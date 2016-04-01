@@ -1,0 +1,20 @@
+dependencies: \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Executors/RCTJSCExecutor.m \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Executors/RCTJSCExecutor.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTJavaScriptExecutor.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTDefines.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTAssert.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTBridge+Private.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTBridge.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Modules/RCTDevMenu.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTLog.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Profiler/RCTProfile.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTPerformanceLogger.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Base/RCTUtils.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Profiler/RCTJSCProfiler.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Modules/RCTRedBox.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/react-native/React/Modules/RCTSourceCode.h

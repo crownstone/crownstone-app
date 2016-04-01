@@ -1,0 +1,33 @@
+dependencies: \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLCanvas.m \
+  ../../react-native/React/Base/RCTBridge.h \
+  ../../react-native/React/Base/RCTBridgeDelegate.h \
+  ../../react-native/React/Base/RCTBridgeModule.h \
+  ../../react-native/React/Base/RCTDefines.h \
+  ../../react-native/React/Base/RCTFrameUpdate.h \
+  ../../react-native/React/Base/RCTInvalidating.h \
+  ../../react-native/React/Base/RCTJavaScriptExecutor.h \
+  ../../react-native/React/Base/RCTUtils.h \
+  ../../react-native/React/Base/RCTAssert.h \
+  ../../react-native/React/Base/RCTConvert.h \
+  ../../react-native/React/Layout/Layout.h \
+  ../../react-native/React/Views/RCTAnimationType.h \
+  ../../react-native/React/Views/RCTBorderStyle.h \
+  ../../react-native/React/Views/RCTTextDecorationLineType.h \
+  ../../react-native/React/Base/RCTLog.h \
+  ../../react-native/React/Views/RCTPointerEvents.h \
+  ../../react-native/React/Base/RCTEventDispatcher.h \
+  ../../react-native/React/Profiler/RCTProfile.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/RNGLContext.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLShader.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLFBO.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLCanvas.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLData.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/CaptureConfig.h \
+  ../../react-native/React/Views/RCTComponent.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLTexture.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLImageData.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLImage.h \
+  ../../react-native/React/Base/RCTImageSource.h \
+  /Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/node_modules/gl-react-native/ios/GLRenderData.h \
+  ../../react-native/React/Views/UIView+React.h
