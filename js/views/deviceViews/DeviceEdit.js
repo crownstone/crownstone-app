@@ -22,8 +22,7 @@ let styles = stylesIOS;
 
 export class DeviceEdit extends Component {
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
+    this.unsubscribe = this.props.store.subscribe(() => {
       this.forceUpdate();
     })
   }
@@ -33,17 +32,17 @@ export class DeviceEdit extends Component {
   }
 
 
-  constructOptions(state, store, device) {
-    let toBehaviour = () => {Actions.deviceBehaviourEdit({deviceId: this.props.deviceId, roomId: this.props.roomId})};
-    let toSchedule = () => {};
+  constructOptions(store, device) {
+    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId};
+    let items = [];
+
+    let toBehaviour = () => {Actions.deviceBehaviourEdit(requiredData)};
+    let toSchedule = () => {Actions.deviceScheduleEdit(requiredData)};
     let toLinkedDevices = () => {};
 
-    let requiredData = {groupId: state.app.activeGroup, locationId: this.props.roomId, stoneId: this.props.deviceId};
-    let items = [];
     // device Name:
-    items.push({label:'Device Name', type: 'text', value:device.config.name, callback: (newText) => {
-      newText = (newText === '') ? 'Untitled Room' : newText;
-      store.dispatch({...requiredData, ...{type:'UPDATE_STONE_CONFIG', data:{name:newText}}});
+    items.push({label:'Device Name', type: 'textEdit', value:device.config.name, callback: (newText) => {
+      store.dispatch({...requiredData, type:'UPDATE_STONE_CONFIG', data:{name:newText}});
     }});
 
     // icon picker
@@ -51,7 +50,7 @@ export class DeviceEdit extends Component {
 
     // dimmable
     items.push({label:'Dimmable', type: 'switch', value:device.config.dimmable, callback: (newValue) => {
-        store.dispatch({...requiredData, ...{type:'UPDATE_STONE_CONFIG', data:{dimmable:newValue}}});
+        store.dispatch({...requiredData, type:'UPDATE_STONE_CONFIG', data:{dimmable:newValue}});
     }});
 
     // spacer
@@ -82,15 +81,16 @@ export class DeviceEdit extends Component {
   }
 
   render() {
-    const { store } = this.props;
-    let state = store.getState();
-    let room = state.groups[state.app.activeGroup].locations[this.props.roomId];
-    let device = room.stones[this.props.deviceId];
+    const store   = this.props.store;
+    const state   = store.getState();
+    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    const device  = room.stones[this.props.stoneId];
 
-    let options = this.constructOptions(state, store, device);
+    let options = this.constructOptions(store, device);
     return (
       <Background>
         <ScrollView>
+          <EditSpacer top={true} />
           <ListEditableItems items={options.slice(0,3)} separatorIndent={true} />
           <ListEditableItems items={options.slice(3,options.length)}/>
         </ScrollView>

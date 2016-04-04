@@ -17,3 +17,6 @@ npm run lint
 Run react-native
 
 react-native run-ios
+
+
+If there are problems with PHC folders during iOS compilation, remove the build folder in the ios map.

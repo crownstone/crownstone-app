@@ -4,6 +4,7 @@ import React, {
   Image,
   PixelRatio,
   TouchableOpacity,
+  TouchableHighlight,
   Text,
   View
 } from 'react-native';
@@ -57,14 +58,6 @@ export class DeviceEntry extends Component {
         {this.props.navigation === true ? <Icon name="ios-arrow-right" size={23} color={'#bababa'} /> : undefined}
       </View>
     );
-
-    if (this.props.navigation === true) {
-      return (
-        <TouchableOpacity onPress={this.props.onNavigation}  style={{flex:1}}>
-          {content}
-        </TouchableOpacity>
-      );
-    }
     return content;
   }
 }

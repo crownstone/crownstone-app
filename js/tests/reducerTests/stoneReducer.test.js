@@ -35,10 +35,10 @@ test('stoneReducer ADD_LOCATION and REMOVE_LOCATION', function (t) {
     stoneId: {
       behaviour: {
         config: {onlyOffWhenEmpty: false, onlyOnAfterDusk: false},
-        onHomeEnter: {state: undefined, fadeTime: 0, timeout: 0},
-        onHomeExit: {state: undefined,  fadeTime: 0, timeout: 0},
-        onRoomEnter: {state: undefined, fadeTime: 0, timeout: 0},
-        onRoomExit: {state: undefined,  fadeTime: 0, timeout: 0}
+        onHomeEnter: {state: 1, fadeTime: 0, delay: 0, active: false},
+        onHomeExit: {state: 1,  fadeTime: 0, delay: 0, active: false},
+        onRoomEnter: {state: 1, fadeTime: 0, delay: 0, active: false},
+        onRoomExit: {state: 1,  fadeTime: 0, delay: 0, active: false}
       },
       config: {dimmable: false, icon: 'light', name: 'Ceiling Light'},
       linkedDevices: {onOff: {}, onOn: {}},
@@ -74,39 +74,40 @@ test('stoneReducer UPDATE_BEHAVIOUR and UPDATE_BEHAVIOUR_CONFIG', function (t) {
   };
 
   let updateBehaviourState1 = {
-    type: 'UPDATE_BEHAVIOUR_ON_HOME_ENTER',
+    type: 'UPDATE_BEHAVIOUR_FOR_onHomeEnter',
     stoneId: 'stoneId',
     data: {
       state:1,
-      timeout:120,
+      delay:120,
       fadeTime:30
     }
   };
   let updateBehaviourState2 = {
-    type: 'UPDATE_BEHAVIOUR_ON_HOME_EXIT',
+    type: 'UPDATE_BEHAVIOUR_FOR_onHomeExit',
     stoneId: 'stoneId',
     data: {
       state:0,
-      timeout:300,
+      delay:300,
       fadeTime:10
     }
   };
   let updateBehaviourState3 = {
-    type: 'UPDATE_BEHAVIOUR_ON_ROOM_ENTER',
+    type: 'UPDATE_BEHAVIOUR_FOR_onRoomEnter',
     stoneId: 'stoneId',
     data: {
       state:0.2,
-      timeout:60,
+      delay:60,
       fadeTime:20
     }
   };
   let updateBehaviourState4 = {
-    type: 'UPDATE_BEHAVIOUR_ON_ROOM_EXIT',
+    type: 'UPDATE_BEHAVIOUR_FOR_onRoomExit',
     stoneId: 'stoneId',
     data: {
       state:0,
-      timeout:30,
-      fadeTime:2
+      delay:30,
+      fadeTime:2,
+      active: true
     }
   };
 
@@ -127,10 +128,10 @@ test('stoneReducer UPDATE_BEHAVIOUR and UPDATE_BEHAVIOUR_CONFIG', function (t) {
     stoneId: {
       behaviour: {
         config: {onlyOffWhenEmpty: false, onlyOnAfterDusk: true},
-        onHomeEnter: {state: 1, fadeTime: 30, timeout: 120},
-        onHomeExit: {state: 0,  fadeTime: 10, timeout: 300},
-        onRoomEnter: {state: 0.2, fadeTime: 20, timeout: 60},
-        onRoomExit: {state: 0,  fadeTime: 2, timeout: 30}
+        onHomeEnter:  {state: 1,    fadeTime: 30, active: false, delay: 120},
+        onHomeExit:   {state: 0,    fadeTime: 10, active: false, delay: 300},
+        onRoomEnter:  {state: 0.2,  fadeTime: 20, active: false, delay: 60},
+        onRoomExit:   {state: 0,    fadeTime: 2,  active: true, delay: 30}
       },
       config: {dimmable: false, icon: 'light', name: 'Ceiling Light'},
       linkedDevices: {onOff: {}, onOn: {}},

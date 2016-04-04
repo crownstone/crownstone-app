@@ -21,6 +21,11 @@ import { RoomOverview }        from '../views/roomViews/RoomOverview'
 import { RoomEdit }            from '../views/roomViews/RoomEdit'
 import { DeviceEdit }          from '../views/deviceViews/DeviceEdit'
 import { DeviceBehaviourEdit } from '../views/deviceViews/DeviceBehaviourEdit'
+import { DeviceStateEdit }     from '../views/deviceViews/DeviceBehaviourStateEdit'
+import { DelaySelection }      from '../views/deviceViews/DelaySelection'
+import { DeviceScheduleEdit }  from '../views/deviceViews/DeviceScheduleEdit'
+import { DeviceScheduleAdd }   from '../views/deviceViews/DeviceScheduleAdd'
+import { DaySelection }        from '../views/deviceViews/DaySelection'
 import { SettingsOverview }    from '../views/settingsViews/SettingsOverview'
 import {stylesIOS, colors}     from '../views/styles'
 let styles = stylesIOS;
@@ -35,13 +40,17 @@ initialStateActionList.forEach((action) => {
 
 const reducerCreate = params=> {
   const defaultReducer = Reducer(params);
-  return (state, action)=>{
+  return (state, action)=> {
+    // this part makes sure that when a menuIcon is pressed AND you are already in that menu tree,
+    // it goes back to the root of that tree
     if (state) {
       let currentTabIndex = state.index;
       if (state.children[currentTabIndex].name === action.key && action.type === 'jump') {
+        console.log({key: state.children[currentTabIndex].children[0].name, type:'reset'});
         return defaultReducer(state, {key: state.children[currentTabIndex].children[0].name, type:'reset'})
       }
     }
+    console.log(action);
     return defaultReducer(state, action);
   }
 };
@@ -80,7 +89,7 @@ let backButtonFunction = function() {
 };
 
 let onRightFunctionEdit = function(params) {
-  Actions.roomEdit({room:params.room, roomId: params.roomId});
+  Actions.roomEdit({groupId: params.groupId, locationId: params.locationId});
 };
 
 export class AppRouter extends React.Component {
@@ -88,7 +97,7 @@ export class AppRouter extends React.Component {
     super();
     this.props = props;
   }
-
+  //
   render() {
     return <Router createReducer={reducerCreate} store={store}>
       <Scene key="tabBar" tabs={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}}>
@@ -98,6 +107,11 @@ export class AppRouter extends React.Component {
           <Scene key="roomEdit"      component={RoomEdit} title="Edit Room" />
           <Scene key="deviceEdit"    component={DeviceEdit} title="Edit Device" />
           <Scene key="deviceBehaviourEdit" component={DeviceBehaviourEdit} title="Edit Behaviour" />
+          <Scene key="deviceStateEdit"     component={DeviceStateEdit} />
+          <Scene key="delaySelection"      component={DelaySelection} title="Set Delay" />
+          <Scene key="deviceScheduleEdit"  component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
+          <Scene key="deviceScheduleAdd"   component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
+          <Scene key="daySelection"        component={DaySelection} title="Set Active Days" />
         </Scene>
         <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" navigationBarStyle={{backgroundColor:colors.menuBackground.h}} titleStyle={{color:'white'}} renderBackButton={backButtonFunction}>
           <Scene key="Settings" component={SettingsOverview} title="Settings"/>

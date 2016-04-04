@@ -19,11 +19,19 @@ import {stylesIOS, colors} from '../styles'
 let styles = stylesIOS;
 
 export class RoomOverview extends Component {
-  _renderer(device,deviceId) {
-    const { store } = this.props;
-    const state = store.getState();
+  componentDidMount() {
+    this.unsubscribe = this.props.store.subscribe(() => {
+      this.forceUpdate();
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  _renderer(device, stoneId) {
     return (
-      <View key={deviceId + '_entry'}>
+      <View key={stoneId + '_entry'}>
         <View style={styles.listView}>
           <DeviceEntry
             name={device.config.name}
@@ -37,11 +45,11 @@ export class RoomOverview extends Component {
               if (newValue === 0)
                 data.currentUsage = 0;
 
-              store.dispatch({
+              this.props.store.dispatch({
                 type: 'UPDATE_STONE_STATE',
-                groupId: state.app.activeGroup,
-                locationId: this.props.roomId,
-                stoneId: deviceId,
+                groupId: this.props.groupId,
+                locationId: this.props.locationId,
+                stoneId: stoneId,
                 data: data
               })
             }}
@@ -51,28 +59,18 @@ export class RoomOverview extends Component {
     );
   }
 
-  componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
-    })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
   render() {
-    const { store } = this.props;
-    const state = store.getState();
-    let room = state.groups[state.app.activeGroup].locations[this.props.roomId];
+    const store   = this.props.store;
+    const state   = store.getState();
+    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    const devices = room.stones;
+
+    // update the title in case the editing has changed it
     this.props.navigationState.title = room.config.name;
 
     let {width} = Dimensions.get('window');
     let pxRatio = PixelRatio.get();
     let height = 50*pxRatio;
-
-    let devices = room.stones;
 
     return (
       <Background>

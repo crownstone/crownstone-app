@@ -25,5 +25,3 @@ class Root extends Component {
 
 
 AppRegistry.registerComponent('Crownstone', () => Root);
-
-

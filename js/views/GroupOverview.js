@@ -32,12 +32,12 @@ export class GroupOverview extends Component {
     this.unsubscribe();
   }
 
-  _renderRoom(roomId, room) {
+  _renderRoom(locationId, room) {
     let width = Dimensions.get('window').width;
     let radius = 0.35*0.5*width;
 
     // TODO: get color, get position on screen.
-    //() => this.props.goto("RoomOverview", {roomId, roomIndex})
+    //() => this.props.goto("RoomOverview", {locationId, roomIndex})
     //r:255,g:60,b:0
 
 
@@ -49,9 +49,10 @@ export class GroupOverview extends Component {
 
     return (
       <TouchableHighlight onPress={() => Actions.roomOverview({
-        roomId:roomId,
+        groupId:this.activeGroup,
+        locationId:locationId,
         title:room.config.name,
-      })} key={roomId}>
+      })} key={locationId}>
         <View>
           <RoomCircle
             backgroundImage={room.picture.squareURI}
@@ -65,22 +66,22 @@ export class GroupOverview extends Component {
     );
   }
 
-  getRooms() {
-    const { store } = this.props;
-    const state = store.getState();
-
+  _getRooms(rooms) {
     let roomNodes = [];
-    let activeGroup = state.app.activeGroup;
-    let rooms = state.groups[activeGroup].locations;
-    Object.keys(rooms).sort().forEach((roomId) => {
-      roomNodes.push(this._renderRoom(roomId, rooms[roomId]))
+    Object.keys(rooms).sort().forEach((locationId) => {
+      roomNodes.push(this._renderRoom(locationId, rooms[locationId]))
     });
     return roomNodes;
   }
 
   render() {
+    const store   = this.props.store;
+    const state   = store.getState();
+    this.activeGroup = state.app.activeGroup;
+    const rooms    = state.groups[this.activeGroup].locations;
+
     return (
-      <Background>{this.getRooms()}</Background>
+      <Background>{this._getRooms(rooms)}</Background>
     )
   }
 }

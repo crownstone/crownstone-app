@@ -7,7 +7,7 @@ import React, {
 export class EditSpacer extends Component {
   render() {
     let pxRatio = PixelRatio.get();
-    let height = 20*pxRatio;
+    let height = (this.props.top ? 15 : 20) * pxRatio;
 
     return <View style={{backgroundColor: this.props.color || 'transparent', height:height}} />
   }

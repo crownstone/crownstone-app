@@ -10,6 +10,7 @@ export const colors = {
   blue: {h:'#0075c9', r:0, g:117, b:201},
   green: {h:'#a0eb58', r:160, g:235, b:88},
   red: {h:'#ff3c00', r:255, g:60, b:0},
+  iosBlue: {h:'#007aff', r:0, g:122, b:255},
 };
 
 export const stylesIOS = StyleSheet.create({
@@ -81,7 +82,7 @@ export const stylesIOS = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#ffffff',
     paddingLeft:15,
-    paddingRight:6,
+    paddingRight:15,
     alignItems: 'center',
   },
   listText:{
@@ -96,10 +97,15 @@ export const stylesIOS = StyleSheet.create({
     height: 1,
     backgroundColor: colors.separator.h,
   },
-
-
   listItem: {
 
   },
-
+  topExplanation: {
+    paddingTop:20
+  },
+  rightNavigationValue: {
+    color:'#888',
+    paddingRight:15,
+    textAlign:'right'
+  }
 });

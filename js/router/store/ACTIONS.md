@@ -91,19 +91,19 @@ data: {state: Number, currentUsage: Number}
 ```js 
 data: {onlyOnAfterDusk: Boolean, onlyOnAtDusk: Boolean}
 ```
-- UPDATE_BEHAVIOUR_ON_HOME_ENTER
+- UPDATE_BEHAVIOUR_FOR_onHomeEnter
 ```js 
 data: {state: Number, timeout: Number, fadeTime: Number}
 ```
-- UPDATE_BEHAVIOUR_ON_HOME_EXIT
+- UPDATE_BEHAVIOUR_FOR_onHomeExit
 ```js 
 data: {state: Number, timeout: Number, fadeTime: Number}
 ```
-- UPDATE_BEHAVIOUR_ON_ROOM_ENTER
+- UPDATE_BEHAVIOUR_FOR_onRoomEnter
 ```js 
 data: {state: Number, timeout: Number, fadeTime: Number}
 ```
-- UPDATE_BEHAVIOUR_ON_ROOM_EXIT
+- UPDATE_BEHAVIOUR_FOR_onRoomExit
 ```js 
 data: {state: Number, timeout: Number, fadeTime: Number}
 ```

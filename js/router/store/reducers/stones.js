@@ -16,9 +16,10 @@ let defaultSettings = {
     onOff: {}
   },
   deviceState:{
-    state:    undefined, // [0 .. 1] for state, undefined for ignore
-    timeout:  0,        // timeout in seconds
-    fadeTime: 0        // timeout in seconds
+    state:    1,  // [0 .. 1] for state, undefined for ignore
+    delay:    0,  // delay in seconds
+    fadeTime: 0,  // delay in seconds
+    active: false  // if not active the crownstone will not react to the event.
   },
   behaviourConfig:{
     onlyOnAfterDusk: false,
@@ -29,9 +30,10 @@ let defaultSettings = {
 let updateDeviceState = function (state, action) {
   if (action.data) {
     let newState = {...state};
-    newState.state     = action.data.state; // undefined is a valid answer.
-    newState.timeout   = update(action.data.timeout, newState.timeout);
+    newState.state     = update(action.data.state,    newState.active);
+    newState.delay     = update(action.data.delay,  newState.delay);
     newState.fadeTime  = update(action.data.fadeTime, newState.fadeTime);
+    newState.active    = update(action.data.active,   newState.active);
     return newState;
   }
   return state;
@@ -59,7 +61,7 @@ let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_STATE':
       if (action.data) {
-        let newState = {...state};
+        let newState          = {...state};
         newState.state        = update(action.data.state,        newState.state);
         newState.currentUsage = update(action.data.currentUsage, newState.currentUsage);
         return newState;
@@ -74,7 +76,7 @@ let behaviourConfigReducer = (state = defaultSettings.behaviourConfig, action = 
   switch (action.type) {
     case 'UPDATE_BEHAVIOUR_CONFIG':
       if (action.data) {
-        let newState = {...state};
+        let newState              = {...state};
         newState.onlyOnAfterDusk  = update(action.data.onlyOnAfterDusk,  newState.onlyOnAfterDusk);
         newState.onlyOffWhenEmpty = update(action.data.onlyOffWhenEmpty, newState.onlyOffWhenEmpty);
         return newState;
@@ -87,7 +89,7 @@ let behaviourConfigReducer = (state = defaultSettings.behaviourConfig, action = 
 
 let behaviourReducerOnHomeEnter = (state = defaultSettings.deviceState, action = {}) => {
   switch (action.type) {
-    case 'UPDATE_BEHAVIOUR_ON_HOME_ENTER':
+    case 'UPDATE_BEHAVIOUR_FOR_onHomeEnter':
       return updateDeviceState(state,action);
     default:
       return state;
@@ -95,7 +97,7 @@ let behaviourReducerOnHomeEnter = (state = defaultSettings.deviceState, action =
 };
 let behaviourReducerOnHomeExit = (state = defaultSettings.deviceState, action = {}) => {
   switch (action.type) {
-    case 'UPDATE_BEHAVIOUR_ON_HOME_EXIT':
+    case 'UPDATE_BEHAVIOUR_FOR_onHomeExit':
       return updateDeviceState(state,action);
     default:
       return state;
@@ -103,7 +105,7 @@ let behaviourReducerOnHomeExit = (state = defaultSettings.deviceState, action = 
 };
 let behaviourReducerOnRoomEnter = (state = defaultSettings.deviceState, action = {}) => {
   switch (action.type) {
-    case 'UPDATE_BEHAVIOUR_ON_ROOM_ENTER':
+    case 'UPDATE_BEHAVIOUR_FOR_onRoomEnter':
       return updateDeviceState(state,action);
     default:
       return state;
@@ -111,7 +113,7 @@ let behaviourReducerOnRoomEnter = (state = defaultSettings.deviceState, action =
 };
 let behaviourReducerOnRoomExit = (state = defaultSettings.deviceState, action = {}) => {
   switch (action.type) {
-    case 'UPDATE_BEHAVIOUR_ON_ROOM_EXIT':
+    case 'UPDATE_BEHAVIOUR_FOR_onRoomExit':
       return updateDeviceState(state,action);
     default:
       return state;

@@ -50,7 +50,22 @@ export let state = {
                 }
               },
               linkedDevices: {onOn: {}, onOff: {}},
-              schedule: {},
+              schedule: [{
+                enabled: true,
+                range: true,
+                startTime: 0,
+                onStart: {
+                  state:1,
+                  fade:10
+                },
+                endTime: 0,
+                onEnd: {
+                  state:1,
+                  fade:0
+                },
+                onDays:{Monday:0, Tuesday:0, Wednesday:0, Thursday:0, Friday:0, Saturday:0, Sunday:0},
+                overruleBehaviour: true
+              }],
               statistics: {},  // statistics per device
             }
           }

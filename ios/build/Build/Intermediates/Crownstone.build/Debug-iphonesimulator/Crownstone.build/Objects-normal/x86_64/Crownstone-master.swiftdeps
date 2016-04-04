@@ -1,5 +1,0 @@
-version: "Apple Swift version 2.2 (swiftlang-703.0.18.1 clang-703.0.29)"
-options: "fbcc70da91a737d26d34806001efa6a1"
-build_time: [512571795, 322033000]
-inputs:
-  "/Users/alex/Dropbox/DoBots/Projects/react-native/Crownstone/ios/TitleMaker.swift": [511456753, 0]

@@ -15,14 +15,14 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { Explanation } from '../components/Explanation'
+import { EditSpacer } from '../components/EditSpacer'
 
 import { stylesIOS, colors } from '../styles'
 let styles = stylesIOS;
 
 export class RoomEdit extends Component {
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
+    this.unsubscribe = this.props.store.subscribe(() => {
       this.forceUpdate();
     })
   }
@@ -31,9 +31,12 @@ export class RoomEdit extends Component {
     this.unsubscribe();
   }
 
-  _renderer(device,deviceId) {
+  _renderer(device, stoneId) {
     return (
-      <View key={deviceId + '_entry'}>
+      <TouchableHighlight
+        key={stoneId + '_entry'}
+        onPress={() => {Actions.deviceEdit({groupId:this.props.groupId, stoneId, locationId:this.props.locationId})}}
+        style={{flex:1}}>
         <View style={styles.listView}>
           <DeviceEntry
             name={device.config.name}
@@ -42,20 +45,17 @@ export class RoomEdit extends Component {
             currentUsage={device.state.currentUsage}
             navigation={true}
             control={false}
-            onNavigation={() => {
-              Actions.deviceEdit({deviceId, roomId:this.props.roomId})
-            }}
           />
         </View>
-      </View>
+      </TouchableHighlight>
     );
   }
 
-  constructOptions(state, store, room) {
-    let requiredData = {groupId: state.app.activeGroup, locationId: this.props.roomId};
+  constructOptions(store, room) {
+    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId};
     let items = [];
     // room Name:
-    items.push({label:'Room Name', type: 'text', value:room.config.name, callback: (newText) => {
+    items.push({label:'Room Name', type: 'textEdit', value: room.config.name, callback: (newText) => {
       newText = (newText === '') ? 'Untitled Room' : newText;
       store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
     }});
@@ -65,15 +65,16 @@ export class RoomEdit extends Component {
   }
 
   render() {
-    const { store } = this.props;
-    let state = store.getState();
-    let room = state.groups[state.app.activeGroup].locations[this.props.roomId];
-    let devices = room.stones;
+    const store   = this.props.store;
+    const state   = store.getState();
+    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    const devices = room.stones;
 
-    let options = this.constructOptions(state, store, room);
+    let options = this.constructOptions(store, room);
     return (
       <Background>
         <ScrollView>
+          <EditSpacer top={true} />
           <ListEditableItems items={options} separatorIndent={true}/>
           <Explanation text='DEVICES IN ROOM:' />
           <SeparatedItemList items={devices} renderer={this._renderer.bind(this)} separatorIndent={false} />

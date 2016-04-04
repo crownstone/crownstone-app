@@ -14,6 +14,8 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { EditableItem } from '../components/EditableItem'
 import { Explanation } from '../components/Explanation'
 import { EditSpacer } from '../components/EditSpacer'
+
+var Actions = require('react-native-router-flux').Actions;
 var Icon = require('react-native-vector-icons/Ionicons');
 
 let styles = stylesIOS;
@@ -31,10 +33,10 @@ export class DeviceBehaviourEdit extends Component {
   }
 
   _getStateLabel(device, event) {
-    if (device.behaviour[event].state === undefined) {
+    if (device.behaviour[event].active === false) {
       return 'No Change';
     }
-    else if (device.behaviour[event].state < 1) {
+    else if (device.behaviour[event].state < 1 && device.behaviour[event].state > 0) {
       return 'On (' + Math.round(100 * device.behaviour[event].state) + '%)'
     }
     else if (device.behaviour[event].state === 1) {
@@ -44,46 +46,63 @@ export class DeviceBehaviourEdit extends Component {
     return 'Off'
   }
 
-  _getTimeoutLabel(device, event) {
-    if (device.behaviour[event].timeout === undefined || device.behaviour[event].timeout == 0)
+  _getDelayLabel(device, event) {
+    if (device.behaviour[event].delay === undefined || device.behaviour[event].delay == 0)
       return '';
 
-    return 'after ' + device.behaviour[event].timeout + ' minutes';
+    return 'after ' + Math.floor(device.behaviour[event].delay/60) + ' minutes';
   }
 
+  _getTitle(eventName) {
+    switch (eventName) {
+      case 'onHomeEnter':
+        return 'When Entering The House';
+      case 'onHomeExit':
+        return 'When Leaving The House';
+      case 'onRoomEnter':
+        return 'When Entering The Room';
+      case 'onRoomExit':
+        return 'When Leaving The Room';
+      default:
+        return '--- invalid event: ' + this.props.eventName;
+    }
+  }
 
-  constructOptions(state, store, device) {
-    let requiredData = {groupId: state.app.activeGroup, locationId: this.props.roomId, stoneId: this.props.deviceId};
+  constructOptions(store, device) {
+    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId};
     let items = [];
 
-    let toDeviceStateSetup = () => {};
-    // behaviour explanation
-    items.push({label:'WHEN YOU COME HOME', type: 'explanation', style:{paddingTop:10}, below:false});
-    items.push({label:this._getStateLabel(device,'onHomeEnter'), value: this._getTimeoutLabel(device,'onHomeEnter'), type: 'navigationValue', valueStyle:{color:'#bababa'}, callback:toDeviceStateSetup});
+    let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title:this._getTitle(eventName), ...requiredData})};
 
-    // behaviour explanation
+    // Behaviour for onHomeEnter event
+    let eventLabel = 'onHomeEnter';
+    items.push({label:'WHEN YOU COME HOME', type: 'explanation', style: styles.topExplanation, below:false});
+    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
+
+    // Behaviour for onHomeExit event
+    eventLabel = 'onHomeExit';
     items.push({label:'WHEN YOU LEAVE YOUR HOME', type: 'explanation',  below:false});
-    items.push({label:this._getStateLabel(device,'onHomeEnter'), value: this._getTimeoutLabel(device,'onHomeEnter'), type: 'navigationValue', valueStyle:{color:'#bababa'}, callback:toDeviceStateSetup});
+    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
 
-    // behaviour explanation
+    // Behaviour for onRoomEnter event
+    eventLabel = 'onRoomEnter';
     items.push({label:'WHEN YOU ENTER THE ROOM', type: 'explanation',  below:false});
-    items.push({label:this._getStateLabel(device,'onHomeEnter'), value: this._getTimeoutLabel(device,'onHomeEnter'), type: 'navigationValue', valueStyle:{color:'#bababa'}, callback:toDeviceStateSetup});
+    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
 
-    // behaviour explanation
+    // Behaviour for onRoomExit event
+    eventLabel = 'onRoomExit';
     items.push({label:'WHEN YOU LEAVE THE ROOM', type: 'explanation',  below:false});
-    items.push({label:this._getStateLabel(device,'onHomeEnter'), value: this._getTimeoutLabel(device,'onHomeEnter'), type: 'navigationValue', valueStyle:{color:'#bababa'}, callback:toDeviceStateSetup});
+    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
     items.push({label:'If there are still people (from your group) left in the room, this will not be triggered.', type: 'explanation',  below:true});
 
-    // behaviour explanation
+    // Special behaviour cases
     items.push({label:'SPECIAL CASES', type: 'explanation', style:{paddingTop:0}, below:false});
     items.push({label:'Only On After Dusk', value: device.behaviour.config.onlyOnAfterDusk , type: 'switch', valueStyle:{color:'#bababa'}, callback:(newValue) => {
       store.dispatch({
+        ...requiredData,
         type: 'UPDATE_BEHAVIOUR_CONFIG',
-        groupId: state.app.activeGroup,
-        locationId: this.props.roomId,
-        stoneId: this.props.deviceId,
         data: {onlyOnAfterDusk: newValue}
-      })
+      });
     }});
     items.push({label:'Enable if you want the device to only turn on when it\'s getting dark outside.', type: 'explanation',  below:true});
 
@@ -91,12 +110,12 @@ export class DeviceBehaviourEdit extends Component {
   }
 
   render() {
-    const { store } = this.props;
-    let state = store.getState();
-    let room = state.groups[state.app.activeGroup].locations[this.props.roomId];
-    let device = room.stones[this.props.deviceId];
+    const store   = this.props.store;
+    const state   = store.getState();
+    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    const device  = room.stones[this.props.stoneId];
 
-    let options = this.constructOptions(state, store, device);
+    let options = this.constructOptions(store, device);
     return (
       <Background>
         <ScrollView>
