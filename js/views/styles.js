@@ -90,7 +90,7 @@ export const stylesIOS = StyleSheet.create({
     fontSize: 17,
   },
   listTextLarge:{
-    width:300,
+    width:250,
     fontSize: 17,
   },
   separator: {
@@ -107,5 +107,9 @@ export const stylesIOS = StyleSheet.create({
     color:'#888',
     paddingRight:15,
     textAlign:'right'
-  }
+  },
+  shadedStatusBar:{
+    backgroundColor:'rgba(0,0,0,0.2)',
+    height:20,
+  },
 });

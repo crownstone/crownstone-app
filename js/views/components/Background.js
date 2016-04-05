@@ -17,12 +17,13 @@ export class Background extends Component {
     let pxRatio = PixelRatio.get();
 
     return <View style={{backgroundColor: '#c1c1c1'}}>
-      <Image style={{resizeMode:'cover', width: width, height:height}} source={require('../../images/background.png')}>
-        <View style={{width:width,height:32*pxRatio}} />
+      <Image style={{resizeMode:'cover', width: width, height:height}} source={this.props.background || require('../../images/background.png')}>
+        {this.props.hideInterface !== true ? <View style={{width:width,height:31*pxRatio}} /> : undefined}
         <View style={{flex:1}}>
         {this.props.children}
         </View>
-        <View style={{width:width,height:25*pxRatio}} />
+        {this.props.hideInterface !== true ? <View style={{width:width,height:25*pxRatio}} /> : undefined}
+
       </Image>
     </View>
   }

@@ -16,6 +16,9 @@ import { createStore } from 'redux'
 import CrownstoneReducer from './store/reducer'
 import initialStateActionList from './store/initialState'
 
+import { LoginSplash }         from '../views/loginViews/LoginSplash'
+import { Login }               from '../views/loginViews/Login'
+import { Register }            from '../views/loginViews/Register'
 import { GroupOverview }       from '../views/GroupOverview'
 import { RoomOverview }        from '../views/roomViews/RoomOverview'
 import { RoomEdit }            from '../views/roomViews/RoomEdit'
@@ -97,24 +100,29 @@ export class AppRouter extends React.Component {
     super();
     this.props = props;
   }
-  //
+
   render() {
-    return <Router createReducer={reducerCreate} store={store}>
-      <Scene key="tabBar" tabs={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}}>
-        <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" navigationBarStyle={{backgroundColor:colors.menuBackground.h}} titleStyle={{color:'white'}} renderBackButton={backButtonFunction}>
-          <Scene key="groupOverview" component={GroupOverview} title="Group Overview" />
-          <Scene key="roomOverview"  component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
-          <Scene key="roomEdit"      component={RoomEdit} title="Edit Room" />
-          <Scene key="deviceEdit"    component={DeviceEdit} title="Edit Device" />
-          <Scene key="deviceBehaviourEdit" component={DeviceBehaviourEdit} title="Edit Behaviour" />
-          <Scene key="deviceStateEdit"     component={DeviceStateEdit} />
-          <Scene key="delaySelection"      component={DelaySelection} title="Set Delay" />
-          <Scene key="deviceScheduleEdit"  component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
-          <Scene key="deviceScheduleAdd"   component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
-          <Scene key="daySelection"        component={DaySelection} title="Set Active Days" />
-        </Scene>
-        <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" navigationBarStyle={{backgroundColor:colors.menuBackground.h}} titleStyle={{color:'white'}} renderBackButton={backButtonFunction}>
-          <Scene key="Settings" component={SettingsOverview} title="Settings"/>
+    return <Router createReducer={reducerCreate} store={store} >
+      <Scene key="Root" hideNavBar={true}>
+        <Scene key="loginSplash" component={LoginSplash} hideNavBar={true} type="reset" />
+        <Scene key="login" component={Login} hideNavBar={true} />
+        <Scene key="register" component={Register} hideNavBar={true} />
+        <Scene key="tabBar" tabs={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset">
+          <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" navigationBarStyle={{backgroundColor:colors.menuBackground.h}} titleStyle={{color:'white'}} renderBackButton={backButtonFunction}>
+            <Scene key="groupOverview" component={GroupOverview} title="Group Overview"  />
+            <Scene key="roomOverview"  component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
+            <Scene key="roomEdit"      component={RoomEdit} title="Edit Room" />
+            <Scene key="deviceEdit"    component={DeviceEdit} title="Edit Device" />
+            <Scene key="deviceBehaviourEdit" component={DeviceBehaviourEdit} title="Edit Behaviour" />
+            <Scene key="deviceStateEdit"     component={DeviceStateEdit} />
+            <Scene key="delaySelection"      component={DelaySelection} title="Set Delay" />
+            <Scene key="deviceScheduleEdit"  component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
+            <Scene key="deviceScheduleAdd"   component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
+            <Scene key="daySelection"        component={DaySelection} title="Set Active Days" />
+          </Scene>
+          <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" navigationBarStyle={{backgroundColor:colors.menuBackground.h}} titleStyle={{color:'white'}} renderBackButton={backButtonFunction}>
+            <Scene key="Settings" component={SettingsOverview} title="Settings"/>
+          </Scene>
         </Scene>
       </Scene>
     </Router>;

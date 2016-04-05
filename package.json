@@ -8,6 +8,7 @@
     "lint": "eslint ./js"
   },
   "dependencies": {
+    "@remobile/react-native-splashscreen": "^1.0.3",
     "gl-react": "^2.2.0",
     "gl-react-native": "^2.22.0",
     "react": "^0.14.8",

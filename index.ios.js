@@ -7,11 +7,15 @@ import React, {
 } from 'react-native';
 
 import { AppRouter } from './js/router/Router'
-
+var SplashScreen = require('@remobile/react-native-splashscreen');
 
 class Root extends Component {
   constructor() {
     super();
+  }
+
+  componentDidMount() {
+    SplashScreen.hide();
   }
 
   render() {

@@ -53,9 +53,9 @@ export class DeviceScheduleEdit extends Component {
     //};
 
     items.push({label: 'Enabled',            value: true,   type: 'switch',     callback:(newValue) => {}});
-    items.push({label: 'Start Time',         value: '8:00', type: 'timePicker', valueStyle: styles.rightNavigationValue, callback:() => {}});
+    items.push({label: 'Start Time',         value: new Date(new Date().setHours(8, 0)), type: 'timePicker', callback:() => {}});
     items.push({label: 'Set State on Start', value: 'On',   type: 'navigation', valueStyle: styles.rightNavigationValue, labelStyle: {width:200}, callback:() => {}});
-    items.push({label: 'End Time',           value: '8:00', type: 'timePicker', valueStyle: styles.rightNavigationValue, callback:() => {}});
+    items.push({label: 'End Time',           value: new Date(new Date().setHours(8, 0)), type: 'timePicker', callback:() => {}});
     items.push({label: 'Set State on End',   value: 'Off',  type: 'navigation', valueStyle: styles.rightNavigationValue, labelStyle: {width:200}, callback:() => {}});
     items.push({label: 'Override Behaviour', value: true,   type: 'switch',     callback:(newValue) => {}});
     items.push({label: 'Days',               value: true,   type: 'dayList',    callback:(newValue) => {}});
