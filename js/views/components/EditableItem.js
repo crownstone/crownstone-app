@@ -80,7 +80,7 @@ export class EditableItem extends Component {
         return (
           <TouchableHighlight onPress={() => {this.props.setActiveElement(); this.props.callback()}}>
             <View style={[styles.listView, {height}]}>
-              <Text style={[styles.listTextLarge, {color:'#e00'}]}>{this.props.label}</Text>
+              <Text style={[styles.listTextLarge, {color:'#e00'}, this.props.style]}>{this.props.label}</Text>
             </View>
           </TouchableHighlight>
         );
@@ -142,7 +142,7 @@ export class EditableItem extends Component {
           <View style={{flex:1}}>
             <View style={[styles.listView, {paddingTop:10,alignItems:'flex-start',height:heightLarge}]}>
               <Text style={styles.listText}>{this.props.label}</Text>
-              {this.props.value !== undefined ? <PictureCircle picture={require('../../images/mediaRoom.png')} /> : <IconCircle icon={'ios-camera-outline'} color='#b0b0cf' showAdd={true} />}
+              {this.props.value !== undefined ? <PictureCircle picture={require('../../images/mediaRoom.png')} /> : <IconCircle icon={'ios-camera-outline'} color='#ccc' showAdd={true} />}
             </View>
           </View>
         );
@@ -187,8 +187,13 @@ export class EditableItem extends Component {
               <TextInput
                 style={{flex:1}}
                 value={this.props.value}
+                placeholder={this.props.placeholder}
+                secureTextEntry={this.props.secure}
                 onChangeText={(newValue) => {this.props.setActiveElement(); this.props.callback(newValue)}}
+                keyboardType={this.props.keyboardType}
               />
+              {this.props.state === 'error' ? <Icon name="ios-close" size={18} color={'#f03333'} /> : undefined}
+              {this.props.state === 'valid' ? <Icon name="ios-checkmark" size={18} color={colors.green.h} /> : undefined}
             </View>
           </View>
         );
@@ -200,7 +205,7 @@ export class EditableItem extends Component {
           hours = hours < 10 ? '0' + hours : hours;
           mins = mins < 10 ? '0' + mins : mins;
           return hours + ':' + mins;
-        }
+        };
         return (
           <View>
             <TouchableHighlight onPress={() => {this.props.setActiveElement()}}>
@@ -221,7 +226,7 @@ export class EditableItem extends Component {
               </View>
             </SlideFadeInView>
           </View>
-        )
+        );
       default:
         return (
           <View>

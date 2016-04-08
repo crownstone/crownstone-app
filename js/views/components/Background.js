@@ -22,8 +22,7 @@ export class Background extends Component {
         <View style={{flex:1}}>
         {this.props.children}
         </View>
-        {this.props.hideInterface !== true ? <View style={{width:width,height:25*pxRatio}} /> : undefined}
-
+        {this.props.hideInterface !== true && this.props.hideTabBar !== true ? <View style={{width:width,height:25*pxRatio}} /> : undefined}
       </Image>
     </View>
   }

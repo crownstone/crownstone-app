@@ -2,7 +2,9 @@ import { update } from './util'
 
 let defaultSettings = {
   user: {
-    name: undefined,
+    firstName: undefined,
+    lastName: undefined,
+    email: undefined,
     tokens: [],
     picture: undefined
   }
@@ -15,14 +17,14 @@ export default (state = defaultSettings.user, action = {}) => {
     case 'USER_LOG_UPDATE':
       if (action.data) {
         let newState = {...state};
-        newState.name    = update(action.data.name,    newState.name);
+        newState.firstName = update(action.data.firstName, newState.firstName);
+        newState.lastName  = update(action.data.lastName,  newState.lastName);
+        newState.email   = update(action.data.email,   newState.email);
         newState.tokens  = update(action.data.tokens,  newState.tokens);
         newState.picture = update(action.data.picture, newState.picture);
         return newState;
       }
       return state;
-    case 'USER_LOG_OUT':
-      return {};
     default:
       return state;
   }

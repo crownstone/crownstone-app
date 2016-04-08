@@ -25,8 +25,6 @@ export class ListEditableItems extends Component {
         items={items}
         separatorIndent={this.props.separatorIndent}
         renderer={this._renderer.bind(this)}
-        hideOpeningSeparator={items && items.length > 0 ? items[0].type === 'explanation' : true}
-        hideClosingSeparator={items && items.length > 0 ? items[items.length-1].type === 'explanation' : true}
       />
     );
   }

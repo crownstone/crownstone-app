@@ -4,7 +4,9 @@ type:
 - USER_LOG_IN
 ```js 
 data: {
-    name: String,
+    firstName: String,
+    lastName: String,
+    email: String,
     tokens: Array of Objects
     picture: String / Boolean
 }

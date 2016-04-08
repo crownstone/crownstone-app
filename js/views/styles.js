@@ -6,7 +6,7 @@ export const colors = {
   menuBackground: {h:'#1c202a', r:28, g:32, b:42},
   menuText: {h:'#ffffff', r:255, g:255, b:255},
   menuTextSelected: {h:'#2daeff', r:2, g:222, b:255},
-  separator: {h:'#cccccc', r:204, g:204, b:204},
+  gray: {h:'#cccccc', r:204, g:204, b:204},
   blue: {h:'#0075c9', r:0, g:117, b:201},
   green: {h:'#a0eb58', r:160, g:235, b:88},
   red: {h:'#ff3c00', r:255, g:60, b:0},
@@ -25,8 +25,6 @@ export const stylesIOS = StyleSheet.create({
     justifyContent:'center',
     width:100,
   },
-
-
   topBarCenterView: {
     flex: 1,
     alignItems:'center',
@@ -95,7 +93,7 @@ export const stylesIOS = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: colors.separator.h,
+    backgroundColor: colors.gray.h,
   },
   listItem: {
 

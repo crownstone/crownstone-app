@@ -18,7 +18,7 @@
     "react-native-camera": "git+https://github.com/lwansbrough/react-native-camera.git",
     "react-native-fs": "^1.2.0",
     "react-native-modalbox": "^1.3.0",
-    "react-native-router-flux": "^3.2.5",
+    "react-native-router-flux": "^3.2.7",
     "react-native-slider": "^0.4.0",
     "react-native-vector-icons": "^1.2.1",
     "react-redux": "^4.4.1",

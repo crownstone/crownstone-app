@@ -75,13 +75,18 @@ export class GroupOverview extends Component {
   }
 
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
+    const store = this.props.store;
+    const state = store.getState();
     this.activeGroup = state.app.activeGroup;
-    const rooms    = state.groups[this.activeGroup].locations;
-
-    return (
-      <Background background={require('../images/mainBackground.png')}>{this._getRooms(rooms)}</Background>
-    )
+    if (state.groups[this.activeGroup] === undefined) {
+      console.log("DRAWING EMPTY: NO STATE", state);
+      return <View />
+    }
+    else {
+      const rooms = state.groups[this.activeGroup].locations;
+      return (
+        <Background background={require('../images/mainBackground.png')}>{this._getRooms(rooms)}</Background>
+      )
+    }
   }
 }

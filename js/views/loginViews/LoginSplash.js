@@ -11,6 +11,7 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from './../components/Background'
 import {stylesIOS, colors} from './../styles'
+import loginStyles from './LoginStyles'
 let styles = stylesIOS;
 
 export class LoginSplash extends Component {
@@ -25,11 +26,11 @@ export class LoginSplash extends Component {
         <View style={loginStyles.loginButtonContainer}>
           <View style={{width:spacerWidth}} />
           <TouchableOpacity onPress={() => {Actions.register()}} >
-            <View style={[loginStyles.loginButton, {width:buttonWidth}]}><Text style={loginStyles.loginText}>Register</Text></View>
+            <View style={[loginStyles.loginButton, {height:50, borderRadius:25, width:buttonWidth}]}><Text style={loginStyles.loginText}>Register</Text></View>
           </TouchableOpacity>
           <View style={{flex:1}} />
           <TouchableOpacity onPress={() => {Actions.login()}} >
-            <View style={[loginStyles.loginButton, {width:buttonWidth}]}><Text style={loginStyles.loginText}>Log In</Text></View>
+            <View style={[loginStyles.loginButton, {height:50, borderRadius:25, width:buttonWidth}]}><Text style={loginStyles.loginText}>Log In</Text></View>
           </TouchableOpacity>
           <View style={{width:spacerWidth}} />
         </View>
@@ -37,28 +38,3 @@ export class LoginSplash extends Component {
     )
   }
 }
-
-let transparent = {backgroundColor:'transparent'};
-let loginStyles = StyleSheet.create({
-  loginButtonContainer: {
-    flexDirection:'row',
-    flex:1,
-    alignItems:'flex-end',
-    justifyContent:'center',
-    paddingBottom:30
-  },
-  loginButton: {
-    backgroundColor:'transparent',
-    height:50,
-    borderRadius:25,
-    borderWidth:2,
-    borderColor:'white',
-    alignItems:'center',
-    justifyContent:'center'
-  },
-  loginText: {
-    color:'white',
-    fontSize:21,
-    fontWeight:'400',
-  }
-});

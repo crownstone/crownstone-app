@@ -73,7 +73,7 @@ export class RoomOverview extends Component {
     let height = 50*pxRatio;
 
     return (
-      <Background>
+      <Background background={require('../../images/mainBackground.png')}>
         <Image source={room.picture.squareURI ? require(room.picture.squareURI) : require('../../images/roomPlaceholderGreen.png')} width={width} height={height} >
           <View style={{flexDirection:'row'}}>
             <View style={[styles.roomImageContents,{height:height}]}><Text style={styles.roomImageText}>Nobody Present</Text></View>
