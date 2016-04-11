@@ -31,7 +31,7 @@ export class RoomEdit extends Component {
     this.unsubscribe();
   }
 
-  _renderer(device, stoneId) {
+  _renderer(device, index, stoneId) {
     return (
       <TouchableHighlight
         key={stoneId + '_entry'}

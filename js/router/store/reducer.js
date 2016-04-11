@@ -7,8 +7,10 @@ import appReducer     from './reducers/app'
 
 // crownstoneReducer
 export default (state = {}, action = {}) => {
-  if (action.type === 'USER_LOG_OUT')
+  if (action.type === 'USER_LOG_OUT') {
     state = {};
+  }
+
 
   return {
     user: userReducer(state.user, action),

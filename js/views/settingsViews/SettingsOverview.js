@@ -21,6 +21,7 @@ let styles = stylesIOS;
 export class SettingsOverview extends Component {
   _getItems() {
     return [
+      {type:'spacer'},
       {label:'Manage Account',  type:'navigation',   callback: (newValue) => {}},
       {label:'Manage Group',  type:'navigation',   callback: (newValue) => {}},
       //{label:'Add, remove, or change the permissions of the people in your group.',  type:'explanation', below:true},
@@ -44,16 +45,15 @@ export class SettingsOverview extends Component {
 
   _logout() {
     const store = this.props.store;
+    Actions.loginSplash();
     store.dispatch({
       type:'USER_LOG_OUT'
     });
-    Actions.loginSplash();
   }
 
   render() {
     return (
       <Background>
-        <EditSpacer top={true} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

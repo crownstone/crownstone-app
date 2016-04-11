@@ -62,7 +62,7 @@ export class RoomOverview extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    const room = state.groups[this.props.groupId].locations[this.props.locationId];
     const devices = room.stones;
 
     // update the title in case the editing has changed it
@@ -70,19 +70,23 @@ export class RoomOverview extends Component {
 
     let {width} = Dimensions.get('window');
     let pxRatio = PixelRatio.get();
-    let height = 50*pxRatio;
+    let height = 50 * pxRatio;
 
     return (
       <Background background={require('../../images/mainBackground.png')}>
-        <Image source={room.picture.squareURI ? require(room.picture.squareURI) : require('../../images/roomPlaceholderGreen.png')} width={width} height={height} >
+        <Image
+          source={room.picture.squareURI ? require(room.picture.squareURI) : require('../../images/roomPlaceholderGreen.png')}
+          width={width} height={height}>
           <View style={{flexDirection:'row'}}>
-            <View style={[styles.roomImageContents,{height:height}]}><Text style={styles.roomImageText}>Nobody Present</Text></View>
-            <View style={{flex:1}} />
-            <View style={[styles.roomImageContents,{height:height}]}><Text style={styles.roomImageText}>512 W</Text></View>
+            <View style={[styles.roomImageContents,{height:height}]}><Text style={styles.roomImageText}>Nobody
+              Present</Text></View>
+            <View style={{flex:1}}/>
+            <View style={[styles.roomImageContents,{height:height}]}><Text style={styles.roomImageText}>512
+              W</Text></View>
           </View>
         </Image>
         <ScrollView>
-          <SeparatedItemList items={devices} renderer={this._renderer.bind(this)} separatorIndent={false} />
+          <SeparatedItemList items={devices} renderer={this._renderer.bind(this)} separatorIndent={false}/>
         </ScrollView>
       </Background>
     )

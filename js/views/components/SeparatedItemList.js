@@ -15,7 +15,7 @@ export class SeparatedItemList extends Component {
 
     let indentSeparator = this.props.separatorIndent === true;
     let editableItem = (item) => {return !(item.type === 'spacer' || item.type === 'explanation')};
-    let iterator = (prevItem, item, nextItem, index) => {
+    let iterator = (prevItem, item, nextItem, index, itemId) => {
       if (prevItem !== undefined) {
         if (editableItem(prevItem) && editableItem(item) && indentSeparator) {
           renderItems.push(<Separator key={index + 'top_separator'} fullLength={false} />);
@@ -25,7 +25,7 @@ export class SeparatedItemList extends Component {
         }
       }
 
-      renderItems.push(this.props.renderer(item, index));
+      renderItems.push(this.props.renderer(item, index, itemId));
 
       if (nextItem === undefined) {
         if (editableItem(item)) {
@@ -51,7 +51,8 @@ export class SeparatedItemList extends Component {
           (index === 0 ? undefined : items[keys[index-1]]),
           items[itemId],
           (index === items.length-1 ? undefined : items[keys[index+1]]),
-          index
+          index,
+          itemId
         )
       });
     }
