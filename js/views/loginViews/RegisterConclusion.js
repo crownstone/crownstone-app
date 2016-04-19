@@ -37,7 +37,7 @@ export class RegisterConclusion extends Component {
         </View>
         <View style={[style.viewContainer]}>
           <Text style={style.text}>After you click the validation link in the email,
-            you can login to the app.
+            you can login to the app using your email address.
           </Text>
         </View>
         <View style={{

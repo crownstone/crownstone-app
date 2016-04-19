@@ -3,6 +3,7 @@ import React, {
   Dimensions,
   Image,
   PixelRatio,
+  Switch,
   TouchableOpacity,
   TouchableHighlight,
   Text,
@@ -10,7 +11,7 @@ import React, {
 } from 'react-native';
 
 var Icon = require('react-native-vector-icons/Ionicons');
-
+import Slider              from 'react-native-slider'
 import {stylesIOS, colors} from '../styles'
 let styles = stylesIOS;
 
@@ -19,6 +20,9 @@ export class DeviceEntry extends Component {
     this.props.onChange((this.props.state === 1 ? 0 : 1));
   }
 
+  _getControl() {
+    return <Switch value={this.props.state > 0} onValueChange={this._pressedDevice.bind(this)} />
+  }
 
   _getItem() {
     let content = (
@@ -40,7 +44,6 @@ export class DeviceEntry extends Component {
       );
     }
     return content;
-
   }
 
   render() {
@@ -56,6 +59,7 @@ export class DeviceEntry extends Component {
           </View>
         </View>
         {this.props.navigation === true ? <Icon name="ios-arrow-right" size={23} color={'#bababa'} /> : undefined}
+        {this.props.control    === true ? this._getControl() : undefined}
       </View>
     );
     return content;

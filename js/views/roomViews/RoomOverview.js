@@ -29,7 +29,7 @@ export class RoomOverview extends Component {
     this.unsubscribe();
   }
 
-  _renderer(device, stoneId) {
+  _renderer(device, index, stoneId) {
     return (
       <View key={stoneId + '_entry'}>
         <View style={styles.listView}>
@@ -40,6 +40,7 @@ export class RoomOverview extends Component {
             currentUsage={device.state.currentUsage}
             navigation={false}
             control={true}
+            dimmable={device.config.dimmable}
             onChange={(newValue) => {
               let data = {state:newValue};
               if (newValue === 0)
@@ -62,7 +63,7 @@ export class RoomOverview extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const room = state.groups[this.props.groupId].locations[this.props.locationId];
+    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
     const devices = room.stones;
 
     // update the title in case the editing has changed it
@@ -89,6 +90,6 @@ export class RoomOverview extends Component {
           <SeparatedItemList items={devices} renderer={this._renderer.bind(this)} separatorIndent={false}/>
         </ScrollView>
       </Background>
-    )
+    );
   }
 }

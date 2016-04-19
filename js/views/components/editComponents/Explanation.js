@@ -5,7 +5,7 @@ import React, {
 } from 'react-native';
 
 
-import {stylesIOS, colors} from '../styles'
+import {stylesIOS, colors} from '../../styles'
 let styles = stylesIOS;
 
 export class Explanation extends Component {

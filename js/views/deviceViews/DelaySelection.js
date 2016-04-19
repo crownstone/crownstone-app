@@ -11,7 +11,7 @@ import React, {
 var Actions = require('react-native-router-flux').Actions;
 import { Background }        from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { EditSpacer }        from '../components/EditSpacer'
+import { EditSpacer }        from '../components/editComponents/EditSpacer'
 
 
 export class DelaySelection extends Component {

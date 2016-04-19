@@ -30,6 +30,13 @@ import { DeviceScheduleEdit }  from '../views/deviceViews/DeviceScheduleEdit'
 import { DeviceScheduleAdd }   from '../views/deviceViews/DeviceScheduleAdd'
 import { DaySelection }        from '../views/deviceViews/DaySelection'
 import { SettingsOverview }    from '../views/settingsViews/SettingsOverview'
+import { ProfileSettings }     from '../views/settingsViews/ProfileSettings'
+import { ChangePasswordSettings }  from '../views/settingsViews/ChangePasswordSettings'
+import { ChangeEmailSettings }     from '../views/settingsViews/ChangeEmailSettings'
+import { LocationSettings }    from '../views/settingsViews/LocationSettings'
+import { GroupSettings }       from '../views/settingsViews/GroupSettings'
+import { CrownstoneSettings }  from '../views/settingsViews/CrownstoneSettings'
+import { AppComplexity }       from '../views/settingsViews/AppComplexity'
 import {stylesIOS, colors}     from '../views/styles'
 let styles = stylesIOS;
 
@@ -109,26 +116,27 @@ class TabIcon extends React.Component {
   }
 }
 
-let backButtonFunction = function() {
-  if (this.props.navigationState.index === 0) {
-    return null;
-  }
-  return (
-      <TouchableOpacity style={[{
-        width: 100,
-        height: 37,
-        position: 'absolute',
-        bottom: 4,
-        left: 2,
-        padding: 8,
-        justifyContent:'center',
-    }]} onPress={Actions.pop}>
-        <View style={{flexDirection:'row', alignItems:'center'}}>
-          <Icon name="ios-arrow-back" size={25} color={'#ffffff'} style={{marginTop:2,paddingRight:6}} />
-          <Text style={styles.topBarLeft}>Back</Text>
-        </View>
-      </TouchableOpacity>
-  );
+let backButtonFunction = function(params) {
+  //console.log("here", params, this)
+  //if (this.props.navigationState.index === 0) {
+  //  return null;
+  //}
+  //return (
+  //    <TouchableOpacity style={[{
+  //      width: 100,
+  //      height: 37,
+  //      position: 'absolute',
+  //      bottom: 4,
+  //      left: 2,
+  //      padding: 8,
+  //      justifyContent:'center',
+  //  }]} onPress={Actions.pop}>
+  //      <View style={{flexDirection:'row', alignItems:'center'}}>
+  //        <Icon name="ios-arrow-back" size={25} color={'#ffffff'} style={{marginTop:2,paddingRight:6}} />
+  //        <Text style={styles.topBarLeft}>Back</Text>
+  //      </View>
+  //    </TouchableOpacity>
+  //);
 };
 
 let onRightFunctionEdit = function(params) {
@@ -138,7 +146,7 @@ let onRightFunctionEdit = function(params) {
 let navBarStyle = {
   navigationBarStyle:{backgroundColor:colors.menuBackground.h},
   titleStyle:{color:'white'},
-  renderBackButton:backButtonFunction
+  //renderBackButton:backButtonFunction
 };
 
 export class AppRouter extends React.Component {
@@ -148,27 +156,34 @@ export class AppRouter extends React.Component {
   }
 
   render() {
-    return <Router createReducer={reducerCreate} store={store} >
-      <Scene key="Root" hideNavBar={false} {...navBarStyle}>
-        <Scene key="loginSplash"        component={LoginSplash}        hideNavBar={true}  type="reset" />
-        <Scene key="login"              component={Login}              hideNavBar={true}  />
-        <Scene key="register"           component={Register}           hideNavBar={false} title="Register" {...navBarStyle} />
-        <Scene key="registerConclusion" component={RegisterConclusion} hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
+    return <Router createReducer={reducerCreate} store={store} {...navBarStyle}>
+      <Scene key="Root" hideNavBar={false}>
+        <Scene key="loginSplash"            component={LoginSplash}        hideNavBar={true}  type="reset" />
+        <Scene key="login"                  component={Login}              hideNavBar={true}  />
+        <Scene key="register"               component={Register}           hideNavBar={false} title="Register" {...navBarStyle} />
+        <Scene key="registerConclusion"     component={RegisterConclusion} hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
         <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset">
-          <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" {...navBarStyle}>
-          <Scene key="groupOverview" component={GroupOverview} title="Group Overview"  />
-          <Scene key="roomOverview"  component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
-          <Scene key="roomEdit"      component={RoomEdit} title="Edit Room" />
-          <Scene key="deviceEdit"    component={DeviceEdit} title="Edit Device" />
-          <Scene key="deviceBehaviourEdit" component={DeviceBehaviourEdit} title="Edit Behaviour" />
-          <Scene key="deviceStateEdit"     component={DeviceStateEdit} />
-          <Scene key="delaySelection"      component={DelaySelection} title="Set Delay" />
-          <Scene key="deviceScheduleEdit"  component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
-          <Scene key="deviceScheduleAdd"   component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
-          <Scene key="daySelection"        component={DaySelection} title="Set Active Days" />
+          <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
+          <Scene key="groupOverview"        component={GroupOverview} title="Group Overview"  />
+          <Scene key="roomOverview"         component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
+          <Scene key="roomEdit"             component={RoomEdit} title="Edit Room" />
+          <Scene key="deviceEdit"           component={DeviceEdit} title="Edit Device" />
+          <Scene key="deviceBehaviourEdit"  component={DeviceBehaviourEdit} title="Edit Behaviour" />
+          <Scene key="deviceStateEdit"      component={DeviceStateEdit} />
+          <Scene key="delaySelection"       component={DelaySelection} title="Set Delay" />
+          <Scene key="deviceScheduleEdit"   component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
+          <Scene key="deviceScheduleAdd"    component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
+          <Scene key="daySelection"         component={DaySelection} title="Set Active Days" />
           </Scene>
           <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" {...navBarStyle} >
-            <Scene key="Settings" component={SettingsOverview} title="Settings"/>
+            <Scene key="Settings"               component={SettingsOverview} title="Settings"/>
+            <Scene key="profileSettings"        component={ProfileSettings} title="Your Profile"/>
+            <Scene key="ChangeEmailSettings"    component={ChangeEmailSettings} title="Change Email"/>
+            <Scene key="changePasswordSettings" component={ChangePasswordSettings} title="Change Password"/>
+            <Scene key="groupSettings"          component={GroupSettings} title="Manage our Group"/>
+            <Scene key="locationSettings"       component={LocationSettings} title="Manage Your Rooms"/>
+            <Scene key="crownstoneSettings"     component={CrownstoneSettings} title="Manage Your Crownstones"/>
+            <Scene key="appComplexity"          component={AppComplexity} title="Settings"/>
           </Scene>
         </Scene>
       </Scene>

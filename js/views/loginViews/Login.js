@@ -52,7 +52,7 @@ export class Login extends Component {
         </TouchableOpacity>
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*width}]}>
-            <TextInput style={{flex:1, padding:10}} placeholder="username" placeholderTextColor="#888" value={this.state.username} onChange={(newValue) => {this.setState({userName:newValue});}} />
+            <TextInput style={{flex:1, padding:10}} placeholder="email" placeholderTextColor="#888" value={this.state.username} onChange={(newValue) => {this.setState({userName:newValue});}} />
           </View>
           <View style={[loginStyles.textBoxView, {width: 0.8*width}]}>
             <TextInput style={{flex:1, padding:10}} secureTextEntry={true} placeholder="password" placeholderTextColor="#888" value={this.state.password} onChange={(newValue) => {this.setState({password:newValue});}} />

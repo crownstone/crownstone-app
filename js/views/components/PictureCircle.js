@@ -8,12 +8,12 @@ import React, {
   View
 } from 'react-native';
 
-var Icon = require('react-native-vector-icons/Ionicons');
 
-import {stylesIOS, colors} from '../styles'
+import { IconCircle }  from '../IconCircle'
+import {stylesIOS, colors} from '../../styles'
 let styles = stylesIOS;
 
-export class PictureCircle extends Component {
+export class PictureEdit extends Component {
   render() {
     return (
       <View>

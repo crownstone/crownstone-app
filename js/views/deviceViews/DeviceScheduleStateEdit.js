@@ -10,7 +10,7 @@ import React, {
 } from 'react-native';
 import { Background }        from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { EditSpacer }        from '../components/EditSpacer'
+import { EditSpacer }        from '../components/editComponents/EditSpacer'
 var Actions = require('react-native-router-flux').Actions;
 
 import {stylesIOS, colors} from '../styles'

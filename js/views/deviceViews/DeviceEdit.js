@@ -14,8 +14,8 @@ import { stylesIOS, colors } from '../styles'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { EditableItem } from '../components/EditableItem'
-import { Explanation } from '../components/Explanation'
-import { EditSpacer } from '../components/EditSpacer'
+import { Explanation } from '../components/editComponents/Explanation'
+import { EditSpacer } from '../components/editComponents/EditSpacer'
 var Icon = require('react-native-vector-icons/Ionicons');
 
 let styles = stylesIOS;

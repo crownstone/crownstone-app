@@ -14,8 +14,8 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SeparatedItemList } from '../components/SeparatedItemList'
-import { Explanation } from '../components/Explanation'
-import { EditSpacer } from '../components/EditSpacer'
+import { Explanation } from '../components/editComponents/Explanation'
+import { EditSpacer } from '../components/editComponents/EditSpacer'
 
 import { stylesIOS, colors } from '../styles'
 let styles = stylesIOS;
@@ -60,7 +60,7 @@ export class RoomEdit extends Component {
       store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
     }});
     items.push({label:'Icon', type: 'icon', value:'easel', callback: () => {}});
-    items.push({label:'Picture', type: 'picture', value:undefined, callback: () => {}});
+    //items.push({label:'Picture', type: 'picture', value:undefined, callback: () => {}});
     return items;
   }
 
