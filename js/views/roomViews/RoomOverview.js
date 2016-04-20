@@ -9,11 +9,10 @@ import React, {
   View
 } from 'react-native';
 
-import { Background } from '../components/Background'
+import { Background }  from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SeparatedItemList } from '../components/SeparatedItemList'
-
-var Icon = require('react-native-vector-icons/Ionicons');
+import { RoomBanner }  from '../components/RoomBanner'
 
 import {stylesIOS, colors} from '../styles'
 let styles = stylesIOS;
@@ -75,17 +74,7 @@ export class RoomOverview extends Component {
 
     return (
       <Background background={require('../../images/mainBackground.png')}>
-        <Image
-          source={room.picture.squareURI ? require(room.picture.squareURI) : require('../../images/roomPlaceholderGreen.png')}
-          width={width} height={height}>
-          <View style={{flexDirection:'row'}}>
-            <View style={[styles.roomImageContents,{height:height}]}><Text style={styles.roomImageText}>Nobody
-              Present</Text></View>
-            <View style={{flex:1}}/>
-            <View style={[styles.roomImageContents,{height:height}]}><Text style={styles.roomImageText}>512
-              W</Text></View>
-          </View>
-        </Image>
+        <RoomBanner presence={[]} usage={512} />
         <ScrollView>
           <SeparatedItemList items={devices} renderer={this._renderer.bind(this)} separatorIndent={false}/>
         </ScrollView>

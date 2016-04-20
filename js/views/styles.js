@@ -60,14 +60,10 @@ export const stylesIOS = StyleSheet.create({
     fontWeight: 'bold',
     color:'#ffffff',
     padding:8,
-    borderRadius:16,
-    backgroundColor:'rgba(0,0,0,0.3)',
   },
-
   menuItem: {
     fontSize:9,
-    color:colors.menuText.h
-
+    color:colors.menuText.h,
   },
   menuView: {
     flex:1,
@@ -75,7 +71,6 @@ export const stylesIOS = StyleSheet.create({
     alignItems: 'center',
     padding:3,
   },
-
   listView: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
