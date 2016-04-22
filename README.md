@@ -8,7 +8,7 @@ The native libs are not in this project directly.
 
 Run the tests:
 
-npm tests
+npm test
 
 Run the lint:
 
@@ -20,3 +20,4 @@ react-native run-ios
 
 
 If there are problems with PHC folders during iOS compilation, remove the build folder in the ios map.
+Cameraroll has to be manually added to iosbuild in 0.22

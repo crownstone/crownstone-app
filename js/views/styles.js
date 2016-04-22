@@ -1,6 +1,8 @@
-import React, {
-  StyleSheet,
-} from 'react-native';
+import React, { Dimensions,PixelRatio,StyleSheet } from 'react-native'
+
+let width = Dimensions.get('window').width;
+let height = Dimensions.get('window').height;
+let pxRatio = PixelRatio.get();
 
 export const colors = {
   menuBackground: {h:'#1c202a', r:28, g:32, b:42},
@@ -14,37 +16,11 @@ export const colors = {
 };
 
 export const stylesIOS = StyleSheet.create({
-  topBar: {
-    backgroundColor:colors.menuBackground.h,
-    paddingTop:18,
-    paddingLeft:6,
-    paddingRight:6,
-    flexDirection:'row'
-  },
-  topBarSideView: {
-    justifyContent:'center',
-    width:100,
-  },
-  topBarCenterView: {
-    flex: 1,
-    alignItems:'center',
-    justifyContent:'center',
-  },
-  topBarLeft: {
-    fontSize:17,
-    color:colors.menuText.h,
-    textAlign:'left',
-  },
-  topBarCenter: {
-    fontSize:17,
-    fontWeight:'bold',
-    color:colors.menuText.h,
-    textAlign:'center',
-  },
-  topBarRight: {
-    fontSize:17,
-    color:colors.menuText.h,
-    textAlign:'right',
+  fullscreen:{
+    position:'absolute',
+    top:0,left:0,
+    width:width,
+    height:height,
   },
   centered: {
     alignItems: 'center',
@@ -104,5 +80,37 @@ export const stylesIOS = StyleSheet.create({
   shadedStatusBar:{
     backgroundColor:'rgba(0,0,0,0.2)',
     height:20,
+    width:width,
   },
+  button: {
+    width:0.9*width,
+    height:50,
+    borderRadius:12,
+    backgroundColor:'white',
+    margin:5,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  joinedButton: {
+    width:0.9*width,
+    height:101,
+    borderRadius:12,
+    backgroundColor:'white',
+    margin:5,
+  },
+  joinedButtons:{
+    width:0.9*width,
+    height:50,
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  joinedButtonSeparator:{
+    width:0.9*width,
+    height:1,
+    backgroundColor: colors.gray.h
+  },
+  buttonText : {
+    fontSize:17,
+    color: colors.blue.h
+  }
 });

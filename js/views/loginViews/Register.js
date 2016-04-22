@@ -10,7 +10,7 @@ import React, {
   View
 } from 'react-native';
 
-import { TopBar } from './../components/Topbar'
+import { PictureOptions } from './../components/PictureOptions'
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { EditSpacer } from './../components/editComponents/EditSpacer'
@@ -98,7 +98,9 @@ export class Register extends Component {
       {
         label: 'Picture',
         type: 'picture', value: this.state.picture,
-        callback: (newValue) => {}
+        callback: (newValue) => {},
+        triggerOptions:this.triggerOptions.bind(this),
+        removePicture:this.removeOptions.bind(this)
       },
       {
         label: 'Your picture is used so other people can see your face when you\'re in a room.',
@@ -119,17 +121,32 @@ export class Register extends Component {
     ]
   }
 
+  triggerOptions() {
+    this.pictureOptions.show()
+  }
+
+  removeOptions() {
+    this.setState({picture:undefined})
+  }
+
   validateAndContinue() {
     Actions.registerConclusion({type:'reset', email:this.state.email.value})
   }
 
+  getPicture(image) {
+    this.setState({picture:image.uri})
+  }
+
   render() {
     return (
-      <Background hideTabBar={true}>
-        <ScrollView>
-          <ListEditableItems items={this._getItems()} separatorIndent={true} />
-        </ScrollView>
-      </Background>
+      <View>
+        <Background hideTabBar={true}>
+          <ScrollView>
+            <ListEditableItems items={this._getItems()} separatorIndent={true} />
+          </ScrollView>
+        </Background>
+        <PictureOptions ref={(pictureOptions) => {this.pictureOptions = pictureOptions;}} selectCallback={this.getPicture.bind(this)}/>
+      </View>
     );
   }
 }

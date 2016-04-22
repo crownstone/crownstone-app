@@ -10,7 +10,6 @@ import React, {
   View
 } from 'react-native';
 
-import { TopBar } from './../components/Topbar'
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { EditSpacer } from './../components/editComponents/EditSpacer'
