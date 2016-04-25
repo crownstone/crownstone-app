@@ -112,5 +112,9 @@ export const stylesIOS = StyleSheet.create({
   buttonText : {
     fontSize:17,
     color: colors.blue.h
+  },
+  menuText: {
+    fontSize: 17,
+    color: colors.menuText.h,
   }
 });

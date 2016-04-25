@@ -53,7 +53,6 @@ export class CameraRollView extends Component {
   drawPictures() {
     if (this.state.pictures.length > 0) {
       let width = Dimensions.get('window').width;
-      let height = Dimensions.get('window').height;
 
       let amountX = 4;
       let size = width / amountX;
@@ -61,7 +60,7 @@ export class CameraRollView extends Component {
       let images = [];
       let rows = [];
       this.state.pictures.forEach((edge, index) => {
-        images.push(<TouchableHighlight key={'image'+index} onPress={() => {this.props.selectCallback(edge.node.image); Actions.pop();}}>
+        images.push(<TouchableHighlight key={'image'+index} onPress={() => {this.props.selectCallback(edge.node.image.uri); Actions.pop();}}>
                       <Image source={{uri:edge.node.image.uri}} style={{width:size,height:size}}/>
                     </TouchableHighlight>);
         if (images.length == amountX) {

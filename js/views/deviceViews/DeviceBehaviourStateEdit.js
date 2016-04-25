@@ -11,7 +11,7 @@ import React, {
 import { Background }        from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { EditSpacer }        from '../components/editComponents/EditSpacer'
-import { SlideFadeInView }        from '../components/editComponents/SlideFadeInView'
+import { SlideFadeInView }        from '../components/animated/SlideFadeInView'
 var Actions = require('react-native-router-flux').Actions;
 
 import {stylesIOS, colors} from '../styles'

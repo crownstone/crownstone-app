@@ -134,7 +134,7 @@ export class Register extends Component {
   }
 
   getPicture(image) {
-    this.setState({picture:image.uri})
+    this.setState({picture:image})
   }
 
   render() {

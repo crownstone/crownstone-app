@@ -22,7 +22,7 @@ export class PictureCircle extends Component {
           height:60,
           borderRadius:30,
           backgroundColor: '#ffffff',
-          borderColor: this.props.color || colors.menuBackground.h,
+          borderColor: '#fff',
           borderWidth: 2
           }, styles.centered]} source={this.props.picture} />
           <View style={[{

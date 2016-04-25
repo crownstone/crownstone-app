@@ -19,6 +19,9 @@ import { LoginSplash }         from '../views/loginViews/LoginSplash'
 import { Login }               from '../views/loginViews/Login'
 import { Register }            from '../views/loginViews/Register'
 import { RegisterConclusion }  from '../views/loginViews/RegisterConclusion'
+import { PictureView }         from '../views/cameraViews/PictureView'
+import { PicturePreview }      from '../views/cameraViews/PicturePreview'
+import { CameraRollView }      from '../views/cameraViews/CameraRollView'
 import { GroupOverview }       from '../views/GroupOverview'
 import { RoomOverview }        from '../views/roomViews/RoomOverview'
 import { RoomEdit }            from '../views/roomViews/RoomEdit'
@@ -162,18 +165,21 @@ export class AppRouter extends React.Component {
         <Scene key="login"                  component={Login}              hideNavBar={true}  />
         <Scene key="register"               component={Register}           hideNavBar={false} title="Register" {...navBarStyle} />
         <Scene key="registerConclusion"     component={RegisterConclusion} hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
+        <Scene key="pictureView"            component={PictureView}        hideNavBar={true} direction="vertical" />
+        <Scene key="picturePreview"         component={PicturePreview}     hideNavBar={true} direction="vertical" />
+        <Scene key="cameraRollView"         component={CameraRollView}     hideNavBar={true} direction="vertical" />
         <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset">
           <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
-          <Scene key="groupOverview"        component={GroupOverview} title="Group Overview"  />
-          <Scene key="roomOverview"         component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
-          <Scene key="roomEdit"             component={RoomEdit} title="Edit Room" />
-          <Scene key="deviceEdit"           component={DeviceEdit} title="Edit Device" />
-          <Scene key="deviceBehaviourEdit"  component={DeviceBehaviourEdit} title="Edit Behaviour" />
-          <Scene key="deviceStateEdit"      component={DeviceStateEdit} />
-          <Scene key="delaySelection"       component={DelaySelection} title="Set Delay" />
-          <Scene key="deviceScheduleEdit"   component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
-          <Scene key="deviceScheduleAdd"    component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
-          <Scene key="daySelection"         component={DaySelection} title="Set Active Days" />
+            <Scene key="groupOverview"        component={GroupOverview} title="Group Overview"  />
+            <Scene key="roomOverview"         component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
+            <Scene key="roomEdit"             component={RoomEdit} title="Edit Room" />
+            <Scene key="deviceEdit"           component={DeviceEdit} title="Edit Device" />
+            <Scene key="deviceBehaviourEdit"  component={DeviceBehaviourEdit} title="Edit Behaviour" />
+            <Scene key="deviceStateEdit"      component={DeviceStateEdit} />
+            <Scene key="delaySelection"       component={DelaySelection} title="Set Delay" />
+            <Scene key="deviceScheduleEdit"   component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
+            <Scene key="deviceScheduleAdd"    component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
+            <Scene key="daySelection"         component={DaySelection} title="Set Active Days" />
           </Scene>
           <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" {...navBarStyle} >
             <Scene key="Settings"               component={SettingsOverview} title="Settings"/>

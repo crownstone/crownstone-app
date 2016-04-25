@@ -1,6 +1,7 @@
 package com.crownstone;
 
 import com.facebook.react.ReactActivity;
+import com.remobile.splashscreen.RCTSplashScreenPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.rnfs.RNFSPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
@@ -39,6 +40,7 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new RCTSplashScreenPackage(),
         new VectorIconsPackage(),
         new RNFSPackage(),
         new RCTCameraPackage(),

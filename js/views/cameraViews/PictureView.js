@@ -11,6 +11,7 @@ import React, {
   View
 } from 'react-native';
 
+import { Processing } from '../components/Processing';
 import { TopBar } from '../components/Topbar';
 import Camera from 'react-native-camera';
 var Icon = require('react-native-vector-icons/Ionicons');
@@ -22,17 +23,17 @@ export class PictureView extends Component {
   constructor(props) {
     super();
     this.state = {
-      camera: Camera.constants.Type.front,
+      camera: Camera.constants.Type.back,
       flash:Camera.constants.FlashMode.auto,
       pictureTaken: false
     }
   }
 
   takePicture() {
-    //TODO: do something with the image
     this.camera.capture()
-      .then((data) => console.log(data))
+      .then((data) => {Actions.pop(); Actions.picturePreview({image:data, selectCallback:this.props.selectCallback})})
       .catch(err => console.error(err));
+    this.setState({ pictureTaken: true });
   }
 
   switchCamera() {
@@ -73,49 +74,38 @@ export class PictureView extends Component {
 
 
   render() {
-    let width = Dimensions.get('window').width;
-    let pxRatio = PixelRatio.get();
-
-    if (this.state.pictureTaken === true) {
-      return (
-        <View style={{flex:1}}>
-          <View style={[styles.shadedStatusBar, {backgroundColor:colors.menuBackground.h}]} />
-          <View style={{width:width,height:31*pxRatio-20, flexDirection:'row', justifyContent:'center', alignItems:'center', backgroundColor:colors.menuBackground.h}}>
-            <TouchableHighlight onPress={Actions.pop} style={{position:'absolute', left:10, height:31*pxRatio-20, width:90, justifyContent:'center'}}><Text style={styles.topBarLeft}>Cancel</Text></TouchableHighlight>
-            <View><Text style={[styles.topBarLeft,{fontWeight:'bold'}]}>Take a Picture</Text></View>
+    return (
+      <View style={{flex:1}}>
+        <TopBar title="Take A Picture" left="Cancel" leftAction={Actions.pop} notBack={true} />
+        <Camera
+          ref={(cam) => {this.camera = cam;}}
+          type={this.state.camera}
+          style={cameraStyle.preview}
+          captureAudio={false}
+          flashMode={this.state.flash}
+          aspect={Camera.constants.Aspect.fill}>
+          <TouchableOpacity onPress={this.toggleFlash.bind(this)} style={{position:'absolute',top:20,left:20}}>
+            <View style={{flexDirection:'row', alignItems:'center'}}>
+            <View style={cameraStyle.button}>
+              <Icon name={'ios-bolt'} size={38} color={'white'} style={cameraStyle.buttonIcon}/>
+            </View>
+            <Text style={{backgroundColor:'transparent', padding:4, color:'#ffff00'}}>{this.getFlashState()}</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.switchCamera.bind(this)} style={[cameraStyle.button,{position:'absolute',top:20,right:20}]} >
+            <Icon name={'ios-reverse-camera'} size={38} color={'white'} style={cameraStyle.buttonIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.takePicture.bind(this)} style={[cameraStyle.snapButton,{bottom:20}]}>
+            <Icon name={'ios-camera'} size={50} color={'white'} style={cameraStyle.buttonIcon} />
+          </TouchableOpacity>
+        </Camera>
+        <Processing visible={this.state.pictureTaken}>
+          <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+            <Text style={styles.menuText}>Processing</Text>
           </View>
-        </View>
-      );
-    }
-    else {
-      return (
-        <View style={{flex:1}}>
-          <TopBar title="Take A Picture" left="Cancel" leftAction={Actions.pop} notBack={true} />
-          <Camera
-            ref={(cam) => {this.camera = cam;}}
-            type={this.state.camera}
-            style={cameraStyle.preview}
-            captureAudio={false}
-            flashMode={this.state.flash}
-            aspect={Camera.constants.Aspect.fill}>
-            <TouchableOpacity onPress={this.toggleFlash.bind(this)} style={{position:'absolute',top:20,left:20}}>
-              <View style={{flexDirection:'row', alignItems:'center'}}>
-              <View style={cameraStyle.button}>
-                <Icon name={'ios-bolt'} size={38} color={'white'} style={cameraStyle.buttonIcon}/>
-              </View>
-              <Text style={{backgroundColor:'transparent', padding:4, color:'#ffff00'}}>{this.getFlashState()}</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.switchCamera.bind(this)} style={[cameraStyle.button,{position:'absolute',top:20,right:20}]} >
-              <Icon name={'ios-reverse-camera'} size={38} color={'white'} style={cameraStyle.buttonIcon} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.takePicture.bind(this)} style={[cameraStyle.snapButton,{bottom:20}]}>
-              <Icon name={'ios-camera'} size={50} color={'white'} style={cameraStyle.buttonIcon} />
-            </TouchableOpacity>
-          </Camera>
-        </View>
-      );
-    }
+        </Processing>
+      </View>
+    );
   }
 }
 
