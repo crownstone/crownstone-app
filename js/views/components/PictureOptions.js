@@ -12,8 +12,8 @@ var Actions = require('react-native-router-flux').Actions;
 import { FadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
 import { SlideFadeInView }  from './animated/SlideFadeInView'
-import { stylesIOS, colors } from './../styles'
-let styles = stylesIOS;
+import { styles, colors } from './../styles'
+
 
 export class PictureOptions extends Component {
   constructor() {

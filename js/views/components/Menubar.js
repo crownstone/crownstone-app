@@ -12,8 +12,8 @@ import React, {
 } from 'react-native';
 
 import {routes} from './UINavigator'
-import {stylesIOS, colors} from '../styles'
-let styles = stylesIOS;
+import { styles, colors} from '../styles'
+
 
 var Icon = require('react-native-vector-icons/Ionicons');
 

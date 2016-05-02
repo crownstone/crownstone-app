@@ -1,6 +1,7 @@
 package com.crownstone;
 
 import com.facebook.react.ReactActivity;
+import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.remobile.splashscreen.RCTSplashScreenPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.rnfs.RNFSPackage;
@@ -40,6 +41,7 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new ImageResizerPackage(),
             new RCTSplashScreenPackage(),
         new VectorIconsPackage(),
         new RNFSPackage(),

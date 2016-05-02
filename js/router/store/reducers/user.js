@@ -6,6 +6,7 @@ let defaultSettings = {
     lastName: undefined,
     email: undefined,
     tokens: [],
+    userId: [],
     picture: undefined
   }
 };
@@ -21,6 +22,7 @@ export default (state = defaultSettings.user, action = {}) => {
         newState.lastName  = update(action.data.lastName,  newState.lastName);
         newState.email   = update(action.data.email,   newState.email);
         newState.tokens  = update(action.data.tokens,  newState.tokens);
+        newState.userId  = update(action.data.userId,  newState.userId);
         newState.picture = update(action.data.picture, newState.picture);
         return newState;
       }

@@ -11,8 +11,8 @@ import React, {
 
 var Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
-import { stylesIOS, colors } from '../styles'
-let styles = stylesIOS;
+import { styles, colors } from '../styles'
+
 
 
 export class CameraRollView extends Component {

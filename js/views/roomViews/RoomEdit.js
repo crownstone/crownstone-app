@@ -17,8 +17,8 @@ import { SeparatedItemList } from '../components/SeparatedItemList'
 import { Explanation } from '../components/editComponents/Explanation'
 import { EditSpacer } from '../components/editComponents/EditSpacer'
 
-import { stylesIOS, colors } from '../styles'
-let styles = stylesIOS;
+import { styles, colors } from '../styles'
+
 
 export class RoomEdit extends Component {
   componentDidMount() {

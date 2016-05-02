@@ -15,7 +15,7 @@ export const colors = {
   iosBlue: {h:'#007aff', r:0, g:122, b:255},
 };
 
-export const stylesIOS = StyleSheet.create({
+export const styles = StyleSheet.create({
   fullscreen:{
     position:'absolute',
     top:0,left:0,
@@ -65,9 +65,6 @@ export const stylesIOS = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor: colors.gray.h,
-  },
-  listItem: {
-
   },
   topExplanation: {
     paddingTop:20

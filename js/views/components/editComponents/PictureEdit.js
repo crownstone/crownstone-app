@@ -10,11 +10,10 @@ import React, {
   View
 } from 'react-native';
 
-import Camera from 'react-native-camera';
 import { IconCircle }  from '../IconCircle'
 import { PictureCircle }  from '../PictureCircle'
-import {stylesIOS, colors} from '../../styles'
-let styles = stylesIOS;
+import { styles, colors} from '../../styles'
+
 
 export class PictureEdit extends Component {
   render() {
@@ -25,9 +24,12 @@ export class PictureEdit extends Component {
             {
               this.props.value !== undefined
                 ?
-                <TouchableOpacity onPress={this.props.removePicture} ><View><PictureCircle picture={{uri:this.props.value}} /></View></TouchableOpacity>
+                <TouchableOpacity onPress={this.props.removePicture} style={{height:60}}><View><PictureCircle picture={{uri:this.props.value}} /></View></TouchableOpacity>
                 :
-                <TouchableOpacity onPress={this.props.triggerOptions}><View><IconCircle icon={'ios-camera-outline'} color='#ccc' showAdd={true} /></View></TouchableOpacity>
+                <View style={{flexDirection:'row',alignItems:'center', justifyContent:'center'}}>
+                  <TouchableOpacity onPress={this.props.triggerOptions} style={{height:60}}><View><IconCircle icon={'ios-camera-outline'} color='#ccc' showAdd={true} /></View></TouchableOpacity>
+                  <Text style={[styles.listText ,{padding:10, color:colors.gray.h}]}>{this.props.placeholderText}</Text>
+                </View>
             }
           </View>
         </View>

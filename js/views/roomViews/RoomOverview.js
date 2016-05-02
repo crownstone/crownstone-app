@@ -14,8 +14,8 @@ import { DeviceEntry } from '../components/DeviceEntry'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
 
-import {stylesIOS, colors} from '../styles'
-let styles = stylesIOS;
+import { styles, colors} from '../styles'
+
 
 export class RoomOverview extends Component {
   componentDidMount() {

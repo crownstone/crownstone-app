@@ -10,7 +10,7 @@ import React, {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-import { stylesIOS, colors } from '../styles'
+import { styles, colors } from '../styles'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { EditableItem } from '../components/EditableItem'
@@ -18,7 +18,7 @@ import { Explanation } from '../components/editComponents/Explanation'
 import { EditSpacer } from '../components/editComponents/EditSpacer'
 var Icon = require('react-native-vector-icons/Ionicons');
 
-let styles = stylesIOS;
+
 
 export class DeviceEdit extends Component {
   componentDidMount() {

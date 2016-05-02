@@ -11,7 +11,7 @@ import React, {
   Text,
   View
 } from 'react-native';
-import {Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions} from 'react-native-router-flux';
+import { Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions } from 'react-native-router-flux';
 import { createStore } from 'redux'
 import CrownstoneReducer from './store/reducer'
 
@@ -40,8 +40,7 @@ import { LocationSettings }    from '../views/settingsViews/LocationSettings'
 import { GroupSettings }       from '../views/settingsViews/GroupSettings'
 import { CrownstoneSettings }  from '../views/settingsViews/CrownstoneSettings'
 import { AppComplexity }       from '../views/settingsViews/AppComplexity'
-import {stylesIOS, colors}     from '../views/styles'
-let styles = stylesIOS;
+import { styles, colors}     from '../views/styles'
 
 var Icon = require('react-native-vector-icons/Ionicons');
 

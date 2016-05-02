@@ -6,8 +6,8 @@ import React, {
 } from 'react-native';
 
 var Icon = require('react-native-vector-icons/Ionicons');
-import { stylesIOS, colors } from '../../styles'
-let styles = stylesIOS;
+import { styles, colors } from '../../styles'
+
 
 export class NavigationBar extends Component {
 

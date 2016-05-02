@@ -16,8 +16,8 @@ import { TopBar } from '../components/Topbar';
 import Camera from 'react-native-camera';
 var Icon = require('react-native-vector-icons/Ionicons');
 var Actions = require('react-native-router-flux').Actions;
-import {stylesIOS, colors} from '../styles'
-let styles = stylesIOS;
+import { styles, colors} from '../styles'
+
 
 export class PictureView extends Component {
   constructor(props) {

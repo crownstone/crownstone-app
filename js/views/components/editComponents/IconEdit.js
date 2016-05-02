@@ -6,8 +6,8 @@ import React, {
 } from 'react-native';
 
 import { IconCircle }  from '../IconCircle'
-import { stylesIOS, colors } from '../../styles'
-let styles = stylesIOS;
+import { styles, colors } from '../../styles'
+
 
 export class IconEdit extends Component {
 

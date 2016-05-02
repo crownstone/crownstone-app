@@ -10,9 +10,9 @@ var Actions = require('react-native-router-flux').Actions;
 
 
 import { Background } from './../components/Background'
-import {stylesIOS, colors} from './../styles'
+import { styles, colors} from './../styles'
 import loginStyles from './LoginStyles'
-let styles = stylesIOS;
+
 
 export class LoginSplash extends Component {
   render() {

@@ -14,8 +14,8 @@ import { EditSpacer }        from '../components/editComponents/EditSpacer'
 import { SlideFadeInView }        from '../components/animated/SlideFadeInView'
 var Actions = require('react-native-router-flux').Actions;
 
-import {stylesIOS, colors} from '../styles'
-let styles = stylesIOS;
+import { styles, colors} from '../styles'
+
 
 export class DeviceStateEdit extends Component {
   componentDidMount() {

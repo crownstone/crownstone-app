@@ -8,7 +8,7 @@ import React, {
   Text,
   View
 } from 'react-native';
-import { stylesIOS, colors } from '../styles'
+import { styles, colors } from '../styles'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { EditableItem } from '../components/EditableItem'
@@ -18,7 +18,7 @@ import { EditSpacer } from '../components/editComponents/EditSpacer'
 var Actions = require('react-native-router-flux').Actions;
 var Icon = require('react-native-vector-icons/Ionicons');
 
-let styles = stylesIOS;
+
 
 export class DeviceBehaviourEdit extends Component {
   componentDidMount() {

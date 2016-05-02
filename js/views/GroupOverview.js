@@ -13,8 +13,8 @@ var Actions = require('react-native-router-flux').Actions;
 import { Background } from './components/Background'
 import { RoomCircle } from './components/RoomCircle'
 
-import {stylesIOS, colors} from './styles'
-let styles = stylesIOS;
+import { styles, colors} from './styles'
+
 
 export class GroupOverview extends Component {
   constructor() {

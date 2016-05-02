@@ -5,8 +5,8 @@ import React, {
 } from 'react-native';
 
 import Slider               from 'react-native-slider'
-import { stylesIOS, colors } from '../../styles'
-let styles = stylesIOS;
+import { styles, colors } from '../../styles'
+
 
 export class SliderBar extends Component {
   constructor() {

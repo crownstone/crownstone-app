@@ -9,9 +9,8 @@ import React, {
 } from 'react-native';
 
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
+import { styles, colors} from '../styles'
 
-import {stylesIOS, colors} from '../styles'
-let styles = stylesIOS;
 
 const GL = require('gl-react');
 const { Surface } = require('gl-react-native'); // in React Native context

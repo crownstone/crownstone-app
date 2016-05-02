@@ -8,7 +8,7 @@ import React, {
   View
 } from 'react-native';
 
-import {stylesIOS, colors} from '../styles'
+import { styles, colors} from '../styles'
 
 export class RoomBanner extends Component {
   _getPresenceData() {
@@ -40,16 +40,16 @@ export class RoomBanner extends Component {
       <View style={{width:width, height:height, backgroundColor: this.props.color || colors.green.h, justifyContent:'center'}}>
         <View style={{flexDirection:'row'}}>
           <View style={{height:0.7*height, width: leftRatio*width, backgroundColor:'transparent'}}>
-            <View style={[styles.whiteLeft, {height:0.5*height, width:(leftRatio-0.05)*width+offset}]} />
-            <View style={[styles.blueLeft,  {height: 0.5*height, width:(leftRatio-0.05)*width, top: offset}]}>
+            <View style={[bannerStyles.whiteLeft, {height:0.5*height, width:(leftRatio-0.05)*width+offset}]} />
+            <View style={[bannerStyles.blueLeft,  {height: 0.5*height, width:(leftRatio-0.05)*width, top: offset}]}>
               {this._getPresenceData()}
             </View>
           </View>
           <View style={{flex:1}} />
           <View style={{height:0.7*height, width: rightRatio*width, backgroundColor:'transparent', alignItems:'flex-end'}}>
-            <View style={[styles.whiteRight, {height: 0.5*height, width:(rightRatio-0.05) * width+offset}]} />
-            <View style={[styles.blueRight,  {height: 0.5*height, width:(rightRatio-0.05) * width, top: offset}]}>
-              <Text style={styles.roomImageText}>{this.props.usage} W</Text>
+            <View style={[bannerStyles.whiteRight, {height: 0.5*height, width:(rightRatio-0.05) * width+offset}]} />
+            <View style={[bannerStyles.blueRight,  {height: 0.5*height, width:(rightRatio-0.05) * width, top: offset}]}>
+              <Text style={bannerStyles.roomImageText}>{this.props.usage} W</Text>
             </View>
           </View>
         </View>
@@ -59,7 +59,7 @@ export class RoomBanner extends Component {
 }
 
 
-export const styles = StyleSheet.create({
+export const bannerStyles = StyleSheet.create({
   whiteLeft: {
     position:'absolute',
     bottom:0,

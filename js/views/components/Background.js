@@ -6,8 +6,8 @@ import React, {
   View
 } from 'react-native';
 
-import {stylesIOS, colors} from '../styles'
-let styles = stylesIOS;
+import { styles, colors} from '../styles'
+
 
 export class Background extends Component {
 

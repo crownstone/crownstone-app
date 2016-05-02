@@ -119,6 +119,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-image-resizer')
     compile project(':@remobile/react-native-splashscreen')
     compile project(':react-native-vector-icons')
     compile project(':react-native-fs')
@@ -127,4 +128,7 @@ dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:0.20.+"
+
+    compile project(":react-native-image-resizer")
+    compile fileTree(dir: "node_modules/react-native-image-resizer/android/libs", include: ["*.jar"])
 }

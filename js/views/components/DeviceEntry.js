@@ -12,8 +12,8 @@ import React, {
 
 var Icon = require('react-native-vector-icons/Ionicons');
 import Slider              from 'react-native-slider'
-import {stylesIOS, colors} from '../styles'
-let styles = stylesIOS;
+import { styles, colors} from '../styles'
+
 
 export class DeviceEntry extends Component {
   _pressedDevice() {
