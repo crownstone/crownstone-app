@@ -10,8 +10,9 @@ import React, {
   View
 } from 'react-native';
 
-import { CLOUD_ADDRESS } from '../../router/store/externalConfig'
+import { CLOUD } from '../../util/cloud'
 
+import { emailCheckRegex } from './../../util/util'
 import { PictureOptions } from './../components/PictureOptions'
 import { Processing } from './../components/Processing'
 import { Background } from './../components/Background'
@@ -44,11 +45,10 @@ export class Register extends Component {
 
     this.characterChecker = /[\D]/g;
     this.numberChecker = /[0-9]/g;
-    this.emailChecker = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   }
 
   getEmailState(email)  {
-    if (this.emailChecker.test(email)) {
+    if (emailCheckRegex.test(email)) {
       return 'valid';
     }
     return 'error';
@@ -217,8 +217,8 @@ export class Register extends Component {
 
   processImage() {
     return new Promise((resolve, reject) => {
-      let { width, height } = Dimensions.get('window')
       if (this.state.picture !== undefined) {
+        let { width, height } = Dimensions.get('window');
         ImageResizer.createResizedImage(this.state.picture, width * 0.5, height * 0.5, 'JPEG', 80)
           .then((resizedImageUri) => {
             return RNFS.readFile(resizedImageUri, 'base64');
@@ -242,58 +242,25 @@ export class Register extends Component {
   }
 
   requestRegistration() {
-    let handleInitialReply = (response) => {
-      // check the status code. OK is 200, rest will be reported as errors.
-      if (response.status === 200) {
-        this.processImage().then(() => {
-          Actions.registerConclusion({type:'reset', email:this.state.email.value.toLowerCase()})
-        });
-      }
-      else {
-        return response.json();
-      }
-    };
-
-    let handleProblems = (jsonResponse) => {
-      // We should only get here when there is a problem with the jsonResponse status (ie. not 200).
-      // Only then do we return a promise which means jsonResponse will not be undefined.
-      if (jsonResponse && jsonResponse.error) {
-        let message = jsonResponse.error.message.split("` ");
-        message = message[message.length - 1];
-        Alert.alert("Registration Error", message, [{
-          text: 'OK', onPress: () => {
-            this.setState({processing: false});
-            return true;
-          }
-        }]);
-      }
-    };
-
-    let handleErrors = (err) => {
-      Alert.alert("App Error", err.message, [{text:'OK', onPress: () => {
-        this.setState({processing:false});
-      }}]);
-    };
-    
-    let requestConfig = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: this.state.email.value.toLowerCase(),
-        password: this.state.password.value,
-        firstName: this.state.firstName.value,
-        lastName: this.state.lastName.value,
-      })
-    };
-
     this.setState({processing:true});
-    fetch(CLOUD_ADDRESS + "users", requestConfig)
-      .then(handleInitialReply)
-      .then(handleProblems)
-      .catch(handleErrors)
+    let closePopupCallback = () => {this.setState({processing:false})};
+    let successCallback = () => {
+      this.processImage().then(() => {
+        Actions.registerConclusion({type:'reset', email:this.state.email.value.toLowerCase()});
+      });
+    };
+    let errorHandleCallback = (response) => {
+      let message = response.error.message.split("` ");
+      message = message[message.length - 1];
+      Alert.alert("Registration Error", message, [{text: 'OK', onPress: closePopupCallback}]);
+    };
+    let data = {
+      email: this.state.email.value.toLowerCase(),
+      password: this.state.password.value,
+      firstName: this.state.firstName.value,
+      lastName: this.state.lastName.value,
+    };
+    CLOUD.post({endPoint:'users', data, type:'body'}, successCallback, errorHandleCallback, closePopupCallback);
   }
 
   getPicture(image) {
@@ -309,11 +276,7 @@ export class Register extends Component {
           </ScrollView>
         </Background>
         <PictureOptions ref={(pictureOptions) => {this.pictureOptions = pictureOptions;}} selectCallback={this.getPicture.bind(this)}/>
-        <Processing visible={this.state.processing}>
-          <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-            <Text style={styles.menuText}>Processing</Text>
-          </View>
-        </Processing>
+        <Processing visible={this.state.processing} text="Processing..." />
       </View>
     );
   }

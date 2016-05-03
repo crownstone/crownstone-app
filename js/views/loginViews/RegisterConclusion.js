@@ -36,8 +36,11 @@ export class RegisterConclusion extends Component {
           <Text style={[style.text, {fontSize:21, fontWeight:'500'}]}>{this.props.email || 'thisismyemail@gmail.com'}</Text>
         </View>
         <View style={[style.viewContainer]}>
-          <Text style={style.text}>After you click the validation link in the email,
-            you can login to the app using your email address.
+          <Text style={style.text}>{
+            this.props.passwordReset ?
+              'Please click the link in the email and follow the instructions to reset your password.' :
+              'After you click the validation link in the email, you can login to the app using your email address.'
+            }
           </Text>
         </View>
         <View style={{

@@ -4,8 +4,6 @@ let width = Dimensions.get('window').width;
 let height = Dimensions.get('window').height;
 let pxRatio = PixelRatio.get();
 
-console.log(height*0.21, width, height, pxRatio)
-
 export default StyleSheet.create({
   spacer: {
     flexDirection:'column',
