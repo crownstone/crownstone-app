@@ -1,20 +1,25 @@
 var test = require('tape');
 let deepFreeze = require('deep-freeze');
 
-import userReducer from '../../router/store/reducers/user'
+import reducer from '../../router/store/reducer'
 
 test('userReducer USER_LOG_IN and USER_LOG_OUT', function (t) {
-  t.deepEqual(userReducer(), {
-    name: undefined,
-    tokens: [],
-    picture: undefined
-  });
-  let initialState = userReducer();
+  t.deepEqual(reducer().user, {
+      accessToken: undefined,
+      email: undefined,
+      encryptionTokens: [],
+      firstName: undefined,
+      lastName: undefined,
+      picture: null,
+      userId: []
+    }
+  );
+  let initialState = reducer();
   let logInAction = {
     type: 'USER_LOG_IN',
     data: {
-      name: 'alex',
-      tokens: [{owner:'12345'}]
+      firstName: 'alex',
+      encryptionTokens: [{owner:'12345'}]
     }
   };
 
@@ -26,10 +31,18 @@ test('userReducer USER_LOG_IN and USER_LOG_OUT', function (t) {
   deepFreeze(logInAction);
   deepFreeze(logOutAction);
 
-  let loggedInState = userReducer(initialState, logInAction);
+  let loggedInState = reducer(initialState, logInAction);
   deepFreeze(loggedInState);
 
-  t.deepEqual(userReducer(initialState, logInAction), {name: 'alex', tokens: [{owner:'12345'}], picture:undefined});
-  t.deepEqual(userReducer(loggedInState, logOutAction), {});
+  t.deepEqual(reducer(initialState, logInAction).user, {
+    accessToken: undefined,
+    email: undefined,
+    encryptionTokens: [{owner:'12345'}],
+    firstName: 'alex',
+    lastName: undefined,
+    picture: null,
+    userId: []
+  });
+  t.deepEqual(reducer(loggedInState, logOutAction).user, reducer().user);
   t.end();
 });

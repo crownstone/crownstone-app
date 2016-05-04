@@ -82,7 +82,15 @@ test('Initial App state', function (t) {
       presets: false,
       statistics: false
     },
-    user: {name: undefined, picture: undefined, tokens: []}
+    user: {
+      accessToken: undefined,
+      email: undefined,
+      encryptionTokens: [],
+      firstName: undefined,
+      lastName: undefined,
+      picture: null,
+      userId: []
+    }
   };
 
   let locationState = {
@@ -121,7 +129,15 @@ test('Initial App state', function (t) {
       presets: false,
       statistics: false
     },
-    user: {name: undefined, picture: undefined, tokens: []}
+    user: {
+      accessToken: undefined,
+      email: undefined,
+      encryptionTokens: [],
+      firstName: undefined,
+      lastName: undefined,
+      picture: null,
+      userId: []
+    }
   };
 
 
