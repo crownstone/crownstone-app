@@ -7,9 +7,10 @@ import React, {
   View,
 } from 'react-native';
 
-import { AnimatedLogo } from './animated/AnimatedLogo'
-import { FadeInView } from './animated/FadeInView'
-import { styles, colors} from '../styles'
+import { AnimatedLogo }       from './animated/AnimatedLogo'
+import { AnimatedLoadingBar } from './animated/AnimatedLoadingBar'
+import { FadeInView }         from './animated/FadeInView'
+import { styles, colors}      from '../styles'
 
 
 
@@ -17,8 +18,9 @@ export class Processing extends Component {
   constructor(props) {
     super();
 
-    this.state = {visible: props.visible || false};
+    this.state = {visible: props.visible || false, progress:0};
   }
+
 
   render() {
     let height = Dimensions.get('window').height;
@@ -37,6 +39,9 @@ export class Processing extends Component {
         </FadeInView>
       );
     }
+
+
+
     // this will be the processing view after initialization.
     if (this.state.visible === true) {
       return (
@@ -47,6 +52,8 @@ export class Processing extends Component {
           visible={this.state.visible}>
           <View style={{width: 200, height:120, alignItems:'center', justifyContent:'center'}} ><AnimatedLogo /></View>
           {this.props.text ? <Text style={[styles.menuText,{fontWeight:'bold'}]}>{this.props.text}</Text> : undefined}
+          {this.props.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} /> : undefined}
+          {this.props.detailText ? <Text style={[styles.menuText,{fontSize:15, fontWeight:'400', fontStyle:'italic'}]}>{this.props.detailText}</Text> : undefined}
           {this.props.children}
         </FadeInView>
       );

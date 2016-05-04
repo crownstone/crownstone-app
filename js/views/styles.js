@@ -9,7 +9,7 @@ export const colors = {
   menuText: {h:'#ffffff', r:255, g:255, b:255},
   menuTextSelected: {h:'#2daeff', r:2, g:222, b:255},
   gray: {h:'#cccccc', r:204, g:204, b:204},
-  blue: {h:'#0075c9', r:0, g:117, b:201},
+  blue: {h:'#0075c9', r:0, g:137, b:241},
   green: {h:'#a0eb58', r:160, g:235, b:88},
   red: {h:'#ff3c00', r:255, g:60, b:0},
   iosBlue: {h:'#007aff', r:0, g:122, b:255},
