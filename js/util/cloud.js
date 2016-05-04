@@ -1,10 +1,18 @@
 'use strict'
-import { Alert } from 'react-native';
-import { CLOUD_ADDRESS } from '../externalConfig'
+import React, { Alert } from 'react-native';
+import { CLOUD_ADDRESS, DEBUG } from '../externalConfig'
+import RNFS from 'react-native-fs'
+
+let emptyFunction = function() {};
 
 let defaultHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json'
+};
+
+let uploadHeaders = {
+  'Accept': 'application/json',
+  'Content-Type': 'multipart/form-data; boundary=6ff46e0b6b5148d984f148b6542e5a5d',
 };
 
 export let CLOUD = {
@@ -17,25 +25,31 @@ export let CLOUD = {
   stoneId: undefined,
 
   post:     function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    request(options, 'POST', defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
+    return request(options, 'POST', defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
   },
   get:      function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    request(options, 'GET',  defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
+    return request(options, 'GET',  defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
   },
   delete:   function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    request(options, 'DELETE', defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
+    return request(options, 'DELETE', defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
   },
   put:      function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    request(options, 'PUT',  defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
+    return request(options, 'PUT',  defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
   },
   head:     function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    request(options, 'HEAD', defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
+    return request(options, 'HEAD', defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
   },
-  upload:   function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    request(options, 'POST', defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
+
+  uploadImage: function(options, successCallback, errorHandleCallback, closePopupCallback) {
+    var formData = new FormData();
+    let path = options.path.substr(0,4) === 'file' ? options.path : 'file://' + options.path;
+    formData.append('image', {type: "image/jpeg", name: options.name, uri: path });
+    options.data = formData;
+    return request(options, 'POST', uploadHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken, true)
   },
-  download: function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    request(options, 'POST', defaultHeaders, getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this.accessToken)
+
+  download: function(options, toPath, beginCallback = emptyFunction, progressCallback = emptyFunction) {
+    return download(options, getId(options.endPoint, this), this.accessToken, toPath, beginCallback, progressCallback)
   },
 
   setAccess:   function(accessToken) { this.accessToken = accessToken; return this; },
@@ -61,26 +75,9 @@ export let CLOUD = {
  * @param closePopupCallback
  * @param accessToken
  */
-let request = function(options, method, headers = defaultHeaders, id, successCallback, errorHandleCallback, closePopupCallback, accessToken) {
-  let endPoint = options.endPoint;
-
-  // inject the ID into the url if required.
-  endPoint = endPoint.replace('{id}', id);
-  if (endPoint.substr(0,1) === "/") {
-    endPoint = endPoint.substr(1,endPoint.length)
-  }
-
-  // append the access token to the url if we have it.
-  if (accessToken !== undefined) {
-    endPoint = appendToURL(endPoint, {access_token: accessToken});
-  }
-
-  // check if we have to define the body content or add it to the url
-  let body = undefined;
-  if (options.type === 'body' || options.type === undefined)
-    body = JSON.stringify(options.data);
-  else
-    endPoint = appendToURL(endPoint, options.data);
+let request = function(options, method, headers = defaultHeaders, id, successCallback, errorHandleCallback, closePopupCallback, accessToken, doNotStringify) {
+  // append accessToken, data that goes into the query and insert ids
+  let { endPoint, body } = prepareEndpointAndBody(options, id, accessToken, doNotStringify);
 
   // setup the request configuration
   let requestConfig = { method, headers, body };
@@ -108,22 +105,32 @@ let request = function(options, method, headers = defaultHeaders, id, successCal
 
   // handle the parsed reply
   let handleParsedResponse = (parsedResponse) => {
-    if (status === 200 || status === 204) {
-      successCallback(parsedResponse);
-    }
-    else {
-      if (typeof parsedResponse === 'object') {
-        if (parsedResponse && parsedResponse.error) {
-          errorHandleCallback(parsedResponse)
-        }
-        else {
-          Alert.alert("Unknown Reply", JSON.stringify(parsedResponse),getOKButton(closePopupCallback, parsedResponse))
-        }
+    return new Promise((resolve, reject) => {
+      if (status === 200 || status === 204) {
+        if (successCallback)
+          successCallback(parsedResponse);
+        else if (DEBUG === true)
+          console.log("SUCCESS STATE: ", status, parsedResponse);
+        resolve(parsedResponse);
       }
       else {
-        Alert.alert("Unknown Reply", parsedResponse, getOKButton(closePopupCallback, parsedResponse))
+        if (typeof parsedResponse === 'object') {
+          if (parsedResponse && parsedResponse.error) {
+            if (errorHandleCallback)
+              errorHandleCallback(parsedResponse);
+            else if (DEBUG === true)
+              console.log("errorHandleCallback STATE: ", status, parsedResponse);
+            reject(parsedResponse);
+          }
+          else {
+            Alert.alert("Unknown Reply", JSON.stringify(parsedResponse),getOKButton(closePopupCallback, parsedResponse, resolve))
+          }
+        }
+        else {
+          Alert.alert("Unknown Reply", parsedResponse, getOKButton(closePopupCallback, parsedResponse, resolve))
+        }
       }
-    }
+    })
   };
 
   // if anything crashes:
@@ -131,13 +138,75 @@ let request = function(options, method, headers = defaultHeaders, id, successCal
     Alert.alert("App Error", err.message, getOKButton(closePopupCallback, err));
   };
 
-  console.log("requesting from URL:", CLOUD_ADDRESS + endPoint, body);
+  console.log(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, body);
   // the actual request
-  fetch(CLOUD_ADDRESS + endPoint, requestConfig)
-    .then(handleInitialReply.bind(this))
-    .then(handleParsedResponse.bind(this))
-    .catch(handleErrors.bind(this))
+
+  return new Promise((resolve, reject) => {
+    fetch(CLOUD_ADDRESS + endPoint, requestConfig)
+      .then(handleInitialReply.bind(this))
+      .then(handleParsedResponse.bind(this))
+      .then(() => {resolve()})
+      .catch(handleErrors.bind(this))
+    });
 };
+
+function download(options, id, accessToken, toPath, beginCallback, progressCallback) {
+  // append accessToken, data that goes into the query and insert ids
+  let {endPoint} = prepareEndpointAndBody(options, id, accessToken);
+
+  // this will automatically try to download to a temp file. When not possible it will remove the temp file and resolve with null
+  return new Promise((resolve, reject) => {
+    // get a temp path
+    let tempPath = RNFS.DocumentDirectoryPath + '/' + (10000 + Math.random() * 1e6).toString(36);
+
+    // download the file.
+    RNFS.downloadFile(CLOUD_ADDRESS + endPoint, tempPath, beginCallback, progressCallback)
+      .then((status) => {
+        if (status.statusCode !== 200) {
+          // remove the temp file if the download failed
+          RNFS.unlink(tempPath);
+          resolve(null);
+        }
+        else {
+          RNFS.moveFile(tempPath, toPath)
+            .then(() => {
+              // if we have renamed the file, we resolve the promise so we can store the changed filename.
+              resolve(toPath);
+            });
+        }
+      }).catch(reject)
+  });
+}
+
+function prepareEndpointAndBody(options, id, accessToken, doNotStringify) {
+  let endPoint = options.endPoint;
+
+  // inject the ID into the url if required.
+  endPoint = endPoint.replace('{id}', id);
+  if (endPoint.substr(0,1) === "/") {
+    endPoint = endPoint.substr(1,endPoint.length)
+  }
+
+  // append the access token to the url if we have it.
+  if (accessToken !== undefined) {
+    endPoint = appendToURL(endPoint, {access_token: accessToken});
+  }
+
+  // check if we have to define the body content or add it to the url
+  let body = undefined;
+  if (options.type === 'body' || options.type === undefined) {
+    if (typeof options.data === 'object' && doNotStringify !== true) {
+      body = JSON.stringify(options.data);
+    }
+    else {
+      body = options.data;
+    }
+  }
+  else
+    endPoint = appendToURL(endPoint, options.data);
+
+  return { endPoint, body };
+}
 
 function appendToURL(url, toAppend) {
   if (toAppend) {
@@ -173,10 +242,12 @@ function htmlEncode(str) {
   }
 }
 
-function getOKButton(callback, arg) {
+function getOKButton(callback, arg, resolve) {
   return [{text:'OK', onPress: () => {
     if (callback) {
       callback(arg);
+      if (resolve)
+        resolve()
     }
   }}];
 }

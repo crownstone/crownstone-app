@@ -10,6 +10,7 @@ import React, {
   View
 } from 'react-native';
 
+import { removeAllFiles } from './../../util/util'
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
@@ -47,6 +48,7 @@ export class SettingsOverview extends Component {
     store.dispatch({
       type:'USER_LOG_OUT'
     });
+    removeAllFiles();
   }
 
   render() {

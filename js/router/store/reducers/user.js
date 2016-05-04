@@ -5,9 +5,10 @@ let defaultSettings = {
     firstName: undefined,
     lastName: undefined,
     email: undefined,
-    tokens: [],
+    accessToken: undefined,
+    encryptionTokens: [],
     userId: [],
-    picture: undefined
+    picture: null
   }
 };
 
@@ -15,13 +16,15 @@ let defaultSettings = {
 export default (state = defaultSettings.user, action = {}) => {
   switch (action.type) {
     case 'USER_LOG_IN':
-    case 'USER_LOG_UPDATE':
+    case 'USER_UPDATE':
+    case 'USER_APPEND': // append means filling in the data without updating the cloud.
       if (action.data) {
         let newState = {...state};
         newState.firstName = update(action.data.firstName, newState.firstName);
         newState.lastName  = update(action.data.lastName,  newState.lastName);
         newState.email   = update(action.data.email,   newState.email);
-        newState.tokens  = update(action.data.tokens,  newState.tokens);
+        newState.encryptionTokens  = update(action.data.encryptionTokens,  newState.tokens);
+        newState.accessToken  = update(action.data.accessToken,  newState.tokens);
         newState.userId  = update(action.data.userId,  newState.userId);
         newState.picture = update(action.data.picture, newState.picture);
         return newState;

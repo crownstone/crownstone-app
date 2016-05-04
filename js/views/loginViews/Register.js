@@ -12,17 +12,17 @@ import React, {
 
 import { CLOUD } from '../../util/cloud'
 
-import { emailCheckRegex } from './../../util/util'
-import { PictureOptions } from './../components/PictureOptions'
-import { Processing } from './../components/Processing'
-import { Background } from './../components/Background'
-import { ListEditableItems } from './../components/ListEditableItems'
+import { validateEmail, getImageFileFromUser } from '../../util/util'
+import { PictureOptions } from '../components/PictureOptions'
+import { Processing } from '../components/Processing'
+import { Background } from '../components/Background'
+import { ListEditableItems } from '../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles'
+import { styles, colors } from '../styles'
 import ImageResizer from 'react-native-image-resizer';
-var RNFS = require('react-native-fs');
+import RNFS from 'react-native-fs'
 
-
+// these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must be at least 8 characters long, one of which being a number.';
 let passwordStateNumber = 'Your password must contain at least one number.';
 let passwordStateCharacter = 'Your password must contain at least one letter.';
@@ -32,14 +32,13 @@ export class Register extends Component {
   constructor() {
     super();
     this.state = {
-      email: {value: 'alexdemulder@gmail.com', state: ''},
-      password: {value: 'letmein0', state: ''},
-      passwordVerification: {value: 'letmein0', state: ''},
+      email: {value: '', state: ''},
+      password: {value: '', state: ''},
+      passwordVerification: {value: '', state: ''},
       passwordExplanation: passwordStateNeutral,
-      firstName: {value: 'Alex', state: ''},
-      lastName: {value: 'de Mulder', state: ''},
+      firstName: {value: '', state: ''},
+      lastName: {value: '', state: ''},
       picture: undefined,
-      forceCheck: false,
       processing: false,
     };
 
@@ -47,13 +46,25 @@ export class Register extends Component {
     this.numberChecker = /[0-9]/g;
   }
 
+  /**
+   * Check if the email address is valid
+   * @param email
+   * @returns {*}
+   */
   getEmailState(email)  {
-    if (emailCheckRegex.test(email)) {
+    if (validateEmail(email)) {
       return 'valid';
     }
     return 'error';
   }
 
+
+  /**
+   * Check if the passwords are valid
+   * @param password
+   * @param index
+   * @returns {*}
+   */
   getPasswordState(password,index) {
     let setText = (text) => {
       if (this.state.passwordExplanation !== text) {
@@ -90,6 +101,12 @@ export class Register extends Component {
     }
   }
 
+
+  /**
+   * Check if the first and last name are valid
+   * @param name
+   * @returns {*}
+   */
   getNameState(name) {
     if (name.length >= 3 && this.numberChecker.test(name) === false) {
       return 'valid';
@@ -98,7 +115,11 @@ export class Register extends Component {
   }
 
 
-  _getItems() {
+  /**
+   * get the form items
+   * @returns {*[]}
+   */
+  getItems() {
     return [
       {
         label: 'ACCOUNT INFORMATION', type: 'explanation', below: false
@@ -157,8 +178,8 @@ export class Register extends Component {
         value: this.state.picture,
         placeholderText: 'Optional',
         callback: (newValue) => {},
-        triggerOptions:this.triggerOptions.bind(this),
-        removePicture:this.removeOptions.bind(this)
+        triggerOptions:() => {this.pictureOptions.show();}, // picture options are a ref
+        removePicture:() => {this.setState({picture:undefined});}
       },
       {
         label: 'Your picture is used so other people can see your face when you\'re in a room.',
@@ -179,14 +200,10 @@ export class Register extends Component {
     ]
   }
 
-  triggerOptions() {
-    this.pictureOptions.show()
-  }
 
-  removeOptions() {
-    this.setState({picture:undefined})
-  }
-
+  /**
+   * Final check before we send the request to the cloud. If any issues arise, the user is notified.
+   */
   validateAndContinue() {
     let s1 = this.getEmailState(this.state.email.value);
     let s2 = this.getPasswordState(this.state.password.value,1);
@@ -211,38 +228,15 @@ export class Register extends Component {
         password: {state: s2},
         passwordVerification: {state: s3},
         firstName: {state: s4},
-        lastName: {state: s5}});
+        lastName: {state: s5}
+      });
     }
   }
 
-  processImage() {
-    return new Promise((resolve, reject) => {
-      if (this.state.picture !== undefined) {
-        let { width, height } = Dimensions.get('window');
-        ImageResizer.createResizedImage(this.state.picture, width * 0.5, height * 0.5, 'JPEG', 80)
-          .then((resizedImageUri) => {
-            return RNFS.readFile(resizedImageUri, 'base64');
-          })
-          .then((imageData) => {
-            // prepare an image name. when the user logs in, we check if this image exists. If so, upload it.
-            let imageName = this.state.email.value.replace(/[^\w\s]/gi, '');
-            let path = RNFS.DocumentDirectoryPath + '/' + imageName + '.jpg';
-            return RNFS.writeFile(path, imageData, 'base64');})
-          .then((success) => {
-            resolve();
-          })
-          .catch((err) => {
-            reject("picture resizing error:" + err.message);
-          });
-      }
-      else {
-        resolve();
-      }
-    })
-  }
-
   requestRegistration() {
+    // show the processing screen
     this.setState({processing:true});
+
     let closePopupCallback = () => {this.setState({processing:false})};
     let successCallback = () => {
       this.processImage().then(() => {
@@ -263,20 +257,42 @@ export class Register extends Component {
     CLOUD.post({endPoint:'users', data, type:'body'}, successCallback, errorHandleCallback, closePopupCallback);
   }
 
-  getPicture(image) {
-    this.setState({picture:image})
+
+  processImage() {
+    let pxRatio = PixelRatio.get();
+    return new Promise((resolve, reject) => {
+      if (this.state.picture !== undefined) {
+        let { width, height } = Dimensions.get('window');
+        ImageResizer.createResizedImage(this.state.picture, width * pxRatio * 0.5, height * pxRatio * 0.5, 'JPEG', 80)
+          .then((resizedImageUri) => {
+            let imageName = getImageFileFromUser(this.state.email.value);
+            let path = RNFS.DocumentDirectoryPath + '/' + imageName;
+            return RNFS.moveFile(resizedImageUri, path);
+          })
+          .then((moveState) => {
+            resolve();
+          })
+          .catch((err) => {
+            reject("picture resizing error:" + err.message);
+          });
+      }
+      else {
+        resolve();
+      }
+    })
   }
+
 
   render() {
     return (
       <View>
         <Background hideTabBar={true}>
           <ScrollView>
-            <ListEditableItems items={this._getItems()} separatorIndent={true} />
+            <ListEditableItems items={this.getItems()} separatorIndent={true} />
           </ScrollView>
         </Background>
-        <PictureOptions ref={(pictureOptions) => {this.pictureOptions = pictureOptions;}} selectCallback={this.getPicture.bind(this)}/>
-        <Processing visible={this.state.processing} text="Processing..." />
+        <PictureOptions ref={(pictureOptions) => {this.pictureOptions = pictureOptions;}} selectCallback={(image) => {this.setState({picture:image});}}/>
+        <Processing visible={this.state.processing} text="Sending Registration Request..." />
       </View>
     );
   }
