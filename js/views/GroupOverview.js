@@ -78,9 +78,14 @@ export class GroupOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.activeGroup = state.app.activeGroup;
-    if (state.groups[this.activeGroup] === undefined) {
-      console.log("DRAWING EMPTY: NO STATE", state);
-      return <View />
+    if (state.app.doFirstTimeSetup !== true && state.groups[this.activeGroup] === undefined) {
+      return (
+        <Background background={require('../images/mainBackground.png')}>
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>No groups configured.</Text>
+           </View>
+        </Background>
+      )
     }
     else {
       const rooms = state.groups[this.activeGroup].locations;

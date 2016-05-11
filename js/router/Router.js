@@ -15,6 +15,10 @@ import { Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions } from '
 import { createStore } from 'redux'
 import CrownstoneReducer from './store/reducer'
 
+import { OptionPopup } from '../views/components/OptionPopup'
+import { Processing } from '../views/components/Processing'
+import { eventBus } from '../util/eventBus'
+
 import { LoginSplash }         from '../views/loginViews/LoginSplash'
 import { Login }               from '../views/loginViews/Login'
 import { Register }            from '../views/loginViews/Register'
@@ -32,6 +36,8 @@ import { DelaySelection }      from '../views/deviceViews/DelaySelection'
 import { DeviceScheduleEdit }  from '../views/deviceViews/DeviceScheduleEdit'
 import { DeviceScheduleAdd }   from '../views/deviceViews/DeviceScheduleAdd'
 import { DaySelection }        from '../views/deviceViews/DaySelection'
+import { SetupWelcome }        from '../views/setupViews/SetupWelcome'
+import { SetupCreateGroup }    from '../views/setupViews/SetupCreateGroup'
 import { SettingsOverview }    from '../views/settingsViews/SettingsOverview'
 import { ProfileSettings }     from '../views/settingsViews/ProfileSettings'
 import { ChangePasswordSettings }  from '../views/settingsViews/ChangePasswordSettings'
@@ -40,7 +46,7 @@ import { LocationSettings }    from '../views/settingsViews/LocationSettings'
 import { GroupSettings }       from '../views/settingsViews/GroupSettings'
 import { CrownstoneSettings }  from '../views/settingsViews/CrownstoneSettings'
 import { AppComplexity }       from '../views/settingsViews/AppComplexity'
-import { styles, colors}     from '../views/styles'
+import { styles, colors }     from '../views/styles'
 
 var Icon = require('react-native-vector-icons/Ionicons');
 
@@ -152,46 +158,90 @@ let navBarStyle = {
 };
 
 export class AppRouter extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
-    this.props = props;
+
+    this.state = {
+      optionsVisible: false,
+      optionsButtons: [],
+      processingVisible: false,
+      processingProgress: undefined,
+      processingText: undefined,
+      processingProgressInfo: undefined
+    };
+    this.unsubscribe = [];
+  }
+
+  componentDidMount() {
+    this.unsubscribe.push(eventBus.on('showPopup', (buttons) => {console.log("here");this.setState({optionsButtons:buttons, optionsVisible:true})}));
+    this.unsubscribe.push(eventBus.on('hidePopup', () => {this.setState({optionsVisible:false})}));
+    this.unsubscribe.push(eventBus.on('showProcessing', (text,progress,progressText) => {this.setState({
+      processingVisible: true,
+      processingProgress: progress,
+      processingText: text,
+      processingProgressInfo: progressText
+    })}));
+    this.unsubscribe.push(eventBus.on('updateProcessing', (text,progress,progressText) => {this.setState({
+      processingVisible: true,
+      processingProgress: progress,
+      processingText: text,
+      processingProgressInfo: progressText
+    })}));
+    this.unsubscribe.push(eventBus.on('hideProcessing', () => {this.setState({processingVisible:false})}));
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe.forEach((callback) => {callback()});
+    this.unsubscribe = [];
   }
 
   render() {
-    return <Router createReducer={reducerCreate} store={store} {...navBarStyle}>
-      <Scene key="Root" hideNavBar={false}>
-        <Scene key="loginSplash"            component={LoginSplash}        hideNavBar={true}  type="reset" />
-        <Scene key="login"                  component={Login}              hideNavBar={true}  />
-        <Scene key="register"               component={Register}           hideNavBar={false} title="Register" {...navBarStyle} />
-        <Scene key="registerConclusion"     component={RegisterConclusion} hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
-        <Scene key="pictureView"            component={PictureView}        hideNavBar={true} direction="vertical" />
-        <Scene key="picturePreview"         component={PicturePreview}     hideNavBar={true} direction="vertical" />
-        <Scene key="cameraRollView"         component={CameraRollView}     hideNavBar={true} direction="vertical" />
-        <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset">
-          <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
-            <Scene key="groupOverview"        component={GroupOverview} title="Group Overview"  />
-            <Scene key="roomOverview"         component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
-            <Scene key="roomEdit"             component={RoomEdit} title="Edit Room" />
-            <Scene key="deviceEdit"           component={DeviceEdit} title="Edit Device" />
-            <Scene key="deviceBehaviourEdit"  component={DeviceBehaviourEdit} title="Edit Behaviour" />
-            <Scene key="deviceStateEdit"      component={DeviceStateEdit} />
-            <Scene key="delaySelection"       component={DelaySelection} title="Set Delay" />
-            <Scene key="deviceScheduleEdit"   component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
-            <Scene key="deviceScheduleAdd"    component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
-            <Scene key="daySelection"         component={DaySelection} title="Set Active Days" />
-          </Scene>
-          <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" {...navBarStyle} >
-            <Scene key="Settings"               component={SettingsOverview} title="Settings"/>
-            <Scene key="profileSettings"        component={ProfileSettings} title="Your Profile"/>
-            <Scene key="ChangeEmailSettings"    component={ChangeEmailSettings} title="Change Email"/>
-            <Scene key="changePasswordSettings" component={ChangePasswordSettings} title="Change Password"/>
-            <Scene key="groupSettings"          component={GroupSettings} title="Manage our Group"/>
-            <Scene key="locationSettings"       component={LocationSettings} title="Manage Your Rooms"/>
-            <Scene key="crownstoneSettings"     component={CrownstoneSettings} title="Manage Your Crownstones"/>
-            <Scene key="appComplexity"          component={AppComplexity} title="Settings"/>
+    console.log('optionsVisable',this.state.optionsVisible)
+    return (
+      <View>
+        <Router createReducer={reducerCreate} store={store} {...navBarStyle}>
+        <Scene key="Root" hideNavBar={false}>
+          <Scene key="loginSplash"            component={LoginSplash}        hideNavBar={true}  type="reset" />
+          <Scene key="login"                  component={Login}              hideNavBar={true}  />
+          <Scene key="register"               component={Register}           hideNavBar={false} title="Register" {...navBarStyle} />
+          <Scene key="registerConclusion"     component={RegisterConclusion} hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
+          <Scene key="pictureView"            component={PictureView}        hideNavBar={true}  direction="vertical" />
+          <Scene key="picturePreview"         component={PicturePreview}     hideNavBar={true}  direction="vertical" />
+          <Scene key="cameraRollView"         component={CameraRollView}     hideNavBar={true}  direction="vertical" />
+          <Scene key="setupWelcome"                component={SetupWelcome}       hideNavBar={true} type="reset"  direction="vertical" />
+          <Scene key="setupCreateGroup"            component={SetupCreateGroup}   hideNavBar={true}  />
+          <Scene key="setupAddCrownstone"          component={SetupWelcome}       hideNavBar={true}  />
+          <Scene key="setupAddPluginCrownstone"    component={SetupWelcome}       hideNavBar={true}  />
+          <Scene key="setupAddBuiltinCrownstone"   component={SetupWelcome}       hideNavBar={true}  />
+          <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset">
+            <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
+              <Scene key="groupOverview"        component={GroupOverview} title="Group Overview"  />
+              <Scene key="roomOverview"         component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
+              <Scene key="roomEdit"             component={RoomEdit} title="Edit Room" />
+              <Scene key="deviceEdit"           component={DeviceEdit} title="Edit Device" />
+              <Scene key="deviceBehaviourEdit"  component={DeviceBehaviourEdit} title="Edit Behaviour" />
+              <Scene key="deviceStateEdit"      component={DeviceStateEdit} />
+              <Scene key="delaySelection"       component={DelaySelection} title="Set Delay" />
+              <Scene key="deviceScheduleEdit"   component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
+              <Scene key="deviceScheduleAdd"    component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
+              <Scene key="daySelection"         component={DaySelection} title="Set Active Days" />
+            </Scene>
+            <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" {...navBarStyle} >
+              <Scene key="Settings"               component={SettingsOverview} title="Settings"/>
+              <Scene key="profileSettings"        component={ProfileSettings} title="Your Profile"/>
+              <Scene key="changeEmailSettings"    component={ChangeEmailSettings} title="Change Email"/>
+              <Scene key="changePasswordSettings" component={ChangePasswordSettings} title="Change Password"/>
+              <Scene key="groupSettings"          component={GroupSettings} title="Manage our Group"/>
+              <Scene key="locationSettings"       component={LocationSettings} title="Manage Your Rooms"/>
+              <Scene key="crownstoneSettings"     component={CrownstoneSettings} title="Manage Your Crownstones"/>
+              <Scene key="appComplexity"          component={AppComplexity} title="Settings"/>
+            </Scene>
           </Scene>
         </Scene>
-      </Scene>
-    </Router>;
+      </Router>
+      <OptionPopup visible={this.state.optionsVisible} buttons={this.state.optionsButtons} />
+      <Processing visible={this.state.processingVisible} text={this.state.processingText} progress={this.state.processingProgress} progressText={this.state.processingProgressInfo} />
+    </View>
+    );
   }
 }

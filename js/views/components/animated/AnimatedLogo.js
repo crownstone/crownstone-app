@@ -15,7 +15,7 @@ export class AnimatedLogo extends Component {
   }
 
   componentDidMount() {
-    this.animate();
+    //this.animate();
   }
 
   componentWillUnmount() {
@@ -28,12 +28,15 @@ export class AnimatedLogo extends Component {
     let newSize = Math.max(0.3*this.baseSize, this.baseSize * 1.1 * Math.random());
     Animated.spring(this.state.size, {toValue: newSize, friction:3}).start();
 
-    // this.animationTimeout = setTimeout(() => {this.animate();}, 800);
+    this.animationTimeout = setTimeout(() => {this.animate();}, 800);
   }
 
   render() {
     return (
-      <Animated.Image source={require("../../../images/crownstoneLogo.png")} style={[this.props.style, {width:this.state.size, height:this.state.size}]} />
+      <Animated.Image
+        source={require("../../../images/crownstoneLogo.png")}
+        style={[this.props.style, {width:this.state.size, height:this.state.size}]}
+      />
     );
   }
 }

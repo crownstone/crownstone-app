@@ -1,33 +1,40 @@
 import React, {
   Animated,
   Component,
+  View
 } from 'react-native';
 
 export class FadeInView extends Component {
   constructor(props) {
     super();
 
-    this.state = {
-      visible: props.visible,
-      viewOpacity: new Animated.Value(props.visible ? 1 : 0),
+    this.state = {show: props.visible || false, viewOpacity: new Animated.Value(props.visible ? 1 : 0)};
+    this.visible = props.visible || false;
+  }
+
+  componentWillUpdate(nextProps) {
+    if (this.visible !== nextProps.visible) {
+      if (nextProps.visible === true) {
+        this.setState({show: true});
+        setTimeout(() => {console.log("starting animation");Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || 100}).start();},0);
+      }
+      else {
+        Animated.timing(this.state.viewOpacity, {toValue: 0, duration:this.props.duration || 100}).start();
+        setTimeout(() => {this.setState({show: false});},this.props.duration);
+      }
+      this.visible = nextProps.visible;
     }
   }
 
   render() {
-    if (this.state.visible !== this.props.visible) {
-      if (this.props.visible === true) {
-        Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || 100}).start();
-      }
-      else {
-        Animated.timing(this.state.viewOpacity, {toValue: 0, duration:this.props.duration || 100}).start();
-      }
-      this.state.visible = this.props.visible;
+    // this will be the processing view after initialization.
+    if (this.state.show === true) {
+      return (
+        <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]}>
+          {this.props.children}
+        </Animated.View>
+      );
     }
-
-    return (
-      <Animated.View style={[this.props.style, {overflow:'hidden', opacity:this.state.viewOpacity}]}>
-        {this.props.children}
-      </Animated.View>
-    );
+    return <View />;
   }
 }

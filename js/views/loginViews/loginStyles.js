@@ -1,15 +1,13 @@
-import React, { Dimensions,PixelRatio,StyleSheet } from 'react-native'
+import React, { Dimensions, PixelRatio, StyleSheet } from 'react-native'
 
-let width = Dimensions.get('window').width;
-let height = Dimensions.get('window').height;
-let pxRatio = PixelRatio.get();
+let { width, height } = Dimensions.get('window');
 
 export default StyleSheet.create({
   spacer: {
     flexDirection:'column',
     flex:1,
     alignItems:'center',
-    marginTop:height*0.2*pxRatio,
+    marginTop:height*0.4,
   },
   textBoxView: {
     backgroundColor:'#fff',

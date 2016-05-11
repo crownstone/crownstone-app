@@ -12,8 +12,8 @@ import React, {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-import { validateEmail, getImageFileFromUser, APPERROR } from '../../util/util'
-import { CLOUD } from '../../util/cloud'
+import { validateEmail, getImageFileFromUser } from '../../util/util'
+import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';
 import { Processing } from '../components/Processing'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
@@ -27,7 +27,7 @@ export class Login extends Component {
   constructor() {
     super();
     // this.state = {email:'alex@dobots.nl', password:'letmein0', processing:false, processingText:'Logging in...'};
-    this.state = {email:'alexdemulder@gmail.com', password:'letmein0', processing:false, processingText:'Logging in...'};
+    this.state = {email:'alexdemulder@gmail.com', password:'letmein0', processing:false, processingText:'Logging in...', progress:undefined, progressText:undefined, progressAmount:0};
     this.closePopupCallback = () => {this.setState({processing:false})};
   }
 
@@ -48,47 +48,35 @@ export class Login extends Component {
   requestVerificationEmail() {
     this.setState({processing:true, processingText:'Requesting new verification email...'});
     let successCallback = () => { Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'}) };
-    let errorHandleCallback = (response) => {
-      Alert.alert('Cannot Resend Confirmation.',response.error.message,[{text: 'OK', onPress: this.closePopupCallback}]);
-    };
-
-    let data = { email: this.state.email.toLowerCase() };
-    CLOUD.post({ endPoint:'users/resendVerification', data, type:'query'}, successCallback, errorHandleCallback, this.closePopupCallback);
+    CLOUD.requestVerificationEmail(this.state.email.toLowerCase(), successCallback, this.closePopupCallback);
   }
 
   requestPasswordResetEmail() {
     this.setState({processing:true, processingText:'Requesting password reset email...'});
-    let successCallback = () => {
-      Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true})
-    };
-    let errorHandleCallback = (response) => {
-      Alert.alert('Cannot Send Reset Email.',response.error.message,[{text: 'OK', onPress: this.closePopupCallback}]);
-    };
-
-    let data = { email: this.state.email.toLowerCase() };
-    CLOUD.post({endPoint:'users/reset', data, type:'body'}, successCallback, errorHandleCallback, this.closePopupCallback);
+    let successCallback = () => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true})};
+    CLOUD.requestPasswordResetEmail(this.state.email.toLowerCase(), successCallback, this.closePopupCallback);
   }
 
   attemptLogin() {
     this.setState({processing:true, processingText:'Logging in...'});
     let successCallback = (response) => {this.finalizeLogin(response.id, response.userId)};
-    let errorHandleCallback = (response) => {
-      switch (response.error.code) {
-        case "LOGIN_FAILED_EMAIL_NOT_VERIFIED":
-          Alert.alert('Your email address has not been verified','Please click on the link in the email that was sent to you. If you did not receive an email, press Resend Email to try again.',[
-            {text: 'Resend Email', onPress: () => this.requestVerificationEmail()},
-            {text: 'OK', onPress: this.closePopupCallback}
-          ]);
-          break;
-        case "LOGIN_FAILED":
-          Alert.alert('Incorrect Email or Password.','Could not log in.',[{text: 'OK', onPress: this.closePopupCallback}]);
-          break;
-        default:
-          Alert.alert('Login Error',response.error.message,[{text: 'OK', onPress: this.closePopupCallback}]);
-      }
+    let unverifiedEmailCallback = () => {
+      Alert.alert('Your email address has not been verified', 'Please click on the link in the email that was sent to you. If you did not receive an email, press Resend Email to try again.', [
+        {text: 'Resend Email', onPress: () => this.requestVerificationEmail()},
+        {text: 'OK', onPress: this.closePopupCallback}
+      ]);
     };
-    let data = { email: this.state.email.toLowerCase(), password: this.state.password };
-    CLOUD.post({endPoint:'users/login', data, type:'body'}, successCallback, errorHandleCallback, this.closePopupCallback);
+    let invalidLoginCallback = () => {
+      Alert.alert('Incorrect Email or Password.','Could not log in.',[{text: 'OK', onPress: this.closePopupCallback}]);
+    };
+    CLOUD.login(
+      this.state.email.toLowerCase(),
+      this.state.password,
+      successCallback,
+      unverifiedEmailCallback,
+      invalidLoginCallback,
+      this.closePopupCallback
+    );
   }
 
   render() {
@@ -110,7 +98,7 @@ export class Login extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Processing visible={this.state.processing} text={this.state.processingText} />
+        <Processing visible={this.state.processing} text={this.state.processingText} progress={this.state.progress} progressText={this.state.progressText} />
       </Background>
     )
   }
@@ -125,10 +113,9 @@ export class Login extends Component {
           if (file.name === getImageFileFromUser(this.state.email)) {
             uploadingImage = true;
             let newPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
-            CLOUD.forUser(userId).uploadImage({endPoint:'/users/{id}/profilePic', ...file, type:'body'})
+            CLOUD.forUser(userId).uploadProfileImage(file)
               .then(() => {return RNFS.moveFile(file.path, newPath);})
               .then(() => {resolve(newPath);})
-              .catch(APPERROR);
           }
         });
         if (uploadingImage === false) {
@@ -139,24 +126,21 @@ export class Login extends Component {
       // read the document dir for files that have been created during the registration process
       RNFS.readDir(RNFS.DocumentDirectoryPath)
         .then(handleFiles)
-        .catch(APPERROR);
     });
   }
 
-  getUserData(userId) {
-    return new Promise((resolve, reject) => {
-      CLOUD.forUser(userId).get({endPoint:'/users/me'}, resolve, reject)
-    })
-  }
 
   downloadImage(userId) {
-    let path = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
-    return CLOUD.forUser(userId).download({endPoint:'/users/{id}/profilePic'}, path);
+    let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
+    return CLOUD.forUser(userId).downloadProfileImage(toPath);
   }
 
   finalizeLogin(accessToken, userId) {
-    // give the access token to the cloud api
+    this.setState({progress: 0, progressText:'Getting user data.'});
+
+    // give the access token and the userId to the cloud api 
     CLOUD.setAccess(accessToken);
+    CLOUD.setUserId(userId);
 
     // load the user into the database
     const store = this.props.store;
@@ -168,45 +152,48 @@ export class Login extends Component {
         userId:userId
       }
     });
-
+    
+    this.downloadSettings(store, userId);
+  }
+  
+  downloadSettings(store, userId) {
     // get more data on the user
-    this.getUserData(userId).then((userData) => {
-      store.dispatch({
-        type:'USER_APPEND',
-        data:{
-          firstName: userData.firstName,
-          lastName: userData.lastName
-        }
+    let userData = CLOUD.getUserData()
+      .then((userData) => {
+        store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName}});
+        this.setState({progress: this.state.progress + 1/3, progressText:'Received user data.'});
       });
-    });
-
-    // function to store the path to the picture. Can be null or path.
-    let storeProfilePicture = (picturePath) => {
-      store.dispatch({
-        type:'USER_APPEND',
-        data:{
-          picture: picturePath,
-        }
-      });
-    };
 
     // check if we need to upload a picture that has been set aside during the registration process.
-    this.checkForRegistrationPictureUpload(userId)
+    let picture = this.checkForRegistrationPictureUpload(userId)
       .then((picturePath) => {
-        if (picturePath === null) {
-          // check if there is a picture we can download
-          this.downloadImage(userId).then((picturePath) => {
-            storeProfilePicture(picturePath);
-          });
-        }
-        else {
-          storeProfilePicture(picturePath);
-        }
+        if (picturePath !== null)
+          return this.downloadImage(userId); // check if there is a picture we can download
+        else
+          return picturePath;
+      })
+      .then((picturePath) => {
+        store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
+        this.setState({progress: this.state.progress + 1/3, progressText:'Updated user profile picture.'});
       });
+    
+    let groupUpdate = CLOUD.getGroups().then((groupData) => {
+      console.log(groupData)
+      this.setState({progress: this.state.progress + 1/3, progressText:'Received group data.'});
+    });
 
-    // continue to the main part of the app while the images are being handled in the background.
-    Actions.tabBar();
+    Promise.all([userData, picture, groupUpdate]).then(() => {
+      this.setState({progress: 1, progressText:'Done'});
+
+      const state = store.getState();
+      this.activeGroup = state.app.activeGroup;
+      if (state.app.doFirstTimeSetup === true && Object.keys(state.groups).length === 0) {
+        Actions.setupWelcome();
+      }
+      else {
+        Actions.tabBar();
+      }
+    });
   }
 }
 
-let transparent = {backgroundColor:'transparent'};

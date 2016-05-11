@@ -10,10 +10,9 @@ import React, {
   View
 } from 'react-native';
 
-import { CLOUD } from '../../util/cloud'
+import { CLOUD } from '../../cloud/cloudAPI'
 
 import { validateEmail, getImageFileFromUser } from '../../util/util'
-import { PictureOptions } from '../components/PictureOptions'
 import { Processing } from '../components/Processing'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
@@ -177,8 +176,7 @@ export class Register extends Component {
         type:  'picture',
         value: this.state.picture,
         placeholderText: 'Optional',
-        callback: (newValue) => {},
-        triggerOptions:() => {this.pictureOptions.show();}, // picture options are a ref
+        callback:(image) => {this.setState({picture:image});},
         removePicture:() => {this.setState({picture:undefined});}
       },
       {
@@ -215,7 +213,7 @@ export class Register extends Component {
     }
     else {
       if (s1 === 'error')
-        Alert.alert("Invalid Email Address", "Please double check the supplied address", [{text:'OK'}]);
+        Alert.alert("Invalid Email Address", "Please double check the supplied email address", [{text:'OK'}]);
       else if (s2 === 'error')
         Alert.alert("Invalid Password", passwordStateNeutral, [{text:'OK'}]);
       else if (s3 === 'error')
@@ -224,11 +222,12 @@ export class Register extends Component {
         Alert.alert("You Must Enter a First Name.", 'Without numbers.', [{text:'OK'}]);
       else if (s5 === 'error')
         Alert.alert("You Must Enter a Last Name.", 'Without numbers.', [{text:'OK'}]);
-      this.setState({email: {state: s1},
-        password: {state: s2},
-        passwordVerification: {state: s3},
-        firstName: {state: s4},
-        lastName: {state: s5}
+      this.setState({
+        email: {value: this.state.email.value, state: s1},
+        password: {value: this.state.password.value, state: s2},
+        passwordVerification: {value: this.state.passwordVerification.value, state: s3},
+        firstName: {value: this.state.firstName.value, state: s4},
+        lastName: {value: this.state.lastName.value, state: s5},
       });
     }
   }
@@ -284,6 +283,7 @@ export class Register extends Component {
 
 
   render() {
+    console.log('reg', this.props)
     return (
       <View>
         <Background hideTabBar={true}>
@@ -291,7 +291,6 @@ export class Register extends Component {
             <ListEditableItems items={this.getItems()} separatorIndent={true} />
           </ScrollView>
         </Background>
-        <PictureOptions ref={(pictureOptions) => {this.pictureOptions = pictureOptions;}} selectCallback={(image) => {this.setState({picture:image});}}/>
         <Processing visible={this.state.processing} text="Sending Registration Request..." />
       </View>
     );

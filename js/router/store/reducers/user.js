@@ -24,8 +24,8 @@ export default (state = defaultSettings.user, action = {}) => {
         newState.lastName  = update(action.data.lastName,  newState.lastName);
         newState.email   = update(action.data.email,   newState.email);
         newState.encryptionTokens  = update(action.data.encryptionTokens,  newState.tokens);
-        newState.accessToken  = update(action.data.accessToken,  newState.tokens);
-        newState.userId  = update(action.data.userId,  newState.userId);
+        newState._accessToken  = update(action.data._accessToken,  newState.tokens);
+        newState._userId  = update(action.data._userId,  newState._userId);
         newState.picture = update(action.data.picture, newState.picture);
         return newState;
       }

@@ -8,25 +8,27 @@ export class SlideFadeInView extends Component {
     super();
 
     this.state = {
-      visible: props.visible,
       viewOpacity: new Animated.Value(props.visible ? 1 : 0),
       viewHeight: new Animated.Value(props.visible ? props.height : 0)
-    }
+    };
+    this.visible = props.visible || false;
   }
 
-  render() {
-    if (this.state.visible !== this.props.visible) {
-      if (this.props.visible === true) {
+  componentWillUpdate(nextProps) {
+    if (this.visible !== nextProps.visible) {
+      if (nextProps.visible === true) {
         Animated.timing(this.state.viewOpacity,{toValue: 1, duration:200}).start();
-        Animated.timing(this.state.viewHeight, {toValue: this.props.height, duration:200}).start();
+        Animated.timing(this.state.viewHeight, {toValue: nextProps.height, duration:200}).start();
       }
       else {
         Animated.timing(this.state.viewOpacity, {toValue: 0, duration:200}).start();
         Animated.timing(this.state.viewHeight,  {toValue: 0, duration:200}).start();
       }
-      this.state.visible = this.props.visible;
+      this.visible = nextProps.visible;
     }
+  }
 
+  render() {
     return (
       <Animated.View style={[this.props.style,{overflow:'hidden', opacity:this.state.viewOpacity, height: this.state.viewHeight}]}>
         {this.props.children}

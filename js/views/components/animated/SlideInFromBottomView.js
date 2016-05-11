@@ -10,26 +10,25 @@ export class SlideInFromBottomView extends Component {
 
     let height = Dimensions.get('window').height;
 
-    this.state = {
-      visible: props.visible,
-      viewHeight: new Animated.Value(props.visible ? height - props.height : height)
-    }
+    this.state = {viewHeight: new Animated.Value(props.visible ? height - props.height : height)};
+    this.visible = props.visible || false;
   }
 
-  render() {
+  componentWillUpdate(nextProps) {
     let height = Dimensions.get('window').height;
-    let width  = Dimensions.get('window').width;
-
-    if (this.state.visible !== this.props.visible) {
-      if (this.props.visible === true) {
-        Animated.timing(this.state.viewHeight, {toValue: height - this.props.height, duration:150}).start();
+    if (this.visible !== nextProps.visible) {
+      if (nextProps.visible === true) {
+        Animated.timing(this.state.viewHeight, {toValue: height - nextProps.height, duration:150}).start();
       }
       else {
         Animated.timing(this.state.viewHeight,  {toValue: height, duration:150}).start();
       }
-      this.state.visible = this.props.visible;
+      this.visible = nextProps.visible;
     }
+  }
 
+  render() {
+    let width  = Dimensions.get('window').width;
 
     return (
       <Animated.View style={[this.props.style, {position:'absolute', top: this.state.viewHeight, left:0, width: width, overflow:'hidden', height: this.props.height}]}>

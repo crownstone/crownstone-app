@@ -7,23 +7,23 @@ export class SlideInView extends Component {
   constructor(props) {
     super();
 
-    this.state = {
-      visible: props.visible,
-      viewHeight: new Animated.Value(props.visible ? props.height : 0)
-    }
+    this.state = {viewHeight: new Animated.Value(props.visible ? props.height : 0)};
+    this.visible = props.visible || false;
   }
 
-  render() {
-    if (this.state.visible !== this.props.visible) {
-      if (this.props.visible === true) {
-        Animated.timing(this.state.viewHeight, {toValue: this.props.height, duration:200}).start();
+  componentWillUpdate(nextProps) {
+    if (this.visible !== nextProps.visible) {
+      if (nextProps.visible === true) {
+        Animated.timing(this.state.viewHeight, {toValue: nextProps.height, duration:200}).start();
       }
       else {
         Animated.timing(this.state.viewHeight,  {toValue: 0, duration:200}).start();
       }
-      this.state.visible = this.props.visible;
+      this.visible = nextProps.visible;
     }
+  }
 
+  render() {
     return (
       <Animated.View style={[this.props.style, {overflow:'hidden', height: this.state.viewHeight}]}>
         {this.props.children}

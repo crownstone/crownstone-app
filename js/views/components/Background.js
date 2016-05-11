@@ -10,7 +10,6 @@ import { styles, colors} from '../styles'
 
 
 export class Background extends Component {
-
   render() {
     let width = Dimensions.get('window').width;
     let height = Dimensions.get('window').height;

@@ -5,13 +5,13 @@ import reducer from '../../router/store/reducer'
 
 test('userReducer USER_LOG_IN and USER_LOG_OUT', function (t) {
   t.deepEqual(reducer().user, {
-      accessToken: undefined,
+      _accessToken: undefined,
       email: undefined,
       encryptionTokens: [],
       firstName: undefined,
       lastName: undefined,
       picture: null,
-      userId: []
+      _userId: []
     }
   );
   let initialState = reducer();
@@ -35,13 +35,13 @@ test('userReducer USER_LOG_IN and USER_LOG_OUT', function (t) {
   deepFreeze(loggedInState);
 
   t.deepEqual(reducer(initialState, logInAction).user, {
-    accessToken: undefined,
+    _accessToken: undefined,
     email: undefined,
     encryptionTokens: [{owner:'12345'}],
     firstName: 'alex',
     lastName: undefined,
     picture: null,
-    userId: []
+    _userId: []
   });
   t.deepEqual(reducer(loggedInState, logOutAction).user, reducer().user);
   t.end();

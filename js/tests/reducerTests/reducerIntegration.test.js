@@ -83,13 +83,13 @@ test('Initial App state', function (t) {
       statistics: false
     },
     user: {
-      accessToken: undefined,
+      _accessToken: undefined,
       email: undefined,
       encryptionTokens: [],
       firstName: undefined,
       lastName: undefined,
       picture: null,
-      userId: []
+      _userId: []
     }
   };
 
@@ -130,13 +130,13 @@ test('Initial App state', function (t) {
       statistics: false
     },
     user: {
-      accessToken: undefined,
+      _accessToken: undefined,
       email: undefined,
       encryptionTokens: [],
       firstName: undefined,
       lastName: undefined,
       picture: null,
-      userId: []
+      _userId: []
     }
   };
 

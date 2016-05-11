@@ -12,21 +12,24 @@ import { styles, colors} from '../../styles'
 
 let { width, height } = Dimensions.get('window');
 
+/**
+ * expects a progress prop [0 .. 1]
+ */
 export class AnimatedLoadingBar extends Component {
   constructor(props) {
     super();
     this.width = props.width || width * 0.6;
     this.barHeight = props.height || 30;
     this.borderWidth = 3;
-    this.progressTarget = props.progress
-    this.state = {progress: new Animated.Value(props.progress || 0)};
+    this.progressTarget = props.progress;
+    this.state = { progress: new Animated.Value(props.progress || 0) };
   }
 
-  componentWillUpdate() {
+  componentWillUpdate(nextProps) {
     let innerWidth = this.width - 2 * this.borderWidth;
-    if (this.props.progress !== this.progressTarget) {
-      Animated.spring(this.state.progress, {toValue: innerWidth * this.props.progress, friction:4, tension:40}).start();
-      this.progressTarget = this.props.progress;
+    if (nextProps.progress !== this.progressTarget) {
+      Animated.spring(this.state.progress, {toValue: innerWidth * nextProps.progress, friction:4, tension:40}).start();
+      this.progressTarget = nextProps.progress;
     }
   }
 
