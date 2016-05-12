@@ -16,7 +16,6 @@ import loginStyles from './LoginStyles'
 
 export class LoginSplash extends Component {
   render() {
-    console.log('kigunsplash', this.props)
     return (
       <Background hideInterface={true} background={require('../../images/loginBackground.png')}>
         <View style={styles.shadedStatusBar} />

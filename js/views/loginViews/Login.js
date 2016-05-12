@@ -1,7 +1,6 @@
 import React, {
   Alert,
   Component,
-  Dimensions,
   Image,
   StyleSheet,
   TouchableHighlight,
@@ -15,9 +14,9 @@ var Actions = require('react-native-router-flux').Actions;
 import { validateEmail, getImageFileFromUser } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';
-import { Processing } from '../components/Processing'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
+import { styles, colors , width, height, pxRatio } from '../styles'
 import RNFS from 'react-native-fs'
 import loginStyles from './LoginStyles'
 
@@ -26,9 +25,9 @@ import loginStyles from './LoginStyles'
 export class Login extends Component {
   constructor() {
     super();
-    // this.state = {email:'alex@dobots.nl', password:'letmein0', processing:false, processingText:'Logging in...'};
-    this.state = {email:'alexdemulder@gmail.com', password:'letmein0', processing:false, processingText:'Logging in...', progress:undefined, progressText:undefined, progressAmount:0};
-    this.closePopupCallback = () => {this.setState({processing:false})};
+    this.state = {email:'alexdemulder@gmail.com', password:'letmein0'};
+    this.progress = 0;
+    // this.state = {email:'', password:''};
   }
 
   resetPopup() {
@@ -46,50 +45,47 @@ export class Login extends Component {
   }
 
   requestVerificationEmail() {
-    this.setState({processing:true, processingText:'Requesting new verification email...'});
+    this.props.eventBus.emit('showLoading', 'Requesting new verification email...');
     let successCallback = () => { Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'}) };
-    CLOUD.requestVerificationEmail(this.state.email.toLowerCase(), successCallback, this.closePopupCallback);
+    CLOUD.requestVerificationEmail(this.state.email.toLowerCase(), successCallback);
   }
 
   requestPasswordResetEmail() {
-    this.setState({processing:true, processingText:'Requesting password reset email...'});
+    this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
     let successCallback = () => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true})};
-    CLOUD.requestPasswordResetEmail(this.state.email.toLowerCase(), successCallback, this.closePopupCallback);
+    CLOUD.requestPasswordResetEmail(this.state.email.toLowerCase(), successCallback);
   }
 
   attemptLogin() {
-    this.setState({processing:true, processingText:'Logging in...'});
-    let successCallback = (response) => {this.finalizeLogin(response.id, response.userId)};
+    this.props.eventBus.emit('showLoading', 'Logging in...');
     let unverifiedEmailCallback = () => {
       Alert.alert('Your email address has not been verified', 'Please click on the link in the email that was sent to you. If you did not receive an email, press Resend Email to try again.', [
         {text: 'Resend Email', onPress: () => this.requestVerificationEmail()},
-        {text: 'OK', onPress: this.closePopupCallback}
+        {text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}
       ]);
     };
     let invalidLoginCallback = () => {
-      Alert.alert('Incorrect Email or Password.','Could not log in.',[{text: 'OK', onPress: this.closePopupCallback}]);
+      Alert.alert('Incorrect Email or Password.','Could not log in.',[{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
     };
-    CLOUD.login(
-      this.state.email.toLowerCase(),
-      this.state.password,
-      successCallback,
-      unverifiedEmailCallback,
-      invalidLoginCallback,
-      this.closePopupCallback
-    );
+    CLOUD.login({
+      email: this.state.email.toLowerCase(),
+      password: this.state.password,
+      onUnverified: unverifiedEmailCallback,
+      onInvalidCredentials: invalidLoginCallback,
+      stealth: false
+    }).then((response) => {this.finalizeLogin(response.id, response.userId);}).done();
   }
 
   render() {
-    let width = Dimensions.get('window').width;
     return (
       <Background hideInterface={true} background={require('../../images/loginBackground.png')}>
-        <TopBar left="Back" leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
+        <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*width}]}>
-            <TextEditInput style={{flex:1, padding:10}} placeholder="email" placeholderTextColor="#888" value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
+            <TextEditInput style={{flex:1, padding:10}} placeholder='email' placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
           </View>
           <View style={[loginStyles.textBoxView, {width: 0.8*width}]}>
-            <TextEditInput style={{flex:1, padding:10}} secureTextEntry={true} placeholder="password" placeholderTextColor="#888" value={this.state.password} callback={(newValue) => {this.setState({password:newValue});}} />
+            <TextEditInput style={{flex:1, padding:10}} secureTextEntry={true} placeholder='password' placeholderTextColor='#888' value={this.state.password} callback={(newValue) => {this.setState({password:newValue});}} />
           </View>
           <TouchableHighlight style={{borderRadius:20, height:40, width:width*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}><Text style={loginStyles.forgot}>Forgot Password?</Text></TouchableHighlight>
           <View style={loginStyles.loginButtonContainer}>
@@ -98,7 +94,6 @@ export class Login extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Processing visible={this.state.processing} text={this.state.processingText} progress={this.state.progress} progressText={this.state.progressText} />
       </Background>
     )
   }
@@ -136,7 +131,8 @@ export class Login extends Component {
   }
 
   finalizeLogin(accessToken, userId) {
-    this.setState({progress: 0, progressText:'Getting user data.'});
+    this.progress = 0;
+    this.props.eventBus.emit('showProgress', {progress: 0, progressText:'Getting user data.'});
 
     // give the access token and the userId to the cloud api 
     CLOUD.setAccess(accessToken);
@@ -161,8 +157,15 @@ export class Login extends Component {
     let userData = CLOUD.getUserData()
       .then((userData) => {
         store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName}});
-        this.setState({progress: this.state.progress + 1/3, progressText:'Received user data.'});
+        this.progress += 1/3;
+        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received user data.'});
       });
+
+    let groupUpdate = CLOUD.getGroups().then((groupData) => {
+      console.log(groupData)
+      this.progress += 1/3;
+      this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received group data.'});
+    });
 
     // check if we need to upload a picture that has been set aside during the registration process.
     let picture = this.checkForRegistrationPictureUpload(userId)
@@ -174,16 +177,13 @@ export class Login extends Component {
       })
       .then((picturePath) => {
         store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
-        this.setState({progress: this.state.progress + 1/3, progressText:'Updated user profile picture.'});
+        this.progress += 1/3;
+        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Updated user profile picture.'});
       });
     
-    let groupUpdate = CLOUD.getGroups().then((groupData) => {
-      console.log(groupData)
-      this.setState({progress: this.state.progress + 1/3, progressText:'Received group data.'});
-    });
 
     Promise.all([userData, picture, groupUpdate]).then(() => {
-      this.setState({progress: 1, progressText:'Done'});
+      this.props.eventBus.emit('hideProgress');
 
       const state = store.getState();
       this.activeGroup = state.app.activeGroup;

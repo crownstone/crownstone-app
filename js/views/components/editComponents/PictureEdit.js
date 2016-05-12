@@ -37,7 +37,11 @@ export class PictureEdit extends Component {
                 <TouchableOpacity onPress={this.props.removePicture} style={{height:60}}><View><PictureCircle picture={{uri:this.props.value}} /></View></TouchableOpacity>
                 :
                 <View style={{flexDirection:'row',alignItems:'center', justifyContent:'center'}}>
-                  <TouchableOpacity onPress={() => {this.triggerOptions()}} style={{height:60}}><View><IconCircle icon={'ios-camera-outline'} color='#ccc' showAdd={true} /></View></TouchableOpacity>
+                  <TouchableOpacity onPress={() => {this.triggerOptions()}} style={{height:60}}>
+                    <View>
+                      <IconCircle icon={'ios-camera-outline'} color='#ccc' showAdd={true} />
+                    </View>
+                  </TouchableOpacity>
                   <Text style={[styles.listText ,{padding:10, color:colors.gray.h}]}>{this.props.placeholderText}</Text>
                 </View>
             }

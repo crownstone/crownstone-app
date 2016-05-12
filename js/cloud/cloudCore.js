@@ -3,7 +3,7 @@ import { CLOUD_ADDRESS, DEBUG } from '../externalConfig'
 import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
 
-import { prepareEndpointAndBody, getOKButton } from './cloudUtil'
+import { prepareEndpointAndBody, closeLoading } from './cloudUtil'
 
 /**
  *
@@ -23,9 +23,6 @@ export function request(
   method,
   headers = defaultHeaders,
   id,
-  successCallback     = emptyFunction,
-  errorHandleCallback = emptyFunction,
-  closePopupCallback  = emptyFunction,
   accessToken,
   doNotStringify) {
   // append _accessToken, data that goes into the query and insert ids
@@ -36,7 +33,6 @@ export function request(
 
   // two semi-global variables in this promise:
   let STATUS = 0;
-  let PARSED_RESPONSE = {};
 
   // parse the reply
   let handleInitialReply = (response) => {
@@ -52,41 +48,10 @@ export function request(
           response.headers.map['content-length'][0] == 0) {
           return '';
         }
-        return response.json();
+        return response.json(); // this is a promise
       }
     }
-    return response.text();
-  };
-
-  // handle the parsed reply
-  let handleParsedResponse = (parsedResponse) => {
-    PARSED_RESPONSE = parsedResponse;
-    return new Promise((resolve, reject) => {
-      if (STATUS === 200 || STATUS === 204) {
-        if (successCallback)
-          successCallback(PARSED_RESPONSE);
-        else if (DEBUG)
-          console.log("SUCCESS STATE: ", STATUS, parsedResponse);
-        resolve(parsedResponse);
-      }
-      else {
-        if (typeof parsedResponse === 'object') {
-          if (parsedResponse && parsedResponse.error) {
-            if (errorHandleCallback)
-              errorHandleCallback(PARSED_RESPONSE);
-            else if (DEBUG)
-              console.log("errorHandleCallback STATE: ", STATUS, parsedResponse);
-            reject(parsedResponse);
-          }
-          else {
-            Alert.alert("Unknown Reply", JSON.stringify(parsedResponse), getOKButton(closePopupCallback, parsedResponse, resolve))
-          }
-        }
-        else {
-          Alert.alert("Unknown Reply", parsedResponse, getOKButton(closePopupCallback, parsedResponse, resolve))
-        }
-      }
-    })
+    return response.text(); // this is a promise
   };
 
   if (DEBUG)
@@ -95,10 +60,14 @@ export function request(
   // the actual request
   return new Promise((resolve, reject) => {
     fetch(CLOUD_ADDRESS + endPoint, requestConfig)
-      .then(handleInitialReply.bind(this))
-      .then(handleParsedResponse.bind(this))
-      .then(() => {resolve(PARSED_RESPONSE)})
-      .catch((err) => {Alert.alert("APP ERR", err.message)})
+      .then(handleInitialReply)
+      .then((parsedResponse) => {resolve({status:STATUS, data: parsedResponse});})
+      .catch((err) => {
+        if (options.stealth !== true)
+          Alert.alert("APP ERR", err.message)
+
+        reject(err);
+      })
   });
 };
 

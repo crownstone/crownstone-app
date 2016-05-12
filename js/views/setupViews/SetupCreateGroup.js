@@ -13,8 +13,6 @@ import React, {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
-import { TopBar } from '../components/Topbar';
-import { Processing } from '../components/Processing'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
 import { setupStyle } from './SetupStyles'
@@ -29,10 +27,11 @@ export class SetupCreateGroup extends Component {
   }
 
   saveGroupName() {
-    this.setState({processing:true})
     if (this.state.groupName.length > 3) {
+      this.props.eventBus.emit('showLoading', 'Creating Group...');
       CLOUD.createGroup(this.state.groupName)
         .then((response) => {
+          this.props.eventBus.emit('hideLoading');
           console.log("response", response)
         })
     }

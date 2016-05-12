@@ -13,14 +13,15 @@ export class FadeInView extends Component {
   }
 
   componentWillUpdate(nextProps) {
+    let defaultDuration = 200;
     if (this.visible !== nextProps.visible) {
       if (nextProps.visible === true) {
         this.setState({show: true});
-        setTimeout(() => {console.log("starting animation");Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || 100}).start();},0);
+        setTimeout(() => {console.log("starting animation");Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || defaultDuration}).start();},0);
       }
       else {
-        Animated.timing(this.state.viewOpacity, {toValue: 0, duration:this.props.duration || 100}).start();
-        setTimeout(() => {this.setState({show: false});},this.props.duration);
+        Animated.timing(this.state.viewOpacity, {toValue: 0, duration:this.props.duration || defaultDuration}).start();
+        setTimeout(() => {this.setState({show: false});},this.props.duration || defaultDuration);
       }
       this.visible = nextProps.visible;
     }

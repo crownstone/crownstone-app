@@ -10,45 +10,65 @@ import React, {
 
 import { FadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
-import { styles, colors } from './../styles'
+import { styles, colors , height, width } from './../styles'
 import { eventBus } from '../../util/eventBus'
 
 export class OptionPopup extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      visible: false,
+      buttons: [],
+    };
+    this.unsubscribe = [];
+  }
+
+  componentDidMount() {
+    this.unsubscribe.push(eventBus.on('showPopup', (buttons) => {this.setState({buttons:buttons, visible:true})}));
+    this.unsubscribe.push(eventBus.on('hidePopup', () => {this.setState({visible:false})}));
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe.forEach((callback) => {callback()});
+    this.unsubscribe = [];
+  }
+
   getChildren() {
-    let amountOfOptions = this.props.buttons.length;
-    let buttonHeight = 50 * amountOfOptions + amountOfOptions - 1;
+    let amountOfOptions = this.state.buttons.length;
+    let buttonContainerHeight = 50 * amountOfOptions + amountOfOptions - 1;
     
     let buttons = [];
-    this.props.buttons.forEach((button, index) => {
+    this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableHighlight style={styles.joinedButtons} onPress={() => {this.hide(); button.callback();}} key={'option_button_' + index}>
+        <TouchableHighlight style={styles.joinedButtons} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
           <Text style={styles.buttonText}>{button.text}</Text>
         </TouchableHighlight>
       );
+      // insert separator
       if (index !== amountOfOptions - 1)
         buttons.push(<View style={styles.joinedButtonSeparator} key={'option_button_separator' + index} />)
     });
 
 
     return (
-      <View style={[styles.joinedButton, {height:buttonHeight}]}>
+      <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
         {buttons}
       </View>
     )
   }
 
   render() {
-    let height = Dimensions.get('window').height;
     return (
       <FadeInView
         style={[styles.fullscreen, {backgroundColor:'rgba(0,0,0,0.3)'}]}
         height={height}
-        visible={this.props.visible}>
+        visible={this.state.visible}>
 
         <SlideInFromBottomView
           style={[styles.centered, {backgroundColor:'transparent'}]}
           height={180}
-          visible={this.props.visible}>
+          visible={this.state.visible}>
           {this.getChildren()}
           <TouchableHighlight style={styles.button} onPress={() => {eventBus.emit("hidePopup");}}><Text
             style={[styles.buttonText, {fontWeight:'bold'}]}>Cancel</Text></TouchableHighlight>

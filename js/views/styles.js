@@ -1,8 +1,8 @@
 import React, { Dimensions,PixelRatio,StyleSheet } from 'react-native'
 
-let width = Dimensions.get('window').width;
-let height = Dimensions.get('window').height;
-let pxRatio = PixelRatio.get();
+export const width = Dimensions.get('window').width;
+export const height = Dimensions.get('window').height;
+export const pxRatio = PixelRatio.get();
 
 export const colors = {
   menuBackground: {h:'#1c202a', r:28, g:32, b:42},

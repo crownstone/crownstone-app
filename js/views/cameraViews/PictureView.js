@@ -1,9 +1,7 @@
 import React, {
   Component,
   CameraRoll,
-  Dimensions,
   Image,
-  PixelRatio,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -11,12 +9,11 @@ import React, {
   View
 } from 'react-native';
 
-import { Processing } from '../components/Processing';
 import { TopBar } from '../components/Topbar';
 import Camera from 'react-native-camera';
 var Icon = require('react-native-vector-icons/Ionicons');
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors} from '../styles'
+import { styles, colors, width, height } from '../styles'
 
 
 export class PictureView extends Component {
@@ -30,10 +27,14 @@ export class PictureView extends Component {
   }
 
   takePicture() {
+    this.props.eventBus.emit('showLoading', 'Processing...');
     this.camera.capture()
-      .then((data) => {Actions.pop(); Actions.picturePreview({image:data, selectCallback:this.props.selectCallback})})
+      .then((data) => {
+        this.props.eventBus.emit('hideLoading');
+        Actions.pop();
+        Actions.picturePreview({image:data, selectCallback:this.props.selectCallback})
+      })
       .catch(err => console.error(err));
-    this.setState({ pictureTaken: true });
   }
 
   switchCamera() {
@@ -74,14 +75,16 @@ export class PictureView extends Component {
 
 
   render() {
+    // somehow the camera does not take full screen size.
     return (
-      <View style={{flex:1}}>
+      <View style={{flex:1, width, height}}>
         <TopBar title="Take A Picture" left="Cancel" leftAction={Actions.pop} notBack={true} />
         <Camera
           ref={(cam) => {this.camera = cam;}}
           type={this.state.camera}
           style={cameraStyle.preview}
           captureAudio={false}
+          captureTarget={Camera.constants.CaptureTarget.disk}
           flashMode={this.state.flash}
           aspect={Camera.constants.Aspect.fill}>
           <TouchableOpacity onPress={this.toggleFlash.bind(this)} style={{position:'absolute',top:20,left:20}}>
@@ -99,11 +102,6 @@ export class PictureView extends Component {
             <Icon name={'ios-camera'} size={50} color={'white'} style={cameraStyle.buttonIcon} />
           </TouchableOpacity>
         </Camera>
-        <Processing visible={this.state.pictureTaken}>
-          <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-            <Text style={styles.menuText}>Processing</Text>
-          </View>
-        </Processing>
       </View>
     );
   }

@@ -1,16 +1,13 @@
 import React, {
   Animated,
   Component,
-  Dimensions,
   Image,
-  PixelRatio,
   Text,
   View,
 } from 'react-native';
 
-import { styles, colors} from '../../styles'
+import { styles, colors, width, height} from '../../styles'
 
-let { width, height } = Dimensions.get('window');
 
 /**
  * expects a progress prop [0 .. 1]
@@ -26,10 +23,18 @@ export class AnimatedLoadingBar extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    let innerWidth = this.width - 2 * this.borderWidth;
-    if (nextProps.progress !== this.progressTarget) {
-      Animated.spring(this.state.progress, {toValue: innerWidth * nextProps.progress, friction:4, tension:40}).start();
-      this.progressTarget = nextProps.progress;
+    console.log(nextProps, this.props)
+    if (nextProps.progress) {
+      console.log(nextProps.progress, this.progressTarget)
+      let innerWidth = this.width - 2 * this.borderWidth;
+      if (nextProps.progress !== this.progressTarget) {
+        Animated.spring(this.state.progress, {
+          toValue: innerWidth * nextProps.progress,
+          friction: 4,
+          tension: 40
+        }).start();
+        this.progressTarget = nextProps.progress;
+      }
     }
   }
 

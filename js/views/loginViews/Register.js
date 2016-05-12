@@ -1,7 +1,6 @@
 import React, {
   Alert,
   Component,
-  Dimensions,
   TouchableHighlight,
   PixelRatio,
   ScrollView,
@@ -13,11 +12,10 @@ import React, {
 import { CLOUD } from '../../cloud/cloudAPI'
 
 import { validateEmail, getImageFileFromUser } from '../../util/util'
-import { Processing } from '../components/Processing'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from '../styles'
+import { styles, colors , width, height, pxRatio } from '../styles'
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'
 
@@ -234,34 +232,22 @@ export class Register extends Component {
 
   requestRegistration() {
     // show the processing screen
-    this.setState({processing:true});
-
-    let closePopupCallback = () => {this.setState({processing:false})};
-    let successCallback = () => {
-      this.processImage().then(() => {
-        Actions.registerConclusion({type:'reset', email:this.state.email.value.toLowerCase()});
-      });
-    };
-    let errorHandleCallback = (response) => {
-      let message = response.error.message.split("` ");
-      message = message[message.length - 1];
-      Alert.alert("Registration Error", message, [{text: 'OK', onPress: closePopupCallback}]);
-    };
-    let data = {
+    this.props.eventBus.emit('showLoading', 'Sending Registration Request...');
+    CLOUD.registerUser({
       email: this.state.email.value.toLowerCase(),
       password: this.state.password.value,
       firstName: this.state.firstName.value,
       lastName: this.state.lastName.value,
-    };
-    CLOUD.post({endPoint:'users', data, type:'body'}, successCallback, errorHandleCallback, closePopupCallback);
+    })
+      .then(() => {return this.processImage();})
+      .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.value.toLowerCase()});})
+      .done();
   }
 
 
   processImage() {
-    let pxRatio = PixelRatio.get();
     return new Promise((resolve, reject) => {
       if (this.state.picture !== undefined) {
-        let { width, height } = Dimensions.get('window');
         ImageResizer.createResizedImage(this.state.picture, width * pxRatio * 0.5, height * pxRatio * 0.5, 'JPEG', 80)
           .then((resizedImageUri) => {
             let imageName = getImageFileFromUser(this.state.email.value);
@@ -283,16 +269,12 @@ export class Register extends Component {
 
 
   render() {
-    console.log('reg', this.props)
     return (
-      <View>
-        <Background hideTabBar={true}>
-          <ScrollView>
-            <ListEditableItems items={this.getItems()} separatorIndent={true} />
-          </ScrollView>
-        </Background>
-        <Processing visible={this.state.processing} text="Sending Registration Request..." />
-      </View>
+      <Background hideTabBar={true}>
+        <ScrollView>
+          <ListEditableItems items={this.getItems()} separatorIndent={true} />
+        </ScrollView>
+      </Background>
     );
   }
 }

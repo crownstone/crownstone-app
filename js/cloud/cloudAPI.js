@@ -1,6 +1,8 @@
 'use strict'
 import React, { Alert } from 'react-native';
 import { request, download } from './cloudCore'
+import { closeLoading } from './cloudUtil'
+
 
 
 let defaultHeaders = {
@@ -13,6 +15,12 @@ let uploadHeaders = {
   'Content-Type': 'multipart/form-data; boundary=6ff46e0b6b5148d984f148b6542e5a5d',
 };
 
+/**
+ * The cloud API is designed to maintain the REST endpoints and to handle responsed and errors on the network level.
+ * When the reponses come back successfully, the convenience wrappers allow callbacks for relevant scenarios.
+ *
+ * @type {{_accessToken: undefined, _userId: undefined, _deviceId: undefined, _eventId: undefined, _groupId: undefined, _locationId: undefined, _stoneId: undefined, _post: CLOUD._post, _get: CLOUD._get, _delete: CLOUD._delete, _put: CLOUD._put, _head: CLOUD._head, _uploadImage: CLOUD._uploadImage, _download: CLOUD._download, setAccess: CLOUD.setAccess, setUserId: CLOUD.setUserId, forUser: CLOUD.forUser, forStone: CLOUD.forStone, forGroup: CLOUD.forGroup, forLocation: CLOUD.forLocation, forEvent: CLOUD.forEvent, forDevice: CLOUD.forDevice, registerUser: CLOUD.registerUser, login: CLOUD.login, uploadProfileImage: CLOUD.uploadProfileImage, downloadProfileImage: CLOUD.downloadProfileImage, getUserData: CLOUD.getUserData, getGroups: CLOUD.getGroups, requestVerificationEmail: CLOUD.requestVerificationEmail, requestPasswordResetEmail: CLOUD.requestPasswordResetEmail, createGroup: CLOUD.createGroup}}
+ */
 export let CLOUD = {
   _accessToken: undefined,
   _userId: undefined,
@@ -22,27 +30,27 @@ export let CLOUD = {
   _locationId: undefined,
   _stoneId: undefined,
 
-  _post: function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    return request(options, 'POST', defaultHeaders, _getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this._accessToken)
+  _post: function(options) {
+    return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, this), this._accessToken)
   },
-  _get: function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    return request(options, 'GET',  defaultHeaders, _getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this._accessToken)
+  _get: function(options) {
+    return request(options, 'GET',    defaultHeaders, _getId(options.endPoint, this), this._accessToken)
   },
-  _delete: function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    return request(options, 'DELETE', defaultHeaders, _getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this._accessToken)
+  _delete: function(options) {
+    return request(options, 'DELETE', defaultHeaders, _getId(options.endPoint, this), this._accessToken)
   },
-  _put: function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    return request(options, 'PUT',  defaultHeaders, _getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this._accessToken)
+  _put: function(options) {
+    return request(options, 'PUT',    defaultHeaders, _getId(options.endPoint, this), this._accessToken)
   },
-  _head: function(options, successCallback, errorHandleCallback, closePopupCallback) {
-    return request(options, 'HEAD', defaultHeaders, _getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this._accessToken)
+  _head: function(options) {
+    return request(options, 'HEAD',   defaultHeaders, _getId(options.endPoint, this), this._accessToken)
   },
-  _uploadImage: function(options, successCallback, errorHandleCallback, closePopupCallback) {
+  _uploadImage: function(options) {
     var formData = new FormData();
     let path = options.path.substr(0,4) === 'file' ? options.path : 'file://' + options.path;
     formData.append('image', {type: "image/jpeg", name: options.name, uri: path });
     options.data = formData;
-    return request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), successCallback, errorHandleCallback, closePopupCallback, this._accessToken, true)
+    return request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), this._accessToken, true)
   },
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
@@ -60,30 +68,70 @@ export let CLOUD = {
   forLocation: function(locationId)  { this._locationId = locationId;   return this; },
   forEvent:    function(eventId)     { this._eventId = eventId;         return this; },
   forDevice:   function(deviceId)    { this._deviceId = deviceId;       return this; },
-
+  
+  
+  registerUser: function(options) {
+    return new Promise((resolve, reject) => {
+      CLOUD._post({
+        endPoint: 'users',
+        data: {
+          email: options.email,
+          password: options.password,
+          firstName: options.firstName,
+          lastName: options.lastName
+        }, type: 'body'
+      }).then((reply) => {
+        // POST SUCCESS
+        if (reply.status === 200 || reply.status === 204) {
+          resolve(reply.data)
+        }
+        else {
+          if (replay.data && reply.data.error && reply.data.error.message) {
+            let message = replay.data.error.message.split("` ");
+            message = message[message.length - 1];
+            Alert.alert("Registration Error", message, [{text: 'OK', onPress: closeLoading}]);
+          }
+        }
+      });
+    });
+  },
+  
   /**
    *
-   * @param email
-   * @param password
-   * @param successCallback
-   * @param unverifiedEmailCallback
-   * @param invalidLoginCallback
-   * @param closePopupCallback
+   * @param options     
+   *        {email: string, password: string, onUnverified: callback, onInvalidCredentials: callback, stealth: boolean}
    */
-  login: function(email, password, successCallback, unverifiedEmailCallback, invalidLoginCallback, closePopupCallback) {
-    let errorHandleCallback = (response) => {
-      switch (response.error.code) {
-        case "LOGIN_FAILED_EMAIL_NOT_VERIFIED":
-          unverifiedEmailCallback();
-          break;
-        case "LOGIN_FAILED":
-          invalidLoginCallback();
-          break;
-        default:
-          Alert.alert('Login Error',response.error.message,[{text: 'OK', onPress: closePopupCallback}]);
-      }
-    };
-    return this._post({ endPoint:'users/login', data:{ email, password } , type:'body'}, successCallback, errorHandleCallback, closePopupCallback)
+  login: function(options) {
+    return new Promise((resolve, reject) => {
+      this._post({ endPoint:'users/login', data:{ email: options.email, password: options.password } , type:'body'})
+        .then((reply) => {
+          // POST SUCCESS
+          if (reply.status === 200) {
+            resolve(reply.data)
+          }
+          else {
+            if (replay.data && reply.data.error && reply.data.error.code) {
+              switch (reply.data.error.code) {
+                case "LOGIN_FAILED_EMAIL_NOT_VERIFIED":
+                  if (options.onUnverified)
+                    options.onUnverified();
+                  break;
+                case "LOGIN_FAILED":
+                  if (options.onInvalidCredentials)
+                    options.onInvalidCredentials()
+                  break;
+                default:
+                  Alert.alert('Login Error', reply.data.error.message, [{text: 'OK', onPress: closeLoading}]);
+              }
+            }
+          }
+        })
+        .catch((error) => {
+          // ERRORS IN THE REQUEST
+          console.log("ERROR IN LOGIN REQUEST", error);
+          reject(error);
+      })
+    })
   },
 
   /**
@@ -107,7 +155,13 @@ export let CLOUD = {
    * @returns {*}
    */
   getUserData: function () {
-    return this._get({endPoint:'/users/me'});
+    return new Promise((resolve, reject) => {
+      this._get({endPoint:'/users/me'})
+        .then((reply) => {resolve(reply)})
+        .catch((error) => {
+          reject(error);
+        });
+    });
   },
 
   /**
@@ -115,7 +169,13 @@ export let CLOUD = {
    * @returns {*}
    */
   getGroups: function () {
-    return this._get({endPoint:'/users/{id}/groups'});
+    return new Promise((resolve, reject) => {
+      this._get({endPoint:'/users/{id}/groups'})
+        .then((reply) => {resolve(reply)})
+        .catch((error) => {
+          reject(error);
+        });
+    });
   },
 
   /**
@@ -124,7 +184,7 @@ export let CLOUD = {
    * @param successCallback
    * @param closePopupCallback
    */
-  requestVerificationEmail: function(email, successCallback, closePopupCallback) {
+  requestVerificationEmail: function(email, successCallback) {
     let errorHandleCallback = (response) => {Alert.alert('Cannot Resend Confirmation.',response.error.message,[{text: 'OK', onPress: closePopupCallback}]);};
     return this._post({ endPoint:'users/resendVerification', data, type:'query'}, successCallback, errorHandleCallback, closePopupCallback);
   },

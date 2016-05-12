@@ -1,4 +1,4 @@
-
+import { eventBus } from '../util/eventBus'
 
 export function prepareEndpointAndBody(options, id, accessToken, doNotStringify) {
   let endPoint = options.endPoint;
@@ -64,16 +64,7 @@ function _htmlEncode(str) {
   }
 }
 
-export function getOKButton(callback, arg, resolve) {
-  return [{text:'OK', onPress: () => {
-    if (callback) {
-      callback(arg);
-      if (resolve)
-        resolve()
-    }
-  }}];
-}
-
+export const closeLoading = () => {eventBus.emit('hideLoading');}
 
 function htmlEscape(str) {
   return String(str)

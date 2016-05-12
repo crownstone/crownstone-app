@@ -158,48 +158,10 @@ let navBarStyle = {
 };
 
 export class AppRouter extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      optionsVisible: false,
-      optionsButtons: [],
-      processingVisible: false,
-      processingProgress: undefined,
-      processingText: undefined,
-      processingProgressInfo: undefined
-    };
-    this.unsubscribe = [];
-  }
-
-  componentDidMount() {
-    this.unsubscribe.push(eventBus.on('showPopup', (buttons) => {console.log("here");this.setState({optionsButtons:buttons, optionsVisible:true})}));
-    this.unsubscribe.push(eventBus.on('hidePopup', () => {this.setState({optionsVisible:false})}));
-    this.unsubscribe.push(eventBus.on('showProcessing', (text,progress,progressText) => {this.setState({
-      processingVisible: true,
-      processingProgress: progress,
-      processingText: text,
-      processingProgressInfo: progressText
-    })}));
-    this.unsubscribe.push(eventBus.on('updateProcessing', (text,progress,progressText) => {this.setState({
-      processingVisible: true,
-      processingProgress: progress,
-      processingText: text,
-      processingProgressInfo: progressText
-    })}));
-    this.unsubscribe.push(eventBus.on('hideProcessing', () => {this.setState({processingVisible:false})}));
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe.forEach((callback) => {callback()});
-    this.unsubscribe = [];
-  }
-
   render() {
-    console.log('optionsVisable',this.state.optionsVisible)
     return (
       <View>
-        <Router createReducer={reducerCreate} store={store} {...navBarStyle}>
+        <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
         <Scene key="Root" hideNavBar={false}>
           <Scene key="loginSplash"            component={LoginSplash}        hideNavBar={true}  type="reset" />
           <Scene key="login"                  component={Login}              hideNavBar={true}  />
@@ -239,8 +201,8 @@ export class AppRouter extends React.Component {
           </Scene>
         </Scene>
       </Router>
-      <OptionPopup visible={this.state.optionsVisible} buttons={this.state.optionsButtons} />
-      <Processing visible={this.state.processingVisible} text={this.state.processingText} progress={this.state.processingProgress} progressText={this.state.processingProgressInfo} />
+      <OptionPopup />
+      <Processing />
     </View>
     );
   }
