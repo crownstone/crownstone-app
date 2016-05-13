@@ -4,9 +4,11 @@ import { update } from './util'
 
 let defaultSettings = {
   config: {
-    name: 'Home',
-    latitude: undefined,
-    longitude: undefined
+    name: undefined,
+    uuid: undefined,
+    owners:[],
+    users:[],
+    guests:[],
   }
 };
 
@@ -17,8 +19,7 @@ let groupConfigReducer = (state = defaultSettings.config, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.name = update(action.data.name, newState.name);
-        newState.latitude = update(action.data.latitude, newState.latitude);
-        newState.longitude = update(action.data.longitude, newState.longitude);
+        newState.uuid = update(action.data.uuid, newState.uuid);
         return newState;
       }
       return state;

@@ -1,4 +1,5 @@
 import React, {
+  Alert,
   AppRegistry,
   Navigator,
   Component,
@@ -47,6 +48,7 @@ import { GroupSettings }       from '../views/settingsViews/GroupSettings'
 import { CrownstoneSettings }  from '../views/settingsViews/CrownstoneSettings'
 import { AppComplexity }       from '../views/settingsViews/AppComplexity'
 import { styles, colors }     from '../views/styles'
+import { CLOUD }     from '../cloud/cloudAPI'
 
 var Icon = require('react-native-vector-icons/Ionicons');
 
@@ -113,10 +115,10 @@ const reducerCreate = params=> {
   }
 };
 
-class TabIcon extends React.Component {
+class TabIcon extends Component {
   render(){
     return (
-    <View style={styles.centered} >
+    <View style={[styles.centered]} >
       <Icon name={this.props.iconString} size={30} color={this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h} />
       <Text style={[styles.menuItem, {color:this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h}]}>{this.props.title}</Text>
     </View>
@@ -157,10 +159,16 @@ let navBarStyle = {
   //renderBackButton:backButtonFunction
 };
 
-export class AppRouter extends React.Component {
+
+// configure the CLOUD network handler.
+CLOUD.setNetworkErrorHandler((error) => {
+  Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.");
+});
+
+export class AppRouter extends Component {
   render() {
     return (
-      <View>
+      <View style={{flex:1}}>
         <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
         <Scene key="Root" hideNavBar={false}>
           <Scene key="loginSplash"            component={LoginSplash}        hideNavBar={true}  type="reset" />

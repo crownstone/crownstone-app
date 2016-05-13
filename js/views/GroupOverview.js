@@ -88,7 +88,7 @@ export class GroupOverview extends Component {
       )
     }
     else {
-      const rooms = state.groups[this.activeGroup].locations;
+      const rooms = []; //state.groups[this.activeGroup].locations;
       return (
         <Background background={require('../images/mainBackground.png')}>{this._getRooms(rooms)}</Background>
       )

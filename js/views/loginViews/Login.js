@@ -39,21 +39,27 @@ export class Login extends Component {
     else {
       Alert.alert('Send Password Reset Email','Would you like us to send an email to reset your password to: ' + this.state.email.toLowerCase() + '?',[
         {text: 'Cancel'},
-        {text: 'OK',     onPress: () => {this.requestPasswordResetEmail()}}
+        {text: 'OK', onPress: () => {this.requestPasswordResetEmail()}}
       ]);
     }
   }
 
   requestVerificationEmail() {
     this.props.eventBus.emit('showLoading', 'Requesting new verification email...');
-    let successCallback = () => { Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'}) };
-    CLOUD.requestVerificationEmail(this.state.email.toLowerCase(), successCallback);
+    CLOUD.requestVerificationEmail({email:this.state.email.toLowerCase()})
+      .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});})
+      .catch((reply) => {
+        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+      });
   }
 
   requestPasswordResetEmail() {
     this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
-    let successCallback = () => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true})};
-    CLOUD.requestPasswordResetEmail(this.state.email.toLowerCase(), successCallback);
+    CLOUD.requestPasswordResetEmail({email:this.state.email.toLowerCase()})
+      .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true})})
+      .catch((reply) => {
+        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+      });
   }
 
   attemptLogin() {
@@ -72,8 +78,7 @@ export class Login extends Component {
       password: this.state.password,
       onUnverified: unverifiedEmailCallback,
       onInvalidCredentials: invalidLoginCallback,
-      stealth: false
-    }).then((response) => {this.finalizeLogin(response.id, response.userId);}).done();
+    }).then((response) => {this.finalizeLogin(response.id, response.userId);})
   }
 
   render() {
@@ -162,8 +167,8 @@ export class Login extends Component {
       });
 
     let groupUpdate = CLOUD.getGroups().then((groupData) => {
-      console.log(groupData)
       this.progress += 1/3;
+      store.dispatch({type:'ADD_GROUP', groupId: groupData.id, data:{name: groupData.name, uuid: groupData.uuid}});
       this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received group data.'});
     });
 
@@ -183,16 +188,19 @@ export class Login extends Component {
     
 
     Promise.all([userData, picture, groupUpdate]).then(() => {
-      this.props.eventBus.emit('hideProgress');
+      this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
+      setTimeout(() => {
+        this.props.eventBus.emit('hideProgress');
 
-      const state = store.getState();
-      this.activeGroup = state.app.activeGroup;
-      if (state.app.doFirstTimeSetup === true && Object.keys(state.groups).length === 0) {
-        Actions.setupWelcome();
-      }
-      else {
-        Actions.tabBar();
-      }
+        const state = store.getState();
+        this.activeGroup = state.app.activeGroup;
+        if (state.app.doFirstTimeSetup === true && Object.keys(state.groups).length === 0) {
+          Actions.setupWelcome();
+        }
+        else {
+          Actions.tabBar();
+        }
+      }, 100);
     });
   }
 }

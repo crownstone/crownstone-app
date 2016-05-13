@@ -25,7 +25,7 @@ export class SetupWelcome extends Component {
     let offset = height / 2 - totalTextHeight / 2;
     this.state = {
       welcome:    {x: new Animated.Value(width), y: new Animated.Value(offset)},
-      to:         {x: new Animated.Value(width), y: new Animated.Value(offset + 45 + this.textPadding)},
+      to:         {x: new Animated.Value(width), y: new Animated.Value(offset + 45 + 2 * this.textPadding)},
       crownstone: {x: new Animated.Value(width), y: new Animated.Value(offset + 45 + 27 + 2*this.textPadding)},
       opacity: new Animated.Value(0)
     }
@@ -39,14 +39,13 @@ export class SetupWelcome extends Component {
     let fadeDelay = 400;
     let topOffset = 35;
 
-
     store.dispatch({type: 'APP_UPDATE', data: {doFirstTimeSetup: false}});
     setTimeout(() => {Animated.spring(this.state.welcome.x,   {toValue: 0, friction:8, tension:40}).start();},start);
     setTimeout(() => {Animated.spring(this.state.to.x,        {toValue: 0, friction:8, tension:40}).start();},start + dt);
     setTimeout(() => {Animated.spring(this.state.crownstone.x,{toValue: 0, friction:8, tension:40}).start();},start + 2*dt);
     setTimeout(() => {
       Animated.spring(this.state.welcome.y,   {toValue: topOffset, friction:8, tension:20}).start();
-      Animated.spring(this.state.to.y,        {toValue: topOffset + 45 + this.textPadding, friction:8, tension:20}).start();
+      Animated.spring(this.state.to.y,        {toValue: topOffset + 45 + 2 * this.textPadding, friction:8, tension:20}).start();
       Animated.spring(this.state.crownstone.y,{toValue: topOffset + 45 + 27 + 2 * this.textPadding, friction:8, tension:20}).start();
     },start + 2*dt + welcomeTime);
     setTimeout(() => {Animated.timing(this.state.opacity, {toValue: 1, duration:250}).start();},start + 2*dt + welcomeTime + fadeDelay);
@@ -70,8 +69,9 @@ export class SetupWelcome extends Component {
         <Animated.Text style={[setupStyle.header, {position:'absolute', fontSize: fontSize * 0.5, fontStyle:'italic', left:this.state.to.x, top:this.state.to.y}]}>to</Animated.Text>
         <Animated.Text style={[setupStyle.header, {position:'absolute', fontSize: fontSize, left:this.state.crownstone.x, top:this.state.crownstone.y}]}>CROWNSTONE</Animated.Text>
         <Animated.View style={{opacity:this.state.opacity, flex:1, marginTop:170}}>
-          <Text style={[setupStyle.text, {fontSize: fontSize * 0.4}]}>Do you want to setup your own Crownstones or will you join an existing group?</Text>
-          <Text style={[setupStyle.text, {fontSize: fontSize * 0.4}]}>You can always add Crownstones, Groups and Rooms later through the settings menu.</Text>
+          <Text style={[setupStyle.text, {fontSize: fontSize * 0.45}]}>Do you want to setup your own Crownstones or will you join an existing group?</Text>
+          <Text style={[setupStyle.text, {fontSize: fontSize * 0.45}]}>You can always add Crownstones, Groups and Rooms later through the settings menu.</Text>
+          <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
             <TouchableOpacity onPress={() => {Actions.tabBar()}} >
               <View style={setupStyle.button}><Text style={[setupStyle.buttonText]}>Skip setup</Text></View>

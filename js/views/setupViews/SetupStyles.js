@@ -27,9 +27,7 @@ export const setupStyle = StyleSheet.create({
     paddingBottom:0,
   },
   buttonContainer: {
-    position:'absolute',
-    bottom:30,
-    flex:1,
+    marginBottom:30,
     width: width,
     flexDirection:'row',
     alignItems:'center',
@@ -46,7 +44,8 @@ export const setupStyle = StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     margin: (width - 2*130) / 6,
-    marginBottom:0
+    marginBottom:0,
+    marginTop:0
   },
   buttonText: {
     color:'white',
@@ -67,7 +66,6 @@ export const setupStyle = StyleSheet.create({
     borderRadius:3,
     alignItems:'center',
     justifyContent:'center',
-    marginBottom:10,
   },
   forgot: {
     padding:5,

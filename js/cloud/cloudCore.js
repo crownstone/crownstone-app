@@ -63,14 +63,23 @@ export function request(
       .then(handleInitialReply)
       .then((parsedResponse) => {resolve({status:STATUS, data: parsedResponse});})
       .catch((err) => {
-        if (options.stealth !== true)
-          Alert.alert("APP ERR", err.message)
-
         reject(err);
       })
   });
 };
 
+
+/**
+ * 
+ * @param options
+ * @param id
+ * @param accessToken
+ * @param toPath
+ * @param beginCallback
+ * @param progressCallback
+ * @param successCallback
+ * @returns {Promise}
+ */
 export function download(options, id, accessToken, toPath, beginCallback = emptyFunction, progressCallback = emptyFunction, successCallback = emptyFunction) {
   // append _accessToken, data that goes into the query and insert ids
   let {endPoint} = prepareEndpointAndBody(options, id, accessToken);
@@ -82,7 +91,6 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
 
     if (DEBUG)
       console.log('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
-
 
     // download the file.
     RNFS.downloadFile(CLOUD_ADDRESS + endPoint, tempPath, beginCallback, progressCallback)

@@ -1,4 +1,6 @@
 import { eventBus } from '../util/eventBus'
+import { DEBUG } from '../externalConfig'
+import { Alert } from 'react-native'
 
 export function prepareEndpointAndBody(options, id, accessToken, doNotStringify) {
   let endPoint = options.endPoint;
@@ -65,6 +67,7 @@ function _htmlEncode(str) {
 }
 
 export const closeLoading = () => {eventBus.emit('hideLoading');}
+
 
 function htmlEscape(str) {
   return String(str)

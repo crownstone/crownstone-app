@@ -29,6 +29,7 @@ export let CLOUD = {
   _groupId: undefined,
   _locationId: undefined,
   _stoneId: undefined,
+  _networkErrorHandler: () => {},
 
   _post: function(options) {
     return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, this), this._accessToken)
@@ -55,11 +56,19 @@ export let CLOUD = {
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
   },
-  
+  _handleNetworkError: (error, options) => {
+    if (options.background !== true) {
+      this._networkErrorHandler(error);
+    }
+    if (DEBUG === true) {
+      console.log(options.background ? "BACKGROUND REQUEST:" : '',"Network Error:", error);
+    }
+  },
 
   // END USER API
   // These methods have all the endpoints embedded in them.
-
+  
+  setNetworkErrorHandler: function(handler) {this._networkErrorHandler = handler},
   setAccess:   function(accessToken) { this._accessToken = accessToken; return this; },
   setUserId:   function(userId)      { this._userId = userId;           return this; },
   forUser:     function(userId)      { this._userId = userId;           return this; },
@@ -68,11 +77,15 @@ export let CLOUD = {
   forLocation: function(locationId)  { this._locationId = locationId;   return this; },
   forEvent:    function(eventId)     { this._eventId = eventId;         return this; },
   forDevice:   function(deviceId)    { this._deviceId = deviceId;       return this; },
-  
-  
+
+  /**
+   * 
+   * @param options
+   * @returns {Promise}
+   */
   registerUser: function(options) {
     return new Promise((resolve, reject) => {
-      CLOUD._post({
+      this._post({
         endPoint: 'users',
         data: {
           email: options.email,
@@ -86,31 +99,34 @@ export let CLOUD = {
           resolve(reply.data)
         }
         else {
-          if (replay.data && reply.data.error && reply.data.error.message) {
-            let message = replay.data.error.message.split("` ");
-            message = message[message.length - 1];
-            Alert.alert("Registration Error", message, [{text: 'OK', onPress: closeLoading}]);
-          }
+          debugReject(reply, reject);
         }
-      });
+      }).catch((error) => {this._handleNetworkError(error, options);});
     });
   },
   
   /**
    *
-   * @param options     
-   *        {email: string, password: string, onUnverified: callback, onInvalidCredentials: callback, stealth: boolean}
+   * @param options
+   * {
+   *   email: string,
+   *   password: string,
+   *   onUnverified: callback,
+   *   onInvalidCredentials: callback,
+   *   background: boolean
+   * }
+   *
+   * resolves with the parsed data, rejects with {status: httpStatus, data: data}
    */
   login: function(options) {
     return new Promise((resolve, reject) => {
       this._post({ endPoint:'users/login', data:{ email: options.email, password: options.password } , type:'body'})
         .then((reply) => {
-          // POST SUCCESS
           if (reply.status === 200) {
             resolve(reply.data)
           }
           else {
-            if (replay.data && reply.data.error && reply.data.error.code) {
+            if (reply.data && reply.data.error && reply.data.error.code) {
               switch (reply.data.error.code) {
                 case "LOGIN_FAILED_EMAIL_NOT_VERIFIED":
                   if (options.onUnverified)
@@ -118,19 +134,17 @@ export let CLOUD = {
                   break;
                 case "LOGIN_FAILED":
                   if (options.onInvalidCredentials)
-                    options.onInvalidCredentials()
+                    options.onInvalidCredentials();
                   break;
                 default:
-                  Alert.alert('Login Error', reply.data.error.message, [{text: 'OK', onPress: closeLoading}]);
+                  debugReject(reply, reject);
               }
             }
+            else {
+              debugReject(reply, reject);
+            }
           }
-        })
-        .catch((error) => {
-          // ERRORS IN THE REQUEST
-          console.log("ERROR IN LOGIN REQUEST", error);
-          reject(error);
-      })
+        }).catch((error) => {this._handleNetworkError(error, options);});
     })
   },
 
@@ -154,13 +168,18 @@ export let CLOUD = {
    *
    * @returns {*}
    */
-  getUserData: function () {
+  getUserData: function (options = {}) {
     return new Promise((resolve, reject) => {
-      this._get({endPoint:'/users/me'})
-        .then((reply) => {resolve(reply)})
+      this._get({endPoint: '/users/me'})
+        .then((reply) => {
+          if (reply.status === 200)
+            resolve(reply.data);
+          else
+            debugReject(reply, reject);
+        })
         .catch((error) => {
-          reject(error);
-        });
+          this._handleNetworkError(error, options);
+        })
     });
   },
 
@@ -168,36 +187,62 @@ export let CLOUD = {
    *
    * @returns {*}
    */
-  getGroups: function () {
+  getGroups: function (options = {}) {
     return new Promise((resolve, reject) => {
-      this._get({endPoint:'/users/{id}/groups'})
-        .then((reply) => {resolve(reply)})
+      this._get({endPoint: '/users/{id}/groups'})
+        .then((reply) => {
+          if (reply.status === 200)
+            resolve(reply.data);
+          else
+            debugReject(reply, reject);
+        })
         .catch((error) => {
-          reject(error);
-        });
+          this._handleNetworkError(error, options);
+        })
     });
   },
 
   /**
    *
-   * @param email
-   * @param successCallback
-   * @param closePopupCallback
+   * @param options
    */
-  requestVerificationEmail: function(email, successCallback) {
-    let errorHandleCallback = (response) => {Alert.alert('Cannot Resend Confirmation.',response.error.message,[{text: 'OK', onPress: closePopupCallback}]);};
-    return this._post({ endPoint:'users/resendVerification', data, type:'query'}, successCallback, errorHandleCallback, closePopupCallback);
+  requestVerificationEmail: function(options = {}) {
+    return new Promise((resolve, reject) => {
+      this._get({endPoint:'users/resendVerification', data:{email:options.email}, type:'query'})
+        .then((reply) => {
+          if (reply.status === 204) {
+            resolve(reply.data)
+          }
+          else {
+            debugReject(reply, reject);
+          }
+        })
+        .catch((error) => {
+          this._handleNetworkError(error, options);
+        })
+    });
   },
 
   /**
    *
-   * @param email
-   * @param successCallback
-   * @param closePopupCallback
+   * @param options
    */
-  requestPasswordResetEmail: function(email, successCallback, closePopupCallback) {
-    let errorHandleCallback = (response) => {Alert.alert('Cannot Send Reset Email.',response.error.message,[{text: 'OK', onPress: closePopupCallback}]);};
-    return this._post({endPoint:'users/reset', data:{email:email}, type:'body'}, successCallback, errorHandleCallback, closePopupCallback);
+  requestPasswordResetEmail: function(options = {}) {
+    return new Promise((resolve, reject) => {
+      this._get({endPoint:'users/reset', data:{email:options.email}, type:'body'})
+        .then((reply) => {
+          if (reply.status === 204) {
+            resolve(reply)
+          }
+          else {
+            reject(reply);
+            Alert.alert("Cannot Send Email", reply.data);
+          }
+        })
+        .catch((error) => {
+          this._handleNetworkError(error, options);
+        })
+    });
   },
 
 
@@ -237,4 +282,11 @@ function _getId(url, obj) {
   let stoneLocation = url.indexOf('Stones');
   if (stoneLocation !== -1 && stoneLocation < 3)
     return obj._stoneId;
+}
+
+function debugReject(reject, reply) {
+  if (DEBUG) {
+    console.log("UNHANDLED HTML ERROR IN API:", reply);
+  }
+  reject(reply);
 }
