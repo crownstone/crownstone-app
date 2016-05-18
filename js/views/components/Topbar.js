@@ -47,15 +47,14 @@ export class TopBar extends Component {
   }
 
   render() {
-    let pxRatio = PixelRatio.get();
-    let height = 21*pxRatio;
+    let barHeight = 42;
     return (
       <View>
         {this.props.shadeStatus ? <View style={styles.shadedStatusBar} /> : <View style={[styles.shadedStatusBar, {backgroundColor:colors.menuBackground.h}]} />}
         <View style={[topBarStyle.topBar,this.props.style]}>
-          <View style={[topBarStyle.topBarSideView,   {height}]}>{this._getLeftContent()}</View>
-          <View style={[topBarStyle.topBarCenterView, {height}]}><Text style={[topBarStyle.topBarCenter,styles.menuText]}>{this.props.title}</Text></View>
-          <View style={[topBarStyle.topBarSideView,   {height}]}>{this._getRightContent()}</View>
+          <View style={[topBarStyle.topBarSideView,   {height: barHeight}]}>{this._getLeftContent()}</View>
+          <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter,styles.menuText]}>{this.props.title}</Text></View>
+          <View style={[topBarStyle.topBarSideView,   {height: barHeight}]}>{this._getRightContent()}</View>
         </View>
       </View>
     );

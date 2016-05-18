@@ -78,6 +78,7 @@ export class GroupOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.activeGroup = state.app.activeGroup;
+    console.log(state)
     if (state.app.doFirstTimeSetup !== true && state.groups[this.activeGroup] === undefined) {
       return (
         <Background background={require('../images/mainBackground.png')}>

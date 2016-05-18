@@ -53,30 +53,23 @@ export class SetupWelcome extends Component {
 
 
   render() {
-    let fontSize;
-    if (width > 370)
-      fontSize = 45;
-    else if (width > 300)
-      fontSize = 40;
-    else
-      fontSize = 35;
-
-
     return (
       <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
         <View style={styles.shadedStatusBar} />
-        <Animated.Text style={[setupStyle.header, {position:'absolute', fontSize: fontSize, left:this.state.welcome.x, top:this.state.welcome.y}]}>WELCOME</Animated.Text>
-        <Animated.Text style={[setupStyle.header, {position:'absolute', fontSize: fontSize * 0.5, fontStyle:'italic', left:this.state.to.x, top:this.state.to.y}]}>to</Animated.Text>
-        <Animated.Text style={[setupStyle.header, {position:'absolute', fontSize: fontSize, left:this.state.crownstone.x, top:this.state.crownstone.y}]}>CROWNSTONE</Animated.Text>
-        <Animated.View style={{opacity:this.state.opacity, flex:1, marginTop:170}}>
-          <Text style={[setupStyle.text, {fontSize: fontSize * 0.45}]}>Do you want to setup your own Crownstones or will you join an existing group?</Text>
-          <Text style={[setupStyle.text, {fontSize: fontSize * 0.45}]}>You can always add Crownstones, Groups and Rooms later through the settings menu.</Text>
+        <Animated.Text style={[setupStyle.h0, {position:'absolute', left:this.state.welcome.x,    top:this.state.welcome.y}]}>WELCOME</Animated.Text>
+        <Animated.Text style={[setupStyle.h3, {position:'absolute', left:this.state.to.x,         top:this.state.to.y, fontStyle:'italic', }]}>to</Animated.Text>
+        <Animated.Text style={[setupStyle.h0, {position:'absolute', left:this.state.crownstone.x, top:this.state.crownstone.y}]}>CROWNSTONE</Animated.Text>
+        <Animated.View style={{opacity:this.state.opacity, flex:1, marginTop:170, flexDirection:'column'}}>
+          <View style={setupStyle.lineDistance} />
+          <Text style={setupStyle.text}>Do you want to setup your own Crownstones or will you join an existing group?</Text>
+          <View style={setupStyle.lineDistance} />
+          <Text style={setupStyle.text}>You can always add Crownstones, Groups and Rooms later through the settings menu.</Text>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
             <TouchableOpacity onPress={() => {Actions.tabBar()}} >
               <View style={setupStyle.button}><Text style={[setupStyle.buttonText]}>Skip setup</Text></View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {Actions.setupCreateGroup()}} >
+            <TouchableOpacity onPress={() => {Actions.setupAddGroup()}} >
               <View style={setupStyle.button}><Text style={[setupStyle.buttonText]}>Start the setup!</Text></View>
             </TouchableOpacity>
           </View>

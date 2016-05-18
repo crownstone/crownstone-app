@@ -202,6 +202,21 @@ export let CLOUD = {
     });
   },
 
+  getLocations: function(options = {}) {
+    return new Promise((resolve, reject) => {
+      this._get({endPoint: '/Groups/{id}/ownedLocations'})
+        .then((reply) => {
+          if (reply.status === 200)
+            resolve(reply.data);
+          else
+            debugReject(reply, reject);
+        })
+        .catch((error) => {
+          this._handleNetworkError(error, options);
+        })
+    });
+  },
+
   /**
    *
    * @param options
@@ -250,9 +265,12 @@ export let CLOUD = {
    *
    * @param groupName
    */
-  createGroup: function(groupName, successCallback, closePopupCallback) {
-    let errorHandleCallback = (response) => {Alert.alert('Cannot Create Group.',response.error.message,[{text: 'OK', onPress: closePopupCallback}]);};
-    return this._post({endPoint:'users/{id}/groups', data:{name:groupName}, type:'body'}, successCallback, errorHandleCallback, closePopupCallback);
+  createGroup: function(groupName) {
+    return this._post({endPoint:'users/{id}/groups', data:{name:groupName}, type:'body'});
+  },
+
+  createLocation: function(locationName) {
+    return this._post({endPoint:'Groups/{id}/ownedLocations', data:{name:locationName}, type:'body'});
   }
 
 };

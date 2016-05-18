@@ -4,6 +4,7 @@ import { update } from './util'
 let defaultSettings = {
   config: {
     name: undefined,
+    deviceName: undefined,
     icon: undefined,
     dimmable: false
   },

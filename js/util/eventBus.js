@@ -1,3 +1,5 @@
+import { DEBUG } from '../externalConfig'
+
 
 class EventBus {
   constructor() {
@@ -18,6 +20,10 @@ class EventBus {
   }
 
   emit(topic, data) {
+    if (DEBUG) {
+      console.log("EMIT: ", topic, data);
+    }
+
     if (this.topics[topic] !== undefined) {
       this.topics[topic].forEach((element) => {
         element.callback(data);

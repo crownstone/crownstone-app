@@ -136,6 +136,8 @@ export class Login extends Component {
   }
 
   finalizeLogin(accessToken, userId) {
+    console.log(accessToken, userId)
+
     this.progress = 0;
     this.props.eventBus.emit('showProgress', {progress: 0, progressText:'Getting user data.'});
 
@@ -158,19 +160,42 @@ export class Login extends Component {
   }
   
   downloadSettings(store, userId) {
+    let parts = 1/5;
+
     // get more data on the user
     let userData = CLOUD.getUserData()
       .then((userData) => {
         store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName}});
-        this.progress += 1/3;
+        this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received user data.'});
       });
 
+
     let groupUpdate = CLOUD.getGroups().then((groupData) => {
-      this.progress += 1/3;
-      store.dispatch({type:'ADD_GROUP', groupId: groupData.id, data:{name: groupData.name, uuid: groupData.uuid}});
+      this.progress += parts;
+      let locationPromises = [];
+      groupData.forEach((group) => {
+        store.dispatch({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, uuid: group.uuid}});
+
+        // for every group, we get the locations
+        locationPromises.push(
+          CLOUD.forGroup(group.id).getLocations()
+            .then((locations) => {
+              this.progress += parts;
+              this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received Location data.'});
+              locations.forEach((location) => {
+                store.dispatch({type:'ADD_LOCATION', groupId: group.id, locationId: location.id, data:{name: location.name, icon: location.icon}});
+              })
+          })
+        )
+      });
+
       this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received group data.'});
+
+      return Promise.all(locationPromises);
     });
+
+
 
     // check if we need to upload a picture that has been set aside during the registration process.
     let picture = this.checkForRegistrationPictureUpload(userId)
@@ -182,7 +207,7 @@ export class Login extends Component {
       })
       .then((picturePath) => {
         store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
-        this.progress += 1/3;
+        this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Updated user profile picture.'});
       });
     
@@ -200,7 +225,7 @@ export class Login extends Component {
         else {
           Actions.tabBar();
         }
-      }, 100);
+      }, 50);
     });
   }
 }

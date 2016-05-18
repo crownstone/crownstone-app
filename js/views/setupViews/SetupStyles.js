@@ -2,29 +2,74 @@ import React, { Dimensions, PixelRatio, StyleSheet } from 'react-native'
 
 let { width, height } = Dimensions.get('window');
 
+let fontSize;
+if (width > 370)
+  fontSize = 45;
+else if (width > 300)
+  fontSize = 40;
+else
+  fontSize = 35;
+
 export const setupStyle = StyleSheet.create({
-  header:{
-    padding:20,
+  lineDistance: {
+    height:20
+  },
+  h0:{
+    padding: 20,
     backgroundColor:'transparent',
     color:'#fff',
-    fontSize:45,
+    fontSize:fontSize,
     fontWeight:'400',
+  },
+  h1:{
+    padding: 20,
+    backgroundColor:'transparent',
+    color:'#fff',
+    fontSize:fontSize*0.85,
+    fontWeight:'400',
+  },
+  h2:{
+    padding: 20,
+    backgroundColor:'transparent',
+    color:'#fff',
+    fontSize:fontSize*0.75,
+    fontWeight:'400',
+  },
+  h3:{
+    padding: 20,
+    backgroundColor:'transparent',
+    color:'#fff',
+    fontSize: fontSize*0.5,
+    fontWeight:'400',
+  },
+  roomBar: {
+    marginTop:4,
+    marginRight:20,
+  },
+  roomBarInner: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius:5,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'flex-start',
+    padding:10,
+    height:40,
   },
   text: {
     backgroundColor:'transparent',
     color:'#fff',
-    fontSize:22,
+    fontSize: fontSize*0.45,
     fontWeight:'400',
-    padding:20,
-    paddingBottom:0,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   information: {
     backgroundColor:'transparent',
     color:'#fff',
-    fontSize:18,
+    fontSize: fontSize*0.4,
     fontWeight:'300',
-    padding:20,
-    paddingBottom:0,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   buttonContainer: {
     marginBottom:30,

@@ -38,7 +38,11 @@ import { DeviceScheduleEdit }  from '../views/deviceViews/DeviceScheduleEdit'
 import { DeviceScheduleAdd }   from '../views/deviceViews/DeviceScheduleAdd'
 import { DaySelection }        from '../views/deviceViews/DaySelection'
 import { SetupWelcome }        from '../views/setupViews/SetupWelcome'
-import { SetupCreateGroup }    from '../views/setupViews/SetupCreateGroup'
+import { SetupAddGroup }       from '../views/setupViews/SetupAddGroup'
+import { SetupAddCrownstoneSelect } from '../views/setupViews/SetupAddCrownstoneSelect'
+import { SetupAddPlugInCrownstone } from '../views/setupViews/SetupAddPlugInCrownstone'
+import { SetupAddRoom }        from '../views/setupViews/SetupAddRoom'
+import { SetupTrainRoom }      from '../views/setupViews/SetupTrainRoom'
 import { SettingsOverview }    from '../views/settingsViews/SettingsOverview'
 import { ProfileSettings }     from '../views/settingsViews/ProfileSettings'
 import { ChangePasswordSettings }  from '../views/settingsViews/ChangePasswordSettings'
@@ -47,73 +51,15 @@ import { LocationSettings }    from '../views/settingsViews/LocationSettings'
 import { GroupSettings }       from '../views/settingsViews/GroupSettings'
 import { CrownstoneSettings }  from '../views/settingsViews/CrownstoneSettings'
 import { AppComplexity }       from '../views/settingsViews/AppComplexity'
-import { styles, colors }     from '../views/styles'
-import { CLOUD }     from '../cloud/cloudAPI'
+import { styles, colors }      from '../views/styles'
+import { CLOUD }               from '../cloud/cloudAPI'
+import { reducerCreate }       from './store/reducers/navigation'
 
 var Icon = require('react-native-vector-icons/Ionicons');
 
 const store = createStore(CrownstoneReducer);
 
-let inTabMenu = (state) => {
-  if (state && state.children && state.children.length > 0) {
-    return state.children[0].name = "tabBar";
-  }
-  return false;
-};
 
-let getActiveTabName = (state) => {
-  if (state && state.children && state.children.length > 0) {
-    let tabBar = state.children[0];
-    let tabIndex =  tabBar.index;
-    return tabBar.children[tabIndex].name;
-  }
-  return undefined;
-};
-
-let getTabTreeIndex = (state) => {
-  if (state && state.children && state.children.length > 0) {
-    let tabBar = state.children[0];
-    let tabIndex =  tabBar.index;
-    return tabBar.children[tabIndex].index;
-  }
-  return undefined;
-};
-
-let getTabRootName = (state) => {
-  if (state && state.children && state.children.length > 0) {
-    let tabBar = state.children[0];
-    let tabIndex =  tabBar.index;
-    let tabContainer = tabBar.children[tabIndex];
-    return tabContainer.children[0].name;
-  }
-  return undefined;
-};
-
-const reducerCreate = params=> {
-  const defaultReducer = Reducer(params);
-  return (state, action)=> {
-    // this part makes sure that when a menuIcon is pressed AND you are already in that menu tree,
-    // it goes back to the root of that tree
-    if (action.type === 'jump' && inTabMenu(state)) {
-      let activeTabName = getActiveTabName(state);
-      // We only want to reset if the icon is tapped when we're already in the view
-      if (activeTabName === action.key) {
-        // if we're already at root, do not do anything.
-        if (getTabTreeIndex(state) === 0) {
-          return state;
-        }
-        // snap to root.
-        let rootName = getTabRootName(state);
-        if (rootName) {
-          console.log("ACTION", {key:rootName, type:'reset'});
-          return defaultReducer(state, {key:rootName, type:'reset'});
-        }
-      }
-    }
-    console.log("ACTION", action);
-    return defaultReducer(state, action);
-  }
-};
 
 class TabIcon extends Component {
   render(){
@@ -178,11 +124,13 @@ export class AppRouter extends Component {
           <Scene key="pictureView"            component={PictureView}        hideNavBar={true}  direction="vertical" />
           <Scene key="picturePreview"         component={PicturePreview}     hideNavBar={true}  direction="vertical" />
           <Scene key="cameraRollView"         component={CameraRollView}     hideNavBar={true}  direction="vertical" />
-          <Scene key="setupWelcome"                component={SetupWelcome}       hideNavBar={true} type="reset"  direction="vertical" />
-          <Scene key="setupCreateGroup"            component={SetupCreateGroup}   hideNavBar={true}  />
-          <Scene key="setupAddCrownstone"          component={SetupWelcome}       hideNavBar={true}  />
-          <Scene key="setupAddPluginCrownstone"    component={SetupWelcome}       hideNavBar={true}  />
-          <Scene key="setupAddBuiltinCrownstone"   component={SetupWelcome}       hideNavBar={true}  />
+          <Scene key="setupWelcome"                component={SetupWelcome}  hideNavBar={true} type="reset"  direction="vertical" />
+          <Scene key="setupAddGroup"               component={SetupAddGroup} hideNavBar={true}  />
+          <Scene key="setupAddCrownstoneSelect"    component={SetupAddCrownstoneSelect}  hideNavBar={true}  />
+          <Scene key="setupAddPluginCrownstone"    component={SetupAddPlugInCrownstone}  hideNavBar={true}  />
+          <Scene key="setupAddBuiltinCrownstone"   component={SetupAddPlugInCrownstone}  hideNavBar={true}  />
+          <Scene key="setupAddRoom"             component={SetupAddRoom}    hideNavBar={true}  />
+          <Scene key="setupTrainRoom"           component={SetupTrainRoom}  hideNavBar={true}  />
           <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset">
             <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
               <Scene key="groupOverview"        component={GroupOverview} title="Group Overview"  />
