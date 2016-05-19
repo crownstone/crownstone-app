@@ -76,15 +76,15 @@ export class GroupOverview extends Component {
 
   render() {
     const store = this.props.store;
-    console.log("store", store)
     const state = store.getState();
+    console.log("store", state)
     this.activeGroup = state.app.activeGroup;
     if (state.app.doFirstTimeSetup !== true && state.groups[this.activeGroup] === undefined) {
       return (
         <Background background={require('../images/mainBackground.png')}>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>No groups configured.</Text>
-           </View>
+          </View>
         </Background>
       )
     }
