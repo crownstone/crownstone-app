@@ -11,6 +11,7 @@ export default (state = {}, action = {}) => {
     state = {};
   }
 
+  console.log("INIT",state)
 
   return {
     user: userReducer(state.user, action),

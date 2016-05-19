@@ -74,7 +74,7 @@ export class Processing extends Component {
         <View style={{width: 200, height:120, alignItems:'center', justifyContent:'center'}} >
           <AnimatedLogo />
         </View>
-        {this.state.text ? <Text style={[styles.menuText,{fontWeight:'bold'}]}>{this.state.text}</Text> : undefined}
+        {this.state.text ? <Text style={[styles.menuText,{fontWeight:'bold', paddingLeft:20, paddingRight:20, textAlign:'center'}]}>{this.state.text}</Text> : undefined}
         {this.state.progress !== undefined ? <AnimatedLoadingBar progress={this.state.progress} /> : undefined}
         {this.state.progressText ? <Text style={[styles.menuText,{fontSize:15, fontWeight:'400', fontStyle:'italic'}]}>{this.state.progressText}</Text> : undefined}
       </FadeInView>

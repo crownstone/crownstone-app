@@ -10,6 +10,13 @@ let defaultState = {
 // appReducer
 export default (state = defaultState.app, action = {}) => {
   switch (action.type) {
+    case 'SET_ACTIVE_GROUP':
+      if (action.data) {
+        let newState = {...state};
+        newState.activeGroup = update(action.data.activeGroup, newState.activeGroup);
+        return newState;
+      }
+      return state;
     case 'APP_UPDATE': // append means filling in the data without updating the cloud.
       if (action.data) {
         let newState = {...state};

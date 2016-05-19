@@ -23,9 +23,7 @@ export class AnimatedLoadingBar extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    console.log(nextProps, this.props)
     if (nextProps.progress) {
-      console.log(nextProps.progress, this.progressTarget)
       let innerWidth = this.width - 2 * this.borderWidth;
       if (nextProps.progress !== this.progressTarget) {
         Animated.spring(this.state.progress, {

@@ -12,54 +12,19 @@ import React, {
   Text,
   View
 } from 'react-native';
-import { Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions } from 'react-native-router-flux';
-import { createStore } from 'redux'
-import CrownstoneReducer from './store/reducer'
+import { Scene, Router, Actions } from 'react-native-router-flux';
+import { store }                  from './store/store'
+import { eventBus }               from '../util/eventBus'
+import { logOut }                 from '../util/util'
+import { CLOUD }                  from '../cloud/cloudAPI'
+import { reducerCreate }          from './store/reducers/navigation'
+import { OptionPopup }            from '../views/components/OptionPopup'
+import { Processing }             from '../views/components/Processing'
+import { Background }             from '../views/components/Background'
+import { Views }                  from './Views'
+import { styles, colors }         from '../views/styles'
 
-import { OptionPopup } from '../views/components/OptionPopup'
-import { Processing } from '../views/components/Processing'
-import { eventBus } from '../util/eventBus'
-
-import { LoginSplash }         from '../views/loginViews/LoginSplash'
-import { Login }               from '../views/loginViews/Login'
-import { Register }            from '../views/loginViews/Register'
-import { RegisterConclusion }  from '../views/loginViews/RegisterConclusion'
-import { PictureView }         from '../views/cameraViews/PictureView'
-import { PicturePreview }      from '../views/cameraViews/PicturePreview'
-import { CameraRollView }      from '../views/cameraViews/CameraRollView'
-import { GroupOverview }       from '../views/GroupOverview'
-import { RoomOverview }        from '../views/roomViews/RoomOverview'
-import { RoomEdit }            from '../views/roomViews/RoomEdit'
-import { DeviceEdit }          from '../views/deviceViews/DeviceEdit'
-import { DeviceBehaviourEdit } from '../views/deviceViews/DeviceBehaviourEdit'
-import { DeviceStateEdit }     from '../views/deviceViews/DeviceBehaviourStateEdit'
-import { DelaySelection }      from '../views/deviceViews/DelaySelection'
-import { DeviceScheduleEdit }  from '../views/deviceViews/DeviceScheduleEdit'
-import { DeviceScheduleAdd }   from '../views/deviceViews/DeviceScheduleAdd'
-import { DaySelection }        from '../views/deviceViews/DaySelection'
-import { SetupWelcome }        from '../views/setupViews/SetupWelcome'
-import { SetupAddGroup }       from '../views/setupViews/SetupAddGroup'
-import { SetupAddCrownstoneSelect } from '../views/setupViews/SetupAddCrownstoneSelect'
-import { SetupAddPlugInCrownstone } from '../views/setupViews/SetupAddPlugInCrownstone'
-import { SetupAddRoom }        from '../views/setupViews/SetupAddRoom'
-import { SetupTrainRoom }      from '../views/setupViews/SetupTrainRoom'
-import { SettingsOverview }    from '../views/settingsViews/SettingsOverview'
-import { ProfileSettings }     from '../views/settingsViews/ProfileSettings'
-import { ChangePasswordSettings }  from '../views/settingsViews/ChangePasswordSettings'
-import { ChangeEmailSettings }     from '../views/settingsViews/ChangeEmailSettings'
-import { LocationSettings }    from '../views/settingsViews/LocationSettings'
-import { GroupSettings }       from '../views/settingsViews/GroupSettings'
-import { CrownstoneSettings }  from '../views/settingsViews/CrownstoneSettings'
-import { AppComplexity }       from '../views/settingsViews/AppComplexity'
-import { styles, colors }      from '../views/styles'
-import { CLOUD }               from '../cloud/cloudAPI'
-import { reducerCreate }       from './store/reducers/navigation'
-
-var Icon = require('react-native-vector-icons/Ionicons');
-
-const store = createStore(CrownstoneReducer);
-
-
+import Icon from 'react-native-vector-icons/Ionicons'
 
 class TabIcon extends Component {
   render(){
@@ -105,61 +70,105 @@ let navBarStyle = {
   //renderBackButton:backButtonFunction
 };
 
-
 // configure the CLOUD network handler.
 CLOUD.setNetworkErrorHandler((error) => {
   Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.");
 });
 
 export class AppRouter extends Component {
-  render() {
-    return (
-      <View style={{flex:1}}>
-        <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
-        <Scene key="Root" hideNavBar={false}>
-          <Scene key="loginSplash"            component={LoginSplash}        hideNavBar={true}  type="reset" />
-          <Scene key="login"                  component={Login}              hideNavBar={true}  />
-          <Scene key="register"               component={Register}           hideNavBar={false} title="Register" {...navBarStyle} />
-          <Scene key="registerConclusion"     component={RegisterConclusion} hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
-          <Scene key="pictureView"            component={PictureView}        hideNavBar={true}  direction="vertical" />
-          <Scene key="picturePreview"         component={PicturePreview}     hideNavBar={true}  direction="vertical" />
-          <Scene key="cameraRollView"         component={CameraRollView}     hideNavBar={true}  direction="vertical" />
-          <Scene key="setupWelcome"                component={SetupWelcome}  hideNavBar={true} type="reset"  direction="vertical" />
-          <Scene key="setupAddGroup"               component={SetupAddGroup} hideNavBar={true}  />
-          <Scene key="setupAddCrownstoneSelect"    component={SetupAddCrownstoneSelect}  hideNavBar={true}  />
-          <Scene key="setupAddPluginCrownstone"    component={SetupAddPlugInCrownstone}  hideNavBar={true}  />
-          <Scene key="setupAddBuiltinCrownstone"   component={SetupAddPlugInCrownstone}  hideNavBar={true}  />
-          <Scene key="setupAddRoom"             component={SetupAddRoom}    hideNavBar={true}  />
-          <Scene key="setupTrainRoom"           component={SetupTrainRoom}  hideNavBar={true}  />
-          <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset">
-            <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
-              <Scene key="groupOverview"        component={GroupOverview} title="Group Overview"  />
-              <Scene key="roomOverview"         component={RoomOverview} onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
-              <Scene key="roomEdit"             component={RoomEdit} title="Edit Room" />
-              <Scene key="deviceEdit"           component={DeviceEdit} title="Edit Device" />
-              <Scene key="deviceBehaviourEdit"  component={DeviceBehaviourEdit} title="Edit Behaviour" />
-              <Scene key="deviceStateEdit"      component={DeviceStateEdit} />
-              <Scene key="delaySelection"       component={DelaySelection} title="Set Delay" />
-              <Scene key="deviceScheduleEdit"   component={DeviceScheduleEdit} title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
-              <Scene key="deviceScheduleAdd"    component={DeviceScheduleAdd} title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
-              <Scene key="daySelection"         component={DaySelection} title="Set Active Days" />
-            </Scene>
-            <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" {...navBarStyle} >
-              <Scene key="Settings"               component={SettingsOverview} title="Settings"/>
-              <Scene key="profileSettings"        component={ProfileSettings} title="Your Profile"/>
-              <Scene key="changeEmailSettings"    component={ChangeEmailSettings} title="Change Email"/>
-              <Scene key="changePasswordSettings" component={ChangePasswordSettings} title="Change Password"/>
-              <Scene key="groupSettings"          component={GroupSettings} title="Manage our Group"/>
-              <Scene key="locationSettings"       component={LocationSettings} title="Manage Your Rooms"/>
-              <Scene key="crownstoneSettings"     component={CrownstoneSettings} title="Manage Your Crownstones"/>
-              <Scene key="appComplexity"          component={AppComplexity} title="Settings"/>
-            </Scene>
-          </Scene>
-        </Scene>
-      </Router>
-      <OptionPopup />
-      <Processing />
-    </View>
-    );
+  constructor() {
+    super();
+    this.state = {initialized:false, loggedIn: false};
+    this.unsubscribe = [];
   }
+
+  componentDidMount() {
+    this.unsubscribe.push(eventBus.on('storeInitialized', () => {
+      let state = store.getState();
+
+      if (state.user.accessToken !== undefined) {
+        CLOUD.setAccess(state.user.accessToken);
+        CLOUD.getUserData({background:true})
+          .then((reply) => {
+            console.log("recevied verification", reply)
+          })
+          .catch((reply) => {
+            console.log("recevied ERROR", reply);
+            if (reply.status === 401) {
+              logOut();
+              Alert.alert("Please log in again.", undefined, [{text:'OK'}])
+            }
+        });
+        this.setState({initialized:true, loggedIn:true});
+      }
+      else {
+        this.setState({initialized:true, loggedIn:false});
+      }
+    }));
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe.forEach((callback) => {callback()});
+    this.unsubscribe = [];
+  }
+
+  render() {
+    if (this.state.initialized === true) {
+      return (
+        <View style={{flex:1}}>
+          <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
+            <Scene key="Root" hideNavBar={false}>
+              <Scene key="loginSplash"              component={Views.LoginSplash}          hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
+              <Scene key="login"                    component={Views.Login}                hideNavBar={true}  />
+              <Scene key="register"                 component={Views.Register}             hideNavBar={false} title="Register" {...navBarStyle} />
+              <Scene key="registerConclusion"       component={Views.RegisterConclusion}   hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
+              <Scene key="pictureView"              component={Views.PictureView}          hideNavBar={true}  direction="vertical" />
+              <Scene key="picturePreview"           component={Views.PicturePreview}       hideNavBar={true}  direction="vertical" />
+              <Scene key="cameraRollView"           component={Views.CameraRollView}       hideNavBar={true}  direction="vertical" />
+              <Scene key="setupWelcome"             component={Views.SetupWelcome}         hideNavBar={true} type="reset"  direction="vertical" />
+              <Scene key="setupAddGroup"            component={Views.SetupAddGroup}        hideNavBar={true}  />
+              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true} />
+              <Scene key="setupAddPluginStep1"      component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
+              <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}  hideNavBar={true}  />
+              <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}  hideNavBar={true}  />
+              <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
+              <Scene key="setupAddRoom"             component={Views.SetupAddRoom}         hideNavBar={true}  />
+              <Scene key="setupTrainRoom"           component={Views.SetupTrainRoom}       hideNavBar={true}  />
+              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={this.state.loggedIn}>
+                <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
+                  <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />
+                  <Scene key="roomOverview"           component={Views.RoomOverview}        onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
+                  <Scene key="roomEdit"               component={Views.RoomEdit}            title="Edit Room" />
+                  <Scene key="deviceEdit"             component={Views.DeviceEdit}          title="Edit Device" />
+                  <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit} title="Edit Behaviour" />
+                  <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit} />
+                  <Scene key="delaySelection"         component={Views.DelaySelection}      title="Set Delay" />
+                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}  title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
+                  <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}   title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
+                  <Scene key="daySelection"           component={Views.DaySelection}        title="Set Active Days" />
+                </Scene>
+                <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" {...navBarStyle} >
+                  <Scene key="settingsOverview"       component={Views.SettingsOverview}    title="Settings"/>
+                  <Scene key="settingsProfile"        component={Views.SettingsProfile}     title="Your Profile"/>
+                  <Scene key="settingsChangeEmail"    component={Views.SettingsChangeEmail} title="Change Email"/>
+                  <Scene key="settingsChangePassword" component={Views.SettingsChangePassword} title="Change Password"/>
+                  <Scene key="settingsGroup"          component={Views.SettingsGroups}      title="Manage our Group"/>
+                  <Scene key="settingsRoom"           component={Views.SettingsRooms}       title="Manage Your Rooms"/>
+                  <Scene key="settingsCrownstones"    component={Views.SettingsCrownstones} title="Manage Your Crownstones"/>
+                  <Scene key="appComplexity"          component={Views.AppComplexity}       title="Settings"/>
+                </Scene>
+              </Scene>
+            </Scene>
+          </Router>
+          <OptionPopup />
+          <Processing />
+        </View>
+      );
+    }
+    else {
+      // this is the await store part.
+      return <Background hideInterface={true} background={require('../images/loginBackground.png')} />
+    }
+  }
+
 }

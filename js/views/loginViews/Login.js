@@ -136,8 +136,6 @@ export class Login extends Component {
   }
 
   finalizeLogin(accessToken, userId) {
-    console.log(accessToken, userId)
-
     this.progress = 0;
     this.props.eventBus.emit('showProgress', {progress: 0, progressText:'Getting user data.'});
 

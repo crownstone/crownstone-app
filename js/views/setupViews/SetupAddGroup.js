@@ -32,7 +32,20 @@ export class SetupAddGroup extends Component {
         .then((response) => {
           this.props.eventBus.emit('hideLoading');
           store.dispatch({type:'ADD_GROUP', groupId: response.data.id, data:{name: response.data.name, uuid: response.data.uuid}});
-          Actions.setupAddCrownstoneSelect();
+          // TODO: NATIVE_API.addGroup(response.data.uuid)
+          let state = store.getState();
+          
+          // if there is only one group, set it to be active for the setup phase.
+          if (Object.keys(state.groups).length === 1) {
+            store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup: response.data.id}});
+            Actions.setupAddCrownstoneSelect();
+          }
+          else {
+            // TODO: NATIVE_API.getActiveGroup()
+            // TODO:  .then(.. set group)
+            // TODO:  .catch(.. ask which group)
+          }
+          
         })
     }
     else {

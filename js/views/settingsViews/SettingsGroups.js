@@ -17,7 +17,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 
 
-export class LocationSettings extends Component {
+export class SettingsGroups extends Component {
   _getItems() {
     return [
       {type:'spacer'},

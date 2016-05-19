@@ -16,7 +16,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 
 
-export class ChangeEmailSettings extends Component {
+export class SettingsChangeEmail extends Component {
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
       this.forceUpdate();

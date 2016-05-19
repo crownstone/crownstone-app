@@ -72,6 +72,7 @@ export class TextEditInput extends Component {
         keyboardType={this.props.keyboardType}
         onSubmitEditing={this.props.onSubmitEditing ? () => {this.blur(); this.props.onSubmitEditing();} : () => {this.blur();}}
         onEndEditing={() => {this.blur();}}
+        onBlur={() => {this.blur();}}
       />
     );
   }

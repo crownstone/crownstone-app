@@ -2,6 +2,7 @@
 import React, { Alert } from 'react-native';
 import { request, download } from './cloudCore'
 import { closeLoading } from './cloudUtil'
+import { DEBUG } from '../externalConfig'
 
 
 
@@ -271,7 +272,11 @@ export let CLOUD = {
 
   createLocation: function(locationName) {
     return this._post({endPoint:'Groups/{id}/ownedLocations', data:{name:locationName}, type:'body'});
-  }
+  },
+
+  createStone: function(groupId, MacAddress) {
+    return this._post({endPoint:'/Stones', data:{groupId:locationName, address:MacAddress}, type:'body'});
+  },
 
 };
 
@@ -302,7 +307,7 @@ function _getId(url, obj) {
     return obj._stoneId;
 }
 
-function debugReject(reject, reply) {
+function debugReject(reply, reject) {
   if (DEBUG) {
     console.log("UNHANDLED HTML ERROR IN API:", reply);
   }

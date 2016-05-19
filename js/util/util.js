@@ -1,6 +1,8 @@
 import { Alert } from 'react-native';
 import { DEBUG } from '../externalConfig'
+import { store } from '../router/store/store'
 import RNFS from 'react-native-fs'
+import { Actions } from 'react-native-router-flux';
 
 export const validateEmail = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -26,4 +28,12 @@ export const removeAllFiles = function() {
       })
     })
     .catch(APPERROR)
+};
+
+export const logOut = function() {
+  Actions.loginSplash();
+  store.dispatch({
+    type:'USER_LOG_OUT'
+  });
+  removeAllFiles();
 };

@@ -16,7 +16,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 
 
-export class ChangePasswordSettings extends Component {
+export class SettingsProfile extends Component {
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
       this.forceUpdate();
@@ -32,9 +32,9 @@ export class ChangePasswordSettings extends Component {
     let items = [];
     // room Name:
     items.push({label:'Picture', type: 'picture', value:undefined, callback: () => {}});
+    items.push({label:'Email', type: 'textEdit', value: room.config.name, callback: (newText) => {}});
     items.push({label:'First Name', type: 'textEdit', value: room.config.name, callback: (newText) => {}});
     items.push({label:'Last Name', type: 'textEdit', value: room.config.name, callback: (newText) => {}});
-    items.push({label:'Change Email', type: 'textEdit', value: room.config.name, callback: (newText) => {}});
     items.push({label:'Change Password', type: 'navigation', callback: () => {}});
 
     return items;
