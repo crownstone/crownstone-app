@@ -14,7 +14,7 @@ import { Background } from './../components/Background'
 import { styles, colors } from './../styles'
 import { setupStyle } from './SetupStyles'
 
-let {width, height} = Dimensions.get("window");
+let {width, height} = Dimensions.get('window');
 
 export class SetupWelcome extends Component {
   constructor() {

@@ -211,15 +211,15 @@ export class Register extends Component {
     }
     else {
       if (s1 === 'error')
-        Alert.alert("Invalid Email Address", "Please double check the supplied email address", [{text:'OK'}]);
+        Alert.alert('Invalid Email Address', 'Please double check the supplied email address', [{text:'OK'}]);
       else if (s2 === 'error')
-        Alert.alert("Invalid Password", passwordStateNeutral, [{text:'OK'}]);
+        Alert.alert('Invalid Password', passwordStateNeutral, [{text:'OK'}]);
       else if (s3 === 'error')
-        Alert.alert("Check the Verification Password.", passwordStateConflict, [{text:'OK'}]);
+        Alert.alert('Check the Verification Password.', passwordStateConflict, [{text:'OK'}]);
       else if (s4 === 'error')
-        Alert.alert("You Must Enter a First Name.", 'Without numbers.', [{text:'OK'}]);
+        Alert.alert('You Must Enter a First Name.', 'Without numbers.', [{text:'OK'}]);
       else if (s5 === 'error')
-        Alert.alert("You Must Enter a Last Name.", 'Without numbers.', [{text:'OK'}]);
+        Alert.alert('You Must Enter a Last Name.', 'Without numbers.', [{text:'OK'}]);
       this.setState({
         email: {value: this.state.email.value, state: s1},
         password: {value: this.state.password.value, state: s2},
@@ -243,9 +243,9 @@ export class Register extends Component {
       .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.value.toLowerCase()});})
       .catch((reply) => {
         if (reply.data && reply.data.error && reply.data.error.message) {
-          let message = reply.data.error.message.split("` ");
+          let message = reply.data.error.message.split('` ');
           message = message[message.length - 1];
-          Alert.alert("Registration Error", message, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+          Alert.alert('Registration Error', message, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
         }
         return false;
       })
@@ -265,7 +265,7 @@ export class Register extends Component {
             resolve();
           })
           .catch((err) => {
-            reject("picture resizing error:" + err.message);
+            reject('picture resizing error:' + err.message);
           });
       }
       else {

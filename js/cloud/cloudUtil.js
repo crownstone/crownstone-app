@@ -7,7 +7,7 @@ export function prepareEndpointAndBody(options, id, accessToken, doNotStringify)
 
   // inject the ID into the url if required.
   endPoint = endPoint.replace('{id}', id);
-  if (endPoint.substr(0,1) === "/") {
+  if (endPoint.substr(0,1) === '/') {
     endPoint = endPoint.substr(1,endPoint.length)
   }
 
@@ -45,7 +45,7 @@ function _appendToURL(url, toAppend) {
       }
     }
     else
-      throw new Error("ERROR: cannot append anything except an object to an URL. Received: " + toAppend);
+      throw new Error('ERROR: cannot append anything except an object to an URL. Received: ' + toAppend);
 
     if (url.indexOf('?') === -1)
       url += '?';
@@ -81,8 +81,8 @@ function htmlEscape(str) {
 // I needed the opposite function today, so adding here too:
 function htmlUnescape(value){
   return String(value)
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, ''')
+    .replace(/&#39;/g, ''')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&');

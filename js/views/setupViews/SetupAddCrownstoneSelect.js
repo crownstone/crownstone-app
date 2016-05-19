@@ -18,7 +18,7 @@ import { styles, colors, width, height } from './../styles'
 
 export class SetupAddCrownstoneSelect extends Component {
   skip() {
-    Alert.alert("Are you sure?","You can always add Crownstones later through the settings menu.",
+    Alert.alert('Are you sure?','You can always add Crownstones later through the settings menu.',
       [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}])
   }
 
@@ -30,7 +30,7 @@ export class SetupAddCrownstoneSelect extends Component {
           <Text style={setupStyle.h0}>Add your Crownstone</Text>
           <Text style={setupStyle.text}>What sort of Crownstone would you like to add to the group?</Text>
           <View style={{flex:1}} />
-          <View style={{flexDirection:'row', alignItems:"center"}}>
+          <View style={{flexDirection:'row', alignItems:'center'}}>
             <View style={subStyles.container}>
               <TouchableOpacity style={subStyles.button} onPress={() => {Actions.setupAddBuiltinStep1()}}>
                 <Text>TODO: BUILT IN IMAGE</Text>

@@ -15,8 +15,8 @@ export const getImageFileFromUser = function(email) {
 
 export const APPERROR = function (err) {
   if (DEBUG === true) {
-    console.log("APP ERROR FROM PROMISE:", err);
-    Alert.alert("APP ERROR", err.message);
+    console.log('APP ERROR FROM PROMISE:', err);
+    Alert.alert('APP ERROR', err.message);
   }
 };
 

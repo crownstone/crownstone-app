@@ -34,7 +34,7 @@ export class AnimatedLogo extends Component {
   render() {
     return (
       <Animated.Image
-        source={require("../../../images/crownstoneLogo.png")}
+        source={require('../../../images/crownstoneLogo.png')}
         style={[this.props.style, {width:this.state.size, height:this.state.size}]}
       />
     );

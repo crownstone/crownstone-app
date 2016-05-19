@@ -50,7 +50,7 @@ export let CLOUD = {
   _uploadImage: function(options) {
     var formData = new FormData();
     let path = options.path.substr(0,4) === 'file' ? options.path : 'file://' + options.path;
-    formData.append('image', {type: "image/jpeg", name: options.name, uri: path });
+    formData.append('image', {type: 'image/jpeg', name: options.name, uri: path });
     options.data = formData;
     return request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), this._accessToken, true)
   },
@@ -62,7 +62,7 @@ export let CLOUD = {
       this._networkErrorHandler(error);
     }
     if (DEBUG === true) {
-      console.log(options.background ? "BACKGROUND REQUEST:" : '',"Network Error:", error);
+      console.log(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
     }
   },
 
@@ -129,11 +129,11 @@ export let CLOUD = {
           else {
             if (reply.data && reply.data.error && reply.data.error.code) {
               switch (reply.data.error.code) {
-                case "LOGIN_FAILED_EMAIL_NOT_VERIFIED":
+                case 'LOGIN_FAILED_EMAIL_NOT_VERIFIED':
                   if (options.onUnverified)
                     options.onUnverified();
                   break;
-                case "LOGIN_FAILED":
+                case 'LOGIN_FAILED':
                   if (options.onInvalidCredentials)
                     options.onInvalidCredentials();
                   break;
@@ -252,7 +252,7 @@ export let CLOUD = {
           }
           else {
             reject(reply);
-            Alert.alert("Cannot Send Email", reply.data);
+            Alert.alert('Cannot Send Email', reply.data);
           }
         })
         .catch((error) => {
@@ -309,7 +309,7 @@ function _getId(url, obj) {
 
 function debugReject(reply, reject) {
   if (DEBUG) {
-    console.log("UNHANDLED HTML ERROR IN API:", reply);
+    console.log('UNHANDLED HTML ERROR IN API:', reply);
   }
   reject(reply);
 }

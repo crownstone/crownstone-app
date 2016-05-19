@@ -2,7 +2,7 @@ import { Reducer } from 'react-native-router-flux';
 
 let inTabMenu = (state) => {
   if (state && state.children && state.children.length > 0) {
-    return state.children[0].name = "tabBar";
+    return state.children[0].name = 'tabBar';
   }
   return false;
 };
@@ -51,12 +51,12 @@ export const reducerCreate = params=> {
     //     // snap to root.
     //     let rootName = getTabRootName(state);
     //     if (rootName) {
-    //       console.log("ACTION", {key:rootName, type:'reset'});
+    //       console.log('ACTION', {key:rootName, type:'reset'});
     //       return defaultReducer(state, {key:rootName, type:'reset'});
     //     }
     //   }
     // }
-    console.log("ACTION", action);
+    console.log('ACTION', action);
     return defaultReducer(state, action);
   }
 };

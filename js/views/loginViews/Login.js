@@ -49,7 +49,7 @@ export class Login extends Component {
     CLOUD.requestVerificationEmail({email:this.state.email.toLowerCase()})
       .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});})
       .catch((reply) => {
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+        Alert.alert('Cannot Send Email', reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
       });
   }
 
@@ -58,7 +58,7 @@ export class Login extends Component {
     CLOUD.requestPasswordResetEmail({email:this.state.email.toLowerCase()})
       .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true})})
       .catch((reply) => {
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+        Alert.alert('Cannot Send Email', reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
       });
   }
 

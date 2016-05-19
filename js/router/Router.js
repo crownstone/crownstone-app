@@ -13,7 +13,7 @@ import React, {
   View
 } from 'react-native';
 import { Scene, Router, Actions } from 'react-native-router-flux';
-import { store }                  from './store/store'
+import { store, storeInitialized } from './store/store'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
 import { CLOUD }                  from '../cloud/cloudAPI'
@@ -38,7 +38,7 @@ class TabIcon extends Component {
 }
 
 let backButtonFunction = function(params) {
-  //console.log("here", params, this)
+  //console.log('here', params, this)
   //if (this.props.navigationState.index === 0) {
   //  return null;
   //}
@@ -53,7 +53,7 @@ let backButtonFunction = function(params) {
   //      justifyContent:'center',
   //  }]} onPress={Actions.pop}>
   //      <View style={{flexDirection:'row', alignItems:'center'}}>
-  //        <Icon name="ios-arrow-back" size={25} color={'#ffffff'} style={{marginTop:2,paddingRight:6}} />
+  //        <Icon name='ios-arrow-back' size={25} color={'#ffffff'} style={{marginTop:2,paddingRight:6}} />
   //        <Text style={styles.topBarLeft}>Back</Text>
   //      </View>
   //    </TouchableOpacity>
@@ -72,7 +72,7 @@ let navBarStyle = {
 
 // configure the CLOUD network handler.
 CLOUD.setNetworkErrorHandler((error) => {
-  Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.");
+  Alert.alert('Connection Problem', 'Could not connect to the Cloud. Please check your internet connection.');
 });
 
 export class AppRouter extends Component {
@@ -83,31 +83,43 @@ export class AppRouter extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on('storeInitialized', () => {
+    let dataLoginValidation = () => {
       let state = store.getState();
 
+      // if we have an accessToken, we proceed with logging in automatically
       if (state.user.accessToken !== undefined) {
+
+        // in the background we check if we're authenticated, if not we log out.
         CLOUD.setAccess(state.user.accessToken);
         CLOUD.getUserData({background:true})
           .then((reply) => {
-            console.log("recevied verification", reply)
+            console.log('received verification', reply)
           })
           .catch((reply) => {
-            console.log("recevied ERROR", reply);
+            console.log('received ERROR', reply);
             if (reply.status === 401) {
               logOut();
-              Alert.alert("Please log in again.", undefined, [{text:'OK'}])
+              Alert.alert('Please log in again.', undefined, [{text:'OK'}])
             }
-        });
+          });
+
         this.setState({initialized:true, loggedIn:true});
       }
       else {
         this.setState({initialized:true, loggedIn:false});
       }
-    }));
+    };
+
+
+    // there can be a race condition where the event has already been fired before this module has initialized
+    // This check is to ensure that it doesn't matter what comes first.
+    if (storeInitialized === true)
+      dataLoginValidation();
+    else
+      this.unsubscribe.push(eventBus.on('storeInitialized', dataLoginValidation));
   }
 
-  componentWillUnmount() {
+  componentWillUnmount() { // cleanup
     this.unsubscribe.forEach((callback) => {callback()});
     this.unsubscribe = [];
   }

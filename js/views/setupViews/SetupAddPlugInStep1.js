@@ -31,7 +31,7 @@ export class SetupAddPlugInStep1 extends Component {
           <Text style={setupStyle.information}>TODO: illustration of doing this.</Text>
           <View style={{flex:1}} />
           <TouchableOpacity onPress={() => {
-              Alert.alert("Are you sure?","You can always add Crownstones later through the settings menu.",[{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}])
+              Alert.alert('Are you sure?','You can always add Crownstones later through the settings menu.',[{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}])
           }} style={{position:'absolute', left:20, bottom:30}}>
             <View style={setupStyle.smallButton}><Text style={setupStyle.buttonText}>Cancel</Text></View>
           </TouchableOpacity>

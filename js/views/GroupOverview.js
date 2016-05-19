@@ -37,7 +37,7 @@ export class GroupOverview extends Component {
     let radius = 0.35*0.5*width;
 
     // TODO: get color, get position on screen.
-    //() => this.props.goto("RoomOverview", {locationId, roomIndex})
+    //() => this.props.goto('RoomOverview', {locationId, roomIndex})
     //r:255,g:60,b:0
 
 
@@ -76,7 +76,7 @@ export class GroupOverview extends Component {
 
   render() {
     const store = this.props.store;
-    console.log("store", store)
+    console.log('store', store)
     const state = store.getState();
     this.activeGroup = state.app.activeGroup;
     if (state.app.doFirstTimeSetup !== true && state.groups[this.activeGroup] === undefined) {
