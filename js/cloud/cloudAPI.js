@@ -309,7 +309,7 @@ function _getId(url, obj) {
 
 function debugReject(reply, reject) {
   if (DEBUG) {
-    console.log('UNHANDLED HTML ERROR IN API:', reply);
+    console.log("UNHANDLED HTML ERROR IN API:", reply);
   }
   reject(reply);
 }

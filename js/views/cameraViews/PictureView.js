@@ -60,16 +60,16 @@ export class PictureView extends Component {
 
   getFlashState() {
     if (this.state.camera === Camera.constants.Type.front) {
-      return 'Front camera has no flash'
+      return "Front camera has no flash"
     }
     else if (this.state.flash === Camera.constants.FlashMode.on) {
-      return 'on';
+      return "on";
     }
     else if (this.state.flash === Camera.constants.FlashMode.auto) {
-      return 'auto';
+      return "auto";
     }
     else {
-      return 'off';
+      return "off";
     }
   }
 

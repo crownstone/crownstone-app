@@ -53,7 +53,7 @@ export class SetupAddPlugInStep3 extends Component {
 
   getAddRoomBar() {
     let onSubmitEditing = () => {Alert.alert(
-      'Do you want add a room called \'' + this.state.roomName + '\'?',
+      "Do you want add a room called \'" + this.state.roomName + "\'?",
       'You can rename and remove rooms after the setup phase.',
       [{text:'Cancel', onPress:() => {
         this.setState({roomName:''});
@@ -65,7 +65,7 @@ export class SetupAddPlugInStep3 extends Component {
         <View style={setupStyle.roomBarInner}>
           {
             this.state.roomName.length === 0 ?
-              <Icon name='ios-plus-outline' size={30} color='white' style={{position:'relative', top:2}}/> :
+              <Icon name="ios-plus-outline" size={30} color="white" style={{position:'relative', top:2}}/> :
               <View style={{height:30}} />
           }
           <TextEditInput
@@ -82,10 +82,10 @@ export class SetupAddPlugInStep3 extends Component {
               this.state.roomName.length > 1 ?
                 (
                   <TouchableOpacity onPress={onSubmitEditing}>
-                    <Icon name='ios-plus' size={30} color={colors.green.h} style={{position:'relative', top:2}}/>
+                    <Icon name="ios-plus" size={30} color={colors.green.h} style={{position:'relative', top:2}}/>
                   </TouchableOpacity>
                 ) :
-                <Icon name='ios-plus-outline' size={30} color='white' style={{position:'relative', top:2}}/> :
+                <Icon name="ios-plus-outline" size={30} color="white" style={{position:'relative', top:2}}/> :
               undefined
           }
 
@@ -108,7 +108,7 @@ export class SetupAddPlugInStep3 extends Component {
       roomElements.push(
         <TouchableOpacity key={'roomBar_'+id} style={setupStyle.roomBar} onPress={() => {this.setState({selectedRoom:id, roomName:''})}}>
           <View style={setupStyle.roomBarInner}>
-            {this.state.selectedRoom === id ? <Icon name='ios-checkmark' size={30} color={colors.green.h} style={{position:'relative', top:2}} /> : undefined}
+            {this.state.selectedRoom === id ? <Icon name="ios-checkmark" size={30} color={colors.green.h} style={{position:'relative', top:2}} /> : undefined}
             <Text style={[setupStyle.information, {paddingLeft: this.state.selectedRoom === id ? 10 : 0}]}>{room.config.name}</Text>
           </View>
         </TouchableOpacity>
@@ -144,8 +144,8 @@ export class SetupAddPlugInStep3 extends Component {
           <View style={{flex:1}} />
           <TouchableOpacity onPress={() => {
             Alert.alert(
-             'Are you sure?','You can always put Crownstones in rooms later through the Crownstone settings. ' +
-             'Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Group.',
+             "Are you sure?","You can always put Crownstones in rooms later through the Crownstone settings. " +
+             "Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Group.",
              [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}]
             );
           }} style={{position:'absolute', left:20, bottom:30}}>
@@ -153,8 +153,8 @@ export class SetupAddPlugInStep3 extends Component {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             Alert.alert(
-              'Are you sure this Crownstone is not tied to a room?',
-              'Crownstones that are not in a room cannot be used for localization.',
+              "Are you sure this Crownstone is not tied to a room?",
+              "Crownstones that are not in a room cannot be used for localization.",
               [{text:'Cancel'}, {text:'OK'}]
             );
           }} style={{position:'absolute', right:20, bottom:30}}>

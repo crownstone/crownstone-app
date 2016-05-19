@@ -58,7 +58,7 @@ export class DeviceEntry extends Component {
             <Text style={{fontSize:12}}>{this.props.currentUsage + ' W'}</Text>
           </View>
         </View>
-        {this.props.navigation === true ? <Icon name='ios-arrow-right' size={23} color={'#bababa'} /> : undefined}
+        {this.props.navigation === true ? <Icon name="ios-arrow-right" size={23} color={'#bababa'} /> : undefined}
         {this.props.control    === true ? this._getControl() : undefined}
       </View>
     );

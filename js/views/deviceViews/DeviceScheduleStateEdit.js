@@ -35,7 +35,7 @@ export class DeviceScheduleStateEdit extends Component {
     //// behaviour explanation
     //if (device.config.dimmable === true) {
     //  //TODO: DIMMING CONTROL IS BROKEN, could be fixed by passing panHandlers in RN 0.23?
-    //  items.push({label:'State', value: currentBehaviour.state, type: 'slider', callback:(newValue) => {
+    //  items.push({label:"State", value: currentBehaviour.state, type: 'slider', callback:(newValue) => {
     //    store.dispatch({
     //      ...requiredData,
     //      type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
@@ -45,7 +45,7 @@ export class DeviceScheduleStateEdit extends Component {
     //  items.push({label: 'When you ' + this._getExplanationLabel() + ', the light is dimmed to the level you specify here.', type: 'explanation', below: true});
     //}
     //else {
-    //  items.push({label:'State', value: currentBehaviour.state === 1, type: 'switch', callback:(newValue) => {
+    //  items.push({label:"State", value: currentBehaviour.state === 1, type: 'switch', callback:(newValue) => {
     //    store.dispatch({
     //      ...requiredData,
     //      type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
@@ -56,7 +56,7 @@ export class DeviceScheduleStateEdit extends Component {
     //}
     //
     //
-    //items.push({label:'Fading', value: this._getDelayLabel(currentBehaviour), valueStyle:styles.rightNavigationValue, type: 'navigation',  callback:() => {
+    //items.push({label:"Fading", value: this._getDelayLabel(currentBehaviour), valueStyle:styles.rightNavigationValue, type: 'navigation',  callback:() => {
     //  Actions.delaySelection({
     //    ...requiredData,
     //    extractionMethod: (device) => {return device.behaviour[this.props.eventName].delay;},

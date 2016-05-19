@@ -64,7 +64,7 @@ export class DeviceStateEdit extends Component {
       case 0:
         return 'None';
       case 60:
-        return '1 Minute';
+        return "1 Minute";
       default:
         return Math.floor(currentBehaviour.delay/60) + ' Minutes';
     }
@@ -76,7 +76,7 @@ export class DeviceStateEdit extends Component {
     let items = [];
 
     // behaviour explanation
-    items.push({label:'Device Responds', value: currentBehaviour.active, type: 'switch', callback:(newValue) => {
+    items.push({label:"Device Responds", value: currentBehaviour.active, type: 'switch', callback:(newValue) => {
       store.dispatch({
         ...requiredData,
         type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
@@ -99,11 +99,11 @@ export class DeviceStateEdit extends Component {
     let currentBehaviour = device.behaviour[this.props.eventName];
     let items = [];
 
-    items.push({label: 'NEW STATE', type: 'explanation', below: false});
+    items.push({label: "NEW STATE", type: 'explanation', below: false});
     // Dimming control
     if (device.config.dimmable === true) {
       //TODO: DIMMING CONTROL IS BROKEN, could be fixed by passing panHandlers in RN 0.23?
-      items.push({label:'State', value: currentBehaviour.state, type: 'slider', callback:(newValue) => {
+      items.push({label:"State", value: currentBehaviour.state, type: 'slider', callback:(newValue) => {
         store.dispatch({
           ...requiredData,
           type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
@@ -113,7 +113,7 @@ export class DeviceStateEdit extends Component {
       items.push({label: 'When you ' + this._getExplanationLabel() + ', the light is dimmed to the level you specify here.', type: 'explanation', below: true});
     }
     else {
-      items.push({label:'State', value: currentBehaviour.state === 1, type: 'switch', callback:(newValue) => {
+      items.push({label:"State", value: currentBehaviour.state === 1, type: 'switch', callback:(newValue) => {
         store.dispatch({
           ...requiredData,
           type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
@@ -123,7 +123,7 @@ export class DeviceStateEdit extends Component {
       items.push({label:'The device will switched to match the state when you ' + this._getExplanationLabel() + '.', type: 'explanation', below: true});
     }
 
-    items.push({label:'Delay', value: this._getDelayLabel(currentBehaviour), valueStyle:styles.rightNavigationValue, type: 'navigation',  callback:() => {
+    items.push({label:"Delay", value: this._getDelayLabel(currentBehaviour), valueStyle:styles.rightNavigationValue, type: 'navigation',  callback:() => {
       Actions.delaySelection({
         ...requiredData,
         extractionMethod: (device) => {return device.behaviour[this.props.eventName].delay;},

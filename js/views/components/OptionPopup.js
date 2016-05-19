@@ -41,7 +41,7 @@ export class OptionPopup extends Component {
     let buttons = [];
     this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableHighlight style={styles.joinedButtons} onPress={() => {eventBus.emit('hidePopup'); button.callback();}} key={'option_button_' + index}>
+        <TouchableHighlight style={styles.joinedButtons} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
           <Text style={styles.buttonText}>{button.text}</Text>
         </TouchableHighlight>
       );
@@ -70,7 +70,7 @@ export class OptionPopup extends Component {
           height={180}
           visible={this.state.visible}>
           {this.getChildren()}
-          <TouchableHighlight style={styles.button} onPress={() => {eventBus.emit('hidePopup');}}><Text
+          <TouchableHighlight style={styles.button} onPress={() => {eventBus.emit("hidePopup");}}><Text
             style={[styles.buttonText, {fontWeight:'bold'}]}>Cancel</Text></TouchableHighlight>
         </SlideInFromBottomView>
       </FadeInView>

@@ -55,7 +55,7 @@ export function request(
   };
 
   if (DEBUG)
-    console.log(method,'requesting from URL:', CLOUD_ADDRESS + endPoint, body);
+    console.log(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, body);
 
   // the actual request
   return new Promise((resolve, reject) => {
@@ -90,7 +90,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
     let tempPath = RNFS.DocumentDirectoryPath + '/' + (10000 + Math.random() * 1e6).toString(36);
 
     if (DEBUG)
-      console.log('download','requesting from URL:', CLOUD_ADDRESS + endPoint, tempPath);
+      console.log('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
 
     // download the file.
     RNFS.downloadFile(CLOUD_ADDRESS + endPoint, tempPath, beginCallback, progressCallback)

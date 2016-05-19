@@ -81,8 +81,8 @@ function htmlEscape(str) {
 // I needed the opposite function today, so adding here too:
 function htmlUnescape(value){
   return String(value)
-    .replace(/&quot;/g, ''')
-    .replace(/&#39;/g, ''')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&');

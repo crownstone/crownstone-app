@@ -32,7 +32,7 @@ export class TimePicker extends Component {
           <View style={{flex:1, backgroundColor:'#fff', alignItems:'center', justifyContent:'center'}} >
             <DatePickerIOS
               date={this.props.value}
-              mode='time'
+              mode="time"
               timeZoneOffsetInMinutes={0}
               onDateChange={this.props.callback}
               minuteInterval={10}

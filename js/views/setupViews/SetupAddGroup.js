@@ -49,7 +49,7 @@ export class SetupAddGroup extends Component {
         })
     }
     else {
-      Alert.alert('Please provide a valid Group name.', 'At least 3 characters', [{type:'OK'}])
+      Alert.alert("Please provide a valid Group name.", "At least 3 characters", [{type:'OK'}])
     }
   }
 
@@ -59,7 +59,7 @@ export class SetupAddGroup extends Component {
         <View style={styles.shadedStatusBar} />
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={setupStyle.h0}>Group Setup</Text>
-          <Text style={setupStyle.text}>A Group is a place like 'Home', or 'Office' where you use your Crownstones.</Text>
+          <Text style={setupStyle.text}>A Group is a place like "Home", or "Office" where you use your Crownstones.</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.information}>You can invite other people to join this group so they can use your Crownstones too.</Text>
           <View style={setupStyle.lineDistance} />

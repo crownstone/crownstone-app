@@ -12,7 +12,7 @@ let writeTimeout = null;
 
 AsyncStorage.getItem(STORAGE_KEY)
   .then((data) => {
-    console.log('DATA FROM STORAGE', data);
+    console.log("DATA FROM STORAGE", data);
 
     if (data === null) {
       store = createStore(CrownstoneReducer);

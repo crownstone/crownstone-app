@@ -50,12 +50,12 @@ export class TextEditInput extends Component {
 
   focus() {
     this.refs[this.refName].measure((fx, fy, width, height, px, py) => {
-      eventBus.emit('focus', py);
+      eventBus.emit("focus", py);
     })
   }
 
   blur() {
-    eventBus.emit('blur');
+    eventBus.emit("blur");
   }
 
   render() {
