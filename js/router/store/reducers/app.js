@@ -17,7 +17,7 @@ export default (state = defaultState.app, action = {}) => {
         return newState;
       }
       return state;
-    case 'APP_UPDATE': // append means filling in the data without updating the cloud.
+    case 'UPDATE_APP_STATE':
       if (action.data) {
         let newState = {...state};
         newState.activeGroup       = update(action.data.activeGroup, newState.activeGroup);

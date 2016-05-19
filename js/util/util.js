@@ -24,7 +24,13 @@ export const removeAllFiles = function() {
   RNFS.readDir(RNFS.DocumentDirectoryPath)
     .then((result) => {
       result.forEach((file) => {
-        RNFS.unlink(file.path);
+        // we only want to remove files, not folders
+        // removing folders breaks the async storage.
+        RNFS.stat(file.path).then((fileData) => {
+          if (fileData.isDirectory() !== true) {
+            RNFS.unlink(file.path);
+          }
+        })
       })
     })
     .catch(APPERROR)

@@ -77,19 +77,34 @@ export class GroupOverview extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    console.log("store", state)
-    this.activeGroup = state.app.activeGroup;
-    if (state.app.doFirstTimeSetup !== true && state.groups[this.activeGroup] === undefined) {
+
+    if (state.app.activeGroup === undefined) {
+      store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup:Object.keys(state.groups)[0]}})
+    }
+    
+    if (state.app.activeGroup === undefined) {
       return (
         <Background background={require('../images/mainBackground.png')}>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>No groups configured.</Text>
+            <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>Trying to detect Group...</Text>
           </View>
         </Background>
-      )
+      );
     }
     else {
-      const rooms = []; //state.groups[this.activeGroup].locations;
+      this.activeGroup = state.app.activeGroup;
+      console.log(state.groups, this.activeGroup)
+      const rooms = state.groups[this.activeGroup].locations;
+      if (Object.keys(rooms).length === 0) {
+        return (
+          <Background background={require('../images/mainBackground.png')}>
+            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+              <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>No rooms defined yet.</Text>
+              <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>Tap here to add them!</Text>
+            </View>
+          </Background>
+        );
+      }
       return (
         <Background background={require('../images/mainBackground.png')}>{this._getRooms(rooms)}</Background>
       )

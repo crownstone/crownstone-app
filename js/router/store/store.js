@@ -30,7 +30,9 @@ AsyncStorage.getItem(STORAGE_KEY)
       }
       writeTimeout = setTimeout(() => {
         writeTimeout = null;
-        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(store.getState())).done();
+        let payload = JSON.stringify(store.getState());
+        console.log("WRITING: ", payload);
+        AsyncStorage.setItem(STORAGE_KEY, payload).done();
       },500);
     });
 

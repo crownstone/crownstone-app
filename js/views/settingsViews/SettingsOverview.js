@@ -38,7 +38,7 @@ export class SettingsOverview extends Component {
   _logoutPopup() {
     Alert.alert('Log out','Are you sure?',[
       {text: 'Cancel', style: 'cancel'},
-      {text: 'OK', onPress: () => logout()},
+      {text: 'OK', onPress: () => logOut()},
     ])
   }
 

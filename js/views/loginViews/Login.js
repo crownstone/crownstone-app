@@ -212,6 +212,8 @@ export class Login extends Component {
 
     Promise.all([userData, picture, groupUpdate]).then(() => {
       this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
+
+      // small delay so the user sees "done"
       setTimeout(() => {
         this.props.eventBus.emit('hideProgress');
 
@@ -222,7 +224,7 @@ export class Login extends Component {
         }
         else {
           if (state.app.doFirstTimeSetup === true) {
-            store.dispatch({type:'AP_UPDATE', data: {doFirstTimeSetup: false}})
+            store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}})
           }
           Actions.tabBar();
         }
