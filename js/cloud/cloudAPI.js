@@ -2,7 +2,7 @@
 import React, { Alert } from 'react-native';
 import { request, download } from './cloudCore'
 import { closeLoading } from './cloudUtil'
-import { DEBUG } from '../externalConfig'
+import { DEBUG } from '../ExternalConfig'
 
 
 

@@ -1,5 +1,5 @@
 import { eventBus } from '../util/eventBus'
-import { DEBUG } from '../externalConfig'
+import { DEBUG } from '../ExternalConfig'
 import { Alert } from 'react-native'
 
 export function prepareEndpointAndBody(options, id, accessToken, doNotStringify) {

@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { DEBUG } from '../externalConfig'
+import { DEBUG } from '../ExternalConfig'
 import { store } from '../router/store/store'
 import RNFS from 'react-native-fs'
 import { Actions } from 'react-native-router-flux';

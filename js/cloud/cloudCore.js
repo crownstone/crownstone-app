@@ -1,5 +1,5 @@
 import { Alert } from 'react-native'
-import { CLOUD_ADDRESS, DEBUG } from '../externalConfig'
+import { CLOUD_ADDRESS, DEBUG } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
 

@@ -1,4 +1,4 @@
-import { DEBUG } from '../externalConfig'
+import { DEBUG } from '../ExternalConfig'
 
 
 export class EventBus {
