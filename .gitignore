@@ -2,6 +2,7 @@
 node_modules/
 photoshop/
 npm-debug.log
-./ios/build
-./android/build
-./android/app/build
+ios/build
+android/build
+android/app/build
+android/
