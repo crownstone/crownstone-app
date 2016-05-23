@@ -6,7 +6,12 @@ let defaultSettings = {
     name: undefined,
     deviceName: undefined,
     icon: undefined,
-    dimmable: false
+    dimmable: false,
+    locationId: undefined,
+    macAddress: undefined,
+    iBeaconMajor: undefined,
+    iBeaconMinor: undefined,
+    initializedSuccessfully: false,
   },
   state: {
     state: 1.0,
@@ -50,6 +55,9 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.name     = update(action.data.name,     newState.name);
         newState.icon     = update(action.data.icon,     newState.icon);
         newState.dimmable = update(action.data.dimmable, newState.dimmable);
+        newState.locationId = update(action.data.locationId, newState.locationId);
+        newState.macAddress = update(action.data.macAddress, newState.macAddress);
+        newState.initializedSuccessfully = update(action.data.initializedSuccessfully, newState.initializedSuccessfully);
         return newState;
       }
       return state;

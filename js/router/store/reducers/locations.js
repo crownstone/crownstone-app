@@ -56,8 +56,7 @@ let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
 let combinedLocationReducer = combineReducers({
   config:       locationConfigReducer,
   presentUsers: userPresenceReducer,
-  picture:      pictureLocationReducer,
-  stones:       stonesReducer
+  picture:      pictureLocationReducer
 });
 
 

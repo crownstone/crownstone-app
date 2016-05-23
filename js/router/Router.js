@@ -139,7 +139,7 @@ export class AppRouter extends Component {
               <Scene key="cameraRollView"           component={Views.CameraRollView}       hideNavBar={true}  direction="vertical" />
               <Scene key="setupWelcome"             component={Views.SetupWelcome}         hideNavBar={true} type="reset"  direction="vertical" />
               <Scene key="setupAddGroup"            component={Views.SetupAddGroup}        hideNavBar={true}  />
-              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true} />
+              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true} type="reset" />
               <Scene key="setupAddPluginStep1"      component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
               <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}  hideNavBar={true}  />
               <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}  hideNavBar={true}  />

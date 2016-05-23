@@ -1,7 +1,7 @@
 import { DEBUG } from '../externalConfig'
 
 
-class EventBus {
+export class EventBus {
   constructor() {
     this.topics = {};
   }

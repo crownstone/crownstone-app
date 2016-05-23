@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux'
 import locationsReducer from './locations'
+import stonesReducer from './stones'
 import { update } from './util'
 
 let defaultSettings = {
   config: {
     name: undefined,
-    uuid: undefined,
+    uuid: undefined, // ibeacon uuid
     ownerKey: null,
     userKey: null,
     guestKey: null,
@@ -83,7 +84,8 @@ let combinedGroupReducer = combineReducers({
   config:    groupConfigReducer,
   members:   membersReducer,
   presets:   presetsReducer,
-  locations: locationsReducer
+  locations: locationsReducer,
+  stones:    stonesReducer
 });
 
 // groupsReducer

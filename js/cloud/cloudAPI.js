@@ -278,6 +278,10 @@ export let CLOUD = {
     return this._post({endPoint:'/Stones', data:{groupId:locationName, address:MacAddress}, type:'body'});
   },
 
+  deleteStone: function() {
+    return this._delete({endPoint:'/Stones/{id}', data:{}, type:'body'});
+  },
+
 };
 
 
