@@ -36,7 +36,7 @@ export class PictureCircle extends Component {
             borderColor: '#ffffff',
             borderWidth: 2
           }, styles.centered]}>
-            <Icon name={'android-remove'} size={13} color={'#ffffff'} />
+            <Icon name={'ios-remove'} size={13} color={'#ffffff'} />
           </View>
       </View>
     );

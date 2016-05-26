@@ -19,8 +19,8 @@ export class TextEditBar extends Component {
           <TextEditInput
             {...this.props}
           />
-          {this.props.state === 'error' ? <Icon name="ios-close" size={18} color={'#f03333'} style={{paddingLeft:3}} /> : undefined}
-          {this.props.state === 'valid' ? <Icon name="ios-checkmark" size={18} color={colors.green.h} style={{paddingLeft:3}} /> : undefined}
+          {this.props.state === 'error' ? <Icon name="ios-close-circle" size={18} color={'#f03333'} style={{paddingLeft:3}} /> : undefined}
+          {this.props.state === 'valid' ? <Icon name="ios-checkmark-circle" size={18} color={colors.green.h} style={{paddingLeft:3}} /> : undefined}
         </View>
       </View>
     );

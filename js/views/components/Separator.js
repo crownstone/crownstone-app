@@ -12,10 +12,10 @@ export class Separator extends Component {
   render() {
     let width = Dimensions.get('window').width;
     if (this.props.fullLength === true)
-      return <View style={styles.separator} key={this.props.key}/>
+      return <View style={styles.separator} />
     else {
       return (
-        <View style={{backgroundColor:'#ffffff'}} key={this.props.key}>
+        <View style={{backgroundColor:'#ffffff'}}>
           <View style={[styles.separator, {width:width-15, alignSelf:'flex-end'}]}/>
         </View>
       );

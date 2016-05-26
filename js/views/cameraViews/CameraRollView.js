@@ -1,6 +1,5 @@
 import React, { Component } from 'react' 
 import {
-  
   CameraRoll,
   Image,
   Dimensions,
@@ -36,7 +35,7 @@ export class CameraRollView extends Component {
       if (this.pictureIndex !== undefined) {
         query.after = this.pictureIndex;
       }
-
+      
       CameraRoll.getPhotos(query).then((data) => {
         this.pictureIndex = data.page_info.end_cursor;
         if (data.page_info.has_next_page === true) {

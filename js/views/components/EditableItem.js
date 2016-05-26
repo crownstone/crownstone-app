@@ -19,6 +19,7 @@ import { SwitchBar }      from './editComponents/SwitchBar'
 import { TextEditBar }    from './editComponents/TextEditBar'
 import { TimePicker }     from './editComponents/TimePicker'
 
+import { styles } from '../styles'
 
 /**
  *

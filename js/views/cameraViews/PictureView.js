@@ -91,7 +91,7 @@ export class PictureView extends Component {
           <TouchableOpacity onPress={this.toggleFlash.bind(this)} style={{position:'absolute',top:20,left:20}}>
             <View style={{flexDirection:'row', alignItems:'center'}}>
             <View style={cameraStyle.button}>
-              <Icon name={'ios-bolt'} size={38} color={'white'} style={cameraStyle.buttonIcon}/>
+              <Icon name={'ios-flash'} size={38} color={'white'} style={cameraStyle.buttonIcon}/>
             </View>
             <Text style={{backgroundColor:'transparent', padding:4, color:'#ffff00'}}>{this.getFlashState()}</Text>
             </View>

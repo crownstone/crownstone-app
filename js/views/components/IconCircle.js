@@ -39,7 +39,7 @@ export class IconCircle extends Component {
             borderColor: '#ffffff',
             borderWidth: 2
           }, styles.centered]}>
-            <Icon name={'android-create'} size={13} color={'#ffffff'} />
+            <Icon name={'md-create'} size={13} color={'#ffffff'} />
           </View> : undefined}
         {this.props.showAdd === true ?
           <View style={[{
@@ -52,7 +52,7 @@ export class IconCircle extends Component {
             borderColor: '#ffffff',
             borderWidth: 2
           }, styles.centered]}>
-            <Icon name={'android-add'} size={13} color={'#ffffff'} />
+            <Icon name={'md-add'} size={13} color={'#ffffff'} />
           </View> : undefined}
       </View>
     );
