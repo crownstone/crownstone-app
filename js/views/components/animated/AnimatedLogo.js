@@ -1,7 +1,8 @@
-import React, {
+import React, { Component } from 'react' 
+import {
   Animated,
   Image,
-  Component,
+  
 } from 'react-native';
 
 export class AnimatedLogo extends Component {

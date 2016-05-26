@@ -1,5 +1,6 @@
 'use strict'
-import React, { Alert } from 'react-native';
+import React, { Component } from 'react'
+import { Alert } from 'react-native';
 import { request, download } from './cloudCore'
 import { closeLoading } from './cloudUtil'
 import { DEBUG } from '../ExternalConfig'

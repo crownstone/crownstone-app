@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import locationsReducer from './locations'
 import stonesReducer from './stones'
+import appliancesReducer from './appliances'
 import { update } from './util'
 
 let defaultSettings = {
@@ -85,7 +86,8 @@ let combinedGroupReducer = combineReducers({
   members:   membersReducer,
   presets:   presetsReducer,
   locations: locationsReducer,
-  stones:    stonesReducer
+  stones:    stonesReducer,
+  appliances: appliancesReducer
 });
 
 // groupsReducer

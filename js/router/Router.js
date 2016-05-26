@@ -1,8 +1,9 @@
-import React, {
+import React, { Component } from 'react'
+import {
   Alert,
   AppRegistry,
   Navigator,
-  Component,
+  
   Dimensions,
   Image,
   PixelRatio,

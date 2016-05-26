@@ -1,5 +1,6 @@
-import React, {
-  Component,
+import React, { Component } from 'react' 
+import {
+  
   PixelRatio,
   View
 } from 'react-native';

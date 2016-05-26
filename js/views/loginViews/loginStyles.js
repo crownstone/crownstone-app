@@ -1,4 +1,5 @@
-import React, { Dimensions, PixelRatio, StyleSheet } from 'react-native'
+import React, { Component } from 'react'
+import { Dimensions, PixelRatio, StyleSheet } from 'react-native'
 
 let { width, height } = Dimensions.get('window');
 

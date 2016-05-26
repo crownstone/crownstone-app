@@ -1,6 +1,7 @@
-import React, {
-Animated,
-  Component,
+import React, { Component } from 'react'
+import {
+  Animated,
+  
   Dimensions,
   StyleSheet,
   TouchableOpacity,

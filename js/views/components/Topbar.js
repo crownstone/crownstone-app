@@ -1,5 +1,6 @@
-import React, {
-  Component,
+import React, { Component } from 'react'
+import {
+  
   PixelRatio,
   StyleSheet,
   TouchableHighlight,
@@ -19,7 +20,7 @@ export class TopBar extends Component {
       return (
         <TouchableOpacity onPress={() => {this.props.leftAction();}}>
           <View style={{flexDirection:'row', alignItems:'center', flex:0}}>
-            <Icon name="ios-arrow-left" size={23} color={colors.menuText.h} style={{paddingRight:6, marginTop:2}} />
+            <Icon name="ios-arrow-back" size={23} color={colors.menuText.h} style={{paddingRight:6, marginTop:2}} />
             <Text style={[topBarStyle.topBarLeft,styles.menuText]}>{this.props.left}</Text>
           </View>
         </TouchableOpacity>

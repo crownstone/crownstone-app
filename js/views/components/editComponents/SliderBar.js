@@ -1,10 +1,10 @@
-import React, {
-  Component,
+import React, { Component } from 'react'
+import {
   Text,
   View
 } from 'react-native';
 
-import Slider               from 'react-native-slider'
+import Slider from 'react-native-slider'
 import { styles, colors } from '../../styles'
 
 

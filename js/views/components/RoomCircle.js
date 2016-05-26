@@ -1,5 +1,6 @@
-import React, {
-  Component,
+import React, { Component } from 'react' 
+import {
+  
   Dimensions,
   Image,
   NativeModules,
@@ -11,73 +12,7 @@ import React, {
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 import { styles, colors} from '../styles'
 
-
-const GL = require('gl-react');
-const { Surface } = require('gl-react-native'); // in React Native context
 const Ionicon = require('react-native-vector-icons/Ionicons');
-
-const shaders = GL.Shaders.create({
-  imageHueBlend: {
-    frag: `
-precision highp float;
-varying vec2 uv;
-uniform sampler2D image;
-uniform float blendFactor;
-uniform float r;
-uniform float g;
-uniform float b;
-uniform float inputW;
-uniform float inputH;
-
-void main () {
-  // determine how much to shift the image
-  float ratio = inputH/inputW;
-  float shift = 0.5*(inputW/inputH - 1.0);
-
-  // get the texture
-  vec2 transformedUV = uv*vec2(ratio,1.0)+vec2(shift,0.0);
-  vec4 c = texture2D(image, transformedUV);
-
-  // Grayscale transformation based on HSL
-  const vec3 W = vec3(0.2125, 0.7154, 0.0721);
-
-  // background color
-  vec3 color = vec3(r,g,b);
-
-  // transform color to grayscale.
-  vec3 gray = vec3(dot(c.rgb, W));
-
-  // multiply and mix with background
-  vec3 res = mix(gray * color, color, blendFactor);
-
-  // transformation operation.
-  gl_FragColor = vec4(res,c.a);
-}
-    `
-  },
-  circleCrop: {
-    frag: `
-precision highp float;
-varying vec2 uv;
-uniform sampler2D t;
-void main () {
-  gl_FragColor = mix(
-    texture2D(t, uv),
-    vec4(0.0),
-    step(0.5, distance(uv, vec2(0.5))));
-}`
-  }
-});
-
-const ImageHueBlend = GL.createComponent(
-  ({ r, g, b, blendFactor, image }) =>
-    <GL.Node shader={shaders.imageHueBlend} uniforms={{ r, g, b, blendFactor, image, inputW:image.width, inputH:image.height }} />
-);
-
-const CircleCrop = GL.createComponent(
-  ({ children: t }) => <GL.Node shader={shaders.circleCrop} uniforms={{ t }} />
-);
-
 
 export class RoomCircle extends Component {
   constructor() {

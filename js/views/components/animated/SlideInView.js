@@ -1,6 +1,7 @@
-import React, {
+import React, { Component } from 'react' 
+import {
   Animated,
-  Component,
+  
 } from 'react-native';
 
 export class SlideInView extends Component {

@@ -1,6 +1,6 @@
-import React, {
+import React, { Component } from 'react'
+import {
   Animated,
-  Component,
   View
 } from 'react-native';
 

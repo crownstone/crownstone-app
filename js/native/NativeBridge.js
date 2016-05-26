@@ -64,8 +64,7 @@ class NativeBridgeClass {
   getStonesInDFU() {}
   
   connect(id) {return new Promise((resolve, reject) => {
-    this.connectedTo = id;
-    resolve()
+    this.connectedTo = id;    resolve()
   });}
 
   

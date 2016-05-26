@@ -1,6 +1,7 @@
-import React, {
+import React, { Component } from 'react' 
+import {
   Alert,
-  Component,
+  
   Image,
   StyleSheet,
   TouchableHighlight,

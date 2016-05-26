@@ -1,8 +1,8 @@
 'use strict';
-import React, {
+import React, { Component } from 'react'
+import {
   Animated,
   AppRegistry,
-  Component,
   StatusBar,
   View
 } from 'react-native';
@@ -20,12 +20,13 @@ class Root extends Component {
     this.unsubscribe = [];
   }
 
+  // this is used to scroll the view up when typing is active
   componentDidMount() {
     SplashScreen.hide();
 
     let snapBack = () => {
       Animated.timing(this.state.top, {toValue: 0, duration:0}).start();
-    }
+    };
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
       let keyboardHeight = 340;
