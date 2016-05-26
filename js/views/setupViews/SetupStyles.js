@@ -13,7 +13,7 @@ else
 
 export const setupStyle = StyleSheet.create({
   lineDistance: {
-    height:20
+    height:19
   },
   h0:{
     padding: 20,

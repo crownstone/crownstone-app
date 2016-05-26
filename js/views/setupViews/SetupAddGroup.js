@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
   Alert,
-  
   Image,
   StyleSheet,
   TouchableHighlight,
@@ -17,7 +16,7 @@ import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
 import { setupStyle } from './SetupStyles'
 import { styles, colors, width, height } from './../styles'
-
+var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SetupAddGroup extends Component {
   constructor() {
@@ -49,11 +48,11 @@ export class SetupAddGroup extends Component {
           
         })
         .catch((err) => {
-          console.log(err)
+          console.log("error in creating group:", err)
         })
     }
     else {
-      Alert.alert("Please provide a valid Group name.", "At least 3 characters", [{type:'OK'}])
+      Alert.alert("Please provide a valid Group name.", "It must be at least 3 characters long.", [{type:'OK'}])
     }
   }
 
@@ -70,16 +69,19 @@ export class SetupAddGroup extends Component {
           <Text style={setupStyle.information}>You can use permission levels to determine how much control invited people have in your Group.</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.information}>Choose a name for your Group:</Text>
-          <View style={{flex:1}} />
-          <View style={[setupStyle.textBoxView,{flex:1, backgroundColor:'transparent'}]}>
-            <View style={[setupStyle.textBoxView, {width: width - 40}]}>
+          <View style={[setupStyle.textBoxView,{height:70, backgroundColor:'transparent'}]}>
+            <View style={[setupStyle.textBoxView, {height:40, width: width - 40}]}>
               <TextEditInput style={{flex:1, padding:10}} placeholder="Group name" placeholderTextColor="#888" value={this.state.groupName} callback={(newValue) => {this.setState({groupName:newValue});}} />
             </View>
           </View>
           <View style={{flex:1}} />
-          <View style={[setupStyle.buttonContainer,{backgroundColor:undefined, height:100}]}>
-            <TouchableOpacity onPress={this.saveGroupName.bind(this)}>
-              <View style={[setupStyle.button, {height:100, width:100, borderRadius:50}]}><Text style={setupStyle.buttonText}>Next</Text></View>
+          <View style={setupStyle.buttonContainer}>
+            <View style={{flex:1}} />
+            <TouchableOpacity onPress={this.saveGroupName.bind(this)} >
+              <View style={{paddingRight:20, flexDirection:'row', height:30}}>
+                <Text style={[setupStyle.buttonText]}>Next</Text>
+                <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
+              </View>
             </TouchableOpacity>
           </View>
         </View>

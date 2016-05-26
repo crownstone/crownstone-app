@@ -94,7 +94,6 @@ export class GroupOverview extends Component {
     }
     else {
       this.activeGroup = state.app.activeGroup;
-      console.log(state.groups, this.activeGroup)
       const rooms = state.groups[this.activeGroup].locations;
       if (Object.keys(rooms).length === 0) {
         return (

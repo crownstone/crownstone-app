@@ -66,9 +66,6 @@ function _htmlEncode(str) {
   }
 }
 
-export const closeLoading = () => {eventBus.emit('hideLoading');}
-
-
 function htmlEscape(str) {
   return String(str)
     .replace(/&/g, '&amp;')

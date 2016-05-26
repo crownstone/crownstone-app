@@ -39,7 +39,6 @@ export class TextEditInput extends Component {
   }
 
   render() {
-    console.log(this.style)
     return (
       <TextInput
         ref={this.refName}

@@ -15,7 +15,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { Background } from '../components/Background'
 import { setupStyle } from './SetupStyles'
 import { styles, colors, width, height } from './../styles'
-
+var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SetupAddCrownstoneSelect extends Component {
   skip() {
@@ -46,10 +46,14 @@ export class SetupAddCrownstoneSelect extends Component {
             </View>
           </View>
           <View style={{flex:1}} />
-          <View style={[setupStyle.buttonContainer,{backgroundColor:undefined, height:100}]}>
-            <TouchableOpacity onPress={this.skip}>
-              <View style={[setupStyle.button, {height:100, width:100, borderRadius:50}]}><Text style={setupStyle.buttonText}>Skip</Text></View>
+          <View style={setupStyle.buttonContainer}>
+            <TouchableOpacity onPress={this.skip} >
+              <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
+                <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
+                <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>Skip</Text>
+              </View>
             </TouchableOpacity>
+            <View style={{flex:1}} />
           </View>
         </View>
       </Background>

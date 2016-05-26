@@ -3,7 +3,6 @@ import {
   Alert,
   AppRegistry,
   Navigator,
-  
   Dimensions,
   Image,
   PixelRatio,
@@ -30,10 +29,12 @@ import Icon from 'react-native-vector-icons/Ionicons'
 class TabIcon extends Component {
   render(){
     return (
-    <View style={[styles.centered]} >
-      <Icon name={this.props.iconString} size={30} color={this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h} />
-      <Text style={[styles.menuItem, {color:this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h}]}>{this.props.title}</Text>
-    </View>
+      <Icon
+        name={this.props.iconString}
+        size={31}
+        color={this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h}
+        style={{position:'relative', top: 4, backgroundColor:'transparent', padding:0, margin:0}}
+      />
     );
   }
 }
@@ -138,17 +139,17 @@ export class AppRouter extends Component {
               <Scene key="pictureView"              component={Views.PictureView}          hideNavBar={true}  direction="vertical" />
               <Scene key="picturePreview"           component={Views.PicturePreview}       hideNavBar={true}  direction="vertical" />
               <Scene key="cameraRollView"           component={Views.CameraRollView}       hideNavBar={true}  direction="vertical" />
-              <Scene key="setupWelcome"             component={Views.SetupWelcome}         hideNavBar={true} type="reset"  direction="vertical" />
-              <Scene key="setupAddGroup"            component={Views.SetupAddGroup}        hideNavBar={true}  />
-              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true} type="reset" />
+              <Scene key="setupWelcome"             component={Views.SetupWelcome}         hideNavBar={true} type="reset"  direction="vertical"  />
+              <Scene key="setupAddGroup"            component={Views.SetupAddGroup}        hideNavBar={true} />
+              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true} type="reset" initial={true} />
               <Scene key="setupAddPluginStep1"      component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
               <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}  hideNavBar={true}  />
               <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}  hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
               <Scene key="setupAddRoom"             component={Views.SetupAddRoom}         hideNavBar={true}  />
               <Scene key="setupTrainRoom"           component={Views.SetupTrainRoom}       hideNavBar={true}  />
-              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={this.state.loggedIn}>
-                <Scene key="overview" title="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
+              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={this.state.loggedIn && false}>
+                <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />
                   <Scene key="roomOverview"           component={Views.RoomOverview}        onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
                   <Scene key="roomEdit"               component={Views.RoomEdit}            title="Edit Room" />
@@ -160,13 +161,13 @@ export class AppRouter extends Component {
                   <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}   title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
                   <Scene key="daySelection"           component={Views.DaySelection}        title="Set Active Days" />
                 </Scene>
-                <Scene key="settings" title="Settings" icon={TabIcon} iconString="ios-gear-outline" {...navBarStyle} >
+                <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} >
                   <Scene key="settingsOverview"       component={Views.SettingsOverview}    title="Settings"/>
                   <Scene key="settingsProfile"        component={Views.SettingsProfile}     title="Your Profile"/>
                   <Scene key="settingsChangeEmail"    component={Views.SettingsChangeEmail} title="Change Email"/>
                   <Scene key="settingsChangePassword" component={Views.SettingsChangePassword} title="Change Password"/>
-                  <Scene key="settingsGroup"          component={Views.SettingsGroups}      title="Manage our Group"/>
-                  <Scene key="settingsRoom"           component={Views.SettingsRooms}       title="Manage Your Rooms"/>
+                  <Scene key="settingsGroups"          component={Views.SettingsGroups}      title="Manage our Group"/>
+                  <Scene key="settingsRooms"           component={Views.SettingsRooms}       title="Manage Your Rooms"/>
                   <Scene key="settingsCrownstones"    component={Views.SettingsCrownstones} title="Manage Your Crownstones"/>
                   <Scene key="appComplexity"          component={Views.AppComplexity}       title="Settings"/>
                 </Scene>

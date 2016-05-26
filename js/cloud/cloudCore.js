@@ -1,9 +1,9 @@
 import { Alert } from 'react-native'
-import { CLOUD_ADDRESS, DEBUG } from '../ExternalConfig'
+import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
 
-import { prepareEndpointAndBody, closeLoading } from './cloudUtil'
+import { prepareEndpointAndBody } from './cloudUtil'
 
 /**
  *
@@ -36,6 +36,10 @@ export function request(
 
   // parse the reply
   let handleInitialReply = (response) => {
+    // this will eliminate all cloud requests.
+    if (SILENCE_CLOUD === true) 
+      throw new Error("CLOUD NOT AVAILABLE");
+    
     STATUS = response.status;
     if (response &&
       response.headers &&

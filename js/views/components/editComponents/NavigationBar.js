@@ -27,7 +27,7 @@ export class NavigationBar extends Component {
             <View style={{flex:1}} />
           }
           <View style={{paddingTop:3}}>
-            <Icon name="ios-arrow-right" size={18} color={'#888'} />
+            <Icon name="ios-arrow-forward" size={18} color={'#888'} />
           </View>
         </View>
       </TouchableHighlight>

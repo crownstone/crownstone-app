@@ -241,7 +241,10 @@ export class Register extends Component {
       lastName: this.state.lastName.value,
     })
       .then(() => {return this.processImage();})
-      .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.value.toLowerCase()});})
+      .then(() => {
+        this.props.eventBus.emit("hideLoading");
+        Actions.registerConclusion({type:'reset', email:this.state.email.value.toLowerCase()});
+      })
       .catch((reply) => {
         if (reply.data && reply.data.error && reply.data.error.message) {
           let message = reply.data.error.message.split("` ");

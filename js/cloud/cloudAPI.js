@@ -2,8 +2,7 @@
 import React, { Component } from 'react'
 import { Alert } from 'react-native';
 import { request, download } from './cloudCore'
-import { closeLoading } from './cloudUtil'
-import { DEBUG } from '../ExternalConfig'
+import { DEBUG, SILENCE_CLOUD } from '../ExternalConfig'
 
 
 
@@ -59,6 +58,10 @@ export let CLOUD = {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
   },
   _handleNetworkError: (error, options) => {
+    // this will eliminate all cloud requests.
+    if (SILENCE_CLOUD === true)
+      return;
+    
     if (options.background !== true) {
       this._networkErrorHandler(error);
     }
