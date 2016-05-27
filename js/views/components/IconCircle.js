@@ -16,43 +16,44 @@ import { styles, colors} from '../styles'
 
 export class IconCircle extends Component {
   render() {
+    let size = this.props.size || 60;
     return (
       <View>
         <View style={[{
-          width:60,
-          height:60,
-          borderRadius:30,
+          width:size,
+          height:size,
+          borderRadius:size * 0.5,
           backgroundColor: '#ffffff',
           borderColor: this.props.color || colors.menuBackground.h,
           borderWidth: 2
           }, styles.centered]}>
-          <Icon name={this.props.icon} size={40} color={this.props.color || colors.menuBackground.h} />
+          <Icon name={this.props.icon} size={size*2/3} color={this.props.color || colors.menuBackground.h} />
         </View>
         {this.props.showEdit === true ?
           <View style={[{
-            marginTop:-61,
-            marginLeft:41,
-            width:22,
-            height:22,
-            borderRadius:11,
+            marginTop:-size,
+            marginLeft:size*2/3,
+            width:size/3,
+            height:size/3,
+            borderRadius:size/6,
             backgroundColor: colors.green.h,
             borderColor: '#ffffff',
             borderWidth: 2
           }, styles.centered]}>
-            <Icon name={'md-create'} size={13} color={'#ffffff'} />
+            <Icon name={'md-create'} size={size/5} color={'#ffffff'} />
           </View> : undefined}
         {this.props.showAdd === true ?
           <View style={[{
-            marginTop:-61,
-            marginLeft:41,
-            width:22,
-            height:22,
-            borderRadius:11,
+            marginTop:-size,
+            marginLeft:size*2/3,
+            width:size/3,
+            height:size/3,
+            borderRadius:size/6,
             backgroundColor: colors.green.h,
             borderColor: '#ffffff',
             borderWidth: 2
           }, styles.centered]}>
-            <Icon name={'md-add'} size={13} color={'#ffffff'} />
+            <Icon name={'md-add'} size={size/5} color={'#ffffff'} />
           </View> : undefined}
       </View>
     );

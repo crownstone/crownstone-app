@@ -61,7 +61,7 @@ export class SetupWelcome extends Component {
         <Animated.Text style={[setupStyle.h0, {position:'absolute', left:this.state.crownstone.x, top:this.state.crownstone.y}]}>CROWNSTONE</Animated.Text>
         <Animated.View style={{opacity:this.state.opacity, flex:1, marginTop:170, flexDirection:'column'}}>
           <View style={setupStyle.lineDistance} />
-          <Text style={setupStyle.text}>Do you want to setup your own Crownstones or will you join an existing group?</Text>
+          <Text style={setupStyle.text}>Do you want to setup your own Crownstones? If you want to join an existing group, you can skip this step.</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.text}>You can always add Crownstones, Groups and Rooms later through the settings menu.</Text>
           <View style={{flex:1}} />

@@ -12,13 +12,11 @@ import {
 
 import { CLOUD } from '../../cloud/cloudAPI'
 
-import { emailChecker, getImageFileFromUser } from '../../util/util'
+import { getImageFileFromUser, processImage } from '../../util/util'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors , width, height, pxRatio } from '../styles'
-import ImageResizer from 'react-native-image-resizer';
-import RNFS from 'react-native-fs'
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must be at least 8 characters long, one of which being a number.';
@@ -205,15 +203,18 @@ export class Register extends Component {
     // show the processing screen
     this.props.eventBus.emit('showLoading', 'Sending Registration Request...');
     CLOUD.registerUser({
-      email: this.state.email.value.toLowerCase(),
-      password: this.state.password.value,
-      firstName: this.state.firstName.value,
-      lastName: this.state.lastName.value,
+      email: this.state.email.toLowerCase(),
+      password: this.state.password,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
     })
-      .then(() => {return this.processImage();})
+      .then(() => {
+        let imageName = getImageFileFromUser(this.state.email);
+        return processImage(this.state.picture, imageName);
+      })
       .then(() => {
         this.props.eventBus.emit("hideLoading");
-        Actions.registerConclusion({type:'reset', email:this.state.email.value.toLowerCase()});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
       })
       .catch((reply) => {
         if (reply.data && reply.data.error && reply.data.error.message) {
@@ -223,29 +224,6 @@ export class Register extends Component {
         }
         return false;
       })
-  }
-
-
-  processImage() {
-    return new Promise((resolve, reject) => {
-      if (this.state.picture !== undefined) {
-        ImageResizer.createResizedImage(this.state.picture, width * pxRatio * 0.5, height * pxRatio * 0.5, 'JPEG', 80)
-          .then((resizedImageUri) => {
-            let imageName = getImageFileFromUser(this.state.email.value);
-            let path = RNFS.DocumentDirectoryPath + '/' + imageName;
-            return RNFS.moveFile(resizedImageUri, path);
-          })
-          .then((moveState) => {
-            resolve();
-          })
-          .catch((err) => {
-            reject("picture resizing error:" + err.message);
-          });
-      }
-      else {
-        resolve();
-      }
-    })
   }
 
 

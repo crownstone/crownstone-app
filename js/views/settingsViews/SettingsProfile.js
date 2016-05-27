@@ -1,7 +1,6 @@
 import React, { Component } from 'react' 
 import {
   Alert,
-  
   Dimensions,
   TouchableHighlight,
   PixelRatio,
@@ -12,12 +11,20 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
+import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
-var Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles'
+import { processImage, safeDeleteFile } from '../../util/util'
+import { CLOUD } from '../../cloud/cloudAPI'
+import { styles, colors, width } from './../styles'
+import RNFS from 'react-native-fs'
 
 
 export class SettingsProfile extends Component {
+  constructor() {
+    super();
+    this.state = {picture:null};
+  }
+
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
       this.forceUpdate();
@@ -31,12 +38,11 @@ export class SettingsProfile extends Component {
   _getItems(user) {
     let items = [];
     // room Name:
-    console.log(user)
-    items.push({label:'Picture', type: 'picture', value: user.picture, callback: () => {}});
-
+    items.push({type:'spacer'});
     items.push({label:'First Name', type: 'textEdit', value: user.firstName, callback: (newText) => {}});
     items.push({label:'Last Name', type: 'textEdit', value: user.lastName, callback: (newText) => {}});
     items.push({label:'Email', type: 'textEdit', value: user.email, callback: (newText) => {}});
+    items.push({type:'spacer'});
     items.push({label:'Change Password', type: 'navigation', callback: () => {}});
 
     return items;
@@ -49,8 +55,24 @@ export class SettingsProfile extends Component {
 
     return (
       <Background>
+        <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
+          <PictureCircle 
+            value={this.state.picture} 
+            callback={(pictureUrl) => {
+                this.setState({picture:pictureUrl})
+                let newFilename = user.userId + '.jpg';
+                processImage(pictureUrl, newFilename).then((newPicturePath) => {
+                  CLOUD.forUser(userId).uploadProfileImage(newPicturePath)
+                })
+              }} 
+            removePicture={() => {
+              safeDeleteFile(this.state.picture);
+              this.setState({picture:null});
+            }}
+            size={120} />
+        </View>
         <ScrollView>
-          <ListEditableItems items={this._getItems(user)} />
+          <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>
       </Background>
     );

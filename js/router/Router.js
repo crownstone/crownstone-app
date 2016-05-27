@@ -134,7 +134,7 @@ export class AppRouter extends Component {
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"              component={Views.LoginSplash}          hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
               <Scene key="login"                    component={Views.Login}                hideNavBar={true}  />
-              <Scene key="register"                 component={Views.Register}             hideNavBar={false} initial={true} title="Register" {...navBarStyle} />
+              <Scene key="register"                 component={Views.Register}             hideNavBar={false} title="Register" {...navBarStyle} />
               <Scene key="registerConclusion"       component={Views.RegisterConclusion}   hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
               <Scene key="pictureView"              component={Views.PictureView}          hideNavBar={true}  direction="vertical" />
               <Scene key="picturePreview"           component={Views.PicturePreview}       hideNavBar={true}  direction="vertical" />
@@ -163,7 +163,7 @@ export class AppRouter extends Component {
                 </Scene>
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} >
                   <Scene key="settingsOverview"       component={Views.SettingsOverview}    title="Settings"/>
-                  <Scene key="settingsProfile"        component={Views.SettingsProfile}     title="Your Profile"/>
+                  <Scene key="settingsProfile"        component={Views.SettingsProfile}     title="Your Profile" />
                   <Scene key="settingsChangeEmail"    component={Views.SettingsChangeEmail} title="Change Email"/>
                   <Scene key="settingsChangePassword" component={Views.SettingsChangePassword} title="Change Password"/>
                   <Scene key="settingsGroups"          component={Views.SettingsGroups}      title="Manage our Group"/>

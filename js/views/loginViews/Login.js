@@ -104,14 +104,14 @@ export class Login extends Component {
     )
   }
   
-  checkForRegistrationPictureUpload(userId) {
+  checkForRegistrationPictureUpload(userId, filename) {
     return new Promise((resolve, reject) => {
       let uploadingImage = false;
       
       let handleFiles = (files) => {
         files.forEach((file) => {
           // if the file belongs to this user, we want to upload it to the cloud.
-          if (file.name === getImageFileFromUser(this.state.email)) {
+          if (file.name === filename) {
             uploadingImage = true;
             let newPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
             CLOUD.forUser(userId).uploadProfileImage(file)
@@ -197,7 +197,8 @@ export class Login extends Component {
 
 
     // check if we need to upload a picture that has been set aside during the registration process.
-    let picture = this.checkForRegistrationPictureUpload(userId)
+    let imageFilename = getImageFileFromUser(this.state.email);
+    let picture = this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {
         if (picturePath !== null)
           return this.downloadImage(userId); // check if there is a picture we can download

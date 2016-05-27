@@ -60,9 +60,14 @@ export class CameraRollView extends Component {
       let images = [];
       let rows = [];
       this.state.pictures.forEach((edge, index) => {
-        images.push(<TouchableHighlight key={'image'+index} onPress={() => {this.props.selectCallback(edge.node.image.uri); Actions.pop();}}>
-                      <Image source={{uri:edge.node.image.uri}} style={{width:size,height:size}}/>
-                    </TouchableHighlight>);
+        images.push((
+          <TouchableHighlight key={'image'+index} onPress={() => {
+            this.props.selectCallback(edge.node.image.uri);
+            Actions.pop();
+            }}>
+            <Image source={{uri:edge.node.image.uri}} style={{width:size,height:size}}/>
+          </TouchableHighlight>
+        ));
         if (images.length == amountX) {
           rows.push(<View key={'imageRow' + rows.length} style={{flexDirection:'row'}}>{images}</View>);
           images = [];
