@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Dimensions, PixelRatio, StyleSheet } from 'react-native'
+import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+var Icon = require('react-native-vector-icons/Ionicons');
 
 let { width, height } = Dimensions.get('window');
 
@@ -136,3 +137,35 @@ export const setupStyle = StyleSheet.create({
     width:100
   },
 });
+
+export class NextButton extends Component {
+  render() {
+    return <TouchableOpacity onPress={this.props.onPress} >
+      <View style={{paddingRight:20, flexDirection:'row', height:30}}>
+        <Text style={[setupStyle.buttonText]}>Next</Text>
+        <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
+      </View>
+    </TouchableOpacity>
+  }
+}
+export class SkipButton extends Component {
+  render() {
+    return <TouchableOpacity onPress={this.props.onPress} >
+      <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
+        <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
+        <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>Skip</Text>
+      </View>
+    </TouchableOpacity>
+  }
+}
+
+export class CancelButton extends Component {
+  render() {
+    return <TouchableOpacity onPress={this.props.onPress} >
+      <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
+        <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
+        <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>Cancel</Text>
+      </View>
+    </TouchableOpacity>
+  }
+}

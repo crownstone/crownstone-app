@@ -33,7 +33,7 @@ export class PictureEdit extends Component {
           <View style={[styles.listView, {paddingTop:10, alignItems:'flex-start', height:this.props.barHeightLarge}]}>
             <Text style={styles.listText}>{this.props.label}</Text>
             {
-              this.props.value !== undefined
+              this.props.value !== undefined && this.props.value !== null
                 ?
                 <TouchableOpacity onPress={this.props.removePicture} style={{height:60}}><View><PictureCircle picture={{uri:this.props.value}} /></View></TouchableOpacity>
                 :

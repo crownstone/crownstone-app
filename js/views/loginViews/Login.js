@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-import { validateEmail, getImageFileFromUser } from '../../util/util'
+import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
@@ -32,7 +32,7 @@ export class Login extends Component {
   }
 
   resetPopup() {
-    if (validateEmail(this.state.email) === false) {
+    if (emailChecker(this.state.email) === false) {
       Alert.alert('Check Email Address','Please input a valid email address in the form and press the Forgot Password button again.',[
         {text: 'OK'}
       ]);

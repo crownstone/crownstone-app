@@ -17,7 +17,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { CrownstoneAPI } from '../../native/CrownstoneAPI'
 import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
-import { setupStyle } from './SetupStyles'
+import { setupStyle, CancelButton } from './SetupStyles'
 import { styles, colors, width, height } from './../styles'
 
 var Icon = require('react-native-vector-icons/Ionicons');
@@ -25,7 +25,7 @@ var Icon = require('react-native-vector-icons/Ionicons');
 export class SetupAddPlugInStep2 extends Component {
   constructor() {
     super();
-    setTimeout(() => {Actions.setupAddPluginStep3()}, 1500);
+    //setTimeout(() => {Actions.setupAddPluginStep3()}, 1500);
     this.state = {progress:0, text:''};
   }
 
@@ -157,11 +157,14 @@ export class SetupAddPlugInStep2 extends Component {
           <Text style={setupStyle.information}>TODO: Animate when doing something.</Text>
           <Text style={setupStyle.information}>TODO: Move to the next step when finished (now its a timeout).</Text>
           <View style={{flex:1}} />
-          <TouchableOpacity onPress={() => {
-              Alert.alert("Are you sure?","You can always add Crownstones later through the settings menu.",[{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}])
-          }} style={{position:'absolute', left:20, bottom:30}}>
-            <View style={setupStyle.smallButton}><Text style={setupStyle.buttonText}>Cancel</Text></View>
-          </TouchableOpacity>
+          <View style={setupStyle.buttonContainer}>
+            <CancelButton onPress={() => {Alert.alert(
+              "Are you sure?",
+              "You can always add Crownstones later through the settings menu.",
+              [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.tabBar}]
+            )}} />
+            <View style={{flex:1}} />
+          </View>
         </View>
       </Background>
     )

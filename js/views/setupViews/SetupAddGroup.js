@@ -14,7 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { CLOUD } from '../../cloud/cloudAPI'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
-import { setupStyle } from './SetupStyles'
+import { setupStyle, NextButton } from './SetupStyles'
 import { styles, colors, width, height } from './../styles'
 var Icon = require('react-native-vector-icons/Ionicons');
 
@@ -77,12 +77,7 @@ export class SetupAddGroup extends Component {
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
-            <TouchableOpacity onPress={this.saveGroupName.bind(this)} >
-              <View style={{paddingRight:20, flexDirection:'row', height:30}}>
-                <Text style={[setupStyle.buttonText]}>Next</Text>
-                <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
-              </View>
-            </TouchableOpacity>
+            <NextButton onPress={this.saveGroupName.bind(this)} />
           </View>
         </View>
       </Background>

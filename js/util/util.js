@@ -4,9 +4,18 @@ import { store } from '../router/store/store'
 import RNFS from 'react-native-fs'
 import { Actions } from 'react-native-router-flux';
 
-export const validateEmail = function(email) {
+export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return reg.test(email);
+};
+
+export const characterChecker = function (value) {
+  let reg = /[\D]/g;
+  return reg.test(value);
+};
+export const numberChecker = function (value) {
+  let reg = /[0-9]/g;
+  return reg.test(value);
 };
 
 export const getImageFileFromUser = function(email) {

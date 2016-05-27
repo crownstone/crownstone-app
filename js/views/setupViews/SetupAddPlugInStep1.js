@@ -15,7 +15,7 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
-import { setupStyle } from './SetupStyles'
+import { setupStyle, CancelButton, NextButton } from './SetupStyles'
 import { styles, colors, width, height } from './../styles'
 var Icon = require('react-native-vector-icons/Ionicons');
 
@@ -33,25 +33,15 @@ export class SetupAddPlugInStep1 extends Component {
           <Text style={setupStyle.information}>TODO: illustration of doing this.</Text>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
-            <TouchableOpacity onPress={() => {
+            <CancelButton onPress={() => {
               Alert.alert(
                 "Are you sure?",
                 "You can always add Crownstones later through the settings menu.",
-                [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}]
+                [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.tabBar}]
               )
-              }} >
-              <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
-                <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
-                <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>Cancel</Text>
-              </View>
-            </TouchableOpacity>
+              }} />
             <View style={{flex:1}} />
-            <TouchableOpacity onPress={Actions.setupAddPluginStep2} >
-              <View style={{paddingRight:20, flexDirection:'row', height:30}}>
-                <Text style={[setupStyle.buttonText]}>Next</Text>
-                <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
-              </View>
-            </TouchableOpacity>
+            <NextButton onPress={Actions.setupAddPluginStep2} />
           </View>
         </View>
       </Background>

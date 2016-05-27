@@ -13,15 +13,10 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
-import { setupStyle } from './SetupStyles'
+import { setupStyle, SkipButton } from './SetupStyles'
 import { styles, colors, width, height } from './../styles'
-var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SetupAddCrownstoneSelect extends Component {
-  skip() {
-    Alert.alert("Are you sure?","You can always add Crownstones later through the settings menu.",
-      [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}])
-  }
 
   render() {
     return (
@@ -31,7 +26,7 @@ export class SetupAddCrownstoneSelect extends Component {
           <Text style={setupStyle.h0}>Add your Crownstone</Text>
           <Text style={setupStyle.text}>What sort of Crownstone would you like to add to the group?</Text>
           <View style={{flex:1}} />
-          <View style={{flexDirection:'row', alignItems:"center"}}>
+          <View style={{flexDirection:'row', alignItems:'center'}}>
             <View style={subStyles.container}>
               <TouchableOpacity style={subStyles.button} onPress={() => {Actions.setupAddBuiltinStep1()}}>
                 <Text>TODO: BUILT IN IMAGE</Text>
@@ -47,12 +42,12 @@ export class SetupAddCrownstoneSelect extends Component {
           </View>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
-            <TouchableOpacity onPress={this.skip} >
-              <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
-                <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
-                <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>Skip</Text>
-              </View>
-            </TouchableOpacity>
+            <SkipButton onPress={() => {
+              Alert.alert(
+              "Are you sure?",
+              "You can always add Crownstones later through the settings menu.",
+              [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.tabBar}])}}
+            />
             <View style={{flex:1}} />
           </View>
         </View>

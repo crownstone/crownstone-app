@@ -134,21 +134,21 @@ export class AppRouter extends Component {
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"              component={Views.LoginSplash}          hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
               <Scene key="login"                    component={Views.Login}                hideNavBar={true}  />
-              <Scene key="register"                 component={Views.Register}             hideNavBar={false} title="Register" {...navBarStyle} />
+              <Scene key="register"                 component={Views.Register}             hideNavBar={false} initial={true} title="Register" {...navBarStyle} />
               <Scene key="registerConclusion"       component={Views.RegisterConclusion}   hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
               <Scene key="pictureView"              component={Views.PictureView}          hideNavBar={true}  direction="vertical" />
               <Scene key="picturePreview"           component={Views.PicturePreview}       hideNavBar={true}  direction="vertical" />
               <Scene key="cameraRollView"           component={Views.CameraRollView}       hideNavBar={true}  direction="vertical" />
               <Scene key="setupWelcome"             component={Views.SetupWelcome}         hideNavBar={true} type="reset"  direction="vertical"  />
               <Scene key="setupAddGroup"            component={Views.SetupAddGroup}        hideNavBar={true} />
-              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true} type="reset" initial={true} />
+              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true} type="reset" />
               <Scene key="setupAddPluginStep1"      component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
               <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}  hideNavBar={true}  />
               <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}  hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
               <Scene key="setupAddRoom"             component={Views.SetupAddRoom}         hideNavBar={true}  />
               <Scene key="setupTrainRoom"           component={Views.SetupTrainRoom}       hideNavBar={true}  />
-              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={this.state.loggedIn && false}>
+              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />
                   <Scene key="roomOverview"           component={Views.RoomOverview}        onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />

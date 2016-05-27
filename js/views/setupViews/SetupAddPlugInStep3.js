@@ -14,9 +14,8 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
-import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
-import { setupStyle } from './SetupStyles'
+import { setupStyle, CancelButton, NextButton } from './SetupStyles'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { styles, colors, width, height } from './../styles'
 
@@ -25,7 +24,7 @@ var Icon = require('react-native-vector-icons/Ionicons');
 export class SetupAddPlugInStep3 extends Component {
   constructor() {
     super();
-    this.state = {selectedRoom:undefined, roomName:''}
+    this.state = {selectedRoom:undefined, roomName:'', addRoomEditing: false}
   }
 
   componentDidMount() {
@@ -53,43 +52,40 @@ export class SetupAddPlugInStep3 extends Component {
   }
 
   getAddRoomBar() {
-    let onSubmitEditing = () => {Alert.alert(
-      "Do you want add a room called \'" + this.state.roomName + "\'?",
-      'You can rename and remove rooms after the setup phase.',
-      [{text:'Cancel', onPress:() => {
-        this.setState({roomName:''});
-      }},{text:'Yes', onPress:() => {this.storeLocation(this.state.roomName);}}]
-    )};
+    let onSubmitEditing = (roomName) => {
+      if (roomName.length < 3) {
+        Alert.alert(
+          'Room name must be at least 3 characters long.',
+          'Please change the name and try again.',
+          [{text:'OK'}]
+        )
+      }
+      else {
+        Alert.alert(
+          'Do you want add a room called \'' + roomName + '\'?',
+          'You can rename and remove rooms after the setup phase.',
+          [{text:'Cancel', onPress:() => {this.setState({roomName:''});}},
+            {text:'Yes', onPress:() => {this.storeLocation(roomName);}}]
+        );
+      }
+    };
 
     return (
       <View style={setupStyle.roomBar}>
         <View style={setupStyle.roomBarInner}>
           {
-            this.state.roomName.length === 0 ?
-              <Icon name="ios-plus-outline" size={30} color="white" style={{position:'relative', top:2}}/> :
+            this.state.addRoomEditing === false ?
+              <Icon name="ios-add-circle" size={28} color="white" style={{position:'relative', top:1}}/> :
               <View style={{height:30}} />
           }
           <TextEditInput
-            optimization={false}
-            style={{flex:1, paddingLeft: this.state.roomName.length === 0 ? 10 : 0, color:'white'}}
+            onFocus={() => {this.setState({addRoomEditing: true})}}
+            style={{flex:1, paddingLeft: this.state.addRoomEditing === false ? 10 : 0, color:'white'}}
             placeholder='Add Room'
             placeholderTextColor='#ddd'
             value={this.state.roomName}
-            callback={(newValue) => {this.setState({roomName:newValue});}}
-            onSubmitEditing={onSubmitEditing}
+            callback={(newValue) => {this.setState({roomName:newValue,addRoomEditing: false}); console.log('here'); onSubmitEditing(newValue)}}
           />
-          {
-            this.state.roomName.length > 0 ?
-              this.state.roomName.length > 1 ?
-                (
-                  <TouchableOpacity onPress={onSubmitEditing}>
-                    <Icon name="ios-plus" size={30} color={colors.green.h} style={{position:'relative', top:2}}/>
-                  </TouchableOpacity>
-                ) :
-                <Icon name="ios-plus-outline" size={30} color="white" style={{position:'relative', top:2}}/> :
-              undefined
-          }
-
         </View>
       </View>
     )
@@ -99,8 +95,8 @@ export class SetupAddPlugInStep3 extends Component {
     const { store } = this.props;
     const state = store.getState();
     let activeGroup = state.app.activeGroup;
-    let rooms = state.groups[activeGroup].locations;
-
+    // let rooms = state.groups[activeGroup].locations;
+    let rooms = {bar:{config:{name:'hello'}}}
     let roomIds = Object.keys(rooms).sort();
 
     let roomElements = [];
@@ -109,7 +105,7 @@ export class SetupAddPlugInStep3 extends Component {
       roomElements.push(
         <TouchableOpacity key={'roomBar_'+id} style={setupStyle.roomBar} onPress={() => {this.setState({selectedRoom:id, roomName:''})}}>
           <View style={setupStyle.roomBarInner}>
-            {this.state.selectedRoom === id ? <Icon name="ios-checkmark" size={30} color={colors.green.h} style={{position:'relative', top:2}} /> : undefined}
+            {this.state.selectedRoom === id ? <Icon name="ios-checkmark-circle" size={30} color={colors.green.h} style={{position:'relative', top:2}} /> : undefined}
             <Text style={[setupStyle.information, {paddingLeft: this.state.selectedRoom === id ? 10 : 0}]}>{room.config.name}</Text>
           </View>
         </TouchableOpacity>
@@ -143,26 +139,23 @@ export class SetupAddPlugInStep3 extends Component {
           <Text style={setupStyle.information}>Where is this Crownstone located?</Text>
           {this.getRoomOverview()}
           <View style={{flex:1}} />
-          <TouchableOpacity onPress={() => {
-            Alert.alert(
-             "Are you sure?","You can always put Crownstones in rooms later through the Crownstone settings. " +
-             "Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Group.",
-             [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}]
-            );
-          }} style={{position:'absolute', left:20, bottom:30}}>
-            <View style={setupStyle.smallButton}><Text style={setupStyle.buttonText}>Cancel</Text></View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {
-            Alert.alert(
-              "Are you sure this Crownstone is not tied to a room?",
-              "Crownstones that are not in a room cannot be used for localization.",
-              [{text:'Cancel'}, {text:'OK'}]
-            );
-          }} style={{position:'absolute', right:20, bottom:30}}>
-            <View style={setupStyle.smallButton}>
-              <Text style={setupStyle.buttonText}>Next</Text>
-            </View>
-          </TouchableOpacity>
+          <View style={setupStyle.buttonContainer}>
+            <CancelButton onPress={() => {
+              Alert.alert(
+               "Are you sure?","You can always put Crownstones in rooms later through the Crownstone settings. " +
+               "Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Group.",
+               [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}]
+              );
+            }} />
+            <View style={{flex:1}} />
+            <NextButton onPress={() => {
+              Alert.alert(
+                "Are you sure this Crownstone is not tied to a room?",
+                "Crownstones that are not in a room cannot be used for localization.",
+                [{text:'Cancel'}, {text:'OK'}]
+              );
+            }} />
+        </View>
         </View>
       </Background>
     )

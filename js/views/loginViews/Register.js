@@ -12,7 +12,7 @@ import {
 
 import { CLOUD } from '../../cloud/cloudAPI'
 
-import { validateEmail, getImageFileFromUser } from '../../util/util'
+import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
@@ -30,87 +30,50 @@ export class Register extends Component {
   constructor() {
     super();
     this.state = {
-      email: {value: '', state: ''},
-      password: {value: '', state: ''},
-      passwordVerification: {value: '', state: ''},
+      alwaysShowState: false,
+      email: '',
+      password: '',
+      passwordVerification: '',
       passwordExplanation: passwordStateNeutral,
-      firstName: {value: '', state: ''},
-      lastName: {value: '', state: ''},
+      firstName: '',
+      lastName: '',
       picture: undefined,
       processing: false,
     };
 
-    this.characterChecker = /[\D]/g;
-    this.numberChecker = /[0-9]/g;
-  }
+    this.inputStates = {email:false, password:false, firstName:false, lastName:false};
 
-  /**
-   * Check if the email address is valid
-   * @param email
-   * @returns {*}
-   */
-  getEmailState(email)  {
-    if (validateEmail(email)) {
-      return 'valid';
-    }
-    return 'error';
   }
 
 
   /**
    * Check if the passwords are valid
-   * @param password
-   * @param index
+   * @param validationState
    * @returns {*}
    */
-  getPasswordState(password,index) {
+  setPasswordExplanation(validationState) {
     let setText = (text) => {
       if (this.state.passwordExplanation !== text) {
         this.setState({passwordExplanation:text});
       }
     };
 
-    if (password.length >= 8) {
-      if (index === 1) {
-        // check if number requirement is met
-        if (this.numberChecker.test(password) === false) {
-          setText(passwordStateNumber);
-          return 'error';
-        }
-        // check if there is at least one letter
-        else if (this.characterChecker.test(password) === false) {
-          setText(passwordStateCharacter);
-          return 'error';
-        }
-      }
-      else {
-        // check if the verification matches the
-        if (password !== this.state.password.value) {
-          setText(passwordStateConflict);
-          return 'error';
-        }
-      }
-      setText(passwordStateNeutral);
-      return 'valid';
-    }
-    else {
-      setText(passwordStateNeutral);
-      return 'error';
+    switch (validationState) {
+      case 'errorNoNumber':
+        setText(passwordStateNumber);
+        break;
+      case 'errorNoCharacter':
+        setText(passwordStateCharacter);
+        break;
+      case 'errorNoMatch':
+        setText(passwordStateConflict);
+        break;
+      case 'errorTooShort':
+      default:
+        setText(passwordStateNeutral);
     }
   }
 
-
-  /**
-   * Check if the first and last name are valid
-   * @param name
-   * @returns {*}
-   */
-  getNameState(name) {
-    if (name.length >= 3 && this.numberChecker.test(name) === false) {
-      return 'valid';
-    }
-    return 'error';
-  }
 
 
   /**
@@ -125,28 +88,35 @@ export class Register extends Component {
       {
         label: 'Email',
         type: 'textEdit',
+        validation:'email',
+        validationMethod:'icons',
         keyboardType: 'email-address',
-        value: this.state.email.value,
-        state: this.state.email.state,
-        callback: (newValue) => {this.setState({email: {value:newValue, state: this.getEmailState(newValue)}})}
+        value: this.state.email,
+        validationCallback: (newState) => {this.inputStates.email = newState},
+        alwaysShowState: this.state.alwaysShowState,
+        callback: (newValue) => {this.setState({email: newValue})}
       },
       {
         label: 'Password',
         type: 'textEdit',
+        validation:'password',
+        validationMethod:'icons',
+        verification: true,
         secureTextEntry: true,
-        value: this.state.password.value,
-        state: this.state.password.state,
-        callback: (newValue) => {this.setState({password: {value:newValue, state: this.getPasswordState(newValue,1)}})}
+        value: this.state.password,
+        validationCallback: (newState) => {this.inputStates.password = newState; this.setPasswordExplanation(newState)},
+        alwaysShowState: this.state.alwaysShowState,
+        callback: (newValue) => {this.setState({password: newValue})}
       },
-      {
-        label: 'Password',
-        type: 'textEdit',
-        secureTextEntry: true,
-        placeholder: 'Verification',
-        value: this.state.passwordVerification.value,
-        state: this.state.passwordVerification.state,
-        callback: (newValue) => {this.setState({passwordVerification: {value:newValue, state: this.getPasswordState(newValue,2)}})}
-      },
+      // {
+      //   label: 'Password',
+      //   type: 'textEdit',
+      //   secureTextEntry: true,
+      //   placeholder: 'Verification',
+      //   value: this.state.passwordVerification.value,
+      //   stateChange: (newState) => {this.inputStates.password = newState},
+      //   callback: (newValue) => {this.setState({passwordVerification: {value:newValue, state: this.setPasswordExplanation(newValue,2)}})}
+      // },
       {
         label: this.state.passwordExplanation,
         style: {paddingBottom: 0},
@@ -159,16 +129,22 @@ export class Register extends Component {
       {
         label: 'First Name',
         type: 'textEdit',
-        value: this.state.firstName.value,
-        state: this.state.firstName.state,
-        callback: (newValue) => {this.setState({firstName: {value:newValue, state: this.getNameState(newValue)}})}
+        value: this.state.firstName,
+        validation:{minLength:2,numbers:{allowed:false}},
+        validationMethod:'icons',
+        validationCallback: (newState) => {this.inputStates.firstName = newState},
+        alwaysShowState: this.state.alwaysShowState,
+        callback: (newValue) => {this.setState({firstName: newValue})}
       },
       {
         label: 'Last Name',
         type: 'textEdit',
-        value: this.state.lastName.value,
-        state: this.state.lastName.state,
-        callback: (newValue) => {this.setState({lastName: {value:newValue, state: this.getNameState(newValue)}})}
+        value: this.state.lastName,
+        validation:{minLength:2,numbers:{allowed:false}},
+        validationMethod:'icons',
+        validationCallback: (newState) => {this.inputStates.lastName = newState},
+        alwaysShowState: this.state.alwaysShowState,
+        callback: (newValue) => {this.setState({lastName: newValue })}
       },
       {
         label: 'Picture',
@@ -202,32 +178,26 @@ export class Register extends Component {
    * Final check before we send the request to the cloud. If any issues arise, the user is notified.
    */
   validateAndContinue() {
-    let s1 = this.getEmailState(this.state.email.value);
-    let s2 = this.getPasswordState(this.state.password.value,1);
-    let s3 = this.getPasswordState(this.state.passwordVerification.value,2);
-    let s4 = this.getNameState(this.state.firstName.value);
-    let s5 = this.getNameState(this.state.lastName.value);
-    if (s1 == s2 && s2 == s3 && s3 == s4 && s4 == s5 && s5 == 'valid') {
+    this.setState({alwaysShowState: true});
+    if (
+      this.inputStates.email     === 'valid' &&
+      this.inputStates.password  === 'valid' &&
+      this.inputStates.firstName === 'valid' &&
+      this.inputStates.lastName  === 'valid'
+      ) {
       this.requestRegistration();
     }
     else {
-      if (s1 === 'error')
+      if (this.inputStates.email !== 'valid')
         Alert.alert("Invalid Email Address", "Please double check the supplied email address", [{text:'OK'}]);
-      else if (s2 === 'error')
-        Alert.alert("Invalid Password", passwordStateNeutral, [{text:'OK'}]);
-      else if (s3 === 'error')
+      else if (this.inputStates.password === 'errorNoMatch')
         Alert.alert("Check the Verification Password.", passwordStateConflict, [{text:'OK'}]);
-      else if (s4 === 'error')
+      else if (this.inputStates.password !== 'valid')
+        Alert.alert("Invalid Password", passwordStateNeutral, [{text:'OK'}]);
+      else if (this.inputStates.firstName !== 'valid')
         Alert.alert("You Must Enter a First Name.", 'Without numbers.', [{text:'OK'}]);
-      else if (s5 === 'error')
+      else if (this.inputStates.firstName !== 'valid')
         Alert.alert("You Must Enter a Last Name.", 'Without numbers.', [{text:'OK'}]);
-      this.setState({
-        email: {value: this.state.email.value, state: s1},
-        password: {value: this.state.password.value, state: s2},
-        passwordVerification: {value: this.state.passwordVerification.value, state: s3},
-        firstName: {value: this.state.firstName.value, state: s4},
-        lastName: {value: this.state.lastName.value, state: s5},
-      });
     }
   }
 

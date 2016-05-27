@@ -28,24 +28,29 @@ export class SettingsProfile extends Component {
     this.unsubscribe();
   }
 
-  _getItems() {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId};
+  _getItems(user) {
     let items = [];
     // room Name:
-    items.push({label:'Picture', type: 'picture', value:undefined, callback: () => {}});
-    items.push({label:'Email', type: 'textEdit', value: room.config.name, callback: (newText) => {}});
-    items.push({label:'First Name', type: 'textEdit', value: room.config.name, callback: (newText) => {}});
-    items.push({label:'Last Name', type: 'textEdit', value: room.config.name, callback: (newText) => {}});
+    console.log(user)
+    items.push({label:'Picture', type: 'picture', value: user.picture, callback: () => {}});
+
+    items.push({label:'First Name', type: 'textEdit', value: user.firstName, callback: (newText) => {}});
+    items.push({label:'Last Name', type: 'textEdit', value: user.lastName, callback: (newText) => {}});
+    items.push({label:'Email', type: 'textEdit', value: user.email, callback: (newText) => {}});
     items.push({label:'Change Password', type: 'navigation', callback: () => {}});
 
     return items;
   }
 
   render() {
+    const store = this.props.store;
+    const state = store.getState();
+    let user = state.user;
+
     return (
       <Background>
         <ScrollView>
-          <ListEditableItems items={this._getItems()} />
+          <ListEditableItems items={this._getItems(user)} />
         </ScrollView>
       </Background>
     );
