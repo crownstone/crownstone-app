@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux'
-import { update } from './util'
+import { update, getTime } from './reducerUtil'
 import {
   behaviourReducerOnHomeEnter,
   behaviourReducerOnHomeExit,
@@ -17,13 +17,15 @@ let defaultSettings = {
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
     initializedSuccessfully: false,
+    updatedAt: getTime()
   },
   state: {
     state: 1.0,
-    currentUsage: 0
+    currentUsage: 0,
+    updatedAt: getTime()
   },
   schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
-
+    updatedAt: getTime()
   },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
     onHomeEnter: { /* toggleState */ },
@@ -47,6 +49,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.iBeaconMajor = update(action.data.iBeaconMajor, newState.iBeaconMajor);
         newState.iBeaconMinor = update(action.data.iBeaconMinor, newState.iBeaconMinor);
         newState.initializedSuccessfully = update(action.data.initializedSuccessfully, newState.initializedSuccessfully);
+        newState.updatedAt   = getTime();
         return newState;
       }
       return state;
@@ -62,6 +65,7 @@ let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
         let newState          = {...state};
         newState.state        = update(action.data.state,        newState.state);
         newState.currentUsage = update(action.data.currentUsage, newState.currentUsage);
+        newState.updatedAt   = getTime();
         return newState;
       }
       return state;

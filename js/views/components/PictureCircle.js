@@ -25,6 +25,8 @@ export class PictureCircle extends Component {
   render() {
     let size = this.props.size || 60;
     if (this.props.value !== undefined && this.props.value !== null) {
+      let imageURI = this.props.value === 'file' ? this.props.value : 'file://' + this.props.value;
+      imageURI += '?r=' + Math.random(); // cache buster
       return (
         <TouchableOpacity onPress={this.props.removePicture} style={{height:size}}>
           <View>
@@ -36,7 +38,7 @@ export class PictureCircle extends Component {
                   backgroundColor: '#ffffff',
                   borderColor: '#fff',
                   borderWidth: size/30
-                  }} source={{uri:this.props.value}} />
+                  }} source={{uri:imageURI}} />
                 <View style={[{
                     marginTop:-size-1,
                     marginLeft:size*2/3 + 1,

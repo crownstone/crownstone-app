@@ -1,33 +1,14 @@
 import { createStore, combineReducers } from 'redux'
 import stonesReducer from './stones'
-import { update } from './util'
+import { update, getTime } from './reducerUtil'
 
 
 let defaultSettings = {
   config: {
     name:'Untitled Room',
-    icon:'missingIcon'
+    icon:'missingIcon',
+    updatedAt: getTime()
   },
-  picture: {
-    fullURI: undefined,
-    barURI: undefined,
-    squareURI: undefined
-  },
-};
-
-let pictureLocationReducer = (state = defaultSettings.picture, action = {}) => {
-  switch (action.type) {
-    case 'ADD_LOCATION_PICTURE':
-      return {
-        fullURI: action.data.fullURI,
-        barURI: action.data.barURI,
-        squareURI: action.data.squareURI
-      };
-    case 'REMOVE_LOCATION_PICTURE':
-      return defaultSettings.locationPicture;
-    default:
-      return state;
-  }
 };
 
 let userPresenceReducer = (state = [], action = {}) => {
@@ -45,6 +26,7 @@ let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
         let newState = {...state};
         newState.name = update(action.data.name, newState.name);
         newState.icon = update(action.data.icon, newState.icon);
+        newState.updatedAt = getTime();
         return newState;
       }
       return state;
@@ -56,7 +38,6 @@ let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
 let combinedLocationReducer = combineReducers({
   config:       locationConfigReducer,
   presentUsers: userPresenceReducer,
-  picture:      pictureLocationReducer
 });
 
 

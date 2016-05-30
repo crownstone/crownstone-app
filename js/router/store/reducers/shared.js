@@ -1,9 +1,11 @@
+import { update, getTime } from './reducerUtil'
 
 let toggleState = {
   state:    1,  // [0 .. 1] for state, undefined for ignore
   delay:    0,  // delay in seconds
   fadeTime: 0,  // delay in seconds
-  active: false  // if not active the crownstone will not react to the event.
+  active: false,  // if not active the crownstone will not react to the event.
+  updatedAt: getTime()
 };
 
 export const updateToggleState = function (state, action) {
@@ -13,6 +15,7 @@ export const updateToggleState = function (state, action) {
     newState.delay     = update(action.data.delay,    newState.delay);
     newState.fadeTime  = update(action.data.fadeTime, newState.fadeTime);
     newState.active    = update(action.data.active,   newState.active);
+    newState.updatedAt = getTime();
     return newState;
   }
   return state;

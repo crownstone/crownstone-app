@@ -11,6 +11,7 @@ export class TextEditInput extends Component {
     super();
     this.state = {value: props.value};
     this.blurred = false;
+    this.isInFocus = false;
     this.refName = (Math.random() * 1e9).toString(36);
   }
   
@@ -20,7 +21,14 @@ export class TextEditInput extends Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.isInFocus === true) {
+      this.blur();
+    }
+  }
+
   focus() {
+    this.isInFocus = true;
     this.blurred = false;
     this.refs[this.refName].measure((fx, fy, width, height, px, py) => {
       if (this.props.setActiveElement)
@@ -31,6 +39,7 @@ export class TextEditInput extends Component {
 
   blur() {
     if (this.blurred === false) {
+      this.isInFocus = false;
       this.blurred = true;
       if (this.props.__validate) {
         this.props.__validate(this.state.value);

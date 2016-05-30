@@ -13,7 +13,7 @@ import {
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { processImage, safeDeleteFile } from '../../util/util'
+import { logOut, processImage, safeDeleteFile } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors, width } from './../styles'
 import RNFS from 'react-native-fs'
@@ -23,30 +23,121 @@ export class SettingsProfile extends Component {
   constructor() {
     super();
     this.state = {picture:null};
+    this.validationState = {firstName:undefined, lastName:undefined, email:undefined}
   }
 
-  componentDidMount() {
-    this.unsubscribe = this.props.store.subscribe(() => {
-      this.forceUpdate();
-    })
+  componentWillMount() {
+    const store = this.props.store;
+    const state = store.getState();
+    let user = state.user;
+
+    if (this.state.picture !== user.picture) {
+      this.setState({picture: user.picture});
+    }
   }
 
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
+  
   _getItems(user) {
+    const store = this.props.store;
     let items = [];
     // room Name:
     items.push({type:'spacer'});
-    items.push({label:'First Name', type: 'textEdit', value: user.firstName, callback: (newText) => {}});
-    items.push({label:'Last Name', type: 'textEdit', value: user.lastName, callback: (newText) => {}});
-    items.push({label:'Email', type: 'textEdit', value: user.email, callback: (newText) => {}});
+    items.push({
+      label:'First Name',
+      type: 'textEdit',
+      value: user.firstName,
+      validation:{minLength:2, numbers:{allowed:false}},
+      validationCallback: (result) => {console.log("here"); this.validationState.firstName = result;},
+      callback: (newText) => {
+        if (user.firstName !== newText) {
+          if (this.validationState.firstName === 'valid') {
+            store.dispatch({type: 'USER_UPDATE', data: {firstName: newText}});
+            CLOUD.updateUserData({background: true, data: {firstName: newText}});
+          }
+          else {
+            Alert.alert('First name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
+          }
+        }
+      }
+    });
+    items.push({
+      label:'Last Name', 
+      type: 'textEdit',
+      value: user.lastName,
+      validation:{minLength:2, numbers:{allowed:false}},
+      validationCallback: (result) => {this.validationState.lastName = result;},
+      callback: (newText) => {
+        if (user.lastName !== newText) {
+          if (this.validationState.lastName === 'valid') {
+            store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
+            CLOUD.updateUserData({background: true, data: {lastName: newText}});
+          }
+          else {
+            Alert.alert('Last name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
+          }
+        }
+      }
+    });
+    items.push({
+      label:'Email',
+      type: 'textEdit',
+      value: user.email,
+      validation:'email',
+      validationCallback: (result) => {this.validationState.email = result;},
+      callback: (newEmail) => {
+        if (this.validationState.email === 'valid') {
+          if (user.email !== newEmail) {
+            // CLOUD.updateUserData({background:true, data:{email:newEmail}});
+            // TODO: add email system.
+            Alert.alert(
+              'An email has been sent to \'' + newEmail + '\'.',
+              'After you click on the validation link, you can use your new address to log in and it will be synced.',
+              [{text: 'OK'}]);
+          }
+        }
+        else {
+          Alert.alert('Not a valid email address','Please try again.',[{text:'OK'}]);
+        }
+    }});
     items.push({type:'spacer'});
-    items.push({label:'Change Password', type: 'navigation', callback: () => {}});
+    items.push({
+      label:'Change Password',
+      type: 'button',
+      style: {color:colors.blue.h},
+      callback: () => {
+        Alert.alert(
+          'Are you sure you want to reset your password?',
+          'You will receive a password reset email with instructions at \'' + user.email + '\'. You will be logged out when the email has been sent.',
+          [
+            {text: 'Cancel'},
+            {text: 'OK', onPress: () => {this.requestPasswordResetEmail(user.email)}}
+          ]
+        )
+      }
+    });
 
     return items;
   }
+
+
+  requestPasswordResetEmail(email) {
+    this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
+    CLOUD.requestPasswordResetEmail({email: email.toLowerCase()})
+      .then(() => {
+        Alert.alert(
+          'Reset email has been sent',
+          'You will now be logged out. Follow the instructions on the email and log in with your new password.',
+          [{text: 'OK', onPress: () => {
+            this.props.eventBus.emit('hideLoading');
+            logOut();
+          }}]
+        )
+      })
+      .catch((reply) => {
+        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+      });
+  }
+
 
   render() {
     const store = this.props.store;
@@ -57,16 +148,19 @@ export class SettingsProfile extends Component {
       <Background>
         <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
           <PictureCircle 
-            value={this.state.picture} 
+            value={this.state.picture}
             callback={(pictureUrl) => {
-                this.setState({picture:pictureUrl})
                 let newFilename = user.userId + '.jpg';
                 processImage(pictureUrl, newFilename).then((newPicturePath) => {
-                  CLOUD.forUser(userId).uploadProfileImage(newPicturePath)
+                  this.setState({picture:newPicturePath});
+                  store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
+                  CLOUD.forUser(user.userId).uploadProfileImage(newPicturePath).then((data) => {console.log(data)});
                 })
               }} 
             removePicture={() => {
               safeDeleteFile(this.state.picture);
+              store.dispatch({type:'USER_UPDATE', data:{picture:null}});
+              CLOUD.forUser(user.userId).removeProfileImage();
               this.setState({picture:null});
             }}
             size={120} />

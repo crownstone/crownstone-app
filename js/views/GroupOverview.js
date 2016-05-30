@@ -79,9 +79,10 @@ export class GroupOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    if (state.app.activeGroup === undefined) {
-      store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup:Object.keys(state.groups)[0]}})
-    }
+
+    // if (state.app.activeGroup === undefined) {
+    //   store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup:Object.keys(state.groups)[0]}})
+    // }
     
     if (state.app.activeGroup === undefined) {
       return (

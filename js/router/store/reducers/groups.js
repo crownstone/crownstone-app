@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import locationsReducer from './locations'
 import stonesReducer from './stones'
 import appliancesReducer from './appliances'
-import { update } from './util'
+import { update, getTime } from './reducerUtil'
 
 let defaultSettings = {
   config: {
@@ -11,16 +11,18 @@ let defaultSettings = {
     ownerKey: null,
     userKey: null,
     guestKey: null,
+    updatedAt: getTime()
   },
-  member: {
+  members: {
     firstName: undefined,
     lastName: undefined,
     picture: null,
-    accessLevel: undefined
+    accessLevel: undefined,
+    updatedAt: getTime()
   }
 };
 
-let memberReducer = (state = defaultSettings.member, action = {}) => {
+let memberReducer = (state = defaultSettings.members, action = {}) => {
   switch (action.type) {
     case 'ADD_MEMBER':
     case 'UPDATE_MEMBER':
@@ -30,6 +32,7 @@ let memberReducer = (state = defaultSettings.member, action = {}) => {
         newState.lastName = update(action.data.lastName, newState.lastName);
         newState.picture = update(action.data.picture, newState.picture);
         newState.level = update(action.data.level, newState.level);
+        newState.updatedAt = getTime();
         return newState;
       }
       return state;
@@ -66,6 +69,7 @@ let groupConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.ownerKey = update(action.data.ownerKey, newState.ownerKey);
         newState.userKey = update(action.data.userKey, newState.userKey);
         newState.guestKey = update(action.data.guestKey, newState.guestKey);
+        newState.updatedAt = getTime();
         return newState;
       }
       return state;

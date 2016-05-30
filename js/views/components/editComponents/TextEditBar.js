@@ -116,7 +116,6 @@ export class TextEditBar extends Component {
   }
 
   render() {
-
     if (this.props.verification === true) {
       return <View>{this.getTextBlock(false)}<Separator />{this.getTextBlock(true)}</View>;
     }

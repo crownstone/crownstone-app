@@ -50,14 +50,16 @@ export let CLOUD = {
   _uploadImage: function(options) {
     var formData = new FormData();
     let path = options.path.substr(0,4) === 'file' ? options.path : 'file://' + options.path;
-    formData.append('image', {type: 'image/jpeg', name: options.name, uri: path });
+    let filename = options.path.split('/');
+    filename = filename[filename.length-1];
+    formData.append('image', {type: 'image/jpeg', name: filename, uri: path });
     options.data = formData;
     return request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), this._accessToken, true)
   },
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
   },
-  _handleNetworkError: (error, options) => {
+  _handleNetworkError: function (error, options) {
     // this will eliminate all cloud requests.
     if (SILENCE_CLOUD === true)
       return;
@@ -69,6 +71,44 @@ export let CLOUD = {
       console.log(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
     }
   },
+
+  _setupRequest: function(reqType, endpoint, options = {}, type = 'query') {
+    return new Promise((resolve, reject) => {
+      let promiseBody = {endPoint: endpoint, data: options.data, type:type};
+      let promise;
+      switch (reqType) {
+        case 'POST':
+          promise = this._post(promiseBody);
+          break;
+        case 'GET':
+          promise = this._get(promiseBody);
+          break;
+        case 'PUT':
+          promise = this._put(promiseBody);
+          break;
+        case 'DELETE':
+          promise = this._delete(promiseBody);
+          break;
+        case 'HEAD':
+          promise = this._head(promiseBody);
+          break;
+        default:
+          console.error("UNKNOWN TYPE:", reqType);
+          return;
+      }
+      promise.then((reply) => {
+          if (reply.status === 200 || reply.status === 204)
+            resolve(reply.data);
+          else
+            debugReject(reply, reject);
+        })
+        .catch((error) => {
+          console.log(error, this)
+          this._handleNetworkError(error, options);
+        })
+    });
+  },
+
 
   // END USER API
   // These methods have all the endpoints embedded in them.
@@ -89,25 +129,12 @@ export let CLOUD = {
    * @returns {Promise}
    */
   registerUser: function(options) {
-    return new Promise((resolve, reject) => {
-      this._post({
-        endPoint: 'users',
-        data: {
-          email: options.email,
-          password: options.password,
-          firstName: options.firstName,
-          lastName: options.lastName
-        }, type: 'body'
-      }).then((reply) => {
-        // POST SUCCESS
-        if (reply.status === 200 || reply.status === 204) {
-          resolve(reply.data)
-        }
-        else {
-          debugReject(reply, reject);
-        }
-      }).catch((error) => {this._handleNetworkError(error, options);});
-    });
+    return this._setupRequest('POST', 'users', {data:{
+      email: options.email,
+      password: options.password,
+      firstName: options.firstName,
+      lastName: options.lastName
+    }}, 'body');
   },
   
   /**
@@ -155,10 +182,10 @@ export let CLOUD = {
 
   /**
    *
-   * @param file
+   * @param file {String} --> full path string.
    */
   uploadProfileImage: function(file) {
-    return this._uploadImage({endPoint:'/users/{id}/profilePic', ...file, type:'body'})
+    return this._uploadImage({endPoint:'/users/{id}/profilePic', path:file, type:'body'})
   },
 
   /**
@@ -169,23 +196,26 @@ export let CLOUD = {
     return this._download({endPoint:'/users/{id}/profilePic'}, toPath);
   },
 
+
+  removeProfileImage: function() {
+
+  },
+
   /**
    *
    * @returns {*}
    */
   getUserData: function (options = {}) {
-    return new Promise((resolve, reject) => {
-      this._get({endPoint: '/users/me'})
-        .then((reply) => {
-          if (reply.status === 200)
-            resolve(reply.data);
-          else
-            debugReject(reply, reject);
-        })
-        .catch((error) => {
-          this._handleNetworkError(error, options);
-        })
-    });
+    return this._setupRequest('GET', '/users/me', options);
+  },
+
+  /**
+   *
+   * @param options
+   * @returns {Promise}
+   */
+  updateUserData: function(options = {}) {
+    return this._setupRequest('PUT', '/users/{id}', options, 'body');
   },
 
   /**
@@ -193,33 +223,11 @@ export let CLOUD = {
    * @returns {*}
    */
   getGroups: function (options = {}) {
-    return new Promise((resolve, reject) => {
-      this._get({endPoint: '/users/{id}/groups'})
-        .then((reply) => {
-          if (reply.status === 200)
-            resolve(reply.data);
-          else
-            debugReject(reply, reject);
-        })
-        .catch((error) => {
-          this._handleNetworkError(error, options);
-        })
-    });
+    return this._setupRequest('GET', '/users/{id}/groups', options);
   },
 
   getLocations: function(options = {}) {
-    return new Promise((resolve, reject) => {
-      this._get({endPoint: '/Groups/{id}/ownedLocations'})
-        .then((reply) => {
-          if (reply.status === 200)
-            resolve(reply.data);
-          else
-            debugReject(reply, reject);
-        })
-        .catch((error) => {
-          this._handleNetworkError(error, options);
-        })
-    });
+    return this._setupRequest('GET', '/Groups/{id}/ownedLocations', options);
   },
 
   /**
@@ -227,20 +235,12 @@ export let CLOUD = {
    * @param options
    */
   requestVerificationEmail: function(options = {}) {
-    return new Promise((resolve, reject) => {
-      this._get({endPoint:'users/resendVerification', data:{email:options.email}, type:'query'})
-        .then((reply) => {
-          if (reply.status === 204) {
-            resolve(reply.data)
-          }
-          else {
-            debugReject(reply, reject);
-          }
-        })
-        .catch((error) => {
-          this._handleNetworkError(error, options);
-        })
-    });
+    return this._setupRequest(
+      'GET',
+      'users/resendVerification',
+      { data: { email: options.email }, background: options.background },
+      'query'
+    );
   },
 
   /**
@@ -248,21 +248,12 @@ export let CLOUD = {
    * @param options
    */
   requestPasswordResetEmail: function(options = {}) {
-    return new Promise((resolve, reject) => {
-      this._get({endPoint:'users/reset', data:{email:options.email}, type:'body'})
-        .then((reply) => {
-          if (reply.status === 204) {
-            resolve(reply)
-          }
-          else {
-            reject(reply);
-            Alert.alert('Cannot Send Email', reply.data);
-          }
-        })
-        .catch((error) => {
-          this._handleNetworkError(error, options);
-        })
-    });
+    return this._setupRequest(
+      'POST',
+      'users/reset',
+      { data: { email: options.email }, background: options.background },
+      'body'
+    );
   },
 
 
@@ -286,6 +277,9 @@ export let CLOUD = {
     return this._delete({endPoint:'/Stones/{id}', data:{}, type:'body'});
   },
 
+  sync: function() {
+
+  }
 };
 
 

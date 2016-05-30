@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { update } from './util'
+import { update, getTime } from './reducerUtil'
 
 import {
   behaviourReducerOnHomeEnter,
@@ -14,18 +14,21 @@ let defaultSettings = {
     name: undefined,
     icon: undefined,
     dimmable: false,
+    updatedAt: getTime()
   },
   linkedAppliances: { 
     onOn:  {},
-    onOff: {}
+    onOff: {},
+    updatedAt: getTime()
   },
   schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
-
+    updatedAt: getTime()
   },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
     behaviourConfig:{
       onlyOnAfterDusk: false,
-      onlyOffWhenEmpty: false
+      onlyOffWhenEmpty: false,
+      updatedAt: getTime()
     },
     onHomeEnter: { /* toggleState */ },
     onHomeExit:  { /* toggleState */ },
@@ -43,6 +46,7 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.name     = update(action.data.name,     newState.name);
         newState.icon     = update(action.data.icon,     newState.icon);
         newState.dimmable = update(action.data.dimmable, newState.dimmable);
+        newState.updatedAt = getTime();
         return newState;
       }
       return state;

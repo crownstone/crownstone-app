@@ -21,8 +21,6 @@ import { styles, colors , width, height, pxRatio } from '../styles'
 import RNFS from 'react-native-fs'
 import loginStyles from './LoginStyles'
 
-
-
 export class Login extends Component {
   constructor() {
     super();
@@ -48,7 +46,10 @@ export class Login extends Component {
   requestVerificationEmail() {
     this.props.eventBus.emit('showLoading', 'Requesting new verification email...');
     CLOUD.requestVerificationEmail({email:this.state.email.toLowerCase()})
-      .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});})
+      .then(() => {
+        this.props.eventBus.emit('hideLoading');
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
+      })
       .catch((reply) => {
         Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
       });
@@ -57,7 +58,10 @@ export class Login extends Component {
   requestPasswordResetEmail() {
     this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email:this.state.email.toLowerCase()})
-      .then(() => {Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true})})
+      .then(() => {
+        this.props.eventBus.emit('hideLoading');
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
+      })
       .catch((reply) => {
         Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
       });
@@ -151,7 +155,8 @@ export class Login extends Component {
       data:{
         email:this.state.email.toLowerCase(),
         accessToken:accessToken,
-        userId:userId
+        userId:userId,
+        passwordHash:''
       }
     });
     

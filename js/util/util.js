@@ -86,7 +86,7 @@ export const safeDeleteFile = function(uri) {
     RNFS.exists(uri)
       .then((fileExists) => {
         if (fileExists) {
-          return RNFS.unlink(path)
+          return RNFS.unlink(uri)
         }
       })
       .then(() => {

@@ -12,7 +12,7 @@ var Actions = require('react-native-router-flux').Actions;
 var Icon = require('react-native-vector-icons/Ionicons');
 import { Background } from './../components/Background'
 import { styles, colors } from './../styles'
-import { setupStyle } from './SetupStyles'
+import { setupStyle, SkipButton, StartButton } from './SetupStyles'
 
 let {width, height} = Dimensions.get("window");
 
@@ -66,19 +66,15 @@ export class SetupWelcome extends Component {
           <Text style={setupStyle.text}>You can always add Crownstones, Groups and Rooms later through the settings menu.</Text>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
-            <TouchableOpacity onPress={() => {Actions.tabBar()}} >
-              <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
-                <Icon name="ios-remove-circle-outline" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingRight:8}} />
-                <Text style={[setupStyle.buttonText,{fontWeight:'300'}]}>Skip</Text>
-              </View>
-            </TouchableOpacity>
+            <SkipButton onPress={() => {
+              Alert.alert(
+                "Are you sure?",
+                "You you can create a Group later in the settings menu or join an existing Group.",
+                [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.tabBar}]
+              )
+              }} />
             <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => {Actions.setupAddGroup()}} >
-              <View style={{paddingRight:20, flexDirection:'row', height:30}}>
-                <Text style={[setupStyle.buttonText]}>Start setup</Text>
-                <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
-              </View>
-            </TouchableOpacity>
+            <StartButton onPress={Actions.setupAddGroup} />
           </View>
         </Animated.View>
       </Background>

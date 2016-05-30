@@ -148,6 +148,17 @@ export class NextButton extends Component {
     </TouchableOpacity>
   }
 }
+export class StartButton extends Component {
+  render() {
+    return <TouchableOpacity onPress={this.props.onPress} >
+      <View style={{paddingRight:20, flexDirection:'row', height:30}}>
+        <Text style={[setupStyle.buttonText]}>Start setup</Text>
+        <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
+      </View>
+    </TouchableOpacity>
+  }
+}
+
 export class SkipButton extends Component {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >

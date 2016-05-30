@@ -1,9 +1,10 @@
-import { update } from './util'
+import { update, getTime } from './reducerUtil'
 
 let defaultState = {
   app: {
     activeGroup: undefined,
     doFirstTimeSetup: true,
+    updatedAt: getTime()
   }
 };
 
@@ -14,6 +15,7 @@ export default (state = defaultState.app, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.activeGroup = update(action.data.activeGroup, newState.activeGroup);
+        newState.updatedAt   = getTime();
         return newState;
       }
       return state;
@@ -22,6 +24,7 @@ export default (state = defaultState.app, action = {}) => {
         let newState = {...state};
         newState.activeGroup       = update(action.data.activeGroup, newState.activeGroup);
         newState.doFirstTimeSetup  = update(action.data.doFirstTimeSetup,  newState.doFirstTimeSetup);
+        newState.updatedAt         = getTime();
         return newState;
       }
       return state;
