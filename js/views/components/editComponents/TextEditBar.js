@@ -61,7 +61,7 @@ export class TextEditBar extends Component {
       case 'email':
         return emailChecker(value) ? 'valid' : 'errorInvalid';
       case 'password':
-        return this.validateCustom(value, {minLength: 8, numbers:{mandatory: true}, characters:{mandatory:true}});
+        return this.validateCustom(value, {minLength: 1});
       default:
         if (typeof this.props.validation === 'object') {
            return this.validateCustom(value)
@@ -76,7 +76,7 @@ export class TextEditBar extends Component {
       this.verificationContent = this.refs[this.refNameVerification].state.value;
 
     // if we need to do validation, validate the input.
-    if (this.props.validation !== undefined) {
+    if (this.props.validation !== undefined || this.props.verification) {
       let result = this.validateInput(value);
       this.setState({validation:result});
       if (this.props.validationCallback) {

@@ -25,8 +25,13 @@ export class PictureCircle extends Component {
   render() {
     let size = this.props.size || 60;
     if (this.props.value !== undefined && this.props.value !== null) {
-      let imageURI = this.props.value === 'file' ? this.props.value : 'file://' + this.props.value;
+
+      let imageURI = this.props.value;
+      // check if the image is an location on the disk or if it is from the assets.
+      if (this.props.value.substr(0,4) !== 'file' && this.props.value.substr(0,6) !== 'assets')
+        imageURI = 'file://' + this.props.value;
       imageURI += '?r=' + Math.random(); // cache buster
+
       return (
         <TouchableOpacity onPress={this.props.removePicture} style={{height:size}}>
           <View>

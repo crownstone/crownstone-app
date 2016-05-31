@@ -12,6 +12,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
+import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupStyles'
@@ -26,15 +27,35 @@ export class SetupAddGroup extends Component {
 
   saveGroupName() {
     const store = this.props.store;
+    const state = store.getState();
+
     if (this.state.groupName.length > 3) {
       this.props.eventBus.emit('showLoading', 'Creating Group...');
-      CLOUD.createGroup(this.state.groupName)
+      CLOUD.forUser(state.user.userId).createGroup(this.state.groupName)
         .then((response) => {
-          this.props.eventBus.emit('hideLoading');
+          // add the group to the database once it had been added in the cloud.
           store.dispatch({type:'ADD_GROUP', groupId: response.data.id, data:{name: response.data.name, uuid: response.data.uuid}});
-          // TODO: CrownstoneAPI.addGroup(response.data.uuid)
-          let state = store.getState();
           
+          // get all encryption keys the user has access to and store them in the appropriate groups.
+          CLOUD.getKeys()
+            .then((keyResult) => {
+              if (Array.isArray(keyResult.data)) {
+                keyResult.data.forEach((group) => {
+                  store.dispatch({type:'UPDATE_GROUP', groupId: group.groupId, data:{
+                    ownerKey: keyResult.data.ownerKey,
+                    userKey:  keyResult.data.userKey,
+                    guestKey: keyResult.data.guestKey
+                  }});
+                });
+                this.props.eventBus.emit('hideLoading');
+              }
+              else {
+                throw new Error("Key data is not an array.")
+              }
+            }).done();
+
+
+          let state = store.getState();
           // if there is only one group, set it to be active for the setup phase.
           if (Object.keys(state.groups).length === 1) {
             store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup: response.data.id}});
@@ -59,9 +80,9 @@ export class SetupAddGroup extends Component {
   render() {
     return (
       <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
-        <View style={styles.shadedStatusBar} />
+        <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={{flex:1, flexDirection:'column'}}>
-          <Text style={setupStyle.h0}>Group Setup</Text>
+          <Text style={[setupStyle.h0, {paddingTop:0}]}>Group Setup</Text>
           <Text style={setupStyle.text}>A Group is a place like "Home", or "Office" where you use your Crownstones.</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.information}>You can invite other people to join this group so they can use your Crownstones too.</Text>

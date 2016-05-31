@@ -32,9 +32,7 @@ export class PictureView extends Component {
     this.camera.capture()
       .then((data) => {
         this.props.eventBus.emit('hideLoading');
-        console.log(data)
-        Actions.pop();
-        Actions.picturePreview({image: data.path, selectCallback:this.props.selectCallback})
+        Actions.picturePreview({image: data.path, selectCallback:this.props.selectCallback, type:'replace'})
       })
       .catch(err => console.error(err));
   }

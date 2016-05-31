@@ -56,7 +56,7 @@ export const reducerCreate = params=> {
         }
       }
     }
-    console.log("ACTION", action);
+    console.log("ACTION", state, action);
     return defaultReducer(state, action);
   }
 };

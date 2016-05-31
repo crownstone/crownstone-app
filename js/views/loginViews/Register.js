@@ -19,9 +19,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors , width, height, pxRatio } from '../styles'
 
 // these will inform the user of possible issues with the passwords.
-let passwordStateNeutral = 'Your password must be at least 8 characters long, one of which being a number.';
-let passwordStateNumber = 'Your password must contain at least one number.';
-let passwordStateCharacter = 'Your password must contain at least one letter.';
+let passwordStateNeutral = 'Your password must not be empty.';
 let passwordStateConflict = 'Passwords do not match.';
 
 export class Register extends Component {
@@ -57,12 +55,6 @@ export class Register extends Component {
     };
 
     switch (validationState) {
-      case 'errorNoNumber':
-        setText(passwordStateNumber);
-        break;
-      case 'errorNoCharacter':
-        setText(passwordStateCharacter);
-        break;
       case 'errorNoMatch':
         setText(passwordStateConflict);
         break;

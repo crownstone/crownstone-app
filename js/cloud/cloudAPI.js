@@ -257,6 +257,13 @@ export let CLOUD = {
   },
 
 
+  getKeys: function() {
+    return this._setupRequest(
+      'GET',
+      'users/{id}/keys'
+    );
+  },
+
   /**
    *
    * @param groupName
