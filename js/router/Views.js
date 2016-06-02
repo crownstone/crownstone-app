@@ -28,7 +28,8 @@ import { SettingsProfile }          from '../views/settingsViews/SettingsProfile
 import { SettingsChangePassword }   from '../views/settingsViews/SettingsChangePassword'
 import { SettingsChangeEmail }      from '../views/settingsViews/SettingsChangeEmail'
 import { SettingsRooms }            from '../views/settingsViews/SettingsRooms'
-import { SettingsGroups }           from '../views/settingsViews/SettingsGroups'
+import { SettingsGroupIndex }       from '../views/settingsViews/SettingsGroupIndex'
+import { SettingsGroup }           from '../views/settingsViews/SettingsGroup'
 import { SettingsCrownstones }      from '../views/settingsViews/SettingsCrownstones'
 import { AppComplexity }            from '../views/settingsViews/AppComplexity'
 
@@ -63,7 +64,8 @@ export const Views = {
   SettingsChangePassword,
   SettingsChangeEmail,
   SettingsRooms,
-  SettingsGroups,
+  SettingsGroupIndex,
+  SettingsGroup,
   SettingsCrownstones,
   AppComplexity
 };

@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Alert } from 'react-native';
 import { request, download } from './cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../ExternalConfig'
-
+import { preparePictureURI } from '../util/util'
 
 
 let defaultHeaders = {
@@ -49,7 +49,7 @@ export let CLOUD = {
   },
   _uploadImage: function(options) {
     var formData = new FormData();
-    let path = options.path.substr(0,4) === 'file' ? options.path : 'file://' + options.path;
+    let path = preparePictureURI(options.path);
     let filename = options.path.split('/');
     filename = filename[filename.length-1];
     formData.append('image', {type: 'image/jpeg', name: filename, uri: path });

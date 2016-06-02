@@ -8,8 +8,8 @@ let defaultSettings = {
   config: {
     name: undefined,
     uuid: undefined, // ibeacon uuid
-    ownerKey: null,
-    userKey: null,
+    adminKey: null,
+    memberKey: null,
     guestKey: null,
     updatedAt: getTime()
   },
@@ -66,8 +66,8 @@ let groupConfigReducer = (state = defaultSettings.config, action = {}) => {
         let newState = {...state};
         newState.name = update(action.data.name, newState.name);
         newState.uuid = update(action.data.uuid, newState.uuid);
-        newState.ownerKey = update(action.data.ownerKey, newState.ownerKey);
-        newState.userKey = update(action.data.userKey, newState.userKey);
+        newState.adminKey = update(action.data.adminKey, newState.adminKey);
+        newState.memberKey = update(action.data.memberKey, newState.memberKey);
         newState.guestKey = update(action.data.guestKey, newState.guestKey);
         newState.updatedAt = getTime();
         return newState;

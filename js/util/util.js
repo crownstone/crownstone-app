@@ -94,3 +94,23 @@ export const safeDeleteFile = function(uri) {
       }).done()
   })
 };
+
+export const preparePictureURI = function(picture, cacheBuster = true) {
+  if (typeof picture === 'object') {
+    if (picture.uri) {
+      return picture.uri;
+    }
+  }
+
+  let pictureUri = picture;
+  // check if the image is an location on the disk or if it is from the assets.
+  if (picture.substr(0, 4) !== 'file' &&
+    picture.substr(0, 6) !== 'assets' &&
+    picture.substr(0, 4) !== 'http')
+    pictureUri = 'file://' + picture;
+
+  if (cacheBuster)
+    pictureUri += '?r=' + Math.random(); // cache buster
+
+  return pictureUri;
+}

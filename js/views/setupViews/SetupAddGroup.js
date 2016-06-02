@@ -42,9 +42,9 @@ export class SetupAddGroup extends Component {
               if (Array.isArray(keyResult.data)) {
                 keyResult.data.forEach((group) => {
                   store.dispatch({type:'UPDATE_GROUP', groupId: group.groupId, data:{
-                    ownerKey: keyResult.data.ownerKey,
-                    userKey:  keyResult.data.userKey,
-                    guestKey: keyResult.data.guestKey
+                    adminKey: keyResult.data.keys.admin,
+                    memberKey:  keyResult.data.keys.member,
+                    guestKey: keyResult.data.keys.guest
                   }});
                 });
                 this.props.eventBus.emit('hideLoading');

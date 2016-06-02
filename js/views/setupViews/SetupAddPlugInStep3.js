@@ -84,7 +84,7 @@ export class SetupAddPlugInStep3 extends Component {
             placeholder='Add Room'
             placeholderTextColor='#ddd'
             value={this.state.roomName}
-            callback={(newValue) => {this.setState({roomName:newValue,addRoomEditing: false}); console.log('here'); onSubmitEditing(newValue)}}
+            callback={(newValue) => {this.setState({roomName:newValue,addRoomEditing: false}); onSubmitEditing(newValue);}}
           />
         </View>
       </View>
@@ -95,8 +95,7 @@ export class SetupAddPlugInStep3 extends Component {
     const { store } = this.props;
     const state = store.getState();
     let activeGroup = state.app.activeGroup;
-    // let rooms = state.groups[activeGroup].locations;
-    let rooms = {bar:{config:{name:'hello'}}}
+    let rooms = state.groups[activeGroup].locations;
     let roomIds = Object.keys(rooms).sort();
 
     let roomElements = [];

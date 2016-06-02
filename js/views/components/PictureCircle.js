@@ -11,6 +11,7 @@ import { IconCircle }  from './IconCircle'
 var Icon = require('react-native-vector-icons/Ionicons');
 import { styles, colors} from '../styles'
 import { eventBus } from '../../util/eventBus'
+import { preparePictureURI } from '../../util/util'
 var Actions = require('react-native-router-flux').Actions;
 
 export class PictureCircle extends Component {
@@ -26,11 +27,7 @@ export class PictureCircle extends Component {
     let size = this.props.size || 60;
     if (this.props.value !== undefined && this.props.value !== null) {
 
-      let imageURI = this.props.value;
-      // check if the image is an location on the disk or if it is from the assets.
-      if (this.props.value.substr(0,4) !== 'file' && this.props.value.substr(0,6) !== 'assets')
-        imageURI = 'file://' + this.props.value;
-      imageURI += '?r=' + Math.random(); // cache buster
+      let imageURI = preparePictureURI(this.props.value);
 
       return (
         <TouchableOpacity onPress={this.props.removePicture} style={{height:size}}>

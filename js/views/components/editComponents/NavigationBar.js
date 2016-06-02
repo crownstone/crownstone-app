@@ -13,9 +13,16 @@ import { styles, colors } from '../../styles'
 export class NavigationBar extends Component {
 
   render() {
+    let barHeight = this.props.barHeight;
+    if (this.props.largeIcon)
+      barHeight = 75;
+    else if (this.props.icon)
+      barHeight = 50;
     return (
       <TouchableHighlight onPress={() => {this.props.setActiveElement(); this.props.callback()}}>
-        <View style={[styles.listView, {height:this.props.barHeight}]}>
+        <View style={[styles.listView, {height: barHeight}]}>
+          {this.props.largeIcon}
+          {this.props.icon}
           {this.props.value !== undefined ?
             <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
             :
