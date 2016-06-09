@@ -9,7 +9,7 @@
 // CalendarManagerBridge.m
 #import "RCTBridgeModule.h"
 
-@interface RCT_EXTERN_MODULE(TitleMaker, NSObject)
+@interface RCT_EXTERN_MODULE(Bluenet, NSObject)
 
 RCT_EXTERN_METHOD(get:(nonnull NSNumber *)what callback:(RCTResponseSenderBlock)callback)
 

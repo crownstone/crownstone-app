@@ -87,7 +87,6 @@ class CrownstoneAPIClass {
       }
     });
   }
-
 };
 
 class setupCrownstone {

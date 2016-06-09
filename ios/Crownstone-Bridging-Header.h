@@ -6,3 +6,4 @@
 // It's created when we create a Cocoa Touch Class file via the 'File>New File' Menu
 
 #import "RCTBridgeModule.h"
+#import "AppDelegate.h"

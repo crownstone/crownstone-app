@@ -68,7 +68,7 @@ export let CLOUD = {
       this._networkErrorHandler(error);
     }
     if (DEBUG === true) {
-      console.log(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
+      console.error(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
     }
   },
 
@@ -100,10 +100,10 @@ export let CLOUD = {
           if (reply.status === 200 || reply.status === 204)
             resolve(reply.data);
           else
-            debugReject(reply, reject);
+            debugReject(reply, reject, arguments);
         })
         .catch((error) => {
-          console.log(error, this)
+          console.error(error, this);
           this._handleNetworkError(error, options);
         })
     });
@@ -169,11 +169,11 @@ export let CLOUD = {
                     options.onInvalidCredentials();
                   break;
                 default:
-                  debugReject(reply, reject);
+                  debugReject(reply, reject, options);
               }
             }
             else {
-              debugReject(reply, reject);
+              debugReject(reply, reject, options);
             }
           }
         }).catch((error) => {this._handleNetworkError(error, options);});
@@ -316,9 +316,9 @@ function _getId(url, obj) {
     return obj._stoneId;
 }
 
-function debugReject(reply, reject) {
+function debugReject(reply, reject, debugOptions) {
   if (DEBUG) {
-    console.log("UNHANDLED HTML ERROR IN API:", reply);
+    console.error("UNHANDLED HTML ERROR IN API:", reply, debugOptions);
   }
   reject(reply);
 }

@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { BLUENET } from './proxy';
 import { EventBus } from '../util/eventBus'
 /* Pairing process:
 
@@ -21,8 +21,9 @@ import { EventBus } from '../util/eventBus'
 //   this.setState(this.state);
 // });
 
-class NativeBridgeClass {
+export class NativeBridgeClass {
   constructor() {
+
     this.BLEevents = new EventBus();
     this.connectedTo = undefined;
   }

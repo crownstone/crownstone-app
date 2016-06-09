@@ -11,6 +11,8 @@
 
 #import "RCTRootView.h"
 #import "RCTSplashScreen.h"
+#import "Crownstone-Swift.h"
+
 
 @implementation AppDelegate
 
@@ -32,7 +34,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.45:8081/index.ios.bundle?platform=ios&dev=true"];
 
   /**
    * OPTION 2
@@ -43,17 +45,23 @@
    */
 
 //   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-
+  
+  
+  
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"Crownstone"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-  
+
   [RCTSplashScreen show:rootView]; //<--- add show SplashScreen
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
+
   rootViewController.view = rootView;
+  
+  ViewPassThrough *pass = [[ViewPassThrough alloc] initWithViewController: rootViewController];
+  
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
