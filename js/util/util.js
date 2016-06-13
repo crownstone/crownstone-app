@@ -113,4 +113,5 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
     pictureUri += '?r=' + Math.random(); // cache buster
 
   return pictureUri;
-}
+};
+

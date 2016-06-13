@@ -1,6 +1,5 @@
 import React, { Component } from 'react' 
 import {
-  
   Dimensions,
   Image,
   NativeModules,
@@ -9,8 +8,7 @@ import {
   View
 } from 'react-native';
 
-import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
-import { styles, colors} from '../styles'
+import { ProfilePicture } from './ProfilePicture'
 
 const Ionicon = require('react-native-vector-icons/Ionicons');
 
@@ -22,6 +20,14 @@ export class RoomCircle extends Component {
 
   _onPressButton() {
     this.props.goto('RoomOverview')
+  }
+
+  _drawUsers(users) {
+    // TODO: generalize
+    if (users && users.length > 0) {
+      return <ProfilePicture pictureURI={users[0].picture} size={50} style={{position:'absolute', top:-10, left:0}} />
+    }
+    return undefined
   }
 
   _getImage() {
@@ -101,31 +107,32 @@ export class RoomCircle extends Component {
             height: outerDiameter,
             backgroundColor:`rgb(${this.props.color.r},${this.props.color.g},${this.props.color.b})`
           }}>
-          <View style={{
-              position:'relative',
-              top:-(offset) * outerDiameter - borderWidth,
-              left:-borderWidth,
-              backgroundColor:'transparent',
-              width:outerDiameter,
-              height:outerDiameter,
-              alignItems:'center',
-              justifyContent:'center'
-              }}>
-            <Ionicon name={this.props.icon} size={iconSize} color='#ffffff' />
-          </View>
-          <View style={{
-              position:'relative',
-              top:-(0.4 + offset)*outerDiameter - borderWidth,
-              left:-borderWidth,
-              backgroundColor:'transparent',
-              width:outerDiameter,
-              height:(0.4+offset)*outerDiameter,
-              alignItems:'center',
-              justifyContent:'center'
-              }}>
-            <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:iconSize/4}}>{this.props.content.value + ' ' + this.props.content.unit}</Text>
-          </View>
-      </View>
+            <View style={{
+                position:'relative',
+                top:-(offset) * outerDiameter - borderWidth,
+                left:-borderWidth,
+                backgroundColor:'transparent',
+                width:outerDiameter,
+                height:outerDiameter,
+                alignItems:'center',
+                justifyContent:'center'
+                }}>
+              <Ionicon name={this.props.icon} size={iconSize} color='#ffffff' />
+            </View>
+            <View style={{
+                position:'relative',
+                top:-(0.4 + offset)*outerDiameter - borderWidth,
+                left:-borderWidth,
+                backgroundColor:'transparent',
+                width:outerDiameter,
+                height:(0.4+offset)*outerDiameter,
+                alignItems:'center',
+                justifyContent:'center'
+                }}>
+              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:iconSize/4}}>{this.props.content.value + ' ' + this.props.content.unit}</Text>
+            </View>
+        </View>
+        {this._drawUsers(this.props.presentUsers)}
       </View>
       );
     }

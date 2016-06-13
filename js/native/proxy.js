@@ -1,11 +1,19 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, NativeAppEventEmitter } from 'react-native';
 
-let Bluenet = NativeModules.Bluenet;
+// var subscription = NativeAppEventEmitter.addListener(
+//   'EventReminder',
+//   (reminder) => console.log(reminder.name)
+// );
+//
+// // Don't forget to unsubscribe, typically in componentWillUnmount
+// subscription.remove();
 
-export const BLUENET = function(functionName, param) {
+export const Bluenet = NativeModules.BluenetJS;
+
+export const BluenetPromise = function(functionName, param) {
   return new Promise((resolve, reject) => {
     Bluenet[functionName](param, (result) => {
-      if (result.status === 'error') {
+      if (result.error === true) {
         reject(result.data);
       }
       else {
@@ -14,4 +22,3 @@ export const BLUENET = function(functionName, param) {
     })
   })
 };
-

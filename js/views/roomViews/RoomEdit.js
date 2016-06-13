@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  
   TouchableHighlight,
   PixelRatio,
   ScrollView,
@@ -16,7 +15,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { Explanation } from '../components/editComponents/Explanation'
-import { EditSpacer } from '../components/editComponents/EditSpacer'
+import { getRoomContentFromState } from '../../util/dataUtil'
 
 import { styles, colors } from '../styles'
 
@@ -32,7 +31,7 @@ export class RoomEdit extends Component {
     this.unsubscribe();
   }
 
-  _renderer(device, index, stoneId) {
+  _renderer(item, index, stoneId) {
     return (
       <TouchableHighlight
         key={stoneId + '_entry'}
@@ -40,10 +39,10 @@ export class RoomEdit extends Component {
         style={{flex:1}}>
         <View style={styles.listView}>
           <DeviceEntry
-            name={device.config.name}
-            icon={device.config.icon}
-            state={device.state.state}
-            currentUsage={device.state.currentUsage}
+            name={item.device.config.name}
+            icon={item.device.config.icon}
+            state={item.stone.state.state}
+            currentUsage={item.stone.state.currentUsage}
             navigation={true}
             control={false}
           />
@@ -52,15 +51,26 @@ export class RoomEdit extends Component {
     );
   }
 
+  getTrainingButton() {
+    let items = [];
+    // room Name:
+    items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
+    items.push({label:'Retrain Room', type: 'navigation', callback: () => {}});
+    items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
+    'you can retrain this room to improve accuracy.', type: 'explanation',  below:true});
+    return items;
+  }
+
   constructOptions(store, room) {
     let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId};
     let items = [];
     // room Name:
+    items.push({type: 'spacer'});
     items.push({label:'Room Name', type: 'textEdit', value: room.config.name, callback: (newText) => {
       newText = (newText === '') ? 'Untitled Room' : newText;
       store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
     }});
-    items.push({label:'Icon', type: 'icon', value:'easel', callback: () => {}});
+    items.push({label:'Icon', type: 'icon', value:room.config.icon, callback: () => {}});
     //items.push({label:'Picture', type: 'picture', value:undefined, callback: () => {}});
     return items;
   }
@@ -69,16 +79,18 @@ export class RoomEdit extends Component {
     const store   = this.props.store;
     const state   = store.getState();
     const room    = state.groups[this.props.groupId].locations[this.props.locationId];
-    const devices = room.stones;
+
+    let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
 
     let options = this.constructOptions(store, room);
+    let training = this.getTrainingButton();
     return (
       <Background>
         <ScrollView>
-          <EditSpacer top={true} />
           <ListEditableItems items={options} separatorIndent={true}/>
           <Explanation text='DEVICES IN ROOM:' />
-          <SeparatedItemList items={devices} renderer={this._renderer.bind(this)} separatorIndent={false} />
+          <SeparatedItemList items={items} renderer={this._renderer.bind(this)} separatorIndent={false} />
+          <ListEditableItems items={training} separatorIndent={true}/>
         </ScrollView>
       </Background>
     )

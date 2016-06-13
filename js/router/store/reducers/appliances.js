@@ -1,13 +1,6 @@
 import { combineReducers } from 'redux'
 import { update, getTime } from './reducerUtil'
-
-import {
-  behaviourReducerOnHomeEnter,
-  behaviourReducerOnHomeExit,
-  behaviourReducerOnRoomEnter,
-  behaviourReducerOnRoomExit,
-  scheduleReducer,
-} from './shared'
+import { updateToggleState, toggleState } from './shared'
 
 let defaultSettings = {
   config: {
@@ -61,6 +54,51 @@ let linkedAppliancesReducer = (state = defaultSettings.linkedDevices, action = {
     case 'ADD_LINKED_DEVICES':
     case 'UPDATE_LINKED_DEVICES':
     case 'REMOVE_LINKED_DEVICES':
+      return {...state, ...action.data};
+    default:
+      return state;
+  }
+};
+
+
+let behaviourReducerOnHomeEnter = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+let behaviourReducerOnHomeExit = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+let behaviourReducerOnRoomEnter = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+let behaviourReducerOnRoomExit = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+
+let scheduleReducer = (state = {}, action = {}) => {
+  switch (action.type) {
+    case 'ADD_APPLIANCE_SCHEDULE':
+    case 'UPDATE_APPLIANCE_SCHEDULE':
+    case 'REMOVE_APPLIANCE_SCHEDULE':
       return {...state, ...action.data};
     default:
       return state;

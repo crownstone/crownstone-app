@@ -2,9 +2,9 @@ import { NativeBridge } from './NativeBridge'
 
 class CrownstoneAPIClass {
   constructor() {
-    NativeBridge.events.on('statusUpdate',               (data) => {this._makeUnique(data); this._updateCrownstones(data, this.activeCrownstones)});
-    NativeBridge.events.on('foundCrownstoneInSetupMode', (data) => {this._makeUnique(data); this._updateCrownstones(data, this.setupModeCrownstones)});
-    NativeBridge.events.on('foundCrownstoneInDFUMode',   (data) => {this._makeUnique(data); this._updateCrownstones(data, this.dfuModeCrownstones)});
+    NativeBridge.BleEvents.on('statusUpdate',               (data) => {this._makeUnique(data); this._updateCrownstones(data, this.activeCrownstones)});
+    NativeBridge.BleEvents.on('foundCrownstoneInSetupMode', (data) => {this._makeUnique(data); this._updateCrownstones(data, this.setupModeCrownstones)});
+    NativeBridge.BleEvents.on('foundCrownstoneInDFUMode',   (data) => {this._makeUnique(data); this._updateCrownstones(data, this.dfuModeCrownstones)});
     this.dfuModeCrownstones = {};
     this.setupModeCrownstones = {};
     this.activeCrownstones = {};

@@ -156,7 +156,6 @@ export class Login extends Component {
         email:this.state.email.toLowerCase(),
         accessToken:accessToken,
         userId:userId,
-        passwordHash:''
       }
     });
     

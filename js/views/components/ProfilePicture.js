@@ -13,6 +13,7 @@ var Icon = require('react-native-vector-icons/Ionicons');
 export class ProfilePicture extends Component {
   render() {
     let size = this.props.size || 40;
+    let innerSize = this.props.innerSize || size;
     if (this.props.picture !== undefined && this.props.picture !== null) {
       let pictureURI = preparePictureURI(this.props.picture);
 
@@ -32,10 +33,36 @@ export class ProfilePicture extends Component {
     }
     else {
       return (
-        <View style={{position:'relative', top:3, paddingRight: 10}}>
-          <Icon name={this.props.placeHolderIcon || 'ios-contact'} size={size} color={this.props.color || colors.menuBackground.h} />
+        <View  style={this.props.style}>
+        <View style={[{
+              backgroundColor:'#fff',
+              width:size,
+              height:size,
+              borderRadius:0.5*size,
+              overflow:'hidden',
+              alignItems:'center',
+              justifyContent:'center'
+             }]}>
+          <Icon
+            name={this.props.placeHolderIcon || 'ios-contact'}
+            size={innerSize} color={this.props.color || colors.menuBackground.h}
+            style={{paddingTop:0.1*size, margin:0}}
+          />
+        </View>
+        {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
         </View>
       );
     }
   }
+}
+
+let nameStyle = {
+  color:'#fff',
+  fontSize:10,
+  fontWeight:'200',
+  flex:1,
+  backgroundColor:'transparent',
+  alignItems:'center',
+  justifyContent:'center',
+  textAlign:'center'
 }

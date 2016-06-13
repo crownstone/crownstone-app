@@ -12,9 +12,6 @@ import {
 import { styles, colors } from '../styles'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { EditableItem } from '../components/EditableItem'
-import { Explanation } from '../components/editComponents/Explanation'
-import { EditSpacer } from '../components/editComponents/EditSpacer'
 
 var Actions = require('react-native-router-flux').Actions;
 var Icon = require('react-native-vector-icons/Ionicons');
@@ -51,7 +48,7 @@ export class DeviceBehaviourEdit extends Component {
     if (device.behaviour[event].delay === undefined || device.behaviour[event].delay == 0)
       return '';
 
-    return 'after ' + Math.floor(device.behaviour[event].delay/60) + ' minutes';
+    return 'after ' + Math.floor(device.behaviour[event].delay) + ' seconds';
   }
 
   _getTitle(eventName) {
@@ -69,8 +66,8 @@ export class DeviceBehaviourEdit extends Component {
     }
   }
 
-  constructOptions(store, device) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId};
+  constructOptions(store, device, stone) {
+    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
     let items = [];
 
     let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title:this._getTitle(eventName), ...requiredData})};
@@ -84,6 +81,7 @@ export class DeviceBehaviourEdit extends Component {
     eventLabel = 'onHomeExit';
     items.push({label:'WHEN YOU LEAVE YOUR HOME', type: 'explanation',  below:false});
     items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
+    items.push({label:'If there are still people (from your group) left in the house, this will not be triggered.', type: 'explanation',  below:true});
 
     // Behaviour for onRoomEnter event
     eventLabel = 'onRoomEnter';
@@ -97,15 +95,15 @@ export class DeviceBehaviourEdit extends Component {
     items.push({label:'If there are still people (from your group) left in the room, this will not be triggered.', type: 'explanation',  below:true});
 
     // Special behaviour cases
-    items.push({label:'SPECIAL CASES', type: 'explanation', style:{paddingTop:0}, below:false});
-    items.push({label:'Only On After Dusk', value: device.behaviour.config.onlyOnAfterDusk , type: 'switch', valueStyle:{color:'#bababa'}, callback:(newValue) => {
-      store.dispatch({
-        ...requiredData,
-        type: 'UPDATE_BEHAVIOUR_CONFIG',
-        data: {onlyOnAfterDusk: newValue}
-      });
-    }});
-    items.push({label:'Enable if you want the device to only turn on when it\'s getting dark outside.', type: 'explanation',  below:true});
+    // items.push({label:'SPECIAL CASES', type: 'explanation', style:{paddingTop:0}, below:false});
+    // items.push({label:'Only On After Dusk', value: device.behaviour.config.onlyOnAfterDusk , type: 'switch', valueStyle:{color:'#bababa'}, callback:(newValue) => {
+    //   store.dispatch({
+    //     ...requiredData,
+    //     type: 'UPDATE_BEHAVIOUR_CONFIG',
+    //     data: {onlyOnAfterDusk: newValue}
+    //   });
+    // }});
+    // items.push({label:'Enable if you want the device to only turn on when it\'s getting dark outside.', type: 'explanation',  below:true});
 
     return items;
   }
@@ -113,10 +111,17 @@ export class DeviceBehaviourEdit extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
-    const device  = room.stones[this.props.stoneId];
+    let stone  = state.groups[this.props.groupId].stones[this.props.stoneId];
 
-    let options = this.constructOptions(store, device);
+    let options = [];
+    if (stone.config.applianceId) {
+      let device = state.groups[this.props.groupId].appliances[stone.config.applianceId]
+      options = this.constructOptions(store, device, stone);
+    }
+    else {
+      options = this.constructOptions(store, stone, stone);
+    }
+
     return (
       <Background>
         <ScrollView>

@@ -1,5 +1,7 @@
-import { BLUENET } from './proxy';
+import { BluenetPromise, Bluenet } from './proxy';
+import { NativeModules, NativeAppEventEmitter } from 'react-native';
 import { EventBus } from '../util/eventBus'
+
 /* Pairing process:
 
 // crownstone is in low tx mode since it's unclaimed (no keys and no id)
@@ -24,8 +26,75 @@ import { EventBus } from '../util/eventBus'
 export class NativeBridgeClass {
   constructor() {
 
-    this.BLEevents = new EventBus();
-    this.connectedTo = undefined;
+
+    // Bluenet.reset();
+    // Bluenet.initBluenet();
+    //
+    // Bluenet.startCollectingFingerprint('groupid', 'locationid')
+    // setTimeout(() => {Bluenet.finishCollectingFingerprint()},200)
+    //
+    // console.log("STARTING THE CLASSES",NativeAppEventEmitter);
+    //
+    // this.BleEvents = new EventBus();
+    // this.LocationEvents = new EventBus();
+    // this.connectedTo = undefined;
+    //
+    // var subscription = NativeAppEventEmitter.addListener(
+    //   'advertisementData',
+    //   (advertisementData) => {
+    //     let data = JSON.parse(advertisementData);
+    //     this.BleEvents.emit('statusUpdate', {
+    //       type: 'statusUpdate',
+    //       handle: data.id,
+    //       rssi: data.rssi,
+    //       message: {
+    //         id: 2,
+    //         subjectId: 2,
+    //         state: 1,
+    //         currentUsage: 200,
+    //         timestamp: new Date().valueOf(),
+    //         totalUsage: 4000,
+    //         temperature: 20
+    //       }
+    //     });
+    //   });
+    //
+    //
+    // var subscription = NativeAppEventEmitter.addListener(
+    //   'iBeaconAdvertisement',
+    //   (iBeaconAdvertisement) => {
+    //     let data = JSON.parse(iBeaconAdvertisement)
+    //     console.log("iBeaconAdvertisement:",iBeaconAdvertisement);
+    //   }//this.bleEvents.emit('statusUpdate', data);}
+    // );
+    //
+    // var subscription = NativeAppEventEmitter.addListener(
+    //   'enterGroup',
+    //   (enterGroup) => {
+    //     console.log("enterGroup:",enterGroup);
+    //   }//this.bleEvents.emit('statusUpdate', data);}
+    // );
+    // var subscription = NativeAppEventEmitter.addListener(
+    //   'exitGroup',
+    //   (exitGroup) => {console.log("exitGroup:",exitGroup);}//this.bleEvents.emit('statusUpdate', data);}
+    // );
+    // var subscription = NativeAppEventEmitter.addListener(
+    //   'enterLocation',
+    //   (enterLocation) => {console.log("enterLocation:",enterLocation);}//this.bleEvents.emit('statusUpdate', data);}
+    // );
+    // var subscription = NativeAppEventEmitter.addListener(
+    //   'exitLocation',
+    //   (exitLocation) => {console.log("exitLocation:",exitLocation);}//this.bleEvents.emit('statusUpdate', data);}
+    // );
+    // var subscription = NativeAppEventEmitter.addListener(
+    //   'currentLocation',
+    //   (currentLocation) => {console.log("currentLocation:", currentLocation);}//this.bleEvents.emit('statusUpdate', data);}
+    // );
+
+
+    // Don't forget to unsubscribe, typically in componentWillUnmount
+    //subscription.remove();
+
   }
 
   /**

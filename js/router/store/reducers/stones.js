@@ -1,16 +1,11 @@
 import { createStore, combineReducers } from 'redux'
 import { update, getTime } from './reducerUtil'
-import {
-  behaviourReducerOnHomeEnter,
-  behaviourReducerOnHomeExit,
-  behaviourReducerOnRoomEnter,
-  behaviourReducerOnRoomExit,
-  scheduleReducer,
-} from './shared'
+import { updateToggleState, toggleState } from './shared'
 
 let defaultSettings = {
   config: {
     name: undefined,
+    icon: 'ios-outlet',
     applianceId: undefined,
     locationId: undefined,
     macAddress: undefined,
@@ -76,6 +71,51 @@ let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
 
 let stoneStatisticsReducer = (state = [], action = {}) => {
   switch (action.type) {
+    default:
+      return state;
+  }
+};
+
+
+let behaviourReducerOnHomeEnter = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+let behaviourReducerOnHomeExit = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+let behaviourReducerOnRoomEnter = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+let behaviourReducerOnRoomExit = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+
+let scheduleReducer = (state = {}, action = {}) => {
+  switch (action.type) {
+    case 'ADD_STONE_SCHEDULE':
+    case 'UPDATE_STONE_SCHEDULE':
+    case 'REMOVE_STONE_SCHEDULE':
+      return {...state, ...action.data};
     default:
       return state;
   }

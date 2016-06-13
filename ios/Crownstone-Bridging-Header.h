@@ -5,5 +5,6 @@
 // This file seems to be neccessary for the module export to work.
 // It's created when we create a Cocoa Touch Class file via the 'File>New File' Menu
 
+#import "RCTBridge.h"
 #import "RCTBridgeModule.h"
-#import "AppDelegate.h"
+#import "RCTEventDispatcher.h"

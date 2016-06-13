@@ -132,7 +132,7 @@ export class AppRouter extends Component {
         <View style={{flex:1}}>
           <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
-              <Scene key="loginSplash"              component={Views.LoginSplash}          hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
+              <Scene key="loginSplash"              component={Views.LoginSplash}          hideNavBar={true}  type="reset" initial={this.state.loggedIn === false && false} />
               <Scene key="login"                    component={Views.Login}                hideNavBar={true}  />
               <Scene key="register"                 component={Views.Register}             hideNavBar={false} title="Register" {...navBarStyle} />
               <Scene key="registerConclusion"       component={Views.RegisterConclusion}   hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
@@ -148,7 +148,7 @@ export class AppRouter extends Component {
               <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
               <Scene key="setupAddRoom"             component={Views.SetupAddRoom}         hideNavBar={true}  />
               <Scene key="setupTrainRoom"           component={Views.SetupTrainRoom}       hideNavBar={true}  />
-              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={this.state.loggedIn && false}>
+              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={this.state.loggedIn || true}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />
                   <Scene key="roomOverview"           component={Views.RoomOverview}        onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />

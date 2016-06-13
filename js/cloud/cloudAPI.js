@@ -63,7 +63,7 @@ export let CLOUD = {
     // this will eliminate all cloud requests.
     if (SILENCE_CLOUD === true)
       return;
-    
+
     if (options.background !== true) {
       this._networkErrorHandler(error);
     }
@@ -103,7 +103,7 @@ export let CLOUD = {
             debugReject(reply, reject, arguments);
         })
         .catch((error) => {
-          console.error(error, this);
+          console.trace(error, this);
           this._handleNetworkError(error, options);
         })
     });

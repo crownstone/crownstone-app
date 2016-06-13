@@ -13,6 +13,13 @@ let defaultSettings = {
 
 let userPresenceReducer = (state = [], action = {}) => {
   switch (action.type) {
+    case 'USER_ENTER':
+      return [...state, action.data.userId];
+    case 'USER_EXIT':
+      let userIndex = state.indexOf(action.data.userId);
+      if (userIndex !== -1) {
+        return [...state.slice(0,userIndex).concat(list.slice(userIndex+1))]
+      }
     default:
       return state;
   }

@@ -15,26 +15,31 @@ export class SeparatedItemList extends Component {
     let renderItems = [];
 
     let indentSeparator = this.props.separatorIndent === true;
-    let editableItem = (item) => {return !(item.type === 'spacer' || item.type === 'explanation')};
+    let isEditableItem = (item) => {return !(item.type === 'spacer' || item.type === 'explanation')};
     let iterator = (prevItem, item, nextItem, index, itemId) => {
+      let isItemEditable = isEditableItem(item);
       if (prevItem !== undefined) {
-        if (editableItem(prevItem) && editableItem(item) && indentSeparator) {
+        if (isEditableItem(prevItem) && isItemEditable && indentSeparator) {
           renderItems.push(<Separator key={index + 'top_separator'} fullLength={false} />);
         }
-        else if (editableItem(item) || editableItem(prevItem)) {
+        else if (isItemEditable || isEditableItem(prevItem)) {
           renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} />);
         }
+      }
+      else if (isItemEditable == true) {
+        renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} />);
       }
 
       renderItems.push(this.props.renderer(item, index, itemId));
 
       if (nextItem === undefined) {
-        if (editableItem(item)) {
+        if (isItemEditable) {
           renderItems.push(<Separator key={index + 'bottom_separator'} fullLength={true} />);
         }
       }
     };
 
+    
     if (Array.isArray(items)) {
       items.forEach((item, index) => {
         iterator(

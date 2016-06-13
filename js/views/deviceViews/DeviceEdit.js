@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {
-  
+  Alert,
   TouchableOpacity,
   PixelRatio,
   ScrollView,
@@ -33,29 +33,39 @@ export class DeviceEdit extends Component {
   }
 
 
-  constructOptions(store, device) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId};
+  // TODO: make options for empty crownstones
+  constructOptions(store, device, stone) {
+    let requiredData = {
+      groupId: this.props.groupId,
+      locationId: this.props.locationId,
+      stoneId: this.props.stoneId,
+      applianceId: stone.config.applianceId
+    };
     let items = [];
 
-    let toBehaviour = () => {Actions.deviceBehaviourEdit(requiredData)};
-    let toSchedule = () => {Actions.deviceScheduleEdit(requiredData)};
-    let toLinkedDevices = () => {};
-
-    // device Name:
+    let toBehaviour = () => { Actions.deviceBehaviourEdit(requiredData) };
+    let toSchedule  = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
+    /*Actions.deviceScheduleEdit(requiredData) */
+    let toLinkedDevices = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
+    // Crownstone Name:
     items.push({label:'Device Name', type: 'textEdit', value:device.config.name, callback: (newText) => {
-      store.dispatch({...requiredData, type:'UPDATE_STONE_CONFIG', data:{name:newText}});
+      store.dispatch({...requiredData, type:'UPDATE_APPLIANCE_CONFIG', data:{name:newText}});
     }});
 
     // icon picker
-    items.push({label:'Icon', type: 'icon', value:'easel', callback: () => {}});
+    items.push({label:'Icon', type: 'icon', value: device.config.icon, callback: () => {}});
 
-    // dimmable
-    items.push({label:'Dimmable', type: 'switch', value:device.config.dimmable, callback: (newValue) => {
-        store.dispatch({...requiredData, type:'UPDATE_STONE_CONFIG', data:{dimmable:newValue}});
-    }});
+    // icon picker
+    items.push({label:'Unplug Device', type: 'button', style: {color:colors.blue.h}, callback: () => {}});
 
-    // spacer
-    items.push({type: 'spacer'});
+    // // dimmable
+    // items.push({label:'Dimmable', type: 'switch', value:device.config.dimmable, callback: (newValue) => {
+    //     store.dispatch({...requiredData, type:'UPDATE_STONE_CONFIG', data:{dimmable:newValue}});
+    // }});
+
+    // unplugging explanation
+    items.push({label:'Unplugging will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
+
 
     // behaviour link
     items.push({label:'Behaviour', type: 'navigation', callback:toBehaviour});
@@ -84,10 +94,19 @@ export class DeviceEdit extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
-    const device  = room.stones[this.props.stoneId];
+    const stone  = state.groups[this.props.groupId].stones[this.props.stoneId];
 
-    let options = this.constructOptions(store, device);
+
+    let options = [];
+    if (stone.config.applianceId !== undefined) {
+      let device = state.groups[this.props.groupId].appliances[stone.config.applianceId];
+      options = this.constructOptions(store, device, stone);
+    }
+    else {
+      options = this.constructOptions(store, stone, stone);
+    }
+
+
     return (
       <Background>
         <ScrollView>

@@ -10,19 +10,21 @@ import {
 } from 'react-native';
 
 import { styles, colors} from '../styles'
+import { ProfilePicture } from './ProfilePicture'
 
 export class RoomBanner extends Component {
-  _getPresenceData() {
-    if (this.props.presence.length === 0)
+  getPresentUsers() {
+    if (this.props.presentUsers.length === 0)
       return (
         <View>
           <Text style={styles.roomImageText}>Nobody Present</Text>
         </View>
       );
     else {
+      let user = this.props.presentUsers[0]
       return (
         <View>
-          <Text style={styles.roomImageText}>TODO: GET ICONS</Text>
+          <ProfilePicture picture={user.picture} size={30} innerSize={33} name={user.firstName} />
         </View>
       );
     }
@@ -43,7 +45,7 @@ export class RoomBanner extends Component {
           <View style={{height:0.7*height, width: leftRatio*width, backgroundColor:'transparent'}}>
             <View style={[bannerStyles.whiteLeft, {height:0.5*height, width:(leftRatio-0.05)*width+offset}]} />
             <View style={[bannerStyles.blueLeft,  {height: 0.5*height, width:(leftRatio-0.05)*width, top: offset}]}>
-              {this._getPresenceData()}
+              {this.getPresentUsers()}
             </View>
           </View>
           <View style={{flex:1}} />

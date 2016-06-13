@@ -95,10 +95,12 @@ export class DeviceStateEdit extends Component {
     return items;
   }
 
-  constructStateOptions(store, device) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId};
+  constructStateOptions(store, device, stone) {
+    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
     let currentBehaviour = device.behaviour[this.props.eventName];
     let items = [];
+
+    let actionBase = "UPDATE_APPLIANCE_BEHAVIOUR_FOR_";
 
     items.push({label: "NEW STATE", type: 'explanation', below: false});
     // Dimming control
@@ -107,7 +109,7 @@ export class DeviceStateEdit extends Component {
       items.push({label:"State", value: currentBehaviour.state, type: 'slider', callback:(newValue) => {
         store.dispatch({
           ...requiredData,
-          type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
+          type: actionBase + this.props.eventName,
           data: {state: newValue}
         });
       }});
@@ -117,7 +119,7 @@ export class DeviceStateEdit extends Component {
       items.push({label:"State", value: currentBehaviour.state === 1, type: 'switch', callback:(newValue) => {
         store.dispatch({
           ...requiredData,
-          type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
+          type: actionBase + this.props.eventName,
           data: {state: newValue ? 1 : 0}
         });
       }});
@@ -131,7 +133,7 @@ export class DeviceStateEdit extends Component {
         callback: (newValue) => {
           store.dispatch({
             ...requiredData,
-            type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
+            type: actionBase + this.props.eventName,
             data: {delay: newValue}
           });
         }
@@ -145,12 +147,16 @@ export class DeviceStateEdit extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
-    const device  = room.stones[this.props.stoneId];
+    let stone     = state.groups[this.props.groupId].stones[this.props.stoneId];
+
+    let device = stone;
+    if (stone.config.applianceId)
+      device = state.groups[this.props.groupId].appliances[stone.config.applianceId];
+
     let currentBehaviour = device.behaviour[this.props.eventName];
 
-    let options = this.constructOptions(store, device);
-    let stateOptions = this.constructStateOptions(store, device);
+    let options = this.constructOptions(store, device, stone);
+    let stateOptions = this.constructStateOptions(store, device, stone);
     return (
       <Background>
         <ScrollView>

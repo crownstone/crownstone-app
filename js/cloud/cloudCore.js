@@ -37,9 +37,9 @@ export function request(
   // parse the reply
   let handleInitialReply = (response) => {
     // this will eliminate all cloud requests.
-    if (SILENCE_CLOUD === true) 
-      throw new Error("CLOUD NOT AVAILABLE");
-    
+    if (SILENCE_CLOUD === true)
+      return new Promise((resolve, reject) => {reject("Cloud Disabled due to SILENCE_CLOUD == true. Set this to false in ExternalConfig.js to turn the cloud back on.");})
+
     STATUS = response.status;
     if (response &&
       response.headers &&
