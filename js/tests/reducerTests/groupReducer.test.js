@@ -1,8 +1,10 @@
 var test = require('tape');
 let deepFreeze = require('deep-freeze');
 
-
 import groupsReducer from '../../router/store/reducers/groups'
+
+// hack to remove the current time from the reducer so we can predictably match the results.
+Date.prototype.valueOf = function () {return 1}
 
 test('groupsReducer ADD_GROUP, UPDATE_GROUP and REMOVE_GROUP', function (t) {
   let initialState = {};
@@ -42,15 +44,22 @@ test('groupsReducer ADD_GROUP, UPDATE_GROUP and REMOVE_GROUP', function (t) {
 
   let expectedReturn = {
     groupId: {
+      appliances: {},
       config: {
+        adminKey: null,
+        guestKey: null,
+        memberKey: null,
         name: 'home',
-        latitude: undefined,
-        longitude: undefined
+        updatedAt: 1,
+        uuid: undefined
       },
       locations: {},
-      presets: []}
+      members: {},
+      presets: [],
+      stones: {}
+    }
   };
-  t.deepEqual(groupState, expectedReturn, 'adding a group' );
+  t.deepEqual(groupState, expectedReturn, 'adding a group');
   t.deepEqual(groupsReducer(groupState, updateVoidAction), expectedReturn, 'update a group with a void action');
   t.deepEqual(groupsReducer(groupState, emptyAction), expectedReturn, 'update a group with a completely empty action');
 

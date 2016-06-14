@@ -147,7 +147,7 @@ export class NativeBridgeClass {
   }
   makeNoise(id) {}
   writeId(id) {}
-  writeEncryptionKeys(owner, user, guest) {}
+  writeEncryptionKeys(adminKey, userKey, guestKey) {}
   startActiveMode() {}
   getState(idArray) {}
 

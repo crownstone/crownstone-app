@@ -28,18 +28,21 @@ export class PictureCircle extends Component {
     if (this.props.value !== undefined && this.props.value !== null) {
 
       let imageURI = preparePictureURI(this.props.value);
-
+      let borderWidth = size/30;
       return (
         <TouchableOpacity onPress={this.props.removePicture} style={{height:size}}>
           <View>
-            <View >
-              <Image style={{
-                  width:size,
+            <View style={{width:size,
                   height:size,
                   borderRadius:size * 0.5,
                   backgroundColor: '#ffffff',
                   borderColor: '#fff',
-                  borderWidth: size/30
+                  borderWidth: borderWidth}}>
+              <Image style={{
+                  width:size-2*borderWidth,
+                  height:size-2*borderWidth,
+                  borderRadius:(size-2*borderWidth) * 0.5,
+                  backgroundColor: '#ffffff',
                   }} source={{uri:imageURI}} />
                 <View style={[{
                     marginTop:-size-1,

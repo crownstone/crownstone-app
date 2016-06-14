@@ -7,22 +7,17 @@ let defaultSettings = {
     name: undefined,
     icon: undefined,
     dimmable: false,
-    updatedAt: getTime()
+    updatedAt: 1
   },
   linkedAppliances: { 
     onOn:  {},
     onOff: {},
-    updatedAt: getTime()
+    updatedAt: 1
   },
   schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
-    updatedAt: getTime()
+    updatedAt: 1
   },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-    behaviourConfig:{
-      onlyOnAfterDusk: false,
-      onlyOffWhenEmpty: false,
-      updatedAt: getTime()
-    },
     onHomeEnter: { /* toggleState */ },
     onHomeExit:  { /* toggleState */ },
     onRoomEnter: { /* toggleState */ },
@@ -49,7 +44,7 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
 };
 
 
-let linkedAppliancesReducer = (state = defaultSettings.linkedDevices, action = {}) => {
+let linkedAppliancesReducer = (state = defaultSettings.linkedAppliances, action = {}) => {
   switch (action.type) {
     case 'ADD_LINKED_DEVICES':
     case 'UPDATE_LINKED_DEVICES':
@@ -110,14 +105,13 @@ let applianceBehavioursReducer = combineReducers({
   onHomeExit: behaviourReducerOnHomeExit,
   onRoomEnter: behaviourReducerOnRoomEnter,
   onRoomExit: behaviourReducerOnRoomExit,
-  config: applianceConfigReducer
 });
 
 
 let combinedApplianceReducer = combineReducers({
   config: applianceConfigReducer,
   behaviour: applianceBehavioursReducer,
-  linkedDevices: linkedAppliancesReducer,
+  linkedAppliances: linkedAppliancesReducer,
   schedule: scheduleReducer,
 });
 

@@ -61,26 +61,37 @@ export class DeviceStateEdit extends Component {
 
 
   _getDelayLabel(currentBehaviour) {
-    switch(currentBehaviour.delay) {
-      case 0:
-        return 'None';
-      case 60:
-        return "1 Minute";
-      default:
-        return Math.floor(currentBehaviour.delay/60) + ' Minutes';
+    let delay = currentBehaviour.delay;
+
+    if (delay === undefined || delay == 0)
+      return 'None';
+
+    if (delay < 60) {
+      return 'after ' + Math.floor(delay) + ' seconds';
+    }
+    else {
+      return 'after ' + Math.floor(delay/60) + ' minutes';
     }
   }
 
-  constructOptions(store, device) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId};
+  constructOptions(store, device, stone) {
+    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
     let currentBehaviour = device.behaviour[this.props.eventName];
+    
     let items = [];
+
+    let actionBase = 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_';
 
     // behaviour explanation
     items.push({label:"Device Responds", value: currentBehaviour.active, type: 'switch', callback:(newValue) => {
+      console.log("DISPATCHING", {
+        ...requiredData,
+        type: actionBase + this.props.eventName,
+        data: {active: newValue}
+      });
       store.dispatch({
         ...requiredData,
-        type: 'UPDATE_BEHAVIOUR_FOR_' + this.props.eventName,
+        type: actionBase + this.props.eventName,
         data: {active: newValue}
       });
     }});

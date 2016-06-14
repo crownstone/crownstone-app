@@ -5,6 +5,10 @@ import CrownstoneReducer from '../../router/store/reducer'
 import groupsReducer from '../../router/store/reducers/groups'
 import locationsReducer from '../../router/store/reducers/locations'
 
+// hack to remove the current time from the reducer so we can predictably match the results.
+Date.prototype.valueOf = function () {
+  return 1
+}
 
 
 test('locationsReducer PropegationTest', function (t) {
@@ -17,16 +21,16 @@ test('locationsReducer PropegationTest', function (t) {
   let addLocationAction = {
     type: 'ADD_LOCATION',
     groupId: 'groupId',
-    locationId:'locationId',
+    locationId: 'locationId',
     data: {
-      name:'living room',
-      icon:'couch'
+      name: 'living room',
+      icon: 'couch'
     }
   };
   let removeLocationAction = {
     type: 'REMOVE_LOCATION',
     groupId: 'groupId',
-    locationId:'locationId'
+    locationId: 'locationId'
   };
 
 
@@ -37,23 +41,13 @@ test('locationsReducer PropegationTest', function (t) {
 
   let expectedReturn = {
     groupId: {
-      config: {
-        name: 'home',
-        latitude: undefined,
-        longitude: undefined
-      },
-      locations: {
-        locationId: {
-          config: {
-            icon: 'couch',
-            name: 'living room',
-          },
-          picture: {barURI: undefined, fullURI: undefined, squareURI: undefined},
-          presentUsers: [],
-          stones: []
-        }
-      },
-      presets: []}
+      appliances: {},
+      config: {adminKey: null, guestKey: null, memberKey: null, name: 'home', updatedAt: 1, uuid: undefined},
+      locations: {locationId: {config: {icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
+      members: {},
+      presets: [],
+      stones: {}
+    }
   };
 
   let groupState = groupsReducer({}, createGroupAction);
@@ -71,55 +65,39 @@ test('locationsReducer PropegationTest', function (t) {
 
 test('Initial App state', function (t) {
   let initialState = {
-    app: {
-      activeGroup: 'Home'
-    },
+    app: {activeGroup: undefined, doFirstTimeSetup: true, updatedAt: 1},
     groups: {},
     settings: {
       linkedDevices: true,
       onHomeEnterExit: true,
       presenceWithoutDevices: false,
       presets: false,
-      statistics: false
+      statistics: false,
+      updatedAt: 1
     },
     user: {
-      _accessToken: undefined,
+      accessToken: undefined,
       email: undefined,
-      encryptionTokens: [],
       firstName: undefined,
       lastName: undefined,
       picture: null,
-      _userId: []
+      updatedAt: 1,
+      userId: undefined
     }
   };
 
   let locationState = {
     app: {
-      activeGroup: 'Home'
+      activeGroup: undefined, doFirstTimeSetup: true, updatedAt: 1
     },
     groups: {
       Home: {
-        config: {
-          latitude: undefined,
-          longitude: undefined,
-          name: 'Home'
-        },
-        locations: {
-          locationId: {
-            config: {
-              icon: 'couch',
-              name: 'living room'
-            },
-            picture: {
-              barURI: undefined,
-              fullURI: undefined,
-              squareURI: undefined
-            },
-            presentUsers: [],
-            stones: {}
-          }
-        },
-        presets: []
+        appliances: {},
+        config: {adminKey: null, guestKey: null, memberKey: null, name: 'Home', updatedAt: 1, uuid: undefined},
+        locations: {locationId: {config: {icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
+        members: {},
+        presets: [],
+        stones: {}
       }
     },
     settings: {
@@ -127,19 +105,19 @@ test('Initial App state', function (t) {
       onHomeEnterExit: true,
       presenceWithoutDevices: false,
       presets: false,
-      statistics: false
+      statistics: false,
+      updatedAt: 1
     },
     user: {
-      _accessToken: undefined,
+      accessToken: undefined,
       email: undefined,
-      encryptionTokens: [],
       firstName: undefined,
       lastName: undefined,
       picture: null,
-      _userId: []
+      updatedAt: 1,
+      userId: undefined
     }
   };
-
 
   let createGroupAction = {
     type: 'ADD_GROUP',
@@ -150,10 +128,10 @@ test('Initial App state', function (t) {
   let addLocationAction = {
     type: 'ADD_LOCATION',
     groupId: 'Home',
-    locationId:'locationId',
+    locationId: 'locationId',
     data: {
-      name:'living room',
-      icon:'couch'
+      name: 'living room',
+      icon: 'couch'
     }
   };
 

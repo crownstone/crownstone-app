@@ -7,7 +7,7 @@ let defaultSettings = {
     onHomeEnterExit: true,
     presenceWithoutDevices: false,
     linkedDevices: true,
-    updatedAt: getTime()
+    updatedAt: 1
   }
 };
 

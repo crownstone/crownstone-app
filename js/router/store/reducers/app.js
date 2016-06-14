@@ -4,7 +4,7 @@ let defaultState = {
   app: {
     activeGroup: undefined,
     doFirstTimeSetup: true,
-    updatedAt: getTime()
+    updatedAt: 1
   }
 };
 

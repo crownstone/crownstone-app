@@ -5,7 +5,7 @@ export const toggleState = {
   delay:    0,  // delay in seconds
   fadeTime: 0,  // delay in seconds
   active: false,  // if not active the crownstone will not react to the event.
-  updatedAt: getTime()
+  updatedAt: 1
 };
 
 export const updateToggleState = function (state, action) {

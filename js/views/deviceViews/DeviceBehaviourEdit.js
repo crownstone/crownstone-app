@@ -45,10 +45,20 @@ export class DeviceBehaviourEdit extends Component {
   }
 
   _getDelayLabel(device, event) {
-    if (device.behaviour[event].delay === undefined || device.behaviour[event].delay == 0)
+    let delay = Math.floor(device.behaviour[event].delay);
+
+    if (delay === undefined || delay == 0)
       return '';
 
-    return 'after ' + Math.floor(device.behaviour[event].delay) + ' seconds';
+    if (device.behaviour[event].active === false)
+      return '';
+
+    if (delay < 60) {
+      return 'after ' + Math.floor(delay) + ' seconds';
+    }
+    else {
+      return 'after ' + Math.floor(delay/60) + ' minutes';
+    }
   }
 
   _getTitle(eventName) {
@@ -85,7 +95,7 @@ export class DeviceBehaviourEdit extends Component {
 
     // Behaviour for onRoomEnter event
     eventLabel = 'onRoomEnter';
-    items.push({label:'WHEN YOU ENTER THE ROOM', type: 'explanation',  below:false});
+    items.push({label:'WHEN YOU ENTER THE ROOM', type: 'explanation',  below:false, style:{paddingTop:0}});
     items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
 
     // Behaviour for onRoomExit event
@@ -109,9 +119,9 @@ export class DeviceBehaviourEdit extends Component {
   }
 
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    let stone  = state.groups[this.props.groupId].stones[this.props.stoneId];
+    const store = this.props.store;
+    const state = store.getState();
+    let stone   = state.groups[this.props.groupId].stones[this.props.stoneId];
 
     let options = [];
     if (stone.config.applianceId) {
@@ -125,8 +135,7 @@ export class DeviceBehaviourEdit extends Component {
     return (
       <Background>
         <ScrollView>
-          <ListEditableItems items={options.slice(0,9)}/>
-          <ListEditableItems items={options.slice(9)}/>
+          <ListEditableItems items={options}/>
         </ScrollView>
       </Background>
     )

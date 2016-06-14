@@ -113,7 +113,7 @@ class setupCrownstone {
     });
   }
 
-  writeOwnerKey() {
+  writeAdminKey() {
     return new Promise((resolve, reject) => {
 
     });

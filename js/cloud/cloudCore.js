@@ -36,10 +36,6 @@ export function request(
 
   // parse the reply
   let handleInitialReply = (response) => {
-    // this will eliminate all cloud requests.
-    if (SILENCE_CLOUD === true)
-      return new Promise((resolve, reject) => {reject("Cloud Disabled due to SILENCE_CLOUD == true. Set this to false in ExternalConfig.js to turn the cloud back on.");})
-
     STATUS = response.status;
     if (response &&
       response.headers &&
@@ -63,12 +59,18 @@ export function request(
 
   // the actual request
   return new Promise((resolve, reject) => {
-    fetch(CLOUD_ADDRESS + endPoint, requestConfig)
-      .then(handleInitialReply)
-      .then((parsedResponse) => {resolve({status:STATUS, data: parsedResponse});})
-      .catch((err) => {
-        reject(err);
-      })
+    // this will eliminate all cloud requests.
+    if (SILENCE_CLOUD === true) {
+      reject("Cloud Disabled due to SILENCE_CLOUD == true. Set this to false in ExternalConfig.js to turn the cloud back on.");
+    }
+    else {
+      fetch(CLOUD_ADDRESS + endPoint, requestConfig)
+        .then(handleInitialReply)
+        .then((parsedResponse) => {resolve({status:STATUS, data: parsedResponse});})
+        .catch((err) => {
+          reject(err);
+        })
+    }
   });
 };
 

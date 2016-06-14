@@ -18,7 +18,7 @@ import { styles, colors } from './../styles'
 
 
 export class SettingsGroup extends Component {
-  _getOwners(state) {
+  _getAdmins(state) {
     return {label:'Alex de Mulder', type:'navigation', icon: <ProfilePicture pictusre={'https://s-media-cache-ak0.pinimg.com/236x/77/15/e7/7715e7ea54a010649d68b3a7198a8920.jpg'} />, callback: () => {}};
   }
 
@@ -37,7 +37,7 @@ export class SettingsGroup extends Component {
     const state = store.getState();
 
     items.push({label:'ADMINS:',  type:'explanation', below:false});
-    items.push(this._getOwners(state));
+    items.push(this._getAdmins(state));
     items.push({label:'Admins can add, configure and remove Crownstones and Rooms.', style:{paddingBottom:0}, type:'explanation', below:true});
 
     items.push({label:'MEMBERS:',  type:'explanation', below:false});

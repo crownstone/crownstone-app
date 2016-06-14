@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  
   TouchableOpacity,
   PixelRatio,
   ScrollView,
@@ -31,6 +30,8 @@ export class DelaySelection extends Component {
 
     // behaviour link
     items.push({label:'None',       type: 'checkbar', value: optionState === 0,    callback:() => {this.props.callback(0);}});
+    items.push({label:'2 seconds',  type: 'checkbar', value: optionState === 2,    callback:() => {this.props.callback(2);}});
+    items.push({label:'10 seconds', type: 'checkbar', value: optionState === 10,   callback:() => {this.props.callback(10);}});
     items.push({label:'1 Minute',   type: 'checkbar', value: optionState === 60,   callback:() => {this.props.callback(60);}});
     items.push({label:'2 Minutes',  type: 'checkbar', value: optionState === 120,  callback:() => {this.props.callback(120);}});
     items.push({label:'5 Minutes',  type: 'checkbar', value: optionState === 300,  callback:() => {this.props.callback(300);}});
@@ -42,13 +43,15 @@ export class DelaySelection extends Component {
   }
 
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
-    const device  = room.stones[this.props.stoneId];
+    const store = this.props.store;
+    const state = store.getState();
+    let   stone = state.groups[this.props.groupId].stones[this.props.stoneId];
 
-    let optionState = this.props.extractionMethod(device);
-    console.log(optionState)
+    let optionState = this.props.extractionMethod(stone);
+    if (stone.config.applianceId) {
+      let device = state.groups[this.props.groupId].appliances[stone.config.applianceId]
+      optionState = this.props.extractionMethod(device);
+    }
 
     let options = this.constructOptions(optionState);
     return (

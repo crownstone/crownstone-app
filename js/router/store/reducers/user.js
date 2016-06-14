@@ -8,7 +8,7 @@ let defaultSettings = {
     accessToken: undefined,
     userId: undefined,
     picture: null,
-    updatedAt: getTime()
+    updatedAt: 1
   },
 };
 

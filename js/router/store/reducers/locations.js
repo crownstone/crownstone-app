@@ -7,7 +7,7 @@ let defaultSettings = {
   config: {
     name:'Untitled Room',
     icon:'missingIcon',
-    updatedAt: getTime()
+    updatedAt: 1
   },
 };
 

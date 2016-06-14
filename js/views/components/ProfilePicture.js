@@ -16,24 +16,35 @@ export class ProfilePicture extends Component {
     let innerSize = this.props.innerSize || size;
     if (this.props.picture !== undefined && this.props.picture !== null) {
       let pictureURI = preparePictureURI(this.props.picture);
-
+      let borderWidth = 0.07*size;
       return (
-        <View style={{paddingRight: 10}}>
-          <Image style={{
+        <View style={this.props.style}>
+        <View style={{
+            paddingRight: 10,
             width:size,
             height:size,
-            borderRadius:size * 0.5,
-            backgroundColor: '#ffffff',
+            borderRadius:0.5*size,
+            borderWidth:borderWidth,
+            borderColor:"#fff"}}>
+          <Image style={{
+            width:size-2*borderWidth,
+            height:size-2*borderWidth,
+            padding:0,
+            margin:0,
+            borderRadius:0.5*(size-2*borderWidth),
+            backgroundColor: '#fff',
             // borderColor: colors.menuBackground.h,
             // borderWidth: size/30
             }} source={{uri:pictureURI}}
           />
         </View>
+          {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
+        </View>
       );
     }
     else {
       return (
-        <View  style={this.props.style}>
+        <View style={this.props.style}>
         <View style={[{
               backgroundColor:'#fff',
               width:size,

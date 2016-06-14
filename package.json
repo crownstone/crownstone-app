@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.0.4",
-    "babel-preset-react-native": "^1.8.0",
+    "babel-preset-react-native": "^1.9.0",
     "babel-register": "^6.9.0",
     "deep-freeze": "0.0.1",
     "eslint": "^2.8.0",

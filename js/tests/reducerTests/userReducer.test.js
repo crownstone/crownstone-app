@@ -1,25 +1,31 @@
 var test = require('tape');
 let deepFreeze = require('deep-freeze');
 
+
+// hack to remove the current time from the reducer so we can predictably match the results.
+Date.prototype.valueOf = function () {
+  return 1
+}
+
 import reducer from '../../router/store/reducer'
+
 
 test('userReducer USER_LOG_IN and USER_LOG_OUT', function (t) {
   t.deepEqual(reducer().user, {
-      _accessToken: undefined,
+      accessToken: undefined,
       email: undefined,
-      encryptionTokens: [],
       firstName: undefined,
       lastName: undefined,
       picture: null,
-      _userId: []
+      updatedAt: 1,
+      userId: undefined
     }
   );
   let initialState = reducer();
   let logInAction = {
     type: 'USER_LOG_IN',
     data: {
-      firstName: 'alex',
-      encryptionTokens: [{owner:'12345'}]
+      firstName: 'alex'
     }
   };
 
@@ -35,13 +41,13 @@ test('userReducer USER_LOG_IN and USER_LOG_OUT', function (t) {
   deepFreeze(loggedInState);
 
   t.deepEqual(reducer(initialState, logInAction).user, {
-    _accessToken: undefined,
+    accessToken: undefined,
     email: undefined,
-    encryptionTokens: [{owner:'12345'}],
     firstName: 'alex',
     lastName: undefined,
     picture: null,
-    _userId: []
+    updatedAt: 1,
+    userId: undefined
   });
   t.deepEqual(reducer(loggedInState, logOutAction).user, reducer().user);
   t.end();

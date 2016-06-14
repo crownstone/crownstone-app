@@ -54,7 +54,9 @@ export let CLOUD = {
     filename = filename[filename.length-1];
     formData.append('image', {type: 'image/jpeg', name: filename, uri: path });
     options.data = formData;
-    return request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), this._accessToken, true)
+
+    let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), this._accessToken, true);
+    return this._finalizeRequest(promise, options);
   },
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
@@ -73,35 +75,39 @@ export let CLOUD = {
   },
 
   _setupRequest: function(reqType, endpoint, options = {}, type = 'query') {
+    let promiseBody = {endPoint: endpoint, data: options.data, type:type};
+    let promise;
+    switch (reqType) {
+      case 'POST':
+        promise = this._post(promiseBody);
+        break;
+      case 'GET':
+        promise = this._get(promiseBody);
+        break;
+      case 'PUT':
+        promise = this._put(promiseBody);
+        break;
+      case 'DELETE':
+        promise = this._delete(promiseBody);
+        break;
+      case 'HEAD':
+        promise = this._head(promiseBody);
+        break;
+      default:
+        console.error("UNKNOWN TYPE:", reqType);
+        return;
+    }
+    return this._finalizeRequest(promise, options);
+  },
+
+  _finalizeRequest: function(promise, options) {
     return new Promise((resolve, reject) => {
-      let promiseBody = {endPoint: endpoint, data: options.data, type:type};
-      let promise;
-      switch (reqType) {
-        case 'POST':
-          promise = this._post(promiseBody);
-          break;
-        case 'GET':
-          promise = this._get(promiseBody);
-          break;
-        case 'PUT':
-          promise = this._put(promiseBody);
-          break;
-        case 'DELETE':
-          promise = this._delete(promiseBody);
-          break;
-        case 'HEAD':
-          promise = this._head(promiseBody);
-          break;
-        default:
-          console.error("UNKNOWN TYPE:", reqType);
-          return;
-      }
       promise.then((reply) => {
-          if (reply.status === 200 || reply.status === 204)
-            resolve(reply.data);
-          else
-            debugReject(reply, reject, arguments);
-        })
+        if (reply.status === 200 || reply.status === 204)
+          resolve(reply.data);
+        else
+          debugReject(reply, reject, arguments);
+      })
         .catch((error) => {
           console.trace(error, this);
           this._handleNetworkError(error, options);

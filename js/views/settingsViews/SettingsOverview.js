@@ -20,18 +20,17 @@ import { styles, colors } from './../styles'
 
 export class SettingsOverview extends Component {
 
-  userIsOwner() {
+  userIsAdmin() {
     const store = this.props.store;
     const state = store.getState();
     let groups = Object.keys(state.groups);
 
-    if (groups.length > 0) {
-      groups.forEach((groupId) => {
-        if (state.groups[groupId].config.ownerKey !== undefined) {
-          return true;
-        }
-      })
+    for (let i = 0; i < groups.length; i++) {
+      if (state.groups[groups[i]].config.adminKey !== undefined) {
+        return true;
+      }
     }
+
     return false;
   }
 
@@ -50,19 +49,26 @@ export class SettingsOverview extends Component {
 
     if (this.userInGroups()) {
       items.push({label:'Manage Groups', type:'navigation', callback: () => {Actions.settingsGroups()}});
-      items.push({label:'Manage Rooms', type:'navigation', callback: () => {Actions.settingsRooms()}});
+      // items.push({label:'Manage Rooms', type:'navigation', callback: () => {Actions.settingsRooms()}});
     }
     else {
-      items.push({label:'Add Group', type:'navigation', callback: () => {Actions.setupAddGroup()}});
+      items.push({label:'Add Group', type:'navigation', callback: () => {
+        // Actions.setupAddGroup()
+        Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}]);
+      }});
     }
 
-    if (this.userIsOwner()) {
-      items.push({label:'Manage Crownstones', type:'navigation', callback: () => {Actions.settingsCrownstones()}});
+    
+    if (this.userIsAdmin()) {
+      items.push({label:'Manage Crownstones', type:'navigation', callback: () => {
+        Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])
+        // Actions.settingsCrownstones();
+      }});
     }
 
     items.push({type:'spacer'});
-    items.push({label:'App Complexity', type:'navigation', callback: () => {Actions.appComplexity()}});
-    items.push({type:'spacer'});
+    // items.push({label:'App Complexity', type:'navigation', callback: () => {Actions.appComplexity()}});
+    // items.push({type:'spacer'});
     items.push({label:'Log Out', type:'button', callback: () => {this._logoutPopup()}});
     return items;
   }

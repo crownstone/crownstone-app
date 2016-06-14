@@ -281,11 +281,6 @@ export const fakeStore = {
             updatedAt: 1465835364017
           },
           behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-            behaviourConfig:{
-              onlyOnAfterDusk: false,
-              onlyOffWhenEmpty: false,
-              updatedAt: 1465835364017
-            },
             onHomeEnter: {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
@@ -332,11 +327,6 @@ export const fakeStore = {
             updatedAt: 1465835364017
           },
           behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-            behaviourConfig:{
-              onlyOnAfterDusk: false,
-              onlyOffWhenEmpty: false,
-              updatedAt: 1465835364017
-            },
             onHomeEnter: {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
@@ -383,11 +373,6 @@ export const fakeStore = {
             updatedAt: 1465835364017
           },
           behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-            behaviourConfig:{
-              onlyOnAfterDusk: false,
-              onlyOffWhenEmpty: false,
-              updatedAt: 1465835364017
-            },
             onHomeEnter: {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
@@ -434,11 +419,6 @@ export const fakeStore = {
             updatedAt: 1465835364017
           },
           behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-            behaviourConfig:{
-              onlyOnAfterDusk: false,
-              onlyOffWhenEmpty: false,
-              updatedAt: 1465835364017
-            },
             onHomeEnter: {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds

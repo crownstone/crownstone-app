@@ -33,7 +33,7 @@ export class DeviceEntry extends Component {
         borderRadius:30,
         backgroundColor: this.props.state > 0 ? colors.green.h : colors.menuBackground.h,
         }, styles.centered]}>
-        <Icon name={this.props.icon} size={45} color={'#ffffff'} />
+        <Icon name={this.props.icon} size={45} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
       </View>
     );
 

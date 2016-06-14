@@ -12,15 +12,15 @@ let defaultSettings = {
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
     initializedSuccessfully: false,
-    updatedAt: getTime()
+    updatedAt: 1
   },
   state: {
     state: 1.0,
     currentUsage: 0,
-    updatedAt: getTime()
+    updatedAt: 1
   },
   schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
-    updatedAt: getTime()
+    updatedAt: 1
   },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
     onHomeEnter: { /* toggleState */ },

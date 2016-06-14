@@ -11,14 +11,14 @@ let defaultSettings = {
     adminKey: null,
     memberKey: null,
     guestKey: null,
-    updatedAt: getTime()
+    updatedAt: 1
   },
   members: {
     firstName: undefined,
     lastName: undefined,
     picture: null,
     accessLevel: undefined,
-    updatedAt: getTime()
+    updatedAt: 1
   }
 };
 
@@ -26,12 +26,13 @@ let memberReducer = (state = defaultSettings.members, action = {}) => {
   switch (action.type) {
     case 'ADD_MEMBER':
     case 'UPDATE_MEMBER':
+      console.log('herdfsdfe',action)
       if (action.data) {
         let newState = {...state};
         newState.firstName = update(action.data.firstName, newState.firstName);
         newState.lastName = update(action.data.lastName, newState.lastName);
         newState.picture = update(action.data.picture, newState.picture);
-        newState.level = update(action.data.level, newState.level);
+        newState.accessLevel = update(action.data.accessLevel, newState.accessLevel);
         newState.updatedAt = getTime();
         return newState;
       }

@@ -81,7 +81,7 @@ export class SetupAddPlugInStep2 extends Component {
 
     this.setProgress(4);
     crownstone.writeId(stoneId)
-      .then(() => {return crownstone.writeOwnerKey(groupData.ownerKey);})
+      .then(() => {return crownstone.writeAdminKey(groupData.adminKey);})
       .then(() => {return crownstone.writeUserKey(groupData.userKey);})
       .then(() => {return crownstone.writeGuestKey(groupData.guestKey);})
       .then(() => {return crownstone.writeIBeaconUUID(groupData.uuid);})
