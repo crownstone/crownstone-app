@@ -21,8 +21,9 @@ RCT_EXTERN_METHOD(stopScanning)
 
 // Bluenet
 RCT_EXTERN_METHOD(connect:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(disconnect:callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(setSwitchState:(NSNumber *): state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(disconnect:(RCTResponseSenderBlock)callback)
+// nonnull IS REQUIRED FOR ALL NUMBER ENTREES
+RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 
 // Bluenet localization
 RCT_EXTERN_METHOD(trackUUID:(NSString *)groupId groupName:(NSString*)groupName)

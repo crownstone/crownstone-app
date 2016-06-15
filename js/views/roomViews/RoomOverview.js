@@ -11,6 +11,7 @@ import {
 
 import { Background }  from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
+import { NativeBridge } from '../../native/NativeBridge'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
 import { 
@@ -58,7 +59,7 @@ export class RoomOverview extends Component {
                 data: data
               })
               
-              NativeBridge.setSwitchState(newValue)
+              NativeBridge.connectAndSetSwitchState(item.stone.config.uuid)
             }}
           />
         </View>

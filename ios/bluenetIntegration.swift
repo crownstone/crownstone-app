@@ -128,8 +128,12 @@ class BluenetJS: NSObject {
   }
 
   @objc func connect(uuid: String, callback: RCTResponseSenderBlock) {
+    print("Conecting \(uuid)")
     BASE!.bluenet.connect(uuid)
-      .then({_ in callback([["error" : false]])})
+      .then({_ in
+        print("connected!")
+        callback([["error" : false]])
+      })
       .error({err in callback([["error" : true, "data": 1]])})
   }
   
@@ -142,7 +146,9 @@ class BluenetJS: NSObject {
   @objc func setSwitchState(state: NSNumber, callback: RCTResponseSenderBlock) {
     BASE!.bluenet.setSwitchState(Float(state))
       .then({_ in callback([["error" : false]])})
-      .error({err in callback([["error" : true, "data": 1]])})
+      .error({err in
+        print ("error in setSwitchState \(err)")
+        callback([["error" : true, "data": 1]])})
   }
   
   

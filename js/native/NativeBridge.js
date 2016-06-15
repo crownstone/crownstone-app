@@ -34,57 +34,6 @@ class NativeBridgeClass {
     BluenetPromise("isReady")
       .then(() => {Bluenet.startScanningForCrownstones()});
 
-    // setTimeout(() => {Bluenet.initBluenet();},1000)
-    // setTimeout(() => {Bluenet.trackUUID('a643423e-e175-4af0-a2e4-31e32f729a8a','franks!')},3000)
-    //
-    // var subscription = NativeAppEventEmitter.addListener(
-    //   'iBeaconAdvertisement',
-    //   (iBeaconAdvertisement) => {
-    //     let data = JSON.parse(iBeaconAdvertisement);
-    //     console.log("iBeaconAdvertisement:",data);
-    //   }//this.bleEvents.emit('statusUpdate', data);}
-    // );
-
-    //
-    // Bluenet.startCollectingFingerprint('groupid', 'locationid')
-    // setTimeout(() => {Bluenet.finishCollectingFingerprint()},200)
-    //
-    // console.log("STARTING THE CLASSES",NativeAppEventEmitter);
-    //
-    // this.BleEvents = new EventBus();
-    // this.LocationEvents = new EventBus();
-    // this.connectedTo = undefined;
-    //
-    // var subscription = NativeAppEventEmitter.addListener(
-    //   'advertisementData',
-    //   (advertisementData) => {
-    //
-    //     let data = JSON.parse(advertisementData);
-    //     console.log(data);
-    //     // this.BleEvents.emit('statusUpdate', {
-    //     //   type: 'statusUpdate',
-    //     //   handle: data.id,
-    //     //   rssi: data.rssi,
-    //     //   message: {
-    //     //     id: 2,
-    //     //     subjectId: 2,
-    //     //     state: 1,
-    //     //     currentUsage: 200,
-    //     //     timestamp: new Date().valueOf(),
-    //     //     totalUsage: 4000,
-    //     //     temperature: 20
-    //     //   }
-    //     // });
-    //   });
-    // //
-    //
-
-
-
-
-    // Don't forget to unsubscribe, typically in componentWillUnmount
-    //subscription.remove();
-
     this.fingerprintingActive = false;
     this.fingerprintingSession = null;
     this.fingerprintingSubscriptions = {};
@@ -113,46 +62,46 @@ class NativeBridgeClass {
     });
 
     // bind the events
-    NativeAppEventEmitter.addListener(
-      'advertisementData',
-      (advertisementData) => {
-        processScanResponse(this.store, advertisementData);
-      }
-    );
-
-    NativeAppEventEmitter.addListener(
-      'enterGroup',
-      (enterGroup) => {
-        //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
-        console.log("enterGroup:",enterGroup);
-      }
-    );
-    NativeAppEventEmitter.addListener(
-      'exitGroup',
-      (exitGroup) => {
-        console.log("exitGroup:",exitGroup);
-      }
-    );
-    NativeAppEventEmitter.addListener(
-      'enterLocation',
-      (enterLocation) => {
-        reactToEnterRoom(this.store, enterLocation);
-        console.log("enterLocation:",enterLocation);
-      }
-    );
-    NativeAppEventEmitter.addListener(
-      'exitLocation',
-      (exitLocation) => {
-        reactToExitRoom(this.store, exitLocation);
-        console.log("exitLocation:", exitLocation);
-      }
-    );
-    NativeAppEventEmitter.addListener(
-      'currentLocation',
-      (currentLocation) => {
-        console.log("currentLocation:", currentLocation);
-      }
-    );
+    // NativeAppEventEmitter.addListener(
+    //   'advertisementData',
+    //   (advertisementData) => {
+    //     processScanResponse(this.store, advertisementData);
+    //   }
+    // );
+    //
+    // NativeAppEventEmitter.addListener(
+    //   'enterGroup',
+    //   (enterGroup) => {
+    //     //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
+    //     console.log("enterGroup:",enterGroup);
+    //   }
+    // );
+    // NativeAppEventEmitter.addListener(
+    //   'exitGroup',
+    //   (exitGroup) => {
+    //     console.log("exitGroup:",exitGroup);
+    //   }
+    // );
+    // NativeAppEventEmitter.addListener(
+    //   'enterLocation',
+    //   (enterLocation) => {
+    //     reactToEnterRoom(this.store, enterLocation);
+    //     console.log("enterLocation:",enterLocation);
+    //   }
+    // );
+    // NativeAppEventEmitter.addListener(
+    //   'exitLocation',
+    //   (exitLocation) => {
+    //     reactToExitRoom(this.store, exitLocation);
+    //     console.log("exitLocation:", exitLocation);
+    //   }
+    // );
+    // NativeAppEventEmitter.addListener(
+    //   'currentLocation',
+    //   (currentLocation) => {
+    //     console.log("currentLocation:", currentLocation);
+    //   }
+    // );
   }
 
   /**
@@ -214,6 +163,7 @@ class NativeBridgeClass {
 
 
   connect(uuid) {
+    console.log('in here')
     return BluenetPromise('connect', uuid);
   }
 
@@ -224,6 +174,7 @@ class NativeBridgeClass {
   connectAndSetSwitchState(uuid, state) {
     BlePromiseManager.register(() => {
       return new Promise((resolve, reject) => {
+        console.log("here")
         this.connect(uuid)
           .then(() => {
             return this.setSwitchState(state);
@@ -244,63 +195,10 @@ class NativeBridgeClass {
 
   setSwitchState(state) {
     let safeState = Math.min(1, Math.max(0, state));
-    return BluenetPromise(safeState);
+    safeState = 1;
+    return BluenetPromise('setSwitchState', safeState);
   }
 
-
-  /**
-   * This would be fired on all scanResponses from crownstone
-   * @param data
-   *        {type:'statusUpdate/setup/dfu', handle: CUUID, RSSI: Number, message: {}}
-   *
-   *        message statusUpdate:
-   *          {
-   *            id: (uint16 Number),
-   *            subjectId: (uint16 Number),
-   *            state: Number,
-   *            currentUsage: Number,
-   *            timestamp: timeStamp,
-   *            totalUsage: Number,
-   *            temperature: Number
-   *          }
-   *        message setup:
-   *          {}
-   *        message dfu:
-   *          {????????}
-   */
-  scanResponseCallback(data) {
-    if (data.type == 'statusUpdate') {
-      this.bleEvents.emit('statusUpdate', data);
-    }
-    else if (data.type === 'setup') {
-      this.bleEvents.emit('foundCrownstoneInSetupMode', data);
-    }
-    else if (data.type === 'dfu') {
-      this.bleEvents.emit('foundCrownstoneInDFUMode', data);
-    }
-  }
-
-  setStatusUpdateCallback() {}
-  getStonesInSetup() {}
-  getStonesInDFU() {}
-  
-  connect(id) {return new Promise((resolve, reject) => {
-    this.connectedTo = id;    resolve()
-  });}
-
-  
-  disconnect() {}
-  
-  getMacAddress() {
-    return new Promise((resolve, reject) => {
-      resolve("testing")
-    });
-  }
-  makeNoise(id) {}
-  writeId(id) {}
-  writeEncryptionKeys(adminKey, userKey, guestKey) {}
-  startActiveMode() {}
-  getState(idArray) {}
 
 }
 
