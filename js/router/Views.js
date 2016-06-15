@@ -21,7 +21,6 @@ import { SetupAddCrownstoneSelect } from '../views/setupViews/SetupAddCrownstone
 import { SetupAddPlugInStep1 }      from '../views/setupViews/SetupAddPlugInStep1'
 import { SetupAddPlugInStep2 }      from '../views/setupViews/SetupAddPlugInStep2'
 import { SetupAddPlugInStep3 }      from '../views/setupViews/SetupAddPlugInStep3'
-import { SetupAddRoom }             from '../views/setupViews/SetupAddRoom'
 import { SetupTrainRoom }           from '../views/setupViews/SetupTrainRoom'
 import { SettingsOverview }         from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }          from '../views/settingsViews/SettingsProfile'
@@ -57,7 +56,6 @@ export const Views = {
   SetupAddPlugInStep1,
   SetupAddPlugInStep2,
   SetupAddPlugInStep3,
-  SetupAddRoom,
   SetupTrainRoom,
   SettingsOverview,
   SettingsProfile,

@@ -1,5 +1,4 @@
 import { createStore, combineReducers } from 'redux'
-import stonesReducer from './stones'
 import { update, getTime } from './reducerUtil'
 
 
@@ -7,7 +6,9 @@ let defaultSettings = {
   config: {
     name:'Untitled Room',
     icon:'missingIcon',
-    updatedAt: 1
+    updatedAt: 1,
+    fingerprintRaw: [],
+    fingerprintParsed: []
   },
 };
 
@@ -28,11 +29,21 @@ let userPresenceReducer = (state = [], action = {}) => {
 let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
     case 'ADD_LOCATION':
+    case 'UPDATE_LOCATION_FINGERPRINT':
+      if (action.data) {
+        let newState = {...state};
+        newState.fingerprintRaw = update(action.data.fingerprintRaw, newState.fingerprintRaw);
+        newState.fingerprintParsed = update(action.data.fingerprintParsed, newState.fingerprintParsed);
+        return newState;
+      }
+      return state;
     case 'UPDATE_LOCATION_CONFIG':
       if (action.data) {
         let newState = {...state};
         newState.name = update(action.data.name, newState.name);
         newState.icon = update(action.data.icon, newState.icon);
+        newState.fingerprintRaw = update(action.data.fingerprintRaw, newState.fingerprintRaw);
+        newState.fingerprintParsed = update(action.data.fingerprintParsed, newState.fingerprintParsed);
         newState.updatedAt = getTime();
         return newState;
       }

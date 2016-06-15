@@ -31,7 +31,7 @@ export class PicturePreview extends Component {
           <View style={{flexDirection:'row', width:width, position:'absolute', bottom:0}}>
             <TouchableHighlight onPress={() => {
               safeDeleteFile(this.props.image);
-              Actions.pictureView({selectCallback:this.props.selectCallback, type:'replace'});
+              Actions.pictureView({selectCallback:this.props.selectCallback, type:'replace', camera: this.props.camera});
             }} style={previewStyles.buttons}>
               <Text style={[styles.menuText,{fontWeight:'bold'}]}>Retake</Text>
             </TouchableHighlight>

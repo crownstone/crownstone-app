@@ -21,7 +21,7 @@ export class PictureView extends Component {
   constructor(props) {
     super();
     this.state = {
-      camera: Camera.constants.Type.back,
+      camera: props.camera || Camera.constants.Type.front,
       flash:Camera.constants.FlashMode.auto,
       pictureTaken: false
     }
@@ -32,7 +32,7 @@ export class PictureView extends Component {
     this.camera.capture()
       .then((data) => {
         this.props.eventBus.emit('hideLoading');
-        Actions.picturePreview({image: data.path, selectCallback:this.props.selectCallback, type:'replace'})
+        Actions.picturePreview({image: data.path, selectCallback:this.props.selectCallback, type:'replace', camera: this.state.camera})
       })
       .catch(err => console.error(err));
   }

@@ -120,6 +120,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-svg')
     compile project(':@remobile/react-native-splashscreen')
     compile project(':react-native-vector-icons')
     compile project(':react-native-image-resizer')

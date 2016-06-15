@@ -13,7 +13,17 @@ var Icon = require('react-native-vector-icons/Ionicons');
 
 import { styles, colors} from '../styles'
 
-
+/**
+ * props: {
+ *   icon            : String   // icon name (ionicons only without the ion- prefix)
+ *   size            : Number   // size of the iconCircle
+ *   color           : String   // change the color of the icon, default menu dark blue
+ *   borderColor     : String   // change the color of the background, default same as icon
+ *   backgroundColor : String   // change the color of the background, default white
+ *   showAdd         : Bool     // show an add icon in the corner
+ *   showEdit        : Bool     // show an edit icon in the corner
+ * }
+ */
 export class IconCircle extends Component {
   render() {
     let size = this.props.size || 60;
@@ -23,8 +33,8 @@ export class IconCircle extends Component {
           width:size,
           height:size,
           borderRadius:size * 0.5,
-          backgroundColor: '#ffffff',
-          borderColor: this.props.color || colors.menuBackground.h,
+          backgroundColor: this.props.backgroundColor || '#ffffff',
+          borderColor: this.props.borderColor || this.props.color || colors.menuBackground.h,
           borderWidth: 2
           }, styles.centered]}>
           <Icon name={this.props.icon} size={size*2/3} color={this.props.color || colors.menuBackground.h} />

@@ -23,6 +23,7 @@ export class SettingsProfile extends Component {
   constructor() {
     super();
     this.state = {picture:null};
+    this.renderState = {}
     this.validationState = {firstName:undefined, lastName:undefined, email:undefined}
   }
 
@@ -36,9 +37,26 @@ export class SettingsProfile extends Component {
     }
   }
 
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+      const state = store.getState();
+      if (this.renderState && this.renderState.user != state.user) {
+        this.renderState = state;
+        // console.log("Force Update Profile", this.renderState.user, state.user)
+        this.forceUpdate();
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
   
   _getItems(user) {
     const store = this.props.store;
+    const state = store.getState();
     let items = [];
     // room Name:
     items.push({type:'spacer'});
@@ -47,7 +65,7 @@ export class SettingsProfile extends Component {
       type: 'textEdit',
       value: user.firstName,
       validation:{minLength:2, numbers:{allowed:false}},
-      validationCallback: (result) => {console.log("here"); this.validationState.firstName = result;},
+      validationCallback: (result) => {this.validationState.firstName = result;},
       callback: (newText) => {
         if (user.firstName !== newText) {
           if (this.validationState.firstName === 'valid') {
@@ -145,6 +163,7 @@ export class SettingsProfile extends Component {
     const store = this.props.store;
     const state = store.getState();
     let user = state.user;
+    this.renderState = state; // important for performance check
 
     return (
       <Background>

@@ -109,7 +109,7 @@ export let CLOUD = {
           debugReject(reply, reject, arguments);
       })
         .catch((error) => {
-          console.trace(error, this);
+          //console.trace(error, this);
           this._handleNetworkError(error, options);
         })
     });

@@ -14,24 +14,36 @@ import { Background } from './components/Background'
 import { RoomCircle } from './components/RoomCircle'
 import { getPresentUsersFromState, getCurrentUsageFromState } from '../util/dataUtil'
 
-import { styles, colors } from './styles'
+import { styles, colors, width, height } from './styles'
 
 
 export class GroupOverview extends Component {
   constructor() {
     super();
+    this.renderState = {};
   }
 
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
+      // const state = store.getState();
+      // if (this.renderState && this.renderState.groups != state.groups) {
+      //   this.renderState = state;
+        // console.log("Force Update")
+        this.forceUpdate();
+      // }
     })
   }
 
   componentWillUnmount() {
     this.unsubscribe();
   }
+
+  // experiment
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log("Should component update?",nextProps, nextState)
+  //   return true
+  // }
 
 
   _getColor(usage) {
@@ -52,8 +64,9 @@ export class GroupOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let width = Dimensions.get('window').width;
+
     let radius = 0.35*0.5*width;
+    let availableSpace = (height - 175)-radius; // for top bar and menu bar
 
 
     // get the current usage.
@@ -64,10 +77,10 @@ export class GroupOverview extends Component {
 
     // TODO: Make dynamic
     let positions = {
-      'locationId_A': {x:30, y:70},
-      'locationId_D': {x:200, y:120},
-      'locationId_B': {x:50, y:390},
-      'locationId_C': {x:230, y:320},
+      'locationId_A': {x:0.10*width, y:0.12*availableSpace},
+      'locationId_D': {x:0.55*width, y:0.25*availableSpace},
+      'locationId_B': {x:0.08*width, y:0.90*availableSpace},
+      'locationId_C': {x:0.60*width, y:0.75*availableSpace},
     };
 
     return (
@@ -98,8 +111,10 @@ export class GroupOverview extends Component {
   }
 
   render() {
+    console.log("RENDERING OVERVIEW")
     const store = this.props.store;
     const state = store.getState();
+    this.renderState = state;
 
     if (state.app.activeGroup === undefined) {
       return (

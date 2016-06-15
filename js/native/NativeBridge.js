@@ -1,6 +1,7 @@
 import { BluenetPromise, Bluenet } from './proxy';
 import { NativeModules, NativeAppEventEmitter } from 'react-native';
 import { EventBus } from '../util/eventBus'
+import { reactToEnterRoom, reactToExitRoom, processScanResponse, BlePromiseManager } from '../logic/CrownstoneControl'
 
 /* Pairing process:
 
@@ -23,12 +24,27 @@ import { EventBus } from '../util/eventBus'
 //   this.setState(this.state);
 // });
 
-export class NativeBridgeClass {
+class NativeBridgeClass {
   constructor() {
 
+    this.initialized = false;
+    // route the events to React Native
+    Bluenet.rerouteEvents();
 
-    // Bluenet.reset();
-    // Bluenet.initBluenet();
+    BluenetPromise("isReady")
+      .then(() => {Bluenet.startScanningForCrownstones()});
+
+    // setTimeout(() => {Bluenet.initBluenet();},1000)
+    // setTimeout(() => {Bluenet.trackUUID('a643423e-e175-4af0-a2e4-31e32f729a8a','franks!')},3000)
+    //
+    // var subscription = NativeAppEventEmitter.addListener(
+    //   'iBeaconAdvertisement',
+    //   (iBeaconAdvertisement) => {
+    //     let data = JSON.parse(iBeaconAdvertisement);
+    //     console.log("iBeaconAdvertisement:",data);
+    //   }//this.bleEvents.emit('statusUpdate', data);}
+    // );
+
     //
     // Bluenet.startCollectingFingerprint('groupid', 'locationid')
     // setTimeout(() => {Bluenet.finishCollectingFingerprint()},200)
@@ -42,60 +58,195 @@ export class NativeBridgeClass {
     // var subscription = NativeAppEventEmitter.addListener(
     //   'advertisementData',
     //   (advertisementData) => {
+    //
     //     let data = JSON.parse(advertisementData);
-    //     this.BleEvents.emit('statusUpdate', {
-    //       type: 'statusUpdate',
-    //       handle: data.id,
-    //       rssi: data.rssi,
-    //       message: {
-    //         id: 2,
-    //         subjectId: 2,
-    //         state: 1,
-    //         currentUsage: 200,
-    //         timestamp: new Date().valueOf(),
-    //         totalUsage: 4000,
-    //         temperature: 20
-    //       }
-    //     });
+    //     console.log(data);
+    //     // this.BleEvents.emit('statusUpdate', {
+    //     //   type: 'statusUpdate',
+    //     //   handle: data.id,
+    //     //   rssi: data.rssi,
+    //     //   message: {
+    //     //     id: 2,
+    //     //     subjectId: 2,
+    //     //     state: 1,
+    //     //     currentUsage: 200,
+    //     //     timestamp: new Date().valueOf(),
+    //     //     totalUsage: 4000,
+    //     //     temperature: 20
+    //     //   }
+    //     // });
     //   });
+    // //
     //
-    //
-    // var subscription = NativeAppEventEmitter.addListener(
-    //   'iBeaconAdvertisement',
-    //   (iBeaconAdvertisement) => {
-    //     let data = JSON.parse(iBeaconAdvertisement)
-    //     console.log("iBeaconAdvertisement:",iBeaconAdvertisement);
-    //   }//this.bleEvents.emit('statusUpdate', data);}
-    // );
-    //
-    // var subscription = NativeAppEventEmitter.addListener(
-    //   'enterGroup',
-    //   (enterGroup) => {
-    //     console.log("enterGroup:",enterGroup);
-    //   }//this.bleEvents.emit('statusUpdate', data);}
-    // );
-    // var subscription = NativeAppEventEmitter.addListener(
-    //   'exitGroup',
-    //   (exitGroup) => {console.log("exitGroup:",exitGroup);}//this.bleEvents.emit('statusUpdate', data);}
-    // );
-    // var subscription = NativeAppEventEmitter.addListener(
-    //   'enterLocation',
-    //   (enterLocation) => {console.log("enterLocation:",enterLocation);}//this.bleEvents.emit('statusUpdate', data);}
-    // );
-    // var subscription = NativeAppEventEmitter.addListener(
-    //   'exitLocation',
-    //   (exitLocation) => {console.log("exitLocation:",exitLocation);}//this.bleEvents.emit('statusUpdate', data);}
-    // );
-    // var subscription = NativeAppEventEmitter.addListener(
-    //   'currentLocation',
-    //   (currentLocation) => {console.log("currentLocation:", currentLocation);}//this.bleEvents.emit('statusUpdate', data);}
-    // );
+
+
 
 
     // Don't forget to unsubscribe, typically in componentWillUnmount
     //subscription.remove();
 
+    this.fingerprintingActive = false;
+    this.fingerprintingSession = null;
+    this.fingerprintingSubscriptions = {};
+
+    this.store = undefined
   }
+
+  loadStore(store) {
+    if (this.initialized === false) {
+      this.initialized = true;
+      this.store = store;
+      this.init();
+    }
+  }
+
+  init() {
+    // register the ibeacons
+    const state = this.store.getState();
+    let groupIds = Object.keys(state.groups);
+    groupIds.forEach((groupId) => {
+      let groupIBeaconUUID = state.groups[groupId].config.uuid;
+      let groupName = state.groups[groupId].config.name;
+
+      // track the group beacon UUID
+      Bluenet.trackUUID(groupIBeaconUUID, groupName);
+    });
+
+    // bind the events
+    NativeAppEventEmitter.addListener(
+      'advertisementData',
+      (advertisementData) => {
+        processScanResponse(this.store, advertisementData);
+      }
+    );
+
+    NativeAppEventEmitter.addListener(
+      'enterGroup',
+      (enterGroup) => {
+        //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
+        console.log("enterGroup:",enterGroup);
+      }
+    );
+    NativeAppEventEmitter.addListener(
+      'exitGroup',
+      (exitGroup) => {
+        console.log("exitGroup:",exitGroup);
+      }
+    );
+    NativeAppEventEmitter.addListener(
+      'enterLocation',
+      (enterLocation) => {
+        reactToEnterRoom(this.store, enterLocation);
+        console.log("enterLocation:",enterLocation);
+      }
+    );
+    NativeAppEventEmitter.addListener(
+      'exitLocation',
+      (exitLocation) => {
+        reactToExitRoom(this.store, exitLocation);
+        console.log("exitLocation:", exitLocation);
+      }
+    );
+    NativeAppEventEmitter.addListener(
+      'currentLocation',
+      (currentLocation) => {
+        console.log("currentLocation:", currentLocation);
+      }
+    );
+  }
+
+  /**
+   * Callback is to register for updates, not a promise
+   * @param callback
+   */
+  startFingerprinting(callback) {
+    Bluenet.startCollectingFingerprint();
+    this.fingerprintingActive = true;
+
+    if (callback !== undefined) {
+      let sessionId = (Math.random()*1e8).toString(36) + '-' + (Math.random()*1e8).toString(36);
+      this.fingerprintingSession = sessionId;
+      this.fingerprintingSubscriptions[sessionId] =  NativeAppEventEmitter.addListener(
+        'iBeaconAdvertisement',
+        (iBeaconAdvertisement) => {
+          if (Array.isArray(iBeaconAdvertisement)) {
+            let data = [];
+            for (let i = 0; i < iBeaconAdvertisement.length; i++) {
+              data.push(JSON.parse(iBeaconAdvertisement[i]))
+            }
+            callback(data)
+          }
+          else {
+            console.log("DATA NOT AN ARRAY:", iBeaconAdvertisement)
+          }
+        }
+      );
+    }
+  }
+
+  abortFingerprinting() {
+    this._stopFingerprinting(() => { Bluenet.abortCollectingFingerprint();} );
+  }
+
+  finalizeFingerprint(groupId, locationId) {
+    this._stopFingerprinting(() => { Bluenet.finalizeFingerprint(groupId, locationId);} );
+  }
+
+  _stopFingerprinting(nativeCall) {
+    if (this.fingerprintingSession !== null) {
+      this.fingerprintingSubscriptions[this.fingerprintingSession].remove();
+      delete this.fingerprintingSubscriptions[this.fingerprintingSession]
+    }
+
+    if (this.fingerprintingActive) {
+      nativeCall();
+      this.fingerprintingSession = null;
+      this.fingerprintingActive = false;
+    }
+  }
+
+  getFingerprint(groupId, locationId) {
+    return new Promise((resolve, reject) => {
+      // resolve is pushed ino the fingerprint.
+      Bluenet.getFingerprint(groupId, locationId, resolve);
+    });
+  }
+
+
+  connect(uuid) {
+    return BluenetPromise('connect', uuid);
+  }
+
+  disconnect() {
+    return BluenetPromise('disconnect');
+  }
+  
+  connectAndSetSwitchState(uuid, state) {
+    BlePromiseManager.register(() => {
+      return new Promise((resolve, reject) => {
+        this.connect(uuid)
+          .then(() => {
+            return this.setSwitchState(state);
+          })
+          .then(() => {
+            return this.disconnect();
+          })
+          .then(() => {
+            resolve()
+          })
+          .catch((err) => {
+            console.log("connectAndSetSwitchState Error:", err);
+            reject(err);
+          })
+      });
+    });
+  }
+
+  setSwitchState(state) {
+    let safeState = Math.min(1, Math.max(0, state));
+    return BluenetPromise(safeState);
+  }
+
 
   /**
    * This would be fired on all scanResponses from crownstone

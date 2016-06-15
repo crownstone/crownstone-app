@@ -48,8 +48,10 @@ export class SettingsOverview extends Component {
     ];
 
     if (this.userInGroups()) {
-      items.push({label:'Manage Groups', type:'navigation', callback: () => {Actions.settingsGroups()}});
-      // items.push({label:'Manage Rooms', type:'navigation', callback: () => {Actions.settingsRooms()}});
+      items.push({label:'Manage Groups', type:'navigation', callback: () => {
+        Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])
+        // Actions.settingsGroups()
+      }});
     }
     else {
       items.push({label:'Add Group', type:'navigation', callback: () => {
@@ -58,6 +60,7 @@ export class SettingsOverview extends Component {
       }});
     }
 
+    // TODO: room management
     
     if (this.userIsAdmin()) {
       items.push({label:'Manage Crownstones', type:'navigation', callback: () => {
@@ -76,7 +79,7 @@ export class SettingsOverview extends Component {
   _logoutPopup() {
     Alert.alert('Log out','Are you sure?',[
       {text: 'Cancel', style: 'cancel'},
-      {text: 'OK', onPress: logOut},
+      {text: 'OK', onPress: /* logOut */ () => {Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])}},
     ])
   }
 

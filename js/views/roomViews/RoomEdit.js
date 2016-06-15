@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   TouchableHighlight,
   PixelRatio,
   ScrollView,
@@ -51,11 +52,16 @@ export class RoomEdit extends Component {
     );
   }
 
-  getTrainingButton() {
+  getTrainingButton(room) {
     let items = [];
     // room Name:
     items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
-    items.push({label:'Retrain Room', type: 'navigation', callback: () => {}});
+    items.push({label:'Retrain Room', type: 'navigation', callback: () => {
+      Alert.alert('Retrain','Are you sure? The current fingerprint will be lost.',[
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'OK', onPress: () => {Actions.setupTrainRoom({roomName: room.config.name, locationId: this.props.locationId})}},
+      ])
+    }});
     items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
     'you can retrain this room to improve accuracy.', type: 'explanation',  below:true});
     return items;
@@ -83,7 +89,7 @@ export class RoomEdit extends Component {
     let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
 
     let options = this.constructOptions(store, room);
-    let training = this.getTrainingButton();
+    let training = this.getTrainingButton(room);
     return (
       <Background>
         <ScrollView>

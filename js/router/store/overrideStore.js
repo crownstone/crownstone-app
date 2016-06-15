@@ -11,8 +11,8 @@ export const fakeStore = {
   groups: {
     groupId: {
       config: {
-        name: undefined,
-        uuid: undefined, // ibeacon uuid
+        name: "RockstartDemo",
+        uuid: "ddb79713-87ca-4044-84f0-e87072db8106", // ibeacon uuid
         adminKey: 1234,
         memberKey: 1234,
         guestKey: 1234,
@@ -63,14 +63,15 @@ export const fakeStore = {
         }
       },
       stones:    {
-        stoneId_A: {
+        5: {
           config: {
             name: 'Smart Socket #1',
             applianceId: 'applianceId_A',
             locationId: 'locationId_A',
-            macAddress: 'test',
-            iBeaconMajor: 12,
-            iBeaconMinor: 12,
+            macAddress: 'E3:F5:C5:FF:23:40',
+            iBeaconMajor: 5,
+            iBeaconMinor: 5,
+            uuid: "62DDC9A0-3E33-AC3C-4D5B-46EB4B2EE6CB",
             initializedSuccessfully: true,
             updatedAt: 1465835364017
           },
@@ -87,14 +88,14 @@ export const fakeStore = {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onHomeExit:  {
               state:    0,  // [0 .. 1] for state, undefined for ignore
               delay:    10,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onRoomEnter: {
@@ -113,14 +114,15 @@ export const fakeStore = {
             }
           }
         },
-        stoneId_B: {
+        3: {
           config: {
             name: 'Smart Socket #2',
             applianceId: 'applianceId_B',
             locationId: 'locationId_B',
-            macAddress: 'test',
-            iBeaconMajor: 12,
-            iBeaconMinor: 12,
+            macAddress: 'E5:20:4D:1D:CD:6C',
+            iBeaconMajor: 3,
+            iBeaconMinor: 3,
+            uuid: "2E32A7E2-91B9-ACDC-A893-F26A7D1AAEF8",
             initializedSuccessfully: true,
             updatedAt: 1465835364017
           },
@@ -137,14 +139,14 @@ export const fakeStore = {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onHomeExit:  {
               state:    0,  // [0 .. 1] for state, undefined for ignore
               delay:    10,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onRoomEnter: {
@@ -163,14 +165,14 @@ export const fakeStore = {
             }
           }
         },
-        stoneId_C: {
+        1: {
           config: {
             name: 'Smart Socket #3',
             applianceId: 'applianceId_C',
             locationId: 'locationId_C',
-            macAddress: 'test',
-            iBeaconMajor: 12,
-            iBeaconMinor: 12,
+            macAddress: 'C67606B1-9FCD-DAC8-FE7C-DE010A1C5F16',
+            iBeaconMajor: 4,
+            iBeaconMinor: 3,
             initializedSuccessfully: true,
             updatedAt: 1465835364017
           },
@@ -187,14 +189,14 @@ export const fakeStore = {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onHomeExit:  {
               state:    0,  // [0 .. 1] for state, undefined for ignore
               delay:    10,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onRoomEnter: {
@@ -213,14 +215,15 @@ export const fakeStore = {
             }
           }
         },
-        stoneId_D: {
+        2: {
           config: {
             name: 'Smart Socket #4',
             applianceId: 'applianceId_D',
             locationId: 'locationId_D',
-            macAddress: 'test',
-            iBeaconMajor: 12,
-            iBeaconMinor: 12,
+            macAddress: 'FB:8D:71:D5:6B:C1',
+            iBeaconMajor: 2,
+            iBeaconMinor: 2,
+            uuid: "B1E5B8DF-6DA9-49A8-CD64-1D61413C4F95",
             initializedSuccessfully: true,
             updatedAt: 1465835364017
           },
@@ -237,14 +240,14 @@ export const fakeStore = {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onHomeExit:  {
               state:    0,  // [0 .. 1] for state, undefined for ignore
               delay:    10,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onRoomEnter: {
@@ -267,8 +270,8 @@ export const fakeStore = {
       appliances: {
         applianceId_A: {
           config: {
-            name: 'Senseo',
-            icon: 'ios-cafe',
+            name: 'Grill',
+            icon: 'ios-pizza',
             dimmable: false,
             updatedAt: 1465835364017
           },
@@ -285,14 +288,14 @@ export const fakeStore = {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onHomeExit:  {
               state:    0,  // [0 .. 1] for state, undefined for ignore
               delay:    10,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onRoomEnter: {
@@ -331,14 +334,14 @@ export const fakeStore = {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onHomeExit:  {
               state:    0,  // [0 .. 1] for state, undefined for ignore
               delay:    10,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onRoomEnter: {
@@ -377,14 +380,14 @@ export const fakeStore = {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onHomeExit:  {
               state:    0,  // [0 .. 1] for state, undefined for ignore
               delay:    10,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onRoomEnter: {
@@ -423,14 +426,14 @@ export const fakeStore = {
               state:    1,  // [0 .. 1] for state, undefined for ignore
               delay:    0,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onHomeExit:  {
               state:    0,  // [0 .. 1] for state, undefined for ignore
               delay:    10,  // delay in seconds
               fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
+              active: false,  // if not active the crownstone will not react to the event.
               updatedAt: 1465835364017
             },
             onRoomEnter: {

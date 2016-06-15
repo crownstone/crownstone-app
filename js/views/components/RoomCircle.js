@@ -25,7 +25,6 @@ export class RoomCircle extends Component {
   _drawUsers(users) {
     // TODO: generalize
     if (users && users.length > 0) {
-      console.log("USER", users)
       return <ProfilePicture picture={users[0].picture} size={50} style={{position:'absolute', top:-10, left:0}} />
     }
     return undefined

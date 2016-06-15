@@ -26,7 +26,6 @@ let memberReducer = (state = defaultSettings.members, action = {}) => {
   switch (action.type) {
     case 'ADD_MEMBER':
     case 'UPDATE_MEMBER':
-      console.log('herdfsdfe',action)
       if (action.data) {
         let newState = {...state};
         newState.firstName = update(action.data.firstName, newState.firstName);

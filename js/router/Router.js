@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Scene, Router, Actions } from 'react-native-router-flux';
 import { store, storeInitialized } from './store/store'
+import { NativeBridge }           from '../native/NativeBridge'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
 import { CLOUD }                  from '../cloud/cloudAPI'
@@ -77,6 +78,8 @@ CLOUD.setNetworkErrorHandler((error) => {
   Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.");
 });
 
+
+
 export class AppRouter extends Component {
   constructor() {
     super();
@@ -115,8 +118,11 @@ export class AppRouter extends Component {
 
     // there can be a race condition where the event has already been fired before this module has initialized
     // This check is to ensure that it doesn't matter what comes first.
-    if (storeInitialized === true)
+    if (storeInitialized === true) {
+      // give the native bridge a reference to the store
+      NativeBridge.loadStore(store);
       dataLoginValidation();
+    }
     else
       this.unsubscribe.push(eventBus.on('storeInitialized', dataLoginValidation));
   }
@@ -146,8 +152,7 @@ export class AppRouter extends Component {
               <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}  hideNavBar={true}  />
               <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}  hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
-              <Scene key="setupAddRoom"             component={Views.SetupAddRoom}         hideNavBar={true}  />
-              <Scene key="setupTrainRoom"           component={Views.SetupTrainRoom}       hideNavBar={true}  />
+              <Scene key="setupTrainRoom"           component={Views.SetupTrainRoom}       hideNavBar={false} direction="vertical" title="Training"/>
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={this.state.loggedIn || true}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />

@@ -11,6 +11,7 @@ let defaultSettings = {
     macAddress: undefined,
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
+    uuid: undefined,
     initializedSuccessfully: false,
     updatedAt: 1
   },
@@ -37,14 +38,15 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name        = update(action.data.name,     newState.name);
-        newState.locationId  = update(action.data.locationId, newState.locationId);
-        newState.applianceId = update(action.data.applianceId, newState.applianceId);
-        newState.macAddress  = update(action.data.macAddress, newState.macAddress);
+        newState.name         = update(action.data.name,     newState.name);
+        newState.locationId   = update(action.data.locationId, newState.locationId);
+        newState.applianceId  = update(action.data.applianceId, newState.applianceId);
+        newState.macAddress   = update(action.data.macAddress, newState.macAddress);
         newState.iBeaconMajor = update(action.data.iBeaconMajor, newState.iBeaconMajor);
         newState.iBeaconMinor = update(action.data.iBeaconMinor, newState.iBeaconMinor);
+        newState.uuid         = update(action.data.uuid, newState.uuid);
         newState.initializedSuccessfully = update(action.data.initializedSuccessfully, newState.initializedSuccessfully);
-        newState.updatedAt   = getTime();
+        newState.updatedAt    = getTime();
         return newState;
       }
       return state;

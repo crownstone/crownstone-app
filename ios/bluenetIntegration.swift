@@ -8,14 +8,40 @@
 
 import Foundation
 import BluenetLibIOS
-import CoreLocation
+
 import PromiseKit
 import SwiftyJSON
 
+var BASE : ViewPassThrough?
 
-@objc class ViewPassThrough : NSObject {
+
+@objc public class ViewPassThrough : NSObject {
+  public var bluenet : Bluenet!
+  public var bluenetLocalization : BluenetLocalization!
+  
   init(viewController: UIViewController) {
+    super.init()
+    
+
     BluenetLibIOS.setViewController(viewController)
+
+    self.bluenet = Bluenet(appName: "Crownstone");
+
+    self.bluenetLocalization = BluenetLocalization();
+    
+
+    BASE = self
+    
+//    self.bluenetLocalization.trackUUID("a643423e-e175-4af0-a2e4-31e32f729a8a", groupName: "test")
+//    self.bluenetLocalization.on("iBeaconAdvertisement", {ibeaconData -> Void in
+//      var returnArray = [String]()
+//      if let data = ibeaconData as? [iBeaconPacket] {
+//        for packet in data {
+//          returnArray.append(JSONUtils.stringify(packet.getJSON()))
+//        }
+//      }
+//      print(returnArray)
+//    })
   }
 }
 
@@ -51,116 +77,137 @@ func getBleErrorString(err: BleError) -> String {
 class BluenetJS: NSObject {
   
   var bridge: RCTBridge!
-  var bluenet : Bluenet!
-  var bluenetLocalization : BluenetLocalization!
   
-  
-  // reset the eventbus
-  @objc func reset() {
-      BluenetContainer.getInstance().bluenet.reset()
-      BluenetContainer.getInstance().bluenetLocalization.reset()
-  }
-  
-  
-  // singletons are lazyloaded. getInstance will force initialization.
-  @objc func initBluenet() {
-    self.bluenet = BluenetContainer.getInstance().bluenet
-    self.bluenetLocalization = BluenetContainer.getInstance().bluenetLocalization
-    
-    // forward the event streams to react native
-    self.bluenet.on("advertisementData", {data -> Void in
-      if let castData = data as? Advertisement {
-        self.bridge.eventDispatcher().sendAppEventWithName("advertisementData", body: JSONUtils.stringify(castData.getJSON()))
-      }
-    })
 
-    // forward the navigation event stream to react native
-    self.bluenetLocalization.on("iBeaconAdvertisement", {ibeaconData -> Void in
-      var returnArray = [String]()
-      if let data = ibeaconData as? [iBeaconPacket] {
-        for packet in data {
-          returnArray.append(JSONUtils.stringify(packet.getJSON()))
+  @objc func rerouteEvents() {
+    if let base = BASE {
+      // forward the event streams to react native
+      base.bluenet.on("advertisementData", {data -> Void in
+        if let castData = data as? Advertisement {
+          self.bridge.eventDispatcher().sendAppEventWithName("advertisementData", body: castData.stringify())
         }
-      }
-      self.bridge.eventDispatcher().sendAppEventWithName("iBeaconAdvertisement", body: returnArray)
-    })
-    
-    self.bluenetLocalization.on("enterGroup", {data -> Void in
-      if let castData = data as? String {
-        self.bridge.eventDispatcher().sendAppEventWithName("enterGroup", body: castData)
-      }
-    })
-    self.bluenetLocalization.on("exitGroup", {data -> Void in
-      if let castData = data as? String {
-        self.bridge.eventDispatcher().sendAppEventWithName("exitGroup", body: castData)
-      }
-    })
-    self.bluenetLocalization.on("enterLocation", {data -> Void in
-      if let castData = data as? String {
-        self.bridge.eventDispatcher().sendAppEventWithName("enterLocation", body: castData)
-      }
-    })
-    self.bluenetLocalization.on("exitLocation", {data -> Void in
-      if let castData = data as? String {
-        self.bridge.eventDispatcher().sendAppEventWithName("exitLocation", body: castData)
-      }
-    })
-    self.bluenetLocalization.on("currentLocation", {data -> Void in
-      if let castData = data as? String {
-        self.bridge.eventDispatcher().sendAppEventWithName("currentLocation", body: castData)
-      }
-    })
+      })
+
+      // forward the navigation event stream to react native
+      base.bluenetLocalization.on("iBeaconAdvertisement", {ibeaconData -> Void in
+        var returnArray = [String]()
+        if let data = ibeaconData as? [iBeaconPacket] {
+          for packet in data {
+            returnArray.append(packet.stringify())
+          }
+        }
+        self.bridge.eventDispatcher().sendAppEventWithName("iBeaconAdvertisement", body: returnArray)
+      })
+      
+      base.bluenetLocalization.on("enterGroup", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("enterGroup", body: castData)
+        }
+      })
+      base.bluenetLocalization.on("exitGroup", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("exitGroup", body: castData)
+        }
+      })
+      base.bluenetLocalization.on("enterLocation", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("enterLocation", body: castData)
+        }
+      })
+      base.bluenetLocalization.on("exitLocation", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("exitLocation", body: castData)
+        }
+      })
+      base.bluenetLocalization.on("currentLocation", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("currentLocation", body: castData)
+        }
+      })
+     }
+  }
+
+  @objc func connect(uuid: String, callback: RCTResponseSenderBlock) {
+    BASE!.bluenet.connect(uuid)
+      .then({_ in callback([["error" : false]])})
+      .error({err in callback([["error" : true, "data": 1]])})
   }
   
-  @objc func connect(uuid: String, callback: RCTResponseSenderBlock) {
-    self.bluenet.connect(uuid)
+  @objc func disconnect(callback: RCTResponseSenderBlock) {
+    BASE!.bluenet.disconnect()
+      .then({_ in callback([["error" : false]])})
+      .error({err in callback([["error" : true, "data": 1]])})
+  }
+  
+  @objc func setSwitchState(state: NSNumber, callback: RCTResponseSenderBlock) {
+    BASE!.bluenet.setSwitchState(Float(state))
       .then({_ in callback([["error" : false]])})
       .error({err in callback([["error" : true, "data": 1]])})
   }
   
   
   @objc func startScanning() {
-    //self.bluenet.startScanning()
+    BASE!.bluenet.startScanning()
+  }
+  
+  @objc func startScanningForCrownstones() {
+    BASE!.bluenet.startScanningForCrownstones()
+  }
+  
+  @objc func startScanning(serviceId: String) {
+    BASE!.bluenet.startScanningForService(serviceId)
   }
   
   @objc func stopScanning() {
-    //	self.bluenet.stopScanning()
+    BASE!.bluenet.stopScanning()
   }
   
   @objc func isReady(callback: RCTResponseSenderBlock) {
-    self.bluenet.isReady()
+    BASE!.bluenet.isReady()
       .then({_ in callback([["error" : false]])})
       .error({err in callback([["error" : true, "data": 1]])})
   }
   
-  
-  @objc func get(what: NSNumber, callback: RCTResponseSenderBlock) -> Void {
-    let resultsDict = [
-      "success" : true,
-      "title"  : "hello world"
-    ];
-    callback([resultsDict])
+  @objc func trackUUID(groupId: String, groupName: String) -> Void {
+    BASE!.bluenetLocalization.trackUUID(groupId, groupName: groupName)
+    print("trackUUID groupId: \(groupId) locationId: \(groupName)")
   }
   
-  @objc func startCollectingFingerprint(groupId: String, locationId: String) -> Void {
-    print("startCollectingFingerprint groupId: \(groupId) locationId: \(locationId)")
+  @objc func startCollectingFingerprint() -> Void {
+    BASE!.bluenetLocalization.startCollectingFingerprint()
+    print("startCollectingFingerprint ")
+  }
+  
+  @objc func abortCollectingFingerprint() -> Void {
+    BASE!.bluenetLocalization.abortCollectingFingerprint()
+    print("abortCollectingFingerprint ")
   }
   
   
-  @objc func finishCollectingFingerprint() -> Void {
+  @objc func finalizeFingerprint(groupId: String, locationId: String) -> Void {
+    BASE!.bluenetLocalization.finalizeFingerprint(groupId, locationId: locationId)
     print("finishCollectingFingerprint")
   }
   
   
-  @objc func getFingerPrint(locationId: NSString, callback: RCTResponseSenderBlock) -> Void {
-    print("getFingerprint \(locationId)")
-    callback([])
+  @objc func getFingerprint(groupId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
+    let fingerprint = BASE!.bluenetLocalization.getFingerprint(groupId, locationId: locationId)
+    if let fingerprintData = fingerprint {
+      callback([fingerprintData.stringify()])
+    }
+    else {
+      callback([])
+    }
+    print("getFingerprint \(groupId) \(locationId)")
+
   }
   
-  @objc func setSwitchState(state: NSNumber, callback: RCTResponseSenderBlock) -> Void {
-//    self.bluenet.setSwitchState(Float(state))
-//      .then({_ in callback([["error" : false]])})
-//      .error({err in callback([["error" : true, "data": 1]])})
+  
+  @objc func loadFingerprint(groupId: String, locationId: String, fingerprint: String) -> Void {
+    let fingerprint = Fingerprint(stringifiedData: fingerprint)
+    BASE!.bluenetLocalization.loadFingerprint(groupId, locationId: locationId, fingerprint: fingerprint)
+    print("loadFingerprint \(groupId) \(locationId)")
+    
   }
   
   @objc func getBLEstate(state: NSNumber, callback: RCTResponseSenderBlock) -> Void {
@@ -172,20 +219,30 @@ class BluenetJS: NSObject {
   
 }
 
-/**
- This class is here to make the bluenet lib ios into a singleton that is available everywhere in this app.
- */
-public class BluenetContainer {
-  public var bluenet : Bluenet!
-  public var bluenetLocalization : BluenetLocalization!
-  
-  // this makes the BluenetContainer a singleton!! woohoo!
-  static let sharedInstance = BluenetContainer()
-  static func getInstance() -> BluenetContainer {
-    return sharedInstance
-  }
-  private init() {
-    self.bluenet = Bluenet(appName: "Crownstone");
-    self.bluenetLocalization = BluenetLocalization();
-  }
-}
+//  @objc func get(what: NSNumber, callback: RCTResponseSenderBlock) -> Void {
+//    let resultsDict = [
+//      "success" : true,
+//      "title"  : "hello world"
+//    ];
+//    callback([resultsDict])
+//  }
+
+//
+///**
+// This class is here to make the bluenet lib ios into a singleton that is available everywhere in this app.
+// */
+//public class BluenetContainer {
+//  public var bluenet : Bluenet!
+//  public var bluenetLocalization : BluenetLocalization!
+//  
+//  // this makes the BluenetContainer a singleton!! woohoo!
+//  static let sharedInstance = BluenetContainer()
+//  static func getInstance() -> BluenetContainer {
+//    return sharedInstance
+//  }
+//  private init() {
+//    print("init!")
+//    self.bluenet = Bluenet(appName: "Crownstone");
+//    self.bluenetLocalization = BluenetLocalization();
+//  }
+//}

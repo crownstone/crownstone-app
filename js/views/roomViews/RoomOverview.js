@@ -57,6 +57,8 @@ export class RoomOverview extends Component {
                 stoneId: item.stone,
                 data: data
               })
+              
+              NativeBridge.setSwitchState(newValue)
             }}
           />
         </View>

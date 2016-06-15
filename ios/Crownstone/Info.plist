@@ -8,9 +8,9 @@
 		<string>bluetooth-central</string>
 	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We&apos;re spying on you in secret</string>
+	<string>Without your location we don&apos;t know when to switch the Crownstones</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We love you!</string>
+	<string>Without your location we don&apos;t know when to switch the Crownstones</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>

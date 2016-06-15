@@ -34,7 +34,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.45:8081/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.24:8081/index.ios.bundle?platform=ios&dev=true"];
 
   /**
    * OPTION 2
@@ -60,6 +60,7 @@
 
   rootViewController.view = rootView;
   
+  // We use the passthrough to init the Bluenet Lib iOS and to provide the viewcontroller to the lib
   ViewPassThrough *pass = [[ViewPassThrough alloc] initWithViewController: rootViewController];
   
   self.window.rootViewController = rootViewController;
