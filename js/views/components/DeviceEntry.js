@@ -1,6 +1,6 @@
 import React, { Component } from 'react' 
 import {
-  
+  ActivityIndicatorIOS,
   Dimensions,
   Image,
   PixelRatio,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 var Icon = require('react-native-vector-icons/Ionicons');
-import Slider              from 'react-native-slider'
+import Slider from 'react-native-slider'
 import { styles, colors} from '../styles'
 
 
@@ -22,22 +22,33 @@ export class DeviceEntry extends Component {
   }
 
   _getControl() {
-    return <Switch value={this.props.state > 0} onValueChange={this._pressedDevice.bind(this)} />
+    if (this.props.pending === false) {
+      return <Switch value={this.props.state > 0} onValueChange={this._pressedDevice.bind(this)} />
+    }
+    else {
+      return <ActivityIndicatorIOS animating={true} size="large" />
+    }
   }
 
   _getItem() {
+    let color = (
+      this.props.pending === true ?
+          colors.gray.h :
+          (this.props.state > 0 ? colors.green.h : colors.menuBackground.h)
+    );
+
     let content = (
       <View style={[{
         width:60,
         height:60,
         borderRadius:30,
-        backgroundColor: this.props.state > 0 ? colors.green.h : colors.menuBackground.h,
+        backgroundColor: color,
         }, styles.centered]}>
         <Icon name={this.props.icon} size={45} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
       </View>
     );
 
-    if (this.props.control === true) {
+    if (this.props.control === true && this.props.pending === false) {
       return (
         <TouchableOpacity onPress={this._pressedDevice.bind(this)}>
           {content}

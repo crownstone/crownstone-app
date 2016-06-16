@@ -7,8 +7,8 @@ let defaultSettings = {
     name:'Untitled Room',
     icon:'missingIcon',
     updatedAt: 1,
-    fingerprintRaw: [],
-    fingerprintParsed: []
+    fingerprintRaw: '',
+    fingerprintParsed: ''
   },
 };
 
@@ -19,7 +19,7 @@ let userPresenceReducer = (state = [], action = {}) => {
     case 'USER_EXIT':
       let userIndex = state.indexOf(action.data.userId);
       if (userIndex !== -1) {
-        return [...state.slice(0,userIndex).concat(list.slice(userIndex+1))]
+        return [...state.slice(0,userIndex).concat(state.slice(userIndex+1))]
       }
     default:
       return state;

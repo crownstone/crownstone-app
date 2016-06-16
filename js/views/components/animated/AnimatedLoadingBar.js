@@ -1,7 +1,6 @@
 import React, { Component } from 'react' 
 import {
   Animated,
-  
   Image,
   Text,
   View,

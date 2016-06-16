@@ -50,52 +50,60 @@ class NativeBridgeClass {
   }
 
   init() {
-    // register the ibeacons
+    // register the iBeacons
     const state = this.store.getState();
     let groupIds = Object.keys(state.groups);
     groupIds.forEach((groupId) => {
       let groupIBeaconUUID = state.groups[groupId].config.uuid;
       let groupName = state.groups[groupId].config.name;
-
       // track the group beacon UUID
       Bluenet.trackUUID(groupIBeaconUUID, groupName);
+
+      let locations = state.groups[groupId].locations;
+      let locationIds = Object.keys(locations);
+      locationIds.forEach((locationId) => {
+        if (locations[locationId].config.fingerprintRaw !== undefined) {
+          //console.log("locations[locationId].config.fingerprintRaw", locations[locationId].config.fingerprintRaw);
+          Bluenet.loadFingerprint(groupIBeaconUUID, locationId, locations[locationId].config.fingerprintRaw)
+        }
+      });
     });
 
     // bind the events
-    // NativeAppEventEmitter.addListener(
-    //   'advertisementData',
-    //   (advertisementData) => {
-    //     processScanResponse(this.store, advertisementData);
-    //   }
-    // );
-    //
-    // NativeAppEventEmitter.addListener(
-    //   'enterGroup',
-    //   (enterGroup) => {
-    //     //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
-    //     console.log("enterGroup:",enterGroup);
-    //   }
-    // );
-    // NativeAppEventEmitter.addListener(
-    //   'exitGroup',
-    //   (exitGroup) => {
-    //     console.log("exitGroup:",exitGroup);
-    //   }
-    // );
-    // NativeAppEventEmitter.addListener(
-    //   'enterLocation',
-    //   (enterLocation) => {
-    //     reactToEnterRoom(this.store, enterLocation);
-    //     console.log("enterLocation:",enterLocation);
-    //   }
-    // );
-    // NativeAppEventEmitter.addListener(
-    //   'exitLocation',
-    //   (exitLocation) => {
-    //     reactToExitRoom(this.store, exitLocation);
-    //     console.log("exitLocation:", exitLocation);
-    //   }
-    // );
+    NativeAppEventEmitter.addListener(
+      'advertisementData',
+      (advertisementData) => {
+        processScanResponse(this.store, advertisementData);
+      }
+    );
+    NativeAppEventEmitter.addListener(
+      'enterGroup',
+      (enterGroup) => {
+        //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
+        console.log("enterGroup:",enterGroup);
+      }
+    );
+    NativeAppEventEmitter.addListener(
+      'exitGroup',
+      (exitGroup) => {
+        console.log("exitGroup:",exitGroup);
+      }
+    );
+    NativeAppEventEmitter.addListener(
+      'enterLocation',
+      (enterLocation) => {
+        console.log("enterLocation:",enterLocation);
+        reactToEnterRoom(this.store, enterLocation);
+      }
+    );
+    NativeAppEventEmitter.addListener(
+      'exitLocation',
+      (exitLocation) => {
+        console.log("exitLocation:", exitLocation);
+        reactToExitRoom(this.store, exitLocation);
+
+      }
+    );
     // NativeAppEventEmitter.addListener(
     //   'currentLocation',
     //   (currentLocation) => {
@@ -172,9 +180,9 @@ class NativeBridgeClass {
   }
   
   connectAndSetSwitchState(uuid, state) {
-    BlePromiseManager.register(() => {
+    return BlePromiseManager.register(() => {
       return new Promise((resolve, reject) => {
-        console.log("here")
+        console.log("GOING TO SWITCH TO STATE", state)
         this.connect(uuid)
           .then(() => {
             return this.setSwitchState(state);
@@ -188,6 +196,7 @@ class NativeBridgeClass {
           .catch((err) => {
             console.log("connectAndSetSwitchState Error:", err);
             reject(err);
+            return this.disconnect();
           })
       });
     });
@@ -195,7 +204,6 @@ class NativeBridgeClass {
 
   setSwitchState(state) {
     let safeState = Math.min(1, Math.max(0, state));
-    safeState = 1;
     return BluenetPromise('setSwitchState', safeState);
   }
 

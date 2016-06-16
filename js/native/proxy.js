@@ -25,7 +25,8 @@ if (DISABLE_NATIVE === true) {
     startCollectingFingerprint: () => {},
     abortCollectingFingerprint: () => {},
     finalizeFingerprint: () => {},
-    getFingerprint: () => {}
+    getFingerprint: () => {},
+    loadFingerprint: () => {}
   }
 }
 else {

@@ -69,6 +69,8 @@ func getBleErrorString(err: BleError) -> String {
       return "INVALID_UUID"
     case .NOT_INITIALIZED:
       return "NOT_INITIALIZED"
+    default:
+      return "UNKNOWN"
   }
 }
 
@@ -144,11 +146,12 @@ class BluenetJS: NSObject {
   }
   
   @objc func setSwitchState(state: NSNumber, callback: RCTResponseSenderBlock) {
-    BASE!.bluenet.setSwitchState(Float(state))
+    BASE!.bluenet.setSwitchState(state)
       .then({_ in callback([["error" : false]])})
       .error({err in
         print ("error in setSwitchState \(err)")
-        callback([["error" : true, "data": 1]])})
+        callback([["error" : true, "data": 1]])
+      })
   }
   
   

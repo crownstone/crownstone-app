@@ -33,6 +33,8 @@ export const fakeStore = {
           config: {
             name:'Kitchen',
             icon:'ios-restaurant',
+            fingerprintRaw: undefined,
+            fingerprintParsed: undefined,
             updatedAt: 1465835364017
           },
           presentUsers:[]
@@ -41,6 +43,8 @@ export const fakeStore = {
           config: {
             name:'Garage',
             icon:'ios-construct',
+            fingerprintRaw: undefined,
+            fingerprintParsed: undefined,
             updatedAt: 1465835364017
           },
           presentUsers:[]
@@ -49,6 +53,8 @@ export const fakeStore = {
           config: {
             name:'Bathroom',
             icon:'ios-nuclear',
+            fingerprintRaw: undefined,
+            fingerprintParsed: undefined,
             updatedAt: 1465835364017
           },
           presentUsers:[]
@@ -57,9 +63,11 @@ export const fakeStore = {
           config: {
             name:'Living Room',
             icon:'ios-body',
+            fingerprintRaw: undefined,
+            fingerprintParsed: undefined,
             updatedAt: 1465835364017
           },
-          presentUsers:['memberId']
+          presentUsers:[]
         }
       },
       stones:    {

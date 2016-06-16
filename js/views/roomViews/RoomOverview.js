@@ -24,8 +24,14 @@ import { styles, colors, width } from '../styles'
 
 
 export class RoomOverview extends Component {
+  constructor() {
+    super();
+    this.state = {pendingRequests:{}}
+  }
+
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
+      console.log("rerendering the room");
       this.forceUpdate();
     })
   }
@@ -45,26 +51,46 @@ export class RoomOverview extends Component {
             currentUsage={item.stone.state.currentUsage}
             navigation={false}
             control={true}
+            pending={this.state.pendingRequests[stoneId] !== undefined}
             dimmable={item.device.config.dimmable}
             onChange={(newValue) => {
-              let data = {state:newValue};
-              if (newValue === 0)
-                data.currentUsage = 0;
+              this.setRequest(stoneId);
+              NativeBridge.connectAndSetSwitchState(item.stone.config.uuid, newValue)
+                .then(() => {
+                  let data = {state:newValue};
+                  if (newValue === 0)
+                    data.currentUsage = 0;
 
-              this.props.store.dispatch({
-                type: 'UPDATE_STONE_STATE',
-                groupId: this.props.groupId,
-                locationId: this.props.locationId,
-                stoneId: item.stone,
-                data: data
-              })
-              
-              NativeBridge.connectAndSetSwitchState(item.stone.config.uuid)
+                  this.props.store.dispatch({
+                    type: 'UPDATE_STONE_STATE',
+                    groupId: this.props.groupId,
+                    locationId: this.props.locationId,
+                    stoneId: stoneId,
+                    data: data
+                  });
+                  this.clearRequest(stoneId);
+
+                })
+                .catch((err) => {
+                  this.clearRequest(stoneId);
+                })
             }}
           />
         </View>
       </View>
     );
+  }
+
+  setRequest(id) {
+    let pendingRequests = this.state.pendingRequests;
+    pendingRequests[id] = true;
+    this.setState({pendingRequests:pendingRequests})
+  }
+
+  clearRequest(id) {
+    let pendingRequests = this.state.pendingRequests;
+    delete pendingRequests[id];
+    this.setState({pendingRequests:pendingRequests})
   }
 
   
