@@ -21,6 +21,8 @@ let userPresenceReducer = (state = [], action = {}) => {
       if (userIndex !== -1) {
         return [...state.slice(0,userIndex).concat(state.slice(userIndex+1))]
       }
+    case 'CLEAR_USERS':
+      return [];
     default:
       return state;
   }

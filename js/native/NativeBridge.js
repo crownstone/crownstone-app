@@ -1,7 +1,8 @@
 import { BluenetPromise, Bluenet } from './proxy';
 import { NativeModules, NativeAppEventEmitter } from 'react-native';
 import { EventBus } from '../util/eventBus'
-import { reactToEnterRoom, reactToExitRoom, processScanResponse, BlePromiseManager } from '../logic/CrownstoneControl'
+import { reactToEnterRoom, reactToExitRoom, processScanResponse } from '../logic/CrownstoneControl'
+import { BlePromiseManager } from '../logic/BlePromiseManager'
 
 /* Pairing process:
 
@@ -104,12 +105,12 @@ class NativeBridgeClass {
 
       }
     );
-    // NativeAppEventEmitter.addListener(
-    //   'currentLocation',
-    //   (currentLocation) => {
-    //     console.log("currentLocation:", currentLocation);
-    //   }
-    // );
+     NativeAppEventEmitter.addListener(
+       'currentLocation',
+       (currentLocation) => {
+         console.log("currentLocation:", currentLocation);
+       }
+     );
   }
 
   /**
@@ -171,7 +172,6 @@ class NativeBridgeClass {
 
 
   connect(uuid) {
-    console.log('in here')
     return BluenetPromise('connect', uuid);
   }
 
@@ -182,9 +182,9 @@ class NativeBridgeClass {
   connectAndSetSwitchState(uuid, state) {
     return BlePromiseManager.register(() => {
       return new Promise((resolve, reject) => {
-        console.log("GOING TO SWITCH TO STATE", state)
         this.connect(uuid)
           .then(() => {
+            console.log("now switching the state of :",uuid);
             return this.setSwitchState(state);
           })
           .then(() => {
@@ -196,10 +196,10 @@ class NativeBridgeClass {
           .catch((err) => {
             console.log("connectAndSetSwitchState Error:", err);
             reject(err);
-            return this.disconnect();
+            this.disconnect();
           })
       });
-    });
+    }, {from:'connectAndSetSwitchState', uuid:uuid, state:state});
   }
 
   setSwitchState(state) {

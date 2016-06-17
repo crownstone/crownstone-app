@@ -36,17 +36,16 @@ else {
 
 
 export const BluenetPromise = function(functionName, param) {
+  console.log("called bluenetPromise", functionName, " with param", param)
   return new Promise((resolve, reject) => {
-    console.log('in promise)')
     if (DISABLE_NATIVE === true) {
       resolve()
     }
     else {
-      console.log(1)
       if (param === undefined) {
-        console.log(2)
         Bluenet[functionName]((result) => {
           if (result.error === true) {
+            console.log("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
             reject(result.data);
           }
           else {
@@ -55,10 +54,9 @@ export const BluenetPromise = function(functionName, param) {
         })
       }
       else {
-
-        console.log("forwarded to bluent")
         Bluenet[functionName](param, (result) => {
           if (result.error === true) {
+            console.log("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
             reject(result.data);
           }
           else {

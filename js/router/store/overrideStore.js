@@ -49,16 +49,16 @@ export const fakeStore = {
           },
           presentUsers:[]
         },
-        locationId_C: {
-          config: {
-            name:'Bathroom',
-            icon:'ios-nuclear',
-            fingerprintRaw: undefined,
-            fingerprintParsed: undefined,
-            updatedAt: 1465835364017
-          },
-          presentUsers:[]
-        },
+        //locationId_C: {
+        //  config: {
+        //    name:'Bathroom',
+        //    icon:'ios-nuclear',
+        //    fingerprintRaw: undefined,
+        //    fingerprintParsed: undefined,
+        //    updatedAt: 1465835364017
+        //  },
+        //  presentUsers:[]
+        //},
         locationId_D: {
           config: {
             name:'Living Room',
@@ -173,56 +173,57 @@ export const fakeStore = {
             }
           }
         },
-        1: {
-          config: {
-            name: 'Smart Socket #3',
-            applianceId: 'applianceId_C',
-            locationId: 'locationId_C',
-            macAddress: 'C67606B1-9FCD-DAC8-FE7C-DE010A1C5F16',
-            iBeaconMajor: 4,
-            iBeaconMinor: 3,
-            initializedSuccessfully: true,
-            updatedAt: 1465835364017
-          },
-          state: {
-            state: 1.0,
-            currentUsage: 45,
-            updatedAt: 1465835364017
-          },
-          schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
-            updatedAt: 1465835364017
-          },
-          behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-            onHomeEnter: {
-              state:    1,  // [0 .. 1] for state, undefined for ignore
-              delay:    0,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: false,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onHomeExit:  {
-              state:    0,  // [0 .. 1] for state, undefined for ignore
-              delay:    10,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: false,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onRoomEnter: {
-              state:    1,  // [0 .. 1] for state, undefined for ignore
-              delay:    0,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onRoomExit:  {
-              state:    0,  // [0 .. 1] for state, undefined for ignore
-              delay:    2,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            }
-          }
-        },
+        //1: {
+        //  config: {
+        //    name: 'Smart Socket #3',
+        //    applianceId: 'applianceId_C',
+        //    locationId: 'locationId_C',
+        //    macAddress: 'C67606B1-9FCD-DAC8-FE7C-DE010A1C5F16',
+        //    uuid:'C67606B1-9FCD-DAC8-FE7C-DE010A1C5F16',
+        //    iBeaconMajor: 4,
+        //    iBeaconMinor: 3,
+        //    initializedSuccessfully: true,
+        //    updatedAt: 1465835364017
+        //  },
+        //  state: {
+        //    state: 1.0,
+        //    currentUsage: 45,
+        //    updatedAt: 1465835364017
+        //  },
+        //  schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
+        //    updatedAt: 1465835364017
+        //  },
+        //  behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
+        //    onHomeEnter: {
+        //      state:    1,  // [0 .. 1] for state, undefined for ignore
+        //      delay:    0,  // delay in seconds
+        //      fadeTime: 0,  // delay in seconds
+        //      active: false,  // if not active the crownstone will not react to the event.
+        //      updatedAt: 1465835364017
+        //    },
+        //    onHomeExit:  {
+        //      state:    0,  // [0 .. 1] for state, undefined for ignore
+        //      delay:    10,  // delay in seconds
+        //      fadeTime: 0,  // delay in seconds
+        //      active: false,  // if not active the crownstone will not react to the event.
+        //      updatedAt: 1465835364017
+        //    },
+        //    onRoomEnter: {
+        //      state:    1,  // [0 .. 1] for state, undefined for ignore
+        //      delay:    0,  // delay in seconds
+        //      fadeTime: 0,  // delay in seconds
+        //      active: true,  // if not active the crownstone will not react to the event.
+        //      updatedAt: 1465835364017
+        //    },
+        //    onRoomExit:  {
+        //      state:    0,  // [0 .. 1] for state, undefined for ignore
+        //      delay:    2,  // delay in seconds
+        //      fadeTime: 0,  // delay in seconds
+        //      active: true,  // if not active the crownstone will not react to the event.
+        //      updatedAt: 1465835364017
+        //    }
+        //  }
+        //},
         2: {
           config: {
             name: 'Smart Socket #4',

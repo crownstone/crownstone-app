@@ -33,8 +33,6 @@
 		AEDF75A5278A4ED19005F8EE /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 450B815B98344712BBB045BE /* libRCTCamera.a */; };
 		C0EA02FA19904884858E7A86 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69BCC256F9794EB0B5F8CD8D /* FontAwesome.ttf */; };
 		E0694268802948AAAB438DD7 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB84202DEE984E47A75A4CB2 /* Ionicons.ttf */; };
-		FA0C962F1D11618800794D85 /* BluenetLibIOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA0C962C1D11618000794D85 /* BluenetLibIOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FA0C96301D11618F00794D85 /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0C962C1D11618000794D85 /* BluenetLibIOS.framework */; };
 		FA3F47211CF73CE000408E34 /* libRCTSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3F46FD1CF73C8C00408E34 /* libRCTSplashScreen.a */; };
 		FA3F47231CF73D3600408E34 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA3F47221CF73D3600408E34 /* LaunchScreen.xib */; };
 		FA3F47251CF73D7200408E34 /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = FA3F47241CF73D7200408E34 /* splash.png */; };
@@ -49,6 +47,8 @@
 		FA4A0A1B1D09CFBB005753CE /* PromiseKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA4A0A0B1D09CDE0005753CE /* PromiseKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FA4A0A1C1D09CFBB005753CE /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4A0A0C1D09CDE0005753CE /* SwiftyJSON.framework */; };
 		FA4A0A1D1D09CFBB005753CE /* SwiftyJSON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA4A0A0C1D09CDE0005753CE /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FA59511C1D13027000348CF2 /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA59511B1D13027000348CF2 /* BluenetLibIOS.framework */; };
+		FA59511D1D13028100348CF2 /* BluenetLibIOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA59511B1D13027000348CF2 /* BluenetLibIOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FA6E52D51D0ADF3E00188489 /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6E52D41D0ADF3E00188489 /* JSONUtils.swift */; };
 /* End PBXBuildFile section */
 
@@ -188,8 +188,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				FA59511D1D13028100348CF2 /* BluenetLibIOS.framework in Embed Frameworks */,
 				FA4A0A171D09CFBB005753CE /* CryptoSwift.framework in Embed Frameworks */,
-				FA0C962F1D11618800794D85 /* BluenetLibIOS.framework in Embed Frameworks */,
 				FA4A0A191D09CFBB005753CE /* OMGHTTPURLRQ.framework in Embed Frameworks */,
 				FA4A0A1B1D09CFBB005753CE /* PromiseKit.framework in Embed Frameworks */,
 				FA4A0A1D1D09CFBB005753CE /* SwiftyJSON.framework in Embed Frameworks */,
@@ -235,7 +235,6 @@
 		F14D9B6A945E4484933B59E1 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		F2FB7BB27E4E43A19DB305DE /* RCTImageResizer.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTImageResizer.xcodeproj; path = "../node_modules/react-native-image-resizer/ios/RCTImageResizer.xcodeproj"; sourceTree = "<group>"; };
 		F73F7A9D896A46C299611037 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
-		FA0C962C1D11618000794D85 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = Carthage/Build/iOS/BluenetLibIOS.framework; sourceTree = "<group>"; };
 		FA3F46F81CF73C8B00408E34 /* RCTSplashScreen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSplashScreen.xcodeproj; path = "../node_modules/@remobile/react-native-splashscreen/ios/RCTSplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		FA3F47221CF73D3600408E34 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchScreen.xib; path = "../node_modules/@remobile/react-native-splashscreen/ios/RCTSplashScreen/SplashScreenResource/LaunchScreen.xib"; sourceTree = "<group>"; };
 		FA3F47241CF73D7200408E34 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = splash.png; path = ../js/images/splash.png; sourceTree = "<group>"; };
@@ -249,6 +248,7 @@
 		FA4A0A0B1D09CDE0005753CE /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 		FA4A0A0C1D09CDE0005753CE /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		FA4A0A131D09CF2D005753CE /* NativeBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeBridge.h; sourceTree = "<group>"; };
+		FA59511B1D13027000348CF2 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetWorkspace-ctwjboexknfjsaemurnuvcntfmgk/Build/Products/Debug-iphoneos/BluenetLibIOS.framework"; sourceTree = "<group>"; };
 		FA6E52D41D0ADF3E00188489 /* JSONUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONUtils.swift; sourceTree = "<group>"; };
 		FB84202DEE984E47A75A4CB2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		FD57DF026A8B4393B71098CB /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
@@ -274,7 +274,7 @@
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
-				FA0C96301D11618F00794D85 /* BluenetLibIOS.framework in Frameworks */,
+				FA59511C1D13027000348CF2 /* BluenetLibIOS.framework in Frameworks */,
 				FA4A0A101D09CDE0005753CE /* PromiseKit.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				FA4A0A181D09CFBB005753CE /* OMGHTTPURLRQ.framework in Frameworks */,
@@ -437,7 +437,7 @@
 			isa = PBXGroup;
 			children = (
 				FA4A0A061D09C2BA005753CE /* Cartfile */,
-				FA0C962C1D11618000794D85 /* BluenetLibIOS.framework */,
+				FA59511B1D13027000348CF2 /* BluenetLibIOS.framework */,
 				FA4A0A091D09CDE0005753CE /* CryptoSwift.framework */,
 				FA4A0A0A1D09CDE0005753CE /* OMGHTTPURLRQ.framework */,
 				FA4A0A0B1D09CDE0005753CE /* PromiseKit.framework */,

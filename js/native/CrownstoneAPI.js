@@ -93,10 +93,10 @@ class setupCrownstone {
   constructor(handleId) {
     this.handleId = handleId;
   }
-  
-  connect() {
-    return NativeBridge.connect(this.handleId)
-  }
+  //
+  //connect() {
+  //  return NativeBridge.connect(this.handleId)
+  //}
 
   makeNoise() {
     return new Promise((resolve, reject) => {

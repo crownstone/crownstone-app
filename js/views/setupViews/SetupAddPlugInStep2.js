@@ -38,38 +38,38 @@ export class SetupAddPlugInStep2 extends Component {
     let crownstone = undefined;
     let macAddress = undefined;
 
-    CrownstoneAPI.getNearestSetupCrownstone()
-      .then((foundCrownstone) => {
-        crownstone = foundCrownstone;
-        this.setProgress(1);
-        return crownstone.connect();
-      })
-      .then(() => {
-        this.setProgress(2);
-        return crownstone.getMacAddress();
-      })
-      .then((csMacAddress) => {
-        macAddress = csMacAddress;
-        this.setProgress(3);
-        return CLOUD.createStone(activeGroup, macAddress);
-      })
-      .then((data) => {
-        store.dispatch({
-          type: "ADD_STONE",
-          groupId: activeGroup,
-          stoneId: data.stoneId, // TODO: fix when dominik updates cloud (this is the 2 byte id)
-          data: {
-            macAddress:   macAddress,
-            iBeaconMajor: data.major, // TODO: check when dominik updates cloud
-            iBeaconMinor: data.minor, // TODO: check when dominik updates cloud
-            initializedSuccessfully: false
-          }
-        });
-        this.claimStone(crownstone, data.stoneId);
-      })
-      .catch((err) => {
-        /* TODO: handle connections issues */
-      });
+    // CrownstoneAPI.getNearestSetupCrownstone()
+    //   .then((foundCrownstone) => {
+    //     crownstone = foundCrownstone;
+    //     this.setProgress(1);
+    //     return crownstone.connect();
+    //   })
+    //   .then(() => {
+    //     this.setProgress(2);
+    //     return crownstone.getMacAddress();
+    //   })
+    //   .then((csMacAddress) => {
+    //     macAddress = csMacAddress;
+    //     this.setProgress(3);
+    //     return CLOUD.createStone(activeGroup, macAddress);
+    //   })
+    //   .then((data) => {
+    //     store.dispatch({
+    //       type: "ADD_STONE",
+    //       groupId: activeGroup,
+    //       stoneId: data.stoneId, // TODO: fix when dominik updates cloud (this is the 2 byte id)
+    //       data: {
+    //         macAddress:   macAddress,
+    //         iBeaconMajor: data.major, // TODO: check when dominik updates cloud
+    //         iBeaconMinor: data.minor, // TODO: check when dominik updates cloud
+    //         initializedSuccessfully: false
+    //       }
+    //     });
+    //     this.claimStone(crownstone, data.stoneId);
+    //   })
+    //   .catch((err) => {
+    //     /* TODO: handle connections issues */
+    //   });
   }
 
   claimStone(crownstone, stoneId, attempt = 0) {

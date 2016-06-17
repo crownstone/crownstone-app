@@ -48,7 +48,7 @@ export class GroupOverview extends Component {
 
   _getColor(usage) {
     let minUsage = 0;
-    let maxUsage = 400;
+    let maxUsage = 30;
 
     let blendFactor = (Math.min(maxUsage, usage) -  minUsage) / maxUsage;
 

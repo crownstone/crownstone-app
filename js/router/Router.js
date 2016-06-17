@@ -78,7 +78,18 @@ CLOUD.setNetworkErrorHandler((error) => {
   Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.");
 });
 
-
+var removeAllPresentUsers = function(store) {
+  const state = store.getState();
+  let groups = state.groups;
+  let groupIds = Object.keys(groups);
+  groupIds.forEach((groupId) => {
+    let locations = groups[groupId].locations;
+    let locationIds = Object.keys(locations);
+    locationIds.forEach((locationId) => {
+      store.dispatch({type:'CLEAR_USERS', groupId:groupId, locationId:locationId})
+    })
+  })
+}
 
 export class AppRouter extends Component {
   constructor() {
@@ -121,6 +132,7 @@ export class AppRouter extends Component {
     if (storeInitialized === true) {
       // give the native bridge a reference to the store
       NativeBridge.loadStore(store);
+      removeAllPresentUsers(store)
       dataLoginValidation();
     }
     else

@@ -23,7 +23,7 @@ export class SetupTrainRoom extends Component {
     super();
     this.state = {text:'initializing', active: false, opacity: new Animated.Value(0)};
     this.collectedData = [];
-    this.dataLimit = 60;
+    this.dataLimit = 30;
   }
 
   componentDidMount() {
@@ -61,7 +61,7 @@ export class SetupTrainRoom extends Component {
       NativeBridge.finalizeFingerprint(groupId, this.props.locationId);
       NativeBridge.getFingerprint(groupId, this.props.locationId)
         .then((result) => {
-          console.log("gathered fingerprint:", result)
+          console.log("gathered fingerprint:", result);
           store.dispatch({
             type:'UPDATE_LOCATION_FINGERPRINT',
             groupId: groupId,
