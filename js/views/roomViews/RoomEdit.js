@@ -57,9 +57,9 @@ export class RoomEdit extends Component {
     // room Name:
     items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
     items.push({label:'Retrain Room', type: 'navigation', callback: () => {
-      Alert.alert('Retrain','Are you sure? The current fingerprint will be lost.',[
+      Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
         {text: 'Cancel', style: 'cancel'},
-        {text: 'OK', onPress: () => {Actions.setupTrainRoom({roomName: room.config.name, locationId: this.props.locationId})}},
+        {text: 'OK', onPress: () => {Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId})}},
       ])
     }});
     items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +

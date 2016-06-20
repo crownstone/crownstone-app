@@ -26,9 +26,11 @@ RCT_EXTERN_METHOD(disconnect:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 
 // Bluenet localization
-RCT_EXTERN_METHOD(trackUUID:(NSString *)groupId groupName:(NSString*)groupName)
+RCT_EXTERN_METHOD(trackUUID:(NSString *)groupUUID groupId:(NSString*)groupId)
 RCT_EXTERN_METHOD(startCollectingFingerprint)
 RCT_EXTERN_METHOD(abortCollectingFingerprint)
+RCT_EXTERN_METHOD(pauseCollectingFingerprint)
+RCT_EXTERN_METHOD(resumeCollectingFingerprint)
 RCT_EXTERN_METHOD(finalizeFingerprint:(NSString *)groupId locationId:(NSString *)locationId)
 RCT_EXTERN_METHOD(getFingerprint:(NSString *)groupId locationId:(NSString *)locationId callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(loadFingerprint:(NSString *)groupId locationId:(NSString *)locationId fingerprint:(NSString *)fingerprint)

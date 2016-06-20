@@ -16,7 +16,7 @@ import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
 import { 
   getPresentUsersFromState, 
-  getCurrentUsageFromState, 
+  getCurrentPowerUsageFromState, 
   getRoomContentFromState 
 } from '../../util/dataUtil'
 
@@ -100,7 +100,7 @@ export class RoomOverview extends Component {
     const state   = store.getState();
     const room    = state.groups[this.props.groupId].locations[this.props.locationId];
 
-    let usage = getCurrentUsageFromState(state, this.props.groupId, this.props.locationId);
+    let usage = getCurrentPowerUsageFromState(state, this.props.groupId, this.props.locationId);
     let users = getPresentUsersFromState(state, this.props.groupId, this.props.locationId);
 
     // update the title in case the editing has changed it

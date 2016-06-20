@@ -24,7 +24,7 @@ export class RoomBanner extends Component {
       let user = this.props.presentUsers[0]
       return (
         <View>
-          <ProfilePicture picture={user.picture} size={30} innerSize={33} name={user.firstName} />
+          <ProfilePicture picture={user.picture} size={30} innerSize={33} name={user.data.firstName} />
         </View>
       );
     }

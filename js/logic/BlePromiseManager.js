@@ -6,7 +6,7 @@ class BlePromiseManagerClass {
   }
 
   register(promise, message) {
-    console.log("registered")
+    console.log("registered promise in manager")
     return new Promise((resolve, reject) => {
       let container = {promise: promise, resolve: resolve, reject: reject, message:message};
       if (this.promiseInProgress === undefined) {
@@ -21,7 +21,7 @@ class BlePromiseManagerClass {
   }
 
   executePromise(promiseContainer) {
-    console.log('executed')
+    console.log('executed promise ', promiseContainer.message)
     this.promiseInProgress = promiseContainer;
     promiseContainer.promise()
       .then(() => {
@@ -32,7 +32,7 @@ class BlePromiseManagerClass {
       })
       .catch((err) => {
         promiseContainer.reject(err);
-        console.log("ERROR in promise:",err);
+        console.log("ERROR in promise (",promiseContainer.message,"):",err);
       })
   }
 

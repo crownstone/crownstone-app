@@ -8,7 +8,6 @@
 
 import Foundation
 import BluenetLibIOS
-
 import PromiseKit
 import SwiftyJSON
 
@@ -23,9 +22,9 @@ var GLOBAL_BLUENET : ViewPassThrough?
     super.init()
     
 
-    BluenetLibIOS.setViewController(viewController)
+    BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
 
-    self.bluenet = Bluenet(appName: "Crownstone");
+    self.bluenet = Bluenet();
 
     self.bluenetLocalization = BluenetLocalization();
     
@@ -40,8 +39,6 @@ func getBleErrorString(err: BleError) -> String {
       return "DISCONNECTED"
     case .CONNECTION_CANCELLED:
       return "CONNECTION_CANCELLED"
-    case .CONNECTION_TIMEOUT:
-      return "CONNECTION_TIMEOUT"
     case .NOT_CONNECTED:
       return "NOT_CONNECTED"
     case .NO_SERVICES:
@@ -62,8 +59,26 @@ func getBleErrorString(err: BleError) -> String {
       return "CANNOT_SET_TIMEOUT_WITH_THIS_TYPE_OF_PROMISE"
     case .TIMEOUT:
       return "TIMEOUT"
-    default:
-      return "UNKNOWN_BLE_ERROR"
+    case .DISCONNECT_TIMEOUT:
+      return "DISCONNECT_TIMEOUT"
+    case .CANCEL_PENDING_CONNECTION_TIMEOUT:
+      return "CANCEL_PENDING_CONNECTION_TIMEOUT"
+    case .CONNECT_TIMEOUT:
+      return "CONNECT_TIMEOUT"
+    case .GET_SERVICES_TIMEOUT:
+      return "GET_SERVICES_TIMEOUT"
+    case .GET_CHARACTERISTICS_TIMEOUT:
+      return "GET_CHARACTERISTICS_TIMEOUT"
+    case .READ_CHARACTERISTIC_TIMEOUT:
+    return "READ_CHARACTERISTIC_TIMEOUT"
+    case .WRITE_CHARACTERISTIC_TIMEOUT:
+      return "WRITE_CHARACTERISTIC_TIMEOUT"
+    case .ENABLE_NOTIFICATIONS_TIMEOUT:
+      return "ENABLE_NOTIFICATIONS_TIMEOUT"
+    case .DISABLE_NOTIFICATIONS_TIMEOUT:
+      return "DISABLE_NOTIFICATIONS_TIMEOUT"
+  default:
+     return "UNKNOWN_BLE_ERROR \(err)"
   }
 }
 
@@ -125,19 +140,54 @@ class BluenetJS: NSObject {
   @objc func connect(uuid: String, callback: RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.connect(uuid)
       .then({_ in callback([["error" : false]])})
-      .error({err in callback([["error" : true, "data": getBleErrorString(err)]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN connect"]])
+        }
+      })
   }
   
   @objc func disconnect(callback: RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.disconnect()
       .then({_ in callback([["error" : false]])})
-      .error({err in callback([["error" : true, "data":  getBleErrorString(err)]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN disconnect"]])
+        }
+      })
+
   }
   
   @objc func setSwitchState(state: NSNumber, callback: RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.setSwitchState(state)
       .then({_ in callback([["error" : false]])})
-      .error({err in callback([["error" : true, "data":  getBleErrorString(err)]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState"]])
+        }
+      })
+  }
+  
+  @objc func isReady(callback: RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.isReady()
+      .then({_ in callback([["error" : false]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN isReady"]])
+        }
+      })
   }
   
   
@@ -157,15 +207,9 @@ class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenet.stopScanning()
   }
   
-  @objc func isReady(callback: RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.isReady()
-      .then({_ in callback([["error" : false]])})
-      .error({err in callback([["error" : true, "data": getBleErrorString(err)]])})
-  }
-  
-  @objc func trackUUID(groupId: String, groupName: String) -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.trackUUID(groupId, groupName: groupName)
-    print("trackUUID groupId: \(groupId) locationId: \(groupName)")
+
+  @objc func trackUUID(groupUUID: String, groupID: String) -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.trackUUID(groupUUID, groupId: groupID)
   }
   
   @objc func startCollectingFingerprint() -> Void {
@@ -174,19 +218,30 @@ class BluenetJS: NSObject {
   }
   
   @objc func abortCollectingFingerprint() -> Void {
-    BASE!.bluenetLocalization.abortCollectingFingerprint()
+    GLOBAL_BLUENET!.bluenetLocalization.abortCollectingFingerprint()
     print("abortCollectingFingerprint ")
   }
   
   
+  @objc func pauseCollectingFingerprint() -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.pauseCollectingFingerprint()
+    print("pauseCollectingFingerprint ")
+  }
+  
+  @objc func resumeCollectingFingerprint() -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.resumeCollectingFingerprint()
+    print("resumeCollectingFingerprint ")
+  }
+  
+  
   @objc func finalizeFingerprint(groupId: String, locationId: String) -> Void {
-    BASE!.bluenetLocalization.finalizeFingerprint(groupId, locationId: locationId)
+    GLOBAL_BLUENET!.bluenetLocalization.finalizeFingerprint(groupId, locationId: locationId)
     print("finishCollectingFingerprint")
   }
   
   
   @objc func getFingerprint(groupId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
-    let fingerprint = BASE!.bluenetLocalization.getFingerprint(groupId, locationId: locationId)
+    let fingerprint = GLOBAL_BLUENET!.bluenetLocalization.getFingerprint(groupId, locationId: locationId)
     if let fingerprintData = fingerprint {
       callback([fingerprintData.stringify()])
     }
@@ -200,7 +255,7 @@ class BluenetJS: NSObject {
   
   @objc func loadFingerprint(groupId: String, locationId: String, fingerprint: String) -> Void {
     let fingerprint = Fingerprint(stringifiedData: fingerprint)
-    BASE!.bluenetLocalization.loadFingerprint(groupId, locationId: locationId, fingerprint: fingerprint)
+    GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(groupId, locationId: locationId, fingerprint: fingerprint)
     print("loadFingerprint \(groupId) \(locationId)")
     
   }

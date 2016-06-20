@@ -30,12 +30,19 @@ import Icon from 'react-native-vector-icons/Ionicons'
 class TabIcon extends Component {
   render(){
     return (
-      <Icon
-        name={this.props.iconString}
-        size={31}
-        color={this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h}
-        style={{position:'relative', top: 4, backgroundColor:'transparent', padding:0, margin:0}}
-      />
+      <View style={{flex:1,alignItems:'center', justifyContent:'center'}}>
+        <Icon
+          name={this.props.iconString}
+          size={31}
+          color={this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h}
+          style={{backgroundColor:'transparent', padding:0, margin:0}}
+        />
+        <Text style={{
+        fontSize:11,
+        fontWeight:'200',
+        color: (this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h)
+        }}>{this.props.tabTitle}</Text>
+      </View>
     );
   }
 }
@@ -164,8 +171,8 @@ export class AppRouter extends Component {
               <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}  hideNavBar={true}  />
               <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}  hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
-              <Scene key="setupTrainRoom"           component={Views.SetupTrainRoom}       hideNavBar={false} direction="vertical" title="Training" initial={true} />
-              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={false && this.state.loggedIn || true}>
+              <Scene key="roomTraining"             component={Views.RoomTraining}         hideNavBar={true} direction="vertical" title="Training" />
+              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.h}} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={true && this.state.loggedIn || false}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />
                   <Scene key="roomOverview"           component={Views.RoomOverview}        onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
@@ -184,7 +191,7 @@ export class AppRouter extends Component {
                   <Scene key="settingsChangeEmail"    component={Views.SettingsChangeEmail} title="Change Email"/>
                   <Scene key="settingsChangePassword" component={Views.SettingsChangePassword} title="Change Password"/>
                   <Scene key="settingsGroupIndex"     component={Views.SettingsGroupIndex}     title="Groups" />
-                  <Scene key="settingsGroups"         component={Views.SettingsGroup}      title="[Group name here]" onRight={onRightFunctionEdit} rightTitle="Add" initial={false}  />
+                  <Scene key="settingsGroups"         component={Views.SettingsGroup}      title="[Group name here]" onRight={onRightFunctionEdit} rightTitle="Add" initial={false} />
                   <Scene key="settingsRooms"          component={Views.SettingsRooms}       title="Manage Your Rooms"/>
                   <Scene key="settingsCrownstones"    component={Views.SettingsCrownstones} title="Manage Your Crownstones"/>
                   <Scene key="appComplexity"          component={Views.AppComplexity}       title="Settings"/>

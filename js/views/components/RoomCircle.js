@@ -22,77 +22,69 @@ export class RoomCircle extends Component {
     this.props.goto('RoomOverview')
   }
 
-  _drawUsers(users) {
-    // TODO: generalize
-    if (users && users.length > 0) {
-      return <ProfilePicture picture={users[0].picture} size={50} style={{position:'absolute', top:-10, left:0}} />
-    }
-    return undefined
-  }
-
   _getImage() {
     let borderWidth = this.props.radius / 15;
     let innerDiameter = 2*this.props.radius - 2 * borderWidth;
     let outerDiameter = 2*this.props.radius;
     let iconSize = this.props.radius;
     let offset = 0.05;
-    if (this.props.backgroundImage) {
-      return (
-        <View style={{
-            width: outerDiameter,
-            height: outerDiameter,
-            backgroundColor:'transparent'
-          }}>
-          <View style={{
-            borderWidth:borderWidth,
-            borderColor:this.props.borderColor || '#ffffff',
-            borderRadius:outerDiameter,
-            width: outerDiameter,
-            height: outerDiameter,
-            backgroundColor:`rgb(${this.props.color.r},${this.props.color.g},${this.props.color.b})`
-          }}>
-            <Surface
-              width={innerDiameter}
-              height={innerDiameter}
-              backgroundColor='transparent'>
-              <CircleCrop>
-                <ImageHueBlend
-                  r={this.props.color.r/255}
-                  g={this.props.color.g/255}
-                  b={this.props.color.b/255}
-                  blendFactor={0.7}
-                  image={this.props.backgroundImage}
-                />
-              </CircleCrop>
-            </Surface>
-          </View>
-          <View style={{
-            position:'relative',
-            top:-(1+offset)* outerDiameter,
-            left:0,
-            backgroundColor:'transparent',
-            width:outerDiameter,
-            height:outerDiameter,
-            alignItems:'center',
-            justifyContent:'center'
-            }}>
-            <Ionicon name={this.props.icon} size={iconSize} color='#ffffff' />
-          </View>
-          <View style={{
-            position:'relative',
-            top:-(1.4 + offset)*outerDiameter,
-            backgroundColor:'transparent',
-            width:outerDiameter,
-            height:(0.4+offset)*outerDiameter,
-            alignItems:'center',
-            justifyContent:'center'
-            }}>
-            <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:iconSize/4}}>{this.props.content.value + ' ' + this.props.content.unit}</Text>
-          </View>
-        </View>
-      );
-    }
-    else {
+    // if (this.props.backgroundImage) {
+    //   return (
+    //     <View style={{
+    //         width: outerDiameter,
+    //         height: outerDiameter,
+    //         backgroundColor:'transparent'
+    //       }}>
+    //       <View style={{
+    //         borderWidth:borderWidth,
+    //         borderColor:this.props.borderColor || '#ffffff',
+    //         borderRadius:outerDiameter,
+    //         width: outerDiameter,
+    //         height: outerDiameter,
+    //         backgroundColor:`rgb(${this.props.color.r},${this.props.color.g},${this.props.color.b})`
+    //       }}>
+    //         <Surface
+    //           width={innerDiameter}
+    //           height={innerDiameter}
+    //           backgroundColor='transparent'>
+    //           <CircleCrop>
+    //             <ImageHueBlend
+    //               r={this.props.color.r/255}
+    //               g={this.props.color.g/255}
+    //               b={this.props.color.b/255}
+    //               blendFactor={0.7}
+    //               image={this.props.backgroundImage}
+    //             />
+    //           </CircleCrop>
+    //         </Surface>
+    //       </View>
+    //       <View style={{
+    //         position:'relative',
+    //         top:-(1+offset)* outerDiameter,
+    //         left:0,
+    //         backgroundColor:'transparent',
+    //         width:outerDiameter,
+    //         height:outerDiameter,
+    //         alignItems:'center',
+    //         justifyContent:'center'
+    //         }}>
+    //         <Ionicon name={this.props.icon} size={iconSize} color='#ffffff' />
+    //       </View>
+    //       <View style={{
+    //         position:'relative',
+    //         top:-(1.4 + offset)*outerDiameter,
+    //         backgroundColor:'transparent',
+    //         width:outerDiameter,
+    //         height:(0.4+offset)*outerDiameter,
+    //         alignItems:'center',
+    //         justifyContent:'center'
+    //         }}>
+    //         <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:iconSize/4}}>{this.props.content.value + ' ' + this.props.content.unit}</Text>
+    //       </View>
+    //     </View>
+    //   );
+    // }
+    // else {
       return (
         <View style={{
             width: outerDiameter,
@@ -132,10 +124,8 @@ export class RoomCircle extends Component {
               <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:iconSize/4}}>{this.props.content.value + ' ' + this.props.content.unit}</Text>
             </View>
         </View>
-        {this._drawUsers(this.props.presentUsers)}
       </View>
-      );
-    }
+    );
   }
 
   render() {

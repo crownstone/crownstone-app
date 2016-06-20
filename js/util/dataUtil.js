@@ -18,13 +18,13 @@ export const getPresentUsersFromState = function(state, groupId, locationId) {
   let users = [];
 
   location.presentUsers.forEach((userId) => {
-    users.push(state.groups[groupId].members[userId])
+    users.push({id: userId, data: state.groups[groupId].members[userId]})
   });
 
   return users
 };
 
-export const getCurrentUsageFromState = function(state, groupId, locationId) {
+export const getCurrentPowerUsageFromState = function(state, groupId, locationId) {
   let usage = 0;
   let stones = getStonesFromState(state, groupId, locationId);
   for (let stoneId in stones) {

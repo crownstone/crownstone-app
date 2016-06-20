@@ -1,6 +1,5 @@
 import { BluenetPromise, Bluenet } from './proxy';
 import { NativeModules, NativeAppEventEmitter } from 'react-native';
-import { EventBus } from '../util/eventBus'
 import { reactToEnterRoom, reactToExitRoom, processScanResponse } from '../logic/CrownstoneControl'
 import { BlePromiseManager } from '../logic/BlePromiseManager'
 
@@ -38,7 +37,7 @@ class NativeBridgeClass {
     this.fingerprintingActive = false;
     this.fingerprintingSession = null;
     this.fingerprintingSubscriptions = {};
-
+    this.subscriptions = {};
     this.store = undefined
   }
 
@@ -47,78 +46,136 @@ class NativeBridgeClass {
       this.initialized = true;
       this.store = store;
       this.init();
+      this.startListeningToLocationUpdates();
     }
   }
 
   init() {
-    // register the iBeacons
+    // register the iBeacons uuids with the localization system.
     const state = this.store.getState();
     let groupIds = Object.keys(state.groups);
     groupIds.forEach((groupId) => {
       let groupIBeaconUUID = state.groups[groupId].config.uuid;
-      let groupName = state.groups[groupId].config.name;
+
       // track the group beacon UUID
-      Bluenet.trackUUID(groupIBeaconUUID, groupName);
+      Bluenet.trackUUID(groupIBeaconUUID, groupId);
 
       let locations = state.groups[groupId].locations;
       let locationIds = Object.keys(locations);
       locationIds.forEach((locationId) => {
         if (locations[locationId].config.fingerprintRaw !== undefined) {
           //console.log("locations[locationId].config.fingerprintRaw", locations[locationId].config.fingerprintRaw);
-          Bluenet.loadFingerprint(groupIBeaconUUID, locationId, locations[locationId].config.fingerprintRaw)
+          Bluenet.loadFingerprint(groupId, locationId, locations[locationId].config.fingerprintRaw)
         }
       });
     });
 
     // bind the events
-    NativeAppEventEmitter.addListener(
+    this.subscriptions['advertisementData'] = NativeAppEventEmitter.addListener(
       'advertisementData',
       (advertisementData) => {
         processScanResponse(this.store, advertisementData);
       }
     );
-    NativeAppEventEmitter.addListener(
-      'enterGroup',
-      (enterGroup) => {
-        //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
-        console.log("enterGroup:",enterGroup);
-      }
-    );
-    NativeAppEventEmitter.addListener(
-      'exitGroup',
-      (exitGroup) => {
-        console.log("exitGroup:",exitGroup);
-      }
-    );
-    NativeAppEventEmitter.addListener(
-      'enterLocation',
-      (enterLocation) => {
-        console.log("enterLocation:",enterLocation);
-        reactToEnterRoom(this.store, enterLocation);
-      }
-    );
-    NativeAppEventEmitter.addListener(
-      'exitLocation',
-      (exitLocation) => {
-        console.log("exitLocation:", exitLocation);
-        reactToExitRoom(this.store, exitLocation);
 
-      }
-    );
-     NativeAppEventEmitter.addListener(
-       'currentLocation',
-       (currentLocation) => {
-         console.log("currentLocation:", currentLocation);
-       }
-     );
+  }
+
+  startListeningToLocationUpdates() {
+    if (this.subscriptions['enterGroup'] === undefined) {
+      this.subscriptions['enterGroup'] = NativeAppEventEmitter.addListener(
+        'enterGroup',
+        (enterGroup) => {
+          //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
+          console.log("enterGroup:", enterGroup);
+        }
+      );
+    }
+
+    if (this.subscriptions['exitGroup'] === undefined) {
+      this.subscriptions['exitGroup'] = NativeAppEventEmitter.addListener(
+        'exitGroup',
+        (exitGroup) => {
+          console.log("exitGroup:", exitGroup);
+        }
+      );
+    }
+
+    if (this.subscriptions['enterLocation'] === undefined) {
+      this.subscriptions['enterLocation'] = NativeAppEventEmitter.addListener(
+        'enterLocation',
+        (enterLocation) => {
+          console.log("enterLocation:", enterLocation);
+          reactToEnterRoom(this.store, enterLocation);
+        }
+      );
+    }
+
+    if (this.subscriptions['exitLocation'] === undefined) {
+      this.subscriptions['exitLocation'] = NativeAppEventEmitter.addListener(
+        'exitLocation',
+        (exitLocation) => {
+          console.log("exitLocation:", exitLocation);
+          reactToExitRoom(this.store, exitLocation);
+        }
+      );
+    }
+
+    if (this.subscriptions['currentLocation'] === undefined) {
+      this.subscriptions['currentLocation'] = NativeAppEventEmitter.addListener(
+        'currentLocation',
+        (currentLocation) => {
+          console.log("currentLocation:", currentLocation);
+        }
+      );
+    }
+  }
+
+  stopListeningToLocationUpdates() {
+    if (this.subscriptions['enterGroup']      !== undefined) { this.subscriptions['enterGroup'].remove(); }
+    if (this.subscriptions['exitGroup']       !== undefined) { this.subscriptions['exitGroup'].remove(); }
+    if (this.subscriptions['enterLocation']   !== undefined) { this.subscriptions['enterLocation'].remove(); }
+    if (this.subscriptions['exitLocation']    !== undefined) { this.subscriptions['exitLocation'].remove(); }
+    if (this.subscriptions['currentLocation'] !== undefined) { this.subscriptions['currentLocation'].remove(); }
+
+    this.subscriptions['enterGroup']      = undefined;
+    this.subscriptions['exitGroup']       = undefined;
+    this.subscriptions['enterLocation']   = undefined;
+    this.subscriptions['exitLocation']    = undefined;
+    this.subscriptions['currentLocation'] = undefined;
   }
 
   /**
-   * Callback is to register for updates, not a promise
+   * Callback is to register for updates, not a promise. You can do what you want with this information, it will not influence the fingerprint
    * @param callback
    */
   startFingerprinting(callback) {
-    Bluenet.startCollectingFingerprint();
+    this._startFingerprinting(() => { Bluenet.startCollectingFingerprint(); }, callback);
+  }
+
+  resumeCollectingFingerprint(callback) {
+    this._startFingerprinting(() => { Bluenet.resumeCollectingFingerprint(); }, callback);
+  }
+
+  abortFingerprinting() {
+    this._stopFingerprinting(() => { Bluenet.abortCollectingFingerprint();} );
+  }
+
+  finalizeFingerprint(groupId, locationId) {
+    this._stopFingerprinting(() => { Bluenet.finalizeFingerprint(groupId, locationId);} );
+  }
+
+  pauseCollectingFingerprint() {
+    this._stopFingerprinting(() => { Bluenet.abortCollectingFingerprint(); });
+  }
+
+
+
+  /**
+   * Callback is to register for updates, not a promise. It binds a callback to the eventstream and cleans up using stopFingerprinting
+   * @param callback
+   */
+  _startFingerprinting(nativeCall, callback) {
+    nativeCall();
     this.fingerprintingActive = true;
 
     if (callback !== undefined) {
@@ -132,7 +189,7 @@ class NativeBridgeClass {
             for (let i = 0; i < iBeaconAdvertisement.length; i++) {
               data.push(JSON.parse(iBeaconAdvertisement[i]))
             }
-            callback(data)
+            callback(data);
           }
           else {
             console.log("DATA NOT AN ARRAY:", iBeaconAdvertisement)
@@ -142,14 +199,10 @@ class NativeBridgeClass {
     }
   }
 
-  abortFingerprinting() {
-    this._stopFingerprinting(() => { Bluenet.abortCollectingFingerprint();} );
-  }
-
-  finalizeFingerprint(groupId, locationId) {
-    this._stopFingerprinting(() => { Bluenet.finalizeFingerprint(groupId, locationId);} );
-  }
-
+  /**
+   * clean up the listening to the ibeacon eventstream
+   * @param callback
+   */
   _stopFingerprinting(nativeCall) {
     if (this.fingerprintingSession !== null) {
       this.fingerprintingSubscriptions[this.fingerprintingSession].remove();

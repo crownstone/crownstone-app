@@ -1,5 +1,5 @@
-github "krzyzanowskim/CryptoSwift" "0.5"
+github "krzyzanowskim/CryptoSwift" "0.5.1"
 github "mxcl/OMGHTTPURLRQ" "3.1.2"
 github "SwiftyJSON/SwiftyJSON" "2.3.3"
 github "mxcl/PromiseKit" "3.2.0"
-git "file:///Users/alex/Dropbox/DoBots/Projects/XCode/BluenetLibIOS/.git" "161d757bc5a43131810a06c7f95ba11c953e4fb5"
+git "file:///Users/alex/Dropbox/DoBots/Projects/XCode/BluenetLibIOS/.git" "fa348acc48195822a3193a763d6251f6ab1265b9"
