@@ -49,7 +49,7 @@ test('applianceReducer ADD_LOCATION and REMOVE_LOCATION', function (t) {
         onRoomExit: {active: false, delay: 0, fadeTime: 0, state: 1, updatedAt: 1}
       },
       config: {dimmable: false, icon: undefined, name: 'Ceiling Light', updatedAt: 1},
-      linkedDevices: {onOff: {}, onOn: {}, updatedAt: 1},
+      linkedAppliances: {onOff: {}, onOn: {}, updatedAt: 1},
       schedule: {}
     }
   };
@@ -134,7 +134,7 @@ test('applianceReducer UPDATE_BEHAVIOUR and UPDATE_BEHAVIOUR_CONFIG', function (
         onRoomExit: {active: true, delay: 30, fadeTime: 2, state: 0, updatedAt: 1}
       },
       config: {dimmable: false, icon: undefined, name: undefined, updatedAt: 1},
-      linkedDevices: {onOff: {}, onOn: {}, updatedAt: 1},
+      linkedAppliances: {onOff: {}, onOn: {}, updatedAt: 1},
       schedule: {}
     }
   };

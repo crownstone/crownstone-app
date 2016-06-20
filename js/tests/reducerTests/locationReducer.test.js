@@ -38,7 +38,7 @@ test('locationsReducer ADD_LOCATION and REMOVE_LOCATION', function (t) {
   deepFreeze(updateLocationAction);
   deepFreeze(removeLocationAction);
   
-  let expectedReturn = {locationId: {config: {icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}};
+  let expectedReturn = {locationId: {config: { fingerprintParsed: '', fingerprintRaw: '', icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}};
 
   let stateWithLocation = locationsReducer({}, addLocationAction);
   deepFreeze(stateWithLocation);

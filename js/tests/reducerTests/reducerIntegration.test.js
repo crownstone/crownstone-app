@@ -43,7 +43,7 @@ test('locationsReducer PropegationTest', function (t) {
     groupId: {
       appliances: {},
       config: {adminKey: null, guestKey: null, memberKey: null, name: 'home', updatedAt: 1, uuid: undefined},
-      locations: {locationId: {config: {icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
+      locations: {locationId: {config: {fingerprintParsed: '', fingerprintRaw: '', icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
       members: {},
       presets: [],
       stones: {}
@@ -94,7 +94,7 @@ test('Initial App state', function (t) {
       Home: {
         appliances: {},
         config: {adminKey: null, guestKey: null, memberKey: null, name: 'Home', updatedAt: 1, uuid: undefined},
-        locations: {locationId: {config: {icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
+        locations: {locationId: {config: {fingerprintParsed: '', fingerprintRaw: '', icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
         members: {},
         presets: [],
         stones: {}

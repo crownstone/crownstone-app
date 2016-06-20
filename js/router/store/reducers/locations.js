@@ -30,7 +30,6 @@ let userPresenceReducer = (state = [], action = {}) => {
 
 let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
-    case 'ADD_LOCATION':
     case 'UPDATE_LOCATION_FINGERPRINT':
       if (action.data) {
         let newState = {...state};
@@ -39,6 +38,7 @@ let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'ADD_LOCATION':
     case 'UPDATE_LOCATION_CONFIG':
       if (action.data) {
         let newState = {...state};
