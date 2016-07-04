@@ -177,6 +177,19 @@ class BluenetJS: NSObject {
       })
   }
   
+  @objc func setSwitchStateDemo(state: NSNumber, callback: RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.setSwitchStateDemo(state)
+      .then({_ in callback([["error" : false]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState"]])
+        }
+      })
+  }
+  
   @objc func isReady(callback: RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.isReady()
       .then({_ in callback([["error" : false]])})
