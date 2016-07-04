@@ -208,8 +208,9 @@ class BluenetJS: NSObject {
   }
   
 
-  @objc func trackUUID(groupUUID: String, groupID: String) -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.trackUUID(groupUUID, groupId: groupID)
+  @objc func trackUUID(groupUUID: String, groupId: String) -> Void {
+    print("tracking ibeacons with uuid: \(groupUUID) for group: \(groupId)")
+    GLOBAL_BLUENET!.bluenetLocalization.trackUUID(groupUUID, groupId: groupId)
   }
   
   @objc func startCollectingFingerprint() -> Void {

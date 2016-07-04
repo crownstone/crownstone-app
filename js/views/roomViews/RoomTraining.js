@@ -14,7 +14,9 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { TopBar } from '../components/Topbar'
 import { NativeBridge } from '../../native/NativeBridge'
+import { safeDeleteFile } from '../../util/util'
 import { Background } from '../components/Background'
+import RNFS from 'react-native-fs'
 import { colors, width, height } from '../styles'
 var Icon = require('react-native-vector-icons/Ionicons');
 
@@ -24,12 +26,11 @@ export class RoomTraining extends Component {
     super();
     this.state = {text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
     this.collectedData = [];
-    this.dataLimit = 30;
+    this.dataLimit = 30000;
   }
 
   componentDidMount() {
     this.start();
-    // setInterval(() => {this.animatePulse()}, 1000);
   }
 
   componentWillUnmount() {
@@ -54,27 +55,41 @@ export class RoomTraining extends Component {
 
   handleCollection(data) {
     this.collectedData.push(data);
-    this.setState({text: Math.round((this.collectedData.length/this.dataLimit)*100) + ' %'});
+    this.setState({text: this.collectedData.length + " samples"});
     this.animatePulse();
 
     if (this.collectedData.length == this.dataLimit) {
-      this.setState({text:'Finished!', active:false});
-      const store = this.props.store;
-      const state = store.getState();
-      let groupId = state.app.activeGroup;
-      NativeBridge.finalizeFingerprint(groupId, this.props.locationId);
-      NativeBridge.getFingerprint(groupId, this.props.locationId)
-        .then((result) => {
-          console.log("gathered fingerprint:", result);
-          store.dispatch({
-            type:'UPDATE_LOCATION_FINGERPRINT',
-            groupId: groupId,
-            locationId: this.props.locationId,
-            data:{ fingerprintRaw: result }});
-
-          NativeBridge.startListeningToLocationUpdates();
-        }).done()
+      this.finalizeFingerprint()
     }
+  }
+
+  finalizeFingerprint() {
+    this.setState({text:'Finished!', active:false});
+    const store = this.props.store;
+    const state = store.getState();
+    let groupId = state.app.activeGroup;
+    NativeBridge.finalizeFingerprint(groupId, this.props.locationId);
+    NativeBridge.getFingerprint(groupId, this.props.locationId)
+      .then((result) => {
+        console.log("gathered fingerprint:", result);
+        store.dispatch({
+          type:'UPDATE_LOCATION_FINGERPRINT',
+          groupId: groupId,
+          locationId: this.props.locationId,
+          data:{ fingerprintRaw: result }
+        });
+
+        // -------------
+        // DEBUG -- only for intern
+        let path = RNFS.DocumentDirectoryPath + '/' + state.groups[groupId].locations[this.props.locationId].config.name + '_fingerprint.txt';
+        safeDeleteFile(path).then(() => {
+          RNFS.writeFile(path, result).then((data) => {
+            console.log('written to file');
+          }).done();
+        });
+        // -------------
+        NativeBridge.startListeningToLocationUpdates();
+      }).done();
   }
 
   animatePulse() {
@@ -129,7 +144,7 @@ export class RoomTraining extends Component {
             </View>
           </View>
           <View style={{flex:1}} />
-
+          <TouchableHighlight onPress={() => {this.finalizeFingerprint()}}><Text>Click me to finish collecting fingerprint.</Text></TouchableHighlight>
         </View>
       </Background>
     );

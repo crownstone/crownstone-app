@@ -251,6 +251,7 @@ class NativeBridgeClass {
             reject(err);
             this.disconnect();
           })
+          .catch(() => {}).done()
       });
     }, {from:'connectAndSetSwitchState', uuid:uuid, state:state});
   }

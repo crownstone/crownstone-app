@@ -259,6 +259,7 @@
 		FA6E52D41D0ADF3E00188489 /* JSONUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONUtils.swift; sourceTree = "<group>"; };
 		FA76A3261D181CD5007EECA3 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = Carthage/Build/iOS/BluenetLibIOS.framework; sourceTree = "<group>"; };
 		FACC561B1D182D9B00028E6F /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
+		FAFB4C651D1D407200DDE95E /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 		FB84202DEE984E47A75A4CB2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		FD57DF026A8B4393B71098CB /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -379,6 +380,7 @@
 		13B07FAE1A68108700A75B9A /* Crownstone */ = {
 			isa = PBXGroup;
 			children = (
+				FAFB4C651D1D407200DDE95E /* Crownstone.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				FA3F47241CF73D7200408E34 /* splash.png */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -607,7 +609,12 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = CDZXVMM454;
+						DevelopmentTeam = 94R7Q9MFVZ;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -962,7 +969,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -986,6 +995,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -996,7 +1006,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -1019,6 +1031,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
 			};
 			name = Release;

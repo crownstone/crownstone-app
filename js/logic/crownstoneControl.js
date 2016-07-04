@@ -58,7 +58,7 @@ function checkBehaviour(store, locationId, type) {
 
 function setBehaviour(uuid, state, type) {
   console.log("Setting behaviour for ",uuid, 'to', state,' on event', type, ' @ time:', new Date().valueOf());
-  NativeBridge.connectAndSetSwitchState(uuid, state).then().catch();
+  NativeBridge.connectAndSetSwitchState(uuid, state).then(()=>{}).catch(()=>{});
 }
 
 class AdvertisementManagerClass {
