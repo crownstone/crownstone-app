@@ -23,7 +23,7 @@ export class DeviceEntry extends Component {
 
   _getControl() {
     if (this.props.pending === false) {
-      return <Switch value={this.props.state > 0} onValueChange={this._pressedDevice.bind(this)} />
+      return <Switch value={this.props.state === 1} onValueChange={this._pressedDevice.bind(this)} />
     }
     else {
       return <ActivityIndicatorIOS animating={true} size="large" />
@@ -33,8 +33,8 @@ export class DeviceEntry extends Component {
   _getItem() {
     let color = (
       this.props.pending === true ?
-          colors.gray.h :
-          (this.props.state > 0 ? colors.green.h : colors.menuBackground.h)
+          colors.gray.hex :
+          (this.props.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
 
     let content = (

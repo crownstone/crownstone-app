@@ -56,7 +56,7 @@ export class DeviceEdit extends Component {
     items.push({label:'Icon', type: 'icon', value: device.config.icon, callback: () => {}});
 
     // icon picker
-    items.push({label:'Unplug Device', type: 'button', style: {color:colors.blue.h}, callback: () => {}});
+    items.push({label:'Unplug Device', type: 'button', style: {color:colors.blue.hex}, callback: () => {}});
 
     // // dimmable
     // items.push({label:'Dimmable', type: 'switch', value:device.config.dimmable, callback: (newValue) => {

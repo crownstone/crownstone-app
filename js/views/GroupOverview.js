@@ -14,6 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { ProfilePicture } from './components/ProfilePicture'
 import { Background } from './components/Background'
 import { RoomCircle } from './components/RoomCircle'
+import { hsv2rgb, hsl2rgb, hcl2rgb } from '../util/colorConverters'
 import { getPresentUsersFromState, getCurrentPowerUsageFromState } from '../util/dataUtil'
 
 import { styles, colors, width, height } from './styles'
@@ -23,18 +24,17 @@ export class GroupOverview extends Component {
   constructor() {
     super();
     this.renderState = {};
-    this.state = {presentUsers: {}}
+    this.state = {presentUsers: {}};
 
-    // TODO: Make dynamic
     this.roomRadius = 0.35*0.5*width;
     this.userRadius = 25;
     let availableSpace = (height - 175) - this.roomRadius; // for top bar and menu bar
 
     this.roomPositions = {
-      'locationId_A': {x:0.10*width, y:0.12*availableSpace},
-      'locationId_D': {x:0.55*width, y:0.25*availableSpace},
-      'locationId_B': {x:0.08*width, y:0.90*availableSpace},
-      'locationId_C': {x:0.60*width, y:0.75*availableSpace},
+      locationId_A: {x:0.10*width, y:0.12*availableSpace},
+      locationId_D: {x:0.55*width, y:0.25*availableSpace},
+      locationId_B: {x:0.08*width, y:0.90*availableSpace},
+      locationId_C: {x:0.60*width, y:0.75*availableSpace}
     };
 
     this.presentUsers = {}
@@ -76,10 +76,13 @@ export class GroupOverview extends Component {
     // },1000)
   }
 
-
   componentWillUpdate(newProps) {
-    // move the users over the board if they have changed between rooms.
     const store = newProps.store;
+    this._updateUsers(store);
+  }
+
+  _updateUsers(store) {
+    // move the users over the board if they have changed between rooms.
     const state = store.getState();
     this.activeGroup = state.app.activeGroup;
     const locations = state.groups[this.activeGroup].locations;
@@ -88,14 +91,15 @@ export class GroupOverview extends Component {
     locationIds.forEach((locationId) => {
       // get the current usage.
       let presentUsers = getPresentUsersFromState(state, this.activeGroup, locationId);
-      // console.log(presentUsers)
+      //console.log("users in area",presentUsers)
       presentUsers.forEach((user) => {
         if (this.state.presentUsers[user.id] === undefined) {
-          this.state.presentUsers[user.id] = {top: new Animated.Value(-6*this.userRadius), left: new Animated.Value(-6*this.userRadius), location: locationId, data:user.data}
+          this.state.presentUsers[user.id] = {location: locationId, data:user.data};
+          this._moveUser(user.id, locationId, false);
         }
 
         if (this.state.presentUsers[user.id].location !== locationId) {
-          this._moveUser(user.id, locationId);
+          this._moveUser(user.id, locationId, true);
         }
       });
     })
@@ -114,19 +118,28 @@ export class GroupOverview extends Component {
 
   _getColor(usage) {
     let minUsage = 0;
-    let maxUsage = 30;
+    let maxUsage = 400;
 
     let blendFactor = (Math.min(maxUsage, usage) -  minUsage) / maxUsage;
 
-    return {
-      r: blendFactor * colors.red.r + (1-blendFactor) * colors.green.r,
-      g: blendFactor * colors.red.g + (1-blendFactor) * colors.green.g,
-      b: blendFactor * colors.red.b + (1-blendFactor) * colors.green.b,
+    let endColor = colors.green.rgb;
+    let startColor = colors.blue.rgb;
+    if (blendFactor > 0.5) {
+      endColor = colors.red.rgb;
+      startColor = colors.green.rgb;
     }
+
+    let blend = {
+      r: blendFactor * endColor.r + (1-blendFactor) * startColor.r,
+      g: blendFactor * endColor.g + (1-blendFactor) * startColor.g,
+      b: blendFactor * endColor.b + (1-blendFactor) * startColor.b
+    };
+
+    return blend;
   }
 
 
-  _moveUser(userId, locationId) {
+  _moveUser(userId, locationId, animate = false) {
     // TODO: work with multiple users
 
     let corner = this.roomPositions[locationId];
@@ -138,8 +151,14 @@ export class GroupOverview extends Component {
 
     this.state.presentUsers[userId].location = locationId;
 
-    Animated.spring(this.state.presentUsers[userId].top, {toValue: topPos, tension:50, friction:6}).start();
-    Animated.spring(this.state.presentUsers[userId].left, {toValue: leftPos, tension:50, friction:6}).start();
+    if (animate === false) {
+      this.state.presentUsers[userId].top = new Animated.Value(topPos);
+      this.state.presentUsers[userId].left = new Animated.Value(leftPos);
+    }
+    else {
+      Animated.spring(this.state.presentUsers[userId].top, {toValue: topPos, tension: 50, friction: 6}).start();
+      Animated.spring(this.state.presentUsers[userId].left, {toValue: leftPos, tension: 50, friction: 6}).start();
+    }
   }
 
   _renderRoom(locationId, room) {
@@ -174,13 +193,12 @@ export class GroupOverview extends Component {
       roomNodes.push(this._renderRoom(locationId, rooms[locationId]))
     });
 
-
     return roomNodes.concat(this.drawUsers());
   }
 
   drawUsers() {
     let userObjects = [];
-    let users = Object.keys(this.state.presentUsers)
+    let users = Object.keys(this.state.presentUsers);
     users.forEach((userId) => {
       userObjects.push(
         <Animated.View key={userId} style={{position:'absolute', top:this.state.presentUsers[userId].top, left:this.state.presentUsers[userId].left}}>
@@ -192,7 +210,7 @@ export class GroupOverview extends Component {
   }
 
   render() {
-    console.log("RENDERING OVERVIEW")
+    //console.log("RENDERING OVERVIEW")
     const store = this.props.store;
     const state = store.getState();
     this.renderState = state;
@@ -219,6 +237,8 @@ export class GroupOverview extends Component {
           </Background>
         );
       }
+      // update the users
+      this._updateUsers(store);
       return (
         <Background background={require('../images/mainBackgroundLight.png')}>{this._getRoomsAndUsers(rooms)}</Background>
       )

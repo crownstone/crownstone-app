@@ -40,7 +40,7 @@ export class RoomBanner extends Component {
     let offset = 0.1*height;
 
     return (
-      <View style={{width:width, height:height, backgroundColor: this.props.color || colors.green.h, justifyContent:'center'}}>
+      <View style={{width:width, height:height, backgroundColor: this.props.color || colors.green.hex, justifyContent:'center'}}>
         <View style={{flexDirection:'row'}}>
           <View style={{height:0.7*height, width: leftRatio*width, backgroundColor:'transparent'}}>
             <View style={[bannerStyles.whiteLeft, {height:0.5*height, width:(leftRatio-0.05)*width+offset}]} />
@@ -77,13 +77,13 @@ export const bannerStyles = StyleSheet.create({
   },
   blueLeft: {
     position:'relative',
-    backgroundColor:colors.menuBackground.h,
+    backgroundColor:colors.menuBackground.hex,
     alignItems:'center',
     justifyContent:'center'
   },
   blueRight: {
     position:'relative',
-    backgroundColor:colors.menuBackground.h,
+    backgroundColor:colors.menuBackground.hex,
     alignItems:'center',
     justifyContent:'center'
   },

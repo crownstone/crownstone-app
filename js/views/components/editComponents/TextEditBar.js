@@ -88,7 +88,7 @@ export class TextEditBar extends Component {
   getValidationIcons() {
     if (this.props.validationMethod === 'icons') {
       if (this.state.validation === 'valid')
-        return <Icon name="ios-checkmark-circle" size={18} color={colors.green.h} style={{paddingLeft:3}}/>
+        return <Icon name="ios-checkmark-circle" size={18} color={colors.green.hex} style={{paddingLeft:3}}/>
       else if (this.state.validation === undefined)
         return undefined;
       else // we can have many different types of errors

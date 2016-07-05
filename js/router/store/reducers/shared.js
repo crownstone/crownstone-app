@@ -11,7 +11,7 @@ export const toggleState = {
 export const updateToggleState = function (state, action) {
   if (action.data) {
     let newState = {...state};
-    newState.state     = update(action.data.state,    newState.active);
+    newState.state     = update(action.data.state,    newState.state);
     newState.delay     = update(action.data.delay,    newState.delay);
     newState.fadeTime  = update(action.data.fadeTime, newState.fadeTime);
     newState.active    = update(action.data.active,   newState.active);

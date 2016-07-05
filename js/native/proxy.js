@@ -22,6 +22,7 @@ if (DISABLE_NATIVE === true) {
     connect: () => {},
     disconnect: () => {},
     setSwitchState: () => {},
+    setSwitchStateDemo: () => {},
     trackUUID: () => {},
     startCollectingFingerprint: () => {},
     abortCollectingFingerprint: () => {},

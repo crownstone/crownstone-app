@@ -34,10 +34,10 @@ export class IconCircle extends Component {
           height:size,
           borderRadius:size * 0.5,
           backgroundColor: this.props.backgroundColor || '#ffffff',
-          borderColor: this.props.borderColor || this.props.color || colors.menuBackground.h,
+          borderColor: this.props.borderColor || this.props.color || colors.menuBackground.hex,
           borderWidth: 2
           }, styles.centered]}>
-          <Icon name={this.props.icon} size={size*2/3} color={this.props.color || colors.menuBackground.h} />
+          <Icon name={this.props.icon} size={size*2/3} color={this.props.color || colors.menuBackground.hex} />
         </View>
         {this.props.showEdit === true ?
           <View style={[{
@@ -46,7 +46,7 @@ export class IconCircle extends Component {
             width:size/3,
             height:size/3,
             borderRadius:size/6,
-            backgroundColor: colors.green.h,
+            backgroundColor: colors.green.hex,
             borderColor: '#ffffff',
             borderWidth: 2
           }, styles.centered]}>
@@ -59,7 +59,7 @@ export class IconCircle extends Component {
             width:size/3,
             height:size/3,
             borderRadius:size/6,
-            backgroundColor: colors.green.h,
+            backgroundColor: colors.green.hex,
             borderColor: '#ffffff',
             borderWidth: 2
           }, styles.centered]}>

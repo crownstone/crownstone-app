@@ -33,7 +33,7 @@ export class ProfilePicture extends Component {
             margin:0,
             borderRadius:0.5*(size-2*borderWidth),
             backgroundColor: '#fff',
-            // borderColor: colors.menuBackground.h,
+            // borderColor: colors.menuBackground.hex,
             // borderWidth: size/30
             }} source={{uri:pictureURI}}
           />
@@ -56,7 +56,7 @@ export class ProfilePicture extends Component {
              }]}>
           <Icon
             name={this.props.placeHolderIcon || 'ios-contact'}
-            size={innerSize} color={this.props.color || colors.menuBackground.h}
+            size={innerSize} color={this.props.color || colors.menuBackground.hex}
             style={{paddingTop:0.1*size, margin:0}}
           />
         </View>

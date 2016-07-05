@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
   Alert,
-  
   Dimensions,
   TouchableHighlight,
   PixelRatio,
@@ -16,6 +15,7 @@ import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
+import { NativeBridge } from '../../native/NativeBridge'
 
 
 export class SettingsOverview extends Component {
@@ -42,8 +42,24 @@ export class SettingsOverview extends Component {
   }
 
   _getItems() {
+    const store = this.props.store;
+    const state = store.getState();
     let items = [
-      {type:'spacer'},
+      {type:'explanation', label:'Disable the localization updates', bottom:'false'},
+      {type:'switch', label: 'Enable Localization', value: state.app.enableLocalization,
+        callback: (newValue) => {
+          store.dispatch({
+            type: 'UPDATE_APP_STATE',
+            data: {enableLocalization:newValue}
+          })
+          NativeBridge.stopListeningToLocationUpdates();
+          if (newValue === true) {
+            NativeBridge.startListeningToLocationUpdates();
+          }
+          this.forceUpdate();
+        }
+      },
+      {type:'explanation', label:'App settings', bottom:'false'},
       {label:'Manage Profile',  type:'navigation', callback: () => {Actions.settingsProfile()}}
     ];
 

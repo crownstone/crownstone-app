@@ -47,9 +47,9 @@
 		FA4A0A1B1D09CFBB005753CE /* PromiseKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA4A0A0B1D09CDE0005753CE /* PromiseKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FA4A0A1C1D09CFBB005753CE /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4A0A0C1D09CDE0005753CE /* SwiftyJSON.framework */; };
 		FA4A0A1D1D09CFBB005753CE /* SwiftyJSON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA4A0A0C1D09CDE0005753CE /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FA52763D1D2BF7D700C26A49 /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA52763B1D2BF7C100C26A49 /* BluenetLibIOS.framework */; };
+		FA52763E1D2BF7D700C26A49 /* BluenetLibIOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA52763B1D2BF7C100C26A49 /* BluenetLibIOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FA6E52D51D0ADF3E00188489 /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6E52D41D0ADF3E00188489 /* JSONUtils.swift */; };
-		FA76A3271D181CD5007EECA3 /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA76A3261D181CD5007EECA3 /* BluenetLibIOS.framework */; };
-		FA76A3281D181CE1007EECA3 /* BluenetLibIOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA76A3261D181CD5007EECA3 /* BluenetLibIOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FACC56321D182DA700028E6F /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FACC56301D182D9B00028E6F /* libRNSVG.a */; };
 /* End PBXBuildFile section */
 
@@ -197,7 +197,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				FA4A0A171D09CFBB005753CE /* CryptoSwift.framework in Embed Frameworks */,
-				FA76A3281D181CE1007EECA3 /* BluenetLibIOS.framework in Embed Frameworks */,
+				FA52763E1D2BF7D700C26A49 /* BluenetLibIOS.framework in Embed Frameworks */,
 				FA4A0A191D09CFBB005753CE /* OMGHTTPURLRQ.framework in Embed Frameworks */,
 				FA4A0A1B1D09CFBB005753CE /* PromiseKit.framework in Embed Frameworks */,
 				FA4A0A1D1D09CFBB005753CE /* SwiftyJSON.framework in Embed Frameworks */,
@@ -256,8 +256,8 @@
 		FA4A0A0B1D09CDE0005753CE /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 		FA4A0A0C1D09CDE0005753CE /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		FA4A0A131D09CF2D005753CE /* NativeBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeBridge.h; sourceTree = "<group>"; };
+		FA52763B1D2BF7C100C26A49 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetWorkspace-ctwjboexknfjsaemurnuvcntfmgk/Build/Products/Debug-iphoneos/BluenetLibIOS.framework"; sourceTree = "<group>"; };
 		FA6E52D41D0ADF3E00188489 /* JSONUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONUtils.swift; sourceTree = "<group>"; };
-		FA76A3261D181CD5007EECA3 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = Carthage/Build/iOS/BluenetLibIOS.framework; sourceTree = "<group>"; };
 		FACC561B1D182D9B00028E6F /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		FAFB4C651D1D407200DDE95E /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 		FB84202DEE984E47A75A4CB2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
@@ -277,6 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA4A0A1C1D09CFBB005753CE /* SwiftyJSON.framework in Frameworks */,
+				FA52763D1D2BF7D700C26A49 /* BluenetLibIOS.framework in Frameworks */,
 				FA3F472C1CF747D000408E34 /* libRCTCameraRoll.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -284,7 +285,6 @@
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
-				FA76A3271D181CD5007EECA3 /* BluenetLibIOS.framework in Frameworks */,
 				FA4A0A101D09CDE0005753CE /* PromiseKit.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				FA4A0A181D09CFBB005753CE /* OMGHTTPURLRQ.framework in Frameworks */,
@@ -450,7 +450,7 @@
 			isa = PBXGroup;
 			children = (
 				FA4A0A061D09C2BA005753CE /* Cartfile */,
-				FA76A3261D181CD5007EECA3 /* BluenetLibIOS.framework */,
+				FA52763B1D2BF7C100C26A49 /* BluenetLibIOS.framework */,
 				FA4A0A091D09CDE0005753CE /* CryptoSwift.framework */,
 				FA4A0A0A1D09CDE0005753CE /* OMGHTTPURLRQ.framework */,
 				FA4A0A0B1D09CDE0005753CE /* PromiseKit.framework */,
@@ -996,6 +996,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				PROVISIONING_PROFILE = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1013,6 +1014,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
+				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -1032,7 +1034,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				PROVISIONING_PROFILE = "";
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
 		};

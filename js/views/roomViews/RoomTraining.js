@@ -114,7 +114,7 @@ export class RoomTraining extends Component {
                 backgroundColor:'transparent',
                 fontSize:20,
                 fontWeight:'600',
-                color: colors.menuBackground.h,
+                color: colors.menuBackground.hex,
                 textAlign:'center'
               }}>Walk around the room so it can learn to locate you within it. Each beat a point is collected.</Text>
           </View>
@@ -123,7 +123,7 @@ export class RoomTraining extends Component {
           <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:-40}} >
             <View style={{position:'relative'}}>
               <View style={{backgroundColor:'rgba(255,255,255,1)', width:0.5*width, height:0.5*width, borderRadius:0.25*width}} />
-              <Animated.View style={{marginTop: -0.5*width, opacity:this.state.opacity, backgroundColor:colors.green.h, width:0.5*width, height:0.5*width, borderRadius:0.25*width, alignItems:'center', justifyContent:'center'}}>
+              <Animated.View style={{marginTop: -0.5*width, opacity:this.state.opacity, backgroundColor:colors.green.hex, width:0.5*width, height:0.5*width, borderRadius:0.25*width, alignItems:'center', justifyContent:'center'}}>
                 <Icon name={icons[this.state.iconIndex]} size={0.3*width} color="#fff" style={{backgroundColor:'transparent'}} />
               </Animated.View>
               <View style={{backgroundColor:'transparent', marginTop: -0.5*width, width:0.5*width, height:0.5*width, borderRadius:0.25*width,  alignItems:'center', justifyContent:'center'}}>

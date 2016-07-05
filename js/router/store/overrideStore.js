@@ -72,14 +72,14 @@ export const fakeStore = {
         }
       },
       stones:    {
-        5: {
+        500: {
           config: {
             name: 'Smart Socket #1',
             applianceId: 'applianceId_A',
             locationId: 'locationId_A',
             macAddress: 'E3:F5:C5:FF:23:40',
-            iBeaconMajor: 5,
-            iBeaconMinor: 5,
+            iBeaconMajor: 0,
+            iBeaconMinor: 0,
             uuid: "62DDC9A0-3E33-AC3C-4D5B-46EB4B2EE6CB",
             initializedSuccessfully: true,
             updatedAt: 1465835364017
@@ -123,14 +123,14 @@ export const fakeStore = {
             }
           }
         },
-        3: {
+        501: {
           config: {
             name: 'Smart Socket #2',
             applianceId: 'applianceId_B',
             locationId: 'locationId_B',
             macAddress: 'E5:20:4D:1D:CD:6C',
-            iBeaconMajor: 3,
-            iBeaconMinor: 3,
+            iBeaconMajor: 0,
+            iBeaconMinor: 1,
             uuid: "2E32A7E2-91B9-ACDC-A893-F26A7D1AAEF8",
             initializedSuccessfully: true,
             updatedAt: 1465835364017
@@ -174,14 +174,14 @@ export const fakeStore = {
             }
           }
         },
-        1: {
+        503: {
          config: {
            name: 'Smart Socket #3',
            applianceId: 'applianceId_C',
            locationId: 'locationId_C',
-           macAddress: 'C67606B1-9FCD-DAC8-FE7C-DE010A1C5F16',
-           uuid:'C67606B1-9FCD-DAC8-FE7C-DE010A1C5F16',
-           iBeaconMajor: 4,
+           macAddress: 'CD:0D:98:06:6A:42',
+           uuid:'DC7AC5DE-2F70-0601-B884-80B08A69D982',
+           iBeaconMajor: 0,
            iBeaconMinor: 3,
            initializedSuccessfully: true,
            updatedAt: 1465835364017
@@ -225,13 +225,64 @@ export const fakeStore = {
            }
          }
         },
-        2: {
+        // 504: {
+        //   config: {
+        //     name: 'Smart Socket #3',
+        //     applianceId: 'applianceId_C',
+        //     locationId: 'locationId_C',
+        //     macAddress: 'CF:75:73:30:69:86',
+        //     uuid:'849478F5-1D4F-E191-E9A9-BCA602BF7005',
+        //     iBeaconMajor: 0,
+        //     iBeaconMinor: 4,
+        //     initializedSuccessfully: true,
+        //     updatedAt: 1465835364017
+        //   },
+        //   state: {
+        //     state: 1.0,
+        //     currentUsage: 45,
+        //     updatedAt: 1465835364017
+        //   },
+        //   schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
+        //     updatedAt: 1465835364017
+        //   },
+        //   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
+        //     onHomeEnter: {
+        //       state:    1,  // [0 .. 1] for state, undefined for ignore
+        //       delay:    0,  // delay in seconds
+        //       fadeTime: 0,  // delay in seconds
+        //       active: false,  // if not active the crownstone will not react to the event.
+        //       updatedAt: 1465835364017
+        //     },
+        //     onHomeExit:  {
+        //       state:    0,  // [0 .. 1] for state, undefined for ignore
+        //       delay:    10,  // delay in seconds
+        //       fadeTime: 0,  // delay in seconds
+        //       active: false,  // if not active the crownstone will not react to the event.
+        //       updatedAt: 1465835364017
+        //     },
+        //     onRoomEnter: {
+        //       state:    1,  // [0 .. 1] for state, undefined for ignore
+        //       delay:    0,  // delay in seconds
+        //       fadeTime: 0,  // delay in seconds
+        //       active: true,  // if not active the crownstone will not react to the event.
+        //       updatedAt: 1465835364017
+        //     },
+        //     onRoomExit:  {
+        //       state:    0,  // [0 .. 1] for state, undefined for ignore
+        //       delay:    2,  // delay in seconds
+        //       fadeTime: 0,  // delay in seconds
+        //       active: true,  // if not active the crownstone will not react to the event.
+        //       updatedAt: 1465835364017
+        //     }
+        //   }
+        // },
+        502: {
           config: {
             name: 'Smart Socket #4',
             applianceId: 'applianceId_D',
             locationId: 'locationId_D',
             macAddress: 'FB:8D:71:D5:6B:C1',
-            iBeaconMajor: 2,
+            iBeaconMajor: 0,
             iBeaconMinor: 2,
             uuid: "B1E5B8DF-6DA9-49A8-CD64-1D61413C4F95",
             initializedSuccessfully: true,
@@ -475,6 +526,7 @@ export const fakeStore = {
   },
   app: {
     activeGroup: 'groupId',
+    enableLocalization: true,
     doFirstTimeSetup: true,
     updatedAt: 1465835364025
   }

@@ -152,7 +152,7 @@ export class Register extends Component {
       {
         label: 'Next',
         type:  'button',
-        style: {color:colors.blue.h},
+        style: {color:colors.blue.hex},
         callback: this.validateAndContinue.bind(this)
       },
       {

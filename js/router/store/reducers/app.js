@@ -3,6 +3,7 @@ import { update, getTime } from './reducerUtil'
 let defaultState = {
   app: {
     activeGroup: undefined,
+    enableLocalization: true,
     doFirstTimeSetup: true,
     updatedAt: 1
   }
@@ -22,9 +23,10 @@ export default (state = defaultState.app, action = {}) => {
     case 'UPDATE_APP_STATE':
       if (action.data) {
         let newState = {...state};
-        newState.activeGroup       = update(action.data.activeGroup, newState.activeGroup);
-        newState.doFirstTimeSetup  = update(action.data.doFirstTimeSetup,  newState.doFirstTimeSetup);
-        newState.updatedAt         = getTime();
+        newState.activeGroup        = update(action.data.activeGroup, newState.activeGroup);
+        newState.doFirstTimeSetup   = update(action.data.doFirstTimeSetup,  newState.doFirstTimeSetup);
+        newState.enableLocalization = update(action.data.enableLocalization,  newState.enableLocalization);
+        newState.updatedAt          = getTime();
         return newState;
       }
       return state;

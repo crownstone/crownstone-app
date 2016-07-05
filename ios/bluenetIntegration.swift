@@ -145,7 +145,7 @@ class BluenetJS: NSObject {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
         }
         else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN connect"]])
+          callback([["error" : true, "data": "UNKNOWN ERROR IN connect \(err)"]])
         }
       })
   }
@@ -158,7 +158,7 @@ class BluenetJS: NSObject {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
         }
         else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN disconnect"]])
+          callback([["error" : true, "data": "UNKNOWN ERROR IN disconnect \(err)"]])
         }
       })
 
@@ -172,7 +172,7 @@ class BluenetJS: NSObject {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
         }
         else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState"]])
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState \(err)"]])
         }
       })
   }
@@ -185,7 +185,7 @@ class BluenetJS: NSObject {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
         }
         else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState"]])
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchStateDemo \(err)"]])
         }
       })
   }

@@ -156,7 +156,7 @@ export class HomeOverview extends Component {
           <TouchableHighlight onPress={() => this._onPressButton()}>
             <Text>{this.state.title}</Text>
           </TouchableHighlight>
-          <View style={{borderWidth:20, borderColor:colors.red.h, borderRadius:170, backgroundColor:colors.red.h}}>
+          <View style={{borderWidth:20, borderColor:colors.red.hex, borderRadius:170, backgroundColor:colors.red.hex}}>
             <Surface width={300} height={300}>
               <CircleCrop>
                 <Saturation

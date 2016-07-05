@@ -123,7 +123,7 @@ export class SettingsProfile extends Component {
     items.push({
       label:'Change Password',
       type: 'button',
-      style: {color:colors.blue.h},
+      style: {color:colors.blue.hex},
       callback: () => {
         Alert.alert(
           'Are you sure you want to reset your password?',

@@ -23,6 +23,7 @@ import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
+import { AdvertisementManager }   from '../logic/CrownstoneControl'
 import { styles, colors }         from '../views/styles'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -34,13 +35,13 @@ class TabIcon extends Component {
         <Icon
           name={this.props.iconString}
           size={31}
-          color={this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h}
+          color={this.props.selected ?  colors.menuTextSelected.hex : colors.menuText.hex}
           style={{backgroundColor:'transparent', padding:0, margin:0}}
         />
         <Text style={{
         fontSize:11,
         fontWeight:'200',
-        color: (this.props.selected ?  colors.menuTextSelected.h : colors.menuText.h)
+        color: (this.props.selected ?  colors.menuTextSelected.hex : colors.menuText.hex)
         }}>{this.props.tabTitle}</Text>
       </View>
     );
@@ -75,7 +76,7 @@ let onRightFunctionEdit = function(params) {
 };
 
 let navBarStyle = {
-  navigationBarStyle:{backgroundColor:colors.menuBackground.h},
+  navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
   titleStyle:{color:'white'},
   //renderBackButton:backButtonFunction
 };
@@ -96,7 +97,20 @@ var removeAllPresentUsers = function(store) {
       store.dispatch({type:'CLEAR_USERS', groupId:groupId, locationId:locationId})
     })
   })
-}
+};
+
+var clearAllPowerusage = function(store) {
+  const state = store.getState();
+  let groups = state.groups;
+  let groupIds = Object.keys(groups);
+  groupIds.forEach((groupId) => {
+    let stones = groups[groupId].stones;
+    let stoneIds = Object.keys(stones);
+    stoneIds.forEach((stoneId) => {
+      store.dispatch({type:'CLEAR_STONE_USAGE', groupId:groupId, stoneId:stoneId})
+    })
+  })
+};
 
 export class AppRouter extends Component {
   constructor() {
@@ -139,7 +153,9 @@ export class AppRouter extends Component {
     if (storeInitialized === true) {
       // give the native bridge a reference to the store
       NativeBridge.loadStore(store);
-      removeAllPresentUsers(store)
+      AdvertisementManager.loadStore(store);
+      removeAllPresentUsers(store);
+      clearAllPowerusage(store);
       dataLoginValidation();
     }
     else
@@ -172,7 +188,7 @@ export class AppRouter extends Component {
               <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}  hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
               <Scene key="roomTraining"             component={Views.RoomTraining}         hideNavBar={true} direction="vertical" title="Training" />
-              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.h}} tabBarStyle={{backgroundColor:colors.menuBackground.h}} type="reset" initial={true && this.state.loggedIn || false}>
+              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={true && this.state.loggedIn || false}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />
                   <Scene key="roomOverview"           component={Views.RoomOverview}        onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
