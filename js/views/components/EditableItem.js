@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import { ButtonBar }      from './editComponents/ButtonBar'
-import { CheckBar }       from './editComponents/Checkbar'
+import { CheckBar }       from './editComponents/CheckBar'
 import { EditSpacer }     from './editComponents/EditSpacer'
 import { Explanation }    from './editComponents/Explanation'
 import { IconEdit }       from './editComponents/IconEdit'
