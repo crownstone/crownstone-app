@@ -4,7 +4,19 @@ This is heavily work in progress. iOS will be done first, after which it will be
 
 The native libs are not in this project directly.
 
+## Setup
 
+Assuming you've already installed nodejs, npm and Carthage (for ios)
+
+```
+npm install
+rnpm link
+cd ios
+carthage update --platform ios
+cd ..
+```
+
+## Commands
 
 Run the tests:
 
