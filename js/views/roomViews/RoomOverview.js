@@ -14,6 +14,7 @@ import { DeviceEntry } from '../components/DeviceEntry'
 import { NativeBridge } from '../../native/NativeBridge'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
+import { AdvertisementManager } from '../../logic/CrownstoneControl'
 import { 
   getPresentUsersFromState, 
   getCurrentPowerUsageFromState, 
@@ -54,22 +55,27 @@ export class RoomOverview extends Component {
             pending={this.state.pendingRequests[stoneId] !== undefined}
             dimmable={item.device.config.dimmable}
             onChange={(newValue) => {
+            console.log("TOGGLING TO VALUE:",newValue);
               this.setRequest(stoneId);
-              NativeBridge.connectAndSetSwitchState(item.stone.config.uuid, newValue)
+              let bleState = newValue;
+              let data = {state: newValue};
+              if (bleState === 0) {
+                bleState = 0;
+                data.currentUsage = 0;
+              }
+              else {
+                bleState = 1;
+              }
+              NativeBridge.connectAndSetSwitchState(item.stone.config.uuid, bleState)
                 .then(() => {
-                  let data = {state:newValue};
-                  if (newValue === 0)
-                    data.currentUsage = 0;
-
                   this.props.store.dispatch({
                     type: 'UPDATE_STONE_STATE',
                     groupId: this.props.groupId,
-                    locationId: this.props.locationId,
                     stoneId: stoneId,
                     data: data
                   });
+                  AdvertisementManager.resetData({crownstoneId: stoneId});
                   this.clearRequest(stoneId);
-
                 })
                 .catch((err) => {
                   this.clearRequest(stoneId);

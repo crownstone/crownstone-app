@@ -45,6 +45,7 @@ class NativeBridgeClass {
     if (this.initialized === false) {
       this.initialized = true;
       this.store = store;
+
       this.init();
       this.startListeningToLocationUpdates();
     }
@@ -81,52 +82,58 @@ class NativeBridgeClass {
   }
 
   startListeningToLocationUpdates() {
-    if (this.subscriptions['enterGroup'] === undefined) {
-      this.subscriptions['enterGroup'] = NativeAppEventEmitter.addListener(
-        'enterGroup',
-        (enterGroup) => {
-          //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
-          console.log("enterGroup:", enterGroup);
-        }
-      );
-    }
+    let state = this.store.getState();
+    if (state.app.enableLocalization === true) {
+      if (this.subscriptions['enterGroup'] === undefined) {
+        this.subscriptions['enterGroup'] = NativeAppEventEmitter.addListener(
+          'enterGroup',
+          (enterGroup) => {
+            //this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: enterGroup}});
+            console.log("enterGroup:", enterGroup);
+          }
+        );
+      }
 
-    if (this.subscriptions['exitGroup'] === undefined) {
-      this.subscriptions['exitGroup'] = NativeAppEventEmitter.addListener(
-        'exitGroup',
-        (exitGroup) => {
-          console.log("exitGroup:", exitGroup);
-        }
-      );
-    }
+      if (this.subscriptions['exitGroup'] === undefined) {
+        this.subscriptions['exitGroup'] = NativeAppEventEmitter.addListener(
+          'exitGroup',
+          (exitGroup) => {
+            console.log("exitGroup:", exitGroup);
+          }
+        );
+      }
 
-    if (this.subscriptions['enterLocation'] === undefined) {
-      this.subscriptions['enterLocation'] = NativeAppEventEmitter.addListener(
-        'enterLocation',
-        (enterLocation) => {
-          console.log("enterLocation:", enterLocation);
-          reactToEnterRoom(this.store, enterLocation);
-        }
-      );
-    }
+      if (this.subscriptions['enterLocation'] === undefined) {
+        this.subscriptions['enterLocation'] = NativeAppEventEmitter.addListener(
+          'enterLocation',
+          (enterLocation) => {
+            console.log("enterLocation:", enterLocation);
+            reactToEnterRoom(this.store, enterLocation);
+          }
+        );
+      }
 
-    if (this.subscriptions['exitLocation'] === undefined) {
-      this.subscriptions['exitLocation'] = NativeAppEventEmitter.addListener(
-        'exitLocation',
-        (exitLocation) => {
-          console.log("exitLocation:", exitLocation);
-          reactToExitRoom(this.store, exitLocation);
-        }
-      );
-    }
+      if (this.subscriptions['exitLocation'] === undefined) {
+        this.subscriptions['exitLocation'] = NativeAppEventEmitter.addListener(
+          'exitLocation',
+          (exitLocation) => {
+            console.log("exitLocation:", exitLocation);
+            reactToExitRoom(this.store, exitLocation);
+          }
+        );
+      }
 
-    if (this.subscriptions['currentLocation'] === undefined) {
-      this.subscriptions['currentLocation'] = NativeAppEventEmitter.addListener(
-        'currentLocation',
-        (currentLocation) => {
-          console.log("currentLocation:", currentLocation);
-        }
-      );
+       if (this.subscriptions['currentLocation'] === undefined) {
+         this.subscriptions['currentLocation'] = NativeAppEventEmitter.addListener(
+           'currentLocation',
+           (currentLocation) => {
+             console.log("currentLocation:", currentLocation);
+           }
+         );
+       }
+    }
+    else {
+      console.log("LOCALIZATION IS DISABLED IN THE SETTINGS")
     }
   }
 
@@ -238,7 +245,7 @@ class NativeBridgeClass {
         this.connect(uuid)
           .then(() => {
             console.log("now switching the state of :",uuid);
-            return this.setSwitchState(state);
+            return this.setSwitchStateDemo(state);
           })
           .then(() => {
             return this.disconnect();
@@ -249,7 +256,7 @@ class NativeBridgeClass {
           .catch((err) => {
             console.log("connectAndSetSwitchState Error:", err);
             reject(err);
-            this.disconnect();
+            return this.disconnect();
           })
           .catch(() => {}).done()
       });
@@ -260,7 +267,11 @@ class NativeBridgeClass {
     let safeState = Math.min(1, Math.max(0, state));
     return BluenetPromise('setSwitchState', safeState);
   }
-
+  
+  setSwitchStateDemo(state) {
+    let safeState = Math.min(3, Math.max(0, state));
+    return BluenetPromise('setSwitchStateDemo', safeState);
+  }
 
 }
 

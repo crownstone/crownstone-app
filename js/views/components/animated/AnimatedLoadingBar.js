@@ -42,8 +42,8 @@ export class AnimatedLoadingBar extends Component {
 
     return (
       <View style={{width:this.width, overflow:'hidden', alignItems:'center', justifyContent:'center', height:this.barHeight, borderRadius: 18, margin:20, backgroundColor:'#fff'}}>
-        <View style={{width:innerWidth, height:innerHeight, borderRadius: 15, margin:0, backgroundColor:colors.menuBackground.h, overflow:'hidden', alignItems:'flex-start', justifyContent:'center'}}>
-          <Animated.View style={{width:this.state.progress, height: innerHeight, backgroundColor:colors.blue.h}} />
+        <View style={{width:innerWidth, height:innerHeight, borderRadius: 15, margin:0, backgroundColor:colors.menuBackground.hex, overflow:'hidden', alignItems:'flex-start', justifyContent:'center'}}>
+          <Animated.View style={{width:this.state.progress, height: innerHeight, backgroundColor:colors.blue.hex}} />
         </View>
       </View>
     );

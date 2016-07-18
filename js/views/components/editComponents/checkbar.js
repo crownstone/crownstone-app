@@ -20,7 +20,7 @@ export class CheckBar extends Component {
           {
             this.props.value === true ?
               <View style={{paddingTop:3}}>
-                <Icon name="ios-checkmark" size={30} color={colors.iosBlue.h} />
+                <Icon name="ios-checkmark" size={30} color={colors.iosBlue.hex} />
               </View>
               : undefined
           }

@@ -1,20 +1,30 @@
 import React, { Component } from 'react'
 import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/colorConverters'
 
 export const width = Dimensions.get('window').width;
 export const height = Dimensions.get('window').height;
 export const pxRatio = PixelRatio.get();
 
-export const colors = {
-  menuBackground: {h:'#1c202a', r:28, g:32, b:42},
-  menuText: {h:'#ffffff', r:255, g:255, b:255},
-  menuTextSelected: {h:'#2daeff', r:2, g:222, b:255},
-  gray: {h:'#cccccc', r:204, g:204, b:204},
-  blue: {h:'#0075c9', r:0, g:137, b:241},
-  green: {h:'#a0eb58', r:160, g:235, b:88},
-  red: {h:'#ff3c00', r:255, g:60, b:0},
-  iosBlue: {h:'#007aff', r:0, g:122, b:255},
+export let colors = {
+  menuBackground: {hex:'#1c202a'},
+  menuText: {hex:'#ffffff'},
+  menuTextSelected: {hex:'#2daeff'},
+  gray: {hex:'#cccccc'},
+  blue: {hex:'#0075c9'},
+  green: {hex:'#a0eb58'},
+  red: {hex:'#ff3c00'},
+  iosBlue: {hex:'#007aff'},
 };
+
+for (let color in colors) {
+  if (colors.hasOwnProperty(color)) {
+    colors[color].rgb = hex2rgb(colors[color].hex);
+    // colors[color].hsv = rgb2hsv(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
+    // colors[color].hsl = rgb2hsl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
+    // colors[color].hcl = rgb2hcl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
+  }
+}
 
 export const styles = StyleSheet.create({
   fullscreen:{
@@ -40,7 +50,7 @@ export const styles = StyleSheet.create({
   },
   menuItem: {
     fontSize:9,
-    color:colors.menuText.h,
+    color:colors.menuText.hex,
   },
   menuView: {
     flex:1,
@@ -65,7 +75,7 @@ export const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: colors.gray.h,
+    backgroundColor: colors.gray.hex,
   },
   topExplanation: {
     paddingTop:20
@@ -105,14 +115,14 @@ export const styles = StyleSheet.create({
   joinedButtonSeparator:{
     width:0.9*width,
     height:1,
-    backgroundColor: colors.gray.h
+    backgroundColor: colors.gray.hex
   },
   buttonText : {
     fontSize:17,
-    color: colors.blue.h
+    color: colors.blue.hex
   },
   menuText: {
     fontSize: 17,
-    color: colors.menuText.h,
+    color: colors.menuText.hex,
   }
 });

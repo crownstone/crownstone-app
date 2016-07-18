@@ -50,7 +50,7 @@ export class PictureCircle extends Component {
                     width:size/3,
                     height:size/3,
                     borderRadius:size/6,
-                    backgroundColor: colors.red.h,
+                    backgroundColor: colors.red.hex,
                     borderColor: '#ffffff',
                     borderWidth: size/30
                   }, styles.centered]}>
@@ -70,7 +70,7 @@ export class PictureCircle extends Component {
             </View>
           </TouchableOpacity>
           { this.props.placeholderText ?
-            <Text style={{padding:10, color:colors.gray.h, fontSize: 17}}>{this.props.placeholderText}</Text> :
+            <Text style={{padding:10, color:colors.gray.hex, fontSize: 17}}>{this.props.placeholderText}</Text> :
             undefined}
         </View>
       );

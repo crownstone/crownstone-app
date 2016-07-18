@@ -20,7 +20,7 @@ export class TopBar extends Component {
       return (
         <TouchableOpacity onPress={() => {this.props.leftAction();}}>
           <View style={{flexDirection:'row', alignItems:'center', flex:0}}>
-            <Icon name="ios-arrow-back" size={23} color={colors.menuText.h} style={{paddingRight:6, marginTop:2}} />
+            <Icon name="ios-arrow-back" size={23} color={colors.menuText.hex} style={{paddingRight:6, marginTop:2}} />
             <Text style={[topBarStyle.topBarLeft,styles.menuText]}>{this.props.left}</Text>
           </View>
         </TouchableOpacity>
@@ -51,7 +51,7 @@ export class TopBar extends Component {
     let barHeight = 42;
     return (
       <View>
-        {this.props.shadeStatus ? <View style={styles.shadedStatusBar} /> : <View style={[styles.shadedStatusBar, {backgroundColor:colors.menuBackground.h}]} />}
+        {this.props.shadeStatus ? <View style={styles.shadedStatusBar} /> : <View style={[styles.shadedStatusBar, {backgroundColor:colors.menuBackground.hex}]} />}
         <View style={[topBarStyle.topBar,this.props.style]}>
           <View style={[topBarStyle.topBarSideView,   {height: barHeight}]}>{this._getLeftContent()}</View>
           <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter,styles.menuText]}>{this.props.title}</Text></View>
@@ -64,7 +64,7 @@ export class TopBar extends Component {
 
 let topBarStyle = StyleSheet.create({
   topBar: {
-    backgroundColor: colors.menuBackground.h,
+    backgroundColor: colors.menuBackground.hex,
     paddingLeft: 6,
     paddingRight: 6,
     flexDirection: 'row'

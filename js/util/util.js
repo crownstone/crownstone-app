@@ -115,3 +115,4 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
   return pictureUri;
 };
 
+

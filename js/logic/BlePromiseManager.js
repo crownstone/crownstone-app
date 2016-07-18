@@ -25,15 +25,20 @@ class BlePromiseManagerClass {
     this.promiseInProgress = promiseContainer;
     promiseContainer.promise()
       .then(() => {
-        console.log("resolved")
-        this.promiseInProgress = undefined;
+        console.log("resolved");
         promiseContainer.resolve();
-        this.getNextPromise()
+        this.moveOn();
       })
       .catch((err) => {
-        promiseContainer.reject(err);
         console.log("ERROR in promise (",promiseContainer.message,"):",err);
+        promiseContainer.reject(err);
+        this.moveOn();
       })
+  }
+
+  moveOn() {
+    this.promiseInProgress = undefined;
+    this.getNextPromise()
   }
 
   getNextPromise() {

@@ -57,6 +57,11 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
 
 let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
   switch (action.type) {
+    case 'CLEAR_STONE_USAGE':
+      let newState          = {...state};
+      newState.currentUsage = 0;
+      newState.updatedAt   = getTime();
+      return newState;
     case 'UPDATE_STONE_STATE':
       if (action.data) {
         let newState          = {...state};

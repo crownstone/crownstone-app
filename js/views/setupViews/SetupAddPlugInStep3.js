@@ -104,7 +104,7 @@ export class SetupAddPlugInStep3 extends Component {
       roomElements.push(
         <TouchableOpacity key={'roomBar_'+id} style={setupStyle.roomBar} onPress={() => {this.setState({selectedRoom:id, roomName:''})}}>
           <View style={setupStyle.roomBarInner}>
-            {this.state.selectedRoom === id ? <Icon name="ios-checkmark-circle" size={30} color={colors.green.h} style={{position:'relative', top:2}} /> : undefined}
+            {this.state.selectedRoom === id ? <Icon name="ios-checkmark-circle" size={30} color={colors.green.hex} style={{position:'relative', top:2}} /> : undefined}
             <Text style={[setupStyle.information, {paddingLeft: this.state.selectedRoom === id ? 10 : 0}]}>{room.config.name}</Text>
           </View>
         </TouchableOpacity>
