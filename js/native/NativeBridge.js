@@ -1,4 +1,4 @@
-import { BluenetPromise, Bluenet } from './proxy';
+import { BluenetPromise, Bluenet } from './Proxy';
 import { NativeModules, NativeAppEventEmitter } from 'react-native';
 import { reactToEnterRoom, reactToExitRoom, processScanResponse } from '../logic/CrownstoneControl'
 import { BlePromiseManager } from '../logic/BlePromiseManager'
