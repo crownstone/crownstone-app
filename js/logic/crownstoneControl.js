@@ -28,6 +28,7 @@ function checkBehaviour(store, locationId, type) {
     }
   }
   else if (type === "onRoomEnter") {
+
     // remove user from other rooms SHOULD NOT BE NEEDED.
     // locationIds.forEach((otherLocationId) => {
     //   if (otherLocationId !== locationId) {
