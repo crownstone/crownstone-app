@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   Animated,
   Dimensions,
   StyleSheet,
@@ -12,7 +13,7 @@ var Actions = require('react-native-router-flux').Actions;
 var Icon = require('react-native-vector-icons/Ionicons');
 import { Background } from './../components/Background'
 import { styles, colors } from './../styles'
-import { setupStyle, SkipButton, StartButton } from './SetupStyles'
+import { setupStyle, SkipButton, StartButton } from './SetupShared'
 
 let {width, height} = Dimensions.get("window");
 

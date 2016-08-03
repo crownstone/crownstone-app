@@ -65,7 +65,7 @@ class NativeBridgeClass {
       let locationIds = Object.keys(locations);
       locationIds.forEach((locationId) => {
         if (locations[locationId].config.fingerprintRaw !== undefined) {
-          //console.log("locations[locationId].config.fingerprintRaw", locations[locationId].config.fingerprintRaw);
+          console.log(locationId,"locations[locationId].config.fingerprintRaw", locations[locationId].config.fingerprintRaw);
           Bluenet.loadFingerprint(groupId, locationId, locations[locationId].config.fingerprintRaw)
         }
       });

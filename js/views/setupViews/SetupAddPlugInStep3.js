@@ -15,7 +15,8 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
 import { Background } from '../components/Background'
-import { setupStyle, CancelButton, NextButton } from './SetupStyles'
+import { getRoomNames } from '../../util/dataUtil'
+import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { styles, colors, width, height } from './../styles'
 
@@ -38,7 +39,7 @@ export class SetupAddPlugInStep3 extends Component {
     this.unsubscribe();
   }
 
-  storeLocation(roomName) {
+  storeAndPickLocation(roomName) {
     this.props.eventBus.emit('showLoading', 'Creating room and syncing with the Cloud...');
     const { store } = this.props;
     const state = store.getState();
@@ -47,11 +48,16 @@ export class SetupAddPlugInStep3 extends Component {
       .then((reply) => {
         this.props.eventBus.emit('hideLoading');
         this.setState({roomName:''});
-        store.dispatch({type:'ADD_LOCATION', groupId: activeGroup, locationId: reply.data.id, data:{name: roomName}})
-      })
+        store.dispatch({type:'ADD_LOCATION', groupId: activeGroup, locationId: reply.id, data:{name: roomName}});
+        this.setState({selectedRoom:reply.id, roomName:''});
+      }).done()
   }
 
   getAddRoomBar() {
+    const { store } = this.props;
+    const state = store.getState();
+    let activeGroup = state.app.activeGroup;
+
     let onSubmitEditing = (roomName) => {
       if (roomName.length < 3) {
         Alert.alert(
@@ -61,12 +67,23 @@ export class SetupAddPlugInStep3 extends Component {
         )
       }
       else {
-        Alert.alert(
-          'Do you want add a room called \'' + roomName + '\'?',
-          'You can rename and remove rooms after the setup phase.',
-          [{text:'Cancel', onPress:() => {this.setState({roomName:''});}},
-            {text:'Yes', onPress:() => {this.storeLocation(roomName);}}]
-        );
+        // check if the room name is unique.
+        let existingLocations = getRoomNames(state, activeGroup);
+        if (existingLocations[roomName] === undefined) {
+          Alert.alert(
+            'Do you want add a room called \'' + roomName + '\'?',
+            'You can rename and remove rooms after the setup phase.',
+            [{text:'Cancel', onPress:() => {this.setState({roomName:''});}},
+              {text:'Yes', onPress:() => {this.storeAndPickLocation(roomName);}}]
+          );
+        }
+        else {
+          Alert.alert(
+            'Room already exists.',
+            'There is already a room with this name.',
+            [{text:'OK'}]
+          );
+        }
       }
     };
 
@@ -148,11 +165,17 @@ export class SetupAddPlugInStep3 extends Component {
             }} />
             <View style={{flex:1}} />
             <NextButton onPress={() => {
-              Alert.alert(
-                "Are you sure this Crownstone is not tied to a room?",
-                "Crownstones that are not in a room cannot be used for localization.",
-                [{text:'Cancel'}, {text:'OK'}]
-              );
+              if (this.state.selectedRoom !== undefined) {
+                store.dispatch({type:'UPDATE_STONE', groupId: activeGroup, stoneId: this.props.stoneId, data:{locationId: this.state.selectedRoom}})
+                Actions.setupAddPluginStep4();
+              }
+              else {
+               Alert.alert(
+                  "Are you sure this Crownstone is not tied to a room?",
+                  "Crownstones that are not in a room cannot be used for localization.",
+                  [{text:'Cancel'}, {text:'OK'}]
+                );
+              }
             }} />
         </View>
         </View>

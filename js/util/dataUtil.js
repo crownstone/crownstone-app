@@ -52,3 +52,15 @@ export const getRoomContentFromState = function(state, groupId, locationId) {
   }
   return items;
 };
+
+export const getRoomNames = function(state, groupId) {
+  let roomNames = {};
+  let rooms = state.groups[groupId].locations;
+  for (let roomId in rooms) {
+    if (rooms.hasOwnProperty(roomId)) {
+      let room = rooms[roomId];
+      roomNames[room.config.name] = true;
+    }
+  }
+  return roomNames;
+};

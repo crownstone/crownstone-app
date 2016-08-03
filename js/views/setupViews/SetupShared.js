@@ -13,8 +13,18 @@ else
   fontSize = 35;
 
 export const setupStyle = StyleSheet.create({
+  imageDistance: {
+    height:50
+  },
   lineDistance: {
     height:19
+  },
+  smallText: {
+    backgroundColor:'transparent',
+    color:'#fff',
+    fontSize: 13,
+    textAlign:'center',
+    fontWeight:'400',
   },
   h0:{
     padding: 20,

@@ -55,7 +55,7 @@ export function request(
   };
 
   if (DEBUG)
-    console.log(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, body);
+    console.log(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, " body:", body, "config:",requestConfig);
 
   // the actual request
   return new Promise((resolve, reject) => {
@@ -68,6 +68,7 @@ export function request(
         .then(handleInitialReply)
         .then((parsedResponse) => {resolve({status:STATUS, data: parsedResponse});})
         .catch((err) => {
+          console.log('here')
           reject(err);
         })
     }

@@ -50,30 +50,6 @@ export class GroupOverview extends Component {
         this.forceUpdate();
       // }
     });
-
-
-    // debug for moving user around the rooms.
-    // this.inRoom = 0;
-    // setInterval(() => {
-    //   const { store } = this.props;
-    //   let state = store.getState();
-    //   let activeGroup = state.app.activeGroup;
-    //   let locations = state.groups[activeGroup].locations;
-    //   let locationIds = Object.keys(state.groups[activeGroup].locations);
-    //   let inRoom = this.inRoom;
-    //   this.inRoom = (this.inRoom+1)%locationIds.length;
-    //   let userId = 'memberId';
-    //
-    //   locationIds.forEach((otherLocationId) => {
-    //     if (otherLocationId !== this.inRoom) {
-    //       if (locations[otherLocationId].presentUsers.indexOf(userId) !== -1) {
-    //         store.dispatch({type: "USER_EXIT", groupId: activeGroup, locationId: otherLocationId, data: {userId: userId}})
-    //       }
-    //     }
-    //   });
-    //   store.dispatch({type:"USER_ENTER", groupId: activeGroup, locationId: locationIds[this.inRoom], data:{userId: userId}})
-    //
-    // },1000)
   }
 
   componentWillUpdate(newProps) {
@@ -197,12 +173,15 @@ export class GroupOverview extends Component {
   }
 
   drawUsers() {
+    const store = this.props.store;
+    const state = store.getState();
+    let activeGroup = state.app.activeGroup;
     let userObjects = [];
     let users = Object.keys(this.state.presentUsers);
     users.forEach((userId) => {
       userObjects.push(
         <Animated.View key={userId} style={{position:'absolute', top:this.state.presentUsers[userId].top, left:this.state.presentUsers[userId].left}}>
-          <ProfilePicture picture={this.state.presentUsers[userId].data.picture} size={2*this.userRadius} />
+          <ProfilePicture picture={state.groups[activeGroup].members[userId].picture} size={2*this.userRadius} />
         </Animated.View>
       )
     });
@@ -210,12 +189,14 @@ export class GroupOverview extends Component {
   }
 
   render() {
-    //console.log("RENDERING OVERVIEW")
+    console.log("RENDERING OVERVIEW")
+
     const store = this.props.store;
     const state = store.getState();
     this.renderState = state;
 
-    if (state.app.activeGroup === undefined) {
+    console.log(state)
+    if (state.app.activeGroup === undefined || true) {
       return (
         <Background background={require('../images/mainBackgroundLight.png')}>
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

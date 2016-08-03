@@ -225,15 +225,17 @@ export class Login extends Component {
 
         const state = store.getState();
         this.activeGroup = state.app.activeGroup;
-        if (state.app.doFirstTimeSetup === true && Object.keys(state.groups).length === 0) {
-          Actions.setupWelcome();
-        }
-        else {
-          if (state.app.doFirstTimeSetup === true) {
-            store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}})
-          }
-          Actions.tabBar();
-        }
+        Actions.setupWelcome();
+
+        // if (state.app.doFirstTimeSetup === true && Object.keys(state.groups).length === 0) {
+        //   Actions.setupWelcome();
+        // }
+        // else {
+        //   if (state.app.doFirstTimeSetup === true) {
+        //      store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}})
+        //   }
+        //   Actions.tabBar();
+        // }
       }, 50);
     });
   }

@@ -18,25 +18,20 @@ import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { styles, colors, width, height } from './../styles'
 var Icon = require('react-native-vector-icons/Ionicons');
 
-export class SetupAddPlugInStep1 extends Component {
+export class SetupAddPlugInStepRecover extends Component {
   render() {
     let imageSize = 0.35;
     return (
       <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
-        {
-          this.props.hideBack !== true ?
-          <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true}/>
-          :
-          <View style={styles.shadedStatusBar}/>
-        }
+        <View style={styles.shadedStatusBar} />
         <View style={{flex:1, flexDirection:'column'}}>
-          <Text style={this.props.hideBack !== true ? [setupStyle.h1, {paddingTop:0}] : setupStyle.h1}>Adding a Plug-in Crownstone</Text>
-          <Text style={setupStyle.text}>Step 1: Put the Crownstone in the power outlet.</Text>
+          <Text style={[setupStyle.h1]}>Let's try again..</Text>
+          <Text style={setupStyle.text}>Something went wrong during the setup process.</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={setupStyle.information}>Make sure there is nothing is plugged into the Crownstone.</Text>
+          <Text style={setupStyle.information}>Please take the Crownstone out of the outlet, wait 5 seconds and plug it back in.</Text>
           <View style={{flex:1}} />
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Image source={require('../../images/lineDrawings/pluggingInPlug.png')} style={{width:imageSize*height, height:imageSize*height}} />
+            <Image source={require('../../images/lineDrawings/pluggingInPlugRetry.png')} style={{width:imageSize*height, height:imageSize*height}} />
           </View>
           <View style={{flex:1}} />
           <View style={setupStyle.lineDistance} />

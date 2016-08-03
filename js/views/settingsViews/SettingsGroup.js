@@ -19,7 +19,7 @@ import { styles, colors } from './../styles'
 
 export class SettingsGroup extends Component {
   _getAdmins(state) {
-    return {label:'Alex de Mulder', type:'navigation', icon: <ProfilePicture pictusre={'https://s-media-cache-ak0.pinimg.com/236x/77/15/e7/7715e7ea54a010649d68b3a7198a8920.jpg'} />, callback: () => {}};
+    return {label:'Alex de Mulder', type:'navigation', icon: <ProfilePicture picture={'https://s-media-cache-ak0.pinimg.com/236x/77/15/e7/7715e7ea54a010649d68b3a7198a8920.jpg'} />, callback: () => {}};
   }
 
   _getMembers(state) {

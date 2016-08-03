@@ -49,6 +49,7 @@
 		FA662E571D3D1BC6009C5BE3 /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA662E411D3D1B14009C5BE3 /* BluenetLibIOS.framework */; };
 		FA6E52D51D0ADF3E00188489 /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6E52D41D0ADF3E00188489 /* JSONUtils.swift */; };
 		FACC56321D182DA700028E6F /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FACC56301D182D9B00028E6F /* libRNSVG.a */; };
+		FAD9FA481D50C6F300D544F5 /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FA471D50C6EE00D544F5 /* Crownstone.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -255,6 +256,7 @@
 		FA662E4A1D3D1B83009C5BE3 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		FA6E52D41D0ADF3E00188489 /* JSONUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONUtils.swift; sourceTree = "<group>"; };
 		FACC561B1D182D9B00028E6F /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
+		FAD9FA471D50C6EE00D544F5 /* Crownstone.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone.ttf; path = ../js/fonts/Crownstone.ttf; sourceTree = "<group>"; };
 		FAFB4C651D1D407200DDE95E /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 		FB84202DEE984E47A75A4CB2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		FD57DF026A8B4393B71098CB /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 		13B07FAE1A68108700A75B9A /* Crownstone */ = {
 			isa = PBXGroup;
 			children = (
+				FAD9FA471D50C6EE00D544F5 /* Crownstone.ttf */,
 				FAFB4C651D1D407200DDE95E /* Crownstone.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				FA3F47241CF73D7200408E34 /* splash.png */,
@@ -846,6 +849,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAD9FA481D50C6F300D544F5 /* Crownstone.ttf in Resources */,
 				FA3F47231CF73D3600408E34 /* LaunchScreen.xib in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				512E964294A94E34B1EE993A /* Entypo.ttf in Resources */,

@@ -1,7 +1,7 @@
-import { LoginSplash }              from '../views/loginViews/LoginSplash'
-import { Login }                    from '../views/loginViews/Login'
-import { Register }                 from '../views/loginViews/Register'
-import { RegisterConclusion }       from '../views/loginViews/RegisterConclusion'
+import { LoginSplash }              from '../views/startupViews/LoginSplash'
+import { Login }                    from '../views/startupViews/Login'
+import { Register }                 from '../views/startupViews/Register'
+import { RegisterConclusion }       from '../views/startupViews/RegisterConclusion'
 import { PictureView }              from '../views/cameraViews/PictureView'
 import { PicturePreview }           from '../views/cameraViews/PicturePreview'
 import { CameraRollView }           from '../views/cameraViews/CameraRollView'
@@ -21,18 +21,22 @@ import { SetupAddCrownstoneSelect } from '../views/setupViews/SetupAddCrownstone
 import { SetupAddPlugInStep1 }      from '../views/setupViews/SetupAddPlugInStep1'
 import { SetupAddPlugInStep2 }      from '../views/setupViews/SetupAddPlugInStep2'
 import { SetupAddPlugInStep3 }      from '../views/setupViews/SetupAddPlugInStep3'
-import { RoomTraining }           from '../views/roomViews/RoomTraining'
+import { SetupAddPlugInStep4 }      from '../views/setupViews/SetupAddPlugInStep4'
+import { SetupAddPlugInStepRecover } from '../views/setupViews/SetupAddPlugInStepRecover'
+import { RoomTraining }             from '../views/roomViews/RoomTraining'
 import { SettingsOverview }         from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }          from '../views/settingsViews/SettingsProfile'
 import { SettingsChangePassword }   from '../views/settingsViews/SettingsChangePassword'
 import { SettingsChangeEmail }      from '../views/settingsViews/SettingsChangeEmail'
 import { SettingsRooms }            from '../views/settingsViews/SettingsRooms'
 import { SettingsGroupIndex }       from '../views/settingsViews/SettingsGroupIndex'
-import { SettingsGroup }           from '../views/settingsViews/SettingsGroup'
+import { SettingsGroup }            from '../views/settingsViews/SettingsGroup'
 import { SettingsCrownstones }      from '../views/settingsViews/SettingsCrownstones'
 import { AppComplexity }            from '../views/settingsViews/AppComplexity'
+import { CloudChoice }              from '../views/startupViews/CloudChoice'
 
 export const Views = {
+  CloudChoice,
   LoginSplash,
   Login,
   Register,
@@ -57,6 +61,8 @@ export const Views = {
   SetupAddPlugInStep1,
   SetupAddPlugInStep2,
   SetupAddPlugInStep3,
+  SetupAddPlugInStep4,
+  SetupAddPlugInStepRecover,
   SettingsOverview,
   SettingsProfile,
   SettingsChangePassword,
@@ -65,5 +71,6 @@ export const Views = {
   SettingsGroupIndex,
   SettingsGroup,
   SettingsCrownstones,
-  AppComplexity
+  AppComplexity,
+
 };

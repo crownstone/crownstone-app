@@ -37,6 +37,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent:'center',
   },
+  rowCentered: {
+    flexDirection:'row',
+    alignItems: 'center',
+    justifyContent:'center',
+  },
+  columnCentered: {
+    flexDirection:'column',
+    alignItems: 'center',
+    justifyContent:'center',
+  },
   roomImageContents: {
     padding:10,
     justifyContent:'center',

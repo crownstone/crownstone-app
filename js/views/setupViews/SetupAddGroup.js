@@ -12,10 +12,11 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
+import { logOut } from '../../util/util';
 import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
-import { setupStyle, NextButton } from './SetupStyles'
+import { setupStyle, NextButton } from './SetupShared'
 import { styles, colors, width, height } from './../styles'
 var Icon = require('react-native-vector-icons/Ionicons');
 
@@ -29,51 +30,61 @@ export class SetupAddGroup extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    if (this.state.groupName.length > 3) {
+    if (this.state.groupName.length > 2) {
       this.props.eventBus.emit('showLoading', 'Creating Group...');
       CLOUD.forUser(state.user.userId).createGroup(this.state.groupName)
         .then((response) => {
           // add the group to the database once it had been added in the cloud.
-          store.dispatch({type:'ADD_GROUP', groupId: response.data.id, data:{name: response.data.name, uuid: response.data.uuid}});
+          store.dispatch({type:'ADD_GROUP', groupId: response.id, data:{name: response.name, uuid: response.uuid}});
           
           // get all encryption keys the user has access to and store them in the appropriate groups.
           CLOUD.getKeys()
             .then((keyResult) => {
-              if (Array.isArray(keyResult.data)) {
-                keyResult.data.forEach((group) => {
+              if (Array.isArray(keyResult)) {
+                keyResult.forEach((group) => {
                   store.dispatch({type:'UPDATE_GROUP', groupId: group.groupId, data:{
-                    adminKey: keyResult.data.keys.admin,
-                    memberKey:  keyResult.data.keys.member,
-                    guestKey: keyResult.data.keys.guest
+                    adminKey: keyResult.keys.admin,
+                    memberKey:  keyResult.keys.member,
+                    guestKey: keyResult.keys.guest
                   }});
                 });
                 this.props.eventBus.emit('hideLoading');
+                store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup: response.id}});
+
+                // we initially only support plugin so we skip the selection step.
+                Actions.setupAddPluginStep1();
               }
               else {
                 throw new Error("Key data is not an array.")
               }
             }).done();
-
-
-          let state = store.getState();
-          // if there is only one group, set it to be active for the setup phase.
-          if (Object.keys(state.groups).length === 1) {
-            store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup: response.data.id}});
-            Actions.setupAddCrownstoneSelect();
-          }
-          else {
-            // TODO: CrownstoneAPI.getActiveGroup()
-            // TODO:  .then(.. set group)
-            // TODO:  .catch(.. ask which group)
-          }
-          
         })
         .catch((err) => {
-          console.log("error in creating group:", err)
+          if (err.status) {
+            switch (err.status) {
+              case 401:
+                Alert.alert("Please log in again","Your login information cannot be verified.", [{text:'OK'}]);
+                logOut();
+                break;
+              case 422:
+                Alert.alert("Group '" + this.state.groupName + "' already exists.","Please try a different name.", [{text:'OK'}]);
+                break;
+              default:
+                console.log(err);
+                Alert.alert("Could not connect to the cloud service.","Please check if you're connected to the internet.", [{text:'OK'}]);
+            }
+          }
+          else {
+            console.log(err)
+            Alert.alert("Error when creating group.",JSON.stringify(err), [{text:'OK..'}]);
+          }
+
+
+          this.props.eventBus.emit('hideLoading');
         })
     }
     else {
-      Alert.alert("Please provide a valid Group name.", "It must be at least 3 characters long.", [{type:'OK'}])
+      Alert.alert("Please provide a valid Group name.", "It must be at least 3 characters long.", [{text:'OK'}])
     }
   }
 

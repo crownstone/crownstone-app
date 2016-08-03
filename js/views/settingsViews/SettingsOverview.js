@@ -65,14 +65,12 @@ export class SettingsOverview extends Component {
 
     if (this.userInGroups()) {
       items.push({label:'Manage Groups', type:'navigation', callback: () => {
-        Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])
-        // Actions.settingsGroups()
+        Actions.settingsGroups()
       }});
     }
     else {
       items.push({label:'Add Group', type:'navigation', callback: () => {
-        // Actions.setupAddGroup()
-        Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}]);
+        Actions.setupAddGroup()
       }});
     }
 
@@ -80,8 +78,7 @@ export class SettingsOverview extends Component {
     
     if (this.userIsAdmin()) {
       items.push({label:'Manage Crownstones', type:'navigation', callback: () => {
-        Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])
-        // Actions.settingsCrownstones();
+        Actions.settingsCrownstones();
       }});
     }
 
@@ -95,7 +92,7 @@ export class SettingsOverview extends Component {
   _logoutPopup() {
     Alert.alert('Log out','Are you sure?',[
       {text: 'Cancel', style: 'cancel'},
-      {text: 'OK', onPress: /* logOut */ () => {Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])}},
+      {text: 'OK', onPress: logOut}
     ])
   }
 

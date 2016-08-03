@@ -74,6 +74,15 @@ export let CLOUD = {
     }
   },
 
+  /**
+   * This method will check the return type error code for 200 or 204 and unpack the data from the response.
+   * @param reqType
+   * @param endpoint
+   * @param options
+   * @param type
+   * @returns {*}
+   * @private
+   */
   _setupRequest: function(reqType, endpoint, options = {}, type = 'query') {
     let promiseBody = {endPoint: endpoint, data: options.data, type:type};
     let promise;
@@ -275,19 +284,76 @@ export let CLOUD = {
    * @param groupName
    */
   createGroup: function(groupName) {
-    return this._post({endPoint:'users/{id}/groups', data:{name:groupName}, type:'body'});
+    return this._setupRequest(
+      'POST',
+      'users/{id}/groups',
+      {data:{name:groupName}},
+      'body'
+    );
   },
 
   createLocation: function(locationName) {
-    return this._post({endPoint:'Groups/{id}/ownedLocations', data:{name:locationName}, type:'body'});
+    return this._setupRequest(
+      'POST',
+      'Groups/{id}/ownedLocations',
+      {data:{name:locationName}},
+      'body'
+    );
   },
 
+
+  /**
+   * Create a crownstone in the cloud so the major and minor can be generated
+   * @param groupId
+   * @param MacAddress
+   * @returns {*}
+   */
   createStone: function(groupId, MacAddress) {
-    return this._post({endPoint:'/Stones', data:{groupId:locationName, address:MacAddress}, type:'body'});
+    return this._setupRequest(
+      'POST',
+      '/Stones',
+      {data:{groupId:groupId, address:MacAddress}},
+      'body'
+    );
   },
 
-  deleteStone: function() {
-    return this._delete({endPoint:'/Stones/{id}', data:{}, type:'body'});
+  /**
+   * request the data from this crownstone in the cloud
+   * @param stoneId  database id of crownstone
+   * @returns {*}
+   */
+  getStone: function(stoneId) {
+    return this._setupRequest(
+      'GET',
+      '/Stones/' + stoneId
+    );
+  },
+
+
+  /**
+   * search for crownstone with this mac address
+   * @param address  mac address
+   * @returns {*}
+   */
+  findStone: function(address) {
+    return this._setupRequest(
+      'GET',
+      '/Stones/',
+      {data:{where:{address:address}}},
+      'query'
+    );
+  },
+
+  /**
+   * Delete the data from this crownstone in the cloud in case of a failed setup or factory reset.
+   * stoneId  database id of crownstone
+   * @returns {*}
+   */
+  deleteStone: function(stoneId) {
+    return this._setupRequest(
+      'DELETE',
+      '/Stones/' + stoneId
+    );
   },
 
   sync: function() {
@@ -324,7 +390,7 @@ function _getId(url, obj) {
 
 function debugReject(reply, reject, debugOptions) {
   if (DEBUG) {
-    console.error("UNHANDLED HTML ERROR IN API:", reply, debugOptions);
+    console.log("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
   }
   reject(reply);
 }

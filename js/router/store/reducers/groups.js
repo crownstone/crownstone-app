@@ -11,6 +11,7 @@ let defaultSettings = {
     adminKey: null,
     memberKey: null,
     guestKey: null,
+    meshAccessAddress: null,
     updatedAt: 1
   },
   members: {
@@ -69,6 +70,7 @@ let groupConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.adminKey = update(action.data.adminKey, newState.adminKey);
         newState.memberKey = update(action.data.memberKey, newState.memberKey);
         newState.guestKey = update(action.data.guestKey, newState.guestKey);
+        newState.meshAccessAddress = update(action.data.meshAccessAddress, newState.meshAccessAddress);
         newState.updatedAt = getTime();
         return newState;
       }

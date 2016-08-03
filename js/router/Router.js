@@ -48,29 +48,6 @@ class TabIcon extends Component {
   }
 }
 
-let backButtonFunction = function(params) {
-  //console.log("here", params, this)
-  //if (this.props.navigationState.index === 0) {
-  //  return null;
-  //}
-  //return (
-  //    <TouchableOpacity style={[{
-  //      width: 100,
-  //      height: 37,
-  //      position: 'absolute',
-  //      bottom: 4,
-  //      left: 2,
-  //      padding: 8,
-  //      justifyContent:'center',
-  //  }]} onPress={Actions.pop}>
-  //      <View style={{flexDirection:'row', alignItems:'center'}}>
-  //        <Icon name="ios-arrow-back" size={25} color={'#ffffff'} style={{marginTop:2,paddingRight:6}} />
-  //        <Text style={styles.topBarLeft}>Back</Text>
-  //      </View>
-  //    </TouchableOpacity>
-  //);
-};
-
 let onRightFunctionEdit = function(params) {
   Actions.roomEdit({groupId: params.groupId, locationId: params.locationId});
 };
@@ -78,12 +55,11 @@ let onRightFunctionEdit = function(params) {
 let navBarStyle = {
   navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
   titleStyle:{color:'white'},
-  //renderBackButton:backButtonFunction
 };
 
 // configure the CLOUD network handler.
 CLOUD.setNetworkErrorHandler((error) => {
-  Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.");
+  Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.",[{text:'OK'}]);
 });
 
 var removeAllPresentUsers = function(store) {
@@ -147,7 +123,6 @@ export class AppRouter extends Component {
       }
     };
 
-
     // there can be a race condition where the event has already been fired before this module has initialized
     // This check is to ensure that it doesn't matter what comes first.
     if (storeInitialized === true) {
@@ -173,22 +148,24 @@ export class AppRouter extends Component {
         <View style={{flex:1}}>
           <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
-              <Scene key="loginSplash"              component={Views.LoginSplash}          hideNavBar={true}  type="reset" initial={this.state.loggedIn === false && false} />
-              <Scene key="login"                    component={Views.Login}                hideNavBar={true}  />
-              <Scene key="register"                 component={Views.Register}             hideNavBar={false} title="Register" {...navBarStyle} />
-              <Scene key="registerConclusion"       component={Views.RegisterConclusion}   hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
-              <Scene key="pictureView"              component={Views.PictureView}          hideNavBar={true}  direction="vertical" />
-              <Scene key="picturePreview"           component={Views.PicturePreview}       hideNavBar={true}  direction="vertical" />
-              <Scene key="cameraRollView"           component={Views.CameraRollView}       hideNavBar={true}  direction="vertical" />
-              <Scene key="setupWelcome"             component={Views.SetupWelcome}         hideNavBar={true} type="reset"  direction="vertical"  />
-              <Scene key="setupAddGroup"            component={Views.SetupAddGroup}        hideNavBar={true} />
-              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true} type="reset" />
-              <Scene key="setupAddPluginStep1"      component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
-              <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}  hideNavBar={true}  />
-              <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}  hideNavBar={true}  />
-              <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}  hideNavBar={true}  />
-              <Scene key="roomTraining"             component={Views.RoomTraining}         hideNavBar={true} direction="vertical" title="Training" />
-              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={true && this.state.loggedIn || false}>
+              <Scene key="loginSplash"              component={Views.LoginSplash}               hideNavBar={true}  type="reset" initial={this.state.loggedIn === false && false} />
+              <Scene key="login"                    component={Views.Login}                     hideNavBar={true}  />
+              <Scene key="register"                 component={Views.Register}                  hideNavBar={false} title="Register" {...navBarStyle} />
+              <Scene key="registerConclusion"       component={Views.RegisterConclusion}        hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
+              <Scene key="pictureView"              component={Views.PictureView}               hideNavBar={true}  direction="vertical" />
+              <Scene key="picturePreview"           component={Views.PicturePreview}            hideNavBar={true}  direction="vertical" />
+              <Scene key="cameraRollView"           component={Views.CameraRollView}            hideNavBar={true}  direction="vertical" />
+              <Scene key="setupWelcome"             component={Views.SetupWelcome}              hideNavBar={true}  type="reset"  direction="vertical" />
+              <Scene key="setupAddGroup"            component={Views.SetupAddGroup}             hideNavBar={true}  />
+              <Scene key="setupAddCrownstoneSelect" component={Views.SetupAddCrownstoneSelect}  hideNavBar={true}  type="reset" />
+              <Scene key="setupAddPluginStep1"      component={Views.SetupAddPlugInStep1}       hideNavBar={true}  />
+              <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}       hideNavBar={true}  />
+              <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}       hideNavBar={true}  />
+              <Scene key="setupAddPluginStep4"      component={Views.SetupAddPlugInStep4}       hideNavBar={true} initial={true} />
+              <Scene key="setupAddPlugInStepRecover" component={Views.SetupAddPlugInStepRecover}       hideNavBar={true}  />
+              <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}       hideNavBar={true}  />
+              <Scene key="roomTraining"             component={Views.RoomTraining}              hideNavBar={true}  direction="vertical" title="Training" />
+              <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />
                   <Scene key="roomOverview"           component={Views.RoomOverview}        onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />

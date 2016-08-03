@@ -13,7 +13,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
-import { setupStyle, SkipButton } from './SetupStyles'
+import { setupStyle, SkipButton } from './SetupShared'
 import { styles, colors, width, height } from './../styles'
 
 export class SetupAddCrownstoneSelect extends Component {
