@@ -14,26 +14,30 @@ let defaultSettings = {
     meshAccessAddress: null,
     updatedAt: 1
   },
-  members: {
+  users: {
     firstName: undefined,
     lastName: undefined,
+    email: undefined,
+    emailVerified: false,
     picture: null,
-    accessLevel: undefined,
+    accessLevel: undefined, // 'admin', 'member', 'guest'
     updatedAt: 1
   }
 };
 
-let memberReducer = (state = defaultSettings.members, action = {}) => {
+let userReducer = (state = defaultSettings.users, action = {}) => {
   switch (action.type) {
-    case 'ADD_MEMBER':
-    case 'UPDATE_MEMBER':
+    case 'ADD_USER':
+    case 'UPDATE_USER':
       if (action.data) {
         let newState = {...state};
-        newState.firstName = update(action.data.firstName, newState.firstName);
-        newState.lastName = update(action.data.lastName, newState.lastName);
-        newState.picture = update(action.data.picture, newState.picture);
-        newState.accessLevel = update(action.data.accessLevel, newState.accessLevel);
-        newState.updatedAt = getTime();
+        newState.firstName     = update(action.data.firstName,     newState.firstName);
+        newState.lastName      = update(action.data.lastName,      newState.lastName);
+        newState.picture       = update(action.data.picture,       newState.picture);
+        newState.email         = update(action.data.email,         newState.email);
+        newState.emailVerified = update(action.data.emailVerified, newState.emailVerified);
+        newState.accessLevel   = update(action.data.accessLevel,   newState.accessLevel);
+        newState.updatedAt     = getTime();
         return newState;
       }
       return state;
@@ -42,17 +46,17 @@ let memberReducer = (state = defaultSettings.members, action = {}) => {
   }
 };
 
-let membersReducer = (state = {}, action = {}) => {
+let usersReducer = (state = {}, action = {}) => {
   switch (action.type) {
-    case 'REMOVE_MEMBER':
+    case 'REMOVE_USER':
       let newState = {...state};
-      delete newState[action.memberId];
+      delete newState[action.userId];
       return newState;
     default:
-      if (action.memberId !== undefined) {
+      if (action.userId !== undefined) {
         return {
           ...state,
-          ...{[action.memberId]:memberReducer(state[action.memberId], action)}
+          ...{[action.userId]: userReducer(state[action.userId], action)}
         };
       }
       return state;
@@ -88,11 +92,11 @@ let presetsReducer = (state = [], action = {}) => {
 };
 
 let combinedGroupReducer = combineReducers({
-  config:    groupConfigReducer,
-  members:   membersReducer,
-  presets:   presetsReducer,
-  locations: locationsReducer,
-  stones:    stonesReducer,
+  config:     groupConfigReducer,
+  users:      usersReducer,
+  presets:    presetsReducer,
+  locations:  locationsReducer,
+  stones:     stonesReducer,
   appliances: appliancesReducer
 });
 

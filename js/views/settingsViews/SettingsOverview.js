@@ -16,34 +16,15 @@ import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { NativeBridge } from '../../native/NativeBridge'
+import { userInGroups, userIsAdmin, getGroupName } from '../../util/dataUtil'
 
 
 export class SettingsOverview extends Component {
 
-  userIsAdmin() {
-    const store = this.props.store;
-    const state = store.getState();
-    let groups = Object.keys(state.groups);
-
-    for (let i = 0; i < groups.length; i++) {
-      if (state.groups[groups[i]].config.adminKey !== undefined) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-
-  userInGroups() {
-    const store = this.props.store;
-    const state = store.getState();
-    return Object.keys(state.groups).length > 0;
-  }
-
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
+    let activeGroup = state.app.activeGroup || Object.keys(state.groups)[0];
     let items = [
       {type:'explanation', label:'Disable the localization updates', bottom:'false'},
       {type:'switch', label: 'Enable Localization', value: state.app.enableLocalization,
@@ -63,9 +44,9 @@ export class SettingsOverview extends Component {
       {label:'Manage Profile',  type:'navigation', callback: () => {Actions.settingsProfile()}}
     ];
 
-    if (this.userInGroups()) {
+    if (userInGroups(state)) {
       items.push({label:'Manage Groups', type:'navigation', callback: () => {
-        Actions.settingsGroups()
+        Actions.settingsGroups({groupId: activeGroup, title: getGroupName(state, activeGroup)})
       }});
     }
     else {
@@ -76,7 +57,7 @@ export class SettingsOverview extends Component {
 
     // TODO: room management
     
-    if (this.userIsAdmin()) {
+    if (userIsAdmin(state)) {
       items.push({label:'Manage Crownstones', type:'navigation', callback: () => {
         Actions.settingsCrownstones();
       }});

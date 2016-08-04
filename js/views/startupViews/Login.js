@@ -137,6 +137,7 @@ export class Login extends Component {
 
   downloadImage(userId) {
     let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
+    console.log("here", toPath)
     return CLOUD.forUser(userId).downloadProfileImage(toPath);
   }
 
@@ -165,58 +166,79 @@ export class Login extends Component {
   downloadSettings(store, userId) {
     let parts = 1/5;
 
+    let promises = [];
+
     // get more data on the user
-    let userData = CLOUD.getUserData()
-      .then((userData) => {
-        store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName}});
-        this.progress += parts;
-        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received user data.'});
-      });
+    promises.push(
+      CLOUD.getUserData()
+        .then((userData) => {
+          store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName}});
+          this.progress += parts;
+          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received user data.'});
+        })
+    );
 
 
-    let groupUpdate = CLOUD.getGroups().then((groupData) => {
-      this.progress += parts;
-      let locationPromises = [];
-      groupData.forEach((group) => {
-        store.dispatch({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, uuid: group.uuid}});
+    // sync groups
+    promises.push(
+      CLOUD.getGroups()
+        .then((groupData) => {
+          this.progress += parts;
+          let groupDataPromises = [];
+          groupData.forEach((group) => {
+            // add the group to the local db
+            store.dispatch({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, uuid: group.uuid}});
 
-        // for every group, we get the locations
-        locationPromises.push(
-          CLOUD.forGroup(group.id).getLocations()
-            .then((locations) => {
-              this.progress += parts;
-              this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received Location data.'});
-              locations.forEach((location) => {
+            // sync all the data from the group to the phone
+            groupDataPromises.push(CLOUD.forGroup(group.id).syncGroup({}, userId).then((result) => {
+              console.log("GOT BACL")
+              // load all data in the database
+              result.locations.forEach((location) => {
                 store.dispatch({type:'ADD_LOCATION', groupId: group.id, locationId: location.id, data:{name: location.name, icon: location.icon}});
-              })
-          })
-        )
-      });
+              });
+              Object.keys(result.admins).forEach((userId) => {
+                let user = result.admins[userId];
+                console.log("USER",user)
+                store.dispatch({type: 'ADD_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'admin'}});
+              });
+              Object.keys(result.members).forEach((userId) => {
+                let user = result.members[userId];
+                store.dispatch({type: 'ADD_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'member'}});
+              });
+              Object.keys(result.guests).forEach((userId) => {
+                let user = result.guests[userId];
+                store.dispatch({type: 'ADD_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'guest'}});
+              });
+            }));
+          });
 
-      this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received group data.'});
+          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Receiving group data.'});
 
-      return Promise.all(locationPromises);
-    });
+          return Promise.all(groupDataPromises);
+        })
+    );
 
 
 
     // check if we need to upload a picture that has been set aside during the registration process.
     let imageFilename = getImageFileFromUser(this.state.email);
-    let picture = this.checkForRegistrationPictureUpload(userId, imageFilename)
-      .then((picturePath) => {
-        if (picturePath !== null)
-          return this.downloadImage(userId); // check if there is a picture we can download
-        else
-          return picturePath;
-      })
-      .then((picturePath) => {
-        store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
-        this.progress += parts;
-        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Updated user profile picture.'});
-      });
+    promises.push(
+      this.checkForRegistrationPictureUpload(userId, imageFilename)
+        .then((picturePath) => {
+          if (picturePath === null)
+            return this.downloadImage(userId); // check if there is a picture we can download
+          else
+            return picturePath;
+        })
+        .then((picturePath) => {
+          store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
+          this.progress += parts;
+          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
+        })
+    );
     
 
-    Promise.all([userData, picture, groupUpdate]).then(() => {
+    Promise.all(promises).then(() => {
       this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
 
       // small delay so the user sees "done"
@@ -225,17 +247,16 @@ export class Login extends Component {
 
         const state = store.getState();
         this.activeGroup = state.app.activeGroup;
-        Actions.setupWelcome();
 
-        // if (state.app.doFirstTimeSetup === true && Object.keys(state.groups).length === 0) {
-        //   Actions.setupWelcome();
-        // }
-        // else {
-        //   if (state.app.doFirstTimeSetup === true) {
-        //      store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}})
-        //   }
-        //   Actions.tabBar();
-        // }
+        if (state.app.doFirstTimeSetup === true && Object.keys(state.groups).length === 0) {
+          Actions.setupWelcome();
+        }
+        else {
+          if (state.app.doFirstTimeSetup === true) {
+             store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}})
+          }
+          Actions.tabBar();
+        }
       }, 50);
     });
   }

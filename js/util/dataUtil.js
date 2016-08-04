@@ -64,3 +64,27 @@ export const getRoomNames = function(state, groupId) {
   }
   return roomNames;
 };
+
+export const userIsAdmin = function(state) {
+  let groupIds = Object.keys(state.groups);
+  for (let i = 0; i < groupIds.length; i++) {
+    if (state.groups[groupIds[i]].config.adminKey !== undefined) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const getMyLevelInGroup = function(state, groupId) {
+  let userId = state.user.userId;
+
+  return state.groups[groupId].users[userId].accessLevel;
+};
+
+export const userInGroups = function(state) {
+  return Object.keys(state.groups).length > 0;
+};
+
+export const getGroupName = function(state, id) {
+  return state.groups[id].config.name;
+};

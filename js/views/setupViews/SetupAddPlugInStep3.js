@@ -144,6 +144,9 @@ export class SetupAddPlugInStep3 extends Component {
   }
 
   render() {
+    const { store } = this.props;
+    const state = store.getState();
+    let activeGroup = state.app.activeGroup;
     return (
       <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
         <View style={styles.shadedStatusBar} />

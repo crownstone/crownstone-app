@@ -12,6 +12,7 @@ import { CheckBar }       from './editComponents/CheckBar'
 import { EditSpacer }     from './editComponents/EditSpacer'
 import { Explanation }    from './editComponents/Explanation'
 import { IconEdit }       from './editComponents/IconEdit'
+import { InfoBar }        from './editComponents/InfoBar'
 import { NavigationBar }  from './editComponents/NavigationBar'
 import { PictureEdit }    from './editComponents/PictureEdit'
 import { SliderBar }      from './editComponents/SliderBar'
@@ -19,7 +20,7 @@ import { SwitchBar }      from './editComponents/SwitchBar'
 import { TextEditBar }    from './editComponents/TextEditBar'
 import { TimePicker }     from './editComponents/TimePicker'
 
-import { styles } from '../styles'
+import { styles, width } from '../styles'
 
 /**
  *
@@ -37,8 +38,25 @@ import { styles } from '../styles'
  * icon - Trigger to change the icon
      --> {label: field label, value: iconName, callback: (newValue) => {}}
 
+ * info - looks the same as a navigation bar except it does not have the forward icon nor can you click on it.
+    --> {
+     largeIcon: RN object to be in front of the label,
+     icon: RN object to be in front of the label,
+     label: field label,
+     value: text,
+     valueStyle: style object to overrule value style,
+     labelStyle: style object to overrule label style
+   }
  * navigation - text with an > for navigation in a menu. The value and valueStyle is optional
-     --> {label: field label, value: text, callback: (newValue) => {}, valueStyle: style object to overrule value style, labelStyle: style object to overrule label style}
+     --> {
+     largeIcon: RN object to be in front of the label,
+     icon: RN object to be in front of the label,
+     label: field label,
+     value: text,
+     callback: (newValue) => {},
+     valueStyle: style object to overrule value style,
+     labelStyle: style object to overrule label style
+   }
 
  * picture - Trigger to remove a picture or add one
      --> {label: field label, value: pictureURI, callback: (newValue) => {}}
@@ -60,7 +78,6 @@ export class EditableItem extends Component {
 
   render() {
     let pxRatio = PixelRatio.get();
-    let width = Dimensions.get('window').width;
     let height = 21*pxRatio;
     let heightLarge = 40*pxRatio;
 
@@ -77,6 +94,8 @@ export class EditableItem extends Component {
         return <Explanation text={this.props.label} {...this.props} />;
       case 'icon':
         return <IconEdit barHeightLarge={heightLarge} {...this.props} />;
+      case 'info':
+        return <InfoBar barHeight={height} {...this.props} />;
       case 'navigation':
         return <NavigationBar barHeight={height} {...this.props} />;
       case 'picture':

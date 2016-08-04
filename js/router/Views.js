@@ -31,6 +31,7 @@ import { SettingsChangeEmail }      from '../views/settingsViews/SettingsChangeE
 import { SettingsRooms }            from '../views/settingsViews/SettingsRooms'
 import { SettingsGroupIndex }       from '../views/settingsViews/SettingsGroupIndex'
 import { SettingsGroup }            from '../views/settingsViews/SettingsGroup'
+import { SettingsInvite }            from '../views/settingsViews/SettingsInvite'
 import { SettingsCrownstones }      from '../views/settingsViews/SettingsCrownstones'
 import { AppComplexity }            from '../views/settingsViews/AppComplexity'
 import { CloudChoice }              from '../views/startupViews/CloudChoice'
@@ -70,6 +71,7 @@ export const Views = {
   SettingsRooms,
   SettingsGroupIndex,
   SettingsGroup,
+  SettingsInvite,
   SettingsCrownstones,
   AppComplexity,
 

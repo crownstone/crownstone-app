@@ -148,7 +148,7 @@ export class AppRouter extends Component {
         <View style={{flex:1}}>
           <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
-              <Scene key="loginSplash"              component={Views.LoginSplash}               hideNavBar={true}  type="reset" initial={this.state.loggedIn === false && false} />
+              <Scene key="loginSplash"              component={Views.LoginSplash}               hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
               <Scene key="login"                    component={Views.Login}                     hideNavBar={true}  />
               <Scene key="register"                 component={Views.Register}                  hideNavBar={false} title="Register" {...navBarStyle} />
               <Scene key="registerConclusion"       component={Views.RegisterConclusion}        hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
@@ -161,7 +161,7 @@ export class AppRouter extends Component {
               <Scene key="setupAddPluginStep1"      component={Views.SetupAddPlugInStep1}       hideNavBar={true}  />
               <Scene key="setupAddPluginStep2"      component={Views.SetupAddPlugInStep2}       hideNavBar={true}  />
               <Scene key="setupAddPluginStep3"      component={Views.SetupAddPlugInStep3}       hideNavBar={true}  />
-              <Scene key="setupAddPluginStep4"      component={Views.SetupAddPlugInStep4}       hideNavBar={true} initial={true} />
+              <Scene key="setupAddPluginStep4"      component={Views.SetupAddPlugInStep4}       hideNavBar={true}  />
               <Scene key="setupAddPlugInStepRecover" component={Views.SetupAddPlugInStepRecover}       hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"     component={Views.SetupAddPlugInStep1}       hideNavBar={true}  />
               <Scene key="roomTraining"             component={Views.RoomTraining}              hideNavBar={true}  direction="vertical" title="Training" />
@@ -184,7 +184,8 @@ export class AppRouter extends Component {
                   <Scene key="settingsChangeEmail"    component={Views.SettingsChangeEmail} title="Change Email"/>
                   <Scene key="settingsChangePassword" component={Views.SettingsChangePassword} title="Change Password"/>
                   <Scene key="settingsGroupIndex"     component={Views.SettingsGroupIndex}     title="Groups" />
-                  <Scene key="settingsGroups"         component={Views.SettingsGroup}      title="[Group name here]" onRight={onRightFunctionEdit} rightTitle="Add" initial={false} />
+                  <Scene key="settingsGroups"         component={Views.SettingsGroup}       title="[Group name here]" onRight={onRightFunctionEdit} rightTitle="Add"/>
+                  <Scene key="settingsInvite"         component={Views.SettingsInvite}      title="Invite" />
                   <Scene key="settingsRooms"          component={Views.SettingsRooms}       title="Manage Your Rooms"/>
                   <Scene key="settingsCrownstones"    component={Views.SettingsCrownstones} title="Manage Your Crownstones"/>
                   <Scene key="appComplexity"          component={Views.AppComplexity}       title="Settings"/>

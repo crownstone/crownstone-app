@@ -100,7 +100,12 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
       console.log('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
 
     // download the file.
-    RNFS.downloadFile(CLOUD_ADDRESS + endPoint, tempPath, beginCallback, progressCallback)
+    RNFS.downloadFile({
+      fromUrl: CLOUD_ADDRESS + endPoint,
+      toFile: tempPath,
+      begin: beginCallback,
+      progress: progressCallback
+    })
       .then((status) => {
         if (status.statusCode !== 200) {
           // remove the temp file if the download failed

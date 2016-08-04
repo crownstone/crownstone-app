@@ -57,6 +57,7 @@ export class SettingsProfile extends Component {
   _getItems(user) {
     const store = this.props.store;
     const state = store.getState();
+    let groupIds = Object.keys(state.groups);
     let items = [];
     // room Name:
     items.push({type:'spacer'});
@@ -70,7 +71,8 @@ export class SettingsProfile extends Component {
         if (user.firstName !== newText) {
           if (this.validationState.firstName === 'valid') {
             store.dispatch({type: 'USER_UPDATE', data: {firstName: newText}});
-            store.dispatch({type: 'UPDATE_MEMBER', groupId: state.app.activeGroup, memberId: user.userId, data:{firstName: newText}});
+            // update your settings in every group that you belong to.
+            groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_USER', groupId: groupId, memberId: user.userId, data:{firstName: newText}}); });
             CLOUD.updateUserData({background: true, data: {firstName: newText}});
           }
           else {
@@ -89,7 +91,8 @@ export class SettingsProfile extends Component {
         if (user.lastName !== newText) {
           if (this.validationState.lastName === 'valid') {
             store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
-            store.dispatch({type: 'UPDATE_MEMBER', groupId: state.app.activeGroup, memberId: user.userId, data:{lastName: newText}});
+            // update your settings in every group that you belong to.
+            groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_USER', groupId: groupId, memberId: user.userId, data:{lastName: newText}}); });
             CLOUD.updateUserData({background: true, data: {lastName: newText}});
           }
           else {
@@ -162,6 +165,7 @@ export class SettingsProfile extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
+    let groupIds = Object.keys(state.groups);
     let user = state.user;
     this.renderState = state; // important for performance check
 
@@ -175,14 +179,16 @@ export class SettingsProfile extends Component {
                 processImage(pictureUrl, newFilename).then((newPicturePath) => {
                   this.setState({picture:newPicturePath});
                   store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
-                  store.dispatch({type:'UPDATE_MEMBER', groupId: state.app.activeGroup, memberId: user.userId, data:{picture:newPicturePath}});
+                  // update your settings in every group that you belong to.
+                  groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_USER', groupId: groupId, memberId: user.userId, data:{picture: newPicturePath}}); });
                   CLOUD.forUser(user.userId).uploadProfileImage(newPicturePath).then((data) => {console.log(data)});
                 })
               }} 
             removePicture={() => {
               safeDeleteFile(this.state.picture);
               store.dispatch({type:'USER_UPDATE', data:{picture:null}});
-              store.dispatch({type:'UPDATE_MEMBER', groupId: state.app.activeGroup, memberId: user.userId, data:{picture:null}});
+              // update your settings in every group that you belong to.
+              groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_USER', groupId: groupId, memberId: user.userId, data:{picture: null}}); });
               CLOUD.forUser(user.userId).removeProfileImage();
               this.setState({picture:null});
             }}

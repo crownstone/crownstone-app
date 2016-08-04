@@ -10,7 +10,7 @@ var Icon = require('react-native-vector-icons/Ionicons');
 import { styles, colors, width } from '../../styles'
 
 
-export class NavigationBar extends Component {
+export class InfoBar extends Component {
 
   render() {
     let barHeight = this.props.barHeight;
@@ -19,11 +19,11 @@ export class NavigationBar extends Component {
     else if (this.props.icon)
       barHeight = 50;
     return (
-      <TouchableHighlight onPress={() => {this.props.setActiveElement(); this.props.callback()}}>
+      <View>
         <View style={[styles.listView, {height: barHeight}]}>
           {this.props.largeIcon}
-          {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * width, paddingRight:15}]}>{this.props.icon}</View> : undefined}
-
+          {this.props.icon !== undefined ?
+          <View style={[styles.centered, {width:0.12 * width, paddingRight:15}]}>{this.props.icon}</View> : undefined}
           {this.props.value !== undefined ?
             <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
             :
@@ -34,11 +34,8 @@ export class NavigationBar extends Component {
             :
             <View style={{flex:1}} />
           }
-          <View style={{paddingTop:3}}>
-            <Icon name="ios-arrow-forward" size={18} color={'#888'} />
-          </View>
         </View>
-      </TouchableHighlight>
+      </View>
     );
   }
 }

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "tape -r babel-register ./js/tests/*/*",
-    "clearCloud": "tape -r babel-register ./helpers/clearCloud.js",
+    "clearCloud": "node -r babel-register ./helpers/clearCloud.js",
     "lint": "eslint ./js"
   },
   "dependencies": {
@@ -31,7 +31,8 @@
     "eslint": "^2.8.0",
     "eslint-plugin-react": "^4.2.3",
     "tape": "^4.5.1",
-    "node-fetch":"latest"
+    "node-fetch":"latest",
+    "promise":"latest"
   },
   "babel": {
     "presets": [

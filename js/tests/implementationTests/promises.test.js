@@ -14,7 +14,18 @@ let failedPromise10 = new Promise((resolve, reject) => {
   setTimeout(() => {reject(10)}, 100);
 });
 
-test('Promise I', function (t) {
+function slow() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {resolve(1)},200)
+  })
+    .then(() => {
+      return new Promise((resolve2, reject2) => {
+        setTimeout(() => {resolve2(2)}, 200);
+      })
+    })
+}
+
+test('Promise 1', function (t) {
   successfulPromise5
     .then((res) => {
       t.deepEqual(res, 5, 'return 5' );
@@ -37,7 +48,7 @@ test('Promise I', function (t) {
     });
 });
 
-test('Promise II', function (t) {
+test('Promise 2', function (t) {
   failedPromise5
     .then(() => {
       t.deepEqual(true, false, 'this should not be fired');
@@ -51,7 +62,7 @@ test('Promise II', function (t) {
     })
 });
 
-test('Promise III', function (t) {
+test('Promise 3', function (t) {
   successfulPromise5
     .then((res) => {
       t.deepEqual(res, 5, 'return 5' );
@@ -66,7 +77,7 @@ test('Promise III', function (t) {
     })
 });
 
-test('Promise III', function (t) {
+test('Promise 4', function (t) {
   successfulPromise5
     .then((res) => {
       t.deepEqual(res, 5, 'return 5' );
@@ -83,6 +94,28 @@ test('Promise III', function (t) {
       t.deepEqual(success, false, 'skipping then');
       t.end();
     })
+});
+
+
+test('Promise 5', function (t) {
+  slow()
+    .then((res) => {
+      t.deepEqual(res, 2, 'waited for "then"' );
+      t.end();
+    })
+});
+
+
+test('Promise All', function (t) {
+  let promises1 = [];
+  let promises2 = [];
+  let result = 0;
+  promises1.push(slow().then((res) => {result = res}));
+
+  Promise.all([promises1,promises2]).then(() => {
+    t.deepEqual(result, 2, 'waited for "then"' );
+    t.end();
+  })
 });
 
 

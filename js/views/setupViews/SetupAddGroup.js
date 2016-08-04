@@ -29,6 +29,7 @@ export class SetupAddGroup extends Component {
   saveGroupName() {
     const store = this.props.store;
     const state = store.getState();
+    let me = state.user;
 
     if (this.state.groupName.length > 2) {
       this.props.eventBus.emit('showLoading', 'Creating Group...');
@@ -36,7 +37,10 @@ export class SetupAddGroup extends Component {
         .then((response) => {
           // add the group to the database once it had been added in the cloud.
           store.dispatch({type:'ADD_GROUP', groupId: response.id, data:{name: response.name, uuid: response.uuid}});
-          
+
+          // add yourself to the group members as admin
+          store.dispatch({type: 'ADD_USER', groupId: response.id, memberId: me.userId, data:{picture: me.picture, firstName: me.firstName, lastName: me.lastName, email:me.email, emailVerified: true, accessLevel: 'admin'}});
+
           // get all encryption keys the user has access to and store them in the appropriate groups.
           CLOUD.getKeys()
             .then((keyResult) => {

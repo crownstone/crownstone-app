@@ -25,7 +25,6 @@ var Icon = require('react-native-vector-icons/Ionicons');
 export class SetupAddPlugInStep2 extends Component {
   constructor() {
     super();
-    //setTimeout(() => {Actions.setupAddPluginStep3()}, 1500);
     this.state = {
       progress:0,
       text:'',
@@ -36,7 +35,6 @@ export class SetupAddPlugInStep2 extends Component {
     };
     this.imageIn1 = true;
     setTimeout(() => {this.scanAndRegisterCrownstone();},0);
-    Actions.setupAddPlugInStepRecover();
   }
 
   switchImages(nextImage) {
@@ -217,7 +215,7 @@ export class SetupAddPlugInStep2 extends Component {
         break;
       case 1:
         newImage = require('../../images/lineDrawings/holdingPhoneNextToPlugGettingAddress.png');
-        this.setState({progress: 0.1, text: 'Connecting to Crownstone.'});
+        this.setState({progress: 0.1, text: 'Connecting to Crownstone...'});
         break;
       case 2:
         newImage = require('../../images/lineDrawings/holdingPhoneNextToPlugGettingAddress.png');
@@ -229,7 +227,7 @@ export class SetupAddPlugInStep2 extends Component {
         break;
       case 4:
         newImage = require('../../images/lineDrawings/holdingPhoneNextToPlugPairing.png');
-        this.setState({progress: 0.7, text: 'Binding Crownstone to your Group...'});
+        this.setState({progress: 0.7, text: 'Binding this Crownstone to your Group...'});
         break;
       case 5:
         newImage = require('../../images/lineDrawings/holdingPhoneNextToPlugActivate.png');
@@ -266,6 +264,25 @@ export class SetupAddPlugInStep2 extends Component {
     }
   }
 
+  getHeader() {
+    if (this.state.progress === 0) {
+      return (
+        <View>
+          <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true}/>
+          <Text style={[setupStyle.h1, {paddingTop:0}]}>Adding a Plug-in Crownstone</Text>
+        </View>
+      )
+    }
+    else {
+      return (
+        <View>
+          <View style={styles.shadedStatusBar}/>
+          <Text style={setupStyle.h1}>Adding a Plug-in Crownstone</Text>
+        </View>
+      )
+    }
+  }
+
   render() {
     let imageSize = 0.4*height;
     let subSize = (imageSize/500) * 326; // 500 and 326 are the 100% sizes
@@ -273,8 +290,7 @@ export class SetupAddPlugInStep2 extends Component {
     let suby = imageSize*0.105;
     return (
       <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
-        <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
-        <Text style={[setupStyle.h1, {paddingTop:0}]}>Adding a Plug-in Crownstone</Text>
+        {this.getHeader()}
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={setupStyle.text}>Step 2: Hold your phone next to the Crownstone.</Text>
           <View style={setupStyle.lineDistance} />

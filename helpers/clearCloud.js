@@ -1,4 +1,6 @@
-var fetch = require('node-fetch');
+const fetch = require('node-fetch');
+const Promise = require("promise");
+
 
 /**
  *
@@ -6,6 +8,12 @@ var fetch = require('node-fetch');
  *
  * @type {{Accept: string, Content-Type: string}}
  */
+
+// fucking fetch lib uses its own promises!
+fetch.Promise = Promise;
+
+let token = '5nEe9TjFvYRWlUCK0MdcCJczl4CLwjyVCOhHNWpg4qpBVBB7ERZVDDdnxeiiDP3d';
+let userId = '5747122cfb25ed03000bdc70';
 
 let defaultHeaders = {
   'Accept': 'application/json',
@@ -24,18 +32,16 @@ let handleInitialReply = (response) => {
         response.headers.map['content-length'][0] == 0) {
         return '';
       }
-      console.log("parsing json")
       return response.json(); // this is a promise
     }
   }
-  console.log("parsing text")
   return response.text(); // this is a promise
 };
 
 
 
 fetch(
-  'http://crownstone-cloud.herokuapp.com/api/users/5747122cfb25ed03000bdc70/groups?access_token=5nEe9TjFvYRWlUCK0MdcCJczl4CLwjyVCOhHNWpg4qpBVBB7ERZVDDdnxeiiDP3d',
+  'http://crownstone-cloud.herokuapp.com/api/users/' + userId + '/groups?access_token=' + token,
   {method: 'GET',headers: defaultHeaders,body: ''})
   .then(handleInitialReply)
   .then((result) => {
@@ -68,48 +74,48 @@ fetch(
   })
   .then(() => {
     console.log("FINISHED")
-  })
-  .catch((err) => {
-    console.log(err, err.trace)
-  })
+  }).done()
 
 function deleteGroup (groupId) {
   return new Promise((resolve, reject) => {
-    let base = 'http://crownstone-cloud.herokuapp.com/api/Groups/$id$?access_token=5nEe9TjFvYRWlUCK0MdcCJczl4CLwjyVCOhHNWpg4qpBVBB7ERZVDDdnxeiiDP3d';
+    let base = 'http://crownstone-cloud.herokuapp.com/api/Groups/$id$?access_token=' + token;
     return fetch(base.replace("$id$", groupId),{method: 'DELETE', headers: defaultHeaders, body: ''})
       .then(handleInitialReply)
       .then((results) => {
-        console.log(results);
+        // console.log(results);
         resolve()
-      })
+      }).done()
   })
 }
 
 function removeStones(groupId) {
+  console.log("removeStones", groupId)
   return new Promise((resolve, reject) => {
-    let base = 'http://crownstone-cloud.herokuapp.com/api/Groups/$id$/ownedStones?access_token=5nEe9TjFvYRWlUCK0MdcCJczl4CLwjyVCOhHNWpg4qpBVBB7ERZVDDdnxeiiDP3d';
+    let base = 'http://crownstone-cloud.herokuapp.com/api/Groups/$id$/ownedStones?access_token=' + token;
     fetch(base.replace("$id$", groupId), {method: 'GET', headers: defaultHeaders, body: ''})
       .then(handleInitialReply)
       .then((results) => {
         let data = JSON.parse(results);
+        // console.log("stonedata:",data)
         let promiseArray = [];
         data.forEach((stone) => {
           promiseArray.push(deleteStone(stone.id))
-        })
+        });
         return Promise.all(promiseArray);
       })
-      .then(resolve)
+      .then(resolve).done()
   });
 }
 
 function deleteStone(stoneId) {
+  console.log('delete stone', stoneId)
   return new Promise((resolve, reject) => {
-    let base = 'http://crownstone-cloud.herokuapp.com/api/Stones/$id$?access_token=5nEe9TjFvYRWlUCK0MdcCJczl4CLwjyVCOhHNWpg4qpBVBB7ERZVDDdnxeiiDP3d';
+    let base = 'http://crownstone-cloud.herokuapp.com/api/Stones/$id$?access_token=' + token;
     return fetch(base.replace("$id$", stoneId), {method: 'DELETE', headers: defaultHeaders, body: ''})
       .then(handleInitialReply)
       .then((results) => {
-        console.log(results);
+        // console.log(results);
         resolve()
-      })
+      }).done()
   });
 }
