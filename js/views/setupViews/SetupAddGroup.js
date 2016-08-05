@@ -36,7 +36,7 @@ export class SetupAddGroup extends Component {
       CLOUD.forUser(state.user.userId).createGroup(this.state.groupName)
         .then((response) => {
           // add the group to the database once it had been added in the cloud.
-          store.dispatch({type:'ADD_GROUP', groupId: response.id, data:{name: response.name, uuid: response.uuid}});
+          store.dispatch({type:'ADD_GROUP', groupId: response.id, data:{name: response.name, iBeaconUUID: response.uuid}});
 
           // add yourself to the group members as admin
           store.dispatch({type: 'ADD_USER', groupId: response.id, memberId: me.userId, data:{picture: me.picture, firstName: me.firstName, lastName: me.lastName, email:me.email, emailVerified: true, accessLevel: 'admin'}});

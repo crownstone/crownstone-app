@@ -7,7 +7,7 @@ import { update, getTime } from './reducerUtil'
 let defaultSettings = {
   config: {
     name: undefined,
-    uuid: undefined, // ibeacon uuid
+    iBeaconUUID: undefined, // ibeacon uuid
     adminKey: null,
     memberKey: null,
     guestKey: null,
@@ -70,7 +70,7 @@ let groupConfigReducer = (state = defaultSettings.config, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.name = update(action.data.name, newState.name);
-        newState.uuid = update(action.data.uuid, newState.uuid);
+        newState.iBeaconUUID = update(action.data.iBeaconUUID, newState.iBeaconUUID);
         newState.adminKey = update(action.data.adminKey, newState.adminKey);
         newState.memberKey = update(action.data.memberKey, newState.memberKey);
         newState.guestKey = update(action.data.guestKey, newState.guestKey);

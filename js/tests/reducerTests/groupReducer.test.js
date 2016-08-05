@@ -4,7 +4,7 @@ let deepFreeze = require('deep-freeze');
 import groupsReducer from '../../router/store/reducers/groups'
 
 // hack to remove the current time from the reducer so we can predictably match the results.
-Date.prototype.valueOf = function () {return 1}
+Date.prototype.valueOf = function () {return 1};
 
 test('groupsReducer ADD_GROUP, UPDATE_GROUP and REMOVE_GROUP', function (t) {
   let initialState = {};
@@ -49,12 +49,13 @@ test('groupsReducer ADD_GROUP, UPDATE_GROUP and REMOVE_GROUP', function (t) {
         adminKey: null,
         guestKey: null,
         memberKey: null,
+        meshAccessAddress: null,
         name: 'home',
         updatedAt: 1,
-        uuid: undefined
+        iBeaconUUID: undefined
       },
       locations: {},
-      members: {},
+      users: {},
       presets: [],
       stones: {}
     }

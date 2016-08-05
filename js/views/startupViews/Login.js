@@ -187,7 +187,7 @@ export class Login extends Component {
           let groupDataPromises = [];
           groupData.forEach((group) => {
             // add the group to the local db
-            store.dispatch({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, uuid: group.uuid}});
+            store.dispatch({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, iBeaconUUID: group.uuid}});
 
             // sync all the data from the group to the phone
             groupDataPromises.push(CLOUD.forGroup(group.id).syncGroup({}, userId).then((result) => {

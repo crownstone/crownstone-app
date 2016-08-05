@@ -6,7 +6,7 @@ import applianceReducer from '../../router/store/reducers/appliances'
 // hack to remove the current time from the reducer so we can predictably match the results.
 Date.prototype.valueOf = function () {
   return 1
-}
+};
 
 test('applianceReducer ADD_LOCATION and REMOVE_LOCATION', function (t) {
   let addApplianceAction = {

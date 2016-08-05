@@ -42,9 +42,9 @@ test('locationsReducer PropegationTest', function (t) {
   let expectedReturn = {
     groupId: {
       appliances: {},
-      config: {adminKey: null, guestKey: null, memberKey: null, name: 'home', updatedAt: 1, uuid: undefined},
+      config: {adminKey: null, guestKey: null, memberKey: null, meshAccessAddress: null, name: 'home', updatedAt: 1, iBeaconUUID: undefined},
       locations: {locationId: {config: {fingerprintParsed: '', fingerprintRaw: '', icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
-      members: {},
+      users: {},
       presets: [],
       stones: {}
     }
@@ -65,7 +65,7 @@ test('locationsReducer PropegationTest', function (t) {
 
 test('Initial App state', function (t) {
   let initialState = {
-    app: {activeGroup: undefined, doFirstTimeSetup: true, updatedAt: 1},
+    app: {activeGroup: undefined, doFirstTimeSetup: true, enableLocalization:true, updatedAt: 1},
     groups: {},
     settings: {
       linkedDevices: true,
@@ -87,15 +87,13 @@ test('Initial App state', function (t) {
   };
 
   let locationState = {
-    app: {
-      activeGroup: undefined, doFirstTimeSetup: true, updatedAt: 1
-    },
+    app: {activeGroup: undefined, doFirstTimeSetup: true, enableLocalization:true, updatedAt: 1},
     groups: {
       Home: {
         appliances: {},
-        config: {adminKey: null, guestKey: null, memberKey: null, name: 'Home', updatedAt: 1, uuid: undefined},
+        config: {adminKey: null, guestKey: null, memberKey: null, meshAccessAddress: null, name: 'Home', updatedAt: 1, iBeaconUUID: undefined},
         locations: {locationId: {config: {fingerprintParsed: '', fingerprintRaw: '', icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
-        members: {},
+        users: {},
         presets: [],
         stones: {}
       }

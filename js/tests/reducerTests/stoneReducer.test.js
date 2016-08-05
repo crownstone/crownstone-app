@@ -56,9 +56,10 @@ test('stoneReducer ADD_LOCATION and REMOVE_LOCATION', function (t) {
         initializedSuccessfully: false,
         locationId: undefined,
         macAddress: undefined,
+        bluetoothId: undefined,
+        crownstoneId: undefined,
         name: 'Ceiling Light',
         updatedAt: 1,
-        uuid: undefined
       },
       schedule: {},
       state: {currentUsage: 0, state: 1, updatedAt: 1},
@@ -154,9 +155,10 @@ test('stoneReducer UPDATE_BEHAVIOUR and UPDATE_BEHAVIOUR_CONFIG', function (t) {
         initializedSuccessfully: false,
         locationId: undefined,
         macAddress: undefined,
+        bluetoothId: undefined,
+        crownstoneId: undefined,
         name: 'Ceiling Light',
         updatedAt: 1,
-        uuid: undefined
       },
       schedule: {},
       state: {currentUsage: 0, state: 1, updatedAt: 1},
@@ -178,5 +180,3 @@ test('stoneReducer UPDATE_BEHAVIOUR and UPDATE_BEHAVIOUR_CONFIG', function (t) {
 
   t.end();
 });
-
-console.log(process.env)

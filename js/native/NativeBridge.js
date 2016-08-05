@@ -56,7 +56,7 @@ class NativeBridgeClass {
     const state = this.store.getState();
     let groupIds = Object.keys(state.groups);
     groupIds.forEach((groupId) => {
-      let groupIBeaconUUID = state.groups[groupId].config.uuid;
+      let groupIBeaconUUID = state.groups[groupId].config.iBeaconUUID;
 
       // track the group beacon UUID
       Bluenet.trackUUID(groupIBeaconUUID, groupId);

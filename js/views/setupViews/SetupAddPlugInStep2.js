@@ -147,7 +147,7 @@ export class SetupAddPlugInStep2 extends Component {
       .then(() => {return crownstone.writeUserKey(groupData.userKey);})
       .then(() => {return crownstone.writeGuestKey(groupData.guestKey);})
       .then(() => {return crownstone.writeMeshAccessAddress(groupData.meshAccessAddress);})
-      .then(() => {return crownstone.writeIBeaconUUID(groupData.uuid);})
+      .then(() => {return crownstone.writeIBeaconUUID(groupData.iBeaconUUID);})
       .then(() => {return crownstone.writeIBeaconMajor(stoneData.iBeaconMajor);})
       .then(() => {return crownstone.writeIBeaconMinor(stoneData.iBeaconMinor);})
       .then(() => {

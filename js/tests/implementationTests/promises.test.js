@@ -112,7 +112,7 @@ test('Promise All', function (t) {
   let result = 0;
   promises1.push(slow().then((res) => {result = res}));
 
-  Promise.all([promises1,promises2]).then(() => {
+  Promise.all(promises1.concat(promises2)).then(() => {
     t.deepEqual(result, 2, 'waited for "then"' );
     t.end();
   })
