@@ -172,23 +172,23 @@ export class AppRouter extends Component {
                   <Scene key="roomEdit"               component={Views.RoomEdit}            title="Edit Room" />
                   <Scene key="deviceEdit"             component={Views.DeviceEdit}          title="Edit Device" />
                   <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit} title="Edit Behaviour" />
-                  <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit} />
+                  <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}     />
                   <Scene key="delaySelection"         component={Views.DelaySelection}      title="Set Delay" />
                   <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}  title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
                   <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}   title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
                   <Scene key="daySelection"           component={Views.DaySelection}        title="Set Active Days" />
                 </Scene>
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
-                  <Scene key="settingsOverview"       component={Views.SettingsOverview}    title="Settings"/>
-                  <Scene key="settingsProfile"        component={Views.SettingsProfile}     title="Your Profile" />
-                  <Scene key="settingsChangeEmail"    component={Views.SettingsChangeEmail} title="Change Email"/>
+                  <Scene key="settingsOverview"       component={Views.SettingsOverview}       title="Settings"/>
+                  <Scene key="settingsProfile"        component={Views.SettingsProfile}        title="Your Profile" />
+                  <Scene key="settingsChangeEmail"    component={Views.SettingsChangeEmail}    title="Change Email"/>
                   <Scene key="settingsChangePassword" component={Views.SettingsChangePassword} title="Change Password"/>
-                  <Scene key="settingsGroupIndex"     component={Views.SettingsGroupIndex}     title="Groups" />
-                  <Scene key="settingsGroups"         component={Views.SettingsGroup}       title="[Group name here]" onRight={onRightFunctionEdit} rightTitle="Add"/>
-                  <Scene key="settingsInvite"         component={Views.SettingsInvite}      title="Invite" />
-                  <Scene key="settingsRooms"          component={Views.SettingsRooms}       title="Manage Your Rooms"/>
-                  <Scene key="settingsCrownstones"    component={Views.SettingsCrownstones} title="Manage Your Crownstones"/>
-                  <Scene key="appComplexity"          component={Views.AppComplexity}       title="Settings"/>
+                  <Scene key="settingsGroupOverview"  component={Views.SettingsGroupOverview}  title="Group Overview" />
+                  <Scene key="settingsGroup"          component={Views.SettingsGroup}          title="[Group name here]" />
+                  <Scene key="settingsGroupUser"      component={Views.SettingsGroupUser}      title="[Username here]" />
+                  <Scene key="settingsGroupInvite"    component={Views.SettingsGroupInvite}    title="Invite" />
+                  <Scene key="settingsCrownstones"    component={Views.SettingsCrownstones}    title="Manage Your Crownstones"/>
+                  <Scene key="appComplexity"          component={Views.AppComplexity}          title="Settings"/>
                 </Scene>
               </Scene>
             </Scene>

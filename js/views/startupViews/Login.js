@@ -191,7 +191,6 @@ export class Login extends Component {
 
             // sync all the data from the group to the phone
             groupDataPromises.push(CLOUD.forGroup(group.id).syncGroup({}, userId).then((result) => {
-              console.log("GOT BACL")
               // load all data in the database
               result.locations.forEach((location) => {
                 store.dispatch({type:'ADD_LOCATION', groupId: group.id, locationId: location.id, data:{name: location.name, icon: location.icon}});

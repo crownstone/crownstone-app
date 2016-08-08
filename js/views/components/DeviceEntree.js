@@ -16,7 +16,7 @@ import Slider from 'react-native-slider'
 import { styles, colors} from '../styles'
 
 
-export class DeviceEntry extends Component {
+export class DeviceEntree extends Component {
   _pressedDevice() {
     this.props.onChange((this.props.state === 1 ? 0 : 1));
   }

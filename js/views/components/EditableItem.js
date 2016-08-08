@@ -9,6 +9,7 @@ import {
 
 import { ButtonBar }      from './editComponents/ButtonBar'
 import { CheckBar }       from './editComponents/CheckBar'
+import { Dropdown }       from './editComponents/Dropdown'
 import { EditSpacer }     from './editComponents/EditSpacer'
 import { Explanation }    from './editComponents/Explanation'
 import { IconEdit }       from './editComponents/IconEdit'
@@ -85,11 +86,17 @@ export class EditableItem extends Component {
       this.props.setActiveElement = () => {};
     }
 
+    if (this.props.__item !== undefined) {
+      return this.props.__item;
+    }
+
     switch (this.props.type) {
       case 'button':
         return <ButtonBar barHeight={height} {...this.props} />;
       case 'checkbar':
         return <CheckBar barHeight={height} {...this.props} />;
+      case 'dropdown':
+        return <Dropdown barHeight={height} {...this.props} />;
       case 'explanation':
         return <Explanation text={this.props.label} {...this.props} />;
       case 'icon':

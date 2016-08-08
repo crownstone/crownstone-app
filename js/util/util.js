@@ -115,4 +115,9 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
   return pictureUri;
 };
 
+String.prototype.capitalize = function() {
+  return this[0].toUpperCase() + this.substring(1);
+};
+
+
 

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import { Background }  from '../components/Background'
-import { DeviceEntry } from '../components/DeviceEntry'
+import { DeviceEntree } from '../components/DeviceEntree'
 import { NativeBridge } from '../../native/NativeBridge'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
@@ -45,7 +45,7 @@ export class RoomOverview extends Component {
     return (
       <View key={stoneId + '_entry'}>
         <View style={styles.listView}>
-          <DeviceEntry
+          <DeviceEntree
             name={item.device.config.name}
             icon={item.device.config.icon}
             state={item.stone.state.state}

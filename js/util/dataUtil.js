@@ -1,10 +1,10 @@
 export const getStonesFromState = function(state, groupId, locationId) {
   let filteredStones = {};
-  if (groupId !== undefined && locationId !== undefined) {
+  if (groupId !== undefined) {
     let stones = state.groups[groupId].stones;
     for (let stoneId in stones) {
       if (stones.hasOwnProperty(stoneId)) {
-        if (stones[stoneId].config.locationId === locationId) {
+        if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
           filteredStones[stoneId] = (stones[stoneId]);
         }
       }
@@ -36,6 +36,24 @@ export const getCurrentPowerUsageFromState = function(state, groupId, locationId
   return usage
 };
 
+
+export const getGroupContentFromState = function(state, groupId) {
+  let stones = getStonesFromState(state, groupId);
+  let appliances = state.groups[groupId].appliances;
+
+  let items = {};
+  for (let stoneId in stones) {
+    if (stones.hasOwnProperty(stoneId)) {
+      let stone = stones[stoneId];
+      if (stone.config.applianceId)
+        items[stoneId] = {stone: stone, device: appliances[stone.config.applianceId]};
+      else
+        items[stoneId] = {stone: stone, device: stone}
+    }
+  }
+  return items;
+};
+
 export const getRoomContentFromState = function(state, groupId, locationId) {
   let stones = getStonesFromState(state, groupId, locationId);
   let appliances = state.groups[groupId].appliances;
@@ -65,6 +83,7 @@ export const getRoomNames = function(state, groupId) {
   return roomNames;
 };
 
+
 export const userIsAdmin = function(state) {
   let groupIds = Object.keys(state.groups);
   for (let i = 0; i < groupIds.length; i++) {
@@ -87,4 +106,8 @@ export const userInGroups = function(state) {
 
 export const getGroupName = function(state, id) {
   return state.groups[id].config.name;
+};
+
+export const getRoomName = function(state, groupId, locationId) {
+  return state.groups[groupId].locations[locationId].config.name;
 };

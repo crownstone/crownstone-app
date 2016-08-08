@@ -13,7 +13,7 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { DeviceEntry } from '../components/DeviceEntry'
+import { DeviceEntree } from '../components/DeviceEntree'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { Explanation } from '../components/editComponents/Explanation'
 import { getRoomContentFromState } from '../../util/dataUtil'
@@ -39,7 +39,7 @@ export class RoomEdit extends Component {
         onPress={() => {Actions.deviceEdit({groupId:this.props.groupId, stoneId, locationId:this.props.locationId})}}
         style={{flex:1}}>
         <View style={styles.listView}>
-          <DeviceEntry
+          <DeviceEntree
             name={item.device.config.name}
             icon={item.device.config.icon}
             state={item.stone.state.state}

@@ -6,14 +6,21 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors } from '../../styles'
+import { styles, colors, width } from '../../styles'
 
 
 export class ButtonBar extends Component {
   render() {
+    let barHeight = this.props.barHeight;
+    if (this.props.largeIcon)
+      barHeight = 75;
+    else if (this.props.icon)
+      barHeight = 50;
+
     return (
       <TouchableHighlight onPress={() => {this.props.setActiveElement(); this.props.callback()}}>
-        <View style={[styles.listView, {height:this.props.barHeight}]}>
+        <View style={[styles.listView, {height: barHeight}]}>
+          {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * width, paddingRight:15}]}>{this.props.icon}</View> : undefined}
           <Text style={[styles.listTextLarge, {color:'#e00'}, this.props.style]}>{this.props.label}</Text>
         </View>
       </TouchableHighlight>

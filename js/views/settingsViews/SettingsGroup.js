@@ -16,12 +16,25 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getMyLevelInGroup } from '../../util/dataUtil';
 var Icon = require('react-native-vector-icons/Ionicons');
+import { CLOUD } from '../../cloud/cloudAPI'
 
-function capitalize(string) {
-  return string[0].toUpperCase() + string.substring(1);
-}
 
 export class SettingsGroup extends Component {
+  constructor() {
+    super();
+    this.validationState = {groupName:'valid'};
+  }
+
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+      this.forceUpdate();
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
 
   _getUsersWithAccess(state,accessLevel) {
     let result = [];
@@ -33,23 +46,11 @@ export class SettingsGroup extends Component {
             label:users[userId].firstName + " " + users[userId].lastName,
             type: userId === state.user.userId ? 'info' : 'navigation',
             icon: <ProfilePicture picture={users[userId].picture} />,
-            callback: () => {}
+            callback: () => {
+              Actions.settingsGroupUser({title: users[userId].firstName, userId: userId, groupId: this.props.groupId});
+            }
           })
         }
-      }
-    }
-
-    let level = getMyLevelInGroup(state, this.props.groupId);
-    if (level == "admin" || level == 'member' && accessLevel == 'guest') {
-      if (accessLevel !== 'admin') { // currently we do not support multiple admins.
-        result.push({
-          label: 'Invite a new ' + capitalize(accessLevel), // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
-          type: 'navigation',
-          icon: <Icon name="ios-add-circle" size={30} color={colors.green.hex}/>,
-          callback: () => {
-            Actions.settingsInvite({title: 'Invite ' + capitalize(accessLevel)});
-          }
-        });
       }
     }
 
@@ -62,17 +63,89 @@ export class SettingsGroup extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    items.push({label:'ADMINS:',  type:'explanation', below:false});
+    if (getMyLevelInGroup(state, this.props.groupId) == 'admin') {
+      let groupSettings = state.groups[this.props.groupId].config;
+      items.push({label:'GROUP SETTINGS',  type:'explanation', below:false});
+      items.push({
+        type:'textEdit',
+        label:'Group Name',
+        value: groupSettings.name,
+        validation:{minLength:2},
+        validationCallback: (result) => {this.validationState.groupName = result;},
+        callback: (newText) => {
+          if (groupSettings.name !== newText) {
+            if (this.validationState.groupName === 'valid') {
+              this.props.eventBus.emit('showLoading', 'Changing group name...');
+              CLOUD.forGroup(this.props.groupId).changeGroupName(newText)
+                .then((result) => {
+                  store.dispatch({type: 'UPDATE_GROUP', groupId: this.props.groupId,  data: {name: newText}});
+                  this.props.eventBus.emit('hideLoading');
+                })
+                .catch((err) => {
+                  this.props.eventBus.emit('hideLoading');
+                })
+            }
+            else {
+              Alert.alert('Group name must be at least 3 letters long', 'Please try again.', [{text: 'OK'}]);
+            }
+          }
+        }
+      });
+    }
+
+    items.push({label:'ADMINS',  type:'explanation', below:false});
     items = items.concat(this._getUsersWithAccess(state,'admin'));
     items.push({label:'Admins can add, configure and remove Crownstones and Rooms.', style:{paddingBottom:0}, type:'explanation', below:true});
 
-    items.push({label:'MEMBERS:',  type:'explanation', below:false});
-    items = items.concat(this._getUsersWithAccess(state,'member'));
-    items.push({label:'Members can configure Crownstones.', style:{paddingBottom:0}, type:'explanation', below:true});
+    let members = this._getUsersWithAccess(state,'member');
+    if (members.length > 0) {
+      items.push({label:'MEMBERS',  type: 'explanation', below: false});
+      items = items.concat(members);
+      items.push({label:'Members can configure Crownstones.', style:{paddingBottom:0}, type:'explanation', below:true});
+    }
 
-    items.push({label:'GUESTS:',  type:'explanation', below:false});
-    items = items.concat(this._getUsersWithAccess(state,'guest'));
-    items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
+    let guest = this._getUsersWithAccess(state, 'guest');
+    if (guest.length > 0) {
+      items.push({label:'GUESTS',  type:'explanation', below: false});
+      items = items.concat(guest);
+      items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
+    }
+
+    let level = getMyLevelInGroup(state, this.props.groupId);
+    if (level == "admin" || level == 'member') {
+      items.push({type:'spacer'});
+      items.push({
+        label: 'Invite someone to the group', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
+        type: 'navigation',
+        labelStyle: {color:colors.blue.hex},
+        icon: <Icon name="ios-add-circle" size={30} color={colors.green.hex} style={{position:'relative', top:2}} />,
+        callback: () => {
+          Actions.settingsGroupInvite({groupId: this.props.groupId});
+        }
+      });
+    }
+
+
+    if (getMyLevelInGroup(state, this.props.groupId) == 'admin') {
+      items.push({label:'DANGER',  type:'explanation', below:false});
+      items.push({
+        label: 'Delete this Group',
+        type: 'button',
+        callback: () => {
+          Alert.alert(
+            "Are you sure you want to delete this Group?",
+            "This is only possible if you have reset all Crownstones in this Group.",
+            [
+              {text:'No'},
+              {text:'Yes', onPress:() => {
+                // TODO: check if there are still crownstones.
+              }}
+            ]
+          );
+        }
+      })
+      items.push({label:'Deleting a group cannot be undone.',  type:'explanation', below:true});
+    }
 
     return items;
   }

@@ -46,7 +46,7 @@ export class SettingsOverview extends Component {
 
     if (userInGroups(state)) {
       items.push({label:'Manage Groups', type:'navigation', callback: () => {
-        Actions.settingsGroups({groupId: activeGroup, title: getGroupName(state, activeGroup)})
+        Actions.settingsGroupOverview()
       }});
     }
     else {

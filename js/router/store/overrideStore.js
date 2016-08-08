@@ -4,7 +4,7 @@ export const fakeStore = {
     lastName: 'van Rossum',
     email: 'anne@crownstone.rocks',
     accessToken: 12345,
-    userId: 'memberId',
+    userId: 'userId',
     picture: null,
     updatedAt: 1465835364017
   },
@@ -19,12 +19,19 @@ export const fakeStore = {
         guestKey: 1234,
         updatedAt: 1465835364017
       },
-      members: {
-        memberId: {
+      users: {
+        userId: {
           firstName: 'Anne',
           lastName: 'van Rossum',
           picture: null,
           accessLevel: 'admin',
+          updatedAt: 1465835364017
+        },
+        memberId: {
+          firstName: 'Bart',
+          lastName: 'van Vliet',
+          picture: null,
+          accessLevel: 'member',
           updatedAt: 1465835364017
         }
       },

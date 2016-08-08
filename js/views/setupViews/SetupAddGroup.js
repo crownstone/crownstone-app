@@ -39,7 +39,7 @@ export class SetupAddGroup extends Component {
           store.dispatch({type:'ADD_GROUP', groupId: response.id, data:{name: response.name, iBeaconUUID: response.uuid}});
 
           // add yourself to the group members as admin
-          store.dispatch({type: 'ADD_USER', groupId: response.id, memberId: me.userId, data:{picture: me.picture, firstName: me.firstName, lastName: me.lastName, email:me.email, emailVerified: true, accessLevel: 'admin'}});
+          store.dispatch({type: 'ADD_USER', groupId: response.id, userId: me.userId, data:{picture: me.picture, firstName: me.firstName, lastName: me.lastName, email:me.email, emailVerified: true, accessLevel: 'admin'}});
 
           // get all encryption keys the user has access to and store them in the appropriate groups.
           CLOUD.getKeys()

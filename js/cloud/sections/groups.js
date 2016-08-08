@@ -105,6 +105,19 @@ export const groups = {
           return Promise.all(profilePicturePromises);
         })
       })
+  },
+
+  changeGroupName: function(groupName) {
+    return this._setupRequest('PUT', '/Groups/{id}', {name:groupName}, 'body');
+  },
+
+  changeUserAccess: function(userId, accessLevel) {
+    // TODO: fix when correct endpoint has been added
+    // return this._setupRequest('PUT', '/Groups/{id}/users/rel/' + userId, {role:accessLevel}, 'body');
+
+    return new Promise((resolve, reject) => {
+      resolve();
+    })
   }
 
 };
