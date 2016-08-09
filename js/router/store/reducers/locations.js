@@ -10,6 +10,9 @@ let defaultSettings = {
     fingerprintRaw: '',
     fingerprintParsed: ''
   },
+  usage: {
+    now: 0
+  }
 };
 
 let userPresenceReducer = (state = [], action = {}) => {

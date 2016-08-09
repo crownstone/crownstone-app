@@ -59,7 +59,12 @@ export class SettingsOverview extends Component {
     
     if (userIsAdmin(state)) {
       items.push({label:'Manage Crownstones', type:'navigation', callback: () => {
-        Actions.settingsCrownstones();
+        Actions.settingsCrownstoneOverview();
+      }});
+    }
+    else {
+      items.push({label:'Crownstone Recovery', type:'navigation', callback: () => {
+        Actions.settingsCrownstoneOverview();
       }});
     }
 

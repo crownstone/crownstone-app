@@ -14,6 +14,7 @@ let defaultSettings = {
     bluetoothId: undefined,
     crownstoneId: undefined,
     initializedSuccessfully: false,
+    firmwareVersion: 0,
     updatedAt: 1
   },
   state: {
@@ -45,6 +46,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.macAddress   = update(action.data.macAddress, newState.macAddress);
         newState.iBeaconMajor = update(action.data.iBeaconMajor, newState.iBeaconMajor);
         newState.iBeaconMinor = update(action.data.iBeaconMinor, newState.iBeaconMinor);
+        newState.firmwareVersion = update(action.data.firmwareVersion, newState.firmwareVersion);
         newState.bluetoothId  = update(action.data.bluetoothId, newState.bluetoothId);
         newState.crownstoneId = update(action.data.crownstoneId, newState.crownstoneId);
         newState.initializedSuccessfully = update(action.data.initializedSuccessfully, newState.initializedSuccessfully);

@@ -18,7 +18,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 var Icon = require('react-native-vector-icons/Ionicons');
 
-export class SettingsCrownstones extends Component {
+export class SettingsCrownstoneOverview extends Component {
 
   _getGroups(state, accessLevel) {
     let items = [];
@@ -52,7 +52,7 @@ export class SettingsCrownstones extends Component {
           items.push({__item:
             <TouchableHighlight
               key={stoneId + '_entry'}
-              onPress={() => {Actions.deviceEdit({groupId:this.props.groupId, stoneId, locationId:this.props.locationId})}}
+              onPress={() => {Actions.settingsCrownstone({stoneId:stoneId, groupId: group.id});}}
               style={{flex:1}}>
               <View style={styles.listView}>
                 <DeviceOverview
@@ -60,6 +60,7 @@ export class SettingsCrownstones extends Component {
                   stoneName={stone.stone.config.name}
                   deviceName={stone.device.config.name}
                   locationName={getRoomName(state, group.id, stone.stone.config.locationId)}
+                  navigation={true}
                 />
                 </View>
               </TouchableHighlight>})
@@ -67,7 +68,7 @@ export class SettingsCrownstones extends Component {
       }
       items.push({
         label: 'Add a Crownstone to this Group',
-        icon: <Icon name="ios-add-circle" size={30} color={colors.green.hex} style={{position:'relative', top:2}} />,
+        largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
         style: {color:colors.blue.hex},
         type: 'button',
         callback: () => {

@@ -174,7 +174,7 @@ export class AppRouter extends Component {
                   <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit} title="Edit Behaviour" />
                   <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}     />
                   <Scene key="delaySelection"         component={Views.DelaySelection}      title="Set Delay" />
-                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}  title="Schedule" onRight={onRightFunctionEdit} rightTitle="Add" />
+                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}  title="Schedule"  onRight={onRightFunctionEdit} rightTitle="Add" />
                   <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}   title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
                   <Scene key="daySelection"           component={Views.DaySelection}        title="Set Active Days" />
                 </Scene>
@@ -187,7 +187,8 @@ export class AppRouter extends Component {
                   <Scene key="settingsGroup"          component={Views.SettingsGroup}          title="[Group name here]" />
                   <Scene key="settingsGroupUser"      component={Views.SettingsGroupUser}      title="[Username here]" />
                   <Scene key="settingsGroupInvite"    component={Views.SettingsGroupInvite}    title="Invite" />
-                  <Scene key="settingsCrownstones"    component={Views.SettingsCrownstones}    title="Manage Your Crownstones"/>
+                  <Scene key="settingsCrownstoneOverview" component={Views.SettingsCrownstoneOverview} title="Manage Your Crownstones"/>
+                  <Scene key="settingsCrownstone"     component={Views.SettingsCrownstone}     title="Manage Crownstone"/>
                   <Scene key="appComplexity"          component={Views.AppComplexity}          title="Settings"/>
                 </Scene>
               </Scene>

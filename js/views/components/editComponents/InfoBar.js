@@ -21,7 +21,8 @@ export class InfoBar extends Component {
     return (
       <View>
         <View style={[styles.listView, {height: barHeight}]}>
-          {this.props.largeIcon}
+          {this.props.largeIcon !== undefined ?
+            <View style={[styles.centered, {width: 80, paddingRight:20} ]}>{this.props.largeIcon}</View> : undefined}
           {this.props.icon !== undefined ?
           <View style={[styles.centered, {width:0.12 * width, paddingRight:15}]}>{this.props.icon}</View> : undefined}
           {this.props.value !== undefined ?

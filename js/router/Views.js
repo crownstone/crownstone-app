@@ -32,7 +32,8 @@ import { SettingsGroupOverview }     from '../views/settingsViews/SettingsGroupO
 import { SettingsGroup }             from '../views/settingsViews/SettingsGroup'
 import { SettingsGroupInvite }       from '../views/settingsViews/SettingsGroupInvite'
 import { SettingsGroupUser }         from '../views/settingsViews/SettingsGroupUser'
-import { SettingsCrownstones }       from '../views/settingsViews/SettingsCrownstones'
+import { SettingsCrownstoneOverview }from '../views/settingsViews/SettingsCrownstoneOverview'
+import { SettingsCrownstone }        from '../views/settingsViews/SettingsCrownstone'
 import { AppComplexity }             from '../views/settingsViews/AppComplexity'
 import { CloudChoice }               from '../views/startupViews/CloudChoice'
 
@@ -72,7 +73,8 @@ export const Views = {
   SettingsGroup,
   SettingsGroupInvite,
   SettingsGroupUser,
-  SettingsCrownstones,
+  SettingsCrownstoneOverview,
+  SettingsCrownstone,
   AppComplexity,
 
 };

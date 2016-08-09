@@ -55,7 +55,7 @@ export class DeviceOverview extends Component {
             <Text style={{fontSize:11, fontWeight:'100', fontStyle:'italic'}}>{this.props.locationName === undefined ? 'Not in a room.' :'In the ' + this.props.locationName}</Text>
           </View>
         </View>
-        <Icon name="ios-arrow-forward" size={23} color={'#bababa'} />
+        {this.props.navigation ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'} /> : undefined}
       </View>
     );
     return content;
