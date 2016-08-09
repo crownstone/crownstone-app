@@ -11,9 +11,12 @@ export let colors = {
   menuText: {hex:'#ffffff'},
   menuTextSelected: {hex:'#2daeff'},
   gray: {hex:'#cccccc'},
+  purple: {hex:'#8a01ff'},
   blue: {hex:'#0075c9'},
   green: {hex:'#a0eb58'},
+  green2: {hex:'#4cd864'},
   red: {hex:'#ff3c00'},
+  menuRed: {hex:'#e00'},
   iosBlue: {hex:'#007aff'},
 };
 

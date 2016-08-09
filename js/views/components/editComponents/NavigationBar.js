@@ -18,6 +18,7 @@ export class NavigationBar extends Component {
       barHeight = 75;
     else if (this.props.icon)
       barHeight = 50;
+
     return (
       <TouchableHighlight onPress={() => {this.props.setActiveElement(); this.props.callback()}}>
         <View style={[styles.listView, {height: barHeight}]}>

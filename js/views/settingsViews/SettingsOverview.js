@@ -15,6 +15,7 @@ import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
+import { IconButton } from '../components/IconButton'
 import { NativeBridge } from '../../native/NativeBridge'
 import { userInGroups, userIsAdmin, getGroupName } from '../../util/dataUtil'
 
@@ -42,31 +43,31 @@ export class SettingsOverview extends Component {
       })
 
     items.push({type:'explanation', label:'UPDATE YOUR PROFILE', bottom:'false'});
-    items.push({label:'My Profile',  type:'navigation', callback: () => {Actions.settingsProfile()}});
+    items.push({label:'My Profile', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
 
     items.push({type:'explanation', label:'CONFIGURATION', bottom:'false'});
     if (userInGroups(state)) {
-      items.push({label:'Groups', type:'navigation', callback: () => {
+      items.push({label:'Groups', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
         Actions.settingsGroupOverview()
       }});
     }
     else {
-      items.push({label:'Add Group', type:'navigation', callback: () => {
+      items.push({label:'Add Group', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
         Actions.setupAddGroup()
       }});
     }
 
     if (userIsAdmin(state)) {
-      items.push({label:'Rooms', type:'navigation', callback: () => {
+      items.push({label:'Rooms', icon: <IconButton name="c1-foodWine" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, type:'navigation', callback: () => {
         Actions.settingsRoomOverview();
       }});
 
-      items.push({label:'Crownstones', type:'navigation', callback: () => {
+      items.push({label:'Crownstones', icon: <IconButton name="ios-flash" size={25} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />, type:'navigation', callback: () => {
         Actions.settingsCrownstoneOverview();
       }});
     }
     else {
-      items.push({label:'Crownstone Recovery', type:'navigation', callback: () => {
+      items.push({label:'Crownstone Recovery', icon: <IconButton name="ios-flash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />, type:'navigation', callback: () => {
         Actions.settingsCrownstoneOverview();
       }});
     }
@@ -74,7 +75,7 @@ export class SettingsOverview extends Component {
     items.push({type:'spacer'});
     // items.push({label:'App Complexity', type:'navigation', callback: () => {Actions.appComplexity()}});
     // items.push({type:'spacer'});
-    items.push({label:'Log Out', type:'button', callback: () => {this._logoutPopup()}});
+    items.push({label:'Log Out', type:'button', icon: <IconButton name="md-log-out" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.menuRed.hex}} />, callback: () => {this._logoutPopup()}});
     return items;
   }
 
