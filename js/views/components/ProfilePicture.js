@@ -8,7 +8,7 @@ import {
 import { styles, colors} from '../styles'
 import { preparePictureURI } from '../../util/util'
 var Actions = require('react-native-router-flux').Actions;
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from './Icon';
 
 export class ProfilePicture extends Component {
   render() {

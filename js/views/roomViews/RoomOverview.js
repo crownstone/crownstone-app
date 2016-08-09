@@ -9,12 +9,13 @@ import {
   View
 } from 'react-native';
 
-import { Background }  from '../components/Background'
+import { Background }   from '../components/Background'
 import { DeviceEntree } from '../components/DeviceEntree'
 import { NativeBridge } from '../../native/NativeBridge'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
 import { AdvertisementManager } from '../../logic/CrownstoneControl'
+var Actions = require('react-native-router-flux').Actions;
 import { 
   getPresentUsersFromState, 
   getCurrentPowerUsageFromState, 
@@ -108,11 +109,6 @@ export class RoomOverview extends Component {
 
     let usage = getCurrentPowerUsageFromState(state, this.props.groupId, this.props.locationId);
     let users = getPresentUsersFromState(state, this.props.groupId, this.props.locationId);
-
-    // update the title in case the editing has changed it
-    // we get it from the state instead of the props so it reflects changes in the edit screen.
-    this.props.navigationState.title = room.config.name;
-
     let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
 
     return (

@@ -25,9 +25,9 @@ export class SettingsOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
     let activeGroup = state.app.activeGroup || Object.keys(state.groups)[0];
-    let items = [
-      {type:'explanation', label:'Disable the localization updates', bottom:'false'},
-      {type:'switch', label: 'Enable Localization', value: state.app.enableLocalization,
+    let items = [];
+    items.push({type:'explanation', label:'DEBUG: Disable the localization updates', bottom:'false'});
+    items.push({type:'switch', label: 'Enable Localization', value: state.app.enableLocalization,
         callback: (newValue) => {
           store.dispatch({
             type: 'UPDATE_APP_STATE',
@@ -39,13 +39,14 @@ export class SettingsOverview extends Component {
           }
           this.forceUpdate();
         }
-      },
-      {type:'explanation', label:'App settings', bottom:'false'},
-      {label:'Manage Profile',  type:'navigation', callback: () => {Actions.settingsProfile()}}
-    ];
+      })
 
+    items.push({type:'explanation', label:'UPDATE YOUR PROFILE', bottom:'false'});
+    items.push({label:'My Profile',  type:'navigation', callback: () => {Actions.settingsProfile()}});
+
+    items.push({type:'explanation', label:'CONFIGURATION', bottom:'false'});
     if (userInGroups(state)) {
-      items.push({label:'Manage Groups', type:'navigation', callback: () => {
+      items.push({label:'Groups', type:'navigation', callback: () => {
         Actions.settingsGroupOverview()
       }});
     }
@@ -55,10 +56,12 @@ export class SettingsOverview extends Component {
       }});
     }
 
-    // TODO: room management
-    
     if (userIsAdmin(state)) {
-      items.push({label:'Manage Crownstones', type:'navigation', callback: () => {
+      items.push({label:'Rooms', type:'navigation', callback: () => {
+        Actions.settingsRoomOverview();
+      }});
+
+      items.push({label:'Crownstones', type:'navigation', callback: () => {
         Actions.settingsCrownstoneOverview();
       }});
     }

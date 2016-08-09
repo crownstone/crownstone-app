@@ -18,7 +18,6 @@ import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
 import { styles, colors, width, height } from './../styles'
-var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SetupAddGroup extends Component {
   constructor() {
@@ -48,7 +47,7 @@ export class SetupAddGroup extends Component {
                 keyResult.forEach((group) => {
                   store.dispatch({type:'UPDATE_GROUP', groupId: group.groupId, data:{
                     adminKey: keyResult.keys.admin,
-                    memberKey:  keyResult.keys.member,
+                    memberKey: keyResult.keys.member,
                     guestKey: keyResult.keys.guest
                   }});
                 });

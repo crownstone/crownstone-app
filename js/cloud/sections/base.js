@@ -108,6 +108,7 @@ export const base = {
   _finalizeRequest: function(promise, options) {
     return new Promise((resolve, reject) => {
       promise.then((reply) => {
+        console.log("REPLY")
         if (reply.status === 200 || reply.status === 204)
           resolve(reply.data);
         else

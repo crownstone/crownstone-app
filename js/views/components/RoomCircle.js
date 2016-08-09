@@ -10,7 +10,7 @@ import {
 
 import { ProfilePicture } from './ProfilePicture'
 
-const Ionicon = require('react-native-vector-icons/Ionicons');
+import { Icon } from './Icon';
 
 export class RoomCircle extends Component {
   constructor() {
@@ -26,7 +26,8 @@ export class RoomCircle extends Component {
     let borderWidth = this.props.radius / 15;
     let innerDiameter = 2*this.props.radius - 2 * borderWidth;
     let outerDiameter = 2*this.props.radius;
-    let iconSize = this.props.radius;
+    let iconSize = this.props.radius*0.8;
+    let textSize = this.props.radius/4;
     let offset = 0.05;
     // if (this.props.backgroundImage) {
     //   return (
@@ -109,7 +110,7 @@ export class RoomCircle extends Component {
                 alignItems:'center',
                 justifyContent:'center'
                 }}>
-              <Ionicon name={this.props.icon} size={iconSize} color='#ffffff' />
+              <Icon name={this.props.icon} size={iconSize} color='#ffffff' />
             </View>
             <View style={{
                 position:'relative',
@@ -121,7 +122,7 @@ export class RoomCircle extends Component {
                 alignItems:'center',
                 justifyContent:'center'
                 }}>
-              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:iconSize/4}}>{this.props.content.value + ' ' + this.props.content.unit}</Text>
+              <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:textSize}}>{this.props.content.value + ' ' + this.props.content.unit}</Text>
             </View>
         </View>
       </View>

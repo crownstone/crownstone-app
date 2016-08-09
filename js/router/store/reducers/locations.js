@@ -5,7 +5,7 @@ import { update, getTime } from './reducerUtil'
 let defaultSettings = {
   config: {
     name:'Untitled Room',
-    icon:'missingIcon',
+    icon: undefined,
     updatedAt: 1,
     fingerprintRaw: '',
     fingerprintParsed: ''

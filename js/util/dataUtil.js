@@ -94,6 +94,19 @@ export const userIsAdmin = function(state) {
   return false;
 };
 
+export const getGroupsWhereIHaveAccessLevel = function(state, accessLevel) {
+  let items = [];
+  for (let groupId in state.groups) {
+    if (state.groups.hasOwnProperty(groupId)) {
+      let group = state.groups[groupId];
+      if (group.users[state.user.userId].accessLevel === accessLevel) {
+        items.push({id: groupId, name: group.config.name});
+      }
+    }
+  }
+  return items;
+}
+
 export const getMyLevelInGroup = function(state, groupId) {
   let userId = state.user.userId;
 

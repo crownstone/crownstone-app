@@ -11,7 +11,6 @@ import { styles, colors } from '../../styles'
 
 
 export class IconEdit extends Component {
-
   render() {
     return (
       <View style={{flex:1}}>

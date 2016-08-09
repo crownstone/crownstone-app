@@ -6,7 +6,7 @@ import {
   View
 } from 'react-native';
 
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from '../Icon';
 import { styles, colors } from '../../styles'
 
 

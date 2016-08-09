@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import {
-  
   TouchableHighlight,
   Text,
   View
 } from 'react-native';
 
-var Icon = require('react-native-vector-icons/Ionicons');
 import { styles, colors, width } from '../../styles'
 
 

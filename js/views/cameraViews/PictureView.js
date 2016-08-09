@@ -12,7 +12,7 @@ import {
 
 import { TopBar } from '../components/Topbar';
 import Camera from 'react-native-camera';
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from '../components/Icon';
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors, width, height } from '../styles'
 

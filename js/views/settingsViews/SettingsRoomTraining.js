@@ -16,10 +16,10 @@ import { TopBar } from '../components/Topbar'
 import { NativeBridge } from '../../native/NativeBridge'
 import { Background } from '../components/Background'
 import { colors, width, height } from '../styles'
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from '../components/Icon';
 
 
-export class RoomTraining extends Component {
+export class SettingsRoomTraining extends Component {
   constructor(props) {
     super();
     this.state = {text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
@@ -106,7 +106,7 @@ export class RoomTraining extends Component {
                 {text:'Yes', onPress: () => { this.stop(true); Actions.pop(); }}
               ]
             )}
-          : Actions.pop}
+          : Actions.pop }
           title="Train Room"/>
         <View style={{flexDirection:'column', flex:1}}>
           <View style={{padding:30, alignItems:'center'}}>

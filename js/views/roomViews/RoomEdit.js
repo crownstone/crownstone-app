@@ -55,29 +55,7 @@ export class RoomEdit extends Component {
   getTrainingButton(room) {
     let items = [];
     // room Name:
-    items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
-    items.push({label:'Retrain Room', type: 'navigation', callback: () => {
-      Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
-        {text: 'Cancel', style: 'cancel'},
-        {text: 'OK', onPress: () => {Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId})}},
-      ])
-    }});
-    items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
-    'you can retrain this room to improve accuracy.', type: 'explanation',  below:true});
-    return items;
-  }
 
-  constructOptions(store, room) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId};
-    let items = [];
-    // room Name:
-    items.push({type: 'spacer'});
-    items.push({label:'Room Name', type: 'textEdit', value: room.config.name, callback: (newText) => {
-      newText = (newText === '') ? 'Untitled Room' : newText;
-      store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
-    }});
-    items.push({label:'Icon', type: 'icon', value:room.config.icon, callback: () => {}});
-    //items.push({label:'Picture', type: 'picture', value:undefined, callback: () => {}});
     return items;
   }
 
@@ -88,15 +66,12 @@ export class RoomEdit extends Component {
 
     let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
 
-    let options = this.constructOptions(store, room);
     let training = this.getTrainingButton(room);
     return (
       <Background>
         <ScrollView>
-          <ListEditableItems items={options} separatorIndent={true}/>
           <Explanation text='DEVICES IN ROOM:' />
           <SeparatedItemList items={items} renderer={this._renderer.bind(this)} separatorIndent={false} />
-          <ListEditableItems items={training} separatorIndent={true}/>
         </ScrollView>
       </Background>
     )

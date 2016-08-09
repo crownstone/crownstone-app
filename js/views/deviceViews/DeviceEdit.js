@@ -17,7 +17,6 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { EditableItem } from '../components/EditableItem'
 import { Explanation } from '../components/editComponents/Explanation'
 import { EditSpacer } from '../components/editComponents/EditSpacer'
-var Icon = require('react-native-vector-icons/Ionicons');
 
 
 
@@ -55,8 +54,10 @@ export class DeviceEdit extends Component {
     // icon picker
     items.push({label:'Icon', type: 'icon', value: device.config.icon, callback: () => {}});
 
-    // icon picker
-    items.push({label:'Unplug Device', type: 'button', style: {color:colors.blue.hex}, callback: () => {}});
+    // unplug device
+    items.push({label:'Unplug Device', type: 'button', style: {color:colors.blue.hex}, callback: () => {
+
+    }});
 
     // // dimmable
     // items.push({label:'Dimmable', type: 'switch', value:device.config.dimmable, callback: (newValue) => {

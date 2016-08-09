@@ -14,7 +14,6 @@ import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
-var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SettingsGroupOverview extends Component {
 

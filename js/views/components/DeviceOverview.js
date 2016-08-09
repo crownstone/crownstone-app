@@ -11,42 +11,26 @@ import {
   View
 } from 'react-native';
 
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from './Icon';
 import Slider from 'react-native-slider'
 import { styles, colors} from '../styles'
 
 
 export class DeviceOverview extends Component {
 
-  _getItem() {
-    let color = colors.blue.hex;
-
-    let content = (
-      <View style={[{
-        width:60,
-        height:60,
-        borderRadius:30,
-        backgroundColor: color,
-        }, styles.centered]}>
-        <Icon name={this.props.icon} size={45} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
-      </View>
-    );
-
-    if (this.props.control === true && this.props.pending === false) {
-      return (
-        <TouchableOpacity onPress={this._pressedDevice.bind(this)}>
-          {content}
-        </TouchableOpacity>
-      );
-    }
-    return content;
-  }
-
   render() {
     let content = (
       <View style={{flexDirection:'row', padding:10, paddingLeft:0, alignItems:'center', flex:1}}>
         <View style={{paddingRight:20}}>
-          {this._getItem()}
+          <View style={[{
+              width:60,
+              height:60,
+              borderRadius:30,
+              backgroundColor:  colors.blue.hex,
+            }, styles.centered]}
+          >
+            <Icon name={this.props.icon} size={45} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+          </View>
         </View>
         <View style={{flex:1}}>
           <View style={{flexDirection:'column'}}>

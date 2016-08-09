@@ -15,7 +15,6 @@ var Actions = require('react-native-router-flux').Actions;
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { styles, colors, width, height } from './../styles'
-var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SetupAddPlugInStep4 extends Component {
   render() {

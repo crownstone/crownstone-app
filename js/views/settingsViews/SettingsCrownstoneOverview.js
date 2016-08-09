@@ -13,36 +13,20 @@ import {
 import { Background } from './../components/Background'
 import { DeviceOverview } from '../components/DeviceOverview'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getGroupContentFromState, getRoomName } from './../../util/dataUtil'
+import { getGroupContentFromState, getRoomName, getGroupsWhereIHaveAccessLevel } from './../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from '../components/Icon';
 
 export class SettingsCrownstoneOverview extends Component {
-
-  _getGroups(state, accessLevel) {
-    let items = [];
-    for (let groupId in state.groups) {
-      if (state.groups.hasOwnProperty(groupId)) {
-        let group = state.groups[groupId];
-        if (group.users[state.user.userId].accessLevel === accessLevel) {
-          items.push({id: groupId, name: group.config.name});
-        }
-      }
-    }
-
-    return items;
-  }
-
-
   _getItems() {
     let items = [];
 
     const store = this.props.store;
     const state = store.getState();
 
-    let groupNames = this._getGroups(state, 'admin');
-    groupNames.forEach((group) => {
+    let groups = getGroupsWhereIHaveAccessLevel(state, 'admin');
+    groups.forEach((group) => {
       let stones = getGroupContentFromState(state, group.id);
       let stoneIds = Object.keys(stones);
       if (stoneIds.length > 0) {

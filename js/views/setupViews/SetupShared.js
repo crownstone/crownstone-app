@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from '../components/Icon';
 
 let { width, height } = Dimensions.get('window');
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  
   PixelRatio,
   StyleSheet,
   TouchableHighlight,
@@ -9,8 +8,7 @@ import {
   View
 } from 'react-native';
 
-var Icon = require('react-native-vector-icons/Ionicons');
-
+import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 
 
@@ -29,7 +27,7 @@ export class TopBar extends Component {
     else if (this.props.left) {
       return (
         <TouchableOpacity onPress={() => {this.props.leftAction();}}>
-          <Text style={[topBarStyle.topBarLeft,styles.menuText]}>{this.props.left}</Text>
+          <Text style={[topBarStyle.topBarLeft,styles.menuText, this.props.leftStyle]}>{this.props.left}</Text>
         </TouchableOpacity>
       );
     }
@@ -40,7 +38,7 @@ export class TopBar extends Component {
     if (this.props.right) {
       return (
         <TouchableOpacity onPress={() => {this.props.rightAction();}}>
-          <Text style={[topBarStyle.topBarRight,styles.menuText]}>{this.props.right}</Text>
+          <Text style={[topBarStyle.topBarRight,styles.menuText, this.props.rightStyle]}>{this.props.right}</Text>
         </TouchableOpacity>
       );
     }
@@ -54,7 +52,7 @@ export class TopBar extends Component {
         {this.props.shadeStatus ? <View style={styles.shadedStatusBar} /> : <View style={[styles.shadedStatusBar, {backgroundColor:colors.menuBackground.hex}]} />}
         <View style={[topBarStyle.topBar,this.props.style]}>
           <View style={[topBarStyle.topBarSideView,   {height: barHeight}]}>{this._getLeftContent()}</View>
-          <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter,styles.menuText]}>{this.props.title}</Text></View>
+          <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter,styles.menuText, this.props.titleStyle]}>{this.props.title}</Text></View>
           <View style={[topBarStyle.topBarSideView,   {height: barHeight}]}>{this._getRightContent()}</View>
         </View>
       </View>

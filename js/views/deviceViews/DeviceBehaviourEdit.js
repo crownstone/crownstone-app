@@ -13,9 +13,6 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 
 var Actions = require('react-native-router-flux').Actions;
-var Icon = require('react-native-vector-icons/Ionicons');
-
-
 
 export class DeviceBehaviourEdit extends Component {
   componentDidMount() {

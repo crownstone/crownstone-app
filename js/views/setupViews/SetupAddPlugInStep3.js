@@ -20,7 +20,6 @@ import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { styles, colors, width, height } from './../styles'
 
-var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SetupAddPlugInStep3 extends Component {
   constructor() {
@@ -40,7 +39,7 @@ export class SetupAddPlugInStep3 extends Component {
   }
 
   storeAndPickLocation(roomName) {
-    this.props.eventBus.emit('showLoading', 'Creating room and syncing with the Cloud...');
+    this.props.eventBus.emit('showLoading', 'Creating room...');
     const { store } = this.props;
     const state = store.getState();
     let activeGroup = state.app.activeGroup;

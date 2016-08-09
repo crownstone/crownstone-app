@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-var Icon = require('react-native-vector-icons/Ionicons');
 import { Background } from './../components/Background'
 import { styles, colors } from './../styles'
 import { setupStyle, SkipButton, StartButton } from './SetupShared'

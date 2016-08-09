@@ -1,6 +1,5 @@
 import React, { Component } from 'react' 
 import {
-  
   Dimensions,
   Image,
   PixelRatio,
@@ -9,7 +8,7 @@ import {
   View
 } from 'react-native';
 
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from './Icon';
 
 import { styles, colors} from '../styles'
 
@@ -37,7 +36,7 @@ export class IconCircle extends Component {
           borderColor: this.props.borderColor || this.props.color || colors.menuBackground.hex,
           borderWidth: 2
           }, styles.centered]}>
-          <Icon name={this.props.icon} size={size*2/3} color={this.props.color || colors.menuBackground.hex} />
+          <Icon name={this.props.icon} size={size*0.6} color={this.props.color || colors.menuBackground.hex} />
         </View>
         {this.props.showEdit === true ?
           <View style={[{

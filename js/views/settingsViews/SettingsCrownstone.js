@@ -16,7 +16,6 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { getGroupContentFromState, getRoomName } from './../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
-var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SettingsCrownstone extends Component {
 
@@ -38,8 +37,6 @@ export class SettingsCrownstone extends Component {
 
       }
     });
-
-
     items.push({label:'Removing this Crownstone from its Group will reset it back to factory defaults',  type:'explanation', below:true});
 
     return items;

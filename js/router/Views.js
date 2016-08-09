@@ -5,9 +5,10 @@ import { RegisterConclusion }        from '../views/startupViews/RegisterConclus
 import { PictureView }               from '../views/cameraViews/PictureView'
 import { PicturePreview }            from '../views/cameraViews/PicturePreview'
 import { CameraRollView }            from '../views/cameraViews/CameraRollView'
-import { GroupOverview }             from '../views/GroupOverview'
+import { GroupOverview }             from '../views/main/GroupOverview'
 import { RoomOverview }              from '../views/roomViews/RoomOverview'
 import { RoomEdit }                  from '../views/roomViews/RoomEdit'
+import { SettingsRoomTraining }              from '../views/settingsViews/SettingsRoomTraining'
 import { DeviceEdit }                from '../views/deviceViews/DeviceEdit'
 import { DeviceBehaviourEdit }       from '../views/deviceViews/DeviceBehaviourEdit'
 import { DeviceStateEdit }           from '../views/deviceViews/DeviceBehaviourStateEdit'
@@ -23,7 +24,6 @@ import { SetupAddPlugInStep2 }       from '../views/setupViews/SetupAddPlugInSte
 import { SetupAddPlugInStep3 }       from '../views/setupViews/SetupAddPlugInStep3'
 import { SetupAddPlugInStep4 }       from '../views/setupViews/SetupAddPlugInStep4'
 import { SetupAddPlugInStepRecover } from '../views/setupViews/SetupAddPlugInStepRecover'
-import { RoomTraining }              from '../views/roomViews/RoomTraining'
 import { SettingsOverview }          from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }           from '../views/settingsViews/SettingsProfile'
 import { SettingsChangePassword }    from '../views/settingsViews/SettingsChangePassword'
@@ -32,6 +32,10 @@ import { SettingsGroupOverview }     from '../views/settingsViews/SettingsGroupO
 import { SettingsGroup }             from '../views/settingsViews/SettingsGroup'
 import { SettingsGroupInvite }       from '../views/settingsViews/SettingsGroupInvite'
 import { SettingsGroupUser }         from '../views/settingsViews/SettingsGroupUser'
+import { SettingsRoomOverview }      from '../views/settingsViews/SettingsRoomOverview'
+import { SettingsRoomIconSelection } from '../views/settingsViews/SettingsRoomIconSelection'
+import { SettingsRoom }              from '../views/settingsViews/SettingsRoom'
+import { SettingsRoomAdd }           from '../views/settingsViews/SettingsRoomAdd'
 import { SettingsCrownstoneOverview }from '../views/settingsViews/SettingsCrownstoneOverview'
 import { SettingsCrownstone }        from '../views/settingsViews/SettingsCrownstone'
 import { AppComplexity }             from '../views/settingsViews/AppComplexity'
@@ -49,7 +53,7 @@ export const Views = {
   GroupOverview,
   RoomOverview,
   RoomEdit,
-  RoomTraining,
+  SettingsRoomTraining,
   DeviceEdit,
   DeviceBehaviourEdit,
   DeviceStateEdit,
@@ -75,6 +79,10 @@ export const Views = {
   SettingsGroupUser,
   SettingsCrownstoneOverview,
   SettingsCrownstone,
+  SettingsRoomIconSelection,
+  SettingsRoomOverview,
+  SettingsRoom,
+  SettingsRoomAdd,
   AppComplexity,
 
 };

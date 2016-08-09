@@ -16,7 +16,6 @@ import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { styles, colors, width, height } from './../styles'
-var Icon = require('react-native-vector-icons/Ionicons');
 
 export class SetupAddPlugInStep1 extends Component {
   render() {

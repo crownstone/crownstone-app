@@ -15,7 +15,7 @@ import { ProfilePicture } from './../components/ProfilePicture'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getMyLevelInGroup } from '../../util/dataUtil';
-var Icon = require('react-native-vector-icons/Ionicons');
+import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 
 
