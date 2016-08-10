@@ -35,7 +35,7 @@ export class DeviceOverview extends Component {
         <View style={{flex:1}}>
           <View style={{flexDirection:'column'}}>
             <Text style={{fontSize:16, fontWeight:'500'}}>{this.props.stoneName}</Text>
-            <Text style={{fontSize:14, fontWeight:'100', paddingTop:3, paddingBottom:2}}>{'Device: ' + (this.props.stoneName !== this.props.deviceName ? this.props.deviceName : this.props.stoneName)}</Text>
+            <Text style={{fontSize:14, fontWeight:'100', paddingTop:3, paddingBottom:2}}>{'Device: ' + (this.props.stoneName !== this.props.deviceName ? this.props.deviceName : 'Nothing plugged in.')}</Text>
             <Text style={{fontSize:11, fontWeight:'100', fontStyle:'italic'}}>{this.props.locationName === undefined ? 'Not in a room.' :'In the ' + this.props.locationName}</Text>
           </View>
         </View>

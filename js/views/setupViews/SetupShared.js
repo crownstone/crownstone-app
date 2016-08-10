@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { Icon } from '../components/Icon';
-
-let { width, height } = Dimensions.get('window');
+import { colors, width, height } from '../styles'
 
 let fontSize;
 if (width > 370)
@@ -84,7 +83,7 @@ export const setupStyle = StyleSheet.create({
     paddingRight: 20,
   },
   buttonContainer: {
-    marginBottom:30,
+    marginBottom:15,
     width: width,
     flexDirection:'row',
     alignItems:'center',
@@ -152,8 +151,8 @@ export class NextButton extends Component {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingRight:20, flexDirection:'row', height:30}}>
-        <Text style={[setupStyle.buttonText]}>Next</Text>
-        <Icon name="ios-arrow-forward" size={30} color={'#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
+        <Text style={[setupStyle.buttonText, {color:this.props.dark ? colors.menuBackground.hex : '#fff'}]}>Next</Text>
+        <Icon name="ios-arrow-forward" size={30} color={this.props.dark ? colors.menuBackground.hex : '#fff'} style={{position:'relative', top:-2, paddingLeft:8}} />
       </View>
     </TouchableOpacity>
   }

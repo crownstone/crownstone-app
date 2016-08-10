@@ -38,6 +38,8 @@ import { SettingsRoom }              from '../views/settingsViews/SettingsRoom'
 import { SettingsRoomAdd }           from '../views/settingsViews/SettingsRoomAdd'
 import { SettingsCrownstoneOverview }from '../views/settingsViews/SettingsCrownstoneOverview'
 import { SettingsCrownstone }        from '../views/settingsViews/SettingsCrownstone'
+import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
+import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
 import { AppComplexity }             from '../views/settingsViews/AppComplexity'
 import { CloudChoice }               from '../views/startupViews/CloudChoice'
 
@@ -83,6 +85,8 @@ export const Views = {
   SettingsRoomOverview,
   SettingsRoom,
   SettingsRoomAdd,
+  SettingsPluginRecoverStep1,
+  SettingsPluginRecoverStep2,
   AppComplexity,
 
 };

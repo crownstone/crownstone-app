@@ -166,6 +166,8 @@ export class AppRouter extends Component {
               <Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}       hideNavBar={true}  />
               <Scene key="roomTraining"               component={Views.SettingsRoomTraining}      hideNavBar={true} direction="vertical" title="Training" />
               <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection} hideNavBar={true} direction="vertical" title="Pick an Icon" />
+              <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
+              <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />

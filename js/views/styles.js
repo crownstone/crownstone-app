@@ -7,7 +7,7 @@ export const height = Dimensions.get('window').height;
 export const pxRatio = PixelRatio.get();
 
 export let colors = {
-  menuBackground: {hex:'#1c202a'},
+  menuBackground: {hex:'#00263e'},
   menuText: {hex:'#ffffff'},
   menuTextSelected: {hex:'#2daeff'},
   gray: {hex:'#cccccc'},

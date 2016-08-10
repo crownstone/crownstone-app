@@ -69,6 +69,7 @@ export class SettingsCrownstoneOverview extends Component {
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
+        Actions.settingsPluginRecoverStep1();
       }
     });
     items.push({label:'If you want to reset a Crownstone because it is not responding correctly, click here and follow the instructions.',  type:'explanation', below:true});
