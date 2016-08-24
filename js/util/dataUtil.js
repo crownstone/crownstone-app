@@ -13,12 +13,15 @@ export const getStonesFromState = function(state, groupId, locationId) {
   return filteredStones;
 };
 
-export const getPresentUsersFromState = function(state, groupId, locationId) {
+export const getPresentUsersFromState = function(state, groupId, locationId, all = false) {
   const location = state.groups[groupId].locations[locationId];
   let users = [];
-
-  location.presentUsers.forEach((userId) => {
-    users.push({id: userId, data: state.groups[groupId].members[userId]})
+  let presentUsers = location.presentUsers;
+  if (all) {
+    presentUsers = Object.keys(state.groups[groupId].users)
+  }
+  presentUsers.forEach((userId) => {
+    users.push({id: userId, data: state.groups[groupId].users[userId]})
   });
 
   return users

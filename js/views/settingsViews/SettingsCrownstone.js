@@ -19,6 +19,19 @@ import { styles, colors } from './../styles'
 
 export class SettingsCrownstone extends Component {
 
+
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+
   _getItems() {
     let items = [];
 

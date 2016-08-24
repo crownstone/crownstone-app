@@ -15,7 +15,9 @@ export let colors = {
   blue: {hex:'#0075c9'},
   green: {hex:'#a0eb58'},
   green2: {hex:'#4cd864'},
+  orange: {hex:'#ff953a'},
   red: {hex:'#ff3c00'},
+  darkRed: {hex:'#cc0900'},
   menuRed: {hex:'#e00'},
   iosBlue: {hex:'#007aff'},
 };

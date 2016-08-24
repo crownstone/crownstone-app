@@ -19,6 +19,18 @@ import { styles, colors } from './../styles'
 
 export class SettingsRoom extends Component {
 
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+
   _getItems() {
     const store = this.props.store;
     const state = store.getState();

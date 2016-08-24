@@ -55,7 +55,7 @@ export class DeviceEdit extends Component {
     items.push({label:'Icon', type: 'icon', value: device.config.icon, callback: () => {}});
 
     // unplug device
-    items.push({label:'Unplug Device', type: 'button', style: {color:colors.blue.hex}, callback: () => {
+    items.push({label:'Unplug Device from Crownstone', type: 'button', style: {color:colors.blue.hex}, callback: () => {
 
     }});
 
@@ -74,20 +74,20 @@ export class DeviceEdit extends Component {
     // behaviour explanation
     items.push({label:'Customize how Crownstone reacts to your presence.', type: 'explanation',  below:true});
 
-    // schedule link
-    items.push({label:'Schedule', type: 'navigation', callback:toSchedule});
-
-    // schedule explanation
-    items.push({label:'Schedule when Crownstone should turn your device on or off.' +
-    ' You can choose if this schedule will overrule the behaviour based on your presence', type: 'explanation',  below:true});
-
-    // linked devices link
-    items.push({label:'Linked Devices', type: 'navigation', callback:toLinkedDevices});
-
-    // linked devices explanation
-    items.push({label:'Let other Crownstones react when this device turns on or off by manual input.' +
-    ' Manual input here is either through the app or by turning the device physically off. ' +
-    'Switching based on presence is not used for this.', type: 'explanation',  below:true});
+    // // schedule link
+    // items.push({label:'Schedule', type: 'navigation', callback:toSchedule});
+    //
+    // // schedule explanation
+    // items.push({label:'Schedule when Crownstone should turn your device on or off.' +
+    // ' You can choose if this schedule will overrule the behaviour based on your presence', type: 'explanation',  below:true});
+    //
+    // // linked devices link
+    // items.push({label:'Linked Devices', type: 'navigation', callback:toLinkedDevices});
+    //
+    // // linked devices explanation
+    // items.push({label:'Let other Crownstones react when this device turns on or off by manual input.' +
+    // ' Manual input here is either through the app or by turning the device physically off. ' +
+    // 'Switching based on presence is not used for this.', type: 'explanation',  below:true});
 
     return items;
   }

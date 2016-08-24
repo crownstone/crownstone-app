@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 
 import { Icon } from './Icon';
-import Slider from 'react-native-slider'
 import { styles, colors} from '../styles'
 
 

@@ -24,7 +24,6 @@ function combineSections() {
   mixin(result, stones);
   mixin(result, locations);
   mixin(result, groups);
-  console.log(result);
   return result;
 }
 

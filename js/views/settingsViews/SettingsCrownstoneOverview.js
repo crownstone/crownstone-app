@@ -19,6 +19,19 @@ import { styles, colors } from './../styles'
 import { Icon } from '../components/Icon';
 
 export class SettingsCrownstoneOverview extends Component {
+
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+
   _getItems() {
     let items = [];
 
@@ -37,7 +50,7 @@ export class SettingsCrownstoneOverview extends Component {
             <TouchableHighlight
               key={stoneId + '_entry'}
               onPress={() => {Actions.settingsCrownstone({stoneId:stoneId, groupId: group.id});}}
-              style={{flex:1}}>
+            >
               <View style={styles.listView}>
                 <DeviceOverview
                   icon={stone.device.config.icon}

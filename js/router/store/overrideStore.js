@@ -33,7 +33,35 @@ export const fakeStore = {
           picture: null,
           accessLevel: 'member',
           updatedAt: 1465835364017
-        }
+        },
+        memberId2: {
+          firstName: 'Marc',
+          lastName: 'van Vliet',
+          picture: null,
+          accessLevel: 'member',
+          updatedAt: 1465835364017
+        },
+        memberId3: {
+          firstName: 'Fred',
+          lastName: 'van Vliet',
+          picture: null,
+          accessLevel: 'member',
+          updatedAt: 1465835364017
+        },
+        memberId4: {
+          firstName: 'Fred',
+          lastName: 'van Vliet',
+          picture: null,
+          accessLevel: 'member',
+          updatedAt: 1465835364017
+        },
+        memberId5: {
+          firstName: 'Fred',
+          lastName: 'van Vliet',
+          picture: null,
+          accessLevel: 'member',
+          updatedAt: 1465835364017
+        },
       },
       presets: [],
       locations: {

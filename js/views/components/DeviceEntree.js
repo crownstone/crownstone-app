@@ -1,6 +1,6 @@
 import React, { Component } from 'react' 
 import {
-  ActivityIndicatorIOS,
+  ActivityIndicator,
   Dimensions,
   Image,
   PixelRatio,
@@ -26,7 +26,7 @@ export class DeviceEntree extends Component {
       return <Switch value={this.props.state === 1} onValueChange={this._pressedDevice.bind(this)} />
     }
     else {
-      return <ActivityIndicatorIOS animating={true} size="large" />
+      return <ActivityIndicator animating={true} size="large" />
     }
   }
 

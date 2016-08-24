@@ -20,7 +20,19 @@ import { Icon } from '../components/Icon';
 
 export class SettingsRoomOverview extends Component {
 
-  
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+
+
   _getItems() {
     let items = [];
 
@@ -39,7 +51,7 @@ export class SettingsRoomOverview extends Component {
             <TouchableHighlight
               key={roomId + '_entry'}
               onPress={() => {Actions.settingsRoom({locationId:roomId, groupId: group.id});}}
-              style={{flex:1}}>
+             >
               <View style={styles.listView}>
                 <RoomOverview
                   icon={room.config.icon}

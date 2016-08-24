@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {
-  ActivityIndicatorIOS,
+  ActivityIndicator,
   Alert,
   Image,
   StyleSheet,
@@ -33,7 +33,7 @@ export class SettingsPluginRecoverStep2 extends Component {
           </View>
           <View style={{flex:1}} />
           <View style={{marginBottom:20}}>
-            <ActivityIndicatorIOS animating={true} size="large"/>
+            <ActivityIndicator animating={true} size="large"/>
           </View>
 
         </View>

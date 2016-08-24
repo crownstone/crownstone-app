@@ -14,6 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { ProfilePicture } from '../components/ProfilePicture'
 import { Background } from '../components/Background'
 import { RoomCircle } from '../components/RoomCircle'
+import { RoomLayer } from './RoomLayer'
 import { hsv2rgb, hsl2rgb, hcl2rgb } from '../../util/colorConverters'
 import { getPresentUsersFromState, getCurrentPowerUsageFromState } from '../../util/dataUtil'
 
@@ -27,7 +28,7 @@ export class GroupOverview extends Component {
     this.state = {presentUsers: {}};
 
     this.roomRadius = 0.35*0.5*width;
-    this.userRadius = 25;
+    this.userDiameter = 25;
     let availableSpace = (height - 175) - this.roomRadius; // for top bar and menu bar
 
     this.roomPositions = {
@@ -52,35 +53,6 @@ export class GroupOverview extends Component {
     });
   }
 
-  componentWillUpdate(newProps) {
-    const store = newProps.store;
-    this._updateUsers(store);
-  }
-
-  _updateUsers(store) {
-    // move the users over the board if they have changed between rooms.
-    const state = store.getState();
-    this.activeGroup = state.app.activeGroup;
-    const locations = state.groups[this.activeGroup].locations;
-    let locationIds = Object.keys(locations);
-
-    locationIds.forEach((locationId) => {
-      // get the current usage.
-      let presentUsers = getPresentUsersFromState(state, this.activeGroup, locationId);
-      //console.log("users in area",presentUsers)
-      presentUsers.forEach((user) => {
-        if (this.state.presentUsers[user.id] === undefined) {
-          this.state.presentUsers[user.id] = {location: locationId, data:user.data};
-          this._moveUser(user.id, locationId, false);
-        }
-
-        if (this.state.presentUsers[user.id].location !== locationId) {
-          this._moveUser(user.id, locationId, true);
-        }
-      });
-    })
-  }
-
   componentWillUnmount() {
     this.unsubscribe();
   }
@@ -92,136 +64,41 @@ export class GroupOverview extends Component {
   // }
 
 
-  _getColor(usage) {
-    let minUsage = 0;
-    let maxUsage = 400;
-
-    let blendFactor = (Math.min(maxUsage, usage) -  minUsage) / maxUsage;
-
-    let endColor = colors.green.rgb;
-    let startColor = colors.blue.rgb;
-    if (blendFactor > 0.5) {
-      endColor = colors.red.rgb;
-      startColor = colors.green.rgb;
-    }
-
-    let blend = {
-      r: blendFactor * endColor.r + (1-blendFactor) * startColor.r,
-      g: blendFactor * endColor.g + (1-blendFactor) * startColor.g,
-      b: blendFactor * endColor.b + (1-blendFactor) * startColor.b
-    };
-
-    return blend;
-  }
-
-
-  _moveUser(userId, locationId, animate = false) {
-    // TODO: work with multiple users
-
-    let corner = this.roomPositions[locationId];
-    let roomHalfDiag = Math.sqrt(2*this.roomRadius*this.roomRadius); // can be optimized
-    let userHalfDiag = Math.sqrt(2*this.userRadius*this.userRadius); // can be optimized
-
-    let topPos = corner.y + (roomHalfDiag - this.roomRadius - userHalfDiag);
-    let leftPos = corner.x + (roomHalfDiag - this.roomRadius- userHalfDiag);
-
-    this.state.presentUsers[userId].location = locationId;
-
-    if (animate === false) {
-      this.state.presentUsers[userId].top = new Animated.Value(topPos);
-      this.state.presentUsers[userId].left = new Animated.Value(leftPos);
-    }
-    else {
-      Animated.spring(this.state.presentUsers[userId].top, {toValue: topPos, tension: 50, friction: 6}).start();
-      Animated.spring(this.state.presentUsers[userId].left, {toValue: leftPos, tension: 50, friction: 6}).start();
-    }
-  }
-
-  _renderRoom(locationId, room) {
-    const store = this.props.store;
-    const state = store.getState();
-
-    // get the current usage.
-    let usage = getCurrentPowerUsageFromState(state, this.activeGroup, locationId);
-    let color = this._getColor(usage);
-
-    return (
-      <TouchableHighlight onPress={() => Actions.roomOverview({
-        groupId:this.activeGroup,
-        locationId:locationId,
-        title:room.config.name,
-      })} key={locationId}>
-        <View>
-          <RoomCircle
-            radius={this.roomRadius}
-            color={color}
-            icon={room.config.icon}
-            content={{value:usage, unit:'W'}}
-            pos={this.roomPositions[locationId]}
-          /></View>
-      </TouchableHighlight>
-    );
-  }
-
-  _getRoomsAndUsers(rooms) {
-    let roomNodes = [];
-    Object.keys(rooms).sort().forEach((locationId) => {
-      roomNodes.push(this._renderRoom(locationId, rooms[locationId]))
-    });
-
-    return roomNodes.concat(this.drawUsers());
-  }
-
-  drawUsers() {
-    const store = this.props.store;
-    const state = store.getState();
-    let activeGroup = state.app.activeGroup;
-    let userObjects = [];
-    let users = Object.keys(this.state.presentUsers);
-    users.forEach((userId) => {
-      userObjects.push(
-        <Animated.View key={userId} style={{position:'absolute', top:this.state.presentUsers[userId].top, left:this.state.presentUsers[userId].left}}>
-          <ProfilePicture picture={state.groups[activeGroup].members[userId].picture} size={2*this.userRadius} />
-        </Animated.View>
-      )
-    });
-    return userObjects
-  }
-
   render() {
-    console.log("RENDERING OVERVIEW")
+    console.log("RENDERING OVERVIEW");
 
     const store = this.props.store;
     const state = store.getState();
     this.renderState = state;
-
-    if (state.app.activeGroup === undefined) {
+    //
+    // if (state.app.activeGroup === undefined) {
+    //   return (
+    //     <Background background={require('../../images/mainBackgroundLight.png')}>
+    //       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+    //         <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>Trying to detect Group...</Text>
+    //       </View>
+    //     </Background>
+    //   );
+    // }
+    // else {
+    //   this.activeGroup = state.app.activeGroup;
+    //   const rooms = state.groups[this.activeGroup].locations;
+    //   if (Object.keys(rooms).length === 0) {
+    //     return (
+    //       <Background background={require('../../images/mainBackgroundLight.png')}>
+    //         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+    //           <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>No rooms defined yet.</Text>
+    //           <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>Tap here to add them!</Text>
+    //         </View>
+    //       </Background>
+    //     );
+    //   }
+    //   // update the users
       return (
         <Background background={require('../../images/mainBackgroundLight.png')}>
-          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>Trying to detect Group...</Text>
-          </View>
+          <RoomLayer store={store} />
         </Background>
-      );
-    }
-    else {
-      this.activeGroup = state.app.activeGroup;
-      const rooms = state.groups[this.activeGroup].locations;
-      if (Object.keys(rooms).length === 0) {
-        return (
-          <Background background={require('../../images/mainBackgroundLight.png')}>
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-              <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>No rooms defined yet.</Text>
-              <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>Tap here to add them!</Text>
-            </View>
-          </Background>
-        );
-      }
-      // update the users
-      this._updateUsers(store);
-      return (
-        <Background background={require('../../images/mainBackgroundLight.png')}>{this._getRoomsAndUsers(rooms)}</Background>
       )
-    }
+    // }
   }
 }
