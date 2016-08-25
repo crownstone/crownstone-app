@@ -8,6 +8,8 @@ import { base } from './sections/base'
 import { stones } from './sections/stones'
 import { groups } from './sections/groups'
 import { locations } from './sections/locations'
+import { devices } from './sections/devices'
+import { appliances } from './sections/appliances'
 
 
 function mixin(base, section) {
@@ -24,6 +26,8 @@ function combineSections() {
   mixin(result, stones);
   mixin(result, locations);
   mixin(result, groups);
+  mixin(result, devices);
+  mixin(result, appliances);
   return result;
 }
 

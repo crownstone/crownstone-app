@@ -31,9 +31,9 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_APPLIANCE_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name     = update(action.data.name,     newState.name);
-        newState.icon     = update(action.data.icon,     newState.icon);
-        newState.dimmable = update(action.data.dimmable, newState.dimmable);
+        newState.name      = update(action.data.name,     newState.name);
+        newState.icon      = update(action.data.icon,     newState.icon);
+        newState.dimmable  = update(action.data.dimmable, newState.dimmable);
         newState.updatedAt = getTime();
         return newState;
       }
@@ -123,7 +123,7 @@ export default (state = {}, action = {}) => {
       delete stateCopy[action.applianceId];
       return stateCopy;
     default:
-      if (action.applianceId !== undefined) {
+      if (action.applianceId !== undefined && action.applianceId !== null) {
         return {
           ...state,
           ...{[action.applianceId]:combinedApplianceReducer(state[action.applianceId], action)}

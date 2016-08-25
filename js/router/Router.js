@@ -148,38 +148,39 @@ export class AppRouter extends Component {
         <View style={{flex:1}}>
           <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
-              <Scene key="loginSplash"                component={Views.LoginSplash}               hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
-              <Scene key="login"                      component={Views.Login}                     hideNavBar={true}  />
-              <Scene key="register"                   component={Views.Register}                  hideNavBar={false} title="Register" {...navBarStyle} />
-              <Scene key="registerConclusion"         component={Views.RegisterConclusion}        hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
-              <Scene key="pictureView"                component={Views.PictureView}               hideNavBar={true}  direction="vertical" />
-              <Scene key="picturePreview"             component={Views.PicturePreview}            hideNavBar={true}  direction="vertical" />
-              <Scene key="cameraRollView"             component={Views.CameraRollView}            hideNavBar={true}  direction="vertical" />
-              <Scene key="setupWelcome"               component={Views.SetupWelcome}              hideNavBar={true}  type="reset"  direction="vertical" />
-              <Scene key="setupAddGroup"              component={Views.SetupAddGroup}             hideNavBar={true}  />
-              <Scene key="setupAddCrownstoneSelect"   component={Views.SetupAddCrownstoneSelect}  hideNavBar={true}  type="reset" />
-              <Scene key="setupAddPluginStep1"        component={Views.SetupAddPlugInStep1}       hideNavBar={true}  />
-              <Scene key="setupAddPluginStep2"        component={Views.SetupAddPlugInStep2}       hideNavBar={true}  />
-              <Scene key="setupAddPluginStep3"        component={Views.SetupAddPlugInStep3}       hideNavBar={true}  />
-              <Scene key="setupAddPluginStep4"        component={Views.SetupAddPlugInStep4}       hideNavBar={true}  />
-              <Scene key="setupAddPlugInStepRecover"  component={Views.SetupAddPlugInStepRecover} hideNavBar={true}  />
-              <Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}       hideNavBar={true}  />
-              <Scene key="roomTraining"               component={Views.SettingsRoomTraining}      hideNavBar={true} direction="vertical" title="Training" />
-              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection} hideNavBar={true} direction="vertical" title="Pick an Icon" />
+              <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
+              <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
+              <Scene key="register"                   component={Views.Register}                   hideNavBar={false} title="Register" {...navBarStyle} />
+              <Scene key="registerConclusion"         component={Views.RegisterConclusion}         hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
+              <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  direction="vertical" />
+              <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  direction="vertical" />
+              <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  direction="vertical" />
+              <Scene key="setupWelcome"               component={Views.SetupWelcome}               hideNavBar={true}  type="reset"  direction="vertical" />
+              <Scene key="setupAddGroup"              component={Views.SetupAddGroup}              hideNavBar={true}  />
+              <Scene key="setupAddCrownstoneSelect"   component={Views.SetupAddCrownstoneSelect}   hideNavBar={true}  type="reset" />
+              <Scene key="setupAddPluginStep1"        component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />
+              <Scene key="setupAddPluginStep2"        component={Views.SetupAddPlugInStep2}        hideNavBar={true}  />
+              <Scene key="setupAddPluginStep3"        component={Views.SetupAddPlugInStep3}        hideNavBar={true}  />
+              <Scene key="setupAddPluginStep4"        component={Views.SetupAddPlugInStep4}        hideNavBar={true}  />
+              <Scene key="setupAddPlugInStepRecover"  component={Views.SetupAddPlugInStepRecover}  hideNavBar={true}  />
+              <Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />
+              <Scene key="roomTraining"               component={Views.SettingsRoomTraining}       hideNavBar={true} direction="vertical" title="Training" />
+              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true} direction="vertical" title="Pick an Icon" />
               <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
-                  <Scene key="groupOverview"          component={Views.GroupOverview}       title="Group Overview"  />
-                  <Scene key="roomOverview"           component={Views.RoomOverview}        onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
-                  <Scene key="roomEdit"               component={Views.RoomEdit}            title="Configure Devices" />
-                  <Scene key="deviceEdit"             component={Views.DeviceEdit}          title="Edit Device" />
-                  <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit} title="Edit Behaviour" />
-                  <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}     />
-                  <Scene key="delaySelection"         component={Views.DelaySelection}      title="Set Delay" />
-                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}  title="Schedule"  onRight={onRightFunctionEdit} rightTitle="Add" />
-                  <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}   title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
-                  <Scene key="daySelection"           component={Views.DaySelection}        title="Set Active Days" />
+                  <Scene key="groupOverview"          component={Views.GroupOverview}              title="Group Overview"  />
+                  <Scene key="roomOverview"           component={Views.RoomOverview}               onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
+                  <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Configure Devices" />
+                  <Scene key="deviceEdit"             component={Views.DeviceEdit}                 title="Edit Device" />
+                  <Scene key="applianceSelection"     component={Views.ApplianceSelection}         title="Devices" />
+                  <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        title="Edit Behaviour" />
+                  <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}            />
+                  <Scene key="delaySelection"         component={Views.DelaySelection}             title="Set Delay" />
+                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         title="Schedule"  onRight={onRightFunctionEdit} rightTitle="Add" />
+                  <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}          title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
+                  <Scene key="daySelection"           component={Views.DaySelection}               title="Set Active Days" />
                 </Scene>
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                   <Scene key="settingsOverview"           component={Views.SettingsOverview}            title="Settings"/>
@@ -193,7 +194,7 @@ export class AppRouter extends Component {
                   <Scene key="settingsCrownstoneOverview" component={Views.SettingsCrownstoneOverview}  title="Manage Your Crownstones"/>
                   <Scene key="settingsCrownstone"         component={Views.SettingsCrownstone}          title="Manage Crownstone"/>
                   <Scene key="settingsRoomOverview"       component={Views.SettingsRoomOverview}        title="Manage Rooms"/>
-                  <Scene key="settingsRoomAdd"            component={Views.SettingsRoomAdd}          title="Create new Room"/>
+                  <Scene key="settingsRoomAdd"            component={Views.SettingsRoomAdd}             title="Create new Room"/>
                   <Scene key="settingsRoom"               component={Views.SettingsRoom}                title="Manage Room"/>
                   <Scene key="appComplexity"              component={Views.AppComplexity}               title="Settings"/>
                 </Scene>

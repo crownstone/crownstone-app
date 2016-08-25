@@ -46,6 +46,7 @@ export class SettingsCrownstoneOverview extends Component {
         items.push({label:"CROWNSTONES IN GROUP '" + group.name + "'",  type:'explanation', below:false});
         stoneIds.forEach((stoneId) => {
           let stone = stones[stoneId];
+          let roomName = getRoomName(state, group.id, stone.stone.config.locationId)
           items.push({__item:
             <TouchableHighlight
               key={stoneId + '_entry'}
@@ -54,9 +55,9 @@ export class SettingsCrownstoneOverview extends Component {
               <View style={styles.listView}>
                 <DeviceOverview
                   icon={stone.device.config.icon}
-                  stoneName={stone.stone.config.name}
-                  deviceName={stone.device.config.name}
-                  locationName={getRoomName(state, group.id, stone.stone.config.locationId)}
+                  name={stone.stone.config.name}
+                  subtext={'Device: ' + (stone.stone.config.applianceId ? stone.device.config.name : 'Nothing plugged in.')}
+                  subtext2={roomName === undefined ? 'Not in a room.' :'In the ' + roomName}
                   navigation={true}
                 />
                 </View>

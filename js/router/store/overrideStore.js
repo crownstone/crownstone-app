@@ -127,36 +127,6 @@ export const fakeStore = {
           schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
             updatedAt: 1465835364017
           },
-          behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-            onHomeEnter: {
-              state:    1,  // [0 .. 1] for state, undefined for ignore
-              delay:    0,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: false,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onHomeExit:  {
-              state:    0,  // [0 .. 1] for state, undefined for ignore
-              delay:    10,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: false,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onRoomEnter: {
-              state:    1,  // [0 .. 1] for state, undefined for ignore
-              delay:    0,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onRoomExit:  {
-              state:    0,  // [0 .. 1] for state, undefined for ignore
-              delay:    2,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            }
-          }
         },
         501: {
           config: {
@@ -178,36 +148,6 @@ export const fakeStore = {
           schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
             updatedAt: 1465835364017
           },
-          behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-            onHomeEnter: {
-              state:    1,  // [0 .. 1] for state, undefined for ignore
-              delay:    0,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: false,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onHomeExit:  {
-              state:    0,  // [0 .. 1] for state, undefined for ignore
-              delay:    10,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: false,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onRoomEnter: {
-              state:    1,  // [0 .. 1] for state, undefined for ignore
-              delay:    0,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onRoomExit:  {
-              state:    0,  // [0 .. 1] for state, undefined for ignore
-              delay:    2,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            }
-          }
         },
         503: {
          config: {
@@ -229,36 +169,6 @@ export const fakeStore = {
          schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
            updatedAt: 1465835364017
          },
-         behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-           onHomeEnter: {
-             state:    1,  // [0 .. 1] for state, undefined for ignore
-             delay:    0,  // delay in seconds
-             fadeTime: 0,  // delay in seconds
-             active: false,  // if not active the crownstone will not react to the event.
-             updatedAt: 1465835364017
-           },
-           onHomeExit:  {
-             state:    0,  // [0 .. 1] for state, undefined for ignore
-             delay:    10,  // delay in seconds
-             fadeTime: 0,  // delay in seconds
-             active: false,  // if not active the crownstone will not react to the event.
-             updatedAt: 1465835364017
-           },
-           onRoomEnter: {
-             state:    1,  // [0 .. 1] for state, undefined for ignore
-             delay:    0,  // delay in seconds
-             fadeTime: 0,  // delay in seconds
-             active: true,  // if not active the crownstone will not react to the event.
-             updatedAt: 1465835364017
-           },
-           onRoomExit:  {
-             state:    0,  // [0 .. 1] for state, undefined for ignore
-             delay:    2,  // delay in seconds
-             fadeTime: 0,  // delay in seconds
-             active: true,  // if not active the crownstone will not react to the event.
-             updatedAt: 1465835364017
-           }
-         }
         },
         // 504: {
         //   config: {
@@ -331,36 +241,6 @@ export const fakeStore = {
           schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
             updatedAt: 1465835364017
           },
-          behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
-            onHomeEnter: {
-              state:    1,  // [0 .. 1] for state, undefined for ignore
-              delay:    0,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: false,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onHomeExit:  {
-              state:    0,  // [0 .. 1] for state, undefined for ignore
-              delay:    10,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: false,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onRoomEnter: {
-              state:    1,  // [0 .. 1] for state, undefined for ignore
-              delay:    0,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            },
-            onRoomExit:  {
-              state:    0,  // [0 .. 1] for state, undefined for ignore
-              delay:    2,  // delay in seconds
-              fadeTime: 0,  // delay in seconds
-              active: true,  // if not active the crownstone will not react to the event.
-              updatedAt: 1465835364017
-            }
-          }
         },
       },
       appliances: {

@@ -90,5 +90,8 @@ const glyphMap = {
   'c1-light2':0xf056,
   'c1-iron':0xf057,
   'c1-toiletroll2':0xf058,
+  'c1-Crownstone':0xf059,
+  'c1-PluginThin':0xf05a,
+  'c1-Plugin':0xf05b,
 }
-export const CustomIcon = createIconSet(glyphMap, 'Crownstone', 'Crownstone.ttf')
+export const CustomIcon = createIconSet(glyphMap, 'Crownstone', 'Crownstone.ttf');

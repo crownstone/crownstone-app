@@ -8,7 +8,8 @@ import { CameraRollView }            from '../views/cameraViews/CameraRollView'
 import { GroupOverview }             from '../views/main/GroupOverview'
 import { RoomOverview }              from '../views/roomViews/RoomOverview'
 import { RoomEdit }                  from '../views/roomViews/RoomEdit'
-import { SettingsRoomTraining }              from '../views/settingsViews/SettingsRoomTraining'
+import { SettingsRoomTraining }      from '../views/settingsViews/SettingsRoomTraining'
+import { ApplianceSelection }        from '../views/deviceViews/ApplianceSelection'
 import { DeviceEdit }                from '../views/deviceViews/DeviceEdit'
 import { DeviceBehaviourEdit }       from '../views/deviceViews/DeviceBehaviourEdit'
 import { DeviceStateEdit }           from '../views/deviceViews/DeviceBehaviourStateEdit'
@@ -56,6 +57,7 @@ export const Views = {
   RoomOverview,
   RoomEdit,
   SettingsRoomTraining,
+  ApplianceSelection,
   DeviceEdit,
   DeviceBehaviourEdit,
   DeviceStateEdit,

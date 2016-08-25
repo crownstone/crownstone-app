@@ -92,12 +92,13 @@ export class SetupAddPlugInStep2 extends Component {
   registerStone(crownstone, activeGroup, macAddress) {
     const {store} = this.props;
     const processSuccess = (cloudResponse) => {
-      console.log("received from cloud:",cloudResponse)
+      console.log("received from cloud:",cloudResponse);
       store.dispatch({
         type: "ADD_STONE",
         groupId: activeGroup,
         stoneId: cloudResponse.id,
         data: {
+          icon: 'c1-Plugin',
           crownstoneId: cloudResponse.uid,
           bluetoothId:  crownstone.getBluetoothId(),
           macAddress:   macAddress,

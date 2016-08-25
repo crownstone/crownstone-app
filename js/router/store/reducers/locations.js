@@ -70,7 +70,7 @@ export default (state = {}, action = {}) => {
       delete stateCopy[action.locationId];
       return stateCopy;
     default:
-      if (action.locationId !== undefined) {
+      if (action.locationId !== undefined && action.locationId !== null) {
         return {
           ...state,
           ...{[action.locationId]:combinedLocationReducer(state[action.locationId], action)}

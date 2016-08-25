@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
-import { DeviceOverview } from '../components/DeviceOverview'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { getGroupContentFromState, getRoomName } from './../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;

@@ -24,7 +24,6 @@ import { styles, colors, width, height } from '../styles'
 export class RoomLayer extends Component {
   constructor() {
     super();
-    this.renderState = {};
     this.state = {presentUsers: {}, a:1};
 
     this.roomRadius = 0.35*0.5*width;
@@ -72,12 +71,14 @@ export class RoomLayer extends Component {
 
   componentDidMount() {
     const { store } = this.props;
-    this.renderState = store.getState();
     this.unsubscribe = store.subscribe(() => {
+      if (this.renderState === undefined)
+        return;
+
       // only redraw if the amount of rooms changes.
       const state = store.getState();
       if (state.app.activeGroup) {
-        if (Object.keys(state.groups[state.app.activeGroup].locations).length == Object.keys(this.renderState.groups[state.app.activeGroup].locations).length) {
+        if (Object.keys(state.groups[state.app.activeGroup].locations).length !== Object.keys(this.renderState.groups[state.app.activeGroup].locations).length) {
           this.forceUpdate();
         }
       }
@@ -91,10 +92,10 @@ export class RoomLayer extends Component {
   }
 
   // experiment
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log("Should component update?",nextProps, nextState)
-  //   return true
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("Should component update?",nextProps, nextState)
+    return false
+  }
 
   _renderRoom(locationId, room, activeGroup, count, index) {
     let pos = {};
@@ -160,6 +161,8 @@ export class RoomLayer extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.renderState = state;
+
+    console.log("rendering room layer")
 
     return (
       <View>

@@ -32,11 +32,10 @@ export class DeviceEdit extends Component {
   }
 
 
-  // TODO: make options for empty crownstones
   constructOptions(store, device, stone) {
+    const state = store.getState();
     let requiredData = {
       groupId: this.props.groupId,
-      locationId: this.props.locationId,
       stoneId: this.props.stoneId,
       applianceId: stone.config.applianceId
     };
@@ -47,33 +46,62 @@ export class DeviceEdit extends Component {
     /*Actions.deviceScheduleEdit(requiredData) */
     let toLinkedDevices = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
     // Crownstone Name:
-    items.push({label:'Device Name', type: 'textEdit', value:device.config.name, callback: (newText) => {
-      store.dispatch({...requiredData, type:'UPDATE_APPLIANCE_CONFIG', data:{name:newText}});
-    }});
 
-    // icon picker
-    items.push({label:'Icon', type: 'icon', value: device.config.icon, callback: () => {}});
+    if (stone.config.applianceId) {
+      items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
+      items.push({
+        label: 'Device Name', type: 'textEdit', value: device.config.name, callback: (newText) => {
+          store.dispatch({...requiredData, type: 'UPDATE_APPLIANCE_CONFIG', data: {name: newText}});
+        }
+      });
 
-    // unplug device
-    items.push({label:'Unplug Device from Crownstone', type: 'button', style: {color:colors.blue.hex}, callback: () => {
+      // icon picker
+      items.push({label:'Icon', type: 'icon', value: device.config.icon, callback: () => {}});
 
-    }});
+      // unplug device
+      items.push({
+        label: 'Unplug Device from Crownstone', type: 'button', style: {color: colors.blue.hex}, callback: () => {
+          store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});
+        }
+      });
+      items.push({label:'Unplugging will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
+
+    }
+    else {
+      items.push({label:'CROWNSTONE', type: 'explanation',  below:false});
+      items.push({
+        label: 'Name', type: 'textEdit', value: device.config.name, callback: (newText) => {
+          store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
+        }
+      });
+
+      items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
+      items.push({
+        label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
+          Actions.applianceSelection({
+            groupId: this.props.groupId,
+            callback: (applianceId) => {
+              store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: applianceId}});
+            }
+          });
+        }
+      });
+      items.push({label:'A Device has it\'s own configuration so you can set up once and quickly apply it to a Crownstone.', type: 'explanation',  below:true});
+    }
 
     // // dimmable
     // items.push({label:'Dimmable', type: 'switch', value:device.config.dimmable, callback: (newValue) => {
     //     store.dispatch({...requiredData, type:'UPDATE_STONE_CONFIG', data:{dimmable:newValue}});
     // }});
 
-    // unplugging explanation
-    items.push({label:'Unplugging will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
-
-
     // behaviour link
     items.push({label:'Behaviour', type: 'navigation', callback:toBehaviour});
 
     // behaviour explanation
-    items.push({label:'Customize how Crownstone reacts to your presence.', type: 'explanation',  below:true});
-
+    if (stone.config.applianceId)
+      items.push({label: 'Customize how this Device reacts to your presence.', type: 'explanation', below: true});
+    else
+      items.push({label: 'Customize how this Crownstone reacts to your presence.', type: 'explanation', below: true});
     // // schedule link
     // items.push({label:'Schedule', type: 'navigation', callback:toSchedule});
     //
@@ -95,11 +123,10 @@ export class DeviceEdit extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const stone  = state.groups[this.props.groupId].stones[this.props.stoneId];
-
+    const stone   = state.groups[this.props.groupId].stones[this.props.stoneId];
 
     let options = [];
-    if (stone.config.applianceId !== undefined) {
+    if (stone.config.applianceId) {
       let device = state.groups[this.props.groupId].appliances[stone.config.applianceId];
       options = this.constructOptions(store, device, stone);
     }
@@ -111,9 +138,7 @@ export class DeviceEdit extends Component {
     return (
       <Background>
         <ScrollView>
-          <EditSpacer top={true} />
-          <ListEditableItems items={options.slice(0,3)} separatorIndent={true} />
-          <ListEditableItems items={options.slice(3,options.length)}/>
+          <ListEditableItems items={options} separatorIndent={true}/>
         </ScrollView>
       </Background>
     )

@@ -103,12 +103,13 @@ export class PresentUsers extends Component {
 
   componentDidMount() {
     const { store } = this.props;
-    this.renderState = store.getState();
     this.unsubscribe = store.subscribe(() => {
       // only redraw if the amount of rooms changes.
       const state = store.getState();
+      if (this.renderState === undefined)
+        return;
       if (state.app.activeGroup) {
-        if (state.groups[state.app.activeGroup].locations.presentUsers == this.renderState.groups[state.app.activeGroup].locations.presentUsers) {
+        if (state.groups[state.app.activeGroup].locations.presentUsers != this.renderState.groups[state.app.activeGroup].locations.presentUsers) {
           this._getUsers();
           this.forceUpdate();
         }
@@ -123,10 +124,10 @@ export class PresentUsers extends Component {
   }
 
   // experiment
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log("Should component update?",nextProps, nextState)
-  //   return true
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    // console.log("Should component update?",nextProps, nextState)
+    return false
+  }
 
 
   _getUsers() {
@@ -157,6 +158,7 @@ export class PresentUsers extends Component {
     let extra = totalCount > drawThreshold ? totalCount - drawThreshold + 1 : 0;
 
     let introAnimations = [];
+    let exitAnimations = [];
 
     // put users in the slot structure
     for (let i = 0; i < presentUsers.length; i++) {
@@ -263,17 +265,19 @@ export class PresentUsers extends Component {
     }
 
     // if we create new elements, we have to wait for them to draw before we animate them. 100 is an estimate.
-    setTimeout(() => {
-      Animated.parallel(introAnimations).start();
-    },100);
+    if (introAnimations.length > 0) {
+      setTimeout(() => {
+        Animated.parallel(introAnimations).start();
+      }, 100);
+    }
 
     // we loop over the existing items to see if there are some that have moved or disappeared.
     Object.keys(this.positions).forEach((userId) => {
       if (newPositions[userId] === undefined) {
         // add animation to remove user
-        Animated.timing(this.positions[userId].top, {toValue: this.positions[userId].base.y, duration: 200}).start();
-        Animated.timing(this.positions[userId].left, {toValue: this.positions[userId].base.x, duration: 200}).start();
-        Animated.timing(this.positions[userId].opacity, {toValue: 0, duration: 200}).start();
+        exitAnimations.push(Animated.timing(this.positions[userId].top, {toValue: this.positions[userId].base.y, duration: 200}));
+        exitAnimations.push(Animated.timing(this.positions[userId].left, {toValue: this.positions[userId].base.x, duration: 200}));
+        exitAnimations.push(Animated.timing(this.positions[userId].opacity, {toValue: 0, duration: 200}));
         setTimeout(() => {
           delete this.positions[userId];
         },200)
@@ -281,10 +285,14 @@ export class PresentUsers extends Component {
       }
       else if(newPositions[userId].x != this.positions[userId].x || newPositions[userId].y != this.positions[userId].y) {
         // add animation on change of position.
-        Animated.timing(this.positions[userId].left, {toValue: newPositions[userId].x, duration: 200}).start()
-        Animated.timing(this.positions[userId].top, {toValue: newPositions[userId].y, duration: 200}).start()
+        exitAnimations.push(Animated.timing(this.positions[userId].left, {toValue: newPositions[userId].x, duration: 200}));
+        exitAnimations.push(Animated.timing(this.positions[userId].top, {toValue: newPositions[userId].y, duration: 200}));
       }
     });
+
+    if (exitAnimations.length > 0) {
+      Animated.parallel(exitAnimations).start();
+    }
   }
 
   getUsers() {

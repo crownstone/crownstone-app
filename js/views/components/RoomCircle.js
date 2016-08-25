@@ -41,8 +41,9 @@ export class RoomCircle extends Component {
 
   componentDidMount() {
     const { store } = this.props;
-    this.renderState = store.getState();
     this.unsubscribe = store.subscribe(() => {
+      if (this.renderState === undefined)
+        return;
       // only redraw if the power usage changes or if the settings of the room change
       const state = store.getState();
       let usage = getCurrentPowerUsageFromState(state, state.app.activeGroup, this.props.locationId);
@@ -56,6 +57,12 @@ export class RoomCircle extends Component {
 
   componentWillUnmount() {
     this.unsubscribe();
+  }
+
+  // experiment
+  shouldComponentUpdate(nextProps, nextState) {
+    // console.log("Should component update?",nextProps, nextState)
+    return false
   }
 
 
@@ -82,11 +89,10 @@ export class RoomCircle extends Component {
 
 
   _getImage(room) {
-    this.usage = 600;
-    this.color = this._getColor(this.usage);
+    // this.usage = 600;
+    // this.color = this._getColor(this.usage);
     return (
       <View>
-
         <View style={{
           borderRadius: this.outerDiameter,
           width: this.outerDiameter,
@@ -119,15 +125,28 @@ export class RoomCircle extends Component {
 
 
   _getUsageCircle(usage) {
-    if (usage == 0)
-      return <Svg style={{
-        width: this.outerDiameter,
-        height: this.outerDiameter,
-      }} />;
-
     let prevColor = this._getColor(usage, true);
-
     let pathLength = Math.PI * 2 * this.props.radius;
+    if (usage == 0)
+      return (
+        <Svg style={{
+          width: this.outerDiameter,
+          height: this.outerDiameter,
+        }} >
+          <Circle
+            r={this.props.radius - this.borderWidth}
+            stroke={prevColor}
+            strokeWidth={this.borderWidth}
+            strokeDasharray={[pathLength,pathLength]}
+            rotate="-90"
+            x={this.props.radius}
+            y={this.props.radius}
+            strokeLinecap="round"
+            fill="white"
+          />
+        </Svg>
+    );
+
     return (
       <Svg style={{
         width: this.outerDiameter,

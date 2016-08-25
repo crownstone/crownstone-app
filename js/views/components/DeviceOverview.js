@@ -17,27 +17,37 @@ import { styles, colors} from '../styles'
 
 
 export class DeviceOverview extends Component {
+  _getText() {
+    if (this.props.subtext) {
+      return <View style={{flexDirection: 'column'}}>
+        <Text style={{fontSize: 16, fontWeight: '500'}}>{this.props.name}</Text>
+        <Text style={{fontSize: 14, fontWeight: '100', paddingTop: 3, paddingBottom: 2}}>{this.props.subtext}</Text>
+        <Text style={{fontSize: 11, fontWeight: '100', fontStyle: 'italic'}}>{this.props.subtext2}</Text>
+      </View>
+    }
+    else {
+      return <Text style={{fontSize: 18, fontWeight: '300'}}>{this.props.name}</Text>
+    }
+  }
 
   render() {
+    let size = this.props.size || 60;
+
     let content = (
       <View style={{flexDirection:'row', padding:10, paddingLeft:0, alignItems:'center', flex:1}}>
         <View style={{paddingRight:20}}>
           <View style={[{
-              width:60,
-              height:60,
-              borderRadius:30,
+              width: size,
+              height: size,
+              borderRadius: 0.5 * size,
               backgroundColor:  colors.blue.hex,
             }, styles.centered]}
           >
-            <Icon name={this.props.icon} size={45} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+            <Icon name={this.props.icon} size={0.75*size} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
           </View>
         </View>
         <View style={{flex:1}}>
-          <View style={{flexDirection:'column'}}>
-            <Text style={{fontSize:16, fontWeight:'500'}}>{this.props.stoneName}</Text>
-            <Text style={{fontSize:14, fontWeight:'100', paddingTop:3, paddingBottom:2}}>{'Device: ' + (this.props.stoneName !== this.props.deviceName ? this.props.deviceName : 'Nothing plugged in.')}</Text>
-            <Text style={{fontSize:11, fontWeight:'100', fontStyle:'italic'}}>{this.props.locationName === undefined ? 'Not in a room.' :'In the ' + this.props.locationName}</Text>
-          </View>
+          {this._getText()}
         </View>
         {this.props.navigation ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'} /> : undefined}
       </View>

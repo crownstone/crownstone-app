@@ -24,7 +24,6 @@ import { styles, colors, width, height } from '../styles'
 export class GroupOverview extends Component {
   constructor() {
     super();
-    this.renderState = {};
     this.state = {presentUsers: {}};
 
     this.roomRadius = 0.35*0.5*width;
@@ -44,12 +43,16 @@ export class GroupOverview extends Component {
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      // const state = store.getState();
-      // if (this.renderState && this.renderState.groups != state.groups) {
-      //   this.renderState = state;
-        // console.log("Force Update")
+      // only rerender if we go to a different group
+      if (this.renderState === undefined)
+        return;
+
+      const state = store.getState();
+
+      if (this.renderState.app.activeGroup !== state.app.activeGroup) {
+        console.log("triggering rerender of group overview")
         this.forceUpdate();
-      // }
+      }
     });
   }
 
@@ -59,8 +62,8 @@ export class GroupOverview extends Component {
 
   // experiment
   // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log("Should component update?",nextProps, nextState)
-  //   return true
+  //   // console.log("Should component update?",nextProps, nextState)
+  //   return false
   // }
 
 

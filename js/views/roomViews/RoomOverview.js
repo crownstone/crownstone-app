@@ -56,7 +56,6 @@ export class RoomOverview extends Component {
             pending={this.state.pendingRequests[stoneId] !== undefined}
             dimmable={item.device.config.dimmable}
             onChange={(newValue) => {
-            console.log("TOGGLING TO VALUE:",newValue);
               this.setRequest(stoneId);
               let bleState = newValue;
               let data = {state: newValue};

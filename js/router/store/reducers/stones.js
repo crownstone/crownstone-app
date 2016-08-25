@@ -6,8 +6,8 @@ let defaultSettings = {
   config: {
     name: undefined,
     icon: 'ios-outlet',
-    applianceId: undefined,
-    locationId: undefined,
+    applianceId: null,
+    locationId: null,
     macAddress: undefined,
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,

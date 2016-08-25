@@ -121,7 +121,7 @@ export class DeviceBehaviourEdit extends Component {
 
     let options = [];
     if (stone.config.applianceId) {
-      let device = state.groups[this.props.groupId].appliances[stone.config.applianceId]
+      let device = state.groups[this.props.groupId].appliances[stone.config.applianceId];
       options = this.constructOptions(store, device, stone);
     }
     else {

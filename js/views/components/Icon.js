@@ -10,7 +10,8 @@ import { styles, colors} from '../styles'
 export class Icon extends Component {
   render() {
     if (this.props.name === undefined) {
-      return <Ionicon {...this.props} name="ios-document" />
+      return <CustomIcon {...this.props} name="c1-Crownstone"/>
+      /*return <Ionicon {...this.props} name="ios-document" />*/
     }
 
     if (this.props.name.substr(0,3) == 'c1-') {
