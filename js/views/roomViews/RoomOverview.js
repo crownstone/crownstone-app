@@ -33,7 +33,6 @@ export class RoomOverview extends Component {
 
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
-      console.log("rerendering the room");
       this.forceUpdate();
     })
   }
@@ -102,25 +101,41 @@ export class RoomOverview extends Component {
   
 
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    const store = this.props.store;
+    const state = store.getState();
 
     let usage = getCurrentPowerUsageFromState(state, this.props.groupId, this.props.locationId);
     let users = getPresentUsersFromState(state, this.props.groupId, this.props.locationId);
     let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
 
-    return (
-      <Background background={require('../../images/mainBackgroundLight.png')}>
-        <RoomBanner presentUsers={users} usage={usage} />
-        <ScrollView>
-          <SeparatedItemList
-            items={items}
-            separatorIndent={false}
-            renderer={this._renderer.bind(this)}
-          />
-        </ScrollView>
-      </Background>
-    );
+    if (Object.keys(items).length == 0) {
+      return (
+        <Background background={require('../../images/mainBackgroundLight.png')}>
+          <RoomBanner presentUsers={users} noCrownstones={true}/>
+          <ScrollView>
+            <SeparatedItemList
+              items={items}
+              separatorIndent={false}
+              renderer={this._renderer.bind(this)}
+            />
+          </ScrollView>
+        </Background>
+      );
+    }
+    else {
+      return (
+        <Background background={require('../../images/mainBackgroundLight.png')}>
+          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null}  />
+          <ScrollView>
+            <SeparatedItemList
+              items={items}
+              separatorIndent={false}
+              renderer={this._renderer.bind(this)}
+            />
+          </ScrollView>
+        </Background>
+      );
+    }
+
   }
 }

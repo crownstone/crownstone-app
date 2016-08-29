@@ -21,7 +21,7 @@ import { SwitchBar }      from './editComponents/SwitchBar'
 import { TextEditBar }    from './editComponents/TextEditBar'
 import { TimePicker }     from './editComponents/TimePicker'
 
-import { styles, width } from '../styles'
+import { styles, screenWidth, barHeight, barHeightLarge } from '../styles'
 
 /**
  *
@@ -78,9 +78,6 @@ import { styles, width } from '../styles'
 export class EditableItem extends Component {
 
   render() {
-    let pxRatio = PixelRatio.get();
-    let height = 21*pxRatio;
-    let heightLarge = 40*pxRatio;
 
     if (this.props.setActiveElement === undefined) {
       this.props.setActiveElement = () => {};
@@ -92,35 +89,35 @@ export class EditableItem extends Component {
 
     switch (this.props.type) {
       case 'button':
-        return <ButtonBar barHeight={height} {...this.props} />;
+        return <ButtonBar barHeight={barHeight} {...this.props} />;
       case 'checkbar':
-        return <CheckBar barHeight={height} {...this.props} />;
+        return <CheckBar barHeight={barHeight} {...this.props} />;
       case 'dropdown':
-        return <Dropdown barHeight={height} {...this.props} />;
+        return <Dropdown barHeight={barHeight} {...this.props} />;
       case 'explanation':
         return <Explanation text={this.props.label} {...this.props} />;
       case 'icon':
-        return <IconEdit barHeightLarge={heightLarge} {...this.props} />;
+        return <IconEdit barHeightLarge={barHeightLarge} {...this.props} />;
       case 'info':
-        return <InfoBar barHeight={height} {...this.props} />;
+        return <InfoBar barHeight={barHeight} {...this.props} />;
       case 'navigation':
-        return <NavigationBar barHeight={height} {...this.props} />;
+        return <NavigationBar barHeight={barHeight} {...this.props} />;
       case 'picture':
-        return <PictureEdit barHeightLarge={heightLarge} {...this.props} />;
+        return <PictureEdit barHeightLarge={barHeightLarge} {...this.props} />;
       case 'switch':
-        return <SwitchBar barHeight={height} {...this.props} />;
+        return <SwitchBar barHeight={barHeight} {...this.props} />;
       case 'slider':
-        return <SliderBar barHeight={height} {...this.props} />;
+        return <SliderBar barHeight={barHeight} {...this.props} />;
       case 'spacer':
         return <EditSpacer />;
       case 'textEdit':
-        return <TextEditBar barHeight={height} {...this.props} />;
+        return <TextEditBar barHeight={barHeight} {...this.props} />;
       case 'timePicker':
-        return <TimePicker barHeight={height} {...this.props} />;
+        return <TimePicker barHeight={barHeight} {...this.props} />;
       default:
         return (
           <View>
-            <View style={[styles.listView, {height, flex:1}]}>
+            <View style={[styles.listView, {barHeight, flex:1}]}>
               <Text>{this.props.label + ' - UNHANDLED for ' + this.props.type}</Text>
             </View>
           </View>

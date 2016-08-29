@@ -11,16 +11,20 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-import { styles, colors } from '../styles'
+import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { EditableItem } from '../components/EditableItem'
-import { Explanation } from '../components/editComponents/Explanation'
-import { EditSpacer } from '../components/editComponents/EditSpacer'
+import { FadeInView } from '../components/animated/FadeInView'
 
 
 
 export class DeviceEdit extends Component {
+  constructor() {
+    super();
+    this.state = {showStone:false};
+    this.showStone = false;
+  }
+
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
       this.forceUpdate();
@@ -31,46 +35,18 @@ export class DeviceEdit extends Component {
     this.unsubscribe();
   }
 
-
-  constructOptions(store, device, stone) {
-    const state = store.getState();
+  constructStoneOptions(store, stone) {
     let requiredData = {
       groupId: this.props.groupId,
       stoneId: this.props.stoneId,
-      applianceId: stone.config.applianceId
     };
     let items = [];
 
     let toBehaviour = () => { Actions.deviceBehaviourEdit(requiredData) };
-    let toSchedule  = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
-    /*Actions.deviceScheduleEdit(requiredData) */
-    let toLinkedDevices = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
-    // Crownstone Name:
 
-    if (stone.config.applianceId) {
-      items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
-      items.push({
-        label: 'Device Name', type: 'textEdit', value: device.config.name, callback: (newText) => {
-          store.dispatch({...requiredData, type: 'UPDATE_APPLIANCE_CONFIG', data: {name: newText}});
-        }
-      });
-
-      // icon picker
-      items.push({label:'Icon', type: 'icon', value: device.config.icon, callback: () => {}});
-
-      // unplug device
-      items.push({
-        label: 'Unplug Device from Crownstone', type: 'button', style: {color: colors.blue.hex}, callback: () => {
-          store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});
-        }
-      });
-      items.push({label:'Unplugging will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
-
-    }
-    else {
       items.push({label:'CROWNSTONE', type: 'explanation',  below:false});
       items.push({
-        label: 'Name', type: 'textEdit', value: device.config.name, callback: (newText) => {
+        label: 'Name', type: 'textEdit', value: stone.config.name, callback: (newText) => {
           store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
         }
       });
@@ -81,13 +57,55 @@ export class DeviceEdit extends Component {
           Actions.applianceSelection({
             groupId: this.props.groupId,
             callback: (applianceId) => {
+              this.showStone = false;
               store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: applianceId}});
             }
           });
         }
       });
       items.push({label:'A Device has it\'s own configuration so you can set up once and quickly apply it to a Crownstone.', type: 'explanation',  below:true});
-    }
+
+    // behaviour link
+    items.push({label:'Behaviour', type: 'navigation', callback:toBehaviour});
+
+    items.push({label: 'Customize how this Crownstone reacts to your presence.', type: 'explanation', below: true});
+
+    return items;
+  }
+
+
+  constructApplianceOptions(store, appliance, applianceId) {
+    let requiredData = {
+      groupId: this.props.groupId,
+      stoneId: this.props.stoneId,
+      applianceId: applianceId
+    };
+    let items = [];
+
+    let toBehaviour = () => { Actions.deviceBehaviourEdit(requiredData) };
+    // let toSchedule  = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
+    // let toLinkedDevices = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
+
+    items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
+    items.push({
+      label: 'Device Name', type: 'textEdit', value: appliance.config.name, callback: (newText) => {
+        store.dispatch({...requiredData, type: 'UPDATE_APPLIANCE_CONFIG', data: {name: newText}});
+      }
+    });
+
+    // icon picker
+    items.push({label:'Icon', type: 'icon', value: appliance.config.icon, callback: () => {
+      Actions.deviceIconSelection({applianceId: applianceId, icon: appliance.config.icon, groupId: this.props.groupId})
+    }});
+
+    // unplug device
+    items.push({
+      label: 'Unplug Device from Crownstone', type: 'button', style: {color: colors.blue.hex}, callback: () => {
+        this.showStone = true;
+        setTimeout(() => {store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});},300);
+      }
+    });
+    items.push({label:'Unplugging will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
 
     // // dimmable
     // items.push({label:'Dimmable', type: 'switch', value:device.config.dimmable, callback: (newValue) => {
@@ -98,10 +116,8 @@ export class DeviceEdit extends Component {
     items.push({label:'Behaviour', type: 'navigation', callback:toBehaviour});
 
     // behaviour explanation
-    if (stone.config.applianceId)
-      items.push({label: 'Customize how this Device reacts to your presence.', type: 'explanation', below: true});
-    else
-      items.push({label: 'Customize how this Crownstone reacts to your presence.', type: 'explanation', below: true});
+    items.push({label: 'Customize how this Device reacts to your presence.', type: 'explanation', below: true});
+
     // // schedule link
     // items.push({label:'Schedule', type: 'navigation', callback:toSchedule});
     //
@@ -125,20 +141,22 @@ export class DeviceEdit extends Component {
     const state   = store.getState();
     const stone   = state.groups[this.props.groupId].stones[this.props.stoneId];
 
-    let options = [];
+    let applianceOptions = [];
+    let stoneOptions = this.constructStoneOptions(store, stone);
     if (stone.config.applianceId) {
-      let device = state.groups[this.props.groupId].appliances[stone.config.applianceId];
-      options = this.constructOptions(store, device, stone);
+      let appliance = state.groups[this.props.groupId].appliances[stone.config.applianceId];
+      applianceOptions = this.constructApplianceOptions(store, appliance, stone.config.applianceId);
     }
-    else {
-      options = this.constructOptions(store, stone, stone);
-    }
-
 
     return (
       <Background>
         <ScrollView>
-          <ListEditableItems items={options} separatorIndent={true}/>
+          <FadeInView visible={!this.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
+            <ListEditableItems items={applianceOptions} separatorIndent={true}/>
+          </FadeInView>
+          <FadeInView visible={this.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={200}>
+            <ListEditableItems items={stoneOptions} separatorIndent={false}/>
+          </FadeInView>
         </ScrollView>
       </Background>
     )

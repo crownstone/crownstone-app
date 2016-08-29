@@ -11,7 +11,7 @@ import {
 import { AnimatedLogo }       from './animated/AnimatedLogo'
 import { AnimatedLoadingBar } from './animated/AnimatedLoadingBar'
 import { FadeInView }         from './animated/FadeInView'
-import { styles, colors , height, width } from './../styles'
+import { styles, colors , screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/eventBus'
 
 export class Processing extends Component {
@@ -69,7 +69,7 @@ export class Processing extends Component {
     return (
       <FadeInView
         style={[styles.fullscreen, {backgroundColor:'rgba(0,0,0,0.75)',justifyContent:'center', alignItems:'center'}]}
-        height={height}
+        height={screenHeight}
         duration={200}
         visible={this.state.visible}>
         <View style={{width: 200, height:120, alignItems:'center', justifyContent:'center'}} >

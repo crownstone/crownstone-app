@@ -18,26 +18,13 @@ import { RoomLayer } from './RoomLayer'
 import { hsv2rgb, hsl2rgb, hcl2rgb } from '../../util/colorConverters'
 import { getPresentUsersFromState, getCurrentPowerUsageFromState } from '../../util/dataUtil'
 
-import { styles, colors, width, height } from '../styles'
+import { styles, colors, width, screenHeight } from '../styles'
 
 
 export class GroupOverview extends Component {
   constructor() {
     super();
     this.state = {presentUsers: {}};
-
-    this.roomRadius = 0.35*0.5*width;
-    this.userDiameter = 25;
-    let availableSpace = (height - 175) - this.roomRadius; // for top bar and menu bar
-
-    this.roomPositions = {
-      locationId_A: {x:0.10*width, y:0.12*availableSpace},
-      locationId_D: {x:0.55*width, y:0.25*availableSpace},
-      locationId_B: {x:0.08*width, y:0.90*availableSpace},
-      locationId_C: {x:0.60*width, y:0.75*availableSpace}
-    };
-
-    this.presentUsers = {}
   }
 
   componentDidMount() {
@@ -99,7 +86,7 @@ export class GroupOverview extends Component {
     //   // update the users
       return (
         <Background background={require('../../images/mainBackgroundLight.png')}>
-          <RoomLayer store={store} />
+          <RoomLayer store={store} groupId={state.app.activeGroup} />
         </Background>
       )
     // }

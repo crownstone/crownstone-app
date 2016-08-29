@@ -15,7 +15,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
-import { styles, colors, width, height } from './../styles'
+import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 export class SetupAddPlugInStep1 extends Component {
   render() {
@@ -35,7 +35,7 @@ export class SetupAddPlugInStep1 extends Component {
           <Text style={setupStyle.information}>Make sure there is nothing is plugged into the Crownstone.</Text>
           <View style={{flex:1}} />
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Image source={require('../../images/lineDrawings/pluggingInPlug.png')} style={{width:imageSize*height, height:imageSize*height}} />
+            <Image source={require('../../images/lineDrawings/pluggingInPlug.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
           </View>
           <View style={{flex:1}} />
           <View style={setupStyle.lineDistance} />

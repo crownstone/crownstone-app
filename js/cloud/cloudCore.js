@@ -4,6 +4,7 @@ import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
 
 import { prepareEndpointAndBody } from './cloudUtil'
+import { safeMoveFile } from '../util/util'
 
 /**
  *
@@ -114,12 +115,12 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
           resolve(null);
         }
         else {
-          RNFS.moveFile(tempPath, toPath)
-            .then(() => {
+          safeMoveFile(tempPath,toPath)
+            .then((toPath) => {
               // if we have renamed the file, we resolve the promise so we can store the changed filename.
               successCallback();
               resolve(toPath);
-            });
+            })
         }
       }).catch(reject)
   });

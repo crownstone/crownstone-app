@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 import { Scene, Router, Actions } from 'react-native-router-flux';
-import { store, storeInitialized } from './store/store'
+import { StoreManager }           from './store/store'
 import { NativeBridge }           from '../native/NativeBridge'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
@@ -25,8 +25,9 @@ import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
 import { AdvertisementManager }   from '../logic/CrownstoneControl'
 import { styles, colors }         from '../views/styles'
-
 import { Icon } from '../views/components/Icon';
+
+let store = {};
 
 class TabIcon extends Component {
   render(){
@@ -75,7 +76,7 @@ var removeAllPresentUsers = function(store) {
   })
 };
 
-var clearAllPowerusage = function(store) {
+var clearAllCurrentPowerUsage = function(store) {
   const state = store.getState();
   let groups = state.groups;
   let groupIds = Object.keys(groups);
@@ -95,55 +96,77 @@ export class AppRouter extends Component {
     this.unsubscribe = [];
   }
 
+
+
   componentDidMount() {
+    // check what we should do with this data.
+    let interpretData = () => {
+      store = StoreManager.getStore();
+      if (store.hasOwnProperty('getState')) {
+        dataLoginValidation()
+      }
+      else {
+        this.setState({storeInitialized:true, loggedIn:false});
+      }
+
+      this.unsubscribe.forEach((callback) => {callback()});
+      this.unsubscribe = [];
+    };
+
+    // if there is a user that is listed as logged in, verify his account.
     let dataLoginValidation = () => {
       let state = store.getState();
 
-      // if we have an accessToken, we proceed with logging in automatically
+      // pass the store to the singletons
+      NativeBridge.loadStore(store);
+      AdvertisementManager.loadStore(store);
+      removeAllPresentUsers(store);
+      clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
+
+      // TODO: restore validation
+      // // if we have an accessToken, we proceed with logging in automatically
       if (state.user.accessToken !== undefined) {
-
-        // in the background we check if we're authenticated, if not we log out.
-        CLOUD.setAccess(state.user.accessToken);
-        CLOUD.getUserData({background:true})
-          .then((reply) => {
-            console.log("received verification", reply)
-          })
-          .catch((reply) => {
-            console.log("received ERROR", reply);
-            if (reply.status === 401) {
-              logOut();
-              Alert.alert("Please log in again.", undefined, [{text:'OK'}])
-            }
-          });
-
-        this.setState({initialized:true, loggedIn:true});
+      //   // in the background we check if we're authenticated, if not we log out.
+      //   CLOUD.setAccess(state.user.accessToken);
+      //   CLOUD.getUserData({background:true})
+      //     .then((reply) => {
+      //       console.log("received verification", reply)
+      //     })
+      //     .catch((reply) => {
+      //       console.log("received ERROR", reply);
+      //       if (reply.status === 401) {
+      //         logOut();
+      //         Alert.alert("Please log in again.", undefined, [{text:'OK'}])
+      //       }
+      //     });
+      //
+        this.setState({storeInitialized:true, loggedIn:true});
       }
       else {
-        this.setState({initialized:true, loggedIn:false});
+        this.setState({storeInitialized:true, loggedIn:false});
       }
     };
 
     // there can be a race condition where the event has already been fired before this module has initialized
     // This check is to ensure that it doesn't matter what comes first.
-    if (storeInitialized === true) {
-      // give the native bridge a reference to the store
-      NativeBridge.loadStore(store);
-      AdvertisementManager.loadStore(store);
-      removeAllPresentUsers(store);
-      clearAllPowerusage(store);
-      dataLoginValidation();
+    if (StoreManager.isInitialized === true) {
+      interpretData();
     }
     else
-      this.unsubscribe.push(eventBus.on('storeInitialized', dataLoginValidation));
+      this.unsubscribe.push(eventBus.on('storeInitialized', interpretData));
   }
 
   componentWillUnmount() { // cleanup
+    this.cleanUp()
+  }
+
+  cleanUp() {
     this.unsubscribe.forEach((callback) => {callback()});
     this.unsubscribe = [];
   }
 
   render() {
-    if (this.state.initialized === true) {
+    if (this.state.storeInitialized === true) {
       return (
         <View style={{flex:1}}>
           <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
@@ -165,7 +188,8 @@ export class AppRouter extends Component {
               <Scene key="setupAddPlugInStepRecover"  component={Views.SetupAddPlugInStepRecover}  hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />
               <Scene key="roomTraining"               component={Views.SettingsRoomTraining}       hideNavBar={true} direction="vertical" title="Training" />
-              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true} direction="vertical" title="Pick an Icon" />
+              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
               <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>

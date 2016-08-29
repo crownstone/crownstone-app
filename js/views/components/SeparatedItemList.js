@@ -41,6 +41,9 @@ export class SeparatedItemList extends Component {
 
     
     if (Array.isArray(items)) {
+      if (items.length == 0)
+        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} />);
+      
       items.forEach((item, index) => {
         iterator(
           (index === 0 ? undefined : items[index-1]),
@@ -52,6 +55,9 @@ export class SeparatedItemList extends Component {
     }
     else if (typeof items === 'object') {
       let keys = Object.keys(items).sort();
+      if (keys.length == 0) {
+        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} />);
+      }
       keys.forEach((itemId, index) => {
         iterator(
           (index === 0 ? undefined : items[keys[index-1]]),

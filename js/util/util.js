@@ -1,8 +1,9 @@
 import { Alert } from 'react-native';
 import { DEBUG } from '../ExternalConfig'
-import { store } from '../router/store/store'
+import { StoreManager } from '../router/store/store'
 import { Actions } from 'react-native-router-flux';
-import { styles, colors , width, height, pxRatio } from '../views/styles'
+import { userLogOut } from '../router/store/store';
+import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'
 
@@ -49,10 +50,7 @@ export const removeAllFiles = function() {
 
 export const logOut = function() {
   Actions.loginSplash();
-  store.dispatch({
-    type:'USER_LOG_OUT'
-  });
-  removeAllFiles();
+  StoreManager.userLogOut();
 };
 
 export const processImage = function(picture, targetFilename) {
@@ -60,7 +58,7 @@ export const processImage = function(picture, targetFilename) {
     if (picture !== undefined) {
       let path = RNFS.DocumentDirectoryPath + '/' + targetFilename;
       let resizedUri = undefined;
-      ImageResizer.createResizedImage(picture, width * pxRatio * 0.5, height * pxRatio * 0.5, 'JPEG', 90)
+      ImageResizer.createResizedImage(picture, width * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90)
         .then((resizedImageUri) => {
           resizedUri = resizedImageUri;
           return safeDeleteFile(path);
@@ -79,6 +77,18 @@ export const processImage = function(picture, targetFilename) {
       resolve();
     }
   })
+};
+
+export const safeMoveFile = function(from,to) {
+  return safeDeleteFile(to)
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        RNFS.moveFile(from, to)
+          .then(() => {
+            resolve(to);
+          });
+      })
+    })
 };
 
 export const safeDeleteFile = function(uri) {

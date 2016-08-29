@@ -1,7 +1,6 @@
-import React, { Component } from 'react' 
+import React, { Component } from 'react'
 import {
   Animated,
-  
 } from 'react-native';
 
 export class SlideInView extends Component {
@@ -15,10 +14,10 @@ export class SlideInView extends Component {
   componentWillUpdate(nextProps) {
     if (this.visible !== nextProps.visible) {
       if (nextProps.visible === true) {
-        Animated.timing(this.state.viewHeight, {toValue: nextProps.height, duration:200}).start();
+        Animated.timing(this.state.viewHeight, {toValue: nextProps.height, duration:this.props.duration || 200}).start();
       }
       else {
-        Animated.timing(this.state.viewHeight,  {toValue: 0, duration:200}).start();
+        Animated.timing(this.state.viewHeight,  {toValue: 0, duration:this.props.duration || 200}).start();
       }
       this.visible = nextProps.visible;
     }

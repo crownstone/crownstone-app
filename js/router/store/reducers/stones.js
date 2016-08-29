@@ -5,7 +5,7 @@ import { updateToggleState, toggleState } from './shared'
 let defaultSettings = {
   config: {
     name: undefined,
-    icon: 'ios-outlet',
+    icon: 'c2-plugin',
     applianceId: null,
     locationId: null,
     macAddress: undefined,

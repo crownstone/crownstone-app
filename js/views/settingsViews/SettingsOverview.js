@@ -25,7 +25,6 @@ export class SettingsOverview extends Component {
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup || Object.keys(state.groups)[0];
     let items = [];
     items.push({type:'explanation', label:'DEBUG: Disable the localization updates', bottom:'false'});
     items.push({type:'switch', label: 'Enable Localization', value: state.app.enableLocalization,
@@ -82,7 +81,7 @@ export class SettingsOverview extends Component {
   _logoutPopup() {
     Alert.alert('Log out','Are you sure?',[
       {text: 'Cancel', style: 'cancel'},
-      {text: 'OK', onPress: logOut}
+      {text: 'OK', onPress: () => {logOut(this.props.eventBus)}}
     ])
   }
 

@@ -72,7 +72,7 @@
 //
 // const ImageHueBlend = GL.createComponent(
 //   ({ r, g, b, blendFactor, image }) =>
-//     <GL.Node shader={shaders.imageHueBlend} uniforms={{ r, g, b, blendFactor, image, inputW:image.width, inputH:image.height }} />
+//     <GL.Node shader={shaders.imageHueBlend} uniforms={{ r, g, b, blendFactor, image, inputW:image.width, inputH:image.screenHeight }} />
 // );
 //
 // const CircleCrop = GL.createComponent(
@@ -90,7 +90,7 @@
 //     this.props.goto('RoomOverview')
 //   }
 //
-//   _getImage() {
+//   getCircle() {
 //     let borderWidth = this.props.radius / 15;
 //     let innerDiameter = 2*this.props.radius - 2 * borderWidth;
 //     let outerDiameter = 2*this.props.radius;
@@ -100,7 +100,7 @@
 //       return (
 //         <View style={{
 //             width: outerDiameter,
-//             height: outerDiameter,
+//             screenHeight: outerDiameter,
 //             backgroundColor:'transparent'
 //           }}>
 //           <View style={{
@@ -108,12 +108,12 @@
 //             borderColor:this.props.borderColor || '#ffffff',
 //             borderRadius:outerDiameter,
 //             width: outerDiameter,
-//             height: outerDiameter,
+//             screenHeight: outerDiameter,
 //             backgroundColor:`rgb(${this.props.color.r},${this.props.color.g},${this.props.color.b})`
 //           }}>
 //             <Surface
 //               width={innerDiameter}
-//               height={innerDiameter}
+//               screenHeight={innerDiameter}
 //               backgroundColor='transparent'>
 //               <CircleCrop>
 //                 <ImageHueBlend
@@ -132,7 +132,7 @@
 //             left:0,
 //             backgroundColor:'transparent',
 //             width:outerDiameter,
-//             height:outerDiameter,
+//             screenHeight:outerDiameter,
 //             alignItems:'center',
 //             justifyContent:'center'
 //             }}>
@@ -143,7 +143,7 @@
 //             top:-(1.4 + offset)*outerDiameter,
 //             backgroundColor:'transparent',
 //             width:outerDiameter,
-//             height:(0.4+offset)*outerDiameter,
+//             screenHeight:(0.4+offset)*outerDiameter,
 //             alignItems:'center',
 //             justifyContent:'center'
 //             }}>
@@ -156,7 +156,7 @@
 //       return (
 //         <View style={{
 //             width: outerDiameter,
-//             height: outerDiameter,
+//             screenHeight: outerDiameter,
 //             backgroundColor:'transparent'
 //           }}>
 //         <View style={{
@@ -164,7 +164,7 @@
 //             borderColor:this.props.borderColor || '#ffffff',
 //             borderRadius:outerDiameter,
 //             width: outerDiameter,
-//             height: outerDiameter,
+//             screenHeight: outerDiameter,
 //             backgroundColor:`rgb(${this.props.color.r},${this.props.color.g},${this.props.color.b})`
 //           }}>
 //           <View style={{
@@ -173,7 +173,7 @@
 //               left:-borderWidth,
 //               backgroundColor:'transparent',
 //               width:outerDiameter,
-//               height:outerDiameter,
+//               screenHeight:outerDiameter,
 //               alignItems:'center',
 //               justifyContent:'center'
 //               }}>
@@ -185,7 +185,7 @@
 //               left:-borderWidth,
 //               backgroundColor:'transparent',
 //               width:outerDiameter,
-//               height:(0.4+offset)*outerDiameter,
+//               screenHeight:(0.4+offset)*outerDiameter,
 //               alignItems:'center',
 //               justifyContent:'center'
 //               }}>
@@ -202,6 +202,6 @@
 //       position:'absolute',
 //       top:this.props.pos.y,
 //       left:this.props.pos.x,
-//     }}>{this._getImage()}</View>
+//     }}>{this.getCircle()}</View>
 //   }
 // }

@@ -1,3 +1,5 @@
+import { NO_LOCATION_NAME } from '../ExternalConfig'
+
 export const getStonesFromState = function(state, groupId, locationId) {
   let filteredStones = {};
   if (groupId !== undefined) {
@@ -13,9 +15,45 @@ export const getStonesFromState = function(state, groupId, locationId) {
   return filteredStones;
 };
 
+export const getAmountOfStonesInLocation = function(state, groupId, locationId) {
+  let counter = 0;
+  if (groupId !== undefined) {
+    let stones = state.groups[groupId].stones;
+    for (let stoneId in stones) {
+      if (stones.hasOwnProperty(stoneId)) {
+        if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
+          counter += 1;
+        }
+      }
+    }
+  }
+  return counter;
+}
+
+export const getOrphanedStones = function(state, groupId) {
+  let filteredStones = [];
+  if (groupId !== undefined) {
+    let stones = state.groups[groupId].stones;
+    for (let stoneId in stones) {
+      if (stones.hasOwnProperty(stoneId)) {
+        if (stones[stoneId].config.locationId === null || stones[stoneId].config.locationId === undefined) {
+          filteredStones[stoneId] = (stones[stoneId]);
+        }
+      }
+    }
+  }
+  return filteredStones;
+};
+
+
 export const getPresentUsersFromState = function(state, groupId, locationId, all = false) {
-  const location = state.groups[groupId].locations[locationId];
   let users = [];
+  if (locationId === null) {
+    return users;
+  }
+
+  const location = state.groups[groupId].locations[locationId];
+
   let presentUsers = location.presentUsers;
   if (all) {
     presentUsers = Object.keys(state.groups[groupId].users)
@@ -26,6 +64,7 @@ export const getPresentUsersFromState = function(state, groupId, locationId, all
 
   return users
 };
+
 
 export const getCurrentPowerUsageFromState = function(state, groupId, locationId) {
   let usage = 0;
@@ -57,6 +96,7 @@ export const getGroupContentFromState = function(state, groupId) {
   return items;
 };
 
+
 export const getRoomContentFromState = function(state, groupId, locationId) {
   let stones = getStonesFromState(state, groupId, locationId);
   let appliances = state.groups[groupId].appliances;
@@ -73,6 +113,7 @@ export const getRoomContentFromState = function(state, groupId, locationId) {
   }
   return items;
 };
+
 
 export const getRoomNames = function(state, groupId) {
   let roomNames = {};
@@ -97,6 +138,7 @@ export const userIsAdmin = function(state) {
   return false;
 };
 
+
 export const getGroupsWhereIHaveAccessLevel = function(state, accessLevel) {
   let items = [];
   for (let groupId in state.groups) {
@@ -108,7 +150,8 @@ export const getGroupsWhereIHaveAccessLevel = function(state, accessLevel) {
     }
   }
   return items;
-}
+};
+
 
 export const getMyLevelInGroup = function(state, groupId) {
   let userId = state.user.userId;
@@ -116,14 +159,37 @@ export const getMyLevelInGroup = function(state, groupId) {
   return state.groups[groupId].users[userId].accessLevel;
 };
 
+
 export const userInGroups = function(state) {
   return Object.keys(state.groups).length > 0;
 };
+
 
 export const getGroupName = function(state, id) {
   return state.groups[id].config.name;
 };
 
+
 export const getRoomName = function(state, groupId, locationId) {
+  if (locationId === null) {
+    return NO_LOCATION_NAME;
+  }
   return state.groups[groupId].locations[locationId].config.name;
 };
+
+
+export const getRoomIdFromName = function(state, groupId, locationName) {
+  if (locationName === NO_LOCATION_NAME) {
+    return null;
+  }
+  let locations = state.groups[groupId].locations;
+  for (let locationId in locations) {
+    if (locations.hasOwnProperty(locationId)) {
+      if (locations[locationId].config.name == locationName) {
+        return locationId;
+      }
+    }
+  }
+  return false;
+};
+

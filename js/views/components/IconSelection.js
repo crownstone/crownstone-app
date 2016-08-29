@@ -11,13 +11,22 @@ import {
 
 import { styles, colors, width } from '../styles'
 
+import { SlideInView } from './animated/SlideInView'
+import { NavigationBar } from './editComponents/NavigationBar'
+import { Separator } from './Separator'
 import { CustomIcon } from '../../fonts/customIcons'
 
 let borderColor = 'rgba(0,0,0,0.1)';
+let rowHeight = 90;
 
 export class IconSelection extends Component {
-  constructor() {
+  constructor(props) {
     super();
+
+    this.state = {};
+    props.categories.forEach((category) => {
+      this.state[category.key] = false;
+    })
   }
 
   _getIcons() {
@@ -31,14 +40,19 @@ export class IconSelection extends Component {
 
   _getCategory(category) {
     let icons = this.props.icons[category.key];
+    let heightWhenVisible =  Math.ceil(icons.length/3) * (rowHeight + 1);
 
     return (
       <View key={category.key}>
-        <View style={{backgroundColor:'#fff', padding:5, paddingTop:15}}>
-          <Text style={{fontWeight:'100', fontSize:15}}>{category.label}</Text>
-        </View>
-        <View style={{height:1, flex:1, backgroundColor: borderColor}} />
-        {this._getIconRows(icons)}
+        <NavigationBar label={category.label} arrowDown={this.state[category.key]} callback={() => {
+          let newState = {};
+          newState[category.key] = !this.state[category.key];
+          this.setState(newState)
+        }} />
+        <Separator fullLength={true} />
+        <SlideInView visible={this.state[category.key]} height={heightWhenVisible} duration={300}>
+          {this._getIconRows(icons)}
+        </SlideInView>
       </View>
     )
   }
@@ -75,7 +89,7 @@ export class IconSelection extends Component {
   _getIcon(icons, iconIndex) {
     if (iconIndex < icons.length) {
       return <TouchableOpacity
-        style={[styles.centered, {height:90, flex:1}, this.props.selectedIcon === icons[iconIndex] ? {backgroundColor:colors.blue.hex} : undefined]}
+        style={[styles.centered, {height:rowHeight, flex:1}, this.props.selectedIcon === icons[iconIndex] ? {backgroundColor:colors.blue.hex} : undefined]}
         onPress={() => {this.props.callback(icons[iconIndex])}}
       >
         <CustomIcon name={icons[iconIndex]} size={60} color={ this.props.selectedIcon === icons[iconIndex] ? '#fff' : colors.blue.hex} />

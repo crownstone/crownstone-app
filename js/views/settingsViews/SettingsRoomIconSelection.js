@@ -51,7 +51,7 @@ let listOfIcons = {
     'c1-plate2',
     'c1-coffee2',
     'c1-cupboard',
-    'c1-coffee',
+    'c1-coffee1',
     'c1-plate',
     'c1-beer',
     'c1-cocktailGlass2',
@@ -105,7 +105,7 @@ export class SettingsRoomIconSelection extends Component {
         <TopBar
           left={"Back"}
           leftAction={Actions.pop}
-          title="Pick Icon"/>
+          title="Pick an Icon"/>
         <ScrollView>
           <IconSelection
             categories={categories}

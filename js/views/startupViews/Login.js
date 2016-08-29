@@ -17,7 +17,8 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
-import { styles, colors , width, height, pxRatio } from '../styles'
+import { styles, colors , screenWidth, screenHeight, pxRatio } from '../styles'
+import { StoreManager } from '../../router/store/store'
 import RNFS from 'react-native-fs'
 import loginStyles from './LoginStyles'
 
@@ -26,7 +27,6 @@ export class Login extends Component {
     super();
     this.state = {email:'alex@dobots.nl', password:'letmein0'};
     this.progress = 0;
-    // this.state = {email:'', password:''};
   }
 
   resetPopup() {
@@ -83,7 +83,16 @@ export class Login extends Component {
       password: this.state.password,
       onUnverified: unverifiedEmailCallback,
       onInvalidCredentials: invalidLoginCallback,
-    }).then((response) => {this.finalizeLogin(response.id, response.userId);})
+    })
+      .then((response) => {return new Promise((resolve, reject) => {
+        // start the login process from the store manager.
+        StoreManager.userLogIn(response.userId)
+          .then(() => {
+            resolve(response);
+          }).catch((err) => {reject(err)})
+      })})
+      .then((response) => {this.finalizeLogin(response.id, response.userId);})
+      .done()
   }
 
   render() {
@@ -91,13 +100,13 @@ export class Login extends Component {
       <Background hideInterface={true} background={require('../../images/loginBackground.png')}>
         <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
-          <View style={[loginStyles.textBoxView, {width: 0.8*width}]}>
+          <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput style={{flex:1, padding:10}} placeholder='email' placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
           </View>
-          <View style={[loginStyles.textBoxView, {width: 0.8*width}]}>
+          <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput style={{flex:1, padding:10}} secureTextEntry={true} placeholder='password' placeholderTextColor='#888' value={this.state.password} callback={(newValue) => {this.setState({password:newValue});}} />
           </View>
-          <TouchableHighlight style={{borderRadius:20, height:40, width:width*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}><Text style={loginStyles.forgot}>Forgot Password?</Text></TouchableHighlight>
+          <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}><Text style={loginStyles.forgot}>Forgot Password?</Text></TouchableHighlight>
           <View style={loginStyles.loginButtonContainer}>
             <TouchableOpacity onPress={this.attemptLogin.bind(this)}>
               <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
@@ -114,6 +123,7 @@ export class Login extends Component {
       
       let handleFiles = (files) => {
         files.forEach((file) => {
+          console.log("handling file")
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;
@@ -137,7 +147,6 @@ export class Login extends Component {
 
   downloadImage(userId) {
     let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
-    console.log("here", toPath)
     return CLOUD.forUser(userId).downloadProfileImage(toPath);
   }
 
@@ -177,7 +186,6 @@ export class Login extends Component {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received user data.'});
         })
     );
-
 
     // sync groups
     promises.push(
@@ -240,7 +248,10 @@ export class Login extends Component {
     Promise.all(promises).then(() => {
       this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
 
-      // small delay so the user sees "done"
+      // finalize the login due to successful download of data. Enables persistence.
+      StoreManager.finalizeLogIn(userId);
+
+      // set a small delay so the user sees "done"
       setTimeout(() => {
         this.props.eventBus.emit('hideProgress');
 

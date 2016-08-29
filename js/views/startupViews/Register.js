@@ -16,7 +16,7 @@ import { getImageFileFromUser, processImage } from '../../util/util'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors , width, height, pxRatio } from '../styles'
+import { styles, colors , width, screenHeight, pxRatio } from '../styles'
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must not be empty.';

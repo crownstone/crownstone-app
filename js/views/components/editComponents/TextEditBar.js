@@ -99,7 +99,6 @@ export class TextEditBar extends Component {
 
   getTextBlock(verification) {
     return (
-        <View>
         <View style={[styles.listView, {height:this.props.barHeight}]}>
           <Text style={styles.listText}>{this.props.label}</Text>
           <TextEditInput
@@ -111,7 +110,6 @@ export class TextEditBar extends Component {
           />
           {this.getValidationIcons()}
         </View>
-      </View>
     );
   }
 

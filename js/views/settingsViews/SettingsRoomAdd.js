@@ -34,7 +34,7 @@ export class SettingsRoomAdd extends Component {
 
     let items = [];
     items.push({type:'spacer'});
-    items.push({label:'Room Name', type: 'textEdit', value: this.state.name, callback: (newText) => {
+    items.push({label:'Room Name', type: 'textEdit', placeholder:'My New Room', value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
     items.push({label:'Icon', type: 'icon', value: this.state.icon,
@@ -75,7 +75,7 @@ export class SettingsRoomAdd extends Component {
                     store.dispatch({type:'ADD_LOCATION', groupId: this.props.groupId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
                     Actions.pop();
                     Actions.settingsRoom({groupId: this.props.groupId, locationId: reply.id});
-                  }).done()
+                  }).catch((err) => {Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: () => {this.props.eventBus.emit('hideLoading');}}])})
               }}]
             );
           }

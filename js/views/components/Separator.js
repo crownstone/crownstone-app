@@ -1,22 +1,20 @@
 import React, { Component } from 'react' 
 import {
-  
   Dimensions,
   View
 } from 'react-native';
 
-import { styles, colors } from '../styles'
+import { styles, colors, screenWidth } from '../styles'
 
 
 export class Separator extends Component {
   render() {
-    let width = Dimensions.get('window').width;
     if (this.props.fullLength === true)
       return <View style={styles.separator} />
     else {
       return (
         <View style={{backgroundColor:'#ffffff'}}>
-          <View style={[styles.separator, {width:width-15, alignSelf:'flex-end'}]}/>
+          <View style={[styles.separator, {width:screenWidth-15, alignSelf:'flex-end'}]}/>
         </View>
       );
     }

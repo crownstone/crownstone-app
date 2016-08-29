@@ -52,25 +52,16 @@ export class RoomEdit extends Component {
     );
   }
 
-  getTrainingButton(room) {
-    let items = [];
-    // room Name:
-
-    return items;
-  }
-
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
 
     let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
 
-    let training = this.getTrainingButton(room);
     return (
       <Background>
         <ScrollView>
-          <Explanation text='DEVICES IN ROOM:' />
+          <Explanation text='AVAILABLE DEVICES'/>
           <SeparatedItemList items={items} renderer={this._renderer.bind(this)} separatorIndent={false} />
         </ScrollView>
       </Background>

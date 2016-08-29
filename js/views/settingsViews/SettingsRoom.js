@@ -11,23 +11,46 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
-import { DeviceOverview } from '../components/DeviceOverview'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getGroupContentFromState, getRoomName } from './../../util/dataUtil'
+import { IconButton } from '../components/IconButton'
+import { getStonesFromState } from '../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 
 export class SettingsRoom extends Component {
+  constructor() {
+    super();
+    this.deleting = false;
+  }
 
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
+      if (this.deleting === false)
+        this.forceUpdate();
     });
   }
 
   componentWillUnmount() {
     this.unsubscribe();
+  }
+
+  _removeRoom() {
+    const store = this.props.store;
+    const state = store.getState();
+    this.deleting = true;
+
+    let stones = getStonesFromState(state, this.props.groupId, this.props.locationId);
+    Actions.pop();
+    console.log("{groupId: this.props.groupId, locationId: this.props.locationId, type: \"REMOVE_LOCATION\"}")
+    store.dispatch({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
+
+    for (let stoneId in stones) {
+      if (stones.hasOwnProperty(stoneId)) {
+        store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
+      }
+    }
+
   }
 
 
@@ -49,7 +72,7 @@ export class SettingsRoom extends Component {
     }});
 
     items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
-    items.push({label:'Retrain Room', type: 'navigation', callback: () => {
+    items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-signpost" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
       Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => {Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId})}},
@@ -62,7 +85,8 @@ export class SettingsRoom extends Component {
       label: 'Remove Room',
       type: 'button',
       callback: () => {
-        store.dispatch()
+        Alert.alert("Are you sure?","'Removing this Room will make all contained Crownstones floating.'",
+          [{text: "Cancel"}, {text:'OK', onPress: this._removeRoom.bind(this)}])
       }
     });
     items.push({label:'Removing this Room will make all contained Crownstones floating.',  type:'explanation', below:true});

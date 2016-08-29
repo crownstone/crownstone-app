@@ -44,7 +44,7 @@ export class DeviceEntree extends Component {
         borderRadius:30,
         backgroundColor: color,
         }, styles.centered]}>
-        <Icon name={this.props.icon} size={45} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+        <Icon name={this.props.icon} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
       </View>
     );
 

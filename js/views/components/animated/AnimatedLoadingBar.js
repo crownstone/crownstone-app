@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 
-import { styles, colors, width, height} from '../../styles'
+import { styles, colors, screenWidth, screenHeight} from '../../styles'
 
 
 /**
@@ -15,7 +15,7 @@ import { styles, colors, width, height} from '../../styles'
 export class AnimatedLoadingBar extends Component {
   constructor(props) {
     super();
-    this.width = props.width || width * 0.6;
+    this.width = props.width || screenWidth * 0.6;
     this.barHeight = props.height || 30;
     this.borderWidth = 3;
     this.progressTarget = props.progress;

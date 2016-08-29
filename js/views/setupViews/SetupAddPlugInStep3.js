@@ -18,7 +18,7 @@ import { Background } from '../components/Background'
 import { getRoomNames } from '../../util/dataUtil'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
-import { styles, colors, width, height } from './../styles'
+import { styles, colors, width, screenHeight } from './../styles'
 
 
 export class SetupAddPlugInStep3 extends Component {
@@ -134,7 +134,7 @@ export class SetupAddPlugInStep3 extends Component {
     return (
       <View style={{padding:20, paddingRight:0}}>
         <Text style={[setupStyle.information, {paddingLeft:0, fontWeight:'500'}]}>My Rooms:</Text>
-        <ScrollView style={{height:height-440}}>
+        <ScrollView style={{height:screenHeight-440}}>
           {this.getRoomElements()}
           {this.getAddRoomBar()}
         </ScrollView>
@@ -162,7 +162,7 @@ export class SetupAddPlugInStep3 extends Component {
               Alert.alert(
                "Are you sure?","You can always put Crownstones in rooms later through the Crownstone settings. " +
                "Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Group.",
-               [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.tabBar()}}]
+               [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.setupAddPluginStep4()}}]
               );
             }} />
             <View style={{flex:1}} />

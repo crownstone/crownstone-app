@@ -1,4 +1,4 @@
-import { Reducer } from 'react-native-router-flux';
+import { Reducer, ActionConst } from 'react-native-router-flux';
 
 let inTabMenu = (state) => {
   if (state && state.children && state.children.length > 0) {
@@ -35,12 +35,13 @@ let getTabRootName = (state) => {
   return undefined;
 };
 
-export const reducerCreate = params=> {
+export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params);
   return (state, action)=> {
+
     // this part makes sure that when a menuIcon is pressed AND you are already in that menu tree,
     // it goes back to the root of that tree
-    if (action.type === 'jump' && inTabMenu(state)) {
+    if (action.type === ActionConst.JUMP && inTabMenu(state)) {
       let activeTabName = getActiveTabName(state);
       // We only want to reset if the icon is tapped when we're already in the view
       if (activeTabName === action.key) {

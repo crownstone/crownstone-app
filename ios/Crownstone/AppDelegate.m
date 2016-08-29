@@ -12,6 +12,9 @@
 #import "RCTRootView.h"
 #import "RCTSplashScreen.h"
 #import "Crownstone-Swift.h"
+#import <UIKit/UIKitDefines.h>
+#import <UIKit/UIFontDescriptor.h>
+
 
 
 @implementation AppDelegate
@@ -52,7 +55,7 @@
                                                       moduleName:@"Crownstone"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-
+  
   [RCTSplashScreen show:rootView]; //<--- add show SplashScreen
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

@@ -111,7 +111,7 @@ export const fakeStore = {
           config: {
             name: 'Smart Socket #1',
             applianceId: 'applianceId_A',
-            locationId: 'locationId_A',
+            locationId: null,
             macAddress: 'E3:F5:C5:FF:23:40',
             iBeaconMajor: 0,
             iBeaconMinor: 0,

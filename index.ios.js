@@ -9,7 +9,7 @@ import {
 
 import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/eventBus'
-import { colors, height } from './js/views/styles'
+import { colors, screenHeight } from './js/views/styles'
 
 var SplashScreen = require('@remobile/react-native-splashscreen');
 
@@ -30,7 +30,7 @@ class Root extends Component {
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
       let keyboardHeight = 340;
-      let distFromBottom = height - posY;
+      let distFromBottom = screenHeight - posY;
       Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:100}).start()
     }));
     this.unsubscribe.push(eventBus.on('blur', () => {

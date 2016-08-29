@@ -89,17 +89,37 @@ export class DeviceBehaviourEdit extends Component {
     items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
     items.push({label:'If there are still people (from your group) left in the house, this will not be triggered.', type: 'explanation',  below:true});
 
-    // Behaviour for onRoomEnter event
-    eventLabel = 'onRoomEnter';
-    items.push({label:'WHEN YOU ENTER THE ROOM', type: 'explanation',  below:false, style:{paddingTop:0}});
-    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
+    if (stone.config.locationId !== null) {
+      // Behaviour for onRoomEnter event
+      eventLabel = 'onRoomEnter';
+      items.push({label: 'WHEN YOU ENTER THE ROOM', type: 'explanation', below: false, style: {paddingTop: 0}});
+      items.push({
+        label: this._getStateLabel(device, eventLabel),
+        value: this._getDelayLabel(device, eventLabel),
+        type: 'navigation',
+        valueStyle: {color: '#888'},
+        callback: toDeviceStateSetup.bind(this, eventLabel)
+      });
 
-    // Behaviour for onRoomExit event
-    eventLabel = 'onRoomExit';
-    items.push({label:'WHEN YOU LEAVE THE ROOM', type: 'explanation',  below:false});
-    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-    items.push({label:'If there are still people (from your group) left in the room, this will not be triggered.', type: 'explanation',  below:true});
-
+      // Behaviour for onRoomExit event
+      eventLabel = 'onRoomExit';
+      items.push({label: 'WHEN YOU LEAVE THE ROOM', type: 'explanation', below: false});
+      items.push({
+        label: this._getStateLabel(device, eventLabel),
+        value: this._getDelayLabel(device, eventLabel),
+        type: 'navigation',
+        valueStyle: {color: '#888'},
+        callback: toDeviceStateSetup.bind(this, eventLabel)
+      });
+      items.push({
+        label: 'If there are still people (from your group) left in the room, this will not be triggered.',
+        type: 'explanation',
+        below: true
+      });
+    }
+    else {
+      items.push({label: 'Since this Crownstone is not in a room, we cannot give it behaviour for entering or leaving it\'s room.', type: 'explanation', below: false});
+    }
     // Special behaviour cases
     // items.push({label:'SPECIAL CASES', type: 'explanation', style:{paddingTop:0}, below:false});
     // items.push({label:'Only On After Dusk', value: device.behaviour.config.onlyOnAfterDusk , type: 'switch', valueStyle:{color:'#bababa'}, callback:(newValue) => {

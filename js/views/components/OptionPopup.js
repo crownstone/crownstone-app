@@ -11,7 +11,7 @@ import {
 
 import { FadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
-import { styles, colors , height, width } from './../styles'
+import { styles, colors , screenHeight, width } from './../styles'
 import { eventBus } from '../../util/eventBus'
 
 export class OptionPopup extends Component {
@@ -63,7 +63,7 @@ export class OptionPopup extends Component {
     return (
       <FadeInView
         style={[styles.fullscreen, {backgroundColor:'rgba(0,0,0,0.3)'}]}
-        height={height}
+        height={screenHeight}
         visible={this.state.visible}>
 
         <SlideInFromBottomView

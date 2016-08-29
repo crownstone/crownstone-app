@@ -13,6 +13,7 @@ import { ApplianceSelection }        from '../views/deviceViews/ApplianceSelecti
 import { DeviceEdit }                from '../views/deviceViews/DeviceEdit'
 import { DeviceBehaviourEdit }       from '../views/deviceViews/DeviceBehaviourEdit'
 import { DeviceStateEdit }           from '../views/deviceViews/DeviceBehaviourStateEdit'
+import { DeviceIconSelection }       from '../views/deviceViews/DeviceIconSelection'
 import { DelaySelection }            from '../views/deviceViews/DelaySelection'
 import { DeviceScheduleEdit }        from '../views/deviceViews/DeviceScheduleEdit'
 import { DeviceScheduleAdd }         from '../views/deviceViews/DeviceScheduleAdd'
@@ -60,6 +61,7 @@ export const Views = {
   ApplianceSelection,
   DeviceEdit,
   DeviceBehaviourEdit,
+  DeviceIconSelection,
   DeviceStateEdit,
   DelaySelection,
   DeviceScheduleEdit,

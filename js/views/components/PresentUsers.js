@@ -275,9 +275,9 @@ export class PresentUsers extends Component {
     Object.keys(this.positions).forEach((userId) => {
       if (newPositions[userId] === undefined) {
         // add animation to remove user
-        exitAnimations.push(Animated.timing(this.positions[userId].top, {toValue: this.positions[userId].base.y, duration: 200}));
-        exitAnimations.push(Animated.timing(this.positions[userId].left, {toValue: this.positions[userId].base.x, duration: 200}));
-        exitAnimations.push(Animated.timing(this.positions[userId].opacity, {toValue: 0, duration: 200}));
+        Animated.timing(this.positions[userId].top, {toValue: this.positions[userId].base.y, duration: 200}).start();
+        Animated.timing(this.positions[userId].left, {toValue: this.positions[userId].base.x, duration: 200}).start();
+        Animated.timing(this.positions[userId].opacity, {toValue: 0, duration: 200}).start();
         setTimeout(() => {
           delete this.positions[userId];
         },200)
@@ -285,14 +285,14 @@ export class PresentUsers extends Component {
       }
       else if(newPositions[userId].x != this.positions[userId].x || newPositions[userId].y != this.positions[userId].y) {
         // add animation on change of position.
-        exitAnimations.push(Animated.timing(this.positions[userId].left, {toValue: newPositions[userId].x, duration: 200}));
-        exitAnimations.push(Animated.timing(this.positions[userId].top, {toValue: newPositions[userId].y, duration: 200}));
+        exitAnimations.push(Animated.timing(this.positions[userId].left, {toValue: newPositions[userId].x, duration: 200}).start());
+        exitAnimations.push(Animated.timing(this.positions[userId].top, {toValue: newPositions[userId].y, duration: 200}).start());
       }
     });
 
-    if (exitAnimations.length > 0) {
-      Animated.parallel(exitAnimations).start();
-    }
+    // if (exitAnimations.length > 0) {
+    //   Animated.parallel(exitAnimations).start();
+    // }
   }
 
   getUsers() {

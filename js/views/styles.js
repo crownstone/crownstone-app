@@ -2,15 +2,19 @@ import React, { Component } from 'react'
 import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/colorConverters'
 
-export const width = Dimensions.get('window').width;
-export const height = Dimensions.get('window').height;
+export const screenWidth = Dimensions.get('window').width;
+export const screenHeight = Dimensions.get('window').height;
 export const pxRatio = PixelRatio.get();
+
+export let barHeight = 21*pxRatio;
+export let barHeightLarge = 40*pxRatio;
 
 export let colors = {
   menuBackground: {hex:'#00263e'},
   menuText: {hex:'#ffffff'},
   menuTextSelected: {hex:'#2daeff'},
   gray: {hex:'#cccccc'},
+  lightGray: {hex:'#dddddd'},
   purple: {hex:'#8a01ff'},
   blue: {hex:'#0075c9'},
   green: {hex:'#a0eb58'},
@@ -35,8 +39,8 @@ export const styles = StyleSheet.create({
   fullscreen:{
     position:'absolute',
     top:0,left:0,
-    width:width,
-    height:height,
+    width:screenWidth,
+    height:screenHeight,
   },
   centered: {
     alignItems: 'center',
@@ -103,10 +107,10 @@ export const styles = StyleSheet.create({
   shadedStatusBar:{
     backgroundColor:'rgba(0,0,0,0.2)',
     height:20,
-    width:width,
+    width:screenWidth,
   },
   button: {
-    width:0.9*width,
+    width:0.9*screenWidth,
     height:50,
     borderRadius:12,
     backgroundColor:'white',
@@ -115,20 +119,20 @@ export const styles = StyleSheet.create({
     alignItems:'center',
   },
   joinedButton: {
-    width:0.9*width,
+    width:0.9*screenWidth,
     height:101,
     borderRadius:12,
     backgroundColor:'white',
     margin:5,
   },
   joinedButtons:{
-    width:0.9*width,
+    width:0.9*screenWidth,
     height:50,
     justifyContent:'center',
     alignItems:'center',
   },
   joinedButtonSeparator:{
-    width:0.9*width,
+    width:0.9*screenWidth,
     height:1,
     backgroundColor: colors.gray.hex
   },
@@ -141,3 +145,4 @@ export const styles = StyleSheet.create({
     color: colors.menuText.hex,
   }
 });
+

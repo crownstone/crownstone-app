@@ -18,7 +18,7 @@ import { CrownstoneAPI, SetupCrownstone } from '../../native/CrownstoneAPI'
 import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton } from './SetupShared'
-import { styles, colors, width, height } from './../styles'
+import { styles, colors, width, screenHeight } from './../styles'
 
 
 export class SetupAddPlugInStep2 extends Component {
@@ -109,24 +109,28 @@ export class SetupAddPlugInStep2 extends Component {
       });
       this.claimStone(crownstone, cloudResponse.id);
     };
+
+    const processFailure = () => {
+      Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK"}]);
+    };
     CLOUD.createStone(activeGroup, macAddress)
       .then(processSuccess)
       .catch((err) => {
         if (err.status === 422) {
-          console.log("need to get the data from the cloud.",err);
           CLOUD.findStone(macAddress)
             .then((response) => {
-              console.log(response[0])
               if (response.length === 1) {
                 processSuccess(response[0]);
               }
             })
             .catch((err) => {
               console.log("CONNECTION ERROR:",err);
+              processFailure();
             })
         }
         else {
           console.log("CONNECTION ERROR:",err);
+          processFailure();
         }
 
       });
@@ -284,7 +288,7 @@ export class SetupAddPlugInStep2 extends Component {
   }
 
   render() {
-    let imageSize = 0.4*height;
+    let imageSize = 0.4*screenHeight;
     let subSize = (imageSize/500) * 326; // 500 and 326 are the 100% sizes
     let subx = imageSize*0.59;
     let suby = imageSize*0.105;

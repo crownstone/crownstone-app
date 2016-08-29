@@ -46,8 +46,21 @@ export class RoomCircle extends Component {
         return;
       // only redraw if the power usage changes or if the settings of the room change
       const state = store.getState();
-      let usage = getCurrentPowerUsageFromState(state, state.app.activeGroup, this.props.locationId);
-      if (usage !== this.usage || state.groups[state.app.activeGroup].locations[this.props.locationId].config != this.renderState.groups[state.app.activeGroup].locations[this.props.locationId].config) {
+      let usage = getCurrentPowerUsageFromState(state, this.props.groupId, this.props.locationId);
+
+      // in the case the room is deleted, do not redraw.
+      if (this.props.locationId !== null && state.groups[this.props.groupId].locations[this.props.locationId] === undefined) {
+        return;
+      }
+
+      if (this.props.locationId !== null) {
+        if (usage !== this.usage || state.groups[this.props.groupId].locations[this.props.locationId].config != this.renderState.groups[this.props.groupId].locations[this.props.locationId].config) {
+          this.usage = usage;
+          this.color = this._getColor(this.usage);
+          this.forceUpdate();
+        }
+      }
+      else if (usage !== this.usage) {
         this.usage = usage;
         this.color = this._getColor(this.usage);
         this.forceUpdate();
@@ -88,8 +101,8 @@ export class RoomCircle extends Component {
   }
 
 
-  _getImage(room) {
-    // this.usage = 600;
+  getCircle(room) {
+    // this.usage = 2550;
     // this.color = this._getColor(this.usage);
     return (
       <View>
@@ -114,8 +127,9 @@ export class RoomCircle extends Component {
             margin:0,
             justifyContent:'center',
             alignItems:'center'
-          }}>
+          }}><View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
             <Icon name={room.config.icon} size={this.iconSize} color='#ffffff' style={{backgroundColor:'transparent'}} />
+            </View>
             <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{this.usage + " W"}</Text>
           </View>
         </View>
@@ -199,12 +213,19 @@ export class RoomCircle extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.renderState = store.getState();
-    let room = state.groups[state.app.activeGroup].locations[this.props.locationId];
+
+    let room;
+    if (this.props.locationId === null) {
+      room = {config:{icon:'c2-pluginFilled'}}
+    }
+    else {
+      room = state.groups[this.props.groupId].locations[this.props.locationId];
+    }
 
     return (
       <View style={{position:'absolute', top:this.props.pos.y, left:this.props.pos.x}}>
-        {this._getImage(room)}
-        <PresentUsers locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />
+        {this.getCircle(room)}
+        {this.props.locationId === null ? undefined : <PresentUsers locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
       </View>
     )
   }

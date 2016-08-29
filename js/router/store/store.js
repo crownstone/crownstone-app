@@ -5,54 +5,224 @@ import { fakeStore }      from './overrideStore'
 import { eventBus }       from '../../util/eventBus'
 import { OVERRIDE_DATABASE } from '../../ExternalConfig'
 
-let STORAGE_KEY = 'reducerStore';
+class StoreManagerClass {
+  constructor() {
+    this.store = {};
+    this.storeInitialized = false;
 
-export let store = {};
-export let storeInitialized = false;
+    this.storageKey = null;
+    this.storageKeyBase = 'CrownstoneStore_';
+    this.userIdentificationStorageKey = 'CrownstoneLoggedInUser';
 
-let writeTimeout = null;
+    this.writeToDiskTimeout = null;
+    this.unsubscribe = null;
 
-AsyncStorage.getItem(STORAGE_KEY)
-  .then((data) => {
+    this._init();
+  }
 
-    if (data) {
-      data = JSON.parse(data);
-      console.log("DATA FROM STORAGE", data );
-      if (OVERRIDE_DATABASE === true && data && data.user && data.user.firstName === undefined) {
-        console.log("INJECTING FAKE DATA");
-        store = createStore(CrownstoneReducer, fakeStore);
-      }
-      else {
-        store = createStore(CrownstoneReducer, data);
-      }
+  _init() {
+    AsyncStorage.getItem(this.userIdentificationStorageKey) // this will just contain a string of the logged in user.
+      .then((userId) => {
+        this._initializeStore(userId);
+      });
+  }
+
+  _initializeStore(userId) {
+    if (userId === null) {
+      this._setupStore({}, false);
     }
     else {
-      console.log("DATA FROM STORAGE", data );
-      if (OVERRIDE_DATABASE === true) {
-        console.log("INJECTING FAKE DATA");
-        store = createStore(CrownstoneReducer, fakeStore);
-      }
-      else {
-        store = createStore(CrownstoneReducer);
-      }
+      this._setUserStorageKey(userId);
+      AsyncStorage.getItem(this.storageKey)
+        .then((data) => {
+          this._setupStore(data, true);
+        });
+    }
+  }
+
+  _setUserStorageKey(userId) {
+    this.storageKey = this._createUserStorageKey(userId);
+  }
+
+  _createUserStorageKey(userId) {
+    return this.storageKeyBase + userId;
+  }
+
+
+  _handleDEBUG(initialState) {
+    // if (initialState) {
+    //   let data = JSON.parse(initialState);
+    //   if (data.user && data.user.firstName === undefined) {
+    //     if (OVERRIDE_DATABASE === true) {
+    //       console.log("INJECTING FAKE DATA");
+    //       this.store = createStore(CrownstoneReducer, fakeStore);
+    //     }
+    //   }
+    // }
+    // else {
+    //   if (OVERRIDE_DATABASE === true) {
+    //     console.log("INJECTING FAKE DATA");
+    //     this.store = createStore(CrownstoneReducer, fakeStore);
+    //   }
+    // }
+    // // used for DEBUG
+    //
+  }
+
+  /**
+   * actually create the store, either filled with an initial state or empty.
+   * @param initialState
+   * @param enableWriteToDisk
+   * @returns {{}|*}
+   * @private
+   */
+  _setupStore(initialState, enableWriteToDisk) {
+    console.log(initialState)
+    if (initialState && typeof initialState === 'string') {
+      let data = JSON.parse(initialState);
+      this.store = createStore(CrownstoneReducer, data);
+    }
+    else {
+      console.log("Creating an empty database")
+      this.store = createStore(CrownstoneReducer);
     }
 
-    storeInitialized = true;
+    // we now have a functional store!
+    this.storeInitialized = true;
 
-    store.subscribe(() => {
-      if (writeTimeout !== null) {
-        clearTimeout(writeTimeout);
-        writeTimeout = null;
+    // if we are not logged in, the database lives only in memory.
+    if (enableWriteToDisk === true) {
+      this._setupWritingToDisk();
+    }
+
+    // we emit the storeInitialized event just in case of race conditions.
+    eventBus.emit('storeInitialized');
+  }
+
+
+  /**
+   * Setting up persistence including overflow protection.
+   * @private
+   */
+  _setupWritingToDisk() {
+    if (this.unsubscribe !== null) {
+      this.unsubscribe();
+      this.unsubscribe = null;
+    }
+
+    this.unsubscribe = this.store.subscribe(() => {
+      // protect against a LOT of writes at the same time, we only write to disk twice a second max.
+      if (this.writeToDiskTimeout !== null) {
+        clearTimeout(this.writeToDiskTimeout);
+        this.writeToDiskTimeout = null;
       }
-      writeTimeout = setTimeout(() => {
-        writeTimeout = null;
-        let payload = JSON.stringify(store.getState());
-        //console.log("WRITING: ", payload);
-        AsyncStorage.setItem(STORAGE_KEY, payload).done();
+      this.writeToDiskTimeout = setTimeout(() => {
+        this.writeToDiskTimeout = null;
+        // only write to disk if we are LOGGED IN.
+        AsyncStorage.getItem(this.userIdentificationStorageKey)
+          .then((userId) => {
+            if (userId) {
+              let payload = JSON.stringify(this.store.getState());
+              AsyncStorage.setItem(this.storageKey, payload).done();
+            }
+          }).done();
       }, 500);
     });
+  }
 
-    eventBus.emit('storeInitialized');
-    return store;
+  /**
+   * This will get the data of this user from the database in case it is available.
+   * Once we have received it, we will hydrate the store with it.
+   * @param userId
+   */
+  userLogIn(userId) {
+    let storageKey = this._createUserStorageKey(userId);
+    return AsyncStorage.getItem(storageKey)
+      .then((data) => {
+        if (data) {
+          let parsedData = JSON.parse(data);
+          this.store.dispatch({type:"HYDRATE", state: parsedData})
+        }
+      });
+  }
 
-}).done();
+
+  /**
+   * this should be called when the setup procedure has been successful
+   * @param userId
+   * @returns {*|Promise.<TResult>}
+   */
+  finalizeLogIn(userId) {
+    this._setUserStorageKey(userId);
+    // write to database that we are logged in.
+    return AsyncStorage.setItem(this.userIdentificationStorageKey, userId)
+      .then(() => {
+        // we enable persistence.
+        this._setupWritingToDisk();
+
+        // write everything downloaded from the cloud at login to disk.
+        return this._persistToDisk();
+      })
+  }
+
+
+  /**
+   * When we log out, we first write all we have to the disk.
+   */
+  userLogOut() {
+    return new Promise((resolve, reject) => {
+      // will only do something if we are indeed logged in, denoted by the presence of the user key.
+      if (this.storageKey) {
+        // write everything to disk
+        this._persistToDisk()
+          .then(() => {
+            // remove the userId from the logged in user list.
+            return AsyncStorage.setItem(this.userIdentificationStorageKey, "")
+          })
+          .then(() => {
+            // clear the storage key
+            this.storageKey = null;
+
+            // stop writing to disk
+            if (this.writeToDiskTimeout !== null) {
+              clearTimeout(this.writeToDiskTimeout);
+              this.writeToDiskTimeout = null;
+            }
+
+            // stop the subscription
+            if (this.unsubscribe !== null) {
+              this.unsubscribe();
+              this.unsubscribe = null;
+            }
+
+            // now that the store only lived in memory, clear it
+            this.store.dispatch({type: "USER_LOGGED_OUT_CLEAR_STORE"})
+          })
+      }
+      else {
+        resolve();
+      }
+    })
+  }
+
+  _persistToDisk() {
+    if (this.storageKey) {
+      // write everything to disk
+      let payload = JSON.stringify(this.store.getState());
+      return AsyncStorage.setItem(this.storageKey, payload)
+    }
+    else {
+      return new Promise((resolve, reject) => {resolve()});
+    }
+  }
+
+  getStore() {
+    return this.store;
+  }
+
+  isInitialized() {
+    return this.storeInitialized;
+  }
+}
+
+export const StoreManager = new StoreManagerClass();
