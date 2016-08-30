@@ -127,7 +127,7 @@ export class AppRouter extends Component {
       // // if we have an accessToken, we proceed with logging in automatically
       if (state.user.accessToken !== undefined) {
       //   // in the background we check if we're authenticated, if not we log out.
-      //   CLOUD.setAccess(state.user.accessToken);
+        CLOUD.setAccess(state.user.accessToken);
       //   CLOUD.getUserData({background:true})
       //     .then((reply) => {
       //       console.log("received verification", reply)

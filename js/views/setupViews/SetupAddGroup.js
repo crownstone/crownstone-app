@@ -17,7 +17,7 @@ import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
-import { styles, colors, width, height } from './../styles'
+import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 export class SetupAddGroup extends Component {
   constructor() {
@@ -105,7 +105,7 @@ export class SetupAddGroup extends Component {
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.information}>Choose a name for your Group:</Text>
           <View style={[setupStyle.textBoxView,{height:70, backgroundColor:'transparent'}]}>
-            <View style={[setupStyle.textBoxView, {height:40, width: width - 40}]}>
+            <View style={[setupStyle.textBoxView, {height:40, width: screenWidth - 40}]}>
               <TextEditInput style={{flex:1, padding:10}} placeholder="Group name" placeholderTextColor="#888" value={this.state.groupName} callback={(newValue) => {this.setState({groupName:newValue});}} />
             </View>
           </View>

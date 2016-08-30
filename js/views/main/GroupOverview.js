@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   NativeModules,
+  StyleSheet,
   TouchableHighlight,
   Text,
   View
@@ -11,14 +12,11 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 
-import { ProfilePicture } from '../components/ProfilePicture'
 import { Background } from '../components/Background'
-import { RoomCircle } from '../components/RoomCircle'
+import { Icon } from '../components/Icon'
 import { RoomLayer } from './RoomLayer'
-import { hsv2rgb, hsl2rgb, hcl2rgb } from '../../util/colorConverters'
-import { getPresentUsersFromState, getCurrentPowerUsageFromState } from '../../util/dataUtil'
 
-import { styles, colors, width, screenHeight } from '../styles'
+import { styles, colors, screenWidth, screenHeight } from '../styles'
 
 
 export class GroupOverview extends Component {
@@ -60,35 +58,72 @@ export class GroupOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.renderState = state;
-    //
-    // if (state.app.activeGroup === undefined) {
-    //   return (
-    //     <Background background={require('../../images/mainBackgroundLight.png')}>
-    //       <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-    //         <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>Trying to detect Group...</Text>
-    //       </View>
-    //     </Background>
-    //   );
-    // }
-    // else {
-    //   this.activeGroup = state.app.activeGroup;
-    //   const rooms = state.groups[this.activeGroup].locations;
-    //   if (Object.keys(rooms).length === 0) {
-    //     return (
-    //       <Background background={require('../../images/mainBackgroundLight.png')}>
-    //         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-    //           <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>No rooms defined yet.</Text>
-    //           <Text style={{backgroundColor:'transparent', color:'rgba(255,255,255,0.5)', fontSize:30}}>Tap here to add them!</Text>
-    //         </View>
-    //       </Background>
-    //     );
-    //   }
-    //   // update the users
+
+    let groupsAvailable = Object.keys(state.groups).length;
+    let stonesAvailable = 0;
+    let activeGroup = state.app.activeGroup;
+
+    if (groupsAvailable > 0 && activeGroup) {
+      stonesAvailable = Object.keys(state.groups[activeGroup].stones);
+    }
+
+    if (groupsAvailable == 0) {
       return (
         <Background background={require('../../images/mainBackgroundLight.png')}>
-          <RoomLayer store={store} groupId={state.app.activeGroup} />
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Icon name="c1-house" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+            <Text style={overviewStyles.mainText}>No Groups available.</Text>
+            <Text style={overviewStyles.subText}>Go into the settings to create your own Group or wait to be added to those of others.</Text>
+          </View>
         </Background>
-      )
-    // }
+      );
+    }
+    else if (activeGroup) {
+      if (stonesAvailable == 0) {
+        return (
+          <Background background={require('../../images/mainBackgroundLight.png')}>
+            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+              <Icon name="c2-pluginFront" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+              <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
+              <Text style={overviewStyles.subText}>Go into the settings to add Crownstones.</Text>
+              <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
+            </View>
+          </Background>
+        );
+      }
+      else {
+        return (
+          <Background background={require('../../images/mainBackgroundLight.png')}>
+            <RoomLayer store={store} groupId={state.app.activeGroup} />
+            <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
+          </Background>
+        )
+      }
+    }
+    else {
+      return (
+        <Background background={require('../../images/mainBackgroundLight.png')}>
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Icon name="c1-mapPin" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+            <Text style={overviewStyles.mainText}>No Groups in range...</Text>
+          </View>
+        </Background>
+      );
+    }
   }
 }
+
+
+
+
+const overviewStyles = StyleSheet.create({
+  mainText:{
+    backgroundColor:'transparent', textAlign:'center', color:colors.blue.hex, fontSize:25, padding:15, paddingBottom:0
+  },
+  subText: {
+    backgroundColor:'transparent', textAlign:'center', color:colors.blue.hex, fontSize:15, padding:15, paddingBottom:0
+  },
+  bottomText: {
+    position:'absolute', bottom:10, width:screenWidth, backgroundColor:'transparent', textAlign:'center', color:colors.blue.hex, fontSize:12, padding:15, paddingBottom:0
+  }
+});

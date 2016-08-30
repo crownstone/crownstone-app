@@ -41,8 +41,9 @@ export class SettingsCrownstoneOverview extends Component {
     groups.forEach((group) => {
       let stones = getGroupContentFromState(state, group.id);
       let stoneIds = Object.keys(stones);
+
+      items.push({label:"CROWNSTONES IN GROUP: '" + group.name + "'",  type:'explanation', below:false});
       if (stoneIds.length > 0) {
-        items.push({label:"CROWNSTONES IN GROUP '" + group.name + "'",  type:'explanation', below:false});
         stoneIds.forEach((stoneId) => {
           let stone = stones[stoneId];
           let roomName = getRoomName(state, group.id, stone.stone.config.locationId);

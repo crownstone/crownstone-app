@@ -14,11 +14,12 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
+import { Icon } from '../components/Icon'
 import { Background } from '../components/Background'
 import { getRoomNames } from '../../util/dataUtil'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { TextEditInput } from '../components/editComponents/TextEditInput'
-import { styles, colors, width, screenHeight } from './../styles'
+import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 
 export class SetupAddPlugInStep3 extends Component {

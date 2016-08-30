@@ -1,9 +1,30 @@
-import { AsyncStorage }   from 'react-native'
-import { createStore }    from 'redux'
-import CrownstoneReducer  from './reducer'
-import { fakeStore }      from './overrideStore'
-import { eventBus }       from '../../util/eventBus'
-import { OVERRIDE_DATABASE } from '../../ExternalConfig'
+import { AsyncStorage }                    from 'react-native'
+import { createStore }                     from 'redux'
+import CrownstoneReducer                   from './reducer'
+import { fakeStore }                       from './overrideStore'
+import { eventBus }                        from '../../util/eventBus'
+import { OVERRIDE_DATABASE }               from '../../ExternalConfig'
+
+// from https://github.com/tshelburne/redux-batched-actions
+// included due to conflict with compilers
+const BATCH = 'BATCHING_REDUCER.BATCH';
+
+// modified for application
+function batchActions(actions) {
+  return this.dispatch({ type: BATCH, payload: actions });
+}
+
+function enableBatching(reducer) {
+  return function batchingReducer(state, action) {
+    switch (action.type) {
+      case BATCH:
+        return action.payload.reduce(batchingReducer, state); // uses Array.reduce.
+      default:
+        return reducer(state, action);
+    }
+  };
+}
+// ---------------
 
 class StoreManagerClass {
   constructor() {
@@ -77,14 +98,15 @@ class StoreManagerClass {
    * @private
    */
   _setupStore(initialState, enableWriteToDisk) {
-    console.log(initialState)
     if (initialState && typeof initialState === 'string') {
       let data = JSON.parse(initialState);
-      this.store = createStore(CrownstoneReducer, data);
+      this.store = createStore(enableBatching(CrownstoneReducer), data);
+      this.store.batch = batchActions;
     }
     else {
-      console.log("Creating an empty database")
-      this.store = createStore(CrownstoneReducer);
+      console.log("Creating an empty database");
+      this.store = createStore(enableBatching(CrownstoneReducer), {});
+      this.store.batch = batchActions;
     }
 
     // we now have a functional store!
@@ -170,6 +192,8 @@ class StoreManagerClass {
    * When we log out, we first write all we have to the disk.
    */
   userLogOut() {
+    // now that the store only lived in memory, clear it
+    this.store.dispatch({type: "USER_LOGGED_OUT_CLEAR_STORE"})
     return new Promise((resolve, reject) => {
       // will only do something if we are indeed logged in, denoted by the presence of the user key.
       if (this.storageKey) {

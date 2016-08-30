@@ -14,11 +14,11 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
-import { styles, colors, width, screenHeight } from './../styles'
+import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 export class SetupAddPlugInStep4 extends Component {
   render() {
-    let imageSize = 0.35*width;
+    let imageSize = 0.35*screenWidth;
     return (
       <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
         <View style={styles.shadedStatusBar} />
@@ -37,7 +37,11 @@ export class SetupAddPlugInStep4 extends Component {
             </View>
           </TouchableOpacity>
           <View style={{flex:1}} />
-          <TouchableOpacity style={{paddingLeft:30, paddingRight:30}} onPress={() => {Actions.tabBar();}}>
+          <TouchableOpacity style={{paddingLeft:30, paddingRight:30}} onPress={
+            () => {
+              this.props.store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}});
+              Actions.tabBar();
+            }}>
             <View style={styles.rowCentered}>
               <Image source={require('../../images/lineDrawings/getStarted.png')} style={{width:imageSize, height:imageSize}} />
               <View style={{flexDirection:'column', flex:1}}>

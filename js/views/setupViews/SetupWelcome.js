@@ -70,7 +70,10 @@ export class SetupWelcome extends Component {
               Alert.alert(
                 "Are you sure?",
                 "You you can create a Group later in the settings menu or join an existing Group.",
-                [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.tabBar}]
+                [{text:'No'},{text:'Yes, I\'m sure', onPress: () => {
+                  this.props.store.dispatch({type: 'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}});
+                  Actions.tabBar()
+                }}]
               )
               }} />
             <View style={{flex:1}} />

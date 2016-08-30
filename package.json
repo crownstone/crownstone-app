@@ -11,7 +11,7 @@
   "dependencies": {
     "@remobile/react-native-splashscreen": "^1.0.3",
     "react": "15.2.1",
-    "react-native": "^0.32.0",
+    "react-native": "^0.31.0",
     "react-native-art-svg": "^1.1.0",
     "react-native-camera": "git+https://github.com/lwansbrough/react-native-camera.git",
     "react-native-fs": "^1.2.0",

@@ -43,8 +43,8 @@ export class SettingsRoomOverview extends Component {
     groups.forEach((group) => {
       let rooms = state.groups[group.id].locations;
       let roomIds = Object.keys(rooms);
+      items.push({label:"ROOMS IN GROUP '" + group.name + "'",  type:'explanation', below:false});
       if (roomIds.length > 0) {
-        items.push({label:"ROOMS IN GROUP '" + group.name + "'",  type:'explanation', below:false});
         roomIds.forEach((roomId) => {
           let room = rooms[roomId];
           items.push({__item:

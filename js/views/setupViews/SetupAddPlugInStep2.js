@@ -111,7 +111,9 @@ export class SetupAddPlugInStep2 extends Component {
     };
 
     const processFailure = () => {
-      Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK"}]);
+      Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK", onPress:() => {
+        this.setProgress(0);
+      }}]);
     };
     CLOUD.createStone(activeGroup, macAddress)
       .then(processSuccess)

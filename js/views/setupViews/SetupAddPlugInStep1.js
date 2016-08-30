@@ -44,7 +44,7 @@ export class SetupAddPlugInStep1 extends Component {
               Alert.alert(
                 "Are you sure?",
                 "You can always add Crownstones later through the settings menu.",
-                [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.tabBar}]
+                [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.setupAddPluginStep4}]
               )
               }} />
             <View style={{flex:1}} />

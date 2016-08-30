@@ -39,15 +39,17 @@ export class SettingsRoom extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.deleting = true;
+    let reduxActions = [];
 
     let stones = getStonesFromState(state, this.props.groupId, this.props.locationId);
     Actions.pop();
-    console.log("{groupId: this.props.groupId, locationId: this.props.locationId, type: \"REMOVE_LOCATION\"}")
-    store.dispatch({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
 
+    store.dispatch({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
+    reduxActions.push({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"})
     for (let stoneId in stones) {
       if (stones.hasOwnProperty(stoneId)) {
-        store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
+        store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
+        reduxActions.push({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
       }
     }
 

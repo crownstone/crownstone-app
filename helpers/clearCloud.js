@@ -12,7 +12,7 @@ const Promise = require("promise");
 // fucking fetch lib uses its own promises!
 fetch.Promise = Promise;
 
-let token = '5nEe9TjFvYRWlUCK0MdcCJczl4CLwjyVCOhHNWpg4qpBVBB7ERZVDDdnxeiiDP3d';
+let token = 'IXoWq6dQWvHJg1ZLHbDKwprgzKKnRJLtkSgE8QqkwmyxMn9JTcYAzLuAfzpHA4tx';
 let userId = '5747122cfb25ed03000bdc70';
 
 let defaultHeaders = {
@@ -46,7 +46,8 @@ fetch(
   .then(handleInitialReply)
   .then((result) => {
     let data = JSON.parse(result);
-    let groupIds = []
+    let groupIds = [];
+    console.log(data)
     data.forEach((group) => {
       groupIds.push(group.id)
     })

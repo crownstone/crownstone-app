@@ -262,9 +262,6 @@ export class Login extends Component {
           Actions.setupWelcome();
         }
         else {
-          if (state.app.doFirstTimeSetup === true) {
-             store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}})
-          }
           Actions.tabBar();
         }
       }, 50);
