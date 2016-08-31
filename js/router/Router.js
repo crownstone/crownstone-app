@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StoreManager }           from './store/store'
-import { NativeBridge }           from '../native/NativeBridge'
+import { NativeEventsBridge }           from '../native/NativeEventsBridge'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
 import { CLOUD }                  from '../cloud/cloudAPI'
@@ -118,7 +118,7 @@ export class AppRouter extends Component {
       let state = store.getState();
 
       // pass the store to the singletons
-      NativeBridge.loadStore(store);
+      NativeEventsBridge.loadStore(store);
       AdvertisementManager.loadStore(store);
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again

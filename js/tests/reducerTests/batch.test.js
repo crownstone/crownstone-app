@@ -9,3 +9,4 @@ Date.prototype.valueOf = function () {return 1};
 test('Batch testing', function (t) {
   t.end();
 });
+

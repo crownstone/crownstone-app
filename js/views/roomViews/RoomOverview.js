@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 
 import { Background }   from '../components/Background'
-import { DeviceEntree } from '../components/DeviceEntree'
-import { NativeBridge } from '../../native/NativeBridge'
+import { DeviceEntry } from '../components/DeviceEntry'
+import { BleActions, BLEutil } from '../../native/BLEutil'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
 import { AdvertisementManager } from '../../logic/CrownstoneControl'
@@ -45,7 +45,7 @@ export class RoomOverview extends Component {
     return (
       <View key={stoneId + '_entry'}>
         <View style={styles.listView}>
-          <DeviceEntree
+          <DeviceEntry
             name={item.device.config.name}
             icon={item.device.config.icon}
             state={item.stone.state.state}
@@ -54,18 +54,14 @@ export class RoomOverview extends Component {
             control={true}
             pending={this.state.pendingRequests[stoneId] !== undefined}
             dimmable={item.device.config.dimmable}
-            onChange={(newValue) => {
-              this.setRequest(stoneId);
-              let bleState = newValue;
-              let data = {state: newValue};
+            onChange={(switchState) => {
+              this.showPending(stoneId);
+              let data = {state: switchState};
               if (bleState === 0) {
-                bleState = 0;
                 data.currentUsage = 0;
               }
-              else {
-                bleState = 1;
-              }
-              NativeBridge.connectAndSetSwitchState(item.stone.config.uuid, bleState)
+              let proxy = BLEutil.getProxy(item.stone.config.bluetoothId);
+              proxy.perform(BleActions.setSwitchState, switchState)
                 .then(() => {
                   this.props.store.dispatch({
                     type: 'UPDATE_STONE_STATE',
@@ -74,10 +70,10 @@ export class RoomOverview extends Component {
                     data: data
                   });
                   AdvertisementManager.resetData({crownstoneId: stoneId});
-                  this.clearRequest(stoneId);
+                  this.clearPending(stoneId);
                 })
                 .catch((err) => {
-                  this.clearRequest(stoneId);
+                  this.clearPending(stoneId);
                 })
             }}
           />
@@ -86,13 +82,13 @@ export class RoomOverview extends Component {
     );
   }
 
-  setRequest(id) {
+  showPending(id) {
     let pendingRequests = this.state.pendingRequests;
     pendingRequests[id] = true;
     this.setState({pendingRequests:pendingRequests})
   }
 
-  clearRequest(id) {
+  clearPending(id) {
     let pendingRequests = this.state.pendingRequests;
     delete pendingRequests[id];
     this.setState({pendingRequests:pendingRequests})

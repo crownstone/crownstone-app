@@ -16,7 +16,7 @@ import Slider from 'react-native-slider'
 import { styles, colors} from '../styles'
 
 
-export class DeviceEntree extends Component {
+export class DeviceEntry extends Component {
   _pressedDevice() {
     this.props.onChange((this.props.state === 1 ? 0 : 1));
   }
@@ -59,7 +59,7 @@ export class DeviceEntree extends Component {
   }
 
   render() {
-    let content = (
+    return (
       <View style={{flexDirection:'row', padding:10, paddingLeft:0, alignItems:'center', flex:1}}>
         <View style={{paddingRight:20}}>
           {this._getItem()}
@@ -74,6 +74,5 @@ export class DeviceEntree extends Component {
         {this.props.control    === true ? this._getControl() : undefined}
       </View>
     );
-    return content;
   }
 }

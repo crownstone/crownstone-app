@@ -37,7 +37,7 @@ export const getOrphanedStones = function(state, groupId) {
     for (let stoneId in stones) {
       if (stones.hasOwnProperty(stoneId)) {
         if (stones[stoneId].config.locationId === null || stones[stoneId].config.locationId === undefined) {
-          filteredStones[stoneId] = (stones[stoneId]);
+          filteredStones.push(stones[stoneId]);
         }
       }
     }

@@ -55,7 +55,7 @@ export class SettingsCrownstoneOverview extends Component {
               <View style={styles.listView}>
                 <DeviceOverview
                   icon={stone.device.config.icon}
-                  name={stone.stone.config.name}
+                  name={stone.stone.config.name || "Untitled Crownstone"}
                   subtext={'Device: ' + (stone.stone.config.applianceId ? stone.device.config.name : 'Nothing plugged in.')}
                   subtext2={stone.stone.config.locationId === null ? 'Not in a room.' :'In the ' + roomName}
                   navigation={true}

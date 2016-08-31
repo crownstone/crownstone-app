@@ -13,7 +13,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { TopBar } from '../components/Topbar'
-import { NativeBridge } from '../../native/NativeBridge'
+import { NativeEventsBridge } from '../../native/NativeEventsBridge'
 import { Background } from '../components/Background'
 import { colors, width, height } from '../styles'
 import { Icon } from '../components/Icon';
@@ -38,14 +38,14 @@ export class SettingsRoomTraining extends Component {
   start() {
     this.collectedData = [];
     this.setState({text:'initializing', active:true});
-    NativeBridge.stopListeningToLocationUpdates();
-    NativeBridge.startFingerprinting(this.handleCollection.bind(this));
+    NativeEventsBridge.stopListeningToLocationEvents();
+    NativeEventsBridge.startFingerprinting(this.handleCollection.bind(this));
   }
 
   stop(forceAbort = false) {
     if (this.state.active === true || forceAbort) {
-      NativeBridge.startListeningToLocationUpdates();
-      NativeBridge.abortFingerprinting();
+      NativeEventsBridge.startListeningToLocationEvents();
+      NativeEventsBridge.abortFingerprinting();
       this.collectedData = [];
       this.setState({active: false});
     }
@@ -66,8 +66,8 @@ export class SettingsRoomTraining extends Component {
     const store = this.props.store;
     const state = store.getState();
     let groupId = state.app.activeGroup;
-    NativeBridge.finalizeFingerprint(groupId, this.props.locationId);
-    NativeBridge.getFingerprint(groupId, this.props.locationId)
+    NativeEventsBridge.finalizeFingerprint(groupId, this.props.locationId);
+    NativeEventsBridge.getFingerprint(groupId, this.props.locationId)
       .then((result) => {
         console.log("gathered fingerprint:", result);
         store.dispatch({
@@ -77,7 +77,7 @@ export class SettingsRoomTraining extends Component {
           data:{ fingerprintRaw: result }
         });
 
-        NativeBridge.startListeningToLocationUpdates();
+        NativeEventsBridge.startListeningToLocationEvents();
       }).done();
   }
 
@@ -97,12 +97,12 @@ export class SettingsRoomTraining extends Component {
           left={this.state.active ? "Cancel" : "Back"}
           notBack={this.state.active}
           leftAction={this.state.active ? () => {
-            NativeBridge.pauseCollectingFingerprint();
+            NativeEventsBridge.pauseCollectingFingerprint();
             Alert.alert(
               "Do you want to cancel training?",
               "Cancelling the training process will revert it to the way it was before.",
               [
-                {text:'No', onPress: () => { NativeBridge.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+                {text:'No', onPress: () => { NativeEventsBridge.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
                 {text:'Yes', onPress: () => { this.stop(true); Actions.pop(); }}
               ]
             )}

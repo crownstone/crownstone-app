@@ -16,6 +16,9 @@ import { getRoomName, getRoomNames, getRoomIdFromName } from './../../util/dataU
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { NO_LOCATION_NAME } from '../../ExternalConfig'
+import { CLOUD } from '../../cloud/cloudAPI'
+import { BLEutil } from '../../native/BLEutil'
+import { BleActions } from '../../native/Proxy'
 
 export class SettingsCrownstone extends Component {
 
@@ -38,11 +41,9 @@ export class SettingsCrownstone extends Component {
     const store = this.props.store;
     const state = store.getState();
     let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
-    console.log(stone.config.locationId)
-    let roomName = getRoomName(state, this.props.groupId, stone.config.locationId);
-    console.log(roomName)
-    let roomNames = Object.keys(getRoomNames(state, this.props.groupId));
 
+    let roomName = getRoomName(state, this.props.groupId, stone.config.locationId);
+    let roomNames = Object.keys(getRoomNames(state, this.props.groupId));
     roomNames.push(NO_LOCATION_NAME); // add the location for no crownstones.
 
     let options = roomNames.map((roomName) => {return {label:roomName}});
@@ -93,9 +94,17 @@ export class SettingsCrownstone extends Component {
         Alert.alert(
           "Are you sure?",
           "Removing a Crownstone from the group will revert it to it's factory default settings.",
-          [{text:'Cancel'},{text:'Remove', onPress:() => {
-           // TODO: Implement removal from group.
-        }}])
+          [{text: 'Cancel'}, {text: 'Remove', onPress: () => {
+              Alert.alert(
+                "Let\'s get started!",
+                "Please put down your phone so we can remove and reset this Crownstone",
+                [{text: 'Cancel'}, {text: 'Remove', onPress: () => {
+                    this.props.eventBus.emit('showLoading', 'Looking for the Crownstone...');
+                    this._removeCrownstone(stone);
+                }}]
+              )
+          }}]
+        )
       }
     });
     items.push({label:'Removing this Crownstone from its Group will reset it back to factory defaults.',  type:'explanation', below:true});
@@ -103,8 +112,69 @@ export class SettingsCrownstone extends Component {
     return items;
   }
 
+  _removeCrownstone(stone) {
+    BLEutil.detectCrownstone(stone.config.bluetoothId)
+      .then(() => {
+        this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
+        CLOUD.forGroup(this.props.groupId).deleteStone(this.props.stoneId)
+          .then(() => {
+            this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
+            let proxy = BLEutil.getProxy(stone.config.bluetoothId);
+            proxy.perform(BleActions.factoryReset())
+              .then(() => {
+                this._removeCrownstoneFromRedux();
+              })
+              .catch((err) => {
+                this.props.eventBus.emit('showLoading', 'Trying again...');
+                return new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    proxy.perform(BleActions.factoryReset())
+                      .then(() => {
+                        resolve();
+                      })
+                      .catch((err) => {
+                        reject(err);
+                      })
+                  }, 1000);
+                })
+              })
+              .then(() => {
+                this._removeCrownstoneFromRedux();
+              })
+              .catch((err) => {
+                Alert.alert("Encountered a problem.",
+                  "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
+                  "You can recover it using the recovery procedure.", [{text:'OK', onPress: () => {
+                    this.props.eventBus.emit('hideLoading');}
+                  }])
+              })
+          })
+          .catch((err) => {
+            console.log("error while asking the cloud to remove this crownstone", err);
+            Alert.alert("Encountered Cloud Issue.",
+              "We cannot delete this Crownstone in the cloud. Please try again later",
+              [{text:'OK', onPress: () => {
+                this.props.eventBus.emit('hideLoading');}
+              }])
+          })
+
+      })
+      .catch((err) => {
+        Alert.alert("Can't see this one!",
+          "We can't find this Crownstone while scanning. Can you move closer to it and try again?",
+          [{text:'OK', onPress: () => {
+            this.props.eventBus.emit('hideLoading');}
+          }])
+      })
+  }
+
+  _removeCrownstoneFromRedux() {
+    store.dispatch({type: "REMOVE_STONE", groupId: this.props.groupId, stoneId: this.props.stoneId});
+    this.props.eventBus.emit('hideLoading');
+  }
+
   render() {
-    console.log("redrawing corwnsotn")
+    console.log("redrawing Crownstone settings page");
     return (
       <Background>
         <ScrollView>

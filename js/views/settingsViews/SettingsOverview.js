@@ -16,7 +16,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { IconButton } from '../components/IconButton'
-import { NativeBridge } from '../../native/NativeBridge'
+import { NativeEventsBridge } from '../../native/NativeEventsBridge'
 import { userInGroups, userIsAdmin, getGroupName } from '../../util/dataUtil'
 
 
@@ -33,9 +33,9 @@ export class SettingsOverview extends Component {
             type: 'UPDATE_APP_STATE',
             data: {enableLocalization:newValue}
           })
-          NativeBridge.stopListeningToLocationUpdates();
+          NativeEventsBridge.stopListeningToLocationEvents();
           if (newValue === true) {
-            NativeBridge.startListeningToLocationUpdates();
+            NativeEventsBridge.startListeningToLocationEvents();
           }
           this.forceUpdate();
         }

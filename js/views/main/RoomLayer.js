@@ -146,6 +146,7 @@ export class RoomLayer extends Component {
 
 
     let orphanedStones = getOrphanedStones(state, this.props.groupId);
+
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
     let amountOfRooms = roomIdArray.length;
@@ -154,6 +155,7 @@ export class RoomLayer extends Component {
     if (orphanedStones.length > 0) {
       amountOfRooms += 1;
     }
+
     for (let i = 0; i < roomIdArray.length; i++) {
       let amountOfStones = getAmountOfStonesInLocation(state, this.props.groupId, roomIdArray[i]);
       roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], this.props.groupId, amountOfRooms, i, amountOfStones))

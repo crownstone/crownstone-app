@@ -14,7 +14,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
-import { CrownstoneAPI, SetupCrownstone } from '../../native/CrownstoneAPI'
+import { BLEutil, SetupCrownstone } from '../../native/BLEutil'
 import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton } from './SetupShared'
@@ -33,7 +33,8 @@ export class SetupAddPlugInStep2 extends Component {
       fade1: new Animated.Value(1),
     };
     this.imageIn1 = true;
-    setTimeout(() => {this.scanAndRegisterCrownstone();},0);
+    this.unsubscribe = Native
+    // setTimeout(() => {this.scanAndRegisterCrownstone();},0);
   }
 
   switchImages(nextImage) {
@@ -66,22 +67,36 @@ export class SetupAddPlugInStep2 extends Component {
     const state = store.getState();
     let activeGroup = state.app.activeGroup || Object.keys(state.groups)[0];
     let crownstone = undefined;
-    let macAddress = undefined;
 
-    CrownstoneAPI.getNearestSetupCrownstone()
+    BLEutil.getNearestSetupCrownstone()
       .then((foundCrownstone) => {
         crownstone = foundCrownstone;
-        this.setProgress(1);
-        return crownstone.connect();
+        this.interrogateStone(crownstone, activeGroup);
       })
+      .catch((err) => {
+        console.log("error in looking for setup crownstone:",err);
+        Alert.alert("Nothing Found",
+          "We can not find a Crownstone in setup mode. " +
+          "If you are near a Crownstone, please plug it in and out of the power socket and hold your phone close.",
+          [
+            {text:'Cancel', onPress: () => { Actions.pop(); }},
+            {text:'OK', onPress:() => { this.scanAndRegisterCrownstone(); }}
+          ]
+        )
+      })
+
+  }
+
+  interrogateStone(crownstone, activeGroup) {
+    this.setProgress(1);
+    return crownstone.connect()
       .then(() => {
         this.setProgress(2);
-        return crownstone.getMacAddress();
+        return crownstone.getMACAddress();
       })
-      .then((csMacAddress) => {
-        macAddress = csMacAddress;
+      .then((MACAddress) => {
         this.setProgress(3);
-        this.registerStone(crownstone, activeGroup, macAddress);
+        this.registerStone(crownstone, activeGroup, MACAddress);
       })
       .catch((err) => {
         console.log("error connecting to crownstone!", err);
@@ -89,7 +104,7 @@ export class SetupAddPlugInStep2 extends Component {
       })
   }
 
-  registerStone(crownstone, activeGroup, macAddress) {
+  registerStone(crownstone, activeGroup, MACAddress) {
     const {store} = this.props;
     const processSuccess = (cloudResponse) => {
       console.log("received from cloud:",cloudResponse);
@@ -98,10 +113,11 @@ export class SetupAddPlugInStep2 extends Component {
         groupId: activeGroup,
         stoneId: cloudResponse.id,
         data: {
+          name: 'Plug-in Crownstone',
           icon: 'c1-Plugin',
           crownstoneId: cloudResponse.uid,
           bluetoothId:  crownstone.getBluetoothId(),
-          macAddress:   macAddress,
+          macAddress:   MACAddress,
           iBeaconMajor: cloudResponse.major,
           iBeaconMinor: cloudResponse.minor,
           initializedSuccessfully: false
@@ -112,17 +128,17 @@ export class SetupAddPlugInStep2 extends Component {
 
     const processFailure = () => {
       Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK", onPress:() => {
-        this.setProgress(0);
+        this.scanAndRegisterCrownstone();
       }}]);
     };
-    CLOUD.createStone(activeGroup, macAddress)
+    CLOUD.createStone(activeGroup, MACAddress)
       .then(processSuccess)
       .catch((err) => {
         if (err.status === 422) {
-          CLOUD.findStone(macAddress)
-            .then((response) => {
-              if (response.length === 1) {
-                processSuccess(response[0]);
+          CLOUD.findStone(MACAddress)
+            .then((foundCrownstones) => {
+              if (foundCrownstones.length === 1) {
+                processSuccess(foundCrownstones[0]);
               }
             })
             .catch((err) => {
@@ -134,7 +150,6 @@ export class SetupAddPlugInStep2 extends Component {
           console.log("CONNECTION ERROR:",err);
           processFailure();
         }
-
       });
 
   }
@@ -147,24 +162,25 @@ export class SetupAddPlugInStep2 extends Component {
     let stoneData = state.groups[activeGroup].stones[stoneId];
 
     this.setProgress(4);
-    // TODO: CHECK IF WE HAVE TO CONNECT AGAIN.
-    crownstone.writeId(stoneId)
-      .then(() => {return crownstone.writeAdminKey(groupData.adminKey);})
-      .then(() => {return crownstone.writeUserKey(groupData.userKey);})
-      .then(() => {return crownstone.writeGuestKey(groupData.guestKey);})
-      .then(() => {return crownstone.writeMeshAccessAddress(groupData.meshAccessAddress);})
-      .then(() => {return crownstone.writeIBeaconUUID(groupData.iBeaconUUID);})
-      .then(() => {return crownstone.writeIBeaconMajor(stoneData.iBeaconMajor);})
-      .then(() => {return crownstone.writeIBeaconMinor(stoneData.iBeaconMinor);})
+
+    let data = {};
+    data.crownstoneId      = stoneData.crownstoneId;
+    data.adminKey          = groupData.adminKey;
+    data.memberKey         = groupData.memberKey;
+    data.guestKey          = groupData.guestKey;
+    data.meshAccessAddress = groupData.meshAccessAddress;
+    data.ibeaconUUID       = groupData.iBeaconUUID;
+    data.ibeaconMajor      = stoneData.iBeaconMajor;
+    data.ibeaconMinor      = stoneData.iBeaconMinor;
+
+    crownstone.connect()
+      .then(() => { return crownstone.setup(data); })
       .then(() => {
         this.setProgress(5);
-        crownstone.activate().then(() => {
-          this.setProgress(6);
-          setTimeout(() => { Actions.setupAddPluginStep3({stoneId: stoneId}); }, 1800);
-        })
+        setTimeout(() => { this.setProgress(6); }, 300);
+        setTimeout(() => { Actions.setupAddPluginStep3({ stoneId: stoneId }); }, 1800);
       })
       .catch((err) => {
-        //TODO: explore options here.
         console.log("error", err, "ATTEMPT:", attempt);
         Alert.alert("Something went wrong.",'We will try it again.',[
           {text:'Cancel', type:'cancel', onPress: () => {
@@ -175,17 +191,15 @@ export class SetupAddPlugInStep2 extends Component {
           }},
           {text:'OK', onPress: () => {
             this.setProgress(4);
-            crownstone.reset().then(() => {
-              if (attempt < 5) {
-                setTimeout(() => {this.claimStone(crownstone, stoneId, attempt += 1);}, 1000);
-              }
-              else {
-                this.cleanupFailedAttempt(stoneId)
-                  .then(() => {
-                    Actions.setupAddPlugInStepRecover();
-                  }).done();
-              }
-            });
+            if (attempt < 3) {
+              this.claimStone(crownstone, stoneId, attempt += 1);
+            }
+            else {
+              this.cleanupFailedAttempt(stoneId)
+                .then(() => {
+                  Actions.setupAddPlugInStepRecover();
+                }).done();
+            }
           }}
         ]);
       })
@@ -206,10 +220,7 @@ export class SetupAddPlugInStep2 extends Component {
       })
       .catch((err) => {
         console.log("ERROR REMOVING STONE FROM CLOUD.")
-      })
-
-    //TODO: ask user to remove it from the power
-    //TODO: retry
+      });
   }
   
   setProgress(step) {

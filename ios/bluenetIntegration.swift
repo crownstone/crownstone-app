@@ -35,48 +35,82 @@ var GLOBAL_BLUENET : ViewPassThrough?
 
 func getBleErrorString(err: BleError) -> String {
   switch(err) {
-    case .DISCONNECTED:
-      return "DISCONNECTED"
-    case .CONNECTION_CANCELLED:
-      return "CONNECTION_CANCELLED"
-    case .NOT_CONNECTED:
-      return "NOT_CONNECTED"
-    case .NO_SERVICES:
-      return "NO_SERVICES"
-    case .NO_CHARACTERISTICS:
-      return "NO_CHARACTERISTICS"
-    case .SERVICE_DOES_NOT_EXIST:
-      return "SERVICE_DOES_NOT_EXIST"
-    case .CHARACTERISTIC_DOES_NOT_EXIST:
-      return "CHARACTERISTIC_DOES_NOT_EXIST"
-    case .WRONG_TYPE_OF_PROMISE:
-      return "WRONG_TYPE_OF_PROMISE"
-    case .INVALID_UUID:
-      return "INVALID_UUID"
-    case .NOT_INITIALIZED:
-      return "NOT_INITIALIZED"
-    case .CANNOT_SET_TIMEOUT_WITH_THIS_TYPE_OF_PROMISE:
-      return "CANNOT_SET_TIMEOUT_WITH_THIS_TYPE_OF_PROMISE"
-    case .TIMEOUT:
-      return "TIMEOUT"
-    case .DISCONNECT_TIMEOUT:
-      return "DISCONNECT_TIMEOUT"
-    case .CANCEL_PENDING_CONNECTION_TIMEOUT:
-      return "CANCEL_PENDING_CONNECTION_TIMEOUT"
-    case .CONNECT_TIMEOUT:
-      return "CONNECT_TIMEOUT"
-    case .GET_SERVICES_TIMEOUT:
-      return "GET_SERVICES_TIMEOUT"
-    case .GET_CHARACTERISTICS_TIMEOUT:
-      return "GET_CHARACTERISTICS_TIMEOUT"
-    case .READ_CHARACTERISTIC_TIMEOUT:
+  case .DISCONNECTED:
+    return "DISCONNECTED"
+  case .CONNECTION_CANCELLED:
+    return "CONNECTION_CANCELLED"
+  case .NOT_CONNECTED:
+    return "NOT_CONNECTED"
+  case .NO_SERVICES:
+    return "NO_SERVICES"
+  case .NO_CHARACTERISTICS:
+    return "NO_CHARACTERISTICS"
+  case .SERVICE_DOES_NOT_EXIST:
+    return "SERVICE_DOES_NOT_EXIST"
+  case .CHARACTERISTIC_DOES_NOT_EXIST:
+    return "CHARACTERISTIC_DOES_NOT_EXIST"
+  case .WRONG_TYPE_OF_PROMISE:
+    return "WRONG_TYPE_OF_PROMISE"
+  case .INVALID_UUID:
+    return "INVALID_UUID"
+  case .NOT_INITIALIZED:
+    return "NOT_INITIALIZED"
+  case .CANNOT_SET_TIMEOUT_WITH_THIS_TYPE_OF_PROMISE:
+    return "CANNOT_SET_TIMEOUT_WITH_THIS_TYPE_OF_PROMISE"
+  case .TIMEOUT:
+    return "TIMEOUT"
+  case .DISCONNECT_TIMEOUT:
+    return "DISCONNECT_TIMEOUT"
+  case .CANCEL_PENDING_CONNECTION_TIMEOUT:
+    return "CANCEL_PENDING_CONNECTION_TIMEOUT"
+  case .CONNECT_TIMEOUT:
+    return "CONNECT_TIMEOUT"
+  case .GET_SERVICES_TIMEOUT:
+    return "GET_SERVICES_TIMEOUT"
+  case .GET_CHARACTERISTICS_TIMEOUT:
+    return "GET_CHARACTERISTICS_TIMEOUT"
+  case .READ_CHARACTERISTIC_TIMEOUT:
     return "READ_CHARACTERISTIC_TIMEOUT"
-    case .WRITE_CHARACTERISTIC_TIMEOUT:
-      return "WRITE_CHARACTERISTIC_TIMEOUT"
-    case .ENABLE_NOTIFICATIONS_TIMEOUT:
-      return "ENABLE_NOTIFICATIONS_TIMEOUT"
-    case .DISABLE_NOTIFICATIONS_TIMEOUT:
-      return "DISABLE_NOTIFICATIONS_TIMEOUT"
+  case .WRITE_CHARACTERISTIC_TIMEOUT:
+    return "WRITE_CHARACTERISTIC_TIMEOUT"
+  case .ENABLE_NOTIFICATIONS_TIMEOUT:
+    return "ENABLE_NOTIFICATIONS_TIMEOUT"
+  case .DISABLE_NOTIFICATIONS_TIMEOUT:
+    return "DISABLE_NOTIFICATIONS_TIMEOUT"
+  case .CANNOT_WRITE_AND_VERIFY:
+    return "CANNOT_WRITE_AND_VERIFY"
+  case .CAN_NOT_CONNECT_TO_UUID:
+    return "CAN_NOT_CONNECT_TO_UUID"
+  case .INVALID_SESSION_DATA:
+    return "INVALID_SESSION_DATA"
+  case .NO_SESSION_NONCE_SET:
+    return "NO_SESSION_NONCE_SET"
+  case .COULD_NOT_VALIDATE_SESSION_NONCE:
+    return "COULD_NOT_VALIDATE_SESSION_NONCE"
+  case .INVALID_SIZE_FOR_ENCRYPTED_PAYLOAD:
+    return "INVALID_SIZE_FOR_ENCRYPTED_PAYLOAD"
+  case .INVALID_SIZE_FOR_SESSION_NONCE_PACKET:
+    return "INVALID_SIZE_FOR_SESSION_NONCE_PACKET"
+  case .INVALID_PACKAGE_FOR_ENCRYPTION_TOO_SHORT:
+    return "INVALID_PACKAGE_FOR_ENCRYPTION_TOO_SHORT"
+  case .INVALID_KEY_FOR_ENCRYPTION:
+    return "INVALID_KEY_FOR_ENCRYPTION"
+  case .DO_NOT_HAVE_ENCRYPTION_KEY:
+    return "DO_NOT_HAVE_ENCRYPTION_KEY"
+  case .COULD_NOT_ENCRYPT:
+    return "COULD_NOT_ENCRYPT"
+  case .COULD_NOT_ENCRYPT_KEYS_NOT_SET:
+    return "COULD_NOT_ENCRYPT_KEYS_NOT_SET"
+  case .COULD_NOT_DECRYPT_KEYS_NOT_SET:
+    return "COULD_NOT_DECRYPT_KEYS_NOT_SET"
+  case .COULD_NOT_DECRYPT:
+    return "COULD_NOT_DECRYPT"
+  case .CAN_NOT_GET_PAYLOAD:
+    return "CAN_NOT_GET_PAYLOAD"
+  case .USERLEVEL_IN_READ_PACKET_INVALID:
+    return "USERLEVEL_IN_READ_PACKET_INVALID"
+  case .READ_SESSION_NONCE_ZERO_MAYBE_ENCRYPTION_DISABLED:
+    return "READ_SESSION_NONCE_ZERO_MAYBE_ENCRYPTION_DISABLED"
   default:
      return "UNKNOWN_BLE_ERROR \(err)"
   }
@@ -91,6 +125,13 @@ class BluenetJS: NSObject {
 
   @objc func rerouteEvents() {
     if let globalBluenet = GLOBAL_BLUENET {
+      // forward the event streams to react native
+      globalBluenet.bluenet.on("verifiedAdvertisementData", {data -> Void in
+        if let castData = data as? Advertisement {
+          self.bridge.eventDispatcher().sendAppEventWithName("verifiedAdvertisementData", body: castData.stringify())
+        }
+      })
+      
       // forward the event streams to react native
       globalBluenet.bluenet.on("advertisementData", {data -> Void in
         if let castData = data as? Advertisement {
@@ -107,6 +148,18 @@ class BluenetJS: NSObject {
           }
         }
         self.bridge.eventDispatcher().sendAppEventWithName("iBeaconAdvertisement", body: returnArray)
+      })
+      
+      globalBluenet.bluenetLocalization.on("nearestSetupCrownstone", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("nearestSetupCrownstone", body: castData)
+        }
+      })
+      
+      globalBluenet.bluenetLocalization.on("nearestCrownstone", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("nearestCrownstone", body: castData)
+        }
       })
       
       globalBluenet.bluenetLocalization.on("enterGroup", {data -> Void in
@@ -136,6 +189,37 @@ class BluenetJS: NSObject {
       })
      }
   }
+  
+  @objc func setSettings(configJSON: String, callback: RCTResponseSenderBlock) {
+    let data = JSON.parse(configJSON);
+    let encryptionEnabled = data["encryptionEnabled"].bool
+    let adminKey          = data["adminKey"].string
+    let memberKey         = data["memberKey"].string
+    let guestKey          = data["guestKey"].string
+    
+    if (encryptionEnabled != nil && adminKey != nil && memberKey != nil && guestKey != nil) {
+      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled!, adminKey: adminKey!, memberKey: memberKey!, guestKey: guestKey!)
+      GLOBAL_BLUENET!.bluenet.setSettings(settings)
+      callback([["error" : false]])
+    }
+    else {
+      callback([["error" : true, "data": "Missing one of the datafields required for setup."]])
+    }
+  }
+  
+  @objc func isReady(callback: RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.isReady()
+      .then({_ in callback([["error" : false]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN isReady"]])
+        }
+      })
+  }
+
 
   @objc func connect(uuid: String, callback: RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.connect(uuid)
@@ -150,8 +234,21 @@ class BluenetJS: NSObject {
       })
   }
   
-  @objc func disconnect(callback: RCTResponseSenderBlock) {
+  @objc func phoneDisconnect(callback: RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.disconnect()
+      .then({_ in callback([["error" : false]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN phoneDisconnect \(err)"]])
+        }
+      })
+  }
+  
+  @objc func disconnect(callback: RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.disconnect()
       .then({_ in callback([["error" : false]])})
       .error({err in
         if let bleErr = err as? BleError {
@@ -161,11 +258,10 @@ class BluenetJS: NSObject {
           callback([["error" : true, "data": "UNKNOWN ERROR IN disconnect \(err)"]])
         }
       })
-
   }
   
   @objc func setSwitchState(state: NSNumber, callback: RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.setSwitchState(state)
+    GLOBAL_BLUENET!.bluenet.control.setSwitchState(state.floatValue)
       .then({_ in callback([["error" : false]])})
       .error({err in
         if let bleErr = err as? BleError {
@@ -173,32 +269,6 @@ class BluenetJS: NSObject {
         }
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState \(err)"]])
-        }
-      })
-  }
-  
-  @objc func setSwitchStateDemo(state: NSNumber, callback: RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.setSwitchStateDemo(state)
-      .then({_ in callback([["error" : false]])})
-      .error({err in
-        if let bleErr = err as? BleError {
-          callback([["error" : true, "data": getBleErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchStateDemo \(err)"]])
-        }
-      })
-  }
-  
-  @objc func isReady(callback: RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.isReady()
-      .then({_ in callback([["error" : false]])})
-      .error({err in
-        if let bleErr = err as? BleError {
-          callback([["error" : true, "data": getBleErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN isReady"]])
         }
       })
   }
@@ -221,10 +291,21 @@ class BluenetJS: NSObject {
   }
   
 
-  @objc func trackUUID(groupUUID: String, groupId: String) -> Void {
+  @objc func trackIBeacon(groupUUID: String, groupId: String) -> Void {
     print("tracking ibeacons with uuid: \(groupUUID) for group: \(groupId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackUUID(groupUUID, groupId: groupId)
+    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(groupUUID, groupId: groupId)
   }
+  
+  @objc func stopIBeaconTracking() -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.stopTracking()
+    print("stopIBeaconTracking ")
+  }
+  
+  @objc func resumeIBeaconTracking() -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.resumeTracking()
+    print("resumeIBeaconTracking ")
+  }
+  
   
   @objc func startCollectingFingerprint() -> Void {
     GLOBAL_BLUENET!.bluenetLocalization.startCollectingFingerprint()
@@ -235,7 +316,6 @@ class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenetLocalization.abortCollectingFingerprint()
     print("abortCollectingFingerprint ")
   }
-  
   
   @objc func pauseCollectingFingerprint() -> Void {
     GLOBAL_BLUENET!.bluenetLocalization.pauseCollectingFingerprint()
@@ -271,14 +351,90 @@ class BluenetJS: NSObject {
     let fingerprint = Fingerprint(stringifiedData: fingerprint)
     GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(groupId, locationId: locationId, fingerprint: fingerprint)
     print("loadFingerprint \(groupId) \(locationId)")
+  }
+  
+  
+  @objc func factoryReset(callback: RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.control.commandFactoryReset()
+      .then({_ in callback([["error" : false]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN recover"]])
+        }
+      })
+  }
+  
+  
+  @objc func getMACAddress(callback: RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.setup.getMACAddress()
+      .then({(macAddress : String) -> Void in callback([["error" : false, "data": macAddress]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getMACAddress"]])
+        }
+      })
+  }
+  
+  @objc func recover(crownstoneUUID: String, callback: RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.control.recoverByFactoryReset(crownstoneUUID)
+      .then({_ in callback([["error" : false]])})
+      .error({err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN recover"]])
+        }
+      })
+  }
+  
+  @objc func setupCrownstone(configJSON: String, callback: RCTResponseSenderBlock) -> Void {
+    let data = JSON.parse(configJSON);
+    let crownstoneId      = data["crownstoneId"].uInt16
+    let adminKey          = data["adminKey"].string
+    let memberKey         = data["memberKey"].string
+    let guestKey          = data["guestKey"].string
+    let meshAccessAddress = data["meshAccessAddress"].uInt32
+    let ibeaconUUID       = data["ibeaconUUID"].string
+    let ibeaconMajor      = data["ibeaconMajor"].uInt16
+    let ibeaconMinor      = data["ibeaconMinor"].uInt16
     
+    if (crownstoneId != nil &&
+      adminKey != nil &&
+      memberKey != nil &&
+      guestKey != nil &&
+      meshAccessAddress != nil &&
+      ibeaconUUID != nil &&
+      ibeaconMajor != nil &&
+      ibeaconMinor != nil) {
+      GLOBAL_BLUENET!.bluenet.setup.setup(
+        crownstoneId!,
+        adminKey: adminKey!,
+        memberKey: memberKey!,
+        guestKey: guestKey!,
+        meshAccessAddress: meshAccessAddress!,
+        ibeaconUUID: ibeaconUUID!,
+        ibeaconMajor: ibeaconMajor!,
+        ibeaconMinor: ibeaconMinor!)
+        .then({_ in callback([["error" : false]])})
+        .error({err in
+          if let bleErr = err as? BleError {
+            callback([["error" : true, "data": getBleErrorString(bleErr)]])
+          }
+          else {
+            callback([["error" : true, "data": "UNKNOWN ERROR IN setupCrownstone"]])
+          }
+        })
+    }
+    else {
+      callback([["error" : true, "data": "Missing one of the datafields required for setup."]])
+    }
   }
-  
-  @objc func getBLEstate(state: NSNumber, callback: RCTResponseSenderBlock) -> Void {
-    //    self.bluenet.setSwitchState(Float(state))
-    //      .then({_ in callback([["error" : false]])})
-    //      .error({err in callback([["error" : true, "data": 1]])})
-  }
-  
   
 }

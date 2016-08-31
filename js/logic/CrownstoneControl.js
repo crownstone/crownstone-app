@@ -1,78 +1,66 @@
 import { getRoomContentFromState } from '../util/dataUtil'
-import { NativeBridge } from '../native/NativeBridge'
+import { NativeEventsBridge } from '../native/NativeEventsBridge'
+import { CROWNSTONE_SERVICEDATA_UUID } from '../ExternalConfig'
 
-export const reactToEnterRoom = function(store, locationId) {
-  checkBehaviour(store, locationId, 'onRoomEnter');
-};
-export const reactToExitRoom = function(store, locationId) {
-  checkBehaviour(store, locationId, 'onRoomExit');
-};
+// export const reactToEnterRoom = function(store, locationId) {
+//   checkBehaviour(store, locationId, 'onRoomEnter');
+// };
+// export const reactToExitRoom = function(store, locationId) {
+//   checkBehaviour(store, locationId, 'onRoomExit');
+// };
+//
+// function checkBehaviour(store, locationId, type) {
+//   const state = store.getState();
+//   const activeGroup = state.app.activeGroup;
+//   const locations = state.groups[activeGroup].locations;
+//   const locationIds = Object.keys(locations);
+//   const location = locations[locationId];
+//
+//   if (location === undefined) {
+//     console.log("COULD NOT GET LOCATION", locationId);
+//     return;
+//   }
+//   const userId = state.user.userId;
+//   const devices = getRoomContentFromState(state, activeGroup, locationId);
+//
+//   if (type === "onRoomExit") {
+//     if (locations[locationId].presentUsers.indexOf(userId) !== -1) {
+//       store.dispatch({type:"USER_EXIT", groupId: activeGroup, locationId: locationId, data:{userId: userId}})
+//     }
+//   }
+//   else if (type === "onRoomEnter") {
+//
+//     // remove user from other rooms SHOULD NOT BE NEEDED.
+//     // locationIds.forEach((otherLocationId) => {
+//     //   if (otherLocationId !== locationId) {
+//     //     if (locations[otherLocationId].presentUsers.indexOf(userId) !== -1) {
+//     //       store.dispatch({type: "USER_EXIT", groupId: activeGroup, locationId: otherLocationId, data: {userId: userId}})
+//     //     }
+//     //   }
+//     // });
+//     // add user to rooms
+//     if (locations[locationId].presentUsers.indexOf(userId) === -1) {
+//       console.log("dispatching user enter event in", activeGroup, locationId, userId);
+//       store.dispatch({type:"USER_ENTER", groupId: activeGroup, locationId: locationId, data:{userId: userId}})
+//     }
+//   }
+//
+//   let stoneIds = Object.keys(devices);
+//
+//   stoneIds.forEach((stoneId) => {
+//     let device = devices[stoneId].device;
+//     let stone = devices[stoneId].stone;
+//     let behaviour = device.behaviour[type];
+//     //console.log("switching to ",behaviour, devices, stoneId)
+//     if (behaviour.active === true) {
+//     //if (behaviour.active === true && behaviour.state !== stone.state.state) {
+//       let bleState = behaviour.state;
+//       setTimeout(() => {setBehaviour(stone.config.uuid, bleState, type, stoneId);}, behaviour.delay*1000);
+//     }
+//   });
+// }
 
-function checkBehaviour(store, locationId, type) {
-  const state = store.getState();
-  const activeGroup = state.app.activeGroup;
-  const locations = state.groups[activeGroup].locations;
-  const locationIds = Object.keys(locations);
-  const location = locations[locationId];
 
-  if (location === undefined) {
-    console.log("COULD NOT GET LOCATION", locationId);
-    return;
-  }
-  const userId = state.user.userId;
-  const devices = getRoomContentFromState(state, activeGroup, locationId);
-
-  if (type === "onRoomExit") {
-    if (locations[locationId].presentUsers.indexOf(userId) !== -1) {
-      store.dispatch({type:"USER_EXIT", groupId: activeGroup, locationId: locationId, data:{userId: userId}})
-    }
-  }
-  else if (type === "onRoomEnter") {
-
-    // remove user from other rooms SHOULD NOT BE NEEDED.
-    // locationIds.forEach((otherLocationId) => {
-    //   if (otherLocationId !== locationId) {
-    //     if (locations[otherLocationId].presentUsers.indexOf(userId) !== -1) {
-    //       store.dispatch({type: "USER_EXIT", groupId: activeGroup, locationId: otherLocationId, data: {userId: userId}})
-    //     }
-    //   }
-    // });
-    // add user to rooms
-    if (locations[locationId].presentUsers.indexOf(userId) === -1) {
-      console.log("dispatching user enter event in", activeGroup, locationId, userId);
-      store.dispatch({type:"USER_ENTER", groupId: activeGroup, locationId: locationId, data:{userId: userId}})
-    }
-  }
-
-  let stoneIds = Object.keys(devices);
-
-  stoneIds.forEach((stoneId) => {
-    let device = devices[stoneId].device;
-    let stone = devices[stoneId].stone;
-    let behaviour = device.behaviour[type];
-    //console.log("switching to ",behaviour, devices, stoneId)
-    if (behaviour.active === true) {
-    //if (behaviour.active === true && behaviour.state !== stone.state.state) {
-      let bleState = behaviour.state;
-      if (bleState === 0) {
-        bleState = 2;
-      }
-      else {
-        bleState = 3;
-      }
-      setTimeout(() => {setBehaviour(stone.config.uuid, bleState, type, stoneId);}, behaviour.delay*1000);
-    }
-  });
-}
-
-function setBehaviour(uuid, state, type, stoneId) {
-  console.log("Setting behaviour for ",uuid,'to', state,' on event',type, ' @ time:', new Date().valueOf());
-  NativeBridge.connectAndSetSwitchState(uuid, state)
-    .then(()=>{
-      AdvertisementManager.resetData({crownstoneId: stoneId});
-    })
-    .catch(()=>{});
-}
 
 class AdvertisementManagerClass {
   constructor() {
@@ -186,23 +174,18 @@ class AdvertisementManagerClass {
 export const AdvertisementManager = new AdvertisementManagerClass();
 
 
-export const processScanResponse = function(store, packet) {
+export const processScanResponse = function(store, packet = {}) {
   if (packet) {
     packet = JSON.parse(packet);
   }
-  if (packet.serviceData && packet.serviceData["C001"] && packet.serviceData["C001"].crownstoneId) {
+
+  if (packet.isCrownstone === true) {
     const state = store.getState();
     const activeGroup = state.app.activeGroup;
 
-    let serviceData = packet.serviceData["C001"];
+    let serviceData = packet.serviceData[CROWNSTONE_SERVICEDATA_UUID];
     let stoneId = serviceData.crownstoneId;
     let stone = state.groups[activeGroup].stones[stoneId];
-
-    // hack to handle the presence based input.
-    if (serviceData.switchState == 2)
-      serviceData.switchState = 0;
-    if (serviceData.switchState == 3)
-      serviceData.switchState = 1;
 
     // break if a different thing is scanned
     if (stone === undefined) {

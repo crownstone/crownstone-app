@@ -46,7 +46,7 @@ export class DeviceEdit extends Component {
 
       items.push({label:'CROWNSTONE', type: 'explanation',  below:false});
       items.push({
-        label: 'Name', type: 'textEdit', value: stone.config.name, callback: (newText) => {
+        label: 'Name', type: 'textEdit', placeholder:'Choose a nice name', value: stone.config.name, callback: (newText) => {
           store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
         }
       });
@@ -88,7 +88,7 @@ export class DeviceEdit extends Component {
 
     items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
     items.push({
-      label: 'Device Name', type: 'textEdit', value: appliance.config.name, callback: (newText) => {
+      label: 'Device Name', type: 'textEdit', placeholder:'Choose a nice name', value: appliance.config.name, callback: (newText) => {
         store.dispatch({...requiredData, type: 'UPDATE_APPLIANCE_CONFIG', data: {name: newText}});
       }
     });

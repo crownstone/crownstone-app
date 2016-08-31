@@ -2,7 +2,7 @@ import { update, getTime } from './reducerUtil'
 
 let defaultState = {
   app: {
-    activeGroup: undefined,
+    activeGroup: null,
     enableLocalization: true,
     doFirstTimeSetup: true,
     updatedAt: 1
