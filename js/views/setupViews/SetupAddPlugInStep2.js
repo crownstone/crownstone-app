@@ -113,8 +113,7 @@ export class SetupAddPlugInStep2 extends Component {
         groupId: activeGroup,
         stoneId: cloudResponse.id,
         data: {
-          name: 'Plug-in Crownstone',
-          icon: 'c1-Plugin',
+          type: 'plugin_v1',
           crownstoneId: cloudResponse.uid,
           bluetoothId:  crownstone.getBluetoothId(),
           macAddress:   MACAddress,
@@ -131,7 +130,7 @@ export class SetupAddPlugInStep2 extends Component {
         this.scanAndRegisterCrownstone();
       }}]);
     };
-    CLOUD.createStone(activeGroup, MACAddress)
+    CLOUD.createStone(activeGroup, MACAddress, 'plugin_v1')
       .then(processSuccess)
       .catch((err) => {
         if (err.status === 422) {

@@ -48,7 +48,7 @@ export class SettingsGroupUser extends Component {
         this.props.eventBus.emit('showLoading', 'Updating user permissions...');
         CLOUD.forGroup(this.props.groupId).changeUserAccess(this.props.userId, permission)
           .then((result) => {
-            store.dispatch({type: 'UPDATE_USER', groupId: this.props.groupId, userId: this.props.userId, data:{accessLevel: permission}});
+            store.dispatch({type: 'UPDATE_GROUP_USER', groupId: this.props.groupId, userId: this.props.userId, data:{accessLevel: permission}});
           })
           .done(() => {
             this.props.eventBus.emit('hideLoading');

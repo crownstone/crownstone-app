@@ -14,6 +14,7 @@ import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
 import { getStonesFromState } from '../../util/dataUtil'
+import { CLOUD } from '../../cloud/cloudAPI'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 
@@ -39,20 +40,28 @@ export class SettingsRoom extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.deleting = true;
-    let reduxActions = [];
+    this.props.eventBus.emit('showLoading','Removing this room in the Cloud.');
+    CLOUD.forGroup(this.props.groupId).deleteLocation(this.props.locationId)
+      .then(() => {
+        this.props.eventBus.emit('hideLoading');
+        let stones = getStonesFromState(state, this.props.groupId, this.props.locationId);
+        Actions.pop();
 
-    let stones = getStonesFromState(state, this.props.groupId, this.props.locationId);
-    Actions.pop();
-
-    store.dispatch({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
-    reduxActions.push({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"})
-    for (let stoneId in stones) {
-      if (stones.hasOwnProperty(stoneId)) {
-        store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
-        reduxActions.push({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
-      }
-    }
-
+        store.dispatch({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
+        // reduxActions.push({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"})
+        for (let stoneId in stones) {
+          if (stones.hasOwnProperty(stoneId)) {
+            store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
+            // reduxActions.push({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
+          }
+        }
+      })
+      .catch((err) => {
+        this.deleting = false;
+        Alert.alert("Encountered Cloud Issue.",
+          "We cannot delete this Appliance in the Cloud. Please try again later.",
+          [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading');} }])
+      });
   }
 
 

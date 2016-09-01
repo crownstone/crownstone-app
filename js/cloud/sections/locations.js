@@ -11,4 +11,21 @@ export const locations = {
       'body'
     );
   },
-}
+
+  updateLocation: function (locationId, data, background = true) {
+    return this._setupRequest(
+      'PUT',
+      'Groups/{id}/ownedLocations/' + locationId,
+      {background: background, data: data},
+      'body'
+    );
+  },
+
+
+  deleteLocation: function(locationId) {
+    return this._setupRequest(
+      'DELETE',
+      'Groups/{id}/ownedLocations/' + locationId
+    );
+  }
+};

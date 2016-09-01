@@ -144,8 +144,8 @@ export class SettingsCrownstone extends Component {
               .catch((err) => {
                 Alert.alert("Encountered a problem.",
                   "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
-                  "You can recover it using the recovery procedure.", [{text:'OK', onPress: () => {
-                    this.props.eventBus.emit('hideLoading');}
+                  "You can recover it using the recovery procedure.",
+                  [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); }
                   }])
               })
           })

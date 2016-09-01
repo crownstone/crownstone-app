@@ -20,6 +20,11 @@ export default (state = defaultState.app, action = {}) => {
         return newState;
       }
       return state;
+    case 'CLEAR_ACTIVE_GROUP':
+      let newState = {...state};
+      newState.activeGroup = null;
+      newState.updatedAt   = getTime();
+      return newState;
     case 'UPDATE_APP_STATE':
       if (action.data) {
         let newState = {...state};

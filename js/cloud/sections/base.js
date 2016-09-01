@@ -26,6 +26,7 @@ export const base = {
   _groupId: undefined,
   _locationId: undefined,
   _stoneId: undefined,
+  _applianceId: undefined,
   _networkErrorHandler: () => {},
 
   _post: function(options) {
@@ -112,7 +113,7 @@ export const base = {
         if (reply.status === 200 || reply.status === 204)
           resolve(reply.data);
         else
-          debugReject(reply, reject, arguments);
+          this.__debugReject(reply, reject, arguments);
       })
         .catch((error) => {
           //console.trace(error, this);
@@ -134,10 +135,13 @@ export const base = {
   forLocation: function(locationId)  { this._locationId = locationId;   return this; },
   forEvent:    function(eventId)     { this._eventId = eventId;         return this; },
   forDevice:   function(deviceId)    { this._deviceId = deviceId;       return this; },
+  forAppliance:function(applianceId) { this._applianceId = applianceId; return this; },
 
-
-  sync: function() {
-
+  __debugReject: function(reply, reject, debugOptions) {
+    if (DEBUG) {
+      console.log("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
+    }
+    reject(reply);
   }
 };
 
@@ -151,6 +155,10 @@ function _getId(url, obj) {
   let devicesLocation = url.indexOf('Devices');
   if (devicesLocation !== -1 && devicesLocation < 3)
     return obj._deviceId;
+
+  let appliancesLocation = url.indexOf('Appliances');
+  if (appliancesLocation !== -1 && appliancesLocation < 3)
+    return obj._applianceId;
 
   let eventsLocation = url.indexOf('Events');
   if (eventsLocation !== -1 && eventsLocation < 3)
@@ -169,9 +177,3 @@ function _getId(url, obj) {
     return obj._stoneId;
 }
 
-function debugReject(reply, reject, debugOptions) {
-  if (DEBUG) {
-    console.log("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
-  }
-  reject(reply);
-}

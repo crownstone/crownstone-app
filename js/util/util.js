@@ -1,8 +1,8 @@
 import { Alert } from 'react-native';
 import { DEBUG } from '../ExternalConfig'
-import { StoreManager } from '../router/store/store'
+import { StoreManager } from '../router/store/storeManager'
 import { Actions } from 'react-native-router-flux';
-import { userLogOut } from '../router/store/store';
+import { userLogOut } from '../router/store/storeManager';
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'

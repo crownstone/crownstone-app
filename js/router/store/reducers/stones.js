@@ -4,8 +4,9 @@ import { updateToggleState, toggleState } from './shared'
 
 let defaultSettings = {
   config: {
-    name: undefined,
-    icon: 'c2-plugin',
+    name: 'Plug-in Crownstone',
+    icon: 'c2-pluginFilled',
+    type: 'plugin_v1',
     applianceId: null,
     locationId: null,
     macAddress: undefined,
@@ -29,7 +30,9 @@ let defaultSettings = {
     onHomeEnter: { /* toggleState */ },
     onHomeExit:  { /* toggleState */ },
     onRoomEnter: { /* toggleState */ },
-    onRoomExit:  { /* toggleState */ }
+    onRoomExit:  { /* toggleState */ },
+    onNear:      { /* toggleState */ },
+    onAway:      { /* toggleState */ },
   }
 };
 
@@ -120,6 +123,22 @@ let behaviourReducerOnRoomExit = (state = toggleState, action = {}) => {
       return state;
   }
 };
+let behaviourReducerOnNear = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+let behaviourReducerOnAway = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
 
 let scheduleReducer = (state = {}, action = {}) => {
   switch (action.type) {
@@ -134,9 +153,11 @@ let scheduleReducer = (state = {}, action = {}) => {
 
 let stoneBehavioursReducer = combineReducers({
   onHomeEnter: behaviourReducerOnHomeEnter,
-  onHomeExit: behaviourReducerOnHomeExit,
+  onHomeExit:  behaviourReducerOnHomeExit,
   onRoomEnter: behaviourReducerOnRoomEnter,
-  onRoomExit: behaviourReducerOnRoomExit,
+  onRoomExit:  behaviourReducerOnRoomExit,
+  onNear:      behaviourReducerOnNear,
+  onAway:      behaviourReducerOnAway,
 });
 
 

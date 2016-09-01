@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import locationsReducer from './locations'
+import groupUserReducer from './groupUser'
 import stonesReducer from './stones'
 import appliancesReducer from './appliances'
 import { update, getTime } from './reducerUtil'
@@ -13,60 +14,22 @@ let defaultSettings = {
     guestKey: null,
     meshAccessAddress: null,
     updatedAt: 1
-  },
-  users: {
-    firstName: undefined,
-    lastName: undefined,
-    email: undefined,
-    emailVerified: false,
-    picture: null,
-    accessLevel: undefined, // 'admin', 'member', 'guest'
-    updatedAt: 1
-  }
-};
-
-let userReducer = (state = defaultSettings.users, action = {}) => {
-  switch (action.type) {
-    case 'ADD_USER':
-    case 'UPDATE_USER':
-      if (action.data) {
-        let newState = {...state};
-        newState.firstName     = update(action.data.firstName,     newState.firstName);
-        newState.lastName      = update(action.data.lastName,      newState.lastName);
-        newState.picture       = update(action.data.picture,       newState.picture);
-        newState.email         = update(action.data.email,         newState.email);
-        newState.emailVerified = update(action.data.emailVerified, newState.emailVerified);
-        newState.accessLevel   = update(action.data.accessLevel,   newState.accessLevel);
-        newState.updatedAt     = getTime();
-        return newState;
-      }
-      return state;
-    default:
-      return state
-  }
-};
-
-let usersReducer = (state = {}, action = {}) => {
-  switch (action.type) {
-    case 'REMOVE_USER':
-      let newState = {...state};
-      delete newState[action.userId];
-      return newState;
-    default:
-      if (action.userId !== undefined) {
-        return {
-          ...state,
-          ...{[action.userId]: userReducer(state[action.userId], action)}
-        };
-      }
-      return state;
   }
 };
 
 let groupConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
+    case 'SET_GROUP_KEYS':
+      if (action.data) {
+        let newState = {...state};
+        newState.adminKey = update(action.data.adminKey, newState.adminKey);
+        newState.memberKey = update(action.data.memberKey, newState.memberKey);
+        newState.guestKey = update(action.data.guestKey, newState.guestKey);
+        return newState;
+      }
+      return state;
     case 'ADD_GROUP':
-    case 'UPDATE_GROUP':
+    case 'UPDATE_GROUP_CONFIG':
       if (action.data) {
         let newState = {...state};
         newState.name = update(action.data.name, newState.name);
@@ -93,7 +56,7 @@ let presetsReducer = (state = [], action = {}) => {
 
 let combinedGroupReducer = combineReducers({
   config:     groupConfigReducer,
-  users:      usersReducer,
+  users:      groupUserReducer,
   presets:    presetsReducer,
   locations:  locationsReducer,
   stones:     stonesReducer,

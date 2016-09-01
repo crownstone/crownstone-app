@@ -10,6 +10,7 @@ import { groups } from './sections/groups'
 import { locations } from './sections/locations'
 import { devices } from './sections/devices'
 import { appliances } from './sections/appliances'
+import { sync } from './sections/sync'
 
 
 function mixin(base, section) {
@@ -28,6 +29,7 @@ function combineSections() {
   mixin(result, groups);
   mixin(result, devices);
   mixin(result, appliances);
+  result.sync = sync;
   return result;
 }
 

@@ -1,3 +1,5 @@
+
+
 export const user = {
   /**
    *
@@ -45,11 +47,11 @@ export const user = {
                     options.onInvalidCredentials();
                   break;
                 default:
-                  debugReject(reply, reject, options);
+                  this.__debugReject(reply, reject, options);
               }
             }
             else {
-              debugReject(reply, reject, options);
+              this.__debugReject(reply, reject, options);
             }
           }
         }).catch((error) => {this._handleNetworkError(error, options);});
@@ -119,5 +121,12 @@ export const user = {
       'body'
     );
   },
+
+  getKeys: function(options = {}) {
+    return this._setupRequest(
+      'GET',
+      'users/{id}/keys'
+    );
+  }
 
 };

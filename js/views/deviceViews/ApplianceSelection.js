@@ -51,17 +51,8 @@ export class ApplianceSelection extends Component {
           backgroundColor: colors.red.hex,
           color:'#fff',
           onPress: () => {
-            Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",[{text:'Cancel'}, {text:'Delete', onPress: () => {
-              let stones = state.groups[this.props.groupId].stones;
-              for (let stoneId in stones) {
-                if (stones.hasOwnProperty(stoneId)) {
-                  if (stones[stoneId].config.applianceId == applianceId) {
-                    store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}})
-                  }
-                }
-              }
-              store.dispatch({groupId: this.props.groupId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
-            }}])
+            Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",
+              [{text:'Cancel'}, {text:'Delete', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
           }
         }];
 
@@ -82,34 +73,56 @@ export class ApplianceSelection extends Component {
           </TouchableHighlight>
         </Swipeout>
           })
-      })
+      });
+      items.push({label:'You can delete a device by swiping it to the left and pressing Delete.', style:{paddingBottom:0}, type: 'explanation',  below:true});
     }
 
 
-    items.push({label:'You can delete a device by swiping it to the left and pressing Delete.', type: 'explanation',  below:true});
-    items.push({label:'ADD DEVICE', type: 'explanation', style:{paddingTop:0}, below:false});
+    items.push({label:'ADD DEVICE', type: 'explanation', below:false});
     items.push({
       label: 'Add a Device',
       largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-        // TODO: Put back.
-        // this.props.eventBus.emit('showLoading', 'Creating new Device...');
-        // CLOUD.createAppliance("New Device", this.props.groupId)
-        //   .then((reply) => {
-        //     this.props.eventBus.emit('hideLoading');
-        //     store.dispatch({groupId: this.props.groupId, applianceId: reply.id, type: 'ADD_APPLIANCE', data:{name: "New Device"}});
-        //     this.props.callback(reply.id);
-        //     Actions.pop();
-        //   }).done()
-        let id = 'test';
-        store.dispatch({groupId: this.props.groupId, applianceId: id, type: 'ADD_APPLIANCE', data:{name: "New Device"}});
-        this.props.callback(id);
-        Actions.pop();
+        this.props.eventBus.emit('showLoading', 'Creating new Device...');
+        CLOUD.createAppliance("", this.props.groupId)
+          .then((reply) => {
+            this.props.eventBus.emit('hideLoading');
+            store.dispatch({groupId: this.props.groupId, applianceId: reply.id, type: 'ADD_APPLIANCE'});
+            this.props.callback(reply.id);
+            Actions.pop();
+          })
+          .catch((err) => {
+            Alert.alert("Encountered Cloud Issue.",
+              "We cannot create an Appliance in the Cloud. Please try again later.",
+              [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading');} }])
+          });
       }
     });
     return items;
+  }
+
+  _removeAppliance(store, state, applianceId) {
+    this.props.eventBus.emit('showLoading','Removing this appliance in the Cloud.');
+    CLOUD.deleteAppliance(applianceId)
+      .then(() => {
+        this.props.eventBus.emit('hideLoading');
+        let stones = state.groups[this.props.groupId].stones;
+        for (let stoneId in stones) {
+          if (stones.hasOwnProperty(stoneId)) {
+            if (stones[stoneId].config.applianceId == applianceId) {
+              store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}})
+            }
+          }
+        }
+        store.dispatch({groupId: this.props.groupId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
+      })
+      .catch((err) => {
+        Alert.alert("Encountered Cloud Issue.",
+          "We cannot delete this Appliance in the Cloud. Please try again later.",
+          [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading');} }])
+      });
   }
 
   render() {

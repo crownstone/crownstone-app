@@ -21,7 +21,9 @@ let defaultSettings = {
     onHomeEnter: { /* toggleState */ },
     onHomeExit:  { /* toggleState */ },
     onRoomEnter: { /* toggleState */ },
-    onRoomExit:  { /* toggleState */ }
+    onRoomExit:  { /* toggleState */ },
+    onNear:      { /* toggleState */ },
+    onAway:      { /* toggleState */ },
   },
 };
 
@@ -88,7 +90,22 @@ let behaviourReducerOnRoomExit = (state = toggleState, action = {}) => {
       return state;
   }
 };
-
+let behaviourReducerOnNear = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
+let behaviourReducerOnAway = (state = toggleState, action = {}) => {
+  switch (action.type) {
+    case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
+      return updateToggleState(state,action);
+    default:
+      return state;
+  }
+};
 let scheduleReducer = (state = {}, action = {}) => {
   switch (action.type) {
     case 'ADD_APPLIANCE_SCHEDULE':
@@ -105,6 +122,8 @@ let applianceBehavioursReducer = combineReducers({
   onHomeExit: behaviourReducerOnHomeExit,
   onRoomEnter: behaviourReducerOnRoomEnter,
   onRoomExit: behaviourReducerOnRoomExit,
+  onNear: behaviourReducerOnNear,
+  onAway: behaviourReducerOnAway,
 });
 
 

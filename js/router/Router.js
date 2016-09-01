@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 import { Scene, Router, Actions } from 'react-native-router-flux';
-import { StoreManager }           from './store/store'
+import { StoreManager }           from './store/storeManager'
 import { NativeEventsBridge }           from '../native/NativeEventsBridge'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
@@ -116,6 +116,8 @@ export class AppRouter extends Component {
     // if there is a user that is listed as logged in, verify his account.
     let dataLoginValidation = () => {
       let state = store.getState();
+
+      store.dispatch({type:"CLEAR_ACTIVE_GROUP"})
 
       // pass the store to the singletons
       NativeEventsBridge.loadStore(store);

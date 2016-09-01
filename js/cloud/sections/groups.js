@@ -48,15 +48,33 @@ export const groups = {
   },
 
 
-  syncGroup: function(options, selfId) {
+  getGroupData: function(selfId) {
     let groupId = this._groupId;
 
     let promises     = [];
 
+    let applianceData= [];
+    let stoneData    = [];
     let locationData = [];
     let adminData    = [];
     let memberData   = [];
     let guestData    = [];
+
+    // for every group we get the crownstones
+    promises.push(
+      this.getStonesInGroup()
+        .then((stones) => {
+          stoneData = stones;
+        })
+    );
+
+    // for every group we get the appliances
+    promises.push(
+      this.getAppliancesInGroup()
+        .then((appliances) => {
+          applianceData = appliances;
+        })
+    );
 
     // for every group, we get the locations
     promises.push(
@@ -80,10 +98,12 @@ export const groups = {
 
     return Promise.all(promises).then(() => {
       return {
-        locations: locationData,
-        admins:    adminData,
-        members:   memberData,
-        guests:    guestData,
+        appliances: applianceData,
+        stones:     stoneData,
+        locations:  locationData,
+        admins:     adminData,
+        members:    memberData,
+        guests:     guestData,
       }
     })
   },

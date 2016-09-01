@@ -18,7 +18,7 @@ import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../styles'
-import { StoreManager } from '../../router/store/store'
+import { StoreManager } from '../../router/store/storeManager'
 import RNFS from 'react-native-fs'
 import loginStyles from './LoginStyles'
 
@@ -187,43 +187,45 @@ export class Login extends Component {
         })
     );
 
+    // sync all.
+    promises.push(CLOUD.sync(store));
+
     // sync groups
-    promises.push(
-      CLOUD.getGroups()
-        .then((groupData) => {
-          this.progress += parts;
-          let groupDataPromises = [];
-          groupData.forEach((group) => {
-            // add the group to the local db
-            store.dispatch({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, iBeaconUUID: group.uuid}});
-
-            // sync all the data from the group to the phone
-            groupDataPromises.push(CLOUD.forGroup(group.id).syncGroup({}, userId).then((result) => {
-              // load all data in the database
-              result.locations.forEach((location) => {
-                store.dispatch({type:'ADD_LOCATION', groupId: group.id, locationId: location.id, data:{name: location.name, icon: location.icon}});
-              });
-              Object.keys(result.admins).forEach((userId) => {
-                let user = result.admins[userId];
-                console.log("USER",user)
-                store.dispatch({type: 'ADD_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'admin'}});
-              });
-              Object.keys(result.members).forEach((userId) => {
-                let user = result.members[userId];
-                store.dispatch({type: 'ADD_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'member'}});
-              });
-              Object.keys(result.guests).forEach((userId) => {
-                let user = result.guests[userId];
-                store.dispatch({type: 'ADD_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'guest'}});
-              });
-            }));
-          });
-
-          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Receiving group data.'});
-
-          return Promise.all(groupDataPromises);
-        })
-    );
+    // promises.push(
+    //   CLOUD.getGroups()
+    //     .then((groupData) => {
+    //       this.progress += parts;
+    //       let groupDataPromises = [];
+    //       groupData.forEach((group) => {
+    //         // add the group to the local db
+    //         store.dispatch({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, iBeaconUUID: group.uuid}});
+    //
+    //         // sync all the data from the group to the phone
+    //         groupDataPromises.push(CLOUD.forGroup(group.id).syncGroup(userId).then((result) => {
+    //           // load all data in the database
+    //           result.locations.forEach((location) => {
+    //             store.dispatch({type:'ADD_LOCATION', groupId: group.id, locationId: location.id, data:{name: location.name, icon: location.icon}});
+    //           });
+    //           Object.keys(result.admins).forEach((userId) => {
+    //             let user = result.admins[userId];
+    //             store.dispatch({type: 'ADD_GROUP_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'admin'}});
+    //           });
+    //           Object.keys(result.members).forEach((userId) => {
+    //             let user = result.members[userId];
+    //             store.dispatch({type: 'ADD_GROUP_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'member'}});
+    //           });
+    //           Object.keys(result.guests).forEach((userId) => {
+    //             let user = result.guests[userId];
+    //             store.dispatch({type: 'ADD_GROUP_USER', groupId: group.id, userId: user.id, data:{picture: user.picture, firstName: user.firstName, lastName: user.lastName, email: user.email, emailVerified: user.emailVerified, accessLevel: 'guest'}});
+    //           });
+    //         }));
+    //       });
+    //
+    //       this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Receiving group data.'});
+    //
+    //       return Promise.all(groupDataPromises);
+    //     })
+    // );
 
 
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+/*import React, { Component } from 'react'
 import {
   Dimensions,
   StyleSheet,
@@ -18,6 +18,7 @@ import { Icon } from '../components/Icon';
 /**
  * CURRENTLY DISABLED
  */
+/*
 export class CloudChoice extends Component {
   render() {
     return (
@@ -61,3 +62,4 @@ export const choiceStyle = StyleSheet.create(
     }
   }
 );
+*/

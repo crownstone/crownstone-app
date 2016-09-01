@@ -42,6 +42,7 @@ export class SettingsGroup extends Component {
     for (let userId in users) {
       if (users.hasOwnProperty(userId)) {
         if (users[userId].accessLevel == accessLevel) {
+          console.log(users[userId].picture)
           result.push({
             label:users[userId].firstName + " " + users[userId].lastName,
             type: userId === state.user.userId ? 'info' : 'navigation',
@@ -78,7 +79,7 @@ export class SettingsGroup extends Component {
               this.props.eventBus.emit('showLoading', 'Changing group name...');
               CLOUD.forGroup(this.props.groupId).changeGroupName(newText)
                 .then((result) => {
-                  store.dispatch({type: 'UPDATE_GROUP', groupId: this.props.groupId,  data: {name: newText}});
+                  store.dispatch({type: 'UPDATE_GROUP_CONFIG', groupId: this.props.groupId,  data: {name: newText}});
                   this.props.eventBus.emit('hideLoading');
                 })
                 .catch((err) => {

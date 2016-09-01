@@ -72,8 +72,7 @@ export class SettingsProfile extends Component {
           if (this.validationState.firstName === 'valid') {
             store.dispatch({type: 'USER_UPDATE', data: {firstName: newText}});
             // update your settings in every group that you belong to.
-            groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_USER', groupId: groupId, memberId: user.userId, data:{firstName: newText}}); });
-            CLOUD.updateUserData({background: true, data: {firstName: newText}});
+            groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, memberId: user.userId, data:{firstName: newText}}); });
           }
           else {
             Alert.alert('First name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
@@ -92,8 +91,8 @@ export class SettingsProfile extends Component {
           if (this.validationState.lastName === 'valid') {
             store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
             // update your settings in every group that you belong to.
-            groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_USER', groupId: groupId, memberId: user.userId, data:{lastName: newText}}); });
-            CLOUD.updateUserData({background: true, data: {lastName: newText}});
+            groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, memberId: user.userId, data:{lastName: newText}}); });
+
           }
           else {
             Alert.alert('Last name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
@@ -180,16 +179,14 @@ export class SettingsProfile extends Component {
                   this.setState({picture:newPicturePath});
                   store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
                   // update your settings in every group that you belong to.
-                  groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_USER', groupId: groupId, memberId: user.userId, data:{picture: newPicturePath}}); });
-                  CLOUD.forUser(user.userId).uploadProfileImage(newPicturePath).then((data) => {console.log(data)});
+                  groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, memberId: user.userId, data: {picture: newPicturePath}}); });
                 })
               }} 
             removePicture={() => {
               safeDeleteFile(this.state.picture);
               store.dispatch({type:'USER_UPDATE', data:{picture:null}});
               // update your settings in every group that you belong to.
-              groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_USER', groupId: groupId, memberId: user.userId, data:{picture: null}}); });
-              CLOUD.forUser(user.userId).removeProfileImage();
+              groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, memberId: user.userId, data:{picture: null}}); });
               this.setState({picture:null});
             }}
             size={120} />

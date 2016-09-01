@@ -11,7 +11,8 @@ import {
 
 import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
-import { BleActions, BLEutil } from '../../native/BLEutil'
+import { BLEutil } from '../../native/BLEutil'
+import { BleActions } from '../../native/Proxy'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
 import { AdvertisementManager } from '../../logic/CrownstoneControl'
@@ -57,7 +58,7 @@ export class RoomOverview extends Component {
             onChange={(switchState) => {
               this.showPending(stoneId);
               let data = {state: switchState};
-              if (bleState === 0) {
+              if (switchState === 0) {
                 data.currentUsage = 0;
               }
               let proxy = BLEutil.getProxy(item.stone.config.bluetoothId);

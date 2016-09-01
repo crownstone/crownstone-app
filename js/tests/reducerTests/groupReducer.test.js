@@ -6,7 +6,7 @@ import groupsReducer from '../../router/store/reducers/groups'
 // hack to remove the current time from the reducer so we can predictably match the results.
 Date.prototype.valueOf = function () {return 1};
 
-test('groupsReducer ADD_GROUP, UPDATE_GROUP and REMOVE_GROUP', function (t) {
+test('groupsReducer ADD_GROUP, UPDATE_GROUP_CONFIG and REMOVE_GROUP', function (t) {
   let initialState = {};
   let createAction = {
     type: 'ADD_GROUP',
@@ -18,13 +18,13 @@ test('groupsReducer ADD_GROUP, UPDATE_GROUP and REMOVE_GROUP', function (t) {
 
 
   let updateAction = {
-    type: 'UPDATE_GROUP',
+    type: 'UPDATE_GROUP_CONFIG',
     data: {name: 'school'},
     groupId: 'groupId'
   };
 
   let updateVoidAction = {
-    type: 'UPDATE_GROUP',
+    type: 'UPDATE_GROUP_CONFIG',
     groupId: 'groupId'
   };
 

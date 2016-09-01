@@ -102,6 +102,7 @@ class NativeEventsClass {
           eventName,
           (groupId) => {
             this.locationEvents.emit(eventName, groupId);
+            // TODO: move to localization util or something
             if (state.groups[groupId] !== undefined) {
               // prepare the settings for this group and pass them onto bluenet
               let bluenetSettings = {
@@ -125,7 +126,8 @@ class NativeEventsClass {
           eventName,
           (groupId) => {
             this.locationEvents.emit(eventName, groupId);
-            this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: null}});
+            // TODO: move to localization util or something
+            this.store.dispatch({type: 'CLEAR_ACTIVE_GROUP'});
           }
         );
       }
@@ -137,6 +139,7 @@ class NativeEventsClass {
           eventName,
           (locationId) => {
             this.locationEvents.emit(eventName, locationId);
+            // TODO: move to localization util or something, do something with the behaviour
             this.store.dispatch({type: 'USER_ENTER', groupId: state.app.activeGroup, locationId: locationId});
           }
         );
@@ -149,6 +152,7 @@ class NativeEventsClass {
           eventName,
           (locationId) => {
             this.locationEvents.emit(eventName, locationId);
+            // TODO: move to localization util or something, do something with the behaviour
             this.store.dispatch({type: 'USER_EXIT', groupId: state.app.activeGroup, locationId: locationId});
           }
         );
