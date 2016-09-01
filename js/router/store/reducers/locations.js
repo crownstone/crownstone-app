@@ -7,8 +7,8 @@ let defaultSettings = {
     name:'Untitled Room',
     icon: undefined,
     updatedAt: 1,
-    fingerprintRaw: '',
-    fingerprintParsed: ''
+    fingerprintRaw: null,
+    fingerprintParsed: null
   },
   presentUsers: []
 };

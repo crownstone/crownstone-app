@@ -82,19 +82,34 @@ export class SettingsRoom extends Component {
       Actions.roomIconSelection({locationId: this.props.locationId, icon: room.config.icon, groupId: this.props.groupId})
     }});
 
-    items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
-    items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-signpost" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
-      Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
-        {text: 'Cancel', style: 'cancel'},
-        {text: 'OK', onPress: () => {Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId})}},
-      ])
-    }});
-    items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
-    'you can retrain this room to improve accuracy.', type: 'explanation',  below:true});
+    if (Object.keys(state.groups[this.props.groupId].stones).length >= 0) {
+      items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
+      if (room.config.fingerprintRaw) {
+        items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
+          Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
+            {text: 'Cancel', style: 'cancel'},
+            {text: 'OK', onPress: () => {Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId})}},
+          ])
+        }});
+        items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
+        'you can retrain this room to improve accuracy.', type: 'explanation',  below:true});
+      }
+      else {
+        items.push({label:'Train localization in room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
+          Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId});
+        }});
+        items.push({label:'Before you can use indoor localization other than enter/exit your house, you need to train all rooms so Crownstone can learn how to position you.', type: 'explanation',  below:true});
+      }
+    }
+    else {
+      items.push({label:'Indoor localization on room-level is only possible when you have 4 or more Crownstones registered.', type: 'explanation',  below:false});
+      items.push({type: 'spacer'});
+    }
 
     items.push({
       label: 'Remove Room',
       type: 'button',
+      icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback: () => {
         Alert.alert("Are you sure?","'Removing this Room will make all contained Crownstones floating.'",
           [{text: "Cancel"}, {text:'OK', onPress: this._removeRoom.bind(this)}])

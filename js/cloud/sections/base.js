@@ -1,6 +1,7 @@
 import { request, download } from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/util'
+import { EventBus } from '../../util/eventBus'
 
 let defaultHeaders = {
   'Accept': 'application/json',
@@ -19,6 +20,7 @@ let uploadHeaders = {
  *
  */
 export const base = {
+  events: new EventBus(),
   _accessToken: undefined,
   _userId: undefined,
   _deviceId: undefined,

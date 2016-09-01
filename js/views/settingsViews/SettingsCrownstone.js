@@ -18,6 +18,7 @@ import { styles, colors } from './../styles'
 import { NO_LOCATION_NAME } from '../../ExternalConfig'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { BLEutil } from '../../native/BLEutil'
+import { IconButton } from '../components/IconButton'
 import { BleActions } from '../../native/Proxy'
 
 export class SettingsCrownstone extends Component {
@@ -89,6 +90,7 @@ export class SettingsCrownstone extends Component {
     items.push({label:'DANGER',  type:'explanation', style:{paddingTop:0}, below:false});
     items.push({
       label: 'Remove from Group',
+      icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       type: 'button',
       callback: () => {
         Alert.alert(

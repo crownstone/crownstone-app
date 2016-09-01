@@ -6,19 +6,32 @@ import { CLOUD } from '../cloudAPI'
  * @param store
  * @returns {Promise.<TResult>|*}
  */
-export const sync = function(store) {
-  let state = store.getState();
-  let actions = [];
-  return syncDown(state)
-    .then((data) => {
-      let cloudData = syncGroups(state, actions, data.groups, data.groupsData);
-      syncCleanupLocal(store, state, actions, cloudData);
-      syncKeys(actions, data.keys);
+export const sync = {
 
-      console.log("SYNC Dispatching ", actions.length, " actions!");
-      actions.forEach((action) => { action.triggeredBySync = true; });
-      store.batchDispatch(actions);
-    })
+  sync: function (store) {
+    let state = store.getState();
+    let actions = [];
+    return syncDown(state)
+      .then((data) => {
+        let cloudData = syncGroups(state, actions, data.groups, data.groupsData);
+        let deletedGroup = syncCleanupLocal(store, state, actions, cloudData);
+        syncKeys(actions, data.keys);
+
+        console.log("SYNC Dispatching ", actions.length, " actions!");
+        actions.forEach((action) => {
+          action.triggeredBySync = true;
+        });
+        store.batchDispatch(actions);
+
+        this.events.emit("CloudSyncComplete");
+
+        if (cloudData.addedGroup === true || deletedGroup === true) {
+          this.events.emit("CloudSyncComplete_groupsChanged");
+        }
+      })
+
+
+  }
 };
 
 const syncDown = function (state) {
@@ -38,7 +51,6 @@ const syncDown = function (state) {
     syncPromises.push(
       CLOUD.getKeys()
         .then((data) => {
-          console.log("got keys!")
           cloudKeys = data;
         })
     );
@@ -79,6 +91,7 @@ const shouldUpdate = function(localVersion, cloudVersion) {
 
 const syncCleanupLocal = function(store, state, actions, cloudData) {
   let groupIds = Object.keys(state.groups);
+  let deletedGroup = false;
 
   groupIds.forEach((groupId) => {
     if (cloudData.cloudGroupIds[groupId] === undefined) {
@@ -87,6 +100,7 @@ const syncCleanupLocal = function(store, state, actions, cloudData) {
         store.dispatch({type: 'CLEAR_ACTIVE_GROUP'});
       }
       actions.push({type: 'REMOVE_GROUP', groupId: groupId});
+      deletedGroup = true;
     }
     else {
       // if the group also exists in the cloud, check if its member need deletion
@@ -125,7 +139,9 @@ const syncCleanupLocal = function(store, state, actions, cloudData) {
       });
 
     }
-  })
+  });
+
+  return deletedGroup;
 };
 
 const syncGroups = function(state, actions, groups, groupsData) {
@@ -134,7 +150,7 @@ const syncGroups = function(state, actions, groups, groupsData) {
   let cloudStoneIds = {};
   let cloudLocationIds = {};
   let cloudApplianceIds = {};
-
+  let addedGroup = false;
 
   groups.forEach((group) => {
     // put id in map so we can easily find it again
@@ -145,6 +161,7 @@ const syncGroups = function(state, actions, groups, groupsData) {
 
     // add or update the group.
     if (groupInState === undefined) {
+      addedGroup = true;
       actions.push({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, iBeaconUUID: group.uuid}});
     }
     else if (shouldUpdate(groupInState.config, group)) {
@@ -290,7 +307,8 @@ const syncGroups = function(state, actions, groups, groupsData) {
     cloudGroupIds,
     cloudStoneIds,
     cloudLocationIds,
-    cloudApplianceIds
+    cloudApplianceIds,
+    addedGroup
   }
 };
 

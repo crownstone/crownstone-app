@@ -14,22 +14,22 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { TopBar } from '../components/Topbar'
 import { NativeEventsBridge } from '../../native/NativeEventsBridge'
+import { FingerprintManager } from '../../native/LocalizationUtil'
 import { Background } from '../components/Background'
-import { colors, width, height } from '../styles'
+import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
+import { IconButton } from '../components/IconButton'
 
 
 export class SettingsRoomTraining extends Component {
   constructor(props) {
     super();
-    this.state = {text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
+    this.state = {started: false, text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
     this.collectedData = [];
-    this.dataLimit = 30;
+    this.dataLimit = 60;
   }
 
-  componentDidMount() {
-    this.start();
-  }
+  componentDidMount() {}
 
   componentWillUnmount() {
     this.stop()
@@ -37,15 +37,15 @@ export class SettingsRoomTraining extends Component {
 
   start() {
     this.collectedData = [];
-    this.setState({text:'initializing', active:true});
+    this.setState({started:true, text:'initializing', active:true});
     NativeEventsBridge.stopListeningToLocationEvents();
-    NativeEventsBridge.startFingerprinting(this.handleCollection.bind(this));
+    FingerprintManager.startFingerprinting((data) => {this.handleCollection(data);});
   }
 
   stop(forceAbort = false) {
     if (this.state.active === true || forceAbort) {
       NativeEventsBridge.startListeningToLocationEvents();
-      NativeEventsBridge.abortFingerprinting();
+      FingerprintManager.abortFingerprinting();
       this.collectedData = [];
       this.setState({active: false});
     }
@@ -66,8 +66,8 @@ export class SettingsRoomTraining extends Component {
     const store = this.props.store;
     const state = store.getState();
     let groupId = state.app.activeGroup;
-    NativeEventsBridge.finalizeFingerprint(groupId, this.props.locationId);
-    NativeEventsBridge.getFingerprint(groupId, this.props.locationId)
+    FingerprintManager.finalizeFingerprint(groupId, this.props.locationId);
+    FingerprintManager.getFingerprint(groupId, this.props.locationId)
       .then((result) => {
         console.log("gathered fingerprint:", result);
         store.dispatch({
@@ -90,51 +90,102 @@ export class SettingsRoomTraining extends Component {
 
   render() {
     let icons = ['ios-finger-print','ios-outlet-outline','ios-pin-outline','ios-pricetag-outline'];
-
-    return (
-      <Background hideInterface={true} background={require('../../images/mainBackgroundLight.png')}>
-        <TopBar
-          left={this.state.active ? "Cancel" : "Back"}
-          notBack={this.state.active}
-          leftAction={this.state.active ? () => {
-            NativeEventsBridge.pauseCollectingFingerprint();
-            Alert.alert(
-              "Do you want to cancel training?",
-              "Cancelling the training process will revert it to the way it was before.",
-              [
-                {text:'No', onPress: () => { NativeEventsBridge.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
-                {text:'Yes', onPress: () => { this.stop(true); Actions.pop(); }}
-              ]
-            )}
-          : Actions.pop }
-          title="Train Room"/>
-        <View style={{flexDirection:'column', flex:1}}>
-          <View style={{padding:30, alignItems:'center'}}>
+    if (this.state.started === false) {
+      return (
+        <Background hideInterface={true} background={require('../../images/mainBackgroundLight.png')}>
+          <TopBar
+            left={"Back"}
+            leftAction={ Actions.pop }
+            title="Train Room"/>
+          <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
               <Text style={{
                 backgroundColor:'transparent',
                 fontSize:20,
                 fontWeight:'600',
                 color: colors.menuBackground.hex,
                 textAlign:'center'
-              }}>Walk around the room so it can learn to locate you within it. Each beat a point is collected.</Text>
-          </View>
+              }}>To let Crownstone find you in this room, we need to help it a little!</Text>
+              <Text style={{
+                backgroundColor:'transparent',
+                fontSize:18,
+                fontWeight:'300',
+                color: colors.menuBackground.hex,
+                textAlign:'center',
+                paddingTop:40,
+              }}>To train, walk around the room with your phone in your hand.
+                Try to get to every spot in the room, close by the walls as well and through the center.
+                The training process takes 1 minute and you can see the progress on your screen.
+              </Text>
+              <Text style={{
+                backgroundColor:'transparent',
+                fontSize:18,
+                fontWeight:'300',
+                color: colors.menuBackground.hex,
+                textAlign:'center',
+                paddingTop:40,
+              }}>Press the button below to get started!
+              </Text>
 
-          <View style={{flex:1}} />
-          <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:-40}} >
-            <View style={{position:'relative'}}>
-              <View style={{backgroundColor:'rgba(255,255,255,1)', width:0.5*width, height:0.5*width, borderRadius:0.25*width}} />
-              <Animated.View style={{marginTop: -0.5*width, opacity:this.state.opacity, backgroundColor:colors.green.hex, width:0.5*width, height:0.5*width, borderRadius:0.25*width, alignItems:'center', justifyContent:'center'}}>
-                <Icon name={icons[this.state.iconIndex]} size={0.3*width} color="#fff" style={{backgroundColor:'transparent'}} />
-              </Animated.View>
-              <View style={{backgroundColor:'transparent', marginTop: -0.5*width, width:0.5*width, height:0.5*width, borderRadius:0.25*width,  alignItems:'center', justifyContent:'center'}}>
-                <Text style={{backgroundColor:'transparent', fontSize:22, fontWeight:'200'}}>{this.state.text}</Text>
+            <View style={{flex:1}} />
+            <TouchableOpacity
+              style={[
+                {borderWidth:5, borderColor:"#fff", backgroundColor:colors.green.hex, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth},
+                styles.centered
+              ]}
+              onPress={() => {this.start();}}
+            >
+              <Icon name="ios-finger-print" size={0.35*screenWidth} color="#fff" style={{backgroundColor:"transparent", position:'relative', top:0.01*screenWidth}} />
+            </TouchableOpacity>
+            <View style={{flex:1}} />
+          </View>
+        </Background>
+      );
+    }
+    else {
+      return (
+        <Background hideInterface={true} background={require('../../images/mainBackgroundLight.png')}>
+          <TopBar
+            left={this.state.active ? "Cancel" : "Back"}
+            notBack={this.state.active}
+            leftAction={this.state.active ? () => {
+              LocalizationUtil.pauseCollectingFingerprint();
+              Alert.alert(
+                "Do you want to cancel training?",
+                "Cancelling the training process will revert it to the way it was before.",
+                [
+                  {text:'No', onPress: () => { LocalizationUtil.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+                  {text:'Yes', onPress: () => { this.stop(true); Actions.pop(); }}
+                ]
+              )}
+              : Actions.pop }
+            title="Train Room"/>
+          <View style={{flexDirection:'column', flex:1}}>
+            <View style={{padding:30, alignItems:'center'}}>
+              <Text style={{
+                backgroundColor:'transparent',
+                fontSize:20,
+                fontWeight:'600',
+                color: colors.menuBackground.hex,
+                textAlign:'center'
+              }}>Walk around the room so we can learn to locate you within it. Each beat a point is collected.</Text>
+            </View>
+
+            <View style={{flex:1}} />
+            <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:-40}} >
+              <View style={{position:'relative'}}>
+                <View style={{backgroundColor:'rgba(255,255,255,1)', width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth}} />
+                <Animated.View style={{marginTop: -0.5*screenWidth, opacity:this.state.opacity, backgroundColor:colors.green.hex, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth, alignItems:'center', justifyContent:'center'}}>
+                  <Icon name={icons[this.state.iconIndex]} size={0.3*screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />
+                </Animated.View>
+                <View style={{backgroundColor:'transparent', marginTop: -0.5*screenWidth, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth,  alignItems:'center', justifyContent:'center'}}>
+                  <Text style={{backgroundColor:'transparent', fontSize:22, fontWeight:'200'}}>{this.state.text}</Text>
+                </View>
               </View>
             </View>
+            <View style={{flex:1}} />
           </View>
-          <View style={{flex:1}} />
-        </View>
-      </Background>
-    );
-
+        </Background>
+      );
+    }
   }
 }

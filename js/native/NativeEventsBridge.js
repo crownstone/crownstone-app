@@ -38,24 +38,7 @@ class NativeEventsClass {
   }
 
   init() {
-    // register the iBeacons uuids with the localization system.
-    const state = this.store.getState();
-    let groupIds = Object.keys(state.groups);
-    groupIds.forEach((groupId) => {
-      let groupIBeaconUUID = state.groups[groupId].config.iBeaconUUID;
 
-      // track the group beacon UUID
-      Bluenet.trackIBeacon(groupIBeaconUUID, groupId);
-
-      let locations = state.groups[groupId].locations;
-      let locationIds = Object.keys(locations);
-      locationIds.forEach((locationId) => {
-        if (locations[locationId].config.fingerprintRaw !== undefined) {
-          console.log(locationId,"locations[locationId].config.fingerprintRaw", locations[locationId].config.fingerprintRaw);
-          Bluenet.loadFingerprint(groupId, locationId, locations[locationId].config.fingerprintRaw)
-        }
-      });
-    });
   }
 
   startListeningToBleEvents() {
@@ -88,6 +71,16 @@ class NativeEventsClass {
         this.bleEvents.emit(eventName, crownstoneUUID);
       }
     );
+
+    eventName = NativeEvents.location.iBeaconAdvertisement;
+    if (this.subscriptions[eventName] === undefined) {
+      this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
+        eventName,
+        (iBeaconAdvertisement) => {
+          this.locationEvents.emit(eventName, iBeaconAdvertisement);
+        }
+      );
+    }
   }
 
   startListeningToLocationEvents() {
@@ -167,16 +160,6 @@ class NativeEventsClass {
            this.locationEvents.emit(eventName, currentLocation);
          }
        );
-      }
-
-      eventName = NativeEvents.location.iBeaconAdvertisement;
-      if (this.subscriptions[eventName] === undefined) {
-        this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-          eventName,
-          (iBeaconAdvertisement) => {
-            this.locationEvents.emit(eventName, iBeaconAdvertisement);
-          }
-        );
       }
     }
     else {

@@ -13,7 +13,7 @@ export let Bluenet;
 if (DISABLE_NATIVE === true) {
   console.log("NATIVE CALLS ARE DISABLES BY EXTERNALCONFIG.JS")
   Bluenet = {
-
+    clearTrackedBeacons: () => {},
     rerouteEvents: () => {},
     isReady: () => {},
     connect: () => {},
@@ -93,6 +93,7 @@ export const NativeEvents = {
 };
 
 export const BleActions = {
+  clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:        ()      => { return BluenetPromise('isReady');              },
   connect:        (uuid)  => { return BluenetPromise('connect', uuid);        },
   disconnect:     ()      => { return BluenetPromise('disconnect');           },

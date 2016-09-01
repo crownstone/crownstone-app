@@ -17,6 +17,7 @@ import { StoreManager }           from './store/storeManager'
 import { NativeEventsBridge }           from '../native/NativeEventsBridge'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
+import { INITIALIZER }            from '../util/initialize'
 import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
@@ -28,66 +29,6 @@ import { styles, colors }         from '../views/styles'
 import { Icon } from '../views/components/Icon';
 
 let store = {};
-
-class TabIcon extends Component {
-  render(){
-    return (
-      <View style={{flex:1,alignItems:'center', justifyContent:'center'}}>
-        <Icon
-          name={this.props.iconString}
-          size={31}
-          color={this.props.selected ?  colors.menuTextSelected.hex : colors.menuText.hex}
-          style={{backgroundColor:'transparent', padding:0, margin:0}}
-        />
-        <Text style={{
-        fontSize:11,
-        fontWeight:'200',
-        color: (this.props.selected ?  colors.menuTextSelected.hex : colors.menuText.hex)
-        }}>{this.props.tabTitle}</Text>
-      </View>
-    );
-  }
-}
-
-let onRightFunctionEdit = function(params) {
-  Actions.roomEdit({groupId: params.groupId, locationId: params.locationId});
-};
-
-let navBarStyle = {
-  navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
-  titleStyle:{color:'white'},
-};
-
-// configure the CLOUD network handler.
-CLOUD.setNetworkErrorHandler((error) => {
-  Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.",[{text:'OK'}]);
-});
-
-var removeAllPresentUsers = function(store) {
-  const state = store.getState();
-  let groups = state.groups;
-  let groupIds = Object.keys(groups);
-  groupIds.forEach((groupId) => {
-    let locations = groups[groupId].locations;
-    let locationIds = Object.keys(locations);
-    locationIds.forEach((locationId) => {
-      store.dispatch({type:'CLEAR_USERS', groupId:groupId, locationId:locationId})
-    })
-  })
-};
-
-var clearAllCurrentPowerUsage = function(store) {
-  const state = store.getState();
-  let groups = state.groups;
-  let groupIds = Object.keys(groups);
-  groupIds.forEach((groupId) => {
-    let stones = groups[groupId].stones;
-    let stoneIds = Object.keys(stones);
-    stoneIds.forEach((stoneId) => {
-      store.dispatch({type:'CLEAR_STONE_USAGE', groupId:groupId, stoneId:stoneId})
-    })
-  })
-};
 
 export class AppRouter extends Component {
   constructor() {
@@ -102,6 +43,7 @@ export class AppRouter extends Component {
     // check what we should do with this data.
     let interpretData = () => {
       store = StoreManager.getStore();
+      INITIALIZER.start(store, eventBus)
       if (store.hasOwnProperty('getState')) {
         dataLoginValidation()
       }
@@ -144,6 +86,7 @@ export class AppRouter extends Component {
       //     });
       //
         this.setState({storeInitialized:true, loggedIn:true});
+        eventBus.emit("appStarted");
       }
       else {
         this.setState({storeInitialized:true, loggedIn:false});
@@ -240,3 +183,59 @@ export class AppRouter extends Component {
   }
 
 }
+
+
+class TabIcon extends Component {
+  render(){
+    return (
+      <View style={{flex:1,alignItems:'center', justifyContent:'center'}}>
+        <Icon
+          name={this.props.iconString}
+          size={31}
+          color={this.props.selected ?  colors.menuTextSelected.hex : colors.menuText.hex}
+          style={{backgroundColor:'transparent', padding:0, margin:0}}
+        />
+        <Text style={{
+          fontSize:11,
+          fontWeight:'200',
+          color: (this.props.selected ?  colors.menuTextSelected.hex : colors.menuText.hex)
+        }}>{this.props.tabTitle}</Text>
+      </View>
+    );
+  }
+}
+
+let onRightFunctionEdit = function(params) {
+  Actions.roomEdit({groupId: params.groupId, locationId: params.locationId});
+};
+
+let navBarStyle = {
+  navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
+  titleStyle:{color:'white'},
+};
+
+var removeAllPresentUsers = function(store) {
+  const state = store.getState();
+  let groups = state.groups;
+  let groupIds = Object.keys(groups);
+  groupIds.forEach((groupId) => {
+    let locations = groups[groupId].locations;
+    let locationIds = Object.keys(locations);
+    locationIds.forEach((locationId) => {
+      store.dispatch({type:'CLEAR_USERS', groupId:groupId, locationId:locationId})
+    })
+  })
+};
+
+var clearAllCurrentPowerUsage = function(store) {
+  const state = store.getState();
+  let groups = state.groups;
+  let groupIds = Object.keys(groups);
+  groupIds.forEach((groupId) => {
+    let stones = groups[groupId].stones;
+    let stoneIds = Object.keys(stones);
+    stoneIds.forEach((stoneId) => {
+      store.dispatch({type:'CLEAR_STONE_USAGE', groupId:groupId, stoneId:stoneId})
+    })
+  })
+};

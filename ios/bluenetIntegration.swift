@@ -334,6 +334,13 @@ class BluenetJS: NSObject {
   }
   
   
+  @objc func clearTrackedBeacons(callback: RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.clearTrackedBeacons()
+    callback([["error" : false]])
+    print("finishCollectingFingerprint")
+  }
+  
+  
   @objc func getFingerprint(groupId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
     let fingerprint = GLOBAL_BLUENET!.bluenetLocalization.getFingerprint(groupId, locationId: locationId)
     if let fingerprintData = fingerprint {
