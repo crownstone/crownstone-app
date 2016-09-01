@@ -96,7 +96,9 @@ export const groups = {
       this.getUserFromType(this.getGuests.bind(this),  'guest',  guestData,  groupId, selfId)
     );
 
+    console.log(promises)
     return Promise.all(promises).then(() => {
+      console.log("returning all")
       return {
         appliances: applianceData,
         stones:     stoneData,
@@ -109,7 +111,7 @@ export const groups = {
   },
 
   getUserFromType: function(userGetter, type, userData, groupId, selfId) {
-    userGetter()
+    return userGetter()
       .then((users) => {
         let profilePicturePromises = [];
         users.forEach((user) => {

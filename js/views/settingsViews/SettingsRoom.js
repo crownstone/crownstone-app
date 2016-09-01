@@ -43,18 +43,18 @@ export class SettingsRoom extends Component {
     this.props.eventBus.emit('showLoading','Removing this room in the Cloud.');
     CLOUD.forGroup(this.props.groupId).deleteLocation(this.props.locationId)
       .then(() => {
+        let removeActions = [];
         this.props.eventBus.emit('hideLoading');
         let stones = getStonesFromState(state, this.props.groupId, this.props.locationId);
         Actions.pop();
 
-        store.dispatch({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
-        // reduxActions.push({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"})
+        removeActions.push({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
         for (let stoneId in stones) {
           if (stones.hasOwnProperty(stoneId)) {
-            store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
-            // reduxActions.push({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
+            removeActions.push({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
           }
         }
+        store.batchDispatch(removeActions);
       })
       .catch((err) => {
         this.deleting = false;

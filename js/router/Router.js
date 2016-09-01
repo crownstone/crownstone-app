@@ -117,7 +117,8 @@ export class AppRouter extends Component {
     let dataLoginValidation = () => {
       let state = store.getState();
 
-      store.dispatch({type:"CLEAR_ACTIVE_GROUP"})
+
+      store.dispatch({type:"CLEAR_ACTIVE_GROUP"});
 
       // pass the store to the singletons
       NativeEventsBridge.loadStore(store);

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
   Alert,
-  
   Image,
   StyleSheet,
   TouchableHighlight,
@@ -11,6 +10,7 @@ import {
   View
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
+var md5 = require('md5')
 
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
@@ -80,7 +80,7 @@ export class Login extends Component {
     };
     CLOUD.login({
       email: this.state.email.toLowerCase(),
-      password: this.state.password,
+      password: md5(this.state.password),
       onUnverified: unverifiedEmailCallback,
       onInvalidCredentials: invalidLoginCallback,
     })

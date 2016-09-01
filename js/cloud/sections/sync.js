@@ -34,9 +34,11 @@ const syncDown = function (state) {
     let cloudKeys = [];
 
     let syncPromises = [];
+
     syncPromises.push(
       CLOUD.getKeys()
         .then((data) => {
+          console.log("got keys!")
           cloudKeys = data;
         })
     );
@@ -117,7 +119,7 @@ const syncCleanupLocal = function(store, state, actions, cloudData) {
 
       // cleanup group users
       groupUserIds.forEach((userId) => {
-        if (cloudData.cloudGroupMemberIds[userId] === undefined) {
+        if (cloudData.cloudGroupMemberIds[groupId][userId] === undefined) {
           actions.push({type: 'REMOVE_GROUP_USER', groupId: groupId, userId: userId});
         }
       });
@@ -330,9 +332,9 @@ const syncGroupUser = function(actions, group, groupInState, userId, user, acces
 const syncKeys = function(actions, keys) {
   keys.forEach((keySet) => {
     actions.push({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
-      adminKey:  keySet.owner  || keySet.admin || null,
-      memberKey: keySet.member || null,
-      guestKey:  keySet.guest  || null
+      adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
+      memberKey: keySet.keys.member || null,
+      guestKey:  keySet.keys.guest  || null
     }})
   })
 };

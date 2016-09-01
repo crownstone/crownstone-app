@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+var md5 = require('md5')
+
 import {
   Alert,
-  
   TouchableHighlight,
   PixelRatio,
   ScrollView,
@@ -196,7 +197,7 @@ export class Register extends Component {
     this.props.eventBus.emit('showLoading', 'Sending Registration Request...');
     CLOUD.registerUser({
       email: this.state.email.toLowerCase(),
-      password: this.state.password,
+      password: md5(this.state.password),
       firstName: this.state.firstName,
       lastName: this.state.lastName,
     })
