@@ -1,15 +1,12 @@
 import React, { Component } from 'react' 
 import {
-  
-  PixelRatio,
   View
 } from 'react-native';
 
 export class EditSpacer extends Component {
   render() {
-    let pxRatio = PixelRatio.get();
-    let height = (this.props.top ? 15 : 20) * pxRatio;
+    let height = (this.props.top ? 30 : 40);
 
-    return <View style={{backgroundColor: this.props.color || 'transparent', height:height}} />
+    return <View style={{backgroundColor: this.props.color || 'transparent', height: this.props.height || height}} />
   }
 }

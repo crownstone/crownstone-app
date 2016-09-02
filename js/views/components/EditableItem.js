@@ -109,7 +109,7 @@ export class EditableItem extends Component {
       case 'slider':
         return <SliderBar barHeight={barHeight} {...this.props} />;
       case 'spacer':
-        return <EditSpacer />;
+        return <EditSpacer {...this.props} />;
       case 'textEdit':
         return <TextEditBar barHeight={barHeight} {...this.props} />;
       case 'timePicker':

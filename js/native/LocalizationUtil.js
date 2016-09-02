@@ -105,12 +105,12 @@ export const FingerprintManager = new FingerprintManagerClass();
 export const LocalizationUtil = {
 
   /**
-   * clear all beacons and re-register them. This will not re-emit roomenter/exit if we are in the same room.
+   * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
    */
   trackGroups: function (store) {
     BleActions.clearTrackedBeacons()
       .then(() => {
-        // register the iBeacons uuids with the localization system.
+        // register the iBeacons UUIDs with the localization system.
         const state = store.getState();
         let groupIds = Object.keys(state.groups);
         groupIds.forEach((groupId) => {

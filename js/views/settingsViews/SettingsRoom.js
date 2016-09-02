@@ -82,7 +82,8 @@ export class SettingsRoom extends Component {
       Actions.roomIconSelection({locationId: this.props.locationId, icon: room.config.icon, groupId: this.props.groupId})
     }});
 
-    if (Object.keys(state.groups[this.props.groupId].stones).length >= 0) {
+
+    if (Object.keys(state.groups[this.props.groupId].stones).length >= 4) {
       items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
       if (room.config.fingerprintRaw) {
         items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
@@ -103,7 +104,7 @@ export class SettingsRoom extends Component {
     }
     else {
       items.push({label:'Indoor localization on room-level is only possible when you have 4 or more Crownstones registered.', type: 'explanation',  below:false});
-      items.push({type: 'spacer'});
+      items.push({type: 'spacer', height:30});
     }
 
     items.push({

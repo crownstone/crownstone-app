@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-var md5 = require('md5')
-
+var md5 = require('md5');
 import {
   Alert,
-  TouchableHighlight,
-  PixelRatio,
+  Linking,
   ScrollView,
   Switch,
   Text,
+  TouchableHighlight,
   View
 } from 'react-native';
 
@@ -17,7 +16,7 @@ import { getImageFileFromUser, processImage } from '../../util/util'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors , width, screenHeight, pxRatio } from '../styles'
+import { styles, colors , screenWidth, screenHeight } from '../styles'
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must not be empty.';
@@ -65,7 +64,11 @@ export class Register extends Component {
     }
   }
 
-
+  _viewURL(url) {
+    Linking.openURL(url)
+      .then(() => {console.log("success")})
+      .catch(err => console.error('An error occurred', err));
+  }
 
   /**
    * get the form items
@@ -151,15 +154,34 @@ export class Register extends Component {
         below: true
       },
       {
+        type: 'explanation',
+        __item: (
+          <View style={{backgroundColor:'transparent'}}>
+            <View style={{flexDirection:'row',padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12}}>
+              <Text style={{fontSize:12, color:'#444'}}>By registering, you agree to our </Text>
+              <TouchableHighlight onPress={() => {
+                this._viewURL('http://crownstone.rocks/terms-of-service/');
+              }}>
+                <Text style={{fontSize:12, color:colors.blue.hex}}>terms </Text>
+              </TouchableHighlight>
+              <Text style={{fontSize:12, color:'#444'}}>& </Text>
+              <TouchableHighlight onPress={() => {
+                this._viewURL('http://crownstone.rocks/privacy-policy/');
+              }}>
+                <Text style={{fontSize:12, color:colors.blue.hex}}>privacy policy</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        )
+      },
+      {
         label: 'Next',
         type:  'button',
         style: {color:colors.blue.hex},
         callback: this.validateAndContinue.bind(this)
       },
       {
-        label: 'By tapping Next, you agree to be awesome.',
-        type: 'explanation',
-        below: true
+        type: 'spacer',
       },
     ]
   }

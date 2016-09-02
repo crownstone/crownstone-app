@@ -1,6 +1,7 @@
 package com.crownstone;
 
 import com.facebook.react.ReactActivity;
+import com.bitgo.randombytes.RandomBytesPackage;
 import com.horcrux.svg.RNSvgPackage;
 import com.remobile.splashscreen.RCTSplashScreenPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -41,6 +42,7 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RandomBytesPackage(),
             new RNSvgPackage(),
             new RCTSplashScreenPackage(),
             new VectorIconsPackage(),
