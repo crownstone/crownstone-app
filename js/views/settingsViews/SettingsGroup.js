@@ -114,7 +114,7 @@ export class SettingsGroup extends Component {
 
     let level = getMyLevelInGroup(state, this.props.groupId);
     if (level == "admin" || level == 'member') {
-      items.push({type:'spacer'});
+      items.push({label:'ADD PEOPLE TO YOUR GROUP', type:'explanation'});
       items.push({
         label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
@@ -128,9 +128,10 @@ export class SettingsGroup extends Component {
 
 
     if (getMyLevelInGroup(state, this.props.groupId) == 'admin') {
-      items.push({label:'DANGER',  type:'explanation', below:false});
+      items.push({type:'spacer'});
       items.push({
         label: 'Delete this Group',
+        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
           Alert.alert(

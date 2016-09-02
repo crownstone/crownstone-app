@@ -78,7 +78,13 @@ export class RoomLayer extends Component {
       // only redraw if the amount of rooms changes.
       const state = store.getState();
       if (state.app.activeGroup) {
-        if (Object.keys(state.groups[this.props.groupId].locations).length !== Object.keys(this.renderState.groups[this.props.groupId].locations).length) {
+
+        let orphanedStonesNow = getOrphanedStones(state, this.props.groupId);
+        let orphanedStonesBefore = getOrphanedStones(this.renderState, this.props.groupId);
+
+        let amountOfRooms = Object.keys(state.groups[this.props.groupId].locations).length + orphanedStonesNow;
+        let amountOfRoomsBefore = Object.keys(this.renderState.groups[this.props.groupId].locations).length + orphanedStonesBefore;
+        if (amountOfRooms !== amountOfRoomsBefore) {
           this.forceUpdate();
         }
       }

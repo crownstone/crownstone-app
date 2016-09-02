@@ -14,7 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from '../setupViews/SetupShared'
-import { styles, colors, width, height } from './../styles'
+import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 export class SettingsPluginRecoverStep1 extends Component {
   render() {
@@ -27,7 +27,7 @@ export class SettingsPluginRecoverStep1 extends Component {
           <Text style={[setupStyle.information, {color:colors.menuBackground.hex}]}>Please take the Crownstone out of the outlet, wait 5 seconds, and plug it back in. Hold your phone close to it and press Next to continue.</Text>
           <View style={{flex:1}} />
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Image source={require('../../images/lineDrawings/pluggingInPlugRetryDark.png')} style={{width:imageSize*height, height:imageSize*height}} />
+            <Image source={require('../../images/lineDrawings/pluggingInPlugRetryDark.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
           </View>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>

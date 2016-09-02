@@ -165,8 +165,13 @@ export class SetupAddPlugInStep3 extends Component {
             <View style={{flex:1}} />
             <NextButton onPress={() => {
               if (this.state.selectedRoom !== undefined) {
-                store.dispatch({type:'UPDATE_STONE_CONFIG', groupId: this.props.groupId, stoneId: this.props.stoneId, data:{locationId: this.state.selectedRoom}})
-                Actions.setupAddPluginStep4({groupId: this.props.groupId});
+                store.dispatch({type:'UPDATE_STONE_CONFIG', groupId: this.props.groupId, stoneId: this.props.stoneId, data:{locationId: this.state.selectedRoom}});
+                if (this.props.fromMainMenu === true) {
+                  Actions.tabBar();
+                }
+                else {
+                  Actions.setupAddPluginStep4({groupId: this.props.groupId})
+                }
               }
               else {
                Alert.alert(

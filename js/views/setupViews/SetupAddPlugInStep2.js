@@ -178,7 +178,7 @@ export class SetupAddPlugInStep2 extends Component {
       .then(() => {
         this.setProgress(5);
         setTimeout(() => { this.setProgress(6); }, 300);
-        setTimeout(() => { Actions.setupAddPluginStep3({ stoneId: stoneId, groupId:this.props.groupId}); }, 1800);
+        setTimeout(() => { Actions.setupAddPluginStep3({ stoneId: stoneId, groupId:this.props.groupId, fromMainMenu: this.props.fromMainMenu}); }, 1800);
       })
       .catch((err) => {
         console.log("error", err, "ATTEMPT:", attempt);

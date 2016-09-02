@@ -1,9 +1,8 @@
 import { NativeEventsBridge } from './NativeEventsBridge'
 import { BlePromiseManager } from '../logic/BlePromiseManager'
 import { BleActions, NativeEvents } from './Proxy';
-import { mixin } from '../util/util';
 
-let bleUtil = {
+export const BLEutil = {
   pendingSearch: {},
 
   cancelSearch: function() {
@@ -16,30 +15,56 @@ let bleUtil = {
     this.pendingSearch = {};
   },
 
-  getNearestSetupCrownstone: function() {
+  getNearestSetupCrownstone: function(near = true) {
+    let distanceThreshold = -120;
+    if (near === true) {
+      distanceThreshold = -50; // keep low tx in mind
+    }
     this.cancelSearch();
-    return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestSetupCrownstone)
+    return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestSetupCrownstone, distanceThreshold).then((handle) => {return new SetupCrownstone(handle);})
   },
 
-  getNearestCrownstone: function() {
+  getNearestCrownstone: function(near = true) {
+    let distanceThreshold = -120;
+    if (near === true) {
+      distanceThreshold = -45;
+    }
     this.cancelSearch();
-    return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestCrownstone)
+    return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestCrownstone, distanceThreshold)
   },
 
-  _getNearestCrownstoneFromEvent: function(event) {
+  _getNearestCrownstoneFromEvent: function(event, distanceThreshold) {
     return new Promise((resolve, reject) => {
       let count = 0;
-      let lastUuid = '';
+      let lastHandle = '';
+      let lastRSSI = -120;
 
-      let sortingCallback = (uuid) => {
-        if (lastUuid === uuid) { count += 1; }
-        else                   { count  = 0; }
+      let sortingCallback = (nearestItem) => {
+        if (typeof nearestItem == 'string') {
+          nearestItem = JSON.parse(nearestItem);
+        }
+
+        // do not care for items too far away.
+        if (nearestItem.rssi < distanceThreshold || nearestItem.rssi >= 0) {
+          return;
+        }
+
+        console.log("nearestItem rssi", nearestItem);
+
+        // check if the new one is in fact nearer (with an uncertainty of 10db)
+        if (nearestItem.handle === lastHandle && nearestItem.rssi >= lastRSSI-10) {
+          count += 1;
+          lastRSSI = nearestItem.rssi;
+        }
+        else {
+          count  = 0;
+        }
 
         // two consecutive measurements is OK
         if (count == 1)
-          finish(uuid);
+          finish(lastHandle);
 
-        lastUuid = uuid;
+        lastHandle = nearestItem.handle;
       };
 
       let finish = (uuid) => {
@@ -48,9 +73,9 @@ let bleUtil = {
         }
         this.pendingSearch.unsubscribe();
         this.pendingSearch = {};
-        resolve(new SetupCrownstone(uuid));
+        resolve(uuid);
       };
-      this.pendingSearch.unsubscribe = NativeEventsBridge.bleEvents.on(event, (data) => {console.log("IN"); sortingCallback(data)});
+      this.pendingSearch.unsubscribe = NativeEventsBridge.bleEvents.on(event, (data) => {sortingCallback(data)});
       // if we cant find something in 10 seconds, we fail.
       this.pendingSearch.timeout = setTimeout(() => {
         this.pendingSearch.unsubscribe();
@@ -60,26 +85,26 @@ let bleUtil = {
     })
   },
 
-  detectCrownstone: function(stone) {
+  detectCrownstone: function(stoneHandle) {
     this.cancelSearch();
     return new Promise((resolve, reject) => {
       let count = 0;
       let unbind = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (verifiedAdvertisement) => {
-        if (verifiedAdvertisement.uuid === stone.config.bluetoothId)
+        if (verifiedAdvertisement.uuid === stoneHandle)
           count += 1;
 
         // three consecutive measurements before timeout is OK
         if (count == 2)
-          finish();
+          finish(verifiedAdvertisement);
       };
 
-      let finish = () => {
+      let finish = (verifiedAdvertisement) => {
         if (unbind.timeout) {
           clearTimeout(unbind.timeout);
         }
         unbind.unsubscribe();
-        resolve(true);
+        resolve(verifiedAdvertisement.setupPackage);
       };
       unbind.unsubscribe = NativeEventsBridge.bleEvents.on(NativeEvents.ble.verifiedAdvertisementData, sortingCallback);
 
@@ -97,13 +122,6 @@ let bleUtil = {
 
 };
 
-function getter() {
-  let base = {};
-  mixin(base,bleUtil);
-  return base;
-}
-
-export const BLEutil = getter();
 
 class SingleCommand {
   constructor(bleHandle) {
@@ -153,5 +171,4 @@ export class SetupCrownstone {
     }
     return BleActions.setupCrownstone(dataString);
   }
-
 }

@@ -44,11 +44,18 @@ export class SetupAddPlugInStep1 extends Component {
               Alert.alert(
                 "Are you sure?",
                 "You can always add Crownstones later through the settings menu.",
-                [{text:'No'},{text:'Yes, I\'m sure', onPress: () => {Actions.setupAddPluginStep4({groupId: this.props.groupId})}}]
+                [{text:'No'},{text:'Yes, I\'m sure', onPress: () => {
+                  if (this.props.fromMainMenu === true) {
+                    Actions.tabBar();
+                  }
+                  else {
+                    Actions.setupAddPluginStep4({groupId: this.props.groupId})
+                  }
+                }}]
               )
             }} />
             <View style={{flex:1}} />
-            <NextButton onPress={() => {Actions.setupAddPluginStep2({groupId: this.props.groupId})}} />
+            <NextButton onPress={() => {Actions.setupAddPluginStep2({groupId: this.props.groupId, fromMainMenu: this.props.fromMainMenu})}} />
           </View>
         </View>
       </Background>

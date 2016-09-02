@@ -77,7 +77,7 @@ export class PictureView extends Component {
   render() {
     // somehow the camera does not take full screen size.
     return (
-      <View style={{flex:1, screenWidth, screenHeight}}>
+      <View style={{flex:1, width:screenWidth, height:screenHeight}}>
         <TopBar title="Take A Picture" left="Cancel" leftAction={Actions.pop} notBack={true} />
         <Camera
           ref={(cam) => {this.camera = cam;}}

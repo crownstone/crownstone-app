@@ -97,13 +97,14 @@ export const NativeEvents = {
 export const BleActions = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:        ()      => { return BluenetPromise('isReady');              },
-  connect:        (uuid)  => { return BluenetPromise('connect', uuid);        },
+  connect:        (handle)=> { return BluenetPromise('connect', handle);      },
   disconnect:     ()      => { return BluenetPromise('disconnect');           },
   phoneDisconnect:()      => { return BluenetPromise('phoneDisconnect');      },
   setSwitchState: (state) => { return BluenetPromise('setSwitchState', state);},
   getMACAddress:  ()      => { return BluenetPromise('getMACAddress');        },
   setupCrownstone:(dataString) => { return BluenetPromise('setupCrownstone', dataString); },
   setSettings:    (dataString) => { return BluenetPromise('setSettings', dataString); },
+  recover:        (handle)     => { return BluenetPromise('recover', handle); },
   factoryReset:   ()      => { return BluenetPromise('factoryReset'); },
 };
 

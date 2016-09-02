@@ -80,12 +80,12 @@ export class SettingsOverview extends Component {
       items.push({type: 'spacer'});
       items.push({
         type: 'button',
-        label: 'Turn on every Crownstone in Group',
+        label: 'Turn all Crownstones on',
         icon: <IconButton name="ios-power" size={22} button={true} style={{position: 'relative', top: 1}} color="#fff"
                           buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
         style: {color: colors.menuTextSelected.hex},
         callback: () => {
-          Alert.alert("Are you sure?", "Are you sure you want to turn on every Crownstone?", [
+          Alert.alert("Are you sure?", "Are you sure you want to turn on every Crownstone in this Group?", [
             {text: 'Cancel', style: 'cancel'},
             {text: 'OK', onPress: () => {}}
           ])

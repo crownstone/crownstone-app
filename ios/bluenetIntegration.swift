@@ -142,14 +142,14 @@ class BluenetJS: NSObject {
       })
 
       globalBluenet.bluenet.on("nearestSetupCrownstone", {data -> Void in
-        if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEventWithName("nearestSetupCrownstone", body: castData)
+        if let castData = data as? NearestItem {
+          self.bridge.eventDispatcher().sendAppEventWithName("nearestSetupCrownstone", body: castData.stringify())
         }
       })
       
       globalBluenet.bluenet.on("nearestCrownstone", {data -> Void in
-        if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEventWithName("nearestCrownstone", body: castData)
+        if let castData = data as? NearestItem {
+          self.bridge.eventDispatcher().sendAppEventWithName("nearestCrownstone", body: castData.stringify())
         }
       })
       

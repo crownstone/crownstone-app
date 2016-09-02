@@ -119,7 +119,7 @@ const syncCleanupLocal = function(store, state, actions, cloudData) {
       // cleanup stones
       stoneIds.forEach((stoneId) => {
         if (cloudData.cloudStoneIds[stoneId] === undefined) {
-          actions.push({type: 'REMOVE_STONE', groupId: groupId, locationId: stoneId});
+          actions.push({type: 'REMOVE_STONE', groupId: groupId, stoneId: stoneId});
         }
       });
 
@@ -204,7 +204,7 @@ const syncGroups = function(state, actions, groups, groupsData) {
             type: 'UPDATE_STONE_CONFIG',
             groupId: group.id,
             stoneId: stone.id,
-            data: {name: stone.name, icon: stone.deviceType, applianceId: stone.applianceId}
+            data: {name: stone.name, icon: stone.deviceType, stoneId: stone.id}
           });
         }
       }
@@ -213,7 +213,7 @@ const syncGroups = function(state, actions, groups, groupsData) {
           type: 'ADD_STONE',
           groupId: group.id,
           stoneId: stone.id,
-          data: {name: stone.name, icon: stone.deviceType, applianceId: stone.applianceId}
+          data: {name: stone.name, icon: stone.deviceType, stoneId: stone.id}
         });
 
         // we only download the behaviour the first time we add the stone.
