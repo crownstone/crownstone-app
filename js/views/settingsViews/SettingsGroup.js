@@ -42,7 +42,7 @@ export class SettingsGroup extends Component {
     for (let userId in users) {
       if (users.hasOwnProperty(userId)) {
         if (users[userId].accessLevel == accessLevel) {
-          console.log(users[userId].picture)
+          console.log(users[userId])
           result.push({
             label:users[userId].firstName + " " + users[userId].lastName,
             type: userId === state.user.userId ? 'info' : 'navigation',
@@ -69,7 +69,7 @@ export class SettingsGroup extends Component {
       items.push({label:'GROUP SETTINGS',  type:'explanation', below:false});
       items.push({
         type:'textEdit',
-        label:'Group Name',
+        label:'Name',
         value: groupSettings.name,
         validation:{minLength:2},
         validationCallback: (result) => {this.validationState.groupName = result;},
@@ -116,7 +116,7 @@ export class SettingsGroup extends Component {
     if (level == "admin" || level == 'member') {
       items.push({type:'spacer'});
       items.push({
-        label: 'Invite someone to the group', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
+        label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
         labelStyle: {color:colors.blue.hex},
         icon: <Icon name="ios-add-circle" size={30} color={colors.green.hex} style={{position:'relative', top:2}} />,

@@ -43,12 +43,11 @@ export class SetupAddPlugInStep3 extends Component {
     this.props.eventBus.emit('showLoading', 'Creating room...');
     const { store } = this.props;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup;
-    CLOUD.forGroup(activeGroup).createLocation(roomName)
+    CLOUD.forGroup(this.props.groupId).createLocation(roomName)
       .then((reply) => {
         this.props.eventBus.emit('hideLoading');
         this.setState({roomName:''});
-        store.dispatch({type:'ADD_LOCATION', groupId: activeGroup, locationId: reply.id, data:{name: roomName}});
+        store.dispatch({type:'ADD_LOCATION', groupId: this.props.groupId, locationId: reply.id, data:{name: roomName}});
         this.setState({selectedRoom:reply.id, roomName:''});
       }).done()
   }
@@ -56,7 +55,6 @@ export class SetupAddPlugInStep3 extends Component {
   getAddRoomBar() {
     const { store } = this.props;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup;
 
     let onSubmitEditing = (roomName) => {
       if (roomName.length < 3) {
@@ -68,7 +66,7 @@ export class SetupAddPlugInStep3 extends Component {
       }
       else {
         // check if the room name is unique.
-        let existingLocations = getRoomNames(state, activeGroup);
+        let existingLocations = getRoomNames(state, this.props.groupId);
         if (existingLocations[roomName] === undefined) {
           Alert.alert(
             'Do you want add a room called \'' + roomName + '\'?',
@@ -111,8 +109,7 @@ export class SetupAddPlugInStep3 extends Component {
   getRoomElements() {
     const { store } = this.props;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup;
-    let rooms = state.groups[activeGroup].locations;
+    let rooms = state.groups[this.props.groupId].locations;
     let roomIds = Object.keys(rooms).sort();
 
     let roomElements = [];
@@ -146,7 +143,6 @@ export class SetupAddPlugInStep3 extends Component {
   render() {
     const { store } = this.props;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup;
     return (
       <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
         <View style={styles.shadedStatusBar} />
@@ -163,14 +159,14 @@ export class SetupAddPlugInStep3 extends Component {
               Alert.alert(
                "Are you sure?","You can always put Crownstones in rooms later through the Crownstone settings. " +
                "Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Group.",
-               [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.setupAddPluginStep4()}}]
+               [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.setupAddPluginStep4({groupId: this.props.groupId})}}]
               );
             }} />
             <View style={{flex:1}} />
             <NextButton onPress={() => {
               if (this.state.selectedRoom !== undefined) {
-                store.dispatch({type:'UPDATE_STONE', groupId: activeGroup, stoneId: this.props.stoneId, data:{locationId: this.state.selectedRoom}})
-                Actions.setupAddPluginStep4();
+                store.dispatch({type:'UPDATE_STONE_CONFIG', groupId: this.props.groupId, stoneId: this.props.stoneId, data:{locationId: this.state.selectedRoom}})
+                Actions.setupAddPluginStep4({groupId: this.props.groupId});
               }
               else {
                Alert.alert(

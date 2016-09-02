@@ -64,12 +64,6 @@ export class Register extends Component {
     }
   }
 
-  _viewURL(url) {
-    Linking.openURL(url)
-      .then(() => {console.log("success")})
-      .catch(err => console.error('An error occurred', err));
-  }
-
   /**
    * get the form items
    * @returns {*[]}
@@ -157,16 +151,16 @@ export class Register extends Component {
         type: 'explanation',
         __item: (
           <View style={{backgroundColor:'transparent'}}>
-            <View style={{flexDirection:'row',padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12}}>
+            <View style={{flexDirection:'row', padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12}}>
               <Text style={{fontSize:12, color:'#444'}}>By registering, you agree to our </Text>
               <TouchableHighlight onPress={() => {
-                this._viewURL('http://crownstone.rocks/terms-of-service/');
+                Linking.openURL('http://crownstone.rocks/terms-of-service/').catch((err) => {})
               }}>
                 <Text style={{fontSize:12, color:colors.blue.hex}}>terms </Text>
               </TouchableHighlight>
               <Text style={{fontSize:12, color:'#444'}}>& </Text>
               <TouchableHighlight onPress={() => {
-                this._viewURL('http://crownstone.rocks/privacy-policy/');
+                Linking.openURL('http://crownstone.rocks/privacy-policy/').catch(err => {})
               }}>
                 <Text style={{fontSize:12, color:colors.blue.hex}}>privacy policy</Text>
               </TouchableHighlight>

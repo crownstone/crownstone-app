@@ -7,6 +7,13 @@ import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/st
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'
 
+export const mixin = function(base, section) {
+  for (let key in section) {
+    if (section.hasOwnProperty(key))
+      base[key] = section[key]
+  }
+};
+
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return reg.test(email);

@@ -44,18 +44,19 @@ export class SetupAddGroup extends Component {
           CLOUD.getKeys()
             .then((keyResult) => {
               if (Array.isArray(keyResult)) {
-                keyResult.forEach((group) => {
-                  store.dispatch({type:'UPDATE_GROUP_CONFIG', groupId: group.groupId, data:{
-                    adminKey: keyResult.keys.admin,
-                    memberKey: keyResult.keys.member,
-                    guestKey: keyResult.keys.guest
-                  }});
+                console.log(keyResult)
+                keyResult.forEach((keySet) => {
+                  store.dispatch({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
+                    adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
+                    memberKey: keySet.keys.member || null,
+                    guestKey:  keySet.keys.guest  || null
+                  }})
                 });
                 this.props.eventBus.emit('hideLoading');
                 store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup: response.id}});
 
                 // we initially only support plugin so we skip the selection step.
-                Actions.setupAddPluginStep1();
+                Actions.setupAddPluginStep1({groupId: response.id});
               }
               else {
                 throw new Error("Key data is not an array.")

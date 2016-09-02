@@ -70,7 +70,7 @@ export class SettingsCrownstoneOverview extends Component {
         style: {color:colors.blue.hex},
         type: 'button',
         callback: () => {
-          Actions.setupAddPluginStep1();
+          Actions.setupAddPluginStep1({groupId: group.id});
         }
       })
     });

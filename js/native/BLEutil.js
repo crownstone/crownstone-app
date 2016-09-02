@@ -1,13 +1,28 @@
 import { NativeEventsBridge } from './NativeEventsBridge'
 import { BlePromiseManager } from '../logic/BlePromiseManager'
 import { BleActions, NativeEvents } from './Proxy';
+import { mixin } from '../util/util';
 
-export const BLEutil = {
+let bleUtil = {
+  pendingSearch: {},
+
+  cancelSearch: function() {
+    if (this.pendingSearch.timeout) {
+      clearTimeout(this.pendingSearch.timeout);
+    }
+    if (this.pendingSearch.unsubscribe) {
+      this.pendingSearch.unsubscribe();
+    }
+    this.pendingSearch = {};
+  },
+
   getNearestSetupCrownstone: function() {
+    this.cancelSearch();
     return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestSetupCrownstone)
   },
 
   getNearestCrownstone: function() {
+    this.cancelSearch();
     return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestCrownstone)
   },
 
@@ -16,7 +31,6 @@ export const BLEutil = {
       let count = 0;
       let lastUuid = '';
 
-      let unbind = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (uuid) => {
         if (lastUuid === uuid) { count += 1; }
         else                   { count  = 0; }
@@ -29,22 +43,25 @@ export const BLEutil = {
       };
 
       let finish = (uuid) => {
-        if (unbind.timeout) {
-          clearTimeout(unbind.timeout);
+        if (this.pendingSearch.timeout) {
+          clearTimeout(this.pendingSearch.timeout);
         }
-        unbind.unsubscribe();
+        this.pendingSearch.unsubscribe();
+        this.pendingSearch = {};
         resolve(new SetupCrownstone(uuid));
       };
-      unbind.unsubscribe = NativeEventsBridge.bleEvents.on(event, sortingCallback);
+      this.pendingSearch.unsubscribe = NativeEventsBridge.bleEvents.on(event, (data) => {console.log("IN"); sortingCallback(data)});
       // if we cant find something in 10 seconds, we fail.
-      unbind.timeout = setTimeout(() => {
-        unbind.unsubscribe();
+      this.pendingSearch.timeout = setTimeout(() => {
+        this.pendingSearch.unsubscribe();
+        this.pendingSearch = {};
         reject("Nothing Near");
       }, 10000);
     })
   },
 
-  detectCrownstone(stone) {
+  detectCrownstone: function(stone) {
+    this.cancelSearch();
     return new Promise((resolve, reject) => {
       let count = 0;
       let unbind = {unsubscribe:()=>{}, timeout: undefined};
@@ -79,6 +96,14 @@ export const BLEutil = {
   },
 
 };
+
+function getter() {
+  let base = {};
+  mixin(base,bleUtil);
+  return base;
+}
+
+export const BLEutil = getter();
 
 class SingleCommand {
   constructor(bleHandle) {

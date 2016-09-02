@@ -65,6 +65,8 @@ export class AppRouter extends Component {
       // pass the store to the singletons
       NativeEventsBridge.loadStore(store);
       AdvertisementManager.loadStore(store);
+
+      console.log("LOADED STORES")
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
 
@@ -95,11 +97,12 @@ export class AppRouter extends Component {
 
     // there can be a race condition where the event has already been fired before this module has initialized
     // This check is to ensure that it doesn't matter what comes first.
-    if (StoreManager.isInitialized === true) {
+    if (StoreManager.isInitialized() === true) {
       interpretData();
     }
-    else
+    else {
       this.unsubscribe.push(eventBus.on('storeInitialized', interpretData));
+    }
   }
 
   componentWillUnmount() { // cleanup

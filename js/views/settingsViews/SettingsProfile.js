@@ -23,7 +23,7 @@ export class SettingsProfile extends Component {
   constructor() {
     super();
     this.state = {picture:null};
-    this.renderState = {}
+    this.renderState = {};
     this.validationState = {firstName:undefined, lastName:undefined, email:undefined}
   }
 

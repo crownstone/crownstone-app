@@ -84,8 +84,7 @@ const syncDown = function (state) {
 };
 
 const shouldUpdate = function(localVersion, cloudVersion) {
-  console.log(localVersion.updatedAt, cloudVersion.updatedAt, localVersion.updatedAt < cloudVersion.updatedAt);
-  return localVersion.updatedAt < cloudVersion.updatedAt;
+  return localVersion.updatedAt < new Date(cloudVersion.updatedAt).valueOf();
 };
 
 
@@ -288,17 +287,17 @@ const syncGroups = function(state, actions, groups, groupsData) {
     Object.keys(groupsData[group.id].admins).forEach((userId) => {
       cloudGroupMemberIds[group.id][userId] = true;
       let user = groupsData[group.id].admins[userId];
-      syncGroupUser(actions, group, groupInState, userId, user, 'admin');
+      syncGroupUser(actions, group, groupInState, userId, user, state, 'admin');
     });
     Object.keys(groupsData[group.id].members).forEach((userId) => {
       cloudGroupMemberIds[group.id][userId] = true;
       let user = groupsData[group.id].members[userId];
-      syncGroupUser(actions, group, groupInState, userId, user, 'member');
+      syncGroupUser(actions, group, groupInState, userId, user, state, 'member');
     });
     Object.keys(groupsData[group.id].guests).forEach((userId) => {
       cloudGroupMemberIds[group.id][userId] = true;
       let user = groupsData[group.id].guests[userId];
-      syncGroupUser(actions, group, groupInState, userId, user, 'guest');
+      syncGroupUser(actions, group, groupInState, userId, user, state, 'guest');
     });
   });
 
@@ -312,8 +311,14 @@ const syncGroups = function(state, actions, groups, groupsData) {
   }
 };
 
-const syncGroupUser = function(actions, group, groupInState, userId, user, accessLevel) {
+const syncGroupUser = function(actions, group, groupInState, userId, user, state, accessLevel) {
   if (groupInState !== undefined && groupInState.users[userId] !== undefined) {
+    // since we do not get a profile picture via the same way as the rest of the users, we alter the data to contain our own pic.
+    let selfId = state.user.userId;
+    if (userId == selfId) {
+      user.picture = state.user.picture;
+    }
+
     if (shouldUpdate(groupInState.users[userId], user)) {
       actions.push({
         type: 'UPDATE_GROUP_USER',

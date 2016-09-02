@@ -18,7 +18,7 @@ import { BLEutil, SetupCrownstone } from '../../native/BLEutil'
 import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton } from './SetupShared'
-import { styles, colors, width, screenHeight } from './../styles'
+import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 
 export class SetupAddPlugInStep2 extends Component {
@@ -33,8 +33,10 @@ export class SetupAddPlugInStep2 extends Component {
       fade1: new Animated.Value(1),
     };
     this.imageIn1 = true;
-    this.unsubscribe = Native
-    // setTimeout(() => {this.scanAndRegisterCrownstone();},0);
+  }
+
+  componentDidMount() {
+    setTimeout(() => {this.scanAndRegisterCrownstone();},0);
   }
 
   switchImages(nextImage) {
@@ -156,10 +158,9 @@ export class SetupAddPlugInStep2 extends Component {
   claimStone(crownstone, stoneId, attempt = 0) {
     const {store} = this.props;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup;
-    let groupData = state.groups[activeGroup].config;
-    let stoneData = state.groups[activeGroup].stones[stoneId];
-
+    let groupId = this.props.groupId;
+    let groupData = state.groups[groupId].config;
+    let stoneData = state.groups[groupId].stones[stoneId].config;
     this.setProgress(4);
 
     let data = {};
@@ -167,7 +168,7 @@ export class SetupAddPlugInStep2 extends Component {
     data.adminKey          = groupData.adminKey;
     data.memberKey         = groupData.memberKey;
     data.guestKey          = groupData.guestKey;
-    data.meshAccessAddress = groupData.meshAccessAddress;
+    data.meshAccessAddress = groupData.meshAccessAddress || 2789430350;
     data.ibeaconUUID       = groupData.iBeaconUUID;
     data.ibeaconMajor      = stoneData.iBeaconMajor;
     data.ibeaconMinor      = stoneData.iBeaconMinor;
@@ -177,7 +178,7 @@ export class SetupAddPlugInStep2 extends Component {
       .then(() => {
         this.setProgress(5);
         setTimeout(() => { this.setProgress(6); }, 300);
-        setTimeout(() => { Actions.setupAddPluginStep3({ stoneId: stoneId }); }, 1800);
+        setTimeout(() => { Actions.setupAddPluginStep3({ stoneId: stoneId, groupId:this.props.groupId}); }, 1800);
       })
       .catch((err) => {
         console.log("error", err, "ATTEMPT:", attempt);
@@ -196,7 +197,7 @@ export class SetupAddPlugInStep2 extends Component {
             else {
               this.cleanupFailedAttempt(stoneId)
                 .then(() => {
-                  Actions.setupAddPlugInStepRecover();
+                  Actions.setupAddPlugInStepRecover({groupId:this.props.groupId});
                 }).done();
             }
           }}
@@ -205,16 +206,15 @@ export class SetupAddPlugInStep2 extends Component {
   }
 
   cleanupFailedAttempt(stoneId) {
-    const {store} = this.props;
+    const { store } = this.props;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup;
-    
-    CLOUD.forStone(stoneId).deleteStone()
+
+    return CLOUD.deleteStone(stoneId)
       .then(() => {
         store.dispatch({
           type: "REMOVE_STONE",
-          groupId: activeGroup,
-          stoneId: cloudResponse.data.id,
+          groupId: this.props.groupId,
+          stoneId: stoneId,
         });
       })
       .catch((err) => {
@@ -264,7 +264,7 @@ export class SetupAddPlugInStep2 extends Component {
           <CancelButton onPress={() => {Alert.alert(
                 "Are you sure?",
                 "You can always add Crownstones later through the settings menu.",
-                [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.tabBar}]
+                [{text:'No'},{text:'Yes, I\'m sure', onPress: () => {BLEutil.cancelSearch(); Actions.tabBar();}}]
               )}}/>
           <View style={{flex:1}}/>
         </View>
@@ -284,7 +284,7 @@ export class SetupAddPlugInStep2 extends Component {
     if (this.state.progress === 0) {
       return (
         <View>
-          <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true}/>
+          <TopBar left='Back' leftAction={() => {BLEutil.cancelSearch(); Actions.pop();}} style={{backgroundColor:'transparent'}} shadeStatus={true}/>
           <Text style={[setupStyle.h1, {paddingTop:0}]}>Adding a Plug-in Crownstone</Text>
         </View>
       )

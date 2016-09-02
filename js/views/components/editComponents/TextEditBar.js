@@ -105,7 +105,7 @@ export class TextEditBar extends Component {
             ref={verification ? this.refNameVerification : this.refName}
             __validate={(value) => {this.validate(value)}}
             {...this.props}
-            placeholder={verification ? 'Verification' : this.props.placeholder}
+            placeholder={verification ? 'Verification' : this.props.placeholder || this.props.label}
             value={verification ? this.verificationContent : this.props.value}
           />
           {this.getValidationIcons()}

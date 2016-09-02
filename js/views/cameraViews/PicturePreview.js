@@ -26,7 +26,7 @@ export class PicturePreview extends Component {
         <View style={{flex:1, backgroundColor:'#0f101a', alignItems:'center', justifyContent:'center'}}>
           <Image source={{uri:imageURI}} style={{width: screenWidth, height:screenWidth}}>
             <View style={{position:'absolute', top:0, left:0, backgroundColor:'rgba(0,0,0,0.5)', width:screenWidth, height: screenWidth}} />
-            <Image source={{uri:imageURI}} style={{position:'absolute', top:0, left:0, width: screenWidth, height:screenWidth, borderRadius:0.5*width}} />
+            <Image source={{uri:imageURI}} style={{position:'absolute', top:0, left:0, width: screenWidth, height:screenWidth, borderRadius:0.5*screenWidth}} />
           </Image>
           <View style={{flexDirection:'row', width: screenWidth, position:'absolute', bottom:0}}>
             <TouchableHighlight onPress={() => {

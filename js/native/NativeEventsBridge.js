@@ -27,6 +27,7 @@ class NativeEventsClass {
   }
 
   loadStore(store) {
+    console.log('LOADED STORE NativeEventsClass', this.initialized);
     if (this.initialized === false) {
       this.initialized = true;
       this.store = store;
@@ -43,41 +44,39 @@ class NativeEventsClass {
 
   startListeningToBleEvents() {
     // bind the BLE events
-    let eventName = NativeEvents.ble.verifiedAdvertisementData;
-    if (this.subscriptions[eventName] === undefined) {
-      this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-        eventName,
-        (verifiedAdvertisementData) => {
-          if (typeof verifiedAdvertisementData == 'string' && verifiedAdvertisementData.length > 2) {
-            verifiedAdvertisementData = JSON.parse(verifiedAdvertisementData);
-            this.bleEvents.emit(eventName, verifiedAdvertisementData);
-          }
+    let vAdvData = NativeEvents.ble.verifiedAdvertisementData;
+    this.subscriptions[vAdvData] = NativeAppEventEmitter.addListener(
+      vAdvData,
+      (verifiedAdvertisementData) => {
+        if (typeof verifiedAdvertisementData == 'string' && verifiedAdvertisementData.length > 2) {
+          verifiedAdvertisementData = JSON.parse(verifiedAdvertisementData);
+          this.bleEvents.emit(vAdvData, verifiedAdvertisementData);
         }
-      );
-    }
-
-    eventName = NativeEvents.ble.nearestSetupCrownstone;
-    this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-      eventName,
-      (crownstoneUUID) => {
-        this.bleEvents.emit(eventName, crownstoneUUID);
       }
     );
 
-    eventName = NativeEvents.ble.nearestCrownstone;
-    this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-      eventName,
+    let nSetupCS = NativeEvents.ble.nearestSetupCrownstone;
+    this.subscriptions[nSetupCS] = NativeAppEventEmitter.addListener(
+      nSetupCS,
       (crownstoneUUID) => {
-        this.bleEvents.emit(eventName, crownstoneUUID);
+        this.bleEvents.emit(nSetupCS, crownstoneUUID);
       }
     );
 
-    eventName = NativeEvents.location.iBeaconAdvertisement;
-    if (this.subscriptions[eventName] === undefined) {
-      this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-        eventName,
+    let nCS = NativeEvents.ble.nearestCrownstone;
+    this.subscriptions[nCS] = NativeAppEventEmitter.addListener(
+      nCS,
+      (crownstoneUUID) => {
+        this.bleEvents.emit(nCS, crownstoneUUID);
+      }
+    );
+
+    let iBeaconAdv = NativeEvents.location.iBeaconAdvertisement;
+    if (this.subscriptions[iBeaconAdv] === undefined) {
+      this.subscriptions[iBeaconAdv] = NativeAppEventEmitter.addListener(
+        iBeaconAdv,
         (iBeaconAdvertisement) => {
-          this.locationEvents.emit(eventName, iBeaconAdvertisement);
+          this.locationEvents.emit(iBeaconAdv, iBeaconAdvertisement);
         }
       );
     }
@@ -89,12 +88,12 @@ class NativeEventsClass {
       // resume the tracking of the beacons, can also be called safely if we are already listening.
       Bluenet.resumeIBeaconTracking();
 
-      let eventName = NativeEvents.location.enterGroup;
-      if (this.subscriptions[eventName] === undefined) {
-        this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-          eventName,
+      let enterGroup = NativeEvents.location.enterGroup;
+      if (this.subscriptions[enterGroup] === undefined) {
+        this.subscriptions[enterGroup] = NativeAppEventEmitter.addListener(
+          enterGroup,
           (groupId) => {
-            this.locationEvents.emit(eventName, groupId);
+            this.locationEvents.emit(enterGroup, groupId);
             // TODO: move to localization util or something
             if (state.groups[groupId] !== undefined) {
               // prepare the settings for this group and pass them onto bluenet
@@ -113,12 +112,12 @@ class NativeEventsClass {
         );
       }
 
-      eventName = NativeEvents.location.exitGroup;
-      if (this.subscriptions[eventName] === undefined) {
-        this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-          eventName,
+      let exitGroup = NativeEvents.location.exitGroup;
+      if (this.subscriptions[exitGroup] === undefined) {
+        this.subscriptions[exitGroup] = NativeAppEventEmitter.addListener(
+          exitGroup,
           (groupId) => {
-            this.locationEvents.emit(eventName, groupId);
+            this.locationEvents.emit(exitGroup, groupId);
             // TODO: move to localization util or something
             this.store.dispatch({type: 'CLEAR_ACTIVE_GROUP'});
           }
@@ -126,12 +125,12 @@ class NativeEventsClass {
       }
 
 
-      eventName = NativeEvents.location.enterLocation;
-      if (this.subscriptions[eventName] === undefined) {
-        this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-          eventName,
+      let enterLoc = NativeEvents.location.enterLocation;
+      if (this.subscriptions[enterLoc] === undefined) {
+        this.subscriptions[enterLoc] = NativeAppEventEmitter.addListener(
+          enterLoc,
           (locationId) => {
-            this.locationEvents.emit(eventName, locationId);
+            this.locationEvents.emit(enterLoc, locationId);
             // TODO: move to localization util or something, do something with the behaviour
             this.store.dispatch({type: 'USER_ENTER', groupId: state.app.activeGroup, locationId: locationId});
           }
@@ -139,12 +138,12 @@ class NativeEventsClass {
       }
 
 
-      eventName = NativeEvents.location.exitLocation;
-      if (this.subscriptions[eventName] === undefined) {
-        this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-          eventName,
+      let exitLoc = NativeEvents.location.exitLocation;
+      if (this.subscriptions[exitLoc] === undefined) {
+        this.subscriptions[exitLoc] = NativeAppEventEmitter.addListener(
+          exitLoc,
           (locationId) => {
-            this.locationEvents.emit(eventName, locationId);
+            this.locationEvents.emit(exitLoc, locationId);
             // TODO: move to localization util or something, do something with the behaviour
             this.store.dispatch({type: 'USER_EXIT', groupId: state.app.activeGroup, locationId: locationId});
           }
@@ -152,12 +151,12 @@ class NativeEventsClass {
       }
 
 
-      eventName = NativeEvents.location.currentLocation;
-      if (this.subscriptions[eventName] === undefined) {
-       this.subscriptions[eventName] = NativeAppEventEmitter.addListener(
-         eventName,
+      let currentLoc = NativeEvents.location.currentLocation;
+      if (this.subscriptions[currentLoc] === undefined) {
+       this.subscriptions[currentLoc] = NativeAppEventEmitter.addListener(
+         currentLoc,
          (currentLocation) => {
-           this.locationEvents.emit(eventName, currentLocation);
+           this.locationEvents.emit(currentLoc, currentLocation);
          }
        );
       }

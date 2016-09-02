@@ -14,7 +14,7 @@ import { TopBar } from '../components/Topbar';
 import Camera from 'react-native-camera';
 import { Icon } from '../components/Icon';
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors, width, screenHeight } from '../styles'
+import { styles, colors, screenWidth, screenHeight } from '../styles'
 
 
 export class PictureView extends Component {
@@ -77,7 +77,7 @@ export class PictureView extends Component {
   render() {
     // somehow the camera does not take full screen size.
     return (
-      <View style={{flex:1, width, screenHeight}}>
+      <View style={{flex:1, screenWidth, screenHeight}}>
         <TopBar title="Take A Picture" left="Cancel" leftAction={Actions.pop} notBack={true} />
         <Camera
           ref={(cam) => {this.camera = cam;}}

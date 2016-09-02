@@ -2,6 +2,7 @@
 import React, { Component } from 'react'
 import { Alert } from 'react-native';
 
+import { mixin } from '../util/util';
 
 import { user } from './sections/user'
 import { base } from './sections/base'
@@ -12,14 +13,6 @@ import { devices } from './sections/devices'
 import { appliances } from './sections/appliances'
 import { sync } from './sections/sync'
 
-
-function mixin(base, section) {
-  for (let key in section) {
-    if (section.hasOwnProperty(key))
-      base[key] = section[key]
-  }
-}
-
 function combineSections() {
   let result = {};
   mixin(result, base);
@@ -29,7 +22,7 @@ function combineSections() {
   mixin(result, groups);
   mixin(result, devices);
   mixin(result, appliances);
-  result.sync = sync;
+  mixin(result, sync);
   return result;
 }
 

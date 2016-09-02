@@ -16,7 +16,7 @@ export class AnimatedLogo extends Component {
   }
 
   componentDidMount() {
-    //this.animate();
+    this.animate();
   }
 
   componentWillUnmount() {

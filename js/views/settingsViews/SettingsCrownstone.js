@@ -68,7 +68,7 @@ export class SettingsCrownstone extends Component {
             }
             else {
               Alert.alert("Move Crownstone to " + selectedRoom,
-                "If you move a Crownstone to a different room, we'd recommend you redo the fingerprints to ensure the indoor localization will work correctly.",
+                "If you move a Crownstone to a different room, we'd recommend you retrain the rooms to ensure the indoor localization will work correctly.",
                 [{text:'Cancel'}, {text:"OK", onPress: () => {
                   let roomId = getRoomIdFromName(state, this.props.groupId, selectedRoom);
                   store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})

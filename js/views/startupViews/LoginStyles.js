@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { Dimensions, PixelRatio, StyleSheet } from 'react-native'
-
-let { width, height } = Dimensions.get('window');
+import { screenWidth, screenHeight } from '../styles'
 
 export default StyleSheet.create({
   spacer: {
     flexDirection:'column',
     flex:1,
     alignItems:'center',
-    marginTop:height*0.4,
+    marginTop:screenHeight*0.4,
   },
   textBoxView: {
     backgroundColor:'#fff',
@@ -33,7 +32,7 @@ export default StyleSheet.create({
     position:'absolute',
     bottom:30,
     flex:1,
-    width: width,
+    width: screenWidth,
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'center',
@@ -42,13 +41,13 @@ export default StyleSheet.create({
   loginButton: {
     backgroundColor:'transparent',
     height: 110,
-    width: 110,
-    borderRadius:55,
+    width:  110,
+    borderRadius: 55,
     borderWidth:2,
     borderColor:'white',
     alignItems:'center',
     justifyContent:'center',
-    margin: (width - 2*110) / 6,
+    margin: (screenWidth - 2*110) / 6,
     marginBottom:0
   },
   loginText: {

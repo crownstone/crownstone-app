@@ -74,7 +74,7 @@ export class Dropdown extends Component {
         <TouchableHighlight onPress={() => {this.setState({open:!this.state.open})}}>
           <View style={[styles.listView, {height:this.props.barHeight}]}>
             <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
-            <Text style={[{flex:1, fontSize:17}, this.props.valueStyle]}>{this.props.buttons !== true ? this.props.value :this.state.value}</Text>
+            <Text style={[{flex:1, fontSize:17}, this.props.valueStyle]}>{this.props.buttons !== true ? this.props.value : this.state.value}</Text>
           </View>
         </TouchableHighlight>
         <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor:'#fff'}}>

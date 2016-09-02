@@ -193,3 +193,11 @@ export const getRoomIdFromName = function(state, groupId, locationName) {
   return false;
 };
 
+export const getTotalAmountOfCrownstones = function(state) {
+  let groupIds = Object.keys(state.groups);
+  let count = 0;
+  groupIds.forEach((groupId) => {
+    count += Object.keys(state.groups[groupId].stones).length;
+  })
+  return count;
+};

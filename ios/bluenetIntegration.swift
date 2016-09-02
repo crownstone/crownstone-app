@@ -25,7 +25,9 @@ var GLOBAL_BLUENET : ViewPassThrough?
     BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
 
     self.bluenet = Bluenet();
-
+    
+    let defaultSettings = BluenetSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil)
+    self.bluenet.setSettings(defaultSettings);
     self.bluenetLocalization = BluenetLocalization();
     
 
@@ -139,6 +141,18 @@ class BluenetJS: NSObject {
         }
       })
 
+      globalBluenet.bluenet.on("nearestSetupCrownstone", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("nearestSetupCrownstone", body: castData)
+        }
+      })
+      
+      globalBluenet.bluenet.on("nearestCrownstone", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEventWithName("nearestCrownstone", body: castData)
+        }
+      })
+      
       // forward the navigation event stream to react native
       globalBluenet.bluenetLocalization.on("iBeaconAdvertisement", {ibeaconData -> Void in
         var returnArray = [String]()
@@ -150,17 +164,7 @@ class BluenetJS: NSObject {
         self.bridge.eventDispatcher().sendAppEventWithName("iBeaconAdvertisement", body: returnArray)
       })
       
-      globalBluenet.bluenetLocalization.on("nearestSetupCrownstone", {data -> Void in
-        if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEventWithName("nearestSetupCrownstone", body: castData)
-        }
-      })
-      
-      globalBluenet.bluenetLocalization.on("nearestCrownstone", {data -> Void in
-        if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEventWithName("nearestCrownstone", body: castData)
-        }
-      })
+     
       
       globalBluenet.bluenetLocalization.on("enterGroup", {data -> Void in
         if let castData = data as? String {

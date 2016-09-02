@@ -85,11 +85,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listText:{
-    width:130,
+    width:(1/3)*screenWidth,
     fontSize: 17,
   },
   listTextLarge:{
-    width:250,
+    width:(2/3)*screenWidth,
     fontSize: 17,
   },
   separator: {

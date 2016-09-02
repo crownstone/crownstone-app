@@ -28,7 +28,7 @@ export class SetupAddPlugInStep4 extends Component {
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.information}>You can always add more Crownstones later through the settings menu.</Text>
           <View style={{flex:1}} />
-          <TouchableOpacity style={{paddingLeft:30, paddingRight:30}} onPress={() => {Actions.setupAddPluginStep1({hideBack:true});}}>
+          <TouchableOpacity style={{paddingLeft:30, paddingRight:30}} onPress={() => {Actions.setupAddPluginStep1({hideBack:true, groupId: this.props.groupId});}}>
             <View style={styles.rowCentered}>
               <Image source={require('../../images/lineDrawings/addCrownstone.png')} style={{width:imageSize, height:imageSize}} />
               <View style={{flexDirection:'column', flex:1}}>

@@ -11,7 +11,9 @@ import { DISABLE_NATIVE } from '../ExternalConfig'
 
 export let Bluenet;
 if (DISABLE_NATIVE === true) {
-  console.log("NATIVE CALLS ARE DISABLES BY EXTERNALCONFIG.JS")
+  console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
+  console.log("!-----------  NATIVE CALLS ARE DISABLES BY EXTERNALCONFIG.JS -----------!");
+  console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   Bluenet = {
     clearTrackedBeacons: () => {},
     rerouteEvents: () => {},
