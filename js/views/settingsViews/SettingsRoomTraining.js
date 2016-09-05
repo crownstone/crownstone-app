@@ -69,7 +69,7 @@ export class SettingsRoomTraining extends Component {
     FingerprintManager.finalizeFingerprint(groupId, this.props.locationId);
     FingerprintManager.getFingerprint(groupId, this.props.locationId)
       .then((result) => {
-        console.log("gathered fingerprint:", result);
+        // console.log("gathered fingerprint:", result);
         store.dispatch({
           type:'UPDATE_LOCATION_FINGERPRINT',
           groupId: groupId,

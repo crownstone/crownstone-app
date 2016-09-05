@@ -42,7 +42,7 @@ export class SettingsGroup extends Component {
     for (let userId in users) {
       if (users.hasOwnProperty(userId)) {
         if (users[userId].accessLevel == accessLevel) {
-          console.log(users[userId])
+          // console.log(users[userId])
           result.push({
             label:users[userId].firstName + " " + users[userId].lastName,
             type: userId === state.user.userId ? 'info' : 'navigation',

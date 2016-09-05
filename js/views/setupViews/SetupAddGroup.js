@@ -44,7 +44,7 @@ export class SetupAddGroup extends Component {
           CLOUD.getKeys()
             .then((keyResult) => {
               if (Array.isArray(keyResult)) {
-                console.log(keyResult);
+                // console.log(keyResult);
                 keyResult.forEach((keySet) => {
                   store.dispatch({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
                     adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
@@ -74,12 +74,12 @@ export class SetupAddGroup extends Component {
                 Alert.alert("Group '" + this.state.groupName + "' already exists.","Please try a different name.", [{text:'OK'}]);
                 break;
               default:
-                console.log(err);
+                // console.log(err);
                 Alert.alert("Could not connect to the cloud service.","Please check if you're connected to the internet.", [{text:'OK'}]);
             }
           }
           else {
-            console.log(err)
+            // console.log(err)
             Alert.alert("Error when creating group.",JSON.stringify(err), [{text:'OK..'}]);
           }
 

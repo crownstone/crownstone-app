@@ -17,7 +17,7 @@ export const sync = {
         let deletedGroup = syncCleanupLocal(store, state, actions, cloudData);
         syncKeys(actions, data.keys);
 
-        console.log("SYNC Dispatching ", actions.length, " actions!");
+        // console.log("SYNC Dispatching ", actions.length, " actions!");
         actions.forEach((action) => {
           action.triggeredBySync = true;
         });

@@ -141,7 +141,7 @@ export class SettingsCrownstone extends Component {
         this._removeCrownstoneFromRedux();
       })
       .catch((err) => {
-        console.log("error while asking the cloud to remove this crownstone", err);
+        // console.log("error while asking the cloud to remove this crownstone", err);
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Crownstone in the cloud. Please try again later",
           [{text:'OK', onPress: () => {
@@ -186,7 +186,7 @@ export class SettingsCrownstone extends Component {
           })
       })
       .catch((err) => {
-        console.log("error while asking the cloud to remove this crownstone", err);
+        // console.log("error while asking the cloud to remove this crownstone", err);
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Crownstone in the cloud. Please try again later",
           [{text:'OK', onPress: () => {
@@ -217,7 +217,7 @@ export class SettingsCrownstone extends Component {
   }
 
   render() {
-    console.log("redrawing Crownstone settings page");
+    // console.log("redrawing Crownstone settings page");
     return (
       <Background>
         <ScrollView>

@@ -43,7 +43,7 @@ export class SettingsProfile extends Component {
       const state = store.getState();
       if (this.renderState && this.renderState.user != state.user) {
         this.renderState = state;
-        // console.log("Force Update Profile", this.renderState.user, state.user)
+        // // console.log("Force Update Profile", this.renderState.user, state.user)
         this.forceUpdate();
       }
     })

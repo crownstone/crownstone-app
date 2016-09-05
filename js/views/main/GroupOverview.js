@@ -35,7 +35,7 @@ export class GroupOverview extends Component {
       const state = store.getState();
 
       if (this.renderState.app.activeGroup !== state.app.activeGroup) {
-        console.log("triggering rerender of group overview");
+        // console.log("triggering rerender of group overview");
         this.forceUpdate();
       }
     });
@@ -47,13 +47,13 @@ export class GroupOverview extends Component {
 
   // experiment
   // shouldComponentUpdate(nextProps, nextState) {
-  //   // console.log("Should component update?",nextProps, nextState)
+  //   // // console.log("Should component update?",nextProps, nextState)
   //   return false
   // }
 
 
   render() {
-    console.log("RENDERING OVERVIEW");
+    // console.log("RENDERING OVERVIEW");
 
 
     return (

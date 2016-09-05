@@ -84,7 +84,7 @@ export class SettingsGroupInvite extends Component {
   }
 
   validateAndContinue() {
-    console.log("HAPPY DAYS!", this.state, this.inputStates)
+    // console.log("HAPPY DAYS!", this.state, this.inputStates)
   }
 
   render() {

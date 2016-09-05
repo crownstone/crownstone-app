@@ -84,11 +84,11 @@ export class DeviceStateEdit extends Component {
 
     // behaviour explanation
     items.push({label:"Device Responds", value: currentBehaviour.active, type: 'switch', callback:(newValue) => {
-      console.log("DISPATCHING", {
-        ...requiredData,
-        type: actionBase + this.props.eventName,
-        data: {active: newValue}
-      });
+      // console.log("DISPATCHING", {
+      //   ...requiredData,
+      //   type: actionBase + this.props.eventName,
+      //   data: {active: newValue}
+      // });
       store.dispatch({
         ...requiredData,
         type: actionBase + this.props.eventName,

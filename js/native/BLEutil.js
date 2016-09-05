@@ -44,7 +44,7 @@ export const BLEutil = {
           nearestItem = JSON.parse(nearestItem);
         }
 
-        console.log("nearestItem", nearestItem, event);
+        // console.log("nearestItem", nearestItem, event);
 
         // do not care for items too far away.
         if (nearestItem.rssi < distanceThreshold || nearestItem.rssi >= 0) {
@@ -135,13 +135,13 @@ class SingleCommand {
    * @returns {*}
    */
   perform(action, prop) {
-    console.log("connecting to ", this.bleHandle, "doing this: ", action, "with prop", prop)
+    // console.log("connecting to ", this.bleHandle, "doing this: ", action, "with prop", prop)
     return BlePromiseManager.register(() => {
       return BleActions.connect(this.bleHandle)
         .then(() => { return action(prop); })
         .then(() => { return BleActions.disconnect(); })
         .catch((err) => {
-          console.log("BLE Error:", err);
+          // console.log("BLE Error:", err);
           return BleActions.phoneDisconnect();
         })
     }, {from:'perform on singleCommand'});

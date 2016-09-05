@@ -74,7 +74,7 @@ export class RoomCircle extends Component {
 
   // experiment
   shouldComponentUpdate(nextProps, nextState) {
-    // console.log("Should component update?",nextProps, nextState)
+    // // console.log("Should component update?",nextProps, nextState)
     return false
   }
 

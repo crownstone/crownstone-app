@@ -21,7 +21,7 @@ export class EventBus {
 
   emit(topic, data) {
     if (DEBUG) {
-      //console.log("EMIT: ", topic, data);
+      //// console.log("EMIT: ", topic, data);
     }
 
     if (this.topics[topic] !== undefined) {

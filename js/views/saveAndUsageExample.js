@@ -106,11 +106,11 @@ export class HomeOverview extends Component {
   onRef(input) {
     if (this.requestLoad === true) {
       this.requestLoad = false;
-      console.log('Rendering Offscreen')
+      // console.log('Rendering Offscreen')
       // create a path you want to write to
       var path = RNFS.DocumentDirectoryPath + '/image.png';
       input.captureFrame({type:'png', format:'file', filePath: path, quality:1}).then((filePath) => {
-        console.log('captured!', RNFS.CachesDirectoryPath, filePath, arguments)
+        // console.log('captured!', RNFS.CachesDirectoryPath, filePath, arguments)
         this.state.imagePath = filePath
         this.setState(this.state)
       });
@@ -121,9 +121,9 @@ export class HomeOverview extends Component {
   }
 
   _getImage() {
-    console.log('requestedImage')
+    // console.log('requestedImage')
     if (this.state.imagePath !== undefined) {
-      console.log('presenting image',this.state);
+      // console.log('presenting image',this.state);
       return <Image style={{width:300, height:300}} source={{uri: this.state.imagePath}} />
     }
   }
@@ -131,7 +131,7 @@ export class HomeOverview extends Component {
   render() {
     let offscreenRender;
     if (this.requestLoad === true) {
-      console.log('setup')
+      // console.log('setup')
       let width = Dimensions.get('window').width;
       offscreenRender = <View style={{position:'absolute', top:0, left:width}}>
         <Surface ref={this.onRef.bind(this)} width={300} height={300} preload={true}>
@@ -147,7 +147,7 @@ export class HomeOverview extends Component {
         </Surface>
       </View>
     }
-    console.log('drawing')
+    // console.log('drawing')
     return (
       <Background>
         {this._getImage()}

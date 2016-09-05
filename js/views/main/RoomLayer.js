@@ -99,7 +99,7 @@ export class RoomLayer extends Component {
 
   // experiment
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("Should component update?",nextProps, nextState);
+    // console.log("Should component update?",nextProps, nextState);
     return false
   }
 
@@ -190,7 +190,7 @@ export class RoomLayer extends Component {
     const state = store.getState();
     this.renderState = state;
 
-    console.log("rendering room layer");
+    // console.log("rendering room layer");
 
     return (
       <View>

@@ -45,7 +45,7 @@ export class CameraRollView extends Component {
         let pictures = [...this.state.pictures, ...data.edges];
         this.setState({pictures: pictures})
       }).catch((err) => {
-        console.log(err)
+        // console.log(err)
       });
     }
   }

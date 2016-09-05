@@ -76,7 +76,7 @@ export class SetupAddPlugInStep2 extends Component {
         this.interrogateStone(crownstone, activeGroup);
       })
       .catch((err) => {
-        console.log("error in looking for setup crownstone:",err);
+        // console.log("error in looking for setup crownstone:",err);
         Alert.alert("Nothing Found",
           "We can not find a Crownstone in setup mode. " +
           "If you are near a Crownstone, please plug it in and out of the power socket and hold your phone close.",
@@ -101,7 +101,7 @@ export class SetupAddPlugInStep2 extends Component {
         this.registerStone(crownstone, activeGroup, MACAddress);
       })
       .catch((err) => {
-        console.log("error connecting to crownstone!", err);
+        // console.log("error connecting to crownstone!", err);
         this.scanAndRegisterCrownstone()
       })
   }
@@ -109,7 +109,7 @@ export class SetupAddPlugInStep2 extends Component {
   registerStone(crownstone, activeGroup, MACAddress) {
     const {store} = this.props;
     const processSuccess = (cloudResponse) => {
-      console.log("received from cloud:",cloudResponse);
+      // console.log("received from cloud:",cloudResponse);
       store.dispatch({
         type: "ADD_STONE",
         groupId: activeGroup,
@@ -143,12 +143,12 @@ export class SetupAddPlugInStep2 extends Component {
               }
             })
             .catch((err) => {
-              console.log("CONNECTION ERROR:",err);
+              // console.log("CONNECTION ERROR:",err);
               processFailure();
             })
         }
         else {
-          console.log("CONNECTION ERROR:",err);
+          // console.log("CONNECTION ERROR:",err);
           processFailure();
         }
       });
@@ -181,7 +181,7 @@ export class SetupAddPlugInStep2 extends Component {
         setTimeout(() => { Actions.setupAddPluginStep3({stoneId: stoneId, groupId:this.props.groupId, fromMainMenu: this.props.fromMainMenu, BLEhandle: stoneData.bluetoothId}); }, 1800);
       })
       .catch((err) => {
-        console.log("error", err, "ATTEMPT:", attempt);
+        // console.log("error", err, "ATTEMPT:", attempt);
         Alert.alert("Something went wrong.",'We will try it again.',[
           {text:'Cancel', type:'cancel', onPress: () => {
             this.cleanupFailedAttempt(stoneId)
@@ -218,7 +218,7 @@ export class SetupAddPlugInStep2 extends Component {
         });
       })
       .catch((err) => {
-        console.log("ERROR REMOVING STONE FROM CLOUD.")
+        // console.log("ERROR REMOVING STONE FROM CLOUD.")
       });
   }
   

@@ -97,7 +97,7 @@ export const groups = {
     );
 
     return Promise.all(promises).then(() => {
-      console.log("returning all")
+      // console.log("returning all")
       return {
         appliances: applianceData,
         stones:     stoneData,

@@ -32,7 +32,7 @@ class FingerprintManagerClass {
             callback(data);
           }
           else {
-            console.log("DATA NOT AN ARRAY:", iBeaconAdvertisement)
+            // console.log("DATA NOT AN ARRAY:", iBeaconAdvertisement)
           }
         }
       );
@@ -61,7 +61,7 @@ class FingerprintManagerClass {
    * @param callback
    */
   startFingerprinting(callback) {
-    console.log(this)
+    // console.log(this)
     this._startFingerprinting(() => {
       Bluenet.startCollectingFingerprint();
     }, callback);
@@ -118,7 +118,7 @@ export const LocalizationUtil = {
           // track the group beacon UUID
           Bluenet.trackIBeacon(groupIBeaconUUID, groupId);
 
-          console.log("-------------- SETUP TRACKING FOR ", groupIBeaconUUID);
+          // console.log("-------------- SETUP TRACKING FOR ", groupIBeaconUUID);
 
           let locations = state.groups[groupId].locations;
           let locationIds = Object.keys(locations);

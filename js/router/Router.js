@@ -65,7 +65,7 @@ export class AppRouter extends Component {
       NativeEventsBridge.loadStore(store);
       AdvertisementManager.loadStore(store);
 
-      console.log("LOADED STORES")
+      // console.log("LOADED STORES")
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
 
@@ -76,10 +76,10 @@ export class AppRouter extends Component {
         CLOUD.setAccess(state.user.accessToken);
       //   CLOUD.getUserData({background:true})
       //     .then((reply) => {
-      //       console.log("received verification", reply)
+      //       // console.log("received verification", reply)
       //     })
       //     .catch((reply) => {
-      //       console.log("received ERROR", reply);
+      //       // console.log("received ERROR", reply);
       //       if (reply.status === 401) {
       //         logOut();
       //         Alert.alert("Please log in again.", undefined, [{text:'OK'}])

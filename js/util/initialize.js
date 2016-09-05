@@ -13,7 +13,7 @@ export const INITIALIZER = {
   start: function(store, eventBus) {
     if (this.started === false) {
 
-      console.log("STARTING")
+      // console.log("STARTING")
       // subscribe to iBeacons when required.
       CLOUD.events.on('CloudSyncComplete_groupsChanged', () => {LocalizationUtil.trackGroups(store);});
       eventBus.on(    'appStarted',                      () => {LocalizationUtil.trackGroups(store);});

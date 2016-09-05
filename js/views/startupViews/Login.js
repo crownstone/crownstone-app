@@ -164,7 +164,7 @@ export class Login extends Component {
       
       let handleFiles = (files) => {
         files.forEach((file) => {
-          console.log("handling file")
+          // console.log("handling file")
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;

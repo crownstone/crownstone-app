@@ -4,12 +4,12 @@ import { BATCH } from './storeManager'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    console.log('will dispatch', action);
+    // console.log('will dispatch', action);
 
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
 
-    console.log("new state:", getState())
+    // console.log("new state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, getState);
@@ -82,7 +82,7 @@ function handleUserInCloud(action, state) {
   let userId = state.user.userId;
   CLOUD.forUser(userId);
   if (action.data.picture) {
-    CLOUD.uploadProfileImage(action.data.picture).then((data) => {console.log(data)}).catch(() => {});
+    CLOUD.uploadProfileImage(action.data.picture).then((data) => {/* console.log(data)*/}).catch(() => {});
   }
   else if (action.data.picture === null) {
     CLOUD.removeProfileImage().catch(() => {});
