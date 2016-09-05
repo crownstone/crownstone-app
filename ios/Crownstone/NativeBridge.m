@@ -29,7 +29,7 @@ RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
 RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 
-RCT_EXTERN_METHOD(factoryReset:callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(factoryReset:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(recover:(NSString *)crownstoneUUID callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupCrownstone:(NSString *)configJSON callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)

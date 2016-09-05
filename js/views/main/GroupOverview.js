@@ -35,7 +35,7 @@ export class GroupOverview extends Component {
       const state = store.getState();
 
       if (this.renderState.app.activeGroup !== state.app.activeGroup) {
-        console.log("triggering rerender of group overview")
+        console.log("triggering rerender of group overview");
         this.forceUpdate();
       }
     });
@@ -55,6 +55,15 @@ export class GroupOverview extends Component {
   render() {
     console.log("RENDERING OVERVIEW");
 
+
+    return (
+      <Background background={require('../../images/mainBackgroundLight.png')}>
+        {this._getRenderContent()}
+      </Background>
+    );
+  }
+
+  _getRenderContent() {
     const store = this.props.store;
     const state = store.getState();
     this.renderState = state;
@@ -69,45 +78,39 @@ export class GroupOverview extends Component {
 
     if (groupsAvailable == 0) {
       return (
-        <Background background={require('../../images/mainBackgroundLight.png')}>
-          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Icon name="c1-house" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-            <Text style={overviewStyles.mainText}>No Groups available.</Text>
-            <Text style={overviewStyles.subText}>Go into the settings to create your own Group or wait to be added to those of others.</Text>
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <Icon name="c1-house" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+          <Text style={overviewStyles.mainText}>No Groups available.</Text>
+          <Text style={overviewStyles.subText}>Go into the settings to create your own Group or wait to be added to those of others.</Text>
           </View>
-        </Background>
       );
     }
     else if (activeGroup) {
       if (stonesAvailable == 0) {
         return (
-          <Background background={require('../../images/mainBackgroundLight.png')}>
-            <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-              <Icon name="c2-pluginFront" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-              <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
-              <Text style={overviewStyles.subText}>Go into the settings to add Crownstones.</Text>
-              <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
-            </View>
-          </Background>
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Icon name="c2-pluginFront" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+            <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
+            <Text style={overviewStyles.subText}>Go into the settings to add Crownstones.</Text>
+            <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
+          </View>
         );
       }
       else {
         return (
-          <Background background={require('../../images/mainBackgroundLight.png')}>
+          <View style={{flex:1}}>
             <RoomLayer store={store} groupId={state.app.activeGroup} />
             <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
-          </Background>
+          </View>
         )
       }
     }
     else {
       return (
-        <Background background={require('../../images/mainBackgroundLight.png')}>
-          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Icon name="c1-mapPin" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-            <Text style={overviewStyles.mainText}>No Groups in range...</Text>
-          </View>
-        </Background>
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <Icon name="c1-mapPin" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+          <Text style={overviewStyles.mainText}>No Groups in range...</Text>
+        </View>
       );
     }
   }

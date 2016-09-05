@@ -31,10 +31,10 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
       let keyboardHeight = 340;
       let distFromBottom = screenHeight - posY;
-      Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:100}).start()
+      Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:200}).start()
     }));
     this.unsubscribe.push(eventBus.on('blur', () => {
-      Animated.timing(this.state.top, {toValue: 0, duration:100}).start()
+      Animated.timing(this.state.top, {toValue: 0, duration:200}).start()
     }));
 
     // catch for the simulator

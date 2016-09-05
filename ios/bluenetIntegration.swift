@@ -166,12 +166,12 @@ class BluenetJS: NSObject {
       
      
       
-      globalBluenet.bluenetLocalization.on("enterGroup", {data -> Void in
+      globalBluenet.bluenetLocalization.on("enterRegion", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEventWithName("enterGroup", body: castData)
         }
       })
-      globalBluenet.bluenetLocalization.on("exitGroup", {data -> Void in
+      globalBluenet.bluenetLocalization.on("exitRegion", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEventWithName("exitGroup", body: castData)
         }

@@ -93,7 +93,8 @@ class NativeEventsClass {
         this.subscriptions[enterGroup] = NativeAppEventEmitter.addListener(
           enterGroup,
           (groupId) => {
-            this.locationEvents.emit(enterGroup, groupId);
+            let state = this.store.getState();
+            console.log("ENTER GROUP");
             // TODO: move to localization util or something
             if (state.groups[groupId] !== undefined) {
               // prepare the settings for this group and pass them onto bluenet
@@ -103,9 +104,13 @@ class NativeEventsClass {
                 memberKey: state.groups[groupId].config.memberKey,
                 guestKey : state.groups[groupId].config.guestKey,
               };
+
+              console.log("Set Settings.", bluenetSettings)
               return BleActions.setSettings(JSON.stringify(bluenetSettings))
                 .then(() => {
+                  console.log("Setting Active Group")
                   this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: groupId}});
+                  this.locationEvents.emit(enterGroup, groupId);
                 })
             }
           }
@@ -117,6 +122,7 @@ class NativeEventsClass {
         this.subscriptions[exitGroup] = NativeAppEventEmitter.addListener(
           exitGroup,
           (groupId) => {
+            console.log("EXIT GROUP")
             this.locationEvents.emit(exitGroup, groupId);
             // TODO: move to localization util or something
             this.store.dispatch({type: 'CLEAR_ACTIVE_GROUP'});
@@ -130,9 +136,12 @@ class NativeEventsClass {
         this.subscriptions[enterLoc] = NativeAppEventEmitter.addListener(
           enterLoc,
           (locationId) => {
-            this.locationEvents.emit(enterLoc, locationId);
-            // TODO: move to localization util or something, do something with the behaviour
-            this.store.dispatch({type: 'USER_ENTER', groupId: state.app.activeGroup, locationId: locationId});
+            let state = this.store.getState();
+            if (state.app.activeGroup && locationId) {
+              this.locationEvents.emit(enterLoc, locationId);
+              // TODO: move to localization util or something, do something with the behaviour
+              this.store.dispatch({type: 'USER_ENTER', groupId: state.app.activeGroup, locationId: locationId, userId: state.user.userId});
+            }
           }
         );
       }
@@ -143,9 +152,12 @@ class NativeEventsClass {
         this.subscriptions[exitLoc] = NativeAppEventEmitter.addListener(
           exitLoc,
           (locationId) => {
-            this.locationEvents.emit(exitLoc, locationId);
-            // TODO: move to localization util or something, do something with the behaviour
-            this.store.dispatch({type: 'USER_EXIT', groupId: state.app.activeGroup, locationId: locationId});
+            let state = this.store.getState();
+            if (state.app.activeGroup && locationId) {
+              this.locationEvents.emit(exitLoc, locationId);
+              // TODO: move to localization util or something, do something with the behaviour
+              this.store.dispatch({type: 'USER_EXIT', groupId: state.app.activeGroup, locationId: locationId, userId: state.user.userId});
+            }
           }
         );
       }

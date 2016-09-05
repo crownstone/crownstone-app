@@ -43,7 +43,7 @@ export class AppRouter extends Component {
     // check what we should do with this data.
     let interpretData = () => {
       store = StoreManager.getStore();
-      INITIALIZER.start(store, eventBus)
+      INITIALIZER.start(store, eventBus);
       if (store.hasOwnProperty('getState')) {
         dataLoginValidation()
       }
@@ -58,7 +58,6 @@ export class AppRouter extends Component {
     // if there is a user that is listed as logged in, verify his account.
     let dataLoginValidation = () => {
       let state = store.getState();
-
 
       store.dispatch({type:"CLEAR_ACTIVE_GROUP"});
 
@@ -144,7 +143,7 @@ export class AppRouter extends Component {
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="groupOverview"          component={Views.GroupOverview}              title="Group Overview"  />
-                  <Scene key="roomOverview"           component={Views.RoomOverview}               onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white'}} />
+                  <Scene key="roomOverview"           component={Views.RoomOverview}               onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white',backgroundColor:"transparent"}} />
                   <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Configure Devices" />
                   <Scene key="deviceEdit"             component={Views.DeviceEdit}                 title="Edit Device" />
                   <Scene key="applianceSelection"     component={Views.ApplianceSelection}         title="Devices" />

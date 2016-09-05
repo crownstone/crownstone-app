@@ -18,7 +18,7 @@ export const BLEutil = {
   getNearestSetupCrownstone: function(near = true) {
     let distanceThreshold = -120;
     if (near === true) {
-      distanceThreshold = -50; // keep low tx in mind
+      distanceThreshold = -95; // keep low tx in mind
     }
     this.cancelSearch();
     return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestSetupCrownstone, distanceThreshold).then((handle) => {return new SetupCrownstone(handle);})
@@ -27,7 +27,7 @@ export const BLEutil = {
   getNearestCrownstone: function(near = true) {
     let distanceThreshold = -120;
     if (near === true) {
-      distanceThreshold = -45;
+      distanceThreshold = -80;
     }
     this.cancelSearch();
     return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestCrownstone, distanceThreshold)
@@ -44,12 +44,12 @@ export const BLEutil = {
           nearestItem = JSON.parse(nearestItem);
         }
 
+        console.log("nearestItem", nearestItem, event);
+
         // do not care for items too far away.
         if (nearestItem.rssi < distanceThreshold || nearestItem.rssi >= 0) {
           return;
         }
-
-        console.log("nearestItem rssi", nearestItem);
 
         // check if the new one is in fact nearer (with an uncertainty of 10db)
         if (nearestItem.handle === lastHandle && nearestItem.rssi >= lastRSSI-10) {
@@ -135,15 +135,16 @@ class SingleCommand {
    * @returns {*}
    */
   perform(action, prop) {
+    console.log("connecting to ", this.bleHandle, "doing this: ", action, "with prop", prop)
     return BlePromiseManager.register(() => {
       return BleActions.connect(this.bleHandle)
         .then(() => { return action(prop); })
         .then(() => { return BleActions.disconnect(); })
         .catch((err) => {
-          console.log("switch Error:", err);
+          console.log("BLE Error:", err);
           return BleActions.phoneDisconnect();
         })
-    }, {from:'connectAndSetSwitchState'});
+    }, {from:'perform on singleCommand'});
   }
 }
 

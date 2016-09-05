@@ -14,7 +14,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
-import { BLEutil, SetupCrownstone } from '../../native/BLEutil'
+import { BLEutil } from '../../native/BLEutil'
 import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton } from './SetupShared'
@@ -178,7 +178,7 @@ export class SetupAddPlugInStep2 extends Component {
       .then(() => {
         this.setProgress(5);
         setTimeout(() => { this.setProgress(6); }, 300);
-        setTimeout(() => { Actions.setupAddPluginStep3({ stoneId: stoneId, groupId:this.props.groupId, fromMainMenu: this.props.fromMainMenu}); }, 1800);
+        setTimeout(() => { Actions.setupAddPluginStep3({stoneId: stoneId, groupId:this.props.groupId, fromMainMenu: this.props.fromMainMenu, BLEhandle: stoneData.bluetoothId}); }, 1800);
       })
       .catch((err) => {
         console.log("error", err, "ATTEMPT:", attempt);
@@ -197,7 +197,7 @@ export class SetupAddPlugInStep2 extends Component {
             else {
               this.cleanupFailedAttempt(stoneId)
                 .then(() => {
-                  Actions.setupAddPlugInStepRecover({groupId:this.props.groupId});
+                  Actions.setupAddPlugInStepRecover({groupId:this.props.groupId, stoneId: stoneId});
                 }).done();
             }
           }}

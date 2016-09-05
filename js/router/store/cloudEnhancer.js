@@ -82,14 +82,14 @@ function handleUserInCloud(action, state) {
   let userId = state.user.userId;
   CLOUD.forUser(userId);
   if (action.data.picture) {
-    CLOUD.uploadProfileImage(action.data.picture).then((data) => {console.log(data)});
+    CLOUD.uploadProfileImage(action.data.picture).then((data) => {console.log(data)}).catch(() => {});
   }
   else if (action.data.picture === null) {
-    CLOUD.removeProfileImage();
+    CLOUD.removeProfileImage().catch(() => {});
   }
 
   if (action.data.firstName || action.data.lastName) {
-    CLOUD.updateUserData({background: true, data: {firstName: state.user.firstName, lastName: state.user.lastName}});
+    CLOUD.updateUserData({background: true, data: {firstName: state.user.firstName, lastName: state.user.lastName}}).catch(() => {});
   }
 }
 
@@ -99,7 +99,7 @@ function handleStoneBehaviourInCloud(action, state) {
 
   if (getMyLevelInGroup(state, groupId) === 'admin') {
     let behaviourJSON = JSON.stringify(state.groups[groupId].stones[stoneId].behaviour);
-    CLOUD.forStone(stoneId).updateStone({json:behaviourJSON});
+    CLOUD.forStone(stoneId).updateStone({json:behaviourJSON}).catch(() => {});
   }
 }
 
@@ -110,14 +110,15 @@ function handleStoneInCloud(action, state) {
   let stoneConfig = state.groups[groupId].stones[stoneId].config;
   let data = {
     name: stoneConfig.name,
-    address: stoneConfig.address,
+    address: stoneConfig.macAddress,
     deviceType: stoneConfig.icon,
     id: stoneId,
     applianceId: stoneConfig.applianceId,
-    locationId: stoneConfig.locationId
+    locationId: stoneConfig.locationId,
+    groupId: groupId,
   };
   
-  CLOUD.forStone(stoneId).updateStone(data);
+  CLOUD.forStone(stoneId).updateStone(data).catch(() => {});
 }
 
 function handleApplianceInCloud(action, state) {
@@ -132,7 +133,7 @@ function handleApplianceInCloud(action, state) {
     groupId: groupId,
   };
 
-  CLOUD.forAppliance(applianceId).updateAppliance(data);
+  CLOUD.forAppliance(applianceId).updateAppliance(data).catch(() => {});
 }
 
 function handleApplianceBehaviourInCloud(action, state) {
@@ -141,7 +142,7 @@ function handleApplianceBehaviourInCloud(action, state) {
 
   if (getMyLevelInGroup(state, groupId) === 'admin') {
     let behaviourJSON = JSON.stringify(state.groups[groupId].appliances[applianceId].behaviour);
-    CLOUD.forAppliance(applianceId).updateAppliance({json:behaviourJSON});
+    CLOUD.forAppliance(applianceId).updateAppliance({json:behaviourJSON}).catch(() => {});
   }
 }
 
@@ -158,7 +159,7 @@ function handleLocationInCloud(action, state) {
     groupId: groupId,
   };
 
-  CLOUD.forGroup(groupId).updateLocation(locationId, data);
+  CLOUD.forGroup(groupId).updateLocation(locationId, data).catch(() => {});
 }
 
 function handleGroupInCloud(action, state) {

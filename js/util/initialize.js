@@ -10,11 +10,14 @@ import { LocalizationUtil } from '../native/LocalizationUtil'
  */
 export const INITIALIZER = {
   started: false,
-  start: (store, eventBus) => {
+  start: function(store, eventBus) {
     if (this.started === false) {
+
+      console.log("STARTING")
       // subscribe to iBeacons when required.
       CLOUD.events.on('CloudSyncComplete_groupsChanged', () => {LocalizationUtil.trackGroups(store);});
       eventBus.on(    'appStarted',                      () => {LocalizationUtil.trackGroups(store);});
+      eventBus.on(    'groupCreated',                    () => {LocalizationUtil.trackGroups(store);});
 
       // configure the CLOUD network handler.
       CLOUD.setNetworkErrorHandler((error) => {

@@ -85,7 +85,6 @@ class FingerprintManagerClass {
     });
   }
 
-
   pauseCollectingFingerprint() {
     this._stopFingerprinting(() => {
       Bluenet.abortCollectingFingerprint();
@@ -119,10 +118,12 @@ export const LocalizationUtil = {
           // track the group beacon UUID
           Bluenet.trackIBeacon(groupIBeaconUUID, groupId);
 
+          console.log("-------------- SETUP TRACKING FOR ", groupIBeaconUUID);
+
           let locations = state.groups[groupId].locations;
           let locationIds = Object.keys(locations);
           locationIds.forEach((locationId) => {
-            if (locations[locationId].config.fingerprintRaw !== null) {
+            if (locations[locationId].config.fingerprintRaw) {
               Bluenet.loadFingerprint(groupId, locationId, locations[locationId].config.fingerprintRaw)
             }
           });

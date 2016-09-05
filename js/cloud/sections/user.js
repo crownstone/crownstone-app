@@ -76,7 +76,7 @@ export const user = {
 
 
   removeProfileImage: function() {
-
+    return new Promise((resolve, reject) => {resolve()});
   },
 
   /**

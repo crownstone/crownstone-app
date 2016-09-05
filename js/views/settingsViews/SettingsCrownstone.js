@@ -122,7 +122,7 @@ export class SettingsCrownstone extends Component {
           if (isInSetupMode === true) {
             this._removeCloudOnly();
           }
-          this._removeCloudReset();
+          this._removeCloudReset(stone);
         })
         .catch((err) => {
           Alert.alert("Can't see this one!",
@@ -141,6 +141,7 @@ export class SettingsCrownstone extends Component {
         this._removeCrownstoneFromRedux();
       })
       .catch((err) => {
+        console.log("error while asking the cloud to remove this crownstone", err);
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Crownstone in the cloud. Please try again later",
           [{text:'OK', onPress: () => {
@@ -155,7 +156,7 @@ export class SettingsCrownstone extends Component {
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
         let proxy = BLEutil.getProxy(stone.config.bluetoothId);
-        proxy.perform(BleActions.factoryReset())
+        proxy.perform(BleActions.factoryReset)
           .then(() => {
             this._removeCrownstoneFromRedux();
           })
@@ -163,7 +164,7 @@ export class SettingsCrownstone extends Component {
             this.props.eventBus.emit('showLoading', 'Trying again...');
             return new Promise((resolve, reject) => {
               setTimeout(() => {
-                proxy.perform(BleActions.factoryReset())
+                proxy.perform(BleActions.factoryReset)
                   .then(() => {
                     resolve();
                   })
@@ -212,6 +213,7 @@ export class SettingsCrownstone extends Component {
   _removeCrownstoneFromRedux() {
     this.props.store.dispatch({type: "REMOVE_STONE", groupId: this.props.groupId, stoneId: this.props.stoneId});
     this.props.eventBus.emit('hideLoading');
+    Actions.pop();
   }
 
   render() {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {
   Alert,
-  
   Image,
   StyleSheet,
   ScrollView,
@@ -14,6 +13,9 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
+import { NativeEventsBridge } from '../../native/NativeEventsBridge'
+import { BLEutil } from '../../native/BLEutil'
+import { BleActions, NativeEvents } from '../../native/Proxy'
 import { Icon } from '../components/Icon'
 import { Background } from '../components/Background'
 import { getRoomNames } from '../../util/dataUtil'
@@ -23,9 +25,20 @@ import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 
 export class SetupAddPlugInStep3 extends Component {
-  constructor() {
+  constructor(props) {
     super();
-    this.state = {selectedRoom:undefined, roomName:'', addRoomEditing: false}
+    this.state = {selectedRoom:undefined, roomName:'', addRoomEditing: false};
+
+    // turn on the Crownstone.
+    this.unsubscribeGroupEnter = NativeEventsBridge.locationEvents.on(NativeEvents.location.enterGroup,
+      (groupId) => {
+        if (groupId === this.props.groupId) {
+          BLEutil.getProxy(props.BLEhandle).perform(BleActions.setSwitchState, 1).catch(() => {
+          });
+          this.unsubscribeGroupEnter();
+          this.unsubscribeGroupEnter = null;
+        }
+      });
   }
 
   componentDidMount() {
@@ -37,6 +50,9 @@ export class SetupAddPlugInStep3 extends Component {
 
   componentWillUnmount() {
     this.unsubscribe();
+    if (this.unsubscribeGroupEnter !== null) {
+      this.unsubscribeGroupEnter();
+    }
   }
 
   storeAndPickLocation(roomName) {
@@ -140,6 +156,16 @@ export class SetupAddPlugInStep3 extends Component {
     );
   }
 
+
+  _nextStep() {
+    if (this.props.fromMainMenu === true) {
+      Actions.tabBar();
+    }
+    else {
+      Actions.setupAddPluginStep4({groupId: this.props.groupId})
+    }
+  }
+
   render() {
     const { store } = this.props;
     const state = store.getState();
@@ -159,25 +185,24 @@ export class SetupAddPlugInStep3 extends Component {
               Alert.alert(
                "Are you sure?","You can always put Crownstones in rooms later through the Crownstone settings. " +
                "Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Group.",
-               [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{Actions.setupAddPluginStep4({groupId: this.props.groupId})}}]
+               [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{
+                 this._nextStep();
+               }}]
               );
             }} />
             <View style={{flex:1}} />
             <NextButton onPress={() => {
               if (this.state.selectedRoom !== undefined) {
                 store.dispatch({type:'UPDATE_STONE_CONFIG', groupId: this.props.groupId, stoneId: this.props.stoneId, data:{locationId: this.state.selectedRoom}});
-                if (this.props.fromMainMenu === true) {
-                  Actions.tabBar();
-                }
-                else {
-                  Actions.setupAddPluginStep4({groupId: this.props.groupId})
-                }
+                this._nextStep();
               }
               else {
                Alert.alert(
                   "Are you sure this Crownstone is not tied to a room?",
                   "Crownstones that are not in a room cannot be used for localization.",
-                  [{text:'Cancel'}, {text:'OK'}]
+                  [{text:'Cancel'}, {text:'OK', onPress: () => {
+                    this._nextStep();
+                  }}]
                 );
               }
             }} />

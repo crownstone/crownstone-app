@@ -12,13 +12,13 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
+import { Icon } from '../components/Icon'
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 export class SetupAddPlugInStep4 extends Component {
   render() {
-    let imageSize = 0.35*screenWidth;
     return (
       <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
         <View style={styles.shadedStatusBar} />
@@ -28,26 +28,22 @@ export class SetupAddPlugInStep4 extends Component {
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.information}>You can always add more Crownstones later through the settings menu.</Text>
           <View style={{flex:1}} />
-          <TouchableOpacity style={{paddingLeft:30, paddingRight:30}} onPress={() => {Actions.setupAddPluginStep1({hideBack:true, groupId: this.props.groupId});}}>
-            <View style={styles.rowCentered}>
-              <Image source={require('../../images/lineDrawings/addCrownstone.png')} style={{width:imageSize, height:imageSize}} />
-              <View style={{flexDirection:'column', flex:1}}>
-                <Text style={setupStyle.information}>Add another Crownstone</Text>
-              </View>
-            </View>
+          <TouchableOpacity style={{paddingLeft:20, paddingRight:30,flexDirection:'row',
+            alignItems: 'center',
+            justifyContent:'flex-start'}} onPress={() => {Actions.setupAddPluginStep1({hideBack:true, groupId: this.props.groupId});}}>
+            <Icon name="c2-plugin" size={100} color="#fff" style={{backgroundColor:'transparent', width:105}} />
+            <Text style={setupStyle.information}>Add another Crownstone</Text>
           </TouchableOpacity>
           <View style={{flex:1}} />
-          <TouchableOpacity style={{paddingLeft:30, paddingRight:30}} onPress={
+          <TouchableOpacity style={{paddingLeft:30, paddingRight:30, flexDirection:'row',
+            alignItems: 'center',
+            justifyContent:'flex-start'}} onPress={
             () => {
               this.props.store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}});
               Actions.tabBar();
             }}>
-            <View style={styles.rowCentered}>
-              <Image source={require('../../images/lineDrawings/getStarted.png')} style={{width:imageSize, height:imageSize}} />
-              <View style={{flexDirection:'column', flex:1}}>
-                <Text style={setupStyle.information}>Finish setting up Crownstones</Text>
-              </View>
-            </View>
+            <Icon name="md-log-in" size={100} color="#fff" style={{backgroundColor:'transparent', width:95}} />
+            <Text style={setupStyle.information}>Finish setting up Crownstones</Text>
           </TouchableOpacity>
           <View style={{flex:1}} />
         </View>

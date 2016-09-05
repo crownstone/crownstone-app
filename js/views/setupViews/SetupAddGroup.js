@@ -44,7 +44,7 @@ export class SetupAddGroup extends Component {
           CLOUD.getKeys()
             .then((keyResult) => {
               if (Array.isArray(keyResult)) {
-                console.log(keyResult)
+                console.log(keyResult);
                 keyResult.forEach((keySet) => {
                   store.dispatch({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
                     adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
@@ -52,8 +52,8 @@ export class SetupAddGroup extends Component {
                     guestKey:  keySet.keys.guest  || null
                   }})
                 });
+                this.props.eventBus.emit('groupCreated');
                 this.props.eventBus.emit('hideLoading');
-                store.dispatch({type:'SET_ACTIVE_GROUP', data:{activeGroup: response.id}});
 
                 // we initially only support plugin so we skip the selection step.
                 Actions.setupAddPluginStep1({groupId: response.id});

@@ -22,12 +22,19 @@ export class DeviceEntry extends Component {
   }
 
   _getControl() {
+    let content;
     if (this.props.pending === false) {
-      return <Switch value={this.props.state === 1} onValueChange={this._pressedDevice.bind(this)} />
+      content = <Switch value={this.props.state === 1} onValueChange={this._pressedDevice.bind(this)} />
     }
     else {
-      return <ActivityIndicator animating={true} size="large" />
+      content = <ActivityIndicator animating={true} size="large" />
     }
+
+    return (
+      <View style={{width: 60, alignItems:'flex-end', justifyContent:'center'}}>
+        {content}
+      </View>
+    );
   }
 
   _getItem() {
