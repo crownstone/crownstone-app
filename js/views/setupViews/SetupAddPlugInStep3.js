@@ -30,15 +30,22 @@ export class SetupAddPlugInStep3 extends Component {
     this.state = {selectedRoom:undefined, roomName:'', addRoomEditing: false};
 
     // turn on the Crownstone.
-    this.unsubscribeGroupEnter = NativeEventsBridge.locationEvents.on(NativeEvents.location.enterGroup,
-      (groupId) => {
-        if (groupId === this.props.groupId) {
-          BLEutil.getProxy(props.BLEhandle).perform(BleActions.setSwitchState, 1).catch(() => {
-          });
-          this.unsubscribeGroupEnter();
-          this.unsubscribeGroupEnter = null;
-        }
-      });
+    this.unsubscribeGroupEnter = null;
+    let state = props.store.getState();
+    if (state.app.activeGroup === undefined && state.app.activeGroup == this.props.groupId) {
+      this.unsubscribeGroupEnter = NativeEventsBridge.locationEvents.on(NativeEvents.location.enterGroup,
+        (groupId) => {
+          if (groupId === this.props.groupId) {
+            BLEutil.getProxy(props.BLEhandle).perform(BleActions.setSwitchState, 1).catch(() => {});
+            this.unsubscribeGroupEnter();
+            this.unsubscribeGroupEnter = null;
+          }
+        });
+    }
+    else {
+      BLEutil.getProxy(props.BLEhandle).perform(BleActions.setSwitchState, 1).catch(() => {});
+    }
+
   }
 
   componentDidMount() {

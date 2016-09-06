@@ -50,20 +50,23 @@ export class IconSelection extends Component {
           this.setState(newState)
         }} />
         <Separator fullLength={true} />
-        <SlideInView visible={this.state[category.key]} height={heightWhenVisible} duration={300}>
-          {this._getIconRows(icons)}
+        <SlideInView visible={this.state[category.key]} height={heightWhenVisible} duration={500}>
+          {this._getIconRows(icons, this.state[category.key])}
         </SlideInView>
       </View>
     )
   }
 
-  _getIconRows(icons) {
-    let rowCount = Math.ceil(icons.length/3);
-    let items = [];
-    for (let i = 0; i < rowCount; i++) {
-      items.push(this._getIconRow(icons,i*3, 'iconRow_'+i))
+  _getIconRows(icons, visible) {
+    if (visible === true) {
+      let rowCount = Math.ceil(icons.length / 3);
+      let items = [];
+      for (let i = 0; i < rowCount; i++) {
+        items.push(this._getIconRow(icons, i * 3, 'iconRow_' + i))
+      }
+      return items;
     }
-    return items;
+    return undefined;
   }
 
   _getIconRow(icons, iconIndex, key) {

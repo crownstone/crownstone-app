@@ -39,10 +39,6 @@
 		FA3F472C1CF747D000408E34 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3F472B1CF7478400408E34 /* libRCTCameraRoll.a */; };
 		FA4A09EE1D09BD87005753CE /* bluenetIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4A09ED1D09BD87005753CE /* bluenetIntegration.swift */; };
 		FA4A0A051D09C1DF005753CE /* NativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4A0A041D09C1DF005753CE /* NativeBridge.m */; };
-		FA662E441D3D1B17009C5BE3 /* BluenetLibIOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA662E411D3D1B14009C5BE3 /* BluenetLibIOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FA662E4F1D3D1B8A009C5BE3 /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA662E481D3D1B83009C5BE3 /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FA662E511D3D1B8A009C5BE3 /* PromiseKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA662E491D3D1B83009C5BE3 /* PromiseKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FA662E531D3D1B8A009C5BE3 /* SwiftyJSON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA662E4A1D3D1B83009C5BE3 /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FA662E541D3D1BC6009C5BE3 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA662E481D3D1B83009C5BE3 /* CryptoSwift.framework */; };
 		FA662E551D3D1BC6009C5BE3 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA662E491D3D1B83009C5BE3 /* PromiseKit.framework */; };
 		FA662E561D3D1BC6009C5BE3 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA662E4A1D3D1B83009C5BE3 /* SwiftyJSON.framework */; };
@@ -51,6 +47,7 @@
 		FA8BCD6F1D7446D100A4CED9 /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8BCD6E1D7446CF00A4CED9 /* Crownstone.ttf */; };
 		FA8BCD741D746C1E00A4CED9 /* CustomIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8BCD721D745CA500A4CED9 /* CustomIcons.ttf */; };
 		FACC56321D182DA700028E6F /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FACC56301D182D9B00028E6F /* libRNSVG.a */; };
+		FACDBD691D7ECA47005DEF91 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FACDBD681D7ECA3A005DEF91 /* libRNDeviceInfo.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -187,24 +184,14 @@
 			remoteGlobalIDString = 0CF68AC11AF0540F00FF9E5C;
 			remoteInfo = RNSVG;
 		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		FA4A0A1E1D09CFBB005753CE /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				FA662E531D3D1B8A009C5BE3 /* SwiftyJSON.framework in Embed Frameworks */,
-				FA662E511D3D1B8A009C5BE3 /* PromiseKit.framework in Embed Frameworks */,
-				FA662E441D3D1B17009C5BE3 /* BluenetLibIOS.framework in Embed Frameworks */,
-				FA662E4F1D3D1B8A009C5BE3 /* CryptoSwift.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
+		FACDBD671D7ECA3A005DEF91 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FACDBD631D7ECA3A005DEF91 /* RNDeviceInfo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA5891D81BA9A9FC002B4DB2;
+			remoteInfo = RNDeviceInfo;
 		};
-/* End PBXCopyFilesBuildPhase section */
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
@@ -259,6 +246,7 @@
 		FA8BCD6E1D7446CF00A4CED9 /* Crownstone.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone.ttf; path = ../js/fonts/Crownstone.ttf; sourceTree = "<group>"; };
 		FA8BCD721D745CA500A4CED9 /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
 		FACC561B1D182D9B00028E6F /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
+		FACDBD631D7ECA3A005DEF91 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		FAFB4C651D1D407200DDE95E /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 		FB84202DEE984E47A75A4CB2 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		FD57DF026A8B4393B71098CB /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
@@ -280,6 +268,7 @@
 				FA662E551D3D1BC6009C5BE3 /* PromiseKit.framework in Frameworks */,
 				FA662E561D3D1BC6009C5BE3 /* SwiftyJSON.framework in Frameworks */,
 				FA662E571D3D1BC6009C5BE3 /* BluenetLibIOS.framework in Frameworks */,
+				FACDBD691D7ECA47005DEF91 /* libRNDeviceInfo.a in Frameworks */,
 				FA3F472C1CF747D000408E34 /* libRCTCameraRoll.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -418,6 +407,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				FACDBD631D7ECA3A005DEF91 /* RNDeviceInfo.xcodeproj */,
 				FACC561B1D182D9B00028E6F /* RNSVG.xcodeproj */,
 				FA3F47261CF7478300408E34 /* RCTCameraRoll.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -539,6 +529,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FACDBD641D7ECA3A005DEF91 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FACDBD681D7ECA3A005DEF91 /* libRNDeviceInfo.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		FC9894E6A5244B579E3B0421 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -583,7 +581,8 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				FA4A0A1E1D09CFBB005753CE /* Embed Frameworks */,
+				FACDBD541D7EC520005DEF91 /* ShellScript */,
+				FACDBD551D7EC529005DEF91 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -612,7 +611,7 @@
 						DevelopmentTeam = 94R7Q9MFVZ;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -689,6 +688,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = FACDBD641D7ECA3A005DEF91 /* Products */;
+					ProjectRef = FACDBD631D7ECA3A005DEF91 /* RNDeviceInfo.xcodeproj */;
 				},
 				{
 					ProductGroup = FA3F46DC1CF7385600408E34 /* Products */;
@@ -838,6 +841,13 @@
 			remoteRef = FACC562F1D182D9B00028E6F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FACDBD681D7ECA3A005DEF91 /* libRNDeviceInfo.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNDeviceInfo.a;
+			remoteRef = FACDBD671D7ECA3A005DEF91 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -884,6 +894,36 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
+		};
+		FACDBD541D7EC520005DEF91 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone";
+		};
+		FACDBD551D7EC529005DEF91 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/CryptoSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BluenetLibIOS.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -971,7 +1011,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
@@ -1010,7 +1049,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (

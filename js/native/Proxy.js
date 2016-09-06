@@ -12,7 +12,7 @@ import { DISABLE_NATIVE } from '../ExternalConfig'
 export let Bluenet;
 if (DISABLE_NATIVE === true) {
   console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
-  console.log("!-----------  NATIVE CALLS ARE DISABLES BY EXTERNALCONFIG.JS -----------!");
+  console.log("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
   console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   Bluenet = {
     clearTrackedBeacons: () => {},
@@ -105,7 +105,7 @@ export const BleActions = {
   setupCrownstone:(dataString) => { return BluenetPromise('setupCrownstone', dataString); },
   setSettings:    (dataString) => { return BluenetPromise('setSettings', dataString); },
   recover:        (handle)     => { return BluenetPromise('recover', handle); },
-  factoryReset:   ()      => { return BluenetPromise('factoryReset'); },
+  commandFactoryReset:   ()      => { return BluenetPromise('commandFactoryReset'); },
 };
 
 

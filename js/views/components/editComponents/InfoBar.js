@@ -29,7 +29,7 @@ export class InfoBar extends Component {
             <Text style={[styles.listTextLarge, this.props.labelStyle]}>{this.props.label}</Text>
           }
           {this.props.value !== undefined ?
-            <Text style={[{flex:1, fontSize:17}, this.props.valueStyle]}>{this.props.value}</Text>
+            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.props.value}</Text>
             :
             <View style={{flex:1}} />
           }

@@ -201,8 +201,9 @@ class BluenetJS: NSObject {
     let memberKey         = data["memberKey"].string
     let guestKey          = data["guestKey"].string
     
-    if (encryptionEnabled != nil && adminKey != nil && memberKey != nil && guestKey != nil) {
-      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled!, adminKey: adminKey!, memberKey: memberKey!, guestKey: guestKey!)
+    if (encryptionEnabled != nil && (adminKey != nil || memberKey != nil || guestKey != nil)) {
+      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled!, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey)
+      print("SETTING SETTINGS \(settings)")
       GLOBAL_BLUENET!.bluenet.setSettings(settings)
       callback([["error" : false]])
     }
@@ -365,7 +366,7 @@ class BluenetJS: NSObject {
   }
   
   
-  @objc func factoryReset(callback: RCTResponseSenderBlock) -> Void {
+  @objc func commandFactoryReset(callback: RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenet.control.commandFactoryReset()
       .then({_ in callback([["error" : false]])})
       .error({err in
@@ -377,6 +378,7 @@ class BluenetJS: NSObject {
         }
       })
   }
+  
   
   
   @objc func getMACAddress(callback: RCTResponseSenderBlock) -> Void {

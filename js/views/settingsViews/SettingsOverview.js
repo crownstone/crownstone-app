@@ -102,7 +102,7 @@ export class SettingsOverview extends Component {
       __item: (
         <View style={{backgroundColor:'transparent'}}>
           <View style={{flexDirection:'row', padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12, justifyContent:'center'}}>
-            <Text style={{fontSize:12, color:'#444'}}>review our </Text>
+            <Text style={{fontSize:12, color:'#444'}}>Crownstone </Text>
             <TouchableHighlight onPress={() => {
               Linking.openURL('http://crownstone.rocks/terms-of-service/').catch(err => {})
             }}>

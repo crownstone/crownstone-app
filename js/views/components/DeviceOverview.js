@@ -43,7 +43,7 @@ export class DeviceOverview extends Component {
               backgroundColor:  colors.blue.hex,
             }, styles.centered]}
           >
-            <Icon name={this.props.icon} size={0.75*size} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+            <Icon name={this.props.icon} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
           </View>
         </View>
         <View style={{flex:1}}>

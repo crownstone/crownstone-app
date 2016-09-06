@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   roomImageText:{
-    fontSize:17,
+    fontSize:16,
     fontWeight: 'bold',
     color:'#ffffff',
     padding:8,
@@ -86,11 +86,11 @@ export const styles = StyleSheet.create({
   },
   listText:{
     width:(1/3)*screenWidth,
-    fontSize: 17,
+    fontSize: 16,
   },
   listTextLarge:{
     width:(2/3)*screenWidth,
-    fontSize: 17,
+    fontSize: 16,
   },
   separator: {
     height: 1,
@@ -137,11 +137,11 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.gray.hex
   },
   buttonText : {
-    fontSize:17,
+    fontSize:16,
     color: colors.blue.hex
   },
   menuText: {
-    fontSize: 17,
+    fontSize: 16,
     color: colors.menuText.hex,
   }
 });

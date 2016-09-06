@@ -71,7 +71,7 @@ export class PictureCircle extends Component {
             </View>
           </TouchableOpacity>
           { this.props.placeholderText ?
-            <Text style={{padding:10, color:colors.gray.hex, fontSize: 17}}>{this.props.placeholderText}</Text> :
+            <Text style={{padding:10, color:colors.gray.hex, fontSize: 16}}>{this.props.placeholderText}</Text> :
             undefined}
         </View>
       );

@@ -120,6 +120,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-device-info')
     compile project(':react-native-randombytes')
     compile project(':react-native-svg')
     compile project(':@remobile/react-native-splashscreen')

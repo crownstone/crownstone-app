@@ -26,7 +26,7 @@ export class TimePicker extends Component {
         <TouchableHighlight onPress={() => {this.props.setActiveElement()}}>
           <View style={[styles.listView, {height:this.props.barHeight}]}>
             <Text style={[styles.listTextLarge, this.props.labelStyle]}>{this.props.label}</Text>
-            <Text style={[{flex:1, fontSize:17, textAlign:'right'}, this.props.valueStyle]}>{formatTime(this.props.value)}</Text>
+            <Text style={[{flex:1, fontSize:16, textAlign:'right'}, this.props.valueStyle]}>{formatTime(this.props.value)}</Text>
           </View>
         </TouchableHighlight>
         <SlideFadeInView height={216} visible={this.props.activeElement == this.props.elementIndex} >

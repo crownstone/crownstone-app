@@ -31,8 +31,8 @@ export class SetupAddPlugInStep4 extends Component {
           <TouchableOpacity style={{paddingLeft:20, paddingRight:30,flexDirection:'row',
             alignItems: 'center',
             justifyContent:'flex-start'}} onPress={() => {Actions.setupAddPluginStep1({hideBack:true, groupId: this.props.groupId});}}>
-            <Icon name="c2-plugin" size={100} color="#fff" style={{backgroundColor:'transparent', width:105}} />
-            <Text style={setupStyle.information}>Add another Crownstone</Text>
+            <Icon name="c2-plugin" size={100} color="#fff" style={{backgroundColor:'transparent', width:105, position:'relative', top:3}} />
+            <Text style={[setupStyle.information, {width: screenWidth - 140, paddingLeft:5, paddingRight:0}]}>Add more Crownstones</Text>
           </TouchableOpacity>
           <View style={{flex:1}} />
           <TouchableOpacity style={{paddingLeft:30, paddingRight:30, flexDirection:'row',
@@ -42,8 +42,8 @@ export class SetupAddPlugInStep4 extends Component {
               this.props.store.dispatch({type:'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}});
               Actions.tabBar();
             }}>
-            <Icon name="md-log-in" size={100} color="#fff" style={{backgroundColor:'transparent', width:95}} />
-            <Text style={setupStyle.information}>Finish setting up Crownstones</Text>
+            <Icon name="md-log-in" size={100} color="#fff" style={{backgroundColor:'transparent', width:95, position:'relative', top:5}} />
+            <Text style={[setupStyle.information, {width: screenWidth - 140, paddingLeft:5, paddingRight:0}]}>Let's get started!</Text>
           </TouchableOpacity>
           <View style={{flex:1}} />
         </View>

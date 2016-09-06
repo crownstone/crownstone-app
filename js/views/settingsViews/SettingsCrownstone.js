@@ -22,12 +22,17 @@ import { IconButton } from '../components/IconButton'
 import { BleActions } from '../../native/Proxy'
 
 export class SettingsCrownstone extends Component {
-
+  constructor() {
+    super();
+    this.deleting = false;
+  }
 
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
+      if (this.deleting === false) {
+        this.forceUpdate();
+      }
     });
   }
 
@@ -156,32 +161,16 @@ export class SettingsCrownstone extends Component {
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
         let proxy = BLEutil.getProxy(stone.config.bluetoothId);
-        proxy.perform(BleActions.factoryReset)
+        proxy.perform(BleActions.commandFactoryReset)
           .then(() => {
             this._removeCrownstoneFromRedux();
           })
           .catch((err) => {
-            this.props.eventBus.emit('showLoading', 'Trying again...');
-            return new Promise((resolve, reject) => {
-              setTimeout(() => {
-                proxy.perform(BleActions.factoryReset)
-                  .then(() => {
-                    resolve();
-                  })
-                  .catch((err) => {
-                    reject(err);
-                  })
-              }, 1000);
-            })
-          })
-          .then(() => {
-            this._removeCrownstoneFromRedux();
-          })
-          .catch((err) => {
+            console.log("ERROR:",err)
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "You can recover it using the recovery procedure.",
-              [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); }
+              [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); Actions.pop(); Actions.settingsPluginRecoverStep1(); }
               }])
           })
       })
@@ -195,25 +184,14 @@ export class SettingsCrownstone extends Component {
       })
   }
 
-
-  _removeCrownstoneFromCloud() {
-    this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
-    return CLOUD.forGroup(this.props.groupId).deleteStone(this.props.stoneId)
-      .then(() => {
-        this.props.eventBus.emit('hideLoading', 'Factory resetting the Crownstone...');
-        Alert.alert("Can't see this one!",
-          "We can't find this Crownstone while scanning. Can you move closer to it and try again?",
-          [{text:"OK"}]
-        );
-      })
-
-
-  }
-
   _removeCrownstoneFromRedux() {
-    this.props.store.dispatch({type: "REMOVE_STONE", groupId: this.props.groupId, stoneId: this.props.stoneId});
-    this.props.eventBus.emit('hideLoading');
+    // deleting makes sure we will not draw this page again if we delete it's source from the database.
+    this.deleting = true;
+
+    // revert to the previous screen
     Actions.pop();
+    this.props.eventBus.emit('hideLoading');
+    this.props.store.dispatch({type: "REMOVE_STONE", groupId: this.props.groupId, stoneId: this.props.stoneId});
   }
 
   render() {
