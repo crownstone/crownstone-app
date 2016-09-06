@@ -63,18 +63,18 @@ export const logOut = function() {
 export const processImage = function(picture, targetFilename) {
   return new Promise((resolve, reject) => {
     if (picture !== undefined) {
-      let path = RNFS.DocumentDirectoryPath + '/' + targetFilename;
+      let targetPath = RNFS.DocumentDirectoryPath + '/' + targetFilename;
       let resizedUri = undefined;
       ImageResizer.createResizedImage(picture, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90)
         .then((resizedImageUri) => {
           resizedUri = resizedImageUri;
-          return safeDeleteFile(path);
+          return safeDeleteFile(targetPath);
         })
         .then(() => {
-          return RNFS.moveFile(resizedUri, path);
+          return safeMoveFile(resizedUri, targetPath);
         })
         .then(() => {
-          resolve(path);
+          resolve(targetPath);
         })
         .catch((err) => {
           reject("picture resizing error:" + err.message);

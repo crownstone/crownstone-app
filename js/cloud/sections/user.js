@@ -102,7 +102,7 @@ export const user = {
    */
   requestVerificationEmail: function(options = {}) {
     return this._setupRequest(
-      'GET',
+      'POST',
       'users/resendVerification',
       { data: { email: options.email }, background: options.background },
       'query'

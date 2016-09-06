@@ -67,13 +67,12 @@ export class SetupAddPlugInStep2 extends Component {
 
     const {store} = this.props;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup || Object.keys(state.groups)[0];
     let crownstone = undefined;
 
     BLEutil.getNearestSetupCrownstone()
       .then((foundCrownstone) => {
         crownstone = foundCrownstone;
-        this.interrogateStone(crownstone, activeGroup);
+        this.interrogateStone(crownstone, this.props.groupId);
       })
       .catch((err) => {
         console.log("error in looking for setup crownstone:",err);
@@ -89,7 +88,7 @@ export class SetupAddPlugInStep2 extends Component {
 
   }
 
-  interrogateStone(crownstone, activeGroup) {
+  interrogateStone(crownstone, groupId) {
     this.setProgress(1);
     return crownstone.connect()
       .then(() => {
@@ -98,21 +97,22 @@ export class SetupAddPlugInStep2 extends Component {
       })
       .then((MACAddress) => {
         this.setProgress(3);
-        this.registerStone(crownstone, activeGroup, MACAddress);
+        this.registerStone(crownstone, groupId, MACAddress);
       })
       .catch((err) => {
         console.log("error connecting to crownstone!", err);
+        crownstone.disconnect();
         this.scanAndRegisterCrownstone()
       })
   }
 
-  registerStone(crownstone, activeGroup, MACAddress) {
+  registerStone(crownstone, groupId, MACAddress) {
     const {store} = this.props;
     const processSuccess = (cloudResponse) => {
       console.log("received from cloud:",cloudResponse);
       store.dispatch({
         type: "ADD_STONE",
-        groupId: activeGroup,
+        groupId: groupId,
         stoneId: cloudResponse.id,
         data: {
           type: 'plugin_v1',
@@ -129,17 +129,24 @@ export class SetupAddPlugInStep2 extends Component {
 
     const processFailure = () => {
       Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK", onPress:() => {
+        crownstone.disconnect();
         this.scanAndRegisterCrownstone();
+        Actions.pop();
       }}]);
     };
-    CLOUD.createStone(activeGroup, MACAddress, 'plugin_v1')
+    CLOUD.createStone(groupId, MACAddress, 'plugin_v1')
       .then(processSuccess)
       .catch((err) => {
+        console.log("here I have the error!", err)
         if (err.status === 422) {
           CLOUD.findStone(MACAddress)
             .then((foundCrownstones) => {
+              console.log("I HAVE A RESULT", foundCrownstones)
               if (foundCrownstones.length === 1) {
                 processSuccess(foundCrownstones[0]);
+              }
+              else {
+                processFailure();
               }
             })
             .catch((err) => {
@@ -159,8 +166,11 @@ export class SetupAddPlugInStep2 extends Component {
     const {store} = this.props;
     const state = store.getState();
     let groupId = this.props.groupId;
+    console.log("----------------------------------------------------------------------")
+    console.log(state, this.props.groupId)
     let groupData = state.groups[groupId].config;
     let stoneData = state.groups[groupId].stones[stoneId].config;
+
     this.setProgress(4);
 
     let data = {};

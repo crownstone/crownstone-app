@@ -10,14 +10,14 @@ import {
   View
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
-var md5 = require('md5')
-
+var md5 = require('md5');
+import { emailFromRegistration } from './emailMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
-import { styles, colors , screenWidth, screenHeight, pxRatio } from '../styles'
+import { styles, colors , screenWidth, screenHeight } from '../styles'
 import { StoreManager } from '../../router/store/storeManager'
 import RNFS from 'react-native-fs'
 import loginStyles from './LoginStyles'
@@ -25,7 +25,9 @@ import loginStyles from './LoginStyles'
 export class Login extends Component {
   constructor() {
     super();
-    this.state = {email:'alex@dobots.nl', password:'letmein0'};
+    // this.state = {email: emailFromRegistration.email || 'alex@dobots.nl', password:'letmein0'};
+    this.state = {email: emailFromRegistration.email || '', password:''};
+    // this.state = {email: emailFromRegistration.email || 'anne@crownstone.rocks', password:'bier'};
     this.progress = 0;
   }
 
@@ -146,7 +148,7 @@ export class Login extends Component {
         <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
-            <TextEditInput style={{flex:1, padding:10}} placeholder='email' placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
+            <TextEditInput style={{flex:1, padding:10}} placeholder='email' keyboardType='email-address' autoCapitalize={false} placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
           </View>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput style={{flex:1, padding:10}} secureTextEntry={true} placeholder='password' placeholderTextColor='#888' value={this.state.password} callback={(newValue) => {this.setState({password:newValue});}} />
@@ -230,6 +232,7 @@ export class Login extends Component {
 
     // check if we need to upload a picture that has been set aside during the registration process.
     let imageFilename = getImageFileFromUser(this.state.email);
+    console.log("IMAGE FILENAME AT LOGIN", imageFilename)
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {
         if (picturePath === null)

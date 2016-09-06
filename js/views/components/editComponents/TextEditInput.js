@@ -55,6 +55,7 @@ export class TextEditInput extends Component {
         ref={this.refName}
         onFocus={this.props.onFocus ? () => {this.focus(); this.props.onFocus();} : () => {this.focus();}}
         style={[{flex:1, position:'relative', top:1}, this.props.style]}
+        autoCapitalize={this.props.autoCapitalize || true}
         value={this.props.optimization === false ? this.props.value : this.state.value}
         placeholder={this.props.placeholder}
         placeholderTextColor={this.props.placeholderTextColor}

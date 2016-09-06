@@ -16,6 +16,16 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 
 export class SettingsGroupOverview extends Component {
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+        this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
 
   _getGroups(state, accessLevel) {
     let items = [];

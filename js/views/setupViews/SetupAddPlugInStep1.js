@@ -19,6 +19,7 @@ import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 export class SetupAddPlugInStep1 extends Component {
   render() {
+    console.log("ENTERING ADDING CROWNSTONE INTERFACE WITH GROUP : ", this.props.groupId);
     let imageSize = 0.35;
     return (
       <Background hideInterface={true} image={this.props.backgrounds.setup}>

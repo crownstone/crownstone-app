@@ -139,6 +139,56 @@ export const groups = {
     return new Promise((resolve, reject) => {
       resolve();
     })
-  }
+  },
+
+  deleteGroup: function() {
+    let groupId = this._groupId;
+
+    let promises     = [];
+
+    let applianceData= [];
+    let stoneData    = [];
+    let locationData = [];
+
+    promises.push(
+      this.getStonesInGroup()
+        .then((stones) => {
+          stoneData = stones;
+        })
+    );
+
+    // for every group we get the appliances
+    promises.push(
+      this.getAppliancesInGroup()
+        .then((appliances) => {
+          applianceData = appliances;
+        })
+    );
+
+    // for every group, we get the locations
+    promises.push(
+      this.getLocations()
+        .then((locations) => {
+          locationData = locations;
+        })
+    );
+
+    return Promise.all(promises).then(() => {
+      let deletePromises = [];
+      applianceData.forEach((appliance) => {
+        deletePromises.push(this.deleteAppliance(appliance.id));
+      });
+
+      stoneData.forEach((stone) => {
+        deletePromises.push(this.deleteStone(stone.id));
+      });
+
+      locationData.forEach((location) => {
+        deletePromises.push(this.deleteLocation(location.id));
+      });
+
+      return Promise.all(deletePromises);
+    })
+  },
 
 };

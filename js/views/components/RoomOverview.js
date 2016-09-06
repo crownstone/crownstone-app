@@ -34,7 +34,7 @@ export class RoomOverview extends Component {
         <View style={{flex:1}}>
           <View style={{flexDirection:'column'}}>
             <Text style={{fontSize:16, fontWeight:'500'}}>{this.props.name}</Text>
-            <Text style={{fontSize:14, fontWeight:'100', paddingTop:3}}>{'Amount of Crownstones: ' + this.props.stoneCount}</Text>
+            <Text style={{fontSize:14, fontWeight:'100', paddingTop:3}}>{'Number of Crownstones: ' + this.props.stoneCount}</Text>
           </View>
         </View>
         {this.props.navigation ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'} /> : undefined}

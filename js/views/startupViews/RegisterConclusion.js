@@ -29,12 +29,12 @@ export class RegisterConclusion extends Component {
     let buttonWidth = 0.5 * width;
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.boot}>
+      <Background hideInterface={true} image={this.props.backgrounds.mainDark}>
         <View style={[style.viewContainer, {paddingTop:270}]}>
           <Text style={style.text}>An email has been sent to:</Text>
         </View>
         <View style={[style.viewContainer]}>
-          <Text style={[style.text, {fontSize:21, fontWeight:'500'}]}>{this.props.email || 'thisismyemail@gmail.com'}</Text>
+          <Text style={[style.text, {fontSize:21, fontWeight:'500'}]}>{this.props.email}</Text>
         </View>
         <View style={[style.viewContainer]}>
           <Text style={style.text}>{

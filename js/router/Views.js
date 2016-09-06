@@ -43,10 +43,8 @@ import { SettingsCrownstone }        from '../views/settingsViews/SettingsCrowns
 import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
 import { AppComplexity }             from '../views/settingsViews/AppComplexity'
-import { CloudChoice }               from '../views/startupViews/CloudChoice'
 
 export const Views = {
-  CloudChoice,
   LoginSplash,
   Login,
   Register,

@@ -35,7 +35,7 @@ export class AppRouter extends Component {
     super();
     this.state = {initialized:false, loggedIn: false};
     this.unsubscribe = [];
-    this.backgrounds = {setup:undefined, main: undefined, menu: undefined, boot: undefined};
+    this.backgrounds = {setup:undefined, main: undefined, menu: undefined, boot: undefined, mainDark: undefined};
   }
 
   componentDidMount() {
@@ -111,6 +111,7 @@ export class AppRouter extends Component {
     this.backgrounds.main  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
     this.backgrounds.menu  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
     this.backgrounds.boot  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/loginBackground.png')} />;
+    this.backgrounds.mainDark  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackground.png')} />;
   }
 
   componentWillUnmount() { // cleanup

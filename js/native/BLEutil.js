@@ -157,6 +157,10 @@ export class SetupCrownstone {
     return BleActions.connect(this.bleHandle);
   }
 
+  disconnect() {
+    return BleActions.phoneDisconnect();
+  }
+
   getMACAddress() {
     return BleActions.getMACAddress();
   }

@@ -12,8 +12,13 @@ const Promise = require("promise");
 // fucking fetch lib uses its own promises!
 fetch.Promise = Promise;
 
+//alex
 let token = 'IXoWq6dQWvHJg1ZLHbDKwprgzKKnRJLtkSgE8QqkwmyxMn9JTcYAzLuAfzpHA4tx';
 let userId = '5747122cfb25ed03000bdc70';
+
+//anne
+// let token = 'FrEAgEDUZCIksrdM5GkZCIIEmCg0Z4gbuoI57YsURvT8CGhZcq1HB8JgcPAs83mD';
+// let userId = '57cef12aa54fcf0300c5074c';
 
 let defaultHeaders = {
   'Accept': 'application/json',
@@ -74,7 +79,38 @@ fetch(
     })
   })
   .then(() => {
-    console.log("FINISHED")
+    console.log("FINISHED with groups")
+  }).done();
+
+
+
+fetch(
+  'http://crownstone-cloud.herokuapp.com/api/Appliances?access_token=' + token,
+  {method: 'GET',headers: defaultHeaders,body: ''})
+  .then(handleInitialReply)
+  .then((result) => {
+    let data = JSON.parse(result);
+    let applianceIds = [];
+    console.log(data)
+    data.forEach((appliance) => {
+      applianceIds.push(appliance.id)
+    })
+    console.log(data, applianceIds)
+    return applianceIds
+  })
+  .then((applianceIds) => {
+    return new Promise((resolve, reject) => {
+      console.log('deleting stones from ',applianceIds)
+      let promiseArray = [];
+      applianceIds.forEach((applianceId) => {
+        promiseArray.push(removeAppliance(applianceId))
+      });
+      Promise.all(promiseArray)
+        .then(resolve)
+    })
+  })
+  .then(() => {
+    console.log("FINISHED with appliacnes")
   }).done()
 
 function deleteGroup (groupId) {
@@ -113,6 +149,19 @@ function deleteStone(stoneId) {
   return new Promise((resolve, reject) => {
     let base = 'http://crownstone-cloud.herokuapp.com/api/Stones/$id$?access_token=' + token;
     return fetch(base.replace("$id$", stoneId), {method: 'DELETE', headers: defaultHeaders, body: ''})
+      .then(handleInitialReply)
+      .then((results) => {
+        // console.log(results);
+        resolve()
+      }).done()
+  });
+}
+
+function removeAppliance(applianceId) {
+  console.log('delete appliance', applianceId)
+  return new Promise((resolve, reject) => {
+    let base = 'http://crownstone-cloud.herokuapp.com/api/Appliances/$id$?access_token=' + token;
+    return fetch(base.replace("$id$", applianceId), {method: 'DELETE', headers: defaultHeaders, body: ''})
       .then(handleInitialReply)
       .then((results) => {
         // console.log(results);

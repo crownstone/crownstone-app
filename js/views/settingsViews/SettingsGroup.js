@@ -15,7 +15,7 @@ import { ProfilePicture } from './../components/ProfilePicture'
 import { IconButton } from '../components/IconButton'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getMyLevelInGroup } from '../../util/dataUtil';
+import { getMyLevelInGroup, getGroupContentFromState } from '../../util/dataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 
@@ -23,13 +23,16 @@ import { CLOUD } from '../../cloud/cloudAPI'
 export class SettingsGroup extends Component {
   constructor() {
     super();
+    this.deleting = false;
     this.validationState = {groupName:'valid'};
   }
 
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
+      if (this.deleting == false) {
+        this.forceUpdate();
+      }
     })
   }
 
@@ -135,32 +138,47 @@ export class SettingsGroup extends Component {
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
-          Alert.alert(
-            "This is not supported yet. Sorry!",
-            "",
-            [{text:'OK'}]
-          );
-        //   Alert.alert(
-        //     "Are you sure you want to delete this Group?",
-        //     "This is only possible if you have reset all Crownstones in this Group.",
-        //     [
-        //       {text:'No'},
-        //       {text:'Yes', onPress:() => {
-        //         // TODO: check if there are still crownstones.
-        //
-        //       }}
-        //     ]
-        //   );
+          this._deleteGroup(state);
         }
-      })
+      });
       items.push({label:'Deleting a group cannot be undone.',  type:'explanation', below:true});
     }
 
     return items;
   }
 
-  render() {
+  _deleteGroup(state) {
+    Alert.alert(
+      "Are you sure you want to delete this Group?",
+      "This is only possible if you have removed all Crownstones from this Group.",
+      [
+        {text:'No'},
+        {text:'Yes', onPress:() => {
+          let stones = getGroupContentFromState(state, this.props.groupId);
+          let stoneIds = Object.keys(stones);
+          if (stoneIds.length > 0) {
+            Alert.alert(
+              "Still Crownstones detected in Group",
+              "You can remove Crownstones from this Group in the Settings > Crownstones, select one and click remove.",
+              [{text:'OK'}]
+            );
+          }
+          else {
+            this.props.eventBus.emit('showLoading','Removing this Group in the Cloud.');
+            CLOUD.forGroup(this.props.groupId).deleteGroup()
+              .then(() => {
+                this.props.eventBus.emit('hideLoading');
+                this.deleting = true;
+                Actions.pop();
+                this.props.store.dispatch({type:'REMOVE_GROUP', groupId: this.props.groupId});
+              })
+          }
+        }}
+      ]
+    );
+  }
 
+  render() {
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView>

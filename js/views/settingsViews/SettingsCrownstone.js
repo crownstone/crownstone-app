@@ -54,38 +54,45 @@ export class SettingsCrownstone extends Component {
 
     let options = roomNames.map((roomName) => {return {label:roomName}});
 
-    items.push({label:'LOCATION OF CROWNSTONE',  type:'explanation', below:false});
-    items.push({
-        type:'dropdown',
-        label:'In Room',
-        value: roomName,
-        // buttons:true,
-        dropdownHeight:130,
-        items:options,
-        callback: (selectedRoom) => {
-          if (selectedRoom !== roomName) {
-            if (selectedRoom == NO_LOCATION_NAME) {
-              Alert.alert("Decouple this Crownstone",
-                "If you do not add the Crownstone to a room, it will not be used for indoor localization purposes.",
-                [{text:'Cancel'}, {text:"OK", onPress: () => {
-                  store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
-                }}])
-            }
-            else {
-              Alert.alert("Move Crownstone to " + selectedRoom,
-                "If you move a Crownstone to a different room, we'd recommend you retrain the rooms to ensure the indoor localization will work correctly.",
-                [{text:'Cancel'}, {text:"OK", onPress: () => {
-                  let roomId = getRoomIdFromName(state, this.props.groupId, selectedRoom);
-                  store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})
-                }}])
-            }
+
+    if (roomNames.length == 1) {
+      items.push({label:'In order to put a Crownstone in a Room, first create a room in the Settings.',  type:'explanation', below:false});
+    }
+    else {
+      items.push({label:'LOCATION OF CROWNSTONE',  type:'explanation', below:false});
+      items.push({
+          type:'dropdown',
+          label:'In Room',
+          value: roomName,
+          // buttons:true,
+          dropdownHeight:130,
+          items:options,
+          callback: (selectedRoom) => {
+            if (selectedRoom !== roomName) {
+              if (selectedRoom == NO_LOCATION_NAME) {
+                Alert.alert("Decouple this Crownstone",
+                  "If you do not add the Crownstone to a room, it will not be used for indoor localization purposes.",
+                  [{text:'Cancel'}, {text:"OK", onPress: () => {
+                    store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
+                  }}])
+              }
+              else {
+                Alert.alert("Move Crownstone to " + selectedRoom,
+                  "If you move a Crownstone to a different room, we'd recommend you retrain the rooms to ensure the indoor localization will work correctly.",
+                  [{text:'Cancel'}, {text:"OK", onPress: () => {
+                    let roomId = getRoomIdFromName(state, this.props.groupId, selectedRoom);
+                    store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})
+                  }}])
+              }
 
 
+            }
           }
         }
-      }
-    );
-    items.push({label:'To ensure the indoor localization works correctly after moving a Crownstone, repeat the fingerprinting process.',  type:'explanation', below:true});
+      );
+      items.push({label:'To ensure the indoor localization works correctly after moving a Crownstone, repeat the fingerprinting process.',  type:'explanation', below:true});
+
+    }
 
     // TODO: DFU and firmware upgrades.
     // items.push({label:'FIRMWARE',  type:'explanation', style:{paddingTop:0}, below:false});
