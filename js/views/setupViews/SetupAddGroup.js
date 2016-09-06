@@ -34,11 +34,13 @@ export class SetupAddGroup extends Component {
       this.props.eventBus.emit('showLoading', 'Creating Group...');
       CLOUD.forUser(state.user.userId).createGroup(this.state.groupName)
         .then((response) => {
+
+          let creationActions = [];
           // add the group to the database once it had been added in the cloud.
-          store.dispatch({type:'ADD_GROUP', groupId: response.id, data:{name: response.name, iBeaconUUID: response.uuid}});
+          creationActions.push({type:'ADD_GROUP', groupId: response.id, data:{name: response.name, iBeaconUUID: response.uuid}});
 
           // add yourself to the group members as admin
-          store.dispatch({type: 'ADD_GROUP_USER', groupId: response.id, userId: me.userId, data:{picture: me.picture, firstName: me.firstName, lastName: me.lastName, email:me.email, emailVerified: true, accessLevel: 'admin'}});
+          creationActions.push({type: 'ADD_GROUP_USER', groupId: response.id, userId: me.userId, data:{picture: me.picture, firstName: me.firstName, lastName: me.lastName, email:me.email, emailVerified: true, accessLevel: 'admin'}});
 
           // get all encryption keys the user has access to and store them in the appropriate groups.
           CLOUD.getKeys()
@@ -46,7 +48,7 @@ export class SetupAddGroup extends Component {
               if (Array.isArray(keyResult)) {
                 console.log(keyResult);
                 keyResult.forEach((keySet) => {
-                  store.dispatch({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
+                  creationActions.push({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
                     adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
                     memberKey: keySet.keys.member || null,
                     guestKey:  keySet.keys.guest  || null
@@ -55,6 +57,7 @@ export class SetupAddGroup extends Component {
                 this.props.eventBus.emit('groupCreated');
                 this.props.eventBus.emit('hideLoading');
 
+                store.batchDispatch(creationActions);
                 // we initially only support plugin so we skip the selection step.
                 Actions.setupAddPluginStep1({groupId: response.id});
               }
@@ -79,7 +82,7 @@ export class SetupAddGroup extends Component {
             }
           }
           else {
-            console.log(err)
+            console.log(err);
             Alert.alert("Error when creating group.",JSON.stringify(err), [{text:'OK..'}]);
           }
 

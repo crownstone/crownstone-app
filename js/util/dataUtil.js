@@ -144,7 +144,8 @@ export const getGroupsWhereIHaveAccessLevel = function(state, accessLevel) {
   for (let groupId in state.groups) {
     if (state.groups.hasOwnProperty(groupId)) {
       let group = state.groups[groupId];
-      if (group.users[state.user.userId].accessLevel === accessLevel) {
+      // there can be a race condition where the current user is yet to be added to groups but a redraw during the creation process triggers this method
+      if (group.users[state.user.userId] && group.users[state.user.userId].accessLevel === accessLevel) {
         items.push({id: groupId, name: group.config.name});
       }
     }

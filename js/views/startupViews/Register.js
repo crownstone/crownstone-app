@@ -81,7 +81,7 @@ export class Register extends Component {
         type: 'textEdit',
         validation:'email',
         validationMethod:'icons',
-        autoCapitalize:false,
+        autoCapitalize:'none',
         keyboardType: 'email-address',
         value: this.state.email,
         validationCallback: (newState) => {this.inputStates.email = newState},
