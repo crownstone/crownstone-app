@@ -73,7 +73,7 @@ export class DeviceScheduleAdd extends Component {
 
     let options = this.constructScheduleItems(store, scheduleItems);
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <ListEditableItems items={options.slice(0,9)}/>
           <ListEditableItems items={options.slice(9)}/>

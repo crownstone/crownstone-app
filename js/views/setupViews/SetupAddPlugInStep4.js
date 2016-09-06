@@ -20,7 +20,7 @@ import { styles, colors, screenWidth, screenHeight } from './../styles'
 export class SetupAddPlugInStep4 extends Component {
   render() {
     return (
-      <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.setup}>
         <View style={styles.shadedStatusBar} />
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={[setupStyle.h1]}>Ready to get started?</Text>

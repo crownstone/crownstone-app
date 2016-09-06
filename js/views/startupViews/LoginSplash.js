@@ -17,7 +17,7 @@ import loginStyles from './LoginStyles'
 export class LoginSplash extends Component {
   render() {
     return (
-      <Background hideInterface={true} background={require('../../images/loginBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.boot}>
         <View style={styles.shadedStatusBar} />
         <View style={loginStyles.loginButtonContainer}>
           <TouchableOpacity onPress={() => {Actions.register()}} >

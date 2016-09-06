@@ -97,7 +97,7 @@ export class SettingsRoomAdd extends Component {
 
   render() {
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

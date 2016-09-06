@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Crownstone copy.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>20</integer>
+		</dict>
 		<key>Crownstone.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -18,6 +23,11 @@
 			<true/>
 		</dict>
 		<key>13B07F861A680F5B00A75B9A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FA577C5B1D7F1D7E00B63970</key>
 		<dict>
 			<key>primary</key>
 			<true/>

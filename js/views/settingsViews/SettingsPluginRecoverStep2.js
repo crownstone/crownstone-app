@@ -66,7 +66,7 @@ export class SettingsPluginRecoverStep2 extends Component {
   render() {
     let imageSize = 0.45;
     return (
-      <Background hideTabBar={true} background={require('../../images/mainBackgroundLight.png')}>
+      <Background hideTabBar={true} image={this.props.backgrounds.main}>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.menuBackground.hex}]}>Hold your phone next to the Crownstone.</Text>
           <View style={setupStyle.lineDistance} />

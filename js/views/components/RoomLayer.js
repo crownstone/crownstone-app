@@ -12,8 +12,8 @@ import {
 
 var Actions = require('react-native-router-flux').Actions;
 
-import { ProfilePicture } from '../components/ProfilePicture'
-import { RoomCircle } from '../components/RoomCircle'
+import { ProfilePicture } from './ProfilePicture'
+import { RoomCircle } from './RoomCircle'
 import { getOrphanedStones, getAmountOfStonesInLocation } from '../../util/dataUtil'
 
 import { styles, colors, screenWidth, screenHeight } from '../styles'

@@ -55,7 +55,7 @@ export class DelaySelection extends Component {
 
     let options = this.constructOptions(optionState);
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <EditSpacer top={true} />
           <ListEditableItems items={options} separatorIndent={true} />

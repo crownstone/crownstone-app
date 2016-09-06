@@ -21,7 +21,7 @@ export class PicturePreview extends Component {
     let imageURI = this.props.image === 'file' ? this.props.image : 'file://' + this.props.image;
     imageURI += '?r=' + Math.random(); // cache buster
     return (
-      <View style={{flex:1, screenWidth, screenHeight}} >
+      <View style={{flex:1, width:screenWidth, height:screenHeight}} >
         <TopBar title="Review Your Picture" notBack={true} />
         <View style={{flex:1, backgroundColor:'#0f101a', alignItems:'center', justifyContent:'center'}}>
           <Image source={{uri:imageURI}} style={{width: screenWidth, height:screenWidth}}>

@@ -21,7 +21,7 @@ export class SetupAddPlugInStep1 extends Component {
   render() {
     let imageSize = 0.35;
     return (
-      <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.setup}>
         {
           this.props.hideBack !== true ?
           <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true}/>

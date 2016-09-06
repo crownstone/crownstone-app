@@ -305,7 +305,7 @@ export class SetupAddPlugInStep2 extends Component {
     let subx = imageSize*0.59;
     let suby = imageSize*0.105;
     return (
-      <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.setup}>
         {this.getHeader()}
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={setupStyle.text}>Step 2: Hold your phone next to the Crownstone.</Text>

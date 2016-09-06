@@ -20,7 +20,7 @@ export class SetupAddCrownstoneSelect extends Component {
 
   render() {
     return (
-      <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.setup}>
         <View style={styles.shadedStatusBar} />
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={setupStyle.h0}>Add your Crownstone</Text>

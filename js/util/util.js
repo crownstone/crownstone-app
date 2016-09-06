@@ -65,7 +65,7 @@ export const processImage = function(picture, targetFilename) {
     if (picture !== undefined) {
       let path = RNFS.DocumentDirectoryPath + '/' + targetFilename;
       let resizedUri = undefined;
-      ImageResizer.createResizedImage(picture, width * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90)
+      ImageResizer.createResizedImage(picture, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90)
         .then((resizedImageUri) => {
           resizedUri = resizedImageUri;
           return safeDeleteFile(path);

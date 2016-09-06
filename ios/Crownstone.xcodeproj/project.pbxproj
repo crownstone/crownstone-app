@@ -238,6 +238,7 @@
 		FA4A0A041D09C1DF005753CE /* NativeBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeBridge.m; path = Crownstone/NativeBridge.m; sourceTree = "<group>"; };
 		FA4A0A061D09C2BA005753CE /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		FA4A0A131D09CF2D005753CE /* NativeBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeBridge.h; sourceTree = "<group>"; };
+		FA577C8E1D7F1D7E00B63970 /* Crownstone copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Crownstone copy-Info.plist"; path = "/Users/alex/Dropbox/DoBots/Projects/CrownstoneApp/ios/Crownstone copy-Info.plist"; sourceTree = "<absolute>"; };
 		FA662E411D3D1B14009C5BE3 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = Carthage/Build/iOS/BluenetLibIOS.framework; sourceTree = "<group>"; };
 		FA662E481D3D1B83009C5BE3 /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		FA662E491D3D1B83009C5BE3 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
@@ -451,6 +452,7 @@
 				00E356EF1AD99517003FC87E /* CrownstoneTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				FC9894E6A5244B579E3B0421 /* Resources */,
+				FA577C8E1D7F1D7E00B63970 /* Crownstone copy-Info.plist */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -581,7 +583,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				FACDBD541D7EC520005DEF91 /* ShellScript */,
+				FACDBD541D7EC520005DEF91 /* Run Script */,
 				FACDBD551D7EC529005DEF91 /* ShellScript */,
 			);
 			buildRules = (
@@ -895,18 +897,19 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
 		};
-		FACDBD541D7EC520005DEF91 /* ShellScript */ = {
+		FACDBD541D7EC520005DEF91 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone";
+			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\n#find \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\n#do\n#FRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\n#FRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\n#echo \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\n#EXTRACTED_ARCHS=()\n\n#for ARCH in $ARCHS\n#do\n#echo \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\n#lipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\n#EXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\n#done\n\n#echo \"Merging extracted architectures: ${ARCHS}\"\n#lipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\n#rm \"${EXTRACTED_ARCHS[@]}\"\n\n#echo \"Replacing original executable with thinned version\"\n#rm \"$FRAMEWORK_EXECUTABLE_PATH\"\n#mv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\n#done";
 		};
 		FACDBD551D7EC529005DEF91 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -1,25 +1,34 @@
 import React, { Component } from 'react' 
 import {
-  
-  Dimensions,
   Image,
-  PixelRatio,
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth, screenHeight, pxRatio} from '../styles'
+import { styles, colors, screenWidth, screenHeight} from '../styles'
 
 
 export class Background extends Component {
+  constructor() {
+    super();
+    this.image = undefined;
+  }
+
+  componentWillMount() {
+    this.image = this.props.image;
+  }
+
   render() {
     return (
-      <Image style={[styles.fullscreen,{resizeMode:'cover', width: screenWidth, height:screenHeight}]} source={this.props.background || require('../../images/background.png')}>
-        {this.props.hideInterface !== true ? <View style={{width:screenWidth,height:62}} /> : undefined}
-        <View style={{flex:1}}>
-        {this.props.children}
+      <View style={styles.fullscreen} >
+        {this.image}
+        <View style={styles.fullscreen} >
+          {this.props.hideInterface !== true ? <View style={{width:screenWidth,height:62}} /> : undefined}
+          <View style={{flex:1}}>
+            {this.props.children}
+          </View>
+          {this.props.hideInterface !== true && this.props.hideTabBar !== true ? <View style={{width: screenWidth,height:50}} /> : undefined}
         </View>
-        {this.props.hideInterface !== true && this.props.hideTabBar !== true ? <View style={{width: screenWidth,height:50}} /> : undefined}
-      </Image>
+      </View>
     );
   }
 }

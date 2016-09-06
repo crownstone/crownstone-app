@@ -169,7 +169,7 @@ export class SettingsProfile extends Component {
     this.renderState = state; // important for performance check
 
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
           <PictureCircle 
             value={this.state.picture}
@@ -179,14 +179,14 @@ export class SettingsProfile extends Component {
                   this.setState({picture:newPicturePath});
                   store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
                   // update your settings in every group that you belong to.
-                  groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, memberId: user.userId, data: {picture: newPicturePath}}); });
-                })
+                  groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, userId: user.userId, data: {picture: newPicturePath}}); });
+                }).catch((err) => {console.log("PICTURE ERROR ",err)})
               }} 
             removePicture={() => {
               safeDeleteFile(this.state.picture);
               store.dispatch({type:'USER_UPDATE', data:{picture:null}});
               // update your settings in every group that you belong to.
-              groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, memberId: user.userId, data:{picture: null}}); });
+              groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, userId: user.userId, data:{picture: null}}); });
               this.setState({picture:null});
             }}
             size={120} />

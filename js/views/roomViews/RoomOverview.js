@@ -107,7 +107,7 @@ export class RoomOverview extends Component {
 
     if (Object.keys(items).length == 0) {
       return (
-        <Background background={require('../../images/mainBackgroundLight.png')}>
+        <Background image={this.props.backgrounds.main} >
           <RoomBanner presentUsers={users} noCrownstones={true}/>
           <ScrollView>
             <SeparatedItemList
@@ -121,7 +121,7 @@ export class RoomOverview extends Component {
     }
     else {
       return (
-        <Background background={require('../../images/mainBackgroundLight.png')}>
+        <Background image={this.props.backgrounds.main} >
           <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null}  />
           <ScrollView>
             <SeparatedItemList

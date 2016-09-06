@@ -12,6 +12,7 @@ import {
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
+import { IconButton } from '../components/IconButton'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getMyLevelInGroup } from '../../util/dataUtil';
@@ -42,7 +43,7 @@ export class SettingsGroup extends Component {
     for (let userId in users) {
       if (users.hasOwnProperty(userId)) {
         if (users[userId].accessLevel == accessLevel) {
-          console.log(users[userId])
+          console.log("SHOWING USER IN GROUP", users, users[userId]);
           result.push({
             label:users[userId].firstName + " " + users[userId].lastName,
             type: userId === state.user.userId ? 'info' : 'navigation',
@@ -119,7 +120,7 @@ export class SettingsGroup extends Component {
         label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
         labelStyle: {color:colors.blue.hex},
-        icon: <Icon name="ios-add-circle" size={30} color={colors.green.hex} style={{position:'relative', top:2}} />,
+        icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
         callback: () => {
           Actions.settingsGroupInvite({groupId: this.props.groupId});
         }
@@ -135,15 +136,21 @@ export class SettingsGroup extends Component {
         type: 'button',
         callback: () => {
           Alert.alert(
-            "Are you sure you want to delete this Group?",
-            "This is only possible if you have reset all Crownstones in this Group.",
-            [
-              {text:'No'},
-              {text:'Yes', onPress:() => {
-                // TODO: check if there are still crownstones.
-              }}
-            ]
+            "This is not supported yet. Sorry!",
+            "",
+            [{text:'OK'}]
           );
+        //   Alert.alert(
+        //     "Are you sure you want to delete this Group?",
+        //     "This is only possible if you have reset all Crownstones in this Group.",
+        //     [
+        //       {text:'No'},
+        //       {text:'Yes', onPress:() => {
+        //         // TODO: check if there are still crownstones.
+        //
+        //       }}
+        //     ]
+        //   );
         }
       })
       items.push({label:'Deleting a group cannot be undone.',  type:'explanation', below:true});
@@ -155,7 +162,7 @@ export class SettingsGroup extends Component {
   render() {
 
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

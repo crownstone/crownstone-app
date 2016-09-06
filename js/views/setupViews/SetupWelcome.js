@@ -54,7 +54,7 @@ export class SetupWelcome extends Component {
 
   render() {
     return (
-      <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.setup}>
         <View style={styles.shadedStatusBar} />
         <Animated.Text style={[setupStyle.h0, {position:'absolute', left:this.state.welcome.x,    top:this.state.welcome.y}]}>WELCOME</Animated.Text>
         <Animated.Text style={[setupStyle.h3, {position:'absolute', left:this.state.to.x,         top:this.state.to.y, fontStyle:'italic', }]}>to</Animated.Text>

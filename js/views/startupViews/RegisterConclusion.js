@@ -29,7 +29,7 @@ export class RegisterConclusion extends Component {
     let buttonWidth = 0.5 * width;
 
     return (
-      <Background hideTabBar={true} background={require('../../images/loginBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.boot}>
         <View style={[style.viewContainer, {paddingTop:270}]}>
           <Text style={style.text}>An email has been sent to:</Text>
         </View>

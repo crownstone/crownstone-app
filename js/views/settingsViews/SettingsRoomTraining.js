@@ -92,7 +92,7 @@ export class SettingsRoomTraining extends Component {
     let icons = ['ios-finger-print','ios-outlet-outline','ios-pin-outline','ios-pricetag-outline'];
     if (this.state.started === false) {
       return (
-        <Background hideInterface={true} background={require('../../images/mainBackgroundLight.png')}>
+        <Background hideInterface={true} image={this.props.backgrounds.main}>
           <TopBar
             left={"Back"}
             leftAction={ Actions.pop }

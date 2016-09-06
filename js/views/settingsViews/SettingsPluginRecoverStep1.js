@@ -20,7 +20,7 @@ export class SettingsPluginRecoverStep1 extends Component {
   render() {
     let imageSize = 0.40;
     return (
-      <Background hideTabBar={true} background={require('../../images/mainBackgroundLight.png')}>
+      <Background hideTabBar={true} image={this.props.backgrounds.main}>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.menuBackground.hex}]}>If you're physically next to the Crownstone, you can restore it to factory defaults.</Text>
           <View style={setupStyle.lineDistance} />

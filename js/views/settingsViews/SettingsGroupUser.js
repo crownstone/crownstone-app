@@ -76,7 +76,7 @@ export class SettingsGroupUser extends Component {
     let user = state.groups[this.props.groupId].users[this.props.userId];
 
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
             <ProfilePicture

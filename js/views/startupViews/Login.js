@@ -142,7 +142,7 @@ export class Login extends Component {
   }
   render() {
     return (
-      <Background hideInterface={true} background={require('../../images/loginBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.boot}>
         <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>

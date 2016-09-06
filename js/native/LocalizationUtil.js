@@ -61,7 +61,6 @@ class FingerprintManagerClass {
    * @param callback
    */
   startFingerprinting(callback) {
-    console.log(this)
     this._startFingerprinting(() => {
       Bluenet.startCollectingFingerprint();
     }, callback);

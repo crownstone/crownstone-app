@@ -51,7 +51,7 @@ export class DaySelection extends Component {
 
     let options = this.constructOptions(optionState);
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <EditSpacer top={true} />
           <ListEditableItems items={options} separatorIndent={true} />

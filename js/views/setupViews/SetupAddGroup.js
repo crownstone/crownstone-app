@@ -94,7 +94,7 @@ export class SetupAddGroup extends Component {
 
   render() {
     return (
-      <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.setup}>
         <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={[setupStyle.h0, {paddingTop:0}]}>Group Setup</Text>

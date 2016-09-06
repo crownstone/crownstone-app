@@ -149,7 +149,7 @@ export class DeviceBehaviourEdit extends Component {
     }
 
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <ListEditableItems items={options}/>
         </ScrollView>

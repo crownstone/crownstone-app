@@ -9,7 +9,7 @@ export function CloudEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
 
-    console.log("new state:", getState())
+    // console.log("new state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, getState);
@@ -18,8 +18,6 @@ export function CloudEnhancer({ getState }) {
     else {
       handleAction(action, returnValue, getState);
     }
-
-
 
     // This will likely be the action itself, unless
     // a middleware further in chain changed it.

@@ -25,7 +25,7 @@ import { Processing }             from '../views/components/Processing'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
 import { AdvertisementManager }   from '../logic/CrownstoneControl'
-import { styles, colors }         from '../views/styles'
+import { styles, colors, screenWidth, screenHeight }         from '../views/styles'
 import { Icon } from '../views/components/Icon';
 
 let store = {};
@@ -35,9 +35,8 @@ export class AppRouter extends Component {
     super();
     this.state = {initialized:false, loggedIn: false};
     this.unsubscribe = [];
+    this.backgrounds = {setup:undefined, main: undefined, menu: undefined, boot: undefined};
   }
-
-
 
   componentDidMount() {
     // check what we should do with this data.
@@ -104,6 +103,16 @@ export class AppRouter extends Component {
     }
   }
 
+  /**
+   * Preloading backgrounds
+   */
+  componentWillMount() {
+    this.backgrounds.setup = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/setupBackground.png')} />;
+    this.backgrounds.main  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
+    this.backgrounds.menu  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
+    this.backgrounds.boot  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/loginBackground.png')} />;
+  }
+
   componentWillUnmount() { // cleanup
     this.cleanUp()
   }
@@ -117,7 +126,7 @@ export class AppRouter extends Component {
     if (this.state.storeInitialized === true) {
       return (
         <View style={{flex:1}}>
-          <Router createReducer={reducerCreate} store={store} {...navBarStyle} eventBus={eventBus}>
+          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />

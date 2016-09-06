@@ -169,7 +169,7 @@ export class DeviceStateEdit extends Component {
     let options = this.constructOptions(store, device, stone);
     let stateOptions = this.constructStateOptions(store, device, stone);
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <EditSpacer top={true} />
           <ListEditableItems items={options}/>

@@ -14,7 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { Icon } from '../components/Icon'
-import { RoomLayer } from './RoomLayer'
+import { RoomLayer } from '../components/RoomLayer'
 
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 
@@ -53,11 +53,10 @@ export class GroupOverview extends Component {
 
 
   render() {
-    console.log("RENDERING OVERVIEW");
-
+    console.log("RENDERING OVERVIEW 222");
 
     return (
-      <Background background={require('../../images/mainBackgroundLight.png')}>
+      <Background image={this.props.backgrounds.main} >
         {this._getRenderContent()}
       </Background>
     );

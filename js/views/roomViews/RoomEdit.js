@@ -59,7 +59,7 @@ export class RoomEdit extends Component {
     let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
 
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <Explanation text='AVAILABLE DEVICES'/>
           <SeparatedItemList items={items} renderer={this._renderer.bind(this)} separatorIndent={false} />

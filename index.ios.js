@@ -9,7 +9,7 @@ import {
 
 import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/eventBus'
-import { colors, screenHeight } from './js/views/styles'
+import { colors, screenWidth, screenHeight } from './js/views/styles'
 
 var SplashScreen = require('@remobile/react-native-splashscreen');
 
@@ -44,6 +44,7 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
 
   }
+
 
   componentWillUnmount() {
     this.unsubscribe.forEach((callback) => {callback()});

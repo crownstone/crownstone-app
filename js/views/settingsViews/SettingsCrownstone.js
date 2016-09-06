@@ -197,7 +197,7 @@ export class SettingsCrownstone extends Component {
   render() {
     console.log("redrawing Crownstone settings page");
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

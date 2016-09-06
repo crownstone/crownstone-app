@@ -149,7 +149,7 @@ export class HomeOverview extends Component {
     }
     console.log('drawing')
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         {this._getImage()}
         <TopBar name={this.props.name} />
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

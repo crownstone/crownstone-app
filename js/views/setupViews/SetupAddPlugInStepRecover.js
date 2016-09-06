@@ -21,7 +21,7 @@ export class SetupAddPlugInStepRecover extends Component {
   render() {
     let imageSize = 0.35;
     return (
-      <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.setup}>
         <View style={styles.shadedStatusBar} />
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={[setupStyle.h1]}>Let's try again..</Text>

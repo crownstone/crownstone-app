@@ -149,7 +149,7 @@ export class DeviceEdit extends Component {
     }
 
     return (
-      <Background>
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <FadeInView visible={!this.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
             <ListEditableItems items={applianceOptions} separatorIndent={true}/>

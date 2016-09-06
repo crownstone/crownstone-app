@@ -177,7 +177,7 @@ export class SetupAddPlugInStep3 extends Component {
     const { store } = this.props;
     const state = store.getState();
     return (
-      <Background hideInterface={true} background={require('../../images/setupBackground.png')}>
+      <Background hideInterface={true} image={this.props.backgrounds.setup}>
         <View style={styles.shadedStatusBar} />
         <View style={{height:30}} />
         <View style={{flex:1, flexDirection:'column'}}>
