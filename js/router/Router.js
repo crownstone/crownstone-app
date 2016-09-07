@@ -133,9 +133,9 @@ export class AppRouter extends Component {
               <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
               <Scene key="register"                   component={Views.Register}                   hideNavBar={false} title="Register" {...navBarStyle} />
               <Scene key="registerConclusion"         component={Views.RegisterConclusion}         hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
-              <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  direction="vertical" />
-              <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  direction="vertical" />
-              <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  direction="vertical" />
+              <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  panHandlers={null} direction="vertical" />
+              <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  panHandlers={null} direction="vertical" />
+              <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="setupWelcome"               component={Views.SetupWelcome}               hideNavBar={true}  type="reset"  direction="vertical" />
               <Scene key="setupAddGroup"              component={Views.SetupAddGroup}              hideNavBar={true}  />
               <Scene key="setupAddCrownstoneSelect"   component={Views.SetupAddCrownstoneSelect}   hideNavBar={true}  type="reset" />
@@ -145,9 +145,9 @@ export class AppRouter extends Component {
               <Scene key="setupAddPluginStep4"        component={Views.SetupAddPlugInStep4}        hideNavBar={true}  />
               <Scene key="setupAddPlugInStepRecover"  component={Views.SetupAddPlugInStepRecover}  hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />
-              <Scene key="roomTraining"               component={Views.SettingsRoomTraining}       hideNavBar={true} direction="vertical" title="Training" />
-              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
-              <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="roomTraining"               component={Views.SettingsRoomTraining}       hideNavBar={true}  direction="vertical" title="Training" />
+              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
               <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>

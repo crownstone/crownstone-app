@@ -65,21 +65,23 @@ export class DeviceScheduleEdit extends Component {
   }
 
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
-    const device  = room.stones[this.props.stoneId];
-    let scheduleItems = device.schedule;
-
-    let options = this.constructScheduleItems(store, scheduleItems);
-    return (
-      <Background image={this.props.backgrounds.menu} >
-        <ScrollView>
-          <EditSpacer top={true} />
-          <ListEditableItems items={options.slice(0,9)}/>
-          <ListEditableItems items={options.slice(9)}/>
-        </ScrollView>
-      </Background>
-    )
+    console.log("the schedule uses an old data model.");
+    return <View />;
+    // const store   = this.props.store;
+    // const state   = store.getState();
+    // const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    // const device  = room.stones[this.props.stoneId];
+    // let scheduleItems = device.schedule;
+    //
+    // let options = this.constructScheduleItems(store, scheduleItems);
+    // return (
+    //   <Background image={this.props.backgrounds.menu} >
+    //     <ScrollView>
+    //       <EditSpacer top={true} />
+    //       <ListEditableItems items={options.slice(0,9)}/>
+    //       <ListEditableItems items={options.slice(9)}/>
+    //     </ScrollView>
+    //   </Background>
+    // )
   }
 }

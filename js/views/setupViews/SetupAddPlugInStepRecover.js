@@ -43,7 +43,7 @@ export class SetupAddPlugInStepRecover extends Component {
               )
               }} />
             <View style={{flex:1}} />
-            <NextButton onPress={Actions.setupAddPluginStep2} />
+            <NextButton onPress={Actions.setupAddPluginStep2({groupId: this.props.groupId, fromMainMenu: this.props.fromMainMenu})} />
           </View>
         </View>
       </Background>

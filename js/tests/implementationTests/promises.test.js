@@ -1,5 +1,7 @@
 var test = require('tape');
 let deepFreeze = require('deep-freeze');
+const Promise = require("promise");
+
 
 let successfulPromise5 = new Promise((resolve, reject) => {
   setTimeout(() => {resolve(5)}, 100);
@@ -13,6 +15,19 @@ let failedPromise5 = new Promise((resolve, reject) => {
 let failedPromise10 = new Promise((resolve, reject) => {
   setTimeout(() => {reject(10)}, 100);
 });
+
+function getFailingPromise() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {reject(5)}, 100);
+  });
+}
+
+function getPromise() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {resolve(5)}, 100);
+  });
+}
+
 
 function slow() {
   return new Promise((resolve, reject) => {
@@ -117,7 +132,4 @@ test('Promise All', function (t) {
     t.end();
   })
 });
-
-
-
 

@@ -15,15 +15,6 @@ import { EditSpacer }        from '../components/editComponents/EditSpacer'
 
 
 export class DelaySelection extends Component {
-  componentDidMount() {
-    this.unsubscribe = this.props.store.subscribe(() => {
-      this.forceUpdate();
-    })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
 
   constructOptions(optionState) {
     let items = [];

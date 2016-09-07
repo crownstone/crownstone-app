@@ -64,14 +64,10 @@ export class SetupAddPlugInStep2 extends Component {
 
   scanAndRegisterCrownstone() {
     this.setProgress(0);
-
-    const {store} = this.props;
-    const state = store.getState();
-    let crownstone = undefined;
-
+    BLEutil.cancelSearch();
     BLEutil.getNearestSetupCrownstone()
       .then((foundCrownstone) => {
-        crownstone = foundCrownstone;
+        let crownstone = foundCrownstone;
         this.interrogateStone(crownstone, this.props.groupId);
       })
       .catch((err) => {
@@ -85,10 +81,9 @@ export class SetupAddPlugInStep2 extends Component {
           ]
         )
       })
-
   }
 
-  interrogateStone(crownstone, groupId) {
+  interrogateStone(crownstone) {
     this.setProgress(1);
     return crownstone.connect()
       .then(() => {
@@ -97,22 +92,21 @@ export class SetupAddPlugInStep2 extends Component {
       })
       .then((MACAddress) => {
         this.setProgress(3);
-        this.registerStone(crownstone, groupId, MACAddress);
+        this.registerStone(crownstone, MACAddress);
       })
       .catch((err) => {
-        console.log("error connecting to crownstone!", err);
         crownstone.disconnect();
         this.scanAndRegisterCrownstone()
       })
   }
 
-  registerStone(crownstone, groupId, MACAddress) {
+  registerStone(crownstone, MACAddress) {
     const {store} = this.props;
     const processSuccess = (cloudResponse) => {
       console.log("received from cloud:",cloudResponse);
       store.dispatch({
         type: "ADD_STONE",
-        groupId: groupId,
+        groupId: this.props.groupId,
         stoneId: cloudResponse.id,
         data: {
           type: 'plugin_v1',
@@ -134,14 +128,12 @@ export class SetupAddPlugInStep2 extends Component {
         Actions.pop();
       }}]);
     };
-    CLOUD.createStone(groupId, MACAddress, 'plugin_v1')
+    CLOUD.createStone(this.props.groupId, MACAddress, 'plugin_v1')
       .then(processSuccess)
       .catch((err) => {
-        console.log("here I have the error!", err)
         if (err.status === 422) {
           CLOUD.findStone(MACAddress)
             .then((foundCrownstones) => {
-              console.log("I HAVE A RESULT", foundCrownstones)
               if (foundCrownstones.length === 1) {
                 processSuccess(foundCrownstones[0]);
               }
@@ -159,15 +151,12 @@ export class SetupAddPlugInStep2 extends Component {
           processFailure();
         }
       });
-
   }
 
-  claimStone(crownstone, stoneId, attempt = 0) {
+  claimStone(crownstone, stoneId) {
     const {store} = this.props;
     const state = store.getState();
     let groupId = this.props.groupId;
-    console.log("----------------------------------------------------------------------")
-    console.log(state, this.props.groupId)
     let groupData = state.groups[groupId].config;
     let stoneData = state.groups[groupId].stones[stoneId].config;
 
@@ -191,45 +180,38 @@ export class SetupAddPlugInStep2 extends Component {
         setTimeout(() => { Actions.setupAddPluginStep3({stoneId: stoneId, groupId:this.props.groupId, fromMainMenu: this.props.fromMainMenu, BLEhandle: stoneData.bluetoothId}); }, 1800);
       })
       .catch((err) => {
-        console.log("error", err, "ATTEMPT:", attempt);
-        Alert.alert("Something went wrong.",'We will try it again.',[
-          {text:'Cancel', type:'cancel', onPress: () => {
-            this.cleanupFailedAttempt(stoneId)
-              .then(() => {
-                this.scanAndRegisterCrownstone();
-              }).done();
-          }},
+        crownstone.disconnect();
+        Alert.alert("Whoops!",'Something went wrong during pairing, we will roll back the changes so far so you can try again.',[
           {text:'OK', onPress: () => {
-            this.setProgress(4);
-            if (attempt < 3) {
-              this.claimStone(crownstone, stoneId, attempt += 1);
-            }
-            else {
-              this.cleanupFailedAttempt(stoneId)
-                .then(() => {
-                  Actions.setupAddPlugInStepRecover({groupId:this.props.groupId, stoneId: stoneId});
-                }).done();
-            }
-          }}
-        ]);
+            this.cleanupFailedAttempt(stoneId)
+              .catch((err) => {
+                this.props.eventBus.emit('hideLoading');
+                Alert.alert("Can not connect to the Cloud",'Please try again later.',[{text:'OK'}]);
+                return false;
+              })
+              .done((success) => {
+                if (success)
+                  Actions.setupAddPlugInStepRecover({groupId: this.props.groupId, fromMainMenu: this.props.fromMainMenu});
+              })
+          }}])
       })
+
   }
 
   cleanupFailedAttempt(stoneId) {
     const { store } = this.props;
-    const state = store.getState();
-
+    this.props.eventBus.emit('showLoading', 'Reverting changes...');
     return CLOUD.deleteStone(stoneId)
       .then(() => {
+        this.props.eventBus.emit('hideLoading');
         store.dispatch({
           type: "REMOVE_STONE",
           groupId: this.props.groupId,
           stoneId: stoneId,
         });
+        return true;
       })
-      .catch((err) => {
-        console.log("ERROR REMOVING STONE FROM CLOUD.")
-      });
+
   }
   
   setProgress(step) {

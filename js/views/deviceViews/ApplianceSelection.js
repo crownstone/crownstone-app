@@ -25,8 +25,15 @@ export class ApplianceSelection extends Component {
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
-    });
+      // guard against deletion of the stone
+      let state = this.props.store.getState();
+      let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+      if (stone)
+        this.forceUpdate();
+      else {
+        Actions.pop()
+      }
+    })
   }
 
   componentWillUnmount() {

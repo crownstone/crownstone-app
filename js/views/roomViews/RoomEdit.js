@@ -24,7 +24,14 @@ import { styles, colors } from '../styles'
 export class RoomEdit extends Component {
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
-      this.forceUpdate();
+      // guard against deletion of the room
+      let state = this.props.store.getState();
+      let room = state.groups[this.props.groupId].locations[this.props.locationId];
+      if (room)
+        this.forceUpdate();
+      else {
+        Actions.pop()
+      }
     })
   }
 

@@ -27,7 +27,14 @@ export class DeviceEdit extends Component {
 
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
-      this.forceUpdate();
+      // guard against deletion of the stone
+      let state = this.props.store.getState();
+      let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+      if (stone)
+        this.forceUpdate();
+      else {
+        Actions.pop()
+      }
     })
   }
 
@@ -55,7 +62,7 @@ export class DeviceEdit extends Component {
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
           Actions.applianceSelection({
-            groupId: this.props.groupId,
+            ...requiredData,
             callback: (applianceId) => {
               this.showStone = false;
               store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: applianceId}});
@@ -95,7 +102,7 @@ export class DeviceEdit extends Component {
 
     // icon picker
     items.push({label:'Icon', type: 'icon', value: appliance.config.icon, callback: () => {
-      Actions.deviceIconSelection({applianceId: applianceId, icon: appliance.config.icon, groupId: this.props.groupId})
+      Actions.deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, groupId: this.props.groupId})
     }});
 
     // unplug device

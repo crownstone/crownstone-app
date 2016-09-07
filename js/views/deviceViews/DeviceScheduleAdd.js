@@ -24,7 +24,14 @@ export class DeviceScheduleAdd extends Component {
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
+      // guard against deletion of the stone
+      let state = this.props.store.getState();
+      let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+      if (stone)
+        this.forceUpdate();
+      else {
+        Actions.pop()
+      }
     })
   }
   componentWillUnmount() {
@@ -65,20 +72,23 @@ export class DeviceScheduleAdd extends Component {
   }
 
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
-    const device  = room.stones[this.props.stoneId];
-    let scheduleItems = device.schedule;
-
-    let options = this.constructScheduleItems(store, scheduleItems);
-    return (
-      <Background image={this.props.backgrounds.menu} >
-        <ScrollView>
-          <ListEditableItems items={options.slice(0,9)}/>
-          <ListEditableItems items={options.slice(9)}/>
-        </ScrollView>
-      </Background>
-    )
+    console.log("the schedule uses an old data model.");
+    return <View />;
+    //
+    // const store   = this.props.store;
+    // const state   = store.getState();
+    // const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    // const device  = room.stones[this.props.stoneId];
+    // let scheduleItems = device.schedule;
+    //
+    // let options = this.constructScheduleItems(store, scheduleItems);
+    // return (
+    //   <Background image={this.props.backgrounds.menu} >
+    //     <ScrollView>
+    //       <ListEditableItems items={options.slice(0,9)}/>
+    //       <ListEditableItems items={options.slice(9)}/>
+    //     </ScrollView>
+    //   </Background>
+    // )
   }
 }

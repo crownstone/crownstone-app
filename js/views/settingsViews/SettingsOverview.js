@@ -28,23 +28,24 @@ export class SettingsOverview extends Component {
     let items = [];
     let totalAmountOfCrownstones = getTotalAmountOfCrownstones(state);
 
-    if (totalAmountOfCrownstones > 0) {
-      items.push({type: 'explanation', label: 'USE LOCALIZATION', below: false});
-      items.push({
-        type: 'switch', label: 'Enable Localization', value: state.app.enableLocalization,
-        callback: (newValue) => {
-          store.dispatch({
-            type: 'UPDATE_APP_STATE',
-            data: {enableLocalization: newValue}
-          })
-          NativeEventsBridge.stopListeningToLocationEvents();
-          if (newValue === true) {
-            NativeEventsBridge.startListeningToLocationEvents();
-          }
-          this.forceUpdate();
-        }
-      });
-    }
+    // TODO: restore once we have a better description for this. Also Location must be working.
+    // if (totalAmountOfCrownstones > 0) {
+    //   items.push({type: 'explanation', label: 'USE LOCALIZATION', below: false});
+    //   items.push({
+    //     type: 'switch', label: 'Enable Localization', value: state.app.enableLocalization,
+    //     callback: (newValue) => {
+    //       store.dispatch({
+    //         type: 'UPDATE_APP_STATE',
+    //         data: {enableLocalization: newValue}
+    //       })
+    //       NativeEventsBridge.stopListeningToLocationEvents();
+    //       if (newValue === true) {
+    //         NativeEventsBridge.startListeningToLocationEvents();
+    //       }
+    //       this.forceUpdate();
+    //     }
+    //   });
+    // }
 
     items.push({type:'explanation', label:'UPDATE YOUR PROFILE', below:false});
     items.push({label:'My Profile', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
@@ -76,22 +77,23 @@ export class SettingsOverview extends Component {
       }});
     }
 
-    if (state.app.activeGroup && Object.keys(state.groups[state.app.activeGroup].stones).length > 0) {
-      items.push({type: 'spacer'});
-      items.push({
-        type: 'button',
-        label: 'Turn all Crownstones on',
-        icon: <IconButton name="ios-power" size={22} button={true} style={{position: 'relative', top: 1}} color="#fff"
-                          buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
-        style: {color: colors.menuTextSelected.hex},
-        callback: () => {
-          Alert.alert("Are you sure?", "Are you sure you want to turn on every Crownstone in this Group?", [
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: () => {}}
-          ])
-        }
-      });
-    }
+    // TODO: restore once we have a better description for this. Also mesh must be working.
+    // if (state.app.activeGroup && Object.keys(state.groups[state.app.activeGroup].stones).length > 0) {
+    //   items.push({type: 'spacer'});
+    //   items.push({
+    //     type: 'button',
+    //     label: 'Turn all Crownstones on',
+    //     icon: <IconButton name="ios-power" size={22} button={true} style={{position: 'relative', top: 1}} color="#fff"
+    //                       buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+    //     style: {color: colors.menuTextSelected.hex},
+    //     callback: () => {
+    //       Alert.alert("Are you sure?", "Are you sure you want to turn on every Crownstone in this Group?", [
+    //         {text: 'Cancel', style: 'cancel'},
+    //         {text: 'OK', onPress: () => {}}
+    //       ])
+    //     }
+    //   });
+    // }
 
     items.push({type:'spacer'});
     items.push({label:'Log Out', type:'button', icon: <IconButton name="md-log-out" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.menuRed.hex}} />, callback: () => {this._logoutPopup()}});

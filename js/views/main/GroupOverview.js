@@ -53,7 +53,7 @@ export class GroupOverview extends Component {
 
 
   render() {
-    console.log("RENDERING OVERVIEW 222");
+    console.log("RENDERING OVERVIEW");
 
     return (
       <Background image={this.props.backgrounds.main} >
@@ -67,15 +67,19 @@ export class GroupOverview extends Component {
     const state = store.getState();
     this.renderState = state;
 
-    let groupsAvailable = Object.keys(state.groups).length;
-    let stonesAvailable = 0;
+    let groupIds = Object.keys(state.groups);
+    let noGroups = groupIds.length == 0;
+    let noStones = true;
     let activeGroup = state.app.activeGroup;
 
-    if (groupsAvailable > 0 && activeGroup) {
-      stonesAvailable = Object.keys(state.groups[activeGroup].stones);
-    }
+    // check if we have ANY crownstone
+    groupIds.forEach((groupId) => {
+      if (Object.keys(state.groups[groupId].stones).length > 0) {
+        noStones = false;
+      }
+    });
 
-    if (groupsAvailable == 0) {
+    if (noGroups) {
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
           <Icon name="c1-house" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
@@ -84,31 +88,29 @@ export class GroupOverview extends Component {
           </View>
       );
     }
+    else if (noStones) {
+      return (
+        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+          <Icon name="c2-pluginFront" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+          <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
+          <Text style={overviewStyles.subText}>Go into the settings to add Crownstones.</Text>
+        </View>
+      );
+    }
     else if (activeGroup) {
-      if (stonesAvailable == 0) {
-        return (
-          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Icon name="c2-pluginFront" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-            <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
-            <Text style={overviewStyles.subText}>Go into the settings to add Crownstones.</Text>
-            <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
-          </View>
-        );
-      }
-      else {
-        return (
-          <View style={{flex:1}}>
-            <RoomLayer store={store} groupId={state.app.activeGroup} />
-            <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
-          </View>
-        )
-      }
+      return (
+        <View style={{flex:1}}>
+          <RoomLayer store={store} groupId={state.app.activeGroup} />
+          <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
+        </View>
+      );
     }
     else {
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <Icon name="c1-mapPin" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+          <Icon name="c1-signpost" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
           <Text style={overviewStyles.mainText}>No Groups in range...</Text>
+          <Text style={overviewStyles.subText}>If you come in range of a group you are part of, the rooms and Crownstones will be shown automatically.</Text>
         </View>
       );
     }

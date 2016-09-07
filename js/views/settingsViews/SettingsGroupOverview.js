@@ -14,6 +14,8 @@ import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
+import { IconButton } from '../components/IconButton'
+
 
 export class SettingsGroupOverview extends Component {
   componentDidMount() {
@@ -73,22 +75,23 @@ export class SettingsGroupOverview extends Component {
       items = items.concat(guestGroups);
     }
 
-    items.push({type:'spacer'});
-    items.push({
-      label: 'Create a new Group',
-      style: {color:colors.blue.hex},
-      type: 'button',
-      callback: () => {
-        Alert.alert(
-          "Do you want to create a new Group?",
-          "Select yes if you want to setup your own Crownstones.",
-          [
-            {text:'No'},
-            {text:'Yes', onPress:() => {Actions.setupAddGroup();}}
-          ]
-        );
-      }
-    });
+    // TODO: support multiple groups.
+    if (adminGroups.length == 0) {
+      items.push({type: 'spacer'});
+      items.push({
+        label: 'Create a new Group',
+        icon: <IconButton name="ios-add-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex}}/>,
+        style: {color: colors.blue.hex},
+        type: 'button',
+        callback: () => {
+          Alert.alert(
+            "Do you want to create a new Group?",
+            "Select yes if you want to setup your own Crownstones.",
+            [{text: 'No'}, {text: 'Yes', onPress: () => {Actions.setupAddGroup();}}]
+          );
+        }
+      });
+    }
 
     // if you do not have, or are part of, any groups yet.
     if (adminGroups.length == 0 && memberGroups.length == 0 && guestGroups.length == 0)

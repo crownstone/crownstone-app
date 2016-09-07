@@ -17,6 +17,7 @@ import { getGroupContentFromState, getRoomName, getGroupsWhereIHaveAccessLevel }
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { Icon } from '../components/Icon';
+import { IconButton } from '../components/IconButton'
 
 export class SettingsCrownstoneOverview extends Component {
 
@@ -80,7 +81,8 @@ export class SettingsCrownstoneOverview extends Component {
     items.push({type:'spacer'});
     items.push({
       label: 'Recover a Crownstone',
-      style: {color:colors.blue.hex},
+      icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />,
+      style: {color:colors.menuTextSelected.hex},
       type: 'button',
       callback: () => {
         Actions.settingsPluginRecoverStep1();
