@@ -80,7 +80,11 @@ function handleUserInCloud(action, state) {
   let userId = state.user.userId;
   CLOUD.forUser(userId);
   if (action.data.picture) {
-    CLOUD.uploadProfileImage(action.data.picture).then((data) => {console.log(data)}).catch(() => {});
+    CLOUD.uploadProfileImage(action.data.picture)
+      .then((data) => {
+        console.log(data)
+      })
+      .catch(() => {});
   }
   else if (action.data.picture === null) {
     CLOUD.removeProfileImage().catch(() => {});

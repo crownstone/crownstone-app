@@ -175,18 +175,26 @@ export class SettingsProfile extends Component {
             value={this.state.picture}
             callback={(pictureUrl) => {
                 let newFilename = user.userId + '.jpg';
-                processImage(pictureUrl, newFilename).then((newPicturePath) => {
-                  this.setState({picture:newPicturePath});
-                  store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
-                  // update your settings in every group that you belong to.
-                  groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, userId: user.userId, data: {picture: newPicturePath}}); });
-                }).catch((err) => {console.log("PICTURE ERROR ",err)})
+                processImage(pictureUrl, newFilename)
+                  .then((newPicturePath) => {
+                    this.setState({picture:newPicturePath});
+                    store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
+                    // update your settings in every group that you belong to.
+                    groupIds.forEach((groupId) => {
+                      store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, userId: user.userId, data: {picture: newPicturePath}});
+                    });
+                  })
+                  .catch((err) => {
+                    console.log("PICTURE ERROR ",err)
+                  })
               }} 
             removePicture={() => {
               safeDeleteFile(this.state.picture);
               store.dispatch({type:'USER_UPDATE', data:{picture:null}});
               // update your settings in every group that you belong to.
-              groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, userId: user.userId, data:{picture: null}}); });
+              groupIds.forEach((groupId) => {
+                store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, userId: user.userId, data:{picture: null}});
+              });
               this.setState({picture:null});
             }}
             size={120} />
