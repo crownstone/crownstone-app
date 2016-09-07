@@ -61,8 +61,10 @@ export class RoomEdit extends Component {
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView>
+
           <Explanation text='AVAILABLE DEVICES'/>
           <SeparatedItemList items={items} renderer={this._renderer.bind(this)} separatorIndent={false} />
+          <Explanation text='Room name and Icon are changed through the settings. Click on the cog icon in the tab bar below to go to the settings.'/>
         </ScrollView>
       </Background>
     )

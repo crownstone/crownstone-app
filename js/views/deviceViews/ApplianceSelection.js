@@ -13,7 +13,7 @@ import {
 import { Background } from './../components/Background'
 import { DeviceOverview } from '../components/DeviceOverview'
 import { ListEditableItems } from './../components/ListEditableItems'
-import Swipeout from 'react-native-swipeout'
+import { Swipeout } from '../../external/swipeout/Swipeout'
 import { CLOUD } from '../../cloud/cloudAPI'
 
 var Actions = require('react-native-router-flux').Actions;
