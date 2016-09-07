@@ -27,7 +27,17 @@ export class TextEditInput extends Component {
     }
   }
 
+  componentDidMount() {
+    if (this.props.textFieldRegistration) {
+      this.props.textFieldRegistration(this.refName, this.refs[this.refName]);
+    }
+  }
+
   focus() {
+    if (this.props.currentFocus) {
+      this.props.currentFocus(this.refName);
+    }
+
     this.isInFocus = true;
     this.blurred = false;
     this.refs[this.refName].measure((fx, fy, width, height, px, py) => {
@@ -45,6 +55,7 @@ export class TextEditInput extends Component {
         this.props.__validate(this.state.value);
       }
       this.props.callback(this.state.value);
+
       eventBus.emit("blur");
     }
   }
@@ -63,6 +74,7 @@ export class TextEditInput extends Component {
         onChangeText={(newValue) => {this.setState({value:newValue})}}
         keyboardType={this.props.keyboardType}
         onEndEditing={() => {this.blur();}}
+        onSubmitEditing={() => {this.blur(); if (this.props.nextFunction) { this.props.nextFunction(); }}}
       />
     );
   }

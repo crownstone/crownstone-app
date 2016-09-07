@@ -24,6 +24,7 @@ import { emailFromRegistration } from './emailMemory'
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must not be empty.';
 let passwordStateConflict = 'Passwords do not match.';
+let passwordStateOK = '';
 
 export class Register extends Component {
   constructor() {
@@ -60,6 +61,9 @@ export class Register extends Component {
     switch (validationState) {
       case 'errorNoMatch':
         setText(passwordStateConflict);
+        break;
+      case 'valid':
+        setText(passwordStateOK);
         break;
       case 'errorTooShort':
       default:
@@ -100,15 +104,6 @@ export class Register extends Component {
         alwaysShowState: this.state.alwaysShowState,
         callback: (newValue) => {this.setState({password: newValue})}
       },
-      // {
-      //   label: 'Password',
-      //   type: 'textEdit',
-      //   secureTextEntry: true,
-      //   placeholder: 'Verification',
-      //   value: this.state.passwordVerification.value,
-      //   stateChange: (newState) => {this.inputStates.password = newState},
-      //   callback: (newValue) => {this.setState({passwordVerification: {value:newValue, state: this.setPasswordExplanation(newValue,2)}})}
-      // },
       {
         label: this.state.passwordExplanation,
         style: {paddingBottom: 0},
@@ -200,15 +195,15 @@ export class Register extends Component {
     }
     else {
       if (this.inputStates.email !== 'valid')
-        Alert.alert("Invalid Email Address", "Please double check the supplied email address", [{text:'OK'}]);
+        Alert.alert("Invalid Email Address", "Please double check the supplied email address.", [{text:'OK'}]);
       else if (this.inputStates.password === 'errorNoMatch')
         Alert.alert("Check the Verification Password.", passwordStateConflict, [{text:'OK'}]);
       else if (this.inputStates.password !== 'valid')
         Alert.alert("Invalid Password", passwordStateNeutral, [{text:'OK'}]);
       else if (this.inputStates.firstName !== 'valid')
-        Alert.alert("You Must Enter a First Name.", 'Without numbers.', [{text:'OK'}]);
-      else if (this.inputStates.firstName !== 'valid')
-        Alert.alert("You Must Enter a Last Name.", 'Without numbers.', [{text:'OK'}]);
+        Alert.alert("You Must Enter a First Name.", 'Without numbers and at least 2 letters.', [{text:'OK'}]);
+      else if (this.inputStates.lastName !== 'valid')
+        Alert.alert("You Must Enter a Last Name.", 'Without numbers and at least 2 letters.', [{text:'OK'}]);
     }
   }
 

@@ -10,9 +10,35 @@ import { Separator } from '../components/Separator'
 
 
 export class SeparatedItemList extends Component {
-  render() {
+  constructor() {
+    super();
+    this.textFields = [];
+    this.textFieldMap = {};
+    this.index = 0;
+  }
+
+  _focusOnNextField() {
+    this.index += 1;
+    if (this.index < this.textFields.length) {
+      this.textFields[this.index].focus();
+    }
+  }
+
+  _getItems() {
     let items = this.props.items;
     let renderItems = [];
+
+    let textFieldRegistration = (key,ref) => {
+      this.textFieldMap[key] = this.textFields.length;
+      this.textFields.push(ref);
+    };
+    let nextFunction = () => {
+      this._focusOnNextField();
+    };
+    let currentFocus = (key) => {
+      this.index = this.textFieldMap[key];
+    };
+
 
     let indentSeparator = this.props.separatorIndent === true;
     let isEditableItem = (item) => {return !(item.type === 'spacer' || item.type === 'explanation')};
@@ -30,7 +56,7 @@ export class SeparatedItemList extends Component {
         renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} />);
       }
 
-      renderItems.push(this.props.renderer(item, index, itemId));
+      renderItems.push(this.props.renderer(item, index, itemId, textFieldRegistration, nextFunction, currentFocus));
 
       if (nextItem === undefined) {
         if (isItemEditable) {
@@ -39,11 +65,11 @@ export class SeparatedItemList extends Component {
       }
     };
 
-    
+
     if (Array.isArray(items)) {
       if (items.length == 0)
         renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} />);
-      
+
       items.forEach((item, index) => {
         iterator(
           (index === 0 ? undefined : items[index-1]),
@@ -72,7 +98,10 @@ export class SeparatedItemList extends Component {
       return <Text>UNKNOWN TYPE</Text>
     }
 
+    return renderItems;
+  }
 
-    return <View>{renderItems}</View>
+  render() {
+    return <View>{this._getItems()}</View>
   }
 }

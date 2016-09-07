@@ -34,15 +34,15 @@ export class TextEditBar extends Component {
 
   validateCustom(value, customRules = this.props.validation) {
     // check length
-    if (customRules.minLength !== undefined && value.length < customRules.minLength)
+    if (customRules.minLength  !== undefined && value.length < customRules.minLength)
       return 'errorTooShort';
-    if (customRules.maxLength !== undefined && value.length > customRules.maxLength)
+    if (customRules.maxLength  !== undefined && value.length > customRules.maxLength)
       return 'errorTooLong';
 
     // check content
-    if (customRules.numbers   !== undefined && customRules.numbers.allowed === false && numberChecker(value) === true)
+    if (customRules.numbers    !== undefined && customRules.numbers.allowed === false && numberChecker(value) === true)
       return 'errorNumber';
-    if (customRules.numbers   !== undefined && customRules.numbers.mandatory === true && numberChecker(value) === false)
+    if (customRules.numbers    !== undefined && customRules.numbers.mandatory === true && numberChecker(value) === false)
       return 'errorNoNumber';
     if (customRules.characters !== undefined && customRules.characters.allowed === false && characterChecker(value) === true)
       return 'errorCharacter';
