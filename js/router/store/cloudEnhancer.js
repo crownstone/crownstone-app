@@ -1,15 +1,16 @@
 import { CLOUD } from '../../cloud/cloudAPI'
 import { getMyLevelInGroup } from '../../util/dataUtil'
 import { BATCH } from './storeManager'
+import { LOG } from '../../logging/Log'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    console.log('will dispatch', action);
+    LOG('will dispatch', action);
 
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
 
-    console.log("new state:", getState())
+    LOG("new state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, getState);
@@ -82,7 +83,7 @@ function handleUserInCloud(action, state) {
   if (action.data.picture) {
     CLOUD.uploadProfileImage(action.data.picture)
       .then((data) => {
-        console.log(data)
+        LOG(data)
       })
       .catch(() => {});
   }

@@ -16,6 +16,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getMyLevelInGroup } from '../../util/dataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'
+import { LOG } from '../../logging/Log'
 
 export class SettingsGroupInvite extends Component {
   constructor() {
@@ -84,7 +85,7 @@ export class SettingsGroupInvite extends Component {
   }
 
   validateAndContinue() {
-    console.log("HAPPY DAYS!", this.state, this.inputStates)
+    LOG("HAPPY DAYS!", this.state, this.inputStates)
   }
 
   render() {

@@ -10,7 +10,6 @@ import {
   View
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
-
 import { CLOUD } from '../../cloud/cloudAPI'
 import { logOut } from '../../util/util';
 import { TopBar } from '../components/Topbar';
@@ -18,6 +17,7 @@ import { TextEditInput } from '../components/editComponents/TextEditInput'
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
+import { LOG } from '../../logging/Log'
 
 export class SetupAddGroup extends Component {
   constructor() {
@@ -46,7 +46,7 @@ export class SetupAddGroup extends Component {
           CLOUD.getKeys()
             .then((keyResult) => {
               if (Array.isArray(keyResult)) {
-                console.log(keyResult);
+                LOG(keyResult);
                 keyResult.forEach((keySet) => {
                   creationActions.push({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
                     adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
@@ -77,12 +77,12 @@ export class SetupAddGroup extends Component {
                 Alert.alert("Group '" + this.state.groupName + "' already exists.","Please try a different name.", [{text:'OK'}]);
                 break;
               default:
-                console.log(err);
+                LOG(err);
                 Alert.alert("Could not connect to the cloud service.","Please check if you're connected to the internet.", [{text:'OK'}]);
             }
           }
           else {
-            console.log(err);
+            LOG(err);
             Alert.alert("Error when creating group.",JSON.stringify(err), [{text:'OK..'}]);
           }
 

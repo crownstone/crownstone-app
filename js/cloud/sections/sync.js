@@ -1,5 +1,5 @@
 import { CLOUD } from '../cloudAPI'
-
+import { LOG } from '../../logging/Log'
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -17,7 +17,7 @@ export const sync = {
         let deletedGroup = syncCleanupLocal(store, state, actions, cloudData);
         syncKeys(actions, data.keys);
 
-        console.log("SYNC Dispatching ", actions.length, " actions!");
+        LOG("SYNC Dispatching ", actions.length, " actions!");
         actions.forEach((action) => {
           action.triggeredBySync = true;
         });

@@ -22,6 +22,17 @@ import { userInGroups, userIsAdmin, getGroupName } from '../../util/dataUtil'
 
 export class SettingsOverview extends Component {
 
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+      this.forceUpdate();
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
@@ -127,7 +138,7 @@ export class SettingsOverview extends Component {
   _logoutPopup() {
     Alert.alert('Log out','Are you sure?',[
       {text: 'Cancel', style: 'cancel'},
-      {text: 'OK', onPress: () => {logOut(this.props.eventBus)}}
+      {text: 'OK', onPress: () => {logOut()}}
     ])
   }
 

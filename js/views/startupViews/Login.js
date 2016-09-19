@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 var md5 = require('md5');
+import { LOG } from '../../logging/Log'
 import { emailFromRegistration } from './emailMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
@@ -70,6 +71,11 @@ export class Login extends Component {
   }
 
   attemptLogin() {
+    if (this.state.email === '' || this.state.password === '') {
+      Alert.alert('Almost there!','Please input your email and password.', [{text: 'OK'}]);
+      return;
+    }
+
     this.props.eventBus.emit('showLoading', 'Logging in...');
     let unverifiedEmailCallback = () => {
       Alert.alert('Your email address has not been verified', 'Please click on the link in the email that was sent to you. If you did not receive an email, press Resend Email to try again.', [
@@ -86,15 +92,27 @@ export class Login extends Component {
       onUnverified: unverifiedEmailCallback,
       onInvalidCredentials: invalidLoginCallback,
     })
-      .then((response) => {return new Promise((resolve, reject) => {
+      .then((response) => {
+        return new Promise((resolve, reject) => {
         // start the login process from the store manager.
         StoreManager.userLogIn(response.userId)
           .then(() => {
             resolve(response);
           }).catch((err) => {reject(err)})
-      })})
-      .then((response) => {this.finalizeLogin(response.id, response.userId);})
-      .done()
+        })
+      })
+      .catch((err) => {
+        Alert.alert(
+          "Connection Problem",
+          "Could not connect to the Cloud. Please check your internet connection.",
+          [{text:'OK', onPress: () => { eventBus.emit('hideLoading'); }}]
+        );
+        return false;
+      })
+      .done((response) => {
+        if (response === false) {return;}
+        this.finalizeLogin(response.id, response.userId);
+      })
   }
 
   _getLoginButton() {
@@ -166,7 +184,7 @@ export class Login extends Component {
       
       let handleFiles = (files) => {
         files.forEach((file) => {
-          console.log("handling file")
+          LOG("handling file")
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;
@@ -232,7 +250,7 @@ export class Login extends Component {
 
     // check if we need to upload a picture that has been set aside during the registration process.
     let imageFilename = getImageFileFromUser(this.state.email);
-    console.log("IMAGE FILENAME AT LOGIN", imageFilename)
+    LOG("IMAGE FILENAME AT LOGIN", imageFilename)
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {
         if (picturePath === null)

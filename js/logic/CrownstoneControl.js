@@ -1,6 +1,7 @@
 import { getRoomContentFromState } from '../util/dataUtil'
 import { NativeEventsBridge } from '../native/NativeEventsBridge'
 import { CROWNSTONE_SERVICEDATA_UUID } from '../ExternalConfig'
+import { LOG } from '../logging/Log'
 
 // export const reactToEnterRoom = function(store, locationId) {
 //   checkBehaviour(store, locationId, 'onRoomEnter');
@@ -17,7 +18,7 @@ import { CROWNSTONE_SERVICEDATA_UUID } from '../ExternalConfig'
 //   const location = locations[locationId];
 //
 //   if (location === undefined) {
-//     console.log("COULD NOT GET LOCATION", locationId);
+//     LOG("COULD NOT GET LOCATION", locationId);
 //     return;
 //   }
 //   const userId = state.user.userId;
@@ -40,7 +41,7 @@ import { CROWNSTONE_SERVICEDATA_UUID } from '../ExternalConfig'
 //     // });
 //     // add user to rooms
 //     if (locations[locationId].presentUsers.indexOf(userId) === -1) {
-//       console.log("dispatching user enter event in", activeGroup, locationId, userId);
+//       LOG("dispatching user enter event in", activeGroup, locationId, userId);
 //       store.dispatch({type:"USER_ENTER", groupId: activeGroup, locationId: locationId, data:{userId: userId}})
 //     }
 //   }
@@ -51,7 +52,7 @@ import { CROWNSTONE_SERVICEDATA_UUID } from '../ExternalConfig'
 //     let device = devices[stoneId].device;
 //     let stone = devices[stoneId].stone;
 //     let behaviour = device.behaviour[type];
-//     //console.log("switching to ",behaviour, devices, stoneId)
+//     //LOG("switching to ",behaviour, devices, stoneId)
 //     if (behaviour.active === true) {
 //     //if (behaviour.active === true && behaviour.state !== stone.state.state) {
 //       let bleState = behaviour.state;
@@ -126,7 +127,7 @@ class AdvertisementManagerClass {
         meanClean = mean;
       }
       else {
-        // console.log("no data without outliers, not using filtered data", mean, std)
+        // LOG("no data without outliers, not using filtered data", mean, std)
       }
 
       return {mean: Math.round(mean), debug: {data:JSON.stringify(stone.data), cleanData:JSON.stringify(dataWithoutOutliers), meanDirty: meanDirty, meanClean: meanClean, std: std, dirtyCount: stone.data.length, cleanCount:dataWithoutOutliers.length}};
@@ -194,7 +195,7 @@ export const processScanResponse = function(store, packet = {}) {
 
     // self repairing mechanism for crownstones with updated or lost uuid.
     if (stone.config.uuid !== packet.id) {
-      console.log("RESTORING ID FOR ", stoneId , " TO ", packet.id);
+      LOG("RESTORING ID FOR ", stoneId , " TO ", packet.id);
       store.dispatch({
         type: "UPDATE_STONE_CONFIG",
         groupId: activeGroup,
@@ -216,11 +217,11 @@ export const processScanResponse = function(store, packet = {}) {
       powerUsage = 0;
     }
 
-    // console.log("GOT FROM BLE", locationName, serviceData);
+    // LOG("GOT FROM BLE", locationName, serviceData);
 
     // abide by the update time.
     // if (Math.round(stone.state.state * 255) !== serviceData.switchState) {
-    //   console.log("SETTING SWITCH STATE for state", stone.state.state, serviceData, " in: ", locationName);
+    //   LOG("SETTING SWITCH STATE for state", stone.state.state, serviceData, " in: ", locationName);
     //   store.dispatch({
     //     type: "UPDATE_STONE_STATE",
     //     groupId: activeGroup,
@@ -229,7 +230,7 @@ export const processScanResponse = function(store, packet = {}) {
     //   })
     // }
     // else if (Math.abs(powerUsage - powerUsage) > 1) {
-    //   console.log("SETTING SWITCH STATE for power", powerUsage - serviceData.powerUsage, powerUsage, " in: ", locationName);
+    //   LOG("SETTING SWITCH STATE for power", powerUsage - serviceData.powerUsage, powerUsage, " in: ", locationName);
     //   store.dispatch({
     //     type: "UPDATE_STONE_STATE",
     //     groupId: activeGroup,
@@ -239,7 +240,7 @@ export const processScanResponse = function(store, packet = {}) {
     // }
 
     if (stone.state.state !== serviceData.switchState) {
-        // console.log("SETTING SWITCH STATE due to cs:",packet.name," for state", stone.state.state, serviceData, " in: ", locationName);
+        // LOG("SETTING SWITCH STATE due to cs:",packet.name," for state", stone.state.state, serviceData, " in: ", locationName);
         store.dispatch({
           type: "UPDATE_STONE_STATE",
           groupId: activeGroup,
@@ -248,7 +249,7 @@ export const processScanResponse = function(store, packet = {}) {
         })
       }
       else if (Math.abs(powerUsage - currentUsage) > 2) {
-        console.log("SETTING POWER USAGE due to cs:",packet.name ," for power diff:", powerUsage - currentUsage, " from current: ", currentUsage, "measured:",powerUsage,"raw:",rawPowerUsage,"data:",powerUsageFull, "in: ", locationName);
+        LOG("SETTING POWER USAGE due to cs:",packet.name ," for power diff:", powerUsage - currentUsage, " from current: ", currentUsage, "measured:",powerUsage,"raw:",rawPowerUsage,"data:",powerUsageFull, "in: ", locationName);
         store.dispatch({
           type: "UPDATE_STONE_STATE",
           groupId: activeGroup,

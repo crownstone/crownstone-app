@@ -1,4 +1,5 @@
 import RNFS from 'react-native-fs'
+import { LOG } from '../../logging/Log'
 
 export const groups = {
 
@@ -97,7 +98,7 @@ export const groups = {
     );
 
     return Promise.all(promises).then(() => {
-      console.log("returning all")
+      LOG("returning all")
       return {
         appliances: applianceData,
         stones:     stoneData,
@@ -173,22 +174,33 @@ export const groups = {
         })
     );
 
-    return Promise.all(promises).then(() => {
-      let deletePromises = [];
-      applianceData.forEach((appliance) => {
-        deletePromises.push(this.deleteAppliance(appliance.id));
-      });
+    return Promise.all(promises)
+      .then(() => {
+        let deletePromises = [];
+        applianceData.forEach((appliance) => {
+          deletePromises.push(this.deleteAppliance(appliance.id));
+        });
 
-      stoneData.forEach((stone) => {
-        deletePromises.push(this.deleteStone(stone.id));
-      });
+        stoneData.forEach((stone) => {
+          deletePromises.push(this.deleteStone(stone.id));
+        });
 
-      locationData.forEach((location) => {
-        deletePromises.push(this.deleteLocation(location.id));
-      });
+        locationData.forEach((location) => {
+          deletePromises.push(this.deleteLocation(location.id));
+        });
 
-      return Promise.all(deletePromises);
-    })
+        return Promise.all(deletePromises);
+      })
+      .then(() => {
+        return this._deleteGroup(groupId);
+      })
+  },
+
+  _deleteGroup: function(groupId) {
+    return this._setupRequest(
+      'DELETE',
+      'Groups/' + groupId
+    );
   },
 
 };

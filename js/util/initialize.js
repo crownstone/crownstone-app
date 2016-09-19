@@ -13,16 +13,22 @@ export const INITIALIZER = {
   start: function(store, eventBus) {
     if (this.started === false) {
 
-      console.log("STARTING")
+
       // subscribe to iBeacons when required.
       CLOUD.events.on('CloudSyncComplete_groupsChanged', () => {LocalizationUtil.trackGroups(store);});
       eventBus.on(    'appStarted',                      () => {LocalizationUtil.trackGroups(store);});
       eventBus.on(    'groupCreated',                    () => {LocalizationUtil.trackGroups(store);});
 
       // configure the CLOUD network handler.
-      CLOUD.setNetworkErrorHandler((error) => {
-        Alert.alert("Connection Problem", "Could not connect to the Cloud. Please check your internet connection.",[{text:'OK'}]);
-      });
+      let handler = function(error) {
+        Alert.alert(
+          "Connection Problem",
+          "Could not connect to the Cloud. Please check your internet connection.",
+          [{text: 'OK', onPress: () => {eventBus.emit('hideLoading');}}]
+        );
+      };
+
+      CLOUD.setNetworkErrorHandler(handler);
       this.started = true;
     }
   }

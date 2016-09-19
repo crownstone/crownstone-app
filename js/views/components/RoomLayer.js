@@ -17,7 +17,7 @@ import { RoomCircle } from './RoomCircle'
 import { getOrphanedStones, getAmountOfStonesInLocation } from '../../util/dataUtil'
 
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-
+import { LOG } from '../../logging/Log'
 
 
 
@@ -99,7 +99,7 @@ export class RoomLayer extends Component {
 
   // experiment
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("Should component update?",nextProps, nextState);
+    LOG("Should component update?",nextProps, nextState);
     return false
   }
 
@@ -190,7 +190,7 @@ export class RoomLayer extends Component {
     const state = store.getState();
     this.renderState = state;
 
-    console.log("rendering room layer");
+    LOG("rendering room layer");
 
     return (
       <View>

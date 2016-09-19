@@ -125,7 +125,7 @@ export class PresentUsers extends Component {
 
   // experiment
   shouldComponentUpdate(nextProps, nextState) {
-    // console.log("Should component update?",nextProps, nextState)
+    // LOG("Should component update?",nextProps, nextState)
     return false
   }
 

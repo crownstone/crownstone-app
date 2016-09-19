@@ -2,6 +2,7 @@ import { request, download } from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/util'
 import { EventBus } from '../../util/eventBus'
+import { LOG } from '../../logging/Log'
 
 let defaultHeaders = {
   'Accept': 'application/json',
@@ -69,7 +70,7 @@ export const base = {
       this._networkErrorHandler(error);
     }
     if (DEBUG === true) {
-      console.error(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
+      LOG(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
     }
   },
 
@@ -111,7 +112,7 @@ export const base = {
   _finalizeRequest: function(promise, options) {
     return new Promise((resolve, reject) => {
       promise.then((reply) => {
-        console.log("REPLY")
+        LOG("REPLY")
         if (reply.status === 200 || reply.status === 204)
           resolve(reply.data);
         else
@@ -141,7 +142,7 @@ export const base = {
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
-      console.log("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
+      LOG("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
     }
     reject(reply);
   }

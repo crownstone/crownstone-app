@@ -3,6 +3,7 @@ import {
   Animated,
   View
 } from 'react-native';
+import { LOG } from '../../../logging/Log'
 
 export class FadeInView extends Component {
   constructor(props) {
@@ -18,7 +19,7 @@ export class FadeInView extends Component {
       if (nextProps.visible === true) {
         this.setState({show: true});
         setTimeout(() => {
-          console.log("starting animation");
+          LOG("starting animation");
           Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || defaultDuration}).start();
         },0);
       }

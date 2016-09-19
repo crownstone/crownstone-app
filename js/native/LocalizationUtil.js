@@ -1,5 +1,6 @@
 import { NativeEventsBridge } from './NativeEventsBridge'
 import { Bluenet, NativeEvents, BleActions } from './Proxy';
+import { LOG } from '../logging/Log'
 
 class FingerprintManagerClass {
   constructor() {
@@ -32,7 +33,7 @@ class FingerprintManagerClass {
             callback(data);
           }
           else {
-            console.log("DATA NOT AN ARRAY:", iBeaconAdvertisement)
+            LOG("DATA NOT AN ARRAY:", iBeaconAdvertisement)
           }
         }
       );
@@ -117,7 +118,7 @@ export const LocalizationUtil = {
           // track the group beacon UUID
           Bluenet.trackIBeacon(groupIBeaconUUID, groupId);
 
-          console.log("-------------- SETUP TRACKING FOR ", groupIBeaconUUID);
+          LOG("-------------- SETUP TRACKING FOR ", groupIBeaconUUID);
 
           let locations = state.groups[groupId].locations;
           let locationIds = Object.keys(locations);

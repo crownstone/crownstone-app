@@ -15,7 +15,7 @@ import { EditSpacer }        from '../components/editComponents/EditSpacer'
 var Actions = require('react-native-router-flux').Actions;
 
 import { styles, colors} from '../styles'
-
+import { LOG } from '../../logging/Log'
 
 export class DeviceScheduleStateEdit extends Component {
   componentDidMount() {
@@ -76,7 +76,7 @@ export class DeviceScheduleStateEdit extends Component {
   }
 
   render() {
-    console.log("the schedule uses an old data model.");
+    LOG("the schedule uses an old data model.");
     return <View />;
     // const store   = this.props.store;
     // const state   = store.getState();

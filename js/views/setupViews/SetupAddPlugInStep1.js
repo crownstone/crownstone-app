@@ -16,10 +16,11 @@ import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
+import { LOG } from '../../logging/Log'
 
 export class SetupAddPlugInStep1 extends Component {
   render() {
-    console.log("ENTERING ADDING CROWNSTONE INTERFACE WITH GROUP : ", this.props.groupId);
+    LOG("ENTERING ADDING CROWNSTONE INTERFACE WITH GROUP : ", this.props.groupId);
     let imageSize = 0.35;
     return (
       <Background hideInterface={true} image={this.props.backgrounds.setup}>

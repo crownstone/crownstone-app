@@ -18,7 +18,7 @@ import { styles, colors } from './../styles';
 import { getMyLevelInGroup, getGroupContentFromState } from '../../util/dataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
-
+import { LOG } from '../../logging/Log'
 
 export class SettingsGroup extends Component {
   constructor() {
@@ -46,7 +46,7 @@ export class SettingsGroup extends Component {
     for (let userId in users) {
       if (users.hasOwnProperty(userId)) {
         if (users[userId].accessLevel == accessLevel) {
-          console.log("SHOWING USER IN GROUP", users, users[userId]);
+          LOG("SHOWING USER IN GROUP", users, users[userId]);
           result.push({
             label:users[userId].firstName + " " + users[userId].lastName,
             type: userId === state.user.userId ? 'info' : 'navigation',

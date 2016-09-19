@@ -5,6 +5,7 @@ import { CloudEnhancer }                   from './cloudEnhancer'
 import { fakeStore }                       from './overrideStore'
 import { eventBus }                        from '../../util/eventBus'
 import { OVERRIDE_DATABASE }               from '../../ExternalConfig'
+import { LOG }                             from '../../logging/Log'
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
@@ -76,14 +77,14 @@ class StoreManagerClass {
     //   let data = JSON.parse(initialState);
     //   if (data.user && data.user.firstName === undefined) {
     //     if (OVERRIDE_DATABASE === true) {
-    //       console.log("INJECTING FAKE DATA");
+    //       LOG("INJECTING FAKE DATA");
     //       this.store = createStore(CrownstoneReducer, fakeStore);
     //     }
     //   }
     // }
     // else {
     //   if (OVERRIDE_DATABASE === true) {
-    //     console.log("INJECTING FAKE DATA");
+    //     LOG("INJECTING FAKE DATA");
     //     this.store = createStore(CrownstoneReducer, fakeStore);
     //   }
     // }
@@ -105,7 +106,7 @@ class StoreManagerClass {
       this.store.batchDispatch = batchActions;
     }
     else {
-      console.log("Creating an empty database");
+      LOG("Creating an empty database");
       this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer));
       this.store.batchDispatch = batchActions;
     }

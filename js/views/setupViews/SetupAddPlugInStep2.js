@@ -19,7 +19,7 @@ import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
-
+import { LOG } from '../../logging/Log'
 
 export class SetupAddPlugInStep2 extends Component {
   constructor() {
@@ -71,7 +71,7 @@ export class SetupAddPlugInStep2 extends Component {
         this.interrogateStone(crownstone, this.props.groupId);
       })
       .catch((err) => {
-        console.log("error in looking for setup crownstone:",err);
+        LOG("error in looking for setup crownstone:",err);
         Alert.alert("Nothing Found",
           "We can not find a Crownstone in setup mode. " +
           "If you are near a Crownstone, please plug it in and out of the power socket and hold your phone close.",
@@ -103,7 +103,7 @@ export class SetupAddPlugInStep2 extends Component {
   registerStone(crownstone, MACAddress) {
     const {store} = this.props;
     const processSuccess = (cloudResponse) => {
-      console.log("received from cloud:",cloudResponse);
+      LOG("received from cloud:",cloudResponse);
       store.dispatch({
         type: "ADD_STONE",
         groupId: this.props.groupId,
@@ -142,12 +142,12 @@ export class SetupAddPlugInStep2 extends Component {
               }
             })
             .catch((err) => {
-              console.log("CONNECTION ERROR:",err);
+              LOG("CONNECTION ERROR:",err);
               processFailure();
             })
         }
         else {
-          console.log("CONNECTION ERROR:",err);
+          LOG("CONNECTION ERROR:",err);
           processFailure();
         }
       });

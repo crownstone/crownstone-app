@@ -15,7 +15,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { Background } from '../components/Background'
 import { Icon } from '../components/Icon'
 import { RoomLayer } from '../components/RoomLayer'
-
+import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 
 
@@ -35,7 +35,7 @@ export class GroupOverview extends Component {
       const state = store.getState();
 
       if (this.renderState.app.activeGroup !== state.app.activeGroup) {
-        console.log("triggering rerender of group overview");
+        LOG("triggering rerender of group overview");
         this.forceUpdate();
       }
     });
@@ -47,13 +47,13 @@ export class GroupOverview extends Component {
 
   // experiment
   // shouldComponentUpdate(nextProps, nextState) {
-  //   // console.log("Should component update?",nextProps, nextState)
+  //   // LOG("Should component update?",nextProps, nextState)
   //   return false
   // }
 
 
   render() {
-    console.log("RENDERING OVERVIEW");
+    LOG("RENDERING OVERVIEW");
 
     return (
       <Background image={this.props.backgrounds.main} >

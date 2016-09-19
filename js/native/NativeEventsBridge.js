@@ -3,7 +3,7 @@ import { NativeModules, NativeAppEventEmitter } from 'react-native';
 import { reactToEnterRoom, reactToExitRoom, processScanResponse } from '../logic/CrownstoneControl'
 import { BlePromiseManager } from '../logic/BlePromiseManager'
 import { EventBus } from '../util/eventBus'
-
+import { LOG } from '../logging/Log'
 
 
 class NativeEventsClass {
@@ -27,7 +27,7 @@ class NativeEventsClass {
   }
 
   loadStore(store) {
-    console.log('LOADED STORE NativeEventsClass', this.initialized);
+    LOG('LOADED STORE NativeEventsClass', this.initialized);
     if (this.initialized === false) {
       this.initialized = true;
       this.store = store;
@@ -94,7 +94,7 @@ class NativeEventsClass {
           enterGroup,
           (groupId) => {
             let state = this.store.getState();
-            console.log("ENTER GROUP");
+            LOG("ENTER GROUP");
             // TODO: move to localization util or something
             if (state.groups[groupId] !== undefined) {
               // prepare the settings for this group and pass them onto bluenet
@@ -105,10 +105,10 @@ class NativeEventsClass {
                 guestKey : state.groups[groupId].config.guestKey,
               };
 
-              console.log("Set Settings.", bluenetSettings)
+              LOG("Set Settings.", bluenetSettings)
               return BleActions.setSettings(JSON.stringify(bluenetSettings))
                 .then(() => {
-                  console.log("Setting Active Group")
+                  LOG("Setting Active Group")
                   this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: groupId}});
                   this.locationEvents.emit(enterGroup, groupId);
                 })
@@ -122,7 +122,7 @@ class NativeEventsClass {
         this.subscriptions[exitGroup] = NativeAppEventEmitter.addListener(
           exitGroup,
           (groupId) => {
-            console.log("EXIT GROUP")
+            LOG("EXIT GROUP")
             this.locationEvents.emit(exitGroup, groupId);
             // TODO: move to localization util or something
             this.store.dispatch({type: 'CLEAR_ACTIVE_GROUP'});
@@ -174,7 +174,7 @@ class NativeEventsClass {
       }
     }
     else {
-      console.log("LOCALIZATION IS DISABLED IN THE SETTINGS")
+      LOG("LOCALIZATION IS DISABLED IN THE SETTINGS")
     }
   }
 

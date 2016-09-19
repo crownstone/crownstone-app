@@ -15,6 +15,7 @@ import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { logOut, processImage, safeDeleteFile } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
+import { LOG } from '../../logging/Log'
 import { styles, colors, width } from './../styles'
 import RNFS from 'react-native-fs'
 
@@ -43,7 +44,7 @@ export class SettingsProfile extends Component {
       const state = store.getState();
       if (this.renderState && this.renderState.user != state.user) {
         this.renderState = state;
-        // console.log("Force Update Profile", this.renderState.user, state.user)
+        // LOG("Force Update Profile", this.renderState.user, state.user)
         this.forceUpdate();
       }
     })
@@ -185,7 +186,7 @@ export class SettingsProfile extends Component {
                     });
                   })
                   .catch((err) => {
-                    console.log("PICTURE ERROR ",err)
+                    LOG("PICTURE ERROR ",err)
                   })
               }} 
             removePicture={() => {

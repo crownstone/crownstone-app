@@ -17,6 +17,7 @@ import { StoreManager }           from './store/storeManager'
 import { NativeEventsBridge }           from '../native/NativeEventsBridge'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
+import { LOG }                    from '../logging/Log'
 import { INITIALIZER }            from '../util/initialize'
 import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
@@ -64,7 +65,7 @@ export class AppRouter extends Component {
       NativeEventsBridge.loadStore(store);
       AdvertisementManager.loadStore(store);
 
-      console.log("LOADED STORES")
+      LOG("LOADED STORES")
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
 
@@ -75,10 +76,10 @@ export class AppRouter extends Component {
         CLOUD.setAccess(state.user.accessToken);
       //   CLOUD.getUserData({background:true})
       //     .then((reply) => {
-      //       console.log("received verification", reply)
+      //       LOG("received verification", reply)
       //     })
       //     .catch((reply) => {
-      //       console.log("received ERROR", reply);
+      //       LOG("received ERROR", reply);
       //       if (reply.status === 401) {
       //         logOut();
       //         Alert.alert("Please log in again.", undefined, [{text:'OK'}])
