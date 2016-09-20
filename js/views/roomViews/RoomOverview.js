@@ -70,7 +70,7 @@ export class RoomOverview extends Component {
               if (switchState === 0) {
                 data.currentUsage = 0;
               }
-              let proxy = BLEutil.getProxy(item.stone.config.bluetoothId);
+              let proxy = BLEutil.getProxy(item.stone.config.handle);
               proxy.perform(BleActions.setSwitchState, switchState)
                 .then(() => {
                   this.props.store.dispatch({

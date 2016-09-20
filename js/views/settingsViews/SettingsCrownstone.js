@@ -129,7 +129,7 @@ export class SettingsCrownstone extends Component {
 
   _removeCrownstone(stone) {
     return new Promise((resolve, reject) => {
-      BLEutil.detectCrownstone(stone.config.bluetoothId)
+      BLEutil.detectCrownstone(stone.config.handle)
         .then((isInSetupMode) => {
           // if this crownstone is broadcasting but in setup mode, we only remove it from the cloud.
           if (isInSetupMode === true) {
@@ -168,7 +168,7 @@ export class SettingsCrownstone extends Component {
     CLOUD.forGroup(this.props.groupId).deleteStone(this.props.stoneId)
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
-        let proxy = BLEutil.getProxy(stone.config.bluetoothId);
+        let proxy = BLEutil.getProxy(stone.config.handle);
         proxy.perform(BleActions.commandFactoryReset)
           .then(() => {
             this._removeCrownstoneFromRedux();
@@ -178,8 +178,12 @@ export class SettingsCrownstone extends Component {
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "You can recover it using the recovery procedure.",
-              [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); Actions.pop(); Actions.settingsPluginRecoverStep1(); }
-              }])
+              [{text:'OK', onPress: () => {
+                this.props.eventBus.emit('hideLoading');
+                Actions.pop();
+                Actions.settingsPluginRecoverStep1();
+              }}]
+            )
           })
       })
       .catch((err) => {
@@ -197,9 +201,15 @@ export class SettingsCrownstone extends Component {
     this.deleting = true;
 
     // revert to the previous screen
-    Actions.pop();
-    this.props.eventBus.emit('hideLoading');
-    this.props.store.dispatch({type: "REMOVE_STONE", groupId: this.props.groupId, stoneId: this.props.stoneId});
+    Alert.alert("Success!",
+      "We have removed this Crownstone from the Cloud, your Group and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a (new?) Group.",
+      [{text:'OK', onPress: () => {
+        Actions.pop();
+        this.props.eventBus.emit('hideLoading');
+        this.props.store.dispatch({type: "REMOVE_STONE", groupId: this.props.groupId, stoneId: this.props.stoneId});
+      }
+      }]
+    )
   }
 
   render() {

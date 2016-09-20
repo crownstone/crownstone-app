@@ -39,6 +39,10 @@ export class SetupAddPlugInStep2 extends Component {
     setTimeout(() => {this.scanAndRegisterCrownstone();},0);
   }
 
+  componentWillUnmount() {
+    BLEutil.cancelAllSearches();
+  }
+
   switchImages(nextImage) {
     if (this.imageIn1 === true) {
       if (nextImage !== this.state.fade1image) {
@@ -64,13 +68,14 @@ export class SetupAddPlugInStep2 extends Component {
 
   scanAndRegisterCrownstone() {
     this.setProgress(0);
-    BLEutil.cancelSearch();
+    BLEutil.cancelAllSearches();
     BLEutil.getNearestSetupCrownstone()
       .then((foundCrownstone) => {
         let crownstone = foundCrownstone;
         this.interrogateStone(crownstone, this.props.groupId);
       })
       .catch((err) => {
+        BLEutil.cancelAllSearches();
         LOG("error in looking for setup crownstone:",err);
         Alert.alert("Nothing Found",
           "We can not find a Crownstone in setup mode. " +
@@ -95,6 +100,7 @@ export class SetupAddPlugInStep2 extends Component {
         this.registerStone(crownstone, MACAddress);
       })
       .catch((err) => {
+        BLEutil.cancelAllSearches();
         crownstone.disconnect();
         this.scanAndRegisterCrownstone()
       })
@@ -111,7 +117,7 @@ export class SetupAddPlugInStep2 extends Component {
         data: {
           type: 'plugin_v1',
           crownstoneId: cloudResponse.uid,
-          bluetoothId:  crownstone.getBluetoothId(),
+          handle:  crownstone.getHandle(),
           macAddress:   MACAddress,
           iBeaconMajor: cloudResponse.major,
           iBeaconMinor: cloudResponse.minor,
@@ -177,9 +183,10 @@ export class SetupAddPlugInStep2 extends Component {
       .then(() => {
         this.setProgress(5);
         setTimeout(() => { this.setProgress(6); }, 300);
-        setTimeout(() => { Actions.setupAddPluginStep3({stoneId: stoneId, groupId:this.props.groupId, fromMainMenu: this.props.fromMainMenu, BLEhandle: stoneData.bluetoothId}); }, 1800);
+        setTimeout(() => { Actions.setupAddPluginStep3({stoneId: stoneId, groupId:this.props.groupId, fromMainMenu: this.props.fromMainMenu, BLEhandle: stoneData.handle}); }, 1800);
       })
       .catch((err) => {
+        BLEutil.cancelAllSearches();
         crownstone.disconnect();
         Alert.alert("Whoops!",'Something went wrong during pairing, we will roll back the changes so far so you can try again.',[
           {text:'OK', onPress: () => {
@@ -256,7 +263,7 @@ export class SetupAddPlugInStep2 extends Component {
           <CancelButton onPress={() => {Alert.alert(
                 "Are you sure?",
                 "You can always add Crownstones later through the settings menu.",
-                [{text:'No'},{text:'Yes, I\'m sure', onPress: () => {BLEutil.cancelSearch(); Actions.tabBar();}}]
+                [{text:'No'},{text:'Yes, I\'m sure', onPress: () => {BLEutil.cancelAllSearches(); Actions.tabBar();}}]
               )}}/>
           <View style={{flex:1}}/>
         </View>
@@ -276,7 +283,7 @@ export class SetupAddPlugInStep2 extends Component {
     if (this.state.progress === 0) {
       return (
         <View>
-          <TopBar left='Back' leftAction={() => {BLEutil.cancelSearch(); Actions.pop();}} style={{backgroundColor:'transparent'}} shadeStatus={true}/>
+          <TopBar left='Back' leftAction={() => {BLEutil.cancelAllSearches(); Actions.pop();}} style={{backgroundColor:'transparent'}} shadeStatus={true}/>
           <Text style={[setupStyle.h1, {paddingTop:0}]}>Adding a Plug-in Crownstone</Text>
         </View>
       )

@@ -199,6 +199,25 @@ export const getTotalAmountOfCrownstones = function(state) {
   let count = 0;
   groupIds.forEach((groupId) => {
     count += Object.keys(state.groups[groupId].stones).length;
-  })
+  });
   return count;
+};
+
+export const getMapOfAllOwnedCrownstones = function(state) {
+  let groupIds = Object.keys(state.groups);
+  let map = {};
+  groupIds.forEach((groupId) => {
+    let stoneIds = Object.keys(state.groups[groupId].stones);
+    let locations = state.groups[groupId].locations;
+    let appliances = state.groups[groupId].appliances;
+    stoneIds.forEach((stoneId) => {
+      let stoneConfig = state.groups[groupId].stones[stoneId].config;
+      map[stoneConfig.handle] = {
+        name: stoneConfig.name,
+        applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
+        locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
+      };
+    })
+  });
+  return map;
 };

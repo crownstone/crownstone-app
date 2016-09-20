@@ -113,6 +113,10 @@ func getBleErrorString(err: BleError) -> String {
     return "USERLEVEL_IN_READ_PACKET_INVALID"
   case .READ_SESSION_NONCE_ZERO_MAYBE_ENCRYPTION_DISABLED:
     return "READ_SESSION_NONCE_ZERO_MAYBE_ENCRYPTION_DISABLED"
+  case .NOT_IN_RECOVERY_MODE:
+    return "NOT_IN_RECOVERY_MODE"
+  case .CANNOT_READ_FACTORY_RESET_CHARACTERISTIC:
+    return "CANNOT_READ_FACTORY_RESET_CHARACTERISTIC"
   default:
      return "UNKNOWN_BLE_ERROR \(err)"
   }
@@ -226,8 +230,8 @@ class BluenetJS: NSObject {
   }
 
 
-  @objc func connect(uuid: String, callback: RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.connect(uuid)
+  @objc func connect(handle: String, callback: RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.connect(handle)
       .then({_ in callback([["error" : false]])})
       .error({err in
         if let bleErr = err as? BleError {
@@ -394,8 +398,8 @@ class BluenetJS: NSObject {
       })
   }
   
-  @objc func recover(crownstoneUUID: String, callback: RCTResponseSenderBlock) -> Void {
-    GLOBAL_BLUENET!.bluenet.control.recoverByFactoryReset(crownstoneUUID)
+  @objc func recover(crownstoneHandle: String, callback: RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.control.recoverByFactoryReset(crownstoneHandle)
       .then({_ in callback([["error" : false]])})
       .error({err in
         if let bleErr = err as? BleError {

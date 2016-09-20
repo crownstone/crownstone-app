@@ -14,7 +14,8 @@ import {
 } from 'react-native';
 import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StoreManager }           from './store/storeManager'
-import { NativeEventsBridge }           from '../native/NativeEventsBridge'
+import { NativeEventsBridge }     from '../native/NativeEventsBridge'
+import { AdvertisementHandler }   from '../native/AdvertisementHandler'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
 import { LOG }                    from '../logging/Log'
@@ -25,8 +26,7 @@ import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
-import { AdvertisementManager }   from '../logic/CrownstoneControl'
-import { styles, colors, screenWidth, screenHeight }         from '../views/styles'
+import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
 
 let store = {};
@@ -63,7 +63,7 @@ export class AppRouter extends Component {
 
       // pass the store to the singletons
       NativeEventsBridge.loadStore(store);
-      AdvertisementManager.loadStore(store);
+      AdvertisementHandler.loadStore(store);
 
       LOG("LOADED STORES")
       removeAllPresentUsers(store);
@@ -74,17 +74,18 @@ export class AppRouter extends Component {
       if (state.user.accessToken !== undefined) {
       //   // in the background we check if we're authenticated, if not we log out.
         CLOUD.setAccess(state.user.accessToken);
-      //   CLOUD.getUserData({background:true})
-      //     .then((reply) => {
-      //       LOG("received verification", reply)
-      //     })
-      //     .catch((reply) => {
-      //       LOG("received ERROR", reply);
-      //       if (reply.status === 401) {
-      //         logOut();
-      //         Alert.alert("Please log in again.", undefined, [{text:'OK'}])
-      //       }
-      //     });
+        CLOUD.getUserData({background:true})
+          .then((reply) => {
+            LOG("Verified User.", reply);
+            CLOUD.sync(store);
+          })
+          .catch((reply) => {
+            LOG("COULD NOT VERIFY USER -- ERROR", reply);
+            if (reply.status === 401) {
+              logOut();
+              Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
+            }
+          });
       //
         this.setState({storeInitialized:true, loggedIn:true});
         eventBus.emit("appStarted");

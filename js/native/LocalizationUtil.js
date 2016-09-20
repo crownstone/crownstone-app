@@ -112,6 +112,7 @@ export const LocalizationUtil = {
         // register the iBeacons UUIDs with the localization system.
         const state = store.getState();
         let groupIds = Object.keys(state.groups);
+        console.log("GroupIds:", groupIds)
         groupIds.forEach((groupId) => {
           let groupIBeaconUUID = state.groups[groupId].config.iBeaconUUID;
 

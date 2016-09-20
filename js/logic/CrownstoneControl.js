@@ -194,15 +194,15 @@ export const processScanResponse = function(store, packet = {}) {
     }
 
     // self repairing mechanism for crownstones with updated or lost uuid.
-    if (stone.config.uuid !== packet.id) {
-      LOG("RESTORING ID FOR ", stoneId , " TO ", packet.id);
-      store.dispatch({
-        type: "UPDATE_STONE_CONFIG",
-        groupId: activeGroup,
-        stoneId: stoneId,
-        data: {uuid: packet.id}
-      })
-    }
+    // if (stone.config.uuid !== packet.id) {
+    //   LOG("RESTORING ID FOR ", stoneId , " TO ", packet.id);
+    //   store.dispatch({
+    //     type: "UPDATE_STONE_CONFIG",
+    //     groupId: activeGroup,
+    //     stoneId: stoneId,
+    //     data: {uuid: packet.id}
+    //   })
+    // }
 
     let locationName = state.groups[activeGroup].locations[stone.config.locationId].config.name;
     let currentUsage = stone.state.currentUsage;
