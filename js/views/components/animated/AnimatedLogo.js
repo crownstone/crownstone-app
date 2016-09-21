@@ -29,14 +29,14 @@ export class AnimatedLogo extends Component {
   animate() {
     // we want a noticable difference from the old size
     let currentSize = this.setSize;
-    let newSize = currentSize;
-    for (let i = 0; i < 5; i++) {
-      newSize = this._getNewSize();
+    let newSize = this._getNewSize();
+    // for (let i = 0; i < 5; i++) {
+    //   newSize = this._getNewSize();
       console.log("Math.abs((newSize - currentSize)/currentSize) ",Math.abs((newSize - currentSize)/currentSize) );
-      if (Math.abs((newSize - currentSize)/currentSize) > 0.35) {
-        break;
-      }
-    }
+      // if (Math.abs((newSize - currentSize)/currentSize) > 0.35) {
+      //   break;
+      // }
+    // }
 
     Animated.spring(this.state.size, {toValue: newSize, friction:3}).start();
 

@@ -51,13 +51,6 @@ export class DeviceEdit extends Component {
 
     let toBehaviour = () => { Actions.deviceBehaviourEdit(requiredData) };
 
-      items.push({label:'CROWNSTONE', type: 'explanation',  below:false});
-      items.push({
-        label: 'Name', type: 'textEdit', placeholder:'Choose a nice name', value: stone.config.name, callback: (newText) => {
-          store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
-        }
-      });
-
       items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {

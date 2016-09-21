@@ -106,13 +106,13 @@ export const base = {
         console.error("UNKNOWN TYPE:", reqType);
         return;
     }
-    return this._finalizeRequest(promise, options);
+    return this._finalizeRequest(promise, options, endpoint);
   },
 
-  _finalizeRequest: function(promise, options) {
+  _finalizeRequest: function(promise, options, endpoint) {
     return new Promise((resolve, reject) => {
       promise.then((reply) => {
-        LOG("REPLY")
+        LOG("REPLY from", endpoint, " with options: ", options, " is: ", reply);
         if (reply.status === 200 || reply.status === 204)
           resolve(reply.data);
         else

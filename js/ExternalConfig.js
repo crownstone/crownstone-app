@@ -21,7 +21,7 @@ LOG("Device Locale", DeviceInfo.getDeviceLocale()); // e.g en-US
 LOG("Device Country", DeviceInfo.getDeviceCountry()); // e.g US
 LOG("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https://developers.google.com/instance-id/
 
-export const CLOUD_ADDRESS = 'http://crownstone-cloud.herokuapp.com/api/';
+export const CLOUD_ADDRESS = 'https://crownstone-cloud.herokuapp.com/api/';
 export const CROWNSTONE_SERVICEDATA_UUID = 'C001';
 export const DEBUG = true;
 export const DISABLE_NATIVE = DeviceInfo.getModel() === "Simulator"; // this will disable the native calls.

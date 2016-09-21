@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Animated,
   ActivityIndicator,
   Alert,
   Image,
@@ -13,10 +14,9 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
-import { setupStyle, CancelButton, NextButton } from '../setupViews/SetupShared'
-import { styles, colors, width, screenHeight } from './../styles'
+import { setupStyle } from '../setupViews/SetupShared'
+import { styles, colors, screenWidth, screenHeight } from './../styles'
 import { getMapOfAllOwnedCrownstones } from '../../util/dataUtil'
 import { BLEutil } from '../../native/BLEutil'
 import { BleActions } from '../../native/Proxy'
@@ -25,8 +25,12 @@ import { LOG } from '../../logging/Log'
 export class SettingsPluginRecoverStep2 extends Component {
   constructor() {
     super();
-    this.state = {};
-    this.state.action = "Looking for Crownstones nearby...";
+    this.state = {
+      text:'Looking for Crownstones nearby...',
+      fade2: new Animated.Value(0),
+      fade1: new Animated.Value(1),
+    };
+    this.lookingForCrownstone = true;
   }
 
   componentDidMount() {
@@ -35,6 +39,25 @@ export class SettingsPluginRecoverStep2 extends Component {
 
   componentWillUnmount() {
     BLEutil.cancelAllSearches();
+  }
+
+  switchImages() {
+    if (this.lookingForCrownstone === true) {
+      this.setState({text:'Attempting to recover Crownstone...',})
+      Animated.timing(this.state.fade1, {toValue: 0, duration: 200}).start();
+      setTimeout(() => {
+        Animated.timing(this.state.fade2, {toValue: 1, duration: 200}).start();
+      }, 150);
+      this.lookingForCrownstone = false;
+    }
+    else {
+      this.setState({text:'Looking for Crownstones nearby...'});
+      Animated.timing(this.state.fade2, {toValue: 0, duration: 200}).start();
+      setTimeout(() => {
+        Animated.timing(this.state.fade1, {toValue: 1, duration: 200}).start();
+      }, 150);
+      this.lookingForCrownstone = true;
+    }
   }
 
   _getDescription(stoneInfo) {
@@ -150,7 +173,7 @@ export class SettingsPluginRecoverStep2 extends Component {
   }
 
   recoverStone(handle) {
-    this.setState({action:"Attempting to recover Crownstone..."});
+    this.switchImages();
     LOG('attempting to recover handle:', handle);
     BleActions.recover(handle)
       .then(() => {
@@ -178,15 +201,21 @@ export class SettingsPluginRecoverStep2 extends Component {
 
   render() {
     let imageSize = 0.45;
+    let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
       <Background hideTabBar={true} image={this.props.backgrounds.main}>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.menuBackground.hex}]}>Hold your phone next to the Crownstone.</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={[setupStyle.information, {color:colors.menuBackground.hex}]}>{this.state.action}</Text>
+          <Text style={[setupStyle.information, {color:colors.menuBackground.hex}]}>{this.state.text}</Text>
           <View style={{flex:1}} />
-          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugDark.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+          <View style={{width: screenWidth, height:imageSize*screenHeight}}>
+            <Animated.View style={{opacity:this.state.fade1, position:'absolute', left:leftPos, top: 0}}>
+              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugDark.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+            </Animated.View>
+            <Animated.View style={{opacity:this.state.fade2, position:'absolute', left:leftPos, top: 0}}>
+              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugDarkPairing.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+            </Animated.View>
           </View>
           <View style={{flex:1}} />
           <View style={{marginBottom:20}}>

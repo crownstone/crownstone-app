@@ -45,6 +45,7 @@ export class SettingsCrownstone extends Component {
 
   _getItems() {
     let items = [];
+    let requiredData = {groupId: this.props.groupId, stoneId: this.props.stoneId};
 
     const store = this.props.store;
     const state = store.getState();
@@ -56,8 +57,15 @@ export class SettingsCrownstone extends Component {
 
     let options = roomNames.map((roomName) => {return {label:roomName}});
 
+    items.push({label:'CROWNSTONE', type: 'explanation',  below:false});
+    items.push({
+      label: 'Name', type: 'textEdit', placeholder:'Choose a nice name', value: stone.config.name, callback: (newText) => {
+        store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
+      }
+    });
 
-    items.push({label:'LOCATION OF CROWNSTONE',  type:'explanation', below:false});
+
+    items.push({label:'LOCATION',  type:'explanation', below:false});
     if (roomNames.length == 1) {
       items.push({label:'First create rooms.',  type:'info', style:{color:colors.lightGray.hex}});
       items.push({type:'spacer'});
@@ -76,7 +84,7 @@ export class SettingsCrownstone extends Component {
               Alert.alert("Decouple this Crownstone",
                 "If you do not add the Crownstone to a room, it will not be used for indoor localization purposes.",
                 [{text:'Cancel'}, {text:"OK", onPress: () => {
-                  store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
+                  store.dispatch({...requiredData, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
                 }}])
             }
             else {
@@ -84,7 +92,7 @@ export class SettingsCrownstone extends Component {
                 "If you move a Crownstone to a different room, we'd recommend you retrain the rooms to ensure the indoor localization will work correctly.",
                 [{text:'Cancel'}, {text:"OK", onPress: () => {
                   let roomId = getRoomIdFromName(state, this.props.groupId, selectedRoom);
-                  store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})
+                  store.dispatch({...requiredData, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})
                 }}])
             }
           }

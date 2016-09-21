@@ -19,7 +19,7 @@ import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGError } from '../../logging/Log'
 
 export class SetupAddPlugInStep2 extends Component {
   constructor() {
@@ -32,11 +32,11 @@ export class SetupAddPlugInStep2 extends Component {
       fade2: new Animated.Value(0),
       fade1: new Animated.Value(1),
     };
-    this.imageIn1 = true;
+    this.lookingForCrownstone = true;
   }
 
   componentDidMount() {
-    setTimeout(() => {this.scanAndRegisterCrownstone();},0);
+    setTimeout(() => {this.lookForCrownstones();},0);
   }
 
   componentWillUnmount() {
@@ -44,14 +44,14 @@ export class SetupAddPlugInStep2 extends Component {
   }
 
   switchImages(nextImage) {
-    if (this.imageIn1 === true) {
+    if (this.lookingForCrownstone === true) {
       if (nextImage !== this.state.fade1image) {
         this.setState({fade2image: nextImage})
         Animated.timing(this.state.fade1, {toValue: 0, duration: 200}).start();
         setTimeout(() => {
           Animated.timing(this.state.fade2, {toValue: 1, duration: 200}).start();
         }, 150);
-        this.imageIn1 = false;
+        this.lookingForCrownstone = false;
       }
     }
     else {
@@ -61,12 +61,12 @@ export class SetupAddPlugInStep2 extends Component {
         setTimeout(() => {
           Animated.timing(this.state.fade1, {toValue: 1, duration: 200}).start();
         }, 150);
-        this.imageIn1 = true;
+        this.lookingForCrownstone = true;
       }
     }
   }
 
-  scanAndRegisterCrownstone() {
+  lookForCrownstones() {
     this.setProgress(0);
     BLEutil.cancelAllSearches();
     BLEutil.getNearestSetupCrownstone()
@@ -82,7 +82,7 @@ export class SetupAddPlugInStep2 extends Component {
           "If you are near a Crownstone, please plug it in and out of the power socket and hold your phone close.",
           [
             {text:'Cancel', onPress: () => { Actions.pop(); }},
-            {text:'OK', onPress:() => { this.scanAndRegisterCrownstone(); }}
+            {text:'OK', onPress:() => { this.lookForCrownstones(); }}
           ]
         )
       })
@@ -102,7 +102,7 @@ export class SetupAddPlugInStep2 extends Component {
       .catch((err) => {
         BLEutil.cancelAllSearches();
         crownstone.disconnect();
-        this.scanAndRegisterCrownstone()
+        this.lookForCrownstones()
       })
   }
 
@@ -130,7 +130,7 @@ export class SetupAddPlugInStep2 extends Component {
     const processFailure = () => {
       Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK", onPress:() => {
         crownstone.disconnect();
-        this.scanAndRegisterCrownstone();
+        this.lookForCrownstones();
         Actions.pop();
       }}]);
     };
@@ -148,12 +148,12 @@ export class SetupAddPlugInStep2 extends Component {
               }
             })
             .catch((err) => {
-              LOG("CONNECTION ERROR:",err);
+              LOGError("CONNECTION ERROR:",err);
               processFailure();
             })
         }
         else {
-          LOG("CONNECTION ERROR:",err);
+          LOGError("CONNECTION ERROR:",err);
           processFailure();
         }
       });
@@ -187,18 +187,24 @@ export class SetupAddPlugInStep2 extends Component {
       })
       .catch((err) => {
         BLEutil.cancelAllSearches();
-        crownstone.disconnect();
+        crownstone.disconnect().catch();
         Alert.alert("Whoops!",'Something went wrong during pairing, we will roll back the changes so far so you can try again.',[
           {text:'OK', onPress: () => {
             this.cleanupFailedAttempt(stoneId)
               .catch((err) => {
                 this.props.eventBus.emit('hideLoading');
-                Alert.alert("Can not connect to the Cloud",'Please try again later.',[{text:'OK'}]);
+                Alert.alert("Can not connect to the Cloud",'Please try again later.',[{text:'OK', onPress: () => {BLEutil.cancelAllSearches(); Actions.pop();}}]);
                 return false;
               })
               .done((success) => {
-                if (success)
-                  Actions.setupAddPlugInStepRecover({groupId: this.props.groupId, fromMainMenu: this.props.fromMainMenu});
+                LOG("here")
+                if (success) {
+                  LOG("going to setupAddPlugInStepRecover");
+                  Actions.setupAddPlugInStepRecover({
+                    groupId: this.props.groupId,
+                    fromMainMenu: this.props.fromMainMenu
+                  });
+                }
               })
           }}])
       })
@@ -260,11 +266,14 @@ export class SetupAddPlugInStep2 extends Component {
     if (this.state.progress === 0) {
       return (
         <View style={setupStyle.buttonContainer}>
-          <CancelButton onPress={() => {Alert.alert(
+          <CancelButton onPress={() => {
+            BLEutil.cancelAllSearches();
+            Alert.alert(
                 "Are you sure?",
                 "You can always add Crownstones later through the settings menu.",
-                [{text:'No'},{text:'Yes, I\'m sure', onPress: () => {BLEutil.cancelAllSearches(); Actions.tabBar();}}]
-              )}}/>
+                [{text:'No', onPress: () => { this.lookForCrownstones() }},{text:'Yes, I\'m sure', onPress: () => {BLEutil.cancelAllSearches(); Actions.tabBar();}}]
+            )}
+          }/>
           <View style={{flex:1}}/>
         </View>
       )
@@ -279,33 +288,21 @@ export class SetupAddPlugInStep2 extends Component {
     }
   }
 
-  getHeader() {
-    if (this.state.progress === 0) {
-      return (
-        <View>
-          <TopBar left='Back' leftAction={() => {BLEutil.cancelAllSearches(); Actions.pop();}} style={{backgroundColor:'transparent'}} shadeStatus={true}/>
-          <Text style={[setupStyle.h1, {paddingTop:0}]}>Adding a Plug-in Crownstone</Text>
-        </View>
-      )
-    }
-    else {
-      return (
-        <View>
-          <View style={styles.shadedStatusBar}/>
-          <Text style={setupStyle.h1}>Adding a Plug-in Crownstone</Text>
-        </View>
-      )
-    }
-  }
 
   render() {
     let imageSize = 0.4*screenHeight;
     let subSize = (imageSize/500) * 326; // 500 and 326 are the 100% sizes
-    let subx = imageSize*0.59;
-    let suby = imageSize*0.105;
+    let subX = imageSize*0.59;
+    let subY = imageSize*0.105;
     return (
       <Background hideInterface={true} image={this.props.backgrounds.setup}>
-        {this.getHeader()}
+        <TopBar
+          left={this.state.progress === 0 ? 'Back' : undefined}
+          leftAction={this.state.progress === 0 ? () => { BLEutil.cancelAllSearches(); Actions.pop(); } : undefined}
+          style={{backgroundColor:'transparent'}}
+          shadeStatus={true}
+        />
+        <Text style={[setupStyle.h1, {paddingTop:0}]}>Adding a Plug-in Crownstone</Text>
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={setupStyle.text}>Step 2: Hold your phone next to the Crownstone.</Text>
           <View style={setupStyle.lineDistance} />
@@ -313,10 +310,10 @@ export class SetupAddPlugInStep2 extends Component {
           <View style={{flex:1}} />
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlug.png')} style={{width:imageSize, height:imageSize}}>
-              <Animated.View style={{opacity:this.state.fade1, position:'absolute', left:subx, top: suby}}>
+              <Animated.View style={{opacity:this.state.fade1, position:'absolute', left:subX, top: subY}}>
                 <Image source={this.state.fade1image} style={{width:subSize, height:subSize}} />
               </Animated.View>
-              <Animated.View style={{opacity:this.state.fade2, position:'absolute', left:subx, top: suby}}>
+              <Animated.View style={{opacity:this.state.fade2, position:'absolute', left:subX, top: subY}}>
                 <Image source={this.state.fade2image} style={{width:subSize, height:subSize}} />
               </Animated.View>
             </Image>

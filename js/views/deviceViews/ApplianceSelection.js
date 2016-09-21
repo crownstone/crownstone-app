@@ -64,11 +64,7 @@ export class ApplianceSelection extends Component {
         }];
 
         items.push({__item:
-        <Swipeout right={deleteButton} autoClose={true} >
-          <TouchableHighlight
-            key={appliance + '_entry'}
-            onPress={() => {this.props.callback(applianceId); Actions.pop();}}
-          >
+        <Swipeout right={deleteButton} autoClose={true}  onOpen={() => {this.props.callback(applianceId); Actions.pop();}}>
             <View style={styles.listView}>
               <DeviceOverview
                 icon={appliance.config.icon}
@@ -77,9 +73,8 @@ export class ApplianceSelection extends Component {
                 size={40}
               />
             </View>
-          </TouchableHighlight>
         </Swipeout>
-          })
+        })
       });
       items.push({label:'You can delete a device by swiping it to the left and pressing Delete.', style:{paddingBottom:0}, type: 'explanation',  below:true});
     }
