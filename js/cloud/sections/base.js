@@ -26,7 +26,7 @@ export const base = {
   _userId: undefined,
   _deviceId: undefined,
   _eventId: undefined,
-  _groupId: undefined,
+  _sphereId: undefined,
   _locationId: undefined,
   _stoneId: undefined,
   _applianceId: undefined,
@@ -134,7 +134,7 @@ export const base = {
   setUserId:   function(userId)      { this._userId = userId;           return this; },
   forUser:     function(userId)      { this._userId = userId;           return this; },
   forStone:    function(stoneId)     { this._stoneId = stoneId;         return this; },
-  forGroup:    function(groupId)     { this._groupId = groupId;         return this; },
+  forSphere:    function(sphereId)     { this._sphereId = sphereId;         return this; },
   forLocation: function(locationId)  { this._locationId = locationId;   return this; },
   forEvent:    function(eventId)     { this._eventId = eventId;         return this; },
   forDevice:   function(deviceId)    { this._deviceId = deviceId;       return this; },
@@ -167,9 +167,9 @@ function _getId(url, obj) {
   if (eventsLocation !== -1 && eventsLocation < 3)
     return obj._eventId;
 
-  let groupsLocation = url.indexOf('Groups');
-  if (groupsLocation !== -1 && groupsLocation < 3)
-    return obj._groupId;
+  let spheresLocation = url.indexOf('Groups');
+  if (spheresLocation !== -1 && spheresLocation < 3)
+    return obj._sphereId;
 
   let locationsLocation = url.indexOf('Locations');
   if (locationsLocation !== -1 && locationsLocation < 3)

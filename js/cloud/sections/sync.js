@@ -13,8 +13,8 @@ export const sync = {
     let actions = [];
     return syncDown(state)
       .then((data) => {
-        let cloudData = syncGroups(state, actions, data.groups, data.groupsData);
-        let deletedGroup = syncCleanupLocal(store, state, actions, cloudData);
+        let cloudData = syncSpheres(state, actions, data.spheres, data.spheresData);
+        let deletedSphere = syncCleanupLocal(store, state, actions, cloudData);
         syncKeys(actions, data.keys);
 
         LOG("SYNC Dispatching ", actions.length, " actions!");
@@ -25,8 +25,8 @@ export const sync = {
 
         this.events.emit("CloudSyncComplete");
 
-        if (cloudData.addedGroup === true || deletedGroup === true) {
-          this.events.emit("CloudSyncComplete_groupsChanged");
+        if (cloudData.addedSphere === true || deletedSphere === true) {
+          this.events.emit("CloudSyncComplete_spheresChanged");
         }
       })
 
@@ -42,8 +42,8 @@ const syncDown = function (state) {
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
 
-    let cloudGroups = [];
-    let cloudGroupsData = {};
+    let cloudSpheres = [];
+    let cloudSpheresData = {};
     let cloudKeys = [];
 
     let syncPromises = [];
@@ -55,27 +55,27 @@ const syncDown = function (state) {
         })
     );
     syncPromises.push(
-      CLOUD.getGroups()
-        .then((groupData) => {
-          let groupDataPromises = [];
-          groupData.forEach((group) => {
-            cloudGroups.push(group);
+      CLOUD.getSpheres()
+        .then((sphereData) => {
+          let sphereDataPromises = [];
+          sphereData.forEach((sphere) => {
+            cloudSpheres.push(sphere);
 
             // download all data from the cloud to the phone
-            groupDataPromises.push(CLOUD.forGroup(group.id).getGroupData(userId)
+            sphereDataPromises.push(CLOUD.forSphere(sphere.id).getSphereData(userId)
               .then((result) => {
-                cloudGroupsData[group.id] = result;
+                cloudSpheresData[sphere.id] = result;
               })
             );
           });
 
-          return Promise.all(groupDataPromises);
+          return Promise.all(sphereDataPromises);
         })
     );
 
     Promise.all(syncPromises)
       .then(() => {
-        resolve({keys: cloudKeys, groups: cloudGroups, groupsData: cloudGroupsData})
+        resolve({keys: cloudKeys, spheres: cloudSpheres, spheresData: cloudSpheresData})
       })
       .catch((err) => {
         reject(err);
@@ -89,94 +89,94 @@ const shouldUpdate = function(localVersion, cloudVersion) {
 
 
 const syncCleanupLocal = function(store, state, actions, cloudData) {
-  let groupIds = Object.keys(state.groups);
-  let deletedGroup = false;
+  let sphereIds = Object.keys(state.spheres);
+  let deletedSphere = false;
 
-  groupIds.forEach((groupId) => {
-    if (cloudData.cloudGroupIds[groupId] === undefined) {
-      // we are going to remove this group, if it is active we first deactivate it.
-      if (state.app.activeGroup == groupId) {
-        store.dispatch({type: 'CLEAR_ACTIVE_GROUP'});
+  sphereIds.forEach((sphereId) => {
+    if (cloudData.cloudSphereIds[sphereId] === undefined) {
+      // we are going to remove this sphere, if it is active we first deactivate it.
+      if (state.app.activeSphere == sphereId) {
+        store.dispatch({type: 'CLEAR_ACTIVE_SPHERE'});
       }
-      actions.push({type: 'REMOVE_GROUP', groupId: groupId});
-      deletedGroup = true;
+      actions.push({type: 'REMOVE_SPHERE', sphereId: sphereId});
+      deletedSphere = true;
     }
     else {
-      // if the group also exists in the cloud, check if its member need deletion
-      let group = state.groups[groupId];
-      let locationIds = Object.keys(group.locations);
-      let stoneIds = Object.keys(group.stones);
-      let applianceIds = Object.keys(group.appliances);
-      let groupUserIds = Object.keys(group.users);
+      // if the sphere also exists in the cloud, check if its member need deletion
+      let sphere = state.spheres[sphereId];
+      let locationIds = Object.keys(sphere.locations);
+      let stoneIds = Object.keys(sphere.stones);
+      let applianceIds = Object.keys(sphere.appliances);
+      let sphereUserIds = Object.keys(sphere.users);
 
       // cleanup locations
       locationIds.forEach((locationId) => {
         if (cloudData.cloudLocationIds[locationId] === undefined) {
-          actions.push({type: 'REMOVE_LOCATION', groupId: groupId, locationId: locationId});
+          actions.push({type: 'REMOVE_LOCATION', sphereId: sphereId, locationId: locationId});
         }
       });
 
       // cleanup stones
       stoneIds.forEach((stoneId) => {
         if (cloudData.cloudStoneIds[stoneId] === undefined) {
-          actions.push({type: 'REMOVE_STONE', groupId: groupId, stoneId: stoneId});
+          actions.push({type: 'REMOVE_STONE', sphereId: sphereId, stoneId: stoneId});
         }
       });
 
       // cleanup appliances
       applianceIds.forEach((applianceId) => {
         if (cloudData.cloudApplianceIds[applianceId] === undefined) {
-          actions.push({type: 'REMOVE_APPLIANCE', groupId: groupId, applianceId: applianceId});
+          actions.push({type: 'REMOVE_APPLIANCE', sphereId: sphereId, applianceId: applianceId});
         }
       });
 
-      // cleanup group users
-      groupUserIds.forEach((userId) => {
-        if (cloudData.cloudGroupMemberIds[groupId][userId] === undefined) {
-          actions.push({type: 'REMOVE_GROUP_USER', groupId: groupId, userId: userId});
+      // cleanup sphere users
+      sphereUserIds.forEach((userId) => {
+        if (cloudData.cloudSphereMemberIds[sphereId][userId] === undefined) {
+          actions.push({type: 'REMOVE_SPHERE_USER', sphereId: sphereId, userId: userId});
         }
       });
 
     }
   });
 
-  return deletedGroup;
+  return deletedSphere;
 };
 
-const syncGroups = function(state, actions, groups, groupsData) {
-  let cloudGroupMemberIds = {};
-  let cloudGroupIds = {};
+const syncSpheres = function(state, actions, spheres, spheresData) {
+  let cloudSphereMemberIds = {};
+  let cloudSphereIds = {};
   let cloudStoneIds = {};
   let cloudLocationIds = {};
   let cloudApplianceIds = {};
-  let addedGroup = false;
+  let addedSphere = false;
 
-  groups.forEach((group) => {
+  spheres.forEach((sphere) => {
     // put id in map so we can easily find it again
-    cloudGroupIds[group.id] = true;
-    cloudGroupMemberIds[group.id] = {};
+    cloudSphereIds[sphere.id] = true;
+    cloudSphereMemberIds[sphere.id] = {};
 
-    let groupInState = state.groups[group.id];
+    let sphereInState = state.spheres[sphere.id];
 
-    // add or update the group.
-    if (groupInState === undefined) {
-      addedGroup = true;
-      actions.push({type:'ADD_GROUP', groupId: group.id, data:{name: group.name, iBeaconUUID: group.uuid}});
+    // add or update the sphere.
+    if (sphereInState === undefined) {
+      addedSphere = true;
+      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid}});
     }
-    else if (shouldUpdate(groupInState.config, group)) {
-      actions.push({type: 'UPDATE_GROUP', groupId: group.id, data: {name: group.name, iBeaconUUID: group.uuid}});
+    else if (shouldUpdate(sphereInState.config, sphere)) {
+      actions.push({type: 'UPDATE_SPHERE', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid}});
     }
 
     /**
      * Sync the locations from the cloud to the database.
      */
-    groupsData[group.id].locations.forEach((location) => {
+    spheresData[sphere.id].locations.forEach((location) => {
       cloudLocationIds[location.id] = true;
-      if (groupInState !== undefined && groupInState.locations[location.id] !== undefined) {
-        if (shouldUpdate(groupInState.locations[location.id].config, location)) {
+      if (sphereInState !== undefined && sphereInState.locations[location.id] !== undefined) {
+        if (shouldUpdate(sphereInState.locations[location.id].config, location)) {
           actions.push({
             type: 'UPDATE_LOCATION_CONFIG',
-            groupId: group.id,
+            sphereId: sphere.id,
             locationId: location.id,
             data: {name: location.name, icon: location.icon}
           });
@@ -185,7 +185,7 @@ const syncGroups = function(state, actions, groups, groupsData) {
       else {
         actions.push({
           type: 'ADD_LOCATION',
-          groupId: group.id,
+          sphereId: sphere.id,
           locationId: location.id,
           data: {name: location.name, icon: location.icon}
         });
@@ -196,13 +196,13 @@ const syncGroups = function(state, actions, groups, groupsData) {
     /**
      * Sync the stones from the cloud to the database.
      */
-    groupsData[group.id].stones.forEach((stone) => {
+    spheresData[sphere.id].stones.forEach((stone) => {
       cloudStoneIds[stone.id] = true;
-      if (groupInState !== undefined && groupInState.stones[stone.id] !== undefined) {
-        if (shouldUpdate(groupInState.stones[stone.id].config, stone)) {
+      if (sphereInState !== undefined && sphereInState.stones[stone.id] !== undefined) {
+        if (shouldUpdate(sphereInState.stones[stone.id].config, stone)) {
           actions.push({
             type: 'UPDATE_STONE_CONFIG',
-            groupId: group.id,
+            sphereId: sphere.id,
             stoneId: stone.id,
             data: {name: stone.name, icon: stone.deviceType, stoneId: stone.id}
           });
@@ -211,7 +211,7 @@ const syncGroups = function(state, actions, groups, groupsData) {
       else {
         actions.push({
           type: 'ADD_STONE',
-          groupId: group.id,
+          sphereId: sphere.id,
           stoneId: stone.id,
           data: {name: stone.name, icon: stone.deviceType, stoneId: stone.id}
         });
@@ -221,17 +221,17 @@ const syncGroups = function(state, actions, groups, groupsData) {
           let behaviour = JSON.parse(stone.json);
 
           if (behaviour.onHomeEnter)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter', groupId: group.id, stoneId: stone.id, data: behaviour.onHomeEnter });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter', sphereId: sphere.id, stoneId: stone.id, data: behaviour.onHomeEnter });
           if (behaviour.onHomeExit)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit', groupId: group.id, stoneId: stone.id, data: behaviour.onHomeExit });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit', sphereId: sphere.id, stoneId: stone.id, data: behaviour.onHomeExit });
           if (behaviour.onRoomEnter)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter', groupId: group.id, stoneId: stone.id, data: behaviour.onRoomEnter });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter', sphereId: sphere.id, stoneId: stone.id, data: behaviour.onRoomEnter });
           if (behaviour.onRoomExit)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit', groupId: group.id, stoneId: stone.id, data: behaviour.onRoomExit });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit', sphereId: sphere.id, stoneId: stone.id, data: behaviour.onRoomExit });
           if (behaviour.onNear)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onNear', groupId: group.id, stoneId: stone.id, data: behaviour.onNear });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onNear', sphereId: sphere.id, stoneId: stone.id, data: behaviour.onNear });
           if (behaviour.onAway)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onAway', groupId: group.id, stoneId: stone.id, data: behaviour.onAway });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onAway', sphereId: sphere.id, stoneId: stone.id, data: behaviour.onAway });
         }
       }
     });
@@ -240,13 +240,13 @@ const syncGroups = function(state, actions, groups, groupsData) {
     /**
      * Sync the appliances from the cloud to the database.
      */
-    groupsData[group.id].appliances.forEach((appliance) => {
+    spheresData[sphere.id].appliances.forEach((appliance) => {
       cloudApplianceIds[appliance.id] = true;
-      if (groupInState !== undefined && groupInState.appliances[appliance.id] !== undefined) {
-        if (shouldUpdate(groupInState.appliances[appliance.id].config, appliance)) {
+      if (sphereInState !== undefined && sphereInState.appliances[appliance.id] !== undefined) {
+        if (shouldUpdate(sphereInState.appliances[appliance.id].config, appliance)) {
           actions.push({
             type: 'UPDATE_APPLIANCE_CONFIG',
-            groupId: group.id,
+            sphereId: sphere.id,
             applianceId: appliance.id,
             data: {name: appliance.name, icon: appliance.deviceType}
           });
@@ -255,7 +255,7 @@ const syncGroups = function(state, actions, groups, groupsData) {
       else {
         actions.push({
           type: 'ADD_APPLIANCE',
-          groupId: group.id,
+          sphereId: sphere.id,
           applianceId: appliance.id,
           data: {name: appliance.name, icon: appliance.deviceType, applianceId: appliance.applianceId}
         });
@@ -265,17 +265,17 @@ const syncGroups = function(state, actions, groups, groupsData) {
           let behaviour = JSON.parse(appliance.json);
 
           if (behaviour.onHomeEnter)
-            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter', groupId: group.id, applianceId: appliance.id, data: behaviour.onHomeEnter });
+            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter', sphereId: sphere.id, applianceId: appliance.id, data: behaviour.onHomeEnter });
           if (behaviour.onHomeExit)
-            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit', groupId: group.id, applianceId: appliance.id, data: behaviour.onHomeExit });
+            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit', sphereId: sphere.id, applianceId: appliance.id, data: behaviour.onHomeExit });
           if (behaviour.onRoomEnter)
-            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter', groupId: group.id, applianceId: appliance.id, data: behaviour.onRoomEnter });
+            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter', sphereId: sphere.id, applianceId: appliance.id, data: behaviour.onRoomEnter });
           if (behaviour.onRoomExit)
-            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit', groupId: group.id, applianceId: appliance.id, data: behaviour.onRoomExit });
+            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit', sphereId: sphere.id, applianceId: appliance.id, data: behaviour.onRoomExit });
           if (behaviour.onNear)
-            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear', groupId: group.id, applianceId: appliance.id, data: behaviour.onNear });
+            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear', sphereId: sphere.id, applianceId: appliance.id, data: behaviour.onNear });
           if (behaviour.onAway)
-            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway', groupId: group.id, applianceId: appliance.id, data: behaviour.onAway });
+            actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway', sphereId: sphere.id, applianceId: appliance.id, data: behaviour.onAway });
         }
       }
     });
@@ -284,45 +284,45 @@ const syncGroups = function(state, actions, groups, groupsData) {
     /**
      * Sync the Admins from the cloud to the database.
      */
-    Object.keys(groupsData[group.id].admins).forEach((userId) => {
-      cloudGroupMemberIds[group.id][userId] = true;
-      let user = groupsData[group.id].admins[userId];
-      syncGroupUser(actions, group, groupInState, userId, user, state, 'admin');
+    Object.keys(spheresData[sphere.id].admins).forEach((userId) => {
+      cloudSphereMemberIds[sphere.id][userId] = true;
+      let user = spheresData[sphere.id].admins[userId];
+      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'admin');
     });
-    Object.keys(groupsData[group.id].members).forEach((userId) => {
-      cloudGroupMemberIds[group.id][userId] = true;
-      let user = groupsData[group.id].members[userId];
-      syncGroupUser(actions, group, groupInState, userId, user, state, 'member');
+    Object.keys(spheresData[sphere.id].members).forEach((userId) => {
+      cloudSphereMemberIds[sphere.id][userId] = true;
+      let user = spheresData[sphere.id].members[userId];
+      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'member');
     });
-    Object.keys(groupsData[group.id].guests).forEach((userId) => {
-      cloudGroupMemberIds[group.id][userId] = true;
-      let user = groupsData[group.id].guests[userId];
-      syncGroupUser(actions, group, groupInState, userId, user, state, 'guest');
+    Object.keys(spheresData[sphere.id].guests).forEach((userId) => {
+      cloudSphereMemberIds[sphere.id][userId] = true;
+      let user = spheresData[sphere.id].guests[userId];
+      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'guest');
     });
   });
 
   return {
-    cloudGroupMemberIds,
-    cloudGroupIds,
+    cloudSphereMemberIds,
+    cloudSphereIds,
     cloudStoneIds,
     cloudLocationIds,
     cloudApplianceIds,
-    addedGroup
+    addedSphere
   }
 };
 
-const syncGroupUser = function(actions, group, groupInState, userId, user, state, accessLevel) {
-  if (groupInState !== undefined && groupInState.users[userId] !== undefined) {
+const syncSphereUser = function(actions, sphere, sphereInState, userId, user, state, accessLevel) {
+  if (sphereInState !== undefined && sphereInState.users[userId] !== undefined) {
     // since we do not get a profile picture via the same way as the rest of the users, we alter the data to contain our own pic.
     let selfId = state.user.userId;
     if (userId == selfId) {
       user.picture = state.user.picture;
     }
 
-    if (shouldUpdate(groupInState.users[userId], user)) {
+    if (shouldUpdate(sphereInState.users[userId], user)) {
       actions.push({
-        type: 'UPDATE_GROUP_USER',
-        groupId: group.id,
+        type: 'UPDATE_SPHERE_USER',
+        sphereId: sphere.id,
         userId: user.id,
         data: {
           picture: user.picture,
@@ -337,8 +337,8 @@ const syncGroupUser = function(actions, group, groupInState, userId, user, state
   }
   else {
     actions.push({
-      type: 'ADD_GROUP_USER',
-      groupId: group.id,
+      type: 'ADD_SPHERE_USER',
+      sphereId: sphere.id,
       userId: user.id,
       data: {
         picture: user.picture,
@@ -354,7 +354,7 @@ const syncGroupUser = function(actions, group, groupInState, userId, user, state
 
 const syncKeys = function(actions, keys) {
   keys.forEach((keySet) => {
-    actions.push({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
+    actions.push({type:'SET_SPHERE_KEYS', sphereId: keySet.groupId, data:{
       adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
       memberKey: keySet.keys.member || null,
       guestKey:  keySet.keys.guest  || null

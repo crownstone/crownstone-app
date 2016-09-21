@@ -280,9 +280,9 @@ export class Login extends Component {
         this.props.eventBus.emit('hideProgress');
 
         const state = store.getState();
-        this.activeGroup = state.app.activeGroup;
+        this.activeSphere = state.app.activeSphere;
 
-        if (state.app.doFirstTimeSetup === true && Object.keys(state.groups).length === 0) {
+        if (state.app.doFirstTimeSetup === true && Object.keys(state.spheres).length === 0) {
           Actions.setupWelcome();
         }
         else {

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import locationsReducer from './locations'
-import groupUserReducer from './groupUser'
+import sphereUserReducer from './sphereUser'
 import stonesReducer from './stones'
 import appliancesReducer from './appliances'
 import { update, getTime } from './reducerUtil'
@@ -17,9 +17,9 @@ let defaultSettings = {
   }
 };
 
-let groupConfigReducer = (state = defaultSettings.config, action = {}) => {
+let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
-    case 'SET_GROUP_KEYS':
+    case 'SET_SPHERE_KEYS':
       if (action.data) {
         let newState = {...state};
         newState.adminKey = update(action.data.adminKey, newState.adminKey);
@@ -28,8 +28,8 @@ let groupConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
-    case 'ADD_GROUP':
-    case 'UPDATE_GROUP_CONFIG':
+    case 'ADD_SPHERE':
+    case 'UPDATE_SPHERE_CONFIG':
       if (action.data) {
         let newState = {...state};
         newState.name = update(action.data.name, newState.name);
@@ -54,27 +54,27 @@ let presetsReducer = (state = [], action = {}) => {
   }
 };
 
-let combinedGroupReducer = combineReducers({
-  config:     groupConfigReducer,
-  users:      groupUserReducer,
+let combinedSphereReducer = combineReducers({
+  config:     sphereConfigReducer,
+  users:      sphereUserReducer,
   presets:    presetsReducer,
   locations:  locationsReducer,
   stones:     stonesReducer,
   appliances: appliancesReducer
 });
 
-// groupsReducer
+// spheresReducer
 export default (state = {}, action = {}) => {
   switch (action.type) {
-    case 'REMOVE_GROUP':
+    case 'REMOVE_SPHERE':
       let newState = {...state};
-      delete newState[action.groupId];
+      delete newState[action.sphereId];
       return newState;
     default:
-      if (action.groupId !== undefined) {
+      if (action.sphereId !== undefined) {
         return {
           ...state,
-          ...{[action.groupId]:combinedGroupReducer(state[action.groupId], action)}
+          ...{[action.sphereId]:combinedSphereReducer(state[action.sphereId], action)}
         };
       }
       return state;

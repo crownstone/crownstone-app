@@ -32,7 +32,7 @@ export class DeviceScheduleEdit extends Component {
   }
 
   constructScheduleItems(store, scheduleItems) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId};
     let items = [];
 
     //let data = {
@@ -69,7 +69,7 @@ export class DeviceScheduleEdit extends Component {
     return <View />;
     // const store   = this.props.store;
     // const state   = store.getState();
-    // const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    // const room    = state.spheres[this.props.sphereId].locations[this.props.locationId];
     // const device  = room.stones[this.props.stoneId];
     // let scheduleItems = device.schedule;
     //

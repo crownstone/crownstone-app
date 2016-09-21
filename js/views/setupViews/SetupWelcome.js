@@ -61,15 +61,15 @@ export class SetupWelcome extends Component {
         <Animated.Text style={[setupStyle.h0, {position:'absolute', left:this.state.crownstone.x, top:this.state.crownstone.y}]}>CROWNSTONE</Animated.Text>
         <Animated.View style={{opacity:this.state.opacity, flex:1, marginTop:170, flexDirection:'column'}}>
           <View style={setupStyle.lineDistance} />
-          <Text style={setupStyle.text}>Do you want to setup your own Crownstones? If you want to join an existing group, you can skip this step.</Text>
+          <Text style={setupStyle.text}>Do you want to setup your own Crownstones? If you want to join an existing sphere, you can skip this step.</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={setupStyle.text}>You can always add Crownstones, Groups and Rooms later through the settings menu.</Text>
+          <Text style={setupStyle.text}>You can always add Crownstones, Spheres and Rooms later through the settings menu.</Text>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
             <SkipButton onPress={() => {
               Alert.alert(
                 "Are you sure?",
-                "You you can create a Group later in the settings menu or join an existing Group.",
+                "You you can create a Sphere later in the settings menu or join an existing Sphere.",
                 [{text:'No'},{text:'Yes, I\'m sure', onPress: () => {
                   this.props.store.dispatch({type: 'UPDATE_APP_STATE', data: {doFirstTimeSetup: false}});
                   Actions.tabBar()
@@ -77,7 +77,7 @@ export class SetupWelcome extends Component {
               )
               }} />
             <View style={{flex:1}} />
-            <StartButton onPress={Actions.setupAddGroup} />
+            <StartButton onPress={Actions.setupAddSphere} />
           </View>
         </Animated.View>
       </Background>

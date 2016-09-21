@@ -26,7 +26,7 @@ export class RoomEdit extends Component {
     this.unsubscribe = this.props.store.subscribe(() => {
       if (this.props.locationId !== null) {
         let state = this.props.store.getState();
-        let room = state.groups[this.props.groupId].locations[this.props.locationId];
+        let room = state.spheres[this.props.sphereId].locations[this.props.locationId];
         if (room)
           this.forceUpdate();
         else {
@@ -44,7 +44,7 @@ export class RoomEdit extends Component {
     return (
       <TouchableHighlight
         key={stoneId + '_entry'}
-        onPress={() => {Actions.deviceEdit({groupId:this.props.groupId, stoneId, locationId:this.props.locationId})}}
+        onPress={() => {Actions.deviceEdit({sphereId:this.props.sphereId, stoneId, locationId:this.props.locationId})}}
         style={{flex:1}}>
         <View style={styles.listView}>
           <DeviceEntry
@@ -64,7 +64,7 @@ export class RoomEdit extends Component {
     const store   = this.props.store;
     const state   = store.getState();
 
-    let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
+    let items = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
 
     return (
       <Background image={this.props.backgrounds.menu} >

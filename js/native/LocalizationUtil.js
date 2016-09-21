@@ -79,9 +79,9 @@ class FingerprintManagerClass {
     });
   }
 
-  finalizeFingerprint(groupId, locationId) {
+  finalizeFingerprint(sphereId, locationId) {
     this._stopFingerprinting(() => {
-      Bluenet.finalizeFingerprint(groupId, locationId);
+      Bluenet.finalizeFingerprint(sphereId, locationId);
     });
   }
 
@@ -91,10 +91,10 @@ class FingerprintManagerClass {
     });
   }
 
-  getFingerprint(groupId, locationId) {
+  getFingerprint(sphereId, locationId) {
     return new Promise((resolve, reject) => {
       // resolve is pushed ino the fingerprint.
-      Bluenet.getFingerprint(groupId, locationId, resolve);
+      Bluenet.getFingerprint(sphereId, locationId, resolve);
     });
   }
 }
@@ -106,26 +106,26 @@ export const LocalizationUtil = {
   /**
    * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
    */
-  trackGroups: function (store) {
+  trackSpheres: function (store) {
     BleActions.clearTrackedBeacons()
       .then(() => {
         // register the iBeacons UUIDs with the localization system.
         const state = store.getState();
-        let groupIds = Object.keys(state.groups);
-        console.log("GroupIds:", groupIds)
-        groupIds.forEach((groupId) => {
-          let groupIBeaconUUID = state.groups[groupId].config.iBeaconUUID;
+        let sphereIds = Object.keys(state.spheres);
+        console.log("SphereIds:", sphereIds)
+        sphereIds.forEach((sphereId) => {
+          let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
 
-          // track the group beacon UUID
-          Bluenet.trackIBeacon(groupIBeaconUUID, groupId);
+          // track the sphere beacon UUID
+          Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
 
-          LOG("-------------- SETUP TRACKING FOR ", groupIBeaconUUID);
+          LOG("-------------- SETUP TRACKING FOR ", sphereIBeaconUUID);
 
-          let locations = state.groups[groupId].locations;
+          let locations = state.spheres[sphereId].locations;
           let locationIds = Object.keys(locations);
           locationIds.forEach((locationId) => {
             if (locations[locationId].config.fingerprintRaw) {
-              Bluenet.loadFingerprint(groupId, locationId, locations[locationId].config.fingerprintRaw)
+              Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw)
             }
           });
         });

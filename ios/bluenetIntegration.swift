@@ -172,12 +172,12 @@ class BluenetJS: NSObject {
       
       globalBluenet.bluenetLocalization.on("enterRegion", {data -> Void in
         if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEventWithName("enterGroup", body: castData)
+          self.bridge.eventDispatcher().sendAppEventWithName("enterSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalization.on("exitRegion", {data -> Void in
         if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEventWithName("exitGroup", body: castData)
+          self.bridge.eventDispatcher().sendAppEventWithName("exitSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalization.on("enterLocation", {data -> Void in
@@ -300,9 +300,9 @@ class BluenetJS: NSObject {
   }
   
 
-  @objc func trackIBeacon(groupUUID: String, groupId: String) -> Void {
-    print("tracking ibeacons with uuid: \(groupUUID) for group: \(groupId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(groupUUID, groupId: groupId)
+  @objc func trackIBeacon(sphereUUID: String, sphereId: String) -> Void {
+    print("tracking ibeacons with uuid: \(sphereUUID) for sphere: \(sphereId)")
+    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(sphereUUID, groupId: sphereId)
   }
   
   @objc func stopIBeaconTracking() -> Void {
@@ -337,8 +337,8 @@ class BluenetJS: NSObject {
   }
   
   
-  @objc func finalizeFingerprint(groupId: String, locationId: String) -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.finalizeFingerprint(groupId, locationId: locationId)
+  @objc func finalizeFingerprint(sphereId: String, locationId: String) -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.finalizeFingerprint(sphereId, locationId: locationId)
     print("finishCollectingFingerprint")
   }
   
@@ -350,23 +350,23 @@ class BluenetJS: NSObject {
   }
   
   
-  @objc func getFingerprint(groupId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
-    let fingerprint = GLOBAL_BLUENET!.bluenetLocalization.getFingerprint(groupId, locationId: locationId)
+  @objc func getFingerprint(sphereId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
+    let fingerprint = GLOBAL_BLUENET!.bluenetLocalization.getFingerprint(sphereId, locationId: locationId)
     if let fingerprintData = fingerprint {
       callback([fingerprintData.stringify()])
     }
     else {
       callback([])
     }
-    print("getFingerprint \(groupId) \(locationId)")
+    print("getFingerprint \(sphereId) \(locationId)")
 
   }
   
   
-  @objc func loadFingerprint(groupId: String, locationId: String, fingerprint: String) -> Void {
+  @objc func loadFingerprint(sphereId: String, locationId: String, fingerprint: String) -> Void {
     let fingerprint = Fingerprint(stringifiedData: fingerprint)
-    GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(groupId, locationId: locationId, fingerprint: fingerprint)
-    print("loadFingerprint \(groupId) \(locationId)")
+    GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(sphereId, locationId: locationId, fingerprint: fingerprint)
+    print("loadFingerprint \(sphereId) \(locationId)")
   }
   
   

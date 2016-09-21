@@ -19,7 +19,7 @@ import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 
 
-export class GroupOverview extends Component {
+export class SphereOverview extends Component {
   constructor() {
     super();
     this.state = {presentUsers: {}};
@@ -28,14 +28,14 @@ export class GroupOverview extends Component {
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
-      // only rerender if we go to a different group
+      // only rerender if we go to a different sphere
       if (this.renderState === undefined)
         return;
 
       const state = store.getState();
 
-      if (this.renderState.app.activeGroup !== state.app.activeGroup) {
-        LOG("triggering rerender of group overview");
+      if (this.renderState.app.activeSphere !== state.app.activeSphere) {
+        LOG("triggering rerender of sphere overview");
         this.forceUpdate();
       }
     });
@@ -67,24 +67,24 @@ export class GroupOverview extends Component {
     const state = store.getState();
     this.renderState = state;
 
-    let groupIds = Object.keys(state.groups);
-    let noGroups = groupIds.length == 0;
+    let sphereIds = Object.keys(state.spheres);
+    let noSpheres = sphereIds.length == 0;
     let noStones = true;
-    let activeGroup = state.app.activeGroup;
+    let activeSphere = state.app.activeSphere;
 
     // check if we have ANY crownstone
-    groupIds.forEach((groupId) => {
-      if (Object.keys(state.groups[groupId].stones).length > 0) {
+    sphereIds.forEach((sphereId) => {
+      if (Object.keys(state.spheres[sphereId].stones).length > 0) {
         noStones = false;
       }
     });
 
-    if (noGroups) {
+    if (noSpheres) {
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
           <Icon name="c1-house" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-          <Text style={overviewStyles.mainText}>No Groups available.</Text>
-          <Text style={overviewStyles.subText}>Go into the settings to create your own Group or wait to be added to those of others.</Text>
+          <Text style={overviewStyles.mainText}>No Spheres available.</Text>
+          <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
           </View>
       );
     }
@@ -97,11 +97,11 @@ export class GroupOverview extends Component {
         </View>
       );
     }
-    else if (activeGroup) {
+    else if (activeSphere) {
       return (
         <View style={{flex:1}}>
-          <RoomLayer store={store} groupId={state.app.activeGroup} />
-          <Text style={overviewStyles.bottomText}>{'Currently in Group: ' + state.groups[activeGroup].config.name }</Text>
+          <RoomLayer store={store} sphereId={state.app.activeSphere} />
+          <Text style={overviewStyles.bottomText}>{'Currently in Sphere: ' + state.spheres[activeSphere].config.name }</Text>
         </View>
       );
     }
@@ -109,8 +109,8 @@ export class GroupOverview extends Component {
       return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
           <Icon name="c1-signpost" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-          <Text style={overviewStyles.mainText}>No Groups in range...</Text>
-          <Text style={overviewStyles.subText}>If you come in range of a group you are part of, the rooms and Crownstones will be shown automatically.</Text>
+          <Text style={overviewStyles.mainText}>No Spheres in range...</Text>
+          <Text style={overviewStyles.subText}>If you come in range of a sphere you are part of, the rooms and Crownstones will be shown automatically.</Text>
         </View>
       );
     }

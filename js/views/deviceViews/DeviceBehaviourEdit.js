@@ -20,7 +20,7 @@ export class DeviceBehaviourEdit extends Component {
     this.unsubscribe = store.subscribe(() => {
       // guard against deletion of the stone
       let state = this.props.store.getState();
-      let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (stone)
         this.forceUpdate();
       else {
@@ -80,7 +80,7 @@ export class DeviceBehaviourEdit extends Component {
   }
 
   constructOptions(store, device, stone) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
     let items = [];
 
     let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title:this._getTitle(eventName), ...requiredData})};
@@ -94,7 +94,7 @@ export class DeviceBehaviourEdit extends Component {
     eventLabel = 'onHomeExit';
     items.push({label:'WHEN YOU LEAVE YOUR HOME', type: 'explanation',  below:false});
     items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-    items.push({label:'If there are still people (from your group) left in the house, this will not be triggered.', type: 'explanation',  below:true});
+    items.push({label:'If there are still people (from your sphere) left in the house, this will not be triggered.', type: 'explanation',  below:true});
 
     if (stone.config.locationId !== null) {
       // Behaviour for onRoomEnter event
@@ -119,7 +119,7 @@ export class DeviceBehaviourEdit extends Component {
         callback: toDeviceStateSetup.bind(this, eventLabel)
       });
       items.push({
-        label: 'If there are still people (from your group) left in the room, this will not be triggered.',
+        label: 'If there are still people (from your sphere) left in the room, this will not be triggered.',
         type: 'explanation',
         below: true
       });
@@ -144,11 +144,11 @@ export class DeviceBehaviourEdit extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let stone   = state.groups[this.props.groupId].stones[this.props.stoneId];
+    let stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let options = [];
     if (stone.config.applianceId) {
-      let device = state.groups[this.props.groupId].appliances[stone.config.applianceId];
+      let device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
       options = this.constructOptions(store, device, stone);
     }
     else {

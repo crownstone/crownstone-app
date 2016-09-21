@@ -5,7 +5,7 @@ import { RegisterConclusion }        from '../views/startupViews/RegisterConclus
 import { PictureView }               from '../views/cameraViews/PictureView'
 import { PicturePreview }            from '../views/cameraViews/PicturePreview'
 import { CameraRollView }            from '../views/cameraViews/CameraRollView'
-import { GroupOverview }             from '../views/main/GroupOverview'
+import { SphereOverview }             from '../views/main/SphereOverview'
 import { RoomOverview }              from '../views/roomViews/RoomOverview'
 import { RoomEdit }                  from '../views/roomViews/RoomEdit'
 import { SettingsRoomTraining }      from '../views/settingsViews/SettingsRoomTraining'
@@ -19,7 +19,7 @@ import { DeviceScheduleEdit }        from '../views/deviceViews/DeviceScheduleEd
 import { DeviceScheduleAdd }         from '../views/deviceViews/DeviceScheduleAdd'
 import { DaySelection }              from '../views/deviceViews/DaySelection'
 import { SetupWelcome }              from '../views/setupViews/SetupWelcome'
-import { SetupAddGroup }             from '../views/setupViews/SetupAddGroup'
+import { SetupAddSphere }             from '../views/setupViews/SetupAddSphere'
 import { SetupAddCrownstoneSelect }  from '../views/setupViews/SetupAddCrownstoneSelect'
 import { SetupAddPlugInStep1 }       from '../views/setupViews/SetupAddPlugInStep1'
 import { SetupAddPlugInStep2 }       from '../views/setupViews/SetupAddPlugInStep2'
@@ -30,10 +30,10 @@ import { SettingsOverview }          from '../views/settingsViews/SettingsOvervi
 import { SettingsProfile }           from '../views/settingsViews/SettingsProfile'
 import { SettingsChangePassword }    from '../views/settingsViews/SettingsChangePassword'
 import { SettingsChangeEmail }       from '../views/settingsViews/SettingsChangeEmail'
-import { SettingsGroupOverview }     from '../views/settingsViews/SettingsGroupOverview'
-import { SettingsGroup }             from '../views/settingsViews/SettingsGroup'
-import { SettingsGroupInvite }       from '../views/settingsViews/SettingsGroupInvite'
-import { SettingsGroupUser }         from '../views/settingsViews/SettingsGroupUser'
+import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
+import { SettingsSphere }             from '../views/settingsViews/SettingsSphere'
+import { SettingsSphereInvite }       from '../views/settingsViews/SettingsSphereInvite'
+import { SettingsSphereUser }         from '../views/settingsViews/SettingsSphereUser'
 import { SettingsRoomOverview }      from '../views/settingsViews/SettingsRoomOverview'
 import { SettingsRoomIconSelection } from '../views/settingsViews/SettingsRoomIconSelection'
 import { SettingsRoom }              from '../views/settingsViews/SettingsRoom'
@@ -52,7 +52,7 @@ export const Views = {
   PictureView,
   PicturePreview,
   CameraRollView,
-  GroupOverview,
+  SphereOverview,
   RoomOverview,
   RoomEdit,
   SettingsRoomTraining,
@@ -66,7 +66,7 @@ export const Views = {
   DeviceScheduleAdd,
   DaySelection,
   SetupWelcome,
-  SetupAddGroup,
+  SetupAddSphere,
   SetupAddCrownstoneSelect,
   SetupAddPlugInStep1,
   SetupAddPlugInStep2,
@@ -77,10 +77,10 @@ export const Views = {
   SettingsProfile,
   SettingsChangePassword,
   SettingsChangeEmail,
-  SettingsGroupOverview,
-  SettingsGroup,
-  SettingsGroupInvite,
-  SettingsGroupUser,
+  SettingsSphereOverview,
+  SettingsSphere,
+  SettingsSphereInvite,
+  SettingsSphereUser,
   SettingsCrownstoneOverview,
   SettingsCrownstone,
   SettingsRoomIconSelection,

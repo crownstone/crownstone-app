@@ -30,15 +30,15 @@ export class SetupAddPlugInStep3 extends Component {
     this.state = {selectedRoom:undefined, roomName:'', addRoomEditing: false};
 
     // turn on the Crownstone.
-    this.unsubscribeGroupEnter = null;
+    this.unsubscribeSphereEnter = null;
     let state = props.store.getState();
-    if (state.app.activeGroup === undefined && state.app.activeGroup == this.props.groupId) {
-      this.unsubscribeGroupEnter = NativeEventsBridge.locationEvents.on(NativeEvents.location.enterGroup,
-        (groupId) => {
-          if (groupId === this.props.groupId) {
+    if (state.app.activeSphere === undefined && state.app.activeSphere == this.props.sphereId) {
+      this.unsubscribeSphereEnter = NativeEventsBridge.locationEvents.on(NativeEvents.location.enterSphere,
+        (sphereId) => {
+          if (sphereId === this.props.sphereId) {
             BLEutil.getProxy(props.BLEhandle).perform(BleActions.setSwitchState, 1).catch(() => {});
-            this.unsubscribeGroupEnter();
-            this.unsubscribeGroupEnter = null;
+            this.unsubscribeSphereEnter();
+            this.unsubscribeSphereEnter = null;
           }
         });
     }
@@ -57,8 +57,8 @@ export class SetupAddPlugInStep3 extends Component {
 
   componentWillUnmount() {
     this.unsubscribe();
-    if (this.unsubscribeGroupEnter !== null) {
-      this.unsubscribeGroupEnter();
+    if (this.unsubscribeSphereEnter !== null) {
+      this.unsubscribeSphereEnter();
     }
   }
 
@@ -66,11 +66,11 @@ export class SetupAddPlugInStep3 extends Component {
     this.props.eventBus.emit('showLoading', 'Creating room...');
     const { store } = this.props;
     const state = store.getState();
-    CLOUD.forGroup(this.props.groupId).createLocation(roomName)
+    CLOUD.forSphere(this.props.sphereId).createLocation(roomName)
       .then((reply) => {
         this.props.eventBus.emit('hideLoading');
         this.setState({roomName:''});
-        store.dispatch({type:'ADD_LOCATION', groupId: this.props.groupId, locationId: reply.id, data:{name: roomName}});
+        store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: reply.id, data:{name: roomName}});
         this.setState({selectedRoom:reply.id, roomName:''});
       }).done()
   }
@@ -89,7 +89,7 @@ export class SetupAddPlugInStep3 extends Component {
       }
       else {
         // check if the room name is unique.
-        let existingLocations = getRoomNames(state, this.props.groupId);
+        let existingLocations = getRoomNames(state, this.props.sphereId);
         if (existingLocations[roomName] === undefined) {
           Alert.alert(
             'Do you want add a room called \'' + roomName + '\'?',
@@ -132,7 +132,7 @@ export class SetupAddPlugInStep3 extends Component {
   getRoomElements() {
     const { store } = this.props;
     const state = store.getState();
-    let rooms = state.groups[this.props.groupId].locations;
+    let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms).sort();
 
     let roomElements = [];
@@ -169,7 +169,7 @@ export class SetupAddPlugInStep3 extends Component {
       Actions.tabBar();
     }
     else {
-      Actions.setupAddPluginStep4({groupId: this.props.groupId})
+      Actions.setupAddPluginStep4({sphereId: this.props.sphereId})
     }
   }
 
@@ -182,7 +182,7 @@ export class SetupAddPlugInStep3 extends Component {
         <View style={{height:30}} />
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={[setupStyle.h1, {paddingTop:0}]}>Setting up your Crownstone</Text>
-          <Text style={setupStyle.text}>Great! This Crownstone has been added to your Group!</Text>
+          <Text style={setupStyle.text}>Great! This Crownstone has been added to your Sphere!</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.information}>Where is this Crownstone located?</Text>
           {this.getRoomOverview()}
@@ -191,7 +191,7 @@ export class SetupAddPlugInStep3 extends Component {
             <CancelButton onPress={() => {
               Alert.alert(
                "Are you sure?","You can always put Crownstones in rooms later through the Crownstone settings. " +
-               "Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Group.",
+               "Crownstones that are not in rooms will not be used for the indoor localization, other from presence in the Sphere.",
                [{text:'No'},{text:'Yes, I\'m sure', onPress:()=>{
                  this._nextStep();
                }}]
@@ -200,7 +200,7 @@ export class SetupAddPlugInStep3 extends Component {
             <View style={{flex:1}} />
             <NextButton onPress={() => {
               if (this.state.selectedRoom !== undefined) {
-                store.dispatch({type:'UPDATE_STONE_CONFIG', groupId: this.props.groupId, stoneId: this.props.stoneId, data:{locationId: this.state.selectedRoom}});
+                store.dispatch({type:'UPDATE_STONE_CONFIG', sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{locationId: this.state.selectedRoom}});
                 this._nextStep();
               }
               else {

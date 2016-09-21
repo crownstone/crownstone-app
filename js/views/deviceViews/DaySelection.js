@@ -35,7 +35,7 @@ export class DaySelection extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    const room    = state.spheres[this.props.sphereId].locations[this.props.locationId];
     const device  = room.stones[this.props.stoneId];
 
     let optionState = this.props.extractionMethod(device);

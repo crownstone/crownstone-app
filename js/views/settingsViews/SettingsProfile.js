@@ -58,7 +58,7 @@ export class SettingsProfile extends Component {
   _getItems(user) {
     const store = this.props.store;
     const state = store.getState();
-    let groupIds = Object.keys(state.groups);
+    let sphereIds = Object.keys(state.spheres);
     let items = [];
     // room Name:
     items.push({type:'spacer'});
@@ -72,8 +72,8 @@ export class SettingsProfile extends Component {
         if (user.firstName !== newText) {
           if (this.validationState.firstName === 'valid') {
             store.dispatch({type: 'USER_UPDATE', data: {firstName: newText}});
-            // update your settings in every group that you belong to.
-            groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, memberId: user.userId, data:{firstName: newText}}); });
+            // update your settings in every sphere that you belong to.
+            sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{firstName: newText}}); });
           }
           else {
             Alert.alert('First name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
@@ -91,8 +91,8 @@ export class SettingsProfile extends Component {
         if (user.lastName !== newText) {
           if (this.validationState.lastName === 'valid') {
             store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
-            // update your settings in every group that you belong to.
-            groupIds.forEach((groupId) => { store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, memberId: user.userId, data:{lastName: newText}}); });
+            // update your settings in every sphere that you belong to.
+            sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{lastName: newText}}); });
 
           }
           else {
@@ -165,7 +165,7 @@ export class SettingsProfile extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let groupIds = Object.keys(state.groups);
+    let sphereIds = Object.keys(state.spheres);
     let user = state.user;
     this.renderState = state; // important for performance check
 
@@ -180,9 +180,9 @@ export class SettingsProfile extends Component {
                   .then((newPicturePath) => {
                     this.setState({picture:newPicturePath});
                     store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
-                    // update your settings in every group that you belong to.
-                    groupIds.forEach((groupId) => {
-                      store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, userId: user.userId, data: {picture: newPicturePath}});
+                    // update your settings in every sphere that you belong to.
+                    sphereIds.forEach((sphereId) => {
+                      store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath}});
                     });
                   })
                   .catch((err) => {
@@ -192,9 +192,9 @@ export class SettingsProfile extends Component {
             removePicture={() => {
               safeDeleteFile(this.state.picture);
               store.dispatch({type:'USER_UPDATE', data:{picture:null}});
-              // update your settings in every group that you belong to.
-              groupIds.forEach((groupId) => {
-                store.dispatch({type: 'UPDATE_GROUP_USER', groupId: groupId, userId: user.userId, data:{picture: null}});
+              // update your settings in every sphere that you belong to.
+              sphereIds.forEach((sphereId) => {
+                store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null}});
               });
               this.setState({picture:null});
             }}

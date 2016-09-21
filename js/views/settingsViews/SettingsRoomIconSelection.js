@@ -98,7 +98,7 @@ export class SettingsRoomIconSelection extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const selectedIcon = this.props.icon || state.groups[this.props.groupId].locations[this.props.locationId].config.icon;
+    const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
 
     return (
       <Background hideInterface={true} image={this.props.backgrounds.main}>
@@ -115,7 +115,7 @@ export class SettingsRoomIconSelection extends Component {
             this.props.selectCallback !== undefined ?
               this.props.selectCallback :
               (newIcon) => {
-                store.dispatch({type:'UPDATE_LOCATION_CONFIG', groupId: this.props.groupId, locationId: this.props.locationId, data:{icon: newIcon}});
+                store.dispatch({type:'UPDATE_LOCATION_CONFIG', sphereId: this.props.sphereId, locationId: this.props.locationId, data:{icon: newIcon}});
                 Actions.pop();
               }}
           />

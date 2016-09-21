@@ -15,16 +15,16 @@ import { ProfilePicture } from './../components/ProfilePicture'
 import { IconButton } from '../components/IconButton'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getMyLevelInGroup, getGroupContentFromState } from '../../util/dataUtil';
+import { getMyLevelInSphere, getSphereContentFromState } from '../../util/dataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 
-export class SettingsGroup extends Component {
+export class SettingsSphere extends Component {
   constructor() {
     super();
     this.deleting = false;
-    this.validationState = {groupName:'valid'};
+    this.validationState = {sphereName:'valid'};
   }
 
   componentDidMount() {
@@ -42,17 +42,17 @@ export class SettingsGroup extends Component {
 
   _getUsersWithAccess(state,accessLevel) {
     let result = [];
-    let users = state.groups[this.props.groupId].users;
+    let users = state.spheres[this.props.sphereId].users;
     for (let userId in users) {
       if (users.hasOwnProperty(userId)) {
         if (users[userId].accessLevel == accessLevel) {
-          LOG("SHOWING USER IN GROUP", users, users[userId]);
+          LOG("SHOWING USER IN SPHERE", users, users[userId]);
           result.push({
             label:users[userId].firstName + " " + users[userId].lastName,
             type: userId === state.user.userId ? 'info' : 'navigation',
             icon: <ProfilePicture picture={users[userId].picture} />,
             callback: () => {
-              Actions.settingsGroupUser({title: users[userId].firstName, userId: userId, groupId: this.props.groupId});
+              Actions.settingsSphereUser({title: users[userId].firstName, userId: userId, sphereId: this.props.sphereId});
             }
           })
         }
@@ -68,22 +68,22 @@ export class SettingsGroup extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    if (getMyLevelInGroup(state, this.props.groupId) == 'admin') {
-      let groupSettings = state.groups[this.props.groupId].config;
-      items.push({label:'GROUP SETTINGS',  type:'explanation', below:false});
+    if (getMyLevelInSphere(state, this.props.sphereId) == 'admin') {
+      let sphereSettings = state.spheres[this.props.sphereId].config;
+      items.push({label:'SPHERE SETTINGS',  type:'explanation', below:false});
       items.push({
         type:'textEdit',
         label:'Name',
-        value: groupSettings.name,
+        value: sphereSettings.name,
         validation:{minLength:2},
-        validationCallback: (result) => {this.validationState.groupName = result;},
+        validationCallback: (result) => {this.validationState.sphereName = result;},
         callback: (newText) => {
-          if (groupSettings.name !== newText) {
-            if (this.validationState.groupName === 'valid') {
-              this.props.eventBus.emit('showLoading', 'Changing group name...');
-              CLOUD.forGroup(this.props.groupId).changeGroupName(newText)
+          if (sphereSettings.name !== newText) {
+            if (this.validationState.sphereName === 'valid') {
+              this.props.eventBus.emit('showLoading', 'Changing sphere name...');
+              CLOUD.forSphere(this.props.sphereId).changeSphereName(newText)
                 .then((result) => {
-                  store.dispatch({type: 'UPDATE_GROUP_CONFIG', groupId: this.props.groupId,  data: {name: newText}});
+                  store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: this.props.sphereId,  data: {name: newText}});
                   this.props.eventBus.emit('hideLoading');
                 })
                 .catch((err) => {
@@ -91,7 +91,7 @@ export class SettingsGroup extends Component {
                 })
             }
             else {
-              Alert.alert('Group name must be at least 3 letters long', 'Please try again.', [{text: 'OK'}]);
+              Alert.alert('Sphere name must be at least 3 letters long', 'Please try again.', [{text: 'OK'}]);
             }
           }
         }
@@ -116,61 +116,61 @@ export class SettingsGroup extends Component {
       items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
-    let level = getMyLevelInGroup(state, this.props.groupId);
+    let level = getMyLevelInSphere(state, this.props.sphereId);
     if (level == "admin" || level == 'member') {
-      items.push({label:'ADD PEOPLE TO YOUR GROUP', type:'explanation'});
+      items.push({label:'ADD PEOPLE TO YOUR SPHERE', type:'explanation'});
       items.push({
         label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
         labelStyle: {color:colors.blue.hex},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
         callback: () => {
-          Actions.settingsGroupInvite({groupId: this.props.groupId});
+          Actions.settingsSphereInvite({sphereId: this.props.sphereId});
         }
       });
     }
 
 
-    if (getMyLevelInGroup(state, this.props.groupId) == 'admin') {
+    if (getMyLevelInSphere(state, this.props.sphereId) == 'admin') {
       items.push({type:'spacer'});
       items.push({
-        label: 'Delete this Group',
+        label: 'Delete this Sphere',
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
-          this._deleteGroup(state);
+          this._deleteSphere(state);
         }
       });
-      items.push({label:'Deleting a group cannot be undone.',  type:'explanation', below:true});
+      items.push({label:'Deleting a sphere cannot be undone.',  type:'explanation', below:true});
     }
 
     return items;
   }
 
-  _deleteGroup(state) {
+  _deleteSphere(state) {
     Alert.alert(
-      "Are you sure you want to delete this Group?",
-      "This is only possible if you have removed all Crownstones from this Group.",
+      "Are you sure you want to delete this Sphere?",
+      "This is only possible if you have removed all Crownstones from this Sphere.",
       [
         {text:'No'},
         {text:'Yes', onPress:() => {
-          let stones = getGroupContentFromState(state, this.props.groupId);
+          let stones = getSphereContentFromState(state, this.props.sphereId);
           let stoneIds = Object.keys(stones);
           if (stoneIds.length > 0) {
             Alert.alert(
-              "Still Crownstones detected in Group",
-              "You can remove Crownstones from this Group in the Settings > Crownstones, select one and click remove.",
+              "Still Crownstones detected in Sphere",
+              "You can remove Crownstones from this Sphere in the Settings > Crownstones, select one and click remove.",
               [{text:'OK'}]
             );
           }
           else {
-            this.props.eventBus.emit('showLoading','Removing this Group in the Cloud.');
-            CLOUD.forGroup(this.props.groupId).deleteGroup()
+            this.props.eventBus.emit('showLoading','Removing this Sphere in the Cloud.');
+            CLOUD.forSphere(this.props.sphereId).deleteSphere()
               .then(() => {
                 this.props.eventBus.emit('hideLoading');
                 this.deleting = true;
                 Actions.pop();
-                this.props.store.dispatch({type:'REMOVE_GROUP', groupId: this.props.groupId});
+                this.props.store.dispatch({type:'REMOVE_SPHERE', sphereId: this.props.sphereId});
               })
           }
         }}

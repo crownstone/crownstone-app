@@ -59,7 +59,7 @@ export class AppRouter extends Component {
     let dataLoginValidation = () => {
       let state = store.getState();
 
-      store.dispatch({type:"CLEAR_ACTIVE_GROUP"});
+      store.dispatch({type:"CLEAR_ACTIVE_SPHERE"});
 
       // pass the store to the singletons
       NativeEventsBridge.loadStore(store);
@@ -139,7 +139,7 @@ export class AppRouter extends Component {
               <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="setupWelcome"               component={Views.SetupWelcome}               hideNavBar={true}  type="reset"  direction="vertical" />
-              <Scene key="setupAddGroup"              component={Views.SetupAddGroup}              hideNavBar={true}  />
+              <Scene key="setupAddSphere"             component={Views.SetupAddSphere}             hideNavBar={true}  />
               <Scene key="setupAddCrownstoneSelect"   component={Views.SetupAddCrownstoneSelect}   hideNavBar={true}  type="reset" />
               <Scene key="setupAddPluginStep1"        component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />
               <Scene key="setupAddPluginStep2"        component={Views.SetupAddPlugInStep2}        hideNavBar={true}  />
@@ -154,7 +154,7 @@ export class AppRouter extends Component {
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
-                  <Scene key="groupOverview"          component={Views.GroupOverview}              title="Group Overview"  />
+                  <Scene key="sphereOverview"         component={Views.SphereOverview}             title="Sphere Overview"  />
                   <Scene key="roomOverview"           component={Views.RoomOverview}               onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white',backgroundColor:"transparent"}} />
                   <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Configure Devices" />
                   <Scene key="deviceEdit"             component={Views.DeviceEdit}                 title="Edit Device" />
@@ -171,10 +171,10 @@ export class AppRouter extends Component {
                   <Scene key="settingsProfile"            component={Views.SettingsProfile}             title="Your Profile" />
                   <Scene key="settingsChangeEmail"        component={Views.SettingsChangeEmail}         title="Change Email"/>
                   <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}      title="Change Password"/>
-                  <Scene key="settingsGroupOverview"      component={Views.SettingsGroupOverview}       title="Group Overview" />
-                  <Scene key="settingsGroup"              component={Views.SettingsGroup}               title="[Group name here]" />
-                  <Scene key="settingsGroupUser"          component={Views.SettingsGroupUser}           title="[Username here]" />
-                  <Scene key="settingsGroupInvite"        component={Views.SettingsGroupInvite}         title="Invite" />
+                  <Scene key="settingsSphereOverview"      component={Views.SettingsSphereOverview}       title="Sphere Overview" />
+                  <Scene key="settingsSphere"              component={Views.SettingsSphere}               title="[Sphere name here]" />
+                  <Scene key="settingsSphereUser"          component={Views.SettingsSphereUser}           title="[Username here]" />
+                  <Scene key="settingsSphereInvite"        component={Views.SettingsSphereInvite}         title="Invite" />
                   <Scene key="settingsCrownstoneOverview" component={Views.SettingsCrownstoneOverview}  title="Manage Your Crownstones"/>
                   <Scene key="settingsCrownstone"         component={Views.SettingsCrownstone}          title="Manage Crownstone"/>
                   <Scene key="settingsRoomOverview"       component={Views.SettingsRoomOverview}        title="Manage Rooms"/>
@@ -220,7 +220,7 @@ class TabIcon extends Component {
 }
 
 let onRightFunctionEdit = function(params) {
-  Actions.roomEdit({groupId: params.groupId, locationId: params.locationId});
+  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId});
 };
 
 let navBarStyle = {
@@ -230,26 +230,26 @@ let navBarStyle = {
 
 var removeAllPresentUsers = function(store) {
   const state = store.getState();
-  let groups = state.groups;
-  let groupIds = Object.keys(groups);
-  groupIds.forEach((groupId) => {
-    let locations = groups[groupId].locations;
+  let spheres = state.spheres;
+  let sphereIds = Object.keys(spheres);
+  sphereIds.forEach((sphereId) => {
+    let locations = spheres[sphereId].locations;
     let locationIds = Object.keys(locations);
     locationIds.forEach((locationId) => {
-      store.dispatch({type:'CLEAR_USERS', groupId:groupId, locationId:locationId})
+      store.dispatch({type:'CLEAR_USERS', sphereId:sphereId, locationId:locationId})
     })
   })
 };
 
 var clearAllCurrentPowerUsage = function(store) {
   const state = store.getState();
-  let groups = state.groups;
-  let groupIds = Object.keys(groups);
-  groupIds.forEach((groupId) => {
-    let stones = groups[groupId].stones;
+  let spheres = state.spheres;
+  let sphereIds = Object.keys(spheres);
+  sphereIds.forEach((sphereId) => {
+    let stones = spheres[sphereId].stones;
     let stoneIds = Object.keys(stones);
     stoneIds.forEach((stoneId) => {
-      store.dispatch({type:'CLEAR_STONE_USAGE', groupId:groupId, stoneId:stoneId})
+      store.dispatch({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId})
     })
   })
 };

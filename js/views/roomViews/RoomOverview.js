@@ -37,7 +37,7 @@ export class RoomOverview extends Component {
       // guard against deletion of the room
       if (this.props.locationId !== null) {
         let state = this.props.store.getState();
-        let room = state.groups[this.props.groupId].locations[this.props.locationId];
+        let room = state.spheres[this.props.sphereId].locations[this.props.locationId];
         if (room)
           this.forceUpdate();
         else {
@@ -75,7 +75,7 @@ export class RoomOverview extends Component {
                 .then(() => {
                   this.props.store.dispatch({
                     type: 'UPDATE_STONE_STATE',
-                    groupId: this.props.groupId,
+                    sphereId: this.props.sphereId,
                     stoneId: stoneId,
                     data: data
                   });
@@ -110,9 +110,9 @@ export class RoomOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let usage = getCurrentPowerUsageFromState(state, this.props.groupId, this.props.locationId);
-    let users = getPresentUsersFromState(state, this.props.groupId, this.props.locationId);
-    let items = getRoomContentFromState(state, this.props.groupId, this.props.locationId);
+    let usage = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
+    let users = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
+    let items = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
 
     if (Object.keys(items).length == 0) {
       return (

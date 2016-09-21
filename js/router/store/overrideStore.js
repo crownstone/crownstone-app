@@ -8,8 +8,8 @@ export const fakeStore = {
     picture: null,
     updatedAt: 1465835364017
   },
-  groups: {
-    groupId: {
+  spheres: {
+    sphereId: {
       config: {
         name: "RockstartDemo",
         // uuid: "349d9214-7cb7-269e-964d-1003ae25b7b2", // ibeacon uuid
@@ -440,7 +440,7 @@ export const fakeStore = {
     updatedAt: 1465835364025
   },
   app: {
-    activeGroup: 'groupId',
+    activeSphere: 'sphereId',
     enableLocalization: true,
     doFirstTimeSetup: true,
     updatedAt: 1465835364025

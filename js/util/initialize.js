@@ -15,9 +15,9 @@ export const INITIALIZER = {
 
 
       // subscribe to iBeacons when required.
-      CLOUD.events.on('CloudSyncComplete_groupsChanged', () => {LocalizationUtil.trackGroups(store);});
-      eventBus.on(    'appStarted',                      () => {LocalizationUtil.trackGroups(store);});
-      eventBus.on(    'groupCreated',                    () => {LocalizationUtil.trackGroups(store);});
+      CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});
+      eventBus.on(    'appStarted',                       () => {LocalizationUtil.trackSpheres(store);});
+      eventBus.on(    'sphereCreated',                    () => {LocalizationUtil.trackSpheres(store);});
 
       // configure the CLOUD network handler.
       let handler = function(error) {

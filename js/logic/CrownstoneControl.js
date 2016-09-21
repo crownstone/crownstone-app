@@ -12,8 +12,8 @@ import { LOG } from '../logging/Log'
 //
 // function checkBehaviour(store, locationId, type) {
 //   const state = store.getState();
-//   const activeGroup = state.app.activeGroup;
-//   const locations = state.groups[activeGroup].locations;
+//   const activeSphere = state.app.activeSphere;
+//   const locations = state.spheres[activeSphere].locations;
 //   const locationIds = Object.keys(locations);
 //   const location = locations[locationId];
 //
@@ -22,11 +22,11 @@ import { LOG } from '../logging/Log'
 //     return;
 //   }
 //   const userId = state.user.userId;
-//   const devices = getRoomContentFromState(state, activeGroup, locationId);
+//   const devices = getRoomContentFromState(state, activeSphere, locationId);
 //
 //   if (type === "onRoomExit") {
 //     if (locations[locationId].presentUsers.indexOf(userId) !== -1) {
-//       store.dispatch({type:"USER_EXIT", groupId: activeGroup, locationId: locationId, data:{userId: userId}})
+//       store.dispatch({type:"USER_EXIT", sphereId: activeSphere, locationId: locationId, data:{userId: userId}})
 //     }
 //   }
 //   else if (type === "onRoomEnter") {
@@ -35,14 +35,14 @@ import { LOG } from '../logging/Log'
 //     // locationIds.forEach((otherLocationId) => {
 //     //   if (otherLocationId !== locationId) {
 //     //     if (locations[otherLocationId].presentUsers.indexOf(userId) !== -1) {
-//     //       store.dispatch({type: "USER_EXIT", groupId: activeGroup, locationId: otherLocationId, data: {userId: userId}})
+//     //       store.dispatch({type: "USER_EXIT", sphereId: activeSphere, locationId: otherLocationId, data: {userId: userId}})
 //     //     }
 //     //   }
 //     // });
 //     // add user to rooms
 //     if (locations[locationId].presentUsers.indexOf(userId) === -1) {
-//       LOG("dispatching user enter event in", activeGroup, locationId, userId);
-//       store.dispatch({type:"USER_ENTER", groupId: activeGroup, locationId: locationId, data:{userId: userId}})
+//       LOG("dispatching user enter event in", activeSphere, locationId, userId);
+//       store.dispatch({type:"USER_ENTER", sphereId: activeSphere, locationId: locationId, data:{userId: userId}})
 //     }
 //   }
 //
@@ -79,10 +79,10 @@ class AdvertisementManagerClass {
       let id = serviceData.crownstoneId;
 
       let state = this.storeReference.getState();
-      let groupId = state.app.activeGroup;
+      let sphereId = state.app.activeSphere;
       this.storeReference.dispatch({
         type: 'UPDATE_STONE_STATE',
-        groupId: groupId,
+        sphereId: sphereId,
         stoneId: id,
         data: {currentUsage:0}
       });
@@ -182,11 +182,11 @@ export const processScanResponse = function(store, packet = {}) {
 
   if (packet.isCrownstone === true) {
     const state = store.getState();
-    const activeGroup = state.app.activeGroup;
+    const activeSphere = state.app.activeSphere;
 
     let serviceData = packet.serviceData[CROWNSTONE_SERVICEDATA_UUID];
     let stoneId = serviceData.crownstoneId;
-    let stone = state.groups[activeGroup].stones[stoneId];
+    let stone = state.spheres[activeSphere].stones[stoneId];
 
     // break if a different thing is scanned
     if (stone === undefined) {
@@ -198,13 +198,13 @@ export const processScanResponse = function(store, packet = {}) {
     //   LOG("RESTORING ID FOR ", stoneId , " TO ", packet.id);
     //   store.dispatch({
     //     type: "UPDATE_STONE_CONFIG",
-    //     groupId: activeGroup,
+    //     sphereId: activeSphere,
     //     stoneId: stoneId,
     //     data: {uuid: packet.id}
     //   })
     // }
 
-    let locationName = state.groups[activeGroup].locations[stone.config.locationId].config.name;
+    let locationName = state.spheres[activeSphere].locations[stone.config.locationId].config.name;
     let currentUsage = stone.state.currentUsage;
     //if (serviceData.switchState == 0) {
     //  AdvertisementManager.resetData(serviceData);
@@ -224,7 +224,7 @@ export const processScanResponse = function(store, packet = {}) {
     //   LOG("SETTING SWITCH STATE for state", stone.state.state, serviceData, " in: ", locationName);
     //   store.dispatch({
     //     type: "UPDATE_STONE_STATE",
-    //     groupId: activeGroup,
+    //     sphereId: activeSphere,
     //     stoneId: stoneId,
     //     data: {state: serviceData.switchState / 255, currentUsage: Math.max(0, serviceData.powerUsage)}
     //   })
@@ -233,7 +233,7 @@ export const processScanResponse = function(store, packet = {}) {
     //   LOG("SETTING SWITCH STATE for power", powerUsage - serviceData.powerUsage, powerUsage, " in: ", locationName);
     //   store.dispatch({
     //     type: "UPDATE_STONE_STATE",
-    //     groupId: activeGroup,
+    //     sphereId: activeSphere,
     //     stoneId: stoneId,
     //     data: {state: serviceData.switchState / 255, currentUsage: powerUsage}
     //   })
@@ -243,7 +243,7 @@ export const processScanResponse = function(store, packet = {}) {
         // LOG("SETTING SWITCH STATE due to cs:",packet.name," for state", stone.state.state, serviceData, " in: ", locationName);
         store.dispatch({
           type: "UPDATE_STONE_STATE",
-          groupId: activeGroup,
+          sphereId: activeSphere,
           stoneId: stoneId,
           data: {state: serviceData.switchState, currentUsage: powerUsage}
         })
@@ -252,7 +252,7 @@ export const processScanResponse = function(store, packet = {}) {
         LOG("SETTING POWER USAGE due to cs:",packet.name ," for power diff:", powerUsage - currentUsage, " from current: ", currentUsage, "measured:",powerUsage,"raw:",rawPowerUsage,"data:",powerUsageFull, "in: ", locationName);
         store.dispatch({
           type: "UPDATE_STONE_STATE",
-          groupId: activeGroup,
+          sphereId: activeSphere,
           stoneId: stoneId,
           data: {state: serviceData.switchState, currentUsage: powerUsage}
         })

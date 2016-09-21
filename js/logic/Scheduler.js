@@ -22,7 +22,7 @@ class SchedulerClass {
 
 
   init() {
-    NativeEventsBridge.locationEvents.on(NativeEvents.location.exitGroup,       this.flushAll.bind(this));
+    NativeEventsBridge.locationEvents.on(NativeEvents.location.exitSphere,       this.flushAll.bind(this));
     NativeEventsBridge.locationEvents.on(NativeEvents.ble.iBeaconAdvertisement, this.tick.bind(this));
   }
   

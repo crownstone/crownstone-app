@@ -45,14 +45,14 @@ export class SettingsCrownstone extends Component {
 
   _getItems() {
     let items = [];
-    let requiredData = {groupId: this.props.groupId, stoneId: this.props.stoneId};
+    let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId};
 
     const store = this.props.store;
     const state = store.getState();
-    let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    let roomName = getRoomName(state, this.props.groupId, stone.config.locationId);
-    let roomNames = Object.keys(getRoomNames(state, this.props.groupId));
+    let roomName = getRoomName(state, this.props.sphereId, stone.config.locationId);
+    let roomNames = Object.keys(getRoomNames(state, this.props.sphereId));
     roomNames.push(NO_LOCATION_NAME); // add the location for no crownstones.
 
     let options = roomNames.map((roomName) => {return {label:roomName}});
@@ -91,7 +91,7 @@ export class SettingsCrownstone extends Component {
               Alert.alert("Move Crownstone to " + selectedRoom,
                 "If you move a Crownstone to a different room, we'd recommend you retrain the rooms to ensure the indoor localization will work correctly.",
                 [{text:'Cancel'}, {text:"OK", onPress: () => {
-                  let roomId = getRoomIdFromName(state, this.props.groupId, selectedRoom);
+                  let roomId = getRoomIdFromName(state, this.props.sphereId, selectedRoom);
                   store.dispatch({...requiredData, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})
                 }}])
             }
@@ -109,13 +109,13 @@ export class SettingsCrownstone extends Component {
     // items.push({label:'This Crownstone is up to date.',  type:'explanation', below:true});
 
     items.push({
-      label: 'Remove from Group',
+      label: 'Remove from Sphere',
       icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       type: 'button',
       callback: () => {
         Alert.alert(
           "Are you sure?",
-          "Removing a Crownstone from the group will revert it to it's factory default settings.",
+          "Removing a Crownstone from the sphere will revert it to it's factory default settings.",
           [{text: 'Cancel'}, {text: 'Remove', onPress: () => {
               Alert.alert(
                 "Let\'s get started!",
@@ -129,7 +129,7 @@ export class SettingsCrownstone extends Component {
         )
       }
     });
-    items.push({label:'Removing this Crownstone from its Group will reset it back to factory defaults.',  type:'explanation', below:true});
+    items.push({label:'Removing this Crownstone from its Sphere will reset it back to factory defaults.',  type:'explanation', below:true});
 
     return items;
   }
@@ -147,7 +147,7 @@ export class SettingsCrownstone extends Component {
         })
         .catch((err) => {
           Alert.alert("Can't see this one!",
-            "We can't find this Crownstone while scanning. Can you move closer to it and try again? If you want to remove it from your Group without resetting it, press Delete anyway.",
+            "We can't find this Crownstone while scanning. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
             [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}},
               {text:'OK', onPress: () => {this.props.eventBus.emit('hideLoading');}}])
         })
@@ -157,7 +157,7 @@ export class SettingsCrownstone extends Component {
 
   _removeCloudOnly() {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
-    CLOUD.forGroup(this.props.groupId).deleteStone(this.props.stoneId)
+    CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .then(() => {
         this._removeCrownstoneFromRedux();
       })
@@ -173,7 +173,7 @@ export class SettingsCrownstone extends Component {
 
   _removeCloudReset(stone) {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
-    CLOUD.forGroup(this.props.groupId).deleteStone(this.props.stoneId)
+    CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
         let proxy = BLEutil.getProxy(stone.config.handle);
@@ -210,11 +210,11 @@ export class SettingsCrownstone extends Component {
 
     // revert to the previous screen
     Alert.alert("Success!",
-      "We have removed this Crownstone from the Cloud, your Group and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a (new?) Group.",
+      "We have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a (new?) Sphere.",
       [{text:'OK', onPress: () => {
         Actions.pop();
         this.props.eventBus.emit('hideLoading');
-        this.props.store.dispatch({type: "REMOVE_STONE", groupId: this.props.groupId, stoneId: this.props.stoneId});
+        this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }
       }]
     )

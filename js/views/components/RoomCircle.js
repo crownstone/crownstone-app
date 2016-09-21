@@ -46,15 +46,15 @@ export class RoomCircle extends Component {
         return;
       // only redraw if the power usage changes or if the settings of the room change
       const state = store.getState();
-      let usage = getCurrentPowerUsageFromState(state, this.props.groupId, this.props.locationId);
+      let usage = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
 
       // in the case the room is deleted, do not redraw.
-      if (this.props.locationId !== null && state.groups[this.props.groupId].locations[this.props.locationId] === undefined) {
+      if (this.props.locationId !== null && state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
         return;
       }
 
       if (this.props.locationId !== null) {
-        if (usage !== this.usage || state.groups[this.props.groupId].locations[this.props.locationId].config != this.renderState.groups[this.props.groupId].locations[this.props.locationId].config) {
+        if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
           this.usage = usage;
           this.color = this._getColor(this.usage);
           this.forceUpdate();
@@ -219,7 +219,7 @@ export class RoomCircle extends Component {
       room = {config:{icon:'c2-pluginFilled'}}
     }
     else {
-      room = state.groups[this.props.groupId].locations[this.props.locationId];
+      room = state.spheres[this.props.sphereId].locations[this.props.locationId];
     }
 
     return (

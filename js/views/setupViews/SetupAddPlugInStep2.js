@@ -72,7 +72,7 @@ export class SetupAddPlugInStep2 extends Component {
     BLEutil.getNearestSetupCrownstone()
       .then((foundCrownstone) => {
         let crownstone = foundCrownstone;
-        this.interrogateStone(crownstone, this.props.groupId);
+        this.interrogateStone(crownstone, this.props.sphereId);
       })
       .catch((err) => {
         BLEutil.cancelAllSearches();
@@ -112,7 +112,7 @@ export class SetupAddPlugInStep2 extends Component {
       LOG("received from cloud:",cloudResponse);
       store.dispatch({
         type: "ADD_STONE",
-        groupId: this.props.groupId,
+        sphereId: this.props.sphereId,
         stoneId: cloudResponse.id,
         data: {
           type: 'plugin_v1',
@@ -134,7 +134,7 @@ export class SetupAddPlugInStep2 extends Component {
         Actions.pop();
       }}]);
     };
-    CLOUD.createStone(this.props.groupId, MACAddress, 'plugin_v1')
+    CLOUD.createStone(this.props.sphereId, MACAddress, 'plugin_v1')
       .then(processSuccess)
       .catch((err) => {
         if (err.status === 422) {
@@ -162,19 +162,19 @@ export class SetupAddPlugInStep2 extends Component {
   claimStone(crownstone, stoneId) {
     const {store} = this.props;
     const state = store.getState();
-    let groupId = this.props.groupId;
-    let groupData = state.groups[groupId].config;
-    let stoneData = state.groups[groupId].stones[stoneId].config;
+    let sphereId = this.props.sphereId;
+    let sphereData = state.spheres[sphereId].config;
+    let stoneData = state.spheres[sphereId].stones[stoneId].config;
 
     this.setProgress(4);
 
     let data = {};
     data.crownstoneId      = stoneData.crownstoneId;
-    data.adminKey          = groupData.adminKey;
-    data.memberKey         = groupData.memberKey;
-    data.guestKey          = groupData.guestKey;
-    data.meshAccessAddress = groupData.meshAccessAddress || 2789430350;
-    data.ibeaconUUID       = groupData.iBeaconUUID;
+    data.adminKey          = sphereData.adminKey;
+    data.memberKey         = sphereData.memberKey;
+    data.guestKey          = sphereData.guestKey;
+    data.meshAccessAddress = sphereData.meshAccessAddress || 2789430350;
+    data.ibeaconUUID       = sphereData.iBeaconUUID;
     data.ibeaconMajor      = stoneData.iBeaconMajor;
     data.ibeaconMinor      = stoneData.iBeaconMinor;
 
@@ -183,7 +183,7 @@ export class SetupAddPlugInStep2 extends Component {
       .then(() => {
         this.setProgress(5);
         setTimeout(() => { this.setProgress(6); }, 300);
-        setTimeout(() => { Actions.setupAddPluginStep3({stoneId: stoneId, groupId:this.props.groupId, fromMainMenu: this.props.fromMainMenu, BLEhandle: stoneData.handle}); }, 1800);
+        setTimeout(() => { Actions.setupAddPluginStep3({stoneId: stoneId, sphereId:this.props.sphereId, fromMainMenu: this.props.fromMainMenu, BLEhandle: stoneData.handle}); }, 1800);
       })
       .catch((err) => {
         BLEutil.cancelAllSearches();
@@ -201,7 +201,7 @@ export class SetupAddPlugInStep2 extends Component {
                 if (success) {
                   LOG("going to setupAddPlugInStepRecover");
                   Actions.setupAddPlugInStepRecover({
-                    groupId: this.props.groupId,
+                    sphereId: this.props.sphereId,
                     fromMainMenu: this.props.fromMainMenu
                   });
                 }
@@ -219,7 +219,7 @@ export class SetupAddPlugInStep2 extends Component {
         this.props.eventBus.emit('hideLoading');
         store.dispatch({
           type: "REMOVE_STONE",
-          groupId: this.props.groupId,
+          sphereId: this.props.sphereId,
           stoneId: stoneId,
         });
         return true;
@@ -248,7 +248,7 @@ export class SetupAddPlugInStep2 extends Component {
         break;
       case 4:
         newImage = require('../../images/lineDrawings/holdingPhoneNextToPlugPairing.png');
-        this.setState({progress: 0.7, text: 'Binding this Crownstone to your Group...'});
+        this.setState({progress: 0.7, text: 'Binding this Crownstone to your Sphere...'});
         break;
       case 5:
         newImage = require('../../images/lineDrawings/holdingPhoneNextToPlugActivate.png');

@@ -26,7 +26,7 @@ export class DeviceScheduleAdd extends Component {
     this.unsubscribe = store.subscribe(() => {
       // guard against deletion of the stone
       let state = this.props.store.getState();
-      let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (stone)
         this.forceUpdate();
       else {
@@ -39,7 +39,7 @@ export class DeviceScheduleAdd extends Component {
   }
 
   constructScheduleItems(store, scheduleItems) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId};
     let items = [];
 
     //let data = {
@@ -77,7 +77,7 @@ export class DeviceScheduleAdd extends Component {
     //
     // const store   = this.props.store;
     // const state   = store.getState();
-    // const room    = state.groups[this.props.groupId].locations[this.props.locationId];
+    // const room    = state.spheres[this.props.sphereId].locations[this.props.locationId];
     // const device  = room.stones[this.props.stoneId];
     // let scheduleItems = device.schedule;
     //

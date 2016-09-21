@@ -1,15 +1,15 @@
 export const stones = {
   /**
    * Create a crownstone in the cloud so the major and minor can be generated
-   * @param groupId
+   * @param sphereId
    * @param MACAddress
    * @returns {*}
    */
-  createStone: function(groupId, MACAddress, type) {
+  createStone: function(sphereId, MACAddress, type) {
     return this._setupRequest(
       'POST',
       '/Stones',
-      {data:{groupId:groupId, address:MACAddress, type:type}},
+      {data:{sphereId:sphereId, address:MACAddress, type:type}},
       'body'
     );
   },
@@ -33,10 +33,10 @@ export const stones = {
 
 
   /**
-   * request the data of all crownstones in this group
+   * request the data of all crownstones in this sphere
    * @returns {*}
    */
-  getStonesInGroup: function() {
+  getStonesInSphere: function() {
     return this._setupRequest(
       'GET',
       '/Groups/{id}/ownedStones'

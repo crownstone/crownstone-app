@@ -33,7 +33,7 @@ export class CloudChoice extends Component {
               <Text style={setupStyle.text}>Use the Cloud to store data</Text>
             </View>
           </View>
-          <Text style={choiceStyle.smallText}>The cloud is used to allow multiple users to use your Crownstones. Crownstones, groups, rooms are stored in the cloud and synces across devices.</Text>
+          <Text style={choiceStyle.smallText}>The cloud is used to allow multiple users to use your Crownstones. Crownstones, spheres, rooms are stored in the cloud and synces across devices.</Text>
         </TouchableOpacity>
         <View style={{flex:1}} />
         <TouchableOpacity style={{paddingLeft:30, paddingRight:30}}>

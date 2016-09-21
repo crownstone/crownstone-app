@@ -19,47 +19,47 @@ import { setupStyle, NextButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 import { LOG } from '../../logging/Log'
 
-export class SetupAddGroup extends Component {
+export class SetupAddSphere extends Component {
   constructor() {
     super();
-    this.state = {groupName:'', processing:false, processingText:'Setting up Group...'}
+    this.state = {sphereName:'', processing:false, processingText:'Setting up Sphere...'}
   }
 
-  saveGroupName() {
+  saveSphereName() {
     const store = this.props.store;
     const state = store.getState();
     let me = state.user;
 
-    if (this.state.groupName.length > 2) {
-      this.props.eventBus.emit('showLoading', 'Creating Group...');
-      CLOUD.forUser(state.user.userId).createGroup(this.state.groupName)
+    if (this.state.sphereName.length > 2) {
+      this.props.eventBus.emit('showLoading', 'Creating Sphere...');
+      CLOUD.forUser(state.user.userId).createSphere(this.state.sphereName)
         .then((response) => {
 
           let creationActions = [];
-          // add the group to the database once it had been added in the cloud.
-          creationActions.push({type:'ADD_GROUP', groupId: response.id, data:{name: response.name, iBeaconUUID: response.uuid}});
+          // add the sphere to the database once it had been added in the cloud.
+          creationActions.push({type:'ADD_SPHERE', sphereId: response.id, data:{name: response.name, iBeaconUUID: response.uuid}});
 
-          // add yourself to the group members as admin
-          creationActions.push({type: 'ADD_GROUP_USER', groupId: response.id, userId: me.userId, data:{picture: me.picture, firstName: me.firstName, lastName: me.lastName, email:me.email, emailVerified: true, accessLevel: 'admin'}});
+          // add yourself to the sphere members as admin
+          creationActions.push({type: 'ADD_SPHERE_USER', sphereId: response.id, userId: me.userId, data:{picture: me.picture, firstName: me.firstName, lastName: me.lastName, email:me.email, emailVerified: true, accessLevel: 'admin'}});
 
-          // get all encryption keys the user has access to and store them in the appropriate groups.
+          // get all encryption keys the user has access to and store them in the appropriate spheres.
           CLOUD.getKeys()
             .then((keyResult) => {
               if (Array.isArray(keyResult)) {
                 LOG(keyResult);
                 keyResult.forEach((keySet) => {
-                  creationActions.push({type:'SET_GROUP_KEYS', groupId: keySet.groupId, data:{
+                  creationActions.push({type:'SET_SPHERE_KEYS', sphereId: keySet.sphereId, data:{
                     adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
                     memberKey: keySet.keys.member || null,
                     guestKey:  keySet.keys.guest  || null
                   }})
                 });
-                this.props.eventBus.emit('groupCreated');
+                this.props.eventBus.emit('sphereCreated');
                 this.props.eventBus.emit('hideLoading');
 
                 store.batchDispatch(creationActions);
                 // we initially only support plugin so we skip the selection step.
-                Actions.setupAddPluginStep1({groupId: response.id});
+                Actions.setupAddPluginStep1({sphereId: response.id});
               }
               else {
                 throw new Error("Key data is not an array.")
@@ -74,7 +74,7 @@ export class SetupAddGroup extends Component {
                 logOut();
                 break;
               case 422:
-                Alert.alert("Group '" + this.state.groupName + "' already exists.","Please try a different name.", [{text:'OK'}]);
+                Alert.alert("Sphere '" + this.state.sphereName + "' already exists.","Please try a different name.", [{text:'OK'}]);
                 break;
               default:
                 LOG(err);
@@ -83,7 +83,7 @@ export class SetupAddGroup extends Component {
           }
           else {
             LOG(err);
-            Alert.alert("Error when creating group.",JSON.stringify(err), [{text:'OK..'}]);
+            Alert.alert("Error when creating sphere.",JSON.stringify(err), [{text:'OK..'}]);
           }
 
 
@@ -91,7 +91,7 @@ export class SetupAddGroup extends Component {
         })
     }
     else {
-      Alert.alert("Please provide a valid Group name.", "It must be at least 3 characters long.", [{text:'OK'}])
+      Alert.alert("Please provide a valid Sphere name.", "It must be at least 3 characters long.", [{text:'OK'}])
     }
   }
 
@@ -100,23 +100,23 @@ export class SetupAddGroup extends Component {
       <Background hideInterface={true} image={this.props.backgrounds.setup}>
         <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={{flex:1, flexDirection:'column'}}>
-          <Text style={[setupStyle.h0, {paddingTop:0}]}>Group Setup</Text>
-          <Text style={setupStyle.text}>A Group is a place like "Home", or "Office" where you use your Crownstones.</Text>
+          <Text style={[setupStyle.h0, {paddingTop:0}]}>Sphere Setup</Text>
+          <Text style={setupStyle.text}>A Sphere is a place like "Home", or "Office" where you use your Crownstones.</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={setupStyle.information}>You can invite other people to join this group so they can use your Crownstones too.</Text>
+          <Text style={setupStyle.information}>You can invite other people to join this sphere so they can use your Crownstones too.</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={setupStyle.information}>You can use permission levels to determine how much control invited people have in your Group.</Text>
+          <Text style={setupStyle.information}>You can use permission levels to determine how much control invited people have in your Sphere.</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={setupStyle.information}>Choose a name for your Group:</Text>
+          <Text style={setupStyle.information}>Choose a name for your Sphere:</Text>
           <View style={[setupStyle.textBoxView,{height:70, backgroundColor:'transparent'}]}>
             <View style={[setupStyle.textBoxView, {height:40, width: screenWidth - 40}]}>
-              <TextEditInput style={{flex:1, padding:10}} placeholder="Group name" placeholderTextColor="#888" value={this.state.groupName} callback={(newValue) => {this.setState({groupName:newValue});}} />
+              <TextEditInput style={{flex:1, padding:10}} placeholder="Sphere name" placeholderTextColor="#888" value={this.state.sphereName} callback={(newValue) => {this.setState({sphereName:newValue});}} />
             </View>
           </View>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
-            <NextButton onPress={this.saveGroupName.bind(this)} />
+            <NextButton onPress={this.saveSphereName.bind(this)} />
           </View>
         </View>
       </Background>

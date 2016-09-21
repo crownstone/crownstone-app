@@ -24,7 +24,7 @@ export class SetupAddCrownstoneSelect extends Component {
         <View style={styles.shadedStatusBar} />
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={setupStyle.h0}>Add your Crownstone</Text>
-          <Text style={setupStyle.text}>What sort of Crownstone would you like to add to the group?</Text>
+          <Text style={setupStyle.text}>What sort of Crownstone would you like to add to the sphere?</Text>
           <View style={{flex:1}} />
           <View style={{flexDirection:'row', alignItems:'center'}}>
             <View style={subStyles.container}>

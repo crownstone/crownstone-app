@@ -87,8 +87,8 @@ export const NativeEvents = {
   },
   location: {
     iBeaconAdvertisement: "iBeaconAdvertisement",
-    enterGroup:           "enterGroup",
-    exitGroup:            "exitGroup",
+    enterSphere:          "enterSphere",
+    exitSphere:           "exitSphere",
     enterLocation:        "enterLocation",
     exitLocation:         "exitLocation",
     currentLocation:      "currentLocation",

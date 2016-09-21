@@ -13,7 +13,7 @@ import {
 import { Background } from './../components/Background'
 import { RoomOverview } from '../components/RoomOverview'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getStonesFromState, getGroupsWhereIHaveAccessLevel } from './../../util/dataUtil'
+import { getStonesFromState, getSpheresWhereIHaveAccessLevel } from './../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { Icon } from '../components/Icon';
@@ -39,24 +39,24 @@ export class SettingsRoomOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let groups = getGroupsWhereIHaveAccessLevel(state, 'admin');
-    groups.forEach((group) => {
-      let rooms = state.groups[group.id].locations;
+    let spheres = getSpheresWhereIHaveAccessLevel(state, 'admin');
+    spheres.forEach((sphere) => {
+      let rooms = state.spheres[sphere.id].locations;
       let roomIds = Object.keys(rooms);
-      items.push({label:"ROOMS IN GROUP '" + group.name + "'",  type:'explanation', below:false});
+      items.push({label:"ROOMS IN SPHERE '" + sphere.name + "'",  type:'explanation', below:false});
       if (roomIds.length > 0) {
         roomIds.forEach((roomId) => {
           let room = rooms[roomId];
           items.push({__item:
             <TouchableHighlight
               key={roomId + '_entry'}
-              onPress={() => {Actions.settingsRoom({locationId:roomId, groupId: group.id});}}
+              onPress={() => {Actions.settingsRoom({locationId:roomId, sphereId: sphere.id});}}
              >
               <View style={styles.listView}>
                 <RoomOverview
                   icon={room.config.icon}
                   name={room.config.name}
-                  stoneCount={Object.keys(getStonesFromState(state,group.id, roomId)).length}
+                  stoneCount={Object.keys(getStonesFromState(state,sphere.id, roomId)).length}
                   navigation={true}
                 />
                 </View>
@@ -64,12 +64,12 @@ export class SettingsRoomOverview extends Component {
         })
       }
       items.push({
-        label: 'Add a Room to this Group',
+        label: 'Add a Room to this Sphere',
         largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
         style: {color:colors.blue.hex},
         type: 'button',
         callback: () => {
-          Actions.settingsRoomAdd({groupId: group.id});
+          Actions.settingsRoomAdd({sphereId: sphere.id});
         }
       })
     });

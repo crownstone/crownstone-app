@@ -2,7 +2,7 @@ var test = require('tape');
 let deepFreeze = require('deep-freeze');
 
 import CrownstoneReducer from '../../router/store/reducer'
-import groupsReducer from '../../router/store/reducers/groups'
+import spheresReducer from '../../router/store/reducers/spheres'
 import locationsReducer from '../../router/store/reducers/locations'
 
 // hack to remove the current time from the reducer so we can predictably match the results.
@@ -13,14 +13,14 @@ Date.prototype.valueOf = function () {
 
 test('locationsReducer PropegationTest', function (t) {
   let initialState = {};
-  let createGroupAction = {
-    type: 'ADD_GROUP',
+  let createSphereAction = {
+    type: 'ADD_SPHERE',
     data: {name: 'home'},
-    groupId: 'groupId'
+    sphereId: 'sphereId'
   };
   let addLocationAction = {
     type: 'ADD_LOCATION',
-    groupId: 'groupId',
+    sphereId: 'sphereId',
     locationId: 'locationId',
     data: {
       name: 'living room',
@@ -29,18 +29,18 @@ test('locationsReducer PropegationTest', function (t) {
   };
   let removeLocationAction = {
     type: 'REMOVE_LOCATION',
-    groupId: 'groupId',
+    sphereId: 'sphereId',
     locationId: 'locationId'
   };
 
 
   deepFreeze(initialState);
   deepFreeze(addLocationAction);
-  deepFreeze(createGroupAction);
+  deepFreeze(createSphereAction);
   deepFreeze(removeLocationAction);
 
   let expectedReturn = {
-    groupId: {
+    sphereId: {
       appliances: {},
       config: {adminKey: null, guestKey: null, memberKey: null, meshAccessAddress: null, name: 'home', updatedAt: 1, iBeaconUUID: undefined},
       locations: {locationId: {config: {fingerprintParsed: '', fingerprintRaw: '', icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
@@ -50,14 +50,14 @@ test('locationsReducer PropegationTest', function (t) {
     }
   };
 
-  let groupState = groupsReducer({}, createGroupAction);
-  deepFreeze(groupState);
+  let sphereState = spheresReducer({}, createSphereAction);
+  deepFreeze(sphereState);
 
-  t.deepEqual(groupsReducer(groupState, addLocationAction), expectedReturn, 'add a location in to group');
-  let locationState = groupsReducer(groupState, addLocationAction);
+  t.deepEqual(spheresReducer(sphereState, addLocationAction), expectedReturn, 'add a location in to sphere');
+  let locationState = spheresReducer(sphereState, addLocationAction);
 
-  expectedReturn.groupId.locations = {};
-  t.deepEqual(groupsReducer(locationState, removeLocationAction), expectedReturn, 'remove a location in a group');
+  expectedReturn.sphereId.locations = {};
+  t.deepEqual(spheresReducer(locationState, removeLocationAction), expectedReturn, 'remove a location in a sphere');
 
   t.end();
 });
@@ -65,8 +65,8 @@ test('locationsReducer PropegationTest', function (t) {
 
 test('Initial App state', function (t) {
   let initialState = {
-    app: {activeGroup: undefined, doFirstTimeSetup: true, enableLocalization:true, updatedAt: 1},
-    groups: {},
+    app: {activeSphere: undefined, doFirstTimeSetup: true, enableLocalization:true, updatedAt: 1},
+    spheres: {},
     settings: {
       linkedDevices: true,
       onHomeEnterExit: true,
@@ -87,8 +87,8 @@ test('Initial App state', function (t) {
   };
 
   let locationState = {
-    app: {activeGroup: undefined, doFirstTimeSetup: true, enableLocalization:true, updatedAt: 1},
-    groups: {
+    app: {activeSphere: undefined, doFirstTimeSetup: true, enableLocalization:true, updatedAt: 1},
+    spheres: {
       Home: {
         appliances: {},
         config: {adminKey: null, guestKey: null, memberKey: null, meshAccessAddress: null, name: 'Home', updatedAt: 1, iBeaconUUID: undefined},
@@ -117,15 +117,15 @@ test('Initial App state', function (t) {
     }
   };
 
-  let createGroupAction = {
-    type: 'ADD_GROUP',
+  let createSphereAction = {
+    type: 'ADD_SPHERE',
     data: {name: 'Home'},
-    groupId: 'Home'
+    sphereId: 'Home'
   };
 
   let addLocationAction = {
     type: 'ADD_LOCATION',
-    groupId: 'Home',
+    sphereId: 'Home',
     locationId: 'locationId',
     data: {
       name: 'living room',
@@ -133,8 +133,8 @@ test('Initial App state', function (t) {
     }
   };
 
-  let addedGroupState = CrownstoneReducer({}, createGroupAction);
-  let addedLocationState = CrownstoneReducer(addedGroupState, addLocationAction);
+  let addedSphereState = CrownstoneReducer({}, createSphereAction);
+  let addedLocationState = CrownstoneReducer(addedSphereState, addLocationAction);
   t.deepEqual(CrownstoneReducer(), initialState, 'verify the initial state')
   t.deepEqual(addedLocationState, locationState, 'verify the location state')
   t.end();

@@ -29,7 +29,7 @@ export class SettingsChangeEmail extends Component {
   }
 
   _getItems() {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId};
     let items = [];
     // room Name:
     items.push({label:'Picture', type: 'picture', value:undefined, callback: () => {}});

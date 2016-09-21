@@ -29,7 +29,7 @@ export class CameraRollView extends Component {
     if (this.active === true) {
       let query = {
         first: 10,
-        groupTypes: 'SavedPhotos',
+        sphereTypes: 'SavedPhotos',
         assetType: 'Photos',
       };
       if (this.pictureIndex !== undefined) {
