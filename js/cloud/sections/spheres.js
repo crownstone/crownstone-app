@@ -27,9 +27,6 @@ export const spheres = {
     return this._setupRequest('GET', '/Groups/{id}/guests', options);
   },
 
-  getKeys: function() {
-    return this._setupRequest('GET','users/{id}/keys');
-  },
 
   /**
    *
@@ -39,17 +36,18 @@ export const spheres = {
     return this._setupRequest('POST', 'users/{id}/groups', {data:{name:sphereName}}, 'body');
   },
 
-  getUserPicture(sphereId, email, userId) {
+  getUserPicture(sphereId, email, userId, options = {}) {
     let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
     return this.forSphere(sphereId)._download({
       endPoint:'/Groups/{id}/profilePic',
       data: {email: email},
-      type: 'query'
+      type: 'query',
+      ...options
     }, toPath);
   },
 
 
-  getSphereData: function(selfId) {
+  getSphereData: function(selfId, options = {}) {
     let sphereId = this._sphereId;
 
     let promises      = [];
@@ -63,7 +61,7 @@ export const spheres = {
 
     // for every sphere we get the crownstones
     promises.push(
-      this.getStonesInSphere()
+      this.getStonesInSphere(options)
         .then((stones) => {
           stoneData = stones;
         }).catch()
@@ -71,7 +69,7 @@ export const spheres = {
 
     // for every sphere we get the appliances
     promises.push(
-      this.getAppliancesInSphere()
+      this.getAppliancesInSphere(options)
         .then((appliances) => {
           applianceData = appliances;
         }).catch()
@@ -79,22 +77,22 @@ export const spheres = {
 
     // for every sphere, we get the locations
     promises.push(
-      this.getLocations()
+      this.getLocations(options)
         .then((locations) => {
           locationData = locations;
         }).catch()
     );
 
     promises.push(
-      this.getUserFromType(this.getAdmins.bind(this),  'admin',  adminData,  sphereId, selfId)
+      this.getUserFromType(this.getAdmins.bind(this),  'admin',  adminData,  sphereId, selfId, options)
     );
 
     promises.push(
-      this.getUserFromType(this.getMembers.bind(this), 'member', memberData, sphereId, selfId)
+      this.getUserFromType(this.getMembers.bind(this), 'member', memberData, sphereId, selfId, options)
     );
 
     promises.push(
-      this.getUserFromType(this.getGuests.bind(this),  'guest',  guestData,  sphereId, selfId)
+      this.getUserFromType(this.getGuests.bind(this),  'guest',  guestData,  sphereId, selfId, options)
     );
 
     return Promise.all(promises).then(() => {
@@ -110,8 +108,8 @@ export const spheres = {
     })
   },
 
-  getUserFromType: function(userGetter, type, userData, sphereId, selfId) {
-    return userGetter()
+  getUserFromType: function(userGetter, type, userData, sphereId, selfId, options) {
+    return userGetter(options)
       .then((users) => {
         let profilePicturePromises = [];
         users.forEach((user) => {
@@ -119,7 +117,7 @@ export const spheres = {
           userData[user.id].accessLevel = type;
           if (user.id !== selfId) {
             profilePicturePromises.push(
-              this.getUserPicture(sphereId, user.email, user.id).then((filename) => {
+              this.getUserPicture(sphereId, user.email, user.id, options).then((filename) => {
                 userData[user.id].picture = filename;
               })
             );

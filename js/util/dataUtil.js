@@ -203,7 +203,7 @@ export const getTotalAmountOfCrownstones = function(state) {
   return count;
 };
 
-export const getMapOfAllOwnedCrownstones = function(state) {
+export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
   let sphereIds = Object.keys(state.spheres);
   let map = {};
   sphereIds.forEach((sphereId) => {
@@ -213,6 +213,8 @@ export const getMapOfAllOwnedCrownstones = function(state) {
     stoneIds.forEach((stoneId) => {
       let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
       map[stoneConfig.handle] = {
+        id: stoneId,
+        cid: stoneConfig.crownstoneId,
         name: stoneConfig.name,
         applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
         locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
@@ -220,4 +222,25 @@ export const getMapOfAllOwnedCrownstones = function(state) {
     })
   });
   return map;
+};
+
+export const getMapOfCrownstonesInSphereByCID = function(state, sphereId) {
+  if (sphereId) {
+    let map = {};
+    let stoneIds = Object.keys(state.spheres[sphereId].stones);
+    let locations = state.spheres[sphereId].locations;
+    let appliances = state.spheres[sphereId].appliances;
+    stoneIds.forEach((stoneId) => {
+      let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
+      map[stoneConfig.crownstoneId] = {
+        id: stoneId,
+        handle: stoneConfig.handle,
+        name: stoneConfig.name,
+        applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
+        locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
+      };
+    });
+    return map;
+  }
+  return {};
 };

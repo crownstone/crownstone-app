@@ -1,4 +1,4 @@
-import { NativeModules, NativeAppEventEmitter } from 'react-native';
+import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
 // var subscription = NativeAppEventEmitter.addListener(
@@ -98,7 +98,20 @@ export const NativeEvents = {
 export const BleActions = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:        ()      => { return BluenetPromise('isReady');              },
-  connect:        (handle)=> { return BluenetPromise('connect', handle);      },
+  connect:        (handle)=> {
+    if (handle) {
+      return BluenetPromise('connect', handle);
+    }
+    else {
+      return new Promise((resolve, reject) => {
+        Alert.alert(
+          "Can't connect to this Crownstone.",
+          "Please move a little closer to this Crownstone and try again.",
+          [{text:'OK', onPress: reject}]
+        )
+      });
+    }
+  },
   disconnect:     ()      => { return BluenetPromise('disconnect');           },
   phoneDisconnect:()      => { return BluenetPromise('phoneDisconnect');      },
   setSwitchState: (state) => { return BluenetPromise('setSwitchState', state);},

@@ -117,6 +117,8 @@ func getBleErrorString(err: BleError) -> String {
     return "NOT_IN_RECOVERY_MODE"
   case .CANNOT_READ_FACTORY_RESET_CHARACTERISTIC:
     return "CANNOT_READ_FACTORY_RESET_CHARACTERISTIC"
+  case .RECOVER_MODE_DISABLED:
+    return "RECOVER_MODE_DISABLED"
   default:
      return "UNKNOWN_BLE_ERROR \(err)"
   }

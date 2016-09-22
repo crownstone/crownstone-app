@@ -133,7 +133,9 @@ class SingleCommand {
         .then(() => { return BleActions.disconnect(); })
         .catch((err) => {
           LOG("BLE Error:", err);
-          return BleActions.phoneDisconnect();
+          return new Promise((resolve,reject) => {
+            BleActions.phoneDisconnect().then(reject).catch(reject);
+          })
         })
     }, {from:'perform on singleCommand'});
   }

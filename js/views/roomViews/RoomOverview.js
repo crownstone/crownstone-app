@@ -38,11 +38,15 @@ export class RoomOverview extends Component {
       if (this.props.locationId !== null) {
         let state = this.props.store.getState();
         let room = state.spheres[this.props.sphereId].locations[this.props.locationId];
-        if (room)
+        if (room) {
           this.forceUpdate();
+        }
         else {
           Actions.pop()
         }
+      }
+      else {
+        this.forceUpdate();
       }
     })
   }

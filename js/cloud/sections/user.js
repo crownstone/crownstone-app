@@ -126,7 +126,8 @@ export const user = {
   getKeys: function(options = {}) {
     return this._setupRequest(
       'GET',
-      'users/{id}/keys'
+      'users/{id}/keys',
+      options
     );
   }
 

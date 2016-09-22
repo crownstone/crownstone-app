@@ -9,7 +9,7 @@ export const stones = {
     return this._setupRequest(
       'POST',
       '/Stones',
-      {data:{sphereId:sphereId, address:MACAddress, type:type}},
+      {data:{groupId:sphereId, address:MACAddress, type:type}},
       'body'
     );
   },
@@ -36,10 +36,11 @@ export const stones = {
    * request the data of all crownstones in this sphere
    * @returns {*}
    */
-  getStonesInSphere: function() {
+  getStonesInSphere: function(options) {
     return this._setupRequest(
       'GET',
-      '/Groups/{id}/ownedStones'
+      '/Groups/{id}/ownedStones',
+      options
     );
   },
 

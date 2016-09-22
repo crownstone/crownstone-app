@@ -8,9 +8,9 @@ export const appliances = {
     return this._setupRequest('GET', '/Appliances', options);
   },
 
-  getAppliancesInSphere: function() {
+  getAppliancesInSphere: function(options) {
     // TODO: change to sphere owned query when it becomes available
-    return this._setupRequest('GET', '/Appliances');
+    return this._setupRequest('GET', '/Appliances',options);
   },
 
   createAppliance: function (applianceName, sphereId) {

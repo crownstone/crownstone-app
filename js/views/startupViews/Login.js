@@ -264,7 +264,7 @@ export class Login extends Component {
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
       })
       .then(() => {
-        return CLOUD.sync(store);
+        return CLOUD.sync(store, false);
       })
     );
 

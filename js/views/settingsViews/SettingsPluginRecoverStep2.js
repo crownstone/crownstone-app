@@ -17,7 +17,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { Background } from '../components/Background'
 import { setupStyle } from '../setupViews/SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
-import { getMapOfAllOwnedCrownstones } from '../../util/dataUtil'
+import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/dataUtil'
 import { BLEutil } from '../../native/BLEutil'
 import { BleActions } from '../../native/Proxy'
 import { LOG } from '../../logging/Log'
@@ -79,7 +79,7 @@ export class SettingsPluginRecoverStep2 extends Component {
     BLEutil.cancelAllSearches();
 
     let state = this.props.store.getState();
-    let map = getMapOfAllOwnedCrownstones(state);
+    let map = getMapOfCrownstonesInAllSpheresByHandle(state);
 
     let nearestSetup = undefined;
     let nearestNormal = undefined;

@@ -111,13 +111,14 @@ export const base = {
 
   _finalizeRequest: function(promise, options, endpoint) {
     return new Promise((resolve, reject) => {
-      promise.then((reply) => {
-        LOG("REPLY from", endpoint, " with options: ", options, " is: ", reply);
-        if (reply.status === 200 || reply.status === 204)
-          resolve(reply.data);
-        else
-          this.__debugReject(reply, reject, arguments);
-      })
+      promise
+        .then((reply) => {
+          LOG("REPLY from", endpoint, " with options: ", options, " is: ", reply);
+          if (reply.status === 200 || reply.status === 204)
+            resolve(reply.data);
+          else
+            this.__debugReject(reply, reject, arguments);
+        })
         .catch((error) => {
           //console.trace(error, this);
           this._handleNetworkError(error, options);

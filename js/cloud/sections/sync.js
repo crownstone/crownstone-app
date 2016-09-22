@@ -8,10 +8,11 @@ import { LOG } from '../../logging/Log'
  */
 export const sync = {
 
-  sync: function (store) {
+  sync: function (store, background = true) {
     let state = store.getState();
     let actions = [];
-    return syncDown(state)
+    let options = { background: background };
+    return syncDown( state, options )
       .then((data) => {
         let cloudData = syncSpheres(state, actions, data.spheres, data.spheresData);
         let deletedSphere = syncCleanupLocal(store, state, actions, cloudData);
@@ -34,7 +35,7 @@ export const sync = {
   }
 };
 
-const syncDown = function (state) {
+const syncDown = function (state, options) {
   return new Promise((resolve, reject) => {
     let userId = state.user.userId;
     let accessToken = state.user.accessToken;
@@ -49,20 +50,20 @@ const syncDown = function (state) {
     let syncPromises = [];
 
     syncPromises.push(
-      CLOUD.getKeys()
+      CLOUD.getKeys(options)
         .then((data) => {
           cloudKeys = data;
         })
     );
     syncPromises.push(
-      CLOUD.getSpheres()
+      CLOUD.getSpheres(options)
         .then((sphereData) => {
           let sphereDataPromises = [];
           sphereData.forEach((sphere) => {
             cloudSpheres.push(sphere);
 
             // download all data from the cloud to the phone
-            sphereDataPromises.push(CLOUD.forSphere(sphere.id).getSphereData(userId)
+            sphereDataPromises.push(CLOUD.forSphere(sphere.id).getSphereData(userId, options)
               .then((result) => {
                 cloudSpheresData[sphere.id] = result;
               })
@@ -204,7 +205,16 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
             type: 'UPDATE_STONE_CONFIG',
             sphereId: sphere.id,
             stoneId: stone.id,
-            data: {name: stone.name, icon: stone.deviceType, stoneId: stone.id}
+            data: {
+              name: stone.name,
+              icon: stone.deviceType,
+              applianceId: stone.applianceId,
+              locationId: stone.locationId,
+              macAddress: stone.address,
+              iBeaconMajor: stone.major,
+              iBeaconMinor: stone.minor,
+              crownstoneId: stone.uid,
+            }
           });
         }
       }
@@ -213,7 +223,16 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           type: 'ADD_STONE',
           sphereId: sphere.id,
           stoneId: stone.id,
-          data: {name: stone.name, icon: stone.deviceType, stoneId: stone.id}
+          data: {
+            name: stone.name,
+            icon: stone.deviceType,
+            applianceId: stone.applianceId,
+            locationId: stone.locationId,
+            macAddress: stone.address,
+            iBeaconMajor: stone.major,
+            iBeaconMinor: stone.minor,
+            crownstoneId: stone.uid
+          }
         });
 
         // we only download the behaviour the first time we add the stone.
@@ -257,7 +276,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           type: 'ADD_APPLIANCE',
           sphereId: sphere.id,
           applianceId: appliance.id,
-          data: {name: appliance.name, icon: appliance.deviceType, applianceId: appliance.applianceId}
+          data: {name: appliance.name, icon: appliance.deviceType}
         });
 
         // we only download the behaviour the first time we add the stone.

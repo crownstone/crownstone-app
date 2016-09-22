@@ -16,10 +16,11 @@ import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StoreManager }           from './store/storeManager'
 import { NativeEventsBridge }     from '../native/NativeEventsBridge'
 import { AdvertisementHandler }   from '../native/AdvertisementHandler'
+import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
 import { LOG }                    from '../logging/Log'
-import { INITIALIZER }            from '../util/initialize'
+import { INITIALIZER }            from '../initialize'
 import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
@@ -64,20 +65,20 @@ export class AppRouter extends Component {
       // pass the store to the singletons
       NativeEventsBridge.loadStore(store);
       AdvertisementHandler.loadStore(store);
+      Scheduler.loadStore(store);
 
       LOG("LOADED STORES")
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
 
-      // TODO: restore validation
       // // if we have an accessToken, we proceed with logging in automatically
       if (state.user.accessToken !== undefined) {
-      //   // in the background we check if we're authenticated, if not we log out.
+        // in the background we check if we're authenticated, if not we log out.
         CLOUD.setAccess(state.user.accessToken);
         CLOUD.getUserData({background:true})
           .then((reply) => {
             LOG("Verified User.", reply);
-            CLOUD.sync(store);
+            CLOUD.sync(store, true);
           })
           .catch((reply) => {
             LOG("COULD NOT VERIFY USER -- ERROR", reply);

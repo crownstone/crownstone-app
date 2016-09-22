@@ -1,4 +1,5 @@
 import { DEBUG } from '../ExternalConfig'
+import { LOG, LOGError } from '../logging/Log'
 
 
 export class EventBus {
@@ -7,6 +8,15 @@ export class EventBus {
   }
   
   on(topic, callback) {
+    if (!(topic)) {
+      LOGError("Attempting to subscribe to undefined topic:", topic);
+      return;
+    }
+    if (!(callback)) {
+      LOGError("Attempting to subscribe without callback to topic:", topic);
+      return;
+    }
+
     if (this.topics[topic] === undefined)
       this.topics[topic] = [];
 
