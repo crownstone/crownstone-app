@@ -166,7 +166,7 @@ export class Login extends Component {
         <TopBar left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
-            <TextEditInput style={{flex:1, padding:10}} placeholder='email' keyboardType='email-address' autoCapitalize="none" placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
+            <TextEditInput style={{flex:1, padding:10}} placeholder='email' keyboardType='email-address' autocorrect={false} autoCapitalize="none" placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
           </View>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput style={{flex:1, padding:10}} secureTextEntry={true} placeholder='password' placeholderTextColor='#888' value={this.state.password} callback={(newValue) => {this.setState({password:newValue});}} />
@@ -279,8 +279,7 @@ export class Login extends Component {
       setTimeout(() => {
         this.props.eventBus.emit('hideProgress');
 
-        const state = store.getState();
-        this.activeSphere = state.app.activeSphere;
+        let state = store.getState();
 
         if (state.app.doFirstTimeSetup === true && Object.keys(state.spheres).length === 0) {
           Actions.setupWelcome();

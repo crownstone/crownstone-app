@@ -138,6 +138,9 @@ export const userIsAdmin = function(state) {
   return false;
 };
 
+export const userIsAdminInSphere = function(state, sphereId) {
+  return state.spheres[sphereId].config.adminKey !== undefined;
+};
 
 export const getSpheresWhereIHaveAccessLevel = function(state, accessLevel) {
   let items = [];

@@ -36,23 +36,7 @@ export class RoomBanner extends Component {
     let rightRatio = 0.30;
     let offset = 0.1*height;
 
-    // usage is null
-    if (this.props.noCrownstones === true) {
-      leftRatio = 0.95;
-      return (
-        <View style={{width:screenWidth, height:height, backgroundColor: this.props.color || colors.green.hex, justifyContent:'center'}}>
-          <View style={{flexDirection:'row'}}>
-            <View style={{height:0.7*height, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
-              <View style={[bannerStyles.whiteLeft, {height: 0.5*height, width:(leftRatio-0.05)*screenWidth+offset}]} />
-              <View style={[bannerStyles.blueLeft,  {height: 0.5*height, width:(leftRatio-0.05)*screenWidth, top: offset}]}>
-                {this.getPresentUsers()}
-              </View>
-            </View>
-          </View>
-        </View>
-      );
-    }
-    else if (this.props.floatingCrownstones === true) {
+    if (this.props.floatingCrownstones === true) {
       return (
         <View style={{width:screenWidth, height:height, backgroundColor: this.props.color || colors.blue.hex, justifyContent:'center'}}>
           <View style={{flexDirection:'row'}}>
@@ -65,6 +49,21 @@ export class RoomBanner extends Component {
               <View style={[bannerStyles.whiteRight, {height: 0.5*height, width:(rightRatio-0.05) * screenWidth+offset}]} />
               <View style={[bannerStyles.blueRight,  {height: 0.5*height, width:(rightRatio-0.05) * screenWidth, top: offset}]}>
                 <Text style={bannerStyles.roomImageText}>{this.props.usage + ' W'} </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      );
+    }
+    else if (this.props.noCrownstones === true) {
+      leftRatio = 0.95;
+      return (
+        <View style={{width:screenWidth, height:height, backgroundColor: this.props.color || colors.green.hex, justifyContent:'center'}}>
+          <View style={{flexDirection:'row'}}>
+            <View style={{height:0.7*height, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
+              <View style={[bannerStyles.whiteLeft, {height: 0.5*height, width:(leftRatio-0.05)*screenWidth+offset}]} />
+              <View style={[bannerStyles.blueLeft,  {height: 0.5*height, width:(leftRatio-0.05)*screenWidth, top: offset}]}>
+                {this.getPresentUsers()}
               </View>
             </View>
           </View>

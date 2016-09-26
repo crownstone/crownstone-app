@@ -10,14 +10,14 @@ export const appliances = {
 
   getAppliancesInSphere: function(options) {
     // TODO: change to sphere owned query when it becomes available
-    return this._setupRequest('GET', '/Appliances',options);
+    return this._setupRequest('GET', '/Appliances', options);
   },
 
-  createAppliance: function (applianceName, sphereId) {
+  createAppliance: function (applianceName, sphereId, icon) {
     return this._setupRequest(
       'POST',
       '/Appliances',
-      {data: {name: applianceName, sphereId:sphereId}},
+      {data: {name: applianceName, groupId:sphereId, icon: icon}},
       'body'
     );
   },

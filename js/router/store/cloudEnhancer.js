@@ -1,7 +1,7 @@
 import { CLOUD } from '../../cloud/cloudAPI'
 import { getMyLevelInSphere } from '../../util/dataUtil'
 import { BATCH } from './storeManager'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGDebug } from '../../logging/Log'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -10,7 +10,7 @@ export function CloudEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
 
-    // LOGDebug("new state:", getState())
+    LOGDebug("new state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, getState);
@@ -118,7 +118,7 @@ function handleStoneInCloud(action, state) {
     id: stoneId,
     applianceId: stoneConfig.applianceId,
     locationId: stoneConfig.locationId,
-    sphereId: sphereId,
+    groupId: sphereId,
   };
   
   CLOUD.forStone(stoneId).updateStone(data).catch(() => {});
@@ -133,7 +133,7 @@ function handleApplianceInCloud(action, state) {
     name: applianceConfig.name,
     icon: applianceConfig.icon,
     id: applianceId,
-    sphereId: sphereId,
+    groupId: sphereId,
   };
 
   CLOUD.forAppliance(applianceId).updateAppliance(data).catch(() => {});
@@ -159,7 +159,7 @@ function handleLocationInCloud(action, state) {
     name: locationConfig.name,
     icon: locationConfig.icon,
     id: locationId,
-    sphereId: sphereId,
+    groupId: sphereId,
   };
 
   CLOUD.forSphere(sphereId).updateLocation(locationId, data).catch(() => {});

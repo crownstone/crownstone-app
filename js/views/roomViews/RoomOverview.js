@@ -60,6 +60,7 @@ export class RoomOverview extends Component {
       <View key={stoneId + '_entry'}>
         <View style={styles.listView}>
           <DeviceEntry
+            eventBus={this.props.eventBus}
             name={item.device.config.name}
             icon={item.device.config.icon}
             state={item.stone.state.state}
@@ -90,6 +91,9 @@ export class RoomOverview extends Component {
                   this.clearPending(stoneId);
                 })
             }}
+            onMove={() => {}}
+            onChangeType={() => {Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId})}}
+            onChangeSettings={() => {Actions.deviceEditLogic({sphereId: this.props.sphereId, stoneId: stoneId})}}
           />
         </View>
       </View>
@@ -121,7 +125,7 @@ export class RoomOverview extends Component {
     if (Object.keys(items).length == 0) {
       return (
         <Background image={this.props.backgrounds.main} >
-          <RoomBanner presentUsers={users} noCrownstones={true}/>
+          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} />
           <ScrollView>
             <SeparatedItemList
               items={items}

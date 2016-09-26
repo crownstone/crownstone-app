@@ -1,5 +1,6 @@
 import React, { Component } from 'react' 
 import {
+  Animated,
   ActivityIndicator,
   Dimensions,
   Image,
@@ -13,10 +14,66 @@ import {
 
 import { Icon } from './Icon';
 import Slider from 'react-native-slider'
-import { styles, colors} from '../styles'
+import { IconButton } from '../components/IconButton'
+import { getUUID } from '../../util/util'
+import { styles, colors, screenWidth } from '../styles'
 
 
 export class DeviceEntry extends Component {
+  constructor(props) {
+    super();
+
+    this.baseHeight = props.height || 80;
+    this.optionsHeight = 40;
+    this.openHeight = this.baseHeight + this.optionsHeight;
+    this.highlightHeight = 0.8*this.baseHeight;
+
+    this.state = {height: new Animated.Value(this.baseHeight), optionsOpen: false};
+    this.optionsAreOpen = false;
+    this.animating = false;
+    this.id = getUUID();
+  }
+
+  componentDidMount() {
+    this.unsubscribe = this.props.eventBus.on("focusDeviceEntry", (id) => {
+      if (id != this.id) {
+        this._closeOptions();
+      }
+    })
+  }
+
+  componentWillUnmount() { // cleanup
+    this.unsubscribe();
+  }
+
+  _closeOptions() {
+    if (this.optionsAreOpen === true && this.animating === false) {
+      this.animating = true;
+      this.setState({optionsOpen: true});
+      Animated.timing(this.state.height, {toValue: this.baseHeight, duration: this.props.duration || 200}).start();
+      setTimeout(() => {this.optionsAreOpen = false; this.animating = false;}, 200);
+    }
+  }
+
+  _openOptions() {
+    if (this.optionsAreOpen === false && this.animating === false) {
+      this.props.eventBus.emit("focusDeviceEntry", this.id);
+      this.animating = true;
+      this.setState({optionsOpen: true});
+      Animated.timing(this.state.height, {toValue: this.openHeight, duration: this.props.duration || 200}).start();
+      setTimeout(() => {this.optionsAreOpen = true; this.animating = false;}, 200);
+    }
+  }
+
+  _toggleOptions() {
+    if (this.optionsAreOpen === false) {
+      this._openOptions();
+    }
+    else {
+      this._closeOptions();
+    }
+  }
+
   _pressedDevice() {
     this.props.onChange((this.props.state === 1 ? 0 : 1));
   }
@@ -31,7 +88,7 @@ export class DeviceEntry extends Component {
     }
 
     return (
-      <View style={{width: 60, alignItems:'flex-end', justifyContent:'center'}}>
+      <View style={{height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'}}>
         {content}
       </View>
     );
@@ -55,31 +112,51 @@ export class DeviceEntry extends Component {
       </View>
     );
 
-    if (this.props.control === true && this.props.pending === false) {
-      return (
-        <TouchableOpacity onPress={this._pressedDevice.bind(this)}>
-          {content}
-        </TouchableOpacity>
-      );
-    }
     return content;
+  }
+
+  _getOptions() {
+    if (this.state.optionsOpen) {
+      return (
+        <View style={{height: this.optionsHeight, flex: 1, alignItems: 'center'}}>
+          <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
+          <View style={{flexDirection: 'row', flex: 1, alignItems: "center"}}>
+            <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onMove()}>
+              <Icon name="md-log-in" size={24} color="#aaa"
+                    style={{backgroundColor: 'transparent', position: 'relative'}}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeType()}>
+              <Icon name="ios-outlet" size={26} color="#aaa"
+                    style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeSettings()}>
+              <Icon name="ios-cog" size={29} color="#aaa"
+                    style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )
+    }
   }
 
   render() {
     return (
-      <View style={{flexDirection:'row', padding:10, paddingLeft:0, alignItems:'center', flex:1}}>
-        <View style={{paddingRight:20}}>
-          {this._getItem()}
+      <Animated.View style={{flexDirection:'column', height: this.state.height, overflow:'hidden', flex:1}}>
+        <View style={{flexDirection:'row', height: this.baseHeight, paddingRight:0, paddingLeft:0, flex:1}}>
+          <TouchableOpacity style={{paddingRight:20, height: this.baseHeight, justifyContent:'center'}} onPress={() => {this._toggleOptions();}}>
+            {this._getItem()}
+          </TouchableOpacity>
+          <TouchableOpacity style={{flex:1, height: this.baseHeight, justifyContent:'center'}} onPress={() => {this._toggleOptions();}}>
+            <View style={{flexDirection:'column'}}>
+              <Text style={{fontSize:17, fontWeight:'100'}}>{this.props.name}</Text>
+              <Text style={{fontSize:12}}>{this.props.currentUsage + ' W'}</Text>
+            </View>
+          </TouchableOpacity>
+          {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'} /> : undefined}
+          {this.props.control    === true ? this._getControl() : undefined}
         </View>
-        <View style={{flex:1}}>
-          <View style={{flexDirection:'column'}}>
-            <Text style={{fontSize:17, fontWeight:'100'}}>{this.props.name}</Text>
-            <Text style={{fontSize:12}}>{this.props.currentUsage + ' W'}</Text>
-          </View>
-        </View>
-        {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'} /> : undefined}
-        {this.props.control    === true ? this._getControl() : undefined}
-      </View>
+        {this._getOptions()}
+      </Animated.View>
     );
   }
 }

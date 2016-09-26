@@ -1,5 +1,5 @@
 import { CLOUD } from '../cloudAPI'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGDebug } from '../../logging/Log'
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -151,6 +151,8 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
   let cloudLocationIds = {};
   let cloudApplianceIds = {};
   let addedSphere = false;
+
+  LOGDebug("SyncSpheres", spheresData);
 
   spheres.forEach((sphere) => {
     // put id in map so we can easily find it again

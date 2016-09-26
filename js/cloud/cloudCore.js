@@ -2,7 +2,7 @@ import { Alert } from 'react-native'
 import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
-import { LOG } from '../logging/Log'
+import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { safeMoveFile } from '../util/util'
 
@@ -43,12 +43,17 @@ export function request(
       response.headers.map &&
       response.headers.map['content-type'] &&
       response.headers.map['content-type'].length > 0) {
-      if (response.headers.map['content-type'][0].substr(0,16) === 'application/json') {
+      if (response && response._bodyBlob && response._bodyBlob.size === 0) {
+        return '';
+      }
+      else if (response.headers.map['content-type'][0].substr(0,16) === 'application/json') {
         if (response.headers.map['content-length'] &&
           response.headers.map['content-length'].length > 0 &&
           response.headers.map['content-length'][0] == 0) {
-          return '';
+          // LOGDebug("Error: JSON-CONTENT IS EMPTY", response);
+          return response.json(); // this is a promise
         }
+        // LOGDebug("JSON CONTENT", response);
         return response.json(); // this is a promise
       }
     }
@@ -66,7 +71,14 @@ export function request(
     }
     else {
       fetch(CLOUD_ADDRESS + endPoint, requestConfig)
+        .catch((connectionError) => {
+          reject(connectionError);
+        })
         .then(handleInitialReply)
+        .catch((parseError) => {
+          LOGError("ERROR DURING PARSING:", parseError);
+          return '';
+        })
         .then((parsedResponse) => {resolve({status:STATUS, data: parsedResponse});})
         .catch((err) => {
           reject(err);

@@ -112,7 +112,6 @@ export const LocalizationUtil = {
         // register the iBeacons UUIDs with the localization system.
         const state = store.getState();
         let sphereIds = Object.keys(state.spheres);
-        console.log("SphereIds:", sphereIds)
         sphereIds.forEach((sphereId) => {
           let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
 

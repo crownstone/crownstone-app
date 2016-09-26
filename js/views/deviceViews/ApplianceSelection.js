@@ -3,6 +3,7 @@ import {
   Alert,
   Dimensions,
   TouchableHighlight,
+  TouchableOpacity,
   PixelRatio,
   ScrollView,
   Switch,
@@ -11,16 +12,20 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
-import { DeviceOverview } from '../components/DeviceOverview'
+import { ApplianceEntry } from '../components/ApplianceEntry'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { Swipeout } from '../../external/swipeout/Swipeout'
 import { CLOUD } from '../../cloud/cloudAPI'
+import { EventBus } from '../../util/eventBus'
 
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { Icon } from '../components/Icon';
 
 export class ApplianceSelection extends Component {
+  constructor() {
+    super();
+    this.deleteEventBus = new EventBus();
+  }
 
   componentDidMount() {
     const { store } = this.props;
@@ -53,27 +58,27 @@ export class ApplianceSelection extends Component {
 
       applianceIds.forEach((applianceId) => {
         let appliance = appliances[applianceId];
-        let deleteButton = [{
-          text: 'Delete',
-          backgroundColor: colors.red.hex,
-          color:'#fff',
-          onPress: () => {
-            Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",
-              [{text:'Cancel'}, {text:'Delete', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
-          }
-        }];
+
+        let selectCallback = () => { this.props.callback(applianceId); Actions.pop(); };
+        let deleteCallback = () => {
+          Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",
+            [{text:'Cancel'}, {text:'Delete', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
+        };
 
         items.push({__item:
-        <Swipeout right={deleteButton} autoClose={true}  onOpen={() => {this.props.callback(applianceId); Actions.pop();}}>
-            <View style={styles.listView}>
-              <DeviceOverview
-                icon={appliance.config.icon}
-                name={appliance.config.name}
-                navigation={false}
-                size={40}
-              />
-            </View>
-        </Swipeout>
+          <View >
+              <View style={[styles.listView]}>
+                <ApplianceEntry
+                  select={selectCallback}
+                  delete={deleteCallback}
+                  icon={appliance.config.icon}
+                  name={appliance.config.name}
+                  navigation={false}
+                  deleteEventBus={this.deleteEventBus}
+                  size={45}
+                />
+              </View>
+          </View>
         })
       });
       items.push({label:'You can delete a device by swiping it to the left and pressing Delete.', style:{paddingBottom:0}, type: 'explanation',  below:true});

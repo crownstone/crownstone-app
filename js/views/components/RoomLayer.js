@@ -125,7 +125,9 @@ export class RoomLayer extends Component {
       locationId:locationId,
       title:room.config.name,
     };
-    if (amountOfStones == 0) {
+
+
+    if (locationId === null) {
       actionsParams.renderRightButton = function() {return false}
     }
 

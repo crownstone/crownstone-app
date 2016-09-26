@@ -74,9 +74,9 @@ export class SettingsOverview extends Component {
     }
 
     if (userIsAdmin(state)) {
-      items.push({label:'Rooms', icon: <IconButton name="c1-foodWine" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, type:'navigation', callback: () => {
-        Actions.settingsRoomOverview();
-      }});
+      // items.push({label:'Rooms', icon: <IconButton name="c1-foodWine" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, type:'navigation', callback: () => {
+      //   Actions.settingsRoomOverview();
+      // }});
 
       items.push({label:'Crownstones', icon: <IconButton name="ios-flash" size={25} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />, type:'navigation', callback: () => {
         Actions.settingsCrownstoneOverview();

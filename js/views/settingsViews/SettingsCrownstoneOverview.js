@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
-import { DeviceOverview } from '../components/DeviceOverview'
+import { ApplianceEntry } from '../components/ApplianceEntry'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { getSphereContentFromState, getRoomName, getSpheresWhereIHaveAccessLevel } from './../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
@@ -40,31 +40,31 @@ export class SettingsCrownstoneOverview extends Component {
 
     let spheres = getSpheresWhereIHaveAccessLevel(state, 'admin');
     spheres.forEach((sphere) => {
-      let stones = getSphereContentFromState(state, sphere.id);
-      let stoneIds = Object.keys(stones);
-
-      items.push({label:"CROWNSTONES IN SPHERE: '" + sphere.name + "'",  type:'explanation', below:false});
-      if (stoneIds.length > 0) {
-        stoneIds.forEach((stoneId) => {
-          let stone = stones[stoneId];
-          let roomName = getRoomName(state, sphere.id, stone.stone.config.locationId);
-          items.push({__item:
-            <TouchableHighlight
-              key={stoneId + '_entry'}
-              onPress={() => {Actions.settingsCrownstone({stoneId:stoneId, sphereId: sphere.id});}}
-            >
-              <View style={styles.listView}>
-                <DeviceOverview
-                  icon={stone.device.config.icon}
-                  name={stone.stone.config.name || "Untitled Crownstone"}
-                  subtext={'Device: ' + (stone.stone.config.applianceId ? stone.device.config.name : 'Nothing plugged in.')}
-                  subtext2={stone.stone.config.locationId === null ? 'Not in a room.' :'In the ' + roomName}
-                  navigation={true}
-                />
-                </View>
-              </TouchableHighlight>})
-        })
-      }
+      // let stones = getSphereContentFromState(state, sphere.id);
+      // let stoneIds = Object.keys(stones);
+      //
+      // items.push({label:"CROWNSTONES IN SPHERE: '" + sphere.name + "'",  type:'explanation', below:false});
+      // if (stoneIds.length > 0) {
+      //   stoneIds.forEach((stoneId) => {
+      //     let stone = stones[stoneId];
+      //     let roomName = getRoomName(state, sphere.id, stone.stone.config.locationId);
+      //     items.push({__item:
+      //       <TouchableHighlight
+      //         key={stoneId + '_entry'}
+      //         onPress={() => {Actions.settingsCrownstone({stoneId:stoneId, sphereId: sphere.id});}}
+      //       >
+      //         <View style={styles.listView}>
+      //           <ApplianceEntry
+      //             icon={stone.device.config.icon}
+      //             name={stone.stone.config.name || "Untitled Crownstone"}
+      //             subtext={'Device: ' + (stone.stone.config.applianceId ? stone.device.config.name : 'Nothing plugged in.')}
+      //             subtext2={stone.stone.config.locationId === null ? 'Not in a room.' :'In the ' + roomName}
+      //             navigation={true}
+      //           />
+      //           </View>
+      //         </TouchableHighlight>})
+      //   })
+      // }
       items.push({
         label: 'Add a Crownstone to this Sphere',
         largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,

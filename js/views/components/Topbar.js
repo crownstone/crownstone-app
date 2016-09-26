@@ -14,12 +14,16 @@ import { styles, colors} from '../styles'
 
 export class TopBar extends Component {
   _getLeftContent() {
-    if (this.props.left && this.props.notBack !== true) {
+    if (this.props.notBack !== true) {
+      let color = colors.menuText.hex;
+      if (this.props.leftStyle && this.props.leftStyle.color) {
+        color = this.props.leftStyle.color;
+      }
       return (
         <TouchableOpacity onPress={() => {this.props.leftAction();}}>
           <View style={{flexDirection:'row', alignItems:'center', flex:0}}>
-            <Icon name="ios-arrow-back" size={23} color={colors.menuText.hex} style={{paddingRight:6, marginTop:2}} />
-            <Text style={[topBarStyle.topBarLeft,styles.menuText]}>{this.props.left}</Text>
+            <Icon name="ios-arrow-back" size={23} color={color} style={{paddingRight:6, marginTop:2}} />
+            <Text style={[topBarStyle.topBarLeft,styles.menuText, this.props.leftStyle]}>{this.props.left}</Text>
           </View>
         </TouchableOpacity>
       );

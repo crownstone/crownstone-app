@@ -36,6 +36,9 @@ export class SphereOverview extends Component {
 
       if (this.renderState.app.activeSphere !== state.app.activeSphere) {
         LOG("triggering rerender of sphere overview");
+
+        // Actions.refresh should update the navbar (showing add..)
+        Actions.refresh();
         this.forceUpdate();
       }
     });

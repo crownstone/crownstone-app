@@ -15,7 +15,7 @@ class NativeEventsClass {
 
     // enable scanning for Crownstones
     BluenetPromise("isReady")
-      .then(() => {Bluenet.startScanningForCrownstones()});
+      .then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
 
 
     this.subscriptions = {};
@@ -32,14 +32,9 @@ class NativeEventsClass {
       this.initialized = true;
       this.store = store;
 
-      this.init();
       this.startListeningToBleEvents();
       this.startListeningToLocationEvents();
     }
-  }
-
-  init() {
-
   }
 
   startListeningToBleEvents() {

@@ -25,6 +25,7 @@ if (DISABLE_NATIVE === true) {
     setSwitchState: () => {},
     startScanning: () => {},
     startScanningForCrownstones: () => {},
+    startScanningForCrownstonesUniqueOnly: () => {},
     stopScanning: () => {},
     trackIBeacon: () => {},
     stopIBeaconTracking: () => {},

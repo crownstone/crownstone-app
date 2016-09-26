@@ -24,8 +24,11 @@ export const INITIALIZER = {
       // sync every 5 minutes
       Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*5});
       Scheduler.loadCallback('backgroundSync', () => {
-        LOG("STARTING ROUTINE SYNCING IN BACKGROUND");
-        CLOUD.sync(store, true);
+        let state = store.getState();
+        if (state.user.userId) {
+          LOG("STARTING ROUTINE SYNCING IN BACKGROUND");
+          CLOUD.sync(store, true);
+        }
       });
 
       // configure the CLOUD network handler.
