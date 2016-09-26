@@ -8,7 +8,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, width, height, colors } from '../styles'
+import { styles, screenWidth, screenHeight, colors } from '../styles'
 import { getCurrentPowerUsageFromState } from '../../util/dataUtil'
 import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
@@ -29,7 +29,7 @@ export class RoomCircle extends Component {
     ];
 
     this.usage = 0;
-
+    this.props = props;
     // calculate the size of the circle based on the screen size
     this.borderWidth = props.radius / 15;
     this.innerDiameter = 2*props.radius - 4.5 * this.borderWidth;
@@ -88,16 +88,20 @@ export class RoomCircle extends Component {
   }
 
   _getColor(usage, prev = false) {
+    if (this.props.remote === true) {
+      return colors.notConnected.hex;
+    }
+
     let level = this._getLevel(usage);
     if (prev) {
       if (level == 0) {
         return "#eee"
       }
       else {
-        return this.levels[level-1].color
+        return this.levels[level-1].color;
       }
     }
-    return this.levels[level].color
+    return this.levels[level].color;
   }
 
 
@@ -130,7 +134,7 @@ export class RoomCircle extends Component {
           }}><View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
             <Icon name={room.config.icon} size={this.iconSize} color='#ffffff' style={{backgroundColor:'transparent'}} />
             </View>
-            <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{this.usage + " W"}</Text>
+            {this.props.remote ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{this.usage + " W"}</Text>}
           </View>
         </View>
       </View>
@@ -230,8 +234,9 @@ export class RoomCircle extends Component {
     )
   }
 }
-
+// ------------------------------------------------------------ //
 // code for when there was an image behind the icon
+// ------------------------------------------------------------ //
 // if (this.props.backgroundImage) {
 //   return (
 //     <View style={{

@@ -39,7 +39,13 @@ export class AppRouter extends Component {
     this.state = {initialized:false, loggedIn: false};
     this.unsubscribe = [];
     this.renderState = undefined;
-    this.backgrounds = {setup:undefined, main: undefined, menu: undefined, boot: undefined, mainDark: undefined};
+    this.backgrounds = { setup:undefined,
+      main: undefined,
+      mainRemoteNotConnected: undefined,
+      menu: undefined,
+      boot: undefined,
+      mainDark: undefined
+    };
   }
 
   componentDidMount() {
@@ -63,8 +69,7 @@ export class AppRouter extends Component {
       let state = store.getState();
 
       store.dispatch({type:"CLEAR_ACTIVE_SPHERE"});
-
-      // store.dispatch({type:"SET_ACTIVE_SPHERE", data:{ activeSphere:Object.keys(state.spheres)[0]}});
+      store.dispatch({type:"SET_REMOTE_SPHERE", data:{ remoteSphere: state.app.previouslyActiveSphere || Object.keys(state.spheres)[0]}});
 
       // pass the store to the singletons
       NativeEventsBridge.loadStore(store);
@@ -114,11 +119,13 @@ export class AppRouter extends Component {
    * Preloading backgrounds
    */
   componentWillMount() {
-    this.backgrounds.setup = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/setupBackground.png')} />;
-    this.backgrounds.main  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
-    this.backgrounds.menu  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
-    this.backgrounds.boot  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/loginBackground.png')} />;
-    this.backgrounds.mainDark  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackground.png')} />;
+    this.backgrounds.setup                   = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/setupBackground.png')} />;
+    this.backgrounds.main                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
+    this.backgrounds.mainRemoteNotConnected  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLightNotConnected.png')} />;
+    this.backgrounds.mainRemoteConnected     = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLightConnected.png')} />;
+    this.backgrounds.menu                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
+    this.backgrounds.boot                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/loginBackground.png')} />;
+    this.backgrounds.mainDark                = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackground.png')} />;
   }
 
   componentWillUnmount() { // cleanup

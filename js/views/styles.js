@@ -11,10 +11,12 @@ export let barHeightLarge = 40*pxRatio;
 
 export let colors = {
   menuBackground: {hex:'#00263e'},
-  menuText: {hex:'#ffffff'},
+  menuText: {hex:'#fff'},
   menuTextSelected: {hex:'#2daeff'},
-  gray: {hex:'#cccccc'},
-  lightGray: {hex:'#dddddd'},
+  gray: {hex:'#ccc'},
+  notConnected: {hex:'#909d9a'},
+  darkGray: {hex:'#555'},
+  lightGray: {hex:'#ddd'},
   purple: {hex:'#8a01ff'},
   blue: {hex:'#0075c9'},
   green: {hex:'#a0eb58'},

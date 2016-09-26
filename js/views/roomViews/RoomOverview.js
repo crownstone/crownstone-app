@@ -66,7 +66,8 @@ export class RoomOverview extends Component {
             state={item.stone.state.state}
             currentUsage={item.stone.state.currentUsage}
             navigation={false}
-            control={true}
+            control={this.props.remote === false}
+            remote={this.props.remote}
             pending={this.state.pendingRequests[stoneId] !== undefined}
             dimmable={item.device.config.dimmable}
             onChange={(switchState) => {
@@ -122,10 +123,15 @@ export class RoomOverview extends Component {
     let users = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
     let items = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
 
+    let backgroundImage = this.props.backgrounds.main;
+    if (this.props.remote === true) {
+      backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
+    }
+
     if (Object.keys(items).length == 0) {
       return (
-        <Background image={this.props.backgrounds.main} >
-          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} />
+        <Background image={backgroundImage} >
+          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} remote={this.props.remote} />
           <ScrollView>
             <SeparatedItemList
               items={items}
@@ -138,8 +144,8 @@ export class RoomOverview extends Component {
     }
     else {
       return (
-        <Background image={this.props.backgrounds.main} >
-          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null}  />
+        <Background image={backgroundImage} >
+          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null} remote={this.props.remote}  />
           <ScrollView>
             <SeparatedItemList
               items={items}

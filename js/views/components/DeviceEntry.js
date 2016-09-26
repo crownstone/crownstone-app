@@ -94,9 +94,9 @@ export class DeviceEntry extends Component {
     );
   }
 
-  _getItem() {
+  _getIcon() {
     let color = (
-      this.props.pending === true ?
+      this.props.pending === true || this.props.remote === true ?
           colors.gray.hex :
           (this.props.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
@@ -122,16 +122,13 @@ export class DeviceEntry extends Component {
           <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
           <View style={{flexDirection: 'row', flex: 1, alignItems: "center"}}>
             <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onMove()}>
-              <Icon name="md-log-in" size={24} color="#aaa"
-                    style={{backgroundColor: 'transparent', position: 'relative'}}/>
+              <Icon name="md-log-in" size={24} color="#aaa" style={{backgroundColor: 'transparent', position: 'relative'}}/>
             </TouchableOpacity>
             <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeType()}>
-              <Icon name="ios-outlet" size={26} color="#aaa"
-                    style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
+              <Icon name="ios-outlet" size={26} color="#aaa" style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
             </TouchableOpacity>
             <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeSettings()}>
-              <Icon name="ios-cog" size={29} color="#aaa"
-                    style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
+              <Icon name="ios-cog" size={29} color="#aaa" style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -144,7 +141,7 @@ export class DeviceEntry extends Component {
       <Animated.View style={{flexDirection:'column', height: this.state.height, overflow:'hidden', flex:1}}>
         <View style={{flexDirection:'row', height: this.baseHeight, paddingRight:0, paddingLeft:0, flex:1}}>
           <TouchableOpacity style={{paddingRight:20, height: this.baseHeight, justifyContent:'center'}} onPress={() => {this._toggleOptions();}}>
-            {this._getItem()}
+            {this._getIcon()}
           </TouchableOpacity>
           <TouchableOpacity style={{flex:1, height: this.baseHeight, justifyContent:'center'}} onPress={() => {this._toggleOptions();}}>
             <View style={{flexDirection:'column'}}>

@@ -35,10 +35,14 @@ export class RoomBanner extends Component {
     let leftRatio = 0.5;
     let rightRatio = 0.30;
     let offset = 0.1*height;
+    let remoteColor = undefined;
+    if (this.props.remote === true) {
+      remoteColor = colors.notConnected.hex;
+    }
 
     if (this.props.floatingCrownstones === true) {
       return (
-        <View style={{width:screenWidth, height:height, backgroundColor: this.props.color || colors.blue.hex, justifyContent:'center'}}>
+        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.blue.hex, justifyContent:'center'}}>
           <View style={{flexDirection:'row'}}>
             <Icon name="c2-pluginFront" size={100} color={colors.green.hex} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
             <Icon name="c2-pluginFront" size={100} color={colors.orange.hex} style={{position:'absolute',backgroundColor:'transparent', top:20, left:175}} />
@@ -58,7 +62,7 @@ export class RoomBanner extends Component {
     else if (this.props.noCrownstones === true) {
       leftRatio = 0.95;
       return (
-        <View style={{width:screenWidth, height:height, backgroundColor: this.props.color || colors.green.hex, justifyContent:'center'}}>
+        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.hex, justifyContent:'center'}}>
           <View style={{flexDirection:'row'}}>
             <View style={{height:0.7*height, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
               <View style={[bannerStyles.whiteLeft, {height: 0.5*height, width:(leftRatio-0.05)*screenWidth+offset}]} />
@@ -72,7 +76,7 @@ export class RoomBanner extends Component {
     }
     else {
       return (
-        <View style={{width:screenWidth, height:height, backgroundColor: this.props.color || colors.green.hex, justifyContent:'center'}}>
+        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.hex, justifyContent:'center'}}>
           <View style={{flexDirection:'row'}}>
             <View style={{height:0.7*height, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
               <View style={[bannerStyles.whiteLeft, {height:0.5*height, width:(leftRatio-0.05)*screenWidth+offset}]} />

@@ -58,14 +58,6 @@ export class SphereOverview extends Component {
   render() {
     LOG("RENDERING OVERVIEW");
 
-    return (
-      <Background image={this.props.backgrounds.main} >
-        {this._getRenderContent()}
-      </Background>
-    );
-  }
-
-  _getRenderContent() {
     const store = this.props.store;
     const state = store.getState();
     this.renderState = state;
@@ -74,6 +66,7 @@ export class SphereOverview extends Component {
     let noSpheres = sphereIds.length == 0;
     let noStones = true;
     let activeSphere = state.app.activeSphere;
+    let remoteSphere = state.app.remoteSphere;
 
     // check if we have ANY crownstone
     sphereIds.forEach((sphereId) => {
@@ -82,39 +75,47 @@ export class SphereOverview extends Component {
       }
     });
 
+    // TODO: user cannot have no Sphere.
     if (noSpheres) {
       return (
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <Icon name="c1-house" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-          <Text style={overviewStyles.mainText}>No Spheres available.</Text>
-          <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
+        <Background image={this.props.backgrounds.main} >
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Icon name="c1-house" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+            <Text style={overviewStyles.mainText}>No Spheres available.</Text>
+            <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
           </View>
+        </Background>
       );
     }
     else if (noStones) {
       return (
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <Icon name="c2-pluginFront" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-          <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
-          <Text style={overviewStyles.subText}>Go into the settings to add Crownstones.</Text>
-        </View>
+        <Background image={this.props.backgrounds.main} >
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <Icon name="c2-pluginFront" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
+            <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
+            <Text style={overviewStyles.subText}>Go into the settings to add Crownstones.</Text>
+          </View>
+        </Background>
       );
     }
     else if (activeSphere) {
       return (
-        <View style={{flex:1}}>
-          <RoomLayer store={store} sphereId={state.app.activeSphere} />
-          <Text style={overviewStyles.bottomText}>{'Currently in Sphere: ' + state.spheres[activeSphere].config.name }</Text>
-        </View>
+        <Background image={this.props.backgrounds.main} >
+          <View style={{flex:1}}>
+            <RoomLayer store={store} sphereId={state.app.activeSphere} />
+            <Text style={overviewStyles.bottomText}>{'Currently in '  + state.spheres[activeSphere].config.name + '\'s Sphere.' }</Text>
+          </View>
+        </Background>
       );
     }
     else {
       return (
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <Icon name="c1-signpost" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
-          <Text style={overviewStyles.mainText}>No Spheres in range...</Text>
-          <Text style={overviewStyles.subText}>If you come in range of a sphere you are part of, the rooms and Crownstones will be shown automatically.</Text>
-        </View>
+        <Background image={this.props.backgrounds.mainRemoteNotConnected} >
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <RoomLayer store={store} sphereId={remoteSphere} remote={true} />
+            <Text style={overviewStyles.bottomTextNotConnected}>{'Currently viewing '  + state.spheres[remoteSphere].config.name + '\'s Sphere\s data.' }</Text>
+          </View>
+        </Background>
       );
     }
   }
@@ -132,5 +133,8 @@ const overviewStyles = StyleSheet.create({
   },
   bottomText: {
     position:'absolute', bottom:10, width:screenWidth, backgroundColor:'transparent', textAlign:'center', color:colors.blue.hex, fontSize:12, padding:15, paddingBottom:0
+  },
+  bottomTextNotConnected: {
+    position:'absolute', bottom:10, width:screenWidth, backgroundColor:'transparent', textAlign:'center', color:colors.darkGray.hex, fontSize:12, padding:15, paddingBottom:0
   }
 });
