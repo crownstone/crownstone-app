@@ -20,6 +20,8 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { BLEutil } from '../../native/BLEutil'
 import { IconButton } from '../components/IconButton'
 import { BleActions } from '../../native/Proxy'
+import { LOG } from '../../logging/Log'
+
 
 export class SettingsCrownstone extends Component {
   constructor() {
@@ -43,19 +45,27 @@ export class SettingsCrownstone extends Component {
 
   _getItems() {
     let items = [];
+    let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId};
 
     const store = this.props.store;
     const state = store.getState();
-    let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    let roomName = getRoomName(state, this.props.groupId, stone.config.locationId);
-    let roomNames = Object.keys(getRoomNames(state, this.props.groupId));
+    let roomName = getRoomName(state, this.props.sphereId, stone.config.locationId);
+    let roomNames = Object.keys(getRoomNames(state, this.props.sphereId));
     roomNames.push(NO_LOCATION_NAME); // add the location for no crownstones.
 
     let options = roomNames.map((roomName) => {return {label:roomName}});
 
+    items.push({label:'CROWNSTONE', type: 'explanation',  below:false});
+    items.push({
+      label: 'Name', type: 'textEdit', placeholder:'Choose a nice name', value: stone.config.name, callback: (newText) => {
+        store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
+      }
+    });
 
-    items.push({label:'LOCATION OF CROWNSTONE',  type:'explanation', below:false});
+
+    items.push({label:'LOCATION',  type:'explanation', below:false});
     if (roomNames.length == 1) {
       items.push({label:'First create rooms.',  type:'info', style:{color:colors.lightGray.hex}});
       items.push({type:'spacer'});
@@ -74,15 +84,15 @@ export class SettingsCrownstone extends Component {
               Alert.alert("Decouple this Crownstone",
                 "If you do not add the Crownstone to a room, it will not be used for indoor localization purposes.",
                 [{text:'Cancel'}, {text:"OK", onPress: () => {
-                  store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
+                  store.dispatch({...requiredData, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
                 }}])
             }
             else {
               Alert.alert("Move Crownstone to " + selectedRoom,
                 "If you move a Crownstone to a different room, we'd recommend you retrain the rooms to ensure the indoor localization will work correctly.",
                 [{text:'Cancel'}, {text:"OK", onPress: () => {
-                  let roomId = getRoomIdFromName(state, this.props.groupId, selectedRoom);
-                  store.dispatch({groupId: this.props.groupId, stoneId: this.props.stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})
+                  let roomId = getRoomIdFromName(state, this.props.sphereId, selectedRoom);
+                  store.dispatch({...requiredData, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})
                 }}])
             }
           }
@@ -99,13 +109,13 @@ export class SettingsCrownstone extends Component {
     // items.push({label:'This Crownstone is up to date.',  type:'explanation', below:true});
 
     items.push({
-      label: 'Remove from Group',
+      label: 'Remove from Sphere',
       icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       type: 'button',
       callback: () => {
         Alert.alert(
           "Are you sure?",
-          "Removing a Crownstone from the group will revert it to it's factory default settings.",
+          "Removing a Crownstone from the sphere will revert it to it's factory default settings.",
           [{text: 'Cancel'}, {text: 'Remove', onPress: () => {
               Alert.alert(
                 "Let\'s get started!",
@@ -119,7 +129,7 @@ export class SettingsCrownstone extends Component {
         )
       }
     });
-    items.push({label:'Removing this Crownstone from its Group will reset it back to factory defaults.',  type:'explanation', below:true});
+    items.push({label:'Removing this Crownstone from its Sphere will reset it back to factory defaults.',  type:'explanation', below:true});
 
     return items;
   }
@@ -127,7 +137,7 @@ export class SettingsCrownstone extends Component {
 
   _removeCrownstone(stone) {
     return new Promise((resolve, reject) => {
-      BLEutil.detectCrownstone(stone.config.bluetoothId)
+      BLEutil.detectCrownstone(stone.config.handle)
         .then((isInSetupMode) => {
           // if this crownstone is broadcasting but in setup mode, we only remove it from the cloud.
           if (isInSetupMode === true) {
@@ -137,7 +147,7 @@ export class SettingsCrownstone extends Component {
         })
         .catch((err) => {
           Alert.alert("Can't see this one!",
-            "We can't find this Crownstone while scanning. Can you move closer to it and try again? If you want to remove it from your Group without resetting it, press Delete anyway.",
+            "We can't find this Crownstone while scanning. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
             [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}},
               {text:'OK', onPress: () => {this.props.eventBus.emit('hideLoading');}}])
         })
@@ -147,12 +157,12 @@ export class SettingsCrownstone extends Component {
 
   _removeCloudOnly() {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
-    CLOUD.forGroup(this.props.groupId).deleteStone(this.props.stoneId)
+    CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .then(() => {
         this._removeCrownstoneFromRedux();
       })
       .catch((err) => {
-        console.log("error while asking the cloud to remove this crownstone", err);
+        LOG("error while asking the cloud to remove this crownstone", err);
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Crownstone in the cloud. Please try again later",
           [{text:'OK', onPress: () => {
@@ -163,25 +173,29 @@ export class SettingsCrownstone extends Component {
 
   _removeCloudReset(stone) {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
-    CLOUD.forGroup(this.props.groupId).deleteStone(this.props.stoneId)
+    CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
-        let proxy = BLEutil.getProxy(stone.config.bluetoothId);
+        let proxy = BLEutil.getProxy(stone.config.handle);
         proxy.perform(BleActions.commandFactoryReset)
           .then(() => {
             this._removeCrownstoneFromRedux();
           })
           .catch((err) => {
-            console.log("ERROR:",err)
+            LOG("ERROR:",err)
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "You can recover it using the recovery procedure.",
-              [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); Actions.pop(); Actions.settingsPluginRecoverStep1(); }
-              }])
+              [{text:'OK', onPress: () => {
+                this.props.eventBus.emit('hideLoading');
+                Actions.pop();
+                Actions.settingsPluginRecoverStep1();
+              }}]
+            )
           })
       })
       .catch((err) => {
-        console.log("error while asking the cloud to remove this crownstone", err);
+        LOG("error while asking the cloud to remove this crownstone", err);
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Crownstone in the cloud. Please try again later",
           [{text:'OK', onPress: () => {
@@ -195,13 +209,19 @@ export class SettingsCrownstone extends Component {
     this.deleting = true;
 
     // revert to the previous screen
-    Actions.pop();
-    this.props.eventBus.emit('hideLoading');
-    this.props.store.dispatch({type: "REMOVE_STONE", groupId: this.props.groupId, stoneId: this.props.stoneId});
+    Alert.alert("Success!",
+      "We have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a (new?) Sphere.",
+      [{text:'OK', onPress: () => {
+        Actions.pop();
+        this.props.eventBus.emit('hideLoading');
+        this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+      }
+      }]
+    )
   }
 
   render() {
-    console.log("redrawing Crownstone settings page");
+    LOG("redrawing Crownstone settings page");
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView>

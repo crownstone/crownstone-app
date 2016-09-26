@@ -23,8 +23,8 @@ export class AppComplexity extends Component {
     return [
       {type:'spacer'},
       {label:'Manage Profile',  type:'navigation',   callback: (newValue) => {}},
-      {label:'Manage Group',    type:'navigation',   callback: (newValue) => {}},
-      //{label:'Add, remove, or change the permissions of the people in your group.',  type:'explanation', below:true},
+      {label:'Manage Sphere',    type:'navigation',   callback: (newValue) => {}},
+      //{label:'Add, remove, or change the permissions of the people in your sphere.',  type:'explanation', below:true},
       {label:'Manage Crownstones', type:'navigation',  callback: (newValue) => {}},
       //{label:'Here you can reset Crownstones to factory settings. (ie. remove ownership)',  type:'explanation', below:true},
       {label:'Manage Locations',   type:'navigation',      callback: (newValue) => {}},

@@ -87,7 +87,7 @@ export class PresentUsers extends Component {
   }
 
   _debug(props) {
-    this.allUsersBase = getPresentUsersFromState(props.store.getState(), props.store.getState().app.activeGroup, props.locationId, true);
+    this.allUsersBase = getPresentUsersFromState(props.store.getState(), props.store.getState().app.activeSphere, props.locationId, true);
     this.allUsers = [];
     this.userI = 0;
     setInterval(() => {
@@ -108,8 +108,8 @@ export class PresentUsers extends Component {
       const state = store.getState();
       if (this.renderState === undefined)
         return;
-      if (state.app.activeGroup) {
-        if (state.groups[state.app.activeGroup].locations.presentUsers != this.renderState.groups[state.app.activeGroup].locations.presentUsers) {
+      if (state.app.activeSphere) {
+        if (state.spheres[state.app.activeSphere].locations.presentUsers != this.renderState.spheres[state.app.activeSphere].locations.presentUsers) {
           this._getUsers();
           this.forceUpdate();
         }
@@ -125,7 +125,7 @@ export class PresentUsers extends Component {
 
   // experiment
   shouldComponentUpdate(nextProps, nextState) {
-    // console.log("Should component update?",nextProps, nextState)
+    // LOG("Should component update?",nextProps, nextState)
     return false
   }
 
@@ -133,9 +133,9 @@ export class PresentUsers extends Component {
   _getUsers() {
     const store = this.props.store;
     const state = store.getState();
-    let activeGroup = state.app.activeGroup;
+    let activeSphere = state.app.activeSphere;
 
-    let presentUsers = getPresentUsersFromState(state, activeGroup, this.props.locationId);
+    let presentUsers = getPresentUsersFromState(state, activeSphere, this.props.locationId);
     // presentUsers = this.allUsers; // ENABLE FOR DEBUG
 
     let slotCount = 0;
@@ -182,7 +182,7 @@ export class PresentUsers extends Component {
           // create RN object with the references to the animation variables.
           this.positions[user.id].obj = (
             <Animated.View key={user.id} style={{position:'absolute', top: this.positions[user.id].top, left: this.positions[user.id].left, opacity: this.positions[user.id].opacity}}>
-              <ProfilePicture picture={state.groups[activeGroup].users[user.id].picture} size={1.2 * this.userDiameter} />
+              <ProfilePicture picture={state.spheres[activeSphere].users[user.id].picture} size={1.2 * this.userDiameter} />
             </Animated.View>
           );
 
@@ -243,7 +243,7 @@ export class PresentUsers extends Component {
             };
             this.positions[user.id].obj = (
               <Animated.View key={user.id} style={{position: 'absolute', top: this.positions[user.id].top, left: this.positions[user.id].left, opacity: this.positions[user.id].opacity}}>
-                <ProfilePicture picture={state.groups[activeGroup].users[user.id].picture} size={this.userDiameter} />
+                <ProfilePicture picture={state.spheres[activeSphere].users[user.id].picture} size={this.userDiameter} />
               </Animated.View>
             );
             introAnimations.push(Animated.timing(this.positions[user.id].top, {toValue: newPositions[user.id].y, duration: 200}));

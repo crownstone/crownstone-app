@@ -1,9 +1,9 @@
 import { NO_LOCATION_NAME } from '../ExternalConfig'
 
-export const getStonesFromState = function(state, groupId, locationId) {
+export const getStonesFromState = function(state, sphereId, locationId) {
   let filteredStones = {};
-  if (groupId !== undefined) {
-    let stones = state.groups[groupId].stones;
+  if (sphereId !== undefined) {
+    let stones = state.spheres[sphereId].stones;
     for (let stoneId in stones) {
       if (stones.hasOwnProperty(stoneId)) {
         if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
@@ -15,10 +15,10 @@ export const getStonesFromState = function(state, groupId, locationId) {
   return filteredStones;
 };
 
-export const getAmountOfStonesInLocation = function(state, groupId, locationId) {
+export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {
   let counter = 0;
-  if (groupId !== undefined) {
-    let stones = state.groups[groupId].stones;
+  if (sphereId !== undefined) {
+    let stones = state.spheres[sphereId].stones;
     for (let stoneId in stones) {
       if (stones.hasOwnProperty(stoneId)) {
         if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
@@ -30,10 +30,10 @@ export const getAmountOfStonesInLocation = function(state, groupId, locationId) 
   return counter;
 }
 
-export const getOrphanedStones = function(state, groupId) {
+export const getOrphanedStones = function(state, sphereId) {
   let filteredStones = [];
-  if (groupId !== undefined) {
-    let stones = state.groups[groupId].stones;
+  if (sphereId !== undefined) {
+    let stones = state.spheres[sphereId].stones;
     for (let stoneId in stones) {
       if (stones.hasOwnProperty(stoneId)) {
         if (stones[stoneId].config.locationId === null || stones[stoneId].config.locationId === undefined) {
@@ -46,29 +46,29 @@ export const getOrphanedStones = function(state, groupId) {
 };
 
 
-export const getPresentUsersFromState = function(state, groupId, locationId, all = false) {
+export const getPresentUsersFromState = function(state, sphereId, locationId, all = false) {
   let users = [];
   if (locationId === null) {
     return users;
   }
 
-  const location = state.groups[groupId].locations[locationId];
+  const location = state.spheres[sphereId].locations[locationId];
 
   let presentUsers = location.presentUsers;
   if (all) {
-    presentUsers = Object.keys(state.groups[groupId].users)
+    presentUsers = Object.keys(state.spheres[sphereId].users)
   }
   presentUsers.forEach((userId) => {
-    users.push({id: userId, data: state.groups[groupId].users[userId]})
+    users.push({id: userId, data: state.spheres[sphereId].users[userId]})
   });
 
   return users
 };
 
 
-export const getCurrentPowerUsageFromState = function(state, groupId, locationId) {
+export const getCurrentPowerUsageFromState = function(state, sphereId, locationId) {
   let usage = 0;
-  let stones = getStonesFromState(state, groupId, locationId);
+  let stones = getStonesFromState(state, sphereId, locationId);
   for (let stoneId in stones) {
     if (stones.hasOwnProperty(stoneId)) {
       usage += stones[stoneId].state.currentUsage
@@ -79,9 +79,9 @@ export const getCurrentPowerUsageFromState = function(state, groupId, locationId
 };
 
 
-export const getGroupContentFromState = function(state, groupId) {
-  let stones = getStonesFromState(state, groupId);
-  let appliances = state.groups[groupId].appliances;
+export const getSphereContentFromState = function(state, sphereId) {
+  let stones = getStonesFromState(state, sphereId);
+  let appliances = state.spheres[sphereId].appliances;
 
   let items = {};
   for (let stoneId in stones) {
@@ -97,9 +97,9 @@ export const getGroupContentFromState = function(state, groupId) {
 };
 
 
-export const getRoomContentFromState = function(state, groupId, locationId) {
-  let stones = getStonesFromState(state, groupId, locationId);
-  let appliances = state.groups[groupId].appliances;
+export const getRoomContentFromState = function(state, sphereId, locationId) {
+  let stones = getStonesFromState(state, sphereId, locationId);
+  let appliances = state.spheres[sphereId].appliances;
 
   let items = {};
   for (let stoneId in stones) {
@@ -115,9 +115,9 @@ export const getRoomContentFromState = function(state, groupId, locationId) {
 };
 
 
-export const getRoomNames = function(state, groupId) {
+export const getRoomNames = function(state, sphereId) {
   let roomNames = {};
-  let rooms = state.groups[groupId].locations;
+  let rooms = state.spheres[sphereId].locations;
   for (let roomId in rooms) {
     if (rooms.hasOwnProperty(roomId)) {
       let room = rooms[roomId];
@@ -129,9 +129,9 @@ export const getRoomNames = function(state, groupId) {
 
 
 export const userIsAdmin = function(state) {
-  let groupIds = Object.keys(state.groups);
-  for (let i = 0; i < groupIds.length; i++) {
-    if (state.groups[groupIds[i]].config.adminKey !== undefined) {
+  let sphereIds = Object.keys(state.spheres);
+  for (let i = 0; i < sphereIds.length; i++) {
+    if (state.spheres[sphereIds[i]].config.adminKey !== undefined) {
       return true;
     }
   }
@@ -139,14 +139,14 @@ export const userIsAdmin = function(state) {
 };
 
 
-export const getGroupsWhereIHaveAccessLevel = function(state, accessLevel) {
+export const getSpheresWhereIHaveAccessLevel = function(state, accessLevel) {
   let items = [];
-  for (let groupId in state.groups) {
-    if (state.groups.hasOwnProperty(groupId)) {
-      let group = state.groups[groupId];
-      // there can be a race condition where the current user is yet to be added to groups but a redraw during the creation process triggers this method
-      if (group.users[state.user.userId] && group.users[state.user.userId].accessLevel === accessLevel) {
-        items.push({id: groupId, name: group.config.name});
+  for (let sphereId in state.spheres) {
+    if (state.spheres.hasOwnProperty(sphereId)) {
+      let sphere = state.spheres[sphereId];
+      // there can be a race condition where the current user is yet to be added to spheres but a redraw during the creation process triggers this method
+      if (sphere.users[state.user.userId] && sphere.users[state.user.userId].accessLevel === accessLevel) {
+        items.push({id: sphereId, name: sphere.config.name});
       }
     }
   }
@@ -154,36 +154,36 @@ export const getGroupsWhereIHaveAccessLevel = function(state, accessLevel) {
 };
 
 
-export const getMyLevelInGroup = function(state, groupId) {
+export const getMyLevelInSphere = function(state, sphereId) {
   let userId = state.user.userId;
 
-  return state.groups[groupId].users[userId].accessLevel;
+  return state.spheres[sphereId].users[userId].accessLevel;
 };
 
 
-export const userInGroups = function(state) {
-  return Object.keys(state.groups).length > 0;
+export const userInSpheres = function(state) {
+  return Object.keys(state.spheres).length > 0;
 };
 
 
-export const getGroupName = function(state, id) {
-  return state.groups[id].config.name;
+export const getSphereName = function(state, id) {
+  return state.spheres[id].config.name;
 };
 
 
-export const getRoomName = function(state, groupId, locationId) {
+export const getRoomName = function(state, sphereId, locationId) {
   if (locationId === null) {
     return NO_LOCATION_NAME;
   }
-  return state.groups[groupId].locations[locationId].config.name;
+  return state.spheres[sphereId].locations[locationId].config.name;
 };
 
 
-export const getRoomIdFromName = function(state, groupId, locationName) {
+export const getRoomIdFromName = function(state, sphereId, locationName) {
   if (locationName === NO_LOCATION_NAME) {
     return null;
   }
-  let locations = state.groups[groupId].locations;
+  let locations = state.spheres[sphereId].locations;
   for (let locationId in locations) {
     if (locations.hasOwnProperty(locationId)) {
       if (locations[locationId].config.name == locationName) {
@@ -195,10 +195,52 @@ export const getRoomIdFromName = function(state, groupId, locationName) {
 };
 
 export const getTotalAmountOfCrownstones = function(state) {
-  let groupIds = Object.keys(state.groups);
+  let sphereIds = Object.keys(state.spheres);
   let count = 0;
-  groupIds.forEach((groupId) => {
-    count += Object.keys(state.groups[groupId].stones).length;
-  })
+  sphereIds.forEach((sphereId) => {
+    count += Object.keys(state.spheres[sphereId].stones).length;
+  });
   return count;
+};
+
+export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
+  let sphereIds = Object.keys(state.spheres);
+  let map = {};
+  sphereIds.forEach((sphereId) => {
+    let stoneIds = Object.keys(state.spheres[sphereId].stones);
+    let locations = state.spheres[sphereId].locations;
+    let appliances = state.spheres[sphereId].appliances;
+    stoneIds.forEach((stoneId) => {
+      let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
+      map[stoneConfig.handle] = {
+        id: stoneId,
+        cid: stoneConfig.crownstoneId,
+        name: stoneConfig.name,
+        applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
+        locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
+      };
+    })
+  });
+  return map;
+};
+
+export const getMapOfCrownstonesInSphereByCID = function(state, sphereId) {
+  if (sphereId) {
+    let map = {};
+    let stoneIds = Object.keys(state.spheres[sphereId].stones);
+    let locations = state.spheres[sphereId].locations;
+    let appliances = state.spheres[sphereId].appliances;
+    stoneIds.forEach((stoneId) => {
+      let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
+      map[stoneConfig.crownstoneId] = {
+        id: stoneId,
+        handle: stoneConfig.handle,
+        name: stoneConfig.name,
+        applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
+        locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
+      };
+    });
+    return map;
+  }
+  return {};
 };

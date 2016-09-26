@@ -12,7 +12,7 @@ let defaultSettings = {
     macAddress: undefined,
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
-    bluetoothId: undefined,
+    handle: undefined,
     crownstoneId: undefined,
     initializedSuccessfully: false,
     firmwareVersion: 0,
@@ -43,17 +43,17 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name         = update(action.data.name,     newState.name);
-        newState.locationId   = update(action.data.locationId, newState.locationId);
-        newState.applianceId  = update(action.data.applianceId, newState.applianceId);
-        newState.macAddress   = update(action.data.macAddress, newState.macAddress);
-        newState.iBeaconMajor = update(action.data.iBeaconMajor, newState.iBeaconMajor);
-        newState.iBeaconMinor = update(action.data.iBeaconMinor, newState.iBeaconMinor);
+        newState.name            = update(action.data.name,     newState.name);
+        newState.locationId      = update(action.data.locationId, newState.locationId);
+        newState.applianceId     = update(action.data.applianceId, newState.applianceId);
+        newState.macAddress      = update(action.data.macAddress, newState.macAddress);
+        newState.iBeaconMajor    = update(action.data.iBeaconMajor, newState.iBeaconMajor);
+        newState.iBeaconMinor    = update(action.data.iBeaconMinor, newState.iBeaconMinor);
         newState.firmwareVersion = update(action.data.firmwareVersion, newState.firmwareVersion);
-        newState.bluetoothId  = update(action.data.bluetoothId, newState.bluetoothId);
-        newState.crownstoneId = update(action.data.crownstoneId, newState.crownstoneId);
+        newState.handle          = update(action.data.handle, newState.handle);
+        newState.crownstoneId    = update(action.data.crownstoneId, newState.crownstoneId);
         newState.initializedSuccessfully = update(action.data.initializedSuccessfully, newState.initializedSuccessfully);
-        newState.updatedAt    = getTime();
+        newState.updatedAt       = getTime();
         return newState;
       }
       return state;

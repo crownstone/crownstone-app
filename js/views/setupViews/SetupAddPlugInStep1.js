@@ -16,10 +16,11 @@ import { TopBar } from '../components/Topbar';
 import { Background } from '../components/Background'
 import { setupStyle, CancelButton, NextButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
+import { LOG } from '../../logging/Log'
 
 export class SetupAddPlugInStep1 extends Component {
   render() {
-    console.log("ENTERING ADDING CROWNSTONE INTERFACE WITH GROUP : ", this.props.groupId);
+    LOG("ENTERING ADDING CROWNSTONE INTERFACE WITH SPHERE : ", this.props.sphereId);
     let imageSize = 0.35;
     return (
       <Background hideInterface={true} image={this.props.backgrounds.setup}>
@@ -50,13 +51,13 @@ export class SetupAddPlugInStep1 extends Component {
                     Actions.tabBar();
                   }
                   else {
-                    Actions.setupAddPluginStep4({groupId: this.props.groupId})
+                    Actions.setupAddPluginStep4({sphereId: this.props.sphereId})
                   }
                 }}]
               )
             }} />
             <View style={{flex:1}} />
-            <NextButton onPress={() => {Actions.setupAddPluginStep2({groupId: this.props.groupId, fromMainMenu: this.props.fromMainMenu})}} />
+            <NextButton onPress={() => {Actions.setupAddPluginStep2({sphereId: this.props.sphereId, fromMainMenu: this.props.fromMainMenu})}} />
           </View>
         </View>
       </Background>

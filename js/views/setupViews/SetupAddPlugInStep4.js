@@ -24,13 +24,13 @@ export class SetupAddPlugInStep4 extends Component {
         <View style={styles.shadedStatusBar} />
         <View style={{flex:1, flexDirection:'column'}}>
           <Text style={[setupStyle.h1]}>Ready to get started?</Text>
-          <Text style={setupStyle.text}>Would you like to add another Crownstone to your Group?</Text>
+          <Text style={setupStyle.text}>Would you like to add another Crownstone to your Sphere?</Text>
           <View style={setupStyle.lineDistance} />
           <Text style={setupStyle.information}>You can always add more Crownstones later through the settings menu.</Text>
           <View style={{flex:1}} />
           <TouchableOpacity style={{paddingLeft:20, paddingRight:30,flexDirection:'row',
             alignItems: 'center',
-            justifyContent:'flex-start'}} onPress={() => {Actions.setupAddPluginStep1({hideBack:true, groupId: this.props.groupId});}}>
+            justifyContent:'flex-start'}} onPress={() => {Actions.setupAddPluginStep1({hideBack:true, sphereId: this.props.sphereId});}}>
             <Icon name="c2-plugin" size={100} color="#fff" style={{backgroundColor:'transparent', width:105, position:'relative', top:3}} />
             <Text style={[setupStyle.information, {width: screenWidth - 140, paddingLeft:5, paddingRight:0}]}>Add more Crownstones</Text>
           </TouchableOpacity>

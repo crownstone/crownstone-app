@@ -17,7 +17,7 @@ import { RoomCircle } from './RoomCircle'
 import { getOrphanedStones, getAmountOfStonesInLocation } from '../../util/dataUtil'
 
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-
+import { LOG } from '../../logging/Log'
 
 
 
@@ -77,13 +77,13 @@ export class RoomLayer extends Component {
 
       // only redraw if the amount of rooms changes.
       const state = store.getState();
-      if (state.app.activeGroup) {
+      if (state.app.activeSphere) {
 
-        let orphanedStonesNow = getOrphanedStones(state, this.props.groupId);
-        let orphanedStonesBefore = getOrphanedStones(this.renderState, this.props.groupId);
+        let orphanedStonesNow = getOrphanedStones(state, this.props.sphereId);
+        let orphanedStonesBefore = getOrphanedStones(this.renderState, this.props.sphereId);
 
-        let amountOfRooms = Object.keys(state.groups[this.props.groupId].locations).length + orphanedStonesNow;
-        let amountOfRoomsBefore = Object.keys(this.renderState.groups[this.props.groupId].locations).length + orphanedStonesBefore;
+        let amountOfRooms = Object.keys(state.spheres[this.props.sphereId].locations).length + orphanedStonesNow;
+        let amountOfRoomsBefore = Object.keys(this.renderState.spheres[this.props.sphereId].locations).length + orphanedStonesBefore;
         if (amountOfRooms !== amountOfRoomsBefore) {
           this.forceUpdate();
         }
@@ -99,11 +99,11 @@ export class RoomLayer extends Component {
 
   // experiment
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("Should component update?",nextProps, nextState);
+    LOG("Should component update?",nextProps, nextState);
     return false
   }
 
-  _renderRoom(locationId, room, activeGroup, count, index, amountOfStones) {
+  _renderRoom(locationId, room, activeSphere, count, index, amountOfStones) {
     // get the position for the room
     let pos = {};
     if (count > 6) {
@@ -121,7 +121,7 @@ export class RoomLayer extends Component {
 
     // variables to pass to the room overview
     let actionsParams = {
-      groupId:activeGroup,
+      sphereId:activeSphere,
       locationId:locationId,
       title:room.config.name,
     };
@@ -134,7 +134,7 @@ export class RoomLayer extends Component {
           <View>
             <RoomCircle
               locationId={locationId}
-              groupId={this.props.groupId}
+              sphereId={this.props.sphereId}
               radius={this.roomRadius}
               store={this.props.store}
               pos={pos}
@@ -148,10 +148,10 @@ export class RoomLayer extends Component {
     this.maxY = 0;
     const store = this.props.store;
     const state = store.getState();
-    let rooms = state.groups[this.props.groupId].locations;
+    let rooms = state.spheres[this.props.sphereId].locations;
 
 
-    let orphanedStones = getOrphanedStones(state, this.props.groupId);
+    let orphanedStones = getOrphanedStones(state, this.props.sphereId);
 
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
@@ -163,12 +163,12 @@ export class RoomLayer extends Component {
     }
 
     for (let i = 0; i < roomIdArray.length; i++) {
-      let amountOfStones = getAmountOfStonesInLocation(state, this.props.groupId, roomIdArray[i]);
-      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], this.props.groupId, amountOfRooms, i, amountOfStones))
+      let amountOfStones = getAmountOfStonesInLocation(state, this.props.sphereId, roomIdArray[i]);
+      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], this.props.sphereId, amountOfRooms, i, amountOfStones))
     }
 
     if (orphanedStones.length > 0) {
-      roomNodes.push(this._renderRoom(null, {config:{name:"Floating Crownstones"}}, this.props.groupId, amountOfRooms, amountOfRooms-1))
+      roomNodes.push(this._renderRoom(null, {config:{name:"Floating Crownstones"}}, this.props.sphereId, amountOfRooms, amountOfRooms-1))
     }
 
     if (roomIdArray.length > 6) {
@@ -190,7 +190,7 @@ export class RoomLayer extends Component {
     const state = store.getState();
     this.renderState = state;
 
-    console.log("rendering room layer");
+    LOG("rendering room layer");
 
     return (
       <View>

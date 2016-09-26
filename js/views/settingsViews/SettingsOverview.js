@@ -17,10 +17,21 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { IconButton } from '../components/IconButton'
 import { NativeEventsBridge } from '../../native/NativeEventsBridge'
-import { userInGroups, userIsAdmin, getGroupName } from '../../util/dataUtil'
+import { userInSpheres, userIsAdmin, getSphereName } from '../../util/dataUtil'
 
 
 export class SettingsOverview extends Component {
+
+  componentDidMount() {
+    const { store } = this.props;
+    this.unsubscribe = store.subscribe(() => {
+      this.forceUpdate();
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
 
   _getItems() {
     const store = this.props.store;
@@ -51,14 +62,14 @@ export class SettingsOverview extends Component {
     items.push({label:'My Profile', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
 
     items.push({type:'explanation', label:'CONFIGURATION', below:false});
-    if (userInGroups(state)) {
-      items.push({label:'Groups', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
-        Actions.settingsGroupOverview()
+    if (userInSpheres(state)) {
+      items.push({label:'Spheres', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
+        Actions.settingsSphereOverview()
       }});
     }
     else {
-      items.push({label:'Add Group', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
-        Actions.setupAddGroup()
+      items.push({label:'Add Sphere', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
+        Actions.setupAddSphere()
       }});
     }
 
@@ -78,7 +89,7 @@ export class SettingsOverview extends Component {
     }
 
     // TODO: restore once we have a better description for this. Also mesh must be working.
-    // if (state.app.activeGroup && Object.keys(state.groups[state.app.activeGroup].stones).length > 0) {
+    // if (state.app.activeSphere && Object.keys(state.spheres[state.app.activeSphere].stones).length > 0) {
     //   items.push({type: 'spacer'});
     //   items.push({
     //     type: 'button',
@@ -87,7 +98,7 @@ export class SettingsOverview extends Component {
     //                       buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
     //     style: {color: colors.menuTextSelected.hex},
     //     callback: () => {
-    //       Alert.alert("Are you sure?", "Are you sure you want to turn on every Crownstone in this Group?", [
+    //       Alert.alert("Are you sure?", "Are you sure you want to turn on every Crownstone in this Sphere?", [
     //         {text: 'Cancel', style: 'cancel'},
     //         {text: 'OK', onPress: () => {}}
     //       ])
@@ -127,7 +138,7 @@ export class SettingsOverview extends Component {
   _logoutPopup() {
     Alert.alert('Log out','Are you sure?',[
       {text: 'Cancel', style: 'cancel'},
-      {text: 'OK', onPress: () => {logOut(this.props.eventBus)}}
+      {text: 'OK', onPress: () => {logOut()}}
     ])
   }
 

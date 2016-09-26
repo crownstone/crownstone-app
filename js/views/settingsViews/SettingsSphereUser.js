@@ -18,7 +18,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors, width } from './../styles'
 import RNFS from 'react-native-fs'
 
-export class SettingsGroupUser extends Component {
+export class SettingsSphereUser extends Component {
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
@@ -46,9 +46,9 @@ export class SettingsGroupUser extends Component {
       callback: (permission) => {
         permission = permission.toLowerCase();
         this.props.eventBus.emit('showLoading', 'Updating user permissions...');
-        CLOUD.forGroup(this.props.groupId).changeUserAccess(this.props.userId, permission)
+        CLOUD.forSphere(this.props.sphereId).changeUserAccess(this.props.userId, permission)
           .then((result) => {
-            store.dispatch({type: 'UPDATE_GROUP_USER', groupId: this.props.groupId, userId: this.props.userId, data:{accessLevel: permission}});
+            store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: this.props.sphereId, userId: this.props.userId, data:{accessLevel: permission}});
           })
           .done(() => {
             this.props.eventBus.emit('hideLoading');
@@ -58,9 +58,9 @@ export class SettingsGroupUser extends Component {
     );
 
     items.push({type:'explanation', label:'REVOKE PERMISSIONS'});
-    items.push({label:'Remove from Group', type:'button', callback: () => {
+    items.push({label:'Remove from Sphere', type:'button', callback: () => {
       Alert.alert(
-        "Are you sure you want to remove this user from the group?",
+        "Are you sure you want to remove this user from the sphere?",
         "User's permissions will be revoked the next time he/she logs into the app.",
       [{text:'No'}, {text:'Yes'}])
     }});
@@ -73,7 +73,7 @@ export class SettingsGroupUser extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let user = state.groups[this.props.groupId].users[this.props.userId];
+    let user = state.spheres[this.props.sphereId].users[this.props.userId];
 
     return (
       <Background image={this.props.backgrounds.menu} >

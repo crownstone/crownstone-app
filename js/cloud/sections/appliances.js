@@ -8,16 +8,16 @@ export const appliances = {
     return this._setupRequest('GET', '/Appliances', options);
   },
 
-  getAppliancesInGroup: function() {
-    // TODO: change to group owned query when it becomes available
-    return this._setupRequest('GET', '/Appliances');
+  getAppliancesInSphere: function(options) {
+    // TODO: change to sphere owned query when it becomes available
+    return this._setupRequest('GET', '/Appliances',options);
   },
 
-  createAppliance: function (applianceName, groupId) {
+  createAppliance: function (applianceName, sphereId) {
     return this._setupRequest(
       'POST',
       '/Appliances',
-      {data: {name: applianceName, groupId:groupId}},
+      {data: {name: applianceName, sphereId:sphereId}},
       'body'
     );
   },

@@ -12,7 +12,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
 import { styles, colors } from '../styles'
-
+import { LOG } from '../../logging/Log'
 
 
 export class CameraRollView extends Component {
@@ -29,7 +29,7 @@ export class CameraRollView extends Component {
     if (this.active === true) {
       let query = {
         first: 10,
-        groupTypes: 'SavedPhotos',
+        sphereTypes: 'SavedPhotos',
         assetType: 'Photos',
       };
       if (this.pictureIndex !== undefined) {
@@ -45,7 +45,7 @@ export class CameraRollView extends Component {
         let pictures = [...this.state.pictures, ...data.edges];
         this.setState({pictures: pictures})
       }).catch((err) => {
-        console.log(err)
+        LOG(err)
       });
     }
   }

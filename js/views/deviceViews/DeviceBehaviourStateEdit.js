@@ -23,7 +23,7 @@ export class DeviceStateEdit extends Component {
     this.unsubscribe = this.props.store.subscribe(() => {
       // guard against deletion of the stone
       let state = this.props.store.getState();
-      let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (stone)
         this.forceUpdate();
       else {
@@ -82,7 +82,7 @@ export class DeviceStateEdit extends Component {
   }
 
   constructOptions(store, device, stone) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
     let currentBehaviour = device.behaviour[this.props.eventName];
     
     let items = [];
@@ -109,7 +109,7 @@ export class DeviceStateEdit extends Component {
   }
 
   constructStateOptions(store, device, stone) {
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
     let currentBehaviour = device.behaviour[this.props.eventName];
     let items = [];
 
@@ -160,11 +160,11 @@ export class DeviceStateEdit extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    let stone     = state.groups[this.props.groupId].stones[this.props.stoneId];
+    let stone     = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let device = stone;
     if (stone.config.applianceId)
-      device = state.groups[this.props.groupId].appliances[stone.config.applianceId];
+      device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
 
     let currentBehaviour = device.behaviour[this.props.eventName];
 

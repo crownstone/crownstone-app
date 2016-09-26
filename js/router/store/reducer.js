@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 
 import userReducer    from './reducers/user'
-import groupsReducer  from './reducers/groups'
+import spheresReducer  from './reducers/spheres'
 import settingReducer from './reducers/settings'
 import appReducer     from './reducers/app'
 
@@ -18,7 +18,7 @@ export default (state = {}, action = {}) => {
 
   return {
     user: userReducer(state.user, action),
-    groups: groupsReducer(state.groups, action),
+    spheres: spheresReducer(state.spheres, action),
     settings: settingReducer(state.settings, action),
     app: appReducer(state.app, action)
   }

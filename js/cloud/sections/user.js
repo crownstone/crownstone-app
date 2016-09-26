@@ -1,4 +1,4 @@
-
+import { LOG } from '../../logging/Log'
 
 export const user = {
   /**
@@ -36,6 +36,7 @@ export const user = {
             resolve(reply.data)
           }
           else {
+            LOG(reply);
             if (reply.data && reply.data.error && reply.data.error.code) {
               switch (reply.data.error.code) {
                 case 'LOGIN_FAILED_EMAIL_NOT_VERIFIED':
@@ -125,7 +126,8 @@ export const user = {
   getKeys: function(options = {}) {
     return this._setupRequest(
       'GET',
-      'users/{id}/keys'
+      'users/{id}/keys',
+      options
     );
   }
 

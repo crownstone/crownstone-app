@@ -43,10 +43,10 @@ test('locationsReducer ADD_LOCATION and REMOVE_LOCATION', function (t) {
   let stateWithLocation = locationsReducer({}, addLocationAction);
   deepFreeze(stateWithLocation);
 
-  t.deepEqual(stateWithLocation, expectedReturn, 'add a location to a group');
+  t.deepEqual(stateWithLocation, expectedReturn, 'add a location to a sphere');
 
   expectedReturn.locationId.config.icon = 'tv';
-  t.deepEqual(locationsReducer(stateWithLocation, updateLocationAction), expectedReturn, 'update a location in a group');
-  t.deepEqual(locationsReducer(stateWithLocation, removeLocationAction), {}, 'remove a location from a group');
+  t.deepEqual(locationsReducer(stateWithLocation, updateLocationAction), expectedReturn, 'update a location in a sphere');
+  t.deepEqual(locationsReducer(stateWithLocation, removeLocationAction), {}, 'remove a location from a sphere');
   t.end();
 });

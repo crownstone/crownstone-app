@@ -39,11 +39,11 @@ export class SetupAddPlugInStepRecover extends Component {
               Alert.alert(
                 "Are you sure?",
                 "You can always add Crownstones later through the settings menu.",
-                [{text:'No'},{text:'Yes, I\'m sure', onPress:Actions.tabBar}]
+                [{text:'No'},{text:'Yes, I\'m sure', onPress: Actions.tabBar}]
               )
               }} />
             <View style={{flex:1}} />
-            <NextButton onPress={Actions.setupAddPluginStep2({groupId: this.props.groupId, fromMainMenu: this.props.fromMainMenu})} />
+            <NextButton onPress={() => {Actions.setupAddPluginStep2({sphereId: this.props.sphereId, fromMainMenu: this.props.fromMainMenu})}} />
           </View>
         </View>
       </Background>

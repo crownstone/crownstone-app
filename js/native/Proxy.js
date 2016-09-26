@@ -1,8 +1,9 @@
-import { NativeModules, NativeAppEventEmitter } from 'react-native';
+import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE } from '../ExternalConfig'
+import { LOG } from '../logging/Log'
 // var subscription = NativeAppEventEmitter.addListener(
 //   'EventReminder',
-//   (reminder) => console.log(reminder.name)
+//   (reminder) => LOG(reminder.name)
 // );
 //
 // // Don't forget to unsubscribe, typically in componentWillUnmount
@@ -11,9 +12,9 @@ import { DISABLE_NATIVE } from '../ExternalConfig'
 
 export let Bluenet;
 if (DISABLE_NATIVE === true) {
-  console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
-  console.log("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
-  console.log("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
+  LOG("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
+  LOG("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
+  LOG("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   Bluenet = {
     clearTrackedBeacons: () => {},
     rerouteEvents: () => {},
@@ -45,7 +46,7 @@ else {
 }
 
 export const BluenetPromise = function(functionName, param) {
-  console.log("called bluenetPromise", functionName, " with param", param);
+  LOG("called bluenetPromise", functionName, " with param", param);
   return new Promise((resolve, reject) => {
     if (DISABLE_NATIVE === true) {
       resolve()
@@ -54,7 +55,7 @@ export const BluenetPromise = function(functionName, param) {
       if (param === undefined) {
         Bluenet[functionName]((result) => {
           if (result.error === true) {
-            console.log("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
+            LOG("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
             reject(result.data);
           }
           else {
@@ -65,7 +66,7 @@ export const BluenetPromise = function(functionName, param) {
       else {
         Bluenet[functionName](param, (result) => {
           if (result.error === true) {
-            console.log("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
+            LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
             reject(result.data);
           }
           else {
@@ -86,8 +87,8 @@ export const NativeEvents = {
   },
   location: {
     iBeaconAdvertisement: "iBeaconAdvertisement",
-    enterGroup:           "enterGroup",
-    exitGroup:            "exitGroup",
+    enterSphere:          "enterSphere",
+    exitSphere:           "exitSphere",
     enterLocation:        "enterLocation",
     exitLocation:         "exitLocation",
     currentLocation:      "currentLocation",
@@ -97,7 +98,20 @@ export const NativeEvents = {
 export const BleActions = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:        ()      => { return BluenetPromise('isReady');              },
-  connect:        (handle)=> { return BluenetPromise('connect', handle);      },
+  connect:        (handle)=> {
+    if (handle) {
+      return BluenetPromise('connect', handle);
+    }
+    else {
+      return new Promise((resolve, reject) => {
+        Alert.alert(
+          "Can't connect to this Crownstone.",
+          "Please move a little closer to this Crownstone and try again.",
+          [{text:'OK', onPress: reject}]
+        )
+      });
+    }
+  },
   disconnect:     ()      => { return BluenetPromise('disconnect');           },
   phoneDisconnect:()      => { return BluenetPromise('phoneDisconnect');      },
   setSwitchState: (state) => { return BluenetPromise('setSwitchState', state);},

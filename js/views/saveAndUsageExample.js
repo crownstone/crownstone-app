@@ -1,6 +1,5 @@
 import React, { Component } from 'react' 
 import {
-  
   Dimensions,
   Image,
   NativeModules,
@@ -8,6 +7,7 @@ import {
   Text,
   View
 } from 'react-native';
+import { LOG } from '../logging/Log'
 
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
 import {TopBar} from './components/Topbar'
@@ -106,11 +106,11 @@ export class HomeOverview extends Component {
   onRef(input) {
     if (this.requestLoad === true) {
       this.requestLoad = false;
-      console.log('Rendering Offscreen')
+      LOG('Rendering Offscreen')
       // create a path you want to write to
       var path = RNFS.DocumentDirectoryPath + '/image.png';
       input.captureFrame({type:'png', format:'file', filePath: path, quality:1}).then((filePath) => {
-        console.log('captured!', RNFS.CachesDirectoryPath, filePath, arguments)
+        LOG('captured!', RNFS.CachesDirectoryPath, filePath, arguments)
         this.state.imagePath = filePath
         this.setState(this.state)
       });
@@ -121,9 +121,9 @@ export class HomeOverview extends Component {
   }
 
   _getImage() {
-    console.log('requestedImage')
+    LOG('requestedImage')
     if (this.state.imagePath !== undefined) {
-      console.log('presenting image',this.state);
+      LOG('presenting image',this.state);
       return <Image style={{width:300, height:300}} source={{uri: this.state.imagePath}} />
     }
   }
@@ -131,7 +131,7 @@ export class HomeOverview extends Component {
   render() {
     let offscreenRender;
     if (this.requestLoad === true) {
-      console.log('setup')
+      LOG('setup')
       let width = Dimensions.get('window').width;
       offscreenRender = <View style={{position:'absolute', top:0, left:width}}>
         <Surface ref={this.onRef.bind(this)} width={300} height={300} preload={true}>
@@ -147,7 +147,7 @@ export class HomeOverview extends Component {
         </Surface>
       </View>
     }
-    console.log('drawing')
+    LOG('drawing')
     return (
       <Background image={this.props.backgrounds.menu} >
         {this._getImage()}

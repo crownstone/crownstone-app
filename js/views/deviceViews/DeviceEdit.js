@@ -29,7 +29,7 @@ export class DeviceEdit extends Component {
     this.unsubscribe = this.props.store.subscribe(() => {
       // guard against deletion of the stone
       let state = this.props.store.getState();
-      let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (stone)
         this.forceUpdate();
       else {
@@ -44,19 +44,12 @@ export class DeviceEdit extends Component {
 
   constructStoneOptions(store, stone) {
     let requiredData = {
-      groupId: this.props.groupId,
+      sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
     };
     let items = [];
 
     let toBehaviour = () => { Actions.deviceBehaviourEdit(requiredData) };
-
-      items.push({label:'CROWNSTONE', type: 'explanation',  below:false});
-      items.push({
-        label: 'Name', type: 'textEdit', placeholder:'Choose a nice name', value: stone.config.name, callback: (newText) => {
-          store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
-        }
-      });
 
       items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
       items.push({
@@ -83,7 +76,7 @@ export class DeviceEdit extends Component {
 
   constructApplianceOptions(store, appliance, applianceId) {
     let requiredData = {
-      groupId: this.props.groupId,
+      sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
       applianceId: applianceId
     };
@@ -102,7 +95,7 @@ export class DeviceEdit extends Component {
 
     // icon picker
     items.push({label:'Icon', type: 'icon', value: appliance.config.icon, callback: () => {
-      Actions.deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, groupId: this.props.groupId})
+      Actions.deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, sphereId: this.props.sphereId})
     }});
 
     // unplug device
@@ -146,12 +139,12 @@ export class DeviceEdit extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const stone   = state.groups[this.props.groupId].stones[this.props.stoneId];
+    const stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let applianceOptions = [];
     let stoneOptions = this.constructStoneOptions(store, stone);
     if (stone.config.applianceId) {
-      let appliance = state.groups[this.props.groupId].appliances[stone.config.applianceId];
+      let appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
       applianceOptions = this.constructApplianceOptions(store, appliance, stone.config.applianceId);
     }
 

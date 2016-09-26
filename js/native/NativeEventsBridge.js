@@ -3,7 +3,7 @@ import { NativeModules, NativeAppEventEmitter } from 'react-native';
 import { reactToEnterRoom, reactToExitRoom, processScanResponse } from '../logic/CrownstoneControl'
 import { BlePromiseManager } from '../logic/BlePromiseManager'
 import { EventBus } from '../util/eventBus'
-
+import { LOG } from '../logging/Log'
 
 
 class NativeEventsClass {
@@ -27,7 +27,7 @@ class NativeEventsClass {
   }
 
   loadStore(store) {
-    console.log('LOADED STORE NativeEventsClass', this.initialized);
+    LOG('LOADED STORE NativeEventsClass', this.initialized);
     if (this.initialized === false) {
       this.initialized = true;
       this.store = store;
@@ -88,44 +88,44 @@ class NativeEventsClass {
       // resume the tracking of the beacons, can also be called safely if we are already listening.
       Bluenet.resumeIBeaconTracking();
 
-      let enterGroup = NativeEvents.location.enterGroup;
-      if (this.subscriptions[enterGroup] === undefined) {
-        this.subscriptions[enterGroup] = NativeAppEventEmitter.addListener(
-          enterGroup,
-          (groupId) => {
+      let enterSphere = NativeEvents.location.enterSphere;
+      if (this.subscriptions[enterSphere] === undefined) {
+        this.subscriptions[enterSphere] = NativeAppEventEmitter.addListener(
+          enterSphere,
+          (sphereId) => {
             let state = this.store.getState();
-            console.log("ENTER GROUP");
+            LOG("ENTER SPHERE", sphereId);
             // TODO: move to localization util or something
-            if (state.groups[groupId] !== undefined) {
-              // prepare the settings for this group and pass them onto bluenet
+            if (state.spheres[sphereId] !== undefined) {
+              // prepare the settings for this sphere and pass them onto bluenet
               let bluenetSettings = {
                 encryptionEnabled:true,
-                adminKey : state.groups[groupId].config.adminKey,
-                memberKey: state.groups[groupId].config.memberKey,
-                guestKey : state.groups[groupId].config.guestKey,
+                adminKey : state.spheres[sphereId].config.adminKey,
+                memberKey: state.spheres[sphereId].config.memberKey,
+                guestKey : state.spheres[sphereId].config.guestKey,
               };
 
-              console.log("Set Settings.", bluenetSettings)
+              LOG("Set Settings.", bluenetSettings, state.spheres[sphereId])
               return BleActions.setSettings(JSON.stringify(bluenetSettings))
                 .then(() => {
-                  console.log("Setting Active Group")
-                  this.store.dispatch({type: 'SET_ACTIVE_GROUP', data: {activeGroup: groupId}});
-                  this.locationEvents.emit(enterGroup, groupId);
-                })
+                  LOG("Setting Active Sphere")
+                  this.store.dispatch({type: 'SET_ACTIVE_SPHERE', data: {activeSphere: sphereId}});
+                  this.locationEvents.emit(enterSphere, sphereId);
+                }).catch()
             }
           }
         );
       }
 
-      let exitGroup = NativeEvents.location.exitGroup;
-      if (this.subscriptions[exitGroup] === undefined) {
-        this.subscriptions[exitGroup] = NativeAppEventEmitter.addListener(
-          exitGroup,
-          (groupId) => {
-            console.log("EXIT GROUP")
-            this.locationEvents.emit(exitGroup, groupId);
+      let exitSphere = NativeEvents.location.exitSphere;
+      if (this.subscriptions[exitSphere] === undefined) {
+        this.subscriptions[exitSphere] = NativeAppEventEmitter.addListener(
+          exitSphere,
+          (sphereId) => {
+            LOG("EXIT SPHERE")
+            this.locationEvents.emit(exitSphere, sphereId);
             // TODO: move to localization util or something
-            this.store.dispatch({type: 'CLEAR_ACTIVE_GROUP'});
+            this.store.dispatch({type: 'CLEAR_ACTIVE_SPHERE'});
           }
         );
       }
@@ -137,10 +137,10 @@ class NativeEventsClass {
           enterLoc,
           (locationId) => {
             let state = this.store.getState();
-            if (state.app.activeGroup && locationId) {
+            if (state.app.activeSphere && locationId) {
               this.locationEvents.emit(enterLoc, locationId);
               // TODO: move to localization util or something, do something with the behaviour
-              this.store.dispatch({type: 'USER_ENTER', groupId: state.app.activeGroup, locationId: locationId, userId: state.user.userId});
+              this.store.dispatch({type: 'USER_ENTER', sphereId: state.app.activeSphere, locationId: locationId, userId: state.user.userId});
             }
           }
         );
@@ -153,10 +153,10 @@ class NativeEventsClass {
           exitLoc,
           (locationId) => {
             let state = this.store.getState();
-            if (state.app.activeGroup && locationId) {
+            if (state.app.activeSphere && locationId) {
               this.locationEvents.emit(exitLoc, locationId);
               // TODO: move to localization util or something, do something with the behaviour
-              this.store.dispatch({type: 'USER_EXIT', groupId: state.app.activeGroup, locationId: locationId, userId: state.user.userId});
+              this.store.dispatch({type: 'USER_EXIT', sphereId: state.app.activeSphere, locationId: locationId, userId: state.user.userId});
             }
           }
         );
@@ -174,7 +174,7 @@ class NativeEventsClass {
       }
     }
     else {
-      console.log("LOCALIZATION IS DISABLED IN THE SETTINGS")
+      LOG("LOCALIZATION IS DISABLED IN THE SETTINGS")
     }
   }
 

@@ -41,17 +41,17 @@ export class SettingsRoom extends Component {
     const state = store.getState();
     this.deleting = true;
     this.props.eventBus.emit('showLoading','Removing this room in the Cloud.');
-    CLOUD.forGroup(this.props.groupId).deleteLocation(this.props.locationId)
+    CLOUD.forSphere(this.props.sphereId).deleteLocation(this.props.locationId)
       .then(() => {
         let removeActions = [];
         this.props.eventBus.emit('hideLoading');
-        let stones = getStonesFromState(state, this.props.groupId, this.props.locationId);
+        let stones = getStonesFromState(state, this.props.sphereId, this.props.locationId);
         Actions.pop();
 
-        removeActions.push({groupId: this.props.groupId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
+        removeActions.push({sphereId: this.props.sphereId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
         for (let stoneId in stones) {
           if (stones.hasOwnProperty(stoneId)) {
-            removeActions.push({groupId: this.props.groupId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
+            removeActions.push({sphereId: this.props.sphereId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
           }
         }
         store.batchDispatch(removeActions);
@@ -68,9 +68,9 @@ export class SettingsRoom extends Component {
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
-    const room  = state.groups[this.props.groupId].locations[this.props.locationId];
+    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
 
-    let requiredData = {groupId: this.props.groupId, locationId: this.props.locationId};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId};
     let items = [];
 
     items.push({label:'ROOM SETTINGS',  type:'explanation', below:false});
@@ -79,11 +79,11 @@ export class SettingsRoom extends Component {
       store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
     }});
     items.push({label:'Icon', type: 'icon', value: room.config.icon, callback: () => {
-      Actions.roomIconSelection({locationId: this.props.locationId, icon: room.config.icon, groupId: this.props.groupId})
+      Actions.roomIconSelection({locationId: this.props.locationId, icon: room.config.icon, sphereId: this.props.sphereId})
     }});
 
 
-    if (Object.keys(state.groups[this.props.groupId].stones).length >= 4) {
+    if (Object.keys(state.spheres[this.props.sphereId].stones).length >= 4) {
       items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
       if (room.config.fingerprintRaw) {
         items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {

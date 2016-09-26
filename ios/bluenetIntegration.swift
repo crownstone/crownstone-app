@@ -113,6 +113,12 @@ func getBleErrorString(err: BleError) -> String {
     return "USERLEVEL_IN_READ_PACKET_INVALID"
   case .READ_SESSION_NONCE_ZERO_MAYBE_ENCRYPTION_DISABLED:
     return "READ_SESSION_NONCE_ZERO_MAYBE_ENCRYPTION_DISABLED"
+  case .NOT_IN_RECOVERY_MODE:
+    return "NOT_IN_RECOVERY_MODE"
+  case .CANNOT_READ_FACTORY_RESET_CHARACTERISTIC:
+    return "CANNOT_READ_FACTORY_RESET_CHARACTERISTIC"
+  case .RECOVER_MODE_DISABLED:
+    return "RECOVER_MODE_DISABLED"
   default:
      return "UNKNOWN_BLE_ERROR \(err)"
   }
@@ -168,12 +174,12 @@ class BluenetJS: NSObject {
       
       globalBluenet.bluenetLocalization.on("enterRegion", {data -> Void in
         if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEventWithName("enterGroup", body: castData)
+          self.bridge.eventDispatcher().sendAppEventWithName("enterSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalization.on("exitRegion", {data -> Void in
         if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEventWithName("exitGroup", body: castData)
+          self.bridge.eventDispatcher().sendAppEventWithName("exitSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalization.on("enterLocation", {data -> Void in
@@ -226,8 +232,8 @@ class BluenetJS: NSObject {
   }
 
 
-  @objc func connect(uuid: String, callback: RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.connect(uuid)
+  @objc func connect(handle: String, callback: RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.connect(handle)
       .then({_ in callback([["error" : false]])})
       .error({err in
         if let bleErr = err as? BleError {
@@ -296,9 +302,9 @@ class BluenetJS: NSObject {
   }
   
 
-  @objc func trackIBeacon(groupUUID: String, groupId: String) -> Void {
-    print("tracking ibeacons with uuid: \(groupUUID) for group: \(groupId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(groupUUID, groupId: groupId)
+  @objc func trackIBeacon(sphereUUID: String, sphereId: String) -> Void {
+    print("tracking ibeacons with uuid: \(sphereUUID) for sphere: \(sphereId)")
+    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(sphereUUID, groupId: sphereId)
   }
   
   @objc func stopIBeaconTracking() -> Void {
@@ -333,8 +339,8 @@ class BluenetJS: NSObject {
   }
   
   
-  @objc func finalizeFingerprint(groupId: String, locationId: String) -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.finalizeFingerprint(groupId, locationId: locationId)
+  @objc func finalizeFingerprint(sphereId: String, locationId: String) -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.finalizeFingerprint(sphereId, locationId: locationId)
     print("finishCollectingFingerprint")
   }
   
@@ -346,23 +352,23 @@ class BluenetJS: NSObject {
   }
   
   
-  @objc func getFingerprint(groupId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
-    let fingerprint = GLOBAL_BLUENET!.bluenetLocalization.getFingerprint(groupId, locationId: locationId)
+  @objc func getFingerprint(sphereId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
+    let fingerprint = GLOBAL_BLUENET!.bluenetLocalization.getFingerprint(sphereId, locationId: locationId)
     if let fingerprintData = fingerprint {
       callback([fingerprintData.stringify()])
     }
     else {
       callback([])
     }
-    print("getFingerprint \(groupId) \(locationId)")
+    print("getFingerprint \(sphereId) \(locationId)")
 
   }
   
   
-  @objc func loadFingerprint(groupId: String, locationId: String, fingerprint: String) -> Void {
+  @objc func loadFingerprint(sphereId: String, locationId: String, fingerprint: String) -> Void {
     let fingerprint = Fingerprint(stringifiedData: fingerprint)
-    GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(groupId, locationId: locationId, fingerprint: fingerprint)
-    print("loadFingerprint \(groupId) \(locationId)")
+    GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(sphereId, locationId: locationId, fingerprint: fingerprint)
+    print("loadFingerprint \(sphereId) \(locationId)")
   }
   
   
@@ -394,8 +400,8 @@ class BluenetJS: NSObject {
       })
   }
   
-  @objc func recover(crownstoneUUID: String, callback: RCTResponseSenderBlock) -> Void {
-    GLOBAL_BLUENET!.bluenet.control.recoverByFactoryReset(crownstoneUUID)
+  @objc func recover(crownstoneHandle: String, callback: RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.control.recoverByFactoryReset(crownstoneHandle)
       .then({_ in callback([["error" : false]])})
       .error({err in
         if let bleErr = err as? BleError {

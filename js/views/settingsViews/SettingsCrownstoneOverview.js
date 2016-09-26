@@ -13,7 +13,7 @@ import {
 import { Background } from './../components/Background'
 import { DeviceOverview } from '../components/DeviceOverview'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getGroupContentFromState, getRoomName, getGroupsWhereIHaveAccessLevel } from './../../util/dataUtil'
+import { getSphereContentFromState, getRoomName, getSpheresWhereIHaveAccessLevel } from './../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { Icon } from '../components/Icon';
@@ -38,20 +38,20 @@ export class SettingsCrownstoneOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let groups = getGroupsWhereIHaveAccessLevel(state, 'admin');
-    groups.forEach((group) => {
-      let stones = getGroupContentFromState(state, group.id);
+    let spheres = getSpheresWhereIHaveAccessLevel(state, 'admin');
+    spheres.forEach((sphere) => {
+      let stones = getSphereContentFromState(state, sphere.id);
       let stoneIds = Object.keys(stones);
 
-      items.push({label:"CROWNSTONES IN GROUP: '" + group.name + "'",  type:'explanation', below:false});
+      items.push({label:"CROWNSTONES IN SPHERE: '" + sphere.name + "'",  type:'explanation', below:false});
       if (stoneIds.length > 0) {
         stoneIds.forEach((stoneId) => {
           let stone = stones[stoneId];
-          let roomName = getRoomName(state, group.id, stone.stone.config.locationId);
+          let roomName = getRoomName(state, sphere.id, stone.stone.config.locationId);
           items.push({__item:
             <TouchableHighlight
               key={stoneId + '_entry'}
-              onPress={() => {Actions.settingsCrownstone({stoneId:stoneId, groupId: group.id});}}
+              onPress={() => {Actions.settingsCrownstone({stoneId:stoneId, sphereId: sphere.id});}}
             >
               <View style={styles.listView}>
                 <DeviceOverview
@@ -66,12 +66,12 @@ export class SettingsCrownstoneOverview extends Component {
         })
       }
       items.push({
-        label: 'Add a Crownstone to this Group',
+        label: 'Add a Crownstone to this Sphere',
         largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
         style: {color:colors.blue.hex},
         type: 'button',
         callback: () => {
-          Actions.setupAddPluginStep1({groupId: group.id, fromMainMenu: true});
+          Actions.setupAddPluginStep1({sphereId: sphere.id, fromMainMenu: true});
         }
       })
     });

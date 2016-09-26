@@ -13,7 +13,7 @@ const Promise = require("promise");
 fetch.Promise = Promise;
 
 //alex
-let token = 'IXoWq6dQWvHJg1ZLHbDKwprgzKKnRJLtkSgE8QqkwmyxMn9JTcYAzLuAfzpHA4tx';
+let token = '587EiRde1iBSVaJrZYn4CZZak575KON5E0z6tEF7K0GCkHDIUZkHx1CyB51LygK2';
 let userId = '5747122cfb25ed03000bdc70';
 
 //anne

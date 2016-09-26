@@ -7,7 +7,7 @@ import { mixin } from '../util/util';
 import { user } from './sections/user'
 import { base } from './sections/base'
 import { stones } from './sections/stones'
-import { groups } from './sections/groups'
+import { spheres } from './sections/spheres'
 import { locations } from './sections/locations'
 import { devices } from './sections/devices'
 import { appliances } from './sections/appliances'
@@ -19,7 +19,7 @@ function combineSections() {
   mixin(result, user);
   mixin(result, stones);
   mixin(result, locations);
-  mixin(result, groups);
+  mixin(result, spheres);
   mixin(result, devices);
   mixin(result, appliances);
   mixin(result, sync);

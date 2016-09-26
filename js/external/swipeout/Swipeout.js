@@ -11,6 +11,7 @@ import {
   Text,
   View
 } from 'react-native';
+import { LOG } from '../../logging/Log'
 
 var tweenState = require('react-tween-state');
 
@@ -82,7 +83,7 @@ export var Swipeout = React.createClass({
   , getDefaultProps: function() {
     return {
       onOpen: function(sectionID, rowID) {
-        console.log('onOpen: '+sectionID+" "+rowID);
+        LOG('onOpen: '+sectionID+" "+rowID);
       },
       rowID: -1,
       sectionID: -1,

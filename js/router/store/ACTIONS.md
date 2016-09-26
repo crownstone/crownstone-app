@@ -22,21 +22,21 @@ data: {
 - USER_LOG_OUT
 
 
-# Groups
+# Spheres
 
 required:
-- groupId : String
+- sphereId : String
 
 type:
-- ADD_GROUP
+- ADD_SPHERE
 ```js 
 data: {name: String, latitude: Number, longitude: Number}
 ```
-- UPDATE_GROUP
+- UPDATE_SPHERE
 ```js 
 data: {name: String, latitude: Number, longitude: Number}
 ```
-- REMOVE_GROUP
+- REMOVE_SPHERE
 
 # Presets
 
@@ -45,7 +45,7 @@ None yet.
 # Locations
 
 required:
-- groupId : String
+- sphereId : String
 - locationId : String
 
 type:
@@ -69,7 +69,7 @@ data: {fullURI: String, barURI: String, squareURI: String}
 # Stones
 
 required:
-- groupId : String
+- sphereId : String
 - locationId : String
 - stoneId: String
 

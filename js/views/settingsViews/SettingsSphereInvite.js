@@ -14,10 +14,11 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getMyLevelInGroup } from '../../util/dataUtil';
+import { getMyLevelInSphere } from '../../util/dataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'
+import { LOG } from '../../logging/Log'
 
-export class SettingsGroupInvite extends Component {
+export class SettingsSphereInvite extends Component {
   constructor() {
     super();
     this.state = {
@@ -47,7 +48,7 @@ export class SettingsGroupInvite extends Component {
     });
 
 
-    let level = getMyLevelInGroup(state, this.props.groupId);
+    let level = getMyLevelInSphere(state, this.props.sphereId);
     if (level == "admin") {
       items.push({
           type:'dropdown',
@@ -84,7 +85,7 @@ export class SettingsGroupInvite extends Component {
   }
 
   validateAndContinue() {
-    console.log("HAPPY DAYS!", this.state, this.inputStates)
+    LOG("HAPPY DAYS!", this.state, this.inputStates)
   }
 
   render() {

@@ -6,7 +6,7 @@ export const locations = {
   createLocation: function (locationName) {
     return this._setupRequest(
       'POST',
-      'Groups/{id}/ownedLocations',
+      '/Groups/{id}/ownedLocations',
       {data: {name: locationName}},
       'body'
     );
@@ -15,7 +15,7 @@ export const locations = {
   updateLocation: function (locationId, data, background = true) {
     return this._setupRequest(
       'PUT',
-      'Groups/{id}/ownedLocations/' + locationId,
+      '/Groups/{id}/ownedLocations/' + locationId,
       {background: background, data: data},
       'body'
     );
@@ -25,7 +25,7 @@ export const locations = {
   deleteLocation: function(locationId) {
     return this._setupRequest(
       'DELETE',
-      'Groups/{id}/ownedLocations/' + locationId
+      '/Groups/{id}/ownedLocations/' + locationId
     );
   }
 };

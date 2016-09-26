@@ -12,15 +12,15 @@ export class ImageStore {
       return;
     }
 
-    for (let group in state.groups) {
-      if (state.groups.hasOwnProperty(group)) {
-       state.groups[group].locations.forEach((location) => {
+    for (let sphere in state.spheres) {
+      if (state.spheres.hasOwnProperty(sphere)) {
+       state.spheres[sphere].locations.forEach((location) => {
          let picture = location.picture;
          if (picture.used == true) {
-           this._preloadPicture(group, location.id, picture);
+           this._preloadPicture(sphere, location.id, picture);
          }
          else {
-           this._clearData(group, location.id);
+           this._clearData(sphere, location.id);
          }
        })
       }
@@ -29,28 +29,28 @@ export class ImageStore {
     this.updateRequired = false;
   }
 
-  _preloadPicture(group, location, uris) {
-    if (this.images[group] === undefined)
-      this.images[group] = {};
+  _preloadPicture(sphere, location, uris) {
+    if (this.images[sphere] === undefined)
+      this.images[sphere] = {};
 
-    if (this.images[group][location] === undefined)
-      this.images[group][location] = {square:{}, bar:{}};
+    if (this.images[sphere][location] === undefined)
+      this.images[sphere][location] = {square:{}, bar:{}};
 
 
-    if (this.images[group][location].square.uri !== uris.squareURI) {
-      this.images[group][location].square.img = resolveAssetSource(require('./images/mediaRoom.png'));
-      this.images[group][location].square.uri = uris.squareURI;
+    if (this.images[sphere][location].square.uri !== uris.squareURI) {
+      this.images[sphere][location].square.img = resolveAssetSource(require('./images/mediaRoom.png'));
+      this.images[sphere][location].square.uri = uris.squareURI;
     }
 
-    if (this.images[group][location].bar.uri !== uris.barURI) {
-      this.images[group][location].bar.img = resolveAssetSource(require('./images/mediaRoom.png'));
-      this.images[group][location].bar.uri = uris.barURI;
+    if (this.images[sphere][location].bar.uri !== uris.barURI) {
+      this.images[sphere][location].bar.img = resolveAssetSource(require('./images/mediaRoom.png'));
+      this.images[sphere][location].bar.uri = uris.barURI;
     }
   }
 
-  _clearData(group,location) {
-    if (this.images[group] && this.images[group][location]) {
-      delete this.images[group][location];
+  _clearData(sphere,location) {
+    if (this.images[sphere] && this.images[sphere][location]) {
+      delete this.images[sphere][location];
     }
   }
 

@@ -10,10 +10,10 @@ let defaultSettings = {
   updatedAt: 1
 };
 
-let groupUserReducer = (state = defaultSettings.users, action = {}) => {
+let sphereUserReducer = (state = defaultSettings.users, action = {}) => {
   switch (action.type) {
-    case 'ADD_GROUP_USER':
-    case 'UPDATE_GROUP_USER':
+    case 'ADD_SPHERE_USER':
+    case 'UPDATE_SPHERE_USER':
       if (action.data) {
         let newState = {...state};
         newState.firstName     = update(action.data.firstName,     newState.firstName);
@@ -31,10 +31,10 @@ let groupUserReducer = (state = defaultSettings.users, action = {}) => {
   }
 };
 
-// groupUserReducer
+// sphereUserReducer
 export default (state = {}, action = {}) => {
   switch (action.type) {
-    case 'REMOVE_GROUP_USER':
+    case 'REMOVE_SPHERE_USER':
       let newState = {...state};
       delete newState[action.userId];
       return newState;
@@ -42,7 +42,7 @@ export default (state = {}, action = {}) => {
       if (action.userId !== undefined) {
         return {
           ...state,
-          ...{[action.userId]: groupUserReducer(state[action.userId], action)}
+          ...{[action.userId]: sphereUserReducer(state[action.userId], action)}
         };
       }
       return state;

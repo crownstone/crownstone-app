@@ -1,3 +1,5 @@
+import { LOG } from '../logging/Log'
+
 
 class BlePromiseManagerClass {
   constructor() {
@@ -6,31 +8,31 @@ class BlePromiseManagerClass {
   }
 
   register(promise, message) {
-    console.log("registered promise in manager")
+    LOG("registered promise in manager")
     return new Promise((resolve, reject) => {
       let container = {promise: promise, resolve: resolve, reject: reject, message:message};
       if (this.promiseInProgress === undefined) {
         this.executePromise(container);
       }
       else {
-        console.log('adding to stack');
-        console.log('currentlyPending:', this.promiseInProgress.message);
+        LOG('adding to stack');
+        LOG('currentlyPending:', this.promiseInProgress.message);
         this.pendingPromises.push(container);
       }
     })
   }
 
   executePromise(promiseContainer) {
-    console.log('executed promise ', promiseContainer.message)
+    LOG('executed promise ', promiseContainer.message)
     this.promiseInProgress = promiseContainer;
     promiseContainer.promise()
       .then(() => {
-        console.log("resolved");
+        LOG("resolved");
         promiseContainer.resolve();
         this.moveOn();
       })
       .catch((err) => {
-        console.log("ERROR in promise (",promiseContainer.message,"):",err);
+        LOG("ERROR in promise (",promiseContainer.message,"):",err);
         promiseContainer.reject(err);
         this.moveOn();
       })
@@ -42,7 +44,7 @@ class BlePromiseManagerClass {
   }
 
   getNextPromise() {
-    console.log('get next')
+    LOG('get next')
     if (this.pendingPromises.length > 0) {
       let nextPromise = this.pendingPromises[0];
       this.executePromise(nextPromise);

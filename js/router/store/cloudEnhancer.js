@@ -1,15 +1,16 @@
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getMyLevelInGroup } from '../../util/dataUtil'
+import { getMyLevelInSphere } from '../../util/dataUtil'
 import { BATCH } from './storeManager'
+import { LOG } from '../../logging/Log'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    console.log('will dispatch', action);
+    LOG('will dispatch', action);
 
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
 
-    console.log("new state:", getState())
+    // LOGDebug("new state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, getState);
@@ -65,11 +66,11 @@ function handleAction(action, returnValue, getState) {
     case 'UPDATE_LOCATION_CONFIG':
       handleLocationInCloud(action, newState);
       break;
-    case 'UPDATE_GROUP_CONFIG':
-      handleGroupInCloud(action, newState);
+    case 'UPDATE_SPHERE_CONFIG':
+      handleSphereInCloud(action, newState);
       break;
-    case 'UPDATE_GROUP_USER':
-      handleGroupUserInCloud(action, newState);
+    case 'UPDATE_SPHERE_USER':
+      handleSphereUserInCloud(action, newState);
       break;
   }
 }
@@ -82,7 +83,7 @@ function handleUserInCloud(action, state) {
   if (action.data.picture) {
     CLOUD.uploadProfileImage(action.data.picture)
       .then((data) => {
-        console.log(data)
+        LOG(data)
       })
       .catch(() => {});
   }
@@ -96,20 +97,20 @@ function handleUserInCloud(action, state) {
 }
 
 function handleStoneBehaviourInCloud(action, state) {
-  let groupId = action.groupId;
+  let sphereId = action.sphereId;
   let stoneId = action.stoneId;
 
-  if (getMyLevelInGroup(state, groupId) === 'admin') {
-    let behaviourJSON = JSON.stringify(state.groups[groupId].stones[stoneId].behaviour);
+  if (getMyLevelInSphere(state, sphereId) === 'admin') {
+    let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
     CLOUD.forStone(stoneId).updateStone({json:behaviourJSON}).catch(() => {});
   }
 }
 
 function handleStoneInCloud(action, state) {
-  let groupId = action.groupId;
+  let sphereId = action.sphereId;
   let stoneId = action.stoneId;
 
-  let stoneConfig = state.groups[groupId].stones[stoneId].config;
+  let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
   let data = {
     name: stoneConfig.name,
     address: stoneConfig.macAddress,
@@ -117,57 +118,57 @@ function handleStoneInCloud(action, state) {
     id: stoneId,
     applianceId: stoneConfig.applianceId,
     locationId: stoneConfig.locationId,
-    groupId: groupId,
+    sphereId: sphereId,
   };
   
   CLOUD.forStone(stoneId).updateStone(data).catch(() => {});
 }
 
 function handleApplianceInCloud(action, state) {
-  let groupId = action.groupId;
+  let sphereId = action.sphereId;
   let applianceId = action.applianceId;
 
-  let applianceConfig = state.groups[groupId].appliances[applianceId].config;
+  let applianceConfig = state.spheres[sphereId].appliances[applianceId].config;
   let data = {
     name: applianceConfig.name,
     icon: applianceConfig.icon,
     id: applianceId,
-    groupId: groupId,
+    sphereId: sphereId,
   };
 
   CLOUD.forAppliance(applianceId).updateAppliance(data).catch(() => {});
 }
 
 function handleApplianceBehaviourInCloud(action, state) {
-  let groupId = action.groupId;
+  let sphereId = action.sphereId;
   let applianceId = action.applianceId;
 
-  if (getMyLevelInGroup(state, groupId) === 'admin') {
-    let behaviourJSON = JSON.stringify(state.groups[groupId].appliances[applianceId].behaviour);
+  if (getMyLevelInSphere(state, sphereId) === 'admin') {
+    let behaviourJSON = JSON.stringify(state.spheres[sphereId].appliances[applianceId].behaviour);
     CLOUD.forAppliance(applianceId).updateAppliance({json:behaviourJSON}).catch(() => {});
   }
 }
 
 
 function handleLocationInCloud(action, state) {
-  let groupId = action.groupId;
+  let sphereId = action.sphereId;
   let locationId = action.locationId;
 
-  let locationConfig = state.groups[groupId].locations[locationId].config;
+  let locationConfig = state.spheres[sphereId].locations[locationId].config;
   let data = {
     name: locationConfig.name,
     icon: locationConfig.icon,
     id: locationId,
-    groupId: groupId,
+    sphereId: sphereId,
   };
 
-  CLOUD.forGroup(groupId).updateLocation(locationId, data).catch(() => {});
+  CLOUD.forSphere(sphereId).updateLocation(locationId, data).catch(() => {});
 }
 
-function handleGroupInCloud(action, state) {
+function handleSphereInCloud(action, state) {
   // these are handled by the views, cloud update for these things is mandatory
 }
 
-function handleGroupUserInCloud(action, state) {
+function handleSphereUserInCloud(action, state) {
 
 }

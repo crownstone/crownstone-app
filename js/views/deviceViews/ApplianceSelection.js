@@ -27,7 +27,7 @@ export class ApplianceSelection extends Component {
     this.unsubscribe = store.subscribe(() => {
       // guard against deletion of the stone
       let state = this.props.store.getState();
-      let stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
       if (stone)
         this.forceUpdate();
       else {
@@ -46,7 +46,7 @@ export class ApplianceSelection extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let appliances = state.groups[this.props.groupId].appliances;
+    let appliances = state.spheres[this.props.sphereId].appliances;
     let applianceIds = Object.keys(appliances);
     if (applianceIds.length > 0) {
       items.push({label:'ALL DEVICES', type: 'explanation',  below:false});
@@ -64,11 +64,7 @@ export class ApplianceSelection extends Component {
         }];
 
         items.push({__item:
-        <Swipeout right={deleteButton} autoClose={true} >
-          <TouchableHighlight
-            key={appliance + '_entry'}
-            onPress={() => {this.props.callback(applianceId); Actions.pop();}}
-          >
+        <Swipeout right={deleteButton} autoClose={true}  onOpen={() => {this.props.callback(applianceId); Actions.pop();}}>
             <View style={styles.listView}>
               <DeviceOverview
                 icon={appliance.config.icon}
@@ -77,9 +73,8 @@ export class ApplianceSelection extends Component {
                 size={40}
               />
             </View>
-          </TouchableHighlight>
         </Swipeout>
-          })
+        })
       });
       items.push({label:'You can delete a device by swiping it to the left and pressing Delete.', style:{paddingBottom:0}, type: 'explanation',  below:true});
     }
@@ -93,10 +88,10 @@ export class ApplianceSelection extends Component {
       type: 'button',
       callback: () => {
         this.props.eventBus.emit('showLoading', 'Creating new Device...');
-        CLOUD.createAppliance("", this.props.groupId)
+        CLOUD.createAppliance("", this.props.sphereId)
           .then((reply) => {
             this.props.eventBus.emit('hideLoading');
-            store.dispatch({groupId: this.props.groupId, applianceId: reply.id, type: 'ADD_APPLIANCE'});
+            store.dispatch({sphereId: this.props.sphereId, applianceId: reply.id, type: 'ADD_APPLIANCE'});
             this.props.callback(reply.id);
             Actions.pop();
           })
@@ -115,15 +110,15 @@ export class ApplianceSelection extends Component {
     CLOUD.deleteAppliance(applianceId)
       .then(() => {
         this.props.eventBus.emit('hideLoading');
-        let stones = state.groups[this.props.groupId].stones;
+        let stones = state.spheres[this.props.sphereId].stones;
         for (let stoneId in stones) {
           if (stones.hasOwnProperty(stoneId)) {
             if (stones[stoneId].config.applianceId == applianceId) {
-              store.dispatch({groupId: this.props.groupId, stoneId: stoneId, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}})
+              store.dispatch({sphereId: this.props.sphereId, stoneId: stoneId, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}})
             }
           }
         }
-        store.dispatch({groupId: this.props.groupId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
+        store.dispatch({sphereId: this.props.sphereId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
       })
       .catch((err) => {
         Alert.alert("Encountered Cloud Issue.",

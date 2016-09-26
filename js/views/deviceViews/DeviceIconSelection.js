@@ -199,7 +199,7 @@ export class DeviceIconSelection extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();
-    const selectedIcon = this.props.icon || state.groups[this.props.groupId].appliances[this.props.applianceId].config.icon;
+    const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].appliances[this.props.applianceId].config.icon;
 
     return (
       <Background hideInterface={true} image={this.props.backgrounds.main}>
@@ -216,7 +216,7 @@ export class DeviceIconSelection extends Component {
             this.props.selectCallback !== undefined ?
               this.props.selectCallback :
               (newIcon) => {
-                store.dispatch({type:'UPDATE_APPLIANCE_CONFIG', groupId: this.props.groupId, applianceId: this.props.applianceId, data:{icon: newIcon}});
+                store.dispatch({type:'UPDATE_APPLIANCE_CONFIG', sphereId: this.props.sphereId, applianceId: this.props.applianceId, data:{icon: newIcon}});
                 Actions.pop();
               }}
           />

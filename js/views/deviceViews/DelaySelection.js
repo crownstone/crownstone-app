@@ -36,11 +36,11 @@ export class DelaySelection extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let   stone = state.groups[this.props.groupId].stones[this.props.stoneId];
+    let   stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let optionState = this.props.extractionMethod(stone);
     if (stone.config.applianceId) {
-      let device = state.groups[this.props.groupId].appliances[stone.config.applianceId]
+      let device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId]
       optionState = this.props.extractionMethod(device);
     }
 

@@ -18,6 +18,7 @@ import { FingerprintManager } from '../../native/LocalizationUtil'
 import { Background } from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
+import { LOG } from '../../logging/Log'
 import { IconButton } from '../components/IconButton'
 
 
@@ -65,14 +66,14 @@ export class SettingsRoomTraining extends Component {
     this.setState({text:'Finished!', active:false});
     const store = this.props.store;
     const state = store.getState();
-    let groupId = state.app.activeGroup;
-    FingerprintManager.finalizeFingerprint(groupId, this.props.locationId);
-    FingerprintManager.getFingerprint(groupId, this.props.locationId)
+    let sphereId = state.app.activeSphere;
+    FingerprintManager.finalizeFingerprint(sphereId, this.props.locationId);
+    FingerprintManager.getFingerprint(sphereId, this.props.locationId)
       .then((result) => {
-        console.log("gathered fingerprint:", result);
+        LOG("gathered fingerprint:", result);
         store.dispatch({
           type:'UPDATE_LOCATION_FINGERPRINT',
-          groupId: groupId,
+          sphereId: sphereId,
           locationId: this.props.locationId,
           data:{ fingerprintRaw: result }
         });

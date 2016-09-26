@@ -2,6 +2,7 @@ import { request, download } from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/util'
 import { EventBus } from '../../util/eventBus'
+import { LOG } from '../../logging/Log'
 
 let defaultHeaders = {
   'Accept': 'application/json',
@@ -25,7 +26,7 @@ export const base = {
   _userId: undefined,
   _deviceId: undefined,
   _eventId: undefined,
-  _groupId: undefined,
+  _sphereId: undefined,
   _locationId: undefined,
   _stoneId: undefined,
   _applianceId: undefined,
@@ -69,7 +70,7 @@ export const base = {
       this._networkErrorHandler(error);
     }
     if (DEBUG === true) {
-      console.error(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
+      LOG(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
     }
   },
 
@@ -105,18 +106,19 @@ export const base = {
         console.error("UNKNOWN TYPE:", reqType);
         return;
     }
-    return this._finalizeRequest(promise, options);
+    return this._finalizeRequest(promise, options, endpoint);
   },
 
-  _finalizeRequest: function(promise, options) {
+  _finalizeRequest: function(promise, options, endpoint) {
     return new Promise((resolve, reject) => {
-      promise.then((reply) => {
-        console.log("REPLY")
-        if (reply.status === 200 || reply.status === 204)
-          resolve(reply.data);
-        else
-          this.__debugReject(reply, reject, arguments);
-      })
+      promise
+        .then((reply) => {
+          LOG("REPLY from", endpoint, " with options: ", options, " is: ", reply);
+          if (reply.status === 200 || reply.status === 204)
+            resolve(reply.data);
+          else
+            this.__debugReject(reply, reject, arguments);
+        })
         .catch((error) => {
           //console.trace(error, this);
           this._handleNetworkError(error, options);
@@ -133,7 +135,7 @@ export const base = {
   setUserId:   function(userId)      { this._userId = userId;           return this; },
   forUser:     function(userId)      { this._userId = userId;           return this; },
   forStone:    function(stoneId)     { this._stoneId = stoneId;         return this; },
-  forGroup:    function(groupId)     { this._groupId = groupId;         return this; },
+  forSphere:    function(sphereId)     { this._sphereId = sphereId;         return this; },
   forLocation: function(locationId)  { this._locationId = locationId;   return this; },
   forEvent:    function(eventId)     { this._eventId = eventId;         return this; },
   forDevice:   function(deviceId)    { this._deviceId = deviceId;       return this; },
@@ -141,7 +143,7 @@ export const base = {
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
-      console.log("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
+      LOG("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
     }
     reject(reply);
   }
@@ -166,9 +168,9 @@ function _getId(url, obj) {
   if (eventsLocation !== -1 && eventsLocation < 3)
     return obj._eventId;
 
-  let groupsLocation = url.indexOf('Groups');
-  if (groupsLocation !== -1 && groupsLocation < 3)
-    return obj._groupId;
+  let spheresLocation = url.indexOf('Groups');
+  if (spheresLocation !== -1 && spheresLocation < 3)
+    return obj._sphereId;
 
   let locationsLocation = url.indexOf('Locations');
   if (locationsLocation !== -1 && locationsLocation < 3)

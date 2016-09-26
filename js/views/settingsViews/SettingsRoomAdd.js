@@ -30,7 +30,7 @@ export class SettingsRoomAdd extends Component {
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
-    const room  = state.groups[this.props.groupId].locations[this.props.locationId];
+    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
 
     let items = [];
     items.push({type:'spacer'});
@@ -41,7 +41,7 @@ export class SettingsRoomAdd extends Component {
       callback: () => {
         Actions.roomIconSelection({
           icon: this.state.icon,
-          groupId: this.props.groupId,
+          sphereId: this.props.sphereId,
           selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}
         }
       )}
@@ -62,19 +62,19 @@ export class SettingsRoomAdd extends Component {
         }
         else {
           // check if the room name is unique.
-          let existingLocations = getRoomNames(state, this.props.groupId);
+          let existingLocations = getRoomNames(state, this.props.sphereId);
           if (existingLocations[this.state.name] === undefined) {
             Alert.alert(
               'Do you want add a room called \'' + this.state.name + '\'?',
               'You can rename and remove rooms after the setup phase.',
               [{text:'Cancel', onPress:() => {}}, {text:'Yes', onPress:() => {
                 this.props.eventBus.emit('showLoading', 'Creating room...');
-                CLOUD.forGroup(this.props.groupId).createLocation(this.state.name)
+                CLOUD.forSphere(this.props.sphereId).createLocation(this.state.name)
                   .then((reply) => {
                     this.props.eventBus.emit('hideLoading');
-                    store.dispatch({type:'ADD_LOCATION', groupId: this.props.groupId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
+                    store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
                     Actions.pop();
-                    Actions.settingsRoom({groupId: this.props.groupId, locationId: reply.id});
+                    Actions.settingsRoom({sphereId: this.props.sphereId, locationId: reply.id});
                   }).catch((err) => {Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: () => {this.props.eventBus.emit('hideLoading');}}])})
               }}]
             );
