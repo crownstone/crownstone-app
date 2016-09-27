@@ -22,7 +22,7 @@ import { LOG } from '../../logging/Log'
 import { IconButton } from '../components/IconButton'
 
 
-export class SettingsRoomTraining extends Component {
+export class RoomTraining extends Component {
   constructor(props) {
     super();
     this.state = {started: false, text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};

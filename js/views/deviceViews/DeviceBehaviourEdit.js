@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 import { styles, colors } from '../styles'
+import { getAmountOfCrownstonesInSphereForLocalization } from '../../util/dataUtil'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 
@@ -155,7 +156,7 @@ export class DeviceBehaviourEdit extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let stoneIds = Object.keys(state.spheres[this.props.sphereId].stones);
+    let stoneIds = getAmountOfCrownstonesInSphereForLocalization(state, this.props.sphereId);
     let stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let options = [];

@@ -163,7 +163,7 @@ export class DeviceEntry extends Component {
             }}>
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
-                <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
+                {this.props.remote === false ? <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text> : undefined}
               </View>
             </TouchableOpacity>
             {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}

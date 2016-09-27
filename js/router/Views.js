@@ -9,7 +9,8 @@ import { SphereOverview }            from '../views/main/SphereOverview'
 import { RoomOverview }              from '../views/roomViews/RoomOverview'
 import { RoomEdit }                  from '../views/roomViews/RoomEdit'
 import { RoomAdd }                   from '../views/roomViews/RoomAdd'
-import { SettingsRoomTraining }      from '../views/settingsViews/SettingsRoomTraining'
+import { RoomTraining }              from '../views/roomViews/RoomTraining'
+import { RoomSelection }             from '../views/roomViews/RoomSelection'
 import { ApplianceSelection }        from '../views/deviceViews/ApplianceSelection'
 import { DeviceEdit }                from '../views/deviceViews/DeviceEdit'
 import { DeviceEditLogic }           from '../views/deviceViews/DeviceEditLogic'
@@ -58,7 +59,8 @@ export const Views = {
   RoomOverview,
   RoomEdit,
   RoomAdd,
-  SettingsRoomTraining,
+  RoomSelection,
+  RoomTraining,
   ApplianceSelection,
   DeviceEdit,
   DeviceEditLogic,

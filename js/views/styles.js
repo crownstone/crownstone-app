@@ -25,7 +25,7 @@ export let colors = {
   red: {hex:'#ff3c00'},
   darkRed: {hex:'#cc0900'},
   menuRed: {hex:'#e00'},
-  iosBlue: {hex:'#007aff'},
+  iosBlue: {hex:'#0077ff'},
 };
 
 for (let color in colors) {

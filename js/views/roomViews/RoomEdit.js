@@ -14,7 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
-import { getStonesFromState } from '../../util/dataUtil'
+import { getStonesFromState, getAmountOfCrownstonesInSphereForLocalization } from '../../util/dataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
@@ -86,7 +86,10 @@ export class RoomEdit extends Component {
     }});
 
 
-    if (Object.keys(state.spheres[this.props.sphereId].stones).length >= 4) {
+
+    // here we do the training if required and possible.
+    let localizationCrownstones = getAmountOfCrownstonesInSphereForLocalization(state, this.props.sphereId);
+    if (localizationCrownstones >= 4 && this.props.remote === false) {
       items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
       if (room.config.fingerprintRaw) {
         items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
@@ -105,8 +108,12 @@ export class RoomEdit extends Component {
         items.push({label:'Before you can use indoor localization other than enter/exit your house, you need to train all rooms so Crownstone can learn how to position you.', type: 'explanation',  below:true});
       }
     }
+    else if (localizationCrownstones >= 4 && this.props.remote === true) {
+      items.push({label:'You can only train this room if you are in this Sphere.', type: 'explanation',  below:false});
+      items.push({type: 'spacer', height:30});
+    }
     else {
-      items.push({label:'Indoor localization on room-level is only possible when you have 4 or more Crownstones registered.', type: 'explanation',  below:false});
+      items.push({label:'Indoor localization on room-level is only possible when you have 4 or more Crownstones registered and placed in rooms.', type: 'explanation',  below:false});
       items.push({type: 'spacer', height:30});
     }
 
