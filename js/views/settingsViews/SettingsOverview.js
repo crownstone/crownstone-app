@@ -73,20 +73,18 @@ export class SettingsOverview extends Component {
       }});
     }
 
-    if (userIsAdmin(state)) {
-      // items.push({label:'Rooms', icon: <IconButton name="c1-foodWine" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, type:'navigation', callback: () => {
-      //   Actions.settingsRoomOverview();
-      // }});
 
-      items.push({label:'Crownstones', icon: <IconButton name="ios-flash" size={25} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />, type:'navigation', callback: () => {
-        Actions.settingsCrownstoneOverview();
-      }});
-    }
-    else {
-      items.push({label:'Crownstone Recovery', icon: <IconButton name="ios-flash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />, type:'navigation', callback: () => {
-        Actions.settingsCrownstoneOverview();
-      }});
-    }
+    items.push({label:'TROUBLESHOOTING',  type:'explanation', below: false});
+    items.push({
+      label: 'Recover a Crownstone',
+      icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />,
+      type: 'navigation',
+      callback: () => {
+        Actions.settingsPluginRecoverStep1();
+      }
+    });
+    items.push({label:'If you want to reset a Crownstone because it is not responding correctly, recover it!',  type:'explanation', below: true});
+
 
     // TODO: restore once we have a better description for this. Also mesh must be working.
     // if (state.app.activeSphere && Object.keys(state.spheres[state.app.activeSphere].stones).length > 0) {
@@ -106,10 +104,13 @@ export class SettingsOverview extends Component {
     //   });
     // }
 
-    items.push({type:'spacer'});
     items.push({label:'Log Out', type:'button', icon: <IconButton name="md-log-out" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.menuRed.hex}} />, callback: () => {this._logoutPopup()}});
 
     items.push({type:'spacer'});
+    items.push({type:'explanation',
+    __item: (
+      <View style={{flex:1}} />
+    )});
     items.push({
       type: 'explanation',
       __item: (
