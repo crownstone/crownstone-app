@@ -96,6 +96,7 @@ export class RoomAdd extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
+    let backgroundImage = this.props.getBackground.call(this, 'menu');
 
     if (this.sphereId === null) {
       Actions.pop();
@@ -103,7 +104,7 @@ export class RoomAdd extends Component {
     }
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.menu} >
+      <Background hideInterface={true} image={backgroundImage} >
         <TopBar
           notBack={false}
           leftAction={ Actions.pop }

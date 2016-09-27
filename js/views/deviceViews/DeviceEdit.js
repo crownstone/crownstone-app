@@ -12,6 +12,8 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { styles, colors, screenWidth, screenHeight } from '../styles'
+import { BLEutil } from '../../native/BLEutil'
+import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
@@ -112,7 +114,6 @@ export class DeviceEdit extends Component {
     };
     let items = [];
 
-    let toBehaviour = () => { Actions.deviceBehaviourEdit(requiredData) };
     // let toSchedule  = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
     // let toLinkedDevices = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
 
@@ -246,13 +247,15 @@ export class DeviceEdit extends Component {
       applianceOptions = this.constructApplianceOptions(store, appliance, stone.config.applianceId, stone);
     }
 
+    let backgroundImage = this.props.getBackground.call(this, 'menu');
+
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={backgroundImage} >
         <ScrollView>
           <FadeInView visible={!this.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
             <ListEditableItems items={applianceOptions} separatorIndent={true}/>
           </FadeInView>
-          <FadeInView visible={this.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={200}>
+          <FadeInView visible={this.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={300}>
             <ListEditableItems items={stoneOptions} separatorIndent={false}/>
           </FadeInView>
         </ScrollView>

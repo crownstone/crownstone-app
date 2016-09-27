@@ -17,6 +17,21 @@ export class Dropdown extends Component {
     this.state = {open:false, value: props.value};
   }
 
+  getLabelIfPossible() {
+    console.log(this.state.value);
+    for (let i = 0; i < this.props.items.length; i++) {
+      let item = this.props.items[i];
+      if (item.value !== undefined && item.value == this.state.value) {
+        if (item.label) {
+          return item.label;
+        }
+        else {
+          return item.value;
+        }
+      }
+    }
+  }
+
   getItems() {
     let items = [];
     let counter = 0;
@@ -74,7 +89,8 @@ export class Dropdown extends Component {
         <TouchableHighlight onPress={() => {this.setState({open:!this.state.open})}}>
           <View style={[styles.listView, {height:this.props.barHeight}]}>
             <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
-            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.props.buttons !== true ? this.props.value : this.state.value}</Text>
+            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
+            {/*<Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.props.buttons !== true ? this.props.value : this.state.value}</Text>*/}
           </View>
         </TouchableHighlight>
         <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor:'#fff'}}>
@@ -83,7 +99,7 @@ export class Dropdown extends Component {
               selectedValue={this.state.value}
               onValueChange={(value) => {
                   if (this.props.buttons !== true) {
-                    this.setState({open: false});
+                    this.setState({open: false, value: value});
                     this.props.callback(value);
                   }
                   else {

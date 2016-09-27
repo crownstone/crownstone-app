@@ -125,8 +125,9 @@ export class RoomEdit extends Component {
   }
 
   render() {
+    let backgroundImage = this.props.getBackground.call(this, 'menu');
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={backgroundImage} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

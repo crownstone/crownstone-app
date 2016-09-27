@@ -22,8 +22,9 @@ import {
   getCurrentPowerUsageFromState, 
   getRoomContentFromState 
 } from '../../util/dataUtil'
-
-import { styles, colors, width } from '../styles'
+import { Icon } from '../components/Icon'
+import { Separator } from '../components/Separator'
+import { styles, colors, screenWidth } from '../styles'
 
 
 export class RoomOverview extends Component {
@@ -93,8 +94,8 @@ export class RoomOverview extends Component {
                 })
             }}
             onMove={() => {}}
-            onChangeType={() => {Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId})}}
-            onChangeSettings={() => {Actions.deviceEditLogic({sphereId: this.props.sphereId, stoneId: stoneId})}}
+            onChangeType={() => {Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
+            onChangeSettings={() => {Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
           />
         </View>
       </View>
@@ -123,22 +124,18 @@ export class RoomOverview extends Component {
     let users = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
     let items = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
 
-    let backgroundImage = this.props.backgrounds.main;
-    if (this.props.remote === true) {
-      backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
-    }
+    let backgroundImage = this.props.getBackground.call(this, 'main');
 
     if (Object.keys(items).length == 0) {
       return (
         <Background image={backgroundImage} >
           <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} remote={this.props.remote} />
-          <ScrollView>
-            <SeparatedItemList
-              items={items}
-              separatorIndent={false}
-              renderer={this._renderer.bind(this)}
-            />
-          </ScrollView>
+          <Separator fullLength={true} />
+          <DeviceEntry empty={true} />
+          <Separator fullLength={true} />
+          <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+            <Icon name="c2-pluginFront" size={0.75 * screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />
+          </View>
         </Background>
       );
     }

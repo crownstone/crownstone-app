@@ -1,13 +1,7 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
-// var subscription = NativeAppEventEmitter.addListener(
-//   'EventReminder',
-//   (reminder) => LOG(reminder.name)
-// );
-//
-// // Don't forget to unsubscribe, typically in componentWillUnmount
-// subscription.remove();
+
 
 
 export let Bluenet;

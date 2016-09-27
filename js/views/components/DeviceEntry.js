@@ -26,7 +26,7 @@ export class DeviceEntry extends Component {
     this.baseHeight = props.height || 80;
     this.optionsHeight = 40;
     this.openHeight = this.baseHeight + this.optionsHeight;
-    this.highlightHeight = 0.8*this.baseHeight;
+    this.unsubscribe = () => {};
 
     this.state = {height: new Animated.Value(this.baseHeight), optionsOpen: false};
     this.optionsAreOpen = false;
@@ -35,11 +35,13 @@ export class DeviceEntry extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.eventBus.on("focusDeviceEntry", (id) => {
-      if (id != this.id) {
-        this._closeOptions();
-      }
-    })
+    if (this.props.eventbus) {
+      this.unsubscribe = this.props.eventBus.on("focusDeviceEntry", (id) => {
+        if (id != this.id) {
+          this._closeOptions();
+        }
+      })
+    }
   }
 
   componentWillUnmount() { // cleanup
@@ -137,23 +139,39 @@ export class DeviceEntry extends Component {
   }
 
   render() {
-    return (
-      <Animated.View style={{flexDirection:'column', height: this.state.height, overflow:'hidden', flex:1}}>
-        <View style={{flexDirection:'row', height: this.baseHeight, paddingRight:0, paddingLeft:0, flex:1}}>
-          <TouchableOpacity style={{paddingRight:20, height: this.baseHeight, justifyContent:'center'}} onPress={() => {this._toggleOptions();}}>
-            {this._getIcon()}
-          </TouchableOpacity>
-          <TouchableOpacity style={{flex:1, height: this.baseHeight, justifyContent:'center'}} onPress={() => {this._toggleOptions();}}>
-            <View style={{flexDirection:'column'}}>
-              <Text style={{fontSize:17, fontWeight:'100'}}>{this.props.name}</Text>
-              <Text style={{fontSize:12}}>{this.props.currentUsage + ' W'}</Text>
-            </View>
-          </TouchableOpacity>
-          {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'} /> : undefined}
-          {this.props.control    === true ? this._getControl() : undefined}
+    if (this.props.empty === true) {
+      return (
+        <View style={{backgroundColor:'#fff', height: 0.5*this.baseHeight, justifyContent: 'center', alignItems:'center'}}>
+          <View style={{flexDirection: 'column'}}>
+            <Text style={{fontSize: 15, fontWeight: '100'}}>No Crownstones in this room.</Text>
+          </View>
         </View>
-        {this._getOptions()}
-      </Animated.View>
-    );
+      )
+    }
+    else {
+      return (
+        <Animated.View style={{flexDirection: 'column', height: this.state.height, overflow: 'hidden', flex: 1}}>
+          <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
+            <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
+                              onPress={() => {
+                                this._toggleOptions();
+                              }}>
+              {this._getIcon()}
+            </TouchableOpacity>
+            <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
+              this._toggleOptions();
+            }}>
+              <View style={{flexDirection: 'column'}}>
+                <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
+                <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
+              </View>
+            </TouchableOpacity>
+            {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}
+            {this.props.control === true ? this._getControl() : undefined}
+          </View>
+          {this._getOptions()}
+        </Animated.View>
+      );
+    }
   }
 }

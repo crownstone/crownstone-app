@@ -46,6 +46,7 @@ export class DeviceEditLogic extends Component {
     let requiredData = {
       sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
+      remote: this.props.remote
     };
     let items = [];
 
@@ -62,12 +63,13 @@ export class DeviceEditLogic extends Component {
     let requiredData = {
       sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
-      applianceId: applianceId
+      applianceId: applianceId,
+      remote: this.props.remote
     };
     let items = [];
 
     //
-    items.push({label: 'Customize how this Device reacts to your presence.', type: 'explanation', below: true});
+    items.push({label: 'Customize how this Device reacts to your presence.', type: 'explanation', below: false});
 
     // behaviour link
     items.push({label:'Behaviour', type: 'navigation', callback:() => { Actions.deviceBehaviourEdit(requiredData) }});
@@ -105,8 +107,10 @@ export class DeviceEditLogic extends Component {
       applianceOptions = this.constructApplianceOptions(store, appliance, stone.config.applianceId);
     }
 
+    let backgroundImage = this.props.getBackground.call(this, 'menu');
+
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={backgroundImage} >
         <ScrollView>
           <FadeInView visible={!this.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
             <ListEditableItems items={applianceOptions} separatorIndent={true}/>

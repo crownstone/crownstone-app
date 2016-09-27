@@ -87,7 +87,7 @@ export class AppRouter extends Component {
         CLOUD.getUserData({background:true})
           .then((reply) => {
             LOG("Verified User.", reply);
-            CLOUD.sync(store, false);
+            CLOUD.sync(store, true);
           })
           .catch((reply) => {
             LOG("COULD NOT VERIFY USER -- ERROR", reply);
@@ -123,7 +123,9 @@ export class AppRouter extends Component {
     this.backgrounds.main                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
     this.backgrounds.mainRemoteNotConnected  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLightNotConnected.png')} />;
     this.backgrounds.mainRemoteConnected     = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLightConnected.png')} />;
-    this.backgrounds.menu                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
+    this.backgrounds.menu                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackground.png')} />;
+    this.backgrounds.menuRemoteNotConnected  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteNotConnected.png')} />;
+    this.backgrounds.menuRemoteConnected     = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteConnected.png')} />;
     this.backgrounds.boot                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/loginBackground.png')} />;
     this.backgrounds.mainDark                = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackground.png')} />;
   }
@@ -142,7 +144,7 @@ export class AppRouter extends Component {
     if (this.state.storeInitialized === true) {
       return (
         <View style={{flex:1}}>
-          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} eventBus={eventBus}>
+          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} getBackground={getBackground} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
@@ -245,16 +247,14 @@ let renderAddRoomButton = function(params) {
 };
 let renderEditRoomButton = function(params) {
   let state = params.store.getState();
-  if (state.app.activeSphere) {
-    if (userIsAdminInSphere(state, state.app.activeSphere)) {
-      return "Edit";
-    }
+  if (userIsAdminInSphere(state, params.sphereId)) {
+    return "Edit";
   }
   return "";
 };
 
 let onRightFunctionEdit = function(params) {
-  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId});
+  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId, remote: params.remote});
 };
 
 let navBarStyle = {
@@ -286,4 +286,30 @@ var clearAllCurrentPowerUsage = function(store) {
       store.dispatch({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId})
     })
   })
+};
+
+let getBackground = function(type) {
+  let backgroundImage;
+  switch (type) {
+    case "menu":
+      backgroundImage = this.props.backgrounds.menu;
+      if (this.props.remote === true) {
+        backgroundImage = this.props.backgrounds.menuRemoteNotConnected;
+      }
+      break;
+    case "dark":
+      backgroundImage = this.props.backgrounds.main;
+      if (this.props.remote === true) {
+        backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
+      }
+      break;
+    default:
+      backgroundImage = this.props.backgrounds.main;
+      if (this.props.remote === true) {
+        backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
+      }
+      break;
+  }
+
+  return backgroundImage;
 };

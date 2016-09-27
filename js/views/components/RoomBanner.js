@@ -14,20 +14,26 @@ import { Icon } from './Icon'
 
 export class RoomBanner extends Component {
   getPresentUsers() {
-    if (this.props.presentUsers.length === 0)
-      return (
-        <View>
-          <Text style={styles.roomImageText}>Nobody Present</Text>
-        </View>
-      );
-    else {
-      let user = this.props.presentUsers[0]
-      return (
-        <View>
-          <ProfilePicture picture={user.picture} size={30} innerSize={33} name={user.data.firstName} />
-        </View>
-      );
+    if (this.props.remote === true) {
+      return <Text style={styles.roomImageText}>Viewing Data</Text>;
     }
+    else if (this.props.presentUsers.length === 0)
+      return <Text style={styles.roomImageText}>Nobody Present</Text>;
+    else {
+      // TODO: support multiple users
+      let user = this.props.presentUsers[0];
+      return <ProfilePicture picture={user.picture} size={30} innerSize={33} name={user.data.firstName} />;
+    }
+  }
+
+  getUsage() {
+    if (this.props.remote === true) {
+      return <Icon name="ios-cloudy-night" size={30} color="#fff" style={{backgroundColor:"transparent"}} />
+    }
+    else {
+      return <Text style={bannerStyles.roomImageText}>{this.props.usage + ' W'}</Text>
+    }
+
   }
 
   render() {
@@ -59,7 +65,7 @@ export class RoomBanner extends Component {
         </View>
       );
     }
-    else if (this.props.noCrownstones === true) {
+    else if (this.props.noCrownstones === true && this.props.remote === false) {
       leftRatio = 0.95;
       return (
         <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.hex, justifyContent:'center'}}>
@@ -88,7 +94,7 @@ export class RoomBanner extends Component {
             <View style={{height:0.7*height, width: rightRatio*screenWidth, backgroundColor:'transparent', alignItems:'flex-end'}}>
               <View style={[bannerStyles.whiteRight, {height: 0.5*height, width:(rightRatio-0.05) * screenWidth+offset}]} />
               <View style={[bannerStyles.blueRight,  {height: 0.5*height, width:(rightRatio-0.05) * screenWidth, top: offset}]}>
-                <Text style={bannerStyles.roomImageText}>{this.props.usage + ' W'} </Text>
+                {this.getUsage()}
               </View>
             </View>
           </View>

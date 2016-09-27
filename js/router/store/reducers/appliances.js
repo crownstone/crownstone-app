@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { update, getTime } from './reducerUtil'
-import { updateToggleState, toggleState } from './shared'
+import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
 let defaultSettings = {
   config: {
@@ -66,7 +66,7 @@ let behaviourReducerOnHomeEnter = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnHomeExit = (state = toggleState, action = {}) => {
+let behaviourReducerOnHomeExit = (state = toggleStateAway, action = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
       return updateToggleState(state,action);
@@ -82,7 +82,7 @@ let behaviourReducerOnRoomEnter = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnRoomExit = (state = toggleState, action = {}) => {
+let behaviourReducerOnRoomExit = (state = toggleStateAway, action = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
       return updateToggleState(state,action);
@@ -98,7 +98,7 @@ let behaviourReducerOnNear = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnAway = (state = toggleState, action = {}) => {
+let behaviourReducerOnAway = (state = toggleStateAway, action = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
       return updateToggleState(state,action);
