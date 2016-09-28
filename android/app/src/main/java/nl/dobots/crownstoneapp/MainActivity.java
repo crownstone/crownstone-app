@@ -8,7 +8,6 @@ import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.rnfs.RNFSPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
-import com.remobile.splashscreen.RCTSplashScreenPackage;
 
 public class MainActivity extends ReactActivity {
 
