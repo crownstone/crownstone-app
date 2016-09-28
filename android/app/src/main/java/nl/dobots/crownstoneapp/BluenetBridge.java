@@ -1,26 +1,40 @@
 package nl.dobots.crownstoneapp;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.telecom.Call;
 import android.util.Log;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import org.json.JSONObject;
+
+import nl.dobots.bluenet.ble.base.BleBase;
+import nl.dobots.bluenet.ble.base.callbacks.IDataCallback;
+import nl.dobots.bluenet.ble.base.callbacks.IDiscoveryCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IStatusCallback;
+import nl.dobots.bluenet.ble.base.structs.CrownstoneServiceData;
+import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
+import nl.dobots.bluenet.ble.extended.callbacks.IBleDeviceCallback;
 import nl.dobots.bluenet.ble.extended.structs.BleDevice;
 import nl.dobots.bluenet.service.BleScanService;
 import nl.dobots.bluenet.service.callbacks.EventListener;
 import nl.dobots.bluenet.service.callbacks.IntervalScanListener;
 import nl.dobots.bluenet.service.callbacks.ScanDeviceListener;
+
+import static nl.dobots.bluenet.ble.extended.BleDeviceFilter.crownstone;
 
 public class BluenetBridge extends ReactContextBaseJavaModule implements IntervalScanListener, EventListener, ScanDeviceListener {
 	private static final String TAG = BluenetBridge.class.getCanonicalName();
@@ -32,13 +46,17 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	private ReactApplicationContext _reactContext;
 	private BleScanService _scanService;
-	private BleExt _bleExt;
+//	private BleBase _bluenet;
+	private BleExt _bluenet;
+
+	private Callback _readyCallback = null;
 
 	public BluenetBridge(ReactApplicationContext reactContext) {
 		super(reactContext);
 		_reactContext = reactContext;
-		_bleExt = new BleExt();
-		_bleExt.init(_reactContext, new IStatusCallback() {
+//		_bluenet = new BleBase();
+		_bluenet = new BleExt();
+		_bluenet.init(_reactContext, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				Log.v(TAG, "onSuccess");
@@ -49,6 +67,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				Log.e(TAG, "onError: " + error);
 			}
 		});
+
+		// create and bind to the BleScanService
+		Log.d(TAG, "binding to service..");
+		Intent intent = new Intent(_reactContext, BleScanService.class);
+		boolean success = _reactContext.bindService(intent, _connection, Context.BIND_AUTO_CREATE);
+		Log.d(TAG, "success: " + success);
 
 //		_scanService
 	}
@@ -65,7 +89,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void isReady(Callback callback) {
-
+		// TODO: what is isReady gets called twice before ready?
+		_readyCallback = callback;
+		checkReady();
 	}
 
 	@ReactMethod
@@ -85,11 +111,29 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void startScanning() {
-
+//		_scanService.startIntervalScan(2000, 50, BleDeviceFilter.all);
 	}
 
 	@ReactMethod
 	public void startScanningForCrownstones() {
+//		_bluenet.setScanFilter(crownstone);
+//		_bluenet.startScan(true, new IBleDeviceCallback() {
+//			@Override
+//			public void onDeviceScanned(BleDevice device) {
+//				Log.d(TAG, "cb scanned device:" + device);
+//			}
+//
+//			@Override
+//			public void onError(int error) {
+//				Log.i(TAG, "scan error: " + error);
+//			}
+//		});
+		Log.d(TAG, "start scan");
+		_scanService.startIntervalScan(2000, 50, BleDeviceFilter.crownstone);
+	}
+
+	@ReactMethod
+	public void startScanningForCrownstonesUniqueOnly() {
 
 	}
 
@@ -100,17 +144,67 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void stopScanning() {
-
+		_scanService.stopIntervalScan();
 	}
 
 	@ReactMethod
-	public void connect(String uuid, Callback callback) {
+	public void connect(String uuid, final Callback callback) {
+//		_bluenet.connectDevice(uuid, 3, new IDataCallback() {
+//			@Override
+//			public void onData(JSONObject json) {
+//
+//			}
+//
+//			@Override
+//			public void onError(int error) {
+//
+//			}
+//		});
+		_bluenet.connectAndDiscover(uuid, new IDiscoveryCallback() {
+			@Override
+			public void onDiscovery(String serviceUuid, String characteristicUuid) {
 
+			}
+
+			@Override
+			public void onSuccess() {
+				Log.i(TAG, "connected");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				Log.i(TAG, "failed to connect: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "failed to connect: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
-	public void disconnect(Callback callback) {
+	public void disconnect(final Callback callback) {
+		_bluenet.disconnectAndClose(false, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				Log.i(TAG, "disconnected");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
 
+			@Override
+			public void onError(int error) {
+				Log.i(TAG, "failed to connect: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "failed to disconnect: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
@@ -119,8 +213,50 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void setSwitchState(Integer switchState, Callback callback) {
+	public void setSwitchState(Float switchState, final Callback callback) {
+		if (switchState > 0) {
+			_bluenet.relayOn(new IStatusCallback() {
+				@Override
+				public void onSuccess() {
+					Log.i(TAG, "relay on success");
+					// power was switch off successfully, update the light bulb
+//						updateLightBulb(false);
+					WritableMap retVal = Arguments.createMap();
+					retVal.putBoolean("error", false);
+					callback.invoke(retVal);
+				}
 
+				@Override
+				public void onError(int error) {
+					Log.i(TAG, "power on failed: " + error);
+					WritableMap retVal = Arguments.createMap();
+					retVal.putBoolean("error", true);
+					retVal.putString("data", "power on failed: " + error);
+					callback.invoke();
+				}
+			});
+		} else {
+			_bluenet.relayOff(new IStatusCallback() {
+				@Override
+				public void onSuccess() {
+					Log.i(TAG, "relay off success");
+					// power was switch off successfully, update the light bulb
+//						updateLightBulb(false);
+					WritableMap retVal = Arguments.createMap();
+					retVal.putBoolean("error", false);
+					callback.invoke(retVal);
+				}
+
+				@Override
+				public void onError(int error) {
+					Log.i(TAG, "power off failed: " + error);
+					WritableMap retVal = Arguments.createMap();
+					retVal.putBoolean("error", true);
+					retVal.putString("data", "power off failed: " + error);
+					callback.invoke();
+				}
+			});
+		}
 	}
 
 	@ReactMethod
@@ -233,6 +369,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			_scanService.setScanPause(LOW_SCAN_PAUSE);
 
 			_bound = true;
+			checkReady();
 		}
 
 		@Override
@@ -260,6 +397,50 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@Override
 	public void onDeviceScanned(BleDevice device) {
 		// TODO: send out event
+		Log.d(TAG, "event scanned device: " + device.getAddress());
+		WritableMap advertisementMap = Arguments.createMap();
+		advertisementMap.putString("handle", device.getAddress());
+		advertisementMap.putString("name", device.getName());
+		advertisementMap.putInt("rssi", device.getRssi());
+		advertisementMap.putBoolean("setupPackage", false); // TODO determine if this is a setup package
+		advertisementMap.putBoolean("isCrownstone", device.isCrownstone());
+		if (device.getProximityUuid() != null) {
+			advertisementMap.putString("serviceUUID", device.getProximityUuid().toString()); // TODO: what string is expected?
+		}
+		else {
+			advertisementMap.putString("serviceUUID", "1337");
+		}
+		WritableMap serviceDataMap = Arguments.createMap();
+		CrownstoneServiceData serviceData = device.getServiceData();
+		if (serviceData != null) {
+			serviceDataMap.putInt("firmwareVersion", 0); // TODO: get firmware version
+			serviceDataMap.putInt("crownstoneId", serviceData.getCrownstoneId());
+			serviceDataMap.putInt("switchState", serviceData.getSwitchState());
+			serviceDataMap.putInt("eventBitmask", serviceData.getEventBitmask());
+			serviceDataMap.putInt("temperature", serviceData.getTemperature());
+			serviceDataMap.putInt("powerUsage", serviceData.getPowerUsage());
+			serviceDataMap.putInt("accumulatedEnergy", serviceData.getAccumulatedEnergy());
+			serviceDataMap.putBoolean("newDataAvailable", false); // TODO: get this from eventBitmask
+			serviceDataMap.putBoolean("stateOfExternalCrownstone", false); // TODO: get this from eventBitmask
+			serviceDataMap.putBoolean("setupMode", false); // TODO: get this from eventBitmask
+			serviceDataMap.putString("random", "bla"); // TODO: get this from servicedata
+			advertisementMap.putMap("serviceData", serviceDataMap);
+		}
+		sendEvent("advertisementData", advertisementMap);
+	}
+
+	private void checkReady() {
+		Log.d(TAG, "checkReady");
+		if (_readyCallback == null) {
+			return;
+		}
+		if (!_bound) {
+			return;
+		}
+		// TODO: Check for permissions, bluetooth on, localization on, etc.
+		WritableMap retVal = Arguments.createMap();
+		retVal.putBoolean("error", false);
+		_readyCallback.invoke(retVal);
 	}
 
 	//@ReactMethod
