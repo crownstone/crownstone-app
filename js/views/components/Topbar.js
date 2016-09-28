@@ -73,7 +73,7 @@ let topBarStyle = StyleSheet.create({
   },
   topBarSideView: {
     justifyContent: 'center',
-    width: 50,
+    width: 70,
   },
   topBarCenterView: {
     flex: 1,
