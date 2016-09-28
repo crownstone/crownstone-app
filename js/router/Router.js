@@ -244,7 +244,7 @@ let renderAddRoomButton = function(params) {
       return "Add";
     }
   }
-  else {
+  else if (state.app.currentSphere) {
     if (userIsAdminInSphere(state, state.app.currentSphere)) {
       return "Add";
     }

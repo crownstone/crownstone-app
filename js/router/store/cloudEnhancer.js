@@ -119,13 +119,16 @@ function handleStoneInCloud(action, state) {
 
   let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
   let data = {
-    name: stoneConfig.name,
-    address: stoneConfig.macAddress,
-    deviceType: stoneConfig.icon,
-    id: stoneId,
+    name:        stoneConfig.name,
+    address:     stoneConfig.macAddress,
+    deviceType:  stoneConfig.icon,
+    id:          stoneId,
     applianceId: stoneConfig.applianceId,
-    locationId: stoneConfig.locationId,
-    groupId: sphereId,
+    locationId:  stoneConfig.locationId,
+    groupId:     sphereId,
+    major:       stoneConfig.iBeaconMajor,
+    minor:       stoneConfig.iBeaconMinor,
+    uid:         stoneConfig.crownstoneId,
   };
   
   CLOUD.forStone(stoneId).updateStone(data).catch(() => {});
