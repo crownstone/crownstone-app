@@ -3,6 +3,8 @@ import { update, getTime } from './reducerUtil'
 let defaultState = {
   app: {
     activeSphere: null,
+    remoteSphere: null,
+    previouslyActiveSphere: null,
     enableLocalization: true,
     doFirstTimeSetup: true,
     updatedAt: 1
@@ -15,7 +17,16 @@ export default (state = defaultState.app, action = {}) => {
     case 'SET_ACTIVE_SPHERE':
       if (action.data) {
         let newState = {...state};
-        newState.activeSphere = update(action.data.activeSphere, newState.activeSphere);
+        newState.activeSphere           = update(action.data.activeSphere, newState.activeSphere);
+        newState.previouslyActiveSphere = update(action.data.activeSphere, newState.activeSphere);
+        newState.updatedAt              = getTime();
+        return newState;
+      }
+      return state;
+    case 'SET_REMOTE_SPHERE':
+      if (action.data) {
+        let newState = {...state};
+        newState.remoteSphere = update(action.data.remoteSphere, newState.remoteSphere);
         newState.updatedAt    = getTime();
         return newState;
       }

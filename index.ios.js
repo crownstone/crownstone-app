@@ -10,8 +10,7 @@ import {
 import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/eventBus'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
-
-var SplashScreen = require('@remobile/react-native-splashscreen');
+import SplashScreen from "rn-splash-screen";
 
 class Root extends Component {
   constructor() {

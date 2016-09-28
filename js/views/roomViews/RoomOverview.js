@@ -22,8 +22,9 @@ import {
   getCurrentPowerUsageFromState, 
   getRoomContentFromState 
 } from '../../util/dataUtil'
-
-import { styles, colors, width } from '../styles'
+import { Icon } from '../components/Icon'
+import { Separator } from '../components/Separator'
+import { styles, colors, screenWidth } from '../styles'
 
 
 export class RoomOverview extends Component {
@@ -60,12 +61,14 @@ export class RoomOverview extends Component {
       <View key={stoneId + '_entry'}>
         <View style={styles.listView}>
           <DeviceEntry
+            eventBus={this.props.eventBus}
             name={item.device.config.name}
             icon={item.device.config.icon}
             state={item.stone.state.state}
             currentUsage={item.stone.state.currentUsage}
             navigation={false}
-            control={true}
+            control={this.props.remote === false}
+            remote={this.props.remote}
             pending={this.state.pendingRequests[stoneId] !== undefined}
             dimmable={item.device.config.dimmable}
             onChange={(switchState) => {
@@ -90,6 +93,9 @@ export class RoomOverview extends Component {
                   this.clearPending(stoneId);
                 })
             }}
+            onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
+            onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
+            onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
           />
         </View>
       </View>
@@ -118,24 +124,25 @@ export class RoomOverview extends Component {
     let users = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
     let items = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
 
+    let backgroundImage = this.props.getBackground.call(this, 'main');
+
     if (Object.keys(items).length == 0) {
       return (
-        <Background image={this.props.backgrounds.main} >
-          <RoomBanner presentUsers={users} noCrownstones={true}/>
-          <ScrollView>
-            <SeparatedItemList
-              items={items}
-              separatorIndent={false}
-              renderer={this._renderer.bind(this)}
-            />
-          </ScrollView>
+        <Background image={backgroundImage} >
+          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} remote={this.props.remote} />
+          <Separator fullLength={true} />
+          <DeviceEntry empty={true} />
+          <Separator fullLength={true} />
+          <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+            <Icon name="c2-pluginFront" size={0.75 * screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />
+          </View>
         </Background>
       );
     }
     else {
       return (
-        <Background image={this.props.backgrounds.main} >
-          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null}  />
+        <Background image={backgroundImage} >
+          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null} remote={this.props.remote}  />
           <ScrollView>
             <SeparatedItemList
               items={items}

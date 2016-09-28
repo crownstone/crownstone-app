@@ -3,11 +3,11 @@ export const locations = {
     return this._setupRequest('GET', '/Groups/{id}/ownedLocations', options);
   },
 
-  createLocation: function (locationName) {
+  createLocation: function (locationName, icon) {
     return this._setupRequest(
       'POST',
       '/Groups/{id}/ownedLocations',
-      {data: {name: locationName}},
+      {data: {name: locationName, icon:icon}},
       'body'
     );
   },

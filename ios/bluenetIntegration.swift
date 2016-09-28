@@ -168,10 +168,7 @@ class BluenetJS: NSObject {
           }
         }
         self.bridge.eventDispatcher().sendAppEventWithName("iBeaconAdvertisement", body: returnArray)
-      })
-      
-     
-      
+      })      
       globalBluenet.bluenetLocalization.on("enterRegion", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEventWithName("enterSphere", body: castData)
@@ -291,6 +288,10 @@ class BluenetJS: NSObject {
   
   @objc func startScanningForCrownstones() {
     GLOBAL_BLUENET!.bluenet.startScanningForCrownstones()
+  }
+  
+  @objc func startScanningForCrownstonesUniqueOnly() {
+    GLOBAL_BLUENET!.bluenet.startScanningForCrownstonesUniqueOnly()
   }
   
   @objc func startScanning(serviceId: String) {

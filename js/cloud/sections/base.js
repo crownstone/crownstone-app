@@ -61,7 +61,7 @@ export const base = {
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
   },
-  _handleNetworkError: function (error, options) {
+  _handleNetworkError: function (error, options, endpoint, promiseBody) {
     // this will eliminate all cloud requests.
     if (SILENCE_CLOUD === true)
       return;
@@ -70,7 +70,7 @@ export const base = {
       this._networkErrorHandler(error);
     }
     if (DEBUG === true) {
-      LOG(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error);
+      LOG(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error, endpoint, promiseBody);
     }
   },
 
@@ -106,10 +106,10 @@ export const base = {
         console.error("UNKNOWN TYPE:", reqType);
         return;
     }
-    return this._finalizeRequest(promise, options, endpoint);
+    return this._finalizeRequest(promise, options, endpoint, promiseBody);
   },
 
-  _finalizeRequest: function(promise, options, endpoint) {
+  _finalizeRequest: function(promise, options, endpoint, promiseBody) {
     return new Promise((resolve, reject) => {
       promise
         .then((reply) => {
@@ -121,7 +121,7 @@ export const base = {
         })
         .catch((error) => {
           //console.trace(error, this);
-          this._handleNetworkError(error, options);
+          this._handleNetworkError(error, options, endpoint, promiseBody);
         })
     });
   },

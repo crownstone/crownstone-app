@@ -138,6 +138,9 @@ export const userIsAdmin = function(state) {
   return false;
 };
 
+export const userIsAdminInSphere = function(state, sphereId) {
+  return state.spheres[sphereId].config.adminKey !== undefined;
+};
 
 export const getSpheresWhereIHaveAccessLevel = function(state, accessLevel) {
   let items = [];
@@ -199,6 +202,19 @@ export const getTotalAmountOfCrownstones = function(state) {
   let count = 0;
   sphereIds.forEach((sphereId) => {
     count += Object.keys(state.spheres[sphereId].stones).length;
+  });
+  return count;
+};
+
+export const getAmountOfCrownstonesInSphereForLocalization = function(state, sphereId) {
+  let stoneIds = Object.keys(state.spheres[sphereId].stones);
+  let count = 0;
+
+  stoneIds.forEach((stoneId) => {
+    let stone = state.spheres[sphereId].stones[stoneId];
+    if (stone.config.locationId !== undefined && stone.config.locationId !== null) {
+      count += 1;
+    }
   });
   return count;
 };

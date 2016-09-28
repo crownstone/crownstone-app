@@ -7,6 +7,13 @@ export const toggleState = {
   active: false,  // if not active the crownstone will not react to the event.
   updatedAt: 1
 };
+export const toggleStateAway = {
+  state:    0,  // [0 .. 1] for state, undefined for ignore
+  delay:    120,  // delay in seconds
+  fadeTime: 0,  // delay in seconds
+  active: false,  // if not active the crownstone will not react to the event.
+  updatedAt: 1
+};
 
 export const updateToggleState = function (state, action) {
   if (action.data) {

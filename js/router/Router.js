@@ -19,7 +19,8 @@ import { AdvertisementHandler }   from '../native/AdvertisementHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
-import { LOG }                    from '../logging/Log'
+import { userIsAdminInSphere }    from '../util/dataUtil'
+import { LOG, LOGDebug }          from '../logging/Log'
 import { INITIALIZER }            from '../initialize'
 import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
@@ -37,7 +38,14 @@ export class AppRouter extends Component {
     super();
     this.state = {initialized:false, loggedIn: false};
     this.unsubscribe = [];
-    this.backgrounds = {setup:undefined, main: undefined, menu: undefined, boot: undefined, mainDark: undefined};
+    this.renderState = undefined;
+    this.backgrounds = { setup:undefined,
+      main: undefined,
+      mainRemoteNotConnected: undefined,
+      menu: undefined,
+      boot: undefined,
+      mainDark: undefined
+    };
   }
 
   componentDidMount() {
@@ -61,13 +69,14 @@ export class AppRouter extends Component {
       let state = store.getState();
 
       store.dispatch({type:"CLEAR_ACTIVE_SPHERE"});
+      store.dispatch({type:"SET_REMOTE_SPHERE", data:{ remoteSphere: state.app.previouslyActiveSphere || Object.keys(state.spheres)[0]}});
 
       // pass the store to the singletons
       NativeEventsBridge.loadStore(store);
       AdvertisementHandler.loadStore(store);
       Scheduler.loadStore(store);
 
-      LOG("LOADED STORES")
+      LOG("LOADED STORES");
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
 
@@ -110,11 +119,15 @@ export class AppRouter extends Component {
    * Preloading backgrounds
    */
   componentWillMount() {
-    this.backgrounds.setup = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/setupBackground.png')} />;
-    this.backgrounds.main  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
-    this.backgrounds.menu  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
-    this.backgrounds.boot  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/loginBackground.png')} />;
-    this.backgrounds.mainDark  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackground.png')} />;
+    this.backgrounds.setup                   = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/setupBackground.png')} />;
+    this.backgrounds.main                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
+    this.backgrounds.mainRemoteNotConnected  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLightNotConnected.png')} />;
+    this.backgrounds.mainRemoteConnected     = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLightConnected.png')} />;
+    this.backgrounds.menu                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackground.png')} />;
+    this.backgrounds.menuRemoteNotConnected  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteNotConnected.png')} />;
+    this.backgrounds.menuRemoteConnected     = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteConnected.png')} />;
+    this.backgrounds.boot                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/loginBackground.png')} />;
+    this.backgrounds.mainDark                = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackground.png')} />;
   }
 
   componentWillUnmount() { // cleanup
@@ -127,10 +140,11 @@ export class AppRouter extends Component {
   }
 
   render() {
+    LOGDebug("RENDERING ROUTER")
     if (this.state.storeInitialized === true) {
       return (
         <View style={{flex:1}}>
-          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} eventBus={eventBus}>
+          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} getBackground={getBackground} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
@@ -148,18 +162,21 @@ export class AppRouter extends Component {
               <Scene key="setupAddPluginStep4"        component={Views.SetupAddPlugInStep4}        hideNavBar={true}  />
               <Scene key="setupAddPlugInStepRecover"  component={Views.SetupAddPlugInStepRecover}  hideNavBar={true}  />
               <Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />
-              <Scene key="roomTraining"               component={Views.SettingsRoomTraining}       hideNavBar={true}  direction="vertical" title="Training" />
-              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
-              <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true} direction="vertical" title="Training" />
+              <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true} panHandlers={null} direction="vertical" title="Move to which Room?" />
+              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
               <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
-                  <Scene key="sphereOverview"         component={Views.SphereOverview}             title="Sphere Overview"  />
-                  <Scene key="roomOverview"           component={Views.RoomOverview}               onRight={onRightFunctionEdit} rightTitle="Edit" rightButtonTextStyle={{color:'white',backgroundColor:"transparent"}} />
-                  <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Configure Devices" />
+                  <Scene key="sphereOverview"         component={Views.SphereOverview}             title="Sphere Overview" onRight={ () => {Actions.roomAdd();} } rightTitle="Add" getRightTitle={renderAddRoomButton}/>
+                  <Scene key="roomOverview"           component={Views.RoomOverview}               onRight={onRightFunctionEdit} rightTitle="Edit"  getRightTitle={renderEditRoomButton} />
+                  <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Room Settings" />
+                  <Scene key="roomAdd"                component={Views.RoomAdd}                    title="Create Room" hideNavBar={true} />
                   <Scene key="deviceEdit"             component={Views.DeviceEdit}                 title="Edit Device" />
-                  <Scene key="applianceSelection"     component={Views.ApplianceSelection}         title="Devices" />
+                  <Scene key="deviceEditLogic"        component={Views.DeviceEditLogic}            title="Device Behaviour" />
+                  <Scene key="applianceSelection"     component={Views.ApplianceSelection}         title="Select a Device" />
                   <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        title="Edit Behaviour" />
                   <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}            />
                   <Scene key="delaySelection"         component={Views.DelaySelection}             title="Set Delay" />
@@ -172,10 +189,10 @@ export class AppRouter extends Component {
                   <Scene key="settingsProfile"            component={Views.SettingsProfile}             title="Your Profile" />
                   <Scene key="settingsChangeEmail"        component={Views.SettingsChangeEmail}         title="Change Email"/>
                   <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}      title="Change Password"/>
-                  <Scene key="settingsSphereOverview"      component={Views.SettingsSphereOverview}       title="Sphere Overview" />
-                  <Scene key="settingsSphere"              component={Views.SettingsSphere}               title="[Sphere name here]" />
-                  <Scene key="settingsSphereUser"          component={Views.SettingsSphereUser}           title="[Username here]" />
-                  <Scene key="settingsSphereInvite"        component={Views.SettingsSphereInvite}         title="Invite" />
+                  <Scene key="settingsSphereOverview"      component={Views.SettingsSphereOverview}     title="Sphere Overview" />
+                  <Scene key="settingsSphere"              component={Views.SettingsSphere}             title="[Sphere name here]" />
+                  <Scene key="settingsSphereUser"          component={Views.SettingsSphereUser}         title="[Username here]" />
+                  <Scene key="settingsSphereInvite"        component={Views.SettingsSphereInvite}       title="Invite" />
                   <Scene key="settingsCrownstoneOverview" component={Views.SettingsCrownstoneOverview}  title="Manage Your Crownstones"/>
                   <Scene key="settingsCrownstone"         component={Views.SettingsCrownstone}          title="Manage Crownstone"/>
                   <Scene key="settingsRoomOverview"       component={Views.SettingsRoomOverview}        title="Manage Rooms"/>
@@ -220,8 +237,30 @@ class TabIcon extends Component {
   }
 }
 
+let renderAddRoomButton = function(params) {
+  let state = params.store.getState();
+  if (state.app.activeSphere) {
+    if (userIsAdminInSphere(state, state.app.activeSphere)) {
+      return "Add";
+    }
+  }
+  else if (state.app.currentSphere) {
+    if (userIsAdminInSphere(state, state.app.currentSphere)) {
+      return "Add";
+    }
+  }
+  return "";
+};
+let renderEditRoomButton = function(params) {
+  let state = params.store.getState();
+  if (userIsAdminInSphere(state, params.sphereId)) {
+    return "Edit";
+  }
+  return "";
+};
+
 let onRightFunctionEdit = function(params) {
-  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId});
+  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId, remote: params.remote});
 };
 
 let navBarStyle = {
@@ -253,4 +292,30 @@ var clearAllCurrentPowerUsage = function(store) {
       store.dispatch({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId})
     })
   })
+};
+
+let getBackground = function(type) {
+  let backgroundImage;
+  switch (type) {
+    case "menu":
+      backgroundImage = this.props.backgrounds.menu;
+      if (this.props.remote === true) {
+        backgroundImage = this.props.backgrounds.menuRemoteNotConnected;
+      }
+      break;
+    case "dark":
+      backgroundImage = this.props.backgrounds.main;
+      if (this.props.remote === true) {
+        backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
+      }
+      break;
+    default:
+      backgroundImage = this.props.backgrounds.main;
+      if (this.props.remote === true) {
+        backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
+      }
+      break;
+  }
+
+  return backgroundImage;
 };

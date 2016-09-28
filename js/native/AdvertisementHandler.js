@@ -2,7 +2,7 @@ import { NativeEventsBridge } from './NativeEventsBridge'
 import { Scheduler } from '../logic/Scheduler';
 import { NativeEvents } from './Proxy';
 import { CROWNSTONE_SERVICEDATA_UUID } from '../ExternalConfig';
-import { LOG } from '../logging/Log'
+import { LOG, LOGDebug } from '../logging/Log'
 import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInSphereByCID } from '../util/dataUtil'
 
 
@@ -38,7 +38,7 @@ class AdvertisementHandlerClass {
       // create a trigger to throttle the updates.
       Scheduler.setRepeatingTrigger(trigger,{repeatEveryNSeconds:2})
 
-      // listen to verified advertisements. Verified means consequativly successfully encrypted.
+      // listen to verified advertisements. Verified means consecutively successfully encrypted.
       NativeEventsBridge.bleEvents.on(NativeEvents.ble.verifiedAdvertisementData, this.handleEvent.bind(this));
       this.initialized = true;
     }
@@ -60,6 +60,8 @@ class AdvertisementHandlerClass {
   }
 
   _handleNormalMode(advertisement) {
+    LOGDebug(advertisement)
+
     // only relevant if we are in a sphere.
     if (!(this.activeSphere)) {
       return;

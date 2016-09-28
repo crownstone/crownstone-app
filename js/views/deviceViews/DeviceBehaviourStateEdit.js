@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  
   TouchableOpacity,
   PixelRatio,
   ScrollView,
@@ -12,9 +11,9 @@ import {
 import { Background }        from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { EditSpacer }        from '../components/editComponents/EditSpacer'
-import { SlideFadeInView }        from '../components/animated/SlideFadeInView'
+import { SlideFadeInView }   from '../components/animated/SlideFadeInView'
+import { LOG }               from '../../logging/Log'
 var Actions = require('react-native-router-flux').Actions;
-
 import { styles, colors} from '../styles'
 
 
@@ -81,13 +80,21 @@ export class DeviceStateEdit extends Component {
     }
   }
 
+
+  _getBaseActionString(stone) {
+    if (stone.config.applianceId === null) {
+      return "UPDATE_STONE_BEHAVIOUR_FOR_";
+    }
+    return "UPDATE_APPLIANCE_BEHAVIOUR_FOR_";
+  }
+
   constructOptions(store, device, stone) {
-    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
+    let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
     let currentBehaviour = device.behaviour[this.props.eventName];
     
     let items = [];
 
-    let actionBase = 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_';
+    let actionBase = this._getBaseActionString(stone);
 
     // behaviour explanation
     items.push({label:"Device Responds", value: currentBehaviour.active, type: 'switch', callback:(newValue) => {
@@ -109,11 +116,11 @@ export class DeviceStateEdit extends Component {
   }
 
   constructStateOptions(store, device, stone) {
-    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
+    let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
     let currentBehaviour = device.behaviour[this.props.eventName];
     let items = [];
 
-    let actionBase = "UPDATE_APPLIANCE_BEHAVIOUR_FOR_";
+    let actionBase = this._getBaseActionString(stone);
 
     items.push({label: "NEW STATE", type: 'explanation', below: false});
     // Dimming control
@@ -139,19 +146,52 @@ export class DeviceStateEdit extends Component {
       items.push({label:'The device will switched to match the state when you ' + this._getExplanationLabel() + '.', type: 'explanation', below: true});
     }
 
-    items.push({label:"Delay", value: this._getDelayLabel(currentBehaviour), valueStyle:styles.rightNavigationValue, type: 'navigation',  callback:() => {
-      Actions.delaySelection({
-        ...requiredData,
-        extractionMethod: (device) => {return device.behaviour[this.props.eventName].delay;},
-        callback: (newValue) => {
-          store.dispatch({
-            ...requiredData,
-            type: actionBase + this.props.eventName,
-            data: {delay: newValue}
-          });
-        }
-      })
-    }});
+
+    let options = [];
+    if (this.props.eventName === "onHomeEnter" || this.props.eventName === "onRoomEnter") {
+      options.push({label: 'None', type: 'checkbar', value: 0});
+      options.push({label: '2 seconds', type: 'checkbar', value: 2});
+      options.push({label: '10 seconds', type: 'checkbar', value: 10});
+      options.push({label: '1 Minute', type: 'checkbar', value: 60});
+    }
+    options.push({label:'2 Minutes',  type: 'checkbar', value: 120});
+    options.push({label:'5 Minutes',  type: 'checkbar', value: 300});
+    options.push({label:'10 Minutes', type: 'checkbar', value: 600});
+    options.push({label:'15 Minutes', type: 'checkbar', value: 900});
+    options.push({label:'30 Minutes', type: 'checkbar', value: 1800});
+
+
+    items.push({
+      type:'dropdown',
+      label:'Delay',
+      value: currentBehaviour.delay,
+      valueLabel: this._getDelayLabel(currentBehaviour),
+      // buttons:true,
+      dropdownHeight:130,
+      items:options,
+      callback: (newValue) => {
+        LOG("new Value", newValue);
+        store.dispatch({
+          ...requiredData,
+          type: actionBase + this.props.eventName,
+          data: {delay: newValue}
+        });
+      }
+    });
+
+    // items.push({label:"Delay", value: this._getDelayLabel(currentBehaviour), valueStyle:styles.rightNavigationValue, type: 'navigation',  callback:() => {
+    //   Actions.delaySelection({
+    //     ...requiredData,
+    //     extractionMethod: (device) => {return device.behaviour[this.props.eventName].delay;},
+    //     callback: (newValue) => {
+    //       store.dispatch({
+    //         ...requiredData,
+    //         type: actionBase + this.props.eventName,
+    //         data: {delay: newValue}
+    //       });
+    //     }
+    //   })
+    // }});
     items.push({label:'You can set a delay between when you ' + this._getExplanationLabel() + ' and when the device responds to it. If the device is switched by something before this delay has finished, the first event will be discarded.', type: 'explanation', below: true});
 
     return items;
@@ -170,12 +210,13 @@ export class DeviceStateEdit extends Component {
 
     let options = this.constructOptions(store, device, stone);
     let stateOptions = this.constructStateOptions(store, device, stone);
+    let backgroundImage = this.props.getBackground.call(this, 'menu');
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={backgroundImage} >
         <ScrollView>
           <EditSpacer top={true} />
           <ListEditableItems items={options}/>
-          <SlideFadeInView height={300} visible={currentBehaviour.active}>
+          <SlideFadeInView  visible={currentBehaviour.active}>
             <ListEditableItems items={stateOptions}/>
           </SlideFadeInView>
         </ScrollView>

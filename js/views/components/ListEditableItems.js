@@ -8,6 +8,8 @@ export class ListEditableItems extends Component {
     this.state = {activeElement:undefined};
   }
 
+
+
   _renderer(item, index, itemId, textFieldRegistration, nextFunction, currentFocus) {
     return <EditableItem
       key={index}
@@ -28,6 +30,7 @@ export class ListEditableItems extends Component {
         items={items}
         separatorIndent={this.props.separatorIndent}
         renderer={this._renderer.bind(this)}
+        focusOnLoad={this.props.focusOnLoad}
       />
     );
   }

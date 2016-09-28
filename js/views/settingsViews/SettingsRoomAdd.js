@@ -30,7 +30,6 @@ export class SettingsRoomAdd extends Component {
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
-    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
 
     let items = [];
     items.push({type:'spacer'});

@@ -25,12 +25,14 @@ export class TextEditInput extends Component {
     if (this.isInFocus === true) {
       this.blur();
     }
+    this.unsubscribe();
   }
 
   componentDidMount() {
     if (this.props.textFieldRegistration) {
       this.props.textFieldRegistration(this.refName, this.refs[this.refName]);
     }
+    this.unsubscribe = eventBus.on("blurAll", () => { console.log("CALLING VLUR"); this.blur();})
   }
 
   focus() {
@@ -64,6 +66,7 @@ export class TextEditInput extends Component {
     return (
       <TextInput
         ref={this.refName}
+        autoCorrect={this.props.autoCorrect || false}
         onFocus={this.props.onFocus ? () => {this.focus(); this.props.onFocus();} : () => {this.focus();}}
         style={[{flex:1, position:'relative', top:1}, this.props.style]}
         autoCapitalize={this.props.autoCapitalize || 'words'}

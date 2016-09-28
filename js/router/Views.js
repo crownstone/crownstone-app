@@ -5,12 +5,15 @@ import { RegisterConclusion }        from '../views/startupViews/RegisterConclus
 import { PictureView }               from '../views/cameraViews/PictureView'
 import { PicturePreview }            from '../views/cameraViews/PicturePreview'
 import { CameraRollView }            from '../views/cameraViews/CameraRollView'
-import { SphereOverview }             from '../views/main/SphereOverview'
+import { SphereOverview }            from '../views/main/SphereOverview'
 import { RoomOverview }              from '../views/roomViews/RoomOverview'
 import { RoomEdit }                  from '../views/roomViews/RoomEdit'
-import { SettingsRoomTraining }      from '../views/settingsViews/SettingsRoomTraining'
+import { RoomAdd }                   from '../views/roomViews/RoomAdd'
+import { RoomTraining }              from '../views/roomViews/RoomTraining'
+import { RoomSelection }             from '../views/roomViews/RoomSelection'
 import { ApplianceSelection }        from '../views/deviceViews/ApplianceSelection'
 import { DeviceEdit }                from '../views/deviceViews/DeviceEdit'
+import { DeviceEditLogic }           from '../views/deviceViews/DeviceEditLogic'
 import { DeviceBehaviourEdit }       from '../views/deviceViews/DeviceBehaviourEdit'
 import { DeviceStateEdit }           from '../views/deviceViews/DeviceBehaviourStateEdit'
 import { DeviceIconSelection }       from '../views/deviceViews/DeviceIconSelection'
@@ -19,7 +22,7 @@ import { DeviceScheduleEdit }        from '../views/deviceViews/DeviceScheduleEd
 import { DeviceScheduleAdd }         from '../views/deviceViews/DeviceScheduleAdd'
 import { DaySelection }              from '../views/deviceViews/DaySelection'
 import { SetupWelcome }              from '../views/setupViews/SetupWelcome'
-import { SetupAddSphere }             from '../views/setupViews/SetupAddSphere'
+import { SetupAddSphere }            from '../views/setupViews/SetupAddSphere'
 import { SetupAddCrownstoneSelect }  from '../views/setupViews/SetupAddCrownstoneSelect'
 import { SetupAddPlugInStep1 }       from '../views/setupViews/SetupAddPlugInStep1'
 import { SetupAddPlugInStep2 }       from '../views/setupViews/SetupAddPlugInStep2'
@@ -30,10 +33,10 @@ import { SettingsOverview }          from '../views/settingsViews/SettingsOvervi
 import { SettingsProfile }           from '../views/settingsViews/SettingsProfile'
 import { SettingsChangePassword }    from '../views/settingsViews/SettingsChangePassword'
 import { SettingsChangeEmail }       from '../views/settingsViews/SettingsChangeEmail'
-import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
-import { SettingsSphere }             from '../views/settingsViews/SettingsSphere'
-import { SettingsSphereInvite }       from '../views/settingsViews/SettingsSphereInvite'
-import { SettingsSphereUser }         from '../views/settingsViews/SettingsSphereUser'
+import { SettingsSphereOverview }    from '../views/settingsViews/SettingsSphereOverview'
+import { SettingsSphere }            from '../views/settingsViews/SettingsSphere'
+import { SettingsSphereInvite }      from '../views/settingsViews/SettingsSphereInvite'
+import { SettingsSphereUser }        from '../views/settingsViews/SettingsSphereUser'
 import { SettingsRoomOverview }      from '../views/settingsViews/SettingsRoomOverview'
 import { SettingsRoomIconSelection } from '../views/settingsViews/SettingsRoomIconSelection'
 import { SettingsRoom }              from '../views/settingsViews/SettingsRoom'
@@ -55,9 +58,12 @@ export const Views = {
   SphereOverview,
   RoomOverview,
   RoomEdit,
-  SettingsRoomTraining,
+  RoomAdd,
+  RoomSelection,
+  RoomTraining,
   ApplianceSelection,
   DeviceEdit,
+  DeviceEditLogic,
   DeviceBehaviourEdit,
   DeviceIconSelection,
   DeviceStateEdit,
