@@ -4,6 +4,7 @@ import { reactToEnterRoom, reactToExitRoom, processScanResponse } from '../logic
 import { BlePromiseManager } from '../logic/BlePromiseManager'
 import { EventBus } from '../util/eventBus'
 import { LOG } from '../logging/Log'
+import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 
 
 class NativeEventsClass {
@@ -99,7 +100,7 @@ class NativeEventsClass {
             if (state.spheres[sphereId] !== undefined) {
               // prepare the settings for this sphere and pass them onto bluenet
               let bluenetSettings = {
-                encryptionEnabled:true,
+                encryptionEnabled:ENCRYPTION_ENABLED,
                 adminKey : state.spheres[sphereId].config.adminKey,
                 memberKey: state.spheres[sphereId].config.memberKey,
                 guestKey : state.spheres[sphereId].config.guestKey,
