@@ -43,30 +43,20 @@ class AdvertisementHandlerClass {
   }
 
   handleEvent(advertisement) {
+    // the service data in this advertisement;
+    let data = advertisement.serviceData;
+
     // service data not available
-    if (typeof advertisement.serviceData !== 'object') {
+    if (typeof data !== 'object') {
       return;
     }
 
-    // check if we handle setup mode or normal mode packets.
-    if (advertisement.serviceData.setupMode !== true) {
-      this._handleNormalMode(advertisement);
-    }
-    else {
-      this._handleSetupMode(advertisement);
-    }
-  }
-
-  _handleNormalMode(advertisement) {
     LOGDebug(advertisement);
 
     // only relevant if we are in a sphere.
     if (!(this.activeSphere)) {
       return;
     }
-
-    // the service data in this advertisement;
-    let data = advertisement.serviceData;
 
     // look for the crownstone in this group which has the same CrownstoneId (CID)
     let refByCID = this.referenceCIDMap[data.crownstoneId];
@@ -107,10 +97,6 @@ class AdvertisementHandlerClass {
     else if (stone.state.currentUsage != data.powerUsage) {
       update(data);
     }
-  }
-
-  _handleSetupMode(advertisement) {
-    
   }
 }
 

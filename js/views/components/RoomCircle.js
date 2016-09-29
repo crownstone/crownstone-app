@@ -92,6 +92,10 @@ export class RoomCircle extends Component {
       return colors.notConnected.hex;
     }
 
+    if (this.props.locationId === null && this.props.seeStoneInSetupMode === true) {
+      return colors.blue.hex;
+    }
+
     let level = this._getLevel(usage);
     if (prev) {
       if (level == 0) {
@@ -213,6 +217,17 @@ export class RoomCircle extends Component {
   }
 
 
+  _getAlertIcon() {
+    let alertSize = 35;
+    if (this.props.locationId === null && this.props.seeStoneInSetupMode) {
+      return (
+        <View style={[styles.centered,{width:alertSize, height:alertSize, borderRadius:alertSize*0.5, borderWidth:3, borderColor:'#fff', position:'absolute', top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.red.hex}]} >
+          <Icon name="ios-star" color="#fff" size={25} style={{backgroundColor:'transparent'}} />
+        </View>
+      )
+    }
+  }
+
   render() {
     const store = this.props.store;
     const state = store.getState();
@@ -230,6 +245,7 @@ export class RoomCircle extends Component {
       <View style={{position:'absolute', top:this.props.pos.y, left:this.props.pos.x}}>
         {this.getCircle(room)}
         {this.props.locationId === null ? undefined : <PresentUsers locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
+        {this._getAlertIcon()}
       </View>
     )
   }

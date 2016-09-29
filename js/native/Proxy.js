@@ -134,6 +134,11 @@ class NativeBusClass {
       exitRoom:             "exitLocation",
       currentRoom:          "currentLocation",
     };
+
+    this.refMap = {};
+    Object.keys(this.topics).forEach((key) => {
+      this.refMap[this.topics[key]] = true;
+    })
   }
 
   on(topic, callback) {
@@ -145,7 +150,7 @@ class NativeBusClass {
       LOGError("Attempting to subscribe without callback to topic:", topic);
       return;
     }
-    if (this.topics[topic] === undefined) {
+    if (this.refMap[topic] === undefined) {
       LOGError("Attempting to subscribe to a topic that does not exist in the native bus.", topic);
       return;
     }

@@ -12,6 +12,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 
+import { NativeBus } from '../../native/Proxy'
 import { Background } from '../components/Background'
 import { Icon } from '../components/Icon'
 import { RoomLayer } from '../components/RoomLayer'
@@ -22,14 +23,36 @@ import { styles, colors, screenWidth, screenHeight } from '../styles'
 export class SphereOverview extends Component {
   constructor() {
     super();
-    this.state = {presentUsers: {}};
+    this.state = {presentUsers: {}, seeStoneInSetupMode: false};
+    this.setupData = {};
+    this.setupModeTimeout = undefined;
   }
 
   componentDidMount() {
     const { store } = this.props;
 
+    this.unsubscribeNative = NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+      this.setupData[setupAdvertisement.handle] = setupAdvertisement;
+      if (this.state.seeStoneInSetupMode === false) {
+        this.setState({seeStoneInSetupMode:true});
+      }
+      else {
+        if (this.setupModeTimeout !== undefined) {
+          clearTimeout(this.setupModeTimeout);
+          this.setupModeTimeout = undefined;
+        }
+      }
 
-    this.unsubscribe = store.subscribe(() => {
+      // handle case for timeout (user moves away from crownstone
+      this.setupModeTimeout = setTimeout(() => {
+        this.setupModeTimeout = undefined;
+        delete this.setupData[setupAdvertisement.handle];
+        // redraw
+        this.setState({seeStoneInSetupMode:false});
+      }, 3000);
+
+    });
+    this.unsubscribeStore = store.subscribe(() => {
       // only rerender if we go to a different sphere
       if (this.renderState === undefined)
         return;
@@ -40,6 +63,7 @@ export class SphereOverview extends Component {
         LOG("triggering rerender of sphere overview");
 
         // Actions.refresh should update the navbar (showing add..)
+        //TODO: use custom Topbar
         Actions.refresh();
         this.forceUpdate();
       }
@@ -47,7 +71,8 @@ export class SphereOverview extends Component {
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribeStore();
+    this.unsubscribeNative();
   }
 
   // experiment
@@ -88,6 +113,16 @@ export class SphereOverview extends Component {
         </Background>
       );
     }
+    else if (this.state.seeStoneInSetupMode === true) {
+      return (
+        <Background image={this.props.backgrounds.mainRemoteNotConnected} >
+          <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+            <RoomLayer store={store} sphereId={activeSphere || remoteSphere} seeStoneInSetupMode={this.state.seeStoneInSetupMode} setupData={this.setupData} />
+            <Text style={overviewStyles.bottomTextNotConnected}>{'Click the Crownstone icon to add the new Crownstone to your Sphere!' }</Text>
+          </View>
+        </Background>
+      );
+    }
     else if (noStones) {
       return (
         <Background image={this.props.backgrounds.main} >
@@ -103,7 +138,7 @@ export class SphereOverview extends Component {
       return (
         <Background image={this.props.backgrounds.main} >
           <View style={{flex:1}}>
-            <RoomLayer store={store} sphereId={state.app.activeSphere} />
+            <RoomLayer store={store} sphereId={activeSphere} />
             <Text style={overviewStyles.bottomText}>{'Currently in '  + state.spheres[activeSphere].config.name + '\'s Sphere.' }</Text>
           </View>
         </Background>

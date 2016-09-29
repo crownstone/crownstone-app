@@ -103,7 +103,7 @@ export class RoomLayer extends Component {
     return false
   }
 
-  _renderRoom(locationId, room, sphereId, count, index, amountOfStones) {
+  _renderRoom(locationId, room, sphereId, count, index) {
     // get the position for the room
     let pos = {};
     if (count > 6) {
@@ -150,6 +150,8 @@ export class RoomLayer extends Component {
             store={this.props.store}
             pos={pos}
             remote={this.props.remote}
+            seeStoneInSetupMode={this.props.seeStoneInSetupMode}
+            setupData={this.props.setupData}
           />
         </View>
       </TouchableHighlight>
@@ -162,26 +164,24 @@ export class RoomLayer extends Component {
     const state = store.getState();
     let rooms = state.spheres[this.props.sphereId].locations;
 
-
     let orphanedStones = getOrphanedStones(state, this.props.sphereId);
+    let showFloatingCrownstones = orphanedStones.length > 0 || this.props.seeStoneInSetupMode === true;
 
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
-    LOG(roomIdArray)
 
     let amountOfRooms = roomIdArray.length;
 
     // the orphaned stones room.
-    if (orphanedStones.length > 0) {
+    if (showFloatingCrownstones) {
       amountOfRooms += 1;
     }
 
     for (let i = 0; i < roomIdArray.length; i++) {
-      let amountOfStones = getAmountOfStonesInLocation(state, this.props.sphereId, roomIdArray[i]);
-      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], this.props.sphereId, amountOfRooms, i, amountOfStones))
+      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], this.props.sphereId, amountOfRooms, i))
     }
 
-    if (orphanedStones.length > 0) {
+    if (showFloatingCrownstones) {
       roomNodes.push(this._renderRoom(null, {config: {name: "Floating Crownstones"}}, this.props.sphereId, amountOfRooms, amountOfRooms - 1))
     }
 

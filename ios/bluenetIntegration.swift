@@ -43,6 +43,8 @@ typealias voidCallback = () -> Void
   }
   
   deinit {
+    print ("CLEANING UP!")
+    
     // cleanup
     for unsubscribeCallback in self.subscriptions {
       unsubscribeCallback()
@@ -142,7 +144,6 @@ func getBleErrorString(err: BleError) -> String {
 
 @objc(BluenetJS)
 class BluenetJS: NSObject {
-  
   var bridge: RCTBridge!
   
 
