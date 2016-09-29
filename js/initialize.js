@@ -2,8 +2,9 @@ import { Alert } from 'react-native'
 
 import { LOG }              from './logging/Log'
 import { CLOUD }            from './cloud/cloudAPI'
-import { LocalizationUtil } from './native/LocalizationUtil'
+import { LocalizationUtil } from './native/LocationHandler'
 import { Scheduler } from './logic/Scheduler'
+import { BleActions, Bluenet } from './native/Proxy';
 
 
 /**
@@ -11,11 +12,27 @@ import { Scheduler } from './logic/Scheduler'
  *
  */
 export const INITIALIZER = {
+  /**
+   * Init happens before start, it triggers
+   */
+  initialized: false,
+  init: function() {
+    if (this.initialized === false) {
+      // route the events to React Native
+      Bluenet.rerouteEvents();
+
+      // enable scanning for Crownstones
+      BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
+      this.initialized = true;
+    }
+  },
+
+  /**
+   * Start the app after init
+   */
   started: false,
   start: function(store, eventBus) {
     if (this.started === false) {
-
-
       // subscribe to iBeacons when required.
       CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});
       eventBus.on(    'appStarted',                       () => {LocalizationUtil.trackSpheres(store);});

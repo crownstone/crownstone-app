@@ -16,7 +16,6 @@ import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { IconButton } from '../components/IconButton'
-import { NativeEventsBridge } from '../../native/NativeEventsBridge'
 import { userInSpheres, userIsAdmin, getSphereName } from '../../util/dataUtil'
 
 

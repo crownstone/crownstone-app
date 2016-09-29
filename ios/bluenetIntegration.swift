@@ -13,25 +13,40 @@ import SwiftyJSON
 
 var GLOBAL_BLUENET : ViewPassThrough?
 
+typealias voidCallback = () -> Void
 
 @objc public class ViewPassThrough : NSObject {
   public var bluenet : Bluenet!
   public var bluenetLocalization : BluenetLocalization!
+  var subscriptions = [voidCallback]()
   
   init(viewController: UIViewController) {
     super.init()
-    
 
     BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
 
     self.bluenet = Bluenet();
     
-    let defaultSettings = BluenetSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil)
-    self.bluenet.setSettings(defaultSettings);
+    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil);
     self.bluenetLocalization = BluenetLocalization();
     
 
     GLOBAL_BLUENET = self
+  }
+  
+  func bluenetOn(topic: String, _ callback:(notification: AnyObject) -> Void) {
+    self.subscriptions.append(self.bluenet.on(topic, callback))
+  }
+  
+  func bluenetLocalizationOn(topic: String, _ callback:(notification: AnyObject) -> Void) {
+    self.subscriptions.append(self.bluenetLocalization.on(topic, callback))
+  }
+  
+  deinit {
+    // cleanup
+    for unsubscribeCallback in self.subscriptions {
+      unsubscribeCallback()
+    }
   }
 }
 
@@ -134,62 +149,72 @@ class BluenetJS: NSObject {
   @objc func rerouteEvents() {
     if let globalBluenet = GLOBAL_BLUENET {
       // forward the event streams to react native
-      globalBluenet.bluenet.on("verifiedAdvertisementData", {data -> Void in
+      globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
-          self.bridge.eventDispatcher().sendAppEventWithName("verifiedAdvertisementData", body: castData.stringify())
+          if (castData.isSetupPackage()) {
+            self.bridge.eventDispatcher().sendAppEventWithName("verifiedSetupAdvertisementData", body: castData.getDictionary())
+          }
+          else if (castData.isDFUPackage()) {
+            self.bridge.eventDispatcher().sendAppEventWithName("verifiedDFUAdvertisementData", body: castData.getDictionary())
+          }
+          else {
+            self.bridge.eventDispatcher().sendAppEventWithName("verifiedAdvertisementData", body: castData.getDictionary())
+          }
+          
+          self.bridge.eventDispatcher().sendAppEventWithName("anyVerifiedAdvertisementData", body: castData.getDictionary())
         }
       })
       
-      // forward the event streams to react native
-      globalBluenet.bluenet.on("advertisementData", {data -> Void in
-        if let castData = data as? Advertisement {
-          self.bridge.eventDispatcher().sendAppEventWithName("advertisementData", body: castData.stringify())
-        }
-      })
-
-      globalBluenet.bluenet.on("nearestSetupCrownstone", {data -> Void in
+//      we will not forward the unverified events
+//      globalBluenet.bluenet.on("advertisementData", {data -> Void in
+//        if let castData = data as? Advertisement {
+//          self.bridge.eventDispatcher().sendAppEventWithName("advertisementData", body: castData.stringify())
+//        }
+//      })
+//
+      globalBluenet.bluenetOn("nearestSetupCrownstone", {data -> Void in
         if let castData = data as? NearestItem {
-          self.bridge.eventDispatcher().sendAppEventWithName("nearestSetupCrownstone", body: castData.stringify())
+          self.bridge.eventDispatcher().sendAppEventWithName("nearestSetupCrownstone", body: castData.getDictionary())
         }
       })
       
-      globalBluenet.bluenet.on("nearestCrownstone", {data -> Void in
+      globalBluenet.bluenetOn("nearestCrownstone", {data -> Void in
         if let castData = data as? NearestItem {
-          self.bridge.eventDispatcher().sendAppEventWithName("nearestCrownstone", body: castData.stringify())
+          self.bridge.eventDispatcher().sendAppEventWithName("nearestCrownstone", body: castData.getDictionary())
         }
       })
       
       // forward the navigation event stream to react native
-      globalBluenet.bluenetLocalization.on("iBeaconAdvertisement", {ibeaconData -> Void in
-        var returnArray = [String]()
+      globalBluenet.bluenetLocalizationOn("iBeaconAdvertisement", {ibeaconData -> Void in
+        var returnArray = [NSDictionary]()
         if let data = ibeaconData as? [iBeaconPacket] {
           for packet in data {
-            returnArray.append(packet.stringify())
+            returnArray.append(packet.getDictionary())
           }
         }
         self.bridge.eventDispatcher().sendAppEventWithName("iBeaconAdvertisement", body: returnArray)
       })      
-      globalBluenet.bluenetLocalization.on("enterRegion", {data -> Void in
+      globalBluenet.bluenetLocalizationOn("enterRegion", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEventWithName("enterSphere", body: castData)
         }
       })
-      globalBluenet.bluenetLocalization.on("exitRegion", {data -> Void in
+      globalBluenet.bluenetLocalizationOn("exitRegion", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEventWithName("exitSphere", body: castData)
         }
       })
-      globalBluenet.bluenetLocalization.on("enterLocation", {data -> Void in
+      globalBluenet.bluenetLocalizationOn("enterLocation", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEventWithName("enterLocation", body: castData)
         }
       })
-      globalBluenet.bluenetLocalization.on("exitLocation", {data -> Void in
+      globalBluenet.bluenetLocalizationOn("exitLocation", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEventWithName("exitLocation", body: castData)
         }
       })
-      globalBluenet.bluenetLocalization.on("currentLocation", {data -> Void in
+      globalBluenet.bluenetLocalizationOn("currentLocation", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEventWithName("currentLocation", body: castData)
         }
@@ -197,17 +222,15 @@ class BluenetJS: NSObject {
      }
   }
   
-  @objc func setSettings(configJSON: String, callback: RCTResponseSenderBlock) {
-    let data = JSON.parse(configJSON);
-    let encryptionEnabled = data["encryptionEnabled"].bool
-    let adminKey          = data["adminKey"].string
-    let memberKey         = data["memberKey"].string
-    let guestKey          = data["guestKey"].string
+  @objc func setSettings(settings: NSDictionary, callback: RCTResponseSenderBlock) {
+    let adminKey  = settings["adminKey"]  as? String
+    let memberKey = settings["memberKey"] as? String
+    let guestKey  = settings["guestKey"]  as? String
     
-    if (encryptionEnabled != nil && (adminKey != nil || memberKey != nil || guestKey != nil)) {
-      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled!, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey)
+    if let encryptionEnabled = settings["encryptionEnabled"] as? Bool {
+      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey)
       print("SETTING SETTINGS \(settings)")
-      GLOBAL_BLUENET!.bluenet.setSettings(settings)
+      GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey)
       callback([["error" : false]])
     }
     else {
@@ -302,10 +325,18 @@ class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenet.stopScanning()
   }
   
+  @objc func startIndoorLocalization() {
+    GLOBAL_BLUENET!.bluenetLocalization.startIndoorLocalization()
+  }
+  
+  @objc func stopIndoorLocalization() {
+    GLOBAL_BLUENET!.bluenetLocalization.stopIndoorLocalization()
+  }
+  
 
-  @objc func trackIBeacon(sphereUUID: String, sphereId: String) -> Void {
-    print("tracking ibeacons with uuid: \(sphereUUID) for sphere: \(sphereId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(sphereUUID, groupId: sphereId)
+  @objc func trackIBeacon(sphereUUID: String, referenceId: String) -> Void {
+    print("tracking ibeacons with uuid: \(sphereUUID) for sphere: \(referenceId)")
+    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(sphereUUID, referenceId: referenceId)
   }
   
   @objc func stopIBeaconTracking() -> Void {

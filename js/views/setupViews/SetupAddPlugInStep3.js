@@ -13,9 +13,8 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { CLOUD } from '../../cloud/cloudAPI'
-import { NativeEventsBridge } from '../../native/NativeEventsBridge'
 import { BLEutil } from '../../native/BLEutil'
-import { BleActions, NativeEvents } from '../../native/Proxy'
+import { BleActions, NativeBus } from '../../native/Proxy'
 import { Icon } from '../components/Icon'
 import { Background } from '../components/Background'
 import { getRoomNames } from '../../util/dataUtil'
@@ -33,7 +32,7 @@ export class SetupAddPlugInStep3 extends Component {
     this.unsubscribeSphereEnter = null;
     let state = props.store.getState();
     if (state.app.activeSphere === undefined && state.app.activeSphere == this.props.sphereId) {
-      this.unsubscribeSphereEnter = NativeEventsBridge.locationEvents.on(NativeEvents.location.enterSphere,
+      this.unsubscribeSphereEnter = NativeBus.on(NativeBus.topics.enterSphere,
         (sphereId) => {
           if (sphereId === this.props.sphereId) {
             BLEutil.getProxy(props.BLEhandle).perform(BleActions.setSwitchState, 1).catch(() => {});

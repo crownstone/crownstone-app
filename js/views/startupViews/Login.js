@@ -264,7 +264,6 @@ export class Login extends Component {
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
       })
       .then(() => {
-        // TODO: Create sphere for a new user.
         return CLOUD.sync(store, false);
       })
     );
@@ -281,8 +280,8 @@ export class Login extends Component {
         this.props.eventBus.emit('hideProgress');
 
         let state = store.getState();
-
-        store.dispatch({type:"SET_REMOTE_SPHERE", data:{ remoteSphere: state.app.previouslyActiveSphere || Object.keys(state.spheres)[0]}});
+        if (Object.keys(state.spheres).length > 0)
+          store.dispatch({type:"SET_REMOTE_SPHERE", data:{ remoteSphere: state.app.previouslyActiveSphere || Object.keys(state.spheres)[0]}});
 
         if (state.app.doFirstTimeSetup === true && Object.keys(state.spheres).length === 0) {
           Actions.setupWelcome();

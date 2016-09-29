@@ -39,6 +39,13 @@ let defaultSettings = {
 
 let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
+    case 'UPDATE_STONE_HANDLE':
+      if (action.data) {
+        let newState = {...state};
+        newState.handle          = update(action.data.handle, newState.handle);
+        return newState;
+      }
+      return state;
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {

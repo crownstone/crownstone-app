@@ -1,7 +1,5 @@
-import { NativeEventsBridge } from './NativeEventsBridge'
 import { Scheduler } from '../logic/Scheduler';
-import { NativeEvents } from './Proxy';
-import { CROWNSTONE_SERVICEDATA_UUID } from '../ExternalConfig';
+import { NativeBus } from './Proxy';
 import { LOG, LOGDebug } from '../logging/Log'
 import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInSphereByCID } from '../util/dataUtil'
 
@@ -18,7 +16,7 @@ class AdvertisementHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE AdvertisementHandlerClass', this.initialized);
+    LOG('LOADED STORE AdvertisementHandler', this.initialized);
     if (this.initialized === false) {
       this.store = store;
       this.init();
@@ -36,22 +34,22 @@ class AdvertisementHandlerClass {
       });
 
       // create a trigger to throttle the updates.
-      Scheduler.setRepeatingTrigger(trigger,{repeatEveryNSeconds:2})
+      Scheduler.setRepeatingTrigger(trigger,{repeatEveryNSeconds:2});
 
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
-      NativeEventsBridge.bleEvents.on(NativeEvents.ble.verifiedAdvertisementData, this.handleEvent.bind(this));
+      NativeBus.on(NativeBus.topics.advertisement, this.handleEvent.bind(this));
       this.initialized = true;
     }
   }
 
   handleEvent(advertisement) {
     // service data not available
-    if (typeof advertisement.serviceData !== 'object' || typeof advertisement.serviceData[CROWNSTONE_SERVICEDATA_UUID] !== 'object') {
+    if (typeof advertisement.serviceData !== 'object') {
       return;
     }
 
     // check if we handle setup mode or normal mode packets.
-    if (advertisement.serviceData[CROWNSTONE_SERVICEDATA_UUID].setupMode !== true) {
+    if (advertisement.serviceData.setupMode !== true) {
       this._handleNormalMode(advertisement);
     }
     else {
@@ -60,7 +58,7 @@ class AdvertisementHandlerClass {
   }
 
   _handleNormalMode(advertisement) {
-    LOGDebug(advertisement)
+    LOGDebug(advertisement);
 
     // only relevant if we are in a sphere.
     if (!(this.activeSphere)) {
@@ -68,7 +66,7 @@ class AdvertisementHandlerClass {
     }
 
     // the service data in this advertisement;
-    let data = advertisement.serviceData[CROWNSTONE_SERVICEDATA_UUID];
+    let data = advertisement.serviceData;
 
     // look for the crownstone in this group which has the same CrownstoneId (CID)
     let refByCID = this.referenceCIDMap[data.crownstoneId];
@@ -76,7 +74,7 @@ class AdvertisementHandlerClass {
     // repair mechanism to store the handle.
     if (data.stateOfExternalCrownstone === false && refByCID !== undefined) {
       if (refByCID.handle != advertisement.handle) {
-        this.store.dispatch({type: "UPDATE_STONE_CONFIG", sphereId: this.activeSphere, stoneId: refByCID.id, data:{handle: advertisement.handle}});
+        this.store.dispatch({type: "UPDATE_STONE_HANDLE", sphereId: this.activeSphere, stoneId: refByCID.id, data:{handle: advertisement.handle}});
         return;
       }
     }
@@ -112,8 +110,12 @@ class AdvertisementHandlerClass {
   }
 
   _handleSetupMode(advertisement) {
-
+    
   }
 }
 
 export const AdvertisementHandler = new AdvertisementHandlerClass();
+
+
+
+

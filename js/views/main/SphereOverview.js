@@ -27,6 +27,8 @@ export class SphereOverview extends Component {
 
   componentDidMount() {
     const { store } = this.props;
+
+
     this.unsubscribe = store.subscribe(() => {
       // only rerender if we go to a different sphere
       if (this.renderState === undefined)
@@ -75,7 +77,6 @@ export class SphereOverview extends Component {
       }
     });
 
-    // TODO: user cannot have no Sphere.
     if (noSpheres) {
       return (
         <Background image={this.props.backgrounds.main} >
@@ -93,7 +94,7 @@ export class SphereOverview extends Component {
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
             <Icon name="c2-pluginFront" size={150} color={colors.blue.hex} style={{backgroundColor:'transparent'}} />
             <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
-            <Text style={overviewStyles.subText}>Go into the settings to add Crownstones.</Text>
+            <Text style={overviewStyles.subText}>Get close to a Crownstone and wait for it to appear! If it does not appear, try the recovery procedure in the settings.</Text>
           </View>
         </Background>
       );

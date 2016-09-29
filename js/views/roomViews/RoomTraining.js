@@ -13,8 +13,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { TopBar } from '../components/Topbar'
-import { NativeEventsBridge } from '../../native/NativeEventsBridge'
-import { FingerprintManager } from '../../native/LocalizationUtil'
+import { FingerprintManager } from '../../native/FingerprintManager'
 import { Background } from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
@@ -39,13 +38,11 @@ export class RoomTraining extends Component {
   start() {
     this.collectedData = [];
     this.setState({started:true, text:'initializing', active:true});
-    NativeEventsBridge.stopListeningToLocationEvents();
     FingerprintManager.startFingerprinting((data) => {this.handleCollection(data);});
   }
 
   stop(forceAbort = false) {
     if (this.state.active === true || forceAbort) {
-      NativeEventsBridge.startListeningToLocationEvents();
       FingerprintManager.abortFingerprinting();
       this.collectedData = [];
       this.setState({active: false});
@@ -78,7 +75,6 @@ export class RoomTraining extends Component {
           data:{ fingerprintRaw: result }
         });
 
-        NativeEventsBridge.startListeningToLocationEvents();
       }).done();
   }
 

@@ -1,6 +1,6 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE } from '../ExternalConfig'
-import { LOG } from '../logging/Log'
+import { LOG, LOGError } from '../logging/Log'
 
 
 
@@ -75,25 +75,24 @@ export const BluenetPromise = function(functionName, param) {
 
 
 export const NativeEvents = {
-  ble: {
-    verifiedAdvertisementData: "verifiedAdvertisementData",
-    nearestCrownstone:         "nearestCrownstone",
-    nearestSetupCrownstone:    "nearestSetupCrownstone",
-  },
-  location: {
-    iBeaconAdvertisement: "iBeaconAdvertisement",
-    enterSphere:          "enterSphere",
-    exitSphere:           "exitSphere",
-    enterLocation:        "enterLocation",
-    exitLocation:         "exitLocation",
-    currentLocation:      "currentLocation",
-  }
+  verifiedSetupAdvertisementData: "verifiedSetupAdvertisementData",
+  verifiedDFUAdvertisementData: "verifiedDFUAdvertisementData",
+  verifiedAdvertisementData: "verifiedAdvertisementData",
+  anyVerifiedAdvertisementData: "anyVerifiedAdvertisementData",
+  nearestCrownstone:         "nearestCrownstone",
+  nearestSetupCrownstone:    "nearestSetupCrownstone",
+  iBeaconAdvertisement: "iBeaconAdvertisement",
+  enterSphere:          "enterSphere",
+  exitSphere:           "exitSphere",
+  enterLocation:        "enterLocation",
+  exitLocation:         "exitLocation",
+  currentLocation:      "currentLocation",
 };
 
 export const BleActions = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
-  isReady:        ()      => { return BluenetPromise('isReady');              },
-  connect:        (handle)=> {
+  isReady:             () => { return BluenetPromise('isReady');              },
+  connect:             (handle) => {
     if (handle) {
       return BluenetPromise('connect', handle);
     }
@@ -107,14 +106,59 @@ export const BleActions = {
       });
     }
   },
-  disconnect:     ()      => { return BluenetPromise('disconnect');           },
-  phoneDisconnect:()      => { return BluenetPromise('phoneDisconnect');      },
-  setSwitchState: (state) => { return BluenetPromise('setSwitchState', state);},
-  getMACAddress:  ()      => { return BluenetPromise('getMACAddress');        },
-  setupCrownstone:(dataString) => { return BluenetPromise('setupCrownstone', dataString); },
-  setSettings:    (dataString) => { return BluenetPromise('setSettings', dataString); },
-  recover:        (handle)     => { return BluenetPromise('recover', handle); },
-  commandFactoryReset:   ()      => { return BluenetPromise('commandFactoryReset'); },
+  disconnect:           ()           => { return BluenetPromise('disconnect');                  },
+  phoneDisconnect:      ()           => { return BluenetPromise('phoneDisconnect');             },
+  setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',   state);     },
+  getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },
+  setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
+  setSettings:          (dataObject) => { return BluenetPromise('setSettings',     dataObject); },
+  recover:              (handle)     => { return BluenetPromise('recover',         handle);     },
+  commandFactoryReset:  ()           => { return BluenetPromise('commandFactoryReset');         },
 };
 
+class NativeBusClass {
+  constructor() {
+    this.topics = {
+      setupAdvertisement:   "verifiedSetupAdvertisementData",
+      dfuAdvertisement:     "verifiedDFUAdvertisementData",
+      advertisement:        "verifiedAdvertisementData",        // = from crownstone in normal operation mode.
+      anyAdvertisement:     "anyVerifiedAdvertisementData",
+
+      nearest:              "nearestCrownstone",
+      nearestSetup:         "nearestSetupCrownstone",
+
+      iBeaconAdvertisement: "iBeaconAdvertisement",
+      enterSphere:          "enterSphere",
+      exitSphere:           "exitSphere",
+      enterRoom:            "enterLocation",
+      exitRoom:             "exitLocation",
+      currentRoom:          "currentLocation",
+    };
+  }
+
+  on(topic, callback) {
+    if (!(topic)) {
+      LOGError("Attempting to subscribe to undefined topic:", topic);
+      return;
+    }
+    if (!(callback)) {
+      LOGError("Attempting to subscribe without callback to topic:", topic);
+      return;
+    }
+    if (this.topics[topic] === undefined) {
+      LOGError("Attempting to subscribe to a topic that does not exist in the native bus.", topic);
+      return;
+    }
+
+    // subscribe to native event.
+    let subscription = NativeAppEventEmitter.addListener(topic, callback);
+
+    // return unsubscribe function.
+    return () => {
+      subscription.remove();
+    };
+  }
+}
+
+export const NativeBus = new NativeBusClass();
 

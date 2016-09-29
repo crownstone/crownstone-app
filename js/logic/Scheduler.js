@@ -1,5 +1,4 @@
-import { NativeEventsBridge } from '../native/NativeEventsBridge'
-import { NativeEvents } from '../native/Proxy';
+import { NativeBus } from '../native/Proxy';
 import { LOG, LOGDebug, LOGError} from '../logging/Log'
 
 
@@ -29,8 +28,8 @@ class SchedulerClass {
         this.activeSphere = state.app.activeSphere;
         this.allowTicksAfterTime = new Date().valueOf() + 2000;
       });
-      NativeEventsBridge.locationEvents.on(NativeEvents.location.exitSphere, this.flushAll.bind(this));
-      NativeEventsBridge.locationEvents.on(NativeEvents.location.iBeaconAdvertisement, () => {
+      NativeBus.on(NativeBus.topics.exitSphere, this.flushAll.bind(this));
+      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, () => {
         this.tick();
       });
 

@@ -1,6 +1,5 @@
-import { NativeEventsBridge } from './NativeEventsBridge'
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BleActions, NativeEvents } from './Proxy';
+import { BleActions, NativeBus } from './Proxy';
 import { LOG } from '../logging/Log'
 
 
@@ -27,18 +26,18 @@ export const BLEutil = {
 
   getNearestSetupCrownstone: function(timeout) {
     this.cancelSetupSearch();
-    return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestSetupCrownstone, this.pendingSetupSearch, timeout)
+    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearestSetup, this.pendingSetupSearch, timeout)
       .then((nearestItem) => {return new SetupCrownstone(nearestItem.handle);})
   },
 
   getNearestSetupCrownstoneHandle: function(timeout) {
     this.cancelSetupSearch();
-    return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestSetupCrownstone, this.pendingSetupSearch, timeout)
+    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearestSetup, this.pendingSetupSearch, timeout)
   },
 
   getNearestCrownstone: function(timeout) {
     this.cancelSearch();
-    return this._getNearestCrownstoneFromEvent(NativeEvents.ble.nearestCrownstone, this.pendingSearch, timeout)
+    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearest, this.pendingSearch, timeout)
   },
 
   _getNearestCrownstoneFromEvent: function(event, stateContainer, timeout = 10000) {
@@ -66,7 +65,7 @@ export const BLEutil = {
       };
 
       LOG("for nearest, subbing to ", event)
-      stateContainer.unsubscribe = NativeEventsBridge.bleEvents.on(event, (data) => { sortingCallback(data); });
+      stateContainer.unsubscribe = NativeBus.on(event, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
       stateContainer.timeout = setTimeout(() => {
@@ -80,28 +79,28 @@ export const BLEutil = {
     this.cancelSearch();
     return new Promise((resolve, reject) => {
       let count = 0;
-      let unbind = {unsubscribe:()=>{}, timeout: undefined};
-      let sortingCallback = (verifiedAdvertisement) => {
-        if (verifiedAdvertisement.handle === stoneHandle)
+      let cleanup = {unsubscribe:()=>{}, timeout: undefined};
+      let sortingCallback = (advertisement) => {
+        if (advertisement.handle === stoneHandle)
           count += 1;
 
         // three consecutive measurements before timeout is OK
         if (count == 2)
-          finish(verifiedAdvertisement);
+          finish(advertisement);
       };
 
-      let finish = (verifiedAdvertisement) => {
-        if (unbind.timeout) {
-          clearTimeout(unbind.timeout);
+      let finish = (advertisement) => {
+        if (cleanup.timeout) {
+          clearTimeout(cleanup.timeout);
         }
-        unbind.unsubscribe();
-        resolve(verifiedAdvertisement.setupPackage);
+        cleanup.unsubscribe();
+        resolve(advertisement.setupPackage);
       };
-      unbind.unsubscribe = NativeEventsBridge.bleEvents.on(NativeEvents.ble.verifiedAdvertisementData, sortingCallback);
+      cleanup.unsubscribe = NativeBus.on(NativeBus.topics.advertisement, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
-      unbind.timeout = setTimeout(() => {
-        unbind.unsubscribe();
+      cleanup.timeout = setTimeout(() => {
+        cleanup.unsubscribe();
         reject(false);
       }, 10000);
     })

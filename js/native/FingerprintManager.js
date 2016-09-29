@@ -1,5 +1,4 @@
-import { NativeEventsBridge } from './NativeEventsBridge'
-import { Bluenet, NativeEvents, BleActions } from './Proxy';
+import { Bluenet, NativeBus, BleActions } from './Proxy';
 import { LOG } from '../logging/Log'
 
 class FingerprintManagerClass {
@@ -22,8 +21,7 @@ class FingerprintManagerClass {
     if (callback !== undefined) {
       let sessionId = (Math.random() * 1e8).toString(36) + '-' + (Math.random() * 1e8).toString(36);
       this.fingerprintingSession = sessionId;
-      this.fingerprintingSubscriptions[sessionId] = NativeEventsBridge.locationEvents.on(
-        NativeEvents.location.iBeaconAdvertisement,
+      this.fingerprintingSubscriptions[sessionId] = NativeBus.on(NativeBus.topics.iBeaconAdvertisement,
         (iBeaconAdvertisement) => {
           if (Array.isArray(iBeaconAdvertisement)) {
             let data = [];
@@ -100,37 +98,3 @@ class FingerprintManagerClass {
 }
 
 export const FingerprintManager = new FingerprintManagerClass();
-
-export const LocalizationUtil = {
-
-  /**
-   * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
-   */
-  trackSpheres: function (store) {
-    BleActions.clearTrackedBeacons()
-      .then(() => {
-        // register the iBeacons UUIDs with the localization system.
-        const state = store.getState();
-        let sphereIds = Object.keys(state.spheres);
-        sphereIds.forEach((sphereId) => {
-          let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
-
-          // track the sphere beacon UUID
-          Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
-
-          LOG("-------------- SETUP TRACKING FOR ", sphereIBeaconUUID);
-
-          let locations = state.spheres[sphereId].locations;
-          let locationIds = Object.keys(locations);
-          locationIds.forEach((locationId) => {
-            if (locations[locationId].config.fingerprintRaw) {
-              Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw)
-            }
-          });
-        });
-      })
-  },
-
-  
-};
-

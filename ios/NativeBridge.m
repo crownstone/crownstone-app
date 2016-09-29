@@ -13,7 +13,7 @@
 @interface RCT_EXTERN_MODULE(BluenetJS, NSObject)
 
 
-RCT_EXTERN_METHOD(setSettings:(NSString *)configJSON callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setSettings:(NSDictionary *)settings callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(isReady:(RCTResponseSenderBlock)callback)
 
 RCT_EXTERN_METHOD(rerouteEvents)
@@ -37,7 +37,10 @@ RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 
 
 // Bluenet localization
-RCT_EXTERN_METHOD(trackIBeacon:(NSString *)sphereUUID sphereId:(NSString*)sphereId)
+RCT_EXTERN_METHOD(startIndoorLocalization)
+RCT_EXTERN_METHOD(stopIndoorLocalization)
+
+RCT_EXTERN_METHOD(trackIBeacon:(NSString *)sphereUUID referenceId:(NSString*)referenceId)
 RCT_EXTERN_METHOD(startCollectingFingerprint)
 RCT_EXTERN_METHOD(abortCollectingFingerprint)
 RCT_EXTERN_METHOD(pauseCollectingFingerprint)

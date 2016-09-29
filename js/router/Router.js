@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StoreManager }           from './store/storeManager'
-import { NativeEventsBridge }     from '../native/NativeEventsBridge'
+import { LocationHandler }        from '../native/LocationHandler'
 import { AdvertisementHandler }   from '../native/AdvertisementHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
@@ -72,7 +72,7 @@ export class AppRouter extends Component {
       store.dispatch({type:"SET_REMOTE_SPHERE", data:{ remoteSphere: state.app.previouslyActiveSphere || Object.keys(state.spheres)[0]}});
 
       // pass the store to the singletons
-      NativeEventsBridge.loadStore(store);
+      LocationHandler.loadStore(store);
       AdvertisementHandler.loadStore(store);
       Scheduler.loadStore(store);
 
