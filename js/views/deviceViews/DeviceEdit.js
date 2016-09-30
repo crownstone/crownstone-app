@@ -12,12 +12,14 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { styles, colors, screenWidth, screenHeight } from '../styles'
+import { BleActions } from '../../native/Proxy'
 import { BLEutil } from '../../native/BLEutil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/animated/FadeInView'
+import { LOG } from '../../logging/Log'
 
 
 

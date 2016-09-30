@@ -74,21 +74,6 @@ export const BluenetPromise = function(functionName, param) {
 };
 
 
-export const NativeEvents = {
-  verifiedSetupAdvertisementData: "verifiedSetupAdvertisementData",
-  verifiedDFUAdvertisementData: "verifiedDFUAdvertisementData",
-  verifiedAdvertisementData: "verifiedAdvertisementData",
-  anyVerifiedAdvertisementData: "anyVerifiedAdvertisementData",
-  nearestCrownstone:         "nearestCrownstone",
-  nearestSetupCrownstone:    "nearestSetupCrownstone",
-  iBeaconAdvertisement: "iBeaconAdvertisement",
-  enterSphere:          "enterSphere",
-  exitSphere:           "exitSphere",
-  enterLocation:        "enterLocation",
-  exitLocation:         "exitLocation",
-  currentLocation:      "currentLocation",
-};
-
 export const BleActions = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
@@ -123,6 +108,7 @@ class NativeBusClass {
       dfuAdvertisement:     "verifiedDFUAdvertisementData",
       advertisement:        "verifiedAdvertisementData",        // = from crownstone in normal operation mode.
       anyAdvertisement:     "anyVerifiedAdvertisementData",
+      setupProgress:        "setupProgress",
 
       nearest:              "nearestCrownstone",
       nearestSetup:         "nearestSetupCrownstone",

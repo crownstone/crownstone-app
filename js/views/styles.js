@@ -14,7 +14,7 @@ export let colors = {
   menuText: {hex:'#fff'},
   menuTextSelected: {hex:'#2daeff'},
   gray: {hex:'#ccc'},
-  notConnected: {hex:'#909d9a'},
+  notConnected: {hex:'#64897f'},
   darkGray: {hex:'#555'},
   lightGray: {hex:'#ddd'},
   purple: {hex:'#8a01ff'},
@@ -26,6 +26,8 @@ export let colors = {
   darkRed: {hex:'#cc0900'},
   menuRed: {hex:'#e00'},
   iosBlue: {hex:'#0077ff'},
+  blinkColor1: {hex:'#2daeff'},
+  blinkColor2: {hex:'#a5dcff'},
 };
 
 for (let color in colors) {

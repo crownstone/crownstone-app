@@ -173,6 +173,12 @@ class BluenetJS: NSObject {
 //        }
 //      })
 //
+      globalBluenet.bluenetOn("setupProgress", {data -> Void in
+        if let castData = data as? NSNumber {
+          self.bridge.eventDispatcher().sendAppEventWithName("setupProgress", body: castData)
+        }
+      })
+      
       globalBluenet.bluenetOn("nearestSetupCrownstone", {data -> Void in
         if let castData = data as? NearestItem {
           self.bridge.eventDispatcher().sendAppEventWithName("nearestSetupCrownstone", body: castData.getDictionary())

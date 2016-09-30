@@ -26,8 +26,8 @@ import loginStyles from './LoginStyles'
 export class Login extends Component {
   constructor() {
     super();
-    // this.state = {email: emailFromRegistration.email || 'alex@dobots.nl', password:'letmein0'};
-    this.state = {email: emailFromRegistration.email || '', password:''};
+    this.state = {email: emailFromRegistration.email || 'alex@dobots.nl', password:'letmein0'};
+    // this.state = {email: emailFromRegistration.email || '', password:''};
     // this.state = {email: emailFromRegistration.email || 'anne@crownstone.rocks', password:'bier'};
     this.progress = 0;
   }
@@ -162,7 +162,7 @@ export class Login extends Component {
   }
   render() {
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.boot}>
+      <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>
         <TopBar leftStyle={{color:'#fff'}} left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>

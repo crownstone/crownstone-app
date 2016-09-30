@@ -1,9 +1,11 @@
 import React, { Component } from 'react' 
 import {
+  Animated,
   Dimensions,
   Image,
   NativeModules,
-  TouchableHighlight,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
   Text,
   View
 } from 'react-native';
@@ -12,6 +14,7 @@ import { styles, screenWidth, screenHeight, colors } from '../styles'
 import { getCurrentPowerUsageFromState } from '../../util/dataUtil'
 import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
+var Actions = require('react-native-router-flux').Actions;
 
 
 import Svg,{ Circle } from 'react-native-svg';
@@ -19,7 +22,24 @@ import Svg,{ Circle } from 'react-native-svg';
 export class RoomCircle extends Component {
   constructor(props) {
     super();
-    this.state = {};
+
+    let initialX = props.pos.x;
+    let initialY = props.pos.y;
+
+    let screenCenterX = 0.5*screenWidth;
+    let screenCenterY = 0.5*screenHeight;
+    if (initialX > screenCenterX)
+      initialX += screenWidth;
+    else
+      initialX -= screenWidth;
+
+    if (initialY > screenCenterY)
+      initialY -= 0.25*screenHeight;
+    else
+      initialY += 0.25*screenHeight;
+
+
+    this.state = {top: new Animated.Value(initialY), left: new Animated.Value(initialX), opacity: new Animated.Value(0)};
 
     this.levels = [
       {min: 0,    max:200,   color: colors.green.hex},
@@ -36,7 +56,19 @@ export class RoomCircle extends Component {
     this.outerDiameter = 2*props.radius;
     this.iconSize = props.radius * 0.8;
     this.textSize = props.radius * 0.25;
-    this.color = this._getColor(this.usage);
+
+    this.animationStarted = false;
+    this.animating = false;
+    this.animatedMoving = false;
+
+    this.previousCircle = undefined;
+    this.wiggleInterval = undefined;
+    this.fadeAnimationTimeout = undefined;
+    this.moveAnimationTimeout = undefined;
+
+    this.movementDuration = 400;
+    this.jumpDuration = 400;
+    this.fadeDuration = this.movementDuration;
   }
 
   componentDidMount() {
@@ -66,16 +98,38 @@ export class RoomCircle extends Component {
         this.forceUpdate();
       }
     });
+
+    this.checkAlertStatus(this.props);
+  }
+
+  componentWillUpdate(nextProps) {
+    this.checkAlertStatus(nextProps);
+  }
+
+  checkAlertStatus(props) {
+    if (props.locationId === null && props.seeStoneInSetupMode) {
+      this.setWiggleInterval()
+    }
+    else if (this.wiggleInterval !== undefined) {
+      clearTimeout(this.wiggleInterval);
+    }
+  }
+
+  setWiggleInterval() {
+    if (this.wiggleInterval === undefined) {
+      this.wiggleInterval = setTimeout(() => {
+        this.wiggleInterval = undefined;
+        this._wiggle();
+        this.setWiggleInterval();
+      }, this.jumpDuration + 1200)
+    }
   }
 
   componentWillUnmount() {
+    clearTimeout(this.wiggleInterval);
+    clearTimeout(this.fadeAnimationTimeout);
+    clearTimeout(this.moveAnimationTimeout);
     this.unsubscribe();
-  }
-
-  // experiment
-  shouldComponentUpdate(nextProps, nextState) {
-    // LOG("Should component update?",nextProps, nextState)
-    return false
   }
 
 
@@ -93,7 +147,7 @@ export class RoomCircle extends Component {
     }
 
     if (this.props.locationId === null && this.props.seeStoneInSetupMode === true) {
-      return colors.blue.hex;
+      return colors.blinkColor1.hex;
     }
 
     let level = this._getLevel(usage);
@@ -108,11 +162,51 @@ export class RoomCircle extends Component {
     return this.levels[level].color;
   }
 
+  _animateFade() {
+    let duration = this.animatedMoving === true ? this.movementDuration : this.fadeDuration;
 
-  getCircle(room) {
-    // this.usage = 2550;
-    // this.color = this._getColor(this.usage);
-    return (
+    if (this.animationStarted === false) {
+      this.animationStarted = true;
+      Animated.timing(this.state.opacity, {toValue: 1, duration: duration}).start();
+      this.fadeAnimationTimeout = setTimeout(() => {
+        this.animationStarted = false;
+        this.animating = false;
+        this.setState({opacity: new Animated.Value(0)});
+      }, duration)
+    }
+  }
+
+  getIcon() {
+    if (this.props.locationId === null && this.props.seeStoneInSetupMode === true) {
+      let smallSize = this.iconSize*1.1*0.6;
+      return (
+        <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
+          <Icon name="ios-sunny" size={smallSize} color={colors.blinkColor2.hex} style={{position:'absolute', top:-smallSize*0.024, left:smallSize*0.46}} />
+          <Icon name="c2-crownstone" size={this.iconSize*1.1} color='#ffffff' style={{position:'absolute', top:this.iconSize*0.15, left:0}} />
+        </View>
+      )
+    }
+    else if (this.props.locationId === null) {
+      return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;
+    }
+    else {
+      let icon = this.props.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
+      return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
+    }
+
+  }
+
+  getCircle() {
+    let newColor = this._getColor(this.usage);
+    if (newColor !== this.color && this.previousCircle !== undefined) {
+      this.animating = true;
+      this.fadeAnimationTimeout = setTimeout(() => {
+        this.color = newColor;
+        this.previousCircle = circle;
+        this._animateFade()
+      },10);
+    }
+    let circle = (
       <View>
         <View style={{
           borderRadius: this.outerDiameter,
@@ -122,7 +216,7 @@ export class RoomCircle extends Component {
           padding:0,
           margin:0
         }}>
-          {this._getUsageCircle(this.usage)}
+          {this._getUsageCircle(this.usage, newColor)}
           <View style={{
             position:'relative',
             top:-this.outerDiameter + 2.25*this.borderWidth,
@@ -130,24 +224,43 @@ export class RoomCircle extends Component {
             borderRadius:this.innerDiameter,
             width: this.innerDiameter,
             height: this.innerDiameter,
-            backgroundColor: this.color,
+            backgroundColor: newColor,
             padding:0,
             margin:0,
             justifyContent:'center',
             alignItems:'center'
           }}><View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
-            <Icon name={room.config.icon} size={this.iconSize} color='#ffffff' style={{backgroundColor:'transparent'}} />
+            {this.getIcon()}
             </View>
             {this.props.remote ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{this.usage + " W"}</Text>}
           </View>
         </View>
       </View>
     );
+
+    if (this.animating === true) {
+      return (
+        <View>
+          <View style={{position:'absolute', top:0, left:0}}>
+            {this.previousCircle}
+          </View>
+          <Animated.View style={{position:'absolute', top:0, left:0, opacity: this.state.opacity}}>
+            {circle}
+          </Animated.View>
+        </View>
+      )
+    }
+    else {
+      this.color = newColor;
+      this.previousCircle = circle;
+      return circle;
+    }
+
   }
 
 
-  _getUsageCircle(usage) {
-    let prevColor = this._getColor(usage, true);
+  _getUsageCircle(usage, newColor) {
+    let colorOfLowerLayer = this._getColor(usage, true);
     let pathLength = Math.PI * 2 * this.props.radius;
     if (usage == 0)
       return (
@@ -157,7 +270,7 @@ export class RoomCircle extends Component {
         }} >
           <Circle
             r={this.props.radius - this.borderWidth}
-            stroke={prevColor}
+            stroke={colorOfLowerLayer}
             strokeWidth={this.borderWidth}
             strokeDasharray={[pathLength,pathLength]}
             rotate="-90"
@@ -176,7 +289,7 @@ export class RoomCircle extends Component {
       }}>
         <Circle
           r={this.props.radius - this.borderWidth}
-          stroke={prevColor}
+          stroke={colorOfLowerLayer}
           strokeWidth={this.borderWidth}
           strokeDasharray={[pathLength,pathLength]}
           rotate="-90"
@@ -187,7 +300,7 @@ export class RoomCircle extends Component {
         />
         <Circle
           r={this.props.radius - this.borderWidth}
-          stroke={this.color}
+          stroke={newColor}
           strokeWidth={this.borderWidth}
           strokeDasharray={[pathLength*this._getFactor(usage),pathLength]}
           rotate="-90"
@@ -217,36 +330,76 @@ export class RoomCircle extends Component {
   }
 
 
-  _getAlertIcon() {
-    let alertSize = 35;
-    if (this.props.locationId === null && this.props.seeStoneInSetupMode) {
-      return (
-        <View style={[styles.centered,{width:alertSize, height:alertSize, borderRadius:alertSize*0.5, borderWidth:3, borderColor:'#fff', position:'absolute', top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.red.hex}]} >
-          <Icon name="ios-star" color="#fff" size={25} style={{backgroundColor:'transparent'}} />
-        </View>
-      )
+  // _getAlertIcon() {
+  //   let alertSize = 30;
+  //   if (this.props.locationId === null && this.props.seeStoneInSetupMode) {
+  //     return (
+  //       <View style={[styles.centered, {
+  //         width:alertSize,
+  //         height:alertSize, borderRadius:alertSize*0.5,
+  //         borderWidth:3,
+  //         borderColor:'#fff',
+  //         position:'absolute',
+  //         top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.blue.hex}]} >
+  //         <Icon name="md-star" color="#fff" size={20} style={{backgroundColor:'transparent'}} />
+  //       </View>
+  //     )
+  //   }
+  // }
+
+  _animatePosition() {
+    let animations = [];
+    if (this.animatedMoving === false) {
+      this.animatedMoving = true;
+      animations.push(Animated.timing(this.state.top, {toValue: this.props.pos.y, duration: this.movementDuration}));
+      animations.push(Animated.timing(this.state.left, {toValue: this.props.pos.x, duration: this.movementDuration}));
+      this.moveAnimationTimeout = setTimeout(() => {
+        this.animatedMoving = false;
+      }, this.movementDuration);
+      Animated.parallel(animations).start();
+    }
+  }
+
+  _wiggle() {
+    let animations = [];
+    let tension = 120;
+    let friction = 3;
+    let offset = 0.08*screenWidth;
+    let randX = offset*(Math.random()-0.5);
+    let randY = offset*(Math.random()-0.5);
+    if (this.animatedMoving === false) {
+      this.animatedMoving = true;
+      animations.push(Animated.spring(this.state.top, {toValue: this.props.pos.y - randY, friction: friction, tension: tension}));
+      animations.push(Animated.spring(this.state.left, {toValue: this.props.pos.x - randX, friction: friction, tension: tension}));
+      this.moveAnimationTimeout = setTimeout(() => {
+        this.animatedMoving = false;
+        animations.push(Animated.spring(this.state.top, {toValue: this.props.pos.y, friction: friction, tension: tension}));
+        animations.push(Animated.spring(this.state.left, {toValue: this.props.pos.x, friction: friction, tension: tension}));
+        Animated.parallel(animations).start();
+      }, this.jumpDuration);
+      Animated.parallel(animations).start();
     }
   }
 
   render() {
+    if (this.state.top !== this.props.pos.y || this.state.left !== this.props.pos.x) {
+      this.moveAnimationTimeout = setTimeout(() => this._animatePosition(),0)
+    }
+
     const store = this.props.store;
     const state = store.getState();
     this.renderState = store.getState();
 
-    let room;
-    if (this.props.locationId === null) {
-      room = {config:{icon:'c2-pluginFilled'}}
-    }
-    else {
-      room = state.spheres[this.props.sphereId].locations[this.props.locationId];
-    }
-
     return (
-      <View style={{position:'absolute', top:this.props.pos.y, left:this.props.pos.x}}>
-        {this.getCircle(room)}
-        {this.props.locationId === null ? undefined : <PresentUsers locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
-        {this._getAlertIcon()}
-      </View>
+      <Animated.View style={{position:'absolute',  top: this.state.top, left: this.state.left}}>
+        <TouchableOpacity onPress={() => Actions.roomOverview(this.props.actionParams)}>
+          <View>
+            {this.getCircle()}
+            {this.props.locationId === null ? undefined : <PresentUsers locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
+            {/*{this._getAlertIcon()}*/}
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
     )
   }
 }

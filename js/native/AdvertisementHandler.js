@@ -51,8 +51,6 @@ class AdvertisementHandlerClass {
       return;
     }
 
-    LOGDebug(advertisement);
-
     // only relevant if we are in a sphere.
     if (!(this.activeSphere)) {
       return;

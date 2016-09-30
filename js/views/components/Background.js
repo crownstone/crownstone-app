@@ -8,19 +8,10 @@ import { styles, colors, screenWidth, screenHeight} from '../styles'
 
 
 export class Background extends Component {
-  constructor() {
-    super();
-    this.image = undefined;
-  }
-
-  componentWillMount() {
-    this.image = this.props.image;
-  }
-
   render() {
     return (
       <View style={styles.fullscreen} >
-        {this.image}
+        {this.props.image}
         <View style={styles.fullscreen} >
           {this.props.hideInterface !== true ? <View style={{width:screenWidth,height:62}} /> : undefined}
           <View style={{flex:1}}>

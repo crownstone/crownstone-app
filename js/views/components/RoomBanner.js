@@ -30,8 +30,11 @@ export class RoomBanner extends Component {
     if (this.props.remote === true) {
       return <Icon name="ios-cloudy-night" size={30} color="#fff" style={{backgroundColor:"transparent"}} />
     }
-    else {
+    else if (this.props.usage !== undefined) {
       return <Text style={bannerStyles.roomImageText}>{this.props.usage + ' W'}</Text>
+    }
+    else {
+      return <Icon name="c2-crownstone" size={45} color="#fff" style={{backgroundColor:"transparent"}} />
     }
 
   }
@@ -48,7 +51,7 @@ export class RoomBanner extends Component {
 
     if (this.props.floatingCrownstones === true) {
       return (
-        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.blue.hex, justifyContent:'center'}}>
+        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.blue.hex, justifyContent:'center', overflow:'hidden'}}>
           <View style={{flexDirection:'row'}}>
             <Icon name="c2-pluginFront" size={100} color={colors.green.hex} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
             <Icon name="c2-pluginFront" size={100} color={colors.orange.hex} style={{position:'absolute',backgroundColor:'transparent', top:20, left:175}} />
@@ -58,7 +61,7 @@ export class RoomBanner extends Component {
             <View style={{height:0.7*height, width: rightRatio*screenWidth, backgroundColor:'transparent', alignItems:'flex-end'}}>
               <View style={[bannerStyles.whiteRight, {height: 0.5*height, width:(rightRatio-0.05) * screenWidth+offset}]} />
               <View style={[bannerStyles.blueRight,  {height: 0.5*height, width:(rightRatio-0.05) * screenWidth, top: offset}]}>
-                <Text style={bannerStyles.roomImageText}>{this.props.usage + ' W'} </Text>
+                {this.getUsage()}
               </View>
             </View>
           </View>

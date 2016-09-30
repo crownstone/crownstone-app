@@ -36,6 +36,8 @@ export class SeparatedItemList extends Component {
     let items = this.props.items;
     let renderItems = [];
 
+
+    // these make sure we can skip to the next textField when we press enter.
     let textFieldRegistration = (key,ref) => {
       this.textFieldMap[key] = this.textFields.length;
       this.textFields.push(ref);
@@ -50,6 +52,8 @@ export class SeparatedItemList extends Component {
 
     let indentSeparator = this.props.separatorIndent === true;
     let isEditableItem = (item) => {return !(item.type === 'spacer' || item.type === 'explanation')};
+
+    // this function parses the input item.
     let iterator = (prevItem, item, nextItem, index, itemId) => {
       let isItemEditable = isEditableItem(item);
       if (prevItem !== undefined) {

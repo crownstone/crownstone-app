@@ -19,7 +19,7 @@ import { setupStyle } from '../setupViews/SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/dataUtil'
 import { BLEutil } from '../../native/BLEutil'
-import { BleActions } from '../../native/Proxy'
+import { BleActions, Bluenet } from '../../native/Proxy'
 import { LOG } from '../../logging/Log'
 
 export class SettingsPluginRecoverStep2 extends Component {
@@ -34,10 +34,14 @@ export class SettingsPluginRecoverStep2 extends Component {
   }
 
   componentDidMount() {
+    // we scan high frequency when we see a setup node
+    Bluenet.startScanningForCrownstones();
+
     setTimeout(() => { this.searchForStone(); }, 1000);
   }
 
   componentWillUnmount() {
+    Bluenet.startScanningForCrownstonesUniqueOnly();
     BLEutil.cancelAllSearches();
   }
 

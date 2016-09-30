@@ -98,10 +98,7 @@ export class RoomLayer extends Component {
   }
 
   // experiment
-  shouldComponentUpdate(nextProps, nextState) {
-    LOG("Should component update?", nextProps, nextState);
-    return false
-  }
+  shouldComponentUpdate(nextProps, nextState) { return true }
 
   _renderRoom(locationId, room, sphereId, count, index) {
     // get the position for the room
@@ -130,7 +127,9 @@ export class RoomLayer extends Component {
       sphereId: sphereId,
       locationId: locationId,
       title: room.config.name,
-      remote: this.props.remote
+      remote: this.props.remote,
+      seeStoneInSetupMode: this.props.seeStoneInSetupMode,
+      setupData: this.props.setupData,
     };
 
 
@@ -141,20 +140,18 @@ export class RoomLayer extends Component {
     }
 
     return (
-      <TouchableHighlight onPress={() => Actions.roomOverview(actionsParams)} key={locationId + "_" + Math.random()}>
-        <View>
-          <RoomCircle
-            locationId={locationId}
-            sphereId={this.props.sphereId}
-            radius={this.roomRadius}
-            store={this.props.store}
-            pos={pos}
-            remote={this.props.remote}
-            seeStoneInSetupMode={this.props.seeStoneInSetupMode}
-            setupData={this.props.setupData}
-          />
-        </View>
-      </TouchableHighlight>
+      <RoomCircle
+        locationId={locationId}
+        sphereId={this.props.sphereId}
+        radius={this.roomRadius}
+        store={this.props.store}
+        pos={pos}
+        remote={this.props.remote}
+        seeStoneInSetupMode={this.props.seeStoneInSetupMode}
+        setupData={this.props.setupData}
+        key={locationId || 'floating'}
+        actionParams={actionsParams}
+      />
     );
   }
 
@@ -207,7 +204,7 @@ export class RoomLayer extends Component {
     LOG("rendering room layer");
 
     return (
-      <View style={{width: screenWidth, flex:1}}>
+      <View style={{position:'absolute', top:0, left:0, width: screenWidth, flex:1}}>
         {this.getRooms()}
       </View>
     )

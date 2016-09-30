@@ -10,14 +10,14 @@ var Actions = require('react-native-router-flux').Actions;
 
 
 import { Background } from './../components/Background'
-import { styles, colors} from './../styles'
+import { styles, colors, screenWidth, screenHeight } from './../styles'
 import loginStyles from './LoginStyles'
 
 
 export class LoginSplash extends Component {
   render() {
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.boot}>
+      <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>
         <View style={styles.shadedStatusBar} />
         <View style={loginStyles.loginButtonContainer}>
           <TouchableOpacity onPress={() => {Actions.register()}} >

@@ -36,11 +36,12 @@
 		</dict>
 	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Without your location we don't know when to switch the Crownstones</string>
+	<string>Without your location we don&apos;t know when to switch the Crownstones</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Lato-Bold.ttf</string>
 		<string>CustomIcons.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>

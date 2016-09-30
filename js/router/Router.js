@@ -43,7 +43,7 @@ export class AppRouter extends Component {
       main: undefined,
       mainRemoteNotConnected: undefined,
       menu: undefined,
-      boot: undefined,
+      mainDarkLogo: undefined,
       mainDark: undefined
     };
   }
@@ -126,8 +126,8 @@ export class AppRouter extends Component {
     this.backgrounds.menu                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackground.png')} />;
     this.backgrounds.menuRemoteNotConnected  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteNotConnected.png')} />;
     this.backgrounds.menuRemoteConnected     = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteConnected.png')} />;
-    this.backgrounds.boot                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/loginBackground.png')} />;
-    this.backgrounds.mainDark                = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackground.png')} />;
+    this.backgrounds.mainDarkLogo            = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/backgroundWLogo.png')} />;
+    this.backgrounds.mainDark                = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
   }
 
   componentWillUnmount() { // cleanup
@@ -210,7 +210,7 @@ export class AppRouter extends Component {
     }
     else {
       // this is the await store part.
-      return <Background hideInterface={true} background={require('../images/loginBackground.png')} />
+      return <Background hideInterface={true} image={this.backgrounds.mainDarkLogo} />
     }
   }
 

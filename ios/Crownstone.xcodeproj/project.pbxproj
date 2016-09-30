@@ -47,6 +47,7 @@
 		FA01EDE31D9ACEF000DD47E4 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA01EDDF1D9ACEF000DD47E4 /* SwiftyJSON.framework */; };
 		FA6384261D9AD2EA00544F95 /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6384241D9AD2D600544F95 /* Crownstone.ttf */; };
 		FA6384271D9AD2EA00544F95 /* CustomIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6384251D9AD2D600544F95 /* CustomIcons.ttf */; };
+		FA7A7F951D9E6B9800AF14FD /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA7A7F821D9E6B9000AF14FD /* Lato-Bold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -242,6 +243,7 @@
 		FA01EDDF1D9ACEF000DD47E4 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		FA6384241D9AD2D600544F95 /* Crownstone.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone.ttf; path = ../js/fonts/Crownstone.ttf; sourceTree = "<group>"; };
 		FA6384251D9AD2D600544F95 /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
+		FA7A7F821D9E6B9000AF14FD /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../js/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -397,6 +399,7 @@
 				BF96604DF89F414592448A44 /* Zocial.ttf */,
 				FA6384241D9AD2D600544F95 /* Crownstone.ttf */,
 				FA6384251D9AD2D600544F95 /* CustomIcons.ttf */,
+				FA7A7F821D9E6B9000AF14FD /* Lato-Bold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -826,6 +829,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA7A7F951D9E6B9800AF14FD /* Lato-Bold.ttf in Resources */,
 				FA6384261D9AD2EA00544F95 /* Crownstone.ttf in Resources */,
 				FA6384271D9AD2EA00544F95 /* CustomIcons.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
