@@ -121,7 +121,6 @@ export class SetupAddPlugInStep2 extends Component {
           macAddress:   MACAddress,
           iBeaconMajor: cloudResponse.major,
           iBeaconMinor: cloudResponse.minor,
-          initializedSuccessfully: false
         }
       });
       this.claimStone(crownstone, cloudResponse.id);

@@ -16,7 +16,6 @@ import { BLEutil } from '../../native/BLEutil'
 import { BleActions, NativeBus } from '../../native/Proxy'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
-import { AdvertisementManager } from '../../logic/CrownstoneControl'
 var Actions = require('react-native-router-flux').Actions;
 import { 
   getPresentUsersFromState, 
@@ -184,7 +183,6 @@ export class RoomOverview extends Component {
                       stoneId: stoneId,
                       data: data
                     });
-                    AdvertisementManager.resetData({crownstoneId: stoneId});
                     this.clearPending(stoneId);
                   })
                   .catch((err) => {

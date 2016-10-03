@@ -14,8 +14,8 @@ let defaultSettings = {
     iBeaconMinor: undefined,
     handle: undefined,
     crownstoneId: undefined,
-    initializedSuccessfully: false,
     firmwareVersion: 0,
+    nearThreshold: -80,
     updatedAt: 1
   },
   state: {
@@ -59,7 +59,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.firmwareVersion = update(action.data.firmwareVersion, newState.firmwareVersion);
         newState.handle          = update(action.data.handle, newState.handle);
         newState.crownstoneId    = update(action.data.crownstoneId, newState.crownstoneId);
-        newState.initializedSuccessfully = update(action.data.initializedSuccessfully, newState.initializedSuccessfully);
+        newState.nearRange       = update(action.data.nearRange, newState.nearRange);
         newState.updatedAt       = getTime();
         return newState;
       }

@@ -1,5 +1,6 @@
 import { NativeBus } from '../native/Proxy';
-import { LOG, LOGDebug, LOGError} from '../logging/Log'
+import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { getUUID } from '../util/util'
 
 
 class SchedulerClass {
@@ -7,6 +8,8 @@ class SchedulerClass {
     this.initialized = false;
     this.store = undefined;
     this.triggers = {};
+
+    this.singleFireTriggers = {};
 
     this.allowTicksAfterTime = 0;
   }
@@ -138,6 +141,11 @@ class SchedulerClass {
     this.scheduledTick = setTimeout(() => { this.tick() }, 4000);
   }
 
+  scheduleCallback(callback, afterMilliseconds) {
+    let uuid = getUUID();
+    this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
+  }
+
 
   tick() {
     this.clearSchedule();
@@ -167,9 +175,22 @@ class SchedulerClass {
       this.allowTicksAfterTime = 0;
     }
 
+    this.checkSingleFires(now);
+
     this.schedule();
   }
 
+
+  checkSingleFires(now) {
+    let triggerIds = Object.keys(this.singleFireTriggers);
+    triggerIds.forEach((triggerId) => {
+      let trigger = this.singleFireTriggers[triggerId];
+      if (trigger.triggerTime < now) {
+        trigger.callback();
+        delete this.singleFireTriggers[triggerId];
+      }
+    })
+  }
 
   /**
    * fire all triggers.

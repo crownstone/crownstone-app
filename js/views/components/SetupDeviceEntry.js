@@ -204,7 +204,6 @@ export class SetupDeviceEntry extends Component {
           macAddress:   MACAddress,
           iBeaconMajor: cloudResponse.major,
           iBeaconMinor: cloudResponse.minor,
-          initializedSuccessfully: false
         }
       });
       this.claimStone(crownstone, cloudResponse.id);

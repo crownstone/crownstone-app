@@ -81,6 +81,10 @@ export class DeviceBehaviourEdit extends Component {
         return 'When Entering The Room';
       case 'onRoomExit':
         return 'When Leaving The Room';
+      case 'onNear':
+        return 'When Close By';
+      case 'onAway':
+        return 'When Further Away';
       default:
         return '--- invalid event: ' + eventName;
     }
@@ -104,6 +108,17 @@ export class DeviceBehaviourEdit extends Component {
       items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
       items.push({label:'If there are still people (from your sphere) left in range, this will not be triggered.', type: 'explanation',  below:true});
 
+      // Behaviour for onNear event
+      eventLabel = 'onNear';
+      items.push({label:'WHEN YOU GET CLOSE', type: 'explanation', style:{paddingTop:0}, below:false});
+      items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
+      items.push({label:'Will trigger when you are roughly within 2m.', type: 'explanation',  below:true});
+
+      // Behaviour for onAway event
+      eventLabel = 'onAway';
+      items.push({label:'WHEN YOU MOVE FURTHER AWAY', type: 'explanation', style:{paddingTop:0}, below:false});
+      items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
+      items.push({label:'Will trigger when you move out of the near zone.', type: 'explanation',  below:true});
     }
     else {
       // Behaviour for onHomeEnter event
@@ -145,7 +160,7 @@ export class DeviceBehaviourEdit extends Component {
           below: true
         });
       }
-      else {
+      else if (amountOfCrownstones >= 4) {
         items.push({label: 'Since this Crownstone is not in a room, we cannot give it behaviour for entering or leaving it\'s room.', type: 'explanation', below: false});
       }
     }
@@ -156,16 +171,16 @@ export class DeviceBehaviourEdit extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let stoneIds = getAmountOfCrownstonesInSphereForLocalization(state, this.props.sphereId);
+    let amountOfStonesForLocation = getAmountOfCrownstonesInSphereForLocalization(state, this.props.sphereId);
     let stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let options = [];
     if (stone.config.applianceId) {
       let device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
-      options = this.constructOptions(device, stone, stoneIds.length);
+      options = this.constructOptions(device, stone, amountOfStonesForLocation);
     }
     else {
-      options = this.constructOptions(stone, stone, stoneIds.length);
+      options = this.constructOptions(stone, stone, amountOfStonesForLocation);
     }
 
     let backgroundImage = this.props.getBackground.call(this, 'menu');

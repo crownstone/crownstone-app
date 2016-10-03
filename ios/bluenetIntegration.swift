@@ -341,17 +341,22 @@ class BluenetJS: NSObject {
   }
   
 
-  @objc func trackIBeacon(sphereUUID: String, referenceId: String) -> Void {
-    print("tracking ibeacons with uuid: \(sphereUUID) for sphere: \(referenceId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(sphereUUID, referenceId: referenceId)
+  @objc func trackIBeacon(ibeaconUUID: String, referenceId: String) -> Void {
+    print("tracking ibeacons with uuid: \(ibeaconUUID) for sphere: \(referenceId)")
+    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(ibeaconUUID, referenceId: referenceId)
   }
   
-  @objc func stopIBeaconTracking() -> Void {
+  @objc func stopTrackingIBeacon(ibeaconUUID: String) -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.stopTrackingIBeacon(ibeaconUUID)
+    print("stopIBeaconTracking ")
+  }
+  
+  @objc func stopTracking() -> Void {
     GLOBAL_BLUENET!.bluenetLocalization.stopTracking()
     print("stopIBeaconTracking ")
   }
   
-  @objc func resumeIBeaconTracking() -> Void {
+  @objc func resumeTracking() -> Void {
     GLOBAL_BLUENET!.bluenetLocalization.resumeTracking()
     print("resumeIBeaconTracking ")
   }

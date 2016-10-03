@@ -75,7 +75,7 @@ export class RoomAdd extends Component {
       let existingLocations = getRoomNames(state, this.sphereId);
       if (existingLocations[this.state.name] === undefined) {
         this.props.eventBus.emit('showLoading', 'Creating room...');
-        CLOUD.forSphere(this.sphereId).createLocation(this.state.name, this.state.iconm)
+        CLOUD.forSphere(this.sphereId).createLocation(this.state.name, this.state.icon)
           .then((reply) => {
             this.props.eventBus.emit('hideLoading');
             store.dispatch({type:'ADD_LOCATION', sphereId: this.sphereId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});

@@ -134,7 +134,7 @@ export class SphereOverview extends Component {
     let currentSphere = activeSphere || remoteSphere || null;
     let noRoomsCurrentSphere = true;
     let noStones = true;
-    if (currentSphere === null) {
+    if (currentSphere !== null) {
       noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
       noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
     }
@@ -158,7 +158,7 @@ export class SphereOverview extends Component {
         </View>
       );
     }
-    else if (noStones && noRoomsCurrentSphere) {
+    else if (noStones === true && noRoomsCurrentSphere == true) {
       newContent = (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Icon name="c2-pluginFront" size={150} color={colors.blue.hex}/>

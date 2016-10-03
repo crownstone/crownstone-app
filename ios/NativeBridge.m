@@ -40,13 +40,18 @@ RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(startIndoorLocalization)
 RCT_EXTERN_METHOD(stopIndoorLocalization)
 
-RCT_EXTERN_METHOD(trackIBeacon:(NSString *)sphereUUID referenceId:(NSString*)referenceId)
+RCT_EXTERN_METHOD(trackIBeacon:(NSString *)ibeaconUUID referenceId:(NSString*)referenceId)
+RCT_EXTERN_METHOD(stopTrackingIBeacon:(NSString *)ibeaconUUID)
+
 RCT_EXTERN_METHOD(startCollectingFingerprint)
 RCT_EXTERN_METHOD(abortCollectingFingerprint)
 RCT_EXTERN_METHOD(pauseCollectingFingerprint)
 RCT_EXTERN_METHOD(resumeCollectingFingerprint)
-RCT_EXTERN_METHOD(resumeIBeaconTracking)
-RCT_EXTERN_METHOD(stopIBeaconTracking)
+
+
+RCT_EXTERN_METHOD(resumeTracking)
+RCT_EXTERN_METHOD(stopTracking)
+
 RCT_EXTERN_METHOD(clearTrackedBeacons:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(finalizeFingerprint:(NSString *)sphereId locationId:(NSString *)locationId)
 RCT_EXTERN_METHOD(getFingerprint:(NSString *)sphereId locationId:(NSString *)locationId callback:(RCTResponseSenderBlock)callback)
