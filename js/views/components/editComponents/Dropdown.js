@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import { SlideFadeInView }  from './../animated/SlideFadeInView'
-import { styles, colors, width } from '../../styles'
+import { styles, colors, screenWidth } from '../../styles'
 
 
 export class Dropdown extends Component {
@@ -18,10 +18,17 @@ export class Dropdown extends Component {
   }
 
   getLabelIfPossible() {
-    console.log(this.state.value);
     for (let i = 0; i < this.props.items.length; i++) {
       let item = this.props.items[i];
       if (item.value !== undefined && item.value == this.state.value) {
+        if (item.label) {
+          return item.label;
+        }
+        else {
+          return item.value;
+        }
+      }
+      else if (item.label !== undefined && item.label == this.state.value) {
         if (item.label) {
           return item.label;
         }

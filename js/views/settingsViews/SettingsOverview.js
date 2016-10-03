@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { logOut } from './../../util/util'
+import { CLOUD } from './../../cloud/cloudAPI'
 import { getTotalAmountOfCrownstones } from './../../util/dataUtil'
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
@@ -68,7 +69,13 @@ export class SettingsOverview extends Component {
     }
     else {
       items.push({label:'Add Sphere', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
-        Actions.setupAddSphere()
+        this.props.eventBus.emit('showLoading', 'Creating Sphere...');
+        return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus).then((sphereId) => {
+          this.props.eventBus.emit('hideLoading');
+          let state = this.props.store.getState();
+          let title = state.spheres[sphereId].config.name;
+          Actions.settingsSphere({sphereId: sphereId, title: title})
+        })
       }});
     }
 

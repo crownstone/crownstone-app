@@ -15,7 +15,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
-import { setupStyle } from '../setupViews/SetupShared'
+import { setupStyle } from '../old/SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/dataUtil'
 import { BLEutil } from '../../native/BLEutil'
@@ -31,17 +31,18 @@ export class SettingsPluginRecoverStep2 extends Component {
       fade1: new Animated.Value(1),
     };
     this.lookingForCrownstone = true;
+    this.uuid = getUUID();
   }
 
   componentDidMount() {
     // we scan high frequency when we see a setup node
-    Bluenet.startScanningForCrownstones();
+    BLEutil.startHighFrequencyScanning(this.uuid, true);
 
     setTimeout(() => { this.searchForStone(); }, 1000);
   }
 
   componentWillUnmount() {
-    Bluenet.startScanningForCrownstonesUniqueOnly();
+    BLEutil.startHighFrequencyScanning(this.uuid);
     BLEutil.cancelAllSearches();
   }
 

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 var md5 = require('md5');
-import { LOG } from '../../logging/Log'
+import { LOG, LOGError } from '../../logging/Log'
 import { emailFromRegistration } from './emailMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
@@ -250,7 +250,7 @@ export class Login extends Component {
 
     // check if we need to upload a picture that has been set aside during the registration process.
     let imageFilename = getImageFileFromUser(this.state.email);
-    LOG("IMAGE FILENAME AT LOGIN", imageFilename)
+    LOG("IMAGE FILENAME AT LOGIN", imageFilename);
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {
         if (picturePath === null)
@@ -264,7 +264,21 @@ export class Login extends Component {
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
       })
       .then(() => {
+        this.progress += parts;
+        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         return CLOUD.sync(store, false);
+      })
+      .then(() => {
+        this.progress += parts;
+        this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
+        let state = store.getState();
+        if (Object.keys(state.spheres).length == 0 && state.app.createdInitialSphere === false) {
+          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Creating first Sphere.'});
+          return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus);
+        }
+        else {
+          this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Sphere available.'});
+        }
       })
     );
 
@@ -283,14 +297,13 @@ export class Login extends Component {
         if (Object.keys(state.spheres).length > 0)
           store.dispatch({type:"SET_REMOTE_SPHERE", data:{ remoteSphere: state.app.previouslyActiveSphere || Object.keys(state.spheres)[0]}});
 
-        if (state.app.doFirstTimeSetup === true && Object.keys(state.spheres).length === 0) {
-          Actions.setupWelcome();
-        }
-        else {
-          Actions.tabBar();
-        }
+        Actions.tabBar();
+
       }, 50);
     });
   }
+
+
+
 }
 

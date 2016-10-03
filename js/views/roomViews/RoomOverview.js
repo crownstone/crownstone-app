@@ -61,7 +61,7 @@ export class RoomOverview extends Component {
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",  (handle) => {this.setupInProgress = undefined;}));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress", (handle) => {this.setupInProgress = handle;}));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress", (handle) => {this.setupInProgress = handle; this.forceUpdate()}));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",   (handle) => {
       // use this to avoid the last events of the successful setup mode.
       this.lastSuccessfulSetupHandle = handle;
@@ -141,6 +141,7 @@ export class RoomOverview extends Component {
         <View key={stoneId + '_entry'}>
           <View style={styles.listView}>
             <SetupDeviceEntry
+              key={stoneId + '_element'}
               eventBus={this.props.eventBus}
               store={this.props.store}
               setup={true}
@@ -256,7 +257,7 @@ export class RoomOverview extends Component {
         <Background image={backgroundImage} >
           <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} remote={this.props.remote} />
           <Separator fullLength={true} />
-          <DeviceEntry empty={true} />
+          <DeviceEntry empty={true} floatingCrownstones={this.props.locationId === null} />
           <Separator fullLength={true} />
           <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
             <Icon name="c2-pluginFront" size={0.75 * screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />

@@ -233,14 +233,18 @@ class SchedulerClass {
   _checkAndAddAction(actionsToDispatch, action, state) {
     if (action.sphereId !== undefined) {
       let sphere = state.spheres[action.sphereId];
-      if (action.stoneId !== undefined) {
+      if (sphere === undefined)
+        return;
+
+
+      if (action.stoneId !== undefined && sphere.stones[action.stoneId]) {
         // TODO: currently only for state, generalization might be required.
         this._addActionIfDispatch(actionsToDispatch, action, sphere.stones[action.stoneId].state);
       }
-      else if (action.applianceId !== undefined) {
+      else if (action.applianceId !== undefined && sphere.appliances[action.applianceId]) {
         actionsToDispatch.push(action);
       }
-      else if (action.locationId !== undefined) {
+      else if (action.locationId !== undefined && sphere.locations[action.locationId]) {
         actionsToDispatch.push(action);
       }
     }

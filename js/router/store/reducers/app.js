@@ -4,6 +4,7 @@ let defaultState = {
   app: {
     activeSphere: null,
     remoteSphere: null,
+    createdInitialSphere: false,
     previouslyActiveSphere: null,
     enableLocalization: true,
     doFirstTimeSetup: true,
@@ -13,10 +14,11 @@ let defaultState = {
 
 // appReducer
 export default (state = defaultState.app, action = {}) => {
+  let newState;
   switch (action.type) {
     case 'SET_ACTIVE_SPHERE':
       if (action.data) {
-        let newState = {...state};
+        newState = {...state};
         newState.activeSphere           = update(action.data.activeSphere, newState.activeSphere);
         newState.previouslyActiveSphere = update(action.data.activeSphere, newState.activeSphere);
         newState.updatedAt              = getTime();
@@ -25,24 +27,35 @@ export default (state = defaultState.app, action = {}) => {
       return state;
     case 'SET_REMOTE_SPHERE':
       if (action.data) {
-        let newState = {...state};
+        newState = {...state};
         newState.remoteSphere = update(action.data.remoteSphere, newState.remoteSphere);
         newState.updatedAt    = getTime();
         return newState;
       }
       return state;
     case 'CLEAR_ACTIVE_SPHERE':
-      let newState = {...state};
+      newState = {...state};
       newState.activeSphere = null;
+      newState.updatedAt   = getTime();
+      return newState;
+    case 'CLEAR_PREVIOUSLY_ACTIVE_SPHERE':
+      newState = {...state};
+      newState.previouslyActiveSphere = null;
+      newState.updatedAt   = getTime();
+      return newState;
+    case 'CLEAR_REMOTE_SPHERE':
+      newState = {...state};
+      newState.remoteSphere = null;
       newState.updatedAt   = getTime();
       return newState;
     case 'UPDATE_APP_STATE':
       if (action.data) {
-        let newState = {...state};
-        newState.activeSphere       = update(action.data.activeSphere, newState.activeSphere);
-        newState.doFirstTimeSetup   = update(action.data.doFirstTimeSetup,  newState.doFirstTimeSetup);
-        newState.enableLocalization = update(action.data.enableLocalization,  newState.enableLocalization);
-        newState.updatedAt          = getTime();
+        newState = {...state};
+        newState.createdInitialSphere = update(action.data.createdInitialSphere, newState.createdInitialSphere);
+        newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
+        newState.doFirstTimeSetup    = update(action.data.doFirstTimeSetup,  newState.doFirstTimeSetup);
+        newState.enableLocalization  = update(action.data.enableLocalization,  newState.enableLocalization);
+        newState.updatedAt           = getTime();
         return newState;
       }
       return state;

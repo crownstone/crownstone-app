@@ -23,7 +23,7 @@ export class SettingsSphereInvite extends Component {
     super();
     this.state = {
       email: '',
-      permission:'guest'
+      permission:'Guest'
     };
     this.inputStates = {email: false};
   }
@@ -53,11 +53,11 @@ export class SettingsSphereInvite extends Component {
       items.push({
           type:'dropdown',
           label:'Access Level',
-          value: this.state.permission.capitalize(),
-          dropdownHeight:'100',
+          value: this.state.permission,
+          dropdownHeight:100,
           items:[{label:'Member'},{label:'Guest'}],
           callback: (permission) => {
-            this.setState({permission:permission.toLowerCase()});
+            this.setState({permission:permission});
           }
         }
       );
@@ -66,10 +66,10 @@ export class SettingsSphereInvite extends Component {
       items.push({type:'info', label:'Access level', value:'Guest'});
     }
 
-    if (this.state.permission == 'member') {
+    if (this.state.permission == 'Member') {
       items.push({label:'Members can configure Crownstones.', type:'explanation', below:true});
     }
-    else if (this.state.permission == 'guest') {
+    else if (this.state.permission == 'Guest') {
       items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', type:'explanation', below:true});
     }
 

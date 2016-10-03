@@ -30,6 +30,12 @@ export class RoomEdit extends Component {
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
+      let state = store.getState();
+      if (state.spheres[this.props.sphereId] === undefined) {
+        Actions.pop();
+        return;
+      }
+
       if (this.deleting === false)
         this.forceUpdate();
     });

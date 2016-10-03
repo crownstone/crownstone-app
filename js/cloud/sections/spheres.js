@@ -3,6 +3,53 @@ import { LOG } from '../../logging/Log'
 
 export const spheres = {
 
+
+  /**
+   * self contained method to create a sphere and set the keys and users correctly.
+   * @param store
+   * @param sphereName
+   * @param eventBus
+   * @returns {Promise.<T>}
+   */
+  createNewSphere(store, sphereName, eventBus) {
+    let state = store.getState();
+    let sphereId;
+    let creationActions = [];
+    return this.forUser(state.user.userId).createSphere(sphereName)
+      .then((response) => {
+        sphereId = response.id;
+
+        // add the sphere to the database once it had been added in the cloud.
+        creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid}});
+        creationActions.push({type:'UPDATE_APP_STATE', data: { createdInitialGroup: true }});
+
+        // add yourself to the sphere members as admin
+        creationActions.push({type: 'ADD_SPHERE_USER', sphereId: sphereId, userId: state.user.userId, data:{picture: state.user.picture, firstName: state.user.firstName, lastName: state.user.lastName, email:state.user.email, emailVerified: true, accessLevel: 'admin'}});
+
+        // get all encryption keys the user has access to and store them in the appropriate spheres.
+        return this.getKeys()
+      })
+      .then((keyResult) => {
+        if (Array.isArray(keyResult)) {
+          keyResult.forEach((keySet) => {
+            creationActions.push({type:'SET_SPHERE_KEYS', sphereId: sphereId, data:{
+              adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
+              memberKey: keySet.keys.member || null,
+              guestKey:  keySet.keys.guest  || null
+            }})
+          });
+
+          eventBus.emit('sphereCreated');
+          store.batchDispatch(creationActions);
+          return sphereId
+        }
+        else {
+          throw new Error("Key data is not an array.")
+        }
+      })
+  },
+
+
   /**
    *
    * @returns {*}

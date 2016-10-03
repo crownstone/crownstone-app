@@ -31,4 +31,6 @@ export const BUILD_NUMBER = '1.0.6.2';
 
 export let NO_LOCATION_NAME = 'None'; // this is a let because localization may change it.
 
-export const ENCRYPTION_ENABLED = false;
+export const ENCRYPTION_ENABLED = true;
+
+export const HIGH_FREQUENCY_SCAN_MAX_DURATION = 15000; //ms

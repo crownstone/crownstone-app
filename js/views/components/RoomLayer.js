@@ -75,8 +75,8 @@ export class RoomLayer extends Component {
         return;
 
       // only redraw if the amount of rooms changes.
-      if (this.props.sphereId) {
-        const state = store.getState();
+      const state = store.getState();
+      if (this.props.sphereId && state.spheres[this.props.sphereId]) {
 
         let orphanedStonesNow = getOrphanedStones(state, this.props.sphereId);
         let orphanedStonesBefore = getOrphanedStones(this.renderState, this.props.sphereId);
@@ -201,13 +201,15 @@ export class RoomLayer extends Component {
     const state = store.getState();
     this.renderState = state;
 
-    LOG("rendering room layer");
-
-    return (
-      <View style={{position:'absolute', top:0, left:0, width: screenWidth, flex:1}}>
-        {this.getRooms()}
-      </View>
-    )
-
+    if (this.props.sphereId === null) {
+      return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
+    }
+    else {
+      return (
+        <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}}>
+          {this.getRooms()}
+        </View>
+      )
+    }
   }
 }

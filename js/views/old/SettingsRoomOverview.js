@@ -10,12 +10,12 @@ import {
   View
 } from 'react-native';
 
-import { Background } from './../components/Background'
+import { Background } from '../components/Background'
 import { RoomOverview } from '../components/RoomOverview'
-import { ListEditableItems } from './../components/ListEditableItems'
-import { getStonesFromState, getSpheresWhereIHaveAccessLevel } from './../../util/dataUtil'
+import { ListEditableItems } from '../components/ListEditableItems'
+import { getStonesFromState, getSpheresWhereIHaveAccessLevel } from '../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles'
+import { styles, colors } from '../styles'
 import { Icon } from '../components/Icon';
 
 export class SettingsRoomOverview extends Component {

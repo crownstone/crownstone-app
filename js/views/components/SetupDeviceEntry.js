@@ -30,12 +30,14 @@ export class SetupDeviceEntry extends Component {
 
     this.state = {
       progressWidth: new Animated.Value(0),
+      name: 'New Crownstone',
       explanation:'',
       subtext: 'Click here to add it to this Sphere!',
       claimingInProgress: false
     };
 
-    this.disabled = props.disabled;
+    this.currentLoadingWidth = 0;
+    this.disabled = props.disabled || false;
     this.stoneIdDuringSetup = undefined;
   }
 
@@ -45,12 +47,14 @@ export class SetupDeviceEntry extends Component {
       this.disabled = true;
     }
   }
+
   componentWillUpdate(nextProps) {
-    if (nextProps.disabled === true) {
+    LOG("will update", nextProps.disabled, this.disabled);
+    if (nextProps.disabled === true && this.disabled === false) {
       this.setProgress(-1);
       this.disabled = true;
     }
-    else if (this.disabled === true) {
+    else if (nextProps.disabled === false && this.disabled === true) {
       this.setProgress(0);
       this.disabled = false;
     }
@@ -72,7 +76,9 @@ export class SetupDeviceEntry extends Component {
 
   _getIcon() {
     let color = colors.blinkColor1.hex;
-    if (this.state.claimingInProgress === true)
+    if (this.disabled === true)
+      color = colors.gray.hex;
+    else if (this.state.claimingInProgress === true)
        color = colors.blinkColor2.hex;
 
     let content = (
@@ -90,7 +96,7 @@ export class SetupDeviceEntry extends Component {
   }
 
   recoverFromError() {
-    this.props.eventBus.emit("setupCancelled", this.props.handle);
+    setTimeout(() => {this.props.eventBus.emit("setupCancelled", this.props.handle);},10);
     if (this.stoneIdDuringSetup !== undefined) {
       this.props.store.dispatch({
         type: "REMOVE_STONE",
@@ -100,7 +106,6 @@ export class SetupDeviceEntry extends Component {
       this.stoneIdDuringSetup = undefined;
     }
     this.setProgress(0);
-
   }
 
   setProgress(value = 0) {
@@ -123,13 +128,17 @@ export class SetupDeviceEntry extends Component {
         this.setState({explanation:"Registered. Setting up Crownstone..."});
         break;
       case 19:
-        this.setState({explanation:"Done!"});
-        this.props.eventBus.emit("setupComplete", this.props.handle);
+        this.setState({subtext:"Finalizing setup...", explanation:"Rebooting Crownstone..."});
+        setTimeout(() => {this.props.eventBus.emit("setupComplete", this.props.handle);}, 4000); // give some time for reboot
         break;
     }
 
     let max = 19;
-    Animated.timing(this.state.progressWidth, {toValue: screenWidth * (value/max), duration: 100}).start();
+    let loadingWidth = screenWidth * (Math.max(0,value)/max);
+    if (this.currentLoadingWidth !== loadingWidth) {
+      this.currentLoadingWidth = loadingWidth;
+      Animated.timing(this.state.progressWidth, {toValue: loadingWidth, duration: 100}).start();
+    }
   }
 
   render() {
@@ -142,7 +151,7 @@ export class SetupDeviceEntry extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {this.claim();}}>
             <View style={{flexDirection: 'column'}}>
-              <Text style={{fontSize: 17, fontWeight: '100'}}>New Crownstone</Text>
+              <Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text>
               <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
               <Text style={{fontSize: 10}}>{this.state.explanation}</Text>
             </View>
@@ -269,16 +278,6 @@ export class SetupDeviceEntry extends Component {
   }
 
   cleanupFailedAttempt(stoneId) {
-    const { store } = this.props;
-    CLOUD.deleteStone(stoneId)
-      .then(() => {
-        this.setProgress(0);
-      })
-      .catch((err) => {
-        this.setProgress(0);
-        // Alert.alert("Can not connect to the Cloud",'Please try again later.',[{text:'OK'}]);
-        // return false;
-      })
-
+    CLOUD.deleteStone(stoneId).catch((err) => {LOGError("COULD NOT CLEAN UP AFTER SETUP", err)})
   }
 }

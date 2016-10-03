@@ -10,11 +10,11 @@ import {
   View
 } from 'react-native';
 
-import { Background } from './../components/Background'
-import { ListEditableItems } from './../components/ListEditableItems'
-import { getRoomName, getRoomNames, getRoomIdFromName } from './../../util/dataUtil'
+import { Background } from '../components/Background'
+import { ListEditableItems } from '../components/ListEditableItems'
+import { getRoomName, getRoomNames, getRoomIdFromName } from '../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles'
+import { styles, colors } from '../styles'
 import { NO_LOCATION_NAME } from '../../ExternalConfig'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { BLEutil } from '../../native/BLEutil'

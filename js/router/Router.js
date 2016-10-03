@@ -153,15 +153,15 @@ export class AppRouter extends Component {
               <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  panHandlers={null} direction="vertical" />
-              <Scene key="setupWelcome"               component={Views.SetupWelcome}               hideNavBar={true}  type="reset"  direction="vertical" />
-              <Scene key="setupAddSphere"             component={Views.SetupAddSphere}             hideNavBar={true}  />
-              <Scene key="setupAddCrownstoneSelect"   component={Views.SetupAddCrownstoneSelect}   hideNavBar={true}  type="reset" />
-              <Scene key="setupAddPluginStep1"        component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />
-              <Scene key="setupAddPluginStep2"        component={Views.SetupAddPlugInStep2}        hideNavBar={true}  />
-              <Scene key="setupAddPluginStep3"        component={Views.SetupAddPlugInStep3}        hideNavBar={true}  />
-              <Scene key="setupAddPluginStep4"        component={Views.SetupAddPlugInStep4}        hideNavBar={true}  />
-              <Scene key="setupAddPlugInStepRecover"  component={Views.SetupAddPlugInStepRecover}  hideNavBar={true}  />
-              <Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />
+              {/*<Scene key="setupWelcome"               component={Views.SetupWelcome}               hideNavBar={true}  type="reset"  direction="vertical" />*/}
+              {/*<Scene key="setupAddSphere"             component={Views.SetupAddSphere}             hideNavBar={true}  />*/}
+              {/*<Scene key="setupAddCrownstoneSelect"   component={Views.SetupAddCrownstoneSelect}   hideNavBar={true}  type="reset" />*/}
+              {/*<Scene key="setupAddPluginStep1"        component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />*/}
+              {/*<Scene key="setupAddPluginStep2"        component={Views.SetupAddPlugInStep2}        hideNavBar={true}  />*/}
+              {/*<Scene key="setupAddPluginStep3"        component={Views.SetupAddPlugInStep3}        hideNavBar={true}  />*/}
+              {/*<Scene key="setupAddPluginStep4"        component={Views.SetupAddPlugInStep4}        hideNavBar={true}  />*/}
+              {/*<Scene key="setupAddPlugInStepRecover"  component={Views.SetupAddPlugInStepRecover}  hideNavBar={true}  />*/}
+              {/*<Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />*/}
               <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true} direction="vertical" title="Training" />
               <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true} panHandlers={null} direction="vertical" title="Move to which Room?" />
               <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />

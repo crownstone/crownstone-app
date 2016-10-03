@@ -10,12 +10,12 @@ import {
   View
 } from 'react-native';
 
-import { Background } from './../components/Background'
+import { Background } from '../components/Background'
 import { ApplianceEntry } from '../components/ApplianceEntry'
-import { ListEditableItems } from './../components/ListEditableItems'
-import { getSphereContentFromState, getRoomName, getSpheresWhereIHaveAccessLevel } from './../../util/dataUtil'
+import { ListEditableItems } from '../components/ListEditableItems'
+import { getSphereContentFromState, getRoomName, getSpheresWhereIHaveAccessLevel } from '../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles'
+import { styles, colors } from '../styles'
 import { Icon } from '../components/Icon';
 import { IconButton } from '../components/IconButton'
 

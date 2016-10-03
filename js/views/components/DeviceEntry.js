@@ -143,7 +143,7 @@ export class DeviceEntry extends Component {
       return (
         <View style={{backgroundColor:'#fff', height: 0.5*this.baseHeight, justifyContent: 'center', alignItems:'center'}}>
           <View style={{flexDirection: 'column'}}>
-            <Text style={{fontSize: 15, fontWeight: '100'}}>No Crownstones in this room.</Text>
+            <Text style={{fontSize: 15, fontWeight: '100'}}>{this.props.floatingCrownstones === true ? "No Crownstones found." : "No Crownstones in this room."}</Text>
           </View>
         </View>
       )

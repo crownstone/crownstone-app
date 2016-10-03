@@ -13,6 +13,8 @@ var Actions = require('react-native-router-flux').Actions;
 
 
 import { NativeBus, Bluenet } from '../../native/Proxy'
+import { BLEutil } from '../../native/BLEutil'
+import { getUUID } from '../../util/util'
 import { AnimatedBackground } from '../components/animated/AnimatedBackground'
 import { Icon } from '../components/Icon'
 import { RoomLayer } from '../components/RoomLayer'
@@ -28,26 +30,15 @@ export class SphereOverview extends Component {
     this.setupModeTimeout = undefined;
     this.animating = false;
     this.scanningTimeout = false;
-    this.highFrequencyScanningMode = false;
+    this.uuid = getUUID();
   }
 
   componentDidMount() {
     const {store} = this.props;
-    let setRestoreScanningTimeout = () => {
-      clearTimeout(this.scanningTimeout);
-      this.scanningTimeout = setTimeout(() => {
-        Bluenet.startScanningForCrownstonesUniqueOnly();
-        this.highFrequencyScanningMode = false;
-      }, 15000);
-    };
 
     this.unsubscribeNative = NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
       // we scan high frequency when we see a setup node
-      if (this.highFrequencyScanningMode === false) {
-        Bluenet.startScanningForCrownstones();
-        this.highFrequencyScanningMode = true;
-      }
-      setRestoreScanningTimeout();
+      BLEutil.startHighFrequencyScanning(this.uuid);
 
       // store the data of this setup Crownstone
       this.setupData[setupAdvertisement.handle] = setupAdvertisement;
@@ -111,9 +102,7 @@ export class SphereOverview extends Component {
   }
 
   componentWillUnmount() {
-    if (this.highFrequencyScanningMode === false) {
-      Bluenet.startScanningForCrownstonesUniqueOnly();
-    }
+    BLEutil.stopHighFrequencyScanning(this.uuid);
 
     clearTimeout(this.scanningTimeout);
     this.unsubscribeStore();
@@ -143,15 +132,19 @@ export class SphereOverview extends Component {
       remoteMode = false;
 
     let currentSphere = activeSphere || remoteSphere || null;
-    let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
-    let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
+    let noRoomsCurrentSphere = true;
+    let noStones = true;
+    if (currentSphere === null) {
+      noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
+      noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
+    }
 
     let newContent = undefined;
     let background = this.props.backgrounds.main;
 
     if (noSpheres) {
       newContent = (
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Icon name="c1-house" size={150} color={colors.blue.hex}/>
           <Text style={overviewStyles.mainText}>No Spheres available.</Text>
           <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>

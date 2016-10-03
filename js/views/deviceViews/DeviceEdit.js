@@ -57,14 +57,8 @@ export class DeviceEdit extends Component {
           "Are you sure?",
           "Removing a Crownstone from the sphere will revert it to it's factory default settings.",
           [{text: 'Cancel'}, {text: 'Remove', onPress: () => {
-            Alert.alert(
-              "Let\'s get started!",
-              "Please put down your phone so we can remove and reset this Crownstone",
-              [{text: 'Cancel'}, {text: 'Remove', onPress: () => {
-                this.props.eventBus.emit('showLoading', 'Looking for the Crownstone...');
-                this._removeCrownstone(stone);
-              }}]
-            )
+            this.props.eventBus.emit('showLoading', 'Looking for the Crownstone...');
+            this._removeCrownstone(stone);
           }}]
         )
       }

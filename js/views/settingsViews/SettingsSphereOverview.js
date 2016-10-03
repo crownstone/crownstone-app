@@ -14,6 +14,7 @@ import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
+import { CLOUD } from './../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 
 
@@ -84,11 +85,13 @@ export class SettingsSphereOverview extends Component {
         style: {color: colors.blue.hex},
         type: 'button',
         callback: () => {
-          Alert.alert(
-            "Do you want to create a new Sphere?",
-            "Select yes if you want to setup your own Crownstones.",
-            [{text: 'No'}, {text: 'Yes', onPress: () => {Actions.setupAddSphere();}}]
-          );
+          this.props.eventBus.emit('showLoading', 'Creating Sphere...');
+          return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus).then((sphereId) => {
+            this.props.eventBus.emit('hideLoading');
+            let state = this.props.store.getState();
+            let title = state.spheres[sphereId].config.name;
+            Actions.settingsSphere({sphereId: sphereId, title: title})
+          })
         }
       });
     }

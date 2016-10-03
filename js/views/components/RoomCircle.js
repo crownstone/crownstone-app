@@ -14,6 +14,7 @@ import { styles, screenWidth, screenHeight, colors } from '../styles'
 import { getCurrentPowerUsageFromState } from '../../util/dataUtil'
 import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
+import { LOGDebug } from '../../logging/Log';
 var Actions = require('react-native-router-flux').Actions;
 
 
@@ -43,8 +44,8 @@ export class RoomCircle extends Component {
 
     this.levels = [
       {min: 0,    max:200,   color: colors.green.hex},
-      {min: 200,  max:500,   color: colors.orange.hex},
-      {min: 500,  max:1500,  color: colors.red.hex},
+      {min: 200,  max:800,   color: colors.orange.hex},
+      {min: 800,  max:1500,  color: colors.red.hex},
       {min: 1500, max:4000,  color: colors.darkRed.hex},
     ];
 
@@ -63,6 +64,7 @@ export class RoomCircle extends Component {
 
     this.previousCircle = undefined;
     this.wiggleInterval = undefined;
+    this.wiggleTimeout = undefined;
     this.fadeAnimationTimeout = undefined;
     this.moveAnimationTimeout = undefined;
 
@@ -76,8 +78,12 @@ export class RoomCircle extends Component {
     this.unsubscribe = store.subscribe(() => {
       if (this.renderState === undefined)
         return;
-      // only redraw if the power usage changes or if the settings of the room change
+
       const state = store.getState();
+      if (state.spheres[this.props.sphereId] === undefined) {
+        return;
+      }
+      // only redraw if the power usage changes or if the settings of the room change
       let usage = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
 
       // in the case the room is deleted, do not redraw.
@@ -88,18 +94,17 @@ export class RoomCircle extends Component {
       if (this.props.locationId !== null) {
         if (usage !== this.usage || state.spheres[this.props.sphereId].locations[this.props.locationId].config != this.renderState.spheres[this.props.sphereId].locations[this.props.locationId].config) {
           this.usage = usage;
-          this.color = this._getColor(this.usage);
           this.forceUpdate();
         }
       }
       else if (usage !== this.usage) {
         this.usage = usage;
-        this.color = this._getColor(this.usage);
         this.forceUpdate();
       }
     });
 
-    this.checkAlertStatus(this.props);
+    // wait to wiggle until after the initial movement.
+    this.wiggleTimeout = setTimeout(() => {this.checkAlertStatus(this.props)},this.moveAnimationTimeout);
   }
 
   componentWillUpdate(nextProps) {
@@ -112,16 +117,17 @@ export class RoomCircle extends Component {
     }
     else if (this.wiggleInterval !== undefined) {
       clearTimeout(this.wiggleInterval);
+      this.wiggleInterval = undefined;
     }
   }
 
   setWiggleInterval() {
     if (this.wiggleInterval === undefined) {
+      this.wiggle();
       this.wiggleInterval = setTimeout(() => {
         this.wiggleInterval = undefined;
-        this._wiggle();
         this.setWiggleInterval();
-      }, this.jumpDuration + 1200)
+      }, this.jumpDuration + 700)
     }
   }
 
@@ -129,6 +135,7 @@ export class RoomCircle extends Component {
     clearTimeout(this.wiggleInterval);
     clearTimeout(this.fadeAnimationTimeout);
     clearTimeout(this.moveAnimationTimeout);
+    clearTimeout(this.wiggleTimeout);
     this.unsubscribe();
   }
 
@@ -360,7 +367,7 @@ export class RoomCircle extends Component {
     }
   }
 
-  _wiggle() {
+  wiggle() {
     let animations = [];
     let tension = 120;
     let friction = 3;

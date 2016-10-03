@@ -159,7 +159,7 @@ export class SettingsSphere extends Component {
           if (stoneIds.length > 0) {
             Alert.alert(
               "Still Crownstones detected in Sphere",
-              "You can remove Crownstones from this Sphere in the Settings > Crownstones, select one and click remove.",
+              "You can remove then by going to them in the overview, tap them, click on the socket icon and press remove.",
               [{text:'OK'}]
             );
           }
@@ -170,7 +170,19 @@ export class SettingsSphere extends Component {
                 this.props.eventBus.emit('hideLoading');
                 this.deleting = true;
                 Actions.pop();
-                this.props.store.dispatch({type:'REMOVE_SPHERE', sphereId: this.props.sphereId});
+
+                let state = this.props.store.getState();
+                let actions = [];
+                if (state.app.activeSphere === this.props.sphereId)
+                  actions.push({type:"CLEAR_ACTIVE_SPHERE"});
+                if (state.app.remoteSphere === this.props.sphereId)
+                  actions.push({type:"CLEAR_REMOTE_SPHERE"});
+                if (state.app.activeSphere === this.props.sphereId)
+                  actions.push({type:"CLEAR_PREVIOUSLY_ACTIVE_SPHERE"});
+
+                actions.push({type:'REMOVE_SPHERE', sphereId: this.props.sphereId});
+
+                this.props.store.batchDispatch(actions);
               })
           }
         }}

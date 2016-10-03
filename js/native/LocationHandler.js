@@ -1,5 +1,7 @@
 import { Bluenet, BleActions, NativeBus } from './Proxy';
+import { BLEutil } from './BLEutil';
 import { LOG } from '../logging/Log'
+import { getUUID } from '../util/util'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 
 
@@ -9,6 +11,8 @@ class LocationHandlerClass {
 
     this.subscriptions = {};
     this.store = undefined;
+
+    this.id = getUUID();
   }
 
   loadStore(store) {
@@ -29,6 +33,8 @@ class LocationHandlerClass {
     let state = this.store.getState();
     LOG("ENTER SPHERE", sphereId);
     if (state.spheres[sphereId] !== undefined) {
+
+      BLEutil.startHighFrequencyScanning(this.id, 5000);
       // prepare the settings for this sphere and pass them onto bluenet
       let bluenetSettings = {
         encryptionEnabled: ENCRYPTION_ENABLED,
@@ -40,7 +46,7 @@ class LocationHandlerClass {
       LOG("Set Settings.", bluenetSettings, state.spheres[sphereId]);
       return BleActions.setSettings(bluenetSettings)
         .then(() => {
-          LOG("Setting Active Sphere")
+          LOG("Setting Active Sphere");
           this.store.dispatch({type: 'SET_ACTIVE_SPHERE', data: {activeSphere: sphereId}});
         }).catch()
     }
