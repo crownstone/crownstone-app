@@ -13,6 +13,7 @@ import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { IconButton } from '../components/IconButton'
+import { Bluenet } from '../../native/Proxy'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getMyLevelInSphere, getSphereContentFromState } from '../../util/dataUtil';
@@ -182,6 +183,8 @@ export class SettingsSphere extends Component {
 
                 actions.push({type:'REMOVE_SPHERE', sphereId: this.props.sphereId});
 
+                // stop tracking sphere.
+                Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
                 this.props.store.batchDispatch(actions);
               })
           }

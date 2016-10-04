@@ -1,9 +1,9 @@
-import { AdvertisementHandler } from './AdvertisementHandler';
 import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BLEutil } from './BLEutil';
 import { Scheduler } from './../logic/Scheduler';
-import { LOG } from '../logging/Log'
+import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { getUUID } from '../util/util'
+import { getAmountOfCrownstonesInSphereForLocalization } from '../util/dataUtil'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 
 
@@ -13,7 +13,7 @@ let TYPES = {
   AWAY: 'onAway',
 };
 
-let TOUCH_RSSI_THRESHOLD = -35;
+let TOUCH_RSSI_THRESHOLD = -40;
 
 class StoneTracker {
   constructor(store) {
@@ -25,17 +25,20 @@ class StoneTracker {
     if (rssi > -1)
       return;
 
+
     // check if we have the sphere
     let state = this.store.getState();
     let sphere = state.spheres[referenceId];
-    if (!(sphere))
+    if (!(sphere)) {
       return;
+    }
 
 
     // check if we have a stone with this major / minor
     let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
-    if (!(stoneId))
+    if (!(stoneId)) {
       return;
+    }
 
     let stone = sphere.stones[stoneId];
     // element is either an appliance or a stone. If we have an application, we use its behaviour, if not, we use the stone's behaviour
@@ -48,10 +51,11 @@ class StoneTracker {
     let ref = this.elements[stoneId];
     let now = new Date().valueOf();
 
-    // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
-    if (rssi < TOUCH_RSSI_THRESHOLD) {
+    // implementation of touch-to-toggle feature. Once every 3 seconds, we require 2 close samples to toggle.
+    // the sign > is because the rssi is negative!
+    if (rssi > TOUCH_RSSI_THRESHOLD && now - ref.touchTime > 3) {
       ref.touchSamples += 1;
-      if (ref.touchSamples >= 2 && now - ref.touchTime > 5) {
+      if (ref.touchSamples >= 2) {
         let newState = stone.state.state > 0 ? 0 : 1;
         this._applySwitchState(newState, stone, stoneId, referenceId);
         ref.touchTime = now;
@@ -78,12 +82,12 @@ class StoneTracker {
       return;
 
     // these event are only used for when there are no room-level options possible
-    let amountOfStonesForLocation = getAmountOfCrownstonesInSphereForLocalization(state, referenceId.sphereId);
+    let amountOfStonesForLocation = getAmountOfCrownstonesInSphereForLocalization(state, referenceId);
     if (amountOfStonesForLocation < 4) {
-      if (ref.rssiAverage < stone.config.nearThreshold && ref.lastTriggerType !== TYPES.NEAR) {
+      if (ref.rssiAverage > stone.config.nearThreshold && ref.lastTriggerType !== TYPES.NEAR) {
         this._handleTrigger(element, ref, TYPES.NEAR, stoneId, referenceId);
       }
-      else if (ref.rssiAverage > stone.config.nearThreshold && ref.lastTriggerType !== TYPES.AWAY) {
+      else if (ref.rssiAverage < stone.config.nearThreshold && ref.lastTriggerType !== TYPES.AWAY) {
         this._handleTrigger(element, ref, TYPES.AWAY, stoneId, referenceId);
       }
     }
@@ -156,7 +160,7 @@ class StoneTracker {
     let stoneIds = Object.keys(sphere.stones);
     for (let i = 0; i < stoneIds.length; i++) {
       let stone = sphere.stones[stoneIds[i]].config;
-      if (stone.ibeaconMajor === major && stone.ibeaconMinor === minor) {
+      if (stone.iBeaconMajor == major && stone.iBeaconMinor == minor) {
         return stoneIds[i];
       }
     }
@@ -194,7 +198,10 @@ class LocationHandlerClass {
   }
 
   _iBeaconAdvertisement(data) {
-    this.tracker.iBeaconUpdate(data.major, data.minor, data.rssi, data.referenceId);
+    data.forEach((iBeaconPackage) => {
+      // LOGDebug("iBeaconPackage",iBeaconPackage);
+      this.tracker.iBeaconUpdate(iBeaconPackage.major, iBeaconPackage.minor, iBeaconPackage.rssi, iBeaconPackage.referenceId);
+    })
   }
 
   _enterSphere(sphereId) {

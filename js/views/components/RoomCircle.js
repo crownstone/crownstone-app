@@ -44,8 +44,8 @@ export class RoomCircle extends Component {
 
     this.levels = [
       {min: 0,    max:200,   color: colors.green.hex},
-      {min: 200,  max:800,   color: colors.orange.hex},
-      {min: 800,  max:1500,  color: colors.red.hex},
+      {min: 200,  max:500,   color: colors.orange.hex},
+      {min: 500,  max:1500,  color: colors.red.hex},
       {min: 1500, max:4000,  color: colors.darkRed.hex},
     ];
 

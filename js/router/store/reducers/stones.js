@@ -15,7 +15,7 @@ let defaultSettings = {
     handle: undefined,
     crownstoneId: undefined,
     firmwareVersion: 0,
-    nearThreshold: -80,
+    nearThreshold: -70,
     updatedAt: 1
   },
   state: {
