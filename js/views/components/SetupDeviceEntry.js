@@ -109,7 +109,7 @@ export class SetupDeviceEntry extends Component {
   }
 
   setProgress(value = 0) {
-    console.log("SETUP PROGRESS:", value);
+    // console.log("SETUP PROGRESS:", value);
     switch(value) {
       case -1:
         this.setState({explanation:'Another Crownstone is already pairing.', subtext:'Pairing in progress...', claimingInProgress:false});

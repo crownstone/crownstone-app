@@ -32,7 +32,7 @@ export class TextEditInput extends Component {
     if (this.props.textFieldRegistration) {
       this.props.textFieldRegistration(this.refName, this.refs[this.refName]);
     }
-    this.unsubscribe = eventBus.on("blurAll", () => { console.log("CALLING VLUR"); this.blur();})
+    this.unsubscribe = eventBus.on("blurAll", () => { this.blur();})
   }
 
   focus() {
