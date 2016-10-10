@@ -50,7 +50,7 @@ RCT_EXTERN_METHOD(resumeCollectingFingerprint)
 
 
 RCT_EXTERN_METHOD(resumeTracking)
-RCT_EXTERN_METHOD(stopTracking)
+RCT_EXTERN_METHOD(pauseTracking)
 
 RCT_EXTERN_METHOD(clearTrackedBeacons:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(finalizeFingerprint:(NSString *)sphereId locationId:(NSString *)locationId)

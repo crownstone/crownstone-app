@@ -355,8 +355,8 @@ class BluenetJS: NSObject {
     print("stopIBeaconTracking ")
   }
   
-  @objc func stopTracking() -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.stopTracking()
+  @objc func pauseTracking() -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.pauseTracking()
     print("stopIBeaconTracking ")
   }
   

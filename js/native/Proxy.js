@@ -22,7 +22,7 @@ if (DISABLE_NATIVE === true) {
     stopScanning: () => {},
     trackIBeacon: () => {},
     stopTrackingIBeacon: () => {},
-    stopTracking: () => {},
+    pauseTracking: () => {},
     resumeTracking: () => {},
     startCollectingFingerprint: () => {},
     abortCollectingFingerprint: () => {},
