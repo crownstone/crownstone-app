@@ -16,6 +16,7 @@ import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StoreManager }           from './store/storeManager'
 import { LocationHandler }        from '../native/LocationHandler'
 import { AdvertisementHandler }   from '../native/AdvertisementHandler'
+import { StoneStateHandler }      from '../native/StoneStateHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
@@ -75,6 +76,7 @@ export class AppRouter extends Component {
       LocationHandler.loadStore(store);
       AdvertisementHandler.loadStore(store);
       Scheduler.loadStore(store);
+      StoneStateHandler.loadStore(store);
 
       LOG("LOADED STORES");
       removeAllPresentUsers(store);

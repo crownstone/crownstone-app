@@ -24,7 +24,7 @@ export const stones = {
   updateStone: function(data, background = true) {
     return this._setupRequest(
       'PUT',
-      '/Stones',
+      '/Stones/{id}',
       {background: background, data:data},
       'body'
     );

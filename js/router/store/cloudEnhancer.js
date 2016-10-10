@@ -101,14 +101,21 @@ function handleStoneBehaviourInCloud(action, state) {
   let stoneId = action.stoneId;
 
   if (getMyLevelInSphere(state, sphereId) === 'admin') {
-    let macAddress = state.spheres[sphereId].stones[stoneId].config.macAddress;
-
+    let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
-    CLOUD.updateStone({
+    CLOUD.forStone(stoneId).updateStone({
+      name:        stoneConfig.name,
+      address:     stoneConfig.macAddress,
+      deviceType:  stoneConfig.icon,
+      id:          stoneId,
+      applianceId: stoneConfig.applianceId,
+      locationId:  stoneConfig.locationId,
+      groupId:     sphereId,
+      major:       stoneConfig.iBeaconMajor,
+      minor:       stoneConfig.iBeaconMinor,
+      uid:         stoneConfig.crownstoneId,
       json:behaviourJSON,
-      id: stoneId,
-      address: macAddress,
-      groupId: sphereId
+
     }).catch(() => {});
   }
 }
@@ -154,9 +161,11 @@ function handleApplianceBehaviourInCloud(action, state) {
   let applianceId = action.applianceId;
 
   if (getMyLevelInSphere(state, sphereId) === 'admin') {
+    let applianceConfig = state.spheres[sphereId].appliances[applianceId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].appliances[applianceId].behaviour);
-    CLOUD.updateAppliance({
+    CLOUD.forAppliance(applianceId).updateAppliance({
       id: applianceId,
+      icon: applianceConfig.icon,
       groupId: sphereId,
       json:behaviourJSON,
     }).catch(() => {});

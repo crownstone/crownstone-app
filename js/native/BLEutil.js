@@ -51,7 +51,7 @@ export const BLEutil = {
       this.startHighFrequencyScanning(highFrequencyRequestUUID);
 
       let sortingCallback = (nearestItem) => {
-        LOG("advertisement in nearest", advertisement)
+        //LOG("advertisement in nearest", nearestItem)
 
         if (typeof nearestItem == 'string') {
           nearestItem = JSON.parse(nearestItem);

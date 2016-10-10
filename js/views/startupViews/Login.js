@@ -26,8 +26,8 @@ import loginStyles from './LoginStyles'
 export class Login extends Component {
   constructor() {
     super();
-    this.state = {email: emailFromRegistration.email || 'alex@dobots.nl', password:'letmein0'};
-    // this.state = {email: emailFromRegistration.email || '', password:''};
+    // this.state = {email: emailFromRegistration.email || 'alex@dobots.nl', password:'letmein0'};
+    this.state = {email: emailFromRegistration.email || '', password:''};
     // this.state = {email: emailFromRegistration.email || 'anne@crownstone.rocks', password:'bier'};
     this.progress = 0;
   }

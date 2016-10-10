@@ -25,7 +25,7 @@ export const appliances = {
   updateAppliance: function (data, background = true) {
     return this._setupRequest(
       'PUT',
-      '/Appliances',
+      '/Appliances/{id}',
       {background: background, data: data},
       'body'
     );

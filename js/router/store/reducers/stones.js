@@ -15,8 +15,10 @@ let defaultSettings = {
     handle: undefined,
     crownstoneId: undefined,
     firmwareVersion: 0,
-    nearThreshold: -70,
-    updatedAt: 1
+    nearThreshold: -85,
+    touchToToggle: true,
+    disabled: false,
+    updatedAt: 1,
   },
   state: {
     state: 1.0,
@@ -46,6 +48,13 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'UPDATE_STONE_DISABILITY':
+      if (action.data) {
+        let newState = {...state};
+        newState.disabled        = update(action.data.disabled, newState.disabled);
+        return newState;
+      }
+      return state;
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
@@ -60,6 +69,8 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.handle          = update(action.data.handle, newState.handle);
         newState.crownstoneId    = update(action.data.crownstoneId, newState.crownstoneId);
         newState.nearRange       = update(action.data.nearRange, newState.nearRange);
+        newState.disabled        = update(action.data.disabled, newState.disabled);
+        newState.touchToToggle   = update(action.data.touchToToggle, newState.touchToToggle);
         newState.updatedAt       = getTime();
         return newState;
       }

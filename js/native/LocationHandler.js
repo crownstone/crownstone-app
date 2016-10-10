@@ -1,10 +1,12 @@
 import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BLEutil } from './BLEutil';
+import { StoneStateHandler } from './StoneStateHandler'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { getUUID } from '../util/util'
 import { getAmountOfCrownstonesInSphereForLocalization } from '../util/dataUtil'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
+import { Vibration } from 'react-native'
 
 
 let TYPES = {
@@ -13,7 +15,10 @@ let TYPES = {
   AWAY: 'onAway',
 };
 
-let TOUCH_RSSI_THRESHOLD = -40;
+let TOUCH_RSSI_THRESHOLD = -50;
+let TOUCH_TIME_BETWEEN_SWITCHING = 4000; // ms
+let TOUCH_CONSECUTIVE_SAMPLES = 1;
+let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
 
 class StoneTracker {
   constructor(store) {
@@ -22,9 +27,10 @@ class StoneTracker {
   }
 
   iBeaconUpdate(major, minor, rssi, referenceId) {
+    // LOG("major, minor, rssi, ref",major, minor, rssi, referenceId)
+    // only use valid rssi measurements, 0 or 128 are not valid measurements
     if (rssi > -1)
       return;
-
 
     // check if we have the sphere
     let state = this.store.getState();
@@ -33,29 +39,36 @@ class StoneTracker {
       return;
     }
 
-
     // check if we have a stone with this major / minor
     let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
     if (!(stoneId)) {
       return;
     }
 
+    // tell the handler that this stone/beacon is still in range.
+    StoneStateHandler.receivedIBeaconUpdate(referenceId, stoneId);
+
     let stone = sphere.stones[stoneId];
     // element is either an appliance or a stone. If we have an application, we use its behaviour, if not, we use the stone's behaviour
     let element = this._getElement(sphere, stone);
 
-    // keep track of this item.
-    if (this.elements[stoneId] === undefined) {
-      this.elements[stoneId] = {lastTriggerType: undefined, lastTriggerTime: 0, rssiAverage: rssi, samples: 0, touchSamples:0, touchTime:0};
-    }
-    let ref = this.elements[stoneId];
+    // currentTime
     let now = new Date().valueOf();
 
-    // implementation of touch-to-toggle feature. Once every 3 seconds, we require 2 close samples to toggle.
+    // keep track of this item.
+    if (this.elements[stoneId] === undefined) {
+      this.elements[stoneId] = {lastTriggerType: undefined, lastTriggerTime: 0, rssiAverage: rssi, samples: 0, touchSamples:0, touchTime: now};
+    }
+
+    // local reference of the device/stone
+    let ref = this.elements[stoneId];
+
+    // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
     // the sign > is because the rssi is negative!
-    if (rssi > TOUCH_RSSI_THRESHOLD && now - ref.touchTime > 3) {
+    if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
       ref.touchSamples += 1;
-      if (ref.touchSamples >= 2) {
+      if (ref.touchSamples >= TOUCH_CONSECUTIVE_SAMPLES) {
+        Vibration.vibrate(400, false);
         let newState = stone.state.state > 0 ? 0 : 1;
         this._applySwitchState(newState, stone, stoneId, referenceId);
         ref.touchTime = now;
@@ -68,8 +81,8 @@ class StoneTracker {
     }
 
 
-    // to avoid flickering we do not trigger these events in less than 3 seconds.
-    if (now - ref.lastTriggerTime < 3)
+    // to avoid flickering we do not trigger these events in less than 5 seconds.
+    if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING)
       return;
 
 
@@ -101,7 +114,7 @@ class StoneTracker {
     let proxy = BLEutil.getProxy(stone.config.handle);
     proxy.perform(BleActions.setSwitchState, newState)
       .then(() => {
-        this.props.store.dispatch({
+        this.store.dispatch({
           type: 'UPDATE_STONE_STATE',
           sphereId: sphereId,
           stoneId: stoneId,
@@ -165,9 +178,6 @@ class StoneTracker {
       }
     }
   }
-
-
-
 }
 
 class LocationHandlerClass {
@@ -208,8 +218,9 @@ class LocationHandlerClass {
     let state = this.store.getState();
     LOG("ENTER SPHERE", sphereId);
     if (state.spheres[sphereId] !== undefined) {
-
+      // start high frequency scan when entering a sphere.
       BLEutil.startHighFrequencyScanning(this.id, 5000);
+
       // prepare the settings for this sphere and pass them onto bluenet
       let bluenetSettings = {
         encryptionEnabled: ENCRYPTION_ENABLED,
@@ -222,7 +233,14 @@ class LocationHandlerClass {
       return BleActions.setSettings(bluenetSettings)
         .then(() => {
           LOG("Setting Active Sphere");
-          this.store.dispatch({type: 'SET_ACTIVE_SPHERE', data: {activeSphere: sphereId}});
+          let sphereActions = [];
+          let stoneIds = Object.keys(state.spheres[sphereId].stones);
+          stoneIds.forEach((stoneId) => {
+            sphereActions.push({type: 'UPDATE_STONE_DISABILITY', stoneId: stoneId, data:{ disabled: true }});
+          });
+
+          sphereActions.push({type: 'SET_ACTIVE_SPHERE', data: {activeSphere: sphereId}});
+          this.store.batchDispatch(sphereActions);
         }).catch()
     }
   }

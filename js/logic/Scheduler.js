@@ -77,6 +77,18 @@ class SchedulerClass {
     }
   }
 
+  clearOverwritableTriggerAction(triggerId, actionId) {
+    if (this.triggers[triggerId]) {
+      delete this.triggers[triggerId].overwritableActions[actionId];
+    }
+  }
+
+  clearTriggerActions(triggerId) {
+    this.triggers[triggerId].actions = [];
+    this.triggers[triggerId].overwritableActions = {};
+    this.triggers[triggerId].callbacks = [];
+  }
+
 
   /**
    * Actions are REDUX actions that can be dispatched into the store. Either object (single action) or array of objects (batch)
@@ -144,6 +156,11 @@ class SchedulerClass {
   scheduleCallback(callback, afterMilliseconds) {
     let uuid = getUUID();
     this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
+    return () => {
+      if (this.singleFireTriggers[uuid]) {
+        delete this.singleFireTriggers[uuid];
+      }
+    }
   }
 
 

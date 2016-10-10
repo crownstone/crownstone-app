@@ -1,8 +1,6 @@
 import { LOG } from './logging/Log'
 
 var DeviceInfo = require('react-native-device-info');
-
-LOG("Dev", DeviceInfo);  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9
 LOG("Device Unique ID", DeviceInfo.getUniqueID());  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9
 // * note this is IDFV on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
 LOG("Device Manufacturer", DeviceInfo.getManufacturer());  // e.g. Apple
@@ -27,7 +25,7 @@ export const DISABLE_NATIVE = DeviceInfo.getModel() === "Simulator"; // this wil
 export const SILENCE_CLOUD = false; // this will silently cancel all calls to the cloud.
 export const OVERRIDE_DATABASE = false;
 
-export const BUILD_NUMBER = '1.0.6.2';
+export const BUILD_NUMBER = '1.1.0:1';
 
 export let NO_LOCATION_NAME = 'None'; // this is a let because localization may change it.
 

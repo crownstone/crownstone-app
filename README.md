@@ -12,7 +12,7 @@ Assuming you've already installed nodejs, npm and Carthage (for ios)
 npm install
 rnpm link
 cd ios
-carthage update --platform ios
+carthage bootstrap --platform iOS --no-use-binaries
 cd ..
 ```
 

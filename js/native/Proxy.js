@@ -1,8 +1,7 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE } from '../ExternalConfig'
 import { LOG, LOGError } from '../logging/Log'
-
-
+import { eventBus }  from '../util/eventBus'
 
 export let Bluenet;
 if (DISABLE_NATIVE === true) {
@@ -79,6 +78,10 @@ export const BleActions = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
   connect:             (handle) => {
+    // tell the app that something is connecting.
+    eventBus.emit("connect", handle);
+
+    // connect
     if (handle) {
       return BluenetPromise('connect', handle);
     }
@@ -94,7 +97,7 @@ export const BleActions = {
   },
   disconnect:           ()           => { return BluenetPromise('disconnect');                  },
   phoneDisconnect:      ()           => { return BluenetPromise('phoneDisconnect');             },
-  setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',   state);     },
+  setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',  state);      },
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
   setSettings:          (dataObject) => { return BluenetPromise('setSettings',     dataObject); },

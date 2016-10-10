@@ -122,8 +122,8 @@ export class RoomOverview extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.setupModeTimeout);
-    this.unsubscribeSetupEvents.forEach((unsub) => {
-      unsub();
+    this.unsubscribeSetupEvents.forEach((unsubscribe) => {
+      unsubscribe();
     });
     this.unsubscribeSetupEvents = [];
 
@@ -165,8 +165,7 @@ export class RoomOverview extends Component {
               currentUsage={item.stone.state.currentUsage}
               navigation={false}
               control={this.props.remote === false}
-              remote={this.props.remote}
-              pending={this.state.pendingRequests[stoneId] !== undefined}
+              disabled={this.state.pendingRequests[stoneId] !== undefined || this.props.remote}
               dimmable={item.device.config.dimmable}
               onChange={(switchState) => {
                 this.showPending(stoneId);
@@ -236,7 +235,7 @@ export class RoomOverview extends Component {
         items={stones}
         separatorIndent={false}
         renderer={this._renderer.bind(this)}
-    />
+      />
     )
   }
 

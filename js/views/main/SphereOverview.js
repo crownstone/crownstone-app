@@ -68,7 +68,17 @@ export class SphereOverview extends Component {
 
       const state = store.getState();
 
-      if (this.renderState.app.activeSphere !== state.app.activeSphere) {
+      let activeSphere = state.app.activeSphere;
+      let remoteSphere = state.app.remoteSphere;
+      let currentSphere = activeSphere || remoteSphere || null;
+      if (this.renderState.app.activeSphere === null && this.renderState.app.remoteSphere === null) {
+        currentSphere = null
+      }
+
+      if (this.renderState.app.activeSphere !== state.app.activeSphere ||
+          this.renderState.app.remoteSphere !== state.app.remoteSphere ||
+          (currentSphere !== null && Object.keys(this.renderState.spheres[currentSphere].stones).length != Object.keys(state.spheres[currentSphere].stones).length)
+        ) {
         LOG("triggering rerender of sphere overview");
 
         // Actions.refresh should update the navbar (showing add..)
@@ -134,7 +144,7 @@ export class SphereOverview extends Component {
     let currentSphere = activeSphere || remoteSphere || null;
     let noRoomsCurrentSphere = true;
     let noStones = true;
-    if (currentSphere !== null) {
+    if (currentSphere !== null && state.spheres[currentSphere]) {
       noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
       noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
     }

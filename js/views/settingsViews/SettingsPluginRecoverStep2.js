@@ -17,6 +17,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { Background } from '../components/Background'
 import { setupStyle } from '../old/SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
+import { getUUID } from '../../util/util'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/dataUtil'
 import { BLEutil } from '../../native/BLEutil'
 import { BleActions, Bluenet } from '../../native/Proxy'

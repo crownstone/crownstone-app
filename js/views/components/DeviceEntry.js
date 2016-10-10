@@ -82,7 +82,7 @@ export class DeviceEntry extends Component {
 
   _getControl() {
     let content;
-    if (this.props.pending === false) {
+    if (this.props.disabled === false) {
       content = <Switch value={this.props.state === 1} onValueChange={this._pressedDevice.bind(this)} />
     }
     else {
@@ -98,7 +98,7 @@ export class DeviceEntry extends Component {
 
   _getIcon() {
     let color = (
-      this.props.pending === true || this.props.remote === true ?
+      this.props.disabled === true ?
           colors.gray.hex :
           (this.props.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
@@ -163,7 +163,7 @@ export class DeviceEntry extends Component {
             }}>
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
-                {this.props.remote === false ? <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text> : undefined}
+                {this.props.disabled === false ? <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text> : undefined}
               </View>
             </TouchableOpacity>
             {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}

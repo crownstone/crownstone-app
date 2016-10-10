@@ -1,10 +1,12 @@
 import { Scheduler } from '../logic/Scheduler';
 import { NativeBus } from './Proxy';
+import { StoneStateHandler } from './StoneStateHandler'
 import { LOG, LOGDebug } from '../logging/Log'
 import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInSphereByCID } from '../util/dataUtil'
+import { eventBus }  from '../util/eventBus'
 
-
-let trigger = 'CrownstoneAdvertisement';
+let TRIGGER_ID = 'CrownstoneAdvertisement';
+let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
 
 class AdvertisementHandlerClass {
   constructor() {
@@ -33,8 +35,13 @@ class AdvertisementHandlerClass {
         this.referenceCIDMap = getMapOfCrownstonesInSphereByCID(state, this.activeSphere);
       });
 
+      // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
+      eventBus.on("connect", (handle) => {
+        Scheduler.clearOverwritableTriggerAction(TRIGGER_ID, ADVERTISEMENT_PREFIX + handle);
+      });
+
       // create a trigger to throttle the updates.
-      Scheduler.setRepeatingTrigger(trigger,{repeatEveryNSeconds:2});
+      Scheduler.setRepeatingTrigger(TRIGGER_ID,{repeatEveryNSeconds:2});
 
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
       NativeBus.on(NativeBus.topics.advertisement, this.handleEvent.bind(this));
@@ -43,7 +50,6 @@ class AdvertisementHandlerClass {
   }
 
   handleEvent(advertisement) {
-    // LOGDebug("GOT ADV:", advertisement);
     // the service data in this advertisement;
     let serviceData = advertisement.serviceData;
 
@@ -57,9 +63,7 @@ class AdvertisementHandlerClass {
       return;
     }
 
-    // LOGDebug("USING THE ADV!");
-
-    // look for the crownstone in this group which has the same CrownstoneId (CID)
+    // look for the crownstone in this sphere which has the same CrownstoneId (CID)
     let refByCID = this.referenceCIDMap[serviceData.crownstoneId];
 
     // repair mechanism to store the handle.
@@ -88,18 +92,21 @@ class AdvertisementHandlerClass {
     }
 
     let update = () => {
-      Scheduler.loadOverwritableAction( trigger, "updateStoneFromAdvertisement_" + advertisement.handle, {
+      Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {
         type: 'UPDATE_STONE_STATE',
         sphereId: this.activeSphere,
         stoneId: ref.id,
         data: { state: switchState, currentUsage: measuredUsage },
+        disabled: false,
         updatedAt: currentTime
       });
+
+      StoneStateHandler.receivedUpdate(this.activeSphere, ref.id);
     };
 
     let stone = state.spheres[this.activeSphere].stones[ref.id];
 
-    if (stone.state.state != switchState) {
+    if (stone.state.state != switchState || stone.config.disabled === true) {
       update();
     }
     else if (stone.state.currentUsage != measuredUsage) {

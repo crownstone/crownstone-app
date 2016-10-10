@@ -41,10 +41,10 @@
 		FA01EDD91D9ACDAC00DD47E4 /* bluenetIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA01EDD51D9ACDAC00DD47E4 /* bluenetIntegration.swift */; };
 		FA01EDDA1D9ACDAC00DD47E4 /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA01EDD61D9ACDAC00DD47E4 /* JSONUtils.swift */; };
 		FA01EDDB1D9ACDAC00DD47E4 /* NativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FA01EDD81D9ACDAC00DD47E4 /* NativeBridge.m */; };
-		FA01EDE01D9ACEF000DD47E4 /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA01EDDC1D9ACEF000DD47E4 /* BluenetLibIOS.framework */; };
 		FA01EDE11D9ACEF000DD47E4 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA01EDDD1D9ACEF000DD47E4 /* CryptoSwift.framework */; };
 		FA01EDE21D9ACEF000DD47E4 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA01EDDE1D9ACEF000DD47E4 /* PromiseKit.framework */; };
 		FA01EDE31D9ACEF000DD47E4 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA01EDDF1D9ACEF000DD47E4 /* SwiftyJSON.framework */; };
+		FA62BFEB1DA7A44000E1B0C5 /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA62BFEA1DA7A44000E1B0C5 /* BluenetLibIOS.framework */; };
 		FA6384261D9AD2EA00544F95 /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6384241D9AD2D600544F95 /* Crownstone.ttf */; };
 		FA6384271D9AD2EA00544F95 /* CustomIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6384251D9AD2D600544F95 /* CustomIcons.ttf */; };
 		FA7A7F951D9E6B9800AF14FD /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA7A7F821D9E6B9000AF14FD /* Lato-Bold.ttf */; };
@@ -237,10 +237,10 @@
 		FA01EDD61D9ACDAC00DD47E4 /* JSONUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONUtils.swift; sourceTree = "<group>"; };
 		FA01EDD71D9ACDAC00DD47E4 /* NativeBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NativeBridge.h; sourceTree = "<group>"; };
 		FA01EDD81D9ACDAC00DD47E4 /* NativeBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NativeBridge.m; sourceTree = "<group>"; };
-		FA01EDDC1D9ACEF000DD47E4 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = Carthage/Build/iOS/BluenetLibIOS.framework; sourceTree = "<group>"; };
 		FA01EDDD1D9ACEF000DD47E4 /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		FA01EDDE1D9ACEF000DD47E4 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 		FA01EDDF1D9ACEF000DD47E4 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
+		FA62BFEA1DA7A44000E1B0C5 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetWorkspace-ctwjboexknfjsaemurnuvcntfmgk/Build/Products/Debug-iphoneos/BluenetLibIOS.framework"; sourceTree = "<group>"; };
 		FA6384241D9AD2D600544F95 /* Crownstone.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone.ttf; path = ../js/fonts/Crownstone.ttf; sourceTree = "<group>"; };
 		FA6384251D9AD2D600544F95 /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
 		FA7A7F821D9E6B9000AF14FD /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../js/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
@@ -271,7 +271,6 @@
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
-				FA01EDE01D9ACEF000DD47E4 /* BluenetLibIOS.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				59D2F04D50214E509FD49D33 /* libRCTCamera.a in Frameworks */,
 				6D4F36F4A1C7428EAA45FC78 /* libRNDeviceInfo.a in Frameworks */,
@@ -280,6 +279,7 @@
 				3F54228D12FE400DA79DFD5B /* libRNRandomBytes.a in Frameworks */,
 				9049E2C5E2B6414CBDEF1CDF /* libRNSVG.a in Frameworks */,
 				83E7FFBA369E4381906B4C93 /* libRNVectorIcons.a in Frameworks */,
+				FA62BFEB1DA7A44000E1B0C5 /* BluenetLibIOS.framework in Frameworks */,
 				3AE8027579D74416B46BE9F4 /* libRCTSplashScreen.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -448,11 +448,11 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				FA01EDDC1D9ACEF000DD47E4 /* BluenetLibIOS.framework */,
 				FA01EDDD1D9ACEF000DD47E4 /* CryptoSwift.framework */,
 				FA01EDDE1D9ACEF000DD47E4 /* PromiseKit.framework */,
 				FA01EDDF1D9ACEF000DD47E4 /* SwiftyJSON.framework */,
 				FA01EDD21D9ACD8A00DD47E4 /* Cartfile */,
+				FA62BFEA1DA7A44000E1B0C5 /* BluenetLibIOS.framework */,
 				13B07FAE1A68108700A75B9A /* Crownstone */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CrownstoneTests */,
@@ -592,6 +592,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 6LYJ9PNC3V;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -867,7 +868,7 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetLibIOS.framework",
+				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetWorkspace-ctwjboexknfjsaemurnuvcntfmgk/Build/Products/Debug-iphoneos/BluenetLibIOS.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CryptoSwift.framework",
@@ -1000,6 +1001,7 @@
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1038,6 +1040,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.Crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

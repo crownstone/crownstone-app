@@ -9,9 +9,9 @@
 import Foundation
 import SwiftyJSON
 
-public class JSONUtils{
+open class JSONUtils{
   
-  public static func stringify(value: AnyObject?)-> String {
+  open static func stringify(_ value: AnyObject?)-> String {
     if value == nil {
       return ""
     }else{
@@ -19,38 +19,38 @@ public class JSONUtils{
     }
   }
   
-  public static func stringify(json:JSON) -> String{
-    return json.rawString(options: NSJSONWritingOptions(rawValue: 0))!;
+  open static func stringify(_ json:JSON) -> String{
+    return json.rawString(options: JSONSerialization.WritingOptions(rawValue: 0))!;
   }
   
-  public static func jsonToData(json:JSON) throws -> NSData{
+  open static func jsonToData(_ json:JSON) throws -> Data{
     return try json.rawData();
   }
   
-  static func getIntValue(jsonString: String) -> Int {
+  static func getIntValue(_ jsonString: String) -> Int {
     return NSString(string: jsonString).integerValue
   }
   
-  static func getDoubleValue(jsonString: String) -> Double {
+  static func getDoubleValue(_ jsonString: String) -> Double {
     return NSString(string: jsonString).doubleValue
   }
   
-  static func getBoolValue(jsonString: String) -> Bool {
+  static func getBoolValue(_ jsonString: String) -> Bool {
     return NSString(string: jsonString).boolValue
   }
   
-  static func getStringValue(jsonString: String) -> String{
+  static func getStringValue(_ jsonString: String) -> String{
     return self.unquote(jsonString)
   }
   
-  static func getDictionaryValue(jsonString: String) -> [String: AnyObject]{
+  static func getDictionaryValue(_ jsonString: String) -> [String: AnyObject]{
     if (jsonString.isEmpty){
       return [String: AnyObject]()
     }
     var result = [String: AnyObject]()
-    if let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding){
+    if let data = jsonString.data(using: String.Encoding.utf8){
       do{
-        if let dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers) as? [String: AnyObject]{
+        if let dictionary = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers) as? [String: AnyObject]{
           result = dictionary
         }
       }catch {
@@ -61,22 +61,22 @@ public class JSONUtils{
   }
   
   
-  private static func getTypeFromDataStructure(structure: String) throws -> String {
-    let data :NSData = structure.dataUsingEncoding(NSUTF8StringEncoding)!
-    let json :Dictionary = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as! [String:AnyObject]
+  fileprivate static func getTypeFromDataStructure(_ structure: String) throws -> String {
+    let data :Data = structure.data(using: String.Encoding.utf8)!
+    let json :Dictionary = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as! [String:AnyObject]
     
     return json["type"] as! String
   }
   
-  private static func isDouble(number: Double) -> Bool {
+  fileprivate static func isDouble(_ number: Double) -> Bool {
     return number != floor(number)
   }
   
-  private static func quote(string: String) -> String {
+  fileprivate static func quote(_ string: String) -> String {
     return String(format: "\"%@\"", string)
   }
   
-  private static func unquote(string: String) -> String {
-    return string.stringByReplacingOccurrencesOfString("\"", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+  fileprivate static func unquote(_ string: String) -> String {
+    return string.replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range: nil)
   }
 }
