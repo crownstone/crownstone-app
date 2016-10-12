@@ -114,7 +114,7 @@ export class SettingsProfile extends Component {
             // TODO: add email system.
             Alert.alert(
               'An email has been sent to \'' + newEmail + '\'.',
-              'After you click on the validation link, you can use your isNew address to log in and it will be synced.',
+              'After you click on the validation link, you can use your new address to log in and it will be synced.',
               [{text: 'OK'}]);
           }
         }
@@ -149,7 +149,7 @@ export class SettingsProfile extends Component {
       .then(() => {
         Alert.alert(
           'Reset email has been sent',
-          'You will now be logged out. Follow the instructions on the email and log in with your isNew password.',
+          'You will now be logged out. Follow the instructions on the email and log in with your new password.',
           [{text: 'OK', onPress: () => {
             this.props.eventBus.emit('hideLoading');
             logOut();

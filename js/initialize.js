@@ -5,7 +5,7 @@ import { CLOUD }            from './cloud/cloudAPI'
 import { LocalizationUtil } from './native/LocationHandler'
 import { Scheduler } from './logic/Scheduler'
 import { BleActions, Bluenet, NativeBus } from './native/Proxy';
-import { eventBus }         from '../util/eventBus'
+import { eventBus }         from './util/eventBus'
 
 
 /**

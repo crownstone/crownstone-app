@@ -184,7 +184,7 @@ export class SettingsPluginRecoverStep2 extends Component {
     BleActions.recover(handle)
       .then(() => {
         Alert.alert("Success!",
-          "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a isNew Sphere.",
+          "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a new Sphere.",
           [{text:'OK', onPress: () => { Actions.pop(); }}]
         )
       })
