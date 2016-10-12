@@ -1,3 +1,3 @@
 
 
-export let emailFromRegistration = {email: null};
+export let emailMemoryForLogin = {email: null};

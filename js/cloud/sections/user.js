@@ -36,7 +36,6 @@ export const user = {
             resolve(reply.data)
           }
           else {
-            LOG(reply);
             if (reply.data && reply.data.error && reply.data.error.code) {
               switch (reply.data.error.code) {
                 case 'LOGIN_FAILED_EMAIL_NOT_VERIFIED':
@@ -76,8 +75,12 @@ export const user = {
   },
 
 
-  removeProfileImage: function() {
-    return new Promise((resolve, reject) => {resolve()});
+  removeProfileImage: function(options = {}) {
+    return this._setupRequest(
+      'DELETE',
+      'users/{id}/profilePic',
+      { background: options.background }
+    );
   },
 
   /**

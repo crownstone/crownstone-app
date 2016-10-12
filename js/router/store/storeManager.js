@@ -6,7 +6,7 @@ import { EventEnhancer }                   from './eventEnhancer'
 import { fakeStore }                       from './overrideStore'
 import { eventBus }                        from '../../util/eventBus'
 import { OVERRIDE_DATABASE }               from '../../ExternalConfig'
-import { LOG }                             from '../../logging/Log'
+import { LOG, LOGDebug }                   from '../../logging/Log'
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
@@ -103,6 +103,7 @@ class StoreManagerClass {
   _setupStore(initialState, enableWriteToDisk) {
     if (initialState && typeof initialState === 'string') {
       let data = JSON.parse(initialState);
+      LOGDebug("CURRENT DATA:", data);
       this.store = createStore(enableBatching(CrownstoneReducer), data, applyMiddleware(CloudEnhancer, EventEnhancer));
       this.store.batchDispatch = batchActions;
     }

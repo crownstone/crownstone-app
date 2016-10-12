@@ -6,7 +6,9 @@ let defaultSettings = {
     lastName: undefined,
     email: undefined,
     accessToken: undefined,
+    passwordHash: undefined,
     userId: undefined,
+    isNew: true,
     picture: null,
     updatedAt: 1
   },
@@ -20,13 +22,15 @@ export default (state = defaultSettings.user, action = {}) => {
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       if (action.data) {
         let newState = {...state};
-        newState.firstName   = update(action.data.firstName,    newState.firstName);
-        newState.lastName    = update(action.data.lastName,     newState.lastName);
-        newState.email       = update(action.data.email,        newState.email);
-        newState.accessToken = update(action.data.accessToken,  newState.accessToken);
-        newState.userId      = update(action.data.userId,       newState.userId);
-        newState.picture     = update(action.data.picture,      newState.picture);
-        newState.updatedAt   = getTime();
+        newState.firstName    = update(action.data.firstName,    newState.firstName);
+        newState.lastName     = update(action.data.lastName,     newState.lastName);
+        newState.email        = update(action.data.email,        newState.email);
+        newState.passwordHash = update(action.data.passwordHash, newState.passwordHash);
+        newState.isNew          = update(action.data.isNew,          newState.isNew);
+        newState.accessToken  = update(action.data.accessToken,  newState.accessToken);
+        newState.userId       = update(action.data.userId,       newState.userId);
+        newState.picture      = update(action.data.picture,      newState.picture);
+        newState.updatedAt    = getTime();
         return newState;
       }
       return state;

@@ -221,7 +221,7 @@ export class DeviceEdit extends Component {
 
     // revert to the previous screen
     Alert.alert("Success!",
-      "We have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a (new?) Sphere.",
+      "We have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.",
       [{text:'OK', onPress: () => {
         Actions.pop();
         this.props.eventBus.emit('hideLoading');

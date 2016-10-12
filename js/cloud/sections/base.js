@@ -168,7 +168,7 @@ function _getId(url, obj) {
   if (eventsLocation !== -1 && eventsLocation < 3)
     return obj._eventId;
 
-  let spheresLocation = url.indexOf('Groups');
+  let spheresLocation = url.indexOf('Spheres');
   if (spheresLocation !== -1 && spheresLocation < 3)
     return obj._sphereId;
 

@@ -136,7 +136,7 @@ function removeStones(groupId) {
         // console.log("stonedata:",data)
         let promiseArray = [];
         data.forEach((stone) => {
-          promiseArray.push(deleteStone(stone.id))
+          promiseArray.push(deleteStones(stone.id))
         });
         return Promise.all(promiseArray);
       })
@@ -144,7 +144,7 @@ function removeStones(groupId) {
   });
 }
 
-function deleteStone(stoneId) {
+function deleteStones(stoneId) {
   console.log('delete stone', stoneId)
   return new Promise((resolve, reject) => {
     let base = 'http://crownstone-cloud.herokuapp.com/api/Stones/$id$?access_token=' + token;

@@ -9,7 +9,6 @@
     "lint": "eslint ./js"
   },
   "dependencies": {
-    "md5": "^2.2.1",
     "react": "^15.3.0",
     "react-native": "^0.35.0-rc.0",
     "react-native-art-svg": "^1.1.0",
@@ -25,7 +24,8 @@
     "react-redux": "^4.4.5",
     "react-tween-state": "^0.1.5",
     "redux": "^3.6.0",
-    "rn-splash-screen": "^2.1.0"
+    "rn-splash-screen": "^2.1.0",
+    "sha-1": "^0.1.1"
   },
   "devDependencies": {
     "babel-eslint": "^6.0.4",

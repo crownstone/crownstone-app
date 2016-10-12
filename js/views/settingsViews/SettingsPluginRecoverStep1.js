@@ -13,7 +13,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
-import { setupStyle, NextButton } from '../old/SetupShared'
+import { setupStyle, NextButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 export class SettingsPluginRecoverStep1 extends Component {

@@ -10,7 +10,7 @@ export function CloudEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
 
-    //LOGDebug("new state:", getState())
+    //LOGDebug("isNew state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, getState);
@@ -34,6 +34,7 @@ function handleAction(action, returnValue, getState) {
 
   let newState = getState();
   switch (action.type) {
+    case 'USER_APPEND':
     case 'USER_UPDATE':
       handleUserInCloud(action, newState);
       break;
@@ -88,11 +89,11 @@ function handleUserInCloud(action, state) {
       .catch(() => {});
   }
   else if (action.data.picture === null) {
-    CLOUD.removeProfileImage().catch(() => {});
+    CLOUD.removeProfileImage({background: true}).catch(() => {});
   }
 
   if (action.data.firstName || action.data.lastName) {
-    CLOUD.updateUserData({background: true, data: {firstName: state.user.firstName, lastName: state.user.lastName}}).catch(() => {});
+    CLOUD.updateUserData({background: true, data: {firstName: state.user.firstName, lastName: state.user.lastName, new: state.user.isNew}}).catch(() => {});
   }
 }
 
@@ -103,19 +104,18 @@ function handleStoneBehaviourInCloud(action, state) {
   if (getMyLevelInSphere(state, sphereId) === 'admin') {
     let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
-    CLOUD.forStone(stoneId).updateStone({
+    CLOUD.forSphere(sphereId).updateStone(stoneId, {
       name:        stoneConfig.name,
       address:     stoneConfig.macAddress,
       deviceType:  stoneConfig.icon,
       id:          stoneId,
       applianceId: stoneConfig.applianceId,
       locationId:  stoneConfig.locationId,
-      groupId:     sphereId,
+      sphereId:    sphereId,
       major:       stoneConfig.iBeaconMajor,
       minor:       stoneConfig.iBeaconMinor,
       uid:         stoneConfig.crownstoneId,
       json:behaviourJSON,
-
     }).catch(() => {});
   }
 }
@@ -132,13 +132,13 @@ function handleStoneInCloud(action, state) {
     id:          stoneId,
     applianceId: stoneConfig.applianceId,
     locationId:  stoneConfig.locationId,
-    groupId:     sphereId,
+    sphereId:    sphereId,
     major:       stoneConfig.iBeaconMajor,
     minor:       stoneConfig.iBeaconMinor,
     uid:         stoneConfig.crownstoneId,
   };
   
-  CLOUD.forStone(stoneId).updateStone(data).catch(() => {});
+  CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
 }
 
 function handleApplianceInCloud(action, state) {
@@ -150,10 +150,10 @@ function handleApplianceInCloud(action, state) {
     name: applianceConfig.name,
     icon: applianceConfig.icon,
     id: applianceId,
-    groupId: sphereId,
+    sphereId: sphereId,
   };
 
-  CLOUD.forAppliance(applianceId).updateAppliance(data).catch(() => {});
+  CLOUD.forSphere(sphereId).updateAppliance(applianceId, data).catch(() => {});
 }
 
 function handleApplianceBehaviourInCloud(action, state) {
@@ -163,10 +163,10 @@ function handleApplianceBehaviourInCloud(action, state) {
   if (getMyLevelInSphere(state, sphereId) === 'admin') {
     let applianceConfig = state.spheres[sphereId].appliances[applianceId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].appliances[applianceId].behaviour);
-    CLOUD.forAppliance(applianceId).updateAppliance({
+    CLOUD.forSphere(sphereId).updateAppliance(applianceId,{
       id: applianceId,
       icon: applianceConfig.icon,
-      groupId: sphereId,
+      sphereId: sphereId,
       json:behaviourJSON,
     }).catch(() => {});
   }
@@ -181,7 +181,7 @@ function handleLocationInCloud(action, state) {
     name: locationConfig.name,
     icon: locationConfig.icon,
     id: locationId,
-    groupId: sphereId,
+    sphereId: sphereId,
   };
 
   CLOUD.forSphere(sphereId).updateLocation(locationId, data).catch(() => {});

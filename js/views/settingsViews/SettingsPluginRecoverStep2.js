@@ -15,7 +15,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
-import { setupStyle } from '../old/SetupShared'
+import { setupStyle } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 import { getUUID } from '../../util/util'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/dataUtil'
@@ -184,7 +184,7 @@ export class SettingsPluginRecoverStep2 extends Component {
     BleActions.recover(handle)
       .then(() => {
         Alert.alert("Success!",
-          "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a new Sphere.",
+          "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a isNew Sphere.",
           [{text:'OK', onPress: () => { Actions.pop(); }}]
         )
       })

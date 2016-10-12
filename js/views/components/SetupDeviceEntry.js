@@ -215,11 +215,11 @@ export class SetupDeviceEntry extends Component {
         this.recoverFromError();
       }}]);
     };
-    CLOUD.createStone(this.props.sphereId, MACAddress, 'plugin_v1')
+    CLOUD.forSphere(this.props.sphereId).createStone(this.props.sphereId, MACAddress, 'plugin_v1')
       .then(processSuccess)
       .catch((err) => {
         if (err.status === 422) {
-          CLOUD.findStone(MACAddress)
+          CLOUD.forSphere(this.props.sphereId).findStone(MACAddress)
             .then((foundCrownstones) => {
               if (foundCrownstones.length === 1) {
                 processSuccess(foundCrownstones[0]);
@@ -277,6 +277,6 @@ export class SetupDeviceEntry extends Component {
   }
 
   cleanupFailedAttempt(stoneId) {
-    CLOUD.deleteStone(stoneId).catch((err) => {LOGError("COULD NOT CLEAN UP AFTER SETUP", err)})
+    CLOUD.forSphere(this.props.sphereId).deleteStone(stoneId).catch((err) => {LOGError("COULD NOT CLEAN UP AFTER SETUP", err)})
   }
 }

@@ -44,7 +44,7 @@ export const BLEutil = {
   },
 
   _getNearestCrownstoneFromEvent: function(event, stateContainer, timeout = 10000) {
-    LOGDebug("LOOKING FOR NEAREST")
+    LOGDebug("LOOKING FOR NEAREST");
     return new Promise((resolve, reject) => {
       let measurementMap = {};
       let highFrequencyRequestUUID = getUUID();

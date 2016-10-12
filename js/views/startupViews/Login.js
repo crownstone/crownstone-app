@@ -10,9 +10,9 @@ import {
   View
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
-var md5 = require('md5');
+var sha1 = require('sha-1');
 import { LOG, LOGError } from '../../logging/Log'
-import { emailFromRegistration } from './emailMemory'
+import { emailMemoryForLogin } from './emailMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';
@@ -26,9 +26,9 @@ import loginStyles from './LoginStyles'
 export class Login extends Component {
   constructor() {
     super();
-    // this.state = {email: emailFromRegistration.email || 'alex@dobots.nl', password:'letmein0'};
-    this.state = {email: emailFromRegistration.email || '', password:''};
-    // this.state = {email: emailFromRegistration.email || 'anne@crownstone.rocks', password:'bier'};
+    // this.state = {email: emailMemoryForLogin.email || 'alex@dobots.nl', password:'letmein0'};
+    this.state = {email: emailMemoryForLogin.email || '', password:''};
+    // this.state = {email: emailMemoryForLogin.email || 'anne@crownstone.rocks', password:'bier'};
     this.progress = 0;
   }
 
@@ -50,6 +50,7 @@ export class Login extends Component {
     this.props.eventBus.emit('showLoading', 'Requesting new verification email...');
     CLOUD.requestVerificationEmail({email:this.state.email.toLowerCase()})
       .then(() => {
+        emailMemoryForLogin.email = this.state.email;
         this.props.eventBus.emit('hideLoading');
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
       })
@@ -86,9 +87,10 @@ export class Login extends Component {
     let invalidLoginCallback = () => {
       Alert.alert('Incorrect Email or Password.','Could not log in.',[{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
     };
+
     CLOUD.login({
       email: this.state.email.toLowerCase(),
-      password: md5(this.state.password),
+      password: sha1(this.state.password),
       onUnverified: unverifiedEmailCallback,
       onInvalidCredentials: invalidLoginCallback,
     })
@@ -225,6 +227,7 @@ export class Login extends Component {
       type:'USER_LOG_IN',
       data:{
         email:this.state.email.toLowerCase(),
+        passwordHash: sha1(this.state.password),
         accessToken:accessToken,
         userId:userId,
       }
@@ -272,7 +275,7 @@ export class Login extends Component {
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         let state = store.getState();
-        if (Object.keys(state.spheres).length == 0 && state.app.createdInitialSphere === false) {
+        if (Object.keys(state.spheres).length == 0 && state.user.isNew === true) {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Creating first Sphere.'});
           return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus);
         }

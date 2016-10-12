@@ -18,7 +18,7 @@ import { getUUID } from '../../util/util'
 import { AnimatedBackground } from '../components/animated/AnimatedBackground'
 import { Icon } from '../components/Icon'
 import { RoomLayer } from '../components/RoomLayer'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGDebug } from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 
 
@@ -70,7 +70,8 @@ export class SphereOverview extends Component {
 
       let activeSphere = state.app.activeSphere;
       let remoteSphere = state.app.remoteSphere;
-      let currentSphere = activeSphere || remoteSphere || null;
+      let noSpheres = Object.keys(state.spheres).length === 0;
+      let currentSphere = noSpheres === false ? activeSphere || remoteSphere || null : null;
       if (this.renderState.app.activeSphere === null && this.renderState.app.remoteSphere === null) {
         currentSphere = null
       }
@@ -85,7 +86,7 @@ export class SphereOverview extends Component {
         //TODO: use custom Topbar
         Actions.refresh();
 
-        // TODO: currently the refresh happens with the action. when new topbar, use the forceUpdate
+        // TODO: currently the refresh happens with the action. when isNew topbar, use the forceUpdate
         // this.forceUpdate();
       }
     });
@@ -141,7 +142,7 @@ export class SphereOverview extends Component {
     if (activeSphere || this.state.seeStoneInSetupMode)
       remoteMode = false;
 
-    let currentSphere = activeSphere || remoteSphere || null;
+    let currentSphere = noSpheres === false ? activeSphere || remoteSphere || null : null;
     let noRoomsCurrentSphere = true;
     let noStones = true;
     if (currentSphere !== null && state.spheres[currentSphere]) {
@@ -149,6 +150,8 @@ export class SphereOverview extends Component {
       noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
     }
 
+
+    LOGDebug("currentSphere", currentSphere)
     let newContent = undefined;
     let background = this.props.backgrounds.main;
 

@@ -94,7 +94,7 @@ let listOfIcons = {
   ]
 };
 
-export class SettingsRoomIconSelection extends Component {
+export class RoomIconSelection extends Component {
   render() {
     const store   = this.props.store;
     const state   = store.getState();

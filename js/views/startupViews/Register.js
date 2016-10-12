@@ -19,7 +19,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors , screenWidth, screenHeight } from '../styles'
 
 
-import { emailFromRegistration } from './emailMemory'
+import { emailMemoryForLogin } from './emailMemory'
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must not be empty.';
@@ -222,7 +222,7 @@ export class Register extends Component {
       })
       .then(() => {
         this.props.eventBus.emit("hideLoading");
-        emailFromRegistration.email = this.state.email.toLowerCase();
+        emailMemoryForLogin.email = this.state.email.toLowerCase();
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
       })
       .catch((reply) => {

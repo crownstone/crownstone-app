@@ -155,18 +155,9 @@ export class AppRouter extends Component {
               <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  panHandlers={null} direction="vertical" />
-              {/*<Scene key="setupWelcome"               component={Views.SetupWelcome}               hideNavBar={true}  type="reset"  direction="vertical" />*/}
-              {/*<Scene key="setupAddSphere"             component={Views.SetupAddSphere}             hideNavBar={true}  />*/}
-              {/*<Scene key="setupAddCrownstoneSelect"   component={Views.SetupAddCrownstoneSelect}   hideNavBar={true}  type="reset" />*/}
-              {/*<Scene key="setupAddPluginStep1"        component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />*/}
-              {/*<Scene key="setupAddPluginStep2"        component={Views.SetupAddPlugInStep2}        hideNavBar={true}  />*/}
-              {/*<Scene key="setupAddPluginStep3"        component={Views.SetupAddPlugInStep3}        hideNavBar={true}  />*/}
-              {/*<Scene key="setupAddPluginStep4"        component={Views.SetupAddPlugInStep4}        hideNavBar={true}  />*/}
-              {/*<Scene key="setupAddPlugInStepRecover"  component={Views.SetupAddPlugInStepRecover}  hideNavBar={true}  />*/}
-              {/*<Scene key="setupAddBuiltinStep1"       component={Views.SetupAddPlugInStep1}        hideNavBar={true}  />*/}
               <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true} direction="vertical" title="Training" />
               <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true} panHandlers={null} direction="vertical" title="Move to which Room?" />
-              <Scene key="roomIconSelection"          component={Views.SettingsRoomIconSelection}  hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
               <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
               <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
@@ -191,15 +182,10 @@ export class AppRouter extends Component {
                   <Scene key="settingsProfile"            component={Views.SettingsProfile}             title="Your Profile" />
                   <Scene key="settingsChangeEmail"        component={Views.SettingsChangeEmail}         title="Change Email"/>
                   <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}      title="Change Password"/>
-                  <Scene key="settingsSphereOverview"      component={Views.SettingsSphereOverview}     title="Sphere Overview" />
-                  <Scene key="settingsSphere"              component={Views.SettingsSphere}             title="[Sphere name here]" />
-                  <Scene key="settingsSphereUser"          component={Views.SettingsSphereUser}         title="[Username here]" />
-                  <Scene key="settingsSphereInvite"        component={Views.SettingsSphereInvite}       title="Invite" />
-                  <Scene key="settingsCrownstoneOverview" component={Views.SettingsCrownstoneOverview}  title="Manage Your Crownstones"/>
-                  <Scene key="settingsCrownstone"         component={Views.SettingsCrownstone}          title="Manage Crownstone"/>
-                  <Scene key="settingsRoomOverview"       component={Views.SettingsRoomOverview}        title="Manage Rooms"/>
-                  <Scene key="settingsRoomAdd"            component={Views.SettingsRoomAdd}             title="Create new Room"/>
-                  <Scene key="settingsRoom"               component={Views.SettingsRoom}                title="Manage Room"/>
+                  <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     title="Sphere Overview" />
+                  <Scene key="settingsSphere"             component={Views.SettingsSphere}             title="[Sphere name here]" />
+                  <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         title="[Username here]" />
+                  <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       title="Invite" />
                   <Scene key="appComplexity"              component={Views.AppComplexity}               title="Settings"/>
                 </Scene>
               </Scene>

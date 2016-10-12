@@ -4,7 +4,6 @@ let defaultState = {
   app: {
     activeSphere: null,
     remoteSphere: null,
-    createdInitialSphere: false,
     previouslyActiveSphere: null,
     enableLocalization: true,
     doFirstTimeSetup: true,
@@ -51,7 +50,6 @@ export default (state = defaultState.app, action = {}) => {
     case 'UPDATE_APP_STATE':
       if (action.data) {
         newState = {...state};
-        newState.createdInitialSphere = update(action.data.createdInitialSphere, newState.createdInitialSphere);
         newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
         newState.doFirstTimeSetup    = update(action.data.doFirstTimeSetup,  newState.doFirstTimeSetup);
         newState.enableLocalization  = update(action.data.enableLocalization,  newState.enableLocalization);

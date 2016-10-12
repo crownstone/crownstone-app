@@ -8,8 +8,8 @@ export const stones = {
   createStone: function(sphereId, MACAddress, type) {
     return this._setupRequest(
       'POST',
-      '/Stones',
-      {data:{groupId:sphereId, address:MACAddress, type:type}},
+      '/Spheres/{id}/ownedStones/',
+      {data:{sphereId:sphereId, address:MACAddress, type:type}},
       'body'
     );
   },
@@ -21,10 +21,10 @@ export const stones = {
    * @param background
    * @returns {*}
    */
-  updateStone: function(data, background = true) {
+  updateStone: function(stoneId, data, background = true) {
     return this._setupRequest(
       'PUT',
-      '/Stones/{id}',
+      '/Spheres/{id}/ownedStones/' + stoneId,
       {background: background, data:data},
       'body'
     );
@@ -39,7 +39,7 @@ export const stones = {
   getStonesInSphere: function(options) {
     return this._setupRequest(
       'GET',
-      '/Groups/{id}/ownedStones',
+      '/Spheres/{id}/ownedStones',
       options
     );
   },
@@ -66,7 +66,7 @@ export const stones = {
   findStone: function(address) {
     return this._setupRequest(
       'GET',
-      '/Stones/',
+      '/Spheres/{id}/ownedStones/',
       {data:{where:{address:address}}},
       'query'
     );
@@ -78,9 +78,11 @@ export const stones = {
    * @returns {*}
    */
   deleteStone: function(stoneId) {
-    return this._setupRequest(
-      'DELETE',
-      '/Stones/' + stoneId
-    );
+    if (stoneId) {
+      return this._setupRequest(
+        'DELETE',
+        '/Spheres/{id}/ownedStones/' + stoneId
+      );
+    }
   },
 };

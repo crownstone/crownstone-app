@@ -93,7 +93,7 @@ export class ApplianceSelection extends Component {
       type: 'button',
       callback: () => {
         this.props.eventBus.emit('showLoading', 'Creating new Device...');
-        CLOUD.createAppliance("", this.props.sphereId)
+        CLOUD.forSphere(this.props.sphereId).createAppliance("", this.props.sphereId)
           .then((reply) => {
             this.props.eventBus.emit('hideLoading');
             store.dispatch({sphereId: this.props.sphereId, applianceId: reply.id, type: 'ADD_APPLIANCE'});

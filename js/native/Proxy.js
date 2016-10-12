@@ -113,6 +113,7 @@ class NativeBusClass {
       advertisement:        "verifiedAdvertisementData",        // = from crownstone in normal operation mode.
       anyAdvertisement:     "anyVerifiedAdvertisementData",
       setupProgress:        "setupProgress",
+      bleStatus:            "BleStatus",
 
       nearest:              "nearestCrownstone",
       nearestSetup:         "nearestSetupCrownstone",

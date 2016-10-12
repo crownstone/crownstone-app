@@ -21,7 +21,7 @@ export const spheres = {
 
         // add the sphere to the database once it had been added in the cloud.
         creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid}});
-        creationActions.push({type:'UPDATE_APP_STATE', data: { createdInitialGroup: true }});
+        creationActions.push({type:'USER_UPDATE', data: { new: false }});
 
         // add yourself to the sphere members as admin
         creationActions.push({type: 'ADD_SPHERE_USER', sphereId: sphereId, userId: state.user.userId, data:{picture: state.user.picture, firstName: state.user.firstName, lastName: state.user.lastName, email:state.user.email, emailVerified: true, accessLevel: 'admin'}});
@@ -55,23 +55,23 @@ export const spheres = {
    * @returns {*}
    */
   getSpheres: function (options = {}) {
-    return this._setupRequest('GET', '/users/{id}/groups', options);
+    return this._setupRequest('GET', '/users/{id}/spheres', options);
   },
 
   getUsers: function (options = {}) {
-    return this._setupRequest('GET', '/Groups/{id}/users', options);
+    return this._setupRequest('GET', '/Spheres/{id}/users', options);
   },
 
   getAdmins: function (options = {}) {
-    return this._setupRequest('GET', '/Groups/{id}/owner', options).then((result) => {return [result]});
+    return this._setupRequest('GET', '/Spheres/{id}/owner', options).then((result) => {return [result]});
   },
 
   getMembers: function (options = {}) {
-    return this._setupRequest('GET', '/Groups/{id}/members', options);
+    return this._setupRequest('GET', '/Spheres/{id}/members', options);
   },
 
   getGuests: function (options = {}) {
-    return this._setupRequest('GET', '/Groups/{id}/guests', options);
+    return this._setupRequest('GET', '/Spheres/{id}/guests', options);
   },
 
 
@@ -80,13 +80,13 @@ export const spheres = {
    * @param sphereName
    */
   createSphere: function(sphereName) {
-    return this._setupRequest('POST', 'users/{id}/groups', {data:{name:sphereName}}, 'body');
+    return this._setupRequest('POST', 'users/{id}/spheres', {data:{name:sphereName}}, 'body');
   },
 
   getUserPicture(sphereId, email, userId, options = {}) {
     let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
     return this.forSphere(sphereId)._download({
-      endPoint:'/Groups/{id}/profilePic',
+      endPoint:'/Spheres/{id}/profilePic',
       data: {email: email},
       type: 'query',
       ...options
@@ -152,7 +152,7 @@ export const spheres = {
         members:    memberData,
         guests:     guestData,
       }
-    })
+    }).catch()
   },
 
   getUserFromType: function(userGetter, type, userData, sphereId, selfId, options) {
@@ -175,12 +175,12 @@ export const spheres = {
   },
 
   changeSphereName: function(sphereName) {
-    return this._setupRequest('PUT', '/Groups/{id}', {name:sphereName}, 'body');
+    return this._setupRequest('PUT', '/Spheres/{id}', {name:sphereName}, 'body');
   },
 
   changeUserAccess: function(userId, accessLevel) {
     // TODO: fix when correct endpoint has been added
-    // return this._setupRequest('PUT', '/Groups/{id}/users/rel/' + userId, {role:accessLevel}, 'body');
+    // return this._setupRequest('PUT', '/Spheres/{id}/users/rel/' + userId, {role:accessLevel}, 'body');
 
     return new Promise((resolve, reject) => {
       resolve();
@@ -190,11 +190,10 @@ export const spheres = {
   deleteSphere: function() {
     let sphereId = this._sphereId;
 
-    let promises     = [];
-
-    let applianceData= [];
-    let stoneData    = [];
-    let locationData = [];
+    let promises      = [];
+    let applianceData = [];
+    let stoneData     = [];
+    let locationData  = [];
 
     promises.push(
       this.getStonesInSphere()
@@ -242,10 +241,12 @@ export const spheres = {
   },
 
   _deleteSphere: function(sphereId) {
-    return this._setupRequest(
-      'DELETE',
-      'Groups/' + sphereId
-    );
+    if (sphereId) {
+      return this._setupRequest(
+        'DELETE',
+        'Spheres/' + sphereId
+      );
+    }
   },
 
 };

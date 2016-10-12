@@ -22,7 +22,9 @@ export const sync = {
         actions.forEach((action) => {
           action.triggeredBySync = true;
         });
-        store.batchDispatch(actions);
+
+        if (actions.length > 0)
+          store.batchDispatch(actions);
 
         this.events.emit("CloudSyncComplete");
 
@@ -53,7 +55,7 @@ const syncDown = function (state, options) {
       CLOUD.getKeys(options)
         .then((data) => {
           cloudKeys = data;
-        })
+        }).catch()
     );
     syncPromises.push(
       CLOUD.getSpheres(options)
@@ -71,7 +73,7 @@ const syncDown = function (state, options) {
           });
 
           return Promise.all(sphereDataPromises);
-        })
+        }).catch()
     );
 
     Promise.all(syncPromises)
@@ -375,7 +377,7 @@ const syncSphereUser = function(actions, sphere, sphereInState, userId, user, st
 
 const syncKeys = function(actions, keys) {
   keys.forEach((keySet) => {
-    actions.push({type:'SET_SPHERE_KEYS', sphereId: keySet.groupId, data:{
+    actions.push({type:'SET_SPHERE_KEYS', sphereId: keySet.sphereId, data:{
       adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
       memberKey: keySet.keys.member || null,
       guestKey:  keySet.keys.guest  || null

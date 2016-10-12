@@ -4,38 +4,35 @@
 
 export const appliances = {
 
-  getAppliances: function (options = {}) {
-    return this._setupRequest('GET', '/Appliances', options);
-  },
-
   getAppliancesInSphere: function(options) {
-    // TODO: change to sphere owned query when it becomes available
-    return this._setupRequest('GET', '/Appliances', options);
+    return this._setupRequest('GET', '/Spheres/{id}/ownedAppliances', options);
   },
 
   createAppliance: function (applianceName, sphereId, icon) {
     return this._setupRequest(
       'POST',
-      '/Appliances',
-      {data: {name: applianceName, groupId:sphereId, icon: icon}},
+      '/Spheres/{id}/ownedAppliances',
+      {data: {name: applianceName, sphereId:sphereId, icon: icon}},
       'body'
     );
   },
 
-  updateAppliance: function (data, background = true) {
+  updateAppliance: function (applianceId, data, background = true) {
     return this._setupRequest(
       'PUT',
-      '/Appliances/{id}',
+      '/Spheres/{id}/ownedAppliances/' + applianceId,
       {background: background, data: data},
       'body'
     );
   },
 
   deleteAppliance: function (applianceId) {
-    return this._setupRequest(
-      'DELETE',
-      '/Appliances/' + applianceId,
-    );
+    if (applianceId) {
+      return this._setupRequest(
+        'DELETE',
+        '/Spheres/{id}/ownedAppliances/' + applianceId,
+      );
+    }
   },
 
 };
