@@ -7,17 +7,23 @@ export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
     LOG('will dispatch', action);
 
+    // required for some of the actions
+    let oldState = getState();
+
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
+
+    // state after update
+    let newState = getState();
 
     //LOGDebug("isNew state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
-        handleAction(action, returnValue, getState);
+        handleAction(action, returnValue, newState, oldState);
       })
     }
     else {
-      handleAction(action, returnValue, getState);
+      handleAction(action, returnValue, newState, oldState);
     }
 
     // This will likely be the action itself, unless
@@ -26,13 +32,13 @@ export function CloudEnhancer({ getState }) {
   }
 }
 
-function handleAction(action, returnValue, getState) {
+function handleAction(action, returnValue, newState, oldState) {
   // do not sync actions that have been triggered BY the cloud sync mechanism.
   if (action.triggeredBySync === true) {
     return returnValue;
   }
 
-  let newState = getState();
+
   switch (action.type) {
     case 'USER_APPEND':
     case 'USER_UPDATE':
@@ -61,6 +67,9 @@ function handleAction(action, returnValue, getState) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
       handleStoneBehaviourInCloud(action, newState);
+      break;
+    case 'UPDATE_STONE_LOCATION':
+      handleStoneLocationUpdateInCloud(action, newState, oldState);
       break;
 
 
@@ -93,7 +102,13 @@ function handleUserInCloud(action, state) {
   }
 
   if (action.data.firstName || action.data.lastName) {
-    CLOUD.updateUserData({background: true, data: {firstName: state.user.firstName, lastName: state.user.lastName, new: state.user.isNew}}).catch(() => {});
+    let data = {
+      firstName: state.user.firstName,
+      lastName: state.user.lastName,
+      new: state.user.isNew,
+      updatedAt: state.user.updatedAt
+    };
+    CLOUD.updateUserData(data).catch(() => {});
   }
 }
 
@@ -104,19 +119,20 @@ function handleStoneBehaviourInCloud(action, state) {
   if (getMyLevelInSphere(state, sphereId) === 'admin') {
     let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
-    CLOUD.forSphere(sphereId).updateStone(stoneId, {
+    let data = {
       name:        stoneConfig.name,
       address:     stoneConfig.macAddress,
       icon:        stoneConfig.icon,
       id:          stoneId,
       applianceId: stoneConfig.applianceId,
-      locationId:  stoneConfig.locationId,
       sphereId:    sphereId,
       major:       stoneConfig.iBeaconMajor,
       minor:       stoneConfig.iBeaconMinor,
       uid:         stoneConfig.crownstoneId,
-      json:behaviourJSON,
-    }).catch(() => {});
+      json:        behaviourJSON,
+      // updatedAt:   stoneConfig.updatedAt,   // we explicitly do not set the data so other users will not get a push of data that they wont store.
+    };
+    CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
   }
 }
 
@@ -131,14 +147,36 @@ function handleStoneInCloud(action, state) {
     icon:        stoneConfig.icon,
     id:          stoneId,
     applianceId: stoneConfig.applianceId,
-    locationId:  stoneConfig.locationId,
     sphereId:    sphereId,
     major:       stoneConfig.iBeaconMajor,
     minor:       stoneConfig.iBeaconMinor,
     uid:         stoneConfig.crownstoneId,
+    updatedAt:   stoneConfig.updatedAt,
   };
-  
+
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
+}
+
+function handleStoneLocationUpdateInCloud(action, state, oldState) {
+  let sphereId = action.sphereId;
+  let stoneId = action.stoneId;
+  let locationId = action.data.locationId;
+  let updatedAt = state.spheres[sphereId].stones[stoneId].config.updatedAt;
+
+  let prevLocationId = oldState.spheres[sphereId].stones[stoneId].config.locationId;
+
+  if (prevLocationId === null && locationId !== null) {
+    CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, updatedAt, true).catch(() => {});
+  }
+  else {
+    CLOUD.forStone(stoneId).deleteStoneLocationLink(prevLocationId, updatedAt, true)
+      .then(() => {
+        if (locationId !== null) {
+          return CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, updatedAt, true);
+        }
+      })
+      .catch(() => {});
+  }
 }
 
 function handleApplianceInCloud(action, state) {
@@ -151,6 +189,7 @@ function handleApplianceInCloud(action, state) {
     icon: applianceConfig.icon,
     id: applianceId,
     sphereId: sphereId,
+    updatedAt: applianceConfig.updatedAt,
   };
 
   CLOUD.forSphere(sphereId).updateAppliance(applianceId, data).catch(() => {});
@@ -163,12 +202,14 @@ function handleApplianceBehaviourInCloud(action, state) {
   if (getMyLevelInSphere(state, sphereId) === 'admin') {
     let applianceConfig = state.spheres[sphereId].appliances[applianceId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].appliances[applianceId].behaviour);
-    CLOUD.forSphere(sphereId).updateAppliance(applianceId,{
-      id: applianceId,
-      icon: applianceConfig.icon,
+    let data = {
+      id:       applianceId,
+      icon:     applianceConfig.icon,
       sphereId: sphereId,
-      json:behaviourJSON,
-    }).catch(() => {});
+      json:     behaviourJSON,
+      // updatedAt: applianceConfig.updatedAt,  // we explicitly do not set the data so other users will not get a push of data that they wont store.
+    };
+    CLOUD.forSphere(sphereId).updateAppliance(applianceId, data).catch(() => {});
   }
 }
 
@@ -182,6 +223,7 @@ function handleLocationInCloud(action, state) {
     icon: locationConfig.icon,
     id: locationId,
     sphereId: sphereId,
+    updatedAt: locationConfig.updatedAt
   };
 
   CLOUD.forSphere(sphereId).updateLocation(locationId, data).catch(() => {});

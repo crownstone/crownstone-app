@@ -86,8 +86,8 @@ const syncDown = function (state, options) {
   });
 };
 
-const shouldUpdate = function(localVersion, cloudVersion) {
-  return localVersion.updatedAt < new Date(cloudVersion.updatedAt).valueOf();
+const getTimeDifference = function(localVersion, cloudVersion) {
+  return localVersion.updatedAt - new Date(cloudVersion.updatedAt).valueOf();
 };
 
 
@@ -161,14 +161,18 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     cloudSphereIds[sphere.id] = true;
     cloudSphereMemberIds[sphere.id] = {};
 
+    // local reference to this sphere in our redux database.
     let sphereInState = state.spheres[sphere.id];
+
+    // check if we are an admin in this Sphere.
+    let adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
 
     // add or update the sphere.
     if (sphereInState === undefined) {
       addedSphere = true;
       actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid}});
     }
-    else if (shouldUpdate(sphereInState.config, sphere)) {
+    else if (getTimeDifference(sphereInState.config, sphere) < 0) {
       actions.push({type: 'UPDATE_SPHERE', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid}});
     }
 
@@ -178,13 +182,26 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     spheresData[sphere.id].locations.forEach((location) => {
       cloudLocationIds[location.id] = true;
       if (sphereInState !== undefined && sphereInState.locations[location.id] !== undefined) {
-        if (shouldUpdate(sphereInState.locations[location.id].config, location)) {
+        if (getTimeDifference(sphereInState.locations[location.id].config, location) < 0) {
           actions.push({
             type: 'UPDATE_LOCATION_CONFIG',
             sphereId: sphere.id,
             locationId: location.id,
-            data: {name: location.name, icon: location.icon}
+            data: {name: location.name, icon: location.icon, updatedAt: location.updatedAt}
           });
+        }
+        else if (getTimeDifference(sphereInState.locations[location.id].config, location) > 0) {
+          // update cloud since our data is newer!
+          let locationInState = sphereInState.locations[location.id];
+          let data = {
+            name: locationInState.config.name,
+            icon: locationInState.config.icon,
+            id: location.id,
+            sphereId: sphere.id,
+            updatedAt: locationInState.config.updatedAt,
+          };
+          LOG("@SYNC: Updating location", location.id, " in Cloud since our data is newer! remote: ", new Date(location.updatedAt).valueOf(), "local:", locationInState.config.updatedAt, 'diff:', locationInState.config.updatedAt - (new Date(location.updatedAt).valueOf()));
+          CLOUD.updateLocation(location.id, data).catch(() => {});
         }
       }
       else {
@@ -192,7 +209,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           type: 'ADD_LOCATION',
           sphereId: sphere.id,
           locationId: location.id,
-          data: {name: location.name, icon: location.icon}
+          data: {name: location.name, icon: location.icon, updatedAt: location.updatedAt}
         });
       }
     });
@@ -202,24 +219,73 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
      * Sync the stones from the cloud to the database.
      */
     spheresData[sphere.id].stones.forEach((stone) => {
-      cloudStoneIds[stone.id] = true;
+      cloudStoneIds[stone.id] = true; // mark this ID as "yes it is in the cloud"
+
+      // determine the linked location id
+      let locationLinkId = null;
+      if (stone.locations.length > 0 && stone.locations[0]) {
+        locationLinkId = stone.locations[0].id;
+      }
+      else {
+        locationLinkId = null;
+      }
       if (sphereInState !== undefined && sphereInState.stones[stone.id] !== undefined) {
-        if (shouldUpdate(sphereInState.stones[stone.id].config, stone)) {
+        if (getTimeDifference(sphereInState.stones[stone.id].config, stone) < 0) {
           actions.push({
             type: 'UPDATE_STONE_CONFIG',
             sphereId: sphere.id,
             stoneId: stone.id,
             data: {
               name: stone.name,
-              icon: stone.deviceType,
+              icon: stone.icon,
               applianceId: stone.applianceId,
-              locationId: stone.locationId,
+              locationId: locationLinkId,
               macAddress: stone.address,
               iBeaconMajor: stone.major,
               iBeaconMinor: stone.minor,
               crownstoneId: stone.uid,
+              updatedAt: stone.updatedAt,
             }
           });
+        }
+        else if (getTimeDifference(sphereInState.stones[stone.id].config, stone) > 0) {
+          // update cloud since our data is newer!
+          let stoneInState = sphereInState.stones[stone.id];
+          let data = {
+            name: stoneInState.config.name,
+            address: stoneInState.config.macAddress,
+            icon: stoneInState.config.icon,
+            id: stone.id,
+            applianceId: stoneInState.config.applianceId,
+            sphereId: sphere.id,
+            major: stoneInState.config.iBeaconMajor,
+            minor: stoneInState.config.iBeaconMinor,
+            uid: stoneInState.config.crownstoneId,
+            updatedAt: stoneInState.config.updatedAt,
+          };
+
+          // only admins get to update the behaviour
+          if (adminInThisSphere === true) {
+            data.json = JSON.stringify(stoneInState.behaviour);
+          }
+          LOG("@SYNC: Updating Stone", stone.id, " in Cloud since our data is newer! remote: ", new Date(stone.updatedAt).valueOf(), "local:", stoneInState.config.updatedAt, 'diff:', stoneInState.config.updatedAt - (new Date(stone.updatedAt).valueOf()));
+          CLOUD.forSphere(sphere.id).updateStone(stone.id, data).catch(() => {});
+
+          // check if we have to sync the locations:
+          if (stoneInState.config.locationId !== locationLinkId) {
+            // if the one in the cloud is null, we only create a link
+            if (locationLinkId === null && stoneInState.config.locationId !== null) {
+              CLOUD.forStone(stone.id).updateStoneLocationLink(stoneInState.config.locationId, stoneInState.config.updatedAt, true);
+            }
+            else {
+              CLOUD.forStone(stone.id).deleteStoneLocationLink(locationLinkId, stoneInState.config.updatedAt, true)
+                .then(() => {
+                  if (stoneInState.config.locationId !== null) {
+                    CLOUD.forStone(stone.id).updateStoneLocationLink(stoneInState.config.locationId, stoneInState.config.updatedAt, true);
+                  }
+                }).catch(() => {})
+            }
+          }
         }
       }
       else {
@@ -229,13 +295,14 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           stoneId: stone.id,
           data: {
             name: stone.name,
-            icon: stone.deviceType,
+            icon: stone.icon,
             applianceId: stone.applianceId,
-            locationId: stone.locationId,
+            locationId: locationLinkId,
             macAddress: stone.address,
             iBeaconMajor: stone.major,
             iBeaconMinor: stone.minor,
-            crownstoneId: stone.uid
+            crownstoneId: stone.uid,
+            updatedAt: stone.updatedAt,
           }
         });
 
@@ -264,15 +331,36 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
      * Sync the appliances from the cloud to the database.
      */
     spheresData[sphere.id].appliances.forEach((appliance) => {
-      cloudApplianceIds[appliance.id] = true;
+      cloudApplianceIds[appliance.id] = true; // mark this ID as "yes it is in the cloud"
+      // check if we have to update of add this appliance
       if (sphereInState !== undefined && sphereInState.appliances[appliance.id] !== undefined) {
-        if (shouldUpdate(sphereInState.appliances[appliance.id].config, appliance)) {
+        if (getTimeDifference(sphereInState.appliances[appliance.id].config, appliance) < 0) {
           actions.push({
             type: 'UPDATE_APPLIANCE_CONFIG',
             sphereId: sphere.id,
             applianceId: appliance.id,
-            data: {name: appliance.name, icon: appliance.icon}
+            data: {name: appliance.name, icon: appliance.icon, updatedAt: appliance.updatedAt}
           });
+        }
+        else if (getTimeDifference(sphereInState.appliances[appliance.id].config, appliance) > 0) {
+          // update cloud since our data is newer!
+          LOG("@SYNC: Updating appliance", appliance.id, "in Cloud since our data is newer!");
+          let applianceInState = sphereInState.appliances[appliance.id];
+          let data = {
+            name: applianceInState.config.name,
+            icon: applianceInState.config.icon,
+            id: appliance.id,
+            sphereId: sphere.id,
+            updatedAt: applianceInState.config.updatedAt,
+          };
+
+          // only admins get to update the behaviour
+          if (adminInThisSphere === true) {
+            data.json = JSON.stringify(applianceInState.behaviour);
+          }
+
+          LOG("@SYNC: Updating Appliance", appliance.id, " in Cloud since our data is newer! remote: ", new Date(appliance.updatedAt).valueOf(), "local:", applianceInState.config.updatedAt, 'diff:', applianceInState.config.updatedAt - (new Date(appliance.updatedAt).valueOf()));
+          CLOUD.forSphere(sphere.id).updateAppliance(appliance.id, data).catch(() => {});
         }
       }
       else {
@@ -280,7 +368,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           type: 'ADD_APPLIANCE',
           sphereId: sphere.id,
           applianceId: appliance.id,
-          data: {name: appliance.name, icon: appliance.icon}
+          data: {name: appliance.name, icon: appliance.icon, updatedAt: appliance.updatedAt}
         });
 
         // we only download the behaviour the first time we add the stone.
@@ -342,7 +430,7 @@ const syncSphereUser = function(actions, sphere, sphereInState, userId, user, st
       user.picture = state.user.picture;
     }
 
-    if (shouldUpdate(sphereInState.users[userId], user)) {
+    if (getTimeDifference(sphereInState.users[userId], user)) {
       actions.push({
         type: 'UPDATE_SPHERE_USER',
         sphereId: sphere.id,

@@ -20,7 +20,7 @@ export default (state = defaultState.app, action = {}) => {
         newState = {...state};
         newState.activeSphere           = update(action.data.activeSphere, newState.activeSphere);
         newState.previouslyActiveSphere = update(action.data.activeSphere, newState.activeSphere);
-        newState.updatedAt              = getTime();
+        newState.updatedAt              = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -28,7 +28,7 @@ export default (state = defaultState.app, action = {}) => {
       if (action.data) {
         newState = {...state};
         newState.remoteSphere = update(action.data.remoteSphere, newState.remoteSphere);
-        newState.updatedAt    = getTime();
+        newState.updatedAt    = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -53,7 +53,7 @@ export default (state = defaultState.app, action = {}) => {
         newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
         newState.doFirstTimeSetup    = update(action.data.doFirstTimeSetup,  newState.doFirstTimeSetup);
         newState.enableLocalization  = update(action.data.enableLocalization,  newState.enableLocalization);
-        newState.updatedAt           = getTime();
+        newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

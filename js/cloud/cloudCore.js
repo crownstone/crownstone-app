@@ -50,10 +50,10 @@ export function request(
         if (response.headers.map['content-length'] &&
           response.headers.map['content-length'].length > 0 &&
           response.headers.map['content-length'][0] == 0) {
-          LOGDebug("Error: JSON-CONTENT IS EMPTY", response);
+          // LOGDebug("Error: JSON-CONTENT IS EMPTY", response);
           return response.json(); // this is a promise
         }
-        LOGDebug("JSON CONTENT", response);
+        // LOGDebug("JSON CONTENT", response);
         return response.json(); // this is a promise
       }
     }

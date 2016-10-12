@@ -26,11 +26,11 @@ export default (state = defaultSettings.user, action = {}) => {
         newState.lastName     = update(action.data.lastName,     newState.lastName);
         newState.email        = update(action.data.email,        newState.email);
         newState.passwordHash = update(action.data.passwordHash, newState.passwordHash);
-        newState.isNew          = update(action.data.isNew,          newState.isNew);
+        newState.isNew        = update(action.data.isNew,        newState.isNew);
         newState.accessToken  = update(action.data.accessToken,  newState.accessToken);
         newState.userId       = update(action.data.userId,       newState.userId);
         newState.picture      = update(action.data.picture,      newState.picture);
-        newState.updatedAt    = getTime();
+        newState.updatedAt    = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

@@ -22,9 +22,9 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'SET_SPHERE_KEYS':
       if (action.data) {
         let newState = {...state};
-        newState.adminKey = update(action.data.adminKey, newState.adminKey);
+        newState.adminKey  = update(action.data.adminKey, newState.adminKey);
         newState.memberKey = update(action.data.memberKey, newState.memberKey);
-        newState.guestKey = update(action.data.guestKey, newState.guestKey);
+        newState.guestKey  = update(action.data.guestKey, newState.guestKey);
         return newState;
       }
       return state;
@@ -32,13 +32,13 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_SPHERE_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name = update(action.data.name, newState.name);
+        newState.name        = update(action.data.name, newState.name);
         newState.iBeaconUUID = update(action.data.iBeaconUUID, newState.iBeaconUUID);
-        newState.adminKey = update(action.data.adminKey, newState.adminKey);
-        newState.memberKey = update(action.data.memberKey, newState.memberKey);
-        newState.guestKey = update(action.data.guestKey, newState.guestKey);
+        newState.adminKey    = update(action.data.adminKey, newState.adminKey);
+        newState.memberKey   = update(action.data.memberKey, newState.memberKey);
+        newState.guestKey    = update(action.data.guestKey, newState.guestKey);
         newState.meshAccessAddress = update(action.data.meshAccessAddress, newState.meshAccessAddress);
-        newState.updatedAt = getTime();
+        newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

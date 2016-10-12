@@ -70,7 +70,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.nearRange       = update(action.data.nearRange, newState.nearRange);
         newState.disabled        = update(action.data.disabled, newState.disabled);
         newState.touchToToggle   = update(action.data.touchToToggle, newState.touchToToggle);
-        newState.updatedAt       = getTime();
+        newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -78,7 +78,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.locationId      = update(action.data.locationId, newState.locationId);
-        newState.updatedAt       = getTime();
+        newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -100,7 +100,7 @@ let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
         let newState          = {...state};
         newState.state        = update(action.data.state,        newState.state);
         newState.currentUsage = update(action.data.currentUsage, newState.currentUsage);
-        newState.updatedAt   = getTime();
+        newState.updatedAt    = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

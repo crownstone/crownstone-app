@@ -22,7 +22,7 @@ export const updateToggleState = function (state, action) {
     newState.delay     = update(action.data.delay,    newState.delay);
     newState.fadeTime  = update(action.data.fadeTime, newState.fadeTime);
     newState.active    = update(action.data.active,   newState.active);
-    newState.updatedAt = getTime();
+    newState.updatedAt = getTime(action.data.updatedAt);
     return newState;
   }
   return state;

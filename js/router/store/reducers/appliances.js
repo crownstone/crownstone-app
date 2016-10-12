@@ -36,7 +36,7 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.name      = update(action.data.name,     newState.name);
         newState.icon      = update(action.data.icon,     newState.icon);
         newState.dimmable  = update(action.data.dimmable, newState.dimmable);
-        newState.updatedAt = getTime();
+        newState.updatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

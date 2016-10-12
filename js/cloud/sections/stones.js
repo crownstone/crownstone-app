@@ -31,16 +31,63 @@ export const stones = {
   },
 
 
+  /**
+   * Update the link from a crownstone to a room.
+   * @param locationId
+   * @param updatedAt
+   * @param background
+   * @returns {*}
+   */
+  updateStoneLocationLink: function(locationId, updatedAt, background = true) {
+    return this._setupRequest(
+        'PUT',
+        '/Stones/{id}/locations/rel/' + locationId,
+        {background: background},
+      )
+      .then(() => {
+        let promises = [];
+        promises.push(this.updateStone(this._stoneId, {updatedAt: updatedAt}));
+        promises.push(this.updateLocation(locationId, {updatedAt: updatedAt}));
+        // we set the updatedAt time in the cloud since changing the links does not update the time there
+        return Promise.all(promises);
+      })
+  },
+
+
+  /**
+   * Delete the link from a crownstone to a room.
+   * @param locationId
+   * @param updatedAt
+   * @param background
+   * @returns {*}
+   */
+  deleteStoneLocationLink: function(locationId, updatedAt, background = true) {
+    return this._setupRequest(
+        'DELETE',
+        '/Stones/{id}/locations/rel/' + locationId,
+        {background: background},
+      )
+      .then(() => {
+        let promises = [];
+        promises.push(this.updateStone(this._stoneId, {updatedAt: updatedAt}));
+        promises.push(this.updateLocation(locationId, {updatedAt: updatedAt}));
+        // we set the updatedAt time in the cloud since changing the links does not update the time there
+        return Promise.all(promises);
+      })
+  },
+
+
+
 
   /**
    * request the data of all crownstones in this sphere
    * @returns {*}
    */
-  getStonesInSphere: function(options) {
+  getStonesInSphere: function(options = {}) {
     return this._setupRequest(
       'GET',
       '/Spheres/{id}/ownedStones',
-      options
+      {...options, data: {filter:{"include":{"relation":"locations"}}}}
     );
   },
 

@@ -93,11 +93,12 @@ export const user = {
 
   /**
    *
-   * @param options
+   * @param data
+   * @param background
    * @returns {Promise}
    */
-  updateUserData: function(options = {}) {
-    return this._setupRequest('PUT', '/users/{id}', options, 'body');
+  updateUserData: function(data, background = true) {
+    return this._setupRequest('PUT', '/users/{id}', {data: data, background: background}, 'body');
   },
 
   /**

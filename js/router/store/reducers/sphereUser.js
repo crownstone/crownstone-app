@@ -22,7 +22,7 @@ let sphereUserReducer = (state = defaultSettings.users, action = {}) => {
         newState.email         = update(action.data.email,         newState.email);
         newState.emailVerified = update(action.data.emailVerified, newState.emailVerified);
         newState.accessLevel   = update(action.data.accessLevel,   newState.accessLevel);
-        newState.updatedAt     = getTime();
+        newState.updatedAt     = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

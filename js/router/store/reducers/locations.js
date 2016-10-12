@@ -47,7 +47,7 @@ let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.icon = update(action.data.icon, newState.icon);
         newState.fingerprintRaw = update(action.data.fingerprintRaw, newState.fingerprintRaw);
         newState.fingerprintParsed = update(action.data.fingerprintParsed, newState.fingerprintParsed);
-        newState.updatedAt = getTime();
+        newState.updatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
