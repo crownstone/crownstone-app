@@ -60,7 +60,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.name            = update(action.data.name,     newState.name);
-        newState.locationId      = update(action.data.locationId, newState.locationId);
         newState.applianceId     = update(action.data.applianceId, newState.applianceId);
         newState.macAddress      = update(action.data.macAddress, newState.macAddress);
         newState.iBeaconMajor    = update(action.data.iBeaconMajor, newState.iBeaconMajor);
@@ -75,6 +74,15 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'UPDATE_STONE_LOCATION':
+      if (action.data) {
+        let newState = {...state};
+        newState.locationId      = update(action.data.locationId, newState.locationId);
+        newState.updatedAt       = getTime();
+        return newState;
+      }
+      return state;
+
     default:
       return state;
   }

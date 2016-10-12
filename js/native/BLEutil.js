@@ -86,7 +86,6 @@ export const BLEutil = {
   },
 
   detectCrownstone: function(stoneHandle) {
-    LOGDebug("DETECTING")
     this.cancelSearch();
     return new Promise((resolve, reject) => {
       let count = 0;
@@ -95,7 +94,7 @@ export const BLEutil = {
 
       let cleanup = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (advertisement) => {
-        LOG("advertisement in detect", advertisement)
+        LOG("Advertisement in detectCrownstone", advertisement)
 
         if (advertisement.handle === stoneHandle)
           count += 1;
@@ -112,7 +111,7 @@ export const BLEutil = {
         resolve(advertisement.setupPackage);
       };
 
-      LOGDebug("SUBBING TO ", NativeBus.topics.advertisement);
+      LOGDebug("Subscribing TO ", NativeBus.topics.advertisement);
       cleanup.unsubscribe = NativeBus.on(NativeBus.topics.advertisement, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
@@ -129,9 +128,11 @@ export const BLEutil = {
   },
 
   startHighFrequencyScanning: function(id, noTimeout = false) {
+    let enableTimeout = noTimeout === false;
     let timeoutDuration = HIGH_FREQUENCY_SCAN_MAX_DURATION;
     if (typeof noTimeout === 'number' && noTimeout > 0) {
       timeoutDuration = noTimeout;
+      enableTimeout = true;
     }
 
     if (this.highFrequencyScanUsers[id] === undefined) {
@@ -142,7 +143,7 @@ export const BLEutil = {
       this.highFrequencyScanUsers[id] = {timeout: undefined};
     }
 
-    if (noTimeout === false) {
+    if (enableTimeout === true) {
       clearTimeout(this.highFrequencyScanUsers[id].timeout);
       this.highFrequencyScanUsers[id].timeout = setTimeout(() => {
         this.stopHighFrequencyScanning(id);

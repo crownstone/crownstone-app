@@ -15,6 +15,7 @@ class AdvertisementHandlerClass {
     this.referenceMap = {};
     this.referenceCIDMap = {};
     this.activeSphere = '';
+    this.stonesInConnectionProcess = {};
   }
 
   loadStore(store) {
@@ -38,6 +39,17 @@ class AdvertisementHandlerClass {
       // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
       eventBus.on("connect", (handle) => {
         Scheduler.clearOverwritableTriggerAction(TRIGGER_ID, ADVERTISEMENT_PREFIX + handle);
+        // this is a fallback mechanism in case no disconnect event is fired.
+        this.stonesInConnectionProcess[handle] = {timeout: setTimeout(() => {
+          LOGError("Force restoring listening to all crownstones since no disconnect state after 5 seconds.");
+          this._restoreConnectionTimeout();
+        }, 5000)};
+      });
+
+      // sometimes the first event since state change can be wrong, we use this to ignore it.
+      eventBus.on("disconnect", () => {
+        // wait before listening to the stones again.
+        Scheduler.scheduleCallback(() => {this._restoreConnectionTimeout();}, 1000);
       });
 
       // create a trigger to throttle the updates.
@@ -49,7 +61,18 @@ class AdvertisementHandlerClass {
     }
   }
 
+  _restoreConnectionTimeout() {
+    Object.keys(this.stonesInConnectionProcess).forEach((handle) => {
+      clearTimeout(this.stonesInConnectionProcess[handle].timeout)
+    });
+    this.stonesInConnectionProcess = {};
+  }
+
   handleEvent(advertisement) {
+    if (this.stonesInConnectionProcess[advertisement.handle] !== undefined) {
+      return;
+    }
+
     // the service data in this advertisement;
     let serviceData = advertisement.serviceData;
 

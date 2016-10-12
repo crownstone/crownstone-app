@@ -74,6 +74,7 @@ export const BluenetPromise = function(functionName, param) {
 };
 
 
+
 export const BleActions = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
@@ -95,8 +96,16 @@ export const BleActions = {
       });
     }
   },
-  disconnect:           ()           => { return BluenetPromise('disconnect');                  },
-  phoneDisconnect:      ()           => { return BluenetPromise('phoneDisconnect');             },
+  disconnect: () => {
+    return BluenetPromise('disconnect')
+      .then(() => { eventBus.emit("disconnect"); })
+      .catch(() => { eventBus.emit("disconnect"); })
+  },
+  phoneDisconnect: () => {
+    return BluenetPromise('phoneDisconnect')
+      .then(() => { eventBus.emit("disconnect"); })
+      .catch(() => { eventBus.emit("disconnect"); })
+  },
   setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',  state);      },
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },

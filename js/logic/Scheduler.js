@@ -80,6 +80,7 @@ class SchedulerClass {
   clearOverwritableTriggerAction(triggerId, actionId) {
     if (this.triggers[triggerId]) {
       delete this.triggers[triggerId].overwritableActions[actionId];
+      LOGDebug("Cleared TRIGGERS", new Date().valueOf(), triggerId, actionId, this.triggers[triggerId])
     }
   }
 
@@ -203,6 +204,7 @@ class SchedulerClass {
     triggerIds.forEach((triggerId) => {
       let trigger = this.singleFireTriggers[triggerId];
       if (trigger.triggerTime < now) {
+        LOGDebug("FIRING singlefire")
         trigger.callback();
         delete this.singleFireTriggers[triggerId];
       }
@@ -230,6 +232,7 @@ class SchedulerClass {
 
   _flushCallbacks(trigger,state) {
     trigger.callbacks.forEach((callback) => {
+      LOGDebug("FLUSHING CALLBACK trigger")
       callback();
     });
     trigger.callbacks = [];
@@ -241,6 +244,7 @@ class SchedulerClass {
     // check if we have to update the state. If the state has changed due to userinput in between triggers
     // we prefer not to use older data.
     trigger.actions.forEach((action) => {
+      LOGDebug("NORMAL ACTION ", action)
       this._checkAndAddAction(actionsToDispatch, action, state)
     });
 
@@ -248,11 +252,13 @@ class SchedulerClass {
     let overwritableActionKeys = Object.keys(trigger.overwritableActions);
     overwritableActionKeys.forEach((key) => {
       let action = trigger.overwritableActions[key];
+      LOGDebug("OVERWRITABLE ACTION ", action)
       this._checkAndAddAction(actionsToDispatch, action, state)
     });
 
     // update the store
     if (actionsToDispatch.length > 0) {
+      LOGDebug("FLUSHING ACTIONS", actionsToDispatch)
       this.store.batchDispatch(actionsToDispatch);
     }
 

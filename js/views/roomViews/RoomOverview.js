@@ -25,6 +25,7 @@ import {
 import { Icon } from '../components/Icon'
 import { Separator } from '../components/Separator'
 import { styles, colors, screenWidth } from '../styles'
+import { LOG } from '../../logging/Log'
 
 
 export class RoomOverview extends Component {
@@ -229,6 +230,8 @@ export class RoomOverview extends Component {
     if (this.state.seeStoneInSetupMode === true) {
       stones = {...stones, ...this.setupData};
     }
+
+    // LOG("stones:", stones, "of which setup", this.setupData)
 
     return (
       <SeparatedItemList

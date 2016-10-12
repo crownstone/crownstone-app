@@ -461,15 +461,19 @@ class BluenetJS: NSObject {
   }
   
   @objc func setupCrownstone(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
-    let crownstoneId      = data["crownstoneId"] as? UInt16
+    let crownstoneId      = data["crownstoneId"] as? NSNumber
     let adminKey          = data["adminKey"] as? String
     let memberKey         = data["memberKey"] as? String
     let guestKey          = data["guestKey"] as? String
-    let meshAccessAddress = data["meshAccessAddress"] as? UInt32
+    let meshAccessAddress = data["meshAccessAddress"] as? NSNumber
     let ibeaconUUID       = data["ibeaconUUID"] as? String
-    let ibeaconMajor      = data["ibeaconMajor"] as? UInt16
-    let ibeaconMinor      = data["ibeaconMinor"] as? UInt16
+    let ibeaconMajor      = data["ibeaconMajor"] as? NSNumber
+    let ibeaconMinor      = data["ibeaconMinor"] as? NSNumber
+    print("data \(data) 1\(crownstoneId) 2\(adminKey) 3\(memberKey) 4\(guestKey)")
+    print ("5\(meshAccessAddress) 6\(ibeaconUUID) 7\(ibeaconMajor)  8\(ibeaconMinor)")
     
+    print("data \(data) 1\(crownstoneId != nil) 2\(adminKey != nil) 3\(memberKey != nil) 4\(guestKey != nil)")
+    print ("5\(meshAccessAddress != nil) 6\(ibeaconUUID != nil) 7\(ibeaconMajor != nil)  8\(ibeaconMinor != nil)")
     if (crownstoneId != nil &&
       adminKey != nil &&
       memberKey != nil &&
@@ -479,14 +483,14 @@ class BluenetJS: NSObject {
       ibeaconMajor != nil &&
       ibeaconMinor != nil) {
       GLOBAL_BLUENET!.bluenet.setup.setup(
-        crownstoneId!,
+        (crownstoneId!).uint16Value,
         adminKey: adminKey!,
         memberKey: memberKey!,
         guestKey: guestKey!,
-        meshAccessAddress: meshAccessAddress!,
+        meshAccessAddress: (meshAccessAddress!).uint32Value,
         ibeaconUUID: ibeaconUUID!,
-        ibeaconMajor: ibeaconMajor!,
-        ibeaconMinor: ibeaconMinor!)
+        ibeaconMajor: (ibeaconMajor!).uint16Value,
+        ibeaconMinor: (ibeaconMinor!).uint16Value)
         .then{_ in callback([["error" : false]])}
         .catch{err in
           if let bleErr = err as? BleError {

@@ -51,7 +51,7 @@ export class RoomSelection extends Component {
         items.push({__item:
           <TouchableHighlight key={roomId + '_entry'} onPress={() => {
             Actions.pop();
-            store.dispatch({...requiredData, type: "UPDATE_STONE_CONFIG", data: {locationId: roomId}})
+            store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: roomId}})
           }}>
             <View style={styles.listView}>
               <RoomOverview
@@ -74,7 +74,7 @@ export class RoomSelection extends Component {
       type: 'navigation',
       callback: () => {
         Actions.pop();
-        store.dispatch({...requiredData, type: "UPDATE_STONE_CONFIG", data: {locationId: null}})
+        store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: null}})
       }
     });
     items.push({label:"If you do not add the Crownstone to a room, it will not be used for indoor localization purposes.",  type:'explanation', below: true});

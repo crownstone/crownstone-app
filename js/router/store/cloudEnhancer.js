@@ -107,7 +107,7 @@ function handleStoneBehaviourInCloud(action, state) {
     CLOUD.forSphere(sphereId).updateStone(stoneId, {
       name:        stoneConfig.name,
       address:     stoneConfig.macAddress,
-      deviceType:  stoneConfig.icon,
+      icon:        stoneConfig.icon,
       id:          stoneId,
       applianceId: stoneConfig.applianceId,
       locationId:  stoneConfig.locationId,
@@ -128,7 +128,7 @@ function handleStoneInCloud(action, state) {
   let data = {
     name:        stoneConfig.name,
     address:     stoneConfig.macAddress,
-    deviceType:  stoneConfig.icon,
+    icon:        stoneConfig.icon,
     id:          stoneId,
     applianceId: stoneConfig.applianceId,
     locationId:  stoneConfig.locationId,
