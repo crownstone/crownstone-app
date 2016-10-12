@@ -32,7 +32,7 @@ RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponse
 
 RCT_EXTERN_METHOD(commandFactoryReset:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(recover:(NSString *)crownstoneUUID callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(setupCrownstone:(NSString *)configJSON callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setupCrownstone:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 
 

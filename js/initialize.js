@@ -4,7 +4,8 @@ import { LOG }              from './logging/Log'
 import { CLOUD }            from './cloud/cloudAPI'
 import { LocalizationUtil } from './native/LocationHandler'
 import { Scheduler } from './logic/Scheduler'
-import { BleActions, Bluenet } from './native/Proxy';
+import { BleActions, Bluenet, NativeBus } from './native/Proxy';
+import { eventBus }         from '../util/eventBus'
 
 
 /**
@@ -21,6 +22,24 @@ export const INITIALIZER = {
       // route the events to React Native
       Bluenet.rerouteEvents();
 
+      // listen to the BLE events
+      NativeBus.on(NativeBus.topics.bleStatus, (status) => {
+        switch (status) {
+          case "poweredOff":
+
+            break;
+          case "poweredOn":
+            BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
+            break;
+          case "unauthorized":
+
+            break;
+          default:
+
+            break;
+        }
+      });
+
       // enable scanning for Crownstones
       BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
       this.initialized = true;
@@ -31,7 +50,7 @@ export const INITIALIZER = {
    * Start the app after init
    */
   started: false,
-  start: function(store, eventBus) {
+  start: function(store) {
     if (this.started === false) {
       // subscribe to iBeacons when required.
       CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});

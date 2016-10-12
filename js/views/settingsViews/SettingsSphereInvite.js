@@ -16,7 +16,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getMyLevelInSphere } from '../../util/dataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGError } from '../../logging/Log'
 
 export class SettingsSphereInvite extends Component {
   constructor() {
@@ -85,7 +85,17 @@ export class SettingsSphereInvite extends Component {
   }
 
   validateAndContinue() {
-    LOG("HAPPY DAYS!", this.state, this.inputStates)
+    this.props.eventBus.emit('showLoading', 'Inviting User...');
+    CLOUD.inviteUser(this.email.toLowerCase(), this.state.permission)
+      .then(() => {
+        this.props.eventBus.emit('hideLoading');
+        Alert.alert("Invite has been sent!","An email has been sent to " + email + ".", [{text:'OK'}])
+      })
+      .catch((err) => {
+        this.props.eventBus.emit('hideLoading');
+        LOGError("Error when inviting using:",err);
+        Alert.alert("Could not send invite..","Please try again later.", [{text:'OK'}])
+      })
   }
 
   render() {

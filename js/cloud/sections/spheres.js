@@ -33,7 +33,7 @@ export const spheres = {
         if (Array.isArray(keyResult)) {
           keyResult.forEach((keySet) => {
             creationActions.push({type:'SET_SPHERE_KEYS', sphereId: sphereId, data:{
-              adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
+              adminKey:  keySet.keys.admin || null,
               memberKey: keySet.keys.member || null,
               guestKey:  keySet.keys.guest  || null
             }})
@@ -50,6 +50,27 @@ export const spheres = {
   },
 
 
+  inviteUser: function(email, permission = "") {
+    permission = permission.toLowerCase();
+    switch (permission) {
+      case 'admin':
+        return this._setupRequest('PUT', '/Spheres/{id}/spheres', { data: { email: email}});
+        break;
+      case 'member':
+        return this._setupRequest('PUT', '/Spheres/{id}/spheres', { data: { email: email}});
+        break;
+      case 'guest':
+        return this._setupRequest('PUT', '/Spheres/{id}/spheres', { data: { email: email}});
+        break;
+      default:
+        return new Promise((resolve, reject) => {
+          reject(new Error('Invalid Permission: "' + permission + '"'))
+        });
+        break;
+    }
+  },
+
+
   /**
    *
    * @returns {*}
@@ -63,7 +84,7 @@ export const spheres = {
   },
 
   getAdmins: function (options = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/owner', options).then((result) => {return [result]});
+    return this._setupRequest('GET', '/Spheres/{id}/admins', options).then((result) => {return [result]});
   },
 
   getMembers: function (options = {}) {

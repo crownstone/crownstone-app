@@ -460,16 +460,15 @@ class BluenetJS: NSObject {
       }
   }
   
-  @objc func setupCrownstone(_ configJSON: String, callback: @escaping RCTResponseSenderBlock) -> Void {
-    let data = JSON.parse(configJSON);
-    let crownstoneId      = data["crownstoneId"].uInt16
-    let adminKey          = data["adminKey"].string
-    let memberKey         = data["memberKey"].string
-    let guestKey          = data["guestKey"].string
-    let meshAccessAddress = data["meshAccessAddress"].uInt32
-    let ibeaconUUID       = data["ibeaconUUID"].string
-    let ibeaconMajor      = data["ibeaconMajor"].uInt16
-    let ibeaconMinor      = data["ibeaconMinor"].uInt16
+  @objc func setupCrownstone(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let crownstoneId      = data["crownstoneId"] as? UInt16
+    let adminKey          = data["adminKey"] as? String
+    let memberKey         = data["memberKey"] as? String
+    let guestKey          = data["guestKey"] as? String
+    let meshAccessAddress = data["meshAccessAddress"] as? UInt32
+    let ibeaconUUID       = data["ibeaconUUID"] as? String
+    let ibeaconMajor      = data["ibeaconMajor"] as? UInt16
+    let ibeaconMinor      = data["ibeaconMinor"] as? UInt16
     
     if (crownstoneId != nil &&
       adminKey != nil &&

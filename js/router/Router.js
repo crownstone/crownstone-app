@@ -27,6 +27,7 @@ import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
+import { ViewOverlay }            from '../views/components/ViewOverlay'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
@@ -53,7 +54,7 @@ export class AppRouter extends Component {
     // check what we should do with this data.
     let interpretData = () => {
       store = StoreManager.getStore();
-      INITIALIZER.start(store, eventBus);
+      INITIALIZER.start(store);
       if (store.hasOwnProperty('getState')) {
         dataLoginValidation()
       }
@@ -193,6 +194,7 @@ export class AppRouter extends Component {
           </Router>
           <OptionPopup />
           <Processing />
+          <ViewOverlay />
         </View>
       );
     }

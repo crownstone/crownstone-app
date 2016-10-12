@@ -215,10 +215,6 @@ export class SetupCrownstone {
   }
 
   setup(data) {
-    let dataString = data;
-    if (typeof dataString === 'object') {
-      dataString = JSON.stringify(data);
-    }
-    return BleActions.setupCrownstone(dataString);
+    return BleActions.setupCrownstone(data);
   }
 }
