@@ -84,7 +84,7 @@ export const spheres = {
   },
 
   getAdmins: function (options = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/admins', options).then((result) => {return [result]});
+    return this._setupRequest('GET', '/Spheres/{id}/admins', options);
   },
 
   getMembers: function (options = {}) {
