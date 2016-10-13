@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-var md5 = require('md5');
+var sha1 = require('sha-1');
 import {
   Alert,
   Linking,
@@ -212,7 +212,7 @@ export class Register extends Component {
     this.props.eventBus.emit('showLoading', 'Sending Registration Request...');
     CLOUD.registerUser({
       email: this.state.email.toLowerCase(),
-      password: md5(this.state.password),
+      password: sha1(this.state.password),
       firstName: this.state.firstName,
       lastName: this.state.lastName,
     })
