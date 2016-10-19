@@ -44,8 +44,8 @@ export class RoomSelection extends Component {
 
     let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms);
-    items.push({label:"ROOMS IN CURRENT SPHERE",  type:'explanation', below:false});
     if (roomIds.length > 0) {
+      items.push({label:"ROOMS IN CURRENT SPHERE",  type:'explanation', below:false});
       roomIds.forEach((roomId) => {
         let room = rooms[roomId];
         items.push({__item:
@@ -65,7 +65,11 @@ export class RoomSelection extends Component {
         });
       })
     }
+    else {
+      items.push({label:"Add rooms by pressing add in the Sphere Overview",  type:'explanation', below:false});
+    }
 
+    // if ()
     items.push({label:"DECOUPLE THIS CROWNSTONE",  type:'explanation', below: false});
     items.push({
       label: 'Do not put this Crownstone in a specific room.',

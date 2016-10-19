@@ -165,7 +165,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     let sphereInState = state.spheres[sphere.id];
 
     // check if we are an admin in this Sphere.
-    let adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
+    let adminInThisSphere = false;
 
     // add or update the sphere.
     if (sphereInState === undefined) {
@@ -174,7 +174,13 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     }
     else if (getTimeDifference(sphereInState.config, sphere) < 0) {
       actions.push({type: 'UPDATE_SPHERE', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid}});
+      adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
+    else {
+      adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
+    }
+
+
 
     /**
      * Sync the locations from the cloud to the database.
@@ -395,11 +401,13 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     /**
      * Sync the Admins from the cloud to the database.
      */
+    console.log("here1")
     Object.keys(spheresData[sphere.id].admins).forEach((userId) => {
       cloudSphereMemberIds[sphere.id][userId] = true;
       let user = spheresData[sphere.id].admins[userId];
       syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'admin');
     });
+    console.log("here2")
     Object.keys(spheresData[sphere.id].members).forEach((userId) => {
       cloudSphereMemberIds[sphere.id][userId] = true;
       let user = spheresData[sphere.id].members[userId];
@@ -430,7 +438,7 @@ const syncSphereUser = function(actions, sphere, sphereInState, userId, user, st
       user.picture = state.user.picture;
     }
 
-    if (getTimeDifference(sphereInState.users[userId], user)) {
+    if (getTimeDifference(sphereInState.users[userId], user) > 0) {
       actions.push({
         type: 'UPDATE_SPHERE_USER',
         sphereId: sphere.id,

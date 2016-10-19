@@ -189,7 +189,7 @@ export class RoomOverview extends Component {
                     this.clearPending(stoneId);
                   })
               }}
-              onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
+              onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, remote: this.props.remote})}}
               onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
               onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
             />

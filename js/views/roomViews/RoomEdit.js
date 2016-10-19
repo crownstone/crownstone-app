@@ -49,7 +49,7 @@ export class RoomEdit extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.deleting = true;
-    this.props.eventBus.emit('showLoading','Removing this room in the Cloud.');
+    this.props.eventBus.emit('showLoading','Removing this room in the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteLocation(this.props.locationId)
       .then(() => {
         let removeActions = [];
@@ -68,7 +68,7 @@ export class RoomEdit extends Component {
       .catch((err) => {
         this.deleting = false;
         Alert.alert("Encountered Cloud Issue.",
-          "We cannot delete this Appliance in the Cloud. Please try again later.",
+          "We cannot delete this Room in the Cloud. Please try again later.",
           [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading');} }])
       });
   }
