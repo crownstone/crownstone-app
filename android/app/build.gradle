@@ -87,8 +87,8 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.crownstone"
-        minSdkVersion 16
+        applicationId "nl.dobots.crownstoneapp"
+        minSdkVersion 18
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -126,6 +126,7 @@ android {
 }
 
 dependencies {
+    compile project(':bluenet')
     compile project(':rn-splash-screen')
     compile project(':react-native-vector-icons')
     compile project(':react-native-svg')
