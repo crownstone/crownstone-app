@@ -12,8 +12,8 @@ import {
 
 var Actions = require('react-native-router-flux').Actions;
 
-import {ProfilePicture} from './ProfilePicture'
-import {RoomCircle} from './RoomCircle'
+import {ProfilePicture} from '../components/ProfilePicture'
+import {RoomCircle} from '../components/RoomCircle'
 import {getOrphanedStones, getAmountOfStonesInLocation} from '../../util/dataUtil'
 
 import {styles, colors, screenWidth, screenHeight} from '../styles'
@@ -127,7 +127,7 @@ export class RoomLayer extends Component {
       sphereId: sphereId,
       locationId: locationId,
       title: room.config.name,
-      remote: this.props.remote,
+      viewingRemotely: this.props.viewingRemotely,
       seeStoneInSetupMode: this.props.seeStoneInSetupMode,
       setupData: this.props.setupData,
     };
@@ -146,7 +146,7 @@ export class RoomLayer extends Component {
         radius={this.roomRadius}
         store={this.props.store}
         pos={pos}
-        remote={this.props.remote}
+        viewingRemotely={this.props.viewingRemotely}
         seeStoneInSetupMode={this.props.seeStoneInSetupMode}
         setupData={this.props.setupData}
         key={locationId || 'floating'}
@@ -198,8 +198,7 @@ export class RoomLayer extends Component {
 
   render() {
     const store = this.props.store;
-    const state = store.getState();
-    this.renderState = state;
+    this.renderState = store.getState();
 
     if (this.props.sphereId === null) {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;

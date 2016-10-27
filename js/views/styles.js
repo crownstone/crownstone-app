@@ -4,6 +4,8 @@ import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/colorConverters'
 
 export const screenWidth = Dimensions.get('window').width;
 export const screenHeight = Dimensions.get('window').height;
+export const topBarHeight = 62;
+export const tabBarHeight = 50;
 export const pxRatio = PixelRatio.get();
 
 export let barHeight = 21*pxRatio;
@@ -25,7 +27,7 @@ export let colors = {
   red: {hex:'#ff3c00'},
   darkRed: {hex:'#cc0900'},
   menuRed: {hex:'#e00'},
-  iosBlue: {hex:'#0077ff'},
+  iosBlue: {hex:'#007aff'},
   blinkColor1: {hex:'#2daeff'},
   blinkColor2: {hex:'#a5dcff'},
 };

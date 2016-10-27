@@ -1009,7 +1009,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.Crownstone.Crownstone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1051,7 +1051,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.Crownstone.Crownstone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.crownstone.Crownstone;
 				PRODUCT_NAME = Crownstone;
 				SWIFT_OBJC_BRIDGING_HEADER = "Crownstone-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;

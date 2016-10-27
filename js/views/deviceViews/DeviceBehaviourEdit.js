@@ -91,7 +91,7 @@ export class DeviceBehaviourEdit extends Component {
   }
 
   constructOptions(device, stone, amountOfCrownstones) {
-    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, remote: this.props.remote};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
 
     let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title: this._getTitle(eventName, amountOfCrownstones < 4), ...requiredData})};

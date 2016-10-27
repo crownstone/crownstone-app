@@ -48,7 +48,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
-    case 'UPDATE_STONE_DISABILITY':
+    case 'UPDATE_STONE_DISABILITY': // used for crownstones that are not heard from for a while.
       if (action.data) {
         let newState = {...state};
         newState.disabled        = update(action.data.disabled, newState.disabled);

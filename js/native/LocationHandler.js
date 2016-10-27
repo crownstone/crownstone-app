@@ -183,8 +183,6 @@ class StoneTracker {
 class LocationHandlerClass {
   constructor() {
     this.initialized = false;
-
-    this.subscriptions = {};
     this.store = undefined;
     this.tracker = undefined;
 
@@ -240,26 +238,27 @@ class LocationHandlerClass {
           });
 
           sphereActions.push({type: 'SET_ACTIVE_SPHERE', data: {activeSphere: sphereId}});
+          sphereActions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: true, present: true}});
           this.store.batchDispatch(sphereActions);
         }).catch()
     }
   }
 
   _exitSphere(sphereId) {
-    this.store.dispatch({type: 'CLEAR_ACTIVE_SPHERE'});
+    this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: false, present: false}});
   }
 
   _enterRoom(locationId) {
     let state = this.store.getState();
     if (state.app.activeSphere && locationId) {
-      this.store.dispatch({type: 'USER_ENTER', sphereId: state.app.activeSphere, locationId: locationId, userId: state.user.userId});
+      this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: locationId, userId: state.user.userId});
     }
   }
 
   _exitRoom(locationId) {
     let state = this.store.getState();
     if (state.app.activeSphere && locationId) {
-      this.store.dispatch({type: 'USER_EXIT', sphereId: state.app.activeSphere, locationId: locationId, userId: state.user.userId});
+      this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: state.app.activeSphere, locationId: locationId, userId: state.user.userId});
     }
   }
 }

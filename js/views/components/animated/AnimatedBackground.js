@@ -5,7 +5,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth, screenHeight} from '../../styles'
+import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} from '../../styles'
 
 
 export class AnimatedBackground extends Component {
@@ -46,11 +46,11 @@ export class AnimatedBackground extends Component {
 
 
         <View style={styles.fullscreen} >
-          {this.props.hideInterface !== true ? <View style={{width:screenWidth,height:62}} /> : undefined}
+          {this.props.hideInterface !== true && this.props.hideTopBar !== true ? <View style={{width:screenWidth,height:topBarHeight}} /> : undefined}
           <View style={{flex:1}}>
             {this.props.children}
           </View>
-          {this.props.hideInterface !== true && this.props.hideTabBar !== true ? <View style={{width: screenWidth,height:50}} /> : undefined}
+          {this.props.hideInterface !== true && this.props.hideTabBar !== true ? <View style={{width: screenWidth,height:tabBarHeight}} /> : undefined}
         </View>
       </View>
     );

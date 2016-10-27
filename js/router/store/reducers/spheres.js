@@ -13,12 +13,22 @@ let defaultSettings = {
     memberKey: null,
     guestKey: null,
     meshAccessAddress: null,
+    reachable: false,
+    present: false,
     updatedAt: 1
   }
 };
 
 let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
+    case 'SET_SPHERE_STATE':
+      if (action.data) {
+        let newState = {...state};
+        newState.reachable  = update(action.data.reachable, newState.reachable);
+        newState.present = update(action.data.present, newState.present);
+        return newState;
+      }
+      return state;
     case 'SET_SPHERE_KEYS':
       if (action.data) {
         let newState = {...state};

@@ -28,6 +28,7 @@ import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
 import { ViewOverlay }            from '../views/components/ViewOverlay'
+import { BleStateOverlay }        from '../views/components/BleStateOverlay'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
@@ -71,7 +72,6 @@ export class AppRouter extends Component {
       let state = store.getState();
 
       store.dispatch({type:"CLEAR_ACTIVE_SPHERE"});
-      store.dispatch({type:"SET_REMOTE_SPHERE", data:{ remoteSphere: state.app.previouslyActiveSphere || Object.keys(state.spheres)[0]}});
 
       // pass the store to the singletons
       LocationHandler.loadStore(store);
@@ -164,8 +164,8 @@ export class AppRouter extends Component {
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
-                  <Scene key="sphereOverview"         component={Views.SphereOverview}             title="Sphere Overview" onRight={ () => {Actions.roomAdd();} } rightTitle="Add" getRightTitle={renderAddRoomButton}/>
-                  <Scene key="roomOverview"           component={Views.RoomOverview}               onRight={onRightFunctionEdit} rightTitle="Edit"  getRightTitle={renderEditRoomButton} />
+                  <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
+                  <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={false} onRight={onRightFunctionEdit} rightTitle="Edit"  getRightTitle={renderEditRoomButton} />
                   <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Room Settings" />
                   <Scene key="roomAdd"                component={Views.RoomAdd}                    title="Create Room" hideNavBar={true} />
                   <Scene key="deviceEdit"             component={Views.DeviceEdit}                 title="Edit Device" />
@@ -195,6 +195,7 @@ export class AppRouter extends Component {
           <OptionPopup />
           <Processing />
           <ViewOverlay />
+          <BleStateOverlay />
         </View>
       );
     }
@@ -227,20 +228,6 @@ class TabIcon extends Component {
   }
 }
 
-let renderAddRoomButton = function(params) {
-  let state = params.store.getState();
-  if (state.app.activeSphere) {
-    if (userIsAdminInSphere(state, state.app.activeSphere)) {
-      return "Add";
-    }
-  }
-  else if (state.app.currentSphere) {
-    if (userIsAdminInSphere(state, state.app.currentSphere)) {
-      return "Add";
-    }
-  }
-  return "";
-};
 let renderEditRoomButton = function(params) {
   let state = params.store.getState();
   if (userIsAdminInSphere(state, params.sphereId)) {
@@ -250,7 +237,7 @@ let renderEditRoomButton = function(params) {
 };
 
 let onRightFunctionEdit = function(params) {
-  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId, remote: params.remote});
+  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId, viewingRemotely: params.viewingRemotely});
 };
 
 let navBarStyle = {
@@ -289,19 +276,19 @@ let getBackground = function(type) {
   switch (type) {
     case "menu":
       backgroundImage = this.props.backgrounds.menu;
-      if (this.props.remote === true) {
+      if (this.props.viewingRemotely === true) {
         backgroundImage = this.props.backgrounds.menuRemoteNotConnected;
       }
       break;
     case "dark":
       backgroundImage = this.props.backgrounds.main;
-      if (this.props.remote === true) {
+      if (this.props.viewingRemotely === true) {
         backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
       }
       break;
     default:
       backgroundImage = this.props.backgrounds.main;
-      if (this.props.remote === true) {
+      if (this.props.viewingRemotely === true) {
         backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
       }
       break;

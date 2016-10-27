@@ -401,13 +401,11 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     /**
      * Sync the Admins from the cloud to the database.
      */
-    console.log("here1")
     Object.keys(spheresData[sphere.id].admins).forEach((userId) => {
       cloudSphereMemberIds[sphere.id][userId] = true;
       let user = spheresData[sphere.id].admins[userId];
       syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'admin');
     });
-    console.log("here2")
     Object.keys(spheresData[sphere.id].members).forEach((userId) => {
       cloudSphereMemberIds[sphere.id][userId] = true;
       let user = spheresData[sphere.id].members[userId];

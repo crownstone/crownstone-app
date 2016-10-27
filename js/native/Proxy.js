@@ -1,6 +1,6 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE } from '../ExternalConfig'
-import { LOG, LOGError } from '../logging/Log'
+import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
 export let Bluenet;
@@ -117,22 +117,22 @@ export const BleActions = {
 class NativeBusClass {
   constructor() {
     this.topics = {
-      setupAdvertisement:   "verifiedSetupAdvertisementData",
-      dfuAdvertisement:     "verifiedDFUAdvertisementData",
-      advertisement:        "verifiedAdvertisementData",        // = from crownstone in normal operation mode.
-      anyAdvertisement:     "anyVerifiedAdvertisementData",
-      setupProgress:        "setupProgress",
-      bleStatus:            "BleStatus",
+      setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = type_advertisement
+      dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = type_advertisement
+      advertisement:        "verifiedAdvertisementData",        // data type = type_advertisement // = from crownstone in normal operation mode.
+      anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = type_advertisement
+      setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error)
+      bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
 
-      nearest:              "nearestCrownstone",
-      nearestSetup:         "nearestSetupCrownstone",
+      nearest:              "nearestCrownstone",                // data type = type_nearest
+      nearestSetup:         "nearestSetupCrownstone",           // data type = type_nearest
 
-      iBeaconAdvertisement: "iBeaconAdvertisement",
-      enterSphere:          "enterSphere",
-      exitSphere:           "exitSphere",
-      enterRoom:            "enterLocation",
-      exitRoom:             "exitLocation",
-      currentRoom:          "currentLocation",
+      iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = type_beacon[]
+      enterSphere:          "enterSphere",                      // data type = string (sphereId)
+      exitSphere:           "exitSphere",                       // data type = string (sphereId)
+      enterRoom:            "enterLocation",                    // data type = string (locationId)
+      exitRoom:             "exitLocation",                     // data type = string (locationId)
+      currentRoom:          "currentLocation",                  // data type = string (locationId)
     };
 
     this.refMap = {};
@@ -167,3 +167,51 @@ class NativeBusClass {
 
 export const NativeBus = new NativeBusClass();
 
+
+
+/** type defs **/
+
+// type type_serviceData = {  // this is part of the advertisement
+//   firmwareVersion   : number,
+//   crownstoneId      : string,
+//   switchState       : number,
+//   eventBitmask      : number,
+//   temperature       : number,
+//   powerUsage        : number,
+//   accumulatedEnergy : number,
+//   newDataAvailable  : boolean,
+//   stateOfExternalCrownstone: boolean,
+//   setupMode         : boolean,
+//   dfuMode           : boolean,
+//   random            : string
+// }
+//
+// type type_advertisement = {
+//   handle            : string,
+//   name              : number[],
+//   rssi              : number,
+//   isCrownstoneFamily  : boolean,
+//   isCrownstonePlug    : boolean,
+//   isCrownstoneBuiltin : boolean,
+//   isGuidestone        : boolean,
+//   serviceUUID       : string,
+//   serviceData       : type_serviceData
+// }
+//
+// type type_nearest = {
+//   name      : string,
+//   handle    : string,
+//   rssi      : number,
+//   setupMode : boolean
+// }
+//
+// type type_beacon = {
+//   id        : string,
+//   uuid      : string,
+//   major     : number,
+//   minor     : number,
+//   rssi      : number,
+//   referenceId : string,
+// }
+
+/** end of type **/

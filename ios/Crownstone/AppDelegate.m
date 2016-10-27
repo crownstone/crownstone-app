@@ -26,7 +26,7 @@
                                                       moduleName:@"Crownstone"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:0.0f green:0.149f blue:0.243f alpha:1];
   
   // Show splash screen (rn-splash-screen)
   [RCTSplashScreen show:rootView];

@@ -5,6 +5,7 @@ let defaultSettings = {
   lastName: undefined,
   email: undefined,
   emailVerified: false,
+  present: false,
   picture: null,
   accessLevel: undefined, // 'admin', 'member', 'guest'
   updatedAt: 1
@@ -12,6 +13,14 @@ let defaultSettings = {
 
 let sphereUserReducer = (state = defaultSettings.users, action = {}) => {
   switch (action.type) {
+    case 'USER_ENTER_SPHERE':
+      let newState = {...state};
+      newState.present = true;
+      return newState;
+    case 'USER_EXIT_SPHERE':
+      newState = {...state};
+      newState.present = false;
+      return newState;
     case 'ADD_SPHERE_USER':
     case 'UPDATE_SPHERE_USER':
       if (action.data) {

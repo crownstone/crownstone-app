@@ -149,7 +149,7 @@ export class RoomCircle extends Component {
   }
 
   _getColor(usage, prev = false) {
-    if (this.props.remote === true) {
+    if (this.props.viewingRemotely === true) {
       return colors.notConnected.hex;
     }
 
@@ -239,7 +239,7 @@ export class RoomCircle extends Component {
           }}><View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
             {this.getIcon()}
             </View>
-            {this.props.remote ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{this.usage + " W"}</Text>}
+            {this.props.viewingRemotely ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{this.usage + " W"}</Text>}
           </View>
         </View>
       </View>

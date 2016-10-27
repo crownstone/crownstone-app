@@ -63,6 +63,7 @@ export class Login extends Component {
     this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email:this.state.email.toLowerCase()})
       .then(() => {
+        emailMemoryForLogin.email = this.state.email;
         this.props.eventBus.emit('hideLoading');
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
       })
@@ -295,11 +296,6 @@ export class Login extends Component {
       // set a small delay so the user sees "done"
       setTimeout(() => {
         this.props.eventBus.emit('hideProgress');
-
-        let state = store.getState();
-        if (Object.keys(state.spheres).length > 0)
-          store.dispatch({type:"SET_REMOTE_SPHERE", data:{ remoteSphere: state.app.previouslyActiveSphere || Object.keys(state.spheres)[0]}});
-
         Actions.tabBar();
 
       }, 50);
