@@ -38,19 +38,15 @@ public class MainApplication extends Application implements ReactApplication {
 		protected List<ReactPackage> getPackages() {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
-					new RCTCameraPackage(),
-					new RNDeviceInfo(),
-					new RNFSPackage(),
 					new MainReactPackage(),
-            new SplashScreenPackage(),
-            new VectorIconsPackage(),
-            new RNSvgPackage(),
-            new RandomBytesPackage(),
-            new ImageResizerPackage(),
-            new RNFSPackage(),
-            new RNDeviceInfo(),
-            new RCTCameraPackage(),
-            new SplashScreenPackage()
+					new VectorIconsPackage(),
+					new RNSvgPackage(),
+					new RandomBytesPackage(),
+					new ImageResizerPackage(),
+					new RNFSPackage(),
+					new RNDeviceInfo(),
+					new RCTCameraPackage(),
+					new SplashScreenPackage()
 			);
 		}
 	};
