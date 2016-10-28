@@ -37,6 +37,7 @@ export class SettingsSphereInvite extends Component {
     items.push({
       label: 'Email',
       type: 'textEdit',
+      autoCapitalize: 'none',
       validation:'email',
       validationMethod:'icons',
       keyboardType: 'email-address',
@@ -44,23 +45,22 @@ export class SettingsSphereInvite extends Component {
       placeholder: 'Send email to...',
       validationCallback: (newState) => {this.inputStates.email = newState},
       alwaysShowState: false,
-      callback: (newValue) => {this.state.email = newValue}
+      callback: (newValue) => {this.setState({email:newValue});}
     });
 
 
     let level = getMyLevelInSphere(state, this.props.sphereId);
     if (level == "admin") {
       items.push({
-          type:'dropdown',
-          label:'Access Level',
-          value: this.state.permission,
-          dropdownHeight:100,
-          items:[{label:'Member'},{label:'Guest'}],
-          callback: (permission) => {
-            this.setState({permission:permission});
-          }
+        type:'dropdown',
+        label:'Access Level',
+        value: this.state.permission,
+        dropdownHeight:100,
+        items:[{label:'Member'},{label:'Guest'}],
+        callback: (permission) => {
+          this.setState({permission:permission});
         }
-      );
+      });
     }
     else {
       items.push({type:'info', label:'Access level', value:'Guest'});
@@ -86,10 +86,10 @@ export class SettingsSphereInvite extends Component {
 
   validateAndContinue() {
     this.props.eventBus.emit('showLoading', 'Inviting User...');
-    CLOUD.inviteUser(this.email.toLowerCase(), this.state.permission)
+    CLOUD.inviteUser(this.state.email.toLowerCase(), this.state.permission)
       .then(() => {
         this.props.eventBus.emit('hideLoading');
-        Alert.alert("Invite has been sent!","An email has been sent to " + email + ".", [{text:'OK'}])
+        Alert.alert("Invite has been sent!","An email has been sent to " + this.state.email + ".", [{text:'OK', onPress: () => {Actions.pop();}}])
       })
       .catch((err) => {
         this.props.eventBus.emit('hideLoading');

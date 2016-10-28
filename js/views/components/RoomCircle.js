@@ -5,7 +5,6 @@ import {
   Image,
   NativeModules,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Text,
   View
 } from 'react-native';
@@ -18,31 +17,47 @@ import { LOGDebug } from '../../logging/Log';
 var Actions = require('react-native-router-flux').Actions;
 
 
-import Svg,{ Circle } from 'react-native-svg';
+import { Svg, Circle } from 'react-native-svg';
 
 export class RoomCircle extends Component {
   constructor(props) {
     super();
 
+    this.initializedPosition = true;
+    let initialOpacity = 1;
     let initialX = props.pos.x;
     let initialY = props.pos.y;
 
     let screenCenterX = 0.5*screenWidth;
     let screenCenterY = 0.5*screenHeight;
-    if (initialX > screenCenterX)
-      initialX += screenWidth;
-    else
-      initialX -= screenWidth;
 
-    if (initialY > screenCenterY)
-      initialY -= 0.25*screenHeight;
-    else
-      initialY += 0.25*screenHeight;
+    // we only want to animate the movement if this sphere is in focus
+    if (props.active == true) {
+      initialOpacity = 0;
+      this.initializedPosition = false;
 
+      // if we only have one icon, we just fade it in, not have it move from the side.
+      if (props.totalAmountOfRoomCircles > 1) {
+        if (initialX > screenCenterX)
+          initialX += screenWidth;
+        else if (initialX < screenCenterX)
+          initialX -= screenWidth;
 
-    this.state = {top: new Animated.Value(initialY), left: new Animated.Value(initialX), opacity: new Animated.Value(0)};
+        if (initialY > screenCenterY)
+          initialY -= 0.25 * screenHeight;
+        else if (initialY < screenCenterY)
+          initialY += 0.25 * screenHeight;
+      }
+    }
 
-    this.levels = [
+    this.state = {
+      top: new Animated.Value(initialY),
+      left: new Animated.Value(initialX),
+      colorFadeOpacity: new Animated.Value(0),
+      componentOpacity: new Animated.Value(initialOpacity)
+    };
+
+    this.energyLevels = [
       {min: 0,    max:200,   color: colors.green.hex},
       {min: 200,  max:500,   color: colors.orange.hex},
       {min: 500,  max:1500,  color: colors.red.hex},
@@ -141,11 +156,11 @@ export class RoomCircle extends Component {
 
 
   _getLevel(usage) {
-    for (let i = 0; i < this.levels.length; i++) {
-      if (usage < this.levels[i].max)
+    for (let i = 0; i < this.energyLevels.length; i++) {
+      if (usage < this.energyLevels[i].max)
         return i
     }
-    return this.levels.length-1;
+    return this.energyLevels.length-1;
   }
 
   _getColor(usage, prev = false) {
@@ -163,22 +178,22 @@ export class RoomCircle extends Component {
         return "#eee"
       }
       else {
-        return this.levels[level-1].color;
+        return this.energyLevels[level-1].color;
       }
     }
-    return this.levels[level].color;
+    return this.energyLevels[level].color;
   }
 
-  _animateFade() {
+  _animateFadeOnColorChange() {
     let duration = this.animatedMoving === true ? this.movementDuration : this.fadeDuration;
 
     if (this.animationStarted === false) {
       this.animationStarted = true;
-      Animated.timing(this.state.opacity, {toValue: 1, duration: duration}).start();
+      Animated.timing(this.state.colorFadeOpacity, {toValue: 1, duration: duration}).start();
       this.fadeAnimationTimeout = setTimeout(() => {
         this.animationStarted = false;
         this.animating = false;
-        this.setState({opacity: new Animated.Value(0)});
+        this.setState({colorFadeOpacity: new Animated.Value(0)});
       }, duration)
     }
   }
@@ -210,7 +225,7 @@ export class RoomCircle extends Component {
       this.fadeAnimationTimeout = setTimeout(() => {
         this.color = newColor;
         this.previousCircle = circle;
-        this._animateFade()
+        this._animateFadeOnColorChange();
       },10);
     }
     let circle = (
@@ -251,13 +266,14 @@ export class RoomCircle extends Component {
           <View style={{position:'absolute', top:0, left:0}}>
             {this.previousCircle}
           </View>
-          <Animated.View style={{position:'absolute', top:0, left:0, opacity: this.state.opacity}}>
+          <Animated.View style={{position:'absolute', top:0, left:0, opacity: this.state.colorFadeOpacity}}>
             {circle}
           </Animated.View>
         </View>
       )
     }
     else {
+      console.log("initial draw")
       this.color = newColor;
       this.previousCircle = circle;
       return circle;
@@ -323,8 +339,8 @@ export class RoomCircle extends Component {
 
   _getFactor(usage) {
     let level = this._getLevel(usage);
-    let minW = this.levels[level].min;
-    let maxW = this.levels[level].max;
+    let minW = this.energyLevels[level].min;
+    let maxW = this.energyLevels[level].max;
     let val = (usage-minW) / (maxW-minW);
 
     if (val < 0.5) {
@@ -360,6 +376,9 @@ export class RoomCircle extends Component {
       this.animatedMoving = true;
       animations.push(Animated.timing(this.state.top, {toValue: this.props.pos.y, duration: this.movementDuration}));
       animations.push(Animated.timing(this.state.left, {toValue: this.props.pos.x, duration: this.movementDuration}));
+      if (this.initializedPosition === false) {
+        animations.push(Animated.timing(this.state.componentOpacity, {toValue: 1, duration: this.movementDuration}));
+      }
       this.moveAnimationTimeout = setTimeout(() => {
         this.animatedMoving = false;
       }, this.movementDuration);
@@ -389,7 +408,7 @@ export class RoomCircle extends Component {
   }
 
   render() {
-    if (this.state.top !== this.props.pos.y || this.state.left !== this.props.pos.x) {
+    if (this.props.active && (this.state.top !== this.props.pos.y || this.state.left !== this.props.pos.x)) {
       this.moveAnimationTimeout = setTimeout(() => this._animatePosition(),0)
     }
 
@@ -398,7 +417,7 @@ export class RoomCircle extends Component {
     this.renderState = store.getState();
 
     return (
-      <Animated.View style={{position:'absolute',  top: this.state.top, left: this.state.left}}>
+      <Animated.View style={{position:'absolute',  top: this.state.top, left: this.state.left, opacity: this.state.componentOpacity}}>
         <TouchableOpacity onPress={() => Actions.roomOverview(this.props.actionParams)}>
           <View>
             {this.getCircle()}

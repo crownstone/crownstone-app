@@ -19,7 +19,6 @@ import { TopBar } from '../components/Topbar'
 import { AnimatedBackground } from '../components/animated/AnimatedBackground'
 import { Icon } from '../components/Icon'
 import { Sphere } from './Sphere'
-import { RoomLayer } from './RoomLayer'
 import { LOG, LOGDebug } from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
@@ -43,6 +42,7 @@ export class SphereOverview extends Component {
     // set the active sphere if needed and setup the object variables.
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
+
     this.sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
     if (activeSphere === null && this.sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: this.sphereIds[0]}});
@@ -51,6 +51,9 @@ export class SphereOverview extends Component {
     else if (activeSphere) {
       this._activeSphereIndex = this.sphereIds.indexOf(activeSphere);
     }
+
+    // set the view position to match the active sphere.
+    this.state.left = new Animated.Value(-screenWidth*this._activeSphereIndex);
 
     // configure the pan responder
     this._panResponder = PanResponder.create({
@@ -62,12 +65,15 @@ export class SphereOverview extends Component {
       onMoveShouldSetPanResponderCapture:   (evt, gestureState) => false,
       onPanResponderTerminationRequest:     (evt, gestureState) => true,
       onPanResponderGrant:                  (evt, gestureState) => {},
-      onPanResponderMove:                   (evt, gestureState) => { Animated.timing(this.state.left, {toValue: -screenWidth*this._activeSphereIndex + gestureState.dx, duration: 0}).start(); },
+      onPanResponderMove:                   (evt, gestureState) => { this._moveView(gestureState.dx); },
       onPanResponderRelease:                (evt, gestureState) => { this._snapToSphere(gestureState.dx); },
     });
   }
 
 
+  _moveView(dx) {
+    Animated.timing(this.state.left, {toValue: -screenWidth*this._activeSphereIndex + dx, duration: 0}).start();
+  }
   /**
    * this piece of code makes sure the movement is finalized neatly.
    * @param dx
@@ -136,7 +142,7 @@ export class SphereOverview extends Component {
 
       let activeSphere = state.app.activeSphere;
       let noSpheres = Object.keys(state.spheres).length === 0;
-      let currentSphere = noSpheres === false ? activeSphere || remoteSphere || null : null;
+      let currentSphere = noSpheres === false ? activeSphere || null : null;
       if (this.renderState.app.activeSphere === null && this.renderState.app.remoteSphere === null) {
         currentSphere = null
       }
@@ -150,28 +156,6 @@ export class SphereOverview extends Component {
         this.forceUpdate();
       }
     });
-
-    // TESTING:
-    // this._trig()
-  }
-
-
-  _trig() {
-    setTimeout(() => {
-      let state = this.props.store.getState();
-
-      // if (state.app.activeSphere) {
-      if (this.state.seeStoneInSetupMode) {
-        this.setState({seeStoneInSetupMode: false});
-        // this.props.store.dispatch({type: "CLEAR_ACTIVE_SPHERE"});
-      }
-      else {
-        this.setState({seeStoneInSetupMode: true});
-        // this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: state.app.remoteSphere}});
-      }
-
-      this._trig();
-    }, 5000)
   }
 
   componentWillUnmount() {
@@ -213,7 +197,6 @@ export class SphereOverview extends Component {
         viewingRemotely = false;
 
     }
-
 
     let background = this.props.backgrounds.main;
     if (viewingRemotely === true) {

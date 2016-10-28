@@ -71,15 +71,12 @@ export class AppRouter extends Component {
     let dataLoginValidation = () => {
       let state = store.getState();
 
-      store.dispatch({type:"CLEAR_ACTIVE_SPHERE"});
-
       // pass the store to the singletons
       LocationHandler.loadStore(store);
       AdvertisementHandler.loadStore(store);
       Scheduler.loadStore(store);
       StoneStateHandler.loadStore(store);
 
-      LOG("LOADED STORES");
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
 

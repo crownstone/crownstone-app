@@ -90,8 +90,7 @@ export class RoomLayer extends Component {
     });
   }
 
-  componentWillUpdate(newProps) {
-  }
+  componentWillUpdate(newProps) { }
 
   componentWillUnmount() {
     this.unsubscribe();
@@ -100,7 +99,7 @@ export class RoomLayer extends Component {
   // experiment
   shouldComponentUpdate(nextProps, nextState) { return true }
 
-  _renderRoom(locationId, room, sphereId, count, index) {
+  _renderRoom(locationId, room, count, index, activeSphere) {
     // get the position for the room
     let pos = {};
     if (count > 6) {
@@ -124,7 +123,7 @@ export class RoomLayer extends Component {
 
     // variables to pass to the room overview
     let actionsParams = {
-      sphereId: sphereId,
+      sphereId: this.props.sphereId,
       locationId: locationId,
       title: room.config.name,
       viewingRemotely: this.props.viewingRemotely,
@@ -142,6 +141,8 @@ export class RoomLayer extends Component {
     return (
       <RoomCircle
         locationId={locationId}
+        active={this.props.sphereId == activeSphere}
+        totalAmountOfRoomCircles={count}
         sphereId={this.props.sphereId}
         radius={this.roomRadius}
         store={this.props.store}
@@ -159,6 +160,7 @@ export class RoomLayer extends Component {
     this.maxY = 0;
     const store = this.props.store;
     const state = store.getState();
+    let activeSphere = state.app.activeSphere;
     let rooms = state.spheres[this.props.sphereId].locations;
 
     let orphanedStones = getOrphanedStones(state, this.props.sphereId);
@@ -175,11 +177,11 @@ export class RoomLayer extends Component {
     }
 
     for (let i = 0; i < roomIdArray.length; i++) {
-      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], this.props.sphereId, amountOfRooms, i))
+      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], amountOfRooms, i, activeSphere))
     }
 
     if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null, {config: {name: "Floating Crownstones"}}, this.props.sphereId, amountOfRooms, amountOfRooms - 1))
+      roomNodes.push(this._renderRoom(null, {config: {name: "Floating Crownstones"}}, amountOfRooms, amountOfRooms - 1, activeSphere))
     }
 
     if (roomIdArray.length > 6) {

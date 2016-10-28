@@ -54,13 +54,13 @@ export const spheres = {
     permission = permission.toLowerCase();
     switch (permission) {
       case 'admin':
-        return this._setupRequest('PUT', '/Spheres/{id}/spheres', { data: { email: email}});
+        return this._setupRequest('PUT', '/Spheres/{id}/admins', { data: { email: email}});
         break;
       case 'member':
-        return this._setupRequest('PUT', '/Spheres/{id}/spheres', { data: { email: email}});
+        return this._setupRequest('PUT', '/Spheres/{id}/members', { data: { email: email}});
         break;
       case 'guest':
-        return this._setupRequest('PUT', '/Spheres/{id}/spheres', { data: { email: email}});
+        return this._setupRequest('PUT', '/Spheres/{id}/guests', { data: { email: email}});
         break;
       default:
         return new Promise((resolve, reject) => {
