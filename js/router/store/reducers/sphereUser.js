@@ -1,10 +1,11 @@
 import { update, getTime } from './reducerUtil'
 
 let defaultSettings = {
-  firstName: undefined,
-  lastName: undefined,
-  email: undefined,
+  firstName: null,
+  lastName: null,
+  email: null,
   emailVerified: false,
+  invitationPending: false,
   present: false,
   picture: null,
   accessLevel: undefined, // 'admin', 'member', 'guest'
@@ -25,13 +26,14 @@ let sphereUserReducer = (state = defaultSettings.users, action = {}) => {
     case 'UPDATE_SPHERE_USER':
       if (action.data) {
         let newState = {...state};
-        newState.firstName     = update(action.data.firstName,     newState.firstName);
-        newState.lastName      = update(action.data.lastName,      newState.lastName);
-        newState.picture       = update(action.data.picture,       newState.picture);
-        newState.email         = update(action.data.email,         newState.email);
-        newState.emailVerified = update(action.data.emailVerified, newState.emailVerified);
-        newState.accessLevel   = update(action.data.accessLevel,   newState.accessLevel);
-        newState.updatedAt     = getTime(action.data.updatedAt);
+        newState.firstName           = update(action.data.firstName,     newState.firstName);
+        newState.lastName            = update(action.data.lastName,      newState.lastName);
+        newState.picture             = update(action.data.picture,       newState.picture);
+        newState.email               = update(action.data.email,         newState.email);
+        newState.emailVerified       = update(action.data.emailVerified, newState.emailVerified);
+        newState.invitationPending   = update(action.data.invitationPending,   newState.invitationPending);
+        newState.accessLevel         = update(action.data.accessLevel,   newState.accessLevel);
+        newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

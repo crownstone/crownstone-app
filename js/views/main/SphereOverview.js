@@ -72,7 +72,8 @@ export class SphereOverview extends Component {
 
 
   _moveView(dx) {
-    Animated.timing(this.state.left, {toValue: -screenWidth*this._activeSphereIndex + dx, duration: 0}).start();
+    if (this.sphereIds.length > 0)
+      Animated.timing(this.state.left, {toValue: -screenWidth*this._activeSphereIndex + dx, duration: 0}).start();
   }
   /**
    * this piece of code makes sure the movement is finalized neatly.

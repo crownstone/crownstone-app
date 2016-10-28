@@ -112,7 +112,7 @@ export class DeviceBehaviourEdit extends Component {
       eventLabel = 'onNear';
       items.push({label:'WHEN YOU GET CLOSE', type: 'explanation', style:{paddingTop:0}, below:false});
       items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-      items.push({label:'Will trigger when you are roughly within 2m.', type: 'explanation',  below:true});
+      items.push({label:'Will trigger when you are roughly within a few meters.', type: 'explanation',  below:true});
 
       // Behaviour for onAway event
       eventLabel = 'onAway';

@@ -57,7 +57,16 @@ class StoneTracker {
 
     // keep track of this item.
     if (this.elements[stoneId] === undefined) {
-      this.elements[stoneId] = {lastTriggerType: undefined, lastTriggerTime: 0, rssiAverage: rssi, samples: 0, touchSamples:0, touchTime: now};
+      this.elements[stoneId] = {
+        lastTriggerType: undefined,
+        lastTriggerTime: 0,
+        rssiAverage: rssi,
+        samples: 0,
+        touchSamples:0,
+        touchTime: now,
+        cancelScheduledAwayAction: false,
+        cancelScheduledNearAction: false
+      };
     }
 
     // local reference of the device/stone
@@ -132,6 +141,15 @@ class StoneTracker {
 
     let behaviour = element.behaviour[type];
     if (behaviour.active === true) {
+      if (type == TYPES.NEAR && ref.cancelScheduledAwayAction !== false) {
+        ref.cancelScheduledAwayAction();
+        ref.cancelScheduledAwayAction = false;
+      }
+      else if (ref.cancelScheduledNearAction !== false) {
+        ref.cancelScheduledNearAction();
+        ref.cancelScheduledNearAction = false;
+      }
+
       let changeCallback = () => {
         let state = this.store.getState();
         let stone = state.spheres[sphereId].stones[stoneId];
@@ -144,7 +162,12 @@ class StoneTracker {
 
       if (behaviour.delay > 0) {
         // use scheduler
-        Scheduler.scheduleCallback(changeCallback, behaviour.delay*1000);
+        if (type == TYPES.NEAR) {
+          ref.cancelScheduledNearAction = Scheduler.scheduleCallback(changeCallback, behaviour.delay*1000);
+        }
+        else {
+          ref.cancelScheduledAwayAction = Scheduler.scheduleCallback(changeCallback, behaviour.delay*1000);
+        }
       }
       else {
         changeCallback();
