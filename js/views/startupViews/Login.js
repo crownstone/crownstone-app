@@ -254,7 +254,6 @@ export class Login extends Component {
 
     // check if we need to upload a picture that has been set aside during the registration process.
     let imageFilename = getImageFileFromUser(this.state.email);
-    LOG("IMAGE FILENAME AT LOGIN", imageFilename);
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {
         if (picturePath === null)
@@ -266,6 +265,9 @@ export class Login extends Component {
         store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
+      })
+      .catch((err) => {
+        LOGError("Problem downloading profile picture: ", err);
       })
       .then(() => {
         this.progress += parts;

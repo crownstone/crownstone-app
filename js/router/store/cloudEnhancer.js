@@ -41,6 +41,7 @@ function handleAction(action, returnValue, newState, oldState) {
 
   switch (action.type) {
     case 'USER_APPEND':
+      break;
     case 'USER_UPDATE':
       handleUserInCloud(action, newState);
       break;
