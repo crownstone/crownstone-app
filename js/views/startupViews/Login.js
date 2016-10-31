@@ -27,8 +27,9 @@ export class Login extends Component {
   constructor() {
     super();
     // this.state = {email: emailMemoryForLogin.email || 'alex@dobots.nl', password:'letmein0'};
-    this.state = {email: emailMemoryForLogin.email || '', password:''};
+    // this.state = {email: emailMemoryForLogin.email || '', password:''};
     // this.state = {email: emailMemoryForLogin.email || 'anne@crownstone.rocks', password:'bier'};
+    this.state = {email: 'bart@almende.org', password:'12'};
     this.progress = 0;
   }
 
@@ -267,6 +268,7 @@ export class Login extends Component {
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
       })
       .catch((err) => {
+        // likely a 404, ignore
         LOGError("Problem downloading profile picture: ", err);
       })
       .then(() => {
@@ -285,6 +287,9 @@ export class Login extends Component {
         else {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Sphere available.'});
         }
+      })
+      .catch((err) => {
+        Alert.alert("An error has occurred at Login", err, [{text:'OK'}])
       })
     );
 

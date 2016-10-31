@@ -122,7 +122,8 @@ export const safeDeleteFile = function(uri) {
       })
       .then(() => {
         resolve()
-      }).done()
+      })
+      .catch(resolve)
   })
 };
 
