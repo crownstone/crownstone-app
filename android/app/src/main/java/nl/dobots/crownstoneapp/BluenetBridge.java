@@ -200,13 +200,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void startScanningForService(String serviceId) {
-		// This is.. what exactly??
-		setScanningState(true);
-		Log.d(TAG, "startScanningForService");
-	}
-
-	@ReactMethod
 	public void stopScanning() {
 		setScanningState(false);
 		if (isScannerIdle()) {
