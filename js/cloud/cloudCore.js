@@ -118,21 +118,26 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
       begin: beginCallback,
       progress: progressCallback
     })
-      .then((status) => {
-        if (status.statusCode !== 200) {
-          // remove the temp file if the download failed
-          RNFS.unlink(tempPath);
-          successCallback();
-          resolve(null);
-        }
-        else {
-          safeMoveFile(tempPath,toPath)
-            .then((toPath) => {
-              // if we have renamed the file, we resolve the promise so we can store the changed filename.
-              successCallback();
-              resolve(toPath);
-            })
-        }
-      }).catch(reject)
+    .then((status) => {
+      LOGError("got status downloading file", status);
+      if (status.statusCode !== 200) {
+        // remove the temp file if the download failed
+        RNFS.unlink(tempPath);
+        successCallback();
+        resolve(null);
+      }
+      else {
+        safeMoveFile(tempPath,toPath)
+          .then((toPath) => {
+            // if we have renamed the file, we resolve the promise so we can store the changed filename.
+            successCallback();
+            resolve(toPath);
+          })
+      }
+    })
+    .catch((err) => {
+      LOGError("error downloading file", err);
+      reject(err);
+    })
   });
 }
