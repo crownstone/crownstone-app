@@ -165,8 +165,8 @@ export class RoomOverview extends Component {
               state={item.stone.state.state}
               currentUsage={item.stone.state.currentUsage}
               navigation={false}
-              control={this.props.remote === false}
-              disabled={this.state.pendingRequests[stoneId] !== undefined || this.props.remote}
+              control={this.props.viewingRemotely === false}
+              disabled={this.state.pendingRequests[stoneId] !== undefined || this.props.viewingRemotely}
               dimmable={item.device.config.dimmable}
               onChange={(switchState) => {
                 this.showPending(stoneId);
@@ -189,9 +189,9 @@ export class RoomOverview extends Component {
                     this.clearPending(stoneId);
                   })
               }}
-              onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, remote: this.props.remote})}}
-              onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
-              onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, remote: this.props.remote})}}
+              onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.props.viewingRemotely})}}
+              onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.props.viewingRemotely})}}
+              onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.props.viewingRemotely})}}
             />
           </View>
         </View>
@@ -255,7 +255,7 @@ export class RoomOverview extends Component {
     if (Object.keys(stones).length == 0 && this.state.seeStoneInSetupMode == false) {
       return (
         <Background image={backgroundImage} >
-          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} remote={this.props.remote} />
+          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.props.viewingRemotely} />
           <Separator fullLength={true} />
           <DeviceEntry empty={true} floatingCrownstones={this.props.locationId === null} />
           <Separator fullLength={true} />
@@ -268,7 +268,7 @@ export class RoomOverview extends Component {
     else {
       return (
         <Background image={backgroundImage} >
-          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null} remote={this.props.remote}  />
+          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.props.viewingRemotely}  />
           <ScrollView>
             {this.getItems(stones)}
           </ScrollView>

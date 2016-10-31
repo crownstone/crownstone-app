@@ -14,7 +14,7 @@ import { Icon } from './Icon'
 
 export class RoomBanner extends Component {
   getPresentUsers() {
-    if (this.props.remote === true) {
+    if (this.props.viewingRemotely === true) {
       return <Text style={styles.roomImageText}>Viewing Data</Text>;
     }
     else if (this.props.presentUsers.length === 0)
@@ -27,7 +27,7 @@ export class RoomBanner extends Component {
   }
 
   getUsage() {
-    if (this.props.remote === true) {
+    if (this.props.viewingRemotely === true) {
       return <Icon name="ios-cloudy-night" size={30} color="#fff" style={{backgroundColor:"transparent"}} />
     }
     else if (this.props.usage !== undefined) {
@@ -45,7 +45,7 @@ export class RoomBanner extends Component {
     let rightRatio = 0.30;
     let offset = 0.1*height;
     let remoteColor = undefined;
-    if (this.props.remote === true) {
+    if (this.props.viewingRemotely === true) {
       remoteColor = colors.notConnected.hex;
     }
 
@@ -68,7 +68,7 @@ export class RoomBanner extends Component {
         </View>
       );
     }
-    else if (this.props.noCrownstones === true && this.props.remote === false) {
+    else if (this.props.noCrownstones === true && this.props.viewingRemotely === false) {
       leftRatio = 0.95;
       return (
         <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.hex, justifyContent:'center'}}>

@@ -185,7 +185,11 @@ export class SettingsPluginRecoverStep2 extends Component {
       .then(() => {
         Alert.alert("Success!",
           "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a new Sphere.",
-          [{text:'OK', onPress: () => { Actions.pop(); }}]
+          [{text:'OK', onPress: () => {
+            // pop twice to get back to the settings.
+            Actions.pop();
+            Actions.pop();
+          }}]
         )
       })
       .catch((err) => {

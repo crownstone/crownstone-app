@@ -46,7 +46,7 @@ export class DeviceEditLogic extends Component {
     let requiredData = {
       sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
-      remote: this.props.remote
+      viewingRemotely: this.props.viewingRemotely
     };
     let items = [];
 
@@ -64,7 +64,7 @@ export class DeviceEditLogic extends Component {
       sphereId: this.props.sphereId,
       stoneId: this.props.stoneId,
       applianceId: applianceId,
-      remote: this.props.remote
+      viewingRemotely: this.props.viewingRemotely
     };
     let items = [];
 

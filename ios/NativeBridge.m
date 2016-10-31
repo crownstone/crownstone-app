@@ -20,7 +20,6 @@ RCT_EXTERN_METHOD(rerouteEvents)
 RCT_EXTERN_METHOD(startScanning)
 RCT_EXTERN_METHOD(startScanningForCrownstones)
 RCT_EXTERN_METHOD(startScanningForCrownstonesUniqueOnly)
-RCT_EXTERN_METHOD(startScanningForService:(NSString *)serviceId)
 RCT_EXTERN_METHOD(stopScanning)
 
 // Bluenet

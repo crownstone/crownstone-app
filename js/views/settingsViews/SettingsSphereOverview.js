@@ -16,6 +16,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
+import { LOG,LOGError } from '../../logging/Log'
 
 
 export class SettingsSphereOverview extends Component {
@@ -77,7 +78,7 @@ export class SettingsSphereOverview extends Component {
     }
 
     // TODO: support multiple spheres.
-    if (adminSpheres.length == 0) {
+    // if (adminSpheres.length == 0) {
       items.push({type: 'spacer'});
       items.push({
         label: 'Create a new Sphere',
@@ -85,16 +86,10 @@ export class SettingsSphereOverview extends Component {
         style: {color: colors.blue.hex},
         type: 'button',
         callback: () => {
-          this.props.eventBus.emit('showLoading', 'Creating Sphere...');
-          return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus).then((sphereId) => {
-            this.props.eventBus.emit('hideLoading');
-            let state = this.props.store.getState();
-            let title = state.spheres[sphereId].config.name;
-            Actions.settingsSphere({sphereId: sphereId, title: title})
-          })
+          this._createNewSphere(store, state.user.firstName);
         }
       });
-    }
+    // }
 
     // if you do not have, or are part of, any spheres yet.
     if (adminSpheres.length == 0 && memberSpheres.length == 0 && guestSpheres.length == 0)
@@ -102,6 +97,25 @@ export class SettingsSphereOverview extends Component {
 
 
     return items;
+  }
+
+  _createNewSphere(store, name) {
+    this.props.eventBus.emit('showLoading', 'Creating Sphere...');
+    return CLOUD.createNewSphere(store, name, this.props.eventBus)
+      .then((sphereId) => {
+        this.props.eventBus.emit('hideLoading');
+        let state = this.props.store.getState();
+        let title = state.spheres[sphereId].config.name;
+        Actions.settingsSphere({sphereId: sphereId, title: title})
+      })
+      .catch((err) => {
+        if (err.status == 422) {
+          this._createNewSphere(store, name + ' new')
+        }
+        else {
+          LOGError(err)
+        }
+      })
   }
 
   render() {

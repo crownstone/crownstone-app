@@ -328,10 +328,6 @@ class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenet.startScanningForCrownstonesUniqueOnly()
   }
   
-  @objc func startScanning(_ serviceId: String) {
-    GLOBAL_BLUENET!.bluenet.startScanningForService(serviceId)
-  }
-  
   @objc func stopScanning() {
     GLOBAL_BLUENET!.bluenet.stopScanning()
   }

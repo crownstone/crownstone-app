@@ -91,7 +91,7 @@ export class DeviceBehaviourEdit extends Component {
   }
 
   constructOptions(device, stone, amountOfCrownstones) {
-    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, remote: this.props.remote};
+    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
 
     let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title: this._getTitle(eventName, amountOfCrownstones < 4), ...requiredData})};
@@ -112,7 +112,7 @@ export class DeviceBehaviourEdit extends Component {
       eventLabel = 'onNear';
       items.push({label:'WHEN YOU GET CLOSE', type: 'explanation', style:{paddingTop:0}, below:false});
       items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-      items.push({label:'Will trigger when you are roughly within 2m.', type: 'explanation',  below:true});
+      items.push({label:'Will trigger when you are roughly within a few meters.', type: 'explanation',  below:true});
 
       // Behaviour for onAway event
       eventLabel = 'onAway';

@@ -35,20 +35,6 @@ export class DeviceStateEdit extends Component {
     this.unsubscribe();
   }
 
-  _getTopExplanation() {
-    switch(this.props.eventName) {
-      case 'onHomeEnter':
-        return 'SHOULD THE DEVICE REACT TO YOU ENTERING THE HOUSE?';
-      case 'onHomeExit':
-        return 'SHOULD THE DEVICE REACT TO YOU LEAVING THE HOUSE?';
-      case 'onRoomEnter':
-        return 'SHOULD THE DEVICE REACT TO YOU ENTERING THE ROOM?';
-      case 'onRoomExit':
-        return 'SHOULD THE DEVICE REACT TO YOU LEAVING THE ROOM?';
-      default:
-        return '--- invalid event: ' + this.props.eventName;
-    }
-  }
 
   _getExplanationLabel() {
     switch (this.props.eventName) {
@@ -60,6 +46,10 @@ export class DeviceStateEdit extends Component {
         return 'enter the room';
       case 'onRoomExit':
         return 'leave the room';
+      case 'onNear':
+        return 'come near';
+      case 'onAway':
+        return 'are further away';
       default:
         return '--- invalid event: ' + this.props.eventName;
     }

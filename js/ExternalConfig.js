@@ -1,3 +1,5 @@
+// @flow
+
 import { LOG } from './logging/Log'
 
 var DeviceInfo = require('react-native-device-info');

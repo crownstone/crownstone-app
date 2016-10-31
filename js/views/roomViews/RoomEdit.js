@@ -95,7 +95,7 @@ export class RoomEdit extends Component {
 
     // here we do the training if required and possible.
     let localizationCrownstones = getAmountOfCrownstonesInSphereForLocalization(state, this.props.sphereId);
-    if (localizationCrownstones >= 4 && this.props.remote === false) {
+    if (localizationCrownstones >= 4 && this.props.viewingRemotely === false) {
       items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
       if (room.config.fingerprintRaw) {
         items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
@@ -114,7 +114,7 @@ export class RoomEdit extends Component {
         items.push({label:'Before you can use indoor localization other than enter/exit your house, you need to train all rooms so Crownstone can learn how to position you.', type: 'explanation',  below:true});
       }
     }
-    else if (localizationCrownstones >= 4 && this.props.remote === true) {
+    else if (localizationCrownstones >= 4 && this.props.viewingRemotely === true) {
       items.push({label:'You can only train this room if you are in this Sphere.', type: 'explanation',  below:false});
       items.push({type: 'spacer', height:30});
     }

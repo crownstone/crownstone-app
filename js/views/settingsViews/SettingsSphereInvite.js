@@ -37,6 +37,7 @@ export class SettingsSphereInvite extends Component {
     items.push({
       label: 'Email',
       type: 'textEdit',
+      autoCapitalize: 'none',
       validation:'email',
       validationMethod:'icons',
       keyboardType: 'email-address',
@@ -44,23 +45,22 @@ export class SettingsSphereInvite extends Component {
       placeholder: 'Send email to...',
       validationCallback: (newState) => {this.inputStates.email = newState},
       alwaysShowState: false,
-      callback: (newValue) => {this.state.email = newValue}
+      callback: (newValue) => {this.setState({email:newValue});}
     });
 
 
     let level = getMyLevelInSphere(state, this.props.sphereId);
     if (level == "admin") {
       items.push({
-          type:'dropdown',
-          label:'Access Level',
-          value: this.state.permission,
-          dropdownHeight:100,
-          items:[{label:'Member'},{label:'Guest'}],
-          callback: (permission) => {
-            this.setState({permission:permission});
-          }
+        type:'dropdown',
+        label:'Access Level',
+        value: this.state.permission,
+        dropdownHeight:100,
+        items:[{label:'Member'},{label:'Guest'}],
+        callback: (permission) => {
+          this.setState({permission:permission});
         }
-      );
+      });
     }
     else {
       items.push({type:'info', label:'Access level', value:'Guest'});
@@ -78,18 +78,31 @@ export class SettingsSphereInvite extends Component {
       label: 'Send invitation!',
       type:  'button',
       style: {color:colors.blue.hex},
-      callback: this.validateAndContinue.bind(this)
+      callback: () => {this.validateAndContinue(state);}
     });
 
     return items;
   }
 
-  validateAndContinue() {
+  validateAndContinue(state) {
+    // verify if there is already a user with this email address in this sphere.
+    let users = state.spheres[this.props.sphereId].users;
+    let userIds = Object.keys(users);
+    for (let i = 0; i < userIds.length; i++) {
+      if (users[userIds[i]].email.toLowerCase() === this.state.email.toLowerCase()) {
+        Alert.alert("User already in Sphere","A user with this email address is already in the Sphere.", [{text:'OK'}]);
+        return;
+      }
+    }
+
+    // We only get here if the user does not exists in the sphere yet.
     this.props.eventBus.emit('showLoading', 'Inviting User...');
-    CLOUD.inviteUser(this.email.toLowerCase(), this.state.permission)
+    CLOUD.forSphere(this.props.sphereId).inviteUser(this.state.email.toLowerCase(), this.state.permission)
       .then(() => {
         this.props.eventBus.emit('hideLoading');
-        Alert.alert("Invite has been sent!","An email has been sent to " + email + ".", [{text:'OK'}])
+        // this.props.store.dispatch({type: 'ADD_SPHERE_USER', sphereId: this.props.sphereId, userId: "UNKNOWN",
+        //   data:{email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}});
+        Alert.alert("Invite has been sent!","An email has been sent to " + this.state.email + ".", [{text:'OK', onPress: () => {Actions.pop();}}])
       })
       .catch((err) => {
         this.props.eventBus.emit('hideLoading');

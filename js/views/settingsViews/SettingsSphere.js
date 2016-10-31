@@ -176,10 +176,6 @@ export class SettingsSphere extends Component {
                 let actions = [];
                 if (state.app.activeSphere === this.props.sphereId)
                   actions.push({type:"CLEAR_ACTIVE_SPHERE"});
-                if (state.app.remoteSphere === this.props.sphereId)
-                  actions.push({type:"CLEAR_REMOTE_SPHERE"});
-                if (state.app.activeSphere === this.props.sphereId)
-                  actions.push({type:"CLEAR_PREVIOUSLY_ACTIVE_SPHERE"});
 
                 actions.push({type:'REMOVE_SPHERE', sphereId: this.props.sphereId});
 

@@ -27,8 +27,6 @@ export class RoomAdd extends Component {
     this.state = {name:'', icon: 'c1-bookshelf'};
     this.refName = "listItems";
     let state = props.store.getState();
-
-    this.sphereId = state.app.activeSphere;
   }
 
   _getItems() {
@@ -44,7 +42,7 @@ export class RoomAdd extends Component {
       callback: () => {
         Actions.roomIconSelection({
           icon: this.state.icon,
-          sphereId: this.sphereId,
+          sphereId: this.props.sphereId,
           selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}
         }
       )}
@@ -72,15 +70,15 @@ export class RoomAdd extends Component {
     }
     else {
       // check if the room name is unique.
-      let existingLocations = getRoomNames(state, this.sphereId);
+      let existingLocations = getRoomNames(state, this.props.sphereId);
       if (existingLocations[this.state.name] === undefined) {
         this.props.eventBus.emit('showLoading', 'Creating room...');
-        CLOUD.forSphere(this.sphereId).createLocation(this.state.name, this.state.icon)
+        CLOUD.forSphere(this.props.sphereId).createLocation(this.state.name, this.state.icon)
           .then((reply) => {
             this.props.eventBus.emit('hideLoading');
-            store.dispatch({type:'ADD_LOCATION', sphereId: this.sphereId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
+            store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
             Actions.pop();
-            Actions.roomOverview({sphereId: this.sphereId, locationId: reply.id, title:this.state.name,});
+            Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name,});
           }).catch((err) => {Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: () => {this.props.eventBus.emit('hideLoading');}}])})
       }
       else {
@@ -98,7 +96,7 @@ export class RoomAdd extends Component {
     const state = store.getState();
     let backgroundImage = this.props.getBackground.call(this, 'menu');
 
-    if (this.sphereId === null) {
+    if (this.props.sphereId === null) {
       Actions.pop();
       return <View />
     }

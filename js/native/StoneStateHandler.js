@@ -5,6 +5,7 @@ class StoneStateHandlerClass {
   constructor() {
     this.store = {};
     this.timeoutActions = {};
+    this.initialized = false;
   }
 
   loadStore(store) {
