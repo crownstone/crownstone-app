@@ -29,6 +29,7 @@ export const INITIALIZER = {
 
             break;
           case "poweredOn":
+            console.log("HERE")
             BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
             break;
           case "unauthorized":

@@ -96,8 +96,6 @@ export class RoomLayer extends Component {
     this.unsubscribe();
   }
 
-  // experiment
-  shouldComponentUpdate(nextProps, nextState) { return true }
 
   _renderRoom(locationId, room, count, index, activeSphere) {
     // get the position for the room
@@ -126,7 +124,6 @@ export class RoomLayer extends Component {
       sphereId: this.props.sphereId,
       locationId: locationId,
       title: room.config.name,
-      viewingRemotely: this.props.viewingRemotely,
       seeStoneInSetupMode: this.props.seeStoneInSetupMode,
       setupData: this.props.setupData,
     };

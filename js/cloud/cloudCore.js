@@ -138,7 +138,6 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
     })
     .catch((err) => {
       safeDeleteFile(tempPath);
-      LOGError("error downloading file", err);
       reject(err);
     })
   });

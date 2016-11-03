@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 
+import { stoneTypes } from '../../router/store/reducers/stones'
 import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
@@ -25,7 +26,7 @@ import {
 import { Icon } from '../components/Icon'
 import { Separator } from '../components/Separator'
 import { styles, colors, screenWidth } from '../styles'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGDebug } from '../../logging/Log'
 
 
 export class RoomOverview extends Component {
@@ -39,6 +40,7 @@ export class RoomOverview extends Component {
     this.setupModeTimeout = undefined;
     this.lastSuccessfulSetupHandle = undefined;
     this.setupData = props.setupData ? {...props.setupData} : {};
+    this.viewingRemotely = true;
   }
 
   createSetupTimeout(handle) {
@@ -103,22 +105,37 @@ export class RoomOverview extends Component {
       });
     }
 
-    this.unsubscribe = this.props.store.subscribe(() => {
-      // guard against deletion of the room
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId]) {
+        Actions.pop();
+        return;
+      }
+
+      if (
+        (change.stoneUsageUpdated && change.stoneUsageUpdated.sphereIds[this.props.sphereId]) ||
+        (change.changeSphereState && change.changeSphereState.sphereIds[this.props.sphereId]) ||
+        (change.changeStoneState  && change.changeStoneState.sphereIds[this.props.sphereId])  ||
+        (change.stoneLocationUpdated && change.stoneLocationUpdated.sphereIds[this.props.sphereId])  ||
+        (change.changeStones)
+      ) {
+        this.forceUpdate();
+        return;
+      }
+
+      // actions specifically for location that are not floating
       if (this.props.locationId !== null) {
-        let state = this.props.store.getState();
-        let room = state.spheres[this.props.sphereId].locations[this.props.locationId];
-        if (room) {
+        if (
+          (change.userPositionUpdate   && change.userPositionUpdate.locationIds[this.props.locationId])   ||
+          (change.updateLocationConfig && change.updateLocationConfig.locationIds[this.props.locationId])
+        ) {
           this.forceUpdate();
         }
-        else {
-          Actions.pop();
-        }
       }
-      else {
-        this.forceUpdate();
-      }
-    })
+    });
+
+    // tell the component exactly when it should redraw
   }
 
   componentWillUnmount() {
@@ -131,7 +148,7 @@ export class RoomOverview extends Component {
     if (this.unsubscribeNative !== undefined) {
       this.unsubscribeNative();
     }
-    this.unsubscribe();
+    this.unsubscribeStoreEvents();
   }
 
   _renderer(item, index, stoneId) {
@@ -163,11 +180,13 @@ export class RoomOverview extends Component {
               name={item.device.config.name}
               icon={item.device.config.icon}
               state={item.stone.state.state}
-              currentUsage={item.stone.state.currentUsage}
+              currentUsage={item.stone.config.type !== stoneTypes.guidestone ? item.stone.state.currentUsage : undefined}
               navigation={false}
-              control={this.props.viewingRemotely === false}
-              disabled={this.state.pendingRequests[stoneId] !== undefined || this.props.viewingRemotely}
+              control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
+              pending={this.state.pendingRequests[stoneId] !== undefined} // either disabled, pending or remote
+              disabled={item.stone.config.disabled || this.viewingRemotely} // either disabled or remote
               dimmable={item.device.config.dimmable}
+              showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
               onChange={(switchState) => {
                 this.showPending(stoneId);
                 let data = {state: switchState};
@@ -189,9 +208,9 @@ export class RoomOverview extends Component {
                     this.clearPending(stoneId);
                   })
               }}
-              onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.props.viewingRemotely})}}
-              onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.props.viewingRemotely})}}
-              onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.props.viewingRemotely})}}
+              onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.viewingRemotely})}}
+              onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
+              onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
             />
           </View>
         </View>
@@ -232,7 +251,6 @@ export class RoomOverview extends Component {
     }
 
     // LOG("stones:", stones, "of which setup", this.setupData)
-
     return (
       <SeparatedItemList
         items={stones}
@@ -243,19 +261,21 @@ export class RoomOverview extends Component {
   }
 
   render() {
+    LOGDebug("redrawing room overview");
     const store = this.props.store;
     const state = store.getState();
 
-    let usage = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
-    let users = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
+    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false;
+    let usage  = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
+    let users  = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
     let stones = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
 
-    let backgroundImage = this.props.getBackground.call(this, 'main');
+    let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
 
     if (Object.keys(stones).length == 0 && this.state.seeStoneInSetupMode == false) {
       return (
         <Background image={backgroundImage} >
-          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.props.viewingRemotely} />
+          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.viewingRemotely} />
           <Separator fullLength={true} />
           <DeviceEntry empty={true} floatingCrownstones={this.props.locationId === null} />
           <Separator fullLength={true} />
@@ -268,13 +288,12 @@ export class RoomOverview extends Component {
     else {
       return (
         <Background image={backgroundImage} >
-          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.props.viewingRemotely}  />
+          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.viewingRemotely}  />
           <ScrollView>
             {this.getItems(stones)}
           </ScrollView>
         </Background>
       );
     }
-
   }
 }

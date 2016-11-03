@@ -20,15 +20,21 @@ if (DISABLE_NATIVE === true) {
     startScanningForCrownstones: () => {},
     startScanningForCrownstonesUniqueOnly: () => {},
     stopScanning: () => {},
+
+    startIndoorLocalization: () => {},
+    stopIndoorLocalization: () => {},
+
     trackIBeacon: () => {},
     stopTrackingIBeacon: () => {},
     pauseTracking: () => {},
     resumeTracking: () => {},
+
     startCollectingFingerprint: () => {},
     abortCollectingFingerprint: () => {},
     pauseCollectingFingerprint : () => {},
     resumeCollectingFingerprint: () => {},
     finalizeFingerprint: () => {},
+
     getFingerprint: () => {},
     loadFingerprint: () => {},
     getMACAddress: () => {},
@@ -98,7 +104,7 @@ export const BleActions = {
   },
   disconnect: () => {
     return BluenetPromise('disconnect')
-      .then(() => { eventBus.emit("disconnect"); })
+      .then( () => { eventBus.emit("disconnect"); })
       .catch(() => { eventBus.emit("disconnect"); })
   },
   phoneDisconnect: () => {
@@ -188,8 +194,9 @@ export const NativeBus = new NativeBusClass();
 //
 // type type_advertisement = {
 //   handle            : string,
-//   name              : number[],
+//   name              : string,
 //   rssi              : number,
+//   referenceId       : string,
 //   isCrownstoneFamily  : boolean,
 //   isCrownstonePlug    : boolean,
 //   isCrownstoneBuiltin : boolean,

@@ -134,26 +134,17 @@ export class SphereOverview extends Component {
       }, 5000);
 
     });
-    this.unsubscribeStore = store.subscribe(() => {
-      // only rerender if we go to a different sphere
-      if (this.renderState === undefined)
-        return;
 
-      const state = store.getState();
-
-      let activeSphere = state.app.activeSphere;
-      let noSpheres = Object.keys(state.spheres).length === 0;
-      let currentSphere = noSpheres === false ? activeSphere || null : null;
-      if (this.renderState.app.activeSphere === null && this.renderState.app.remoteSphere === null) {
-        currentSphere = null
-      }
-
-      if (this.renderState.app.activeSphere !== state.app.activeSphere ||
-          (currentSphere !== null && Object.keys(this.renderState.spheres[currentSphere].stones).length != Object.keys(state.spheres[currentSphere].stones).length)
-        ) {
-        LOG("triggering rerender of sphere overview");
-
-        // Actions.refresh should update the navbar (showing add..)
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (
+        change.changeSphereState  ||
+        change.updateActiveSphere ||
+        change.changeSpheres      ||
+        change.changeStones       ||
+        change.changeLocations
+      ) {
         this.forceUpdate();
       }
     });
@@ -163,8 +154,8 @@ export class SphereOverview extends Component {
     BLEutil.stopHighFrequencyScanning(this.uuid);
 
     clearTimeout(this.scanningTimeout);
-    this.unsubscribeStore();
     this.unsubscribeNative();
+    this.unsubscribeStoreEvents();
   }
 
 
@@ -212,7 +203,7 @@ export class SphereOverview extends Component {
         <AnimatedBackground hideTopBar={true} image={background}>
           <TopBar
             title={state.spheres[activeSphere].config.name + '\'s Sphere'}
-            right={isAdminInCurrentSphere && !blockAddButton ? 'Add Room' : null}
+            right={isAdminInCurrentSphere && !blockAddButton ? 'Add' : null}
             rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
           />
           <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>

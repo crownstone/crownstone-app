@@ -2,11 +2,17 @@ import { createStore, combineReducers } from 'redux'
 import { update, getTime } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
+export let stoneTypes = {
+  plug: "PLUG",
+  builtin: "BUILTIN",
+  guidestone: "GUIDESTONE"
+};
+
 let defaultSettings = {
   config: {
     name: 'Plug-in Crownstone',
     icon: 'c2-pluginFilled',
-    type: 'plugin_v1',
+    type: stoneTypes.plug,
     applianceId: null,
     locationId: null,
     macAddress: undefined,
@@ -41,6 +47,13 @@ let defaultSettings = {
 
 let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
+    case 'UPDATE_STONE_STATE':
+      if (action.data) {
+        let newState = {...state};
+        newState.disabled = false;
+        return newState;
+      }
+      return state;
     case 'UPDATE_STONE_HANDLE':
       if (action.data) {
         let newState = {...state};
@@ -59,17 +72,19 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name            = update(action.data.name,     newState.name);
-        newState.applianceId     = update(action.data.applianceId, newState.applianceId);
-        newState.macAddress      = update(action.data.macAddress, newState.macAddress);
-        newState.iBeaconMajor    = update(action.data.iBeaconMajor, newState.iBeaconMajor);
-        newState.iBeaconMinor    = update(action.data.iBeaconMinor, newState.iBeaconMinor);
+        newState.name            = update(action.data.name,            newState.name);
+        newState.icon            = update(action.data.icon,            newState.icon);
+        newState.type            = update(action.data.type,            newState.type);
+        newState.applianceId     = update(action.data.applianceId,     newState.applianceId);
+        newState.macAddress      = update(action.data.macAddress,      newState.macAddress);
+        newState.iBeaconMajor    = update(action.data.iBeaconMajor,    newState.iBeaconMajor);
+        newState.iBeaconMinor    = update(action.data.iBeaconMinor,    newState.iBeaconMinor);
         newState.firmwareVersion = update(action.data.firmwareVersion, newState.firmwareVersion);
-        newState.handle          = update(action.data.handle, newState.handle);
-        newState.crownstoneId    = update(action.data.crownstoneId, newState.crownstoneId);
-        newState.nearRange       = update(action.data.nearRange, newState.nearRange);
-        newState.disabled        = update(action.data.disabled, newState.disabled);
-        newState.touchToToggle   = update(action.data.touchToToggle, newState.touchToToggle);
+        newState.handle          = update(action.data.handle,          newState.handle);
+        newState.crownstoneId    = update(action.data.crownstoneId,    newState.crownstoneId);
+        newState.nearRange       = update(action.data.nearRange,       newState.nearRange);
+        newState.disabled        = update(action.data.disabled,        newState.disabled);
+        newState.touchToToggle   = update(action.data.touchToToggle,   newState.touchToToggle);
         newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
       }

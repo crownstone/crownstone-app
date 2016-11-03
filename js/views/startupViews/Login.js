@@ -27,9 +27,9 @@ export class Login extends Component {
   constructor() {
     super();
     // this.state = {email: emailMemoryForLogin.email || 'alex@dobots.nl', password:'letmein0'};
-    // this.state = {email: emailMemoryForLogin.email || '', password:''};
+    this.state = {email: emailMemoryForLogin.email || '', password:''};
     // this.state = {email: emailMemoryForLogin.email || 'anne@crownstone.rocks', password:'bier'};
-    this.state = {email: 'bart@almende.org', password:'12'};
+    // this.state = {email: 'bart@almende.org', password:'12'};
     this.progress = 0;
   }
 
@@ -188,7 +188,6 @@ export class Login extends Component {
       
       let handleFiles = (files) => {
         files.forEach((file) => {
-          LOG("handling file")
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;
@@ -269,7 +268,7 @@ export class Login extends Component {
       })
       .catch((err) => {
         // likely a 404, ignore
-        LOGError("Problem downloading profile picture: ", err);
+        LOGDebug("Problem downloading profile picture: ", err);
       })
       .then(() => {
         this.progress += parts;

@@ -27,7 +27,7 @@ typealias voidCallback = () -> Void
 
     self.bluenet = Bluenet();
     
-    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil);
+    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown");
     self.bluenetLocalization = BluenetLocalization();
     
 
@@ -165,13 +165,19 @@ class BluenetJS: NSObject {
         }
       })
       
+      globalBluenet.bluenetOn("bleStatus", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEvent(withName: "bleStatus", body: castData)
+        }
+      })
+      
 //      we will not forward the unverified events
 //      globalBluenet.bluenet.on("advertisementData", {data -> Void in
 //        if let castData = data as? Advertisement {
 //          self.bridge.eventDispatcher().sendAppEventWithName("advertisementData", body: castData.stringify())
 //        }
 //      })
-//
+
       globalBluenet.bluenetOn("setupProgress", {data -> Void in
         if let castData = data as? NSNumber {
           self.bridge.eventDispatcher().sendAppEvent(withName: "setupProgress", body: castData)
@@ -232,16 +238,17 @@ class BluenetJS: NSObject {
     let adminKey  = settings["adminKey"]  as? String
     let memberKey = settings["memberKey"] as? String
     let guestKey  = settings["guestKey"]  as? String
+    let referenceId = settings["referenceId"]  as? String
     
-    if (adminKey == nil || memberKey == nil || guestKey == nil) {
+    if (adminKey == nil || memberKey == nil || guestKey == nil || referenceId == nil) {
       callback([["error" : true, "data": "Missing one of the Keys required for Bluenet Settings."]])
       return
     }
     
     if let encryptionEnabled = settings["encryptionEnabled"] as? Bool {
-      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey)
+      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
       print("SETTING SETTINGS \(settings)")
-      GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey)
+      GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
       callback([["error" : false]])
     }
     else {

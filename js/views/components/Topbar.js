@@ -73,7 +73,7 @@ let topBarStyle = StyleSheet.create({
   },
   topBarSideView: {
     justifyContent: 'center',
-    width: 90,
+    width: 60, // TODO: make dynamic
   },
   topBarCenterView: {
     flex: 1,
@@ -95,6 +95,6 @@ let topBarStyle = StyleSheet.create({
   },
   text:{
     fontSize: 17,
-    color: colors.iosBlue.hex
+    color: colors.blue.hex
   }
 });
