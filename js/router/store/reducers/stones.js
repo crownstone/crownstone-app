@@ -76,6 +76,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.icon            = update(action.data.icon,            newState.icon);
         newState.type            = update(action.data.type,            newState.type);
         newState.applianceId     = update(action.data.applianceId,     newState.applianceId);
+        newState.locationId      = update(action.data.locationId,      newState.locationId);
         newState.macAddress      = update(action.data.macAddress,      newState.macAddress);
         newState.iBeaconMajor    = update(action.data.iBeaconMajor,    newState.iBeaconMajor);
         newState.iBeaconMinor    = update(action.data.iBeaconMinor,    newState.iBeaconMinor);

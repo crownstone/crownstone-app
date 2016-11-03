@@ -350,7 +350,7 @@ class BluenetJS: NSObject {
 
   @objc func trackIBeacon(_ ibeaconUUID: String, referenceId: String) -> Void {
     print("tracking ibeacons with uuid: \(ibeaconUUID) for sphere: \(referenceId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(ibeaconUUID, referenceId: referenceId)
+    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, referenceId: referenceId)
   }
   
   @objc func stopTrackingIBeacon(_ ibeaconUUID: String) -> Void {
@@ -417,7 +417,7 @@ class BluenetJS: NSObject {
   
   @objc func loadFingerprint(_ sphereId: String, locationId: String, fingerprint: String) -> Void {
     let fingerprint = Fingerprint(stringifiedData: fingerprint)
-    GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(sphereId, locationId: locationId, fingerprint: fingerprint)
+    GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(referenceId: sphereId, locationId: locationId, fingerprint: fingerprint)
     print("loadFingerprint \(sphereId) \(locationId)")
   }
   
@@ -486,7 +486,7 @@ class BluenetJS: NSObject {
       ibeaconMajor != nil &&
       ibeaconMinor != nil) {
       GLOBAL_BLUENET!.bluenet.setup.setup(
-        (crownstoneId!).uint16Value,
+        crownstoneId: (crownstoneId!).uint16Value,
         adminKey: adminKey!,
         memberKey: memberKey!,
         guestKey: guestKey!,

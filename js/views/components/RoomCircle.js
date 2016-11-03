@@ -430,7 +430,7 @@ export class RoomCircle extends Component {
 
     let canDoLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
     let showFingerprintNeeded = false;
-    if (this.props.locationId !== null) {
+    if (this.props.locationId !== null && this.props.viewingRemotely !== true) {
       if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
         showFingerprintNeeded = true;
       }
