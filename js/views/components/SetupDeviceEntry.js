@@ -199,17 +199,15 @@ export class SetupDeviceEntry extends Component {
 
   _getTypedIcon() {
     let typedIcon = 'ios-help-circle';
-    if (this.props.item.isCrownstonePlug)         { typedIcon = 'c2-pluginFilled'; }
-    else if (this.props.item.isCrownstoneBulitin) { typedIcon = 'c2-crownstone'; }
-    else if (this.props.item.isGuidestone)        { typedIcon = 'c2-crownstone'; }
-    return typedIcon;
-  }
-
-  _getTypedIcon() {
-    let typedIcon = 'ios-help-circle';
-    if (this.props.item.isCrownstonePlug)         { typedIcon = 'c2-pluginFilled'; }
-    else if (this.props.item.isCrownstoneBulitin) { typedIcon = 'c2-crownstone'; }
-    else if (this.props.item.isGuidestone)        { typedIcon = 'c2-crownstone'; }
+    if (this.props.item.isCrownstonePlug) {
+      typedIcon = 'c2-pluginFilled';
+    }
+    else if (this.props.item.isCrownstoneBulitin) {
+      typedIcon = 'c2-crownstone';
+    }
+    else if (this.props.item.isGuidestone) {
+      typedIcon = 'c2-crownstone';
+    }
     return typedIcon;
   }
 

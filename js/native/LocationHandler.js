@@ -28,7 +28,10 @@ class StoneTracker {
   iBeaconUpdate(major, minor, rssi, referenceId) {
     // LOG("major, minor, rssi, ref",major, minor, rssi, referenceId)
     // only use valid rssi measurements, 0 or 128 are not valid measurements
-    if (rssi > -1)
+    if (rssi === undefined || rssi > -1)
+      return;
+
+    if (referenceId === undefined || major  === undefined || minor === undefined)
       return;
 
     // check if we have the sphere

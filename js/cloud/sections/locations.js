@@ -1,6 +1,6 @@
 export const locations = {
   getLocations: function (options = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', options);
+    return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', {...options, data:{filter:{"include":"presentPeople"}}});
   },
 
   createLocation: function (locationName, icon) {

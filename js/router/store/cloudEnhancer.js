@@ -58,6 +58,7 @@ function handleAction(action, returnValue, newState, oldState) {
       break;
 
 
+    case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
       handleStoneInCloud(action, newState);
       break;
@@ -82,6 +83,13 @@ function handleAction(action, returnValue, newState, oldState) {
       break;
     case 'UPDATE_SPHERE_USER':
       handleSphereUserInCloud(action, newState);
+      break;
+
+    case 'USER_EXIT_LOCATION':
+      handleUserLocationExit(action, newState);
+      break;
+    case 'USER_ENTER_LOCATION':
+      handleUserLocationEnter(action, newState);
       break;
   }
 }
@@ -236,4 +244,14 @@ function handleSphereInCloud(action, state) {
 
 function handleSphereUserInCloud(action, state) {
 
+}
+
+function handleUserLocationEnter(action, state) {
+  // let userId = state.user.userId;
+  // CLOUD.forUser(userId).enterLocation(action.sphereId, action.locationId).catch(() => {});
+}
+
+function handleUserLocationExit(action, state) {
+  // let userId = state.user.userId;
+  // CLOUD.forUser(userId).exitLocation(action.sphereId, action.locationId).catch(() => {});
 }

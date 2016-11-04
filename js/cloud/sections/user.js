@@ -133,6 +133,23 @@ export const user = {
       'users/{id}/keys',
       options
     );
-  }
+  },
+
+
+  enterLocation: function(sphereId, locationId) {
+    return this._setupRequest(
+      'PUT',
+      'users/{id}/currentLocation',
+      { sphereId: sphereId, locationId: locationId, background: true }
+    );
+  },
+
+  // exitLocation: function() {
+  //   return this._setupRequest(
+  //     'DELETE',
+  //     'users/{id}/currentLocation',
+  //     { background: true }
+  //   );
+  // },
 
 };

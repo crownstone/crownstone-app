@@ -180,6 +180,24 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
       adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
 
+    /**
+     * Sync the Admins, members and guests from the cloud to the database.
+     */
+    Object.keys(spheresData[sphere.id].admins).forEach((userId) => {
+      cloudSphereMemberIds[sphere.id][userId] = true;
+      let user = spheresData[sphere.id].admins[userId];
+      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'admin');
+    });
+    Object.keys(spheresData[sphere.id].members).forEach((userId) => {
+      cloudSphereMemberIds[sphere.id][userId] = true;
+      let user = spheresData[sphere.id].members[userId];
+      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'member');
+    });
+    Object.keys(spheresData[sphere.id].guests).forEach((userId) => {
+      cloudSphereMemberIds[sphere.id][userId] = true;
+      let user = spheresData[sphere.id].guests[userId];
+      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'guest');
+    });
 
 
     /**
@@ -218,8 +236,26 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           data: {name: location_from_cloud.name, icon: location_from_cloud.icon, updatedAt: location_from_cloud.updatedAt}
         });
       }
+
+      // TODO: fix this. test this. make sure this works.
+      // // clear all stores present users
+      // actions.push({type: 'CLEAR_USERS', sphereId: sphere.id, locationId: location_from_cloud.id});
+      //
+      // // put the present users from the cloud into the location.
+      // if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
+      //   location_from_cloud.presentPeople.forEach((person) => {
+      //     // check if the person exists in our sphere and if we are not that person.
+      //     if (person.id !== state.user.userId && cloudSphereMemberIds[person.id] === true) {
+      //       actions.push({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: person.id}});
+      //     }
+      //   });
+      // }
     });
 
+    /**
+     * We now push the location of ourselves to the cloud.
+     */
+    // TODO: add this.
 
     /**
      * Sync the stones from the cloud to the database.
@@ -401,26 +437,6 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
             actions.push({ type: 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway', sphereId: sphere.id, applianceId: appliance_from_cloud.id, data: behaviour.onAway });
         }
       }
-    });
-
-
-    /**
-     * Sync the Admins from the cloud to the database.
-     */
-    Object.keys(spheresData[sphere.id].admins).forEach((userId) => {
-      cloudSphereMemberIds[sphere.id][userId] = true;
-      let user = spheresData[sphere.id].admins[userId];
-      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'admin');
-    });
-    Object.keys(spheresData[sphere.id].members).forEach((userId) => {
-      cloudSphereMemberIds[sphere.id][userId] = true;
-      let user = spheresData[sphere.id].members[userId];
-      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'member');
-    });
-    Object.keys(spheresData[sphere.id].guests).forEach((userId) => {
-      cloudSphereMemberIds[sphere.id][userId] = true;
-      let user = spheresData[sphere.id].guests[userId];
-      syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'guest');
     });
   });
 
