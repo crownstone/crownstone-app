@@ -69,7 +69,15 @@ export class Login extends Component {
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
       })
       .catch((reply) => {
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+        let content = "Please try again.";
+        let title = "Cannot Send Email";
+        if (reply.data && reply.data.error) {
+          if (reply.data.error.code == "EMAIL_NOT_FOUND") {
+            content = "This email is not registered in the Cloud. Please register to create an account.";
+            title = "Unknown Email"
+          }
+        }
+        Alert.alert(title, content, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
       });
   }
 

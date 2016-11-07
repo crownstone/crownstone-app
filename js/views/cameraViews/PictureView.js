@@ -15,7 +15,7 @@ import Camera from 'react-native-camera';
 import { Icon } from '../components/Icon';
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-
+import { LOG, LOGError } from '../../logging/Log'
 
 export class PictureView extends Component {
   constructor(props) {
@@ -34,7 +34,7 @@ export class PictureView extends Component {
         this.props.eventBus.emit('hideLoading');
         Actions.picturePreview({image: data.path, selectCallback:this.props.selectCallback, type:'replace', camera: this.state.camera})
       })
-      .catch(err => console.error(err));
+      .catch(err => LOGError(err));
   }
 
   switchCamera() {
