@@ -12,6 +12,12 @@ export const sync = {
     let state = store.getState();
     let actions = [];
     let options = { background: background };
+
+    if (!state.user.userId) {
+      // do not sync if we're not logged in
+      return;
+    }
+
     return syncDown( state, options )
       .then((data) => {
         let cloudData = syncSpheres(state, actions, data.spheres, data.spheresData);

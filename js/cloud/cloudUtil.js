@@ -12,7 +12,7 @@ export function prepareEndpointAndBody(options, id, accessToken, doNotStringify)
   }
 
   // append the access token to the url if we have it.
-  if (accessToken !== undefined) {
+  if (accessToken) {
     endPoint = _appendToURL(endPoint, {access_token: accessToken});
   }
 

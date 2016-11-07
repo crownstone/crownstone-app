@@ -17,6 +17,7 @@ import { BLEutil } from '../../native/BLEutil'
 import { BleActions, NativeBus } from '../../native/Proxy'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
+import { getUUID } from '../../util/util'
 var Actions = require('react-native-router-flux').Actions;
 import { 
   getPresentUsersFromState, 
@@ -41,6 +42,8 @@ export class RoomOverview extends Component {
     this.lastSuccessfulSetupHandle = undefined;
     this.setupData = props.setupData ? {...props.setupData} : {};
     this.viewingRemotely = true;
+    this.uuid = getUUID();
+
   }
 
   createSetupTimeout(handle) {
@@ -52,7 +55,7 @@ export class RoomOverview extends Component {
       }
       
       this.cleanupAfterSetup(handle);
-    }, 5000);
+    }, 3000);
   };
 
   cleanupAfterSetup(handle) {
@@ -75,16 +78,21 @@ export class RoomOverview extends Component {
     // check if we are a floating crownstone container, in that case we listen for setup stones.
     if (this.props.locationId === null) {
       this.unsubscribeNative = NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+        // we scan in HF to get the most up to date impression of our surroundings
+        BLEutil.startHighFrequencyScanning(this.uuid);
+
         // use this to avoid the last events of the successful setup mode.
         if (setupAdvertisement.handle === this.lastSuccessfulSetupHandle)
           return;
 
+        // update if we see a new crownstone in setup mode
         let forceRefresh = false;
         if (this.setupData[setupAdvertisement.handle] === undefined) {
           this.setupData[setupAdvertisement.handle] = setupAdvertisement;
           forceRefresh = true;
         }
 
+        // update if we have not yet seen a crownstone in setup mode: force refresh is set to false since setState already redraws
         if (this.state.seeStoneInSetupMode === false) {
           this.setState({seeStoneInSetupMode: true});
           forceRefresh = false;
@@ -265,16 +273,18 @@ export class RoomOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false;
+    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && this.state.seeStoneInSetupMode !== true;
+
     let usage  = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
     let stones = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
 
     let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
 
+    let content = undefined;
     if (Object.keys(stones).length == 0 && this.state.seeStoneInSetupMode == false) {
-      return (
-        <Background image={backgroundImage} >
+      content = (
+        <View>
           <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.viewingRemotely} />
           <Separator fullLength={true} />
           <DeviceEntry empty={true} floatingCrownstones={this.props.locationId === null} />
@@ -282,18 +292,24 @@ export class RoomOverview extends Component {
           <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
             <Icon name="c2-pluginFront" size={0.75 * screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />
           </View>
-        </Background>
+        </View>
       );
     }
     else {
-      return (
-        <Background image={backgroundImage} >
-          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.viewingRemotely}  />
+      content = (
+        <View>
+          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null}
+                      viewingRemotely={this.viewingRemotely}/>
           <ScrollView>
             {this.getItems(stones)}
           </ScrollView>
-        </Background>
+        </View>
       );
     }
+    return (
+      <Background image={backgroundImage} >
+        {content}
+      </Background>
+    );
   }
 }

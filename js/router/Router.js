@@ -81,7 +81,7 @@ export class AppRouter extends Component {
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
 
       // // if we have an accessToken, we proceed with logging in automatically
-      if (state.user.accessToken !== undefined) {
+      if (state.user.accessToken !== null) {
         // in the background we check if we're authenticated, if not we log out.
         CLOUD.setAccess(state.user.accessToken);
         CLOUD.getUserData({background:true})

@@ -131,7 +131,7 @@ export class SphereOverview extends Component {
         delete this.setupData[setupAdvertisement.handle];
         // redraw
         this.setState({seeStoneInSetupMode: false});
-      }, 5000);
+      }, 3000);
 
     });
 
@@ -178,6 +178,8 @@ export class SphereOverview extends Component {
     let noStones = true;
     let isAdminInCurrentSphere = false;
     let activeSphere = state.app.activeSphere;
+
+    console.log(state);
 
     if (noSpheres === false) {
       // todo: only do this on change

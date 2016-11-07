@@ -306,6 +306,10 @@ export class SetupDeviceEntry extends Component {
         setTimeout(() => { /* todo: finalize */ }, 1800);
       })
       .catch((err) => {
+        LOGError("Could not setup the Crownstone:", err);
+        if (err == "INVALID_SESSION_DATA") {
+          Alert.alert("Encryption might be off","Error: INVALID_SESSION_DATA, which usually means encryption in this Crownstone is turned off. This app requires encryption to be on.",[{text:'OK'}]);
+        }
         crownstone.disconnect().catch();
         this.cleanupFailedAttempt(stoneId);
         this.recoverFromError();

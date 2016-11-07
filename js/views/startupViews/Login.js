@@ -14,6 +14,8 @@ var sha1 = require('sha-1');
 import { LOG, LOGError } from '../../logging/Log'
 import { emailMemoryForLogin } from './emailMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
+import { LocalizationUtil } from '../../native/LocationHandler'
+import { BleActions, Bluenet } from '../../native/Proxy'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
@@ -74,7 +76,7 @@ export class Login extends Component {
         if (reply.data && reply.data.error) {
           if (reply.data.error.code == "EMAIL_NOT_FOUND") {
             content = "This email is not registered in the Cloud. Please register to create an account.";
-            title = "Unknown Email"
+            title = "Unknown Email";
           }
         }
         Alert.alert(title, content, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
@@ -306,6 +308,12 @@ export class Login extends Component {
 
       // finalize the login due to successful download of data. Enables persistence.
       StoreManager.finalizeLogIn(userId);
+
+      // start listening to the ibeacons
+      LocalizationUtil.trackSpheres(store);
+
+      // start scanning
+      BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
 
       // set a small delay so the user sees "done"
       setTimeout(() => {
