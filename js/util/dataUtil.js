@@ -1,4 +1,4 @@
-import { NO_LOCATION_NAME } from '../ExternalConfig'
+import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 
 export const getStonesFromState = function(state, sphereId, locationId) {
   let filteredStones = {};
@@ -217,6 +217,11 @@ export const getAmountOfCrownstonesInSphereForLocalization = function(state, sph
     }
   });
   return count;
+};
+
+export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) {
+  let amount = getAmountOfCrownstonesInSphereForLocalization(state, sphereId);
+  return amount >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
 
 export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {

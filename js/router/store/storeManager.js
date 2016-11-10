@@ -76,7 +76,7 @@ class StoreManagerClass {
   _handleDEBUG(initialState) {
     // if (initialState) {
     //   let data = JSON.parse(initialState);
-    //   if (data.user && data.user.firstName === undefined) {
+    //   if (data.user && data.user.firstName === null) {
     //     if (OVERRIDE_DATABASE === true) {
     //       LOG("INJECTING FAKE DATA");
     //       this.store = createStore(CrownstoneReducer, fakeStore);

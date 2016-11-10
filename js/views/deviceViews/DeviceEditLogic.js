@@ -107,7 +107,7 @@ export class DeviceEditLogic extends Component {
       applianceOptions = this.constructApplianceOptions(store, appliance, stone.config.applianceId);
     }
 
-    let backgroundImage = this.props.getBackground.call(this, 'menu');
+    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     return (
       <Background image={backgroundImage} >

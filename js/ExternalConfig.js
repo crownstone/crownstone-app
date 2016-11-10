@@ -33,4 +33,6 @@ export let NO_LOCATION_NAME = 'None'; // this is a let because localization may 
 
 export const ENCRYPTION_ENABLED = true;
 
+export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
+
 export const HIGH_FREQUENCY_SCAN_MAX_DURATION = 15000; //ms

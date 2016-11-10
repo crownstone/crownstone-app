@@ -40,8 +40,6 @@ export const INITIALIZER = {
         }
       });
 
-      // enable scanning for Crownstones
-      BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
       this.initialized = true;
     }
   },
@@ -54,7 +52,10 @@ export const INITIALIZER = {
     if (this.started === false) {
       // subscribe to iBeacons when required.
       CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});
-      eventBus.on(    'appStarted',                       () => {LocalizationUtil.trackSpheres(store);});
+      eventBus.on(    'appStarted',                       () => {
+        BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
+        LocalizationUtil.trackSpheres(store);
+      });
       eventBus.on(    'sphereCreated',                    () => {LocalizationUtil.trackSpheres(store);});
 
       // sync every 5 minutes

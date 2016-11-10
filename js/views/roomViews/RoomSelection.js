@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
-import { RoomOverview } from '../components/RoomOverview'
+import { RoomOverview } from '../components/RoomList'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { getStonesFromState, getSpheresWhereIHaveAccessLevel } from './../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
@@ -87,7 +87,7 @@ export class RoomSelection extends Component {
   }
 
   render() {
-    let backgroundImage = this.props.getBackground.call(this, 'menu');
+    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
     return (
       <Background hideInterface={true} image={backgroundImage} >
         <TopBar

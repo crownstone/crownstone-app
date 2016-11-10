@@ -78,7 +78,7 @@ export class RoomAdd extends Component {
             this.props.eventBus.emit('hideLoading');
             store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
             Actions.pop();
-            Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name,});
+            Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
           }).catch((err) => {Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: () => {this.props.eventBus.emit('hideLoading');}}])})
       }
       else {
@@ -94,7 +94,7 @@ export class RoomAdd extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let backgroundImage = this.props.getBackground.call(this, 'menu');
+    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     if (this.props.sphereId === null) {
       Actions.pop();

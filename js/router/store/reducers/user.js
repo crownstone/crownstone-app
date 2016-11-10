@@ -2,12 +2,12 @@ import { update, getTime } from './reducerUtil'
 
 let defaultSettings = {
   user: {
-    firstName: undefined,
-    lastName: undefined,
-    email: undefined,
-    accessToken: undefined,
-    passwordHash: undefined,
-    userId: undefined,
+    firstName: null,
+    lastName: null,
+    email: null,
+    accessToken: null,
+    passwordHash: null,
+    userId: null,
     isNew: true,
     picture: null,
     updatedAt: 1

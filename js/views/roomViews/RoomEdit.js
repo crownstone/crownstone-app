@@ -14,10 +14,11 @@ var Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
-import { getStonesFromState, getAmountOfCrownstonesInSphereForLocalization } from '../../util/dataUtil'
+import { getStonesFromState, enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
+import { LOGDebug, LOG } from './../../logging/Log'
 
 
 
@@ -25,6 +26,7 @@ export class RoomEdit extends Component {
   constructor() {
     super();
     this.deleting = false;
+    this.viewingRemotely = false;
   }
 
   componentDidMount() {
@@ -94,8 +96,8 @@ export class RoomEdit extends Component {
 
 
     // here we do the training if required and possible.
-    let localizationCrownstones = getAmountOfCrownstonesInSphereForLocalization(state, this.props.sphereId);
-    if (localizationCrownstones >= 4 && this.props.viewingRemotely === false) {
+    let canDoIndoorLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
+    if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
       items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
       if (room.config.fingerprintRaw) {
         items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
@@ -109,12 +111,12 @@ export class RoomEdit extends Component {
       }
       else {
         items.push({label:'Train localization in room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
-          Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId});
+          Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId, store: this.props.store});
         }});
         items.push({label:'Before you can use indoor localization other than enter/exit your house, you need to train all rooms so Crownstone can learn how to position you.', type: 'explanation',  below:true});
       }
     }
-    else if (localizationCrownstones >= 4 && this.props.viewingRemotely === true) {
+    else if (canDoIndoorLocalization === true && this.viewingRemotely === true) {
       items.push({label:'You can only train this room if you are in this Sphere.', type: 'explanation',  below:false});
       items.push({type: 'spacer', height:30});
     }
@@ -138,7 +140,11 @@ export class RoomEdit extends Component {
   }
 
   render() {
-    let backgroundImage = this.props.getBackground.call(this, 'menu');
+    const store = this.props.store;
+    const state = store.getState();
+    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false;
+
+    let backgroundImage = this.props.getBackground('menu', this.viewingRemotely);
     return (
       <Background image={backgroundImage} >
         <ScrollView>

@@ -3,6 +3,7 @@ import {
   Animated,
   Alert,
   Image,
+  ScrollView,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -14,10 +15,12 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { TopBar } from '../components/Topbar'
 import { FingerprintManager } from '../../native/FingerprintManager'
+import { Bluenet } from '../../native/Proxy'
+import { sphereRequiresFingerprints } from '../../native/LocationHandler'
 import { Background } from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
-import { LOG } from '../../logging/Log'
+import { LOG, LOGDebug } from '../../logging/Log'
 import { IconButton } from '../components/IconButton'
 
 
@@ -29,10 +32,19 @@ export class RoomTraining extends Component {
     this.dataLimit = 60;
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    LOGDebug("Stopping indoor localization for training purposes");
+    Bluenet.stopIndoorLocalization();
+  }
 
   componentWillUnmount() {
-    this.stop()
+    this.stop();
+
+    let state = this.props.store.getState();
+    if (sphereRequiresFingerprints(state, this.props.sphereId) === false) {
+      LOGDebug("(Re)Starting indoor localization after training");
+      Bluenet.startIndoorLocalization();
+    }
   }
 
   start() {
@@ -94,7 +106,8 @@ export class RoomTraining extends Component {
             left={"Back"}
             leftAction={ Actions.pop }
             title="Train Room"/>
-          <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
+          <ScrollView>
+            <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
               <Text style={{
                 backgroundColor:'transparent',
                 fontSize:20,
@@ -104,53 +117,55 @@ export class RoomTraining extends Component {
               }}>To let Crownstone find you in this room, we need to help it a little!</Text>
               <Text style={{
                 backgroundColor:'transparent',
-                fontSize:18,
+                fontSize:16,
                 fontWeight:'300',
                 color: colors.menuBackground.hex,
                 textAlign:'center',
-                paddingTop:40,
+                paddingTop:20,
               }}>To train, walk around the room with your phone in your hand.
                 Try to get to every spot in the room, close by the walls as well and through the center.
                 The training process takes 1 minute and you can see the progress on your screen.
               </Text>
               <Text style={{
                 backgroundColor:'transparent',
-                fontSize:18,
+                fontSize:16,
                 fontWeight:'300',
                 color: colors.menuBackground.hex,
                 textAlign:'center',
-                paddingTop:40,
+                paddingTop:20,
+                paddingBottom:20,
               }}>Press the button below to get started!
               </Text>
 
-            <View style={{flex:1}} />
-            <TouchableOpacity
-              style={[
-                {borderWidth:5, borderColor:"#fff", backgroundColor:colors.green.hex, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth},
-                styles.centered
-              ]}
-              onPress={() => {this.start();}}
-            >
-              <Icon name="ios-finger-print" size={0.35*screenWidth} color="#fff" style={{backgroundColor:"transparent", position:'relative', top:0.01*screenWidth}} />
-            </TouchableOpacity>
-            <View style={{flex:1}} />
-          </View>
+              <View style={{flex:1}} />
+              <TouchableOpacity
+                style={[
+                  {borderWidth:5, borderColor:"#fff", backgroundColor:colors.green.hex, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth},
+                  styles.centered
+                ]}
+                onPress={() => {this.start();}}
+              >
+                <Icon name="ios-finger-print" size={0.35*screenWidth} color="#fff" style={{backgroundColor:"transparent", position:'relative', top:0.01*screenWidth}} />
+              </TouchableOpacity>
+              <View style={{flex:1}} />
+           </View>
+          </ScrollView>
         </Background>
       );
     }
     else {
       return (
-        <Background hideInterface={true} background={require('../../images/mainBackgroundLight.png')}>
+        <Background hideInterface={true} image={this.props.backgrounds.main}>
           <TopBar
             left={this.state.active ? "Cancel" : "Back"}
             notBack={this.state.active}
             leftAction={this.state.active ? () => {
-              LocalizationUtil.pauseCollectingFingerprint();
+              FingerprintManager.pauseCollectingFingerprint();
               Alert.alert(
                 "Do you want to cancel training?",
                 "Cancelling the training process will revert it to the way it was before.",
                 [
-                  {text:'No', onPress: () => { LocalizationUtil.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+                  {text:'No', onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
                   {text:'Yes', onPress: () => { this.stop(true); Actions.pop(); }}
                 ]
               )}
@@ -164,7 +179,10 @@ export class RoomTraining extends Component {
                 fontWeight:'600',
                 color: colors.menuBackground.hex,
                 textAlign:'center'
-              }}>Walk around the room so we can learn to locate you within it. Each beat a point is collected.</Text>
+              }}>{this.state.active ?
+                "Walk around the room so we can learn to locate you within it. Each beat a point is collected." :
+                "All Done!"
+              }</Text>
             </View>
 
             <View style={{flex:1}} />

@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 import { styles, colors } from '../styles'
-import { getAmountOfCrownstonesInSphereForLocalization } from '../../util/dataUtil'
+import { enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 
@@ -90,13 +90,13 @@ export class DeviceBehaviourEdit extends Component {
     }
   }
 
-  constructOptions(device, stone, amountOfCrownstones) {
+  constructOptions(device, stone, canDoIndoorLocalization) {
     let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
 
-    let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title: this._getTitle(eventName, amountOfCrownstones < 4), ...requiredData})};
+    let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title: this._getTitle(eventName, canDoIndoorLocalization === false), ...requiredData})};
 
-    if (amountOfCrownstones < 4) {
+    if (canDoIndoorLocalization === false) {
       // Behaviour for onHomeEnter event
       let eventLabel = 'onHomeEnter';
       items.push({label:'WHEN YOU GET WITHIN RANGE', type: 'explanation', style: styles.topExplanation, below:false});
@@ -160,7 +160,7 @@ export class DeviceBehaviourEdit extends Component {
           below: true
         });
       }
-      else if (amountOfCrownstones >= 4) {
+      else if (canDoIndoorLocalization === true) {
         items.push({label: 'Since this Crownstone is not in a room, we cannot give it behaviour for entering or leaving it\'s room.', type: 'explanation', below: false});
       }
     }
@@ -171,19 +171,19 @@ export class DeviceBehaviourEdit extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let amountOfStonesForLocation = getAmountOfCrownstonesInSphereForLocalization(state, this.props.sphereId);
+    let canDoIndoorLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
     let stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let options = [];
     if (stone.config.applianceId) {
       let device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
-      options = this.constructOptions(device, stone, amountOfStonesForLocation);
+      options = this.constructOptions(device, stone, canDoIndoorLocalization);
     }
     else {
-      options = this.constructOptions(stone, stone, amountOfStonesForLocation);
+      options = this.constructOptions(stone, stone, canDoIndoorLocalization);
     }
 
-    let backgroundImage = this.props.getBackground.call(this, 'menu');
+    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
     return (
       <Background image={backgroundImage} >
         <ScrollView>

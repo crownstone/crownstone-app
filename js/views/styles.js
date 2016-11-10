@@ -22,6 +22,7 @@ export let colors = {
   purple: {hex:'#8a01ff'},
   blue: {hex:'#0075c9'},
   green: {hex:'#a0eb58'},
+  darkGreen: {hex:'#1f4c43'},
   green2: {hex:'#4cd864'},
   orange: {hex:'#ff953a'},
   red: {hex:'#ff3c00'},

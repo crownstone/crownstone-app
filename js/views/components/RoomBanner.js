@@ -45,7 +45,11 @@ export class RoomBanner extends Component {
     let rightRatio = 0.30;
     let offset = 0.1*height;
     let remoteColor = undefined;
+    let color1 = colors.green.hex;
+    let color2 = colors.darkGreen.hex;
     if (this.props.viewingRemotely === true) {
+      color1 = "#fff";
+      color2 = "#fff";
       remoteColor = colors.notConnected.hex;
     }
 
@@ -53,8 +57,8 @@ export class RoomBanner extends Component {
       return (
         <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.blue.hex, justifyContent:'center', overflow:'hidden'}}>
           <View style={{flexDirection:'row'}}>
-            <Icon name="c2-pluginFront" size={100} color={colors.green.hex} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
-            <Icon name="c2-pluginFront" size={100} color={colors.orange.hex} style={{position:'absolute',backgroundColor:'transparent', top:20, left:175}} />
+            <Icon name="c2-pluginFront" size={100} color={color1} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
+            <Icon name="c2-pluginFront" size={100} color={color2} style={{position:'absolute',backgroundColor:'transparent', top:20, left:175}} />
             <Icon name="c2-pluginFront" size={160} color="#fff" style={{position:'absolute', backgroundColor:'transparent', top:-32, left:-30}} />
 
             <View style={{flex:1}} />

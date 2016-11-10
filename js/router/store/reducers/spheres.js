@@ -24,7 +24,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'SET_SPHERE_STATE':
       if (action.data) {
         let newState = {...state};
-        newState.reachable  = update(action.data.reachable, newState.reachable);
+        newState.reachable = update(action.data.reachable, newState.reachable);
         newState.present = update(action.data.present, newState.present);
         return newState;
       }

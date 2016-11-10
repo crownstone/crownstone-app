@@ -14,6 +14,8 @@ var sha1 = require('sha-1');
 import { LOG, LOGError } from '../../logging/Log'
 import { emailMemoryForLogin } from './emailMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
+import { LocalizationUtil } from '../../native/LocationHandler'
+import { BleActions, Bluenet } from '../../native/Proxy'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
@@ -29,6 +31,7 @@ export class Login extends Component {
     // this.state = {email: emailMemoryForLogin.email || 'alex@dobots.nl', password:'letmein0'};
     this.state = {email: emailMemoryForLogin.email || '', password:''};
     // this.state = {email: emailMemoryForLogin.email || 'anne@crownstone.rocks', password:'bier'};
+    // this.state = {email: 'bart@almende.org', password:'12'};
     this.progress = 0;
   }
 
@@ -68,7 +71,15 @@ export class Login extends Component {
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
       })
       .catch((reply) => {
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+        let content = "Please try again.";
+        let title = "Cannot Send Email";
+        if (reply.data && reply.data.error) {
+          if (reply.data.error.code == "EMAIL_NOT_FOUND") {
+            content = "This email is not registered in the Cloud. Please register to create an account.";
+            title = "Unknown Email";
+          }
+        }
+        Alert.alert(title, content, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
       });
   }
 
@@ -187,7 +198,6 @@ export class Login extends Component {
       
       let handleFiles = (files) => {
         files.forEach((file) => {
-          LOG("handling file")
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;
@@ -267,7 +277,8 @@ export class Login extends Component {
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
       })
       .catch((err) => {
-        LOGError("Problem downloading profile picture: ", err);
+        // likely a 404, ignore
+        LOGDebug("Problem downloading profile picture: ", err);
       })
       .then(() => {
         this.progress += parts;
@@ -286,6 +297,9 @@ export class Login extends Component {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Sphere available.'});
         }
       })
+      .catch((err) => {
+        Alert.alert("An error has occurred at Login", err, [{text:'OK'}])
+      })
     );
 
 
@@ -294,6 +308,12 @@ export class Login extends Component {
 
       // finalize the login due to successful download of data. Enables persistence.
       StoreManager.finalizeLogIn(userId);
+
+      // start listening to the ibeacons
+      LocalizationUtil.trackSpheres(store);
+
+      // start scanning
+      BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
 
       // set a small delay so the user sees "done"
       setTimeout(() => {

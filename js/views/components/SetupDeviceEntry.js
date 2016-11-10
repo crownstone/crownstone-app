@@ -13,12 +13,13 @@ import {
   View
 } from 'react-native';
 
+import { stoneTypes } from '../../router/store/reducers/stones'
 import { Icon } from './Icon';
 import { styles, colors, screenWidth } from '../styles'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { NativeBus } from '../../native/Proxy'
 import { BLEutil, SetupCrownstone } from '../../native/BLEutil'
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG, LOGDebug, LOGError } from '../../logging/Log'
 
 
 export class SetupDeviceEntry extends Component {
@@ -74,6 +75,7 @@ export class SetupDeviceEntry extends Component {
     }
   }
 
+
   _getIcon() {
     let color = colors.blinkColor1.hex;
     if (this.disabled === true)
@@ -81,18 +83,18 @@ export class SetupDeviceEntry extends Component {
     else if (this.state.claimingInProgress === true)
        color = colors.blinkColor2.hex;
 
-    let content = (
+    let typedIcon = this._getTypedIcon();
+
+    return (
       <View style={[{
         width:60,
         height:60,
         borderRadius:30,
         backgroundColor: color,
         }, styles.centered]}>
-        <Icon name={'c2-pluginFilled'} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+        <Icon name={typedIcon} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
       </View>
     );
-
-    return content;
   }
 
   recoverFromError() {
@@ -187,23 +189,58 @@ export class SetupDeviceEntry extends Component {
       })
   }
 
+  _getTypedName() {
+    let name = 'New stone';
+    if (this.props.item.isCrownstonePlug)         { name = 'Crownstone Plug'; }
+    else if (this.props.item.isCrownstoneBulitin) { name = 'Crownstone Builtin'; }
+    else if (this.props.item.isGuidestone)        { name = 'Guidestone'; }
+    return name;
+  }
+
+  _getTypedIcon() {
+    let typedIcon = 'ios-help-circle';
+    if (this.props.item.isCrownstonePlug) {
+      typedIcon = 'c2-pluginFilled';
+    }
+    else if (this.props.item.isCrownstoneBulitin) {
+      typedIcon = 'c2-crownstone';
+    }
+    else if (this.props.item.isGuidestone) {
+      typedIcon = 'c2-crownstone';
+    }
+    return typedIcon;
+  }
+
+  _getType() {
+    if (this.props.item.isCrownstonePlug)         { return stoneTypes.plug; }
+    else if (this.props.item.isCrownstoneBuiltin) { return stoneTypes.builtin; }
+    else if (this.props.item.isGuidestone)        { return stoneTypes.guidestone; }
+    else {
+      LOGError("UNKNOWN DEVICE in setup procedure", this.props.item);
+    }
+  }
+
   registerStone(crownstone, MACAddress) {
     const {store} = this.props;
     const processSuccess = (cloudResponse) => {
       this.setProgress(4);
       LOG("received from cloud:",cloudResponse);
       this.stoneIdDuringSetup = cloudResponse.id;
+
       store.dispatch({
-        type: "ADD_STONE",
-        sphereId: this.props.sphereId,
-        stoneId: cloudResponse.id,
+        type:           "ADD_STONE",
+        sphereId:       this.props.sphereId,
+        stoneId:        cloudResponse.id,
         data: {
-          type: 'plugin_v1',
-          crownstoneId: cloudResponse.uid,
-          handle:  crownstone.getHandle(),
-          macAddress:   MACAddress,
-          iBeaconMajor: cloudResponse.major,
-          iBeaconMinor: cloudResponse.minor,
+          name:           this._getTypedName(),
+          type:           this._getType(),
+          icon:           this._getTypedIcon(),
+          touchToToggle:  this.props.item.isGuidestone == false,
+          crownstoneId:   cloudResponse.uid,
+          handle:         crownstone.getHandle(),
+          macAddress:     MACAddress,
+          iBeaconMajor:   cloudResponse.major,
+          iBeaconMinor:   cloudResponse.minor,
         }
       });
       this.claimStone(crownstone, cloudResponse.id);
@@ -215,7 +252,7 @@ export class SetupDeviceEntry extends Component {
         this.recoverFromError();
       }}]);
     };
-    CLOUD.forSphere(this.props.sphereId).createStone(this.props.sphereId, MACAddress, 'plugin_v1')
+    CLOUD.forSphere(this.props.sphereId).createStone(this.props.sphereId, MACAddress, this._getType())
       .then(processSuccess)
       .catch((err) => {
         if (err.status === 422) {
@@ -269,6 +306,10 @@ export class SetupDeviceEntry extends Component {
         setTimeout(() => { /* todo: finalize */ }, 1800);
       })
       .catch((err) => {
+        LOGError("Could not setup the Crownstone:", err);
+        if (err == "INVALID_SESSION_DATA") {
+          Alert.alert("Encryption might be off","Error: INVALID_SESSION_DATA, which usually means encryption in this Crownstone is turned off. This app requires encryption to be on.",[{text:'OK'}]);
+        }
         crownstone.disconnect().catch();
         this.cleanupFailedAttempt(stoneId);
         this.recoverFromError();

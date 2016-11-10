@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 
+import { stoneTypes } from '../../router/store/reducers/stones'
 import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
@@ -16,6 +17,7 @@ import { BLEutil } from '../../native/BLEutil'
 import { BleActions, NativeBus } from '../../native/Proxy'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
+import { getUUID } from '../../util/util'
 var Actions = require('react-native-router-flux').Actions;
 import { 
   getPresentUsersFromState, 
@@ -25,7 +27,7 @@ import {
 import { Icon } from '../components/Icon'
 import { Separator } from '../components/Separator'
 import { styles, colors, screenWidth } from '../styles'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGDebug } from '../../logging/Log'
 
 
 export class RoomOverview extends Component {
@@ -39,6 +41,9 @@ export class RoomOverview extends Component {
     this.setupModeTimeout = undefined;
     this.lastSuccessfulSetupHandle = undefined;
     this.setupData = props.setupData ? {...props.setupData} : {};
+    this.viewingRemotely = true;
+    this.uuid = getUUID();
+
   }
 
   createSetupTimeout(handle) {
@@ -50,7 +55,7 @@ export class RoomOverview extends Component {
       }
       
       this.cleanupAfterSetup(handle);
-    }, 5000);
+    }, 3000);
   };
 
   cleanupAfterSetup(handle) {
@@ -73,16 +78,21 @@ export class RoomOverview extends Component {
     // check if we are a floating crownstone container, in that case we listen for setup stones.
     if (this.props.locationId === null) {
       this.unsubscribeNative = NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+        // we scan in HF to get the most up to date impression of our surroundings
+        BLEutil.startHighFrequencyScanning(this.uuid);
+
         // use this to avoid the last events of the successful setup mode.
         if (setupAdvertisement.handle === this.lastSuccessfulSetupHandle)
           return;
 
+        // update if we see a new crownstone in setup mode
         let forceRefresh = false;
         if (this.setupData[setupAdvertisement.handle] === undefined) {
           this.setupData[setupAdvertisement.handle] = setupAdvertisement;
           forceRefresh = true;
         }
 
+        // update if we have not yet seen a crownstone in setup mode: force refresh is set to false since setState already redraws
         if (this.state.seeStoneInSetupMode === false) {
           this.setState({seeStoneInSetupMode: true});
           forceRefresh = false;
@@ -103,22 +113,37 @@ export class RoomOverview extends Component {
       });
     }
 
-    this.unsubscribe = this.props.store.subscribe(() => {
-      // guard against deletion of the room
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId]) {
+        Actions.pop();
+        return;
+      }
+
+      if (
+        (change.stoneUsageUpdated && change.stoneUsageUpdated.sphereIds[this.props.sphereId]) ||
+        (change.changeSphereState && change.changeSphereState.sphereIds[this.props.sphereId]) ||
+        (change.changeStoneState  && change.changeStoneState.sphereIds[this.props.sphereId])  ||
+        (change.stoneLocationUpdated && change.stoneLocationUpdated.sphereIds[this.props.sphereId])  ||
+        (change.changeStones)
+      ) {
+        this.forceUpdate();
+        return;
+      }
+
+      // actions specifically for location that are not floating
       if (this.props.locationId !== null) {
-        let state = this.props.store.getState();
-        let room = state.spheres[this.props.sphereId].locations[this.props.locationId];
-        if (room) {
+        if (
+          (change.userPositionUpdate   && change.userPositionUpdate.locationIds[this.props.locationId])   ||
+          (change.updateLocationConfig && change.updateLocationConfig.locationIds[this.props.locationId])
+        ) {
           this.forceUpdate();
         }
-        else {
-          Actions.pop();
-        }
       }
-      else {
-        this.forceUpdate();
-      }
-    })
+    });
+
+    // tell the component exactly when it should redraw
   }
 
   componentWillUnmount() {
@@ -131,7 +156,7 @@ export class RoomOverview extends Component {
     if (this.unsubscribeNative !== undefined) {
       this.unsubscribeNative();
     }
-    this.unsubscribe();
+    this.unsubscribeStoreEvents();
   }
 
   _renderer(item, index, stoneId) {
@@ -163,11 +188,13 @@ export class RoomOverview extends Component {
               name={item.device.config.name}
               icon={item.device.config.icon}
               state={item.stone.state.state}
-              currentUsage={item.stone.state.currentUsage}
+              currentUsage={item.stone.config.type !== stoneTypes.guidestone ? item.stone.state.currentUsage : undefined}
               navigation={false}
-              control={this.props.viewingRemotely === false}
-              disabled={this.state.pendingRequests[stoneId] !== undefined || this.props.viewingRemotely}
+              control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
+              pending={this.state.pendingRequests[stoneId] !== undefined} // either disabled, pending or remote
+              disabled={item.stone.config.disabled || this.viewingRemotely} // either disabled or remote
               dimmable={item.device.config.dimmable}
+              showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
               onChange={(switchState) => {
                 this.showPending(stoneId);
                 let data = {state: switchState};
@@ -189,9 +216,9 @@ export class RoomOverview extends Component {
                     this.clearPending(stoneId);
                   })
               }}
-              onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.props.viewingRemotely})}}
-              onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.props.viewingRemotely})}}
-              onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.props.viewingRemotely})}}
+              onMove={() => { Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.viewingRemotely})}}
+              onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
+              onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
             />
           </View>
         </View>
@@ -232,7 +259,6 @@ export class RoomOverview extends Component {
     }
 
     // LOG("stones:", stones, "of which setup", this.setupData)
-
     return (
       <SeparatedItemList
         items={stones}
@@ -243,38 +269,47 @@ export class RoomOverview extends Component {
   }
 
   render() {
+    LOGDebug("redrawing room overview");
     const store = this.props.store;
     const state = store.getState();
 
-    let usage = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
-    let users = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
+    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && this.state.seeStoneInSetupMode !== true;
+
+    let usage  = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
+    let users  = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
     let stones = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
 
-    let backgroundImage = this.props.getBackground.call(this, 'main');
+    let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
 
+    let content = undefined;
     if (Object.keys(stones).length == 0 && this.state.seeStoneInSetupMode == false) {
-      return (
-        <Background image={backgroundImage} >
-          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.props.viewingRemotely} />
+      content = (
+        <View>
+          <RoomBanner presentUsers={users} noCrownstones={true} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.viewingRemotely} />
           <Separator fullLength={true} />
           <DeviceEntry empty={true} floatingCrownstones={this.props.locationId === null} />
           <Separator fullLength={true} />
           <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
             <Icon name="c2-pluginFront" size={0.75 * screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />
           </View>
-        </Background>
+        </View>
       );
     }
     else {
-      return (
-        <Background image={backgroundImage} >
-          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null} viewingRemotely={this.props.viewingRemotely}  />
+      content = (
+        <View>
+          <RoomBanner presentUsers={users} usage={usage} floatingCrownstones={this.props.locationId === null}
+                      viewingRemotely={this.viewingRemotely}/>
           <ScrollView>
             {this.getItems(stones)}
           </ScrollView>
-        </Background>
+        </View>
       );
     }
-
+    return (
+      <Background image={backgroundImage} >
+        {content}
+      </Background>
+    );
   }
 }

@@ -10,9 +10,12 @@ import {
 } from 'react-native';
 
 import { styles, screenWidth, screenHeight, colors } from '../styles'
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
 import { getCurrentPowerUsageFromState } from '../../util/dataUtil'
 import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
+import { eventBus } from '../../util/eventBus';
+import { enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil' // maybe move away from native?
 import { LOGDebug } from '../../logging/Log';
 var Actions = require('react-native-router-flux').Actions;
 
@@ -90,6 +93,7 @@ export class RoomCircle extends Component {
 
   componentDidMount() {
     const { store } = this.props;
+    // TODO: move this logic into the databaseChange event.
     this.unsubscribe = store.subscribe(() => {
       if (this.renderState === undefined)
         return;
@@ -114,6 +118,16 @@ export class RoomCircle extends Component {
       }
       else if (usage !== this.usage) {
         this.usage = usage;
+        this.forceUpdate();
+      }
+    });
+
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (
+        (change.userPositionUpdate && change.userPositionUpdate.locationIds[this.props.locationId])
+      ) {
         this.forceUpdate();
       }
     });
@@ -152,6 +166,7 @@ export class RoomCircle extends Component {
     clearTimeout(this.moveAnimationTimeout);
     clearTimeout(this.wiggleTimeout);
     this.unsubscribe();
+    this.unsubscribeStoreEvents();
   }
 
 
@@ -353,22 +368,20 @@ export class RoomCircle extends Component {
   }
 
 
-  // _getAlertIcon() {
-  //   let alertSize = 30;
-  //   if (this.props.locationId === null && this.props.seeStoneInSetupMode) {
-  //     return (
-  //       <View style={[styles.centered, {
-  //         width:alertSize,
-  //         height:alertSize, borderRadius:alertSize*0.5,
-  //         borderWidth:3,
-  //         borderColor:'#fff',
-  //         position:'absolute',
-  //         top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.blue.hex}]} >
-  //         <Icon name="md-star" color="#fff" size={20} style={{backgroundColor:'transparent'}} />
-  //       </View>
-  //     )
-  //   }
-  // }
+  _getAlertIcon() {
+    let alertSize = 30;
+    return (
+      <View style={[styles.centered, {
+        width:alertSize,
+        height:alertSize, borderRadius:alertSize*0.5,
+        borderWidth:3,
+        borderColor:'#fff',
+        position:'absolute',
+        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} >
+        <Icon name="md-finger-print" color="#fff" size={20} style={{backgroundColor:'transparent'}} />
+      </View>
+    )
+  }
 
   _animatePosition() {
     let animations = [];
@@ -414,6 +427,14 @@ export class RoomCircle extends Component {
 
     const store = this.props.store;
     const state = store.getState();
+
+    let canDoLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
+    let showFingerprintNeeded = false;
+    if (this.props.locationId !== null && this.props.viewingRemotely !== true) {
+      if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
+        showFingerprintNeeded = true;
+      }
+    }
     this.renderState = store.getState();
 
     return (
@@ -421,8 +442,8 @@ export class RoomCircle extends Component {
         <TouchableOpacity onPress={() => Actions.roomOverview(this.props.actionParams)}>
           <View>
             {this.getCircle()}
-            {this.props.locationId === null ? undefined : <PresentUsers locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
-            {/*{this._getAlertIcon()}*/}
+            {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
+            {showFingerprintNeeded === true ? this._getAlertIcon() : undefined}
           </View>
         </TouchableOpacity>
       </Animated.View>

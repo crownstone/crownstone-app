@@ -200,7 +200,7 @@ export class DeviceStateEdit extends Component {
 
     let options = this.constructOptions(store, device, stone);
     let stateOptions = this.constructStateOptions(store, device, stone);
-    let backgroundImage = this.props.getBackground.call(this, 'menu');
+    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
     return (
       <Background image={backgroundImage} >
         <ScrollView>

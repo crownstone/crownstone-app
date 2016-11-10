@@ -85,7 +85,7 @@ export class DeviceEntry extends Component {
     if (this.props.disabled === false) {
       content = <Switch value={this.props.state === 1} onValueChange={this._pressedDevice.bind(this)} />
     }
-    else {
+    else if (this.props.pending === true) {
       content = <ActivityIndicator animating={true} size="large" />
     }
 
@@ -129,9 +129,9 @@ export class DeviceEntry extends Component {
             <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeType()}>
               <Icon name="ios-outlet" size={26} color="#aaa" style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
             </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeSettings()}>
+            {this.props.showBehaviour === true ? <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeSettings()}>
               <Icon name="ios-cog" size={29} color="#aaa" style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
-            </TouchableOpacity>
+            </TouchableOpacity> : undefined}
           </View>
         </View>
       )
@@ -153,9 +153,7 @@ export class DeviceEntry extends Component {
         <Animated.View style={{flexDirection: 'column', height: this.state.height, overflow: 'hidden', flex: 1}}>
           <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
             <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
-                              onPress={() => {
-                                this._toggleOptions();
-                              }}>
+                              onPress={() => { this._toggleOptions(); }}>
               {this._getIcon()}
             </TouchableOpacity>
             <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
@@ -163,7 +161,7 @@ export class DeviceEntry extends Component {
             }}>
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
-                {this.props.disabled === false ? <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text> : undefined}
+                {this.props.disabled === false && this.props.currentUsage !== undefined ? <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text> : undefined}
               </View>
             </TouchableOpacity>
             {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}

@@ -49,7 +49,7 @@ export class RegisterConclusion extends Component {
           alignItems:'center',
           justifyContent:'center'}}>
           <TouchableOpacity onPress={Actions.loginSplash}>
-            <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Got it!</Text></View>
+            <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>OK</Text></View>
           </TouchableOpacity>
         </View>
       </Background>

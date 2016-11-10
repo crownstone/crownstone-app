@@ -26,7 +26,7 @@ class FingerprintManagerClass {
           if (Array.isArray(iBeaconAdvertisement)) {
             let data = [];
             for (let i = 0; i < iBeaconAdvertisement.length; i++) {
-              data.push(JSON.parse(iBeaconAdvertisement[i]))
+              data.push(iBeaconAdvertisement[i])
             }
             callback(data);
           }
@@ -44,7 +44,7 @@ class FingerprintManagerClass {
    */
   _stopFingerprinting(nativeCall) {
     if (this.fingerprintingSession !== null) {
-      this.fingerprintingSubscriptions[this.fingerprintingSession].remove();
+      this.fingerprintingSubscriptions[this.fingerprintingSession]();
       delete this.fingerprintingSubscriptions[this.fingerprintingSession]
     }
 

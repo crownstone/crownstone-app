@@ -4,7 +4,7 @@ import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
-import { safeMoveFile } from '../util/util'
+import { safeMoveFile, safeDeleteFile } from '../util/util'
 
 /**
  *
@@ -119,12 +119,13 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
       progress: progressCallback
     })
     .then((status) => {
-      LOGError("got status downloading file", status);
       if (status.statusCode !== 200) {
         // remove the temp file if the download failed
-        RNFS.unlink(tempPath);
-        successCallback();
-        resolve(null);
+        safeDeleteFile(tempPath)
+          .then(() => {
+            successCallback();
+            resolve(null);
+          })
       }
       else {
         safeMoveFile(tempPath,toPath)
@@ -136,7 +137,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
       }
     })
     .catch((err) => {
-      LOGError("error downloading file", err);
+      safeDeleteFile(tempPath);
       reject(err);
     })
   });

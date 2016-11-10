@@ -81,7 +81,7 @@ export class AppRouter extends Component {
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
 
       // // if we have an accessToken, we proceed with logging in automatically
-      if (state.user.accessToken !== undefined) {
+      if (state.user.accessToken !== null) {
         // in the background we check if we're authenticated, if not we log out.
         CLOUD.setAccess(state.user.accessToken);
         CLOUD.getUserData({background:true})
@@ -134,29 +134,55 @@ export class AppRouter extends Component {
     this.cleanUp()
   }
 
+  getBackground(type, remotely) {
+    let backgroundImage;
+    switch (type) {
+      case "menu":
+        backgroundImage = this.backgrounds.menu;
+        if (remotely === true) {
+          backgroundImage = this.backgrounds.menuRemoteNotConnected;
+        }
+        break;
+      case "dark":
+        backgroundImage = this.backgrounds.main;
+        if (remotely === true) {
+          backgroundImage = this.backgrounds.mainRemoteNotConnected;
+        }
+        break;
+      default:
+        backgroundImage = this.backgrounds.main;
+        if (remotely === true) {
+          backgroundImage = this.backgrounds.mainRemoteNotConnected;
+        }
+        break;
+    }
+
+    return backgroundImage;
+  }
+
   cleanUp() {
     this.unsubscribe.forEach((callback) => {callback()});
     this.unsubscribe = [];
   }
 
   render() {
-    LOGDebug("RENDERING ROUTER")
+    LOGDebug("RENDERING ROUTER");
     if (this.state.storeInitialized === true) {
       return (
         <View style={{flex:1}}>
-          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} getBackground={getBackground} eventBus={eventBus}>
+          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} getBackground={this.getBackground.bind(this)} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
               <Scene key="register"                   component={Views.Register}                   hideNavBar={false} title="Register" {...navBarStyle} />
-              <Scene key="registerConclusion"         component={Views.RegisterConclusion}         hideNavBar={false} title="Registration Almost Finished" type="reset" {...navBarStyle} />
+              <Scene key="registerConclusion"         component={Views.RegisterConclusion}         hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} />
               <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  panHandlers={null} direction="vertical" />
-              <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true} direction="vertical" title="Training" />
-              <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true} panHandlers={null} direction="vertical" title="Move to which Room?" />
-              <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
-              <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true} panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true}  panHandlers={null} direction="vertical" title="Training" />
+              <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true}  panHandlers={null} direction="vertical" title="Move to which Room?" />
+              <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
               <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
@@ -176,15 +202,15 @@ export class AppRouter extends Component {
                   <Scene key="daySelection"           component={Views.DaySelection}               title="Set Active Days" />
                 </Scene>
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
-                  <Scene key="settingsOverview"           component={Views.SettingsOverview}            title="Settings"/>
-                  <Scene key="settingsProfile"            component={Views.SettingsProfile}             title="Your Profile" />
-                  <Scene key="settingsChangeEmail"        component={Views.SettingsChangeEmail}         title="Change Email"/>
-                  <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}      title="Change Password"/>
+                  <Scene key="settingsOverview"           component={Views.SettingsOverview}           title="Settings"/>
+                  <Scene key="settingsProfile"            component={Views.SettingsProfile}            title="Your Profile" />
+                  <Scene key="settingsChangeEmail"        component={Views.SettingsChangeEmail}        title="Change Email"/>
+                  <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}     title="Change Password"/>
                   <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     title="Sphere Overview" />
                   <Scene key="settingsSphere"             component={Views.SettingsSphere}             title="[Sphere name here]" />
                   <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         title="[Username here]" />
                   <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       title="Invite" />
-                  <Scene key="appComplexity"              component={Views.AppComplexity}               title="Settings"/>
+                  <Scene key="appComplexity"              component={Views.AppComplexity}              title="Settings"/>
                 </Scene>
               </Scene>
             </Scene>
@@ -234,7 +260,7 @@ let renderEditRoomButton = function(params) {
 };
 
 let onRightFunctionEdit = function(params) {
-  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId, viewingRemotely: params.viewingRemotely});
+  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId});
 };
 
 let navBarStyle = {
@@ -259,37 +285,15 @@ var clearAllCurrentPowerUsage = function(store) {
   const state = store.getState();
   let spheres = state.spheres;
   let sphereIds = Object.keys(spheres);
+  let actions = [];
   sphereIds.forEach((sphereId) => {
     let stones = spheres[sphereId].stones;
     let stoneIds = Object.keys(stones);
     stoneIds.forEach((stoneId) => {
-      store.dispatch({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId})
+      actions.push({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId});
+      actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
     })
-  })
-};
-
-let getBackground = function(type) {
-  let backgroundImage;
-  switch (type) {
-    case "menu":
-      backgroundImage = this.props.backgrounds.menu;
-      if (this.props.viewingRemotely === true) {
-        backgroundImage = this.props.backgrounds.menuRemoteNotConnected;
-      }
-      break;
-    case "dark":
-      backgroundImage = this.props.backgrounds.main;
-      if (this.props.viewingRemotely === true) {
-        backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
-      }
-      break;
-    default:
-      backgroundImage = this.props.backgrounds.main;
-      if (this.props.viewingRemotely === true) {
-        backgroundImage = this.props.backgrounds.mainRemoteNotConnected;
-      }
-      break;
-  }
-
-  return backgroundImage;
+  });
+  if (actions.length > 0)
+    store.batchDispatch(actions);
 };

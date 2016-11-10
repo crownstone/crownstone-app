@@ -2,20 +2,47 @@ import { eventBus } from '../../util/eventBus'
 import { BATCH } from './storeManager'
 import { LOG, LOGDebug } from '../../logging/Log'
 
+
+/**
+ * This will emit an event which explains what has been changed in broad lines.
+ *
+ * The eventData is an object with keys of kinds of changes.
+ * Each on of these keys (example: updateApplianceBehaviour) has an object of the ids of the items it is affecting:
+ *    eventData["updateApplianceBehaviour"] = {
+ *      locationIds:{},
+ *      sphereIds:{xxx: true},
+ *      stoneIds:{},
+ *      applianceIds:{xxx: true}
+ *    }
+ * The concept is that you can clearly check the sort of change and if it affects you.
+ *
+ * Finally, if you dont want to check what type of operation it is and only want to check if your ID is affected, there
+ * is a key called totalAffectedIds inside the eventData.
+ *
+ * This event is only triggered once for each database update, batch or normal.
+ *
+ * @param getState
+ * @returns {function(*): function(*=)}
+ * @constructor
+ */
 export function EventEnhancer({ getState }) {
   return (next) => (action) => {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
     let eventData = {};
+    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
-        eventData = {...eventData, ...checkAction(action)};
+        let { data, ids } = checkAction(action, affectedIds);
+        affectedIds = ids;
+        eventData = {...eventData, ...data};
       })
     }
     else {
-      eventData = {...eventData, ...checkAction(action)};
+      let { data, ids } = checkAction(action, affectedIds);
+      affectedIds = ids;
+      eventData = {...eventData, ...data};
     }
-
 
     eventBus.emit("databaseChange", {...action, change: eventData});
 
@@ -25,19 +52,25 @@ export function EventEnhancer({ getState }) {
   }
 }
 
-function checkAction(action) {
+function checkAction(action, affectedIds) {
   let eventStatus = {};
+
+  if (action.locationId)  { affectedIds.locationIds[action.locationId] = true; }
+  if (action.sphereId)    { affectedIds.sphereIds[action.sphereId] = true; }
+  if (action.stoneId)     { affectedIds.stoneIds[action.stoneId] = true; }
+  if (action.applianceId) { affectedIds.applianceIds[action.applianceId] = true; }
+
   switch (action.type) {
     case 'SET_ACTIVE_SPHERE':
     case 'CLEAR_ACTIVE_SPHERE':
-      eventStatus.updaceActiveSphere = true; break;
+      eventStatus.updateActiveSphere = affectedIds; break;
     case 'UPDATE_APP_STATE':
-      eventStatus.updateAppState = true; break;
+      eventStatus.updateAppState = affectedIds; break;
     case 'ADD_APPLIANCE':
-      eventStatus.addAppliance = true;
-      eventStatus.changeAppliances = true;
+      eventStatus.addAppliance = affectedIds;
+      eventStatus.changeAppliances = affectedIds;
     case 'UPDATE_APPLIANCE_CONFIG':
-      eventStatus.updateApplianceConfig = true; break;
+      eventStatus.updateApplianceConfig = affectedIds; break;
     case 'ADD_LINKED_DEVICES':
     case 'UPDATE_LINKED_DEVICES':
     case 'REMOVE_LINKED_DEVICES':
@@ -48,100 +81,102 @@ function checkAction(action) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
-      eventStatus.updateApplianceBehaviour = true; break;
+      eventStatus.updateApplianceBehaviour = affectedIds; break;
     case 'ADD_APPLIANCE_SCHEDULE':
     case 'UPDATE_APPLIANCE_SCHEDULE':
     case 'REMOVE_APPLIANCE_SCHEDULE':
       break;
     case 'REMOVE_APPLIANCE':
-      eventStatus.removeAppliance = true;
-      eventStatus.changeAppliances = true;
-      eventStatus.updateApplianceConfig = true;
+      eventStatus.removeAppliance = affectedIds;
+      eventStatus.changeAppliances = affectedIds;
+      eventStatus.updateApplianceConfig = affectedIds;
       break;
     case 'USER_ENTER_LOCATION':
     case 'USER_EXIT_LOCATION':
-      eventStatus.userPositionUpdate = true;
+      eventStatus.userPositionUpdate = affectedIds;
       break;
     case 'CLEAR_USERS':
-      eventStatus.changeUsers = true;
+      eventStatus.changeUsers = affectedIds;
       break;
     case 'UPDATE_LOCATION_FINGERPRINT':
-      eventStatus.changeFingerprint = true; break;
+      eventStatus.changeFingerprint = affectedIds; break;
     case 'ADD_LOCATION':
-      eventStatus.addLocation = true;
-      eventStatus.changeLocations = true;
+      eventStatus.addLocation = affectedIds;
+      eventStatus.changeLocations = affectedIds;
     case 'UPDATE_LOCATION_CONFIG':
-      eventStatus.updateLocationConfig = true; break;
+      eventStatus.updateLocationConfig = affectedIds; break;
     case 'REMOVE_LOCATION':
-      eventStatus.removeLocation = true;
-      eventStatus.changeLocations = true;
-      eventStatus.updateLocationConfig = true; break;
+      eventStatus.removeLocation = affectedIds;
+      eventStatus.changeLocations = affectedIds;
+      eventStatus.updateLocationConfig = affectedIds; break;
     case 'SET_SPHERE_STATE':
-      eventStatus.changeSphereState = true; break;
+      eventStatus.changeSphereState = affectedIds; break;
     case 'SET_SPHERE_KEYS': break;
     case 'ADD_SPHERE':
-      eventStatus.addSphere = true;
-      eventStatus.changeSpheres = true;
+      eventStatus.addSphere = affectedIds;
+      eventStatus.changeSpheres = affectedIds;
     case 'UPDATE_SPHERE_CONFIG':
-      eventStatus.changeSphereConfig = true; break;
+      eventStatus.changeSphereConfig = affectedIds; break;
     case 'REMOVE_SPHERE':
-      eventStatus.removeSphere = true;
-      eventStatus.changeSpheres = true;
-      eventStatus.changeSphereConfig = true; break;
+      eventStatus.removeSphere = affectedIds;
+      eventStatus.changeSpheres = affectedIds;
+      eventStatus.changeSphereConfig = affectedIds; break;
     case 'ADD_SPHERE_USER':
-      eventStatus.addSphereUser = true;
-      eventStatus.changeSphereUsers = true;
+      eventStatus.addSphereUser = affectedIds;
+      eventStatus.changeSphereUsers = affectedIds;
     case 'UPDATE_SPHERE_USER':
-      eventStatus.updateSphereUser = true;
+      eventStatus.updateSphereUser = affectedIds;
       break;
     case 'REMOVE_SPHERE_USER':
-      eventStatus.removeSphereUser = true;
-      eventStatus.changeSphereUsers = true;
-      eventStatus.updateSphereUser = true;
+      eventStatus.removeSphereUser = affectedIds;
+      eventStatus.changeSphereUsers = affectedIds;
+      eventStatus.updateSphereUser = affectedIds;
       break;
     case 'USER_ENTER_SPHERE':
     case 'USER_EXIT_SPHERE':
-      eventStatus.changeSphereUserPresence = true; break;
+      eventStatus.changeSphereUserPresence = affectedIds; break;
     case 'UPDATE_STONE_HANDLE':
-      eventStatus.changeStoneHandle = true; break;
+      eventStatus.changeStoneHandle = affectedIds; break;
     case 'UPDATE_STONE_DISABILITY':
-      eventStatus.changeStoneState = true; break;
+      eventStatus.changeStoneState = affectedIds; break;
     case 'ADD_STONE':
-      eventStatus.addStone = true;
-      eventStatus.changeStones = true;
+      eventStatus.addStone = affectedIds;
+      eventStatus.changeStones = affectedIds;
     case 'UPDATE_STONE_CONFIG':
-      eventStatus.updateStoneConfig = true; break;
+      eventStatus.updateStoneConfig = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':
-      eventStatus.stoneLocationUpdated = true; break;
+      eventStatus.stoneLocationUpdated = affectedIds; break;
     case 'CLEAR_STONE_USAGE':
     case 'UPDATE_STONE_STATE':
-      eventStatus.powerUsageUpdated = true;
-      eventStatus.stoneUsageUpdated = true; break;
+      eventStatus.powerUsageUpdated = affectedIds;
+      eventStatus.stoneUsageUpdated = affectedIds; break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
-      eventStatus.updateStoneBehaviour = true; break;
+      eventStatus.updateStoneBehaviour = affectedIds; break;
       break;
     case 'ADD_STONE_SCHEDULE':
     case 'UPDATE_STONE_SCHEDULE':
     case 'REMOVE_STONE_SCHEDULE':
       break;
     case 'REMOVE_STONE':
-      eventStatus.removeStone = true;
-      eventStatus.changeStones = true;
-      eventStatus.updateStoneConfig = true; break;
+      eventStatus.removeStone = affectedIds;
+      eventStatus.changeStones = affectedIds;
+      eventStatus.updateStoneConfig = affectedIds; break;
     case 'USER_LOG_IN':
-      eventStatus.userLogin = true; break;
+      eventStatus.userLogin = affectedIds; break;
     case 'USER_UPDATE':
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
-      eventStatus.changeUserData = true; break;
+      eventStatus.changeUserData = affectedIds; break;
       break;
     default:
       console.log("UNKNOWN ACTION TYPE:", action);
   }
 
-  return eventStatus;
+  eventStatus.totalAffectedIds = affectedIds;
+
+  return { data: eventStatus , ids: affectedIds };
 }

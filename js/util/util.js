@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
 import { DEBUG } from '../ExternalConfig'
 import { StoreManager } from '../router/store/storeManager'
+import { Bluenet } from '../native/Proxy'
 import { Actions } from 'react-native-router-flux';
 import { LOG } from '../logging/Log'
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
@@ -71,6 +72,8 @@ export const removeAllFiles = function() {
 
 export const logOut = function() {
   Actions.loginSplash();
+  Bluenet.clearTrackedBeacons();
+  Bluenet.stopScanning();
   StoreManager.userLogOut();
 };
 
@@ -122,7 +125,8 @@ export const safeDeleteFile = function(uri) {
       })
       .then(() => {
         resolve()
-      }).done()
+      })
+      .catch(resolve)
   })
 };
 

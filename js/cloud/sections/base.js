@@ -2,7 +2,7 @@ import { request, download } from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/util'
 import { EventBus } from '../../util/eventBus'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGError } from '../../logging/Log'
 
 let defaultHeaders = {
   'Accept': 'application/json',
@@ -103,7 +103,7 @@ export const base = {
         promise = this._head(promiseBody);
         break;
       default:
-        console.error("UNKNOWN TYPE:", reqType);
+        LOGError("UNKNOWN TYPE:", reqType);
         return;
     }
     return this._finalizeRequest(promise, options, endpoint, promiseBody);
@@ -143,7 +143,7 @@ export const base = {
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
-      LOG("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
+      LOGError("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
     }
     reject(reply);
   }

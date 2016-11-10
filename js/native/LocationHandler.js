@@ -4,10 +4,9 @@ import { StoneStateHandler } from './StoneStateHandler'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { getUUID } from '../util/util'
-import { getAmountOfCrownstonesInSphereForLocalization } from '../util/dataUtil'
+import { enoughCrownstonesForIndoorLocalization } from '../util/dataUtil'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 import { Vibration } from 'react-native'
-
 
 let TYPES = {
   TOUCH: 'touch',
@@ -29,7 +28,10 @@ class StoneTracker {
   iBeaconUpdate(major, minor, rssi, referenceId) {
     // LOG("major, minor, rssi, ref",major, minor, rssi, referenceId)
     // only use valid rssi measurements, 0 or 128 are not valid measurements
-    if (rssi > -1)
+    if (rssi === undefined || rssi > -1)
+      return;
+
+    if (referenceId === undefined || major  === undefined || minor === undefined)
       return;
 
     // check if we have the sphere
@@ -72,21 +74,24 @@ class StoneTracker {
     // local reference of the device/stone
     let ref = this.elements[stoneId];
 
-    // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
-    // the sign > is because the rssi is negative!
-    if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
-      ref.touchSamples += 1;
-      if (ref.touchSamples >= TOUCH_CONSECUTIVE_SAMPLES) {
-        Vibration.vibrate(400, false);
-        let newState = stone.state.state > 0 ? 0 : 1;
-        this._applySwitchState(newState, stone, stoneId, referenceId);
-        ref.touchTime = now;
-        ref.touchSamples = 0;
-        return;
+    // not all stones have touch to toggle enabled
+    if (stone.config.touchToToggle === true) {
+      // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
+      // the sign > is because the rssi is negative!
+      if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
+        ref.touchSamples += 1;
+        if (ref.touchSamples >= TOUCH_CONSECUTIVE_SAMPLES) {
+          Vibration.vibrate(400, false);
+          let newState = stone.state.state > 0 ? 0 : 1;
+          this._applySwitchState(newState, stone, stoneId, referenceId);
+          ref.touchTime = now;
+          ref.touchSamples = 0;
+          return;
+        }
       }
-    }
-    else {
-      ref.touchSamples = 0;
+      else {
+        ref.touchSamples = 0;
+      }
     }
 
 
@@ -104,8 +109,7 @@ class StoneTracker {
       return;
 
     // these event are only used for when there are no room-level options possible
-    let amountOfStonesForLocation = getAmountOfCrownstonesInSphereForLocalization(state, referenceId);
-    if (amountOfStonesForLocation < 4) {
+    if (enoughCrownstonesForIndoorLocalization(state, referenceId)) {
       if (ref.rssiAverage > stone.config.nearThreshold && ref.lastTriggerType !== TYPES.NEAR) {
         this._handleTrigger(element, ref, TYPES.NEAR, stoneId, referenceId);
       }
@@ -220,6 +224,7 @@ class LocationHandlerClass {
       this.tracker = new StoneTracker(store);
 
 
+      // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOGDebug('CURRENT ROOM', data)});
       NativeBus.on(NativeBus.topics.enterSphere, this._enterSphere.bind(this));
       NativeBus.on(NativeBus.topics.exitSphere,  this._exitSphere.bind(this) );
       NativeBus.on(NativeBus.topics.enterRoom,   this._enterRoom.bind(this)  );
@@ -248,7 +253,20 @@ class LocationHandlerClass {
         adminKey : state.spheres[sphereId].config.adminKey,
         memberKey: state.spheres[sphereId].config.memberKey,
         guestKey : state.spheres[sphereId].config.guestKey,
+        referenceId : sphereId
       };
+
+      let moreFingerprintsNeeded = sphereRequiresFingerprints(state, sphereId);
+
+      if (moreFingerprintsNeeded === false) {
+        LOGDebug("Starting indoor localization for sphere", sphereId);
+        Bluenet.startIndoorLocalization();
+      }
+      else {
+        LOGDebug("Stopping indoor localization for sphere", sphereId, "due to missing fingerprints.");
+        Bluenet.stopIndoorLocalization();
+      }
+
 
       LOG("Set Settings.", bluenetSettings, state.spheres[sphereId]);
       return BleActions.setSettings(bluenetSettings)
@@ -272,16 +290,18 @@ class LocationHandlerClass {
   }
 
   _enterRoom(locationId) {
+    console.log("USER_ENTER_LOCATION. Todo: get sphere id from lib");
     let state = this.store.getState();
     if (state.app.activeSphere && locationId) {
-      this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: locationId, userId: state.user.userId});
+      this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: locationId, data: {userId: state.user.userId}});
     }
   }
 
   _exitRoom(locationId) {
+    console.log("USER_EXIT_LOCATION. Todo: get sphere id from lib");
     let state = this.store.getState();
     if (state.app.activeSphere && locationId) {
-      this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: state.app.activeSphere, locationId: locationId, userId: state.user.userId});
+      this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: state.app.activeSphere, locationId: locationId, data: {userId: state.user.userId}});
     }
   }
 }
@@ -311,13 +331,23 @@ export const LocalizationUtil = {
           let locationIds = Object.keys(locations);
           locationIds.forEach((locationId) => {
             if (locations[locationId].config.fingerprintRaw) {
+              LOG("-------------- LOADING FINGERPRINT FOR ", locationId, " IN SPHERE ", sphereId);
               Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw)
             }
           });
         });
       })
   },
-
-
 };
 
+
+export const sphereRequiresFingerprints = function (state, sphereId) {
+  let locationIds = Object.keys(state.spheres[sphereId].locations);
+  let requiresFingerprints = false;
+  locationIds.forEach((locationId) => {
+    if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
+      requiresFingerprints = true;
+    }
+  });
+  return requiresFingerprints;
+};

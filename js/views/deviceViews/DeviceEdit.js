@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
+import { stoneTypes } from '../../router/store/reducers/stones'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { BleActions } from '../../native/Proxy'
 import { BLEutil } from '../../native/BLEutil'
@@ -82,19 +83,28 @@ export class DeviceEdit extends Component {
       }
     });
 
-    items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
-    items.push({
-      label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
-        Actions.applianceSelection({
-          ...requiredData,
-          callback: (applianceId) => {
-            this.showStone = false;
-            store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: applianceId}});
-          }
-        });
-      }
-    });
-    items.push({label:'A Device has it\'s own configuration so you can set up once and quickly apply it to a Crownstone.', type: 'explanation',  below:true});
+    if (stone.config.type !== stoneTypes.guidestone) {
+      items.push({label: 'PLUGGED IN DEVICE', type: 'explanation', below: false});
+      items.push({
+        label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
+          Actions.applianceSelection({
+            ...requiredData,
+            callback: (applianceId) => {
+              this.showStone = false;
+              store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: applianceId}});
+            }
+          });
+        }
+      });
+      items.push({
+        label: 'A Device has it\'s own configuration so you can set up once and quickly apply it to a Crownstone.',
+        type: 'explanation',
+        below: true
+      });
+    }
+    else {
+      items.push({type:'spacer'});
+    }
 
     items = this.addDeleteOptions(items, stone);
 
@@ -243,7 +253,7 @@ export class DeviceEdit extends Component {
       applianceOptions = this.constructApplianceOptions(store, appliance, stone.config.applianceId, stone);
     }
 
-    let backgroundImage = this.props.getBackground.call(this, 'menu');
+    let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     return (
       <Background image={backgroundImage} >

@@ -9,8 +9,10 @@ import {
   View
 } from 'react-native';
 
-import { styles, width, height, colors } from '../styles'
-import { getPresentUsersFromState, getCurrentPowerUsageFromState } from '../../util/dataUtil'
+import { styles, screenWidth, screenHeight, colors } from '../styles'
+import { LOGDebug } from '../../logging/Log'
+import { eventBus } from '../../util/eventBus'
+import { getPresentUsersFromState } from '../../util/dataUtil'
 import { ProfilePicture } from './ProfilePicture'
 import { TextCircle } from './TextCircle'
 
@@ -87,7 +89,7 @@ export class PresentUsers extends Component {
   }
 
   _debug(props) {
-    this.allUsersBase = getPresentUsersFromState(props.store.getState(), props.store.getState().app.activeSphere, props.locationId, true);
+    this.allUsersBase = getPresentUsersFromState(props.store.getState(), props.sphereId, props.locationId, true);
     this.allUsers = [];
     this.userI = 0;
     setInterval(() => {
@@ -102,42 +104,34 @@ export class PresentUsers extends Component {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      // only redraw if the amount of rooms changes.
-      const state = store.getState();
-      if (this.renderState === undefined)
-        return;
-      if (state.app.activeSphere) {
-        if (state.spheres[state.app.activeSphere].locations.presentUsers != this.renderState.spheres[state.app.activeSphere].locations.presentUsers) {
-          this._getUsers();
-          this.forceUpdate();
-        }
+    this._getUsers();
+
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (
+        (change.userPositionUpdate && change.userPositionUpdate.locationIds[this.props.locationId])
+      ) {
+        this._getUsers();
+        this.forceUpdate();
       }
     });
+
   }
 
   componentWillUpdate(newProps) { }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribeStoreEvents();
   }
-
-  // experiment
-  shouldComponentUpdate(nextProps, nextState) {
-    // LOG("Should component update?",nextProps, nextState)
-    return false
-  }
-
 
   _getUsers() {
     const store = this.props.store;
     const state = store.getState();
-    let activeSphere = state.app.activeSphere;
 
-    let presentUsers = getPresentUsersFromState(state, activeSphere, this.props.locationId);
+    let presentUsers = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
     // presentUsers = this.allUsers; // ENABLE FOR DEBUG
-
+    LOGDebug("presentUsers in state", presentUsers)
     let slotCount = 0;
     let drawCount = 0;
     let totalCount = 0;
@@ -168,7 +162,7 @@ export class PresentUsers extends Component {
       if (user.id == state.user.userId) {
         newPositions[user.id] = this.slotPositions.owner;
 
-        // create a reference to the user if we dont have it in this room yet.
+        // create a reference to the user if we don't have it in this room yet.
         if (this.positions[user.id] === undefined) {
           // add animation to add user.
           this.positions[user.id] = {
@@ -182,7 +176,7 @@ export class PresentUsers extends Component {
           // create RN object with the references to the animation variables.
           this.positions[user.id].obj = (
             <Animated.View key={user.id} style={{position:'absolute', top: this.positions[user.id].top, left: this.positions[user.id].left, opacity: this.positions[user.id].opacity}}>
-              <ProfilePicture picture={state.spheres[activeSphere].users[user.id].picture} size={1.2 * this.userDiameter} />
+              <ProfilePicture picture={state.spheres[this.props.sphereId].users[user.id].picture} size={1.2 * this.userDiameter} />
             </Animated.View>
           );
 
@@ -194,7 +188,7 @@ export class PresentUsers extends Component {
       }
       else {
 
-        // we have handcoded the positions for all users, for 3 users we have a certain config. We put the positions in the case of 3 users in slotsegment 3
+        // we have hard coded the positions for all users, for 3 users we have a certain config. We put the positions in the case of 3 users in slot segment 3
         let slotSegment = drawCount;
 
         // there is a special case if we need to show the "extra" circle
@@ -243,7 +237,7 @@ export class PresentUsers extends Component {
             };
             this.positions[user.id].obj = (
               <Animated.View key={user.id} style={{position: 'absolute', top: this.positions[user.id].top, left: this.positions[user.id].left, opacity: this.positions[user.id].opacity}}>
-                <ProfilePicture picture={state.spheres[activeSphere].users[user.id].picture} size={this.userDiameter} />
+                <ProfilePicture picture={state.spheres[this.props.sphereId].users[user.id].picture} size={this.userDiameter} />
               </Animated.View>
             );
             introAnimations.push(Animated.timing(this.positions[user.id].top, {toValue: newPositions[user.id].y, duration: 200}));
@@ -296,6 +290,7 @@ export class PresentUsers extends Component {
   }
 
   getUsers() {
+    LOGDebug(this.positions)
     let userObjects = [];
     for (let userId in this.positions) {
       if (this.positions.hasOwnProperty(userId)) {
@@ -308,6 +303,7 @@ export class PresentUsers extends Component {
 
 
   render() {
+    console.log("DRAWING PRESENT USER MODULE")
     const store = this.props.store;
     const state = store.getState();
     this.renderState = store.getState();

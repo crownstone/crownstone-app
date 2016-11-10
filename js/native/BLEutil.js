@@ -94,7 +94,7 @@ export const BLEutil = {
 
       let cleanup = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (advertisement) => {
-        LOG("Advertisement in detectCrownstone", advertisement)
+        LOG("Advertisement in detectCrownstone", stoneHandle, advertisement)
 
         if (advertisement.handle === stoneHandle)
           count += 1;
@@ -197,6 +197,7 @@ class SingleCommand {
 export class SetupCrownstone {
   constructor(bleHandle) {
     this.bleHandle = bleHandle;
+    this.type = 'plug'
   }
 
   connect() {
