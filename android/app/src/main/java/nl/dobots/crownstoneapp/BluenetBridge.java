@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,6 +17,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -26,7 +29,6 @@ import nl.dobots.bluenet.ble.base.callbacks.IDiscoveryCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IStatusCallback;
 import nl.dobots.bluenet.ble.base.structs.CrownstoneServiceData;
 import nl.dobots.bluenet.ble.base.structs.EncryptionKeys;
-import nl.dobots.bluenet.ble.cfg.BluenetConfig;
 import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
 import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
@@ -47,6 +49,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public static final int FAST_SCAN_PAUSE = 100; // ms pause
 	public static final int SLOW_SCAN_INTERVAL = 10000; // ms scanning
 	public static final int SLOW_SCAN_PAUSE = 1000; // ms pause
+	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
 	private boolean _bound;
 
 	private ReactApplicationContext _reactContext;
@@ -66,9 +69,22 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	private Map<UUID, String> _iBeaconSphereIds = new HashMap<>();
 
+	// handler used for delayed execution and timeouts
+	private Handler _handler;
+
+	WritableArray _ibeaconAdvertisements = Arguments.createArray();
+
 	public BluenetBridge(ReactApplicationContext reactContext) {
 		super(reactContext);
 		_reactContext = reactContext;
+
+		// create handler with its own thread
+		HandlerThread handlerThread = new HandlerThread("BluenetBridge");
+		handlerThread.start();
+		_handler = new Handler(handlerThread.getLooper());
+
+		_handler.postDelayed(iBeaconTick, IBEACON_TICK_INTERVAL);
+
 //		_bleBase = new BleBase();
 //		_bleExt = new BleExt();
 //		_bleExt.init(_reactContext, new IStatusCallback() {
@@ -344,7 +360,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// string adminKey
 		// string  memberKey
 		// string  guestKey
-		// int  meshAccessAddress
+		// int or hexStrign  meshAccessAddress
 		//   ibeaconUUID
 		//   ibeaconMajor
 		//   ibeaconMinor
@@ -470,6 +486,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 
 	private void sendEvent(String eventName, @Nullable WritableMap params) {
+		_reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
+	}
+
+	private void sendEvent(String eventName, @Nullable WritableArray params) {
 		_reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
 	}
 
@@ -648,9 +668,23 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// TODO: should be once per second with averaged rssi
 //		advertisementMap.putInt("rssi", device.getRssi());
 		advertisementMap.putInt("rssi", device.getAverageRssi());
-//		Log.d(TAG, "data: " + advertisementMap.toString());
-		sendEvent("iBeaconAdvertisement", advertisementMap);
+
+		_ibeaconAdvertisements.pushMap(advertisementMap);
+		Log.d(TAG, "data: " + advertisementMap.toString());
+//		sendEvent("iBeaconAdvertisement", advertisementMap);
 	}
+
+	private Runnable iBeaconTick = new Runnable() {
+		@Override
+		public void run() {
+			if (_ibeaconAdvertisements.size() > 0) {
+				Log.d(TAG, "sendEvent iBeaconAdvertisement: " + _ibeaconAdvertisements.toString());
+				sendEvent("iBeaconAdvertisement", _ibeaconAdvertisements);
+				_ibeaconAdvertisements = Arguments.createArray();
+			}
+			_handler.postDelayed(this, IBEACON_TICK_INTERVAL);
+		}
+	};
 
 	@Override
 	public void onRegionEnter(UUID uuid) {
