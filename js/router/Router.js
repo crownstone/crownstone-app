@@ -193,7 +193,7 @@ export class AppRouter extends Component {
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
-                  <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={false} panHandlers={null} />
+                  <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={false} />
                   <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Room Settings" />
                   <Scene key="roomAdd"                component={Views.RoomAdd}                    title="Create Room" hideNavBar={true} />
                   <Scene key="deviceEdit"             component={Views.DeviceEdit}                 title="Edit Device" />

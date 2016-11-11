@@ -51,7 +51,7 @@ export class DeviceEntry extends Component {
   _closeOptions() {
     if (this.optionsAreOpen === true && this.animating === false) {
       this.animating = true;
-      this.setState({optionsOpen: true});
+      this.setState({optionsOpen: false});
       Animated.timing(this.state.height, {toValue: this.baseHeight, duration: this.props.duration || 200}).start();
       setTimeout(() => {this.optionsAreOpen = false; this.animating = false;}, 200);
     }
@@ -150,7 +150,7 @@ export class DeviceEntry extends Component {
     }
     else {
       return (
-        <Animated.View style={{flexDirection: 'column', height: this.state.height, overflow: 'hidden', flex: 1}}>
+        <Animated.View style={{flexDirection: 'column', height: this.state.height,  flex: 1, overflow:'hidden'}}>
           <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
             <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
                               onPress={() => { this._toggleOptions(); }}>
@@ -166,6 +166,10 @@ export class DeviceEntry extends Component {
             </TouchableOpacity>
             {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}
             {this.props.control === true ? this._getControl() : undefined}
+            {this.state.optionsOpen === true ? undefined :
+              <View  style={{position:'absolute', top: this.baseHeight-8, left:0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray.hex}} >
+              </View>
+            }
           </View>
           {this._getOptions()}
         </Animated.View>

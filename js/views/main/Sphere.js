@@ -38,6 +38,8 @@ export class Sphere extends Component {
     if (sphereIsPresent || this.props.seeStonesInSetupMode)
       viewingRemotely = false;
 
+    // the bottom distance pops the bottom text up if the orbs are shown. Orbs are shown when there are multiple spheres.
+    let bottomDistance = Object.keys(state.spheres).length > 1 ? 20 : 5;
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
     let isAdminInCurrentSphere = getMyLevelInSphere(state, currentSphere) === 'admin';
@@ -63,14 +65,14 @@ export class Sphere extends Component {
     else if (viewingRemotely === false) {
       newContent = (
         <View style={{flex:1}}>
-          <Text style={overviewStyles.bottomText}>{'Currently in ' + state.spheres[currentSphere].config.name + '\'s Sphere.' }</Text>
+          <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'Currently in ' + state.spheres[currentSphere].config.name + '\'s Sphere.' }</Text>
         </View>
       );
     }
     else {
       newContent = (
         <View style={{flex:1}}>
-          <Text style={overviewStyles.bottomTextNotConnected}>{'Currently viewing ' + state.spheres[currentSphere].config.name + '\'s Sphere\s data.' }</Text>
+          <Text style={[overviewStyles.bottomTextNotConnected, {bottom: bottomDistance} ]}>{'Currently viewing ' + state.spheres[currentSphere].config.name + '\'s Sphere\s data.' }</Text>
         </View>
       );
     }

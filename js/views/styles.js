@@ -15,10 +15,11 @@ export let colors = {
   menuBackground: {hex:'#00263e'},
   menuText: {hex:'#fff'},
   menuTextSelected: {hex:'#2daeff'},
+  white: {hex:'#fff'},
   gray: {hex:'#ccc'},
   notConnected: {hex:'#64897f'},
   darkGray: {hex:'#555'},
-  lightGray: {hex:'#ddd'},
+  lightGray: {hex:'#eee'},
   purple: {hex:'#8a01ff'},
   blue: {hex:'#0075c9'},
   green: {hex:'#a0eb58'},
@@ -29,6 +30,7 @@ export let colors = {
   darkRed: {hex:'#cc0900'},
   menuRed: {hex:'#e00'},
   iosBlue: {hex:'#007aff'},
+  lightBlue: {hex:'#a9d0f1'},
   blinkColor1: {hex:'#2daeff'},
   blinkColor2: {hex:'#a5dcff'},
 };
@@ -36,6 +38,7 @@ export let colors = {
 for (let color in colors) {
   if (colors.hasOwnProperty(color)) {
     colors[color].rgb = hex2rgb(colors[color].hex);
+    colors[color].rgba = (opacity) => {return 'rgba(' + colors[color].rgb.r + ',' + colors[color].rgb.g + ',' + colors[color].rgb.b + ',' + opacity + ')'};
     // colors[color].hsv = rgb2hsv(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
     // colors[color].hsl = rgb2hsl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
     // colors[color].hcl = rgb2hcl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);

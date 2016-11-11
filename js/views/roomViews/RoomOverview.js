@@ -88,7 +88,7 @@ export class RoomOverview extends Component {
     if (item.setupMode === true && item.handle) {
       return (
         <View key={stoneId + '_entry'}>
-          <View style={styles.listView}>
+          <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
             <SetupDeviceEntry
               key={stoneId + '_element'}
               eventBus={this.props.eventBus}
@@ -104,7 +104,7 @@ export class RoomOverview extends Component {
     else {
       return (
         <View key={stoneId + '_entry'}>
-          <View style={styles.listView}>
+          <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
             <DeviceEntry
               eventBus={this.props.eventBus}
               name={item.device.config.name}
@@ -115,7 +115,7 @@ export class RoomOverview extends Component {
               control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
               pending={this.state.pendingRequests[stoneId] !== undefined} // either disabled, pending or remote
               disabled={item.stone.config.disabled || this.viewingRemotely || SetupStateHandler.isSetupInProgress() } // either disabled or remote
-              disabledDescription={ SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching: not (yet) seen in the last 30 seconds.' } // either disabled or remote
+              disabledDescription={ SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' } // either disabled or remote
               dimmable={item.device.config.dimmable}
               showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
               onChange={(switchState) => {
@@ -193,8 +193,6 @@ export class RoomOverview extends Component {
   }
 
   render() {
-    console.log("redrawing the thing");
-
     const store = this.props.store;
     const state = store.getState();
 

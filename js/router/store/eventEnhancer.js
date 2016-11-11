@@ -1,6 +1,6 @@
 import { eventBus } from '../../util/eventBus'
 import { BATCH } from './storeManager'
-import { LOG, LOGDebug } from '../../logging/Log'
+import { LOG, LOGDebug, LOGError } from '../../logging/Log'
 
 
 /**
@@ -173,7 +173,7 @@ function checkAction(action, affectedIds) {
       eventStatus.changeUserData = affectedIds; break;
       break;
     default:
-      console.log("UNKNOWN ACTION TYPE:", action);
+      LOGError("UNKNOWN ACTION TYPE:", action);
   }
 
   eventStatus.totalAffectedIds = affectedIds;

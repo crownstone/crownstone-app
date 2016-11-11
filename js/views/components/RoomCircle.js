@@ -206,7 +206,7 @@ export class RoomCircle extends Component {
 
     if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
       if (prev)  {
-        return "#eee"
+        return colors.lightGray.hex;
       }
       return colors.blinkColor1.hex;
     }
@@ -214,7 +214,7 @@ export class RoomCircle extends Component {
     let level = this._getLevel(usage);
     if (prev) {
       if (level == 0) {
-        return "#eee"
+        return colors.lightGray.hex;
       }
       else {
         return this.energyLevels[level-1].color;
