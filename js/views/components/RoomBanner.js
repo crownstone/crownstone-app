@@ -52,12 +52,12 @@ export class RoomBanner extends Component {
       color1 = "#fff";
       color2 = "#fff";
       color3 = "#fff";
-      remoteColor = colors.notConnected.rgba(0.3);
+      remoteColor = colors.notConnected.rgba(0.4);
     }
 
     if (this.props.floatingCrownstones === true) {
       return (
-        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.iosBlue.rgba(0.2), justifyContent:'center', overflow:'hidden', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
+        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.iosBlue.rgba(0.3), justifyContent:'center', overflow:'hidden', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
           <View style={{flexDirection:'row'}}>
             <Icon name="c2-pluginFront" size={100} color={color1} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
             <Icon name="c2-pluginFront" size={100} color={color2} style={{position:'absolute', backgroundColor:'transparent', top:20,  left:175}} />
@@ -77,7 +77,7 @@ export class RoomBanner extends Component {
     else if (this.props.noCrownstones === true && this.props.viewingRemotely === false) {
       leftRatio = 0.95;
       return (
-        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.rgba(0.75), justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
+        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.rgba(0.8), justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
           <View style={{flexDirection:'row'}}>
             <View style={{height:0.7*height, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
               <View style={[bannerStyles.whiteLeft, {height: 0.5*height, width:(leftRatio-0.05)*screenWidth+offset}]} />
@@ -91,7 +91,7 @@ export class RoomBanner extends Component {
     }
     else {
       return (
-        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.rgba(0.75), justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
+        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.rgba(0.8), justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
           <View style={{flexDirection:'row'}}>
             <View style={{height:0.7*height, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
               <View style={[bannerStyles.whiteLeft, {height:0.5*height, width:(leftRatio-0.05)*screenWidth+offset}]} />

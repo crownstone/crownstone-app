@@ -1,4 +1,4 @@
 github "krzyzanowskim/CryptoSwift" "0.6.1"
 github "mxcl/PromiseKit" "4.0.5"
-github "SwiftyJSON/SwiftyJSON" "v3.1.1"
-github "crownstone/bluenet-lib-ios" "0.8.0"
+github "SwiftyJSON/SwiftyJSON" "3.1.2"
+github "crownstone/bluenet-lib-ios" "0.8.2"
