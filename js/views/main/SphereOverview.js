@@ -11,27 +11,24 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-import { NativeBus } from '../../native/Proxy'
-import { BLEutil } from '../../native/BLEutil'
-import { getUUID } from '../../util/util'
-import { Orbs } from '../components/Orbs'
-import { TopBar } from '../components/Topbar'
-import { AnimatedBackground } from '../components/animated/AnimatedBackground'
-import { Icon } from '../components/Icon'
-import { Sphere } from './Sphere'
-import { LOG, LOGDebug } from '../../logging/Log'
+import { SetupStateHandler }                             from '../../native/SetupStateHandler'
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
+import { Orbs }                                          from '../components/Orbs'
+import { TopBar }                                        from '../components/Topbar'
+import { FinalizeLocalizationIcon }                      from '../components/FinalizeLocalizationIcon'
+import { AnimatedBackground }                            from '../components/animated/AnimatedBackground'
+import { Icon }                                          from '../components/Icon'
+import { Sphere }                                        from './Sphere'
+import { getMyLevelInSphere }                            from '../../util/dataUtil'
+import { LOG, LOGError, LOGDebug }                       from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
 
 export class SphereOverview extends Component {
   constructor() {
     super();
-    this.state = {presentUsers: {}, seeStoneInSetupMode: false, opacity: new Animated.Value(0), left: new Animated.Value(0)};
-    this.setupData = {};
-    this.setupModeTimeout = undefined;
+    this.state = {presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0)};
     this.animating = false;
-    this.scanningTimeout = false;
-    this.uuid = getUUID();
 
     this.sphereIds = [];
     this._activeSphereIndex = 0;
@@ -102,38 +99,13 @@ export class SphereOverview extends Component {
     if (initialIndex != this._activeSphereIndex) {
       this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: this.sphereIds[this._activeSphereIndex]}});
     }
-
-
   }
 
   componentDidMount() {
-    const {store} = this.props;
-
-    this.unsubscribeNative = NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
-      // we scan high frequency when we see a setup node
-      BLEutil.startHighFrequencyScanning(this.uuid);
-
-      // store the data of this setup Crownstone
-      this.setupData[setupAdvertisement.handle] = setupAdvertisement;
-      if (this.state.seeStoneInSetupMode === false) {
-        this.setState({seeStoneInSetupMode: true});
-      }
-      else {
-        if (this.setupModeTimeout !== undefined) {
-          clearTimeout(this.setupModeTimeout);
-          this.setupModeTimeout = undefined;
-        }
-      }
-
-      // handle case for timeout (user moves away from crownstone
-      this.setupModeTimeout = setTimeout(() => {
-        this.setupModeTimeout = undefined;
-        delete this.setupData[setupAdvertisement.handle];
-        // redraw
-        this.setState({seeStoneInSetupMode: false});
-      }, 3000);
-
-    });
+    // watch for setup stones
+    this.unsubscribeSetupEvents = [];
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
 
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
@@ -151,10 +123,7 @@ export class SphereOverview extends Component {
   }
 
   componentWillUnmount() {
-    BLEutil.stopHighFrequencyScanning(this.uuid);
-
-    clearTimeout(this.scanningTimeout);
-    this.unsubscribeNative();
+    this.unsubscribeSetupEvents.forEach((unsubscribe) => {unsubscribe();});
     this.unsubscribeStoreEvents();
   }
 
@@ -173,23 +142,25 @@ export class SphereOverview extends Component {
     this.renderState = state;
 
     let noSpheres = this.sphereIds.length == 0;
+    let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let viewingRemotely = true;
     let blockAddButton = false;
     let noStones = true;
+    let noRooms = true;
     let isAdminInCurrentSphere = false;
     let activeSphere = state.app.activeSphere;
-
-    console.log(state);
+    let allowIndoorLocalization = false;
 
     if (noSpheres === false) {
       // todo: only do this on change
       let sphereIsPresent = state.spheres[activeSphere].config.present;
+      allowIndoorLocalization = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION : false);
       noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
-      isAdminInCurrentSphere = state.spheres[activeSphere].users[state.user.userId].accessLevel === 'admin';
+      noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
+      isAdminInCurrentSphere = getMyLevelInSphere(state, activeSphere) === 'admin';
 
-      if (sphereIsPresent || this.state.seeStoneInSetupMode || (noStones === true && isAdminInCurrentSphere == true))
+      if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true && isAdminInCurrentSphere == true))
         viewingRemotely = false;
-
     }
 
     let background = this.props.backgrounds.main;
@@ -199,17 +170,21 @@ export class SphereOverview extends Component {
 
     let viewWidth = screenWidth*this.sphereIds.length;
     let viewHeight = screenHeight - topBarHeight - tabBarHeight;
+    let showFinalizeIndoorNavigationButton = isAdminInCurrentSphere && allowIndoorLocalization;
 
     return (
       <View {...this._panResponder.panHandlers}>
         <AnimatedBackground hideTopBar={true} image={background}>
           <TopBar
             title={state.spheres[activeSphere].config.name + '\'s Sphere'}
+            notBack={!showFinalizeIndoorNavigationButton}
+            leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
+            leftAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
             right={isAdminInCurrentSphere && !blockAddButton ? 'Add' : null}
             rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
           />
           <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
-            {this._getSpheres()}
+            {this._getSpheres(seeStonesInSetupMode)}
           </Animated.View>
           <Orbs amount={this.sphereIds.length} active={this._activeSphereIndex} />
         </AnimatedBackground>
@@ -217,11 +192,11 @@ export class SphereOverview extends Component {
     );
   }
 
-  _getSpheres() {
+  _getSpheres(seeStonesInSetupMode) {
     if (this.sphereIds.length > 0) {
       let spheres = [];
       this.sphereIds.forEach((sphereId) => {
-        spheres.push(<Sphere key={sphereId} id={sphereId} store={this.props.store} leftPosition={screenWidth*spheres.length} setupData={this.setupData} seeStoneInSetupMode={this.state.seeStoneInSetupMode} />)
+        spheres.push(<Sphere key={sphereId} sphereId={sphereId} store={this.props.store} seeStonesInSetupMode={seeStonesInSetupMode} leftPosition={screenWidth*spheres.length} eventBus={this.props.eventBus} />)
       });
       return spheres;
     }

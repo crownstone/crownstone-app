@@ -57,7 +57,8 @@ export class RoomCircle extends Component {
       top: new Animated.Value(initialY),
       left: new Animated.Value(initialX),
       colorFadeOpacity: new Animated.Value(0),
-      componentOpacity: new Animated.Value(initialOpacity)
+      componentOpacity: new Animated.Value(initialOpacity),
+      setupProgress: 20,
     };
 
     this.energyLevels = [
@@ -89,10 +90,25 @@ export class RoomCircle extends Component {
     this.movementDuration = 400;
     this.jumpDuration = 400;
     this.fadeDuration = this.movementDuration;
+
+    this.unsubscribeSetupEvents = [];
   }
 
   componentDidMount() {
     const { store } = this.props;
+
+    if (this.props.locationId === null) {
+      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled", (handle) => {
+        this.setState({setupProgress: 20});
+      }));
+      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress", (data) => {
+        this.setState({setupProgress: data.progress});
+      }));
+      this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete", (handle) => {
+        this.setState({setupProgress: 20});
+      }));
+    }
+
     // TODO: move this logic into the databaseChange event.
     this.unsubscribe = store.subscribe(() => {
       if (this.renderState === undefined)
@@ -141,7 +157,7 @@ export class RoomCircle extends Component {
   }
 
   checkAlertStatus(props) {
-    if (props.locationId === null && props.seeStoneInSetupMode) {
+    if (props.locationId === null && props.seeStonesInSetupMode) {
       this.setWiggleInterval()
     }
     else if (this.wiggleInterval !== undefined) {
@@ -152,7 +168,9 @@ export class RoomCircle extends Component {
 
   setWiggleInterval() {
     if (this.wiggleInterval === undefined) {
-      this.wiggle();
+      if (this.state.setupProgress === 20) {
+        this.wiggle();
+      }
       this.wiggleInterval = setTimeout(() => {
         this.wiggleInterval = undefined;
         this.setWiggleInterval();
@@ -165,6 +183,9 @@ export class RoomCircle extends Component {
     clearTimeout(this.fadeAnimationTimeout);
     clearTimeout(this.moveAnimationTimeout);
     clearTimeout(this.wiggleTimeout);
+    this.unsubscribeSetupEvents.forEach((unsubscribe) => {
+      unsubscribe();
+    });
     this.unsubscribe();
     this.unsubscribeStoreEvents();
   }
@@ -183,7 +204,10 @@ export class RoomCircle extends Component {
       return colors.notConnected.hex;
     }
 
-    if (this.props.locationId === null && this.props.seeStoneInSetupMode === true) {
+    if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
+      if (prev)  {
+        return "#eee"
+      }
       return colors.blinkColor1.hex;
     }
 
@@ -214,7 +238,7 @@ export class RoomCircle extends Component {
   }
 
   getIcon() {
-    if (this.props.locationId === null && this.props.seeStoneInSetupMode === true) {
+    if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
       let smallSize = this.iconSize*1.1*0.6;
       return (
         <View style={{width:this.iconSize*1.1, height: this.iconSize}}>
@@ -288,7 +312,6 @@ export class RoomCircle extends Component {
       )
     }
     else {
-      console.log("initial draw")
       this.color = newColor;
       this.previousCircle = circle;
       return circle;
@@ -300,12 +323,12 @@ export class RoomCircle extends Component {
   _getUsageCircle(usage, newColor) {
     let colorOfLowerLayer = this._getColor(usage, true);
     let pathLength = Math.PI * 2 * this.props.radius;
-    if (usage == 0)
+    if (usage == 0 && !(this.props.locationId === null && this.props.seeStonesInSetupMode === true)) {
       return (
         <Svg style={{
           width: this.outerDiameter,
           height: this.outerDiameter,
-        }} >
+        }}>
           <Circle
             r={this.props.radius - this.borderWidth}
             stroke={colorOfLowerLayer}
@@ -318,7 +341,13 @@ export class RoomCircle extends Component {
             fill="white"
           />
         </Svg>
-    );
+      );
+    }
+
+    let levelProgress = this._getFactor(usage);
+    if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
+      levelProgress = this.state.setupProgress / 20;
+    }
 
     return (
       <Svg style={{
@@ -340,7 +369,7 @@ export class RoomCircle extends Component {
           r={this.props.radius - this.borderWidth}
           stroke={newColor}
           strokeWidth={this.borderWidth}
-          strokeDasharray={[pathLength*this._getFactor(usage),pathLength]}
+          strokeDasharray={[pathLength*levelProgress,pathLength]}
           rotate="-90"
           x={this.props.radius}
           y={this.props.radius}

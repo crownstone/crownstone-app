@@ -47,7 +47,7 @@ let defaultSettings = {
 
 let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
-    case 'UPDATE_STONE_STATE':
+    case 'UPDATE_STONE_STATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
       if (action.data) {
         let newState = {...state};
         newState.disabled = false;

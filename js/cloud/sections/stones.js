@@ -114,7 +114,7 @@ export const stones = {
     return this._setupRequest(
       'GET',
       '/Spheres/{id}/ownedStones/',
-      {data:{where:{address:address}}},
+      {data:{filter:{where:{address:address}}}},
       'query'
     );
   },

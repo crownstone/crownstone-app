@@ -92,7 +92,7 @@ export class SettingsPluginRecoverStep2 extends Component {
     let promises = [];
 
     promises.push(BLEutil.getNearestCrownstone(4000).then((result) => { nearestNormal = result; }));
-    promises.push(BLEutil.getNearestSetupCrownstoneHandle(4000).then((result) => { nearestSetup = result; }));
+    promises.push(BLEutil.getNearestSetupCrownstone(4000).then((result) => { nearestSetup = result; }));
 
     Promise.all(promises)
       .then(() => {

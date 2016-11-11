@@ -5,7 +5,7 @@ import { getUUID } from '../util/util'
 
 class SchedulerClass {
   constructor() {
-    this.initialized = false;
+    this._initialized = false;
     this.store = undefined;
     this.triggers = {};
 
@@ -16,8 +16,8 @@ class SchedulerClass {
 
 
   loadStore(store) {
-    LOG('LOADED STORE SchedulerClass', this.initialized);
-    if (this.initialized === false) {
+    LOG('LOADED STORE SchedulerClass', this._initialized);
+    if (this._initialized === false) {
       this.store = store;
       this.init();
     }
@@ -25,7 +25,7 @@ class SchedulerClass {
 
 
   init() {
-    if (this.initialized === false) {
+    if (this._initialized === false) {
       this.store.subscribe(() => {
         let state = this.store.getState();
         this.activeSphere = state.app.activeSphere;
@@ -37,7 +37,7 @@ class SchedulerClass {
       });
 
       this.schedule();
-      this.initialized = true;
+      this._initialized = true;
     }
   }
 

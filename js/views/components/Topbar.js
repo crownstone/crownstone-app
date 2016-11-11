@@ -15,23 +15,34 @@ import { styles, colors} from '../styles'
 export class TopBar extends Component {
   _getLeftContent() {
     if (this.props.notBack !== true && this.props.leftAction !== undefined) {
-      let color = colors.iosBlue.hex;
-      if (this.props.leftStyle && this.props.leftStyle.color) {
-        color = this.props.leftStyle.color;
+      if (this.props.leftItem !== undefined) {
+        return (
+          <TouchableOpacity onPress={() => {this.props.leftAction();}}>
+            <View style={{flexDirection:'row', alignItems:'center', flex:0}}>
+              {this.props.leftItem}
+            </View>
+          </TouchableOpacity>
+        );
       }
-      return (
-        <TouchableOpacity onPress={() => {this.props.leftAction();}}>
-          <View style={{flexDirection:'row', alignItems:'center', flex:0}}>
-            <Icon name="ios-arrow-back" size={30} color={color} style={{paddingRight:6, marginTop:2}} />
-            <Text style={[topBarStyle.topBarLeft,styles.menuText, this.props.leftStyle]}>{this.props.left}</Text>
-          </View>
-        </TouchableOpacity>
-      );
+      else {
+        let color = colors.iosBlue.hex;
+        if (this.props.leftStyle && this.props.leftStyle.color) {
+          color = this.props.leftStyle.color;
+        }
+        return (
+          <TouchableOpacity onPress={() => {this.props.leftAction();}}>
+            <View style={{flexDirection:'row', alignItems:'center', flex:0}}>
+              <Icon name="ios-arrow-back" size={30} color={color} style={{paddingRight:6, marginTop:2}} />
+              <Text style={[topBarStyle.topBarLeft,topBarStyle.text, this.props.leftStyle]}>{this.props.left}</Text>
+            </View>
+          </TouchableOpacity>
+        );
+      }
     }
     else if (this.props.left) {
       return (
         <TouchableOpacity onPress={() => {this.props.leftAction();}}>
-          <Text style={[topBarStyle.topBarLeft, topBarStyle.menuText, this.props.leftStyle]}>{this.props.left}</Text>
+          <Text style={[topBarStyle.topBarLeft, topBarStyle.text, this.props.leftStyle]}>{this.props.left}</Text>
         </TouchableOpacity>
       );
     }
@@ -95,6 +106,6 @@ let topBarStyle = StyleSheet.create({
   },
   text:{
     fontSize: 17,
-    color: colors.blue.hex
+    color: colors.iosBlue.hex
   }
 });

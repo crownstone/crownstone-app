@@ -1,4 +1,5 @@
 import { Reducer, ActionConst } from 'react-native-router-flux';
+import { LOG } from '../../../logging/Log'
 
 let inTabMenu = (state) => {
   if (state && state.children && state.children.length > 0) {
@@ -38,7 +39,6 @@ let getTabRootName = (state) => {
 export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params);
   return (state, action)=> {
-
     // this part makes sure that when a menuIcon is pressed AND you are already in that menu tree,
     // it goes back to the root of that tree
     if (action.type === ActionConst.JUMP && inTabMenu(state)) {
@@ -52,12 +52,11 @@ export const reducerCreate = (params) => {
         // snap to root.
         let rootName = getTabRootName(state);
         if (rootName) {
-          //LOG("ACTION Overruled", {key:rootName, type:'reset'});
+          LOG("ACTION Overruled", {key:rootName, type:'reset'});
           return defaultReducer(state, {key:rootName, type:'reset'});
         }
       }
     }
-    //LOG("ACTION", action);
     return defaultReducer(state, action);
   }
 };

@@ -1,6 +1,6 @@
 import { Alert } from 'react-native'
 
-import { LOG }              from './logging/Log'
+import { LOG, LOGError }              from './logging/Log'
 import { CLOUD }            from './cloud/cloudAPI'
 import { LocalizationUtil } from './native/LocationHandler'
 import { Scheduler } from './logic/Scheduler'
@@ -19,6 +19,8 @@ export const INITIALIZER = {
   initialized: false,
   init: function() {
     if (this.initialized === false) {
+      LOG("Events forwarded");
+
       // route the events to React Native
       Bluenet.rerouteEvents();
 
@@ -64,7 +66,7 @@ export const INITIALIZER = {
         let state = store.getState();
         if (state.user.userId) {
           LOG("STARTING ROUTINE SYNCING IN BACKGROUND");
-          CLOUD.sync(store, true);
+          CLOUD.sync(store, true).catch((err) => { LOGError("Error during background sync: ", err)});
         }
       });
 

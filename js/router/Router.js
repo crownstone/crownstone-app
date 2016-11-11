@@ -16,6 +16,7 @@ import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StoreManager }           from './store/storeManager'
 import { LocationHandler }        from '../native/LocationHandler'
 import { AdvertisementHandler }   from '../native/AdvertisementHandler'
+import { SetupStateHandler }      from '../native/SetupStateHandler'
 import { StoneStateHandler }      from '../native/StoneStateHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
@@ -27,7 +28,7 @@ import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
-import { ViewOverlay }            from '../views/components/ViewOverlay'
+import { CelebrationFourStones }  from '../views/components/CelebrationFourStones'
 import { BleStateOverlay }        from '../views/components/BleStateOverlay'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
@@ -35,6 +36,8 @@ import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
 
 let store = {};
+
+
 
 export class AppRouter extends Component {
   constructor() {
@@ -76,9 +79,11 @@ export class AppRouter extends Component {
       AdvertisementHandler.loadStore(store);
       Scheduler.loadStore(store);
       StoneStateHandler.loadStore(store);
+      SetupStateHandler.loadStore(store);
 
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
+      setSpherePresenceToFalse(store);  // until we know better, we are NOT able to reach spheres
 
       // // if we have an accessToken, we proceed with logging in automatically
       if (state.user.accessToken !== null) {
@@ -188,7 +193,7 @@ export class AppRouter extends Component {
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
-                  <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={false} onRight={onRightFunctionEdit} rightTitle="Edit"  getRightTitle={renderEditRoomButton} />
+                  <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={false} panHandlers={null} />
                   <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Room Settings" />
                   <Scene key="roomAdd"                component={Views.RoomAdd}                    title="Create Room" hideNavBar={true} />
                   <Scene key="deviceEdit"             component={Views.DeviceEdit}                 title="Edit Device" />
@@ -197,8 +202,8 @@ export class AppRouter extends Component {
                   <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        title="Edit Behaviour" />
                   <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}            />
                   <Scene key="delaySelection"         component={Views.DelaySelection}             title="Set Delay" />
-                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         title="Schedule"  onRight={onRightFunctionEdit} rightTitle="Add" />
-                  <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}          title="New Event" onRight={onRightFunctionEdit} rightTitle="Save" />
+                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         title="Schedule"   rightTitle="Add" />
+                  <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}          title="New Event"  rightTitle="Save" />
                   <Scene key="daySelection"           component={Views.DaySelection}               title="Set Active Days" />
                 </Scene>
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
@@ -217,7 +222,7 @@ export class AppRouter extends Component {
           </Router>
           <OptionPopup />
           <Processing />
-          <ViewOverlay />
+          <CelebrationFourStones />
           <BleStateOverlay />
         </View>
       );
@@ -251,24 +256,13 @@ class TabIcon extends Component {
   }
 }
 
-let renderEditRoomButton = function(params) {
-  let state = params.store.getState();
-  if (userIsAdminInSphere(state, params.sphereId)) {
-    return "Edit";
-  }
-  return "";
-};
-
-let onRightFunctionEdit = function(params) {
-  Actions.roomEdit({sphereId: params.sphereId, locationId: params.locationId});
-};
 
 let navBarStyle = {
   navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
   titleStyle:{color:'white'},
 };
 
-var removeAllPresentUsers = function(store) {
+let removeAllPresentUsers = function(store) {
   const state = store.getState();
   let spheres = state.spheres;
   let sphereIds = Object.keys(spheres);
@@ -281,7 +275,7 @@ var removeAllPresentUsers = function(store) {
   })
 };
 
-var clearAllCurrentPowerUsage = function(store) {
+let clearAllCurrentPowerUsage = function(store) {
   const state = store.getState();
   let spheres = state.spheres;
   let sphereIds = Object.keys(spheres);
@@ -293,6 +287,19 @@ var clearAllCurrentPowerUsage = function(store) {
       actions.push({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId});
       actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
     })
+  });
+  if (actions.length > 0)
+    store.batchDispatch(actions);
+};
+
+
+let setSpherePresenceToFalse = function(store) {
+  const state = store.getState();
+  let spheres = state.spheres;
+  let sphereIds = Object.keys(spheres);
+  let actions = [];
+  sphereIds.forEach((sphereId) => {
+    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
   });
   if (actions.length > 0)
     store.batchDispatch(actions);

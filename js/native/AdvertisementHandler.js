@@ -10,7 +10,7 @@ let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
 
 class AdvertisementHandlerClass {
   constructor() {
-    this.initialized = false;
+    this._initialized = false;
     this.store = undefined;
     this.state = {};
     this.referenceMap = {};
@@ -19,15 +19,15 @@ class AdvertisementHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE AdvertisementHandler', this.initialized);
-    if (this.initialized === false) {
+    LOG('LOADED STORE AdvertisementHandler', this._initialized);
+    if (this._initialized === false) {
       this.store = store;
       this.init();
     }
   }
 
   init() {
-    if (this.initialized === false) {
+    if (this._initialized === false) {
       // refresh maps when the database changes
       this.store.subscribe(() => {
         this.state = this.store.getState();
@@ -56,7 +56,7 @@ class AdvertisementHandlerClass {
 
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
       NativeBus.on(NativeBus.topics.advertisement, this.handleEvent.bind(this));
-      this.initialized = true;
+      this._initialized = true;
     }
   }
 
@@ -117,6 +117,13 @@ class AdvertisementHandlerClass {
     if (switchState === 0 && measuredUsage !== 0) {
       measuredUsage = 0;
     }
+
+    // small aesthetic fix: force no negative values.
+    if (measuredUsage < 0) {
+      measuredUsage = 0;
+    }
+
+
 
     let update = () => {
       Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {

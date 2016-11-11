@@ -278,7 +278,7 @@ export class Login extends Component {
       })
       .catch((err) => {
         // likely a 404, ignore
-        LOGDebug("Problem downloading profile picture: ", err);
+        LOGDebug("Could be a problem downloading profile picture: ", err);
       })
       .then(() => {
         this.progress += parts;

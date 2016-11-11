@@ -1,16 +1,22 @@
 import { Scheduler } from '../logic/Scheduler';
 import { LOG, LOGDebug } from '../logging/Log'
 
+
+/**
+ * This class keeps track of the disability state of the crownstone.
+ *
+ * If a Crownstone is disabled, it means it has not been heard for the last 30 seconds, ibeacon, adv or via mesh.
+ */
 class StoneStateHandlerClass {
   constructor() {
     this.store = {};
     this.timeoutActions = {};
-    this.initialized = false;
+    this._initialized = false;
   }
 
   loadStore(store) {
-    LOG('LOADED STORE StoneStateHandlerClass', this.initialized);
-    if (this.initialized === false) {
+    LOG('LOADED STORE StoneStateHandlerClass', this._initialized);
+    if (this._initialized === false) {
       this.store = store;
     }
   }

@@ -27,13 +27,8 @@ export const BLEutil = {
   cancelSearch:        function() { this._cancelSearch(this.pendingSearch); },
   cancelSetupSearch:   function() { this._cancelSearch(this.pendingSetupSearch); },
 
-  getNearestSetupCrownstone: function(timeout) {
-    this.cancelSetupSearch();
-    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearestSetup, this.pendingSetupSearch, timeout)
-      .then((nearestItem) => {return new SetupCrownstone(nearestItem.handle);})
-  },
 
-  getNearestSetupCrownstoneHandle: function(timeout) {
+  getNearestSetupCrownstone: function(timeout) {
     this.cancelSetupSearch();
     return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearestSetup, this.pendingSetupSearch, timeout)
   },
@@ -73,7 +68,6 @@ export const BLEutil = {
         }
       };
 
-      LOG("for nearest, subbing to ", event)
       stateContainer.unsubscribe = NativeBus.on(event, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
@@ -168,8 +162,8 @@ export const BLEutil = {
 
 
 class SingleCommand {
-  constructor(bleHandle) {
-    this.bleHandle = bleHandle;
+  constructor(handle) {
+    this.handle = handle;
   }
 
   /**
@@ -179,44 +173,17 @@ class SingleCommand {
    * @returns {*}
    */
   perform(action, prop) {
-    LOG("connecting to ", this.bleHandle, "doing this: ", action, "with prop", prop)
+    LOG("connecting to ", this.handle, "doing this: ", action, "with prop", prop)
     return BlePromiseManager.register(() => {
-      return BleActions.connect(this.bleHandle)
+      return BleActions.connect(this.handle)
         .then(() => { return action(prop); })
         .then(() => { return BleActions.disconnect(); })
         .catch((err) => {
-          LOG("BLE Error:", err);
+          LOGError("BLE Single command Error:", err);
           return new Promise((resolve,reject) => {
             BleActions.phoneDisconnect().then(reject).catch(reject);
           })
         })
     }, {from:'perform on singleCommand'});
-  }
-}
-
-export class SetupCrownstone {
-  constructor(bleHandle) {
-    this.bleHandle = bleHandle;
-    this.type = 'plug'
-  }
-
-  connect() {
-    return BleActions.connect(this.bleHandle);
-  }
-
-  disconnect() {
-    return BleActions.phoneDisconnect();
-  }
-
-  getMACAddress() {
-    return BleActions.getMACAddress();
-  }
-
-  getHandle() {
-    return this.bleHandle;
-  }
-
-  setup(data) {
-    return BleActions.setupCrownstone(data);
   }
 }

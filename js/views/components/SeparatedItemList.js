@@ -87,7 +87,8 @@ export class SeparatedItemList extends Component {
           (index === 0 ? undefined : items[index-1]),
           item,
           (index === items.length-1 ? undefined : items[index+1]),
-          index
+          index,
+          this.props.ids !== undefined ? this.props.ids[index] : undefined
         )
       });
     }

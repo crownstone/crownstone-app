@@ -176,10 +176,10 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     // add or update the sphere.
     if (sphereInState === undefined) {
       addedSphere = true;
-      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid}});
+      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress}});
     }
     else if (getTimeDifference(sphereInState.config, sphere) < 0) {
-      actions.push({type: 'UPDATE_SPHERE', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid}});
+      actions.push({type: 'UPDATE_SPHERE', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress}});
       adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
     else {

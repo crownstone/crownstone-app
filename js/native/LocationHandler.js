@@ -209,7 +209,7 @@ class StoneTracker {
 
 class LocationHandlerClass {
   constructor() {
-    this.initialized = false;
+    this._initialized = false;
     this.store = undefined;
     this.tracker = undefined;
 
@@ -217,9 +217,9 @@ class LocationHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE LocationHandler', this.initialized);
-    if (this.initialized === false) {
-      this.initialized = true;
+    LOG('LOADED STORE LocationHandler', this._initialized);
+    if (this._initialized === false) {
+      this._initialized = true;
       this.store = store;
       this.tracker = new StoneTracker(store);
 
@@ -286,6 +286,7 @@ class LocationHandlerClass {
   }
 
   _exitSphere(sphereId) {
+    LOG("LEAVING SPHERE", sphereId);
     this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: false, present: false}});
   }
 

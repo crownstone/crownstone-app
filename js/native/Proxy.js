@@ -9,13 +9,13 @@ if (DISABLE_NATIVE === true) {
   LOG("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
   LOG("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   Bluenet = {
-    clearTrackedBeacons: () => {},
+    clearTrackedBeacons: () => {},        // called through BleActions --> must be promise.
     rerouteEvents: () => {},
-    isReady: () => {},
-    connect: () => {},
-    disconnect: () => {},
-    phoneDisconnect: () => {},
-    setSwitchState: () => {},
+    isReady: () => {},                    // called through BleActions --> must be promise.
+    connect: () => {},                    // called through BleActions --> must be promise.
+    disconnect: () => {},                 // called through BleActions --> must be promise.
+    phoneDisconnect: () => {},            // called through BleActions --> must be promise.
+    setSwitchState: () => {},             // called through BleActions --> must be promise.
     startScanning: () => {},
     startScanningForCrownstones: () => {},
     startScanningForCrownstonesUniqueOnly: () => {},
@@ -37,9 +37,10 @@ if (DISABLE_NATIVE === true) {
 
     getFingerprint: () => {},
     loadFingerprint: () => {},
-    getMACAddress: () => {},
-    recover: () => {},
-    setupCrownstone: () => {},
+    getMACAddress: () => {},             // called through BleActions --> must be promise.
+    commandFactoryReset: () => {},       // called through BleActions --> must be promise.
+    recover: () => {},                   // called through BleActions --> must be promise.
+    setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
   }
 }
 else {
@@ -163,6 +164,7 @@ class NativeBusClass {
 
     // subscribe to native event.
     let subscription = NativeAppEventEmitter.addListener(topic, callback);
+
 
     // return unsubscribe function.
     return () => {

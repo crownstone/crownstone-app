@@ -65,7 +65,7 @@ test('locationsReducer PropegationTest', function (t) {
 
 test('Initial App state', function (t) {
   let initialState = {
-    app: {activeSphere: undefined, doFirstTimeSetup: true, enableLocalization:true, updatedAt: 1},
+    app: {activeSphere: undefined, localizationSetupDone: true, enableLocalization:true, updatedAt: 1},
     spheres: {},
     settings: {
       linkedDevices: true,
@@ -87,7 +87,7 @@ test('Initial App state', function (t) {
   };
 
   let locationState = {
-    app: {activeSphere: undefined, doFirstTimeSetup: true, enableLocalization:true, updatedAt: 1},
+    app: {activeSphere: undefined, localizationSetupDone: true, enableLocalization:true, updatedAt: 1},
     spheres: {
       Home: {
         appliances: {},

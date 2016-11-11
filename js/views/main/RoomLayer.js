@@ -12,18 +12,17 @@ import {
 
 var Actions = require('react-native-router-flux').Actions;
 
-import {ProfilePicture} from '../components/ProfilePicture'
-import {RoomCircle} from '../components/RoomCircle'
-import {getOrphanedStones, getAmountOfStonesInLocation} from '../../util/dataUtil'
-
-import {styles, colors, screenWidth, screenHeight} from '../styles'
-import {LOG} from '../../logging/Log'
+import { SetupStateHandler } from '../../native/SetupStateHandler'
+import { RoomCircle }        from '../components/RoomCircle'
+import { getOrphanedStones, getAmountOfStonesInLocation } from '../../util/dataUtil'
+import { styles, colors, screenWidth, screenHeight } from '../styles'
+import { LOG }               from '../../logging/Log'
 
 
 export class RoomLayer extends Component {
   constructor() {
     super();
-    this.state = {presentUsers: {}, a: 1};
+    this.state = {presentUsers: {}};
 
     this.roomRadius = 0.35 * 0.5 * screenWidth;
     this.availableSpace = (screenHeight - 175) - this.roomRadius; // for top bar and menu bar
@@ -63,39 +62,11 @@ export class RoomLayer extends Component {
         {x: 0.57 * screenWidth, y: 0.34 * this.availableSpace + 4.0 * this.roomRadius}
       ],
     };
-
-    this.presentUsers = {}
-
   }
 
-  componentDidMount() {
-    const {store} = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      if (this.renderState === undefined)
-        return;
+  componentDidMount() {}
 
-      // only redraw if the amount of rooms changes.
-      const state = store.getState();
-      if (this.props.sphereId && state.spheres[this.props.sphereId]) {
-
-        let orphanedStonesNow = getOrphanedStones(state, this.props.sphereId);
-        let orphanedStonesBefore = getOrphanedStones(this.renderState, this.props.sphereId);
-
-        let amountOfRooms = Object.keys(state.spheres[this.props.sphereId].locations).length + orphanedStonesNow;
-        let amountOfRoomsBefore = Object.keys(this.renderState.spheres[this.props.sphereId].locations).length + orphanedStonesBefore;
-        if (amountOfRooms !== amountOfRoomsBefore) {
-          this.forceUpdate();
-        }
-      }
-    });
-  }
-
-  componentWillUpdate(newProps) { }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
+  componentWillUnmount() {}
 
   _renderRoom(locationId, room, count, index, activeSphere) {
     // get the position for the room
@@ -124,8 +95,6 @@ export class RoomLayer extends Component {
       sphereId: this.props.sphereId,
       locationId: locationId,
       title: room.config.name,
-      seeStoneInSetupMode: this.props.seeStoneInSetupMode,
-      setupData: this.props.setupData,
     };
 
 
@@ -137,6 +106,7 @@ export class RoomLayer extends Component {
 
     return (
       <RoomCircle
+        eventBus={this.props.eventBus}
         locationId={locationId}
         active={this.props.sphereId == activeSphere}
         totalAmountOfRoomCircles={count}
@@ -144,9 +114,8 @@ export class RoomLayer extends Component {
         radius={this.roomRadius}
         store={this.props.store}
         pos={pos}
+        seeStonesInSetupMode={this.props.seeStonesInSetupMode}
         viewingRemotely={this.props.viewingRemotely}
-        seeStoneInSetupMode={this.props.seeStoneInSetupMode}
-        setupData={this.props.setupData}
         key={locationId || 'floating'}
         actionParams={actionsParams}
       />
@@ -157,11 +126,11 @@ export class RoomLayer extends Component {
     this.maxY = 0;
     const store = this.props.store;
     const state = store.getState();
-    let activeSphere = state.app.activeSphere;
+    let activeSphere = this.props.sphereId;
     let rooms = state.spheres[this.props.sphereId].locations;
 
     let orphanedStones = getOrphanedStones(state, this.props.sphereId);
-    let showFloatingCrownstones = orphanedStones.length > 0 || this.props.seeStoneInSetupMode === true;
+    let showFloatingCrownstones = orphanedStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
 
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
@@ -196,9 +165,6 @@ export class RoomLayer extends Component {
   }
 
   render() {
-    const store = this.props.store;
-    this.renderState = store.getState();
-
     if (this.props.sphereId === null) {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }

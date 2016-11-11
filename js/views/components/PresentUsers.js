@@ -131,7 +131,6 @@ export class PresentUsers extends Component {
 
     let presentUsers = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
     // presentUsers = this.allUsers; // ENABLE FOR DEBUG
-    LOGDebug("presentUsers in state", presentUsers)
     let slotCount = 0;
     let drawCount = 0;
     let totalCount = 0;
@@ -290,7 +289,6 @@ export class PresentUsers extends Component {
   }
 
   getUsers() {
-    LOGDebug(this.positions)
     let userObjects = [];
     for (let userId in this.positions) {
       if (this.positions.hasOwnProperty(userId)) {
@@ -303,7 +301,6 @@ export class PresentUsers extends Component {
 
 
   render() {
-    console.log("DRAWING PRESENT USER MODULE")
     const store = this.props.store;
     const state = store.getState();
     this.renderState = store.getState();

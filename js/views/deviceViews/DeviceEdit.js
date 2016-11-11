@@ -229,15 +229,13 @@ export class DeviceEdit extends Component {
     // deleting makes sure we will not draw this page again if we delete it's source from the database.
     this.deleting = true;
 
-    // revert to the previous screen
+    // revert to the previous screen is done by the store listener in componentDidMount
     Alert.alert("Success!",
       "We have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.",
       [{text:'OK', onPress: () => {
-        Actions.pop();
         this.props.eventBus.emit('hideLoading');
         this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
-      }
-      }]
+      }}]
     )
   }
 

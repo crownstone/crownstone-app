@@ -159,8 +159,22 @@ export const getSpheresWhereIHaveAccessLevel = function(state, accessLevel) {
 
 export const getMyLevelInSphere = function(state, sphereId) {
   let userId = state.user.userId;
-
-  return state.spheres[sphereId].users[userId].accessLevel;
+  if (state.spheres[sphereId].users[userId])
+    return state.spheres[sphereId].users[userId].accessLevel;
+  else {
+    if (state.spheres[sphereId].config.adminKey !== null) {
+      LOGError("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
+      return 'admin';
+    }
+    else if (state.spheres[sphereId].config.memberKey !== null) {
+      LOGError("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
+      return 'member';
+    }
+    else if (state.spheres[sphereId].config.guestKey !== null) {
+      LOGError("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
+      return 'guest';
+    }
+  }
 };
 
 

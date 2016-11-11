@@ -161,7 +161,7 @@ export class DeviceEntry extends Component {
             }}>
               <View style={{flexDirection: 'column'}}>
                 <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
-                {this.props.disabled === false && this.props.currentUsage !== undefined ? <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text> : undefined}
+                {this._getSubText()}
               </View>
             </TouchableOpacity>
             {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}
@@ -170,6 +170,18 @@ export class DeviceEntry extends Component {
           {this._getOptions()}
         </Animated.View>
       );
+    }
+  }
+
+  _getSubText() {
+    if (this.props.disabled === false && this.props.currentUsage !== undefined) {
+      return <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
+    }
+    else if (this.props.disabled === true && this.props.disabledDescription !== undefined) {
+      return <Text style={{fontSize: 12}}>{this.props.disabledDescription}</Text>
+    }
+    else {
+      return <View />
     }
   }
 }

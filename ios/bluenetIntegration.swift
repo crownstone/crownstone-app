@@ -148,6 +148,7 @@ class BluenetJS: NSObject {
 
   @objc func rerouteEvents() {
     if let globalBluenet = GLOBAL_BLUENET {
+      print("----- BLUENET BRIDGE: Rerouting events")
       // forward the event streams to react native
       globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
@@ -395,7 +396,7 @@ class BluenetJS: NSObject {
     print("finishCollectingFingerprint")
   }
   
-  
+  // this  has a callback so we can chain it in a promise. External calls are always async in RN, we need this to be done before loading new beacons.
   @objc func clearTrackedBeacons(_ callback: RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenetLocalization.clearTrackedBeacons()
     callback([["error" : false]])
@@ -468,12 +469,18 @@ class BluenetJS: NSObject {
     let adminKey          = data["adminKey"] as? String
     let memberKey         = data["memberKey"] as? String
     let guestKey          = data["guestKey"] as? String
-    let meshAccessAddress = data["meshAccessAddress"] as? NSNumber
+    let meshAccessAddressNumber = data["meshAccessAddress"] as? NSNumber
+    let meshAccessAddressString = data["meshAccessAddress"] as? String
     let ibeaconUUID       = data["ibeaconUUID"] as? String
     let ibeaconMajor      = data["ibeaconMajor"] as? NSNumber
     let ibeaconMinor      = data["ibeaconMinor"] as? NSNumber
-    print("data \(data) 1\(crownstoneId) 2\(adminKey) 3\(memberKey) 4\(guestKey)")
-    print ("5\(meshAccessAddress) 6\(ibeaconUUID) 7\(ibeaconMajor)  8\(ibeaconMinor)")
+    
+    var meshAccessAddress : NSNumber? = nil
+    if (meshAccessAddressNumber == nil && meshAccessAddressString != nil) {
+      if let accessAddress = UInt32(meshAccessAddressString!, radix:16) {
+        meshAccessAddress = NSNumber(value:accessAddress)
+      }
+    }
     
     print("data \(data) 1\(crownstoneId != nil) 2\(adminKey != nil) 3\(memberKey != nil) 4\(guestKey != nil)")
     print ("5\(meshAccessAddress != nil) 6\(ibeaconUUID != nil) 7\(ibeaconMajor != nil)  8\(ibeaconMinor != nil)")
@@ -500,7 +507,7 @@ class BluenetJS: NSObject {
             callback([["error" : true, "data": getBleErrorString(bleErr)]])
           }
           else {
-            callback([["error" : true, "data": "UNKNOWN ERROR IN setupCrownstone"]])
+            callback([["error" : true, "data": "UNKNOWN ERROR IN setupCrownstone \(err)"]])
           }
         }
     }

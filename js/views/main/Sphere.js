@@ -11,40 +11,20 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-import { NativeBus } from '../../native/Proxy'
-import { BLEutil } from '../../native/BLEutil'
-import { getUUID } from '../../util/util'
-import { Orbs } from '../components/Orbs'
-import { TopBar } from '../components/Topbar'
-import { AnimatedBackground } from '../components/animated/AnimatedBackground'
-import { Icon } from '../components/Icon'
-import { RoomLayer } from './RoomLayer'
-import { LOG, LOGDebug } from '../../logging/Log'
+import { Icon }               from '../components/Icon'
+import { getMyLevelInSphere } from '../../util/dataUtil'
+import { RoomLayer }          from './RoomLayer'
+import { LOG, LOGDebug }      from '../../logging/Log'
+import { overviewStyles }     from './SphereOverview'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
-import { overviewStyles } from './SphereOverview'
 
 
 export class Sphere extends Component {
   constructor() {
     super();
     this.setupData = {};
-    this.setupModeTimeout = undefined;
     this.animating = false;
-    this.scanningTimeout = false;
   }
-
-  componentWillMount() { }
-
-  componentDidMount() { }
-
-  componentWillUnmount() { }
-
-
-  // experiment
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   // LOG("Should component update?",nextProps, nextState)
-  //   return false
-  // }
 
   render() {
     LOG("RENDERING SPHERE");
@@ -52,19 +32,19 @@ export class Sphere extends Component {
     const state = store.getState();
 
     let viewingRemotely = true;
-    let currentSphere = this.props.id;
+    let currentSphere = this.props.sphereId;
 
     let sphereIsPresent = state.spheres[currentSphere].config.present;
-    if (sphereIsPresent || this.props.seeStoneInSetupMode)
+    if (sphereIsPresent || this.props.seeStonesInSetupMode)
       viewingRemotely = false;
 
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
-    let isAdminInCurrentSphere = state.spheres[currentSphere].users[state.user.userId].accessLevel === 'admin';
+    let isAdminInCurrentSphere = getMyLevelInSphere(state, currentSphere) === 'admin';
 
     let newContent = undefined;
 
-    if (this.props.seeStoneInSetupMode === true && isAdminInCurrentSphere === true) {
+    if (this.props.seeStonesInSetupMode === true && isAdminInCurrentSphere === true) {
       newContent = (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={overviewStyles.bottomTextNotConnected}>{'New Crownstone Detected!'}</Text>
@@ -98,7 +78,7 @@ export class Sphere extends Component {
     return (
       <View style={{width:screenWidth, height: screenHeight - topBarHeight - tabBarHeight, position:'absolute', left: this.props.leftPosition}}>
         {newContent}
-        <RoomLayer store={store} sphereId={currentSphere} seeStoneInSetupMode={this.props.seeStoneInSetupMode} viewingRemotely={viewingRemotely} setupData={this.props.setupData}/>
+        <RoomLayer store={store} sphereId={currentSphere} seeStonesInSetupMode={this.props.seeStonesInSetupMode} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
       </View>
     );
   }
