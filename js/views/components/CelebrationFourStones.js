@@ -336,11 +336,11 @@ export class CelebrationFourStones extends Component {
           <Text style={{fontSize: 0.1*this.w, color: contentColor, fontWeight:'800', paddingBottom:0.04*this.h, textAlign:'center', backgroundColor:'transparent'}}>Congratulations!</Text>
           <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>You have added 4 Crownstones to your Sphere! We can now use the indoor localization at room level!</Text>
           <View style={{flex:1}} />
-          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>We've added this button to your overview:</Text>
+          <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{"We've added this button to your overview:"}</Text>
             <View style={{flex:1}} />
             <FinalizeLocalizationIcon />
             <View style={{flex:1}} />
-            <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>Once you've added all your Crownstones, tap that button to start teaching Crownstone about your home!</Text>
+            <Text style={{fontSize: 16, color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>{"Once you've added all your Crownstones, tap that button to start teaching Crownstone about your home!"}</Text>
               <View style={{flex:1}} />
               <TouchableOpacity onPress={() => {this.setState({visible: false});}} style={{borderWidth:2, borderRadius:0.04*this.h, borderColor: contentColor, width:0.3*this.w, height:0.08*this.h, justifyContent:'center', alignItems:'center'}}>
                 <Text style={{fontSize: 20, fontWeight:'800', color: contentColor, textAlign:'center', backgroundColor:'transparent'}}>OK!</Text>
