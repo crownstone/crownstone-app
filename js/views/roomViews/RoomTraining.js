@@ -33,6 +33,7 @@ export class RoomTraining extends Component {
   }
 
   componentDidMount() {
+
     LOGDebug("Stopping indoor localization for training purposes");
     Bluenet.stopIndoorLocalization();
   }
@@ -112,7 +113,7 @@ export class RoomTraining extends Component {
         <Background hideInterface={true} image={this.props.backgrounds.main}>
           <TopBar
             leftAction={ Actions.pop }
-            title="Train Room"/>
+            title={"Teaching " + aiName}/>
             <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
               <Text style={{
                 backgroundColor:'transparent',

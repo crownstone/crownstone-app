@@ -79,8 +79,30 @@ export class AiStart extends Component {
       Alert.alert("Ehmm " + userFirstName + ".. :(", "I'd really like a name... Could you give me one please?", [{text:"Right Away!"}])
     }
     else {
-      Alert.alert("Thank you!", "It's nice to meet you too!", [{text:"Let's get started!", onPress:() => {
-        let sphereId = this.props.sphereId || Object.keys(this.props.store.getState().spheres)[0];
+      let state = this.props.store.getState();
+      let sphereId = this.props.sphereId || Object.keys(state.spheres)[0];
+      let title = "Thank you!";
+      let detail = "It's nice to finally meet you!";
+      let button = "Let's get started!";
+      if (this.props.canGoBack === true) {
+        if (this.state.aiName === state.spheres[sphereId].config.aiName && this.state.aiSex === state.spheres[sphereId].config.aiSex) {
+          detail = "I think my name and gender describe me perfectly too!";
+          button = "You're right!";
+        }
+        else if (this.state.aiName !== state.spheres[sphereId].config.aiName && this.state.aiSex === state.spheres[sphereId].config.aiSex) {
+          detail = "This name is much better, great choice!";
+          button = "It suits you!";
+        }
+        else if (this.state.aiName === state.spheres[sphereId].config.aiName && this.state.aiSex !== state.spheres[sphereId].config.aiSex) {
+          detail = "You're right! I feel much more like myself as a " + (this.state.aiSex === 'male' ? 'man' : 'woman') + '!';
+          button = "I thought so too!";
+        }
+        else {
+          detail = "I'm a like whole new person now! Hi! It's great to meet you!";
+          button = "Nice to meet you too!";
+        }
+      }
+      Alert.alert(title, detail, [{text: button, onPress:() => {
         this.props.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
         this.props.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {aiName: this.state.aiName, aiSex: this.state.aiSex}});
         if (this.props.canGoBack === true) {
