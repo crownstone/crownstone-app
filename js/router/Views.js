@@ -1,6 +1,7 @@
 import { LoginSplash }               from '../views/startupViews/LoginSplash'
 import { Login }                     from '../views/startupViews/Login'
 import { Register }                  from '../views/startupViews/Register'
+import { AiStart }                   from '../views/startupViews/AiStart'
 import { RegisterConclusion }        from '../views/startupViews/RegisterConclusion'
 import { PictureView }               from '../views/cameraViews/PictureView'
 import { PicturePreview }            from '../views/cameraViews/PicturePreview'
@@ -70,4 +71,5 @@ export const Views = {
   SettingsPluginRecoverStep1,
   SettingsPluginRecoverStep2,
   AppComplexity,
+  AiStart,
 };

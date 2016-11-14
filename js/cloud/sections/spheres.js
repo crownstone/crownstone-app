@@ -50,6 +50,15 @@ export const spheres = {
   },
 
 
+  updateSphere: function(sphereId, data, background = true) {
+    return this._setupRequest(
+      'PUT',
+      '/Spheres/' + sphereId,
+      {background: background, data: data},
+      'body'
+    );
+  },
+
   inviteUser: function(email, permission = "") {
     permission = permission.toLowerCase();
     switch (permission) {

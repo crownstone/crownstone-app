@@ -98,15 +98,21 @@ export class RoomTraining extends Component {
   }
 
   render() {
-    let icons = ['ios-finger-print','ios-outlet-outline','ios-pin-outline','ios-pricetag-outline'];
+    let icons = ['c1-locationPin1','ios-outlet-outline','ios-pin-outline','c1-brain','c1-male','c1-female'];
+
+    let state  = this.props.store.getState();
+    let aiName = state.spheres[this.props.sphereId].config.aiName;
+    let aiSex  = state.spheres[this.props.sphereId].config.aiSex;
+    let aiRef  = aiSex === 'male' ? 'him' : 'her';
+    let aiRef2 = aiSex === 'male' ? 'his' : 'her';
+    let aiRef3 = aiSex === 'male' ? 'he'  : 'she';
+
     if (this.state.started === false) {
       return (
         <Background hideInterface={true} image={this.props.backgrounds.main}>
           <TopBar
-            left={"Back"}
             leftAction={ Actions.pop }
             title="Train Room"/>
-          <ScrollView>
             <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
               <Text style={{
                 backgroundColor:'transparent',
@@ -114,7 +120,7 @@ export class RoomTraining extends Component {
                 fontWeight:'600',
                 color: colors.menuBackground.hex,
                 textAlign:'center'
-              }}>To let Crownstone find you in this room, we need to help it a little!</Text>
+              }}>{"To let " + aiName + " find you in this room, we need to help " + aiRef + " a little!"}</Text>
               <Text style={{
                 backgroundColor:'transparent',
                 fontSize:16,
@@ -123,7 +129,7 @@ export class RoomTraining extends Component {
                 textAlign:'center',
                 paddingTop:20,
               }}>To train, walk around the room with your phone in your hand.
-                Try to get to every spot in the room, close by the walls as well and through the center.
+                Try to get to every spot in the room, near the walls as well and through the center.
                 The training process takes 1 minute and you can see the progress on your screen.
               </Text>
               <Text style={{
@@ -145,11 +151,10 @@ export class RoomTraining extends Component {
                 ]}
                 onPress={() => {this.start();}}
               >
-                <Icon name="ios-finger-print" size={0.35*screenWidth} color="#fff" style={{backgroundColor:"transparent", position:'relative', top:0.01*screenWidth}} />
+                <Icon name="c1-locationPin1" size={0.32*screenWidth} color="#fff" style={{backgroundColor:"transparent", position:'relative', top:0.01*screenWidth}} />
               </TouchableOpacity>
               <View style={{flex:1}} />
            </View>
-          </ScrollView>
         </Background>
       );
     }
@@ -180,8 +185,8 @@ export class RoomTraining extends Component {
                 color: colors.menuBackground.hex,
                 textAlign:'center'
               }}>{this.state.active ?
-                "Walk around the room so we can learn to locate you within it. Each beat a point is collected." :
-                "All Done!"
+                "Walk around the room so " + aiName + " can learn to locate you within it. Each beat " + aiRef3 + " learns a bit more about the room!" :
+                "All Done! Once you have taught " + aiName + " all the rooms, " + aiRef3 + " will start doing " + aiRef2 + " best to determine in which room you are!"
               }</Text>
             </View>
 

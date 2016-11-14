@@ -69,7 +69,7 @@ export class RoomSelection extends Component {
       items.push({label:"Add rooms by pressing add in the Sphere Overview",  type:'explanation', below:false});
     }
 
-    // if ()
+
     items.push({label:"DECOUPLE THIS CROWNSTONE",  type:'explanation', below: false});
     items.push({
       label: 'Do not put this Crownstone in a specific room.',
@@ -78,7 +78,7 @@ export class RoomSelection extends Component {
       type: 'navigation',
       callback: () => {
         Actions.pop();
-        store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: null}})
+        store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: null}});
       }
     });
     items.push({label:"If you do not add the Crownstone to a room, it will not be used for indoor localization purposes.",  type:'explanation', below: true});

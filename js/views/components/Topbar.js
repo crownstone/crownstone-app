@@ -50,7 +50,14 @@ export class TopBar extends Component {
   }
 
   _getRightContent() {
-    if (this.props.right) {
+    if (this.props.rightItem) {
+      return (
+        <TouchableOpacity onPress={() => {this.props.rightAction();}}>
+          {this.props.rightItem}
+        </TouchableOpacity>
+      );
+    }
+    else if (this.props.right) {
       return (
         <TouchableOpacity onPress={() => {this.props.rightAction();}}>
           <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{this.props.right}</Text>
@@ -75,7 +82,7 @@ export class TopBar extends Component {
   }
 }
 
-let topBarStyle = StyleSheet.create({
+export const topBarStyle = StyleSheet.create({
   topBar: {
     backgroundColor: colors.menuBackground.hex,
     paddingLeft: 10,

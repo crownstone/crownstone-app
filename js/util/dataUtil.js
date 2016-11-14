@@ -279,3 +279,18 @@ export const getMapOfCrownstonesInSphereByCID = function(state, sphereId) {
   }
   return {};
 };
+
+export const getAiData = function(state, sphereId) {
+  let sexes = {
+    ref1: {male:'his', female:'her', other:'it'},
+    ref2: {male:'him', female:'her', other:'it'},
+  };
+
+  return {
+    name: state.spheres[sphereId].config.aiName,
+    ref1: sexes.ref1[state.spheres[sphereId].config.aiSex],
+    ref2: sexes.ref2[state.spheres[sphereId].config.aiSex],
+  }
+
+
+}

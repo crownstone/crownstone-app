@@ -206,7 +206,10 @@ class BluenetJS: NSObject {
           }
         }
         self.bridge.eventDispatcher().sendAppEvent(withName: "iBeaconAdvertisement", body: returnArray)
-      })      
+      })
+      
+      
+      
       globalBluenet.bluenetLocalizationOn("enterRegion", {data -> Void in
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
@@ -358,6 +361,13 @@ class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenetLocalization.stopTrackingIBeacon(ibeaconUUID)
     print("stopIBeaconTracking ")
   }
+  
+  @objc func forceClearActiveRegion() -> Void {
+    GLOBAL_BLUENET!.bluenetLocalization.forceClearActiveRegion()
+    print("forceClearActiveRegion ")
+  }
+  
+  
   
   @objc func pauseTracking() -> Void {
     GLOBAL_BLUENET!.bluenetLocalization.pauseTracking()

@@ -19,7 +19,6 @@ export class FadeInView extends Component {
       if (nextProps.visible === true) {
         this.setState({show: true});
         setTimeout(() => {
-          LOG("starting animation");
           Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || defaultDuration}).start();
         },0);
       }

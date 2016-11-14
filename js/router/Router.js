@@ -21,7 +21,6 @@ import { StoneStateHandler }      from '../native/StoneStateHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
 import { logOut }                 from '../util/util'
-import { userIsAdminInSphere }    from '../util/dataUtil'
 import { LOG, LOGDebug }          from '../logging/Log'
 import { INITIALIZER }            from '../initialize'
 import { CLOUD }                  from '../cloud/cloudAPI'
@@ -29,6 +28,7 @@ import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
 import { CelebrationFourStones }  from '../views/components/CelebrationFourStones'
+import { LocalizationSetupStep2 } from '../views/components/LocalizationSetupStep2'
 import { BleStateOverlay }        from '../views/components/BleStateOverlay'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
@@ -184,6 +184,7 @@ export class AppRouter extends Component {
               <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  panHandlers={null} direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  panHandlers={null} direction="vertical" />
+              <Scene key="aiStart"                    component={Views.AiStart}                    hideNavBar={false} panHandlers={null} direction="vertical" title="Hello!" />
               <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true}  panHandlers={null} direction="vertical" title="Training" />
               <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true}  panHandlers={null} direction="vertical" title="Move to which Room?" />
               <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
@@ -193,18 +194,18 @@ export class AppRouter extends Component {
               <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.state.loggedIn}>
                 <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                   <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
-                  <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={false} />
-                  <Scene key="roomEdit"               component={Views.RoomEdit}                   title="Room Settings" />
-                  <Scene key="roomAdd"                component={Views.RoomAdd}                    title="Create Room" hideNavBar={true} />
-                  <Scene key="deviceEdit"             component={Views.DeviceEdit}                 title="Edit Device" />
-                  <Scene key="deviceEditLogic"        component={Views.DeviceEditLogic}            title="Device Behaviour" />
-                  <Scene key="applianceSelection"     component={Views.ApplianceSelection}         title="Select a Device" />
-                  <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        title="Edit Behaviour" />
-                  <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}            />
-                  <Scene key="delaySelection"         component={Views.DelaySelection}             title="Set Delay" />
-                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         title="Schedule"   rightTitle="Add" />
-                  <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}          title="New Event"  rightTitle="Save" />
-                  <Scene key="daySelection"           component={Views.DaySelection}               title="Set Active Days" />
+                  <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
+                  <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
+                  <Scene key="roomAdd"                component={Views.RoomAdd}                    hideNavBar={true} title="Create Room" />
+                  <Scene key="deviceEdit"             component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
+                  <Scene key="deviceEditLogic"        component={Views.DeviceEditLogic}            hideNavBar={false} title="Device Behaviour" />
+                  <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} title="Select a Device" />
+                  <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
+                  <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}            hideNavBar={false} />
+                  <Scene key="delaySelection"         component={Views.DelaySelection}             hideNavBar={false} title="Set Delay" />
+                  <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={false} title="Schedule"   rightTitle="Add" />
+                  <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}          hideNavBar={false} title="New Event"  rightTitle="Save" />
+                  <Scene key="daySelection"           component={Views.DaySelection}               hideNavBar={false} title="Set Active Days" />
                 </Scene>
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                   <Scene key="settingsOverview"           component={Views.SettingsOverview}           title="Settings"/>
@@ -222,8 +223,9 @@ export class AppRouter extends Component {
           </Router>
           <OptionPopup />
           <Processing />
-          <CelebrationFourStones />
+          <CelebrationFourStones store={store} />
           <BleStateOverlay />
+          <LocalizationSetupStep2 store={store} />
         </View>
       );
     }
@@ -299,7 +301,7 @@ let setSpherePresenceToFalse = function(store) {
   let sphereIds = Object.keys(spheres);
   let actions = [];
   sphereIds.forEach((sphereId) => {
-    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
+    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: true }});
   });
   if (actions.length > 0)
     store.batchDispatch(actions);

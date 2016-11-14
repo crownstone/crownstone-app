@@ -398,7 +398,7 @@ export class RoomCircle extends Component {
 
 
   _getAlertIcon() {
-    let alertSize = 30;
+    let alertSize = 34;
     return (
       <View style={[styles.centered, {
         width:alertSize,
@@ -407,7 +407,7 @@ export class RoomCircle extends Component {
         borderColor:'#fff',
         position:'absolute',
         top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} >
-        <Icon name="md-finger-print" color="#fff" size={20} style={{backgroundColor:'transparent'}} />
+        <Icon name="c1-locationPin1" color="#fff" size={17} style={{backgroundColor:'transparent'}} />
       </View>
     )
   }

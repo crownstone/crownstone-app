@@ -32,7 +32,7 @@ type:
 ```js 
 data: {name: String, latitude: Number, longitude: Number}
 ```
-- UPDATE_SPHERE
+- UPDATE_SPHERE_CONFIG
 ```js 
 data: {name: String, latitude: Number, longitude: Number}
 ```

@@ -81,6 +81,9 @@ export class RoomEdit extends Component {
     const state = store.getState();
     const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
 
+    let ai = state.spheres[this.props.sphereId].config.aiName;
+
+
     let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId};
     let items = [];
 
@@ -100,20 +103,20 @@ export class RoomEdit extends Component {
     if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
       items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
       if (room.config.fingerprintRaw) {
-        items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
+        items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
           Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
             {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: () => {Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId})}},
+            {text: 'OK', onPress: () => {Actions.roomTraining({roomName: room.config.name, sphereId: this.props.sphereId, locationId: this.props.locationId})}},
           ])
         }});
         items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
-        'you can retrain this room to improve accuracy.', type: 'explanation',  below:true});
+        'you can retrain this room so ' + ai + ' can find you again!', type: 'explanation',  below:true});
       }
       else {
-        items.push({label:'Train localization in room', type: 'navigation', icon: <IconButton name="ios-finger-print" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => {
-          Actions.roomTraining({roomName: room.config.name, locationId: this.props.locationId, store: this.props.store});
+        items.push({label:'Teach ' + ai + ' to find you!', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
+          Actions.roomTraining({roomName: room.config.name, sphereId: this.props.sphereId, locationId: this.props.locationId, store: this.props.store});
         }});
-        items.push({label:'Before you can use indoor localization other than enter/exit your house, you need to train all rooms so Crownstone can learn how to position you.', type: 'explanation',  below:true});
+        items.push({label:'Teach ' + ai + ' to identify when you\'re in this room by walking around in it.', type: 'explanation',  below:true});
       }
     }
     else if (canDoIndoorLocalization === true && this.viewingRemotely === true) {
@@ -143,7 +146,7 @@ export class RoomEdit extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false;
-
+    this.viewingRemotely = false
     let backgroundImage = this.props.getBackground('menu', this.viewingRemotely);
     return (
       <Background image={backgroundImage} >

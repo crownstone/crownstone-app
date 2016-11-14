@@ -1,19 +1,14 @@
 import React, { Component } from 'react'
 import {
-
-  Dimensions,
   Image,
-  PixelRatio,
   Text,
   View,
 } from 'react-native';
 
-import { AnimatedLogo }       from './animated/AnimatedLogo'
 import { NativeBus }          from '../../native/Proxy'
 import { Icon }               from './Icon'
 import { FadeInView }         from './animated/FadeInView'
 import { styles, colors , screenHeight, screenWidth } from './../styles'
-import { eventBus } from '../../util/eventBus'
 
 export class BleStateOverlay extends Component {
   constructor() {
@@ -24,7 +19,6 @@ export class BleStateOverlay extends Component {
       notificationType: 'unknown' //"unauthorized", "poweredOff", "poweredOn", "unknown"
     };
     this.unsubscribe = [];
-    this.children = undefined;
   }
 
   componentDidMount() {

@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {
+  Alert,
   Animated,
   Dimensions,
   Image,
@@ -111,10 +112,11 @@ export class SphereOverview extends Component {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
-        change.changeSphereState  ||
-        change.updateActiveSphere ||
-        change.changeSpheres      ||
-        change.changeStones       ||
+        change.changeSphereState    ||
+        change.stoneLocationUpdated ||
+        change.updateActiveSphere   ||
+        change.changeSpheres        ||
+        change.changeStones         ||
         change.changeLocations
       ) {
         this.forceUpdate();
@@ -179,8 +181,8 @@ export class SphereOverview extends Component {
             title={state.spheres[activeSphere].config.name + '\'s Sphere'}
             notBack={!showFinalizeIndoorNavigationButton}
             leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
-            leftAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
-            right={isAdminInCurrentSphere && !blockAddButton ? 'Add' : null}
+            leftAction={() => {this._finalizeIndoorLocalization(activeSphere, viewingRemotely);}}
+            right={isAdminInCurrentSphere && !blockAddButton ? '+Room' : null}
             rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
           />
           <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
@@ -208,6 +210,28 @@ export class SphereOverview extends Component {
           <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
         </View>
       )
+    }
+  }
+
+  _finalizeIndoorLocalization(activeSphere, viewingRemotely) {
+    viewingRemotely = false;
+    if (viewingRemotely) {
+      Alert.alert(
+        "You'll have to be in the sphere to continue.",
+        "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
+        [{text: 'OK'}]
+      );
+    }
+    else {
+      Actions.roomOverview({
+        sphereId: activeSphere,
+        locationId: null,
+        title: 'First things first :)',
+        hideRight: true,
+        usedForIndoorLocalizationSetup: true,
+        overlayText:'Place your Crownstones in rooms!',
+        explanation: 'Tap a Crownstone to see the options, then tap the left icon to select a room!'
+      });
     }
   }
 }

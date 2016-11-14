@@ -98,7 +98,7 @@ export class CelebrationFourStones extends Component {
   }
 
   componentDidMount() {
-    eventBus.on("showCelebrationOf4Stones", () => {
+    eventBus.on("showLocalizationSetupStep1", () => {
       // we reset the entire state because we might show this video twice.
       this.setState({
         innerCirclesAmount: 0.0,

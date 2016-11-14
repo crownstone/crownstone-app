@@ -240,6 +240,19 @@ function handleLocationInCloud(action, state) {
 
 function handleSphereInCloud(action, state) {
   // these are handled by the views, cloud update for these things is mandatory
+  let sphereId = action.sphereId;
+
+  let sphereConfig = state.spheres[sphereId].config;
+  let data = {
+    name: sphereConfig.name,
+    iBeaconUUID: sphereConfig.iBeaconUUID,
+    meshAccessAddress: sphereConfig.meshAccessAddress,
+    aiName: sphereConfig.aiName,
+    aiSex: sphereConfig.aiSex,
+    updatedAt: sphereConfig.updatedAt,
+  };
+
+  CLOUD.updateSphere(sphereId, data).catch(() => {});
 }
 
 function handleSphereUserInCloud(action, state) {

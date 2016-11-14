@@ -35,6 +35,11 @@ export class DeviceEntry extends Component {
   }
 
   componentDidMount() {
+    if (this.props.initiallyOpen) {
+      setTimeout(() => {this._openOptions(600);}, 200);
+      // setTimeout(() => {this._closeOptions(600);}, 1200);
+    }
+
     if (this.props.eventbus) {
       this.unsubscribe = this.props.eventBus.on("focusDeviceEntry", (id) => {
         if (id != this.id) {
@@ -48,22 +53,22 @@ export class DeviceEntry extends Component {
     this.unsubscribe();
   }
 
-  _closeOptions() {
+  _closeOptions(delay = 200) {
     if (this.optionsAreOpen === true && this.animating === false) {
       this.animating = true;
       this.setState({optionsOpen: false});
-      Animated.timing(this.state.height, {toValue: this.baseHeight, duration: this.props.duration || 200}).start();
-      setTimeout(() => {this.optionsAreOpen = false; this.animating = false;}, 200);
+      Animated.timing(this.state.height, {toValue: this.baseHeight, duration: this.props.duration || delay}).start();
+      setTimeout(() => {this.optionsAreOpen = false; this.animating = false;}, delay);
     }
   }
 
-  _openOptions() {
+  _openOptions(delay = 200) {
     if (this.optionsAreOpen === false && this.animating === false) {
       this.props.eventBus.emit("focusDeviceEntry", this.id);
       this.animating = true;
       this.setState({optionsOpen: true});
-      Animated.timing(this.state.height, {toValue: this.openHeight, duration: this.props.duration || 200}).start();
-      setTimeout(() => {this.optionsAreOpen = true; this.animating = false;}, 200);
+      Animated.timing(this.state.height, {toValue: this.openHeight, duration: this.props.duration || delay}).start();
+      setTimeout(() => {this.optionsAreOpen = true; this.animating = false;}, delay);
     }
   }
 
@@ -118,7 +123,7 @@ export class DeviceEntry extends Component {
   }
 
   _getOptions() {
-    if (this.state.optionsOpen) {
+    if (this.state.optionsOpen || this.animating) {
       return (
         <View style={{height: this.optionsHeight, flex: 1, alignItems: 'center'}}>
           <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
@@ -139,42 +144,31 @@ export class DeviceEntry extends Component {
   }
 
   render() {
-    if (this.props.empty === true) {
-      return (
-        <View style={{backgroundColor:'#fff', height: 0.5*this.baseHeight, justifyContent: 'center', alignItems:'center'}}>
-          <View style={{flexDirection: 'column'}}>
-            <Text style={{fontSize: 15, fontWeight: '100'}}>{this.props.floatingCrownstones === true ? "No Crownstones found." : "No Crownstones in this room."}</Text>
-          </View>
+    return (
+      <Animated.View style={{flexDirection: 'column', height: this.state.height,  flex: 1, overflow:'hidden'}}>
+        <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
+          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
+                            onPress={() => { this._toggleOptions(); }}>
+            {this._getIcon()}
+          </TouchableOpacity>
+          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
+            this._toggleOptions();
+          }}>
+            <View style={{flexDirection: 'column'}}>
+              <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
+              {this._getSubText()}
+            </View>
+          </TouchableOpacity>
+          {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}
+          {this.props.control === true ? this._getControl() : undefined}
+          {this.state.optionsOpen === true ? undefined :
+            <View  style={{position:'absolute', top: this.baseHeight-8, left:0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray2.hex}} >
+            </View>
+          }
         </View>
-      )
-    }
-    else {
-      return (
-        <Animated.View style={{flexDirection: 'column', height: this.state.height,  flex: 1, overflow:'hidden'}}>
-          <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-            <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
-                              onPress={() => { this._toggleOptions(); }}>
-              {this._getIcon()}
-            </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
-              this._toggleOptions();
-            }}>
-              <View style={{flexDirection: 'column'}}>
-                <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
-                {this._getSubText()}
-              </View>
-            </TouchableOpacity>
-            {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}
-            {this.props.control === true ? this._getControl() : undefined}
-            {this.state.optionsOpen === true ? undefined :
-              <View  style={{position:'absolute', top: this.baseHeight-8, left:0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray.hex}} >
-              </View>
-            }
-          </View>
-          {this._getOptions()}
-        </Animated.View>
-      );
-    }
+        {this._getOptions()}
+      </Animated.View>
+    );
   }
 
   _getSubText() {

@@ -1,3 +1,4 @@
+import { LocationHandler } from '../native/LocationHandler';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG, LOGDebug } from '../logging/Log'
 
@@ -43,6 +44,21 @@ class StoneStateHandlerClass {
     let disableCallback = () => {
       let state = this.store.getState();
       if (state.spheres[sphereId] && state.spheres[sphereId].stones[stoneId]) {
+        // check if there are any stones left that are not disabled.
+        let otherStoneIds = Object.keys(state.spheres[sphereId].stones);
+        delete otherStoneIds[stoneId];
+        let allDisabled = true;
+        otherStoneIds.forEach((otherStoneId) => {
+          if (state.spheres[sphereId].stones[otherStoneId].config.disabled === false) {
+            allDisabled = false;
+          }
+        });
+
+        // fallback to leave the sphere
+        if (allDisabled === true) {
+          LocationHandler._exitSphere(sphereId);
+        }
+
         this.store.dispatch({
           type: 'UPDATE_STONE_DISABILITY',
           sphereId: sphereId,

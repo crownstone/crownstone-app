@@ -58,9 +58,9 @@ export class SettingsSphereOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let adminSpheres = this._getSpheres(state, 'admin');
+    let adminSpheres  = this._getSpheres(state, 'admin');
     let memberSpheres = this._getSpheres(state, 'member');
-    let guestSpheres = this._getSpheres(state, 'guest');
+    let guestSpheres  = this._getSpheres(state, 'guest');
 
     if (adminSpheres.length > 0) {
       items.push({label:'SPHERES WHERE YOU ARE AN ADMIN',  type:'explanation', below:false});

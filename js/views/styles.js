@@ -19,6 +19,7 @@ export let colors = {
   gray: {hex:'#ccc'},
   notConnected: {hex:'#64897f'},
   darkGray: {hex:'#555'},
+  lightGray2: {hex:'#dedede'},
   lightGray: {hex:'#eee'},
   purple: {hex:'#8a01ff'},
   blue: {hex:'#0075c9'},

@@ -12,9 +12,17 @@ import { styles, colors, screenWidth} from '../styles'
 import { ProfilePicture } from './ProfilePicture'
 import { Icon } from './Icon'
 
+
+let LEFT_RATIO = 0.5;
+let RIGHT_RATIO = 0.30;
+let ELEMENT_HEIGHT = 100;
+let ELEMENT_OFFSET = 0.1*ELEMENT_HEIGHT;
+
 export class RoomBanner extends Component {
-  getPresentUsers() {
-    if (this.props.viewingRemotely === true) {
+  getOverlayContent() {
+    if (this.props.overlayText !== undefined)
+      return <Text style={styles.roomImageText}>{this.props.overlayText}</Text>;
+    else if (this.props.viewingRemotely === true) {
       return <Text style={styles.roomImageText}>Viewing Data</Text>;
     }
     else if (this.props.presentUsers.length === 0)
@@ -39,12 +47,7 @@ export class RoomBanner extends Component {
 
   }
 
-  render() {
-    let height = 100;
-    let leftRatio = 0.5;
-    let rightRatio = 0.30;
-    let offset = 0.1*height;
-    let remoteColor = undefined;
+  getIcons() {
     let color1 = colors.green.hex;
     let color2 = colors.darkGreen.hex;
     let color3 = colors.blue.hex;
@@ -52,66 +55,73 @@ export class RoomBanner extends Component {
       color1 = "#fff";
       color2 = "#fff";
       color3 = "#fff";
-      remoteColor = colors.notConnected.rgba(0.4);
     }
 
-    if (this.props.floatingCrownstones === true) {
-      return (
-        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.iosBlue.rgba(0.3), justifyContent:'center', overflow:'hidden', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
-          <View style={{flexDirection:'row'}}>
-            <Icon name="c2-pluginFront" size={100} color={color1} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
-            <Icon name="c2-pluginFront" size={100} color={color2} style={{position:'absolute', backgroundColor:'transparent', top:20,  left:175}} />
-            <Icon name="c2-pluginFront" size={160} color={color3} style={{position:'absolute', backgroundColor:'transparent', top:-32, left:-30}} />
+    return (
+      <View style={{flexDirection:'row'}}>
+        <Icon name="c2-pluginFront" size={100} color={color1} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
+        <Icon name="c2-pluginFront" size={100} color={color2} style={{position:'absolute', backgroundColor:'transparent', top:20,  left:175}} />
+        <Icon name="c2-pluginFront" size={160} color={color3} style={{position:'absolute', backgroundColor:'transparent', top:-32, left:-30}} />
+      </View>
+    )
+  }
 
-            <View style={{flex:1}} />
-            <View style={{height:0.7*height, width: rightRatio*screenWidth, backgroundColor:'transparent', alignItems:'flex-end'}}>
-              <View style={[bannerStyles.whiteRight, {height: 0.5*height, width:(rightRatio-0.05) * screenWidth+offset}]} />
-              <View style={[bannerStyles.blueRight,  {height: 0.5*height, width:(rightRatio-0.05) * screenWidth, top: offset}]}>
-                {this.getUsage()}
-              </View>
-            </View>
+  getLeftContent(leftRatio) {
+    if (this.props.floatingCrownstones === true && this.props.overlayText === undefined) {
+      return this.getIcons();
+    }
+
+    return (
+      <View style={{height:0.7*ELEMENT_HEIGHT, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
+        <View style={[bannerStyles.whiteLeft, {height: 0.5*ELEMENT_HEIGHT, width:(leftRatio-0.05)*screenWidth+ELEMENT_OFFSET}]} />
+        <View style={[bannerStyles.blueLeft,  {height: 0.5*ELEMENT_HEIGHT, width:(leftRatio-0.05)*screenWidth, top: ELEMENT_OFFSET}]}>
+          {this.getOverlayContent()}
+        </View>
+      </View>
+    )
+  }
+
+  getRightContent() {
+    if (!(this.props.noCrownstones === true && this.props.viewingRemotely === false) && this.props.hideRight !== true) {
+      return (
+        <View
+          style={{height:0.7*ELEMENT_HEIGHT, width: RIGHT_RATIO*screenWidth, backgroundColor:'transparent', alignItems:'flex-end'}}>
+          <View
+            style={[bannerStyles.whiteRight, {height: 0.5*ELEMENT_HEIGHT, width:(RIGHT_RATIO-0.05) * screenWidth+ELEMENT_OFFSET}]}/>
+          <View
+            style={[bannerStyles.blueRight,  {height: 0.5*ELEMENT_HEIGHT, width:(RIGHT_RATIO-0.05) * screenWidth, top: ELEMENT_OFFSET}]}>
+            {this.getUsage()}
           </View>
         </View>
-      );
+      )
+    }
+  }
+
+  render() {
+    let leftRatio = this.props.hideRight === true ? 0.95 : LEFT_RATIO;
+    let remoteColor = this.props.viewingRemotely === true ? colors.notConnected.rgba(0.4) : undefined;
+    let backgroundColor = undefined;
+
+    if (this.props.floatingCrownstones === true && this.props.overlayText === undefined) {
+      backgroundColor = remoteColor || this.props.color || colors.iosBlue.rgba(0.3);
     }
     else if (this.props.noCrownstones === true && this.props.viewingRemotely === false) {
+      backgroundColor = remoteColor || this.props.color || colors.green.rgba(0.8);
       leftRatio = 0.95;
-      return (
-        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.rgba(0.8), justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
-          <View style={{flexDirection:'row'}}>
-            <View style={{height:0.7*height, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
-              <View style={[bannerStyles.whiteLeft, {height: 0.5*height, width:(leftRatio-0.05)*screenWidth+offset}]} />
-              <View style={[bannerStyles.blueLeft,  {height: 0.5*height, width:(leftRatio-0.05)*screenWidth, top: offset}]}>
-                {this.getPresentUsers()}
-              </View>
-            </View>
-          </View>
-        </View>
-      );
     }
     else {
-      return (
-        <View style={{width:screenWidth, height:height, backgroundColor: remoteColor || this.props.color || colors.green.rgba(0.8), justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
-          <View style={{flexDirection:'row'}}>
-            <View style={{height:0.7*height, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
-              <View style={[bannerStyles.whiteLeft, {height:0.5*height, width:(leftRatio-0.05)*screenWidth+offset}]} />
-              <View style={[bannerStyles.blueLeft,  {height: 0.5*height, width:(leftRatio-0.05)*screenWidth, top: offset}]}>
-                {this.getPresentUsers()}
-              </View>
-            </View>
-            <View style={{flex:1}} />
-            <View style={{height:0.7*height, width: rightRatio*screenWidth, backgroundColor:'transparent', alignItems:'flex-end'}}>
-              <View style={[bannerStyles.whiteRight, {height: 0.5*height, width:(rightRatio-0.05) * screenWidth+offset}]} />
-              <View style={[bannerStyles.blueRight,  {height: 0.5*height, width:(rightRatio-0.05) * screenWidth, top: offset}]}>
-                {this.getUsage()}
-              </View>
-            </View>
-          </View>
-        </View>
-      );
+      backgroundColor = remoteColor || this.props.color || colors.green.rgba(0.7);
     }
 
-
+    return (
+      <View style={{width:screenWidth, height:ELEMENT_HEIGHT, backgroundColor: backgroundColor, justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
+        <View style={{flexDirection:'row'}}>
+          {this.getLeftContent(leftRatio)}
+          <View style={{flex:1}} />
+          {this.getRightContent()}
+        </View>
+      </View>
+    );
   }
 }
 

@@ -315,10 +315,17 @@ export class Login extends Component {
       // start scanning
       BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
 
+      let state = store.getState();
       // set a small delay so the user sees "done"
       setTimeout(() => {
         this.props.eventBus.emit('hideProgress');
-        Actions.tabBar();
+
+        if (state.user.isNew === true) {
+          Actions.aiStart();
+        }
+        else {
+          Actions.tabBar();
+        }
 
       }, 50);
     });

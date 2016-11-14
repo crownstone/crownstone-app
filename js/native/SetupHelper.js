@@ -92,7 +92,7 @@ export class SetupHelper {
           eventBus.emit("setupComplete", this.handle);
           let state = store.getState();
           if (Object.keys(state.spheres[sphereId].stones).length === 4) {
-            eventBus.emit('showCelebrationOf4Stones');
+            eventBus.emit('showLocalizationSetupStep1', sphereId);
           }
         }, 2500);
       })

@@ -21,6 +21,7 @@ if (DISABLE_NATIVE === true) {
     startScanningForCrownstonesUniqueOnly: () => {},
     stopScanning: () => {},
 
+    forceClearActiveRegion: () => {},
     startIndoorLocalization: () => {},
     stopIndoorLocalization: () => {},
 

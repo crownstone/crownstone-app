@@ -268,7 +268,7 @@ class LocationHandlerClass {
       }
 
 
-      LOG("Set Settings.", bluenetSettings, state.spheres[sphereId]);
+      LOG("Set Settings.", bluenetSettings);
       return BleActions.setSettings(bluenetSettings)
         .then(() => {
           LOG("Setting Active Sphere");
@@ -287,7 +287,12 @@ class LocationHandlerClass {
 
   _exitSphere(sphereId) {
     LOG("LEAVING SPHERE", sphereId);
-    this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: false, present: false}});
+    // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
+    let state = this.store.getState();
+    if (state.spheres[sphereId].config.present === true) {
+      Bluenet.forceClearActiveRegion();
+      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
+    }
   }
 
   _enterRoom(locationId) {

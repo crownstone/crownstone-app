@@ -173,6 +173,9 @@ const glyphMap = {
   'c1-plant':0xf0a9,
   'c1-bedOnWheels':0xf0aa,
   'c1-baby':0xf0ab,
+  'c1-male':0xf0ac,
+  'c1-female':0xf0ad,
+  'c1-brain':0xf0ae,
 };
 
 export const CustomIcon = createIconSet(glyphMap, 'Crownstone', 'Crownstone.ttf');

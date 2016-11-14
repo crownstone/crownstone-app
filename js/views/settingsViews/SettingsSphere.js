@@ -47,7 +47,6 @@ export class SettingsSphere extends Component {
     for (let userId in users) {
       if (users.hasOwnProperty(userId)) {
         if (users[userId].accessLevel == accessLevel) {
-          LOG("SHOWING USER IN SPHERE", users, users[userId]);
           result.push({
             label:users[userId].firstName + " " + users[userId].lastName,
             type: userId === state.user.userId ? 'info' : 'navigation',
@@ -98,6 +97,22 @@ export class SettingsSphere extends Component {
         }
       });
     }
+
+    let aiName = state.spheres[this.props.sphereId].config.aiName;
+    let aiSex = state.spheres[this.props.sphereId].config.aiSex;
+    let airef = aiSex === 'male' ? 'his' : 'her';
+
+    items.push({label:'PERSONAL ARTIFICIAL INTELLIGENCE',  type:'explanation', below:false});
+    items.push({
+      label:aiName,
+      type: 'navigation',
+      icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex}}/>,
+      callback: () => {
+        Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
+      }
+    });
+    items.push({label: aiName + ' will do ' + airef + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
+
 
     items.push({label:'ADMINS',  type:'explanation', below:false});
     items = items.concat(this._getUsersWithAccess(state,'admin'));

@@ -173,13 +173,15 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     // check if we are an admin in this Sphere.
     let adminInThisSphere = false;
 
-    // add or update the sphere.
+    /**
+     * Sync the sphere from the cloud to the database
+     */
     if (sphereInState === undefined) {
       addedSphere = true;
-      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress}});
+      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex}});
     }
     else if (getTimeDifference(sphereInState.config, sphere) < 0) {
-      actions.push({type: 'UPDATE_SPHERE', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress}});
+      actions.push({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex}});
       adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
     else {
@@ -204,6 +206,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
       let user = spheresData[sphere.id].guests[userId];
       syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'guest');
     });
+
 
 
     /**
