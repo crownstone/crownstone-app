@@ -16,7 +16,7 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight }
 export class FinalizeLocalizationIcon extends Component {
   render() {
     return (
-      <View style={{backgroundColor:'transparent', height:35}}>
+      <View style={{backgroundColor:'transparent', height:35, width:40}}>
         <Icon name="ios-navigate" color="#fff" size={35} style={{alignItems:'center', justifyContent:'center', height:35}} />
         <View
           style={{position:'relative', top:-35, left:20, backgroundColor:'#fff', width:18, height:18, borderRadius:9, alignItems:'center', justifyContent:'center'}}>

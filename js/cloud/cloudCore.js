@@ -4,6 +4,7 @@ import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
+import { defaultHeaders } from './sections/base'
 import { safeMoveFile, safeDeleteFile } from '../util/util'
 
 /**

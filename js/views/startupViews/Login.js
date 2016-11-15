@@ -326,7 +326,6 @@ export class Login extends Component {
         else {
           Actions.tabBar();
         }
-
       }, 50);
     });
   }

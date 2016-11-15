@@ -4,12 +4,12 @@ import { preparePictureURI } from '../../util/util'
 import { EventBus } from '../../util/eventBus'
 import { LOG, LOGError } from '../../logging/Log'
 
-let defaultHeaders = {
+export const defaultHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json'
 };
 
-let uploadHeaders = {
+export const  uploadHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'multipart/form-data; boundary=6ff46e0b6b5148d984f148b6542e5a5d',
 };

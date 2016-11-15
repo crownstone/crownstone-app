@@ -14,7 +14,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
-import { styles, colors, screenWidth, screenHeight } from '../styles'
+import { styles, colors, screenWidth, screenHeight, topBarHeight } from '../styles'
 import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
@@ -29,11 +29,13 @@ export class AiStart extends Component {
     let state = this.props.store.getState();
     let userFirstName = state.user.firstName;
 
+    let availableHeight = screenHeight - topBarHeight - 3*16 - 30 - 50 - 50;
+
     return (
       <Background hideTabBar={true} image={this.props.backgrounds.main}>
         <View style={[styles.centered, {flex:1}]}>
           <View style={{flex:1}} />
-          <Icon name="c1-house" size={0.175*screenHeight} color={colors.menuBackground.hex} />
+          <Icon name="c1-house" size={0.26*availableHeight} color={colors.menuBackground.hex} />
           <View style={{flex:1}} />
           <Text style={aiStyle.largeText}>{"Welcome " + userFirstName + "!"}</Text>
           <Text style={aiStyle.boldText}>{"I'm your house!"}</Text>
@@ -53,11 +55,11 @@ export class AiStart extends Component {
           <View style={{flexDirection:'row', paddingBottom:10}}>
             <View style={{flex:1}} />
             <TouchableOpacity onPress={() => {this.setState({aiSex:'male'});}}>
-              <Icon name="c1-male" size={0.2*screenWidth} color={this.state.aiSex === 'male' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
+              <Icon name="c1-male" size={0.21*availableHeight} color={this.state.aiSex === 'male' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
             </TouchableOpacity>
             <View style={{flex:1}} />
             <TouchableOpacity onPress={() => {this.setState({aiSex:'female'});}}>
-              <Icon name="c1-female" size={0.2*screenWidth} color={this.state.aiSex === 'female' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
+              <Icon name="c1-female" size={0.21*availableHeight} color={this.state.aiSex === 'female' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
             </TouchableOpacity>
             <View style={{flex:1}} />
           </View>
