@@ -16,7 +16,7 @@ import { IconButton } from '../components/IconButton'
 import { Bluenet } from '../../native/Proxy'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getMyLevelInSphere, getSphereContentFromState } from '../../util/dataUtil';
+import { getMyLevelInSphere, getSphereContentFromState, getAiData } from '../../util/dataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
@@ -67,8 +67,11 @@ export class SettingsSphere extends Component {
 
     const store = this.props.store;
     const state = store.getState();
+    let adminInSphere = false;
+    let userLevelInSphere = getMyLevelInSphere(state, this.props.sphereId);
 
-    if (getMyLevelInSphere(state, this.props.sphereId) == 'admin') {
+    if (userLevelInSphere == 'admin') {
+      adminInSphere = true;
       let sphereSettings = state.spheres[this.props.sphereId].config;
       items.push({label:'SPHERE SETTINGS',  type:'explanation', below:false});
       items.push({
@@ -98,20 +101,18 @@ export class SettingsSphere extends Component {
       });
     }
 
-    let aiName = state.spheres[this.props.sphereId].config.aiName;
-    let aiSex = state.spheres[this.props.sphereId].config.aiSex;
-    let airef = aiSex === 'male' ? 'his' : 'her';
+    let ai = getAiData(state, this.props.sphereId);
 
     items.push({label:'PERSONAL ARTIFICIAL INTELLIGENCE',  type:'explanation', below:false});
     items.push({
-      label:aiName,
-      type: 'navigation',
+      label: ai.name,
+      type: adminInSphere ? 'navigation' : 'info',
       icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex}}/>,
       callback: () => {
         Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
       }
     });
-    items.push({label: aiName + ' will do ' + airef + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
+    items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
 
 
     items.push({label:'ADMINS',  type:'explanation', below:false});
@@ -132,8 +133,7 @@ export class SettingsSphere extends Component {
       items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
-    let level = getMyLevelInSphere(state, this.props.sphereId);
-    if (level == "admin" || level == 'member') {
+    if (userLevelInSphere == "admin" || userLevelInSphere == 'member') {
       items.push({label:'ADD PEOPLE TO YOUR SPHERE', type:'explanation'});
       items.push({
         label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level

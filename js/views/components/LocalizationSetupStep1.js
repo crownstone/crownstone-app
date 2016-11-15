@@ -36,7 +36,7 @@ import Svg,{
 } from 'react-native-svg';
 
 
-export class CelebrationFourStones extends Component {
+export class LocalizationSetupStep1 extends Component {
   constructor() {
     super();
 

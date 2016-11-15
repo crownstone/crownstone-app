@@ -18,8 +18,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors , screenWidth, screenHeight } from '../styles'
 
-
-import { emailMemoryForLogin } from './emailMemory'
+import { SessionMemory } from './SessionMemory'
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must not be empty.';
@@ -222,7 +221,7 @@ export class Register extends Component {
       })
       .then(() => {
         this.props.eventBus.emit("hideLoading");
-        emailMemoryForLogin.email = this.state.email.toLowerCase();
+        SessionMemory.loginEmail = this.state.email.toLowerCase();
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
       })
       .catch((reply) => {

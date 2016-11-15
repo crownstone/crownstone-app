@@ -27,7 +27,7 @@ import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
-import { CelebrationFourStones }  from '../views/components/CelebrationFourStones'
+import { LocalizationSetupStep1 }  from '../views/components/LocalizationSetupStep1'
 import { LocalizationSetupStep2 } from '../views/components/LocalizationSetupStep2'
 import { BleStateOverlay }        from '../views/components/BleStateOverlay'
 import { Background }             from '../views/components/Background'
@@ -223,7 +223,7 @@ export class AppRouter extends Component {
           </Router>
           <OptionPopup />
           <Processing />
-          <CelebrationFourStones store={store} />
+          <LocalizationSetupStep1 store={store} />
           <BleStateOverlay />
           <LocalizationSetupStep2 store={store} />
         </View>

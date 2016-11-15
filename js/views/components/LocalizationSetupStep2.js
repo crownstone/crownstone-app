@@ -9,6 +9,7 @@ import {
 import { FadeInView }                                 from './animated/FadeInView'
 import { styles, colors , screenHeight, screenWidth } from './../styles'
 import { eventBus }                                   from '../../util/eventBus'
+import { getAiData }                                  from '../../util/dataUtil'
 
 export class LocalizationSetupStep2 extends Component {
   constructor() {
@@ -33,8 +34,7 @@ export class LocalizationSetupStep2 extends Component {
   _getOverlay() {
     if (this.state.visible) {
       let state = this.props.store.getState();
-      let aiName = state.spheres[this.state.sphereId].config.aiName;
-      let aiSex = state.spheres[this.state.sphereId].config.aiSex;
+      let ai = getAiData(state, this.state.sphereId);
 
       return (
         <View
@@ -46,8 +46,8 @@ export class LocalizationSetupStep2 extends Component {
             <Image source={require('../../images/localizationExplanation.png')}
                    style={{width:0.6*screenWidth, height:0.6*screenWidth}}/>
             <Text
-              style={{fontSize: 13, color: colors.blue.hex, textAlign:'center'}}>{"You can now teach " + aiName + " when you are in certain rooms. " +
-            "This new icon indicates that " + aiName + " is ready to learn how to identify this room!"}</Text>
+              style={{fontSize: 13, color: colors.blue.hex, textAlign:'center'}}>{"You can now teach " + ai.name + " when you are in certain rooms. " +
+            "This new icon indicates that " + ai.name + " is ready to learn how to identify this room!"}</Text>
             <View style={{flex:1}}/>
             <Text style={{fontSize:14, fontWeight:'bold', color: colors.blue.hex, textAlign:'center'}}>
               {"Tap a room to get started!"}

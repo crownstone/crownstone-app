@@ -102,18 +102,14 @@ export class RoomTraining extends Component {
     let icons = ['c1-locationPin1','ios-outlet-outline','ios-pin-outline','c1-brain','c1-male','c1-female'];
 
     let state  = this.props.store.getState();
-    let aiName = state.spheres[this.props.sphereId].config.aiName;
-    let aiSex  = state.spheres[this.props.sphereId].config.aiSex;
-    let aiRef  = aiSex === 'male' ? 'him' : 'her';
-    let aiRef2 = aiSex === 'male' ? 'his' : 'her';
-    let aiRef3 = aiSex === 'male' ? 'he'  : 'she';
+    let ai = getAiData(state, this.props.sphereId);
 
     if (this.state.started === false) {
       return (
         <Background hideInterface={true} image={this.props.backgrounds.main}>
           <TopBar
             leftAction={ Actions.pop }
-            title={"Teaching " + aiName}/>
+            title={"Teaching " + ai.name}/>
             <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
               <Text style={{
                 backgroundColor:'transparent',
@@ -121,7 +117,7 @@ export class RoomTraining extends Component {
                 fontWeight:'600',
                 color: colors.menuBackground.hex,
                 textAlign:'center'
-              }}>{"To let " + aiName + " find you in this room, we need to help " + aiRef + " a little!"}</Text>
+              }}>{"To let " + ai.name + " find you in this room, we need to help " + ai.him + " a little!"}</Text>
               <Text style={{
                 backgroundColor:'transparent',
                 fontSize:16,
@@ -186,8 +182,8 @@ export class RoomTraining extends Component {
                 color: colors.menuBackground.hex,
                 textAlign:'center'
               }}>{this.state.active ?
-                "Walk around the room so " + aiName + " can learn to locate you within it. Each beat " + aiRef3 + " learns a bit more about the room!" :
-                "All Done! Once you have taught " + aiName + " all the rooms, " + aiRef3 + " will start doing " + aiRef2 + " best to determine in which room you are!"
+                "Walk around the room so " + ai.name + " can learn to locate you within it. Each beat " + ai.he + " learns a bit more about the room!" :
+                "All Done! Once you have taught " + ai.name + " all the rooms, " + ai.he + " will start doing " + ai.his + " best to determine in which room you are!"
               }</Text>
             </View>
 
