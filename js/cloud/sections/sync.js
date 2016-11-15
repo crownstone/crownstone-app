@@ -54,6 +54,7 @@ const syncDown = function (state, options) {
     let cloudSpheres = [];
     let cloudSpheresData = {};
     let cloudKeys = [];
+    let cloudDevices = [];
 
     let syncPromises = [];
 
@@ -61,6 +62,12 @@ const syncDown = function (state, options) {
       CLOUD.getKeys(options)
         .then((data) => {
           cloudKeys = data;
+        }).catch()
+    );
+    syncPromises.push(
+      CLOUD.forUser(userId).getDevices(options)
+        .then((data) => {
+          cloudDevices = data;
         }).catch()
     );
     syncPromises.push(
@@ -84,7 +91,7 @@ const syncDown = function (state, options) {
 
     Promise.all(syncPromises)
       .then(() => {
-        resolve({keys: cloudKeys, spheres: cloudSpheres, spheresData: cloudSpheresData})
+        resolve({keys: cloudKeys, spheres: cloudSpheres, spheresData: cloudSpheresData, devices: cloudDevices})
       })
       .catch((err) => {
         reject(err);

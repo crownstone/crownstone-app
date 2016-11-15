@@ -172,6 +172,9 @@ function checkAction(action, affectedIds) {
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus.changeUserData = affectedIds; break;
       break;
+    case "HYDRATE":
+    case "USER_LOGGED_OUT_CLEAR_STORE":
+      break;
     default:
       LOGError("UNKNOWN ACTION TYPE:", action);
   }

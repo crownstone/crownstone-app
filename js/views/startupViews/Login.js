@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 var sha1 = require('sha-1');
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG, LOGDebug, LOGError } from '../../logging/Log'
 import { SessionMemory } from './SessionMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { LocalizationUtil } from '../../native/LocationHandler'
@@ -53,7 +53,7 @@ export class Login extends Component {
     this.props.eventBus.emit('showLoading', 'Requesting new verification email...');
     CLOUD.requestVerificationEmail({email:this.state.email.toLowerCase()})
       .then(() => {
-        SessionMemory.loginEmail = this.state.loginEmail;
+        SessionMemory.loginEmail = this.state.email;
         this.props.eventBus.emit('hideLoading');
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
       })
@@ -66,7 +66,7 @@ export class Login extends Component {
     this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email:this.state.email.toLowerCase()})
       .then(() => {
-        SessionMemory.loginEmail = this.state.loginEmail;
+        SessionMemory.loginEmail = this.state.email;
         this.props.eventBus.emit('hideLoading');
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
       })
@@ -180,7 +180,7 @@ export class Login extends Component {
         <TopBar leftStyle={{color:'#fff'}} left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
-            <TextEditInput style={{width: 0.8*screenWidth, padding:10}} placeholder='email' keyboardType='email-address' autocorrect={false} autoCapitalize="none" placeholderTextColor='#888' value={this.state.loginEmail} callback={(newValue) => {this.setState({email:newValue});}} />
+            <TextEditInput style={{width: 0.8*screenWidth, padding:10}} placeholder='email' keyboardType='email-address' autocorrect={false} autoCapitalize="none" placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
           </View>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput style={{width: 0.8*screenWidth, padding:10}} secureTextEntry={true} placeholder='password' placeholderTextColor='#888' value={this.state.password} callback={(newValue) => {this.setState({password:newValue});}} />
@@ -298,7 +298,7 @@ export class Login extends Component {
         }
       })
       .catch((err) => {
-        Alert.alert("An error has occurred at Login", err, [{text:'OK'}])
+        Alert.alert("An error has occurred at Login", err.message, [{text:'OK'}])
       })
     );
 
@@ -321,7 +321,7 @@ export class Login extends Component {
         this.props.eventBus.emit('hideProgress');
 
         if (state.user.isNew === true) {
-          Actions.aiStart();
+          Actions.aiStart({type: 'reset'});
         }
         else {
           Actions.tabBar();
