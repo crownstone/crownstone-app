@@ -1,17 +1,10 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import {
-  Animated,
-  Dimensions,
-  Image,
-  PanResponder,
-  StyleSheet,
-  TouchableHighlight,
   Text,
   View
 } from 'react-native';
 import { Icon } from './Icon'
-import { LOG, LOGError, LOGDebug } from '../../logging/Log'
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
+import { styles, colors } from '../styles'
 
 export class FinalizeLocalizationIcon extends Component {
   render() {
