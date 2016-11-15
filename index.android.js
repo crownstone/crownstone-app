@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import {
   Animated,
   AppRegistry,
-  StatusBar,
   View
 } from 'react-native';
 
@@ -54,7 +53,6 @@ class Root extends Component {
 
   render() {
     return <View style={{flex:1, backgroundColor: colors.menuBackground.h}}>
-      <StatusBar barStyle="light-content" />
       <Animated.View style={{flex:1, position:'relative', top: this.state.top}}>
         <AppRouter />
       </Animated.View>
