@@ -15,7 +15,7 @@ let defaultSettings = {
     meshAccessAddress: 2789430350,
     reachable: false,
     present: false,
-    aiName: 'Rosi',
+    aiName: 'Rosii',
     aiSex: 'female',
     updatedAt: 1
   }

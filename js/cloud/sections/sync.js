@@ -1,5 +1,7 @@
 import { CLOUD } from '../cloudAPI'
-import { LOG, LOGDebug } from '../../logging/Log'
+import { LOG, LOGDebug, LOGError } from '../../logging/Log'
+
+const DeviceInfo = require('react-native-device-info');
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -23,20 +25,25 @@ export const sync = {
         let cloudData = syncSpheres(state, actions, data.spheres, data.spheresData);
         let deletedSphere = syncCleanupLocal(store, state, actions, cloudData);
         syncKeys(actions, data.keys);
+        syncDevices(state, actions, data.devices)
+          .then(() => {
+            LOG("SYNC Dispatching ", actions.length, " actions!");
+            actions.forEach((action) => {
+              action.triggeredBySync = true;
+            });
 
-        LOG("SYNC Dispatching ", actions.length, " actions!");
-        actions.forEach((action) => {
-          action.triggeredBySync = true;
-        });
+            if (actions.length > 0)
+              store.batchDispatch(actions);
 
-        if (actions.length > 0)
-          store.batchDispatch(actions);
+            this.events.emit("CloudSyncComplete");
 
-        this.events.emit("CloudSyncComplete");
-
-        if (cloudData.addedSphere === true || deletedSphere === true) {
-          this.events.emit("CloudSyncComplete_spheresChanged");
-        }
+            if (cloudData.addedSphere === true || deletedSphere === true) {
+              this.events.emit("CloudSyncComplete_spheresChanged");
+            }
+          })
+          .catch((err) => {
+            LOGError(err);
+          })
       })
 
 
@@ -215,7 +222,6 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     });
 
 
-
     /**
      * Sync the locations from the cloud to the database.
      */
@@ -267,11 +273,6 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
       //   });
       // }
     });
-
-    /**
-     * We now push the location of ourselves to the cloud.
-     */
-    // TODO: add this.
 
     /**
      * Sync the stones from the cloud to the database.
@@ -464,6 +465,42 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     cloudApplianceIds,
     addedSphere
   }
+};
+
+/**
+ * Sync devices
+ */
+const syncDevices = function(state, actions, devices) {
+  return new Promise((resolve, reject) => {
+    let deviceId = DeviceInfo.getUniqueID();  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9 note this is IdentityForVendor on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
+    let name = DeviceInfo.getDeviceName();
+    let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
+
+    let deviceExists = false;
+    devices.forEach((device) => {
+      if (device.address === deviceId) {
+        deviceExists = true;
+      }
+    });
+
+    if (!deviceExists) {
+      CLOUD.createDevice({name:name, address:deviceId, description: description})
+        .then((device) => {
+          actions.push({type:'ADD_DEVICE', deviceId: device.id, data: {name: name, address:deviceId, description: description}});
+          /**
+           * We now push the location of ourselves to the cloud.
+           */
+          // TODO: implement this
+          resolve();
+        })
+        .catch((err) => {
+          reject(err);
+        })
+    }
+
+
+
+  });
 };
 
 const syncSphereUser = function(actions, sphere, sphereInState, userId, user, state, accessLevel) {
