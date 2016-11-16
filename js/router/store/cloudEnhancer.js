@@ -1,5 +1,5 @@
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getMyLevelInSphere } from '../../util/dataUtil'
+import { getMyLevelInSphere, getCurrentDeviceId } from '../../util/dataUtil'
 import { BATCH } from './storeManager'
 import { LOG, LOGDebug } from '../../logging/Log'
 
@@ -260,11 +260,11 @@ function handleSphereUserInCloud(action, state) {
 }
 
 function handleUserLocationEnter(action, state) {
-  // let userId = state.user.userId;
-  // CLOUD.forUser(userId).enterLocation(action.sphereId, action.locationId).catch(() => {});
+  let deviceId = getCurrentDeviceId(state);
+  CLOUD.forDevice(deviceId).updateLocation(action.locationId).catch(() => {});
 }
 
 function handleUserLocationExit(action, state) {
-  // let userId = state.user.userId;
-  // CLOUD.forUser(userId).exitLocation(action.sphereId, action.locationId).catch(() => {});
+  let deviceId = getCurrentDeviceId(state);
+  CLOUD.forDevice(deviceId).updateLocation(null).catch(() => {});
 }

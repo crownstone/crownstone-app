@@ -1,7 +1,6 @@
 import { CLOUD } from '../cloudAPI'
 import { LOG, LOGDebug, LOGError } from '../../logging/Log'
-
-const DeviceInfo = require('react-native-device-info');
+import { getDeviceSpecs } from '../../util/dataUtil'
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -107,7 +106,7 @@ const syncDown = function (state, options) {
 };
 
 const getTimeDifference = function(localVersion, cloudVersion) {
-  return localVersion.updatedAt - new Date(cloudVersion.updatedAt).valueOf();
+  return new Date(localVersion.updatedAt).valueOf() - new Date(cloudVersion.updatedAt).valueOf();
 };
 
 
@@ -227,7 +226,9 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
      */
     spheresData[sphere.id].locations.forEach((location_from_cloud) => {
       cloudLocationIds[location_from_cloud.id] = true;
+      let locationInState = undefined;
       if (sphereInState !== undefined && sphereInState.locations[location_from_cloud.id] !== undefined) {
+        locationInState = sphereInState.locations[location_from_cloud.id];
         if (getTimeDifference(sphereInState.locations[location_from_cloud.id].config, location_from_cloud) < 0) {
           actions.push({
             type: 'UPDATE_LOCATION_CONFIG',
@@ -238,7 +239,6 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
         }
         else if (getTimeDifference(sphereInState.locations[location_from_cloud.id].config, location_from_cloud) > 0) {
           // update cloud since our data is newer!
-          let locationInState = sphereInState.locations[location_from_cloud.id];
           let data = {
             name: locationInState.config.name,
             icon: locationInState.config.icon,
@@ -259,19 +259,27 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
         });
       }
 
-      // TODO: fix this. test this. make sure this works.
-      // // clear all stores present users
-      // actions.push({type: 'CLEAR_USERS', sphereId: sphere.id, locationId: location_from_cloud.id});
-      //
-      // // put the present users from the cloud into the location.
-      // if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
-      //   location_from_cloud.presentPeople.forEach((person) => {
-      //     // check if the person exists in our sphere and if we are not that person.
-      //     if (person.id !== state.user.userId && cloudSphereMemberIds[person.id] === true) {
-      //       actions.push({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: person.id}});
-      //     }
-      //   });
-      // }
+      // put the present users from the cloud into the location.
+      let peopleInCloudLocations = {};
+      if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
+        location_from_cloud.presentPeople.forEach((person) => {
+          peopleInCloudLocations[person.Id] = true;
+          // check if the person exists in our sphere and if we are not that person.
+          if (person.id !== state.user.userId && cloudSphereMemberIds[person.id] === true) {
+            actions.push({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: person.id}});
+          }
+        });
+      }
+
+      // remove the users from this location that are not in the cloud and that are not the current user
+      if (locationInState) {
+        locationInState.presentUsers.forEach((userId) => {
+          if (peopleInCloudLocations[userId] === undefined && userId !== state.user.userId) {
+            actions.push({type: 'USER_EXIT_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: userId}});
+          }
+        })
+      }
+
     });
 
     /**
@@ -288,8 +296,10 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
       else {
         locationLinkId = null;
       }
+      console.log("DURING SYNC:", locationLinkId);
       if (sphereInState !== undefined && sphereInState.stones[stone_from_cloud.id] !== undefined) {
         if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) < 0) {
+          console.log("SYNCING DOWN")
           actions.push({
             type: 'UPDATE_STONE_CONFIG',
             sphereId: sphere.id,
@@ -310,6 +320,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           });
         }
         else if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) > 0) {
+          console.log("SYNCING UP!")
           // update cloud since our data is newer!
           let stoneInState = sphereInState.stones[stone_from_cloud.id];
           let data = {
@@ -350,6 +361,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
             }
           }
         }
+        console.log("DONE SYNCING EXISTING STONE")
       }
       else {
         actions.push({
@@ -472,35 +484,78 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
  */
 const syncDevices = function(state, actions, devices) {
   return new Promise((resolve, reject) => {
-    let deviceId = DeviceInfo.getUniqueID();  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9 note this is IdentityForVendor on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
-    let name = DeviceInfo.getDeviceName();
-    let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
+    let {name, address, description} = getDeviceSpecs();
 
-    let deviceExists = false;
+    let deviceId = undefined;
     devices.forEach((device) => {
-      if (device.address === deviceId) {
-        deviceExists = true;
+      if (device.address === address) {
+        deviceId = device.id;
       }
     });
 
-    if (!deviceExists) {
-      CLOUD.createDevice({name:name, address:deviceId, description: description})
+    if (deviceId === undefined) {
+      CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
-          actions.push({type:'ADD_DEVICE', deviceId: device.id, data: {name: name, address:deviceId, description: description}});
+          actions.push({
+            type: 'ADD_DEVICE',
+            deviceId: device.id,
+            data: {name: name, address: deviceId, description: description}
+          });
           /**
            * We now push the location of ourselves to the cloud.
            */
-          // TODO: implement this
-          resolve();
+          return updateUserLocationInCloud(state, deviceId);
         })
-        .catch((err) => {
-          reject(err);
-        })
+        .then(resolve)
+        .catch(reject)
     }
-
-
-
+    else {
+      updateUserLocationInCloud(state, deviceId)
+        .then(resolve)
+        .catch(reject);
+    }
   });
+};
+
+
+const updateUserLocationInCloud = function(state, deviceId) {
+  return new Promise((resolve, reject) => {
+    if (state.user.userId) {
+      let userLocation = findUserLocation(state, state.user.userId);
+      CLOUD.forDevice(deviceId).updateDeviceLocation(userLocation.locationId)
+        .then(resolve)
+        .catch(reject)
+    }
+    resolve();
+  });
+};
+
+const findUserLocation = function(state, userId) {
+  let presentSphereId = null;
+  let presentLocationId = null;
+
+  // first we determine in which sphere we are:
+  let sphereIds = Object.keys(state.spheres);
+  sphereIds.forEach((sphereId) => {
+    if (state.spheres[sphereId].config.present === true) {
+      presentSphereId = sphereId;
+    }
+  });
+
+  // if the user is in a sphere, search for his location.
+  if (presentSphereId) {
+    let locationIds = Object.keys(state.spheres[presentSphereId].locations);
+    locationIds.forEach((locationId) => {
+      console.log("locationId", locationId)
+      let location = state.spheres[presentSphereId].locations[locationId];
+      let userIndex = location.presentUsers.indexOf(userId);
+      if (userIndex !== -1) {
+        presentLocationId = locationId;
+      }
+    });
+  }
+
+  return { sphereId: presentSphereId, locationId: presentLocationId };
 };
 
 const syncSphereUser = function(actions, sphere, sphereInState, userId, user, state, accessLevel) {

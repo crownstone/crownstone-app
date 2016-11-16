@@ -114,6 +114,7 @@ export class SphereOverview extends Component {
       if (
         change.changeSphereState    ||
         change.stoneLocationUpdated ||
+        change.updateStoneConfig    ||
         change.updateActiveSphere   ||
         change.changeSpheres        ||
         change.changeStones         ||
@@ -141,7 +142,6 @@ export class SphereOverview extends Component {
     LOG("RENDERING OVERVIEW");
     const store = this.props.store;
     const state = store.getState();
-    this.renderState = state;
 
     let noSpheres = this.sphereIds.length == 0;
     let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();

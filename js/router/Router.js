@@ -301,7 +301,7 @@ let setSpherePresenceToFalse = function(store) {
   let sphereIds = Object.keys(spheres);
   let actions = [];
   sphereIds.forEach((sphereId) => {
-    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: true }});
+    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
   });
   if (actions.length > 0)
     store.batchDispatch(actions);

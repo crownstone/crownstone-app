@@ -1,5 +1,7 @@
 import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 
+const DeviceInfo = require('react-native-device-info');
+
 export const getStonesFromState = function(state, sphereId, locationId) {
   let filteredStones = {};
   if (sphereId !== undefined) {
@@ -293,4 +295,24 @@ export const getAiData = function(state, sphereId) {
     him: sexes.him[state.spheres[sphereId].config.aiSex],
     he:  sexes.he[state.spheres[sphereId].config.aiSex],
   }
+};
+
+export const getDeviceSpecs = function() {
+  let address = DeviceInfo.getUniqueID();  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9 note this is IdentityForVendor on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
+  let name = DeviceInfo.getDeviceName();
+  let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
+
+  return { address, name, description };
+};
+
+export const getCurrentDeviceId = function(state) {
+  let specs = getDeviceSpecs();
+
+  let deviceIds = Object.keys(state.devices);
+  for (let i = 0; i < deviceIds.length; i++) {
+    if (state.devices[deviceIds[i]].address == specs.address) {
+      return deviceIds[i];
+    }
+  }
+  return undefined;
 };

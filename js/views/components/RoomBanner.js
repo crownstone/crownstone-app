@@ -114,7 +114,7 @@ export class RoomBanner extends Component {
     }
 
     return (
-      <View style={{width:screenWidth, height:ELEMENT_HEIGHT, backgroundColor: backgroundColor, justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2)}}>
+      <View style={{width:screenWidth, height:ELEMENT_HEIGHT, backgroundColor: backgroundColor, justifyContent:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.2), overflow:"hidden"}}>
         <View style={{flexDirection:'row'}}>
           {this.getLeftContent(leftRatio)}
           <View style={{flex:1}} />

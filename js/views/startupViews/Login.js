@@ -285,6 +285,9 @@ export class Login extends Component {
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         return CLOUD.sync(store, false);
       })
+      .catch((err) => {
+        Alert.alert("An error has occurred at Login", err.message, [{text:'OK'}])
+      })
       .then(() => {
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
@@ -298,7 +301,7 @@ export class Login extends Component {
         }
       })
       .catch((err) => {
-        Alert.alert("An error has occurred at Login", err.message, [{text:'OK'}])
+        LOGDebug("Error creating first Sphere.", err);
       })
     );
 
@@ -321,6 +324,7 @@ export class Login extends Component {
         this.props.eventBus.emit('hideProgress');
 
         if (state.user.isNew === true) {
+          store.dispatch({type: 'USER_UPDATE', data:{isNew:false}});
           Actions.aiStart({type: 'reset'});
         }
         else {
