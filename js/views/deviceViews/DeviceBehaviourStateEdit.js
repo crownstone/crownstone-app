@@ -270,7 +270,7 @@ export class DeviceStateEdit extends Component {
             this.unsubscribeNative = undefined;
             let total = 0;
             measurements.forEach((measurement) => { total += measurement; });
-            let average = total / measurements.length;
+            let average = Math.round(total / measurements.length) - 5; // the + five makes sure the user is not defining a place where he will sit: on the threshold.
             this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{ nearThreshold: average }});
 
             // stop the high frequency scanning

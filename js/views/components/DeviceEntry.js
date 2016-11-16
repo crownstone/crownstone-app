@@ -37,7 +37,6 @@ export class DeviceEntry extends Component {
   componentDidMount() {
     if (this.props.initiallyOpen) {
       setTimeout(() => {this._openOptions(600);}, 200);
-      // setTimeout(() => {this._closeOptions(600);}, 1200);
     }
 
     if (this.props.eventbus) {
@@ -90,7 +89,8 @@ export class DeviceEntry extends Component {
     if (this.props.disabled === false) {
       content = <Switch value={this.props.state === 1} onValueChange={this._pressedDevice.bind(this)} />
     }
-    else if (this.props.pending === true) {
+
+    if (this.props.pending === true) {
       content = <ActivityIndicator animating={true} size="large" />
     }
 
