@@ -176,6 +176,10 @@ class NativeBusClass {
 
 export const NativeBus = new NativeBusClass();
 
+// NativeBus.on(NativeBus.topics.advertisement, (data) => {
+//   console.log('crownstoneId', data.name, data.rssi)
+// })
+
 
 
 /** type defs **/

@@ -11,6 +11,7 @@ export class FadeInView extends Component {
 
     this.state = {show: props.visible || false, viewOpacity: new Animated.Value(props.visible ? 1 : 0)};
     this.visible = props.visible || false;
+    this.pendingTimeout = null;
   }
 
   componentWillUpdate(nextProps) {
@@ -18,17 +19,25 @@ export class FadeInView extends Component {
     if (this.visible !== nextProps.visible) {
       if (nextProps.visible === true) {
         this.setState({show: true});
-        setTimeout(() => {
+        this.pendingTimeout = setTimeout(() => {
+          this.pendingTimeout = null;
           Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || defaultDuration}).start();
         },0);
       }
       else {
         Animated.timing(this.state.viewOpacity, {toValue: 0, duration:this.props.duration || defaultDuration}).start();
-        setTimeout(() => {
+        this.pendingTimeout = setTimeout(() => {
+          this.pendingTimeout = null;
           this.setState({show: false});
         },this.props.duration || defaultDuration);
       }
       this.visible = nextProps.visible;
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.pendingTimeout !== null) {
+      clearTimeout(this.pendingTimeout);
     }
   }
 

@@ -217,7 +217,7 @@ export class SphereOverview extends Component {
     viewingRemotely = false;
     if (viewingRemotely) {
       Alert.alert(
-        "You'll have to be in the sphere to continue.",
+        "You'll have to be in the Sphere to continue.",
         "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
         [{text: 'OK'}]
       );
@@ -264,17 +264,6 @@ export const overviewStyles = StyleSheet.create({
     padding: 15,
     paddingBottom: 0
   },
-  bottomTextNotConnected: {
-    position: 'absolute',
-    bottom: 20,
-    width: screenWidth,
-    backgroundColor: 'transparent',
-    textAlign: 'center',
-    color: colors.darkGray.hex,
-    fontSize: 12,
-    padding: 15,
-    paddingBottom: 0
-  }
 });
 
 

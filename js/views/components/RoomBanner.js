@@ -58,7 +58,7 @@ export class RoomBanner extends Component {
     }
 
     return (
-      <View style={{flexDirection:'row'}}>
+      <View style={{flexDirection:'row', height:0.7*ELEMENT_HEIGHT}}>
         <Icon name="c2-pluginFront" size={100} color={color1} style={{position:'absolute', backgroundColor:'transparent', top:-25, left:105}} />
         <Icon name="c2-pluginFront" size={100} color={color2} style={{position:'absolute', backgroundColor:'transparent', top:20,  left:175}} />
         <Icon name="c2-pluginFront" size={160} color={color3} style={{position:'absolute', backgroundColor:'transparent', top:-32, left:-30}} />

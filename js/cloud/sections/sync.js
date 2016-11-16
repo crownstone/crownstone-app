@@ -296,10 +296,8 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
       else {
         locationLinkId = null;
       }
-      console.log("DURING SYNC:", locationLinkId);
       if (sphereInState !== undefined && sphereInState.stones[stone_from_cloud.id] !== undefined) {
         if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) < 0) {
-          console.log("SYNCING DOWN")
           actions.push({
             type: 'UPDATE_STONE_CONFIG',
             sphereId: sphere.id,
@@ -320,7 +318,6 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           });
         }
         else if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) > 0) {
-          console.log("SYNCING UP!")
           // update cloud since our data is newer!
           let stoneInState = sphereInState.stones[stone_from_cloud.id];
           let data = {
@@ -361,7 +358,6 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
             }
           }
         }
-        console.log("DONE SYNCING EXISTING STONE")
       }
       else {
         actions.push({
@@ -546,7 +542,6 @@ const findUserLocation = function(state, userId) {
   if (presentSphereId) {
     let locationIds = Object.keys(state.spheres[presentSphereId].locations);
     locationIds.forEach((locationId) => {
-      console.log("locationId", locationId)
       let location = state.spheres[presentSphereId].locations[locationId];
       let userIndex = location.presentUsers.indexOf(userId);
       if (userIndex !== -1) {

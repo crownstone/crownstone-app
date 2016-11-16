@@ -83,7 +83,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.firmwareVersion = update(action.data.firmwareVersion, newState.firmwareVersion);
         newState.handle          = update(action.data.handle,          newState.handle);
         newState.crownstoneId    = update(action.data.crownstoneId,    newState.crownstoneId);
-        newState.nearRange       = update(action.data.nearRange,       newState.nearRange);
+        newState.nearThreshold   = update(action.data.nearThreshold,   newState.nearThreshold);
         newState.disabled        = update(action.data.disabled,        newState.disabled);
         newState.touchToToggle   = update(action.data.touchToToggle,   newState.touchToToggle);
         newState.updatedAt       = getTime(action.data.updatedAt);

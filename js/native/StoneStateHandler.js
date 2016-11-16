@@ -31,6 +31,9 @@ class StoneStateHandlerClass {
   }
 
   update(sphereId, stoneId) {
+    // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
+    LocationHandler.enterSphere(sphereId);
+
     if (this.timeoutActions[sphereId] === undefined) {
       this.timeoutActions[sphereId] = {};
     }
@@ -54,9 +57,9 @@ class StoneStateHandlerClass {
           }
         });
 
-        // fallback to leave the sphere
+        // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
         if (allDisabled === true) {
-          LocationHandler._exitSphere(sphereId);
+          LocationHandler.exitSphere(sphereId);
         }
 
         this.store.dispatch({

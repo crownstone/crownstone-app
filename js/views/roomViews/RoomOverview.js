@@ -196,11 +196,15 @@ export class RoomOverview extends Component {
     )
   }
 
-  _getExplanation(stonesInRoom) {
+  _getExplanation(stonesInRoom, seeStoneInSetupMode) {
     let explanation = this.props.explanation;
+    if (explanation === undefined && seeStoneInSetupMode === true) {
+      explanation = this.props.locationId === null ? "Crownstones in setup mode have a blue icon." : "Crownstone in setup mode found. Check the overview!";
+    }
     if (explanation === undefined && !stonesInRoom) {
       explanation = this.props.locationId === null ? "No Crownstones found." : "No Crownstones in this room.";
     }
+
 
     if (explanation === undefined) {
       return <View />
@@ -213,6 +217,38 @@ export class RoomOverview extends Component {
         </View>
       </View>
     )
+  }
+
+
+
+  getRightItem(state, userAdmin) {
+    if (userAdmin === true && this.props.locationId !== null && this.props.viewingRemotely !== true) {
+      let canDoLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
+      let showFingerprintNeeded = false;
+      if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
+        showFingerprintNeeded = true;
+      }
+      if (showFingerprintNeeded === true) {
+        let iconSize = 25;
+        return (
+          <AlternatingContent
+            style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
+            fadeDuration={500}
+            switchDuration={2000}
+            contentArray={[
+              <View style={[styles.centered, {
+                width:iconSize,
+                height:iconSize, borderRadius:iconSize*0.5,
+                borderWidth:2,
+                borderColor:'#fff',
+                backgroundColor:colors.iosBlue.hex}]} >
+                <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
+              </View>,
+              <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>Edit</Text>
+              ]} />
+        )
+      }
+    }
   }
 
   render() {
@@ -277,43 +313,11 @@ export class RoomOverview extends Component {
           viewingRemotely={this.viewingRemotely}
           overlayText={this.props.overlayText}
         />
-        {this._getExplanation(stonesInRoom)}
+        {this._getExplanation(stonesInRoom, seeStoneInSetupMode)}
         {content}
       </Background>
     );
   }
-
-  getRightItem(state, userAdmin) {
-    if (userAdmin === true && this.props.locationId !== null && this.props.viewingRemotely !== true) {
-      let canDoLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
-      let showFingerprintNeeded = false;
-      if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
-        showFingerprintNeeded = true;
-      }
-      if (showFingerprintNeeded === true) {
-        let iconSize = 25;
-        return (
-          <AlternatingContent
-            style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
-            fadeDuration={500}
-            switchDuration={2000}
-            contentArray={[
-              <View style={[styles.centered, {
-                width:iconSize,
-                height:iconSize, borderRadius:iconSize*0.5,
-                borderWidth:2,
-                borderColor:'#fff',
-                backgroundColor:colors.iosBlue.hex}]} >
-                <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
-              </View>,
-              <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>Edit</Text>
-              ]} />
-        )
-      }
-    }
-  }
-
-
 }
 
 export const topBarStyle = StyleSheet.create({

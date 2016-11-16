@@ -121,6 +121,12 @@ export const BLEutil = {
     return new SingleCommand(bleHandle)
   },
 
+  /**
+   *
+   * @param id
+   * @param noTimeout   | Bool or timeout in millis
+   * @returns {function()}
+   */
   startHighFrequencyScanning: function(id, noTimeout = false) {
     let enableTimeout = noTimeout === false;
     let timeoutDuration = HIGH_FREQUENCY_SCAN_MAX_DURATION;

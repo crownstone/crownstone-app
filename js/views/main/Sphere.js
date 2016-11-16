@@ -49,7 +49,7 @@ export class Sphere extends Component {
     if (this.props.seeStonesInSetupMode === true && isAdminInCurrentSphere === true) {
       newContent = (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={overviewStyles.bottomTextNotConnected}>{'New Crownstone Detected!'}</Text>
+          <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected!'}</Text>
         </View>
       );
     }
@@ -72,7 +72,7 @@ export class Sphere extends Component {
     else {
       newContent = (
         <View style={{flex:1}}>
-          <Text style={[overviewStyles.bottomTextNotConnected, {bottom: bottomDistance} ]}>{'Currently viewing ' + state.spheres[currentSphere].config.name + '\'s Sphere\s data.' }</Text>
+          <Text style={[overviewStyles.bottomText, {color:colors.white.hex, bottom: bottomDistance} ]}>{'Currently viewing ' + state.spheres[currentSphere].config.name + '\'s Sphere\s data.' }</Text>
         </View>
       );
     }

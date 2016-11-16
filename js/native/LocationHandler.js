@@ -1,6 +1,7 @@
 import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BLEutil } from './BLEutil';
 import { StoneStateHandler } from './StoneStateHandler'
+import { eventBus } from './../util/eventBus';
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { getUUID } from '../util/util'
@@ -23,6 +24,18 @@ class StoneTracker {
   constructor(store) {
     this.elements = {};
     this.store = store;
+    this.temporaryIgnore = false;
+    this.temporaryIgnoreTimeout = undefined;
+
+    eventBus.on("ignoreTriggers", () => {
+      this.temporaryIgnore = true;
+      this.temporaryIgnoreTimeout = setTimeout(() => {
+        if (this.temporaryIgnore === true) {
+          LOGError("temporary ignore of triggers has been on for more than 20 seconds!!");
+        }
+      }, 20000 );
+    });
+    eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
   }
 
   iBeaconUpdate(major, minor, rssi, referenceId) {
@@ -74,6 +87,11 @@ class StoneTracker {
     // local reference of the device/stone
     let ref = this.elements[stoneId];
 
+    // sometimes we need to ignore any distance based toggling.
+    if (this.temporaryIgnore === true) {
+      return;
+    }
+
     // not all stones have touch to toggle enabled
     if (stone.config.touchToToggle === true) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
@@ -109,7 +127,7 @@ class StoneTracker {
       return;
 
     // these event are only used for when there are no room-level options possible
-    if (enoughCrownstonesForIndoorLocalization(state, referenceId)) {
+    if (!enoughCrownstonesForIndoorLocalization(state, referenceId)) {
       if (ref.rssiAverage > stone.config.nearThreshold && ref.lastTriggerType !== TYPES.NEAR) {
         this._handleTrigger(element, ref, TYPES.NEAR, stoneId, referenceId);
       }
@@ -213,7 +231,7 @@ class LocationHandlerClass {
     this.store = undefined;
     this.tracker = undefined;
 
-    this.id = getUUID();
+    this._uuid = getUUID();
   }
 
   loadStore(store) {
@@ -225,8 +243,8 @@ class LocationHandlerClass {
 
 
       // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOGDebug('CURRENT ROOM', data)});
-      NativeBus.on(NativeBus.topics.enterSphere, this._enterSphere.bind(this));
-      NativeBus.on(NativeBus.topics.exitSphere,  this._exitSphere.bind(this) );
+      NativeBus.on(NativeBus.topics.enterSphere, this.enterSphere.bind(this));
+      NativeBus.on(NativeBus.topics.exitSphere,  this.exitSphere.bind(this) );
       NativeBus.on(NativeBus.topics.enterRoom,   this._enterRoom.bind(this)  );
       NativeBus.on(NativeBus.topics.exitRoom,    this._exitRoom.bind(this)   );
       NativeBus.on(NativeBus.topics.iBeaconAdvertisement, this._iBeaconAdvertisement.bind(this));
@@ -240,12 +258,16 @@ class LocationHandlerClass {
     })
   }
 
-  _enterSphere(sphereId) {
+  enterSphere(sphereId) {
     let state = this.store.getState();
+    // make sure we only do this once per sphere
+    if (state.spheres[sphereId].config.present === true && state.app.activeSphere === sphereId)
+      return;
+
     LOG("ENTER SPHERE", sphereId);
     if (state.spheres[sphereId] !== undefined) {
       // start high frequency scan when entering a sphere.
-      BLEutil.startHighFrequencyScanning(this.id, 5000);
+      BLEutil.startHighFrequencyScanning(this._uuid, 5000);
 
       // prepare the settings for this sphere and pass them onto bluenet
       let bluenetSettings = {
@@ -285,7 +307,7 @@ class LocationHandlerClass {
     }
   }
 
-  _exitSphere(sphereId) {
+  exitSphere(sphereId) {
     LOG("LEAVING SPHERE", sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();

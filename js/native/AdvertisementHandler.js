@@ -16,6 +16,8 @@ class AdvertisementHandlerClass {
     this.referenceMap = {};
     this.referenceCIDMap = {};
     this.stonesInConnectionProcess = {};
+    this.temporaryIgnore = false;
+    this.temporaryIgnoreTimeout = undefined;
   }
 
   loadStore(store) {
@@ -50,6 +52,17 @@ class AdvertisementHandlerClass {
         // wait before listening to the stones again.
         Scheduler.scheduleCallback(() => {this._restoreConnectionTimeout();}, 1000);
       });
+
+      // sometimes we need to ignore any trigger for switching because we're doing something else.
+      eventBus.on("ignoreTriggers", () => {
+        this.temporaryIgnore = true;
+        this.temporaryIgnoreTimeout = setTimeout(() => {
+          if (this.temporaryIgnore === true) {
+            LOGError("temporary ignore of triggers has been on for more than 20 seconds!!");
+          }
+        }, 20000 );
+      });
+      eventBus.on("useTriggers",    () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
 
       // create a trigger to throttle the updates.
       Scheduler.setRepeatingTrigger(TRIGGER_ID,{repeatEveryNSeconds:2});
@@ -123,16 +136,17 @@ class AdvertisementHandlerClass {
       measuredUsage = 0;
     }
 
-
-
     let update = () => {
-      Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {
-        type: 'UPDATE_STONE_STATE',
-        sphereId: advertisement.referenceId,
-        stoneId: ref.id,
-        data: { state: switchState, currentUsage: measuredUsage },
-        updatedAt: currentTime
-      });
+      // sometimes we need to ignore any distance based toggling.
+      if (this.temporaryIgnore !== true) {
+        Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {
+          type: 'UPDATE_STONE_STATE',
+          sphereId: advertisement.referenceId,
+          stoneId: ref.id,
+          data: { state: switchState, currentUsage: measuredUsage },
+          updatedAt: currentTime
+        });
+      }
 
       StoneStateHandler.receivedUpdate(advertisement.referenceId, ref.id);
     };
@@ -143,6 +157,9 @@ class AdvertisementHandlerClass {
       update();
     }
     else if (stone.state.currentUsage != measuredUsage) {
+      update();
+    }
+    else if (stone.state.disabled === true) {
       update();
     }
   }
