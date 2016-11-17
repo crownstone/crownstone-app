@@ -60,7 +60,7 @@ export class SettingsProfile extends Component {
     const state = store.getState();
     let sphereIds = Object.keys(state.spheres);
     let items = [];
-    // room Name:
+
     items.push({type:'spacer'});
     items.push({
       label:'First Name',
@@ -139,6 +139,16 @@ export class SettingsProfile extends Component {
       }
     });
 
+    items.push({label: "BETA ACCESS", type: 'explanation', below: false});
+    items.push({label:"Enable Beta Access", value: user.betaAccess, type: 'switch', callback:(newValue) => {
+      store.dispatch({
+        type: 'SET_BETA_ACCESS',
+        data: {betaAccess: newValue}
+      });
+    }});
+    items.push({label: "This will enable certain features in the app that might still be a bit experimental. This is ideal for early adopters or developers!", type: 'explanation', below: true});
+
+
     return items;
   }
 
@@ -171,10 +181,13 @@ export class SettingsProfile extends Component {
 
     return (
       <Background image={this.props.backgrounds.menu} >
-        <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
-          <PictureCircle 
-            value={this.state.picture}
-            callback={(pictureUrl) => {
+
+        <ScrollView>
+          <View>
+            <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
+              <PictureCircle
+                value={this.state.picture}
+                callback={(pictureUrl) => {
                 let newFilename = user.userId + '.jpg';
                 processImage(pictureUrl, newFilename)
                   .then((newPicturePath) => {
@@ -188,8 +201,8 @@ export class SettingsProfile extends Component {
                   .catch((err) => {
                     LOG("PICTURE ERROR ",err)
                   })
-              }} 
-            removePicture={() => {
+              }}
+                removePicture={() => {
               safeDeleteFile(this.state.picture);
               store.dispatch({type:'USER_UPDATE', data:{picture:null}});
               // update your settings in every sphere that you belong to.
@@ -198,9 +211,9 @@ export class SettingsProfile extends Component {
               });
               this.setState({picture:null});
             }}
-            size={120} />
-        </View>
-        <ScrollView>
+                size={120} />
+            </View>
+          </View>
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>
       </Background>
