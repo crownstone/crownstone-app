@@ -15,7 +15,7 @@ import { SlideFadeInView }   from '../components/animated/SlideFadeInView'
 import { LOG }               from '../../logging/Log'
 import { getUUID }           from '../../util/util'
 import { getAiData }         from '../../util/dataUtil'
-import { BLEutil }           from '../../native/BLEutil'
+import { BleUtil }           from '../../native/BleUtil'
 import { NativeBus }         from '../../native/Proxy'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors} from '../styles'
@@ -293,7 +293,7 @@ export class DeviceStateEdit extends Component {
         }
       });
 
-      this.stopHFScanning = BLEutil.startHighFrequencyScanning(this._uuid, 4000);
+      this.stopHFScanning = BleUtil.startHighFrequencyScanning(this._uuid, 4000);
     }, 1000)
   }
 

@@ -5,7 +5,7 @@ import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 import { getUUID } from '../util/util'
 
 
-export const BLEutil = {
+export const BleUtil = {
   pendingSearch: {},
   pendingSetupSearch: {},
   highFrequencyScanUsers: {},

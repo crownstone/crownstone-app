@@ -14,7 +14,7 @@ var sha1 = require('sha-1');
 import { LOG, LOGDebug, LOGError } from '../../logging/Log'
 import { SessionMemory } from './SessionMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
-import { LocalizationUtil } from '../../native/LocationHandler'
+import { LocalizationUtil } from '../../native/LocalizationUtil'
 import { BleActions, Bluenet } from '../../native/Proxy'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { TopBar } from '../components/Topbar';

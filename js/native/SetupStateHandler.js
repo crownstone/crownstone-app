@@ -1,7 +1,7 @@
 import { Scheduler } from '../logic/Scheduler';
 import { NativeBus } from './Proxy';
 import { SetupHelper } from './SetupHelper';
-import { BLEutil } from './BLEutil';
+import { BleUtil } from './BleUtil';
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus';
 import { CLOUD } from '../cloud/cloudAPI';
@@ -62,7 +62,7 @@ class SetupStateHandlerClass {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
         // we scan high frequency when we see a setup node
-        BLEutil.startHighFrequencyScanning(this._uuid);
+        BleUtil.startHighFrequencyScanning(this._uuid);
 
         // store the data of this setup Crownstone
         if (this._stonesInSetupStateAdvertisements[handle] === undefined) {

@@ -16,7 +16,7 @@ import {
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { Icon } from './Icon';
 import { styles, colors, screenWidth } from '../styles'
-import { BLEutil, SetupCrownstone } from '../../native/BLEutil'
+import { BleUtil, SetupCrownstone } from '../../native/BleUtil'
 import { LOG, LOGDebug, LOGError } from '../../logging/Log'
 
 

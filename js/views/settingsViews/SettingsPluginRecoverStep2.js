@@ -19,7 +19,7 @@ import { setupStyle } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 import { getUUID } from '../../util/util'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/dataUtil'
-import { BLEutil } from '../../native/BLEutil'
+import { BleUtil } from '../../native/BleUtil'
 import { BleActions, Bluenet } from '../../native/Proxy'
 import { LOG } from '../../logging/Log'
 
@@ -37,14 +37,14 @@ export class SettingsPluginRecoverStep2 extends Component {
 
   componentDidMount() {
     // we scan high frequency when we see a setup node
-    BLEutil.startHighFrequencyScanning(this.uuid, true);
+    BleUtil.startHighFrequencyScanning(this.uuid, true);
 
     setTimeout(() => { this.searchForStone(); }, 1000);
   }
 
   componentWillUnmount() {
-    BLEutil.startHighFrequencyScanning(this.uuid);
-    BLEutil.cancelAllSearches();
+    BleUtil.startHighFrequencyScanning(this.uuid);
+    BleUtil.cancelAllSearches();
   }
 
   switchImages() {
@@ -82,7 +82,7 @@ export class SettingsPluginRecoverStep2 extends Component {
 
 
   searchForStone() {
-    BLEutil.cancelAllSearches();
+    BleUtil.cancelAllSearches();
 
     let state = this.props.store.getState();
     let map = getMapOfCrownstonesInAllSpheresByHandle(state);
@@ -91,8 +91,8 @@ export class SettingsPluginRecoverStep2 extends Component {
     let nearestNormal = undefined;
     let promises = [];
 
-    promises.push(BLEutil.getNearestCrownstone(4000).then((result) => { nearestNormal = result; }));
-    promises.push(BLEutil.getNearestSetupCrownstone(4000).then((result) => { nearestSetup = result; }));
+    promises.push(BleUtil.getNearestCrownstone(4000).then((result) => { nearestNormal = result; }));
+    promises.push(BleUtil.getNearestSetupCrownstone(4000).then((result) => { nearestSetup = result; }));
 
     Promise.all(promises)
       .then(() => {

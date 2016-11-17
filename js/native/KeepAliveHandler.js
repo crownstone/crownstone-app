@@ -1,7 +1,7 @@
 import { Scheduler } from '../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { BleActions } from './Proxy';
-import { BLEutil } from './BLEutil';
+import { BleUtil } from './BleUtil';
 import { enoughCrownstonesForIndoorLocalization, getMyLevelInSphere } from '../util/dataUtil'
 
 import { TYPES } from '../router/store/reducers/stones'
@@ -60,7 +60,7 @@ class KeepAliveHandlerClass {
           else if (behaviourAway.active) { behaviour = behaviourAway; }
 
           if (behaviour && stone.config.handle) {
-            let proxy = BLEutil.getProxy(stone.config.handle);
+            let proxy = BleUtil.getProxy(stone.config.handle);
 
             if (userLevelInSphere === 'guest') {
               proxy.perform(BleActions.keepAlive)

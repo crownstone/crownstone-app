@@ -16,7 +16,7 @@ import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
-import { BLEutil } from '../../native/BLEutil'
+import { BleUtil } from '../../native/BleUtil'
 import { BleActions, NativeBus } from '../../native/Proxy'
 import { TopBar } from '../components/Topbar'
 import { SeparatedItemList } from '../components/SeparatedItemList'
@@ -128,7 +128,7 @@ export class RoomOverview extends Component {
                 if (switchState === 0) {
                   data.currentUsage = 0;
                 }
-                let proxy = BLEutil.getProxy(item.stone.config.handle);
+                let proxy = BleUtil.getProxy(item.stone.config.handle);
                 proxy.perform(BleActions.setSwitchState, switchState)
                   .then(() => {
                     this.props.store.dispatch({

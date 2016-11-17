@@ -1,226 +1,93 @@
 import { Bluenet, BleActions, NativeBus } from './Proxy';
-import { BLEutil } from './BLEutil';
+import { BleUtil } from './BleUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
-import { StoneStateHandler } from './StoneStateHandler'
-import { eventBus } from './../util/eventBus';
+import { StoneTracker } from './StoneTracker'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { getUUID } from '../util/util'
-import { enoughCrownstonesForIndoorLocalization } from '../util/dataUtil'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
 
-let TOUCH_RSSI_THRESHOLD = -50;
-let TOUCH_TIME_BETWEEN_SWITCHING = 4000; // ms
-let TOUCH_CONSECUTIVE_SAMPLES = 1;
-let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
 
-class StoneTracker {
-  constructor(store) {
-    this.elements = {};
-    this.store = store;
-    this.temporaryIgnore = false;
-    this.temporaryIgnoreTimeout = undefined;
 
-    eventBus.on("ignoreTriggers", () => {
-      this.temporaryIgnore = true;
-      this.temporaryIgnoreTimeout = setTimeout(() => {
-        if (this.temporaryIgnore === true) {
-          LOGError("temporary ignore of triggers has been on for more than 20 seconds!!");
+class RoomPresenceTracker {
+  constructor() {
+    this.roomStates = {};
+  }
+
+  enterRoom(sphereId, locationId) {
+    if (this.roomStates[sphereId] && this.roomStates[sphereId][locationId]) {
+      let stoneIds = Object.keys(this.roomStates[sphereId][locationId]);
+      stoneIds.forEach((stoneId) => {
+        if (this.roomStates[sphereId][locationId][stoneId] !== undefined) {
+          this.roomStates[sphereId][locationId][stoneId]();
+          this.roomStates[sphereId][locationId][stoneId] = undefined;
         }
-      }, 20000 );
+      });
+      this.roomStates[sphereId][locationId] = {};
+    }
+  }
+
+  exitRoom(store, sphereId, locationId) {
+    if (!this.roomStates[sphereId]) {
+      this.roomStates[sphereId] = {};
+    }
+
+    if (!this.roomStates[sphereId][locationId]) {
+      this.roomStates[sphereId][locationId] = {};
+    }
+
+    let state = store.getState();
+    let sphere = state.spheres[sphereId];
+    let stoneIds = Object.keys(sphere.stones);
+    stoneIds.forEach((stoneId) => {
+      // for each stone in sphere select the behaviour we want to copy into the keep Alive
+      let stone = sphere.stones[stoneId];
+      let element = this._getElement(sphere, stone);
+      let behaviour = element.behaviour[TYPES.ROOM_EXIT];
+
+      if (behaviour.active && stone.config.handle && behaviour.state !== stone.state.state) {
+        // cancel the previous timeout
+        if (this.roomStates[sphereId][locationId][stoneId] !== undefined) {
+          this.roomStates[sphereId][locationId][stoneId]();
+          this.roomStates[sphereId][locationId][stoneId] = undefined;
+        }
+        this._handleTrigger(store, behaviour, stoneId, sphereId);
+      }
     });
-    eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
-  }
-
-  handleHomeEnterEvent(stone, sphereId, stoneId, element) {
-    // TODO: put this check back when the mesh works
-    // // if we have enough stones for indoor localization we will use the presence toggle of the sphere to do this.
-    // if (enoughCrownstonesForIndoorLocalization(state, referenceId)) {
-    //   return;
-    // }
-
-    // when we are out of range for 30 seconds, the crownstone is disabled. when we see it again, fire the onHomeEnter
-    if (stone.config.disabled === true) {
-      this._handleTrigger(element, {}, TYPES.HOME_ENTER, stoneId, sphereId)
-    }
-  }
-
-  iBeaconUpdate(major, minor, rssi, referenceId) {
-    // LOG("major, minor, rssi, ref",major, minor, rssi, referenceId)
-    // only use valid rssi measurements, 0 or 128 are not valid measurements
-    if (rssi === undefined || rssi > -1)
-      return;
-
-    if (referenceId === undefined || major  === undefined || minor === undefined)
-      return;
-
-    // check if we have the sphere
-    let state = this.store.getState();
-    let sphere = state.spheres[referenceId];
-    if (!(sphere)) {
-      return;
-    }
-
-    // check if we have a stone with this major / minor
-    let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
-    if (!(stoneId)) {
-      return;
-    }
-
-    let stone = sphere.stones[stoneId];
-    // element is either an appliance or a stone. If we have an application, we use its behaviour, if not, we use the stone's behaviour
-    let element = this._getElement(sphere, stone);
-
-    // handle the case for in range, home enter event is different and requires mesh
-    this.handleHomeEnterEvent(stone, referenceId, stoneId, element);
-
-    // tell the handler that this stone/beacon is still in range.
-    StoneStateHandler.receivedIBeaconUpdate(referenceId, stoneId);
-
-    // currentTime
-    let now = new Date().valueOf();
-
-    // keep track of this item.
-    if (this.elements[stoneId] === undefined) {
-      this.elements[stoneId] = {
-        lastTriggerType: TYPES.AWAY, // we start with the away as default so the app will not initialize and then turn something off you're not near to already.
-        lastTriggerTime: 0,
-        rssiAverage: rssi,
-        samples: 0,
-        touchSamples:0,
-        touchTime: now,
-        cancelScheduledAwayAction: false,
-        cancelScheduledNearAction: false
-      };
-    }
-
-    // local reference of the device/stone
-    let ref = this.elements[stoneId];
-
-    // sometimes we need to ignore any distance based toggling.
-    if (this.temporaryIgnore === true) {
-      return;
-    }
-
-    // not all stones have touch to toggle enabled
-    if (stone.config.touchToToggle === true) {
-      // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
-      // the sign > is because the rssi is negative!
-      if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
-        ref.touchSamples += 1;
-        if (ref.touchSamples >= TOUCH_CONSECUTIVE_SAMPLES) {
-          Vibration.vibrate(400, false);
-          let newState = stone.state.state > 0 ? 0 : 1;
-          this._applySwitchState(newState, stone, stoneId, referenceId);
-          ref.touchTime = now;
-          ref.touchSamples = 0;
-          return;
-        }
-      }
-      else {
-        ref.touchSamples = 0;
-      }
-    }
-
-
-    // to avoid flickering we do not trigger these events in less than 5 seconds.
-    if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING)
-      return;
-
-
-    // update local tracking of data
-    ref.rssiAverage = 0.7 * ref.rssiAverage + 0.3 * rssi;
-    ref.samples += ref.samples < 5 ? 1 : 0;
-
-    // we need a decent sample set.
-    if (ref.samples < 5)
-      return;
-
-    // these event are only used for when there are no room-level options possible
-    if (!enoughCrownstonesForIndoorLocalization(state, referenceId)) {
-      if (ref.rssiAverage > stone.config.nearThreshold) {
-        // if near, cleanup far pending callback
-        this._cleanupPendingOutdatedCallback(element, ref, TYPES.NEAR);
-        this._handleTrigger(element, ref, TYPES.NEAR, stoneId, referenceId);
-      }
-      // we add the -5 so there is not a single threshold line.
-      else if (ref.rssiAverage < (stone.config.nearThreshold - 5)) {
-        // if near, cleanup far pending callback
-        this._cleanupPendingOutdatedCallback(element, ref, TYPES.AWAY);
-        this._handleTrigger(element, ref, TYPES.AWAY, stoneId, referenceId);
-      }
-      // in case we are between near and far, only delete pending callbacks.
-      else if (ref.rssiAverage > stone.config.nearThreshold && ref.rssiAverage < (stone.config.nearThreshold - 5)) {
-        this._cleanupPendingOutdatedCallback(element, ref, TYPES.NEAR);
-      }
-    }
   }
 
 
-  _cleanupPendingOutdatedCallback(element, ref, type) {
-    let behaviour = element.behaviour[type];
-    if (behaviour.active === true) {
-      // intercept pending timeouts because they are no longer relevant.
-      if (type == TYPES.NEAR && ref.cancelScheduledAwayAction !== false) {
-        ref.cancelScheduledAwayAction();
-        ref.cancelScheduledAwayAction = false;
+  _handleTrigger(store, behaviour, stoneId, sphereId) {
+    let changeCallback = () => {
+      let state = store.getState();
+      let stone = state.spheres[sphereId].stones[stoneId];
+      this.roomStates[sphereId][locationId][stoneId] = undefined;
+      // if we need to switch:
+      if (behaviour.state !== stone.state.state) {
+        this._applySwitchState(store, behaviour.state, stone, stoneId, sphereId);
       }
-      else if (ref.cancelScheduledNearAction !== false) {
-        ref.cancelScheduledNearAction();
-        ref.cancelScheduledNearAction = false;
-      }
+    };
+
+    if (behaviour.delay > 0) {
+      // use scheduler
+      this.roomStates[sphereId][locationId][stoneId] = Scheduler.scheduleCallback(changeCallback, behaviour.delay * 1000);
+    }
+    else {
+      changeCallback();
     }
   }
 
-  _handleTrigger(element, ref, type, stoneId, sphereId) {
-    let behaviour = element.behaviour[type];
-    if (behaviour.active === true) {
-      if (ref.lastTriggerType === type) {
-        return;
-      }
-
-      let changeCallback = () => {
-        let state = this.store.getState();
-        let stone = state.spheres[sphereId].stones[stoneId];
-
-        if (type == TYPES.NEAR || type == TYPES.AWAY) {
-          ref.lastTriggerType = type;
-          ref.lastTriggerTime = new Date().valueOf();
-        }
-
-        // if we need to switch:
-        if (behaviour.state !== stone.state.state) {
-          this._applySwitchState(behaviour.state, stone, stoneId, sphereId);
-        }
-      };
-
-      if (behaviour.delay > 0) {
-        // use scheduler
-        if (type == TYPES.NEAR && ref.cancelScheduledNearAction === false) {
-          ref.cancelScheduledNearAction = Scheduler.scheduleCallback(changeCallback, behaviour.delay * 1000);
-        }
-        else if (type == TYPES.AWAY && ref.cancelScheduledAwayAction === false) {
-          ref.cancelScheduledAwayAction = Scheduler.scheduleCallback(changeCallback, behaviour.delay * 1000);
-        }
-      }
-      else {
-        changeCallback();
-      }
-    }
-  }
-
-
-  _applySwitchState(newState, stone, stoneId, sphereId) {
+  _applySwitchState(store, newState, stone, stoneId, sphereId) {
     let data = {state: newState};
     if (newState === 0) {
       data.currentUsage = 0;
     }
-    let proxy = BLEutil.getProxy(stone.config.handle);
+    let proxy = BleUtil.getProxy(stone.config.handle);
     proxy.perform(BleActions.setSwitchState, newState)
       .then(() => {
-        this.store.dispatch({
+        store.dispatch({
           type: 'UPDATE_STONE_STATE',
           sphereId: sphereId,
           stoneId: stoneId,
@@ -231,34 +98,9 @@ class StoneTracker {
         LOGError("COULD NOT SET STATE", err);
       })
   }
-
-  _getElement(sphere, stone) {
-    if (stone.config.applianceId) {
-      return sphere.appliances[stone.config.applianceId];
-    }
-    else {
-      return stone;
-    }
-  }
-
-
-  /**
-   * Todo: get smart map for this.
-   * @param sphere
-   * @param major
-   * @param minor
-   * @returns {*}
-   */
-  _getStoneFromIBeacon(sphere, major, minor) {
-    let stoneIds = Object.keys(sphere.stones);
-    for (let i = 0; i < stoneIds.length; i++) {
-      let stone = sphere.stones[stoneIds[i]].config;
-      if (stone.iBeaconMajor == major && stone.iBeaconMinor == minor) {
-        return stoneIds[i];
-      }
-    }
-  }
 }
+
+const roomTracker = new RoomPresenceTracker();
 
 class LocationHandlerClass {
   constructor() {
@@ -305,7 +147,7 @@ class LocationHandlerClass {
       LOG("ENTER SPHERE", sphereId);
 
       // start high frequency scan when entering a sphere.
-      BLEutil.startHighFrequencyScanning(this._uuid, 5000);
+      BleUtil.startHighFrequencyScanning(this._uuid, 5000);
 
       // prepare the settings for this sphere and pass them onto bluenet
       let bluenetSettings = {
@@ -363,6 +205,10 @@ class LocationHandlerClass {
     if (sphereId && locationId) {
       this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
+      // used for clearing the timeouts for this room
+      if (state.user.betaAccess) {
+        roomTracker.enterRoom(sphereId, locationId);
+      }
 
       let sphere = state.spheres[sphereId];
       let stoneIds = Object.keys(sphere.stones);
@@ -378,7 +224,7 @@ class LocationHandlerClass {
           if (behaviour.state === 0) {
             data.currentUsage = 0;
           }
-          let proxy = BLEutil.getProxy(stone.config.handle);
+          let proxy = BleUtil.getProxy(stone.config.handle);
           proxy.perform(BleActions.setSwitchState, behaviour.state)
             .then(() => {
               this.store.dispatch({
@@ -393,7 +239,6 @@ class LocationHandlerClass {
             })
         }
       });
-
     }
   }
 
@@ -404,44 +249,16 @@ class LocationHandlerClass {
     let state = this.store.getState();
     if (sphereId && locationId) {
       this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
+
+      // used for clearing the timeouts for this room
+      if (state.user.betaAccess) {
+        roomTracker.exitRoom(this.store, sphereId, locationId);
+      }
     }
   }
 }
 
 export const LocationHandler = new LocationHandlerClass();
-
-export const LocalizationUtil = {
-
-  /**
-   * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
-   */
-  trackSpheres: function (store) {
-    BleActions.clearTrackedBeacons()
-      .then(() => {
-        // register the iBeacons UUIDs with the localization system.
-        const state = store.getState();
-        let sphereIds = Object.keys(state.spheres);
-        sphereIds.forEach((sphereId) => {
-          let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
-
-          // track the sphere beacon UUID
-          Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
-
-          LOG("-------------- SETUP TRACKING FOR ", sphereIBeaconUUID);
-
-          let locations = state.spheres[sphereId].locations;
-          let locationIds = Object.keys(locations);
-          locationIds.forEach((locationId) => {
-            if (locations[locationId].config.fingerprintRaw) {
-              LOG("-------------- LOADING FINGERPRINT FOR ", locationId, " IN SPHERE ", sphereId);
-              Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw)
-            }
-          });
-        });
-      })
-  },
-};
-
 
 export const sphereRequiresFingerprints = function (state, sphereId) {
   let locationIds = Object.keys(state.spheres[sphereId].locations);
