@@ -224,15 +224,14 @@ class SchedulerClass {
 
   flush(trigger, state) {
     this._flushActions(trigger,state);
-    this._flushCallbacks(trigger,state);
+    this._flushCallbacks(trigger);
     trigger.lastTriggerTime = new Date().valueOf();
   }
 
-  _flushCallbacks(trigger,state) {
+  _flushCallbacks(trigger) {
     trigger.callbacks.forEach((callback) => {
       callback();
     });
-    trigger.callbacks = [];
   }
 
   _flushActions(trigger, state) {

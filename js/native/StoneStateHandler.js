@@ -49,11 +49,12 @@ class StoneStateHandlerClass {
       if (state.spheres[sphereId] && state.spheres[sphereId].stones[stoneId]) {
         // check if there are any stones left that are not disabled.
         let otherStoneIds = Object.keys(state.spheres[sphereId].stones);
-        delete otherStoneIds[stoneId];
         let allDisabled = true;
         otherStoneIds.forEach((otherStoneId) => {
-          if (state.spheres[sphereId].stones[otherStoneId].config.disabled === false) {
-            allDisabled = false;
+          if (otherStoneId !== stoneId) {
+            if (state.spheres[sphereId].stones[otherStoneId].config.disabled === false) {
+              allDisabled = false;
+            }
           }
         });
 

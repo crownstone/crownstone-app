@@ -177,27 +177,33 @@ export class DeviceStateEdit extends Component {
     options.push({label:'30 Minutes', type: 'checkbar', value: 1800});
 
 
-    items.push({
-      type:'dropdown',
-      label:'Delay',
-      value: currentBehaviour.delay,
-      valueLabel: this._getDelayLabel(currentBehaviour),
-      // buttons:true,
-      dropdownHeight:130,
-      items:options,
-      callback: (newValue) => {
-        LOG("new Value", newValue);
-        store.dispatch({
-          ...requiredData,
-          type: actionBase + this.props.eventName,
-          data: {delay: newValue}
-        });
-      }
-    });
-    items.push({label:'You can set a delay between when you ' + this._getExplanationLabel() + ' and when the device responds to it. If the device is switched by something before this delay has finished, the first event will be discarded.', type: 'explanation', below: true});
 
+    if (!(this.props.eventName === "onHomeEnter" || this.props.eventName === "onRoomEnter" || this.props.eventName === "onNear")) {
+      items.push({
+        type: 'dropdown',
+        label: 'Delay',
+        value: currentBehaviour.delay,
+        valueLabel: this._getDelayLabel(currentBehaviour),
+        // buttons:true,
+        dropdownHeight: 130,
+        items: options,
+        callback: (newValue) => {
+          LOG("new Value", newValue);
+          store.dispatch({
+            ...requiredData,
+            type: actionBase + this.props.eventName,
+            data: {delay: newValue}
+          });
+        }
+      });
+      items.push({
+        label: 'You can set a delay between when you ' + this._getExplanationLabel() + ' and when the device responds to it. If the device is switched by something before this delay has finished, the first event will be discarded.',
+        type: 'explanation',
+        below: true
+      });
+    }
 
-    if (this.props.eventName === "onNear") {
+    if (this.props.eventName === "onNear" || this.props.eventName === 'onAway') {
       items.push({
         type: 'button',
         label: 'Define Range',

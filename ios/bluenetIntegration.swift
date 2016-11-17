@@ -221,17 +221,17 @@ class BluenetJS: NSObject {
         }
       })
       globalBluenet.bluenetLocalizationOn("enterLocation", {data -> Void in
-        if let castData = data as? String {
+        if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitLocation", {data -> Void in
-        if let castData = data as? String {
+        if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("currentLocation", {data -> Void in
-        if let castData = data as? String {
+        if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
         }
       })
@@ -324,6 +324,32 @@ class BluenetJS: NSObject {
           callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState \(err)"]])
         }
       }
+  }
+  
+  @objc func keepAliveState(_ state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.keepAliveState(state: state.floatValue, timeout: timeout.uint16Value)
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN keepAliveState \(err)"]])
+        }
+    }
+  }
+  
+  @objc func keepAlive(callback: @escaping RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.keepAlive()
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN keepAliveState \(err)"]])
+        }
+    }
   }
   
   

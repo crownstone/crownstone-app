@@ -5,7 +5,7 @@ import { LOG, LOGDebug, LOGError } from '../../logging/Log'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    LOG('will dispatch', action);
+    // LOG('will dispatch', action);
 
     // required for some of the actions
     let oldState = getState();

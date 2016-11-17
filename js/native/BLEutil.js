@@ -178,11 +178,11 @@ class SingleCommand {
    * @param prop   --> Optional property
    * @returns {*}
    */
-  perform(action, prop) {
-    LOG("connecting to ", this.handle, "doing this: ", action, "with prop", prop)
+  perform(action, prop1, prop2) {
+    LOG("connecting to ", this.handle, "doing this: ", action, "with prop", prop1, prop2)
     return BlePromiseManager.register(() => {
       return BleActions.connect(this.handle)
-        .then(() => { return action(prop); })
+        .then(() => { return action(prop1, prop2); })
         .then(() => { return BleActions.disconnect(); })
         .catch((err) => {
           LOGError("BLE Single command Error:", err);

@@ -203,7 +203,7 @@ export class DeviceEdit extends Component {
             this._removeCrownstoneFromRedux();
           })
           .catch((err) => {
-            LOG("ERROR:",err)
+            LOG("ERROR:",err);
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "You can recover it using the recovery procedure.",

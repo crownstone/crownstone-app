@@ -69,22 +69,22 @@ export class DeviceBehaviourEdit extends Component {
     switch (eventName) {
       case 'onHomeEnter':
         if (fewCrownstones)
-          return 'When Getting In Range';
+          return 'When In Range';
         else
-          return 'When Entering The House';
+          return 'Entering House';
       case 'onHomeExit':
         if (fewCrownstones)
-          return 'When Moving Out Of Range';
+          return 'Out of Range';
         else
-          return 'When Leaving The House';
+          return 'Leaving House';
       case 'onRoomEnter':
-        return 'When Entering The Room';
+        return 'Entering Room';
       case 'onRoomExit':
-        return 'When Leaving The Room';
+        return 'Leaving Room';
       case 'onNear':
-        return 'When Close By';
+        return 'Close By';
       case 'onAway':
-        return 'When Further Away';
+        return 'Further Away';
       default:
         return '--- invalid event: ' + eventName;
     }

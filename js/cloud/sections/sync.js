@@ -225,7 +225,6 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     // sync pending invites
     spheresData[sphere.id].pendingInvites.forEach((invite) => {
       cloudSphereUserIds[sphere.id][invite.email] = true;
-      console.log("invite", invite, spheresData[sphere.id].pendingInvites)
       if (sphereInState !== undefined && sphereInState.users[invite.email] === undefined) {
         actions.push({
           type: 'ADD_SPHERE_USER',

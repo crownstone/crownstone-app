@@ -1,5 +1,6 @@
 import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BLEutil } from './BLEutil';
+import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneStateHandler } from './StoneStateHandler'
 import { eventBus } from './../util/eventBus';
 import { Scheduler } from './../logic/Scheduler';
@@ -8,12 +9,7 @@ import { getUUID } from '../util/util'
 import { enoughCrownstonesForIndoorLocalization } from '../util/dataUtil'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 import { Vibration } from 'react-native'
-
-let TYPES = {
-  TOUCH: 'touch',
-  NEAR: 'onNear',
-  AWAY: 'onAway',
-};
+import { TYPES } from '../router/store/reducers/stones'
 
 let TOUCH_RSSI_THRESHOLD = -50;
 let TOUCH_TIME_BETWEEN_SWITCHING = 4000; // ms
@@ -38,6 +34,19 @@ class StoneTracker {
     eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
   }
 
+  handleHomeEnterEvent(stone, sphereId, stoneId, element) {
+    // TODO: put this check back when the mesh works
+    // // if we have enough stones for indoor localization we will use the presence toggle of the sphere to do this.
+    // if (enoughCrownstonesForIndoorLocalization(state, referenceId)) {
+    //   return;
+    // }
+
+    // when we are out of range for 30 seconds, the crownstone is disabled. when we see it again, fire the onHomeEnter
+    if (stone.config.disabled === true) {
+      this._handleTrigger(element, {}, TYPES.HOME_ENTER, stoneId, sphereId)
+    }
+  }
+
   iBeaconUpdate(major, minor, rssi, referenceId) {
     // LOG("major, minor, rssi, ref",major, minor, rssi, referenceId)
     // only use valid rssi measurements, 0 or 128 are not valid measurements
@@ -60,12 +69,15 @@ class StoneTracker {
       return;
     }
 
-    // tell the handler that this stone/beacon is still in range.
-    StoneStateHandler.receivedIBeaconUpdate(referenceId, stoneId);
-
     let stone = sphere.stones[stoneId];
     // element is either an appliance or a stone. If we have an application, we use its behaviour, if not, we use the stone's behaviour
     let element = this._getElement(sphere, stone);
+
+    // handle the case for in range, home enter event is different and requires mesh
+    this.handleHomeEnterEvent(stone, referenceId, stoneId, element);
+
+    // tell the handler that this stone/beacon is still in range.
+    StoneStateHandler.receivedIBeaconUpdate(referenceId, stoneId);
 
     // currentTime
     let now = new Date().valueOf();
@@ -129,10 +141,14 @@ class StoneTracker {
     // these event are only used for when there are no room-level options possible
     if (!enoughCrownstonesForIndoorLocalization(state, referenceId)) {
       if (ref.rssiAverage > stone.config.nearThreshold) {
+        // if near, cleanup far pending callback
+        this._cleanupPendingOutdatedCallback(element, ref, TYPES.NEAR);
         this._handleTrigger(element, ref, TYPES.NEAR, stoneId, referenceId);
       }
       // we add the -5 so there is not a single threshold line.
       else if (ref.rssiAverage < (stone.config.nearThreshold - 5)) {
+        // if near, cleanup far pending callback
+        this._cleanupPendingOutdatedCallback(element, ref, TYPES.AWAY);
         this._handleTrigger(element, ref, TYPES.AWAY, stoneId, referenceId);
       }
       // in case we are between near and far, only delete pending callbacks.
@@ -159,8 +175,6 @@ class StoneTracker {
   }
 
   _handleTrigger(element, ref, type, stoneId, sphereId) {
-    // if near, cleanup far pending callback
-    this._cleanupPendingOutdatedCallback(element, ref, type);
     let behaviour = element.behaviour[type];
     if (behaviour.active === true) {
       if (ref.lastTriggerType === type) {
@@ -170,8 +184,11 @@ class StoneTracker {
       let changeCallback = () => {
         let state = this.store.getState();
         let stone = state.spheres[sphereId].stones[stoneId];
-        ref.lastTriggerType = type;
-        ref.lastTriggerTime = new Date().valueOf();
+
+        if (type == TYPES.NEAR || type == TYPES.AWAY) {
+          ref.lastTriggerType = type;
+          ref.lastTriggerTime = new Date().valueOf();
+        }
 
         // if we need to switch:
         if (behaviour.state !== stone.state.state) {
@@ -211,7 +228,7 @@ class StoneTracker {
         });
       })
       .catch((err) => {
-        LOGError("COULD NOT SET STATE FROM TOUCH", err);
+        LOGError("COULD NOT SET STATE", err);
       })
   }
 
@@ -282,8 +299,11 @@ class LocationHandlerClass {
     if (state.spheres[sphereId].config.present === true && state.app.activeSphere === sphereId)
       return;
 
-    LOG("ENTER SPHERE", sphereId);
     if (state.spheres[sphereId] !== undefined) {
+      KeepAliveHandler.keepAlive();
+
+      LOG("ENTER SPHERE", sphereId);
+
       // start high frequency scan when entering a sphere.
       BLEutil.startHighFrequencyScanning(this._uuid, 5000);
 
@@ -335,19 +355,55 @@ class LocationHandlerClass {
     }
   }
 
-  _enterRoom(locationId) {
-    console.log("USER_ENTER_LOCATION. Todo: get sphere id from lib");
+  _enterRoom(data) {
+    LOG("USER_ENTER_LOCATION.", data);
+    let sphereId = data.region;
+    let locationId = data.location;
     let state = this.store.getState();
-    if (state.app.activeSphere && locationId) {
-      this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: locationId, data: {userId: state.user.userId}});
+    if (sphereId && locationId) {
+      this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
+
+
+      let sphere = state.spheres[sphereId];
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        // for each stone in sphere select the behaviour we want to copy into the keep Alive
+        let stone = sphere.stones[stoneId];
+        let element = this._getElement(sphere, stone);
+        let behaviour = element.behaviour[TYPES.ROOM_ENTER];
+
+        if (behaviour.active && stone.config.handle && behaviour.state !== stone.state.state) {
+          // if we need to switch:
+          let data = {state: behaviour.state};
+          if (behaviour.state === 0) {
+            data.currentUsage = 0;
+          }
+          let proxy = BLEutil.getProxy(stone.config.handle);
+          proxy.perform(BleActions.setSwitchState, behaviour.state)
+            .then(() => {
+              this.store.dispatch({
+                type: 'UPDATE_STONE_STATE',
+                sphereId: sphereId,
+                stoneId: stoneId,
+                data: data
+              });
+            })
+            .catch((err) => {
+              LOGError("COULD NOT SET STATE FROM ROOM ENTER", err);
+            })
+        }
+      });
+
     }
   }
 
-  _exitRoom(locationId) {
-    console.log("USER_EXIT_LOCATION. Todo: get sphere id from lib");
+  _exitRoom(data) {
+    LOG("USER_EXIT_LOCATION.", data);
+    let sphereId = data.region;
+    let locationId = data.location;
     let state = this.store.getState();
-    if (state.app.activeSphere && locationId) {
-      this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: state.app.activeSphere, locationId: locationId, data: {userId: state.user.userId}});
+    if (sphereId && locationId) {
+      this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
     }
   }
 }
