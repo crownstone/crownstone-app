@@ -128,7 +128,7 @@ export class SettingsSphere extends Component {
     items.push({
       label: ai.name,
       type: adminInSphere ? 'navigation' : 'info',
-      icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex}}/>,
+      icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex, marginLeft:3, marginRight:7}}/>,
       callback: () => {
         Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
       }
@@ -160,7 +160,7 @@ export class SettingsSphere extends Component {
         label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
         type: 'navigation',
         labelStyle: {color:colors.blue.hex},
-        icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
+        icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor:colors.green.hex, marginLeft:3, marginRight:7}} />,
         callback: () => {
           Actions.settingsSphereInvite({sphereId: this.props.sphereId});
         }
@@ -172,7 +172,7 @@ export class SettingsSphere extends Component {
       items.push({type:'spacer'});
       items.push({
         label: 'Delete this Sphere',
-        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex, marginLeft:3, marginRight:7}} />,
         type: 'button',
         callback: () => {
           this._deleteSphere(state);
