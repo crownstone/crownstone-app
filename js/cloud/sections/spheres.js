@@ -20,11 +20,11 @@ export const spheres = {
         sphereId = response.id;
 
         // add the sphere to the database once it had been added in the cloud.
-        creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid}});
+        creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid, meshAccessAddress: response.meshAccessAddress}});
         creationActions.push({type:'USER_UPDATE', data: { new: false }});
 
         // add yourself to the sphere members as admin
-        creationActions.push({type: 'ADD_SPHERE_USER', sphereId: sphereId, userId: state.user.userId, data:{picture: state.user.picture, firstName: state.user.firstName, lastName: state.user.lastName, email:state.user.email, emailVerified: true, accessLevel: 'admin'}});
+        creationActions.push({type: 'ADD_SPHERE_USER', sphereId: sphereId, userId: state.user.userId, data:{picture: state.user.picture, firstName: state.user.firstName, lastName: state.user.lastName, email:state.user.email, accessLevel: 'admin'}});
 
         // get all encryption keys the user has access to and store them in the appropriate spheres.
         return this.getKeys()
@@ -33,7 +33,7 @@ export const spheres = {
         if (Array.isArray(keyResult)) {
           keyResult.forEach((keySet) => {
             creationActions.push({type:'SET_SPHERE_KEYS', sphereId: sphereId, data:{
-              adminKey:  keySet.keys.admin || null,
+              adminKey:  keySet.keys.admin  || null,
               memberKey: keySet.keys.member || null,
               guestKey:  keySet.keys.guest  || null
             }})
@@ -63,13 +63,13 @@ export const spheres = {
     permission = permission.toLowerCase();
     switch (permission) {
       case 'admin':
-        return this._setupRequest('PUT', '/Spheres/{id}/admins', { data: { email: email}});
+        return this._setupRequest('PUT', '/Spheres/{id}/admins', { data: { email: email }});
         break;
       case 'member':
-        return this._setupRequest('PUT', '/Spheres/{id}/members', { data: { email: email}});
+        return this._setupRequest('PUT', '/Spheres/{id}/members', { data: { email: email }});
         break;
       case 'guest':
-        return this._setupRequest('PUT', '/Spheres/{id}/guests', { data: { email: email}});
+        return this._setupRequest('PUT', '/Spheres/{id}/guests', { data: { email: email }});
         break;
       default:
         return new Promise((resolve, reject) => {
@@ -78,6 +78,19 @@ export const spheres = {
         break;
     }
   },
+
+  getPendingInvites: function(options = {}) {
+    return this._setupRequest('GET', '/Spheres/{id}/pendingInvites', options);
+  },
+
+  resendInvite: function(email, background = false) {
+    return this._setupRequest('GET', '/Spheres/{id}/resendInvite', {data:{email: email}, background: background});
+  },
+
+  revokeInvite: function(email, background = false) {
+    return this._setupRequest('GET', '/Spheres/{id}/removeInvite', {data:{email: email}, background: background});
+  },
+
 
 
   /**
@@ -127,14 +140,15 @@ export const spheres = {
   getSphereData: function(selfId, options = {}) {
     let sphereId = this._sphereId;
 
-    let promises      = [];
+    let promises       = [];
 
-    let applianceData = [];
-    let stoneData     = [];
-    let locationData  = [];
-    let adminData     = [];
-    let memberData    = [];
-    let guestData     = [];
+    let applianceData  = [];
+    let stoneData      = [];
+    let locationData   = [];
+    let adminData      = [];
+    let memberData     = [];
+    let guestData      = [];
+    let pendingInvites = [];
 
     // for every sphere we get the crownstones
     promises.push(
@@ -172,15 +186,22 @@ export const spheres = {
       this.getUserFromType(this.getGuests.bind(this),  'guest',  guestData,  sphereId, selfId, options)
     );
 
+    promises.push(
+      this.forSphere(sphereId).getPendingInvites(options)
+        .then((invites) => {
+          pendingInvites = invites;
+        })
+    );
+
     return Promise.all(promises).then(() => {
-      LOG("returning all");
       return {
-        appliances: applianceData,
-        stones:     stoneData,
-        locations:  locationData,
-        admins:     adminData,
-        members:    memberData,
-        guests:     guestData,
+        appliances:     applianceData,
+        stones:         stoneData,
+        locations:      locationData,
+        admins:         adminData,
+        members:        memberData,
+        guests:         guestData,
+        pendingInvites: pendingInvites,
       }
     }).catch()
   },
@@ -205,16 +226,15 @@ export const spheres = {
   },
 
   changeSphereName: function(sphereName) {
-    return this._setupRequest('PUT', '/Spheres/{id}', {name:sphereName}, 'body');
+    return this._setupRequest('PUT', '/Spheres/{id}', { data: { name: sphereName }}, 'body');
   },
 
-  changeUserAccess: function(userId, accessLevel) {
-    // TODO: fix when correct endpoint has been added
-    // return this._setupRequest('PUT', '/Spheres/{id}/users/rel/' + userId, {role:accessLevel}, 'body');
+  changeUserAccess: function(email, accessLevel, background = false) {
+    return this._setupRequest('PUT', '/Spheres/{id}/role', {data: {email: email, role:accessLevel}, background:background}, 'query');
+  },
 
-    return new Promise((resolve, reject) => {
-      resolve();
-    })
+  deleteUserFromSphere: function(userId) {
+    return this._setupRequest('DELETE', '/Spheres/{id}/users/rel/' + userId);
   },
 
   deleteSphere: function() {

@@ -203,7 +203,6 @@ class SchedulerClass {
     triggerIds.forEach((triggerId) => {
       let trigger = this.singleFireTriggers[triggerId];
       if (trigger.triggerTime < now) {
-        LOGDebug("FIRING singlefire")
         trigger.callback();
         delete this.singleFireTriggers[triggerId];
       }

@@ -73,7 +73,7 @@ class StoneTracker {
     // keep track of this item.
     if (this.elements[stoneId] === undefined) {
       this.elements[stoneId] = {
-        lastTriggerType: undefined,
+        lastTriggerType: TYPES.AWAY, // we start with the away as default so the app will not initialize and then turn something off you're not near to already.
         lastTriggerTime: 0,
         rssiAverage: rssi,
         samples: 0,
@@ -128,14 +128,72 @@ class StoneTracker {
 
     // these event are only used for when there are no room-level options possible
     if (!enoughCrownstonesForIndoorLocalization(state, referenceId)) {
-      if (ref.rssiAverage > stone.config.nearThreshold && ref.lastTriggerType !== TYPES.NEAR) {
+      if (ref.rssiAverage > stone.config.nearThreshold) {
         this._handleTrigger(element, ref, TYPES.NEAR, stoneId, referenceId);
       }
-      else if (ref.rssiAverage < stone.config.nearThreshold && ref.lastTriggerType !== TYPES.AWAY) {
+      // we add the -5 so there is not a single threshold line.
+      else if (ref.rssiAverage < (stone.config.nearThreshold - 5)) {
         this._handleTrigger(element, ref, TYPES.AWAY, stoneId, referenceId);
+      }
+      // in case we are between near and far, only delete pending callbacks.
+      else if (ref.rssiAverage > stone.config.nearThreshold && ref.rssiAverage < (stone.config.nearThreshold - 5)) {
+        this._cleanupPendingOutdatedCallback(element, ref, TYPES.NEAR);
       }
     }
   }
+
+
+  _cleanupPendingOutdatedCallback(element, ref, type) {
+    let behaviour = element.behaviour[type];
+    if (behaviour.active === true) {
+      // intercept pending timeouts because they are no longer relevant.
+      if (type == TYPES.NEAR && ref.cancelScheduledAwayAction !== false) {
+        ref.cancelScheduledAwayAction();
+        ref.cancelScheduledAwayAction = false;
+      }
+      else if (ref.cancelScheduledNearAction !== false) {
+        ref.cancelScheduledNearAction();
+        ref.cancelScheduledNearAction = false;
+      }
+    }
+  }
+
+  _handleTrigger(element, ref, type, stoneId, sphereId) {
+    // if near, cleanup far pending callback
+    this._cleanupPendingOutdatedCallback(element, ref, type);
+    let behaviour = element.behaviour[type];
+    if (behaviour.active === true) {
+      if (ref.lastTriggerType === type) {
+        return;
+      }
+
+      let changeCallback = () => {
+        let state = this.store.getState();
+        let stone = state.spheres[sphereId].stones[stoneId];
+        ref.lastTriggerType = type;
+        ref.lastTriggerTime = new Date().valueOf();
+
+        // if we need to switch:
+        if (behaviour.state !== stone.state.state) {
+          this._applySwitchState(behaviour.state, stone, stoneId, sphereId);
+        }
+      };
+
+      if (behaviour.delay > 0) {
+        // use scheduler
+        if (type == TYPES.NEAR && ref.cancelScheduledNearAction === false) {
+          ref.cancelScheduledNearAction = Scheduler.scheduleCallback(changeCallback, behaviour.delay * 1000);
+        }
+        else if (type == TYPES.AWAY && ref.cancelScheduledAwayAction === false) {
+          ref.cancelScheduledAwayAction = Scheduler.scheduleCallback(changeCallback, behaviour.delay * 1000);
+        }
+      }
+      else {
+        changeCallback();
+      }
+    }
+  }
+
 
   _applySwitchState(newState, stone, stoneId, sphereId) {
     let data = {state: newState};
@@ -155,46 +213,6 @@ class StoneTracker {
       .catch((err) => {
         LOGError("COULD NOT SET STATE FROM TOUCH", err);
       })
-  }
-
-  _handleTrigger(element, ref, type, stoneId, sphereId) {
-    ref.lastTriggerType = type;
-    ref.lastTriggerTime = new Date().valueOf();
-
-    let behaviour = element.behaviour[type];
-    if (behaviour.active === true) {
-      if (type == TYPES.NEAR && ref.cancelScheduledAwayAction !== false) {
-        ref.cancelScheduledAwayAction();
-        ref.cancelScheduledAwayAction = false;
-      }
-      else if (ref.cancelScheduledNearAction !== false) {
-        ref.cancelScheduledNearAction();
-        ref.cancelScheduledNearAction = false;
-      }
-
-      let changeCallback = () => {
-        let state = this.store.getState();
-        let stone = state.spheres[sphereId].stones[stoneId];
-
-        // if we need to switch:
-        if (behaviour.state !== stone.state.state) {
-          this._applySwitchState(behaviour.state, stone, stoneId, sphereId);
-        }
-      };
-
-      if (behaviour.delay > 0) {
-        // use scheduler
-        if (type == TYPES.NEAR) {
-          ref.cancelScheduledNearAction = Scheduler.scheduleCallback(changeCallback, behaviour.delay*1000);
-        }
-        else {
-          ref.cancelScheduledAwayAction = Scheduler.scheduleCallback(changeCallback, behaviour.delay*1000);
-        }
-      }
-      else {
-        changeCallback();
-      }
-    }
   }
 
   _getElement(sphere, stone) {

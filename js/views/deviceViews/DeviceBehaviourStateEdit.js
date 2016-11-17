@@ -270,7 +270,7 @@ export class DeviceStateEdit extends Component {
             this.unsubscribeNative = undefined;
             let total = 0;
             measurements.forEach((measurement) => { total += measurement; });
-            let average = Math.round(total / measurements.length) - 5; // the + five makes sure the user is not defining a place where he will sit: on the threshold.
+            let average = Math.round(total / measurements.length) - 5; // the - five makes sure the user is not defining a place where he will sit: on the threshold.
             this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{ nearThreshold: average }});
 
             // stop the high frequency scanning
@@ -278,6 +278,7 @@ export class DeviceStateEdit extends Component {
               this.stopHFScanning();
 
             // tell the user it was a success!
+            this.props.eventBus.emit("showLoading", "Great!");
             Alert.alert("Great!", "I'll make sure to respond when you are within this range! When you move out and move back in I can start to respond!", [{text:'OK', onPress: () => {
               this.props.eventBus.emit("hideLoading");
               this.props.eventBus.emit("useTriggers");

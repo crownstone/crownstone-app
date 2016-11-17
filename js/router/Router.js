@@ -215,6 +215,7 @@ export class AppRouter extends Component {
                   <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     title="Sphere Overview" />
                   <Scene key="settingsSphere"             component={Views.SettingsSphere}             title="[Sphere name here]" />
                   <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         title="[Username here]" />
+                  <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  title="[Username here]" />
                   <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       title="Invite" />
                   <Scene key="appComplexity"              component={Views.AppComplexity}              title="Settings"/>
                 </Scene>

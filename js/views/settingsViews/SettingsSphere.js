@@ -47,14 +47,35 @@ export class SettingsSphere extends Component {
     for (let userId in users) {
       if (users.hasOwnProperty(userId)) {
         if (users[userId].accessLevel == accessLevel) {
-          result.push({
-            label:users[userId].firstName + " " + users[userId].lastName,
-            type: userId === state.user.userId ? 'info' : 'navigation',
-            icon: <ProfilePicture picture={users[userId].picture} />,
-            callback: () => {
-              Actions.settingsSphereUser({title: users[userId].firstName, userId: userId, sphereId: this.props.sphereId});
-            }
-          })
+          if (users[userId].invitationPending === true) {
+            result.push({
+              label: users[userId].email,
+              type: userId === state.user.userId ? 'info' : 'navigation',
+              icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
+              callback: () => {
+                Actions.settingsSphereInvitedUser({
+                  title: users[userId].email,
+                  userId: userId,
+                  invitePending: true,
+                  sphereId: this.props.sphereId
+                });
+              }
+            });
+          }
+          else {
+            result.push({
+              label: users[userId].firstName + " " + users[userId].lastName,
+              type: userId === state.user.userId ? 'info' : 'navigation',
+              icon: <ProfilePicture picture={users[userId].picture}/>,
+              callback: () => {
+                Actions.settingsSphereUser({
+                  title: users[userId].firstName,
+                  userId: userId,
+                  sphereId: this.props.sphereId
+                });
+              }
+            });
+          }
         }
       }
     }

@@ -154,7 +154,7 @@ const syncCleanupLocal = function(store, state, actions, cloudData) {
 
       // cleanup sphere users
       sphereUserIds.forEach((userId) => {
-        if (cloudData.cloudSphereMemberIds[sphereId][userId] === undefined) {
+        if (cloudData.cloudSphereUserIds[sphereId][userId] === undefined) {
           actions.push({type: 'REMOVE_SPHERE_USER', sphereId: sphereId, userId: userId});
         }
       });
@@ -166,7 +166,7 @@ const syncCleanupLocal = function(store, state, actions, cloudData) {
 };
 
 const syncSpheres = function(state, actions, spheres, spheresData) {
-  let cloudSphereMemberIds = {};
+  let cloudSphereUserIds = {};
   let cloudSphereIds = {};
   let cloudStoneIds = {};
   let cloudLocationIds = {};
@@ -178,7 +178,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
   spheres.forEach((sphere) => {
     // put id in map so we can easily find it again
     cloudSphereIds[sphere.id] = true;
-    cloudSphereMemberIds[sphere.id] = {};
+    cloudSphereUserIds[sphere.id] = {};
 
     // local reference to this sphere in our redux database.
     let sphereInState = state.spheres[sphere.id];
@@ -204,20 +204,40 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
     /**
      * Sync the Admins, members and guests from the cloud to the database.
      */
+    // sync admins
     Object.keys(spheresData[sphere.id].admins).forEach((userId) => {
-      cloudSphereMemberIds[sphere.id][userId] = true;
+      cloudSphereUserIds[sphere.id][userId] = true;
       let user = spheresData[sphere.id].admins[userId];
       syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'admin');
     });
+    // sync members
     Object.keys(spheresData[sphere.id].members).forEach((userId) => {
-      cloudSphereMemberIds[sphere.id][userId] = true;
+      cloudSphereUserIds[sphere.id][userId] = true;
       let user = spheresData[sphere.id].members[userId];
       syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'member');
     });
+    // sync guests
     Object.keys(spheresData[sphere.id].guests).forEach((userId) => {
-      cloudSphereMemberIds[sphere.id][userId] = true;
+      cloudSphereUserIds[sphere.id][userId] = true;
       let user = spheresData[sphere.id].guests[userId];
       syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'guest');
+    });
+    // sync pending invites
+    spheresData[sphere.id].pendingInvites.forEach((invite) => {
+      cloudSphereUserIds[sphere.id][invite.email] = true;
+      console.log("invite", invite, spheresData[sphere.id].pendingInvites)
+      if (sphereInState !== undefined && sphereInState.users[invite.email] === undefined) {
+        actions.push({
+          type: 'ADD_SPHERE_USER',
+          sphereId: sphere.id,
+          userId: invite.email,
+          data: {
+            email: invite.email,
+            invitationPending: true,
+            accessLevel: invite.role
+          }
+        });
+      }
     });
 
 
@@ -265,7 +285,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
         location_from_cloud.presentPeople.forEach((person) => {
           peopleInCloudLocations[person.Id] = true;
           // check if the person exists in our sphere and if we are not that person.
-          if (person.id !== state.user.userId && cloudSphereMemberIds[person.id] === true) {
+          if (person.id !== state.user.userId && cloudSphereUserIds[person.id] === true) {
             actions.push({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: person.id}});
           }
         });
@@ -466,7 +486,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
   });
 
   return {
-    cloudSphereMemberIds,
+    cloudSphereUserIds,
     cloudSphereIds,
     cloudStoneIds,
     cloudLocationIds,
@@ -571,7 +591,6 @@ const syncSphereUser = function(actions, sphere, sphereInState, userId, user, st
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          emailVerified: user.emailVerified,
           accessLevel: accessLevel
         }
       });
@@ -587,7 +606,6 @@ const syncSphereUser = function(actions, sphere, sphereInState, userId, user, st
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        emailVerified: user.emailVerified,
         accessLevel: accessLevel
       }
     });

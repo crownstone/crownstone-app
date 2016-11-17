@@ -179,7 +179,9 @@ export const NativeBus = new NativeBusClass();
 // NativeBus.on(NativeBus.topics.advertisement, (data) => {
 //   console.log('crownstoneId', data.name, data.rssi)
 // })
-
+// NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+//   console.log('iBeaconAdvertisement', data[0].rssi)
+// })
 
 
 /** type defs **/

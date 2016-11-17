@@ -72,7 +72,7 @@ export class Sphere extends Component {
     else {
       newContent = (
         <View style={{flex:1}}>
-          <Text style={[overviewStyles.bottomText, {color:colors.white.hex, bottom: bottomDistance} ]}>{'Currently viewing ' + state.spheres[currentSphere].config.name + '\'s Sphere\s data.' }</Text>
+          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex, bottom: bottomDistance} ]}>{'Currently viewing ' + state.spheres[currentSphere].config.name + '\'s Sphere\s data.' }</Text>
         </View>
       );
     }

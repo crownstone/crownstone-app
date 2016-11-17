@@ -100,8 +100,12 @@ export class SettingsSphereInvite extends Component {
     CLOUD.forSphere(this.props.sphereId).inviteUser(this.state.email.toLowerCase(), this.state.permission)
       .then(() => {
         this.props.eventBus.emit('hideLoading');
-        // this.props.store.dispatch({type: 'ADD_SPHERE_USER', sphereId: this.props.sphereId, userId: "UNKNOWN",
-        //   data:{email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}});
+        this.props.store.dispatch({
+          type: 'ADD_SPHERE_USER',
+          sphereId: this.props.sphereId,
+          userId: this.state.email.toLowerCase(),
+          data: { email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}
+        });
         Alert.alert("Invite has been sent!","An email has been sent to " + this.state.email + ".", [{text:'OK', onPress: () => {Actions.pop();}}])
       })
       .catch((err) => {

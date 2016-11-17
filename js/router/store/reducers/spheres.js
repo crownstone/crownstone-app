@@ -12,7 +12,7 @@ let defaultSettings = {
     adminKey: null,
     memberKey: null,
     guestKey: null,
-    meshAccessAddress: 2789430350,
+    meshAccessAddress: null,
     reachable: false,
     present: false,
     aiName: 'Rosii',
