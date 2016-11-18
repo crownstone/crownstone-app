@@ -135,6 +135,9 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
     if (picture.uri) {
       return picture.uri;
     }
+    else if (picture.path) {
+      picture = picture.path;
+    }
   }
 
   let pictureUri = picture;

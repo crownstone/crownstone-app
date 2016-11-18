@@ -2,7 +2,7 @@ import { Alert } from 'react-native'
 
 import { LOG, LOGError }              from './logging/Log'
 import { CLOUD }            from './cloud/cloudAPI'
-import { LocalizationUtil } from './native/LocationHandler'
+import { LocalizationUtil } from './native/LocalizationUtil'
 import { Scheduler } from './logic/Scheduler'
 import { BleActions, Bluenet, NativeBus } from './native/Proxy';
 import { eventBus }         from './util/eventBus'

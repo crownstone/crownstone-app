@@ -2,6 +2,16 @@ import { createStore, combineReducers } from 'redux'
 import { update, getTime } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
+export let TYPES = {
+  TOUCH: 'touch',
+  NEAR: 'onNear',
+  AWAY: 'onAway',
+  HOME_ENTER: 'onHomeEnter',
+  HOME_EXIT: 'onHomeExit',
+  ROOM_ENTER: 'onRoomEnter',
+  ROOM_EXIT: 'onRoomExit',
+};
+
 export let stoneTypes = {
   plug: "PLUG",
   builtin: "BUILTIN",

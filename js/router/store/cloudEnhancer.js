@@ -1,11 +1,11 @@
 import { CLOUD } from '../../cloud/cloudAPI'
 import { getMyLevelInSphere, getCurrentDeviceId } from '../../util/dataUtil'
 import { BATCH } from './storeManager'
-import { LOG, LOGDebug } from '../../logging/Log'
+import { LOG, LOGDebug, LOGError, LOGStore } from '../../logging/Log'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    LOG('will dispatch', action);
+    LOGStore('will dispatch', action);
 
     // required for some of the actions
     let oldState = getState();
@@ -28,7 +28,7 @@ export function CloudEnhancer({ getState }) {
 
     // This will likely be the action itself, unless
     // a middleware further in chain changed it.
-    return returnValue
+    return returnValue;
   }
 }
 
@@ -37,7 +37,6 @@ function handleAction(action, returnValue, newState, oldState) {
   if (action.triggeredBySync === true) {
     return returnValue;
   }
-
 
   switch (action.type) {
     case 'USER_APPEND':

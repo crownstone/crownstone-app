@@ -16,7 +16,7 @@ import {
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { Icon } from './Icon';
 import { styles, colors, screenWidth } from '../styles'
-import { BLEutil, SetupCrownstone } from '../../native/BLEutil'
+import { BleUtil, SetupCrownstone } from '../../native/BleUtil'
 import { LOG, LOGDebug, LOGError } from '../../logging/Log'
 
 
@@ -109,7 +109,6 @@ export class SetupDeviceEntry extends Component {
         this.setState({explanation:'', subtext:'Click here to add it to this Sphere!', disabled: false, setupInProgress: false});
         break;
       case 1:
-        this.props.eventBus.emit("setupInProgress", this.props.handle);
         this.setState({subtext:"Claiming... Please stay close!", explanation:'', setupInProgress: true});
         break;
       case 3:

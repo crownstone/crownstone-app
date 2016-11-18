@@ -28,6 +28,8 @@ RCT_EXTERN_METHOD(disconnect:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
 RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(keepAliveState:(nonnull NSNumber *)state timeout:(nonnull NSNumber *)timeout callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(keepAlive:(RCTResponseSenderBlock)callback)
 
 RCT_EXTERN_METHOD(commandFactoryReset:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(recover:(NSString *)crownstoneUUID callback:(RCTResponseSenderBlock)callback)

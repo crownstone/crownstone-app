@@ -42,7 +42,7 @@ class AdvertisementHandlerClass {
         Scheduler.clearOverwritableTriggerAction(TRIGGER_ID, ADVERTISEMENT_PREFIX + handle);
         // this is a fallback mechanism in case no disconnect event is fired.
         this.stonesInConnectionProcess[handle] = {timeout: setTimeout(() => {
-          LOGError("Force restoring listening to all crownstones since no disconnect state after 5 seconds.");
+          LOGError("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 5 seconds.");
           this._restoreConnectionTimeout();
         }, 5000)};
       });
@@ -58,11 +58,11 @@ class AdvertisementHandlerClass {
         this.temporaryIgnore = true;
         this.temporaryIgnoreTimeout = setTimeout(() => {
           if (this.temporaryIgnore === true) {
-            LOGError("temporary ignore of triggers has been on for more than 20 seconds!!");
+            LOGError("Temporary ignore of triggers has been on for more than 20 seconds!!");
           }
         }, 20000 );
       });
-      eventBus.on("useTriggers",    () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
+      eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
 
       // create a trigger to throttle the updates.
       Scheduler.setRepeatingTrigger(TRIGGER_ID,{repeatEveryNSeconds:2});

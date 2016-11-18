@@ -221,17 +221,17 @@ class BluenetJS: NSObject {
         }
       })
       globalBluenet.bluenetLocalizationOn("enterLocation", {data -> Void in
-        if let castData = data as? String {
+        if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitLocation", {data -> Void in
-        if let castData = data as? String {
+        if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("currentLocation", {data -> Void in
-        if let castData = data as? String {
+        if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
         }
       })
@@ -324,6 +324,32 @@ class BluenetJS: NSObject {
           callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState \(err)"]])
         }
       }
+  }
+  
+  @objc func keepAliveState(_ state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.keepAliveState(state: state.floatValue, timeout: timeout.uint16Value)
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN keepAliveState \(err)"]])
+        }
+    }
+  }
+  
+  @objc func keepAlive(callback: @escaping RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.keepAlive()
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN keepAliveState \(err)"]])
+        }
+    }
   }
   
   
@@ -479,18 +505,10 @@ class BluenetJS: NSObject {
     let adminKey          = data["adminKey"] as? String
     let memberKey         = data["memberKey"] as? String
     let guestKey          = data["guestKey"] as? String
-    let meshAccessAddressNumber = data["meshAccessAddress"] as? NSNumber
-    let meshAccessAddressString = data["meshAccessAddress"] as? String
+    let meshAccessAddress = data["meshAccessAddress"] as? String
     let ibeaconUUID       = data["ibeaconUUID"] as? String
     let ibeaconMajor      = data["ibeaconMajor"] as? NSNumber
     let ibeaconMinor      = data["ibeaconMinor"] as? NSNumber
-    
-    var meshAccessAddress : NSNumber? = nil
-    if (meshAccessAddressNumber == nil && meshAccessAddressString != nil) {
-      if let accessAddress = UInt32(meshAccessAddressString!, radix:16) {
-        meshAccessAddress = NSNumber(value:accessAddress)
-      }
-    }
     
     print("data \(data) 1\(crownstoneId != nil) 2\(adminKey != nil) 3\(memberKey != nil) 4\(guestKey != nil)")
     print ("5\(meshAccessAddress != nil) 6\(ibeaconUUID != nil) 7\(ibeaconMajor != nil)  8\(ibeaconMinor != nil)")
@@ -507,7 +525,7 @@ class BluenetJS: NSObject {
         adminKey: adminKey!,
         memberKey: memberKey!,
         guestKey: guestKey!,
-        meshAccessAddress: (meshAccessAddress!).uint32Value,
+        meshAccessAddress: meshAccessAddress!,
         ibeaconUUID: ibeaconUUID!,
         ibeaconMajor: (ibeaconMajor!).uint16Value,
         ibeaconMinor: (ibeaconMinor!).uint16Value)

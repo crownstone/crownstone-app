@@ -14,7 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { stoneTypes } from '../../router/store/reducers/stones'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { BleActions } from '../../native/Proxy'
-import { BLEutil } from '../../native/BLEutil'
+import { BleUtil } from '../../native/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
@@ -158,7 +158,7 @@ export class DeviceEdit extends Component {
 
   _removeCrownstone(stone) {
     return new Promise((resolve, reject) => {
-      BLEutil.detectCrownstone(stone.config.handle)
+      BleUtil.detectCrownstone(stone.config.handle)
         .then((isInSetupMode) => {
           // if this crownstone is broadcasting but in setup mode, we only remove it from the cloud.
           if (isInSetupMode === true) {
@@ -197,13 +197,13 @@ export class DeviceEdit extends Component {
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
-        let proxy = BLEutil.getProxy(stone.config.handle);
+        let proxy = BleUtil.getProxy(stone.config.handle);
         proxy.perform(BleActions.commandFactoryReset)
           .then(() => {
             this._removeCrownstoneFromRedux();
           })
           .catch((err) => {
-            LOG("ERROR:",err)
+            LOG("ERROR:",err);
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "You can recover it using the recovery procedure.",

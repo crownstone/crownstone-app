@@ -69,28 +69,28 @@ export class DeviceBehaviourEdit extends Component {
     switch (eventName) {
       case 'onHomeEnter':
         if (fewCrownstones)
-          return 'When Getting In Range';
+          return 'When In Range';
         else
-          return 'When Entering The House';
+          return 'Entering House';
       case 'onHomeExit':
         if (fewCrownstones)
-          return 'When Moving Out Of Range';
+          return 'Out of Range';
         else
-          return 'When Leaving The House';
+          return 'Leaving House';
       case 'onRoomEnter':
-        return 'When Entering The Room';
+        return 'Entering Room';
       case 'onRoomExit':
-        return 'When Leaving The Room';
+        return 'Leaving Room';
       case 'onNear':
-        return 'When Close By';
+        return 'Close By';
       case 'onAway':
-        return 'When Further Away';
+        return 'Further Away';
       default:
         return '--- invalid event: ' + eventName;
     }
   }
 
-  constructOptions(device, stone, canDoIndoorLocalization) {
+  constructOptions(state, device, stone, canDoIndoorLocalization) {
     let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
 
@@ -146,19 +146,32 @@ export class DeviceBehaviourEdit extends Component {
 
         // Behaviour for onRoomExit event
         eventLabel = 'onRoomExit';
-        items.push({label: 'WHEN YOU LEAVE THE ROOM', type: 'explanation', below: false});
-        items.push({
-          label: this._getStateLabel(device, eventLabel),
-          value: this._getDelayLabel(device, eventLabel),
-          type: 'navigation',
-          valueStyle: {color: '#888'},
-          callback: toDeviceStateSetup.bind(this, eventLabel)
-        });
-        items.push({
-          label: 'If there are still people (from your sphere) left in the room, this will not be triggered.',
-          type: 'explanation',
-          below: true
-        });
+        items.push({label: 'WHEN YOU LEAVE THE ROOM *** BETA FEATURE ***', type: 'explanation', below: false});
+        if (state.user.betaAccess) {
+          items.push({
+            label: this._getStateLabel(device, eventLabel),
+            value: this._getDelayLabel(device, eventLabel),
+            type: 'navigation',
+            valueStyle: {color: '#888'},
+            callback: toDeviceStateSetup.bind(this, eventLabel)
+          });
+          // items.push({
+          //   label: 'If there are still people (from your sphere) left in the room, this will not be triggered.',
+          //   type: 'explanation',
+          //   below: true
+          // });
+        }
+        else {
+          items.push({
+            label: "No Beta Access",
+            type: 'info',
+          });
+          items.push({
+              label: "You can enable beta access through your profile in the settings. Beta features are not yet considered ready for general use but are actively worked on.",
+              type: 'explanation',
+              below: true
+            });
+        }
       }
       else if (canDoIndoorLocalization === true) {
         items.push({label: 'Since this Crownstone is not in a room, we cannot give it behaviour for entering or leaving it\'s room.', type: 'explanation', below: false});
@@ -177,10 +190,10 @@ export class DeviceBehaviourEdit extends Component {
     let options = [];
     if (stone.config.applianceId) {
       let device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
-      options = this.constructOptions(device, stone, canDoIndoorLocalization);
+      options = this.constructOptions(state, device, stone, canDoIndoorLocalization);
     }
     else {
-      options = this.constructOptions(stone, stone, canDoIndoorLocalization);
+      options = this.constructOptions(state, stone, stone, canDoIndoorLocalization);
     }
 
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);

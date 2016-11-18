@@ -16,6 +16,7 @@ import { Scene, Router, Actions } from 'react-native-router-flux';
 import { StoreManager }           from './store/storeManager'
 import { LocationHandler }        from '../native/LocationHandler'
 import { AdvertisementHandler }   from '../native/AdvertisementHandler'
+import { KeepAliveHandler }       from '../native/KeepAliveHandler'
 import { SetupStateHandler }      from '../native/SetupStateHandler'
 import { StoneStateHandler }      from '../native/StoneStateHandler'
 import { Scheduler }              from '../logic/Scheduler'
@@ -80,6 +81,7 @@ export class AppRouter extends Component {
       Scheduler.loadStore(store);
       StoneStateHandler.loadStore(store);
       SetupStateHandler.loadStore(store);
+      KeepAliveHandler.loadStore(store);
 
       removeAllPresentUsers(store);
       clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
@@ -215,6 +217,7 @@ export class AppRouter extends Component {
                   <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     title="Sphere Overview" />
                   <Scene key="settingsSphere"             component={Views.SettingsSphere}             title="[Sphere name here]" />
                   <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         title="[Username here]" />
+                  <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  title="[Username here]" />
                   <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       title="Invite" />
                   <Scene key="appComplexity"              component={Views.AppComplexity}              title="Settings"/>
                 </Scene>

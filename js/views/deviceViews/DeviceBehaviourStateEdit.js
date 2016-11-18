@@ -15,7 +15,7 @@ import { SlideFadeInView }   from '../components/animated/SlideFadeInView'
 import { LOG }               from '../../logging/Log'
 import { getUUID }           from '../../util/util'
 import { getAiData }         from '../../util/dataUtil'
-import { BLEutil }           from '../../native/BLEutil'
+import { BleUtil }           from '../../native/BleUtil'
 import { NativeBus }         from '../../native/Proxy'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors} from '../styles'
@@ -177,27 +177,33 @@ export class DeviceStateEdit extends Component {
     options.push({label:'30 Minutes', type: 'checkbar', value: 1800});
 
 
-    items.push({
-      type:'dropdown',
-      label:'Delay',
-      value: currentBehaviour.delay,
-      valueLabel: this._getDelayLabel(currentBehaviour),
-      // buttons:true,
-      dropdownHeight:130,
-      items:options,
-      callback: (newValue) => {
-        LOG("new Value", newValue);
-        store.dispatch({
-          ...requiredData,
-          type: actionBase + this.props.eventName,
-          data: {delay: newValue}
-        });
-      }
-    });
-    items.push({label:'You can set a delay between when you ' + this._getExplanationLabel() + ' and when the device responds to it. If the device is switched by something before this delay has finished, the first event will be discarded.', type: 'explanation', below: true});
 
+    if (!(this.props.eventName === "onHomeEnter" || this.props.eventName === "onRoomEnter" || this.props.eventName === "onNear")) {
+      items.push({
+        type: 'dropdown',
+        label: 'Delay',
+        value: currentBehaviour.delay,
+        valueLabel: this._getDelayLabel(currentBehaviour),
+        // buttons:true,
+        dropdownHeight: 130,
+        items: options,
+        callback: (newValue) => {
+          LOG("new Value", newValue);
+          store.dispatch({
+            ...requiredData,
+            type: actionBase + this.props.eventName,
+            data: {delay: newValue}
+          });
+        }
+      });
+      items.push({
+        label: 'You can set a delay between when you ' + this._getExplanationLabel() + ' and when the device responds to it. If the device is switched by something before this delay has finished, the first event will be discarded.',
+        type: 'explanation',
+        below: true
+      });
+    }
 
-    if (this.props.eventName === "onNear") {
+    if (this.props.eventName === "onNear" || this.props.eventName === 'onAway') {
       items.push({
         type: 'button',
         label: 'Define Range',
@@ -270,7 +276,7 @@ export class DeviceStateEdit extends Component {
             this.unsubscribeNative = undefined;
             let total = 0;
             measurements.forEach((measurement) => { total += measurement; });
-            let average = Math.round(total / measurements.length) - 5; // the + five makes sure the user is not defining a place where he will sit: on the threshold.
+            let average = Math.round(total / measurements.length) - 5; // the - five makes sure the user is not defining a place where he will sit: on the threshold.
             this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{ nearThreshold: average }});
 
             // stop the high frequency scanning
@@ -278,6 +284,7 @@ export class DeviceStateEdit extends Component {
               this.stopHFScanning();
 
             // tell the user it was a success!
+            this.props.eventBus.emit("showLoading", "Great!");
             Alert.alert("Great!", "I'll make sure to respond when you are within this range! When you move out and move back in I can start to respond!", [{text:'OK', onPress: () => {
               this.props.eventBus.emit("hideLoading");
               this.props.eventBus.emit("useTriggers");
@@ -286,7 +293,7 @@ export class DeviceStateEdit extends Component {
         }
       });
 
-      this.stopHFScanning = BLEutil.startHighFrequencyScanning(this._uuid, 4000);
+      this.stopHFScanning = BleUtil.startHighFrequencyScanning(this._uuid, 4000);
     }, 1000)
   }
 

@@ -1,6 +1,6 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
-import { DISABLE_NATIVE } from '../ExternalConfig'
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { DISABLE_NATIVE, DEBUG_BLE } from '../ExternalConfig'
+import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
 export let Bluenet;
@@ -20,6 +20,8 @@ if (DISABLE_NATIVE === true) {
     startScanningForCrownstones: () => {},
     startScanningForCrownstonesUniqueOnly: () => {},
     stopScanning: () => {},
+    keepAliveState: () => {},
+    keepAlive: () => {},
 
     forceClearActiveRegion: () => {},
     startIndoorLocalization: () => {},
@@ -48,17 +50,29 @@ else {
   Bluenet = NativeModules.BluenetJS;
 }
 
-export const BluenetPromise = function(functionName, param) {
-  LOG("called bluenetPromise", functionName, " with param", param);
+export const BluenetPromise = function(functionName, param, param2) {
+  LOG("called bluenetPromise", functionName, " with param", param, param2);
   return new Promise((resolve, reject) => {
     if (DISABLE_NATIVE === true) {
       resolve()
     }
     else {
-      if (param === undefined) {
-        Bluenet[functionName]((result) => {
+      //TODO: cleanup
+      if (param2 !== undefined) {
+        Bluenet[functionName](param, param2, (result) => {
           if (result.error === true) {
-            LOG("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
+            LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, "error:", result.data);
+            reject(result.data);
+          }
+          else {
+            resolve(result.data);
+          }
+        })
+      }
+      else if (param !== undefined) {
+        Bluenet[functionName](param, (result) => {
+          if (result.error === true) {
+            LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
             reject(result.data);
           }
           else {
@@ -67,9 +81,9 @@ export const BluenetPromise = function(functionName, param) {
         })
       }
       else {
-        Bluenet[functionName](param, (result) => {
+        Bluenet[functionName]((result) => {
           if (result.error === true) {
-            LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
+            LOG("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
             reject(result.data);
           }
           else {
@@ -115,6 +129,8 @@ export const BleActions = {
       .catch(() => { eventBus.emit("disconnect"); })
   },
   setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',  state);      },
+  keepAliveState:       (state, timeout) => { return BluenetPromise('keepAliveState',  state, timeout); },
+  keepAlive:            ()           => { return BluenetPromise('keepAlive');                   },
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
   setSettings:          (dataObject) => { return BluenetPromise('setSettings',     dataObject); },
@@ -176,10 +192,14 @@ class NativeBusClass {
 
 export const NativeBus = new NativeBusClass();
 
-// NativeBus.on(NativeBus.topics.advertisement, (data) => {
-//   console.log('crownstoneId', data.name, data.rssi)
-// })
-
+if (DEBUG_BLE) {
+  NativeBus.on(NativeBus.topics.advertisement, (data) => {
+    LOGBle('crownstoneId', data.name, data.rssi)
+  })
+  NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+    LOGBle('iBeaconAdvertisement', data[0].rssi)
+  })
+}
 
 
 /** type defs **/

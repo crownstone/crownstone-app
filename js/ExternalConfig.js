@@ -22,12 +22,16 @@ LOG("Device Country", DeviceInfo.getDeviceCountry()); // e.g US
 LOG("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https://developers.google.com/instance-id/
 
 export const CLOUD_ADDRESS = 'https://crownstone-cloud.herokuapp.com/api/';
+
+export const DEBUG_STORE = true;
+export const DEBUG_SCHEDULER = false;
+export const DEBUG_BLE = false;
+export const DEBUG_CLOUD = true;
 export const DEBUG = true;
+
 export const DISABLE_NATIVE = DeviceInfo.getModel() === "Simulator"; // this will disable the native calls.
 export const SILENCE_CLOUD = false; // this will silently cancel all calls to the cloud.
 export const OVERRIDE_DATABASE = false;
-
-export const BUILD_NUMBER = '1.1.0:1';
 
 export let NO_LOCATION_NAME = 'None'; // this is a let because localization may change it.
 
@@ -36,3 +40,6 @@ export const ENCRYPTION_ENABLED = true;
 export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
 
 export const HIGH_FREQUENCY_SCAN_MAX_DURATION = 15000; //ms
+export const DISABLE_TIMEOUT = 30000; //ms
+export const KEEPALIVE_INTERVAL = 60000; //ms
+

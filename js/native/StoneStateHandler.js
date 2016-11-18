@@ -1,6 +1,7 @@
 import { LocationHandler } from '../native/LocationHandler';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG, LOGDebug } from '../logging/Log'
+import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
 
 /**
@@ -49,11 +50,12 @@ class StoneStateHandlerClass {
       if (state.spheres[sphereId] && state.spheres[sphereId].stones[stoneId]) {
         // check if there are any stones left that are not disabled.
         let otherStoneIds = Object.keys(state.spheres[sphereId].stones);
-        delete otherStoneIds[stoneId];
         let allDisabled = true;
         otherStoneIds.forEach((otherStoneId) => {
-          if (state.spheres[sphereId].stones[otherStoneId].config.disabled === false) {
-            allDisabled = false;
+          if (otherStoneId !== stoneId) {
+            if (state.spheres[sphereId].stones[otherStoneId].config.disabled === false) {
+              allDisabled = false;
+            }
           }
         });
 
@@ -72,7 +74,7 @@ class StoneStateHandlerClass {
       delete this.timeoutActions[sphereId][stoneId];
     };
 
-    this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleCallback(disableCallback, 30000);
+    this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_");
   }
 
 }

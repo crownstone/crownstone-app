@@ -36,12 +36,16 @@ export class SphereOverview extends Component {
     this._panResponder = {};
   }
 
-  componentWillMount() {
+  _setActiveSphere() {
     // set the active sphere if needed and setup the object variables.
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
+    this._activeSphereIndex = 0;
 
     this.sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
+    if (state.spheres[activeSphere] === undefined) {
+      activeSphere = null;
+    }
     if (activeSphere === null && this.sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: this.sphereIds[0]}});
       this._activeSphereIndex = this.sphereIds.indexOf(this.sphereIds[0]);
@@ -52,6 +56,10 @@ export class SphereOverview extends Component {
 
     // set the view position to match the active sphere.
     this.state.left = new Animated.Value(-screenWidth*this._activeSphereIndex);
+  }
+
+  componentWillMount() {
+    this._setActiveSphere();
 
     // configure the pan responder
     this._panResponder = PanResponder.create({
@@ -63,16 +71,17 @@ export class SphereOverview extends Component {
       onMoveShouldSetPanResponderCapture:   (evt, gestureState) => false,
       onPanResponderTerminationRequest:     (evt, gestureState) => true,
       onPanResponderGrant:                  (evt, gestureState) => {},
-      onPanResponderMove:                   (evt, gestureState) => { this._moveView(gestureState.dx); },
+      onPanResponderMove:                   (evt, gestureState) => {
+        if (this.sphereIds.length > 0) {
+          Animated.timing(this.state.left, {
+            toValue: -screenWidth * this._activeSphereIndex + gestureState.dx,
+            duration: 0
+          }).start();
+      }},
       onPanResponderRelease:                (evt, gestureState) => { this._snapToSphere(gestureState.dx); },
     });
   }
 
-
-  _moveView(dx) {
-    if (this.sphereIds.length > 0)
-      Animated.timing(this.state.left, {toValue: -screenWidth*this._activeSphereIndex + dx, duration: 0}).start();
-  }
   /**
    * this piece of code makes sure the movement is finalized neatly.
    * @param dx
@@ -111,11 +120,18 @@ export class SphereOverview extends Component {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
+
+
+      if (change.changeSpheres) {
+        this._setActiveSphere();
+      }
+
       if (
         change.changeSphereState    ||
         change.stoneLocationUpdated ||
         change.updateStoneConfig    ||
         change.updateActiveSphere   ||
+        change.updateLocationConfig ||
         change.changeSpheres        ||
         change.changeStones         ||
         change.changeLocations

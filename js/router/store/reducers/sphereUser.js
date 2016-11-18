@@ -4,7 +4,6 @@ let defaultSettings = {
   firstName: null,
   lastName: null,
   email: null,
-  emailVerified: false,
   invitationPending: false,
   present: false,
   picture: null,
@@ -30,7 +29,6 @@ let sphereUserReducer = (state = defaultSettings.users, action = {}) => {
         newState.lastName            = update(action.data.lastName,      newState.lastName);
         newState.picture             = update(action.data.picture,       newState.picture);
         newState.email               = update(action.data.email,         newState.email);
-        newState.emailVerified       = update(action.data.emailVerified, newState.emailVerified);
         newState.invitationPending   = update(action.data.invitationPending,   newState.invitationPending);
         newState.accessLevel         = update(action.data.accessLevel,   newState.accessLevel);
         newState.updatedAt           = getTime(action.data.updatedAt);

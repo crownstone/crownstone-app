@@ -10,6 +10,7 @@ let defaultSettings = {
     userId: null,
     isNew: true,
     picture: null,
+    betaAccess: false,
     updatedAt: 1
   },
 };
@@ -17,6 +18,13 @@ let defaultSettings = {
 // userReducer
 export default (state = defaultSettings.user, action = {}) => {
   switch (action.type) {
+    case 'SET_BETA_ACCESS':
+      if (action.data) {
+        let newState = {...state};
+        newState.betaAccess   = update(action.data.betaAccess,   newState.betaAccess);
+        return newState;
+      }
+      return state;
     case 'USER_LOG_IN':
     case 'USER_UPDATE':
     case 'USER_APPEND': // append means filling in the data without updating the cloud.

@@ -77,7 +77,8 @@ export function request(
         })
         .then(handleInitialReply)
         .catch((parseError) => {
-          LOGError("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
+          // TODO: cleanly fix this
+          // LOGError("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
           return '';
         })
         .then((parsedResponse) => {resolve({status:STATUS, data: parsedResponse});})

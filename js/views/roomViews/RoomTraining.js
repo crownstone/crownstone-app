@@ -20,6 +20,7 @@ import { sphereRequiresFingerprints } from '../../native/LocationHandler'
 import { Background } from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
+import { getAiData } from '../../util/dataUtil';
 import { LOG, LOGDebug } from '../../logging/Log'
 import { IconButton } from '../components/IconButton'
 

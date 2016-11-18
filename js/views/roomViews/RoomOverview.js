@@ -16,7 +16,7 @@ import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
-import { BLEutil } from '../../native/BLEutil'
+import { BleUtil } from '../../native/BleUtil'
 import { BleActions, NativeBus } from '../../native/Proxy'
 import { TopBar } from '../components/Topbar'
 import { SeparatedItemList } from '../components/SeparatedItemList'
@@ -47,7 +47,7 @@ export class RoomOverview extends Component {
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate();}));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (handle) => { this.forceUpdate();}));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data) => { this.forceUpdate();}));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate();}));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => { this.forceUpdate();}));
 
@@ -128,7 +128,7 @@ export class RoomOverview extends Component {
                 if (switchState === 0) {
                   data.currentUsage = 0;
                 }
-                let proxy = BLEutil.getProxy(item.stone.config.handle);
+                let proxy = BleUtil.getProxy(item.stone.config.handle);
                 proxy.perform(BleActions.setSwitchState, switchState)
                   .then(() => {
                     this.props.store.dispatch({
@@ -255,6 +255,14 @@ export class RoomOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
+    let title = undefined;
+    if (this.props.locationId !== null) {
+      title = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name;
+    }
+    else {
+      title = "Floating Crownstones"
+    }
+
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true;
     // this.viewingRemotely = false; // used for development: forcing remote off
@@ -298,7 +306,7 @@ export class RoomOverview extends Component {
     return (
       <Background hideTopBar={true} image={backgroundImage}>
         <TopBar
-          title={this.props.title}
+          title={title}
           right={userAdmin === true && this.props.locationId !== null ? 'Edit' : undefined}
           rightItem={this.getRightItem(state, userAdmin)}
           rightAction={() => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}
