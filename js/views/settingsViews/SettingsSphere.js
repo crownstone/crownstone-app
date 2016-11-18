@@ -41,7 +41,7 @@ export class SettingsSphere extends Component {
     this.unsubscribe();
   }
 
-  _getUsersWithAccess(state,accessLevel) {
+  _getUsersWithAccess(state, accessLevel, adminInSphere) {
     let result = [];
     let users = state.spheres[this.props.sphereId].users;
     for (let userId in users) {
@@ -50,7 +50,7 @@ export class SettingsSphere extends Component {
           if (users[userId].invitationPending === true) {
             result.push({
               label: users[userId].email,
-              type: userId === state.user.userId ? 'info' : 'navigation',
+              type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
               icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
                 Actions.settingsSphereInvitedUser({
@@ -65,7 +65,7 @@ export class SettingsSphere extends Component {
           else {
             result.push({
               label: users[userId].firstName + " " + users[userId].lastName,
-              type: userId === state.user.userId ? 'info' : 'navigation',
+              type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
               icon: <ProfilePicture picture={users[userId].picture}/>,
               callback: () => {
                 Actions.settingsSphereUser({
@@ -137,17 +137,17 @@ export class SettingsSphere extends Component {
 
 
     items.push({label:'ADMINS',  type:'explanation', below:false});
-    items = items.concat(this._getUsersWithAccess(state,'admin'));
+    items = items.concat(this._getUsersWithAccess(state,'admin', adminInSphere));
     items.push({label:'Admins can add, configure and remove Crownstones and Rooms.', style:{paddingBottom:0}, type:'explanation', below:true});
 
-    let members = this._getUsersWithAccess(state,'member');
+    let members = this._getUsersWithAccess(state,'member', adminInSphere);
     if (members.length > 0) {
       items.push({label:'MEMBERS',  type: 'explanation', below: false});
       items = items.concat(members);
       items.push({label:'Members can configure Crownstones.', style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
-    let guest = this._getUsersWithAccess(state, 'guest');
+    let guest = this._getUsersWithAccess(state, 'guest', adminInSphere);
     if (guest.length > 0) {
       items.push({label:'GUESTS',  type:'explanation', below: false});
       items = items.concat(guest);

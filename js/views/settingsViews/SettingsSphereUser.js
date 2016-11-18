@@ -14,6 +14,7 @@ import { Background } from './../components/Background'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
+import { getMyLevelInSphere } from '../../util/dataUtil'
 import { styles, colors, width } from './../styles'
 var Actions = require('react-native-router-flux').Actions;
 
@@ -40,6 +41,13 @@ export class SettingsSphereUser extends Component {
   _getItems(user) {
     const store = this.props.store;
     const state = store.getState();
+
+    let levelInSphere = getMyLevelInSphere(state, this.props.sphereId);
+    let availablePermissions = [{label:'Member'},{label:"Guest"}];
+    if (levelInSphere === 'admin') {
+      availablePermissions = [{label:"Admin"},{label:'Member'},{label:"Guest"}];
+    }
+
     let items = [];
     // room Name:
     items.push({type:'spacer'});
@@ -49,7 +57,7 @@ export class SettingsSphereUser extends Component {
       label:'Access Level',
       dropdownHeight:150,
       value: user.accessLevel.capitalize(),
-      items:[{label:"Admin"},{label:'Member'},{label:"Guest"}],
+      items: availablePermissions,
       callback: (permission) => {
         permission = permission.toLowerCase();
         this.props.eventBus.emit('showLoading', 'Updating user permissions...');
