@@ -1,5 +1,5 @@
 import { NativeBus } from '../native/Proxy';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { LOG, LOGDebug, LOGError, LOGScheduler } from '../logging/Log'
 import { getUUID } from '../util/util'
 
 
@@ -153,8 +153,8 @@ class SchedulerClass {
     this.scheduledTick = setTimeout(() => { this.tick() }, 4000);
   }
 
-  scheduleCallback(callback, afterMilliseconds) {
-    let uuid = getUUID();
+  scheduleCallback(callback, afterMilliseconds, label = "unlabeled") {
+    let uuid = label + getUUID();
     this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
     return () => {
       if (this.singleFireTriggers[uuid]) {
@@ -169,6 +169,8 @@ class SchedulerClass {
 
     let now = new Date().valueOf();
 
+    LOGScheduler("Tick", now)
+
     // we use this to avoid a race condition where the user has updated the database, and a tick from advertisements
     // instantly overwrites the value again. This can happen when a Crownstone's first advertisement after switching is
     // still the old state.
@@ -180,9 +182,11 @@ class SchedulerClass {
       triggerIds.forEach((triggerId) => {
         let trigger = this.triggers[triggerId];
         if (trigger.options.repeatEveryNSeconds) {
+          LOGScheduler("Handling Trigger:", triggerId, trigger.options.repeatEveryNSeconds, Math.round(0.001 * (now - trigger.lastTriggerTime)));
           // We use round in the conversion from millis to seconds so 1.5seconds is also accepted when the target is 2 seconds
           // due to timer inaccuracy this gives the most reliable results.
           if (Math.round(0.001 * (now - trigger.lastTriggerTime)) >= trigger.options.repeatEveryNSeconds) {
+            LOGScheduler("FIRING Trigger:", triggerId);
             this.flush(trigger, state);
           }
         }
@@ -201,8 +205,10 @@ class SchedulerClass {
   checkSingleFires(now) {
     let triggerIds = Object.keys(this.singleFireTriggers);
     triggerIds.forEach((triggerId) => {
+      LOGScheduler("Handling singlefire trigger:", triggerId);
       let trigger = this.singleFireTriggers[triggerId];
       if (trigger.triggerTime < now) {
+        LOGScheduler("Firing singlefire trigger:", triggerId);
         trigger.callback();
         delete this.singleFireTriggers[triggerId];
       }

@@ -1,6 +1,7 @@
 import { LocationHandler } from '../native/LocationHandler';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG, LOGDebug } from '../logging/Log'
+import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
 
 /**
@@ -73,7 +74,7 @@ class StoneStateHandlerClass {
       delete this.timeoutActions[sphereId][stoneId];
     };
 
-    this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleCallback(disableCallback, 30000);
+    this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_");
   }
 
 }

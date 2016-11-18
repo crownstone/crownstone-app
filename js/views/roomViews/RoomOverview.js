@@ -255,6 +255,14 @@ export class RoomOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
+    let title = undefined;
+    if (this.props.locationId !== null) {
+      title = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name;
+    }
+    else {
+      title = "Floating Crownstones"
+    }
+
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true;
     // this.viewingRemotely = false; // used for development: forcing remote off
@@ -298,7 +306,7 @@ export class RoomOverview extends Component {
     return (
       <Background hideTopBar={true} image={backgroundImage}>
         <TopBar
-          title={this.props.title}
+          title={title}
           right={userAdmin === true && this.props.locationId !== null ? 'Edit' : undefined}
           rightItem={this.getRightItem(state, userAdmin)}
           rightAction={() => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}

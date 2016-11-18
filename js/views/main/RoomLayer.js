@@ -94,7 +94,6 @@ export class RoomLayer extends Component {
     let actionsParams = {
       sphereId: this.props.sphereId,
       locationId: locationId,
-      title: room.config.name,
     };
 
 
@@ -147,7 +146,7 @@ export class RoomLayer extends Component {
     }
 
     if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null, {config: {name: "Floating Crownstones"}}, amountOfRooms, amountOfRooms - 1, activeSphere))
+      roomNodes.push(this._renderRoom(null, {}, amountOfRooms, amountOfRooms - 1, activeSphere))
     }
 
     if (roomIdArray.length > 6) {

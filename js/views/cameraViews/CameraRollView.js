@@ -29,7 +29,7 @@ export class CameraRollView extends Component {
     if (this.active === true) {
       let query = {
         first: 10,
-        sphereTypes: 'SavedPhotos',
+        groupTypes: 'SavedPhotos',
         assetType: 'Photos',
       };
       if (this.pictureIndex !== undefined) {
@@ -39,7 +39,7 @@ export class CameraRollView extends Component {
       CameraRoll.getPhotos(query).then((data) => {
         this.pictureIndex = data.page_info.end_cursor;
         if (data.page_info.has_next_page === true) {
-          this.fetchPictures()
+          this.fetchPictures();
         }
 
         let pictures = [...this.state.pictures, ...data.edges];

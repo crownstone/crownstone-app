@@ -1,11 +1,11 @@
 import { CLOUD } from '../../cloud/cloudAPI'
 import { getMyLevelInSphere, getCurrentDeviceId } from '../../util/dataUtil'
 import { BATCH } from './storeManager'
-import { LOG, LOGDebug, LOGError } from '../../logging/Log'
+import { LOG, LOGDebug, LOGError, LOGStore } from '../../logging/Log'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    // LOG('will dispatch', action);
+    LOGStore('will dispatch', action);
 
     // required for some of the actions
     let oldState = getState();

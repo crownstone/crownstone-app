@@ -31,6 +31,14 @@ export class StoneTracker {
     eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
   }
 
+
+  /**
+   * FALL BACK TO ENSURE THE ENTER HOME EVENT / IN RANGE EVENT FIRES
+   * @param stone
+   * @param sphereId
+   * @param stoneId
+   * @param element
+   */
   handleHomeEnterEvent(stone, sphereId, stoneId, element) {
     // TODO: put this check back when the mesh works
     // // if we have enough stones for indoor localization we will use the presence toggle of the sphere to do this.
@@ -40,7 +48,8 @@ export class StoneTracker {
 
     // when we are out of range for 30 seconds, the crownstone is disabled. when we see it again, fire the onHomeEnter
     if (stone.config.disabled === true) {
-      this._handleTrigger(element, {}, TYPES.HOME_ENTER, stoneId, sphereId)
+      LOG("STARTING TO TRIGGER A ENTER HOME EVENT", element.config.name, stone.config.disabled);
+      this._handleTrigger(element, {}, TYPES.HOME_ENTER, stoneId, sphereId);
     }
   }
 
@@ -174,6 +183,8 @@ export class StoneTracker {
   _handleTrigger(element, ref, type, stoneId, sphereId) {
     let behaviour = element.behaviour[type];
     if (behaviour.active === true) {
+
+      LOG("BEHAVIOUR OF TYPE", type, " IS ACTIVE continue:", !(ref.lastTriggerType === type));
       if (ref.lastTriggerType === type) {
         return;
       }
@@ -187,6 +198,7 @@ export class StoneTracker {
           ref.lastTriggerTime = new Date().valueOf();
         }
 
+        LOG("TRIGGERING CALLBACK FOR ", type)
         // if we need to switch:
         if (behaviour.state !== stone.state.state) {
           this._applySwitchState(behaviour.state, stone, stoneId, sphereId);

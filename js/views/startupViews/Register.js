@@ -41,7 +41,7 @@ export class Register extends Component {
     };
 
     this.inputStates = {email:false, password:false, firstName:false, lastName:false};
-
+    CLOUD.setAccess(undefined);
   }
 
 

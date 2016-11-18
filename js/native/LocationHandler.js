@@ -3,7 +3,7 @@ import { BleUtil } from './BleUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'
 import { Scheduler } from './../logic/Scheduler';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { getUUID } from '../util/util'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 import { Vibration } from 'react-native'
@@ -142,9 +142,12 @@ class LocationHandlerClass {
       return;
 
     if (state.spheres[sphereId] !== undefined) {
+      LOG("ENTER SPHERE", sphereId);
+
       KeepAliveHandler.keepAlive();
 
-      LOG("ENTER SPHERE", sphereId);
+      // trigger crownstones on enter sphere
+      this._triggerCrownstones(state, sphereId, TYPES.HOME_ENTER);
 
       // start high frequency scan when entering a sphere.
       BleUtil.startHighFrequencyScanning(this._uuid, 5000);
@@ -210,35 +213,7 @@ class LocationHandlerClass {
         roomTracker.enterRoom(sphereId, locationId);
       }
 
-      let sphere = state.spheres[sphereId];
-      let stoneIds = Object.keys(sphere.stones);
-      stoneIds.forEach((stoneId) => {
-        // for each stone in sphere select the behaviour we want to copy into the keep Alive
-        let stone = sphere.stones[stoneId];
-        let element = this._getElement(sphere, stone);
-        let behaviour = element.behaviour[TYPES.ROOM_ENTER];
-
-        if (behaviour.active && stone.config.handle && behaviour.state !== stone.state.state) {
-          // if we need to switch:
-          let data = {state: behaviour.state};
-          if (behaviour.state === 0) {
-            data.currentUsage = 0;
-          }
-          let proxy = BleUtil.getProxy(stone.config.handle);
-          proxy.perform(BleActions.setSwitchState, behaviour.state)
-            .then(() => {
-              this.store.dispatch({
-                type: 'UPDATE_STONE_STATE',
-                sphereId: sphereId,
-                stoneId: stoneId,
-                data: data
-              });
-            })
-            .catch((err) => {
-              LOGError("COULD NOT SET STATE FROM ROOM ENTER", err);
-            })
-        }
-      });
+      this._triggerCrownstones(state, sphereId, TYPES.ROOM_ENTER);
     }
   }
 
@@ -254,6 +229,49 @@ class LocationHandlerClass {
       if (state.user.betaAccess) {
         roomTracker.exitRoom(this.store, sphereId, locationId);
       }
+    }
+  }
+
+
+  _triggerCrownstones(state, sphereId, type) {
+    let sphere = state.spheres[sphereId];
+    let stoneIds = Object.keys(sphere.stones);
+    stoneIds.forEach((stoneId) => {
+      // for each stone in sphere select the behaviour we want to copy into the keep Alive
+      let stone = sphere.stones[stoneId];
+      let element = this._getElement(sphere, stone);
+      let behaviour = element.behaviour[type];
+
+      if (behaviour.active && stone.config.handle && behaviour.state !== stone.state.state) {
+        // if we need to switch:
+        let data = {state: behaviour.state};
+        if (behaviour.state === 0) {
+          data.currentUsage = 0;
+        }
+        LOGBle("FIRING ", type, " event for ", element.config.name, stoneId);
+        let proxy = BleUtil.getProxy(stone.config.handle);
+        proxy.perform(BleActions.setSwitchState, behaviour.state)
+          .then(() => {
+            this.store.dispatch({
+              type: 'UPDATE_STONE_STATE',
+              sphereId: sphereId,
+              stoneId: stoneId,
+              data: data
+            });
+          })
+          .catch((err) => {
+            LOGError("COULD NOT SET STATE FROM ROOM ENTER", err);
+          })
+      }
+    });
+  }
+
+  _getElement(sphere, stone) {
+    if (stone.config.applianceId) {
+      return sphere.appliances[stone.config.applianceId];
+    }
+    else {
+      return stone;
     }
   }
 }

@@ -2,7 +2,7 @@ import { request, download } from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/util'
 import { EventBus } from '../../util/eventBus'
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG, LOGError, LOGCloud } from '../../logging/Log'
 
 export const defaultHeaders = {
   'Accept': 'application/json',
@@ -48,9 +48,10 @@ export const base = {
     return request(options, 'HEAD',   defaultHeaders, _getId(options.endPoint, this), this._accessToken)
   },
   _uploadImage: function(options) {
-    var formData = new FormData();
+    let formData = new FormData();
     let path = preparePictureURI(options.path);
-    let filename = options.path.split('/');
+    console.log(path, options);
+    let filename = path.split('/');
     filename = filename[filename.length-1];
     formData.append('image', {type: 'image/jpeg', name: filename, uri: path });
     options.data = formData;
@@ -70,7 +71,7 @@ export const base = {
       this._networkErrorHandler(error);
     }
     if (DEBUG === true) {
-      LOG(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error, endpoint, promiseBody);
+      LOGCloud(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error, endpoint, promiseBody);
     }
   },
 
@@ -113,7 +114,7 @@ export const base = {
     return new Promise((resolve, reject) => {
       promise
         .then((reply) => {
-          LOG("REPLY from", endpoint, " with options: ", options, " is: ", reply);
+          LOGCloud("REPLY from", endpoint, " with options: ", options, " is: ", reply);
           if (reply.status === 200 || reply.status === 204)
             resolve(reply.data);
           else

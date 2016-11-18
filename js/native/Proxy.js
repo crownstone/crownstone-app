@@ -1,6 +1,6 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
-import { DISABLE_NATIVE } from '../ExternalConfig'
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { DISABLE_NATIVE, DEBUG_BLE } from '../ExternalConfig'
+import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
 export let Bluenet;
@@ -192,12 +192,14 @@ class NativeBusClass {
 
 export const NativeBus = new NativeBusClass();
 
-// NativeBus.on(NativeBus.topics.advertisement, (data) => {
-//   console.log('crownstoneId', data.name, data.rssi)
-// })
-// NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-//   console.log('iBeaconAdvertisement', data[0].rssi)
-// })
+if (DEBUG_BLE) {
+  NativeBus.on(NativeBus.topics.advertisement, (data) => {
+    LOGBle('crownstoneId', data.name, data.rssi)
+  })
+  NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+    LOGBle('iBeaconAdvertisement', data[0].rssi)
+  })
+}
 
 
 /** type defs **/

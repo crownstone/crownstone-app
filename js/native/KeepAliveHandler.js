@@ -1,12 +1,12 @@
 import { Scheduler } from '../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { KEEPALIVE_INTERVAL } from '../ExternalConfig';
 import { BleActions } from './Proxy';
 import { BleUtil } from './BleUtil';
 import { enoughCrownstonesForIndoorLocalization, getMyLevelInSphere } from '../util/dataUtil'
 
 import { TYPES } from '../router/store/reducers/stones'
 const TRIGGER_ID = "KEEP_ALIVE_HANDLER";
-const INTERVAL = 60; // seconds;
 
 class KeepAliveHandlerClass {
   constructor() {
@@ -26,7 +26,7 @@ class KeepAliveHandlerClass {
 
   init() {
     if (this._initialized === false) {
-      Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: INTERVAL});
+      Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: KEEPALIVE_INTERVAL});
       Scheduler.loadCallback(TRIGGER_ID, this.keepAlive.bind(this), true);
       this._initialized = true;
     }
@@ -72,7 +72,7 @@ class KeepAliveHandlerClass {
                 })
             }
             else {
-              proxy.perform(BleActions.keepAliveState, behaviour.state, Math.max(1.5*INTERVAL, behaviour.delay)) // the max in time is so that it will not turn off before the next interval.
+              proxy.perform(BleActions.keepAliveState, behaviour.state, Math.max(1.5*KEEPALIVE_INTERVAL, behaviour.delay)) // the max in time is so that it will not turn off before the next interval.
                 .then(() => {
                   LOG("keepAliveState Successful to ", stone.config.name, stone.config.handle);
                 })

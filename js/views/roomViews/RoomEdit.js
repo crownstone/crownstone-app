@@ -83,7 +83,6 @@ export class RoomEdit extends Component {
 
     let ai = state.spheres[this.props.sphereId].config.aiName;
 
-
     let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId};
     let items = [];
 

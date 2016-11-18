@@ -131,6 +131,7 @@ export class SphereOverview extends Component {
         change.stoneLocationUpdated ||
         change.updateStoneConfig    ||
         change.updateActiveSphere   ||
+        change.updateLocationConfig ||
         change.changeSpheres        ||
         change.changeStones         ||
         change.changeLocations
