@@ -29,12 +29,49 @@ export class SphereOverview extends Component {
   constructor() {
     super();
     this.state = {presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0)};
+    this.leftValue = 0;
     this.animating = false;
 
     this.sphereIds = [];
     this._activeSphereIndex = 0;
     this._panResponder = {};
   }
+
+  componentDidMount() {
+    // watch for setup stones
+    this.unsubscribeSetupEvents = [];
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
+
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+
+      if (change.changeSpheres || change.updateActiveSphere) {
+        this._setActiveSphere();
+      }
+
+      if (
+        change.changeSphereState    ||
+        change.stoneLocationUpdated ||
+        change.updateStoneConfig    ||
+        change.updateActiveSphere   ||
+        change.updateLocationConfig ||
+        change.changeSpheres        ||
+        change.changeStones         ||
+        change.changeLocations
+      ) {
+        this.forceUpdate();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeSetupEvents.forEach((unsubscribe) => {unsubscribe();});
+    this.unsubscribeStoreEvents();
+  }
+
 
   _setActiveSphere() {
     // set the active sphere if needed and setup the object variables.
@@ -43,6 +80,8 @@ export class SphereOverview extends Component {
     this._activeSphereIndex = 0;
 
     this.sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
+
+    // handle the case where we deleted a sphere that was active.
     if (state.spheres[activeSphere] === undefined) {
       activeSphere = null;
     }
@@ -55,7 +94,10 @@ export class SphereOverview extends Component {
     }
 
     // set the view position to match the active sphere.
-    this.state.left = new Animated.Value(-screenWidth*this._activeSphereIndex);
+    if (this.leftValue !== -screenWidth*this._activeSphereIndex) {
+      this.setState({left: new Animated.Value(-screenWidth * this._activeSphereIndex)});
+      this.leftValue = -screenWidth * this._activeSphereIndex;
+    }
   }
 
   componentWillMount() {
@@ -73,8 +115,9 @@ export class SphereOverview extends Component {
       onPanResponderGrant:                  (evt, gestureState) => {},
       onPanResponderMove:                   (evt, gestureState) => {
         if (this.sphereIds.length > 0) {
+          this.leftValue = -screenWidth * this._activeSphereIndex + gestureState.dx;
           Animated.timing(this.state.left, {
-            toValue: -screenWidth * this._activeSphereIndex + gestureState.dx,
+            toValue: this.leftValue,
             duration: 0
           }).start();
       }},
@@ -103,7 +146,8 @@ export class SphereOverview extends Component {
     }
 
     // move view
-    Animated.timing(this.state.left, {toValue: -screenWidth*this._activeSphereIndex, duration: 200}).start();
+    this.leftValue = -screenWidth*this._activeSphereIndex;
+    Animated.timing(this.state.left, {toValue: this.leftValue, duration: 200}).start();
 
     // only change the database if we change the active sphere
     if (initialIndex != this._activeSphereIndex) {
@@ -111,40 +155,7 @@ export class SphereOverview extends Component {
     }
   }
 
-  componentDidMount() {
-    // watch for setup stones
-    this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => { this.forceUpdate(); }));
 
-    // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
-      let change = data.change;
-
-
-      if (change.changeSpheres) {
-        this._setActiveSphere();
-      }
-
-      if (
-        change.changeSphereState    ||
-        change.stoneLocationUpdated ||
-        change.updateStoneConfig    ||
-        change.updateActiveSphere   ||
-        change.updateLocationConfig ||
-        change.changeSpheres        ||
-        change.changeStones         ||
-        change.changeLocations
-      ) {
-        this.forceUpdate();
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => {unsubscribe();});
-    this.unsubscribeStoreEvents();
-  }
 
 
   // experiment

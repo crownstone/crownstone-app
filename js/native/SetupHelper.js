@@ -101,6 +101,10 @@ export class SetupHelper {
         if (err == "INVALID_SESSION_DATA") {
           Alert.alert("Encryption might be off","Error: INVALID_SESSION_DATA, which usually means encryption in this Crownstone is turned off. This app requires encryption to be on.",[{text:'OK'}]);
         }
+        else {
+          // user facing alert
+          Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
+        }
         if (this.stoneIdInCloud !== undefined) {
           CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOGError("COULD NOT CLEAN UP AFTER SETUP", err)})
         }

@@ -6,6 +6,7 @@ export const screenWidth = Dimensions.get('window').width;
 export const screenHeight = Dimensions.get('window').height;
 export const topBarHeight = 62;
 export const tabBarHeight = 50;
+export const statusBarHeight = 20;
 export const pxRatio = PixelRatio.get();
 
 export let barHeight = 21*pxRatio;

@@ -18,18 +18,23 @@ export class TextEditBar extends Component {
     this.verificationContent = '';
     this.refName = (Math.random() * 1e9).toString(36);
     this.refNameVerification = (Math.random() * 1e9).toString(36);
+    this.validationTimeout = undefined;
   }
 
   // the alwaysShowState prop forces the validationState to be checked and updated
   componentWillReceiveProps(newProps) {
     if (newProps.alwaysShowState === true && this.state.validation === undefined) {
       // we set the timeout to ensure it has been drawn once. It needs to be rendered for the refs to work.
-      setTimeout(() => {
+      this.validationTimeout = setTimeout(() => {
         if (newProps.validation !== undefined) {
           this.validate(this.refs[this.refName].state.value)
         }
       }, 10);
     }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.validationTimeout);
   }
 
   validateCustom(value, customRules = this.props.validation) {
@@ -71,16 +76,18 @@ export class TextEditBar extends Component {
   }
 
   validate(value) {
-    // copy the content of the validation textarea to this.verificationContent to ensure it is persisted across redraws.
-    if (this.props.verification)
-      this.verificationContent = this.refs[this.refNameVerification].state.value;
+    if (this.refs && this.refs[this.refNameVerification]) {
+      // copy the content of the validation textarea to this.verificationContent to ensure it is persisted across redraws.
+      if (this.props.verification)
+        this.verificationContent = this.refs[this.refNameVerification].state.value;
 
-    // if we need to do validation, validate the input.
-    if (this.props.validation !== undefined || this.props.verification) {
-      let result = this.validateInput(value);
-      this.setState({validation:result});
-      if (this.props.validationCallback) {
-        this.props.validationCallback(result);
+      // if we need to do validation, validate the input.
+      if (this.props.validation !== undefined || this.props.verification) {
+        let result = this.validateInput(value);
+        this.setState({validation: result});
+        if (this.props.validationCallback) {
+          this.props.validationCallback(result);
+        }
       }
     }
   }

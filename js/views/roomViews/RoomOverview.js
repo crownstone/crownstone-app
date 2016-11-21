@@ -46,7 +46,7 @@ export class RoomOverview extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate();}));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data) => { this.forceUpdate();}));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate();}));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => { this.forceUpdate();}));
@@ -60,6 +60,8 @@ export class RoomOverview extends Component {
       }
 
       if (
+        (change.updateApplianceConfig) ||
+        (change.updateStoneConfig) ||
         (change.stoneUsageUpdated && change.stoneUsageUpdated.sphereIds[this.props.sphereId]) ||
         (change.changeSphereState && change.changeSphereState.sphereIds[this.props.sphereId]) ||
         (change.changeStoneState  && change.changeStoneState.sphereIds[this.props.sphereId])  ||

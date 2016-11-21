@@ -15,14 +15,19 @@ export class SeparatedItemList extends Component {
     this.textFields = [];
     this.textFieldMap = {};
     this.index = 0;
+    this.focusTimeout = undefined;
   }
 
   componentDidMount() {
-    setTimeout(() => {
+    this.focusTimeout = setTimeout(() => {
       if (this.props.focusOnLoad === true) {
         this.textFields[0].focus();
       }
     },50);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.focusTimeout)
   }
 
   _focusOnNextField() {

@@ -2,7 +2,7 @@ import { Scheduler } from '../logic/Scheduler';
 import { NativeBus } from './Proxy';
 import { StoneStateHandler } from './StoneStateHandler'
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
-import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInSphereByCID } from '../util/dataUtil'
+import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../util/dataUtil'
 import { eventBus }  from '../util/eventBus'
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
@@ -34,7 +34,7 @@ class AdvertisementHandlerClass {
       this.store.subscribe(() => {
         this.state = this.store.getState();
         this.referenceMap = getMapOfCrownstonesInAllSpheresByHandle(this.state);
-        this.referenceCIDMap = getMapOfCrownstonesInSphereByCID(this.state, this.state.app.activeSphere);
+        this.referenceCIDMap = getMapOfCrownstonesInAllSpheresByCID(this.state);
       });
 
       // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
@@ -103,9 +103,10 @@ class AdvertisementHandlerClass {
       return;
     }
 
-    // look for the crownstone in this sphere which has the same CrownstoneId (CID)
-    let refByCID = this.referenceCIDMap[serviceData.crownstoneId];
+    let sphereId = advertisement.referenceId;
 
+    // look for the crownstone in this sphere which has the same CrownstoneId (CID)
+    let refByCID = this.referenceCIDMap[sphereId][serviceData.crownstoneId];
 
     // repair mechanism to store the handle.
     if (serviceData.stateOfExternalCrownstone === false && refByCID !== undefined) {
@@ -115,7 +116,7 @@ class AdvertisementHandlerClass {
       }
     }
 
-    let ref = this.referenceMap[advertisement.handle];
+    let ref = this.referenceMap[sphereId][advertisement.handle];
     // unknown crownstone
     if (ref === undefined) {
       return;

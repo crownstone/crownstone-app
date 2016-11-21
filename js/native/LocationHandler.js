@@ -120,7 +120,7 @@ class LocationHandlerClass {
 
 
       // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOGDebug('CURRENT ROOM', data)});
-      NativeBus.on(NativeBus.topics.enterSphere, this.enterSphere.bind(this));
+      NativeBus.on(NativeBus.topics.enterSphere, () => {console.log("NATIVE EVENT"); this.enterSphere.bind(this)});
       NativeBus.on(NativeBus.topics.exitSphere,  this.exitSphere.bind(this) );
       NativeBus.on(NativeBus.topics.enterRoom,   this._enterRoom.bind(this)  );
       NativeBus.on(NativeBus.topics.exitRoom,    this._exitRoom.bind(this)   );
@@ -138,7 +138,7 @@ class LocationHandlerClass {
   enterSphere(sphereId) {
     let state = this.store.getState();
     // make sure we only do this once per sphere
-    if (state.spheres[sphereId].config.present === true && state.app.activeSphere === sphereId)
+    if (state.spheres[sphereId].config.present === true)
       return;
 
     if (state.spheres[sphereId] !== undefined) {

@@ -16,7 +16,6 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
 import { getStonesFromState, enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { LOGDebug, LOG } from './../../logging/Log'
 
@@ -27,24 +26,31 @@ export class RoomEdit extends Component {
     super();
     this.deleting = false;
     this.viewingRemotely = false;
+    this.unsubscribeStoreEvents = undefined;
   }
 
   componentDidMount() {
     const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
       let state = store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
         Actions.pop();
         return;
       }
 
-      if (this.deleting === false)
-        this.forceUpdate();
+      if ( change.updateLocationConfig && change.updateLocationConfig.locationId === this.props.locationId ) {
+        if (this.deleting === false)
+          this.forceUpdate();
+      }
     });
+
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribeStoreEvents();
   }
 
   _removeRoom() {
@@ -55,10 +61,7 @@ export class RoomEdit extends Component {
     CLOUD.forSphere(this.props.sphereId).deleteLocation(this.props.locationId)
       .then(() => {
         let removeActions = [];
-        this.props.eventBus.emit('hideLoading');
         let stones = getStonesFromState(state, this.props.sphereId, this.props.locationId);
-        Actions.pop();
-
         removeActions.push({sphereId: this.props.sphereId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
         for (let stoneId in stones) {
           if (stones.hasOwnProperty(stoneId)) {
@@ -66,6 +69,9 @@ export class RoomEdit extends Component {
           }
         }
         store.batchDispatch(removeActions);
+        // jump back to root
+        this.props.eventBus.emit('hideLoading');
+        Actions.sphereOverview({type:'reset'});
       })
       .catch((err) => {
         this.deleting = false;
@@ -132,7 +138,7 @@ export class RoomEdit extends Component {
       type: 'button',
       icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback: () => {
-        Alert.alert("Are you sure?","'Removing this Room will make all contained Crownstones floating.'",
+        Alert.alert("Are you sure?","Removing this Room will make all contained Crownstones floating.",
           [{text: "Cancel"}, {text:'OK', onPress: this._removeRoom.bind(this)}])
       }
     });
@@ -145,7 +151,7 @@ export class RoomEdit extends Component {
     const store = this.props.store;
     const state = store.getState();
     this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false;
-    this.viewingRemotely = false
+
     let backgroundImage = this.props.getBackground('menu', this.viewingRemotely);
     return (
       <Background image={backgroundImage} >

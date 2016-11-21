@@ -1,5 +1,6 @@
 import React, { Component } from 'react' 
 import {
+  Alert,
   CameraRoll,
   Image,
   Dimensions,
@@ -12,8 +13,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
 import { styles, colors } from '../styles'
-import { LOG } from '../../logging/Log'
-
+import { LOG, LOGError } from '../../logging/Log'
 
 export class CameraRollView extends Component {
   constructor() {
@@ -22,7 +22,11 @@ export class CameraRollView extends Component {
     this.pictureIndex = undefined;
     this.state = {pictures:[]};
     this.active = true;
-    setTimeout(() => {this.fetchPictures();},350);
+    this.fetchPicturesTimeout = setTimeout(() => {this.fetchPictures();},350);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.fetchPicturesTimeout);
   }
 
   fetchPictures() {
@@ -45,7 +49,15 @@ export class CameraRollView extends Component {
         let pictures = [...this.state.pictures, ...data.edges];
         this.setState({pictures: pictures})
       }).catch((err) => {
-        LOG(err)
+        if (err.code === "E_UNABLE_TO_LOAD") {
+          Alert.alert(
+            "I do not have access to your pictures...",
+            "You can give me access by going to the settings on your phone, select Crownstone and enable the picture permissions.",
+            [{text:"OK", onPress:() => {Actions.pop();}}]);
+        }
+        else {
+          LOGError(err.message, err)
+        }
       });
     }
   }

@@ -241,17 +241,28 @@ export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) 
 };
 
 export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
+  return _getMap(state, 'handle');
+};
+
+export const getMapOfCrownstonesInAllSpheresByCID = function(state) {
+  return _getMap(state, 'crownstoneId');
+};
+
+function _getMap(state, requestedKey) {
   let sphereIds = Object.keys(state.spheres);
   let map = {};
   sphereIds.forEach((sphereId) => {
     let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let locations = state.spheres[sphereId].locations;
     let appliances = state.spheres[sphereId].appliances;
+    map[sphereId] = {};
+
     stoneIds.forEach((stoneId) => {
       let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
-      map[stoneConfig.handle] = {
+      map[sphereId][stoneConfig[requestedKey]] = {
         id: stoneId,
         cid: stoneConfig.crownstoneId,
+        handle: stoneConfig.handle,
         name: stoneConfig.name,
         applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
         locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
@@ -259,28 +270,7 @@ export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
     })
   });
   return map;
-};
-
-export const getMapOfCrownstonesInSphereByCID = function(state, sphereId) {
-  if (sphereId) {
-    let map = {};
-    let stoneIds = Object.keys(state.spheres[sphereId].stones);
-    let locations = state.spheres[sphereId].locations;
-    let appliances = state.spheres[sphereId].appliances;
-    stoneIds.forEach((stoneId) => {
-      let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
-      map[stoneConfig.crownstoneId] = {
-        id: stoneId,
-        handle: stoneConfig.handle,
-        name: stoneConfig.name,
-        applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
-        locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
-      };
-    });
-    return map;
-  }
-  return {};
-};
+}
 
 export const getAiData = function(state, sphereId) {
   let sexes = {
@@ -315,4 +305,33 @@ export const getCurrentDeviceId = function(state) {
     }
   }
   return undefined;
+};
+
+
+export const prepareStoreForUser = function(store) {
+  const state = store.getState();
+  let spheres = state.spheres;
+  let sphereIds = Object.keys(spheres);
+  let actions = [];
+  sphereIds.forEach((sphereId) => {
+    let locations = spheres[sphereId].locations;
+    let locationIds = Object.keys(locations);
+
+    locationIds.forEach((locationId) => {
+      actions.push({type: 'CLEAR_USERS', sphereId: sphereId, locationId: locationId});
+    });
+
+    let stones = spheres[sphereId].stones;
+    let stoneIds = Object.keys(stones);
+
+    stoneIds.forEach((stoneId) => {
+      actions.push({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId});
+      actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
+    });
+
+    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
+  });
+
+  if (actions.length > 0)
+    store.batchDispatch(actions);
 };

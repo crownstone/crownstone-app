@@ -32,11 +32,13 @@ export class DeviceEntry extends Component {
     this.optionsAreOpen = false;
     this.animating = false;
     this.id = getUUID();
+    this.initiallyOpenTimeout = undefined;
+    this.optionMoveTimeout = undefined;
   }
 
   componentDidMount() {
     if (this.props.initiallyOpen) {
-      setTimeout(() => {this._openOptions(600);}, 200);
+      this.initiallyOpenTimeout = setTimeout(() => {this._openOptions(600);}, 200);
     }
 
     if (this.props.eventbus) {
@@ -50,6 +52,8 @@ export class DeviceEntry extends Component {
 
   componentWillUnmount() { // cleanup
     this.unsubscribe();
+    clearTimeout(this.initiallyOpenTimeout);
+    clearTimeout(this.optionMoveTimeout);
   }
 
   _closeOptions(delay = 200) {
@@ -57,7 +61,7 @@ export class DeviceEntry extends Component {
       this.animating = true;
       this.setState({optionsOpen: false});
       Animated.timing(this.state.height, {toValue: this.baseHeight, duration: this.props.duration || delay}).start();
-      setTimeout(() => {this.optionsAreOpen = false; this.animating = false;}, delay);
+      this.optionMoveTimeout = setTimeout(() => {this.optionsAreOpen = false; this.animating = false;}, delay);
     }
   }
 
@@ -67,7 +71,7 @@ export class DeviceEntry extends Component {
       this.animating = true;
       this.setState({optionsOpen: true});
       Animated.timing(this.state.height, {toValue: this.openHeight, duration: this.props.duration || delay}).start();
-      setTimeout(() => {this.optionsAreOpen = true; this.animating = false;}, delay);
+      this.optionMoveTimeout = setTimeout(() => {this.optionsAreOpen = true; this.animating = false;}, delay);
     }
   }
 

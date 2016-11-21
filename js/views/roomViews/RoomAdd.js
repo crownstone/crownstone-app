@@ -106,10 +106,8 @@ export class RoomAdd extends Component {
         <TopBar
           notBack={false}
           leftAction={ Actions.pop }
-          leftStyle={{color: colors.menuTextSelected.hex}}
           right={"Create"}
           rightAction={ () => {this.createRoom();} }
-          rightStyle={{color: colors.menuTextSelected.hex}}
           title="Create Room"/>
         <ScrollView>
           <ListEditableItems ref={this.refName} focusOnLoad={true} items={this._getItems()} />

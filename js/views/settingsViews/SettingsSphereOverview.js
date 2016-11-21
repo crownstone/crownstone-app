@@ -62,6 +62,8 @@ export class SettingsSphereOverview extends Component {
     let memberSpheres = this._getSpheres(state, 'member');
     let guestSpheres  = this._getSpheres(state, 'guest');
 
+    let totalSpheres = adminSpheres.length + memberSpheres.length + guestSpheres.length;
+
     if (adminSpheres.length > 0) {
       items.push({label:'SPHERES WHERE YOU ARE AN ADMIN',  type:'explanation', below:false});
       items = items.concat(adminSpheres);
@@ -77,8 +79,7 @@ export class SettingsSphereOverview extends Component {
       items = items.concat(guestSpheres);
     }
 
-    // TODO: support multiple spheres.
-    // if (adminSpheres.length == 0) {
+    if (totalSpheres < 5) {
       items.push({type: 'spacer'});
       items.push({
         label: 'Create a new Sphere',
@@ -89,7 +90,10 @@ export class SettingsSphereOverview extends Component {
           this._createNewSphere(store, state.user.firstName);
         }
       });
-    // }
+    }
+    else {
+      items.push({label:'Max 5 Spheres are currently supported.',  type:'explanation', below:false});
+    }
 
     // if you do not have, or are part of, any spheres yet.
     if (adminSpheres.length == 0 && memberSpheres.length == 0 && guestSpheres.length == 0)

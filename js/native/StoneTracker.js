@@ -48,7 +48,6 @@ export class StoneTracker {
 
     // when we are out of range for 30 seconds, the crownstone is disabled. when we see it again, fire the onHomeEnter
     if (stone.config.disabled === true) {
-      LOG("STARTING TO TRIGGER A ENTER HOME EVENT", element.config.name, stone.config.disabled);
       this._handleTrigger(element, {}, TYPES.HOME_ENTER, stoneId, sphereId);
     }
   }
@@ -184,7 +183,7 @@ export class StoneTracker {
     let behaviour = element.behaviour[type];
     if (behaviour.active === true) {
 
-      LOG("BEHAVIOUR OF TYPE", type, " IS ACTIVE continue:", !(ref.lastTriggerType === type));
+      LOG("STARTING TO TRIGGER A ", type, "EVENT, BEHAVIOUR OF TYPE", type, " IS ACTIVE continue:", !(ref.lastTriggerType === type));
       if (ref.lastTriggerType === type) {
         return;
       }

@@ -21,6 +21,7 @@ import { SetupStateHandler }      from '../native/SetupStateHandler'
 import { StoneStateHandler }      from '../native/StoneStateHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
+import { prepareStoreForUser }    from '../util/dataUtil'
 import { logOut }                 from '../util/util'
 import { LOG, LOGDebug }          from '../logging/Log'
 import { INITIALIZER }            from '../initialize'
@@ -38,7 +39,7 @@ import { Icon } from '../views/components/Icon';
 
 let store = {};
 
-
+// set do disabled on log in
 
 export class AppRouter extends Component {
   constructor() {
@@ -83,9 +84,8 @@ export class AppRouter extends Component {
       SetupStateHandler.loadStore(store);
       KeepAliveHandler.loadStore(store);
 
-      removeAllPresentUsers(store);
-      clearAllCurrentPowerUsage(store); // power usage needs to be gathered again
-      setSpherePresenceToFalse(store);  // until we know better, we are NOT able to reach spheres
+      // clear the temporary data like presence, state and disability of stones so no old data will be shown
+      prepareStoreForUser(store);
 
       // // if we have an accessToken, we proceed with logging in automatically
       if (state.user.accessToken !== null) {
@@ -267,45 +267,3 @@ let navBarStyle = {
   titleStyle:{color:'white'},
 };
 
-let removeAllPresentUsers = function(store) {
-  const state = store.getState();
-  let spheres = state.spheres;
-  let sphereIds = Object.keys(spheres);
-  sphereIds.forEach((sphereId) => {
-    let locations = spheres[sphereId].locations;
-    let locationIds = Object.keys(locations);
-    locationIds.forEach((locationId) => {
-      store.dispatch({type:'CLEAR_USERS', sphereId:sphereId, locationId:locationId})
-    })
-  })
-};
-
-let clearAllCurrentPowerUsage = function(store) {
-  const state = store.getState();
-  let spheres = state.spheres;
-  let sphereIds = Object.keys(spheres);
-  let actions = [];
-  sphereIds.forEach((sphereId) => {
-    let stones = spheres[sphereId].stones;
-    let stoneIds = Object.keys(stones);
-    stoneIds.forEach((stoneId) => {
-      actions.push({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId});
-      actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
-    })
-  });
-  if (actions.length > 0)
-    store.batchDispatch(actions);
-};
-
-
-let setSpherePresenceToFalse = function(store) {
-  const state = store.getState();
-  let spheres = state.spheres;
-  let sphereIds = Object.keys(spheres);
-  let actions = [];
-  sphereIds.forEach((sphereId) => {
-    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
-  });
-  if (actions.length > 0)
-    store.batchDispatch(actions);
-};

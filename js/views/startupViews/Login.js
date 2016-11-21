@@ -9,21 +9,22 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
-var sha1 = require('sha-1');
-import { LOG, LOGDebug, LOGError } from '../../logging/Log'
-import { SessionMemory } from './SessionMemory'
+let Actions = require('react-native-router-flux').Actions;
+let sha1 = require('sha-1');
+import { LOG, LOGDebug, LOGError }            from '../../logging/Log'
+import { SessionMemory }                      from './SessionMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
-import { LocalizationUtil } from '../../native/LocalizationUtil'
-import { BleActions, Bluenet } from '../../native/Proxy'
-import { CLOUD } from '../../cloud/cloudAPI'
-import { TopBar } from '../components/Topbar';
-import { TextEditInput } from '../components/editComponents/TextEditInput'
-import { Background } from '../components/Background'
+import { prepareStoreForUser }                from '../../util/dataUtil'
+import { LocalizationUtil }                   from '../../native/LocalizationUtil'
+import { BleActions, Bluenet }                from '../../native/Proxy'
+import { CLOUD }                              from '../../cloud/cloudAPI'
+import { TopBar }                             from '../components/Topbar';
+import { TextEditInput }                      from '../components/editComponents/TextEditInput'
+import { Background }                         from '../components/Background'
 import { styles, colors , screenWidth, screenHeight } from '../styles'
-import { StoreManager } from '../../router/store/storeManager'
-import RNFS from 'react-native-fs'
-import loginStyles from './LoginStyles'
+import { StoreManager }                       from '../../router/store/storeManager'
+import RNFS                                   from 'react-native-fs'
+import loginStyles                            from './LoginStyles'
 
 export class Login extends Component {
   constructor() {
@@ -322,6 +323,7 @@ export class Login extends Component {
       // set a small delay so the user sees "done"
       setTimeout(() => {
         this.props.eventBus.emit('hideProgress');
+        prepareStoreForUser(store);
 
         if (state.user.isNew === true) {
           store.dispatch({type: 'USER_UPDATE', data:{isNew:false}});

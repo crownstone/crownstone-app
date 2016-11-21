@@ -17,11 +17,13 @@ import { ProfilePicture } from './ProfilePicture'
 import { TextCircle } from './TextCircle'
 
 
-
 export class PresentUsers extends Component {
   constructor(props) {
     super();
     this.renderState = {};
+
+    this.introAnimationTimeout = undefined;
+    this.exitAnimationTimeout = undefined;
 
     let roomRadius = props.roomRadius;
     let roomRadiusForBase = 1.5 * roomRadius;
@@ -123,6 +125,8 @@ export class PresentUsers extends Component {
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
+    clearTimeout(this.introAnimationTimeout);
+    clearTimeout(this.exitAnimationTimeout);
   }
 
   _getUsers() {
@@ -259,7 +263,7 @@ export class PresentUsers extends Component {
 
     // if we create new elements, we have to wait for them to draw before we animate them. 100 is an estimate.
     if (introAnimations.length > 0) {
-      setTimeout(() => {
+      this.introAnimationTimeout = setTimeout(() => {
         Animated.parallel(introAnimations).start();
       }, 100);
     }
@@ -271,7 +275,7 @@ export class PresentUsers extends Component {
         Animated.timing(this.positions[userId].top, {toValue: this.positions[userId].base.y, duration: 200}).start();
         Animated.timing(this.positions[userId].left, {toValue: this.positions[userId].base.x, duration: 200}).start();
         Animated.timing(this.positions[userId].opacity, {toValue: 0, duration: 200}).start();
-        setTimeout(() => {
+        this.exitAnimationTimeout = setTimeout(() => {
           delete this.positions[userId];
         },200)
 

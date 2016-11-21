@@ -20,7 +20,7 @@ export let stoneTypes = {
 
 let defaultSettings = {
   config: {
-    name: 'Plug-in Crownstone',
+    name: 'Crownstone Plug',
     icon: 'c2-pluginFilled',
     type: stoneTypes.plug,
     applianceId: null,
