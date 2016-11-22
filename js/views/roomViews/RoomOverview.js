@@ -167,7 +167,7 @@ export class RoomOverview extends Component {
     this.setState({pendingRequests:pendingRequests})
   }
 
-  getItems(stones) {
+  _getStoneList(stones) {
     let stoneArray = [];
     let ids = [];
     let stoneIds = Object.keys(stones);
@@ -188,14 +188,7 @@ export class RoomOverview extends Component {
       stoneArray.push(stones[stoneId]);
     });
 
-    return (
-      <SeparatedItemList
-        items={stoneArray}
-        ids={ids}
-        separatorIndent={false}
-        renderer={this._renderer.bind(this)}
-      />
-    )
+    return {stoneArray, ids};
   }
 
   _getExplanation(stonesInRoom, seeStoneInSetupMode) {
@@ -222,7 +215,12 @@ export class RoomOverview extends Component {
   }
 
 
-
+  /**
+   * The right item is the flickering icon for localization.
+   * @param state
+   * @param userAdmin
+   * @returns {XML}
+   */
   getRightItem(state, userAdmin) {
     if (userAdmin === true && this.props.locationId !== null && this.props.viewingRemotely !== true) {
       let canDoLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
@@ -247,7 +245,7 @@ export class RoomOverview extends Component {
                 <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
               </View>,
               <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>Edit</Text>
-              ]} />
+            ]} />
         )
       }
     }
@@ -297,16 +295,18 @@ export class RoomOverview extends Component {
       );
     }
     else {
+      let {stoneArray, ids} = this._getStoneList(stones);
       content = (
         <View>
           <ScrollView style={{position:'relative', top:-1}}>
-            <View style={{height:Math.max(Object.keys(stones).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
-              {this.getItems(stones)}
+            <View style={{height:Math.max(Object.keys(stoneArray).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
+              {this.renderStones(stoneArray, ids)}
             </View>
           </ScrollView>
         </View>
       );
     }
+
     return (
       <Background hideTopBar={true} image={backgroundImage}>
         <TopBar
@@ -329,6 +329,17 @@ export class RoomOverview extends Component {
         {content}
       </Background>
     );
+  }
+
+  renderStones(stoneArray, ids) {
+    return (
+      <SeparatedItemList
+        items={stoneArray}
+        ids={ids}
+        separatorIndent={false}
+        renderer={this._renderer.bind(this)}
+      />
+    )
   }
 }
 

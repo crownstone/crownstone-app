@@ -94,6 +94,7 @@ export class RoomCircle extends Component {
   }
 
   componentDidMount() {
+    console.log("did mount room circle", this.props.locationId)
     const { store } = this.props;
 
     if (this.props.locationId === null) {
@@ -152,8 +153,24 @@ export class RoomCircle extends Component {
   }
 
   componentWillUpdate(nextProps) {
+    console.log("component update room circle", this.props.locationId)
     this.checkAlertStatus(nextProps);
   }
+
+
+  componentWillUnmount() {
+    console.log("component UNMOUNT room circle", this.props.locationId)
+    clearTimeout(this.wiggleInterval);
+    clearTimeout(this.fadeAnimationTimeout);
+    clearTimeout(this.moveAnimationTimeout);
+    clearTimeout(this.wiggleTimeout);
+    this.unsubscribeSetupEvents.forEach((unsubscribe) => {
+      unsubscribe();
+    });
+    this.unsubscribe();
+    this.unsubscribeStoreEvents();
+  }
+
 
   checkAlertStatus(props) {
     if (props.locationId === null && props.seeStonesInSetupMode) {
@@ -175,18 +192,6 @@ export class RoomCircle extends Component {
         this.setWiggleInterval();
       }, this.jumpDuration + 700)
     }
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.wiggleInterval);
-    clearTimeout(this.fadeAnimationTimeout);
-    clearTimeout(this.moveAnimationTimeout);
-    clearTimeout(this.wiggleTimeout);
-    this.unsubscribeSetupEvents.forEach((unsubscribe) => {
-      unsubscribe();
-    });
-    this.unsubscribe();
-    this.unsubscribeStoreEvents();
   }
 
 

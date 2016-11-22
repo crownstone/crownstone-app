@@ -14,7 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
-import { getOrphanedStones, getAmountOfStonesInLocation } from '../../util/dataUtil'
+import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/dataUtil'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { LOG }               from '../../logging/Log'
 
@@ -96,13 +96,6 @@ export class RoomLayer extends Component {
       locationId: locationId,
     };
 
-
-    if (locationId === null) {
-      actionsParams.renderRightButton = function () {
-        return false
-      }
-    }
-
     return (
       <RoomCircle
         eventBus={this.props.eventBus}
@@ -125,11 +118,10 @@ export class RoomLayer extends Component {
     this.maxY = 0;
     const store = this.props.store;
     const state = store.getState();
-    let activeSphere = this.props.sphereId;
     let rooms = state.spheres[this.props.sphereId].locations;
 
-    let orphanedStones = getOrphanedStones(state, this.props.sphereId);
-    let showFloatingCrownstones = orphanedStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
+    let floatingStones = getFloatingStones(state, this.props.sphereId);
+    let showFloatingCrownstones = floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
 
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
@@ -142,11 +134,11 @@ export class RoomLayer extends Component {
     }
 
     for (let i = 0; i < roomIdArray.length; i++) {
-      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], amountOfRooms, i, activeSphere))
+      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], amountOfRooms, i, this.props.sphereId))
     }
 
     if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null, {}, amountOfRooms, amountOfRooms - 1, activeSphere))
+      roomNodes.push(this._renderRoom(null, {}, amountOfRooms, amountOfRooms - 1, this.props.sphereId))
     }
 
     if (roomIdArray.length > 6) {

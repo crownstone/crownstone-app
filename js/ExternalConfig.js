@@ -25,7 +25,7 @@ export const CLOUD_ADDRESS = 'https://crownstone-cloud.herokuapp.com/api/';
 
 export const DEBUG_STORE = true;
 export const DEBUG_SCHEDULER = false;
-export const DEBUG_BLE = false;
+export const DEBUG_BLE = true;
 export const DEBUG_CLOUD = true;
 export const DEBUG = true;
 

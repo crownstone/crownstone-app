@@ -39,6 +39,8 @@ export class SetupHelper {
     this.macAddress = undefined;
     this.cloudResponse = undefined;
     this.stoneIdInCloud = undefined; // shorthand to the cloud id
+
+    // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     eventBus.emit("ignoreTriggers");
     eventBus.emit("setupStarted", this.handle);
     eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
@@ -89,6 +91,7 @@ export class SetupHelper {
 
           store.batchDispatch(actions);
 
+          // Restore trigger state
           eventBus.emit("useTriggers");
           eventBus.emit("setupComplete", this.handle);
           let state = store.getState();
@@ -98,6 +101,7 @@ export class SetupHelper {
         }, 2500);
       })
       .catch((err) => {
+        // Restore trigger state
         eventBus.emit("useTriggers");
         eventBus.emit("setupCancelled", this.handle);
         if (err == "INVALID_SESSION_DATA") {

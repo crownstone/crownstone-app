@@ -32,7 +32,7 @@ export const getAmountOfStonesInLocation = function(state, sphereId, locationId)
   return counter;
 }
 
-export const getOrphanedStones = function(state, sphereId) {
+export const getFloatingStones = function(state, sphereId) {
   let filteredStones = [];
   if (sphereId !== undefined) {
     let stones = state.spheres[sphereId].stones;
