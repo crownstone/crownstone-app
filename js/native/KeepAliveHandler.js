@@ -36,9 +36,12 @@ class KeepAliveHandlerClass {
     const state = this.store.getState();
     let sphereIds = Object.keys(state.spheres);
 
+    LOGDebug("starting keepalive fun");
+
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
       if (sphere.config.present === true) {
+
         // check every sphere where we are present. Usually this is only one of them!!
         let allowRoomLevel = enoughCrownstonesForIndoorLocalization(state, sphereId);
         let userLevelInSphere = getMyLevelInSphere(state, sphereId);
@@ -55,9 +58,9 @@ class KeepAliveHandlerClass {
           let behaviour = undefined;
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
-          if (behaviourHomeExit.active) { behaviour = behaviourHomeExit; }
+          if      (behaviourHomeExit.active)                   { behaviour = behaviourHomeExit; }
           else if (behaviourRoomExit.active && allowRoomLevel) { behaviour = behaviourRoomExit; }
-          else if (behaviourAway.active) { behaviour = behaviourAway; }
+          else if (behaviourAway.active)                       { behaviour = behaviourAway;     }
 
           if (behaviour && stone.config.handle && stone.config.disabled === false) {
             let proxy = BleUtil.getProxy(stone.config.handle);

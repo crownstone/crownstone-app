@@ -148,6 +148,9 @@ export class RoomCircle extends Component {
       }
     });
 
+    // set the usage initially
+    this.usage = getCurrentPowerUsageFromState(store.getState(), this.props.sphereId, this.props.locationId);
+
     // wait to wiggle until after the initial movement.
     this.wiggleTimeout = setTimeout(() => {this.checkAlertStatus(this.props)},this.moveAnimationTimeout);
   }

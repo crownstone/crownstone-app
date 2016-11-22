@@ -118,7 +118,10 @@ export class StoneTracker {
       if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
         ref.touchSamples += 1;
         if (ref.touchSamples >= TOUCH_CONSECUTIVE_SAMPLES) {
+
+          // notify the user by vibration that the crownstone will be switched.
           Vibration.vibrate(400, false);
+
           let newState = stone.state.state > 0 ? 0 : 1;
           this._applySwitchState(newState, stone, stoneId, referenceId);
           ref.touchTime = now;
@@ -140,8 +143,6 @@ export class StoneTracker {
     // update local tracking of data
     ref.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * ref.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
     ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES ? 1 : 0;
-
-    console.log("nearTrigger:", stone.config.nearThreshold, "FAR trigger:", ref.rssiAverage < (stone.config.nearThreshold - 5), "AVERAGE RSSI:", ref.rssiAverage, ref.samples);
 
     // we need a decent sample set.
     if (ref.samples < MINIMUM_AMOUNT_OF_SAMPLES)
