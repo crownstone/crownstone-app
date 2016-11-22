@@ -17,6 +17,7 @@ import { getUUID }           from '../../util/util'
 import { getAiData }         from '../../util/dataUtil'
 import { BleUtil }           from '../../native/BleUtil'
 import { NativeBus }         from '../../native/Proxy'
+import { Vibration }         from 'react-native'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors} from '../styles'
 
@@ -46,6 +47,7 @@ export class DeviceStateEdit extends Component {
   componentWillUnmount() {
     this.unsubscribe();
     clearTimeout(this.detectionTimeout);
+    clearTimeout(this.pocketTimeout);
     if (this.unsubscribeNative) {
       this.unsubscribeNative();
     }
@@ -213,10 +215,14 @@ export class DeviceStateEdit extends Component {
           if (stoneHandle) {
             Alert.alert(
               "How near is near?",
-              "You can choose the switching point between near and far! Hold your phone at the distance you'd like the device to respond and press OK.",
+              "You can choose the switching point between near and far! After you press OK you have 5 seconds to hold your phone where it usually is (in your pocket?)",
               [{text: 'Cancel'}, {
                 text: 'OK', onPress: () => {
-                  this.defineThreshold(stoneHandle)
+                  // show loading bar
+                  this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
+                  this.pocketTimeout = setTimeout(() => {
+                    this.defineThreshold(stoneHandle)
+                  }, 5000);
                 }
               }]
             );
@@ -257,6 +263,9 @@ export class DeviceStateEdit extends Component {
           this.props.eventBus.emit("hideLoading");
           this.props.eventBus.emit("useTriggers");
 
+          // notify the user when the measurement failed
+          Vibration.vibrate(400, false);
+
           // stop the high frequency scanning
           if (this.stopHFScanning)
             this.stopHFScanning();
@@ -285,6 +294,10 @@ export class DeviceStateEdit extends Component {
 
             // tell the user it was a success!
             this.props.eventBus.emit("showLoading", "Great!");
+
+            // notify the user when the measurement is complete!
+            Vibration.vibrate(400, false);
+
             Alert.alert("Great!", "I'll make sure to respond when you are within this range! When you move out and move back in I can start to respond!", [{text:'OK', onPress: () => {
               this.props.eventBus.emit("hideLoading");
               this.props.eventBus.emit("useTriggers");

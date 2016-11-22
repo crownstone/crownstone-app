@@ -1,6 +1,6 @@
 import { Scheduler } from '../logic/Scheduler';
 import { NativeBus } from './Proxy';
-import { StoneStateHandler } from './StoneStateHandler'
+import { StoneStateHandler } from './StoneDisabilityHandler'
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../util/dataUtil'
 import { eventBus }  from '../util/eventBus'

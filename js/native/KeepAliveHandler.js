@@ -59,7 +59,7 @@ class KeepAliveHandlerClass {
           else if (behaviourRoomExit.active && allowRoomLevel) { behaviour = behaviourRoomExit; }
           else if (behaviourAway.active) { behaviour = behaviourAway; }
 
-          if (behaviour && stone.config.handle) {
+          if (behaviour && stone.config.handle && stone.config.disabled === false) {
             let proxy = BleUtil.getProxy(stone.config.handle);
 
             if (userLevelInSphere === 'guest') {

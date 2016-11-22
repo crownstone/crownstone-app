@@ -11,7 +11,7 @@ import RNFS from 'react-native-fs'
 
 
 export const LOG = function() {
-  let args = ['LOG ------------- :'];
+  let args = ['LOG ------------ :'];
   for (let i = 0; i < arguments.length; i++) {
     args.push(arguments[i]);
   }

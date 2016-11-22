@@ -1,6 +1,6 @@
 import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BleUtil } from './BleUtil';
-import { StoneStateHandler } from './StoneStateHandler'
+import { StoneStateHandler } from './StoneDisabilityHandler'
 import { eventBus } from './../util/eventBus';
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
@@ -8,6 +8,8 @@ import { enoughCrownstonesForIndoorLocalization } from '../util/dataUtil'
 import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
 
+let MINIMUM_AMOUNT_OF_SAMPLES = 3;
+let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
 let TOUCH_RSSI_THRESHOLD = -50;
 let TOUCH_TIME_BETWEEN_SWITCHING = 4000; // ms
 let TOUCH_CONSECUTIVE_SAMPLES = 1;
@@ -136,11 +138,13 @@ export class StoneTracker {
 
 
     // update local tracking of data
-    ref.rssiAverage = 0.7 * ref.rssiAverage + 0.3 * rssi;
-    ref.samples += ref.samples < 5 ? 1 : 0;
+    ref.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * ref.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
+    ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES ? 1 : 0;
+
+    console.log("nearTrigger:", stone.config.nearThreshold, "FAR trigger:", ref.rssiAverage < (stone.config.nearThreshold - 5), "AVERAGE RSSI:", ref.rssiAverage, ref.samples);
 
     // we need a decent sample set.
-    if (ref.samples < 5)
+    if (ref.samples < MINIMUM_AMOUNT_OF_SAMPLES)
       return;
 
     // these event are only used for when there are no room-level options possible

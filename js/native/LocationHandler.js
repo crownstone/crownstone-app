@@ -6,7 +6,6 @@ import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { getUUID } from '../util/util'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
-import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
 
 
