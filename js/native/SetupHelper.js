@@ -39,7 +39,7 @@ export class SetupHelper {
     this.macAddress = undefined;
     this.cloudResponse = undefined;
     this.stoneIdInCloud = undefined; // shorthand to the cloud id
-
+    eventBus.emit("ignoreTriggers");
     eventBus.emit("setupStarted", this.handle);
     eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
     return BleActions.connect(this.handle)
@@ -89,6 +89,7 @@ export class SetupHelper {
 
           store.batchDispatch(actions);
 
+          eventBus.emit("useTriggers");
           eventBus.emit("setupComplete", this.handle);
           let state = store.getState();
           if (Object.keys(state.spheres[sphereId].stones).length === 4) {
@@ -97,6 +98,7 @@ export class SetupHelper {
         }, 2500);
       })
       .catch((err) => {
+        eventBus.emit("useTriggers");
         eventBus.emit("setupCancelled", this.handle);
         if (err == "INVALID_SESSION_DATA") {
           Alert.alert("Encryption might be off","Error: INVALID_SESSION_DATA, which usually means encryption in this Crownstone is turned off. This app requires encryption to be on.",[{text:'OK'}]);

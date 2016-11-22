@@ -50,7 +50,6 @@ export const base = {
   _uploadImage: function(options) {
     let formData = new FormData();
     let path = preparePictureURI(options.path);
-    console.log(path, options);
     let filename = path.split('/');
     filename = filename[filename.length-1];
     formData.append('image', {type: 'image/jpeg', name: filename, uri: path });

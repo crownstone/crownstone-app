@@ -4,6 +4,7 @@ import { SetupHelper } from './SetupHelper';
 import { BleUtil } from './BleUtil';
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus';
+import { getMapOfCrownstonesInAllSpheresByHandle, getMyLevelInSphere } from '../util/dataUtil';
 import { CLOUD } from '../cloud/cloudAPI';
 import { getUUID } from '../util/util';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
@@ -36,6 +37,14 @@ class SetupStateHandlerClass {
     if (this._initialized === false) {
       this._store = store;
       this._init();
+
+      // TODO: Make into map entity so this is only done once.
+      // refresh maps when the database changes
+      this._store.subscribe(() => {
+        const state = this._store.getState();
+        this.referenceHandleMap = getMapOfCrownstonesInAllSpheresByHandle(state);
+      });
+
     }
   }
 
@@ -66,6 +75,8 @@ class SetupStateHandlerClass {
 
         // store the data of this setup Crownstone
         if (this._stonesInSetupStateAdvertisements[handle] === undefined) {
+          // if the user is an admin and the setup stone is already in the sphere, remove it.
+          this._findExitingCrownstone(handle);
 
           // check if it is the first setup stone we see and if so, emit the setupStonesDetected event
           if (Object.keys(this._stonesInSetupStateAdvertisements).length === 0) {
@@ -85,6 +96,18 @@ class SetupStateHandlerClass {
         this._setSetupTimeout(handle);
       });
     }
+  }
+
+  _findExitingCrownstone(handle) {
+    let sphereIds = Object.keys(this.referenceHandleMap);
+    for (let i = 0; i < sphereIds.length; i++) {
+      // TODO: permissions
+      if (this.referenceHandleMap[sphereIds[i]][handle] !== undefined) {
+        LOGError("DELETE EXISTING DEVICE", this.referenceHandleMap[sphereIds[i]][handle]);
+        // this._store.dispatch({type: "REMOVE_STONE", sphereId: sphereIds[i], stoneId: this.referenceHandleMap[sphereIds[i]][handle].id});
+      }
+    }
+
   }
 
   _setSetupTimeout(handle) {

@@ -13,7 +13,7 @@ class AdvertisementHandlerClass {
     this._initialized = false;
     this.store = undefined;
     this.state = {};
-    this.referenceMap = {};
+    this.referenceHandleMap = {};
     this.referenceCIDMap = {};
     this.stonesInConnectionProcess = {};
     this.temporaryIgnore = false;
@@ -30,10 +30,11 @@ class AdvertisementHandlerClass {
 
   init() {
     if (this._initialized === false) {
+      // TODO: Make into map entity so this is only done once.
       // refresh maps when the database changes
       this.store.subscribe(() => {
         this.state = this.store.getState();
-        this.referenceMap = getMapOfCrownstonesInAllSpheresByHandle(this.state);
+        this.referenceHandleMap = getMapOfCrownstonesInAllSpheresByHandle(this.state);
         this.referenceCIDMap = getMapOfCrownstonesInAllSpheresByCID(this.state);
       });
 
@@ -82,6 +83,7 @@ class AdvertisementHandlerClass {
 
   handleEvent(advertisement) {
     if (this.stonesInConnectionProcess[advertisement.handle] !== undefined) {
+      console.log("ignored advertisement since we seem to be connected");
       return;
     }
 
@@ -90,16 +92,19 @@ class AdvertisementHandlerClass {
 
     // service data not available
     if (typeof serviceData !== 'object') {
+      console.log("service data not object");
       return;
     }
 
     // check if we have a state
     if (this.state.spheres === undefined) {
+      console.log("we do not have a state");
       return;
     }
 
     // only relevant if we are in a sphere.
     if (this.state.spheres[advertisement.referenceId] === undefined) {
+      console.log("relevant sphere is not in state");
       return;
     }
 
@@ -112,13 +117,15 @@ class AdvertisementHandlerClass {
     if (serviceData.stateOfExternalCrownstone === false && refByCID !== undefined) {
       if (refByCID.handle != advertisement.handle) {
         this.store.dispatch({type: "UPDATE_STONE_HANDLE", sphereId: advertisement.referenceId, stoneId: refByCID.id, data:{handle: advertisement.handle}});
+        console.log("we have updated the handle");
         return;
       }
     }
 
-    let ref = this.referenceMap[sphereId][advertisement.handle];
+    let ref = this.referenceHandleMap[sphereId][advertisement.handle];
     // unknown crownstone
     if (ref === undefined) {
+      console.log("ref is undefined");
       return;
     }
 

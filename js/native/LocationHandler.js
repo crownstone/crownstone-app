@@ -120,10 +120,10 @@ class LocationHandlerClass {
 
 
       // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOGDebug('CURRENT ROOM', data)});
-      NativeBus.on(NativeBus.topics.enterSphere, () => {console.log("NATIVE EVENT"); this.enterSphere.bind(this)});
-      NativeBus.on(NativeBus.topics.exitSphere,  this.exitSphere.bind(this) );
-      NativeBus.on(NativeBus.topics.enterRoom,   this._enterRoom.bind(this)  );
-      NativeBus.on(NativeBus.topics.exitRoom,    this._exitRoom.bind(this)   );
+      NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {this.enterSphere(sphereId);});
+      NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => {this.exitSphere(sphereId);});
+      NativeBus.on(NativeBus.topics.enterRoom,   (data)     => {this._enterRoom(data);}); // data = {region: sphereId, location: locationId}
+      NativeBus.on(NativeBus.topics.exitRoom,    (data)     => {this._exitRoom(data);});  // data = {region: sphereId, location: locationId}
       NativeBus.on(NativeBus.topics.iBeaconAdvertisement, this._iBeaconAdvertisement.bind(this));
     }
   }

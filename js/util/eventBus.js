@@ -1,5 +1,6 @@
 import { DEBUG } from '../ExternalConfig'
 import { LOG, LOGError } from '../logging/Log'
+import { getUUID } from './util'
 
 
 export class EventBus {
@@ -21,7 +22,7 @@ export class EventBus {
       this._topics[topic] = [];
 
     // generate unique id
-    let id = (1e5 + Math.random()*1e9).toString(36) + '-' + (1e5 + Math.random()*1e9).toString(36);
+    let id = getUUID();
 
     this._topics[topic].push({id,callback});
 
@@ -38,13 +39,21 @@ export class EventBus {
 
         if (Object.keys(this._topics[topic]).length === 0)
           delete this._topics[topic];
+
       }
     };
   }
 
   emit(topic, data) {
     if (this._topics[topic] !== undefined) {
+      // Firing these elements can lead to a removal of a point in this._topics.
+      // To ensure we do not cause a shift by deletion (thus skipping a callback) we first put them in a separate Array
+      let fireElements = [];
       this._topics[topic].forEach((element) => {
+        fireElements.push(element);
+      });
+
+      fireElements.forEach((element) => {
         element.callback(data);
       })
     }

@@ -14,7 +14,6 @@ import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalCon
 import { getCurrentPowerUsageFromState } from '../../util/dataUtil'
 import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
-import { eventBus } from '../../util/eventBus';
 import { enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil' // maybe move away from native?
 import { LOGDebug } from '../../logging/Log';
 var Actions = require('react-native-router-flux').Actions;
@@ -139,7 +138,7 @@ export class RoomCircle extends Component {
     });
 
     // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
         (change.userPositionUpdate && change.userPositionUpdate.locationIds[this.props.locationId])
