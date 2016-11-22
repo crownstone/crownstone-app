@@ -154,9 +154,9 @@ class NativeBusClass {
       iBeaconAdvertisement: "iBeaconAdvertisement",             // data type = type_beacon[]
       enterSphere:          "enterSphere",                      // data type = string (sphereId)
       exitSphere:           "exitSphere",                       // data type = string (sphereId)
-      enterRoom:            "enterLocation",                    // data type = string (locationId)
-      exitRoom:             "exitLocation",                     // data type = string (locationId)
-      currentRoom:          "currentLocation",                  // data type = string (locationId)
+      enterRoom:            "enterLocation",                    // data type = {region: sphereId, location: locationId}
+      exitRoom:             "exitLocation",                     // data type = {region: sphereId, location: locationId}
+      currentRoom:          "currentLocation",                  // data type = {region: sphereId, location: locationId}
     };
 
     this.refMap = {};
