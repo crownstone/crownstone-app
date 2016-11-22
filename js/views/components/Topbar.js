@@ -68,7 +68,7 @@ export class TopBar extends Component {
         </TouchableOpacity>
       );
     }
-    return undefined;
+    return <View style={topBarStyle.topBarRightTouch} />;
   }
 
   render() {
