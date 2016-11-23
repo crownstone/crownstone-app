@@ -16,7 +16,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar'
 import { FingerprintManager } from '../../native/FingerprintManager'
 import { Bluenet } from '../../native/Proxy'
-import { sphereRequiresFingerprints } from '../../native/LocationHandler'
+import { sphereRequiresFingerprints } from '../../util/dataUtil'
 import { Background } from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
@@ -34,7 +34,6 @@ export class RoomTraining extends Component {
   }
 
   componentDidMount() {
-
     LOGDebug("Stopping indoor localization for training purposes");
     Bluenet.stopIndoorLocalization();
   }

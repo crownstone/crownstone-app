@@ -22,7 +22,6 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight }
 export class Sphere extends Component {
   constructor() {
     super();
-    this.setupData = {};
     this.animating = false;
   }
 

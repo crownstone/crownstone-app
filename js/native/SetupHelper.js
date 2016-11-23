@@ -1,14 +1,4 @@
-import React, {Component} from 'react'
-import {
-  Alert,
-  Dimensions,
-  Image,
-  PanResponder,
-  StyleSheet,
-  TouchableHighlight,
-  Text,
-  View
-} from 'react-native';
+import { Alert } from 'react-native';
 
 import { BleActions, NativeBus, Bluenet } from './Proxy';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'

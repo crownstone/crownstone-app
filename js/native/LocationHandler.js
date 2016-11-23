@@ -2,6 +2,7 @@ import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BleUtil } from './BleUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'
+import { sphereRequiresFingerprints } from './../util/dataUtil'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { getUUID } from '../util/util'
@@ -15,6 +16,11 @@ class RoomPresenceTracker {
     this.roomStates = {};
   }
 
+  /**
+   * this will clear out all pending timeouts for triggering because of exit room
+   * @param sphereId
+   * @param locationId
+   */
   enterRoom(sphereId, locationId) {
     if (this.roomStates[sphereId] && this.roomStates[sphereId][locationId]) {
       let stoneIds = Object.keys(this.roomStates[sphereId][locationId]);
@@ -52,13 +58,13 @@ class RoomPresenceTracker {
           this.roomStates[sphereId][locationId][stoneId]();
           this.roomStates[sphereId][locationId][stoneId] = undefined;
         }
-        this._handleTrigger(store, behaviour, stoneId, sphereId);
+        this._handleTrigger(store, behaviour, stoneId, locationId, sphereId);
       }
     });
   }
 
 
-  _handleTrigger(store, behaviour, stoneId, sphereId) {
+  _handleTrigger(store, behaviour, stoneId, locationId, sphereId) {
     let changeCallback = () => {
       let state = store.getState();
       let stone = state.spheres[sphereId].stones[stoneId];
@@ -182,7 +188,6 @@ class LocationHandlerClass {
             sphereActions.push({type: 'UPDATE_STONE_DISABILITY', stoneId: stoneId, data:{ disabled: true }});
           });
 
-          sphereActions.push({type: 'SET_ACTIVE_SPHERE', data: {activeSphere: sphereId}});
           sphereActions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: true, present: true}});
           this.store.batchDispatch(sphereActions);
         }).catch()
@@ -211,8 +216,6 @@ class LocationHandlerClass {
       if (state.user.betaAccess) {
         roomTracker.enterRoom(sphereId, locationId);
       }
-
-      this._triggerCrownstones(state, sphereId, TYPES.ROOM_ENTER);
     }
   }
 
@@ -277,13 +280,3 @@ class LocationHandlerClass {
 
 export const LocationHandler = new LocationHandlerClass();
 
-export const sphereRequiresFingerprints = function (state, sphereId) {
-  let locationIds = Object.keys(state.spheres[sphereId].locations);
-  let requiresFingerprints = false;
-  locationIds.forEach((locationId) => {
-    if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
-      requiresFingerprints = true;
-    }
-  });
-  return requiresFingerprints;
-};

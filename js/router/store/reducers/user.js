@@ -11,6 +11,7 @@ let defaultSettings = {
     isNew: true,
     picture: null,
     betaAccess: false,
+    seenTapToToggle: false,
     updatedAt: 1
   },
 };
@@ -22,6 +23,13 @@ export default (state = defaultSettings.user, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.betaAccess   = update(action.data.betaAccess,   newState.betaAccess);
+        return newState;
+      }
+      return state;
+    case 'USER_SEEN_TAP_TO_TOGGLE':
+      if (action.data) {
+        let newState = {...state};
+        newState.seenTapToToggle   = update(action.data.seenTapToToggle,   newState.seenTapToToggle);
         return newState;
       }
       return state;

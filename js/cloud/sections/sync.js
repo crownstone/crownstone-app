@@ -508,7 +508,7 @@ const syncDevices = function(state, actions, devices) {
       }
     });
 
-    if (deviceId === undefined) {
+    if (deviceId === undefined || state.devices[deviceId] === undefined) {
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
           actions.push({

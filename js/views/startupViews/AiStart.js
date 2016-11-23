@@ -20,9 +20,14 @@ import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
 
 export class AiStart extends Component {
-  constructor() {
+  constructor(props) {
     super();
-    this.state = {aiName: 'Rosii', aiSex:'female'}
+
+    let state = props.store.getState();
+    let sphereId = props.sphereId || Object.keys(state.spheres)[0];
+    let name = state.spheres[sphereId].config.aiName || "Rosii";
+    let sex = state.spheres[sphereId].config.aiSex || "female";
+    this.state = {aiName: name, aiSex: sex};
   }
 
   render() {

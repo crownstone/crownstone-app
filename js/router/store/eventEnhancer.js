@@ -168,6 +168,7 @@ function checkAction(action, affectedIds) {
       eventStatus.updateStoneConfig = affectedIds; break;
     case 'USER_LOG_IN':
       eventStatus.userLogin = affectedIds; break;
+    case 'USER_SEEN_TAP_TO_TOGGLE':
     case 'USER_UPDATE':
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus.changeUserData = affectedIds; break;

@@ -1,3 +1,5 @@
+import { Alert } from 'react-native';
+
 import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BleUtil } from './BleUtil';
 import { StoneStateHandler } from './StoneDisabilityHandler'
@@ -11,7 +13,8 @@ import { TYPES } from '../router/store/reducers/stones'
 let MINIMUM_AMOUNT_OF_SAMPLES = 3;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
 let TOUCH_RSSI_THRESHOLD = -52;
-let TOUCH_TIME_BETWEEN_SWITCHING = 4000; // ms
+let TAP_TO_TOGGLE_ENABLE_THRESHOLD = TOUCH_RSSI_THRESHOLD - 5;
+let TOUCH_TIME_BETWEEN_SWITCHING = 2000; // ms
 let TOUCH_CONSECUTIVE_SAMPLES = 1;
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
 
@@ -97,7 +100,8 @@ export class StoneTracker {
         rssiAverage: rssi,
         samples: 0,
         touchSamples:0,
-        touchTime: 0,
+        touchTime: now,
+        touchEnabled: false,
         cancelScheduledAwayAction: false,
         cancelScheduledNearAction: false
       };
@@ -115,12 +119,20 @@ export class StoneTracker {
     if (stone.config.touchToToggle === true) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
       // the sign > is because the rssi is negative!
-      if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
+      if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING && ref.touchEnabled === true) {
         ref.touchSamples += 1;
         if (ref.touchSamples >= TOUCH_CONSECUTIVE_SAMPLES) {
 
           // notify the user by vibration that the crownstone will be switched.
           Vibration.vibrate(400, false);
+
+          if (state.user.seenTapToToggle !== true) {
+            this.store.dispatch({type:'USER_SEEN_TAP_TO_TOGGLE', data:{seenTapToToggle: true}});
+            Alert.alert("That's tap to toggle! ", "You had your phone very very close to the Crownstone so I switched it for you!", [{text:"OK"}])
+          }
+
+          // remove continuous tap to toggle
+          ref.touchEnabled = false;
 
           let newState = stone.state.state > 0 ? 0 : 1;
           this._applySwitchState(newState, stone, stoneId, referenceId);
@@ -130,6 +142,10 @@ export class StoneTracker {
         }
       }
       else {
+        // first time we have to be at least out of tapping range once before enabling the feature.
+        if (rssi < (TAP_TO_TOGGLE_ENABLE_THRESHOLD)) {
+          ref.touchEnabled = true;
+        }
         ref.touchSamples = 0;
       }
     }

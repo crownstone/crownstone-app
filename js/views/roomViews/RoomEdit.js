@@ -41,7 +41,8 @@ export class RoomEdit extends Component {
         return;
       }
 
-      if ( change.updateLocationConfig && change.updateLocationConfig.locationIds[this.props.locationId] ) {
+      if ( change.updateLocationConfig && change.updateLocationConfig.locationIds[this.props.locationId] ||
+           change.changeFingerprint ) {
         if (this.deleting === false) {
           this.forceUpdate();
         }

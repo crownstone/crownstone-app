@@ -109,7 +109,7 @@ function handleUserInCloud(action, state) {
     CLOUD.removeProfileImage({background: true}).catch(() => {});
   }
 
-  if (action.data.firstName || action.data.lastName) {
+  if (action.data.firstName || action.data.lastName || action.data.isNew !== undefined) {
     let data = {
       firstName: state.user.firstName,
       lastName: state.user.lastName,
@@ -260,10 +260,16 @@ function handleSphereUserInCloud(action, state) {
 
 function handleUserLocationEnter(action, state) {
   let deviceId = getCurrentDeviceId(state);
-  CLOUD.forDevice(deviceId).updateLocation(action.locationId).catch(() => {});
+  if (deviceId) {
+    CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => {
+    });
+  }
 }
 
 function handleUserLocationExit(action, state) {
   let deviceId = getCurrentDeviceId(state);
-  CLOUD.forDevice(deviceId).updateLocation(null).catch(() => {});
+  if (deviceId) {
+    CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {
+    });
+  }
 }

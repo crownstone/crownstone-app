@@ -12,16 +12,16 @@ import {
 } from 'react-native';
 var Actions = require('react-native-router-flux').Actions;
 
-import { SetupStateHandler }                             from '../../native/SetupStateHandler'
-import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
-import { Orbs }                                          from '../components/Orbs'
-import { TopBar }                                        from '../components/Topbar'
-import { FinalizeLocalizationIcon }                      from '../components/FinalizeLocalizationIcon'
-import { AnimatedBackground }                            from '../components/animated/AnimatedBackground'
-import { Icon }                                          from '../components/Icon'
-import { Sphere }                                        from './Sphere'
-import { getMyLevelInSphere }                            from '../../util/dataUtil'
-import { LOG, LOGError, LOGDebug }                       from '../../logging/Log'
+import { SetupStateHandler }                              from '../../native/SetupStateHandler'
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION }  from '../../ExternalConfig'
+import { Orbs }                                           from '../components/Orbs'
+import { TopBar }                                         from '../components/Topbar'
+import { FinalizeLocalizationIcon }                       from '../components/FinalizeLocalizationIcon'
+import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
+import { Icon }                                           from '../components/Icon'
+import { Sphere }                                         from './Sphere'
+import { getMyLevelInSphere, sphereRequiresFingerprints } from '../../util/dataUtil'
+import { LOG, LOGError, LOGDebug }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
 
@@ -199,7 +199,8 @@ export class SphereOverview extends Component {
 
     let viewWidth = screenWidth*this.sphereIds.length;
     let viewHeight = screenHeight - topBarHeight - tabBarHeight;
-    let showFinalizeIndoorNavigationButton = isAdminInCurrentSphere && allowIndoorLocalization;
+    let moreFingerprintsNeeded = sphereRequiresFingerprints(state, activeSphere);
+    let showFinalizeIndoorNavigationButton = isAdminInCurrentSphere && allowIndoorLocalization && moreFingerprintsNeeded === true;
 
     return (
       <View {...this._panResponder.panHandlers}>

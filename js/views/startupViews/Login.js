@@ -323,6 +323,8 @@ export class Login extends Component {
       // set a small delay so the user sees "done"
       setTimeout(() => {
         this.props.eventBus.emit('hideProgress');
+        this.props.eventBus.emit("appStarted");
+
         prepareStoreForUser(store);
 
         if (state.user.isNew === true) {

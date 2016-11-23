@@ -18,7 +18,7 @@ export class TopBar extends Component {
       if (this.props.leftItem !== undefined) {
         return (
           <TouchableOpacity onPress={() => {this.props.leftAction();}} style={topBarStyle.topBarLeftTouch}>
-            <View style={{flexDirection:'row', alignItems:'center', flex:0}}>
+            <View style={{flexDirection:'row', alignItems:'center', flex:0, height: 42}}>
               {this.props.leftItem}
             </View>
           </TouchableOpacity>
@@ -42,7 +42,7 @@ export class TopBar extends Component {
     else if (this.props.left) {
       return (
         <TouchableOpacity onPress={() => {this.props.leftAction();}}  style={topBarStyle.topBarLeftTouch}>
-          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-start'}}>
+          <View style={{flexDirection:'row', alignItems:'center', flex:0, height: 42}}>
             <Text style={[topBarStyle.topBarLeft, topBarStyle.text, this.props.leftStyle]}>{this.props.left}</Text>
           </View>
         </TouchableOpacity>
