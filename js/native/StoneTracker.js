@@ -10,7 +10,7 @@ import { TYPES } from '../router/store/reducers/stones'
 
 let MINIMUM_AMOUNT_OF_SAMPLES = 3;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
-let TOUCH_RSSI_THRESHOLD = -50;
+let TOUCH_RSSI_THRESHOLD = -52;
 let TOUCH_TIME_BETWEEN_SWITCHING = 4000; // ms
 let TOUCH_CONSECUTIVE_SAMPLES = 1;
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
@@ -97,7 +97,7 @@ export class StoneTracker {
         rssiAverage: rssi,
         samples: 0,
         touchSamples:0,
-        touchTime: now,
+        touchTime: 0,
         cancelScheduledAwayAction: false,
         cancelScheduledNearAction: false
       };

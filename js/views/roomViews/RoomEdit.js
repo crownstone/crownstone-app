@@ -41,9 +41,10 @@ export class RoomEdit extends Component {
         return;
       }
 
-      if ( change.updateLocationConfig && change.updateLocationConfig.locationId === this.props.locationId ) {
-        if (this.deleting === false)
+      if ( change.updateLocationConfig && change.updateLocationConfig.locationIds[this.props.locationId] ) {
+        if (this.deleting === false) {
           this.forceUpdate();
+        }
       }
     });
 
@@ -91,6 +92,8 @@ export class RoomEdit extends Component {
 
     let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId};
     let items = [];
+
+    console.log("drawing thing", room)
 
     items.push({label:'ROOM SETTINGS',  type:'explanation', below:false});
     items.push({label:'Room Name', type: 'textEdit', value: room.config.name, callback: (newText) => {
