@@ -192,13 +192,17 @@ class NativeBusClass {
 
 export const NativeBus = new NativeBusClass();
 
+
 if (DEBUG_BLE) {
+  NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
+    LOGBle('setupAdvertisement', data.name, data.rssi, data.handle)
+  });
   NativeBus.on(NativeBus.topics.advertisement, (data) => {
-    LOGBle('crownstoneId', data.name, data.rssi)
-  })
+    LOGBle('crownstoneId', data.name, data.rssi, data.handle)
+  });
   NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-    LOGBle('iBeaconAdvertisement', data[0].rssi)
-  })
+    LOGBle('iBeaconAdvertisement', data[0].rssi, data.handle)
+  });
 }
 
 

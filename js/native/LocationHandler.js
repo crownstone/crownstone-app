@@ -118,9 +118,16 @@ class LocationHandlerClass {
       // check if the user is in another location:
       let locationIds = state.spheres[sphereId].locations;
       for (let i = 0; i < locationIds.length; i++) {
-        let location = state.spheres[sphereId].locations[locationIds[i]];
-        if (location.presentUsers.indexOf(state.user.userId) !== -1) {
-          this._exitRoom({region: sphereId, location: locationIds[i]});
+        // do not remove and put back in the same room
+        if (locationIds[i] !== locationId) {
+          let location = state.spheres[sphereId].locations[locationIds[i]];
+          if (location.presentUsers.indexOf(state.user.userId) !== -1) {
+            this._exitRoom({region: sphereId, location: locationIds[i]});
+          }
+        }
+        else {
+          // if we are already in the room, do not do anything
+          return;
         }
       }
 

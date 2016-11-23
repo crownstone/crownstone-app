@@ -252,8 +252,6 @@ export class RoomOverview extends Component {
   }
 
   render() {
-    console.log("RENDERING ROOM OVERVIEW")
-
     const store = this.props.store;
     const state = store.getState();
 
