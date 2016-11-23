@@ -338,12 +338,15 @@ export const prepareStoreForUser = function(store) {
 
 
 export const sphereRequiresFingerprints = function (state, sphereId) {
-  let locationIds = Object.keys(state.spheres[sphereId].locations);
-  let requiresFingerprints = false;
-  locationIds.forEach((locationId) => {
-    if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
-      requiresFingerprints = true;
-    }
-  });
+  let requiresFingerprints = true;
+  if (state.spheres && state.spheres[sphereId] && state.spheres[sphereId].locations) {
+    let locationIds = Object.keys(state.spheres[sphereId].locations);
+    let requiresFingerprints = false;
+    locationIds.forEach((locationId) => {
+      if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
+        requiresFingerprints = true;
+      }
+    });
+  }
   return requiresFingerprints;
 };

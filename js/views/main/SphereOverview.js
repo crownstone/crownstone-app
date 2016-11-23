@@ -179,6 +179,7 @@ export class SphereOverview extends Component {
     let isAdminInCurrentSphere = false;
     let activeSphere = state.app.activeSphere;
     let allowIndoorLocalization = false;
+    let background = this.props.backgrounds.main;
 
     if (noSpheres === false) {
       // todo: only do this on change
@@ -190,36 +191,50 @@ export class SphereOverview extends Component {
 
       if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true && isAdminInCurrentSphere == true))
         viewingRemotely = false;
+
+      if (viewingRemotely === true) {
+        background = this.props.backgrounds.mainRemoteNotConnected;
+      }
+
+      let viewWidth = screenWidth*this.sphereIds.length;
+      let viewHeight = screenHeight - topBarHeight - tabBarHeight;
+      let moreFingerprintsNeeded = sphereRequiresFingerprints(state, activeSphere);
+      let showFinalizeIndoorNavigationButton = isAdminInCurrentSphere && allowIndoorLocalization && moreFingerprintsNeeded === true;
+
+      return (
+        <View {...this._panResponder.panHandlers}>
+          <AnimatedBackground hideTopBar={true} image={background}>
+            <TopBar
+              title={state.spheres[activeSphere].config.name + '\'s Sphere'}
+              notBack={!showFinalizeIndoorNavigationButton}
+              leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
+              leftAction={() => {this._finalizeIndoorLocalization(activeSphere, viewingRemotely);}}
+              right={isAdminInCurrentSphere && !blockAddButton ? '+Room' : null}
+              rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
+            />
+            <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
+              {this._getSpheres(seeStonesInSetupMode)}
+            </Animated.View>
+            <Orbs amount={this.sphereIds.length} active={this._activeSphereIndex} />
+          </AnimatedBackground>
+        </View>
+      );
+    }
+    else {
+      return (
+        <View {...this._panResponder.panHandlers}>
+          <AnimatedBackground hideTopBar={true} image={background}>
+            <TopBar
+              title={"Hello There!"}
+            />
+            {this._getSpheres(false)}
+          </AnimatedBackground>
+        </View>
+      );
     }
 
-    let background = this.props.backgrounds.main;
-    if (viewingRemotely === true) {
-      background = this.props.backgrounds.mainRemoteNotConnected;
-    }
 
-    let viewWidth = screenWidth*this.sphereIds.length;
-    let viewHeight = screenHeight - topBarHeight - tabBarHeight;
-    let moreFingerprintsNeeded = sphereRequiresFingerprints(state, activeSphere);
-    let showFinalizeIndoorNavigationButton = isAdminInCurrentSphere && allowIndoorLocalization && moreFingerprintsNeeded === true;
 
-    return (
-      <View {...this._panResponder.panHandlers}>
-        <AnimatedBackground hideTopBar={true} image={background}>
-          <TopBar
-            title={state.spheres[activeSphere].config.name + '\'s Sphere'}
-            notBack={!showFinalizeIndoorNavigationButton}
-            leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
-            leftAction={() => {this._finalizeIndoorLocalization(activeSphere, viewingRemotely);}}
-            right={isAdminInCurrentSphere && !blockAddButton ? '+Room' : null}
-            rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
-          />
-          <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
-            {this._getSpheres(seeStonesInSetupMode)}
-          </Animated.View>
-          <Orbs amount={this.sphereIds.length} active={this._activeSphereIndex} />
-        </AnimatedBackground>
-      </View>
-    );
   }
 
   _getSpheres(seeStonesInSetupMode) {

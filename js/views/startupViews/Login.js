@@ -293,7 +293,7 @@ export class Login extends Component {
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         let state = store.getState();
-        if (Object.keys(state.spheres).length == 0 && state.user.isNew === true) {
+        if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Creating first Sphere.'});
           return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus);
         }
@@ -327,8 +327,7 @@ export class Login extends Component {
 
         prepareStoreForUser(store);
 
-        if (state.user.isNew === true) {
-          store.dispatch({type: 'USER_UPDATE', data:{isNew:false}});
+        if (state.user.isNew !== false) {
           Actions.aiStart({type: 'reset'});
         }
         else {

@@ -64,6 +64,7 @@ export class TextEditBar extends Component {
   validateInput(value) {
     switch(this.props.validation) {
       case 'email':
+        console.log(value,  emailChecker(value))
         return emailChecker(value) ? 'valid' : 'errorInvalid';
       case 'password':
         return this.validateCustom(value, {minLength: 1});
@@ -76,8 +77,17 @@ export class TextEditBar extends Component {
   }
 
   validate(value) {
-    if (this.refs && this.refs[this.refNameVerification]) {
-      // copy the content of the validation textarea to this.verificationContent to ensure it is persisted across redraws.
+    // handle the validation
+    if (this.props.verification === undefined  && this.props.validation !== undefined) {
+      let result = this.validateInput(value);
+      this.setState({validation: result});
+      if (this.props.validationCallback) {
+        this.props.validationCallback(result);
+      }
+    }
+    // handle the verification
+    else if (this.refs && this.refs[this.refNameVerification]) {
+      // copy the content of the validation text area to this.verificationContent to ensure it is persisted across redraws.
       if (this.props.verification)
         this.verificationContent = this.refs[this.refNameVerification].state.value;
 
@@ -99,7 +109,7 @@ export class TextEditBar extends Component {
       else if (this.state.validation === undefined)
         return undefined;
       else // we can have many different types of errors
-        return <Icon name="ios-close-circle" size={18} color={'#f03333'} style={{paddingLeft:3}}/>;
+        return <Icon name="ios-close-circle" size={18} color={'#f04928'} style={{paddingLeft:3}}/>;
     }
     return undefined;
   }

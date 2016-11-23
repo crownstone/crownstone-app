@@ -87,9 +87,9 @@ export class Register extends Component {
         autoCapitalize:'none',
         keyboardType: 'email-address',
         value: this.state.email,
-        validationCallback: (newState) => {this.inputStates.email = newState},
+        validationCallback: (newState) => {console.log("email validationCallback", newState);this.inputStates.email = newState},
         alwaysShowState: this.state.alwaysShowState,
-        callback: (newValue) => {this.setState({email: newValue})}
+        callback: (newValue) => {console.log("email callback", newValue); this.setState({email: newValue})}
       },
       {
         label: 'Password',
