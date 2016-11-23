@@ -1,7 +1,7 @@
 import { Bluenet } from '../../native/Proxy'
 import { BATCH } from './storeManager'
 import { LOG, LOGDebug, LOGError } from '../../logging/Log'
-import { sphereRequiresFingerprints } from '../../util/dataUtil'
+import { sphereRequiresFingerprints, enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
 
 
 /**

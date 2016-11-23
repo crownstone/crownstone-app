@@ -142,9 +142,9 @@ export class RoomLayer extends Component {
       roomNodes.push(this._renderRoom(null, {}, amountOfRooms, amountOfRooms - 1, this.props.sphereId))
     }
 
-    if (roomIdArray.length > 6) {
+    if (roomNodes.length > 6) {
       return (
-        <ScrollView style={{height: screenHeight, screenWidth: screenWidth}}>
+        <ScrollView style={{height: screenHeight, width: screenWidth}}>
           <View style={{height: this.maxY + 2 * this.roomRadius + 200}}>
             {roomNodes}
           </View>
