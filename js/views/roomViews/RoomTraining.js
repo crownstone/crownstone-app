@@ -8,7 +8,8 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Text,
-  View
+  View,
+  Vibration
 } from 'react-native';
 
 var Actions = require('react-native-router-flux').Actions;
@@ -22,6 +23,7 @@ import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
 import { getAiData } from '../../util/dataUtil';
 import { LOG, LOGDebug } from '../../logging/Log'
+
 import { IconButton } from '../components/IconButton'
 
 
@@ -73,6 +75,9 @@ export class RoomTraining extends Component {
   }
 
   finalizeFingerprint() {
+    // notify the user by vibration that the fingerprint collection is finished
+    Vibration.vibrate(400, false);
+
     this.setState({text:'Finished!', active:false});
     const store = this.props.store;
     const state = store.getState();
@@ -87,7 +92,6 @@ export class RoomTraining extends Component {
           locationId: this.props.locationId,
           data:{ fingerprintRaw: result }
         });
-
       }).done();
   }
 

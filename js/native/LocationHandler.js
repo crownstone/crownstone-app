@@ -2,6 +2,7 @@ import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BleUtil } from './BleUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'
+import { RoomTracker } from './RoomTracker'
 import { sphereRequiresFingerprints } from './../util/dataUtil'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
@@ -10,102 +11,6 @@ import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
 
 
-
-class RoomPresenceTracker {
-  constructor() {
-    this.roomStates = {};
-  }
-
-  /**
-   * this will clear out all pending timeouts for triggering because of exit room
-   * @param sphereId
-   * @param locationId
-   */
-  enterRoom(sphereId, locationId) {
-    if (this.roomStates[sphereId] && this.roomStates[sphereId][locationId]) {
-      let stoneIds = Object.keys(this.roomStates[sphereId][locationId]);
-      stoneIds.forEach((stoneId) => {
-        if (this.roomStates[sphereId][locationId][stoneId] !== undefined) {
-          this.roomStates[sphereId][locationId][stoneId]();
-          this.roomStates[sphereId][locationId][stoneId] = undefined;
-        }
-      });
-      this.roomStates[sphereId][locationId] = {};
-    }
-  }
-
-  exitRoom(store, sphereId, locationId) {
-    if (!this.roomStates[sphereId]) {
-      this.roomStates[sphereId] = {};
-    }
-
-    if (!this.roomStates[sphereId][locationId]) {
-      this.roomStates[sphereId][locationId] = {};
-    }
-
-    let state = store.getState();
-    let sphere = state.spheres[sphereId];
-    let stoneIds = Object.keys(sphere.stones);
-    stoneIds.forEach((stoneId) => {
-      // for each stone in sphere select the behaviour we want to copy into the keep Alive
-      let stone = sphere.stones[stoneId];
-      let element = this._getElement(sphere, stone);
-      let behaviour = element.behaviour[TYPES.ROOM_EXIT];
-
-      if (behaviour.active && stone.config.handle && behaviour.state !== stone.state.state) {
-        // cancel the previous timeout
-        if (this.roomStates[sphereId][locationId][stoneId] !== undefined) {
-          this.roomStates[sphereId][locationId][stoneId]();
-          this.roomStates[sphereId][locationId][stoneId] = undefined;
-        }
-        this._handleTrigger(store, behaviour, stoneId, locationId, sphereId);
-      }
-    });
-  }
-
-
-  _handleTrigger(store, behaviour, stoneId, locationId, sphereId) {
-    let changeCallback = () => {
-      let state = store.getState();
-      let stone = state.spheres[sphereId].stones[stoneId];
-      this.roomStates[sphereId][locationId][stoneId] = undefined;
-      // if we need to switch:
-      if (behaviour.state !== stone.state.state) {
-        this._applySwitchState(store, behaviour.state, stone, stoneId, sphereId);
-      }
-    };
-
-    if (behaviour.delay > 0) {
-      // use scheduler
-      this.roomStates[sphereId][locationId][stoneId] = Scheduler.scheduleCallback(changeCallback, behaviour.delay * 1000);
-    }
-    else {
-      changeCallback();
-    }
-  }
-
-  _applySwitchState(store, newState, stone, stoneId, sphereId) {
-    let data = {state: newState};
-    if (newState === 0) {
-      data.currentUsage = 0;
-    }
-    let proxy = BleUtil.getProxy(stone.config.handle);
-    proxy.perform(BleActions.setSwitchState, newState)
-      .then(() => {
-        store.dispatch({
-          type: 'UPDATE_STONE_STATE',
-          sphereId: sphereId,
-          stoneId: stoneId,
-          data: data
-        });
-      })
-      .catch((err) => {
-        LOGError("COULD NOT SET STATE", err);
-      })
-  }
-}
-
-const roomTracker = new RoomPresenceTracker();
 
 class LocationHandlerClass {
   constructor() {
@@ -210,12 +115,19 @@ class LocationHandlerClass {
     let locationId = data.location;
     let state = this.store.getState();
     if (sphereId && locationId) {
+      // check if the user is in another location:
+      let locationIds = state.spheres[sphereId].locations;
+      for (let i = 0; i < locationIds.length; i++) {
+        let location = state.spheres[sphereId].locations[locationIds[i]];
+        if (location.presentUsers.indexOf(state.user.userId) !== -1) {
+          this._exitRoom({region: sphereId, location: locationIds[i]});
+        }
+      }
+
       this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
-      // used for clearing the timeouts for this room
-      if (state.user.betaAccess) {
-        roomTracker.enterRoom(sphereId, locationId);
-      }
+      // used for clearing the timeouts for this room and toggling stones in this room
+      RoomTracker.enterRoom(this.store, sphereId, locationId);
     }
   }
 
@@ -229,7 +141,7 @@ class LocationHandlerClass {
 
       // used for clearing the timeouts for this room
       if (state.user.betaAccess) {
-        roomTracker.exitRoom(this.store, sphereId, locationId);
+        RoomTracker.exitRoom(this.store, sphereId, locationId);
       }
     }
   }
@@ -268,6 +180,7 @@ class LocationHandlerClass {
     });
   }
 
+  // TODO: remove duplicates
   _getElement(sphere, stone) {
     if (stone.config.applianceId) {
       return sphere.appliances[stone.config.applianceId];

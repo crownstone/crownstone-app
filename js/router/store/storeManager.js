@@ -1,6 +1,7 @@
 import { AsyncStorage }                    from 'react-native'
 import { createStore, applyMiddleware }    from 'redux'
 import CrownstoneReducer                   from './reducer'
+import { NativeEnhancer }                  from './nativeEnhancer'
 import { CloudEnhancer }                   from './cloudEnhancer'
 import { EventEnhancer }                   from './eventEnhancer'
 import { fakeStore }                       from './overrideStore'
@@ -104,12 +105,12 @@ class StoreManagerClass {
     if (initialState && typeof initialState === 'string') {
       let data = JSON.parse(initialState);
       LOGDebug("CURRENT DATA:", data);
-      this.store = createStore(enableBatching(CrownstoneReducer), data, applyMiddleware(CloudEnhancer, EventEnhancer));
+      this.store = createStore(enableBatching(CrownstoneReducer), data, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }
     else {
       LOG("Creating an empty database");
-      this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer));
+      this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }
 

@@ -51,7 +51,7 @@ class KeepAliveHandlerClass {
           // for each stone in sphere select the behaviour we want to copy into the keep Alive
           let stone = sphere.stones[stoneId];
           let element = this._getElement(sphere, stone);
-          let behaviourRoomExit = element.behaviour[TYPES.HOME_EXIT];
+          let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
           let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
           let behaviourAway = element.behaviour[TYPES.AWAY];
 
@@ -71,7 +71,7 @@ class KeepAliveHandlerClass {
                   LOG("KeepAlive Successful to ", stone.config.name, stone.config.handle);
                 })
                 .catch((err) => {
-                  LOGError("COULD NOT PERFORM KEEPALIVE AS GUEST TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
+                  LOGError("COULD NOT PERFORM KEEP ALIVE AS GUEST TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
                 })
             }
             else {
