@@ -38,6 +38,7 @@ import nl.dobots.bluenet.ble.base.callbacks.IProgressCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IStatusCallback;
 import nl.dobots.bluenet.ble.base.structs.CrownstoneServiceData;
 import nl.dobots.bluenet.ble.base.structs.EncryptionKeys;
+import nl.dobots.bluenet.ble.cfg.BleErrors;
 import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
 import nl.dobots.bluenet.ble.extended.CrownstoneSetup;
@@ -83,6 +84,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private boolean _connectCallbackInvoked;
 
 	private Map<UUID, String> _iBeaconSphereIds = new HashMap<>();
+	private String _currentSphereId;
 
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
@@ -176,6 +178,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			retVal.putBoolean("error", true);
 			retVal.putString("data", "missing parameter");
 		}
+
+		// This is also provided, it's the same as used for the iBeacon UUID:
+		if (config.hasKey("referenceId")) {
+			_currentSphereId = config.getString("referenceId");
+		} else {
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "missing referenceId");
+			_currentSphereId = "";
+		}
+
 		callback.invoke(retVal);
 	}
 
@@ -300,8 +312,37 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void disconnect(final Callback callback) {
 		// Command the crownstone to disconnect the phone
-		BleLog.LOGd(TAG, "Disconnect");
+		BleLog.LOGd(TAG, "Disconnect command");
 		// TODO
+		_bleExt.writeDisconnectCommand(new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.LOGd(TAG, "disconnect command success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				switch (error) {
+					// Regard errors about being disconnected as success
+					case BleErrors.ERROR_NEVER_CONNECTED:
+					case BleErrors.ERROR_NOT_CONNECTED: {
+						BleLog.LOGd(TAG, "disconnect command success");
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", false);
+						callback.invoke(retVal);
+						return;
+					}
+				}
+				BleLog.LOGd(TAG, "disconnect command error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "failed to disconnect: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
@@ -377,9 +418,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void commandFactoryReset(final Callback callback) {
+		BleLog.LOGd(TAG, "commandFactoryReset");
 		_bleExt.writeFactoryReset(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
+				BleLog.LOGd(TAG, "commandFactoryReset success");
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", false);
 				callback.invoke(retVal);
@@ -387,6 +430,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onError(int error) {
+				BleLog.LOGd(TAG, "commandFactoryReset error: " + error);
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
 				retVal.putString("data", "factory reset failed: " + error);
@@ -711,6 +755,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			// set the scan pause (how many ms should the service wait before starting the next scan)
 			_scanService.setScanPause(SLOW_SCAN_PAUSE);
 
+			_scanService.getBleExt().enableEncryption(true); // TODO: should be done by setSettings
+
 //			_bleExt = _scanService.getBleExt();
 
 			_iBeaconRanger = _scanService.getBleExt().getIbeaconRanger();
@@ -746,7 +792,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@Override
 	public void onDeviceScanned(BleDevice device) {
-		BleLog.LOGv(TAG, "event scanned device: " + device.getAddress());
+		BleLog.LOGv(TAG, "event scanned device: " + device.toString());
 		WritableMap advertisementMap = Arguments.createMap();
 		advertisementMap.putString("handle", device.getAddress());
 		advertisementMap.putString("name", device.getName());
@@ -791,17 +837,22 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //		sendEvent("advertisementData", advertisementMap);
 		if (device.isValidatedCrownstone()) {
 			if (device.isDfuMode()) {
+				BleLog.LOGv(TAG, "sendEvent verifiedDFUAdvertisementData: " + advertisementMap);
 				sendEvent("verifiedDFUAdvertisementData", advertisementMap);
 			}
 			else if(device.isSetupMode()) {
+				BleLog.LOGv(TAG, "sendEvent verifiedSetupAdvertisementData: " + advertisementMap);
 				sendEvent("verifiedSetupAdvertisementData", advertisementMap);
 			}
 			else {
+				advertisementMap.putString("referenceId", _currentSphereId);
+				BleLog.LOGv(TAG, "sendEvent verifiedAdvertisementData: " + advertisementMap);
 				sendEvent("verifiedAdvertisementData", advertisementMap);
 			}
 			// Clone, to avoid the "already consumed" error
 			Bundle advertisementBundle = Arguments.toBundle(advertisementMap);
 			WritableMap advertisementMapCopy = Arguments.fromBundle(advertisementBundle);
+			BleLog.LOGv(TAG, "sendEvent anyVerifiedAdvertisementData: " + advertisementMapCopy);
 			sendEvent("anyVerifiedAdvertisementData", advertisementMapCopy);
 		}
 //		if (device.isIBeacon()) {
@@ -831,18 +882,28 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				nearestMap.putString("handle", dev.getAddress());
 				nearestMap.putInt("rssi", dev.getRssi());
 				nearestMap.putBoolean("setupMode", dev.isSetupMode());
+				sendEvent("nearestVerifiedCrownstone", nearestMap);
+				BleLog.LOGv(TAG, "nearestVerifiedCrownstone: " + dev);
+				break;
+			}
+		}
+		for (BleDevice dev : sortedList) {
+			if (dev.isStone() && !dev.isSetupMode()) {
+				WritableMap nearestMap = Arguments.createMap();
+				nearestMap.putString("name", dev.getName());
+				nearestMap.putString("handle", dev.getAddress());
+				nearestMap.putInt("rssi", dev.getRssi());
+				nearestMap.putBoolean("setupMode", dev.isSetupMode());
 				sendEvent("nearestCrownstone", nearestMap);
 				BleLog.LOGv(TAG, "nearestCrownstone: " + dev);
 				break;
 			}
 		}
-
-
 	}
 
 	@Override
 	public void onBeaconScanned(BleDevice device) {
-		BleLog.LOGd(TAG, "event scanned beacon: " + device.getAddress());
+		BleLog.LOGv(TAG, "event scanned beacon: " + device.getAddress());
 		WritableMap advertisementMap = Arguments.createMap();
 		advertisementMap.putString("id", device.getProximityUuid().toString() + ".Maj:" + device.getMajor() + ".Min:" + device.getMinor());
 		advertisementMap.putString("uuid", device.getProximityUuid().toString());
@@ -852,23 +913,23 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// TODO: should be once per second with averaged rssi
 //		advertisementMap.putInt("rssi", device.getRssi());
 		advertisementMap.putInt("rssi", device.getAverageRssi());
-//		synchronized (this) {
+		synchronized (this) {
 //			BleLog.LOGv(TAG, "data: " + advertisementMap.toString());
 //			_ibeaconAdvertisements.pushMap(advertisementMap);
 			_ibeaconAdvertisements.add(advertisementMap);
-//		}
+		}
 //		sendEvent("iBeaconAdvertisement", advertisementMap);
 	}
 
 	private Runnable iBeaconTick = new Runnable() {
 		@Override
 		public void run() {
-//			synchronized (this) {
+			synchronized (this) {
 				if (_ibeaconAdvertisements.size() > 0) {
 //					BleLog.LOGd(TAG, "sendEvent iBeaconAdvertisement: " + _ibeaconAdvertisements.toString());
 //					sendEvent("iBeaconAdvertisement", _ibeaconAdvertisements);
 //					_ibeaconAdvertisements = Arguments.createArray();
-					BleLog.LOGd(TAG, "sendEvent iBeaconAdvertisement");
+					BleLog.LOGv(TAG, "sendEvent iBeaconAdvertisement");
 					WritableArray array = Arguments.createArray();
 					for (WritableMap m : _ibeaconAdvertisements) {
 						array.pushMap(m);
@@ -876,7 +937,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 					sendEvent("iBeaconAdvertisement", array);
 					_ibeaconAdvertisements.clear();
 				}
-//			}
+			}
 			_handler.postDelayed(this, IBEACON_TICK_INTERVAL);
 		}
 	};
@@ -884,6 +945,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@Override
 	public void onRegionEnter(UUID uuid) {
 		String referenceId = _iBeaconSphereIds.get(uuid);
+		BleLog.LOGd(TAG, "onRegionEnter: uuid=" + uuid + ", referenceId=" + referenceId);
 		if (referenceId != null) {
 			sendEvent("enterSphere", referenceId);
 		}
@@ -892,6 +954,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@Override
 	public void onRegionExit(UUID uuid) {
 		String referenceId = _iBeaconSphereIds.get(uuid);
+		BleLog.LOGd(TAG, "onRegionExit: uuid=" + uuid + ", referenceId=" + referenceId);
 		if (referenceId != null) {
 			sendEvent("exitSphere", referenceId);
 		}
