@@ -1,4 +1,5 @@
 import { update, getTime } from './reducerUtil'
+import { getUUID } from '../../../util/util'
 
 let defaultSettings = {
   user: {
@@ -12,7 +13,8 @@ let defaultSettings = {
     picture: null,
     betaAccess: false,
     seenTapToToggle: false,
-    updatedAt: 1
+    appIdentifier: null,
+    updatedAt: 1,
   },
 };
 
@@ -23,6 +25,14 @@ export default (state = defaultSettings.user, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.betaAccess   = update(action.data.betaAccess,   newState.betaAccess);
+        return newState;
+      }
+      return state;
+    case 'CREATE_APP_IDENTIFIER':
+      if (action.data) {
+        let newState = {...state};
+        if (state.appIdentifier === null)
+          newState.appIdentifier   = getUUID();
         return newState;
       }
       return state;

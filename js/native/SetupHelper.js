@@ -56,6 +56,12 @@ export class SetupHelper {
         setTimeout(() => {
           let actions = [];
           let isGuidestone = this.type === stoneTypes.guidestone;
+          let state = store.getState();
+          let showRestoreAlert = false;
+          if (state.spheres[sphereId].stones[this.stoneIdInCloud] !== undefined) {
+            showRestoreAlert = true;
+          }
+
           actions.push({
             type:           "ADD_STONE",
             sphereId:       sphereId,
@@ -81,10 +87,17 @@ export class SetupHelper {
 
           store.batchDispatch(actions);
 
+          if (showRestoreAlert) {
+            Alert.alert(
+              "I know this one!",
+              "This Crownstone was already your sphere. I've combined the existing Crownstone " +
+              "data with the one you just set up!",
+              [{text: "OK"}]);
+          }
+
           // Restore trigger state
           eventBus.emit("useTriggers");
           eventBus.emit("setupComplete", this.handle);
-          let state = store.getState();
           if (Object.keys(state.spheres[sphereId].stones).length === 4) {
             eventBus.emit('showLocalizationSetupStep1', sphereId);
           }

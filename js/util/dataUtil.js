@@ -332,8 +332,9 @@ export const prepareStoreForUser = function(store) {
     actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
   });
 
-  if (actions.length > 0)
-    store.batchDispatch(actions);
+  actions.push({type:'CREATE_APP_IDENTIFIER'});
+
+  store.batchDispatch(actions);
 };
 
 
