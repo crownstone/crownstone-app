@@ -16,6 +16,20 @@ carthage bootstrap --platform iOS --no-use-binaries
 cd ..
 ```
 
+### Android
+
+1. Clone the bluenet lib for android:
+
+        cd android
+        git clone https://github.com/crownstone/bluenet-lib-android.git bluenet
+        cd ..
+
+2. Import the project in Android Studio
+
+        File > New > Import Project ...
+
+    Choose the android dir.
+
 ## Commands
 
 Run the tests:
