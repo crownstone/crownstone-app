@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
-import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import { Dimensions, PixelRatio, Platform, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/colorConverters'
 
+
 export const screenWidth = Dimensions.get('window').width;
-export const screenHeight = Dimensions.get('window').height;
-export const topBarHeight = 62;
+
+export const screenHeight = Platform.OS === 'android' ?
+  Dimensions.get('window').height - 25 :  // android includes the top bar in the window height but we cant draw there.
+  Dimensions.get('window').height;
 export const tabBarHeight = 50;
-export const statusBarHeight = 20;
+export const statusBarHeight = Platform.OS === 'android' ? 0 :  20; // Status bar in iOS is 20 high
+export const topBarHeight = 42 + statusBarHeight;
 export const pxRatio = PixelRatio.get();
 
-export let barHeight = 21*pxRatio;
-export let barHeightLarge = 40*pxRatio;
+export let barHeight = 42;
+export let barHeightLarge = 80;
 
 export let colors = {
   menuBackground: {hex:'#00263e'},
@@ -118,7 +122,7 @@ export const styles = StyleSheet.create({
   },
   shadedStatusBar:{
     backgroundColor:'rgba(0,0,0,0.2)',
-    height:20,
+    height: statusBarHeight,
     width:screenWidth,
   },
   button: {

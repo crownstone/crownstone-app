@@ -27,7 +27,7 @@ export class IconCircle extends Component {
   render() {
     let size = this.props.size || 60;
     return (
-      <View>
+      <View style={{width:size, height:size}}>
         <View style={[{
           width:size,
           height:size,
