@@ -178,6 +178,7 @@ function checkAction(action, affectedIds) {
     case "REMOVE_DEVICE":
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
+    case "CREATE_APP_IDENTIFIER":
       break;
     default:
       LOGError("UNKNOWN ACTION TYPE:", action);

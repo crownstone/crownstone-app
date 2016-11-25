@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import {
   Animated,
   AppRegistry,
+  Keyboard,
   View
 } from 'react-native';
 
@@ -23,8 +24,11 @@ class Root extends Component {
   componentDidMount() {
 //    SplashScreen.hide();
 
+
+
+
     let snapBack = () => {
-      Animated.timing(this.state.top, {toValue: 0, duration:0}).start();
+      Animated.timing(this.state.top, {toValue: 0, duration: 50}).start();
     };
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
@@ -32,9 +36,10 @@ class Root extends Component {
       let distFromBottom = screenHeight - posY;
       Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:200}).start()
     }));
-    this.unsubscribe.push(eventBus.on('blur', () => {
-      Animated.timing(this.state.top, {toValue: 0, duration:200}).start()
-    }));
+    this.unsubscribe.push(eventBus.on('blur', snapBack));
+
+    // if the keyboard is minimized, shift back down
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', snapBack);
 
     // catch for the simulator
     this.unsubscribe.push(eventBus.on('showLoading', snapBack));
@@ -48,11 +53,12 @@ class Root extends Component {
   componentWillUnmount() {
     this.unsubscribe.forEach((callback) => {callback()});
     this.unsubscribe = [];
+    this.keyboardDidHideListener.remove();
   }
 
 
   render() {
-    return <View style={{flex:1, backgroundColor: colors.menuBackground.h}}>
+    return <View style={{flex:1, backgroundColor: colors.menuBackground.hex}}>
       <Animated.View style={{flex:1, position:'relative', top: this.state.top}}>
         <AppRouter />
       </Animated.View>

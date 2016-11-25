@@ -256,12 +256,14 @@ export class DeviceEdit extends Component {
     return (
       <Background image={backgroundImage} >
         <ScrollView>
-          <FadeInView visible={!this.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
-            <ListEditableItems items={applianceOptions} separatorIndent={true}/>
-          </FadeInView>
-          <FadeInView visible={this.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={300}>
-            <ListEditableItems items={stoneOptions} separatorIndent={false}/>
-          </FadeInView>
+          <View style={{height:screenHeight}}>
+            <FadeInView visible={!this.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
+              <ListEditableItems items={applianceOptions} separatorIndent={true}/>
+            </FadeInView>
+            <FadeInView visible={this.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={300}>
+              <ListEditableItems items={stoneOptions} separatorIndent={false}/>
+            </FadeInView>
+          </View>
         </ScrollView>
       </Background>
     )

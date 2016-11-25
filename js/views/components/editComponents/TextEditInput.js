@@ -69,13 +69,13 @@ export class TextEditInput extends Component {
         autoCorrect={this.props.autoCorrect || false}
         onFocus={this.props.onFocus ? () => {this.focus(); this.props.onFocus();} : () => {this.focus();}}
         style={[{flex:1, position:'relative', top:1}, this.props.style]}
-        autoCapitalize={this.props.autoCapitalize || 'words'}
+        autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
         value={this.props.optimization === false ? this.props.value : this.state.value}
         placeholder={this.props.placeholder}
         placeholderTextColor={this.props.placeholderTextColor}
         secureTextEntry={this.props.secureTextEntry}
         onChangeText={(newValue) => {this.setState({value:newValue})}}
-        keyboardType={this.props.keyboardType}
+        keyboardType={this.props.keyboardType || 'default'}
         onEndEditing={() => {this.blur();}}
         onSubmitEditing={() => {this.blur(); if (this.props.nextFunction) { this.props.nextFunction(); }}}
       />

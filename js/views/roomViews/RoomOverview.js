@@ -222,7 +222,7 @@ export class RoomOverview extends Component {
    * @returns {XML}
    */
   getRightItem(state, userAdmin) {
-    if (userAdmin === true && this.props.locationId !== null && this.props.viewingRemotely !== true) {
+    if (userAdmin === true && this.props.locationId !== null && this.viewingRemotely !== true) {
       let canDoLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
       let showFingerprintNeeded = false;
       if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
