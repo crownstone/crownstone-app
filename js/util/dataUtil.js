@@ -1,4 +1,6 @@
 import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
+import { LOG, LOGError } from '../logging/Log'
+
 
 const DeviceInfo = require('react-native-device-info');
 
