@@ -16,33 +16,37 @@ import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flu
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../styles'
 import { Icon } from './Icon'
 
-let MENU_ITEMS = [
-  {
-    id: 'overview',
-    name: 'Overview',
-    element: <Icon name={"ios-color-filter-outline"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-    action: () => {Actions.overview({type:'reset'})}
-  },
-  {
-    id: 'settings',
-    name: 'Settings',
-    element: <Icon name={"ios-cog"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-    action: () => { console.log("here");Actions.settingsOverview({type:'reset'})}
-  }
-
-];
-
 let FACTOR = 0.75;
 let BLUEPADDING = 4;
 
 export class SideBar extends Component {
   constructor() {
     super();
+
+    this.menuItems = [
+      {
+        id: 'overview',
+        label: 'Overview',
+        element: <Icon name={"ios-color-filter-outline"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+        action: () => {
+          Actions.overview();
+        }
+      },
+      {
+        id: 'settings',
+        label: 'Settings',
+        element: <Icon name={"ios-cog"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+        action: () => {
+          Actions.settings({open: false});
+        }
+      }
+
+    ];
   }
 
   _fillItemList(content, items) {
     for (let i = 0; i < items.length; i++) {
-      content.push(<MenuItem key={items[i].id} {...items[i]} />);
+      content.push(<MenuItem key={items[i].id} {...items[i]} closeCallback={this.props.closeCallback} />);
     }
   }
 
@@ -53,7 +57,7 @@ export class SideBar extends Component {
       this._fillItemList(content, this.props.actions);
     }
     content.push(<MenuSegmentSeparator key="categoryLabel" label="Categories"/>);
-    this._fillItemList(content, MENU_ITEMS);
+    this._fillItemList(content, this.menuItems);
     return content;
   }
 
@@ -100,7 +104,9 @@ class MenuItem extends Component {
         borderColor: colors.darkGray.rgba(0.1),
         backgroundColor: colors.lightGray.rgba(0.5),
         alignItems:'center'
-      }} onPress={() => {this.props.action()}}>
+      }} onPress={() => {
+        this.props.action()
+      }}>
         {this.props.element}
         <Text style={{paddingLeft: 15, fontSize:16, fontWeight: '300', color: colors.darkGray.rgba(0.5)}}>{this.props.label}</Text>
       </TouchableOpacity>
