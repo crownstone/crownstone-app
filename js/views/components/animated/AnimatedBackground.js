@@ -38,7 +38,7 @@ export class AnimatedBackground extends Component {
     }
 
     return (
-      <View style={styles.fullscreen}>
+      <View style={[styles.fullscreen,{elevation: 0}]}>
         <View style={styles.fullscreen}>
           {this.state.baseImage}
         </View>

@@ -55,22 +55,26 @@ export const INITIALIZER = {
   start: function(store) {
     if (this.started === false) {
       // subscribe to iBeacons when required.
-      CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});
-      eventBus.on(    'appStarted',                       () => {
-        BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
-        LocalizationUtil.trackSpheres(store);
-      });
-      eventBus.on(    'sphereCreated',                    () => {LocalizationUtil.trackSpheres(store);});
-
-      // sync every 5 minutes
-      Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*5});
-      Scheduler.loadCallback('backgroundSync', () => {
-        let state = store.getState();
-        if (state.user.userId) {
-          LOG("STARTING ROUTINE SYNCING IN BACKGROUND");
-          CLOUD.sync(store, true).catch((err) => { LOGError("Error during background sync: ", err)});
-        }
-      });
+      LOG("-------------------------- DISABLE SYNC --------------------------");
+      LOG("-------------------------- DISABLE SYNC --------------------------");
+      LOG("-------------------------- DISABLE SYNC --------------------------");
+      LOG("-------------------------- DISABLE SYNC --------------------------");
+      // CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});
+      // eventBus.on(    'appStarted',                       () => {
+      //   BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
+      //   LocalizationUtil.trackSpheres(store);
+      // });
+      // eventBus.on(    'sphereCreated',                    () => {LocalizationUtil.trackSpheres(store);});
+      //
+      // // sync every 5 minutes
+      // Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*5});
+      // Scheduler.loadCallback('backgroundSync', () => {
+      //   let state = store.getState();
+      //   if (state.user.userId) {
+      //     LOG("STARTING ROUTINE SYNCING IN BACKGROUND");
+      //     CLOUD.sync(store, true).catch((err) => { LOGError("Error during background sync: ", err)});
+      //   }
+      // });
 
       // configure the CLOUD network handler.
       let handler = function(error) {

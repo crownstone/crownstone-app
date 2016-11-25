@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {
-  PixelRatio,
+  Platform,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -9,10 +9,58 @@ import {
 } from 'react-native';
 
 import { Icon } from './Icon';
-import { styles, colors, screenWidth,  topBarHeight, statusBarHeight} from '../styles'
+import { styles, colors, screenWidth, topBarHeight, statusBarHeight} from '../styles'
+var Actions = require('react-native-router-flux').Actions;
 
+class TopBarAndroid extends Component {
+  _getLeftContent() {
+    if (this.props.left || this.props.leftItem || this.props.right || this.props.rightItem) {
+      return (
+        <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true })}} style={[topBarStyle.topBarLeftTouch]}>
+          <View style={{flexDirection:'row', alignItems:'center', flex:0, height: 42}}>
+            <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
+          </View>
+        </TouchableOpacity>
+      )
+    }
+    return <View style={topBarStyle.topBarLeftTouch} />;
+  }
 
-export class TopBar extends Component {
+  _getRightContent() {
+    // if (this.props.rightItem) {
+    //   return (
+    //     <TouchableOpacity onPress={() => {this.props.rightAction();}} style={topBarStyle.topBarRightTouch}>
+    //       {this.props.rightItem}
+        {/*</TouchableOpacity>*/}
+      {/*);*/}
+    {/*}*/}
+    {/*else if (this.props.right) {*/}
+      {/*return (*/}
+        {/*<TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>*/}
+          {/*<View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: 42}}>*/}
+            {/*<Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{this.props.right}</Text>*/}
+    //       </View>
+    //     </TouchableOpacity>
+    //   );
+    // }
+    return <View style={topBarStyle.topBarRightTouch} />;
+  }
+
+  render() {
+    let barHeight = topBarHeight - statusBarHeight;
+    return (
+      <View>
+        <View style={[topBarStyle.topBar,this.props.style]}>
+          <View style={[{height: barHeight}]}>{this._getLeftContent()}</View>
+          <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter, topBarStyle.titleText, this.props.titleStyle]}>{this.props.title}</Text></View>
+          <View style={[{height: barHeight}]}>{this._getRightContent()}</View>
+        </View>
+      </View>
+    );
+  }
+}
+
+class TopBarIOS extends Component {
   _getLeftContent() {
     if (this.props.notBack !== true && this.props.leftAction !== undefined) {
       if (this.props.leftItem !== undefined) {
@@ -76,16 +124,24 @@ export class TopBar extends Component {
     return (
       <View>
         <View style={[topBarStyle.topBar,this.props.style]}>
-
           <View style={[{height: barHeight}]}>{this._getLeftContent()}</View>
           <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter, topBarStyle.titleText, this.props.titleStyle]}>{this.props.title}</Text></View>
           <View style={[{height: barHeight}]}>{this._getRightContent()}</View>
-
         </View>
       </View>
     );
   }
 }
+
+let TopBarClass;
+if (Platform.OS === 'android') {
+  TopBarClass = TopBarAndroid;
+}
+else {
+  TopBarClass = TopBarIOS;
+}
+
+export const TopBar = TopBarClass;
 
 export const topBarStyle = StyleSheet.create({
   topBar: {

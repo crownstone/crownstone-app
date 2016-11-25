@@ -210,7 +210,7 @@ export class AppRouter extends Component {
         <View style={{flex:1}}>
           <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} getBackground={this.getBackground.bind(this)} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
-              <Scene key="drawer" component={DrawerUnit} open={true} >
+              <Scene key="drawer" component={DrawerUnit} open={false} >
                 <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
                 <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
                 <Scene key="register"                   component={Views.Register}                   hideNavBar={false} title="Register" {...navBarStyle} />
