@@ -22,10 +22,7 @@ class Root extends Component {
 
   // this is used to scroll the view up when typing is active
   componentDidMount() {
-//    SplashScreen.hide();
-
-
-
+    // SplashScreen.hide();
 
     let snapBack = () => {
       Animated.timing(this.state.top, {toValue: 0, duration: 50}).start();
@@ -58,7 +55,7 @@ class Root extends Component {
 
 
   render() {
-    return <View style={{flex:1, backgroundColor: colors.menuBackground.hex}}>
+    return <View style={{flex:1}}>
       <Animated.View style={{flex:1, position:'relative', top: this.state.top}}>
         <AppRouter />
       </Animated.View>

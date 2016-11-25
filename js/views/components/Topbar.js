@@ -12,12 +12,15 @@ import { Icon } from './Icon';
 import { styles, colors, screenWidth, topBarHeight, statusBarHeight} from '../styles'
 var Actions = require('react-native-router-flux').Actions;
 
+
+let barHeight = topBarHeight - statusBarHeight;
+
 class TopBarAndroid extends Component {
   _getLeftContent() {
     if (this.props.left || this.props.leftItem || this.props.right || this.props.rightItem) {
       return (
         <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true })}} style={[topBarStyle.topBarLeftTouch]}>
-          <View style={{flexDirection:'row', alignItems:'center', flex:0, height: 42}}>
+          <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
             <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
           </View>
         </TouchableOpacity>
@@ -27,22 +30,22 @@ class TopBarAndroid extends Component {
   }
 
   _getRightContent() {
-    // if (this.props.rightItem) {
-    //   return (
-    //     <TouchableOpacity onPress={() => {this.props.rightAction();}} style={topBarStyle.topBarRightTouch}>
-    //       {this.props.rightItem}
-        {/*</TouchableOpacity>*/}
-      {/*);*/}
-    {/*}*/}
-    {/*else if (this.props.right) {*/}
-      {/*return (*/}
-        {/*<TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>*/}
-          {/*<View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: 42}}>*/}
-            {/*<Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{this.props.right}</Text>*/}
-    //       </View>
-    //     </TouchableOpacity>
-    //   );
-    // }
+    if (this.props.rightItem) {
+      return (
+        <TouchableOpacity onPress={() => {this.props.rightAction();}} style={topBarStyle.topBarRightTouch}>
+          {this.props.rightItem}
+        </TouchableOpacity>
+      );
+    }
+    else if (this.props.right) {
+      return (
+        <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>
+          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
+            <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{this.props.right}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
     return <View style={topBarStyle.topBarRightTouch} />;
   }
 
@@ -66,7 +69,7 @@ class TopBarIOS extends Component {
       if (this.props.leftItem !== undefined) {
         return (
           <TouchableOpacity onPress={() => {this.props.leftAction();}} style={topBarStyle.topBarLeftTouch}>
-            <View style={{flexDirection:'row', alignItems:'center', flex:0, height: 42}}>
+            <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
               {this.props.leftItem}
             </View>
           </TouchableOpacity>
@@ -79,7 +82,7 @@ class TopBarIOS extends Component {
         }
         return (
           <TouchableOpacity onPress={() => {this.props.leftAction();}} style={[topBarStyle.topBarLeftTouch]}>
-            <View style={{flexDirection:'row', alignItems:'center', flex:0, height: 42}}>
+            <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
               <Icon name="ios-arrow-back" size={33} color={color} style={{paddingRight:6, marginTop:2}} />
               <Text style={[topBarStyle.topBarLeft,topBarStyle.text, this.props.leftStyle]}>{this.props.left}</Text>
             </View>
@@ -90,7 +93,7 @@ class TopBarIOS extends Component {
     else if (this.props.left) {
       return (
         <TouchableOpacity onPress={() => {this.props.leftAction();}}  style={topBarStyle.topBarLeftTouch}>
-          <View style={{flexDirection:'row', alignItems:'center', flex:0, height: 42}}>
+          <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
             <Text style={[topBarStyle.topBarLeft, topBarStyle.text, this.props.leftStyle]}>{this.props.left}</Text>
           </View>
         </TouchableOpacity>
@@ -110,7 +113,7 @@ class TopBarIOS extends Component {
     else if (this.props.right) {
       return (
         <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>
-          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: 42}}>
+          <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
             <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{this.props.right}</Text>
           </View>
         </TouchableOpacity>
@@ -120,7 +123,6 @@ class TopBarIOS extends Component {
   }
 
   render() {
-    let barHeight = topBarHeight - statusBarHeight;
     return (
       <View>
         <View style={[topBarStyle.topBar,this.props.style]}>

@@ -29,48 +29,17 @@ import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
+import { SideMenu }               from '../views/components/SideMenu'
 import { LocalizationSetupStep1 } from '../views/components/LocalizationSetupStep1'
 import { LocalizationSetupStep2 } from '../views/components/LocalizationSetupStep2'
 import { BleStateOverlay }        from '../views/components/BleStateOverlay'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
-import Drawer from 'react-native-drawer';
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
 
 let store = {};
 
-
-class DrawerUnit extends Component {
-  render(){
-    const state = this.props.navigationState;
-    const children = state.children;
-    return (
-      <Drawer
-        ref="navigation"
-        open={state.open}
-        onOpen={()=> Actions.refresh({key:state.key, open: true})}
-        onClose={()=>Actions.refresh({key:state.key, open: false})}
-        type="overlay"
-        content={<View style={{flex:1, backgroundColor:'#d00'}} />}
-        tapToClose={true}
-        openDrawerOffset={0.2}
-        panCloseMask={0.2}
-        negotiatePan={true}
-        styles={drawerStyles}
-        tweenHandler={(ratio) => ({
-                 main: { opacity:Math.max(0.54,1-ratio) }
-            })}>
-        <DefaultRenderer navigationState={children[0]} onNavigate={this.props.onNavigate} />
-      </Drawer>
-    );
-  }
-}
-
-const drawerStyles = {
-  // drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3},
-  drawer: {elevation: 3},
-}
 
 export class AppRouter extends Component {
   constructor() {
@@ -125,7 +94,12 @@ export class AppRouter extends Component {
         CLOUD.getUserData({background:true})
           .then((reply) => {
             LOG("Verified User.", reply);
-            CLOUD.sync(store, true);
+
+            LOG("-------------------------- DISABLE SYNC --------------------------");
+            LOG("-------------------------- DISABLE SYNC --------------------------");
+            LOG("-------------------------- DISABLE SYNC --------------------------");
+            LOG("-------------------------- DISABLE SYNC --------------------------");
+            // CLOUD.sync(store, true);
           })
           .catch((reply) => {
             LOG("COULD NOT VERIFY USER -- ERROR", reply);
@@ -207,10 +181,10 @@ export class AppRouter extends Component {
     LOGDebug("RENDERING ROUTER");
     if (this.state.storeInitialized === true) {
       return (
-        <View style={{flex:1}}>
-          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} getBackground={this.getBackground.bind(this)} eventBus={eventBus}>
+        <View style={{flex:1, backgroundColor: colors.menuBackground.hex}}>
+          <Router createReducer={reducerCreate} store={store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.black.hex}}} backgrounds={this.backgrounds} getBackground={this.getBackground.bind(this)} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
-              <Scene key="drawer" component={DrawerUnit} open={false} >
+              <Scene key="drawer" component={SideMenu} open={true} >
                 <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
                 <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
                 <Scene key="register"                   component={Views.Register}                   hideNavBar={false} title="Register" {...navBarStyle} />

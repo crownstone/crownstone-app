@@ -176,7 +176,7 @@ export class AppRouter extends Component {
     if (this.state.storeInitialized === true) {
       return (
         <View style={{flex:1}}>
-          <Router createReducer={reducerCreate} store={store} {...navBarStyle} backgrounds={this.backgrounds} getBackground={this.getBackground.bind(this)} eventBus={eventBus}>
+          <Router createReducer={reducerCreate} store={store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.menuBackground.hex}}} backgrounds={this.backgrounds} getBackground={this.getBackground.bind(this)} eventBus={eventBus}>
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
@@ -262,6 +262,7 @@ class TabIcon extends Component {
 
 
 let navBarStyle = {
+  backgroundColor:colors.menuBackground.hex,
   navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
   titleStyle:{color:'white'},
 };

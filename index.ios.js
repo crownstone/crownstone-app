@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native';
 
-import { AppRouter } from './js/router/Router.android'
+import { AppRouter } from './js/router/Router.ios'
 import { eventBus } from './js/util/eventBus'
 import { INITIALIZER } from './js/initialize'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
@@ -56,7 +56,7 @@ class Root extends Component {
 
 
   render() {
-    return <View style={{flex:1, backgroundColor: colors.menuBackground.h}}>
+    return <View style={{flex:1}}>
       <StatusBar barStyle="light-content" />
       <Animated.View style={{flex:1, position:'relative', top: this.state.top}}>
         <AppRouter />
