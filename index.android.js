@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native';
 
-import { AppRouter } from './js/router/Router'
+import { AppRouter } from './js/router/Router.android'
 import { eventBus } from './js/util/eventBus'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 

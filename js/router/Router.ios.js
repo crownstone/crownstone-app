@@ -12,7 +12,7 @@ import {
   Text,
   View
 } from 'react-native';
-import { Scene, Router, Actions } from 'react-native-router-flux';
+import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
 import { StoreManager }           from './store/storeManager'
 import { LocationHandler }        from '../native/LocationHandler'
 import { AdvertisementHandler }   from '../native/AdvertisementHandler'
@@ -29,17 +29,16 @@ import { CLOUD }                  from '../cloud/cloudAPI'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
-import { LocalizationSetupStep1 }  from '../views/components/LocalizationSetupStep1'
+import { LocalizationSetupStep1 } from '../views/components/LocalizationSetupStep1'
 import { LocalizationSetupStep2 } from '../views/components/LocalizationSetupStep2'
 import { BleStateOverlay }        from '../views/components/BleStateOverlay'
 import { Background }             from '../views/components/Background'
 import { Views }                  from './Views'
+import Drawer from 'react-native-drawer';
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
 
 let store = {};
-
-// set do disabled on log in
 
 export class AppRouter extends Component {
   constructor() {

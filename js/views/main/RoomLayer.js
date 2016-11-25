@@ -14,7 +14,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
 import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/dataUtil'
-import { styles, colors, screenWidth, screenHeight } from '../styles'
+import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 import { LOG }               from '../../logging/Log'
 
 
@@ -24,7 +24,7 @@ export class RoomLayer extends Component {
     this.state = {presentUsers: {}};
 
     this.roomRadius = 0.35 * 0.5 * screenWidth;
-    this.availableSpace = (screenHeight - 175) - this.roomRadius; // for top bar and menu bar
+    this.availableSpace = (screenHeight - topBarHeight - tabBarHeight - 35) - 2 * this.roomRadius; // for top bar, menu bar and text + orbs
 
     this.roomPositions = {
       1: [
@@ -32,7 +32,7 @@ export class RoomLayer extends Component {
       ],
       2: [
         {x: 0.15 * screenWidth, y: 0.20 * this.availableSpace},
-        {x: 0.50 * screenWidth, y: 0.75 * this.availableSpace}
+        {x: 0.50 * screenWidth, y: 0.80 * this.availableSpace}
       ],
       3: [
         {x: 0.12 * screenWidth, y: 0.12 * this.availableSpace},

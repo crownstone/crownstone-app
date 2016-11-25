@@ -1,6 +1,7 @@
 // @flow
 
 import { LOG } from './logging/Log'
+import { Platform } from 'react-native'
 
 var DeviceInfo = require('react-native-device-info');
 LOG("Device Unique ID", DeviceInfo.getUniqueID());  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9
@@ -43,4 +44,3 @@ export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
 export const HIGH_FREQUENCY_SCAN_MAX_DURATION = 15000; //ms
 export const DISABLE_TIMEOUT = 30000; //ms
 export const KEEPALIVE_INTERVAL = 60000; //ms
-
