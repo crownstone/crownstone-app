@@ -218,7 +218,7 @@ export class StoneTracker {
           ref.lastTriggerTime = new Date().valueOf();
         }
 
-        LOG("TRIGGERING CALLBACK FOR ", type)
+        LOG("TRIGGERING CALLBACK FOR ", type);
         // if we need to switch:
         if (behaviour.state !== stone.state.state) {
           this._applySwitchState(behaviour.state, stone, stoneId, sphereId);

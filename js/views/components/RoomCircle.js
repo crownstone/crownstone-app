@@ -16,7 +16,7 @@ import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil' // maybe move away from native?
 import { LOGDebug } from '../../logging/Log';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 
 import { Svg, Circle } from 'react-native-svg';

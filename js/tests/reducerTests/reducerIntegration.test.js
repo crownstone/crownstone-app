@@ -1,4 +1,4 @@
-var test = require('tape');
+const test = require('tape');
 let deepFreeze = require('deep-freeze');
 
 import CrownstoneReducer from '../../router/store/reducer'
@@ -8,7 +8,7 @@ import locationsReducer from '../../router/store/reducers/locations'
 // hack to remove the current time from the reducer so we can predictably match the results.
 Date.prototype.valueOf = function () {
   return 1
-}
+};
 
 
 test('locationsReducer PropegationTest', function (t) {
@@ -135,8 +135,8 @@ test('Initial App state', function (t) {
 
   let addedSphereState = CrownstoneReducer({}, createSphereAction);
   let addedLocationState = CrownstoneReducer(addedSphereState, addLocationAction);
-  t.deepEqual(CrownstoneReducer(), initialState, 'verify the initial state')
-  t.deepEqual(addedLocationState, locationState, 'verify the location state')
+  t.deepEqual(CrownstoneReducer(), initialState, 'verify the initial state');
+  t.deepEqual(addedLocationState, locationState, 'verify the location state');
   t.end();
 });
 

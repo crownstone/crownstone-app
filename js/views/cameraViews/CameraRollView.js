@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
 import { styles, colors } from '../styles'
 import { LOG, LOGError } from '../../logging/Log'

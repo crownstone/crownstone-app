@@ -12,7 +12,7 @@ import {
 import { Background }        from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { EditSpacer }        from '../components/editComponents/EditSpacer'
-var Actions = require('react-native-router-flux').Actions;
+let Actions = require('react-native-router-flux').Actions;
 
 import { styles, colors} from '../styles'
 import { LOG } from '../../logging/Log'

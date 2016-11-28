@@ -3,7 +3,7 @@
 import { LOG } from './logging/Log'
 import { Platform } from 'react-native'
 
-var DeviceInfo = require('react-native-device-info');
+const DeviceInfo = require('react-native-device-info');
 LOG("Device Unique ID", DeviceInfo.getUniqueID());  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9
 // * note this is IDFV on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
 

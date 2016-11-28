@@ -16,7 +16,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { getUserLevelInSphere } from '../../util/dataUtil'
 import { styles, colors, width } from './../styles'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereUser extends Component {
   constructor() {

@@ -169,7 +169,7 @@ class SchedulerClass {
 
     let now = new Date().valueOf();
 
-    LOGScheduler("Tick", now)
+    LOGScheduler("Tick", now);
 
     // we use this to avoid a race condition where the user has updated the database, and a tick from advertisements
     // instantly overwrites the value again. This can happen when a Crownstone's first advertisement after switching is

@@ -112,7 +112,7 @@ export class DeviceEntry extends Component {
           (this.props.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
 
-    let content = (
+    return (
       <View style={[{
         width:60,
         height:60,
@@ -122,8 +122,6 @@ export class DeviceEntry extends Component {
         <Icon name={this.props.icon} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
       </View>
     );
-
-    return content;
   }
 
   _getOptions() {

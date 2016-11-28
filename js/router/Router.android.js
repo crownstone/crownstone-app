@@ -70,7 +70,7 @@ class DrawerUnit extends Component {
 const drawerStyles = {
   // drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3},
   drawer: {elevation: 3},
-}
+};
 
 export class AppRouter extends Component {
   constructor() {

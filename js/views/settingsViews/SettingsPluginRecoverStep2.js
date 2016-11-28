@@ -12,7 +12,7 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { setupStyle } from './SetupShared'
@@ -53,7 +53,7 @@ export class SettingsPluginRecoverStep2 extends Component {
 
   switchImages() {
     if (this.lookingForCrownstone === true) {
-      this.setState({text:'Attempting to recover Crownstone...',})
+      this.setState({text:'Attempting to recover Crownstone...',});
       Animated.timing(this.state.fade1, {toValue: 0, duration: 200}).start();
       setTimeout(() => {
         Animated.timing(this.state.fade2, {toValue: 1, duration: 200}).start();

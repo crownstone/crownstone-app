@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 
-var Actions = require('react-native-router-flux').Actions;
+let Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
 import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/dataUtil'

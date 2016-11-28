@@ -16,7 +16,7 @@ import { EditableItem } from '../components/EditableItem'
 import { Explanation } from '../components/editComponents/Explanation'
 import { EditSpacer } from '../components/editComponents/EditSpacer'
 
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { LOG } from '../../logging/Log'
 
 

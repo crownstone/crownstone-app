@@ -10,7 +10,7 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 import { SetupStateHandler }                              from '../../native/SetupStateHandler'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION }  from '../../ExternalConfig'

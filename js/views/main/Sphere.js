@@ -9,7 +9,7 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
+let Actions = require('react-native-router-flux').Actions;
 
 import { Icon }               from '../components/Icon'
 import { getUserLevelInSphere } from '../../util/dataUtil'

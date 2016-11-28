@@ -12,7 +12,7 @@ import {
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getUserLevelInSphere } from '../../util/dataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'

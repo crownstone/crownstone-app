@@ -85,9 +85,7 @@ export function request(
         })
     }
   });
-};
-
-
+}
 /**
  * 
  * @param options

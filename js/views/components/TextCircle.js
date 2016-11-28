@@ -32,4 +32,4 @@ let nameStyle = {
   color:'#fff',
   fontSize:15,
   backgroundColor:'transparent',
-}
+};

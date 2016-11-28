@@ -23,7 +23,7 @@ import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
 import { getUserLevelInSphere } from '../../util/dataUtil'
 import { getUUID } from '../../util/util'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { 
   getPresentUsersInLocation,
   getCurrentPowerUsageInLocation,

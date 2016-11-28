@@ -18,7 +18,7 @@ import { getAiData }         from '../../util/dataUtil'
 import { BleUtil }           from '../../native/BleUtil'
 import { NativeBus }         from '../../native/Proxy'
 import { Vibration }         from 'react-native'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors} from '../styles'
 
 

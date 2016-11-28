@@ -11,10 +11,9 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
-import { RoomOverview } from '../components/RoomList'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { getStonesInLocation, getSpheresWhereUserHasAccessLevel } from './../../util/dataUtil'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { TopBar } from '../components/Topbar';
 import { Icon } from '../components/Icon';

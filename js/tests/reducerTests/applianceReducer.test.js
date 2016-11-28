@@ -1,4 +1,4 @@
-var test = require('tape');
+const test = require('tape');
 let deepFreeze = require('deep-freeze');
 
 import applianceReducer from '../../router/store/reducers/appliances'

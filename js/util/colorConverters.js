@@ -168,10 +168,9 @@ export const hcl2rgb = function(hue,chroma,luma) {
  * Assumes h, s, and l are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
  *
- * @param   Number  h       The hue
- * @param   Number  s       The saturation
- * @param   Number  l       The lightness
- * @return  Array           The RGB representation
+ * @param h
+ * @param s
+ * @param l
  */
 export const hsl2rgb = function(h, s, l){
   if (typeof h == "object") {
@@ -213,10 +212,9 @@ export const hsl2rgb = function(h, s, l){
  * Assumes r, g, and b are contained in the set [0, 255] and
  * returns h, s, and l in the set [0, 1].
  *
- * @param   [Number]  r    |   The red color value
- * @param   [Number]  g    |   The green color value
- * @param   [Number]  b    |   The blue color value
- * @return  [Array]           The HSL representation
+ * @param r
+ * @param g
+ * @param b
  */
 export const rgb2hsl = function(r, g, b){
   if (typeof r == "object") {
@@ -280,6 +278,5 @@ export const rgb2hsv = function(r,g,b) {
   let h = (r==minRGB) ? 3 : ((b==minRGB) ? 1 : 5);
   let hue = 60*(h - d/(maxRGB - minRGB));
   let saturation = (maxRGB - minRGB)/maxRGB;
-  let value = maxRGB;
-  return {h:hue,s:saturation,v:value};
+  return {h:hue,s:saturation,v:maxRGB};
 };

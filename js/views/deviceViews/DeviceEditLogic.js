@@ -9,7 +9,7 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Background } from '../components/Background'

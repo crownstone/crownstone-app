@@ -1,10 +1,10 @@
-var test = require('tape');
+const test = require('tape');
 let deepFreeze = require('deep-freeze');
 
 import locationsReducer from '../../router/store/reducers/locations'
 
 // hack to remove the current time from the reducer so we can predictably match the results.
-Date.prototype.valueOf = function () {return 1}
+Date.prototype.valueOf = function () {return 1};
 
 test('locationsReducer ADD_LOCATION and REMOVE_LOCATION', function (t) {
   let initialState = {};

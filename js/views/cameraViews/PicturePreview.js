@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import { TopBar } from '../components/Topbar';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { safeDeleteFile } from '../../util/util'
 import RNFS from 'react-native-fs'

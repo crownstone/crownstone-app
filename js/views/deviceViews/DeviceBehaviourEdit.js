@@ -13,7 +13,7 @@ import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/da
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 export class DeviceBehaviourEdit extends Component {
   componentDidMount() {

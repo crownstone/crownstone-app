@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-var sha1 = require('sha-1');
+const sha1 = require('sha-1');
 import {
   Alert,
   Linking,
@@ -15,7 +15,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { getImageFileFromUser, processImage } from '../../util/util'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors , screenWidth, screenHeight } from '../styles'
 
 import { SessionMemory } from './SessionMemory'

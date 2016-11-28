@@ -3,6 +3,7 @@ export const stones = {
    * Create a crownstone in the cloud so the major and minor can be generated
    * @param sphereId
    * @param MACAddress
+   * @param type
    * @returns {*}
    */
   createStone: function(sphereId, MACAddress, type) {

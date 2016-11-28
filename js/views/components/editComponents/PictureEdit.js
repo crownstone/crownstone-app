@@ -7,7 +7,7 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
+let Actions = require('react-native-router-flux').Actions;
 
 import { PictureCircle }  from '../PictureCircle'
 import { styles, colors} from '../../styles'

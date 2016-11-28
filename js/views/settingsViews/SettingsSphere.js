@@ -14,7 +14,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { IconButton } from '../components/IconButton'
 import { Bluenet } from '../../native/Proxy'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getUserLevelInSphere, getStonesAndAppliancesInSphere, getAiData } from '../../util/dataUtil';
 import { Icon } from '../components/Icon';
