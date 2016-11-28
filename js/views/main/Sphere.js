@@ -20,11 +20,6 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight }
 
 
 export class Sphere extends Component {
-  constructor() {
-    super();
-    this.animating = false;
-  }
-
   render() {
     LOG("RENDERING SPHERE");
     const store = this.props.store;

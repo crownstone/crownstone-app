@@ -67,7 +67,7 @@ export class RoomLayer extends Component {
 
   componentWillUnmount() {}
 
-  _renderRoom(locationId, room, count, index, activeSphere) {
+  _renderRoom(locationId, count, index, activeSphere) {
     // get the position for the room
     let pos = {};
     if (count > 6) {
@@ -133,11 +133,11 @@ export class RoomLayer extends Component {
     }
 
     for (let i = 0; i < roomIdArray.length; i++) {
-      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], amountOfRooms, i, this.props.sphereId))
+      roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i, state.app.activeSphere))
     }
 
     if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null, {}, amountOfRooms, amountOfRooms - 1, this.props.sphereId))
+      roomNodes.push(this._renderRoom(null, amountOfRooms, amountOfRooms - 1, state.app.activeSphere))
     }
 
     if (roomNodes.length > 6) {
