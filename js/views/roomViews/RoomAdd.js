@@ -45,6 +45,14 @@ export class RoomAdd extends Component {
       )}
     });
 
+    items.push({type:'spacer'});
+
+    items.push({
+      label: 'Create Room',
+      type: 'button',
+      style: {color: colors.iosBlue.hex},
+      callback: () => { this.createRoom(); }
+    });
     return items;
   }
 
@@ -103,8 +111,6 @@ export class RoomAdd extends Component {
         <TopBar
           notBack={false}
           leftAction={ Actions.pop }
-          right={"Create"}
-          rightAction={ () => {this.createRoom();} }
           title="Create Room"/>
         <ScrollView>
           <ListEditableItems ref={this.refName} focusOnLoad={true} items={this._getItems()} />

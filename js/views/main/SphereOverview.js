@@ -4,6 +4,7 @@ import {
   Animated,
   Dimensions,
   Image,
+  Platform,
   PanResponder,
   StyleSheet,
   TouchableHighlight,
@@ -225,7 +226,7 @@ export class SphereOverview extends Component {
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
               leftAction={() => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely);}}
-              right={isAdminInCurrentSphere && !blockAddButton ? '+Room' : null}
+              rightItem={isAdminInCurrentSphere && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
             />
             <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
@@ -248,9 +249,20 @@ export class SphereOverview extends Component {
         </View>
       );
     }
+  }
 
-
-
+  _getAddRoomIcon() {
+    // ios props
+    let props = {top:-2, right:24, size: 30, paddingTop:0 };
+    if (Platform.OS === 'android') {
+      props = {top:5, right:24, size: 30, paddingTop:3 };
+    }
+    return (
+      <View style={{ flex:1, alignItems:'flex-end', justifyContent:'center', paddingTop: props.paddingTop }}>
+        <Icon name="md-cube" size={props.size} color="#fff" />
+        <Icon name="md-add" size={18} color={colors.green.hex} style={{position:'absolute', top: props.top, right:props.right}} />
+      </View>
+    )
   }
 
   _getSpheres(seeStonesInSetupMode) {
