@@ -340,15 +340,31 @@ export const prepareStoreForUser = function(store) {
 };
 
 
-export const sphereRequiresFingerprints = function (state, sphereId) {
-  let requiresFingerprints = true;
-  console.log("here")
+export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
+  // if we do not have a sphereId return false
+  if (!sphereId || !state)
+    return false;
+
+  // are there enough?
+  let enoughForLocalization = enoughCrownstonesForIndoorLocalization(state,sphereId);
+
+  // do we need more fingerprints?
+  let requiresFingerprints = requireMoreFingerprints(state, sphereId);
+
+  // we have enough and we do not need more fingerprints.
+  return !requiresFingerprints && enoughForLocalization;
+};
+
+export const requireMoreFingerprints = function (state, sphereId) {
+  // if we do not have a sphereId return false
+  if (!sphereId || !state)
+    return true;
+
+  // do we need more fingerprints?
+  let requiresFingerprints = false;
   if (state.spheres && state.spheres[sphereId] && state.spheres[sphereId].locations) {
     let locationIds = Object.keys(state.spheres[sphereId].locations);
-    console.log("here", locationIds);
-    requiresFingerprints = false;
     locationIds.forEach((locationId) => {
-      console.log("here", locationId, state.spheres[sphereId].locations[locationId].config);
       if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
         requiresFingerprints = true;
       }

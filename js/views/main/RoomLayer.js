@@ -122,8 +122,6 @@ export class RoomLayer extends Component {
     let floatingStones = getFloatingStones(state, this.props.sphereId);
     let showFloatingCrownstones = floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
 
-    console.log("showFloatingCrownstones", showFloatingCrownstones)
-
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
 

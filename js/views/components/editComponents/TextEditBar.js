@@ -64,7 +64,6 @@ export class TextEditBar extends Component {
   validateInput(value) {
     switch(this.props.validation) {
       case 'email':
-        console.log(value,  emailChecker(value))
         return emailChecker(value) ? 'valid' : 'errorInvalid';
       case 'password':
         return this.validateCustom(value, {minLength: 1});

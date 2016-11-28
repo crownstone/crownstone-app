@@ -94,8 +94,6 @@ export class RoomEdit extends Component {
     let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId};
     let items = [];
 
-    console.log("drawing thing", room)
-
     items.push({label:'ROOM SETTINGS',  type:'explanation', below:false});
     items.push({label:'Room Name', type: 'textEdit', value: room.config.name, callback: (newText) => {
       newText = (newText === '') ? 'Untitled Room' : newText;

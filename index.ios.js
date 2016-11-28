@@ -3,11 +3,12 @@ import React, { Component } from 'react'
 import {
   Animated,
   AppRegistry,
+  Keyboard,
   StatusBar,
   View
 } from 'react-native';
 
-import { AppRouter } from './js/router/Router.android'
+import { AppRouter } from './js/router/Router.ios'
 import { eventBus } from './js/util/eventBus'
 import { INITIALIZER } from './js/initialize'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
@@ -27,23 +28,23 @@ class Root extends Component {
     // start the BLE things.
     INITIALIZER.init();
 
-    let snapBack = () => {
-      Animated.timing(this.state.top, {toValue: 0, duration:0}).start();
-    };
+    let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration:0}).start(); };
+    let snapBackKeyboard = () => { Animated.timing(this.state.top, {toValue: 0, duration: 200}).start(); };
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
       let keyboardHeight = 340;
       let distFromBottom = screenHeight - posY;
       Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:200}).start()
     }));
-    this.unsubscribe.push(eventBus.on('blur', () => {
-      Animated.timing(this.state.top, {toValue: 0, duration:200}).start()
-    }));
+    this.unsubscribe.push(eventBus.on('blur', snapBackKeyboard));
+
+    // if the keyboard is minimized, shift back down
+    // this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', snapBack);
 
     // catch for the simulator
-    this.unsubscribe.push(eventBus.on('showLoading', snapBack));
+    this.unsubscribe.push(eventBus.on('showLoading',  snapBack));
     this.unsubscribe.push(eventBus.on('showProgress', snapBack));
-    this.unsubscribe.push(eventBus.on('hideLoading', snapBack));
+    this.unsubscribe.push(eventBus.on('hideLoading',  snapBack));
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
 
   }

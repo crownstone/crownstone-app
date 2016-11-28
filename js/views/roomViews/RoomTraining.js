@@ -17,7 +17,7 @@ var Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar'
 import { FingerprintManager } from '../../native/FingerprintManager'
 import { Bluenet } from '../../native/Proxy'
-import { sphereRequiresFingerprints } from '../../util/dataUtil'
+import { canUseIndoorLocalizationInSphere } from '../../util/dataUtil'
 import { Background } from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
@@ -44,7 +44,7 @@ export class RoomTraining extends Component {
     this.stop();
 
     let state = this.props.store.getState();
-    if (sphereRequiresFingerprints(state, this.props.sphereId) === false) {
+    if (canUseIndoorLocalizationInSphere(state, this.props.sphereId) === true) {
       LOGDebug("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
     }

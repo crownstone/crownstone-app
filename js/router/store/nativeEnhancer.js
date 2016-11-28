@@ -1,7 +1,7 @@
 import { Bluenet } from '../../native/Proxy'
 import { BATCH } from './storeManager'
 import { LOG, LOGDebug, LOGError } from '../../logging/Log'
-import { sphereRequiresFingerprints, enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
+import { canUseIndoorLocalizationInSphere, enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
 
 
 /**
@@ -38,19 +38,14 @@ export function NativeEnhancer({ getState }) {
     if (evaluateFingerprint) {
       let sphereId = action.sphereId;
       if (sphereId) {
-        let requiresFingerprintsOld = sphereRequiresFingerprints(oldState, sphereId);
-        let requiresFingerprintsNew = sphereRequiresFingerprints(newState, sphereId);
-        let indoorLocalizationAllowedOld = enoughCrownstonesForIndoorLocalization(oldState, sphereId);
-        let indoorLocalizationAllowedNew = enoughCrownstonesForIndoorLocalization(oldState, sphereId);
+        let canUseWithOldState = canUseIndoorLocalizationInSphere(oldState, sphereId);
+        let canUseWithNewState = canUseIndoorLocalizationInSphere(newState, sphereId);
 
-        let previousState = indoorLocalizationAllowedOld && !requiresFingerprintsOld;
-        let nextState = indoorLocalizationAllowedNew && !requiresFingerprintsNew;
-
-        if (previousState === false && nextState === true) {
+        if (canUseWithOldState === false && canUseWithNewState === true) {
           LOG("Starting indoor localization from nativeEnhancer");
           Bluenet.startIndoorLocalization();
         }
-        else if (previousState === true && nextState === false) {
+        else if (canUseWithOldState === true && canUseWithNewState === false) {
           LOG("Starting indoor localization from nativeEnhancer");
           Bluenet.stopIndoorLocalization();
         }

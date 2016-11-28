@@ -20,7 +20,7 @@ import { FinalizeLocalizationIcon }                       from '../components/Fi
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
-import { getMyLevelInSphere, sphereRequiresFingerprints } from '../../util/dataUtil'
+import { getMyLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
 import { LOG, LOGError, LOGDebug }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
@@ -170,6 +170,10 @@ export class SphereOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
+    // sphere view dimensions
+    let viewWidth = screenWidth*this.sphereIds.length;
+    let viewHeight = screenHeight - topBarHeight - tabBarHeight;
+
     let noSpheres = this.sphereIds.length == 0;
     let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let viewingRemotely = true;
@@ -178,31 +182,42 @@ export class SphereOverview extends Component {
     let noRooms = true;
     let isAdminInCurrentSphere = false;
     let activeSphere = state.app.activeSphere;
-    let allowIndoorLocalization = false;
     let background = this.props.backgrounds.main;
 
     if (noSpheres === false) {
+      // fallback: should not be required
+      if (!activeSphere) {
+        activeSphere = Object.keys(state.spheres)[0];
+      }
+
       // todo: only do this on change
       let sphereIsPresent = state.spheres[activeSphere].config.present;
-      allowIndoorLocalization = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION : false);
+
+      // are there enough?
+      let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state,activeSphere);
+
+      // do we need more fingerprints?
+      let requiresFingerprints = requireMoreFingerprints(state, activeSphere);
+
+
       noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
       isAdminInCurrentSphere = getMyLevelInSphere(state, activeSphere) === 'admin';
 
-      if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true && isAdminInCurrentSphere == true))
+      if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true && isAdminInCurrentSphere == true)) {
         viewingRemotely = false;
+      }
 
       if (viewingRemotely === true) {
         background = this.props.backgrounds.mainRemoteNotConnected;
       }
 
-      let viewWidth = screenWidth*this.sphereIds.length;
-      let viewHeight = screenHeight - topBarHeight - tabBarHeight;
-      let moreFingerprintsNeeded = sphereRequiresFingerprints(state, activeSphere);
-      let showFinalizeIndoorNavigationButton = viewingRemotely == false &&
-        isAdminInCurrentSphere &&
-        allowIndoorLocalization &&
-        moreFingerprintsNeeded === true;
+      let showFinalizeIndoorNavigationButton = (
+        isAdminInCurrentSphere                     && // only admins can set this up so only show it if you're an admin.
+        viewingRemotely                  === false && // only show this if you're there.
+        enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
+        requiresFingerprints             === true     // Need more fingerprints.
+      );
 
       return (
         <View {...this._panResponder.panHandlers}>

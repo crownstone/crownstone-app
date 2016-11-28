@@ -3,7 +3,7 @@ import { BleUtil } from './BleUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'
 import { RoomTracker } from './RoomTracker'
-import { sphereRequiresFingerprints } from './../util/dataUtil'
+import { canUseIndoorLocalizationInSphere } from './../util/dataUtil'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { getUUID } from '../util/util'
@@ -71,9 +71,9 @@ class LocationHandlerClass {
         referenceId : sphereId
       };
 
-      let moreFingerprintsNeeded = sphereRequiresFingerprints(state, sphereId);
+      let canUseLocalization = canUseIndoorLocalizationInSphere(state, sphereId);
 
-      if (moreFingerprintsNeeded === false) {
+      if (canUseLocalization === true) {
         LOGDebug("Starting indoor localization for sphere", sphereId);
         Bluenet.startIndoorLocalization();
       }
