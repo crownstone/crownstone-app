@@ -32,7 +32,17 @@ export const getAmountOfStonesInLocation = function(state, sphereId, locationId)
 };
 
 export const getFloatingStones = function(state, sphereId) {
-  return getStonesInLocation(state, sphereId, null);
+  let floatingStones = [];
+  if (sphereId !== undefined) {
+    let stones = state.spheres[sphereId].stones;
+    let stoneIds = Object.keys(stones);
+    stoneIds.forEach((stoneId) => {
+      if (stones[stoneId].config.locationId === null || stones[stoneId].config.locationId === undefined) {
+        floatingStones.push(stones[stoneId]);
+      }
+    })
+  }
+  return floatingStones;
 };
 
 

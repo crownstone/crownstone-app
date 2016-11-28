@@ -76,11 +76,9 @@ export class TopBar extends Component {
     return (
       <View>
         <View style={[topBarStyle.topBar,this.props.style]}>
-
           <View style={[{height: barHeight}]}>{this._getLeftContent()}</View>
           <View style={[topBarStyle.topBarCenterView, {height: barHeight}]}><Text style={[topBarStyle.topBarCenter, topBarStyle.titleText, this.props.titleStyle]}>{this.props.title}</Text></View>
           <View style={[{height: barHeight}]}>{this._getRightContent()}</View>
-
         </View>
       </View>
     );

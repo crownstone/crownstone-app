@@ -28,6 +28,9 @@ export const DEBUG_SCHEDULER = false;
 export const DEBUG_BLE = false;
 export const DEBUG_CLOUD = true;
 export const DEBUG = true;
+export const LOGGING = true;
+
+export const ERROR_LOGGING = true;
 
 export const DISABLE_NATIVE = DeviceInfo.getModel() === "Simulator"; // this will disable the native calls.
 export const SILENCE_CLOUD = false; // this will silently cancel all calls to the cloud.

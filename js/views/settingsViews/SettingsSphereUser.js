@@ -52,6 +52,7 @@ export class SettingsSphereUser extends Component {
     // room Name:
     items.push({type:'spacer'});
     items.push({label:'User',  type: 'info', value: user.firstName + ' ' + user.lastName});
+    items.push({label:'Email',  type: 'info', value: user.email});
     items.push({
       type:'dropdown',
       label:'Access Level',

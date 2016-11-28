@@ -12,6 +12,7 @@ import {
 import { logOut } from './../../util/util'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { Background } from './../components/Background'
+import { TopBar } from './../components/Topbar'
 import { ListEditableItems } from './../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
@@ -148,7 +149,11 @@ export class SettingsOverview extends Component {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background hideTopBar={true} image={this.props.backgrounds.menu} >
+        <TopBar
+          title={"Settings"}
+          notBack={true}
+        />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
