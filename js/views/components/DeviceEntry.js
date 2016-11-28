@@ -164,8 +164,7 @@ export class DeviceEntry extends Component {
           {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}
           {this.props.control === true ? this._getControl() : undefined}
           {this.state.optionsOpen === true ? undefined :
-            <View  style={{position:'absolute', top: this.baseHeight-8, left:0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray2.hex}} >
-            </View>
+            <View style={{position:'absolute', top: this.baseHeight-8, left: 0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray2.hex}} />
           }
         </View>
         {this._getOptions()}

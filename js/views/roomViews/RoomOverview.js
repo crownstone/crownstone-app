@@ -149,9 +149,32 @@ export class RoomOverview extends Component {
               onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
               onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
             />
+            {this._getRssiRibbon(item.stone.config.rssi)}
           </View>
         </View>
       );
+    }
+  }
+
+  _getRssiRibbon(rssi) {
+    if (rssi > -80 || true) {
+      let color = colors.lightGray.hex;
+      if (rssi > -70) {
+        color = colors.lightBlue.hex
+      }
+      else if (rssi > -60) {
+        color = colors.blue.hex
+      }
+      return <View style={{
+        width: 0,
+        height: 0,
+        backgroundColor: 'transparent',
+        borderStyle: 'solid',
+        borderRightWidth: 20,
+        borderTopWidth: 25,
+        borderRightColor: 'transparent',
+        borderTopColor: colors.blue.hex, position: 'absolute', top: 0, left: 0
+      }}></View>
     }
   }
 

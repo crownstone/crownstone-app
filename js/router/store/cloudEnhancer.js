@@ -174,13 +174,13 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   let prevLocationId = oldState.spheres[sphereId].stones[stoneId].config.locationId;
 
   if (prevLocationId === null && locationId !== null) {
-    CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, updatedAt, true).catch(() => {});
+    CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, sphereId, updatedAt, true).catch(() => {});
   }
   else {
-    CLOUD.forStone(stoneId).deleteStoneLocationLink(prevLocationId, updatedAt, true)
+    CLOUD.forStone(stoneId).deleteStoneLocationLink(prevLocationId, sphereId, updatedAt, true)
       .then(() => {
         if (locationId !== null) {
-          return CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, updatedAt, true);
+          return CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, sphereId, updatedAt, true);
         }
       })
       .catch(() => {});

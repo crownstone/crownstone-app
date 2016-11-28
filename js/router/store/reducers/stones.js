@@ -32,6 +32,7 @@ let defaultSettings = {
     crownstoneId: undefined,
     firmwareVersion: 0,
     nearThreshold: -85,
+    rssi: -50,
     touchToToggle: true,
     disabled: false,
     updatedAt: 1,
@@ -61,6 +62,13 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.disabled = false;
+        return newState;
+      }
+      return state;
+    case 'UPDATE_STONE_RSSI':
+      if (action.data) {
+        let newState = {...state};
+        newState.rssi            = update(action.data.rssi, newState.rssi);
         return newState;
       }
       return state;

@@ -36,11 +36,12 @@ export const stones = {
   /**
    * Update the link from a crownstone to a room.
    * @param locationId
+   * @param sphereId
    * @param updatedAt
    * @param background
    * @returns {*}
    */
-  updateStoneLocationLink: function(locationId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
+  updateStoneLocationLink: function(locationId, sphereId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
     return this._setupRequest(
         'PUT',
         '/Stones/{id}/locations/rel/' + locationId,
@@ -49,8 +50,8 @@ export const stones = {
       .then(() => {
         if (doNotSetUpdatedTimes !== true) {
           let promises = [];
-          promises.push(this.updateStone(this._stoneId, {updatedAt: updatedAt}));
-          promises.push(this.updateLocation(locationId, {updatedAt: updatedAt}));
+          promises.push(this.forSphere(sphereId).updateStone(this._stoneId, {updatedAt: updatedAt}));
+          promises.push(this.forSphere(sphereId).updateLocation(locationId, {updatedAt: updatedAt}));
           // we set the updatedAt time in the cloud since changing the links does not update the time there
           return Promise.all(promises);
         }
@@ -61,20 +62,22 @@ export const stones = {
   /**
    * Delete the link from a crownstone to a room.
    * @param locationId
+   * @param sphereId
    * @param updatedAt
    * @param background
    * @returns {*}
    */
-  deleteStoneLocationLink: function(locationId, updatedAt, background = true) {
+  deleteStoneLocationLink: function(locationId, sphereId, updatedAt, background = true) {
+    let stoneId = this._stoneId;
     return this._setupRequest(
         'DELETE',
-        '/Stones/{id}/locations/rel/' + locationId,
+        '/Stones/' + stoneId + '/locations/rel/' + locationId,
         {background: background},
       )
       .then(() => {
         let promises = [];
-        promises.push(this.updateStone(this._stoneId, {updatedAt: updatedAt}));
-        promises.push(this.updateLocation(locationId, {updatedAt: updatedAt}));
+        promises.push(this.forSphere(sphereId).updateStone(stoneId, {updatedAt: updatedAt}));
+        promises.push(this.forSphere(sphereId).updateLocation(locationId, {updatedAt: updatedAt}));
         // we set the updatedAt time in the cloud since changing the links does not update the time there
         return Promise.all(promises);
       })

@@ -368,13 +368,13 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           if (stoneInState.config.locationId !== locationLinkId) {
             // if the one in the cloud is null, we only create a link
             if (locationLinkId === null && stoneInState.config.locationId !== null) {
-              CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, stoneInState.config.updatedAt, true).catch(() => {});
+              CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, sphere.id, stoneInState.config.updatedAt, true).catch(() => {});
             }
             else {
-              CLOUD.forStone(stone_from_cloud.id).deleteStoneLocationLink(locationLinkId, stoneInState.config.updatedAt, true)
+              CLOUD.forStone(stone_from_cloud.id).deleteStoneLocationLink(locationLinkId,  sphere.id, stoneInState.config.updatedAt, true)
                 .then(() => {
                   if (stoneInState.config.locationId !== null) {
-                    CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, stoneInState.config.updatedAt, true);
+                    CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, sphere.id,  stoneInState.config.updatedAt, true);
                   }
                 }).catch(() => {})
             }
