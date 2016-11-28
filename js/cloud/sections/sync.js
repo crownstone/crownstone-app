@@ -318,21 +318,21 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
       if (sphereInState !== undefined && sphereInState.stones[stone_from_cloud.id] !== undefined) {
         if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) < 0) {
           actions.push({
-            type: 'UPDATE_STONE_CONFIG',
-            sphereId: sphere.id,
-            stoneId: stone_from_cloud.id,
+            type:      'UPDATE_STONE_CONFIG',
+            sphereId:   sphere.id,
+            stoneId:    stone_from_cloud.id,
             data: {
               name: stone_from_cloud.name,
               icon: stone_from_cloud.icon,
               type: stone_from_cloud.type,
               touchToToggle: stone_from_cloud.touchToToggle,
-              applianceId: stone_from_cloud.applianceId,
-              locationId: locationLinkId,
-              macAddress: stone_from_cloud.address,
-              iBeaconMajor: stone_from_cloud.major,
-              iBeaconMinor: stone_from_cloud.minor,
-              crownstoneId: stone_from_cloud.uid,
-              updatedAt: stone_from_cloud.updatedAt,
+              applianceId:   stone_from_cloud.applianceId,
+              locationId:    locationLinkId,
+              macAddress:    stone_from_cloud.address,
+              iBeaconMajor:  stone_from_cloud.major,
+              iBeaconMinor:  stone_from_cloud.minor,
+              crownstoneId:  stone_from_cloud.uid,
+              updatedAt:     stone_from_cloud.updatedAt,
             }
           });
         }
@@ -340,18 +340,18 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           // update cloud since our data is newer!
           let stoneInState = sphereInState.stones[stone_from_cloud.id];
           let data = {
-            name: stoneInState.config.name,
-            address: stoneInState.config.macAddress,
-            icon: stoneInState.config.icon,
-            id: stone_from_cloud.id,
+            name:          stoneInState.config.name,
+            address:       stoneInState.config.macAddress,
+            icon:          stoneInState.config.icon,
+            id:            stone_from_cloud.id,
             touchToToggle: stoneInState.config.touchToToggle,
-            type: stoneInState.config.type,
-            applianceId: stoneInState.config.applianceId,
-            sphereId: sphere.id,
-            major: stoneInState.config.iBeaconMajor,
-            minor: stoneInState.config.iBeaconMinor,
-            uid: stoneInState.config.crownstoneId,
-            updatedAt: stoneInState.config.updatedAt,
+            type:          stoneInState.config.type,
+            applianceId:   stoneInState.config.applianceId,
+            sphereId:      sphere.id,
+            major:         stoneInState.config.iBeaconMajor,
+            minor:         stoneInState.config.iBeaconMinor,
+            uid:           stoneInState.config.crownstoneId,
+            updatedAt:     stoneInState.config.updatedAt,
           };
 
           // only admins get to update the behaviour
@@ -365,7 +365,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           if (stoneInState.config.locationId !== locationLinkId) {
             // if the one in the cloud is null, we only create a link
             if (locationLinkId === null && stoneInState.config.locationId !== null) {
-              CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, stoneInState.config.updatedAt, true);
+              CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, stoneInState.config.updatedAt, true).catch(() => {});
             }
             else {
               CLOUD.forStone(stone_from_cloud.id).deleteStoneLocationLink(locationLinkId, stoneInState.config.updatedAt, true)
@@ -405,11 +405,11 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           if (behaviour.onHomeEnter)
             actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onHomeEnter });
           if (behaviour.onHomeExit)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onHomeExit });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit',  sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onHomeExit });
           if (behaviour.onRoomEnter)
             actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onRoomEnter });
           if (behaviour.onRoomExit)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onRoomExit });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit',  sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onRoomExit });
           if (behaviour.onNear)
             actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onNear', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onNear });
           if (behaviour.onAway)

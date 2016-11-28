@@ -17,6 +17,7 @@ export const stones = {
 
   /**
    * Update a crownstone in the cloud
+   * @param stoneId
    * @param data
    * @param background
    * @returns {*}

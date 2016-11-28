@@ -341,10 +341,13 @@ export const prepareStoreForUser = function(store) {
 
 export const sphereRequiresFingerprints = function (state, sphereId) {
   let requiresFingerprints = true;
+  console.log("here")
   if (state.spheres && state.spheres[sphereId] && state.spheres[sphereId].locations) {
     let locationIds = Object.keys(state.spheres[sphereId].locations);
-    let requiresFingerprints = false;
+    console.log("here", locationIds);
+    requiresFingerprints = false;
     locationIds.forEach((locationId) => {
+      console.log("here", locationId, state.spheres[sphereId].locations[locationId].config);
       if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
         requiresFingerprints = true;
       }

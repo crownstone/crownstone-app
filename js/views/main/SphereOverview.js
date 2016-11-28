@@ -200,6 +200,7 @@ export class SphereOverview extends Component {
       let viewHeight = screenHeight - topBarHeight - tabBarHeight;
       let moreFingerprintsNeeded = sphereRequiresFingerprints(state, activeSphere);
       let showFinalizeIndoorNavigationButton = isAdminInCurrentSphere && allowIndoorLocalization && moreFingerprintsNeeded === true;
+      console.log("fingerprints needed", isAdminInCurrentSphere, allowIndoorLocalization, moreFingerprintsNeeded)
 
       return (
         <View {...this._panResponder.panHandlers}>
