@@ -287,16 +287,15 @@ export class SphereOverview extends Component {
       this.props.eventBus.emit("showLocalizationSetupStep2", activeSphere);
     }
     else {
-        Actions.roomOverview({
-          sphereId: activeSphere,
-          locationId: null,
-          title: 'First things first :)',
-          hideRight: true,
-          usedForIndoorLocalizationSetup: true,
-          overlayText:'Place your Crownstones in rooms!',
-          explanation: 'Tap a Crownstone to see the options, then tap the left icon to select a room!'
-        });
-      }
+      Actions.roomOverview({
+        sphereId: activeSphere,
+        locationId: null,
+        title: 'First things first :)',
+        hideRight: true,
+        usedForIndoorLocalizationSetup: true,
+        overlayText:'Place your Crownstones in rooms!',
+        explanation: 'Tap a Crownstone to see the options, then tap the left icon to select a room!'
+      });
     }
   }
 }
