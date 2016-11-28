@@ -41,22 +41,22 @@ export const reducerCreate = (params) => {
   return (state, action)=> {
     // this part makes sure that when a menuIcon is pressed AND you are already in that menu tree,
     // it goes back to the root of that tree
-    if (action.type === ActionConst.JUMP && inTabMenu(state)) {
-      let activeTabName = getActiveTabName(state);
-      // We only want to reset if the icon is tapped when we're already in the view
-      if (activeTabName === action.key) {
-        // if we're already at root, do not do anything.
-        if (getTabTreeIndex(state) === 0) {
-          return state;
-        }
-        // snap to root.
-        let rootName = getTabRootName(state);
-        if (rootName) {
-          LOG("ACTION Overruled", {key:rootName, type:'reset'});
-          return defaultReducer(state, {key:rootName, type:'reset'});
-        }
-      }
-    }
+    // if (action.type === ActionConst.JUMP && inTabMenu(state)) {
+    //   let activeTabName = getActiveTabName(state);
+    //   // We only want to reset if the icon is tapped when we're already in the view
+    //   if (activeTabName === action.key) {
+    //     // if we're already at root, do not do anything.
+    //     if (getTabTreeIndex(state) === 0) {
+    //       return state;
+    //     }
+    //     // snap to root.
+    //     let rootName = getTabRootName(state);
+    //     if (rootName) {
+    //       LOG("ACTION Overruled", {key:rootName, type:'reset'});
+    //       return defaultReducer(state, {key:rootName, type:'reset'});
+    //     }
+    //   }
+    // }
     return defaultReducer(state, action);
   }
 };

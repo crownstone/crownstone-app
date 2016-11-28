@@ -19,12 +19,18 @@ export const sync = {
       return;
     }
 
-    return syncDown( state, options )
+    // set the authentication tokens
+    let userId = state.user.userId;
+    let accessToken = state.user.accessToken;
+    CLOUD.setAccess(accessToken);
+    CLOUD.setUserId(userId);
+
+    return syncDown( userId, options )
       .then((data) => {
-        let cloudData = syncSpheres(state, actions, data.spheres, data.spheresData);
-        let deletedSphere = syncCleanupLocal(store, state, actions, cloudData);
+        let cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
+        let deletedSphere = syncCleanupLocal(store, actions, cloudData);
         syncKeys(actions, data.keys);
-        syncDevices(state, actions, data.devices)
+        syncDevices(store, actions, data.devices)
           .then(() => {
             LOG("SYNC Dispatching ", actions.length, " actions!");
             actions.forEach((action) => {
@@ -49,14 +55,8 @@ export const sync = {
   }
 };
 
-const syncDown = function (state, options) {
+const syncDown = function (userId, options) {
   return new Promise((resolve, reject) => {
-    let userId = state.user.userId;
-    let accessToken = state.user.accessToken;
-
-    CLOUD.setAccess(accessToken);
-    CLOUD.setUserId(userId);
-
     let cloudSpheres = [];
     let cloudSpheresData = {};
     let cloudKeys = [];
@@ -110,7 +110,8 @@ const getTimeDifference = function(localVersion, cloudVersion) {
 };
 
 
-const syncCleanupLocal = function(store, state, actions, cloudData) {
+const syncCleanupLocal = function(store, actions, cloudData) {
+  const state = store.getState();
   let sphereIds = Object.keys(state.spheres);
   let deletedSphere = false;
 
@@ -165,7 +166,7 @@ const syncCleanupLocal = function(store, state, actions, cloudData) {
   return deletedSphere;
 };
 
-const syncSpheres = function(state, actions, spheres, spheresData) {
+const syncSpheres = function(store, actions, spheres, spheresData) {
   let cloudSphereUserIds = {};
   let cloudSphereIds = {};
   let cloudStoneIds = {};
@@ -175,6 +176,8 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
 
   LOGDebug("SyncSpheres", spheresData);
 
+  // get the state here so we did not have to wait with an old state on the down sync.
+  const state = store.getState();
   spheres.forEach((sphere) => {
     // put id in map so we can easily find it again
     cloudSphereIds[sphere.id] = true;
@@ -497,9 +500,11 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
 /**
  * Sync devices
  */
-const syncDevices = function(state, actions, devices) {
+const syncDevices = function(store, actions, devices) {
   return new Promise((resolve, reject) => {
-    let {name, address, description} = getDeviceSpecs();
+    const state = store.getState();
+
+    let {name, address, description} = getDeviceSpecs(state);
 
     let deviceId = undefined;
     devices.forEach((device) => {

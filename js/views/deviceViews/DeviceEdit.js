@@ -28,25 +28,33 @@ export class DeviceEdit extends Component {
   constructor() {
     super();
     this.state = {showStone:false};
-    this.showStone = false;
+    this.deleting = false;
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.store.subscribe(() => {
-      // guard against deletion of the stone
-      let state = this.props.store.getState();
-      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-      if (stone)
-        this.forceUpdate();
-      else {
-        Actions.pop()
+    const { store } = this.props;
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      let state = store.getState();
+      if (state.spheres[this.props.sphereId] === undefined) {
+        Actions.pop();
+        return;
       }
-    })
+
+      if ( change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ) {
+        if (this.deleting === false) {
+          this.forceUpdate();
+        }
+      }
+    });
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribeStoreEvents();
   }
+
 
   addDeleteOptions(items, stone) {
     items.push({
@@ -90,7 +98,7 @@ export class DeviceEdit extends Component {
           Actions.applianceSelection({
             ...requiredData,
             callback: (applianceId) => {
-              this.showStone = false;
+              this.setState({showStone:false});
               store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: applianceId}});
             }
           });
@@ -138,7 +146,7 @@ export class DeviceEdit extends Component {
     // unplug device
     items.push({
       label: 'Unplug Device', type: 'button', style: {color: colors.blue.hex}, callback: () => {
-        this.showStone = true;
+        this.setState({showStone:true});
         setTimeout(() => {store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});}, 300);
       }
     });
@@ -257,10 +265,10 @@ export class DeviceEdit extends Component {
       <Background image={backgroundImage} >
         <ScrollView>
           <View style={{height:screenHeight}}>
-            <FadeInView visible={!this.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
+            <FadeInView visible={!this.state.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
               <ListEditableItems items={applianceOptions} separatorIndent={true}/>
             </FadeInView>
-            <FadeInView visible={this.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={300}>
+            <FadeInView visible={this.state.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={300}>
               <ListEditableItems items={stoneOptions} separatorIndent={false}/>
             </FadeInView>
           </View>

@@ -11,9 +11,7 @@ import {
   View
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
-
 import { SetupStateHandler }                              from '../../native/SetupStateHandler'
-import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION }  from '../../ExternalConfig'
 import { Orbs }                                           from '../components/Orbs'
 import { TopBar }                                         from '../components/Topbar'
 import { FinalizeLocalizationIcon }                       from '../components/FinalizeLocalizationIcon'
@@ -28,7 +26,7 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight }
 export class SphereOverview extends Component {
   constructor() {
     super();
-    this.state = {presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0)};
+    this.state = { presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0) };
     this.leftValue = 0;
     this.animating = false;
 

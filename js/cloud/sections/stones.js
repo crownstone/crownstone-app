@@ -40,18 +40,20 @@ export const stones = {
    * @param background
    * @returns {*}
    */
-  updateStoneLocationLink: function(locationId, updatedAt, background = true) {
+  updateStoneLocationLink: function(locationId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
     return this._setupRequest(
         'PUT',
         '/Stones/{id}/locations/rel/' + locationId,
         {background: background},
       )
       .then(() => {
-        let promises = [];
-        promises.push(this.updateStone(this._stoneId, {updatedAt: updatedAt}));
-        promises.push(this.updateLocation(locationId, {updatedAt: updatedAt}));
-        // we set the updatedAt time in the cloud since changing the links does not update the time there
-        return Promise.all(promises);
+        if (doNotSetUpdatedTimes !== true) {
+          let promises = [];
+          promises.push(this.updateStone(this._stoneId, {updatedAt: updatedAt}));
+          promises.push(this.updateLocation(locationId, {updatedAt: updatedAt}));
+          // we set the updatedAt time in the cloud since changing the links does not update the time there
+          return Promise.all(promises);
+        }
       })
   },
 

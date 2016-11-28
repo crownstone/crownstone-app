@@ -138,7 +138,7 @@ function handleStoneBehaviourInCloud(action, state) {
       minor:       stoneConfig.iBeaconMinor,
       uid:         stoneConfig.crownstoneId,
       json:        behaviourJSON,
-      // updatedAt:   stoneConfig.updatedAt,   // we explicitly do not set the data so other users will not get a push of data that they wont store.
+      updatedAt:   stoneConfig.updatedAt,
     };
     CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
   }
@@ -215,7 +215,7 @@ function handleApplianceBehaviourInCloud(action, state) {
       icon:     applianceConfig.icon,
       sphereId: sphereId,
       json:     behaviourJSON,
-      // updatedAt: applianceConfig.updatedAt,  // we explicitly do not set the data so other users will not get a push of data that they wont store.
+      updatedAt: applianceConfig.updatedAt
     };
     CLOUD.forSphere(sphereId).updateAppliance(applianceId, data).catch(() => {});
   }

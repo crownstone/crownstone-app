@@ -201,16 +201,16 @@ export const getAiData = function(state, sphereId) {
   }
 };
 
-export const getDeviceSpecs = function() {
-  let address = DeviceInfo.getUniqueID();  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9 note this is IdentityForVendor on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
+export const getDeviceSpecs = function(state) {
+  let address = state.user.appIdentifier;
   let name = DeviceInfo.getDeviceName();
   let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
 
-  return { address, name, description };
+  return { name, address, description };
 };
 
 export const getCurrentDeviceId = function(state) {
-  let specs = getDeviceSpecs();
+  let specs = getDeviceSpecs(state);
 
   let deviceIds = Object.keys(state.devices);
   for (let i = 0; i < deviceIds.length; i++) {
