@@ -60,9 +60,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	public static final int FAST_SCAN_INTERVAL = 20000; // ms scanning
 	public static final int FAST_SCAN_PAUSE = 100; // ms pause
-	public static final int SLOW_SCAN_INTERVAL = 10000; // ms scanning
-	public static final int SLOW_SCAN_PAUSE = 1000; // ms pause
+	public static final int SLOW_SCAN_INTERVAL = 500; // ms scanning
+	public static final int SLOW_SCAN_PAUSE = 500; // ms pause
 	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
+
+	private enum ScannerState {
+		DISABLED,
+		LOW_POWER,
+		HIGH_POWER,
+	}
+
 	private boolean _bound;
 
 	private ReactApplicationContext _reactContext;
@@ -77,8 +84,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	private Callback _readyCallback = null;
 
-	private boolean _isScanning;
-	private boolean _isTracking;
+	private ScannerState _scannerState = ScannerState.DISABLED;
+	private boolean _isTrackingIbeacon;
 //	private BleDeviceFilter _scanFilter;
 
 	private boolean _connectCallbackInvoked;
@@ -120,8 +127,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			}
 		});
 
-		_isScanning = false;
-		_isTracking = false;
+		_scannerState = ScannerState.DISABLED;
+		_isTrackingIbeacon = false;
 //		_scanFilter = BleDeviceFilter.all;
 
 		// create and bind to the BleScanService
@@ -219,29 +226,30 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void startScanning() {
 		BleLog.LOGd(TAG, "startScanning");
-		setScanningState(true);
+		setScannerState(ScannerState.HIGH_POWER);
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.all);
 	}
 
 	@ReactMethod
 	public void startScanningForCrownstones() {
 		BleLog.LOGd(TAG, "startScanningForCrownstones");
-		setScanningState(true);
+		setScannerState(ScannerState.HIGH_POWER);
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
 	@ReactMethod
 	public void startScanningForCrownstonesUniqueOnly() {
+		// Low power scanning!
 		// Only emit an event when the data changed
 		// TODO: only make it send an event when data changed
 		BleLog.LOGd(TAG, "startScanningForCrownstonesUniqueOnly");
-		setScanningState(true);
+		setScannerState(ScannerState.LOW_POWER);
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
 	@ReactMethod
 	public void stopScanning() {
-		setScanningState(false);
+		setScannerState(ScannerState.DISABLED);
 		if (isScannerIdle()) {
 			_scanService.stopIntervalScan();
 		}
@@ -343,6 +351,25 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				callback.invoke(retVal);
 			}
 		});
+
+//		_bleExt.disconnectAndClose(false, new IStatusCallback() {
+//			@Override
+//			public void onSuccess() {
+//				BleLog.LOGi(TAG, "disconnected");
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", false);
+//				callback.invoke(retVal);
+//			}
+//
+//			@Override
+//			public void onError(int error) {
+//				BleLog.LOGi(TAG, "failed to connect: " + error);
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", true);
+//				retVal.putString("data", "failed to disconnect: " + error);
+//				callback.invoke(retVal);
+//			}
+//		});
 	}
 
 	@ReactMethod
@@ -446,6 +473,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_bleExt.recover(address, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
+				BleLog.LOGi(TAG, "recover success");
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", false);
 				callback.invoke(retVal);
@@ -453,6 +481,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onError(int error) {
+				BleLog.LOGi(TAG, "recover error "+ error);
+				BleLog.LOGi(TAG, Log.getStackTraceString(new Exception()));
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
 				retVal.putString("data", "recover failed: " + error);
@@ -996,19 +1026,20 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		return retKey;
 	}
 
-	private boolean isScanning() { return _isScanning; }
-	private void setScanningState(boolean enabled) { _isScanning = enabled; }
-	private boolean isTracking() { return _isTracking; }
-	private void setTrackingState(boolean enabled) { _isTracking = enabled; }
-	private boolean isScannerIdle() { return !_isScanning && !_isTracking; }
+	private boolean isScanning() { return _scannerState != ScannerState.DISABLED; }
+	private ScannerState getScannerState() { return _scannerState; }
+	private void setScannerState(ScannerState newState) { _scannerState = newState; }
+	private boolean isTrackingIbeacon() { return _isTrackingIbeacon; }
+	private void setTrackingState(boolean enabled) { _isTrackingIbeacon = enabled; }
+	private boolean isScannerIdle() { return !isScanning() && !isTrackingIbeacon(); }
 	private int getScanInterval() {
-		if (isScanning()) {
+		if (getScannerState() == ScannerState.HIGH_POWER) {
 			return FAST_SCAN_INTERVAL;
 		}
 		return SLOW_SCAN_INTERVAL;
 	}
 	private int getScanPause() {
-		if (isScanning()) {
+		if (getScannerState() == ScannerState.HIGH_POWER) {
 			return FAST_SCAN_PAUSE;
 		}
 		return SLOW_SCAN_PAUSE;
