@@ -331,7 +331,7 @@ export class Login extends Component {
           Actions.aiStart({type: 'reset'});
         }
         else {
-          Actions.tabBar();
+          Actions.tabBar({type: 'reset'});
         }
       }, 50);
     });

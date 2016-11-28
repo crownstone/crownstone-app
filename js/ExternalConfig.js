@@ -3,9 +3,7 @@
 import { LOG } from './logging/Log'
 import { Platform } from 'react-native'
 
-var DeviceInfo = require('react-native-device-info');
-LOG("Device Unique ID", DeviceInfo.getUniqueID());  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9
-// * note this is IDFV on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
+const DeviceInfo = require('react-native-device-info');
 
 LOG("Device Manufacturer", DeviceInfo.getManufacturer());  // e.g. Apple
 LOG("Device Brand", DeviceInfo.getBrand());  // e.g. Apple / htc / Xiaomi
@@ -30,6 +28,9 @@ export const DEBUG_SCHEDULER = false;
 export const DEBUG_BLE = false;
 export const DEBUG_CLOUD = true;
 export const DEBUG = true;
+export const LOGGING = true;
+
+export const ERROR_LOGGING = true;
 
 export const DISABLE_NATIVE = DeviceInfo.getModel() === "Simulator"; // this will disable the native calls.
 export const SILENCE_CLOUD = false; // this will silently cancel all calls to the cloud.

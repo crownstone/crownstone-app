@@ -14,9 +14,9 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { IconButton } from '../components/IconButton'
 import { Bluenet } from '../../native/Proxy'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getMyLevelInSphere, getSphereContentFromState, getAiData } from '../../util/dataUtil';
+import { getUserLevelInSphere, getStonesAndAppliancesInSphere, getAiData } from '../../util/dataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
@@ -95,7 +95,7 @@ export class SettingsSphere extends Component {
     const store = this.props.store;
     const state = store.getState();
     let adminInSphere = false;
-    let userLevelInSphere = getMyLevelInSphere(state, this.props.sphereId);
+    let userLevelInSphere = getUserLevelInSphere(state, this.props.sphereId);
 
     if (userLevelInSphere == 'admin') {
       adminInSphere = true;
@@ -174,7 +174,7 @@ export class SettingsSphere extends Component {
     }
 
 
-    if (getMyLevelInSphere(state, this.props.sphereId) == 'admin') {
+    if (getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
       items.push({type:'spacer'});
       items.push({
         label: 'Delete this Sphere',
@@ -197,7 +197,7 @@ export class SettingsSphere extends Component {
       [
         {text:'No'},
         {text:'Yes', onPress:() => {
-          let stones = getSphereContentFromState(state, this.props.sphereId);
+          let stones = getStonesAndAppliancesInSphere(state, this.props.sphereId);
           let stoneIds = Object.keys(stones);
           if (stoneIds.length > 0) {
             Alert.alert(

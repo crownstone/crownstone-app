@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import loginStyles from './LoginStyles'
 import { styles, colors } from './../styles'
 

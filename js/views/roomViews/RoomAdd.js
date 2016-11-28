@@ -13,10 +13,10 @@ import {
 import { TopBar } from './../components/Topbar'
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getRoomNames } from './../../util/dataUtil'
+import { getLocationNamesInSphere } from './../../util/dataUtil'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { LOGError } from './../../logging/Log'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 
 
@@ -27,13 +27,9 @@ export class RoomAdd extends Component {
     super();
     this.state = {name:'', icon: 'c1-bookshelf'};
     this.refName = "listItems";
-    let state = props.store.getState();
   }
 
   _getItems() {
-    const store = this.props.store;
-    const state = store.getState();
-
     let items = [];
     items.push({label:'ADD ROOM TO ', type:'explanation', below:false});
     items.push({label:'Room Name', type: 'textEdit', placeholder:'My New Room', value: this.state.name, callback: (newText) => {
@@ -71,7 +67,7 @@ export class RoomAdd extends Component {
     }
     else {
       // check if the room name is unique.
-      let existingLocations = getRoomNames(state, this.props.sphereId);
+      let existingLocations = getLocationNamesInSphere(state, this.props.sphereId);
       if (existingLocations[this.state.name] === undefined) {
         this.props.eventBus.emit('showLoading', 'Creating room...');
         CLOUD.forSphere(this.props.sphereId).createLocation(this.state.name, this.state.icon)
@@ -95,8 +91,6 @@ export class RoomAdd extends Component {
   }
 
   render() {
-    const store = this.props.store;
-    const state = store.getState();
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     if (this.props.sphereId === null) {

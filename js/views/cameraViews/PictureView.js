@@ -13,7 +13,7 @@ import {
 import { TopBar } from '../components/Topbar';
 import Camera from 'react-native-camera';
 import { Icon } from '../components/Icon';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { LOG, LOGError } from '../../logging/Log'
 

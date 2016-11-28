@@ -11,12 +11,12 @@ import {
 
 import { styles, screenWidth, screenHeight, colors } from '../styles'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
-import { getCurrentPowerUsageFromState } from '../../util/dataUtil'
+import { getCurrentPowerUsageInLocation } from '../../util/dataUtil'
 import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
-import { enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil' // maybe move away from native?
+import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil' // maybe move away from native?
 import { LOGDebug } from '../../logging/Log';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 
 import { Svg, Circle } from 'react-native-svg';
@@ -94,7 +94,6 @@ export class RoomCircle extends Component {
   }
 
   componentDidMount() {
-    console.log("did mount room circle", this.props.locationId)
     const { store } = this.props;
 
     if (this.props.locationId === null) {
@@ -119,7 +118,7 @@ export class RoomCircle extends Component {
         return;
       }
       // only redraw if the power usage changes or if the settings of the room change
-      let usage = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
+      let usage = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
 
       // in the case the room is deleted, do not redraw.
       if (this.props.locationId !== null && state.spheres[this.props.sphereId].locations[this.props.locationId] === undefined) {
@@ -149,20 +148,18 @@ export class RoomCircle extends Component {
     });
 
     // set the usage initially
-    this.usage = getCurrentPowerUsageFromState(store.getState(), this.props.sphereId, this.props.locationId);
+    this.usage = getCurrentPowerUsageInLocation(store.getState(), this.props.sphereId, this.props.locationId);
 
     // wait to wiggle until after the initial movement.
     this.wiggleTimeout = setTimeout(() => {this.checkAlertStatus(this.props)},this.moveAnimationTimeout);
   }
 
   componentWillUpdate(nextProps) {
-    console.log("component update room circle", this.props.locationId)
     this.checkAlertStatus(nextProps);
   }
 
 
   componentWillUnmount() {
-    console.log("component UNMOUNT room circle", this.props.locationId)
     clearTimeout(this.wiggleInterval);
     clearTimeout(this.fadeAnimationTimeout);
     clearTimeout(this.moveAnimationTimeout);
@@ -464,7 +461,7 @@ export class RoomCircle extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let canDoLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
+    let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
     let showFingerprintNeeded = false;
     if (this.props.locationId !== null && this.props.viewingRemotely !== true) {
       if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {

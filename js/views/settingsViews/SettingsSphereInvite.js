@@ -12,9 +12,9 @@ import {
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getMyLevelInSphere } from '../../util/dataUtil';
+import { getUserLevelInSphere } from '../../util/dataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG, LOGError } from '../../logging/Log'
 
@@ -49,7 +49,7 @@ export class SettingsSphereInvite extends Component {
     });
 
 
-    let level = getMyLevelInSphere(state, this.props.sphereId);
+    let level = getUserLevelInSphere(state, this.props.sphereId);
     if (level == "admin") {
       items.push({
         type:'dropdown',

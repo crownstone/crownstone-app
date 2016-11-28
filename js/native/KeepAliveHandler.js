@@ -3,7 +3,7 @@ import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { KEEPALIVE_INTERVAL } from '../ExternalConfig';
 import { BleActions } from './Proxy';
 import { BleUtil } from './BleUtil';
-import { enoughCrownstonesForIndoorLocalization, getMyLevelInSphere } from '../util/dataUtil'
+import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/dataUtil'
 
 import { TYPES } from '../router/store/reducers/stones'
 const TRIGGER_ID = "KEEP_ALIVE_HANDLER";
@@ -43,8 +43,8 @@ class KeepAliveHandlerClass {
       if (sphere.config.present === true) {
 
         // check every sphere where we are present. Usually this is only one of them!!
-        let allowRoomLevel = enoughCrownstonesForIndoorLocalization(state, sphereId);
-        let userLevelInSphere = getMyLevelInSphere(state, sphereId);
+        let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
+        let userLevelInSphere = getUserLevelInSphere(state, sphereId);
 
         let stoneIds = Object.keys(sphere.stones);
         stoneIds.forEach((stoneId) => {
@@ -59,7 +59,7 @@ class KeepAliveHandlerClass {
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
           if      (behaviourHomeExit.active)                   { behaviour = behaviourHomeExit; }
-          else if (behaviourRoomExit.active && allowRoomLevel) { behaviour = behaviourRoomExit; }
+          else if (behaviourRoomExit.active && useRoomLevel)   { behaviour = behaviourRoomExit; }
           else if (behaviourAway.active)                       { behaviour = behaviourAway;     }
 
           if (behaviour && stone.config.handle && stone.config.disabled === false) {

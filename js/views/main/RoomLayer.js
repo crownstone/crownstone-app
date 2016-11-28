@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 
-var Actions = require('react-native-router-flux').Actions;
+let Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
 import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/dataUtil'
@@ -67,7 +67,7 @@ export class RoomLayer extends Component {
 
   componentWillUnmount() {}
 
-  _renderRoom(locationId, room, count, index, activeSphere) {
+  _renderRoom(locationId, count, index, activeSphere) {
     // get the position for the room
     let pos = {};
     if (count > 6) {
@@ -122,8 +122,6 @@ export class RoomLayer extends Component {
     let floatingStones = getFloatingStones(state, this.props.sphereId);
     let showFloatingCrownstones = floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
 
-    console.log("showFloatingCrownstones", showFloatingCrownstones)
-
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
 
@@ -135,11 +133,11 @@ export class RoomLayer extends Component {
     }
 
     for (let i = 0; i < roomIdArray.length; i++) {
-      roomNodes.push(this._renderRoom(roomIdArray[i], rooms[roomIdArray[i]], amountOfRooms, i, this.props.sphereId))
+      roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i, state.app.activeSphere))
     }
 
     if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null, {}, amountOfRooms, amountOfRooms - 1, this.props.sphereId))
+      roomNodes.push(this._renderRoom(null, amountOfRooms, amountOfRooms - 1, state.app.activeSphere))
     }
 
     if (roomNodes.length > 6) {

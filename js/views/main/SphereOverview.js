@@ -10,17 +10,15 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
-
+const Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler }                              from '../../native/SetupStateHandler'
-import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION }  from '../../ExternalConfig'
 import { Orbs }                                           from '../components/Orbs'
 import { TopBar }                                         from '../components/Topbar'
 import { FinalizeLocalizationIcon }                       from '../components/FinalizeLocalizationIcon'
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
-import { getMyLevelInSphere, sphereRequiresFingerprints } from '../../util/dataUtil'
+import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization} from '../../util/dataUtil'
 import { LOG, LOGError, LOGDebug }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
@@ -28,7 +26,7 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight }
 export class SphereOverview extends Component {
   constructor() {
     super();
-    this.state = {presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0)};
+    this.state = { presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0) };
     this.leftValue = 0;
     this.animating = false;
 
@@ -170,6 +168,10 @@ export class SphereOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
 
+    // sphere view dimensions
+    let viewWidth = screenWidth*this.sphereIds.length;
+    let viewHeight = screenHeight - topBarHeight - tabBarHeight;
+
     let noSpheres = this.sphereIds.length == 0;
     let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let viewingRemotely = true;
@@ -178,31 +180,42 @@ export class SphereOverview extends Component {
     let noRooms = true;
     let isAdminInCurrentSphere = false;
     let activeSphere = state.app.activeSphere;
-    let allowIndoorLocalization = false;
     let background = this.props.backgrounds.main;
 
     if (noSpheres === false) {
+      // fallback: should not be required
+      if (!activeSphere) {
+        activeSphere = Object.keys(state.spheres)[0];
+      }
+
       // todo: only do this on change
       let sphereIsPresent = state.spheres[activeSphere].config.present;
-      allowIndoorLocalization = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION : false);
+
+      // are there enough in total?
+      let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state,activeSphere);
+
+      // do we need more fingerprints?
+      let requiresFingerprints = requireMoreFingerprints(state, activeSphere);
+
+
       noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
-      isAdminInCurrentSphere = getMyLevelInSphere(state, activeSphere) === 'admin';
+      isAdminInCurrentSphere = getUserLevelInSphere(state, activeSphere) === 'admin';
 
-      if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true && isAdminInCurrentSphere == true))
+      if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true && isAdminInCurrentSphere == true)) {
         viewingRemotely = false;
+      }
 
       if (viewingRemotely === true) {
         background = this.props.backgrounds.mainRemoteNotConnected;
       }
 
-      let viewWidth = screenWidth*this.sphereIds.length;
-      let viewHeight = screenHeight - topBarHeight - tabBarHeight;
-      let moreFingerprintsNeeded = sphereRequiresFingerprints(state, activeSphere);
-      let showFinalizeIndoorNavigationButton = viewingRemotely == false &&
-        isAdminInCurrentSphere &&
-        allowIndoorLocalization &&
-        moreFingerprintsNeeded === true;
+      let showFinalizeIndoorNavigationButton = (
+        isAdminInCurrentSphere                     && // only admins can set this up so only show it if you're an admin.
+        viewingRemotely                  === false && // only show this if you're there.
+        enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
+        requiresFingerprints             === true     // Need more fingerprints.
+      );
 
       return (
         <View {...this._panResponder.panHandlers}>
@@ -211,7 +224,7 @@ export class SphereOverview extends Component {
               title={state.spheres[activeSphere].config.name + '\'s Sphere'}
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
-              leftAction={() => {this._finalizeIndoorLocalization(activeSphere, viewingRemotely);}}
+              leftAction={() => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely);}}
               right={isAdminInCurrentSphere && !blockAddButton ? '+Room' : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
             />
@@ -259,7 +272,7 @@ export class SphereOverview extends Component {
     }
   }
 
-  _finalizeIndoorLocalization(activeSphere, viewingRemotely) {
+  _finalizeIndoorLocalization(state, activeSphere, viewingRemotely) {
     viewingRemotely = false;
     if (viewingRemotely) {
       Alert.alert(
@@ -267,6 +280,9 @@ export class SphereOverview extends Component {
         "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
         [{text: 'OK'}]
       );
+    }
+    else if (enoughCrownstonesInLocationsForIndoorLocalization(state, activeSphere)) {
+      this.props.eventBus.emit("showLocalizationSetupStep2", activeSphere);
     }
     else {
       Actions.roomOverview({

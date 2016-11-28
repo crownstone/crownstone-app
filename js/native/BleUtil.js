@@ -88,7 +88,7 @@ export const BleUtil = {
 
       let cleanup = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (advertisement) => {
-        LOG("Advertisement in detectCrownstone", stoneHandle, advertisement)
+        LOG("Advertisement in detectCrownstone", stoneHandle, advertisement);
 
         if (advertisement.handle === stoneHandle)
           count += 1;
@@ -179,7 +179,7 @@ class SingleCommand {
    * @returns {*}
    */
   perform(action, prop1, prop2) {
-    LOG("connecting to ", this.handle, "doing this: ", action, "with prop", prop1, prop2)
+    LOG("connecting to ", this.handle, "doing this: ", action, "with prop", prop1, prop2);
     return BlePromiseManager.register(() => {
       return BleActions.connect(this.handle)
         .then(() => { return action(prop1, prop2); })

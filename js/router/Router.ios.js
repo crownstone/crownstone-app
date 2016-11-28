@@ -209,16 +209,15 @@ export class AppRouter extends Component {
                   <Scene key="daySelection"           component={Views.DaySelection}               hideNavBar={false} title="Set Active Days" />
                 </Scene>
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
-                  <Scene key="settingsOverview"           component={Views.SettingsOverview}           title="Settings"/>
-                  <Scene key="settingsProfile"            component={Views.SettingsProfile}            title="Your Profile" />
-                  <Scene key="settingsChangeEmail"        component={Views.SettingsChangeEmail}        title="Change Email"/>
-                  <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}     title="Change Password"/>
-                  <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     title="Sphere Overview" />
-                  <Scene key="settingsSphere"             component={Views.SettingsSphere}             title="[Sphere name here]" />
-                  <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         title="[Username here]" />
-                  <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  title="[Username here]" />
-                  <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       title="Invite" />
-                  <Scene key="appComplexity"              component={Views.AppComplexity}              title="Settings"/>
+                  <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>
+                  <Scene key="settingsProfile"            component={Views.SettingsProfile}           hideNavBar={false} title="Your Profile" />
+                  <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}    hideNavBar={false} title="Change Password"/>
+                  <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    hideNavBar={false} title="Sphere Overview" />
+                  <Scene key="settingsSphere"             component={Views.SettingsSphere}            hideNavBar={false} title="[Sphere name here]" />
+                  <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}        hideNavBar={false} title="[Username here]" />
+                  <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser} hideNavBar={false} title="[Username here]" />
+                  <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}      hideNavBar={false} title="Invite" />
+                  <Scene key="appComplexity"              component={Views.AppComplexity}             hideNavBar={false} title="Settings"/>
                 </Scene>
               </Scene>
             </Scene>
@@ -266,4 +265,5 @@ let navBarStyle = {
   navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
   titleStyle:{color:'white'},
 };
+
 

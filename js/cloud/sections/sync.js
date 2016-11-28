@@ -19,12 +19,18 @@ export const sync = {
       return;
     }
 
-    return syncDown( state, options )
+    // set the authentication tokens
+    let userId = state.user.userId;
+    let accessToken = state.user.accessToken;
+    CLOUD.setAccess(accessToken);
+    CLOUD.setUserId(userId);
+
+    return syncDown( userId, options )
       .then((data) => {
-        let cloudData = syncSpheres(state, actions, data.spheres, data.spheresData);
-        let deletedSphere = syncCleanupLocal(store, state, actions, cloudData);
+        let cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
+        let deletedSphere = syncCleanupLocal(store, actions, cloudData);
         syncKeys(actions, data.keys);
-        syncDevices(state, actions, data.devices)
+        syncDevices(store, actions, data.devices)
           .then(() => {
             LOG("SYNC Dispatching ", actions.length, " actions!");
             actions.forEach((action) => {
@@ -49,14 +55,8 @@ export const sync = {
   }
 };
 
-const syncDown = function (state, options) {
+const syncDown = function (userId, options) {
   return new Promise((resolve, reject) => {
-    let userId = state.user.userId;
-    let accessToken = state.user.accessToken;
-
-    CLOUD.setAccess(accessToken);
-    CLOUD.setUserId(userId);
-
     let cloudSpheres = [];
     let cloudSpheresData = {};
     let cloudKeys = [];
@@ -110,7 +110,8 @@ const getTimeDifference = function(localVersion, cloudVersion) {
 };
 
 
-const syncCleanupLocal = function(store, state, actions, cloudData) {
+const syncCleanupLocal = function(store, actions, cloudData) {
+  const state = store.getState();
   let sphereIds = Object.keys(state.spheres);
   let deletedSphere = false;
 
@@ -165,7 +166,7 @@ const syncCleanupLocal = function(store, state, actions, cloudData) {
   return deletedSphere;
 };
 
-const syncSpheres = function(state, actions, spheres, spheresData) {
+const syncSpheres = function(store, actions, spheres, spheresData) {
   let cloudSphereUserIds = {};
   let cloudSphereIds = {};
   let cloudStoneIds = {};
@@ -175,6 +176,8 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
 
   LOGDebug("SyncSpheres", spheresData);
 
+  // get the state here so we did not have to wait with an old state on the down sync.
+  const state = store.getState();
   spheres.forEach((sphere) => {
     // put id in map so we can easily find it again
     cloudSphereIds[sphere.id] = true;
@@ -318,21 +321,21 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
       if (sphereInState !== undefined && sphereInState.stones[stone_from_cloud.id] !== undefined) {
         if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) < 0) {
           actions.push({
-            type: 'UPDATE_STONE_CONFIG',
-            sphereId: sphere.id,
-            stoneId: stone_from_cloud.id,
+            type:      'UPDATE_STONE_CONFIG',
+            sphereId:   sphere.id,
+            stoneId:    stone_from_cloud.id,
             data: {
               name: stone_from_cloud.name,
               icon: stone_from_cloud.icon,
               type: stone_from_cloud.type,
               touchToToggle: stone_from_cloud.touchToToggle,
-              applianceId: stone_from_cloud.applianceId,
-              locationId: locationLinkId,
-              macAddress: stone_from_cloud.address,
-              iBeaconMajor: stone_from_cloud.major,
-              iBeaconMinor: stone_from_cloud.minor,
-              crownstoneId: stone_from_cloud.uid,
-              updatedAt: stone_from_cloud.updatedAt,
+              applianceId:   stone_from_cloud.applianceId,
+              locationId:    locationLinkId,
+              macAddress:    stone_from_cloud.address,
+              iBeaconMajor:  stone_from_cloud.major,
+              iBeaconMinor:  stone_from_cloud.minor,
+              crownstoneId:  stone_from_cloud.uid,
+              updatedAt:     stone_from_cloud.updatedAt,
             }
           });
         }
@@ -340,18 +343,18 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           // update cloud since our data is newer!
           let stoneInState = sphereInState.stones[stone_from_cloud.id];
           let data = {
-            name: stoneInState.config.name,
-            address: stoneInState.config.macAddress,
-            icon: stoneInState.config.icon,
-            id: stone_from_cloud.id,
+            name:          stoneInState.config.name,
+            address:       stoneInState.config.macAddress,
+            icon:          stoneInState.config.icon,
+            id:            stone_from_cloud.id,
             touchToToggle: stoneInState.config.touchToToggle,
-            type: stoneInState.config.type,
-            applianceId: stoneInState.config.applianceId,
-            sphereId: sphere.id,
-            major: stoneInState.config.iBeaconMajor,
-            minor: stoneInState.config.iBeaconMinor,
-            uid: stoneInState.config.crownstoneId,
-            updatedAt: stoneInState.config.updatedAt,
+            type:          stoneInState.config.type,
+            applianceId:   stoneInState.config.applianceId,
+            sphereId:      sphere.id,
+            major:         stoneInState.config.iBeaconMajor,
+            minor:         stoneInState.config.iBeaconMinor,
+            uid:           stoneInState.config.crownstoneId,
+            updatedAt:     stoneInState.config.updatedAt,
           };
 
           // only admins get to update the behaviour
@@ -365,7 +368,7 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           if (stoneInState.config.locationId !== locationLinkId) {
             // if the one in the cloud is null, we only create a link
             if (locationLinkId === null && stoneInState.config.locationId !== null) {
-              CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, stoneInState.config.updatedAt, true);
+              CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, stoneInState.config.updatedAt, true).catch(() => {});
             }
             else {
               CLOUD.forStone(stone_from_cloud.id).deleteStoneLocationLink(locationLinkId, stoneInState.config.updatedAt, true)
@@ -405,11 +408,11 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
           if (behaviour.onHomeEnter)
             actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onHomeEnter });
           if (behaviour.onHomeExit)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onHomeExit });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit',  sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onHomeExit });
           if (behaviour.onRoomEnter)
             actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onRoomEnter });
           if (behaviour.onRoomExit)
-            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onRoomExit });
+            actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit',  sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onRoomExit });
           if (behaviour.onNear)
             actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onNear', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onNear });
           if (behaviour.onAway)
@@ -497,9 +500,11 @@ const syncSpheres = function(state, actions, spheres, spheresData) {
 /**
  * Sync devices
  */
-const syncDevices = function(state, actions, devices) {
+const syncDevices = function(store, actions, devices) {
   return new Promise((resolve, reject) => {
-    let {name, address, description} = getDeviceSpecs();
+    const state = store.getState();
+
+    let {name, address, description} = getDeviceSpecs(state);
 
     let deviceId = undefined;
     devices.forEach((device) => {

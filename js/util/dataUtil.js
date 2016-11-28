@@ -1,20 +1,18 @@
 import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOG, LOGError } from '../logging/Log'
 
-
 const DeviceInfo = require('react-native-device-info');
 
-export const getStonesFromState = function(state, sphereId, locationId) {
+export const getStonesInLocation = function(state, sphereId, locationId) {
   let filteredStones = {};
   if (sphereId !== undefined) {
     let stones = state.spheres[sphereId].stones;
-    for (let stoneId in stones) {
-      if (stones.hasOwnProperty(stoneId)) {
-        if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
-          filteredStones[stoneId] = (stones[stoneId]);
-        }
+    let stoneIds = Object.keys(stones);
+    stoneIds.forEach((stoneId) => {
+      if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
+        filteredStones[stoneId] = (stones[stoneId]);
       }
-    }
+    })
   }
   return filteredStones;
 };
@@ -23,34 +21,32 @@ export const getAmountOfStonesInLocation = function(state, sphereId, locationId)
   let counter = 0;
   if (sphereId !== undefined) {
     let stones = state.spheres[sphereId].stones;
-    for (let stoneId in stones) {
-      if (stones.hasOwnProperty(stoneId)) {
-        if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
-          counter += 1;
-        }
+    let stoneIds = Object.keys(stones);
+    stoneIds.forEach((stoneId) => {
+      if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
+        counter += 1;
       }
-    }
+    })
   }
   return counter;
-}
+};
 
 export const getFloatingStones = function(state, sphereId) {
-  let filteredStones = [];
+  let floatingStones = [];
   if (sphereId !== undefined) {
     let stones = state.spheres[sphereId].stones;
-    for (let stoneId in stones) {
-      if (stones.hasOwnProperty(stoneId)) {
-        if (stones[stoneId].config.locationId === null || stones[stoneId].config.locationId === undefined) {
-          filteredStones.push(stones[stoneId]);
-        }
+    let stoneIds = Object.keys(stones);
+    stoneIds.forEach((stoneId) => {
+      if (stones[stoneId].config.locationId === null || stones[stoneId].config.locationId === undefined) {
+        floatingStones.push(stones[stoneId]);
       }
-    }
+    })
   }
-  return filteredStones;
+  return floatingStones;
 };
 
 
-export const getPresentUsersFromState = function(state, sphereId, locationId, all = false) {
+export const getPresentUsersInLocation = function(state, sphereId, locationId, all = false) {
   let users = [];
   if (locationId === null) {
     return users;
@@ -70,9 +66,9 @@ export const getPresentUsersFromState = function(state, sphereId, locationId, al
 };
 
 
-export const getCurrentPowerUsageFromState = function(state, sphereId, locationId) {
+export const getCurrentPowerUsageInLocation = function(state, sphereId, locationId) {
   let usage = 0;
-  let stones = getStonesFromState(state, sphereId, locationId);
+  let stones = getStonesInLocation(state, sphereId, locationId);
   for (let stoneId in stones) {
     if (stones.hasOwnProperty(stoneId)) {
       usage += stones[stoneId].state.currentUsage
@@ -83,8 +79,25 @@ export const getCurrentPowerUsageFromState = function(state, sphereId, locationI
 };
 
 
-export const getSphereContentFromState = function(state, sphereId) {
-  let stones = getStonesFromState(state, sphereId);
+export const getStonesAndAppliancesInSphere = function(state, sphereId) {
+  let stones = getStonesInLocation(state, sphereId);
+  let appliances = state.spheres[sphereId].appliances;
+
+  let items = {};
+  let stoneIds = Object.keys(stones);
+  stoneIds.forEach((stoneId) => {
+    let stone = stones[stoneId];
+    if (stone.config.applianceId)
+      items[stoneId] = {stone: stone, device: appliances[stone.config.applianceId]};
+    else
+      items[stoneId] = {stone: stone, device: stone}
+  });
+  return items;
+};
+
+
+export const getStonesAndAppliancesInLocation = function(state, sphereId, locationId) {
+  let stones = getStonesInLocation(state, sphereId, locationId);
   let appliances = state.spheres[sphereId].appliances;
 
   let items = {};
@@ -101,25 +114,7 @@ export const getSphereContentFromState = function(state, sphereId) {
 };
 
 
-export const getRoomContentFromState = function(state, sphereId, locationId) {
-  let stones = getStonesFromState(state, sphereId, locationId);
-  let appliances = state.spheres[sphereId].appliances;
-
-  let items = {};
-  for (let stoneId in stones) {
-    if (stones.hasOwnProperty(stoneId)) {
-      let stone = stones[stoneId];
-      if (stone.config.applianceId)
-        items[stoneId] = {stone: stone, device: appliances[stone.config.applianceId]};
-      else
-        items[stoneId] = {stone: stone, device: stone}
-    }
-  }
-  return items;
-};
-
-
-export const getRoomNames = function(state, sphereId) {
+export const getLocationNamesInSphere = function(state, sphereId) {
   let roomNames = {};
   let rooms = state.spheres[sphereId].locations;
   for (let roomId in rooms) {
@@ -132,21 +127,7 @@ export const getRoomNames = function(state, sphereId) {
 };
 
 
-export const userIsAdmin = function(state) {
-  let sphereIds = Object.keys(state.spheres);
-  for (let i = 0; i < sphereIds.length; i++) {
-    if (state.spheres[sphereIds[i]].config.adminKey !== undefined) {
-      return true;
-    }
-  }
-  return false;
-};
-
-export const userIsAdminInSphere = function(state, sphereId) {
-  return state.spheres[sphereId].config.adminKey !== undefined;
-};
-
-export const getSpheresWhereIHaveAccessLevel = function(state, accessLevel) {
+export const getSpheresWhereUserHasAccessLevel = function(state, accessLevel) {
   let items = [];
   for (let sphereId in state.spheres) {
     if (state.spheres.hasOwnProperty(sphereId)) {
@@ -161,7 +142,7 @@ export const getSpheresWhereIHaveAccessLevel = function(state, accessLevel) {
 };
 
 
-export const getMyLevelInSphere = function(state, sphereId) {
+export const getUserLevelInSphere = function(state, sphereId) {
   let userId = state.user.userId;
   if (state.spheres[sphereId].users[userId])
     return state.spheres[sphereId].users[userId].accessLevel;
@@ -182,65 +163,6 @@ export const getMyLevelInSphere = function(state, sphereId) {
 };
 
 
-export const userInSpheres = function(state) {
-  return Object.keys(state.spheres).length > 0;
-};
-
-
-export const getSphereName = function(state, id) {
-  return state.spheres[id].config.name;
-};
-
-
-export const getRoomName = function(state, sphereId, locationId) {
-  if (locationId === null) {
-    return NO_LOCATION_NAME;
-  }
-  return state.spheres[sphereId].locations[locationId].config.name;
-};
-
-
-export const getRoomIdFromName = function(state, sphereId, locationName) {
-  if (locationName === NO_LOCATION_NAME) {
-    return null;
-  }
-  let locations = state.spheres[sphereId].locations;
-  for (let locationId in locations) {
-    if (locations.hasOwnProperty(locationId)) {
-      if (locations[locationId].config.name == locationName) {
-        return locationId;
-      }
-    }
-  }
-  return false;
-};
-
-export const getTotalAmountOfCrownstones = function(state) {
-  let sphereIds = Object.keys(state.spheres);
-  let count = 0;
-  sphereIds.forEach((sphereId) => {
-    count += Object.keys(state.spheres[sphereId].stones).length;
-  });
-  return count;
-};
-
-export const getAmountOfCrownstonesInSphereForLocalization = function(state, sphereId) {
-  let stoneIds = Object.keys(state.spheres[sphereId].stones);
-  let count = 0;
-
-  stoneIds.forEach((stoneId) => {
-    let stone = state.spheres[sphereId].stones[stoneId];
-    if (stone.config.locationId !== undefined && stone.config.locationId !== null) {
-      count += 1;
-    }
-  });
-  return count;
-};
-
-export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) {
-  let amount = getAmountOfCrownstonesInSphereForLocalization(state, sphereId);
-  return amount >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
-};
 
 export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
   return _getMap(state, 'handle');
@@ -289,16 +211,16 @@ export const getAiData = function(state, sphereId) {
   }
 };
 
-export const getDeviceSpecs = function() {
-  let address = DeviceInfo.getUniqueID();  // e.g. FCDBD8EF-62FC-4ECB-B2F5-92C9E79AC7F9 note this is IdentityForVendor on iOS so it will change if all apps from the current apps vendor have been previously uninstalled
+export const getDeviceSpecs = function(state) {
+  let address = state.user.appIdentifier;
   let name = DeviceInfo.getDeviceName();
   let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
 
-  return { address, name, description };
+  return { name, address, description };
 };
 
 export const getCurrentDeviceId = function(state) {
-  let specs = getDeviceSpecs();
+  let specs = getDeviceSpecs(state);
 
   let deviceIds = Object.keys(state.devices);
   for (let i = 0; i < deviceIds.length; i++) {
@@ -340,11 +262,48 @@ export const prepareStoreForUser = function(store) {
 };
 
 
-export const sphereRequiresFingerprints = function (state, sphereId) {
-  let requiresFingerprints = true;
+export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
+  // if we do not have a sphereId return false
+  if (!sphereId || !state)
+    return false;
+
+  // are there enough?
+  let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state,sphereId);
+
+  // do we need more fingerprints?
+  let requiresFingerprints = requireMoreFingerprints(state, sphereId);
+
+  // we have enough and we do not need more fingerprints.
+  return !requiresFingerprints && enoughForLocalization;
+};
+
+
+export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) {
+  return Object.keys(state.spheres[sphereId].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
+};
+
+export const enoughCrownstonesInLocationsForIndoorLocalization = function(state, sphereId) {
+  let stoneIds = Object.keys(state.spheres[sphereId].stones);
+  let count = 0;
+
+  stoneIds.forEach((stoneId) => {
+    let stone = state.spheres[sphereId].stones[stoneId];
+    if (stone.config.locationId !== undefined && stone.config.locationId !== null) {
+      count += 1;
+    }
+  });
+  return count >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
+};
+
+export const requireMoreFingerprints = function (state, sphereId) {
+  // if we do not have a sphereId return false
+  if (!sphereId || !state)
+    return true;
+
+  // do we need more fingerprints?
+  let requiresFingerprints = false;
   if (state.spheres && state.spheres[sphereId] && state.spheres[sphereId].locations) {
     let locationIds = Object.keys(state.spheres[sphereId].locations);
-    let requiresFingerprints = false;
     locationIds.forEach((locationId) => {
       if (state.spheres[sphereId].locations[locationId].config.fingerprintRaw === null) {
         requiresFingerprints = true;

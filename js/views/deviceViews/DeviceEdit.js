@@ -9,7 +9,7 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 import { stoneTypes } from '../../router/store/reducers/stones'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
@@ -28,25 +28,33 @@ export class DeviceEdit extends Component {
   constructor() {
     super();
     this.state = {showStone:false};
-    this.showStone = false;
+    this.deleting = false;
   }
 
   componentDidMount() {
-    this.unsubscribe = this.props.store.subscribe(() => {
-      // guard against deletion of the stone
-      let state = this.props.store.getState();
-      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-      if (stone)
-        this.forceUpdate();
-      else {
-        Actions.pop()
+    const { store } = this.props;
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      let state = store.getState();
+      if (state.spheres[this.props.sphereId] === undefined) {
+        Actions.pop();
+        return;
       }
-    })
+
+      if ( change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ) {
+        if (this.deleting === false) {
+          this.forceUpdate();
+        }
+      }
+    });
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribeStoreEvents();
   }
+
 
   addDeleteOptions(items, stone) {
     items.push({
@@ -90,7 +98,7 @@ export class DeviceEdit extends Component {
           Actions.applianceSelection({
             ...requiredData,
             callback: (applianceId) => {
-              this.showStone = false;
+              this.setState({showStone:false});
               store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: applianceId}});
             }
           });
@@ -138,8 +146,8 @@ export class DeviceEdit extends Component {
     // unplug device
     items.push({
       label: 'Unplug Device', type: 'button', style: {color: colors.blue.hex}, callback: () => {
-        this.showStone = true;
-        setTimeout(() => {store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});},300);
+        this.setState({showStone:true});
+        setTimeout(() => {store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});}, 300);
       }
     });
     items.push({label:'Unplugging will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
@@ -180,7 +188,7 @@ export class DeviceEdit extends Component {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .then(() => {
-        this._removeCrownstoneFromRedux();
+        this._removeCrownstoneFromRedux(false);
       })
       .catch((err) => {
         LOG("error while asking the cloud to remove this crownstone", err);
@@ -200,7 +208,7 @@ export class DeviceEdit extends Component {
         let proxy = BleUtil.getProxy(stone.config.handle);
         proxy.perform(BleActions.commandFactoryReset)
           .then(() => {
-            this._removeCrownstoneFromRedux();
+            this._removeCrownstoneFromRedux(true);
           })
           .catch((err) => {
             LOG("ERROR:",err);
@@ -225,13 +233,17 @@ export class DeviceEdit extends Component {
       })
   }
 
-  _removeCrownstoneFromRedux() {
+  _removeCrownstoneFromRedux(factoryReset = false) {
     // deleting makes sure we will not draw this page again if we delete it's source from the database.
     this.deleting = true;
 
+    let labelText = "I have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.";
+    if (factoryReset === false) {
+     labelText = "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode thought.. You'll need to recover it to put it back into setup mode."
+    }
+
     // revert to the previous screen is done by the store listener in componentDidMount
-    Alert.alert("Success!",
-      "We have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.",
+    Alert.alert("Success!", labelText,
       [{text:'OK', onPress: () => {
         this.props.eventBus.emit('hideLoading');
         this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
@@ -257,10 +269,10 @@ export class DeviceEdit extends Component {
       <Background image={backgroundImage} >
         <ScrollView>
           <View style={{height:screenHeight}}>
-            <FadeInView visible={!this.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
+            <FadeInView visible={!this.state.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
               <ListEditableItems items={applianceOptions} separatorIndent={true}/>
             </FadeInView>
-            <FadeInView visible={this.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={300}>
+            <FadeInView visible={this.state.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={300}>
               <ListEditableItems items={stoneOptions} separatorIndent={false}/>
             </FadeInView>
           </View>

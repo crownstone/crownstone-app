@@ -15,10 +15,9 @@ import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 
 
-export class RoomOverview extends Component {
-
+export class RoomList extends Component {
   render() {
-    let content = (
+    return (
       <View style={{flexDirection:'row', padding:10, paddingLeft:0, alignItems:'center', flex:1}}>
         <View style={{paddingRight:20}}>
           <View style={[{
@@ -40,6 +39,5 @@ export class RoomOverview extends Component {
         {this.props.navigation ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'} /> : undefined}
       </View>
     );
-    return content;
   }
 }

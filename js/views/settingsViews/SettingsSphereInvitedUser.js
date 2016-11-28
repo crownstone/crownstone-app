@@ -19,7 +19,7 @@ import { logOut, processImage, safeDeleteFile } from '../../util/util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOGError } from '../../logging/Log'
 import { styles, colors, width } from './../styles'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereInvitedUser extends Component {
   constructor() {

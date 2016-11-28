@@ -55,8 +55,7 @@ function _appendToURL(url, toAppend) {
     url += appendString;
   }
   return url;
-};
-
+}
 function _htmlEncode(str) {
   if (Array.isArray(str) || typeof str === 'object') {
     return JSON.stringify(str);

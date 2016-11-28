@@ -85,7 +85,7 @@ export class ApplianceEntry extends Component {
     let height = this.props.size + 20 || 60;
     let size = this.props.size || 60;
 
-    let content = (
+    return (
       <View style={{flexDirection:'row', height:height, paddingLeft:0, alignItems:'center', flex:1}}>
         <TouchableOpacity style={{paddingRight:20}} onPress={() => {this.props.select();}}>
           <View style={[{
@@ -104,6 +104,5 @@ export class ApplianceEntry extends Component {
         {this._getDeleteIcon()}
       </View>
     );
-    return content;
   }
 }

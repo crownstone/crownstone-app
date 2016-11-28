@@ -9,7 +9,7 @@ import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'
 
 export const getUUID = function() {
-  var S4 = function () {
+  const S4 = function () {
     return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
   };
 

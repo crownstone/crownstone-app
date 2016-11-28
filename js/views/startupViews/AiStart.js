@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { styles, colors, screenWidth, screenHeight, topBarHeight } from '../styles'

@@ -11,12 +11,12 @@ import {
 } from 'react-native';
 
 import { Background } from './../components/Background'
-import { RoomOverview } from '../components/RoomList'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getStonesFromState, getSpheresWhereIHaveAccessLevel } from './../../util/dataUtil'
-var Actions = require('react-native-router-flux').Actions;
+import { getStonesInLocation } from './../../util/dataUtil'
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { TopBar } from '../components/Topbar';
+import { RoomList } from '../components/RoomList';
 import { Icon } from '../components/Icon';
 
 export class RoomSelection extends Component {
@@ -54,10 +54,10 @@ export class RoomSelection extends Component {
             store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: roomId}})
           }}>
             <View style={styles.listView}>
-              <RoomOverview
+              <RoomList
                 icon={room.config.icon}
                 name={room.config.name}
-                stoneCount={Object.keys(getStonesFromState(state, this.props.sphereId, roomId)).length}
+                stoneCount={Object.keys(getStonesInLocation(state, this.props.sphereId, roomId)).length}
                 navigation={true}
               />
               </View>

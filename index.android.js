@@ -24,19 +24,18 @@ class Root extends Component {
   componentDidMount() {
     // SplashScreen.hide();
 
-    let snapBack = () => {
-      Animated.timing(this.state.top, {toValue: 0, duration: 50}).start();
-    };
+    let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration: 0}).start(); };
+    let snapBackKeyboard = () => { Animated.timing(this.state.top, {toValue: 0, duration: 50}).start(); };
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
       let keyboardHeight = 340;
       let distFromBottom = screenHeight - posY;
       Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:200}).start()
     }));
-    this.unsubscribe.push(eventBus.on('blur', snapBack));
+    this.unsubscribe.push(eventBus.on('blur', snapBackKeyboard));
 
     // if the keyboard is minimized, shift back down
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', snapBack);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', snapBackKeyboard);
 
     // catch for the simulator
     this.unsubscribe.push(eventBus.on('showLoading', snapBack));
@@ -45,7 +44,6 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
 
   }
-
 
   componentWillUnmount() {
     this.unsubscribe.forEach((callback) => {callback()});

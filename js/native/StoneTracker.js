@@ -6,14 +6,14 @@ import { StoneStateHandler } from './StoneDisabilityHandler'
 import { eventBus } from './../util/eventBus';
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
-import { enoughCrownstonesForIndoorLocalization } from '../util/dataUtil'
+import { canUseIndoorLocalizationInSphere } from '../util/dataUtil'
 import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
 
 let MINIMUM_AMOUNT_OF_SAMPLES = 3;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
 let TOUCH_RSSI_THRESHOLD = -52;
-let TAP_TO_TOGGLE_ENABLE_THRESHOLD = TOUCH_RSSI_THRESHOLD - 10;
+let TAP_TO_TOGGLE_ENABLE_THRESHOLD = TOUCH_RSSI_THRESHOLD - 6;
 let TOUCH_TIME_BETWEEN_SWITCHING = 2000; // ms
 let TOUCH_CONSECUTIVE_SAMPLES = 1;
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
@@ -47,7 +47,7 @@ export class StoneTracker {
   handleHomeEnterEvent(stone, sphereId, stoneId, element) {
     // TODO: put this check back when the mesh works
     // // if we have enough stones for indoor localization we will use the presence toggle of the sphere to do this.
-    // if (enoughCrownstonesForIndoorLocalization(state, referenceId)) {
+    // if (enoughCrownstonesInLocationsForIndoorLocalization(state, referenceId)) {
     //   return;
     // }
 
@@ -165,7 +165,7 @@ export class StoneTracker {
       return;
 
     // these event are only used for when there are no room-level options possible
-    if (!enoughCrownstonesForIndoorLocalization(state, referenceId)) {
+    if (!canUseIndoorLocalizationInSphere(state, referenceId)) {
       if (ref.rssiAverage > stone.config.nearThreshold) {
         // if near, cleanup far pending callback
         this._cleanupPendingOutdatedCallback(element, ref, TYPES.NEAR);
@@ -218,7 +218,7 @@ export class StoneTracker {
           ref.lastTriggerTime = new Date().valueOf();
         }
 
-        LOG("TRIGGERING CALLBACK FOR ", type)
+        LOG("TRIGGERING CALLBACK FOR ", type);
         // if we need to switch:
         if (behaviour.state !== stone.state.state) {
           this._applySwitchState(behaviour.state, stone, stoneId, sphereId);

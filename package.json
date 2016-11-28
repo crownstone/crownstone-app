@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "initFlow" : "flow init",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "tape -r babel-register ./js/tests/*/*",
     "clearCloud": "node -r babel-register ./helpers/clearCloud.js",

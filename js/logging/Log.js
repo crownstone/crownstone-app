@@ -1,4 +1,6 @@
 import {
+  LOGGING,
+  ERROR_LOGGING,
   DEBUG,
   DEBUG_CLOUD,
   DEBUG_BLE,
@@ -11,20 +13,24 @@ import RNFS from 'react-native-fs'
 
 
 export const LOG = function() {
-  let args = ['LOG ------------ :'];
-  for (let i = 0; i < arguments.length; i++) {
-    args.push(arguments[i]);
+  if (LOGGING) {
+    let args = ['LOG ------------ :'];
+    for (let i = 0; i < arguments.length; i++) {
+      args.push(arguments[i]);
+    }
+    console.log.apply(this, args);
   }
-  console.log.apply(this, args);
 };
 
 
 export const LOGError = function() {
-  let args = ['LOG ERROR !!!!! -- :'];
-  for (let i = 0; i < arguments.length; i++) {
-    args.push(arguments[i]);
+  if (ERROR_LOGGING) {
+    let args = ['LOG ERROR !!!!! -- :'];
+    for (let i = 0; i < arguments.length; i++) {
+      args.push(arguments[i]);
+    }
+    console.log.apply(this, args);
   }
-  console.log.apply(this, args);
 };
 
 

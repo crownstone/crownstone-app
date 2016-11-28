@@ -8,7 +8,7 @@ class BlePromiseManagerClass {
   }
 
   register(promise, message) {
-    LOG("registered promise in manager")
+    LOG("registered promise in manager");
     return new Promise((resolve, reject) => {
       let container = {promise: promise, resolve: resolve, reject: reject, message:message};
       if (this.promiseInProgress === undefined) {
@@ -23,7 +23,7 @@ class BlePromiseManagerClass {
   }
 
   executePromise(promiseContainer) {
-    LOG('executed promise ', promiseContainer.message)
+    LOG('executed promise ', promiseContainer.message);
     this.promiseInProgress = promiseContainer;
     promiseContainer.promise()
       .then(() => {
@@ -44,7 +44,7 @@ class BlePromiseManagerClass {
   }
 
   getNextPromise() {
-    LOG('get next')
+    LOG('get next');
     if (this.pendingPromises.length > 0) {
       let nextPromise = this.pendingPromises[0];
       this.executePromise(nextPromise);

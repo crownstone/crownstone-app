@@ -11,13 +11,12 @@ import {
 
 import { logOut } from './../../util/util'
 import { CLOUD } from './../../cloud/cloudAPI'
-import { getTotalAmountOfCrownstones } from './../../util/dataUtil'
 import { Background } from './../components/Background'
+import { TopBar } from './../components/Topbar'
 import { ListEditableItems } from './../components/ListEditableItems'
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { IconButton } from '../components/IconButton'
-import { userInSpheres, userIsAdmin, getSphereName } from '../../util/dataUtil'
 
 
 export class SettingsOverview extends Component {
@@ -37,7 +36,6 @@ export class SettingsOverview extends Component {
     const store = this.props.store;
     const state = store.getState();
     let items = [];
-    let totalAmountOfCrownstones = getTotalAmountOfCrownstones(state);
 
     // TODO: restore once we have a better description for this. Also Location must be working.
     // if (totalAmountOfCrownstones > 0) {
@@ -62,7 +60,7 @@ export class SettingsOverview extends Component {
     items.push({label:'My Profile', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
 
     items.push({type:'explanation', label:'CONFIGURATION', below:false});
-    if (userInSpheres(state)) {
+    if (Object.keys(state.spheres).length > 0) {
       items.push({label:'Spheres', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
         Actions.settingsSphereOverview()
       }});
@@ -151,7 +149,11 @@ export class SettingsOverview extends Component {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background hideTopBar={true} image={this.props.backgrounds.menu} >
+        <TopBar
+          title={"Settings"}
+          notBack={true}
+        />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

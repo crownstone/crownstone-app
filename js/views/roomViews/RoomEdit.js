@@ -9,12 +9,12 @@ import {
   Text,
   View
 } from 'react-native';
-var Actions = require('react-native-router-flux').Actions;
+const Actions = require('react-native-router-flux').Actions;
 
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
-import { getStonesFromState, enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
+import { getStonesInLocation, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors } from './../styles'
 import { LOGDebug, LOG } from './../../logging/Log'
@@ -63,7 +63,7 @@ export class RoomEdit extends Component {
     CLOUD.forSphere(this.props.sphereId).deleteLocation(this.props.locationId)
       .then(() => {
         let removeActions = [];
-        let stones = getStonesFromState(state, this.props.sphereId, this.props.locationId);
+        let stones = getStonesInLocation(state, this.props.sphereId, this.props.locationId);
         removeActions.push({sphereId: this.props.sphereId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
         for (let stoneId in stones) {
           if (stones.hasOwnProperty(stoneId)) {
@@ -94,8 +94,6 @@ export class RoomEdit extends Component {
     let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId};
     let items = [];
 
-    console.log("drawing thing", room)
-
     items.push({label:'ROOM SETTINGS',  type:'explanation', below:false});
     items.push({label:'Room Name', type: 'textEdit', value: room.config.name, callback: (newText) => {
       newText = (newText === '') ? 'Untitled Room' : newText;
@@ -108,7 +106,7 @@ export class RoomEdit extends Component {
 
 
     // here we do the training if required and possible.
-    let canDoIndoorLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
+    let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
     if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
       items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
       if (room.config.fingerprintRaw) {

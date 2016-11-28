@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-var Ionicon = require('react-native-vector-icons/Ionicons');
+const Ionicon = require('react-native-vector-icons/Ionicons');
 import { CustomIcon,CustomIcon2 } from '../../fonts/customIcons'
 import { styles, colors} from '../styles'
 

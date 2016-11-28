@@ -64,7 +64,6 @@ export class TextEditBar extends Component {
   validateInput(value) {
     switch(this.props.validation) {
       case 'email':
-        console.log(value,  emailChecker(value))
         return emailChecker(value) ? 'valid' : 'errorInvalid';
       case 'password':
         return this.validateCustom(value, {minLength: 1});
@@ -105,7 +104,7 @@ export class TextEditBar extends Component {
   getValidationIcons() {
     if (this.props.validationMethod === 'icons') {
       if (this.state.validation === 'valid')
-        return <Icon name="ios-checkmark-circle" size={18} color={colors.green.hex} style={{paddingLeft:3}}/>
+        return <Icon name="ios-checkmark-circle" size={18} color={colors.green.hex} style={{paddingLeft:3}}/>;
       else if (this.state.validation === undefined)
         return undefined;
       else // we can have many different types of errors
