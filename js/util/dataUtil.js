@@ -7,7 +7,8 @@ export const getStonesInLocation = function(state, sphereId, locationId) {
   let filteredStones = {};
   if (sphereId !== undefined) {
     let stones = state.spheres[sphereId].stones;
-    stones.forEach((stoneId) => {
+    let stoneIds = Object.keys(stones);
+    stoneIds.forEach((stoneId) => {
       if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
         filteredStones[stoneId] = (stones[stoneId]);
       }
@@ -20,30 +21,18 @@ export const getAmountOfStonesInLocation = function(state, sphereId, locationId)
   let counter = 0;
   if (sphereId !== undefined) {
     let stones = state.spheres[sphereId].stones;
-    for (let stoneId in stones) {
-      if (stones.hasOwnProperty(stoneId)) {
-        if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
-          counter += 1;
-        }
+    let stoneIds = Object.keys(stones);
+    stoneIds.forEach((stoneId) => {
+      if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
+        counter += 1;
       }
-    }
+    })
   }
   return counter;
 };
 
 export const getFloatingStones = function(state, sphereId) {
-  let filteredStones = [];
-  if (sphereId !== undefined) {
-    let stones = state.spheres[sphereId].stones;
-    for (let stoneId in stones) {
-      if (stones.hasOwnProperty(stoneId)) {
-        if (stones[stoneId].config.locationId === null || stones[stoneId].config.locationId === undefined) {
-          filteredStones.push(stones[stoneId]);
-        }
-      }
-    }
-  }
-  return filteredStones;
+  return getStonesInLocation(state, sphereId, null);
 };
 
 
@@ -85,7 +74,8 @@ export const getStonesAndAppliancesInSphere = function(state, sphereId) {
   let appliances = state.spheres[sphereId].appliances;
 
   let items = {};
-  stones.forEach((stoneId) => {
+  let stoneIds = Object.keys(stones);
+  stoneIds.forEach((stoneId) => {
     let stone = stones[stoneId];
     if (stone.config.applianceId)
       items[stoneId] = {stone: stone, device: appliances[stone.config.applianceId]};

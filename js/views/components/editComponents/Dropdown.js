@@ -60,7 +60,7 @@ export class Dropdown extends Component {
           position:'absolute',
           flex:1,
           top:0,
-          width:width,
+          width: screenWidth,
           flexDirection:'row',
           height:50,
           backgroundColor:'#fff',

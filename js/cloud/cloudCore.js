@@ -11,14 +11,12 @@ import { safeMoveFile, safeDeleteFile } from '../util/util'
  *
  * This method communicates with the cloud services.
  *
- * @param options         { endPoint: '/users/', data: JSON, type:'body'/'query' }
+ * @param options        // { endPoint: '/users/', data: JSON, type:'body'/'query' }
  * @param method
  * @param headers
  * @param id
- * @param successCallback
- * @param errorHandleCallback
- * @param closePopupCallback
  * @param accessToken
+ * @param doNotStringify
  */
 export function request(
   options,
