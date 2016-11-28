@@ -13,7 +13,7 @@ import {
 import { TopBar } from './../components/Topbar'
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getRoomNames } from './../../util/dataUtil'
+import { getLocationNamesInSphere } from './../../util/dataUtil'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { LOGError } from './../../logging/Log'
 var Actions = require('react-native-router-flux').Actions;
@@ -71,7 +71,7 @@ export class RoomAdd extends Component {
     }
     else {
       // check if the room name is unique.
-      let existingLocations = getRoomNames(state, this.props.sphereId);
+      let existingLocations = getLocationNamesInSphere(state, this.props.sphereId);
       if (existingLocations[this.state.name] === undefined) {
         this.props.eventBus.emit('showLoading', 'Creating room...');
         CLOUD.forSphere(this.props.sphereId).createLocation(this.state.name, this.state.icon)

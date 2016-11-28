@@ -13,7 +13,7 @@ import {
 import { Background } from './../components/Background'
 import { RoomOverview } from '../components/RoomList'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getStonesFromState, getSpheresWhereIHaveAccessLevel } from './../../util/dataUtil'
+import { getStonesInLocation, getSpheresWhereUserHasAccessLevel } from './../../util/dataUtil'
 var Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { TopBar } from '../components/Topbar';
@@ -57,7 +57,7 @@ export class RoomSelection extends Component {
               <RoomOverview
                 icon={room.config.icon}
                 name={room.config.name}
-                stoneCount={Object.keys(getStonesFromState(state, this.props.sphereId, roomId)).length}
+                stoneCount={Object.keys(getStonesInLocation(state, this.props.sphereId, roomId)).length}
                 navigation={true}
               />
               </View>

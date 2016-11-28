@@ -4,7 +4,7 @@ import { SetupHelper } from './SetupHelper';
 import { BleUtil } from './BleUtil';
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus';
-import { getMapOfCrownstonesInAllSpheresByHandle, getMyLevelInSphere } from '../util/dataUtil';
+import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/dataUtil';
 import { CLOUD } from '../cloud/cloudAPI';
 import { getUUID } from '../util/util';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'

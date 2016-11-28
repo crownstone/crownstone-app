@@ -12,7 +12,7 @@ import {
 import { styles, screenWidth, screenHeight, colors } from '../styles'
 import { LOGDebug } from '../../logging/Log'
 import { eventBus } from '../../util/eventBus'
-import { getPresentUsersFromState } from '../../util/dataUtil'
+import { getPresentUsersInLocation } from '../../util/dataUtil'
 import { ProfilePicture } from './ProfilePicture'
 import { TextCircle } from './TextCircle'
 
@@ -91,7 +91,7 @@ export class PresentUsers extends Component {
   }
 
   _debug(props) {
-    this.allUsersBase = getPresentUsersFromState(props.store.getState(), props.sphereId, props.locationId, true);
+    this.allUsersBase = getPresentUsersInLocation(props.store.getState(), props.sphereId, props.locationId, true);
     this.allUsers = [];
     this.userI = 0;
     setInterval(() => {
@@ -133,7 +133,7 @@ export class PresentUsers extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let presentUsers = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
+    let presentUsers = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
     // presentUsers = this.allUsers; // ENABLE FOR DEBUG
     let slotCount = 0;
     let drawCount = 0;

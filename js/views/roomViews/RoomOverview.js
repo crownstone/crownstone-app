@@ -21,14 +21,14 @@ import { BleActions, NativeBus } from '../../native/Proxy'
 import { TopBar } from '../components/Topbar'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
-import { userIsAdminInSphere } from '../../util/dataUtil'
+import { getUserLevelInSphere } from '../../util/dataUtil'
 import { getUUID } from '../../util/util'
 var Actions = require('react-native-router-flux').Actions;
 import { 
-  getPresentUsersFromState, 
-  getCurrentPowerUsageFromState, 
-  getRoomContentFromState,
-  enoughCrownstonesForIndoorLocalization
+  getPresentUsersInLocation,
+  getCurrentPowerUsageInLocation,
+  getStonesAndAppliancesInLocation,
+  enoughCrownstonesInLocationsForIndoorLocalization
 } from '../../util/dataUtil'
 import { Icon } from '../components/Icon'
 import { Separator } from '../components/Separator'
@@ -223,7 +223,7 @@ export class RoomOverview extends Component {
    */
   getRightItem(state, userAdmin) {
     if (userAdmin === true && this.props.locationId !== null && this.viewingRemotely !== true) {
-      let canDoLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
+      let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
       let showFingerprintNeeded = false;
       if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
         showFingerprintNeeded = true;
@@ -267,10 +267,10 @@ export class RoomOverview extends Component {
     this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true;
     // this.viewingRemotely = false; // used for development: forcing remote off
 
-    let usage  = getCurrentPowerUsageFromState(state, this.props.sphereId, this.props.locationId);
-    let users  = getPresentUsersFromState(state, this.props.sphereId, this.props.locationId);
-    let stones = getRoomContentFromState(state, this.props.sphereId, this.props.locationId);
-    let userAdmin = userIsAdminInSphere(state, this.props.sphereId);
+    let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
+    let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
+    let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
+    let userAdmin = getUserLevelInSphere(state, this.props.sphereId) === 'admin';
 
     let stonesInRoom = Object.keys(stones).length > 0;
     let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
@@ -279,7 +279,7 @@ export class RoomOverview extends Component {
       if (!stonesInRoom) {
         setTimeout(() => {
           Actions.pop();
-          this.props.eventBus.emit("showLocalizationSetupStep2", this.props.sphereId)
+          this.props.eventBus.emit("showLocalizationSetupStep2", this.props.sphereId);
         }, 100);
       }
     }

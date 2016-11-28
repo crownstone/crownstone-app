@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 import { styles, colors } from '../styles'
-import { enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
+import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 
@@ -184,7 +184,7 @@ export class DeviceBehaviourEdit extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let canDoIndoorLocalization = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
+    let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
     let stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let options = [];

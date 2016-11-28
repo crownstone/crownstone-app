@@ -12,7 +12,7 @@ import {
 var Actions = require('react-native-router-flux').Actions;
 
 import { Icon }               from '../components/Icon'
-import { getMyLevelInSphere } from '../../util/dataUtil'
+import { getUserLevelInSphere } from '../../util/dataUtil'
 import { RoomLayer }          from './RoomLayer'
 import { LOG, LOGDebug }      from '../../logging/Log'
 import { overviewStyles }     from './SphereOverview'
@@ -41,7 +41,7 @@ export class Sphere extends Component {
     let bottomDistance = Object.keys(state.spheres).length > 1 ? 20 : 5;
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
-    let isAdminInCurrentSphere = getMyLevelInSphere(state, currentSphere) === 'admin';
+    let isAdminInCurrentSphere = getUserLevelInSphere(state, currentSphere) === 'admin';
 
     let newContent = undefined;
 

@@ -6,7 +6,7 @@ import { StoneStateHandler } from './StoneDisabilityHandler'
 import { eventBus } from './../util/eventBus';
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
-import { enoughCrownstonesForIndoorLocalization } from '../util/dataUtil'
+import { canUseIndoorLocalizationInSphere } from '../util/dataUtil'
 import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
 
@@ -47,7 +47,7 @@ export class StoneTracker {
   handleHomeEnterEvent(stone, sphereId, stoneId, element) {
     // TODO: put this check back when the mesh works
     // // if we have enough stones for indoor localization we will use the presence toggle of the sphere to do this.
-    // if (enoughCrownstonesForIndoorLocalization(state, referenceId)) {
+    // if (enoughCrownstonesInLocationsForIndoorLocalization(state, referenceId)) {
     //   return;
     // }
 
@@ -165,7 +165,7 @@ export class StoneTracker {
       return;
 
     // these event are only used for when there are no room-level options possible
-    if (!enoughCrownstonesForIndoorLocalization(state, referenceId)) {
+    if (!canUseIndoorLocalizationInSphere(state, referenceId)) {
       if (ref.rssiAverage > stone.config.nearThreshold) {
         // if near, cleanup far pending callback
         this._cleanupPendingOutdatedCallback(element, ref, TYPES.NEAR);

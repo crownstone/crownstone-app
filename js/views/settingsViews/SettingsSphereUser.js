@@ -14,7 +14,7 @@ import { Background } from './../components/Background'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getMyLevelInSphere } from '../../util/dataUtil'
+import { getUserLevelInSphere } from '../../util/dataUtil'
 import { styles, colors, width } from './../styles'
 var Actions = require('react-native-router-flux').Actions;
 
@@ -42,7 +42,7 @@ export class SettingsSphereUser extends Component {
     const store = this.props.store;
     const state = store.getState();
 
-    let levelInSphere = getMyLevelInSphere(state, this.props.sphereId);
+    let levelInSphere = getUserLevelInSphere(state, this.props.sphereId);
     let availablePermissions = [{label:'Member'},{label:"Guest"}];
     if (levelInSphere === 'admin') {
       availablePermissions = [{label:"Admin"},{label:'Member'},{label:"Guest"}];

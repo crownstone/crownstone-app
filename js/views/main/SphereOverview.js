@@ -20,7 +20,7 @@ import { FinalizeLocalizationIcon }                       from '../components/Fi
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
-import { getMyLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization } from '../../util/dataUtil'
+import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization} from '../../util/dataUtil'
 import { LOG, LOGError, LOGDebug }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
@@ -193,7 +193,7 @@ export class SphereOverview extends Component {
       // todo: only do this on change
       let sphereIsPresent = state.spheres[activeSphere].config.present;
 
-      // are there enough?
+      // are there enough in total?
       let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state,activeSphere);
 
       // do we need more fingerprints?
@@ -202,7 +202,7 @@ export class SphereOverview extends Component {
 
       noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
-      isAdminInCurrentSphere = getMyLevelInSphere(state, activeSphere) === 'admin';
+      isAdminInCurrentSphere = getUserLevelInSphere(state, activeSphere) === 'admin';
 
       if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true && isAdminInCurrentSphere == true)) {
         viewingRemotely = false;
@@ -226,7 +226,7 @@ export class SphereOverview extends Component {
               title={state.spheres[activeSphere].config.name + '\'s Sphere'}
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
-              leftAction={() => {this._finalizeIndoorLocalization(activeSphere, viewingRemotely);}}
+              leftAction={() => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely);}}
               right={isAdminInCurrentSphere && !blockAddButton ? '+Room' : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
             />
@@ -274,7 +274,7 @@ export class SphereOverview extends Component {
     }
   }
 
-  _finalizeIndoorLocalization(activeSphere, viewingRemotely) {
+  _finalizeIndoorLocalization(state, activeSphere, viewingRemotely) {
     viewingRemotely = false;
     if (viewingRemotely) {
       Alert.alert(
@@ -283,16 +283,20 @@ export class SphereOverview extends Component {
         [{text: 'OK'}]
       );
     }
+    else if (enoughCrownstonesInLocationsForIndoorLocalization(state, activeSphere)) {
+      this.props.eventBus.emit("showLocalizationSetupStep2", activeSphere);
+    }
     else {
-      Actions.roomOverview({
-        sphereId: activeSphere,
-        locationId: null,
-        title: 'First things first :)',
-        hideRight: true,
-        usedForIndoorLocalizationSetup: true,
-        overlayText:'Place your Crownstones in rooms!',
-        explanation: 'Tap a Crownstone to see the options, then tap the left icon to select a room!'
-      });
+        Actions.roomOverview({
+          sphereId: activeSphere,
+          locationId: null,
+          title: 'First things first :)',
+          hideRight: true,
+          usedForIndoorLocalizationSetup: true,
+          overlayText:'Place your Crownstones in rooms!',
+          explanation: 'Tap a Crownstone to see the options, then tap the left icon to select a room!'
+        });
+      }
     }
   }
 }
