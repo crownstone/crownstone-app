@@ -6,6 +6,7 @@ import { getUUID } from './util'
 export class EventBus {
   constructor() {
     this._topics = {};
+    this._topicIds = {};
   }
   
   on(topic, callback) {
@@ -25,6 +26,7 @@ export class EventBus {
     let id = getUUID();
 
     this._topics[topic].push({id,callback});
+    this._topicIds[id] = true;
 
     // return unsubscribe function.
     return () => {
@@ -36,6 +38,10 @@ export class EventBus {
             break;
           }
         }
+
+        // clear the ID
+        this._topicIds[id] = undefined;
+        delete this._topicIds[id];
 
         if (Object.keys(this._topics[topic]).length === 0)
           delete this._topics[topic];
@@ -54,7 +60,10 @@ export class EventBus {
       });
 
       fireElements.forEach((element) => {
-        element.callback(data);
+        // this check makes sure that if a callback has been deleted, we do not fire it.
+        if (this._topicIds[element.id] === true) {
+          element.callback(data);
+        }
       })
     }
   }

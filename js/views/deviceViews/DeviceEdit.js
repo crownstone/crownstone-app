@@ -139,7 +139,7 @@ export class DeviceEdit extends Component {
     items.push({
       label: 'Unplug Device', type: 'button', style: {color: colors.blue.hex}, callback: () => {
         this.showStone = true;
-        setTimeout(() => {store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});},300);
+        setTimeout(() => {store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});}, 300);
       }
     });
     items.push({label:'Unplugging will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
