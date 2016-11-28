@@ -285,7 +285,6 @@ export const enoughCrownstonesInLocationsForIndoorLocalization = function(state,
   return count >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
 
-
 export const requireMoreFingerprints = function (state, sphereId) {
   // if we do not have a sphereId return false
   if (!sphereId || !state)

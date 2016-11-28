@@ -211,7 +211,6 @@ export class AppRouter extends Component {
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                   <Scene key="settingsOverview"           component={Views.SettingsOverview}           title="Settings"/>
                   <Scene key="settingsProfile"            component={Views.SettingsProfile}            title="Your Profile" />
-                  <Scene key="settingsChangeEmail"        component={Views.SettingsChangeEmail}        title="Change Email"/>
                   <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}     title="Change Password"/>
                   <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     title="Sphere Overview" />
                   <Scene key="settingsSphere"             component={Views.SettingsSphere}             title="[Sphere name here]" />

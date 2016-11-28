@@ -26,7 +26,6 @@ import { DaySelection }               from '../views/deviceViews/DaySelection'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
 import { SettingsChangePassword }     from '../views/settingsViews/SettingsChangePassword'
-import { SettingsChangeEmail }        from '../views/settingsViews/SettingsChangeEmail'
 import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
 import { SettingsSphere }             from '../views/settingsViews/SettingsSphere'
 import { SettingsSphereInvite }       from '../views/settingsViews/SettingsSphereInvite'
@@ -64,7 +63,6 @@ export const Views = {
   SettingsOverview,
   SettingsProfile,
   SettingsChangePassword,
-  SettingsChangeEmail,
   SettingsSphereOverview,
   SettingsSphere,
   SettingsSphereInvite,

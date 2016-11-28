@@ -103,7 +103,7 @@ export class SettingsProfile extends Component {
     });
     items.push({
       label:'Email',
-      type: 'textEdit',
+      type: 'info',
       value: user.email,
       validation:'email',
       validationCallback: (result) => {this.validationState.email = result;},
@@ -181,7 +181,6 @@ export class SettingsProfile extends Component {
 
     return (
       <Background image={this.props.backgrounds.menu} >
-
         <ScrollView>
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
