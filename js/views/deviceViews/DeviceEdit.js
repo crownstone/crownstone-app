@@ -188,7 +188,7 @@ export class DeviceEdit extends Component {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .then(() => {
-        this._removeCrownstoneFromRedux();
+        this._removeCrownstoneFromRedux(false);
       })
       .catch((err) => {
         LOG("error while asking the cloud to remove this crownstone", err);
@@ -208,7 +208,7 @@ export class DeviceEdit extends Component {
         let proxy = BleUtil.getProxy(stone.config.handle);
         proxy.perform(BleActions.commandFactoryReset)
           .then(() => {
-            this._removeCrownstoneFromRedux();
+            this._removeCrownstoneFromRedux(true);
           })
           .catch((err) => {
             LOG("ERROR:",err);
@@ -233,13 +233,17 @@ export class DeviceEdit extends Component {
       })
   }
 
-  _removeCrownstoneFromRedux() {
+  _removeCrownstoneFromRedux(factoryReset = false) {
     // deleting makes sure we will not draw this page again if we delete it's source from the database.
     this.deleting = true;
 
+    let labelText = "I have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.";
+    if (factoryReset === false) {
+     labelText = "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode thought.. You'll need to recover it to put it back into setup mode."
+    }
+
     // revert to the previous screen is done by the store listener in componentDidMount
-    Alert.alert("Success!",
-      "We have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.",
+    Alert.alert("Success!", labelText,
       [{text:'OK', onPress: () => {
         this.props.eventBus.emit('hideLoading');
         this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
