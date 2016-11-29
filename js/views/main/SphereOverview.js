@@ -253,9 +253,9 @@ export class SphereOverview extends Component {
 
   _getAddRoomIcon() {
     // ios props
-    let props = {top:-2, right:24, size: 30, paddingTop:0 };
+    let props = {top:-1, right:20, size: 25, paddingTop:0 };
     if (Platform.OS === 'android') {
-      props = {top:5, right:24, size: 30, paddingTop:3 };
+      props = {top:7, right:20, size: 25, paddingTop:3 };
     }
     return (
       <View style={{ flex:1, alignItems:'flex-end', justifyContent:'center', paddingTop: props.paddingTop }}>
