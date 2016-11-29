@@ -25,7 +25,7 @@ class Root extends Component {
     // SplashScreen.hide();
 
     let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration: 0}).start(); };
-    let snapBackKeyboard = () => { Animated.timing(this.state.top, {toValue: 0, duration: 50}).start(); };
+    let snapBackKeyboard = () => { Animated.timing(this.state.top, {toValue: 0, duration: 100}).start(); };
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
       let keyboardHeight = 340;

@@ -3,6 +3,7 @@ import {
   Alert,
   Image,
   StyleSheet,
+  Platform,
   TouchableHighlight,
   TouchableOpacity,
   TextInput,
@@ -178,7 +179,7 @@ export class Login extends Component {
   render() {
     return (
       <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>
-        <TopBar leftStyle={{color:'#fff'}} left='Back' leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
+        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput style={{width: 0.8*screenWidth, padding:10}} placeholder='email' keyboardType='email-address' autocorrect={false} autoCapitalize="none" placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
@@ -329,6 +330,9 @@ export class Login extends Component {
 
         if (state.user.isNew !== false) {
           Actions.aiStart({type: 'reset'});
+        }
+        else if (Platform.OS === 'android') {
+          Actions.sphereOverview({type: 'reset'});
         }
         else {
           Actions.tabBar({type: 'reset'});
