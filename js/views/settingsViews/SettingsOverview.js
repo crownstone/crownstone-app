@@ -37,25 +37,6 @@ export class SettingsOverview extends Component {
     const state = store.getState();
     let items = [];
 
-    // TODO: restore once we have a better description for this. Also Location must be working.
-    // if (totalAmountOfCrownstones > 0) {
-    //   items.push({type: 'explanation', label: 'USE LOCALIZATION', below: false});
-    //   items.push({
-    //     type: 'switch', label: 'Enable Localization', value: state.app.enableLocalization,
-    //     callback: (newValue) => {
-    //       store.dispatch({
-    //         type: 'UPDATE_APP_STATE',
-    //         data: {enableLocalization: newValue}
-    //       })
-    //       NativeEventsBridge.stopListeningToLocationEvents();
-    //       if (newValue === true) {
-    //         NativeEventsBridge.startListeningToLocationEvents();
-    //       }
-    //       this.forceUpdate();
-    //     }
-    //   });
-    // }
-
     items.push({type:'explanation', label:'UPDATE YOUR PROFILE', below:false});
     items.push({label:'My Profile', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
 
@@ -77,7 +58,6 @@ export class SettingsOverview extends Component {
       }});
     }
 
-
     items.push({label:'TROUBLESHOOTING',  type:'explanation', below: false});
     items.push({
       label: 'Recover a Crownstone',
@@ -88,25 +68,6 @@ export class SettingsOverview extends Component {
       }
     });
     items.push({label:'If you want to reset a Crownstone because it is not responding correctly, recover it!',  type:'explanation', below: true});
-
-
-    // TODO: restore once we have a better description for this. Also mesh must be working.
-    // if (state.app.activeSphere && Object.keys(state.spheres[state.app.activeSphere].stones).length > 0) {
-    //   items.push({type: 'spacer'});
-    //   items.push({
-    //     type: 'button',
-    //     label: 'Turn all Crownstones on',
-    //     icon: <IconButton name="ios-power" size={22} button={true} style={{position: 'relative', top: 1}} color="#fff"
-    //                       buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
-    //     style: {color: colors.menuTextSelected.hex},
-    //     callback: () => {
-    //       Alert.alert("Are you sure?", "Are you sure you want to turn on every Crownstone in this Sphere?", [
-    //         {text: 'Cancel', style: 'cancel'},
-    //         {text: 'OK', onPress: () => {}}
-    //       ])
-    //     }
-    //   });
-    // }
 
     items.push({label:'Log Out', type:'button', icon: <IconButton name="md-log-out" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.menuRed.hex}} />, callback: () => {this._logoutPopup()}});
 
@@ -161,3 +122,39 @@ export class SettingsOverview extends Component {
     );
   }
 }
+
+// TODO: restore once we have a better description for this. Also Location must be working.
+// if (totalAmountOfCrownstones > 0) {
+//   items.push({type: 'explanation', label: 'USE LOCALIZATION', below: false});
+//   items.push({
+//     type: 'switch', label: 'Enable Localization', value: state.app.enableLocalization,
+//     callback: (newValue) => {
+//       store.dispatch({
+//         type: 'UPDATE_APP_STATE',
+//         data: {enableLocalization: newValue}
+//       })
+//       NativeEventsBridge.stopListeningToLocationEvents();
+//       if (newValue === true) {
+//         NativeEventsBridge.startListeningToLocationEvents();
+//       }
+//       this.forceUpdate();
+//     }
+//   });
+// }
+// TODO: restore once we have a better description for this. Also mesh must be working.
+// if (state.app.activeSphere && Object.keys(state.spheres[state.app.activeSphere].stones).length > 0) {
+//   items.push({type: 'spacer'});
+//   items.push({
+//     type: 'button',
+//     label: 'Turn all Crownstones on',
+//     icon: <IconButton name="ios-power" size={22} button={true} style={{position: 'relative', top: 1}} color="#fff"
+//                       buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+//     style: {color: colors.menuTextSelected.hex},
+//     callback: () => {
+//       Alert.alert("Are you sure?", "Are you sure you want to turn on every Crownstone in this Sphere?", [
+//         {text: 'Cancel', style: 'cancel'},
+//         {text: 'OK', onPress: () => {}}
+//       ])
+//     }
+//   });
+// }

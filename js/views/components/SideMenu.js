@@ -18,17 +18,28 @@ import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flu
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 
 export class SideMenu extends Component {
+  constructor(props) {
+    super();
+    this.state = {open: props.navigationState.open}
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log("will receive", nextProps)
+    this.setState({open: nextProps.navigationState.open})
+  }
+
   render(){
+    console.log("rendering SideMenu", this.state.open)
     const state = this.props.navigationState;
     const children = state.children;
     return (
       <Drawer
         ref="navigation"
-        open={state.open}
-        onOpen={()=> Actions.refresh({key:state.key, open: true})}
-        onClose={()=>Actions.refresh({key:state.key, open: false})}
+        open={this.state.open}
+        onOpen={ () => {console.log("onOpen"); Actions.refresh({key:state.key, open: true})}}
+        onClose={() => {console.log("onClose"); Actions.refresh({key:state.key, open: false})}}
         type="overlay"
-        content={<SideBar closeCallback={()=> {Actions.refresh({key:state.key, open: false})}} />}
+        content={<SideBar closeCallback={()=> {this.setState({open:false}); console.log("setting")}} />}
         tapToClose={true}
         openDrawerOffset={0.25}
         panCloseMask={0.25}

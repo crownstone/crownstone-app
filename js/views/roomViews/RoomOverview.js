@@ -173,7 +173,7 @@ export class RoomOverview extends Component {
         borderRightWidth: 20,
         borderTopWidth: 25,
         borderRightColor: 'transparent',
-        borderTopColor: colors.blue.hex, position: 'absolute', top: 0, left: 0
+        borderTopColor: color, position: 'absolute', top: 0, left: 0
       }}></View>
     }
   }

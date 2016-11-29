@@ -39,6 +39,7 @@ let getTabRootName = (state) => {
 export const reducerCreate = (params) => {
   const defaultReducer = Reducer(params);
   return (state, action)=> {
+    console.log("ACTION", state, action)
     // this part makes sure that when a menuIcon is pressed AND you are already in that menu tree,
     // it goes back to the root of that tree
     // if (action.type === ActionConst.JUMP && inTabMenu(state)) {
