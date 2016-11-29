@@ -43,7 +43,10 @@ export class DeviceEdit extends Component {
         return;
       }
 
-      if ( change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ) {
+      if (
+        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+        change.updateApplianceConfig && change.updateApplianceConfig.stoneIds[this.props.stoneId]
+        ) {
         if (this.deleting === false) {
           this.forceUpdate();
         }
@@ -242,10 +245,10 @@ export class DeviceEdit extends Component {
      labelText = "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode thought.. You'll need to recover it to put it back into setup mode."
     }
 
-    // revert to the previous screen is done by the store listener in componentDidMount
     Alert.alert("Success!", labelText,
       [{text:'OK', onPress: () => {
         this.props.eventBus.emit('hideLoading');
+        Actions.pop();
         this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }}]
     )
