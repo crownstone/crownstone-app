@@ -30,14 +30,14 @@ class TopBarAndroid extends Component {
   }
 
   _getRightContent() {
-    if (this.props.rightItem) {
+    if ( this.props.rightItem ) {
       return (
         <TouchableOpacity onPress={() => {this.props.rightAction();}} style={topBarStyle.topBarRightTouch}>
           {this.props.rightItem}
         </TouchableOpacity>
       );
     }
-    else if (this.props.right) {
+    else if ( this.props.right ) {
       return (
         <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>

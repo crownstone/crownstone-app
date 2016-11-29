@@ -279,9 +279,8 @@ class SchedulerClass {
       if (sphere === undefined)
         return;
 
-
-      if (action.stoneId !== undefined && sphere.stones[action.stoneId]) {
-        // TODO: currently only for state, generalization might be required.
+      if (action.stoneId !== undefined && sphere.stones[action.stoneId] || action.type === 'UPDATE_STONE_RSSI') {
+        // TODO: currently only for state, generalization is required.
         this._addActionIfDispatch(actionsToDispatch, action, sphere.stones[action.stoneId].state);
       }
       else if (action.applianceId !== undefined && sphere.appliances[action.applianceId]) {
@@ -297,7 +296,7 @@ class SchedulerClass {
   }
 
   _addActionIfDispatch(actionsToDispatch, action, currentState) {
-    if (action.updatedAt > currentState.updatedAt) {
+    if (action.updatedAt > currentState.updatedAt || action.type === 'UPDATE_STONE_RSSI') {
       actionsToDispatch.push(action);
     }
   }

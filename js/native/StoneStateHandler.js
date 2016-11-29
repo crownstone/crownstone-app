@@ -1,9 +1,13 @@
 import { LocationHandler } from '../native/LocationHandler';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG, LOGDebug } from '../logging/Log'
+import { getUUID } from '../util/util'
 import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
 
+let TRIGGER_ID = "RSSI_TRIGGER_FUNCTION";
+let RSSI_TIMEOUT = 6000;
+let RSSI_REFRESH = 1;
 /**
  * This class keeps track of the disability state of the crownstone.
  *
@@ -14,6 +18,9 @@ class StoneStateHandlerClass {
     this.store = {};
     this.timeoutActions = {};
     this._initialized = false;
+
+    // create a trigger to throttle the updates.
+    Scheduler.setRepeatingTrigger(TRIGGER_ID,{repeatEveryNSeconds: RSSI_REFRESH});
   }
 
   loadStore(store) {
@@ -23,15 +30,18 @@ class StoneStateHandlerClass {
     }
   }
 
-  receivedIBeaconUpdate(sphereId, stoneId) {
-    this.update(sphereId, stoneId);
+  receivedIBeaconUpdate(sphereId, stoneId, rssi) {
+    this.update(sphereId, stoneId, rssi);
   }
 
-  receivedUpdate(sphereId, stoneId) {
-    this.update(sphereId, stoneId);
+  receivedUpdate(sphereId, stoneId, rssi) {
+    this.update(sphereId, stoneId, rssi);
   }
 
-  update(sphereId, stoneId) {
+  update(sphereId, stoneId, rssi) {
+    // update RSSI
+    Scheduler.loadOverwritableAction(TRIGGER_ID, stoneId, {type:'UPDATE_STONE_RSSI', sphereId: sphereId, stoneId:stoneId, data:{rssi:rssi}});
+
     // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
     LocationHandler.enterSphere(sphereId);
 
@@ -39,10 +49,15 @@ class StoneStateHandlerClass {
       this.timeoutActions[sphereId] = {};
     }
     if (this.timeoutActions[sphereId][stoneId] === undefined) {
-      this.timeoutActions[sphereId][stoneId] = {clearTimeout: undefined};
+      this.timeoutActions[sphereId][stoneId] = {clearTimeout: undefined, clearRSSITimeout: undefined};
     }
-    else {
-      this.timeoutActions[sphereId][stoneId].clearTimeout()
+
+    if (this.timeoutActions[sphereId][stoneId].clearTimeout && typeof this.timeoutActions[sphereId][stoneId].clearTimeout === 'function') {
+      this.timeoutActions[sphereId][stoneId].clearTimeout();
+    }
+
+    if (this.timeoutActions[sphereId][stoneId].clearRSSITimeout && typeof this.timeoutActions[sphereId][stoneId].clearRSSITimeout === 'function') {
+      this.timeoutActions[sphereId][stoneId].clearRSSITimeout();
     }
 
     let disableCallback = () => {
@@ -68,13 +83,26 @@ class StoneStateHandlerClass {
           type: 'UPDATE_STONE_DISABILITY',
           sphereId: sphereId,
           stoneId: stoneId,
-          data: {disabled: true}
+          data: {disabled: true, rssi: -1000}
         });
       }
-      delete this.timeoutActions[sphereId][stoneId];
+      this.timeoutActions[sphereId][stoneId].clearTimeout = undefined;
+      delete this.timeoutActions[sphereId][stoneId].clearTimeout;
+    };
+
+    let clearRSSICallback = () => {
+      this.store.dispatch({
+        type: 'UPDATE_STONE_RSSI',
+        sphereId: sphereId,
+        stoneId: stoneId,
+        data: {rssi: -1000}
+      });
+      this.timeoutActions[sphereId][stoneId].clearRSSITimeout = undefined;
+      delete this.timeoutActions[sphereId][stoneId].clearRSSITimeout;
     };
 
     this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_");
+    this.timeoutActions[sphereId][stoneId].clearRSSITimeout = Scheduler.scheduleCallback(clearRSSICallback, RSSI_TIMEOUT, "updateRSSI_" + stoneId + "_");
   }
 
 }

@@ -1,6 +1,6 @@
 import { Scheduler } from '../logic/Scheduler';
 import { NativeBus } from './Proxy';
-import { StoneStateHandler } from './StoneDisabilityHandler'
+import { StoneStateHandler } from './StoneStateHandler'
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../util/dataUtil'
 import { eventBus }  from '../util/eventBus'
@@ -149,8 +149,6 @@ class AdvertisementHandlerClass {
           updatedAt: currentTime
         });
       }
-
-      StoneStateHandler.receivedUpdate(advertisement.referenceId, ref.id);
     };
 
     let stone = this.state.spheres[advertisement.referenceId].stones[ref.id];
@@ -164,6 +162,8 @@ class AdvertisementHandlerClass {
     else if (stone.state.disabled === true) {
       update();
     }
+
+    StoneStateHandler.receivedUpdate(advertisement.referenceId, ref.id, advertisement.rssi);
   }
 }
 

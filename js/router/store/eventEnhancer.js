@@ -158,6 +158,8 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
       eventStatus.updateStoneBehaviour = affectedIds; break;
       break;
+    case "UPDATE_STONE_RSSI":
+      eventStatus.stoneRssiUpdated = affectedIds; break;
     case 'ADD_STONE_SCHEDULE':
     case 'UPDATE_STONE_SCHEDULE':
     case 'REMOVE_STONE_SCHEDULE':

@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 
 import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BleUtil } from './BleUtil';
-import { StoneStateHandler } from './StoneDisabilityHandler'
+import { StoneStateHandler } from './StoneStateHandler'
 import { eventBus } from './../util/eventBus';
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
@@ -87,7 +87,7 @@ export class StoneTracker {
     this.handleHomeEnterEvent(stone, referenceId, stoneId, element);
 
     // tell the handler that this stone/beacon is still in range.
-    StoneStateHandler.receivedIBeaconUpdate(referenceId, stoneId);
+    StoneStateHandler.receivedIBeaconUpdate(referenceId, stoneId, rssi);
 
     // currentTime
     let now = new Date().valueOf();

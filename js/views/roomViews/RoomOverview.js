@@ -62,6 +62,7 @@ export class RoomOverview extends Component {
       if (
         (change.updateApplianceConfig) ||
         (change.updateStoneConfig) ||
+        (change.stoneRssiUpdated  && change.stoneRssiUpdated.sphereIds[this.props.sphereId]) ||
         (change.stoneUsageUpdated && change.stoneUsageUpdated.sphereIds[this.props.sphereId]) ||
         (change.changeSphereState && change.changeSphereState.sphereIds[this.props.sphereId]) ||
         (change.changeStoneState  && change.changeStoneState.sphereIds[this.props.sphereId])  ||
@@ -149,7 +150,7 @@ export class RoomOverview extends Component {
               onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
               onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
             />
-            {this._getRssiRibbon(item.stone.config.rssi)}
+            {item.stone.config.disabled || this.viewingRemotely ? undefined : this._getRssiRibbon(item.stone.config.rssi)}
           </View>
         </View>
       );
@@ -157,14 +158,12 @@ export class RoomOverview extends Component {
   }
 
   _getRssiRibbon(rssi) {
-    if (rssi > -80 || true) {
-      let color = colors.lightGray.hex;
-      if (rssi > -70) {
-        color = colors.lightBlue.hex
-      }
-      else if (rssi > -60) {
-        color = colors.blue.hex
-      }
+    let showNearThreshold = -70;
+    let range = 30;
+    if (rssi > showNearThreshold) {
+      let subRatio = 1 - (-1*(rssi - (showNearThreshold+range))/range);
+      let ratio = Math.max(0,Math.min(1,subRatio));
+      let color = colors.blue.rgba(ratio);
       return <View style={{
         width: 0,
         height: 0,
@@ -174,7 +173,7 @@ export class RoomOverview extends Component {
         borderTopWidth: 25,
         borderRightColor: 'transparent',
         borderTopColor: color, position: 'absolute', top: 0, left: 0
-      }}></View>
+      }} />
     }
   }
 

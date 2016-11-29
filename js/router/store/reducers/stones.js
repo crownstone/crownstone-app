@@ -83,6 +83,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.disabled        = update(action.data.disabled, newState.disabled);
+        newState.rssi            = update(action.data.rssi, newState.rssi);
         return newState;
       }
       return state;
