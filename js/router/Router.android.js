@@ -94,12 +94,7 @@ export class AppRouter extends Component {
         CLOUD.getUserData({background:true})
           .then((reply) => {
             LOG("Verified User.", reply);
-
-            LOG("-------------------------- DISABLE SYNC --------------------------");
-            LOG("-------------------------- DISABLE SYNC --------------------------");
-            LOG("-------------------------- DISABLE SYNC --------------------------");
-            LOG("-------------------------- DISABLE SYNC --------------------------");
-            // CLOUD.sync(store, true);
+            CLOUD.sync(store, true);
           })
           .catch((reply) => {
             LOG("COULD NOT VERIFY USER -- ERROR", reply);
