@@ -112,16 +112,13 @@ export class PresentUsers extends Component {
     this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
-        (change.userPositionUpdate && change.userPositionUpdate.locationIds[this.props.locationId])
+        (change.userPositionUpdate && change.userPositionUpdate.sphereIds[this.props.sphereId])
       ) {
         this._getUsers();
         this.forceUpdate();
       }
     });
-
   }
-
-  componentWillUpdate(newProps) { }
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
@@ -155,7 +152,7 @@ export class PresentUsers extends Component {
     let extra = totalCount > drawThreshold ? totalCount - drawThreshold + 1 : 0;
 
     let introAnimations = [];
-    let exitAnimations = [];
+    let exitAnimations  = [];
 
     // put users in the slot structure
     for (let i = 0; i < presentUsers.length; i++) {
@@ -307,11 +304,18 @@ export class PresentUsers extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    this.renderState = store.getState();
+
+    let presentUsers = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
+    let userObjects = this.getUsers();
+
+    if (presentUsers.length !== userObjects.length) {
+      this._getUsers();
+      userObjects = this.getUsers();
+    }
 
     return (
       <View style={{position:'absolute', top:0, left:0}}>
-        {this.getUsers()}
+        {userObjects}
       </View>
     )
   }

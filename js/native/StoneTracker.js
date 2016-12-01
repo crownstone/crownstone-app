@@ -39,26 +39,6 @@ export class StoneTracker {
   }
 
 
-  /**
-   * FALL BACK TO ENSURE THE ENTER HOME EVENT / IN RANGE EVENT FIRES
-   * @param stone
-   * @param sphereId
-   * @param stoneId
-   * @param element
-   */
-  handleHomeEnterEvent(stone, sphereId, stoneId, element) {
-    // TODO: put this check back when the mesh works
-    // // if we have enough stones for indoor localization we will use the presence toggle of the sphere to do this.
-    // if (enoughCrownstonesInLocationsForIndoorLocalization(state, referenceId)) {
-    //   return;
-    // }
-
-    // when we are out of range for 30 seconds, the crownstone is disabled. when we see it again, fire the onHomeEnter
-    if (stone.config.disabled === true) {
-      this._handleTrigger(element, {}, TYPES.HOME_ENTER, stoneId, sphereId);
-    }
-  }
-
   iBeaconUpdate(major, minor, rssi, referenceId) {
     // LOG("major, minor, rssi, ref",major, minor, rssi, referenceId)
     // only use valid rssi measurements, 0 or 128 are not valid measurements
@@ -84,9 +64,6 @@ export class StoneTracker {
     let stone = sphere.stones[stoneId];
     // element is either an appliance or a stone. If we have an application, we use its behaviour, if not, we use the stone's behaviour
     let element = this._getElement(sphere, stone);
-
-    // handle the case for in range, home enter event is different and requires mesh
-    this.handleHomeEnterEvent(stone, referenceId, stoneId, element);
 
     // tell the handler that this stone/beacon is still in range.
     StoneStateHandler.receivedIBeaconUpdate(referenceId, stoneId, rssi);

@@ -1,5 +1,5 @@
 import { CLOUD } from '../cloudAPI'
-import { LOG, LOGDebug, LOGError } from '../../logging/Log'
+import { LOG, LOGDebug, LOGError, LOGCloud } from '../../logging/Log'
 import { getDeviceSpecs } from '../../util/dataUtil'
 
 /**
@@ -49,6 +49,9 @@ export const sync = {
           .catch((err) => {
             LOGError(err);
           })
+      })
+      .catch((err) => {
+        LOGError(err);
       })
 
 
@@ -174,7 +177,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
   let cloudApplianceIds = {};
   let addedSphere = false;
 
-  LOGDebug("SyncSpheres", spheresData);
+  LOGCloud("SyncSpheres", spheresData);
 
   // get the state here so we did not have to wait with an old state on the down sync.
   const state = store.getState();

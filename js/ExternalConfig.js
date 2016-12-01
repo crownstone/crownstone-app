@@ -23,10 +23,11 @@ LOG("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https:
 
 export const CLOUD_ADDRESS = 'https://crownstone-cloud.herokuapp.com/api/';
 
-export const DEBUG_STORE = true;
+export const DEBUG_STORE = false;
 export const DEBUG_SCHEDULER = false;
 export const DEBUG_BLE = false;
-export const DEBUG_CLOUD = true;
+export const DEBUG_CLOUD = false;
+export const DEBUG_LOGGING = false;
 export const DEBUG = true;
 export const LOGGING = true;
 
@@ -45,4 +46,4 @@ export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
 export const NETWORK_REQUEST_TIMEOUT = 15000; //ms
 export const HIGH_FREQUENCY_SCAN_MAX_DURATION = 15000; //ms
 export const DISABLE_TIMEOUT = 30000; //ms
-export const KEEPALIVE_INTERVAL = 60000; //ms
+export const KEEPALIVE_INTERVAL = 60; // s !

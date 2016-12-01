@@ -49,6 +49,10 @@ class SchedulerClass {
    *                                    repeatEveryNSeconds
    */
   setRepeatingTrigger(id, options) {
+    if (options.repeatEveryNSeconds && options.repeatEveryNSeconds > 2000) {
+      LOGError(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
+    }
+
     if (this.triggers[id] === undefined) {
       this.triggers[id] = {actions: [], callbacks: [], options: {}, overwritableActions: {}, lastTriggerTime: 0};
     }
@@ -199,6 +203,15 @@ class SchedulerClass {
     this.checkSingleFires(now);
 
     this.schedule();
+  }
+
+
+  fireTrigger(triggerId) {
+    let state = this.store.getState();
+    let trigger = this.triggers[triggerId];
+
+    if (trigger)
+      this.flush(trigger, state);
   }
 
 

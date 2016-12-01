@@ -52,9 +52,13 @@ class LocationHandlerClass {
     if (state.spheres[sphereId] !== undefined) {
       LOG("ENTER SPHERE", sphereId);
 
-      KeepAliveHandler.keepAlive();
+      // set the presence
+      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: true, present: true}});
+
+      Scheduler.scheduleCallback(() => {KeepAliveHandler.fireTrigger();}, 10000, 'keepAlive');
 
       // trigger crownstones on enter sphere
+      LOG("TRIGGER ENTER HOME EVENT FOR SPHERE", state.spheres[sphereId].config.name);
       this._triggerCrownstones(state, sphereId, TYPES.HOME_ENTER);
 
       // start high frequency scan when entering a sphere.
@@ -72,11 +76,11 @@ class LocationHandlerClass {
       let canUseLocalization = canUseIndoorLocalizationInSphere(state, sphereId);
 
       if (canUseLocalization === true) {
-        LOGDebug("Starting indoor localization for sphere", sphereId);
+        LOG("Starting indoor localization for sphere", sphereId);
         Bluenet.startIndoorLocalization();
       }
       else {
-        LOGDebug("Stopping indoor localization for sphere", sphereId, "due to missing fingerprints.");
+        LOG("Stopping indoor localization for sphere", sphereId, "due to missing fingerprints.");
         Bluenet.stopIndoorLocalization();
       }
 
@@ -84,14 +88,13 @@ class LocationHandlerClass {
       LOG("Set Settings.", bluenetSettings);
       return BleActions.setSettings(bluenetSettings)
         .then(() => {
-          LOG("Setting Active Sphere");
           let sphereActions = [];
           let stoneIds = Object.keys(state.spheres[sphereId].stones);
+          LOG("Disabling all stones");
           stoneIds.forEach((stoneId) => {
-            sphereActions.push({type: 'UPDATE_STONE_DISABILITY', stoneId: stoneId, data:{ disabled: true }});
+            sphereActions.push({type: 'UPDATE_STONE_DISABILITY', stoneId: stoneId, data: { disabled: true }});
           });
 
-          sphereActions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: true, present: true}});
           this.store.batchDispatch(sphereActions);
         }).catch()
     }

@@ -2,6 +2,7 @@ import {
   LOGGING,
   ERROR_LOGGING,
   DEBUG,
+  DEBUG_LOGGING,
   DEBUG_CLOUD,
   DEBUG_BLE,
   DEBUG_STORE,
@@ -35,7 +36,7 @@ export const LOGError = function() {
 
 
 export const LOGDebug = function() {
-  if (DEBUG) {
+  if (DEBUG_LOGGING) {
     let args = ['LOG Debug ------- :'];
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);

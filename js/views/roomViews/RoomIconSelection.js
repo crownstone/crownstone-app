@@ -20,7 +20,7 @@ let categories = [
   {key: 'kitchen', label: 'Kitchen'},
   {key: 'bathroom', label: 'Bathroom'},
   {key: 'office', label: 'Office'},
-  {key: 'bedRoom', label: 'Bed Room'},
+  {key: 'bedRoom', label: 'Bedroom'},
   {key: 'garage', label: 'Garage'},
   {key: 'miscellaneous', label: 'Miscellaneous'},
 ];

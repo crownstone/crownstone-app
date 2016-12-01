@@ -59,12 +59,12 @@ export class AiStart extends Component {
           <Text style={aiStyle.text}>{"What's my gender?"}</Text>
           <View style={{flexDirection:'row', paddingBottom:10}}>
             <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => {this.setState({aiSex:'male'});}}>
-              <Icon name="c1-male" size={0.21*availableHeight} color={this.state.aiSex === 'male' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
+            <TouchableOpacity onPress={() => {this.setState({aiSex:'male'});}} style={{justifyContent:'center'}} >
+              <Icon name="c1-male" size={(this.state.aiSex === 'male' ? 0.21 : 0.18) * availableHeight} color={this.state.aiSex === 'male' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
             </TouchableOpacity>
             <View style={{flex:1}} />
-            <TouchableOpacity onPress={() => {this.setState({aiSex:'female'});}}>
-              <Icon name="c1-female" size={0.21*availableHeight} color={this.state.aiSex === 'female' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
+            <TouchableOpacity onPress={() => {this.setState({aiSex:'female'});}}  style={{justifyContent:'center'}} >
+              <Icon name="c1-female" size={(this.state.aiSex === 'female' ? 0.21 : 0.18) * availableHeight} color={this.state.aiSex === 'female' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
             </TouchableOpacity>
             <View style={{flex:1}} />
           </View>
@@ -130,7 +130,7 @@ let aiStyle = StyleSheet.create({
     fontSize:16, backgroundColor:'transparent', color:colors.menuBackground.hex, padding:10
   },
   boldText: {
-    fontSize:16, fontWeight:'bold', backgroundColor:'transparent', color:colors.menuBackground.hex, padding:10
+    fontSize:19, fontWeight:'bold', backgroundColor:'transparent', color:colors.menuBackground.hex, padding:10
   },
   largeText: {
     fontSize:30, fontWeight:'bold', backgroundColor:'transparent', color:colors.menuBackground.hex

@@ -32,15 +32,23 @@ class KeepAliveHandlerClass {
     }
   }
 
+
+  fireTrigger() {
+    Scheduler.fireTrigger(TRIGGER_ID);
+  }
+
+
   keepAlive() {
     const state = this.store.getState();
     let sphereIds = Object.keys(state.spheres);
 
-    LOGDebug("starting keepalive fun");
+    LOG("Starting KeepAlive call");
 
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
+      LOG("Starting KeepAlive round for sphere:", sphere.config.name);
       if (sphere.config.present === true) {
+        LOG("Performing round for sphere:", sphere.config.name);
 
         // check every sphere where we are present. Usually this is only one of them!!
         let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
@@ -68,7 +76,7 @@ class KeepAliveHandlerClass {
             if (userLevelInSphere === 'guest') {
               proxy.perform(BleActions.keepAlive)
                 .then(() => {
-                  LOG("KeepAlive Successful to ", stone.config.name, stone.config.handle);
+                  LOG("KeepAlive Successful to ", element.config.name, element.config.handle);
                 })
                 .catch((err) => {
                   LOGError("COULD NOT PERFORM KEEP ALIVE AS GUEST TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
@@ -77,10 +85,10 @@ class KeepAliveHandlerClass {
             else {
               proxy.perform(BleActions.keepAliveState, behaviour.state, Math.max(1.5*KEEPALIVE_INTERVAL, behaviour.delay)) // the max in time is so that it will not turn off before the next interval.
                 .then(() => {
-                  LOG("keepAliveState Successful to ", stone.config.name, stone.config.handle);
+                  LOG("keepAliveState Successful to ", element.config.name, element.config.handle);
                 })
                 .catch((err) => {
-                  LOGError("COULD NOT PERFORM KEEPALIVE AS",userLevelInSphere,"TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
+                  LOGError("COULD NOT PERFORM KEEPALIVE AS", userLevelInSphere, "TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
                 })
             }
           }

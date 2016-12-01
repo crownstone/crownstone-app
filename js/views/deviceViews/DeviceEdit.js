@@ -242,7 +242,7 @@ export class DeviceEdit extends Component {
 
     let labelText = "I have removed this Crownstone from the Cloud, your Sphere and reverted it to factory defaults. After plugging it in and out once more, you can freely add it to a Sphere.";
     if (factoryReset === false) {
-     labelText = "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode thought.. You'll need to recover it to put it back into setup mode."
+     labelText = "I have removed this Crownstone from the Cloud and your Sphere. I could not reset it back to setup mode though.. You'll need to recover it to put it back into setup mode."
     }
 
     Alert.alert("Success!", labelText,

@@ -2,7 +2,7 @@ import { Alert } from 'react-native'
 import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { LOG, LOGDebug, LOGError, LOGCloud } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { defaultHeaders } from './sections/base'
 import { safeMoveFile, safeDeleteFile } from '../util/util'
@@ -60,7 +60,7 @@ export function request(
   };
 
   if (DEBUG)
-    LOG(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, " body:", body, "config:",requestConfig);
+    LOGCloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, " body:", body, "config:",requestConfig);
 
   // the actual request
   return new Promise((resolve, reject) => {
@@ -127,7 +127,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
     let tempPath = RNFS.DocumentDirectoryPath + '/' + (10000 + Math.random() * 1e6).toString(36);
 
     if (DEBUG)
-      LOG('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
+      LOGCloud('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
 
     // download the file.
     RNFS.downloadFile({

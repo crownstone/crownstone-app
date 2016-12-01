@@ -21,7 +21,7 @@ let categories = [
   {key: 'furniture', label: 'Furniture'},
   {key: 'bathroom', label: 'Bathroom'},
   {key: 'office', label: 'Office'},
-  {key: 'bedRoom', label: 'Bed Room'},
+  {key: 'bedRoom', label: 'Bedroom'},
   {key: 'tools', label: 'Tools'},
   {key: 'kitchen', label: 'Kitchen'},
   {key: 'outside', label: 'Outside'},

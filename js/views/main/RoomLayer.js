@@ -24,7 +24,7 @@ export class RoomLayer extends Component {
     this.state = {presentUsers: {}};
 
     this.roomRadius = 0.35 * 0.5 * screenWidth;
-    this.availableSpace = (screenHeight - topBarHeight - tabBarHeight - 35) - 2 * this.roomRadius; // for top bar, menu bar and text + orbs
+    this.availableSpace = (screenHeight - topBarHeight - tabBarHeight - 50) - 2 * this.roomRadius; // for top bar, menu bar and text + orbs
 
     this.roomPositions = {
       1: [
@@ -130,14 +130,17 @@ export class RoomLayer extends Component {
     // the orphaned stones room.
     if (showFloatingCrownstones) {
       amountOfRooms += 1;
-      roomNodes.push(this._renderRoom(null, amountOfRooms, amountOfRooms - 1, state.app.activeSphere))
     }
 
-    for (let i = 0; i < roomIdArray.length; i++) {
-      roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i, state.app.activeSphere))
-    }
+    if (amountOfRooms > 6) {
+      if (showFloatingCrownstones) {
+        roomNodes.push(this._renderRoom(null, amountOfRooms, 0, state.app.activeSphere))
+      }
 
-    if (roomNodes.length > 6) {
+      for (let i = 0; i < roomIdArray.length; i++) {
+        roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i + 1, state.app.activeSphere))
+      }
+
       return (
         <ScrollView style={{height: screenHeight, width: screenWidth}}>
           <View style={{height: this.maxY + 2 * this.roomRadius + 200}}>
@@ -147,6 +150,14 @@ export class RoomLayer extends Component {
       )
     }
     else {
+      for (let i = 0; i < roomIdArray.length; i++) {
+        roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i, state.app.activeSphere))
+      }
+
+      if (showFloatingCrownstones) {
+        roomNodes.push(this._renderRoom(null, amountOfRooms, roomIdArray.length, state.app.activeSphere))
+      }
+
       return roomNodes;
     }
   }
