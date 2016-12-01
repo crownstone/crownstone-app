@@ -130,14 +130,11 @@ export class RoomLayer extends Component {
     // the orphaned stones room.
     if (showFloatingCrownstones) {
       amountOfRooms += 1;
+      roomNodes.push(this._renderRoom(null, amountOfRooms, amountOfRooms - 1, state.app.activeSphere))
     }
 
     for (let i = 0; i < roomIdArray.length; i++) {
       roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i, state.app.activeSphere))
-    }
-
-    if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null, amountOfRooms, amountOfRooms - 1, state.app.activeSphere))
     }
 
     if (roomNodes.length > 6) {

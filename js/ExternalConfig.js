@@ -42,6 +42,7 @@ export const ENCRYPTION_ENABLED = true;
 
 export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
 
+export const NETWORK_REQUEST_TIMEOUT = 15000; //ms
 export const HIGH_FREQUENCY_SCAN_MAX_DURATION = 15000; //ms
 export const DISABLE_TIMEOUT = 30000; //ms
 export const KEEPALIVE_INTERVAL = 60000; //ms

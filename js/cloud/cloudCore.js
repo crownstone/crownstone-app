@@ -1,5 +1,5 @@
 import { Alert } from 'react-native'
-import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD } from '../ExternalConfig'
+import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
@@ -69,19 +69,39 @@ export function request(
       reject("Cloud Disabled due to SILENCE_CLOUD == true. Set this to false in ExternalConfig.js to turn the cloud back on.");
     }
     else {
+      let stopRequest = false;
+      // add a timeout for the fetching of data.
+      setTimeout(() => {
+          stopRequest = true;
+          reject(new Error("Timeout"))
+        },
+      NETWORK_REQUEST_TIMEOUT);
+
       fetch(CLOUD_ADDRESS + endPoint, requestConfig)
         .catch((connectionError) => {
-          reject(connectionError);
+          if (stopRequest === false) {
+            reject(connectionError);
+          }
         })
-        .then(handleInitialReply)
+        .then((response) => {
+          if (stopRequest === false) {
+            return handleInitialReply(response);
+          }
+        })
         .catch((parseError) => {
           // TODO: cleanly fix this
           // LOGError("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
           return '';
         })
-        .then((parsedResponse) => {resolve({status:STATUS, data: parsedResponse});})
+        .then((parsedResponse) => {
+          if (stopRequest === false) {
+            resolve({status: STATUS, data: parsedResponse});
+          }
+        })
         .catch((err) => {
-          reject(err);
+          if (stopRequest === false) {
+            reject(err);
+          }
         })
     }
   });
