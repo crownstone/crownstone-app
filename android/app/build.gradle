@@ -98,7 +98,7 @@ android {
     defaultConfig {
         applicationId "nl.dobots.crownstoneapp"
         minSdkVersion 18
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         ndk {
@@ -137,6 +137,7 @@ android {
 
 dependencies {
     compile project(':bluenet')
+    compile project(':localization')
     compile project(':rn-splash-screen')
     compile project(':react-native-vector-icons')
     compile project(':react-native-svg')

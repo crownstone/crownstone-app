@@ -53,8 +53,12 @@ import nl.dobots.bluenet.service.callbacks.IntervalScanListener;
 import nl.dobots.bluenet.service.callbacks.ScanDeviceListener;
 import nl.dobots.bluenet.utils.BleLog;
 import nl.dobots.bluenet.utils.BleUtils;
+import nl.dobots.localization.Fingerprint;
+import nl.dobots.localization.FingerprintLocalization;
+import nl.dobots.localization.Localization;
+import nl.dobots.localization.LocalizationCallback;
 
-public class BluenetBridge extends ReactContextBaseJavaModule implements IntervalScanListener, EventListener, ScanDeviceListener, BleBeaconRangingListener {
+public class BluenetBridge extends ReactContextBaseJavaModule implements IntervalScanListener, EventListener, ScanDeviceListener, BleBeaconRangingListener, LocalizationCallback {
 	private static final String TAG = BluenetBridge.class.getCanonicalName();
 
 
@@ -85,13 +89,17 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private Callback _readyCallback = null;
 
 	private ScannerState _scannerState = ScannerState.DISABLED;
-	private boolean _isTrackingIbeacon;
-//	private BleDeviceFilter _scanFilter;
+	private boolean _isTrackingIbeacon = false;
+//	private BleDeviceFilter _scanFilter = BleDeviceFilter.all;
 
 	private boolean _connectCallbackInvoked;
 
 	private Map<UUID, String> _iBeaconSphereIds = new HashMap<>();
 	private String _currentSphereId;
+
+	private Localization _localization;
+	private boolean _isTraingingLocalization = false;
+	private boolean _isTraingingLocalizationPaused = false;
 
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
@@ -127,15 +135,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			}
 		});
 
-		_scannerState = ScannerState.DISABLED;
-		_isTrackingIbeacon = false;
-//		_scanFilter = BleDeviceFilter.all;
-
 		// create and bind to the BleScanService
 		BleLog.LOGd(TAG, "binding to service..");
 		Intent intent = new Intent(_reactContext, BleScanService.class);
 		boolean success = _reactContext.bindService(intent, _connection, Context.BIND_AUTO_CREATE);
 		BleLog.LOGd(TAG, "success: " + success);
+
+		_localization = FingerprintLocalization.getInstance();
 
 //		_scanService
 	}
@@ -257,22 +263,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void forceClearActiveRegion() {
-		// Forces not being in an ibeacon region (not needed for android)
-	}
-
-	@ReactMethod
-	public void startIndoorLocalization() {
-		// Start using the classifier
-	}
-
-	@ReactMethod
-	public void stopIndoorLocalization() {
-		// Stop using the classifier
+		// Forces not being in an ibeacon region (not needed for android as far as I know)
 	}
 
 	@ReactMethod
 	public void connect(String uuid, final Callback callback) {
 		BleLog.LOGd(TAG, "Connect to " + uuid);
+		if (_isTraingingLocalization) {
+			BleLog.LOGw(TAG, "Connecting while training localization is bad");
+		}
+
 		_connectCallbackInvoked = false;
 //		_bleExt.connectDevice(uuid, 3, new IDataCallback() {
 //			@Override
@@ -321,7 +321,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public void disconnect(final Callback callback) {
 		// Command the crownstone to disconnect the phone
 		BleLog.LOGd(TAG, "Disconnect command");
-		// TODO
+		// TODO maybe just use disconnectAndClose instead of the command
 		_bleExt.writeDisconnectCommand(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -642,6 +642,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Add the uuid to the list of tracked iBeacons, associate it with given sphereId
 		// Also starts the tracking
 		BleLog.LOGd(TAG, "trackIBeacon: " + ibeaconUUID + " sphereId=" + sphereId);
+		if (ibeaconUUID == null || sphereId == null) {
+			BleLog.LOGe(TAG, "invalid parameters");
+			return;
+		}
 		UUID uuid = UUID.fromString(ibeaconUUID);
 		_iBeaconSphereIds.put(uuid, sphereId);
 //		_trackedIBeacons.put(uuid, sphereId);
@@ -662,7 +666,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void pauseTracking() {
-		// Pause/stop tracking, but keeps the list of tracked iBeacons.
+		// Same as stopTracking, but keeps the list of tracked iBeacons.
 		BleLog.LOGd(TAG, "pauseTracking");
 		setTrackingState(false);
 		if (isScannerIdle()) {
@@ -672,7 +676,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void resumeTracking() {
-		// Resume/start tracking, with the stored list of tracked iBeacons.
+		// Same as startTracking, but restore the stored list of tracked iBeacons.
 		BleLog.LOGd(TAG, "resumeTracking");
 		setTrackingState(true);
 		_scanService.startIntervalScan(getScanInterval(), getScanInterval(), BleDeviceFilter.anyStone);
@@ -690,13 +694,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			_scanService.stopIntervalScan();
 		}
 
-//		// TODO: remove test
-//		// Test
-//		UUID uuid = UUID.fromString("b643423e-e175-4af0-a2e4-31e32f729a8a");
-//		_iBeaconRanger.addIbeaconFilter(new BleIbeaconFilter(uuid));
-//		// End test
-
-		// TODO: what should this return?
 		WritableMap retVal = Arguments.createMap();
 		retVal.putBoolean("error", false);
 		callback.invoke(retVal);
@@ -705,38 +702,73 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 
 	@ReactMethod
-	public void startCollectingFingerprint() {
+	public void startIndoorLocalization() {
+		// Start using the classifier
+		_localization.startLocalization(this);
+	}
 
+	@ReactMethod
+	public void stopIndoorLocalization() {
+		// Stop using the classifier
+		_localization.stopLocalization();
+	}
+
+	@ReactMethod
+	public void startCollectingFingerprint() {
+		_isTraingingLocalization = true;
+		_isTraingingLocalizationPaused = false;
+		_localization.startFingerprint();
 	}
 
 	@ReactMethod
 	public void abortCollectingFingerprint() {
-
+		_localization.abortFingerprint();
+		_isTraingingLocalization = false;
 	}
 
 	@ReactMethod
 	public void pauseCollectingFingerprint() {
-
+		// Stop feeding scans to the localization class
+		// TODO: implementation
+//		_isTraingingLocalization = false;
+		_isTraingingLocalizationPaused = true;
 	}
 
 	@ReactMethod
 	public void resumeCollectingFingerprint() {
-
+		// Start feeding scans to the localization class again
+		// TODO: implementation
+//		_isTraingingLocalization = true;
+		_isTraingingLocalizationPaused = false;
 	}
 
 	@ReactMethod
 	public void finalizeFingerprint(String sphereId, String locationId) {
-
+		_localization.finalizeFingerprint(sphereId, locationId, null);
+		_isTraingingLocalization = false;
 	}
 
 	@ReactMethod
 	public void getFingerprint(String sphereId, String locationId, Callback callback) {
-
+		Fingerprint fingerprint = _localization.getFingerprint(sphereId, locationId);
+		if (fingerprint != null) {
+			String fingerprintStr = fingerprint.toJson().toString();
+			callback.invoke(fingerprintStr);
+		}
+		else {
+			callback.invoke("");
+		}
 	}
 
 	@ReactMethod
 	public void loadFingerprint(String sphereId, String locationId, String fingerPrint) {
-
+		Fingerprint fingerprint = new Fingerprint();
+		if (fingerprint.fromString(fingerPrint)) {
+			_localization.importFingerprint(sphereId, locationId, fingerprint);
+		}
+		else {
+			BleLog.LOGe(TAG, "Failed to load fingerprint: " + fingerPrint);
+		}
 	}
 
 
@@ -933,9 +965,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@Override
 	public void onBeaconScanned(BleDevice device) {
+		String beaconId = device.getProximityUuid().toString() + ".Maj:" + device.getMajor() + ".Min:" + device.getMinor();
 		BleLog.LOGv(TAG, "event scanned beacon: " + device.getAddress());
+		if (_isTraingingLocalization && !_isTraingingLocalizationPaused) {
+			_localization.feedMeasurement(device, beaconId, null, null);
+		}
+		_localization.track(device, beaconId, null);
 		WritableMap advertisementMap = Arguments.createMap();
-		advertisementMap.putString("id", device.getProximityUuid().toString() + ".Maj:" + device.getMajor() + ".Min:" + device.getMinor());
+		advertisementMap.putString("id", beaconId);
 		advertisementMap.putString("uuid", device.getProximityUuid().toString());
 		advertisementMap.putInt("major", device.getMajor());
 		advertisementMap.putInt("minor", device.getMinor());
@@ -988,6 +1025,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (referenceId != null) {
 			sendEvent("exitSphere", referenceId);
 		}
+	}
+
+	@Override
+	public void onLocationUpdate(String locationId, String locationName) {
+		BleLog.LOGd(TAG, "LocationUpdate: " + locationName + "(" + locationId + ")");
+
 	}
 
 	private void checkReady() {
