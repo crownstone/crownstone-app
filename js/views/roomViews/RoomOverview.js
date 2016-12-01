@@ -251,6 +251,14 @@ export class RoomOverview extends Component {
         showFingerprintNeeded = true;
       }
       if (showFingerprintNeeded === true) {
+        if (state.user.seenRoomFingerprintAlert !== true) {
+          let aiName = state.spheres[this.props.sphereId].config.aiName;
+          this.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
+          Alert.alert("Lets teach " + aiName + " how to identify this room!",
+            "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
+            [{text: "OK"}])
+        }
+
         let iconSize = 25;
         return (
           <AlternatingContent
