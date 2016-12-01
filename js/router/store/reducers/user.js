@@ -13,6 +13,8 @@ let defaultSettings = {
     picture: null,
     betaAccess: false,
     seenTapToToggle: false,
+    seenTapToToggleDisabledDuringSetup: false,
+    seenRoomFingerprintAlert: false,
     appIdentifier: null,
     updatedAt: 1,
   },
@@ -36,10 +38,24 @@ export default (state = defaultSettings.user, action = {}) => {
         return newState;
       }
       return state;
-    case 'USER_SEEN_TAP_TO_TOGGLE':
+    case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
       if (action.data) {
         let newState = {...state};
         newState.seenTapToToggle   = update(action.data.seenTapToToggle,   newState.seenTapToToggle);
+        return newState;
+      }
+      return state;
+    case 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT':
+      if (action.data) {
+        let newState = {...state};
+        newState.seenTapToToggleDisabledDuringSetup   = update(action.data.seenTapToToggleDisabledDuringSetup,   newState.seenTapToToggleDisabledDuringSetup);
+        return newState;
+      }
+      return state;
+    case 'USER_SEEN_ROOM_FINGERPRINT_ALERT':
+      if (action.data) {
+        let newState = {...state};
+        newState.seenRoomFingerprintAlert   = update(action.data.seenRoomFingerprintAlert,   newState.seenRoomFingerprintAlert);
         return newState;
       }
       return state;

@@ -13,9 +13,7 @@ import { TYPES } from '../router/store/reducers/stones'
 let MINIMUM_AMOUNT_OF_SAMPLES = 3;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
 let TOUCH_RSSI_THRESHOLD = -52;
-let TAP_TO_TOGGLE_ENABLE_THRESHOLD = TOUCH_RSSI_THRESHOLD - 6;
-let TOUCH_TIME_BETWEEN_SWITCHING = 2000; // ms
-let TOUCH_CONSECUTIVE_SAMPLES = 1;
+let TOUCH_TIME_BETWEEN_SWITCHING = 5000; // ms
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
 
 export class StoneTracker {
@@ -24,6 +22,7 @@ export class StoneTracker {
     this.store = store;
     this.temporaryIgnore = false;
     this.temporaryIgnoreTimeout = undefined;
+    this.tapToToggleDisabled = false;
 
     eventBus.on("ignoreTriggers", () => {
       this.temporaryIgnore = true;
@@ -34,6 +33,9 @@ export class StoneTracker {
       }, 20000 );
     });
     eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
+
+    // if we detect a setup stone, we disable tap to toggle temporarily
+    eventBus.on("setupStoneChange", (setupCrownstonesAvailable) => { this.tapToToggleDisabled = setupCrownstonesAvailable; });
   }
 
 
@@ -99,9 +101,7 @@ export class StoneTracker {
         lastTriggerTime: 0,
         rssiAverage: rssi,
         samples: 0,
-        touchSamples:0,
         touchTime: now,
-        touchEnabled: false,
         cancelScheduledAwayAction: false,
         cancelScheduledNearAction: false
       };
@@ -119,34 +119,27 @@ export class StoneTracker {
     if (stone.config.touchToToggle === true) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
       // the sign > is because the rssi is negative!
-      if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING && ref.touchEnabled === true) {
-        ref.touchSamples += 1;
-        if (ref.touchSamples >= TOUCH_CONSECUTIVE_SAMPLES) {
-
+      if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
+        if (this.tapToToggleDisabled === false) {
           // notify the user by vibration that the crownstone will be switched.
           Vibration.vibrate(400, false);
 
           if (state.user.seenTapToToggle !== true) {
-            this.store.dispatch({type:'USER_SEEN_TAP_TO_TOGGLE', data:{seenTapToToggle: true}});
-            Alert.alert("That's tap to toggle! ", "You had your phone very very close to the Crownstone so I switched it for you!", [{text:"OK"}])
+            this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_ALERT', data: {seenTapToToggle: true}});
+            Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
           }
-
-          // remove continuous tap to toggle
-          ref.touchEnabled = false;
 
           let newState = stone.state.state > 0 ? 0 : 1;
           this._applySwitchState(newState, stone, stoneId, referenceId);
           ref.touchTime = now;
-          ref.touchSamples = 0;
           return;
         }
-      }
-      else {
-        // first time we have to be at least out of tapping range once before enabling the feature.
-        if (rssi < (TAP_TO_TOGGLE_ENABLE_THRESHOLD)) {
-          ref.touchEnabled = true;
+        else {
+          if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
+            this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
+            Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);
+          }
         }
-        ref.touchSamples = 0;
       }
     }
 

@@ -10,8 +10,6 @@ import { getUUID } from '../util/util'
 import { ENCRYPTION_ENABLED } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
 
-
-
 class LocationHandlerClass {
   constructor() {
     this._initialized = false;

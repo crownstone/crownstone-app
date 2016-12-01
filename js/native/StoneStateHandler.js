@@ -31,16 +31,17 @@ class StoneStateHandlerClass {
   }
 
   receivedIBeaconUpdate(sphereId, stoneId, rssi) {
-    this.update(sphereId, stoneId, rssi);
+    // update RSSI, we only use the ibeacon once since it has an average rssi
+    Scheduler.loadOverwritableAction(TRIGGER_ID, stoneId, {type:'UPDATE_STONE_RSSI', sphereId: sphereId, stoneId:stoneId, data:{rssi:rssi}});
+
+    this.update(sphereId, stoneId);
   }
 
   receivedUpdate(sphereId, stoneId, rssi) {
-    this.update(sphereId, stoneId, rssi);
+    this.update(sphereId, stoneId);
   }
 
-  update(sphereId, stoneId, rssi) {
-    // update RSSI
-    Scheduler.loadOverwritableAction(TRIGGER_ID, stoneId, {type:'UPDATE_STONE_RSSI', sphereId: sphereId, stoneId:stoneId, data:{rssi:rssi}});
+  update(sphereId, stoneId) {
 
     // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
     LocationHandler.enterSphere(sphereId);

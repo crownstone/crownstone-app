@@ -75,9 +75,6 @@ class SetupStateHandlerClass {
 
         // store the data of this setup Crownstone
         if (this._stonesInSetupStateAdvertisements[handle] === undefined) {
-          // if the user is an admin and the setup stone is already in the sphere, remove it.
-          this._findExitingCrownstone(handle);
-
           // check if it is the first setup stone we see and if so, emit the setupStonesDetected event
           if (Object.keys(this._stonesInSetupStateAdvertisements).length === 0) {
             emitDiscovery = true;
@@ -85,7 +82,7 @@ class SetupStateHandlerClass {
 
           this._stonesInSetupStateAdvertisements[handle] = setupAdvertisement;
           this._stonesInSetupStateTypes[handle] = SetupStateHandlerClass._getTypeData(setupAdvertisement);
-          eventBus.emit("setupStoneChange");
+          eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
         }
 
         if (emitDiscovery) {
@@ -98,17 +95,6 @@ class SetupStateHandlerClass {
     }
   }
 
-  _findExitingCrownstone(handle) {
-    let sphereIds = Object.keys(this.referenceHandleMap);
-    for (let i = 0; i < sphereIds.length; i++) {
-      // TODO: permissions
-      if (this.referenceHandleMap[sphereIds[i]][handle] !== undefined) {
-        LOGError("DELETE EXISTING DEVICE", this.referenceHandleMap[sphereIds[i]][handle]);
-        // this._store.dispatch({type: "REMOVE_STONE", sphereId: sphereIds[i], stoneId: this.referenceHandleMap[sphereIds[i]][handle].id});
-      }
-    }
-
-  }
 
   _setSetupTimeout(handle) {
     // make sure we do not delete the stone that is being setup from the list.
@@ -130,7 +116,7 @@ class SetupStateHandlerClass {
     delete this._stonesInSetupStateAdvertisements[handle];
     delete this._stonesInSetupStateTypes[handle];
     delete this._setupModeTimeouts[handle];
-    eventBus.emit("setupStoneChange");
+    eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
     if (Object.keys(this._stonesInSetupStateAdvertisements).length === 0) {
       eventBus.emit("noSetupStonesVisible");
     }
