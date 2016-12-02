@@ -13,7 +13,7 @@ const Promise = require("promise");
 fetch.Promise = Promise;
 
 //alex
-let token = 'PWpL22LpcB8iU0boASuBxbp4mMiwBr0M9zeaAK1TugITzXmkCAiznAtn61ju7jZJ';
+let token = 'kuikqcrDYZBvIABLwM68HE5JhDgXdrSXfIdcj92mqsL5FZtH9wAdFP0qMT4fU55x';
 let userId = '5747122cfb25ed03000bdc70';
 
 //anne
@@ -46,7 +46,7 @@ let handleInitialReply = (response) => {
 
 
 fetch(
-  'http://crownstone-cloud.herokuapp.com/api/users/' + userId + '/groups?access_token=' + token,
+  'http://crownstone-cloud.herokuapp.com/api/users/' + userId + '/sphere?access_token=' + token,
   {method: 'GET',headers: defaultHeaders,body: ''})
   .then(handleInitialReply)
   .then((result) => {
@@ -68,7 +68,7 @@ fetch(
     });
     Promise.all(promiseArray)
       .then(() => {
-        console.log("deleting groups")
+        console.log("deleting sphere")
         let promiseArray = [];
         groupIds.forEach((groupId) => {
           promiseArray.push(deleteGroup(groupId))
@@ -79,7 +79,7 @@ fetch(
     })
   })
   .then(() => {
-    console.log("FINISHED with groups")
+    console.log("FINISHED with sphere")
   }).done();
 
 
@@ -115,7 +115,7 @@ fetch(
 
 function deleteGroup (groupId) {
   return new Promise((resolve, reject) => {
-    let base = 'http://crownstone-cloud.herokuapp.com/api/Groups/$id$?access_token=' + token;
+    let base = 'http://crownstone-cloud.herokuapp.com/api/Spheres/$id$?access_token=' + token;
     return fetch(base.replace("$id$", groupId),{method: 'DELETE', headers: defaultHeaders, body: ''})
       .then(handleInitialReply)
       .then((results) => {
@@ -128,7 +128,7 @@ function deleteGroup (groupId) {
 function removeStones(groupId) {
   console.log("removeStones", groupId)
   return new Promise((resolve, reject) => {
-    let base = 'http://crownstone-cloud.herokuapp.com/api/Groups/$id$/ownedStones?access_token=' + token;
+    let base = 'http://crownstone-cloud.herokuapp.com/api/Spheres/$id$/ownedStones?access_token=' + token;
     fetch(base.replace("$id$", groupId), {method: 'GET', headers: defaultHeaders, body: ''})
       .then(handleInitialReply)
       .then((results) => {
