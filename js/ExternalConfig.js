@@ -23,10 +23,10 @@ LOG("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https:
 
 export const CLOUD_ADDRESS = 'https://crownstone-cloud.herokuapp.com/api/';
 
-export const DEBUG_STORE = false;
+export const DEBUG_STORE = true;
 export const DEBUG_SCHEDULER = false;
 export const DEBUG_BLE = false;
-export const DEBUG_CLOUD = false;
+export const DEBUG_CLOUD = true;
 export const DEBUG_LOGGING = false;
 export const DEBUG = true;
 export const LOGGING = true;

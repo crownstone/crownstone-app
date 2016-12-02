@@ -292,7 +292,7 @@ class SchedulerClass {
       if (sphere === undefined)
         return;
 
-      if (action.stoneId !== undefined && sphere.stones[action.stoneId] || action.type === 'UPDATE_STONE_RSSI') {
+      if (action.stoneId !== undefined && sphere.stones[action.stoneId]) {
         // TODO: currently only for state, generalization is required.
         this._addActionIfDispatch(actionsToDispatch, action, sphere.stones[action.stoneId].state);
       }

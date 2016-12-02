@@ -58,6 +58,17 @@ let defaultSettings = {
 
 let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
+    case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
+      if (action.data) {
+        let newState = {...state};
+        newState.updatedAt       = getTime(action.data.updatedAt);
+        return newState;
+      }
     case 'UPDATE_STONE_STATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
       if (action.data) {
         let newState = {...state};
@@ -117,7 +128,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
-
     default:
       return state;
   }
@@ -239,10 +249,12 @@ export default (state = {}, action = {}) => {
       return stateCopy;
     default:
       if (action.stoneId !== undefined) {
-        return {
-          ...state,
-          ...{[action.stoneId]:combinedStoneReducer(state[action.stoneId], action)}
-        };
+        if (state[action.stoneId] !== undefined || action.type === "ADD_STONE") {
+          return {
+            ...state,
+            ...{[action.stoneId]: combinedStoneReducer(state[action.stoneId], action)}
+          };
+        }
       }
       return state;
   }

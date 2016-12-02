@@ -143,10 +143,12 @@ export default (state = {}, action = {}) => {
       return stateCopy;
     default:
       if (action.applianceId !== undefined && action.applianceId !== null) {
-        return {
-          ...state,
-          ...{[action.applianceId]:combinedApplianceReducer(state[action.applianceId], action)}
-        };
+        if (state[action.applianceId] !== undefined || action.type === "ADD_APPLIANCE") {
+          return {
+            ...state,
+            ...{[action.applianceId]: combinedApplianceReducer(state[action.applianceId], action)}
+          };
+        }
       }
       return state;
   }

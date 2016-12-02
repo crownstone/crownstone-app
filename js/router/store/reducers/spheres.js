@@ -86,10 +86,12 @@ export default (state = {}, action = {}) => {
       return newState;
     default:
       if (action.sphereId !== undefined) {
-        return {
-          ...state,
-          ...{[action.sphereId]:combinedSphereReducer(state[action.sphereId], action)}
-        };
+        if (state[action.sphereId] !== undefined || action.type === "ADD_SPHERE") {
+          return {
+            ...state,
+            ...{[action.sphereId]: combinedSphereReducer(state[action.sphereId], action)}
+          };
+        }
       }
       return state;
   }

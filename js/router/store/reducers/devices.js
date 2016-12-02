@@ -39,10 +39,12 @@ export default (state = {}, action = {}) => {
       return newState;
     default:
       if (action.deviceId !== undefined) {
-        return {
-          ...state,
-          ...{[action.deviceId]:deviceConfigReducer(state[action.deviceId], action)}
-        };
+        if (state[action.deviceId] !== undefined || action.type === "ADD_DEVICE") {
+          return {
+            ...state,
+            ...{[action.deviceId]: deviceConfigReducer(state[action.deviceId], action)}
+          };
+        }
       }
       return state;
   }

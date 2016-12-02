@@ -71,10 +71,12 @@ export default (state = {}, action = {}) => {
       return stateCopy;
     default:
       if (action.locationId !== undefined && action.locationId !== null) {
-        return {
-          ...state,
-          ...{[action.locationId]:combinedLocationReducer(state[action.locationId], action)}
-        };
+        if (state[action.locationId] !== undefined || action.type === "ADD_LOCATION") {
+          return {
+            ...state,
+            ...{[action.locationId]: combinedLocationReducer(state[action.locationId], action)}
+          };
+        }
       }
       return state;
   }
