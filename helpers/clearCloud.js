@@ -45,8 +45,8 @@ let handleInitialReply = (response) => {
 
 
 
-fetch(
-  'http://crownstone-cloud.herokuapp.com/api/users/' + userId + '/sphere?access_token=' + token,
+let step1 = fetch(
+  'http://crownstone-cloud.herokuapp.com/api/users/' + userId + '/spheres?access_token=' + token,
   {method: 'GET',headers: defaultHeaders,body: ''})
   .then(handleInitialReply)
   .then((result) => {
@@ -71,7 +71,7 @@ fetch(
         console.log("deleting sphere")
         let promiseArray = [];
         groupIds.forEach((groupId) => {
-          promiseArray.push(deleteGroup(groupId))
+          promiseArray.push(deleteSphere(groupId))
         });
         return Promise.all(promiseArray)
       })
@@ -84,7 +84,7 @@ fetch(
 
 
 
-fetch(
+let step2 = fetch(
   'http://crownstone-cloud.herokuapp.com/api/Appliances?access_token=' + token,
   {method: 'GET',headers: defaultHeaders,body: ''})
   .then(handleInitialReply)
@@ -110,10 +110,19 @@ fetch(
     })
   })
   .then(() => {
-    console.log("FINISHED with appliacnes")
-  }).done()
+    console.log("FINISHED with appliances")
+  }).catch((err) => {console.log('error in appliance deletion', err)});
 
-function deleteGroup (groupId) {
+
+Promise.all([step1, step2])
+  .then(() => {
+    return fetch('http://crownstone-cloud.herokuapp.com/api/users/' + userId + '?access_token=' + token,{method: 'DELETE', headers: defaultHeaders, body: ''})
+  })
+  .then(() => {
+    console.log("DELETED USER")
+  })
+
+function deleteSphere (groupId) {
   return new Promise((resolve, reject) => {
     let base = 'http://crownstone-cloud.herokuapp.com/api/Spheres/$id$?access_token=' + token;
     return fetch(base.replace("$id$", groupId),{method: 'DELETE', headers: defaultHeaders, body: ''})

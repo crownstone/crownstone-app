@@ -4,7 +4,6 @@ let defaultState = {
   app: {
     activeSphere: null,
     enableLocalization: true,
-    localizationSetupDone: false,
     updatedAt: 1
   }
 };
@@ -30,7 +29,6 @@ export default (state = defaultState.app, action = {}) => {
       if (action.data) {
         newState = {...state};
         newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
-        newState.localizationSetupDone = update(action.data.localizationSetupDone,  newState.localizationSetupDone);
         newState.enableLocalization  = update(action.data.enableLocalization,  newState.enableLocalization);
         newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;
