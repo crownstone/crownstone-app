@@ -5,6 +5,7 @@ import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus'
 import { CLOUD } from '../cloud/cloudAPI'
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 
 export class SetupHelper {
   constructor(setupAdvertisement, name, type, icon) {
@@ -98,7 +99,10 @@ export class SetupHelper {
           // Restore trigger state
           eventBus.emit("useTriggers");
           eventBus.emit("setupComplete", this.handle);
-          if (Object.keys(state.spheres[sphereId].stones).length === 4) {
+
+          // show the celebration of 4 stones
+          state = store.getState();
+          if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) {
             eventBus.emit('showLocalizationSetupStep1', sphereId);
           }
         }, 2500);
