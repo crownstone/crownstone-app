@@ -43,13 +43,14 @@ export class RoomOverview extends Component {
     this.unsubscribeSetupEvents = [];
 
     this.viewingRemotely = true;
+    this.justFinishedSetup = "";
   }
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data) => { this.forceUpdate();}));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate();}));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => { this.forceUpdate();}));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => { this.justFinishedSetup = handle; this.forceUpdate();}));
 
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -112,7 +113,7 @@ export class RoomOverview extends Component {
         <View key={stoneId + '_entry'}>
           <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
             <DeviceEntry
-              initiallyOpen={this.props.usedForIndoorLocalizationSetup == true && index == 0}
+              initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
               eventBus={this.props.eventBus}
               name={item.device.config.name}
               icon={item.device.config.icon}

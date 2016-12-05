@@ -163,20 +163,16 @@ export class DeviceStateEdit extends Component {
     if (this.props.eventName === "onHomeEnter" || this.props.eventName === "onRoomEnter" || this.props.eventName === "onNear") {
       options.push({label: 'None', type: 'checkbar', value: 0});
       options.push({label: '2 seconds', type: 'checkbar', value: 2});
-      options.push({label: '10 seconds', type: 'checkbar', value: 10});
-      options.push({label: '1 Minute', type: 'checkbar', value: 60});
     }
-    else if (this.props.eventName === "onAway") {
-      options.push({label: '10 seconds', type: 'checkbar', value: 10});
-      options.push({label: '20 seconds', type: 'checkbar', value: 20});
-      options.push({label: '30 seconds', type: 'checkbar', value: 30});
-      options.push({label: '1 Minute', type: 'checkbar', value: 60});
-    }
-    options.push({label:'2 Minutes',  type: 'checkbar', value: 120});
-    options.push({label:'5 Minutes',  type: 'checkbar', value: 300});
-    options.push({label:'10 Minutes', type: 'checkbar', value: 600});
-    options.push({label:'15 Minutes', type: 'checkbar', value: 900});
-    options.push({label:'30 Minutes', type: 'checkbar', value: 1800});
+    options.push({label: '10 seconds', type: 'checkbar', value: 10});
+    options.push({label: '20 seconds', type: 'checkbar', value: 20});
+    options.push({label: '30 seconds', type: 'checkbar', value: 30});
+    options.push({label: '1 Minute',   type: 'checkbar', value: 60});
+    options.push({label: '2 Minutes',  type: 'checkbar', value: 120});
+    options.push({label: '5 Minutes',  type: 'checkbar', value: 300});
+    options.push({label: '10 Minutes', type: 'checkbar', value: 600});
+    options.push({label: '15 Minutes', type: 'checkbar', value: 900});
+    options.push({label: '30 Minutes', type: 'checkbar', value: 1800});
 
 
 
