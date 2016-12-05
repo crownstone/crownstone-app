@@ -1,5 +1,6 @@
 package nl.dobots.crownstoneapp;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -100,6 +101,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private Localization _localization;
 	private boolean _isTraingingLocalization = false;
 	private boolean _isTraingingLocalizationPaused = false;
+
+	private boolean _isRequestingPermission = false;
 
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
@@ -771,6 +774,25 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		}
 	}
 
+	private Runnable requestPermission = new Runnable() {
+		@Override
+		public void run() {
+			if (_isRequestingPermission) {
+				BleLog.LOGd(TAG, "Already requesting a permission");
+				return;
+			}
+			_handler.removeCallbacks(requestPermission);
+			Activity currentActivity = getCurrentActivity();
+			BleLog.LOGd(TAG, "Request permission on activity " + currentActivity);
+			if (currentActivity != null) {
+				_isRequestingPermission = true;
+				_scanService.requestPermissions(currentActivity);
+			} else {
+				_handler.postDelayed(requestPermission, 1000);
+			}
+		}
+	};
+
 
 
 	private void sendEvent(String eventName, @Nullable WritableMap params) {
@@ -839,6 +861,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@Override
 	public void onEvent(Event event) {
+		switch (event) {
+			case BLE_PERMISSIONS_MISSING: {
+				_handler.post(requestPermission);
+			}
+		}
 		// TODO: send out event
 	}
 
@@ -965,7 +992,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@Override
 	public void onBeaconScanned(BleDevice device) {
-		String beaconId = device.getProximityUuid().toString() + ".Maj:" + device.getMajor() + ".Min:" + device.getMinor();
+		String beaconId = device.getProximityUuid().toString() + ".Maj:" + BleUtils.toUint16(device.getMajor()) + ".Min:" + BleUtils.toUint16(device.getMinor());
 		BleLog.LOGv(TAG, "event scanned beacon: " + device.getAddress());
 		if (_isTraingingLocalization && !_isTraingingLocalizationPaused) {
 			_localization.feedMeasurement(device, beaconId, null, null);
@@ -980,7 +1007,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// TODO: should be once per second with averaged rssi
 //		advertisementMap.putInt("rssi", device.getRssi());
 		advertisementMap.putInt("rssi", device.getAverageRssi());
-		synchronized (this) {
+		synchronized (BluenetBridge.this) {
 //			BleLog.LOGv(TAG, "data: " + advertisementMap.toString());
 //			_ibeaconAdvertisements.pushMap(advertisementMap);
 			_ibeaconAdvertisements.add(advertisementMap);
@@ -991,7 +1018,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private Runnable iBeaconTick = new Runnable() {
 		@Override
 		public void run() {
-			synchronized (this) {
+			synchronized (BluenetBridge.this) {
 				if (_ibeaconAdvertisements.size() > 0) {
 //					BleLog.LOGd(TAG, "sendEvent iBeaconAdvertisement: " + _ibeaconAdvertisements.toString());
 //					sendEvent("iBeaconAdvertisement", _ibeaconAdvertisements);
@@ -1028,9 +1055,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@Override
-	public void onLocationUpdate(String locationId, String locationName) {
-		BleLog.LOGd(TAG, "LocationUpdate: " + locationName + "(" + locationId + ")");
-
+	public void onLocationUpdate(String locationId) {
+		BleLog.LOGd(TAG, "LocationUpdate: " + locationId);
 	}
 
 	private void checkReady() {
