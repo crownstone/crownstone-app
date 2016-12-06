@@ -101,6 +101,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private Localization _localization;
 	private boolean _isTraingingLocalization = false;
 	private boolean _isTraingingLocalizationPaused = false;
+	private String _lastLocationId = null;
 
 	private boolean _isRequestingPermission = false;
 
@@ -1057,6 +1058,36 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@Override
 	public void onLocationUpdate(String locationId) {
 		BleLog.LOGd(TAG, "LocationUpdate: " + locationId);
+		if (locationId == null) {
+			if (_lastLocationId != null) {
+				BleLog.LOGd(TAG, "Send exit " + _currentSphereId + " " + _lastLocationId);
+				WritableMap mapExit = Arguments.createMap();
+				mapExit.putString("region", _currentSphereId);
+				mapExit.putString("location", _lastLocationId);
+				sendEvent("exitLocation", mapExit);
+			}
+		}
+		else if (_lastLocationId == null) {
+			BleLog.LOGd(TAG, "Send enter " + _currentSphereId + " " + locationId);
+			WritableMap mapEnter = Arguments.createMap();
+			mapEnter.putString("region", _currentSphereId);
+			mapEnter.putString("location", locationId);
+			sendEvent("enterLocation", mapEnter);
+		}
+		else if (!locationId.equals(_lastLocationId)) {
+			BleLog.LOGd(TAG, "Send exit " + _currentSphereId + " " + _lastLocationId);
+			WritableMap mapExit = Arguments.createMap();
+			mapExit.putString("region", _currentSphereId);
+			mapExit.putString("location", _lastLocationId);
+			sendEvent("exitLocation", mapExit);
+
+			BleLog.LOGd(TAG, "Send enter " + _currentSphereId + " " + locationId);
+			WritableMap mapEnter = Arguments.createMap();
+			mapEnter.putString("region", _currentSphereId);
+			mapEnter.putString("location", locationId);
+			sendEvent("enterLocation", mapEnter);
+		}
+		_lastLocationId = locationId;
 	}
 
 	private void checkReady() {
