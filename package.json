@@ -15,7 +15,7 @@
     "react-native-camera": "git+https://github.com/lwansbrough/react-native-camera.git",
     "react-native-device-info": "^0.9.5",
     "react-native-drawer": "^2.3.0",
-    "react-native-fs": "^1.2.0",
+    "react-native-fs": "^2.0.1-rc.2",
     "react-native-image-resizer": "^0.0.10",
     "react-native-randombytes": "^2.1.0",
     "react-native-router-flux": "^3.35.0",

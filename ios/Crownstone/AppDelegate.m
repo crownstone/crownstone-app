@@ -44,4 +44,55 @@
   return YES;
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+  // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+  // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate init] timeIntervalSince1970]];
+  NSString *message = [NSString stringWithFormat:@"%@/%@/", date, @" applicationWillResignActive"];
+  appendToFile(message);
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+  // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate init] timeIntervalSince1970]];
+  NSString *message = [NSString stringWithFormat:@"%@/%@/", date, @" applicationWillTerminate"];
+  appendToFile(message);
+}
+
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate init] timeIntervalSince1970]];
+  NSString *message = [NSString stringWithFormat:@"%@/%@/", date, @" applicationDidEnterBackground"];
+  appendToFile(message);
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate init] timeIntervalSince1970]];
+  NSString *message = [NSString stringWithFormat:@"%@/%@/", date, @" applicationWillEnterForeground"];
+  appendToFile(message);
+}
+
+void appendToFile(NSString *msg){
+  NSLog(@"%@", msg);
+  // get path to Documents/somefile.txt
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsDirectory = [paths objectAtIndex:0];
+  NSString *path = [documentsDirectory stringByAppendingPathComponent:@"logfile.txt"];
+  // create if needed
+  if (![[NSFileManager defaultManager] fileExistsAtPath:path]){
+    fprintf(stderr,"Creating file at %s",[path UTF8String]);
+    [[NSData data] writeToFile:path atomically:YES];
+  }
+  // append
+  NSFileHandle *handle = [NSFileHandle fileHandleForWritingAtPath:path];
+  [handle truncateFileAtOffset:[handle seekToEndOfFile]];
+  [handle writeData:[msg dataUsingEncoding:NSUTF8StringEncoding]];
+  [handle closeFile];
+}
+
+
 @end
