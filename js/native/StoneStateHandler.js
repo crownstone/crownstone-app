@@ -50,7 +50,7 @@ class StoneStateHandlerClass {
   }
 
   update(sphereId, stoneId) {
-    LOG("StoneStateHandlerUpdate", sphereId, stoneId);
+    // LOG("StoneStateHandlerUpdate", sphereId, stoneId);
 
     const state = this.store.getState();
     // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
@@ -78,12 +78,12 @@ class StoneStateHandlerClass {
     }
 
     if (this.timeoutActions[sphereId][stoneId].clearTimeout && typeof this.timeoutActions[sphereId][stoneId].clearTimeout === 'function') {
-      LOG("Cancelling_Timeout");
+      // LOG("Cancelling_Timeout");
       this.timeoutActions[sphereId][stoneId].clearTimeout();
     }
 
     if (this.timeoutActions[sphereId][stoneId].clearRSSITimeout && typeof this.timeoutActions[sphereId][stoneId].clearRSSITimeout === 'function') {
-      LOG("Cancelling_RSSI_Timeout");
+      // LOG("Cancelling_RSSI_Timeout");
       this.timeoutActions[sphereId][stoneId].clearRSSITimeout();
     }
 
