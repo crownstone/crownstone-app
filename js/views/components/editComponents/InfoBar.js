@@ -5,7 +5,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, width } from '../../styles'
+import { styles, colors, screenWidth } from '../../styles'
 
 
 export class InfoBar extends Component {
@@ -22,7 +22,7 @@ export class InfoBar extends Component {
           {this.props.largeIcon !== undefined ?
             <View style={[styles.centered, {width: 80, paddingRight:20} ]}>{this.props.largeIcon}</View> : undefined}
           {this.props.icon !== undefined ?
-          <View style={[styles.centered, {width:0.12 * width, paddingRight:15}]}>{this.props.icon}</View> : undefined}
+          <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
           {this.props.value !== undefined ?
             <Text style={[styles.listText, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
             :

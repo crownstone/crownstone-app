@@ -19,6 +19,8 @@ export const sync = {
       return;
     }
 
+    LOGCloud("Start Syncing");
+
     // set the authentication tokens
     let userId = state.user.userId;
     let accessToken = state.user.accessToken;
@@ -393,7 +395,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             name: stone_from_cloud.name,
             icon: stone_from_cloud.icon,
             type: stone_from_cloud.type,
-            touchToToggle: stone_from_cloud.touchToToggle === true, // this check is a fallback for no field being available in the cloud data.
+            touchToToggle: stone_from_cloud.touchToToggle,
             applianceId: stone_from_cloud.applianceId,
             locationId: locationLinkId,
             macAddress: stone_from_cloud.address,

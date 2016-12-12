@@ -154,6 +154,7 @@ function handleStoneInCloud(action, state) {
     address:     stoneConfig.macAddress,
     icon:        stoneConfig.icon,
     id:          stoneId,
+    touchToToggle: stoneConfig.touchToToggle,
     applianceId: stoneConfig.applianceId,
     sphereId:    sphereId,
     major:       stoneConfig.iBeaconMajor,

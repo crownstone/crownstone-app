@@ -18,17 +18,19 @@ typealias voidCallback = () -> Void
 @objc open class ViewPassThrough : NSObject {
   open var bluenet : Bluenet!
   open var bluenetLocalization : BluenetLocalization!
+  open var bluenetMotion : BluenetMotion!
   var subscriptions = [voidCallback]()
   
   init(viewController: UIViewController) {
     super.init()
 
-    BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
+    BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone", loggingFile: true, debugLogEnabled: true)
 
-    self.bluenet = Bluenet();
+    self.bluenet = Bluenet()
+    self.bluenetMotion = BluenetMotion()
     
-    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown");
-    self.bluenetLocalization = BluenetLocalization();
+    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
+    self.bluenetLocalization = BluenetLocalization()
     
 
     GLOBAL_BLUENET = self
@@ -142,10 +144,15 @@ func getBleErrorString(_ err: BleError) -> String {
 }
 
 @objc(BluenetJS)
-class BluenetJS: NSObject {
+open class BluenetJS: NSObject {
   var bridge: RCTBridge!
   
-
+  @objc func refreshLocation() {
+    if let globalBluenet = GLOBAL_BLUENET {
+      
+    }
+  }
+  
   @objc func rerouteEvents() {
     if let globalBluenet = GLOBAL_BLUENET {
       print("----- BLUENET BRIDGE: Rerouting events")
@@ -339,7 +346,7 @@ class BluenetJS: NSObject {
     }
   }
   
-  @objc func keepAlive(callback: @escaping RCTResponseSenderBlock) {
+  @objc func keepAlive(_ callback: @escaping RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.control.keepAlive()
       .then{_ in callback([["error" : false]])}
       .catch{err in

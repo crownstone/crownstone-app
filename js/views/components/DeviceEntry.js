@@ -174,7 +174,44 @@ export class DeviceEntry extends Component {
 
   _getSubText() {
     if (this.props.disabled === false && this.props.currentUsage !== undefined) {
-      return <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
+      if (this.props.nearest === true) {
+        return (
+          <View style={{flexDirection:'row'}}>
+            <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
+            <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Nearest)'}</Text>
+          </View>
+        )
+      }
+      else if (this.props.rssi > -60) {
+        return (
+          <View style={{flexDirection:'row'}}>
+            <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
+            <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Very near)'}</Text>
+          </View>
+        )
+      }
+      else if (this.props.rssi > -70) {
+        return (
+          <View style={{flexDirection:'row'}}>
+            <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
+            <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Near)'}</Text>
+          </View>
+        )
+      }
+      else {
+        return <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
+      }
+    }
+    else if (this.props.disabled === false) {
+      if (this.props.nearest === true) {
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Nearest)'}</Text>
+      }
+      else if (this.props.rssi > -60) {
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Very near)'}</Text>
+      }
+      else if (this.props.rssi > -70) {
+        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Near)'}</Text>
+      }
     }
     else if (this.props.disabled === true && this.props.disabledDescription !== undefined) {
       return <Text style={{fontSize: 12}}>{this.props.disabledDescription}</Text>

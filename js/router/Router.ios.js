@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  AppState,
   Alert,
   AppRegistry,
   Navigator,
@@ -54,6 +55,7 @@ export class AppRouter extends Component {
       mainDark: undefined
     };
   }
+
 
   componentDidMount() {
     // check what we should do with this data.

@@ -28,6 +28,7 @@
                                                    launchOptions:launchOptions];
   rootView.backgroundColor = [[UIColor alloc] initWithRed:0.0f green:0.149f blue:0.243f alpha:1];
   
+  appendLogToFile(@" Application starting");
   // Show splash screen (rn-splash-screen)
   [RCTSplashScreen show:rootView];
   
@@ -48,40 +49,39 @@
 {
   // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
   // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate init] timeIntervalSince1970]];
-  NSString *message = [NSString stringWithFormat:@"%@/%@/", date, @" applicationWillResignActive"];
-  appendToFile(message);
+  appendLogToFile(@" applicationWillResignActive");
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
   // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate init] timeIntervalSince1970]];
-  NSString *message = [NSString stringWithFormat:@"%@/%@/", date, @" applicationWillTerminate"];
-  appendToFile(message);
+  appendLogToFile(@" applicationWillTerminate");
 }
 
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate init] timeIntervalSince1970]];
-  NSString *message = [NSString stringWithFormat:@"%@/%@/", date, @" applicationDidEnterBackground"];
-  appendToFile(message);
+  appendLogToFile(@" applicationDidEnterBackground");
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate init] timeIntervalSince1970]];
-  NSString *message = [NSString stringWithFormat:@"%@/%@/", date, @" applicationWillEnterForeground"];
-  appendToFile(message);
+  appendLogToFile(@" applicationWillEnterForeground");
 }
 
-void appendToFile(NSString *msg){
+  
+@end
+
+void appendLogToFile(NSString *msg) {
   NSLog(@"%@", msg);
-  // get path to Documents/somefile.txt
+  
+  NSString *time = [[NSDate date] description];
+  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+  NSString *message = [NSString stringWithFormat:@"%@ - %@ - %@ \n", date, time, msg];
+//  // get path to Documents/somefile.txt
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
   NSString *documentsDirectory = [paths objectAtIndex:0];
-  NSString *path = [documentsDirectory stringByAppendingPathComponent:@"logfile.txt"];
+  NSString *path = [documentsDirectory stringByAppendingPathComponent:@"/ReactNativeObjC.log"];
   // create if needed
   if (![[NSFileManager defaultManager] fileExistsAtPath:path]){
     fprintf(stderr,"Creating file at %s",[path UTF8String]);
@@ -90,9 +90,8 @@ void appendToFile(NSString *msg){
   // append
   NSFileHandle *handle = [NSFileHandle fileHandleForWritingAtPath:path];
   [handle truncateFileAtOffset:[handle seekToEndOfFile]];
-  [handle writeData:[msg dataUsingEncoding:NSUTF8StringEncoding]];
+  [handle writeData:[message dataUsingEncoding:NSUTF8StringEncoding]];
   [handle closeFile];
 }
 
 
-@end

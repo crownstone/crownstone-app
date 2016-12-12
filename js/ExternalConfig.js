@@ -27,7 +27,7 @@ export const DEBUG_STORE = true;
 export const DEBUG_SCHEDULER = false;
 export const DEBUG_BLE = false;
 export const DEBUG_CLOUD = true;
-export const DEBUG_LOGGING = false;
+export const DEBUG_LOGGING = true;
 export const DEBUG = true;
 export const LOGGING = true;
 

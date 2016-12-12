@@ -272,15 +272,15 @@ export const spheres = {
       .then(() => {
         let deletePromises = [];
         applianceData.forEach((appliance) => {
-          deletePromises.push(this.deleteAppliance(appliance.id));
+          deletePromises.push(this.forSphere(this._sphereId).deleteAppliance(appliance.id));
         });
 
         stoneData.forEach((stone) => {
-          deletePromises.push(this.deleteStone(stone.id));
+          deletePromises.push(this.forSphere(this._sphereId).deleteStone(stone.id));
         });
 
         locationData.forEach((location) => {
-          deletePromises.push(this.deleteLocation(location.id));
+          deletePromises.push(this.forSphere(this._sphereId).deleteLocation(location.id));
         });
 
         return Promise.all(deletePromises);

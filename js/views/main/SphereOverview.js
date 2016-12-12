@@ -45,7 +45,11 @@ export class SphereOverview extends Component {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-
+      let spheres = this.props.store.getState().spheres;
+      let sphereIds = Object.keys(spheres);
+      sphereIds.forEach((sphereId) => {
+        LOG("SPHERE_STATE_PRESENT", spheres[sphereId].config.present);
+      });
 
       if (change.changeSpheres || change.updateActiveSphere) {
         this._setActiveSphere();
@@ -57,6 +61,7 @@ export class SphereOverview extends Component {
         change.updateStoneConfig    ||
         change.updateActiveSphere   ||
         change.updateLocationConfig ||
+        change.changeFingerprint    ||
         change.changeSpheres        ||
         change.changeStones         ||
         change.changeLocations
@@ -165,7 +170,7 @@ export class SphereOverview extends Component {
 
 
   render() {
-    LOG("RENDERING OVERVIEW");
+    LOG("RENDERING_OVERVIEW");
     const store = this.props.store;
     const state = store.getState();
 

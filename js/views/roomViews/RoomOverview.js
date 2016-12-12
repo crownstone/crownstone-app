@@ -44,6 +44,7 @@ export class RoomOverview extends Component {
 
     this.viewingRemotely = true;
     this.justFinishedSetup = "";
+    this.nearestStoneId = undefined;
   }
 
   componentDidMount() {
@@ -61,8 +62,9 @@ export class RoomOverview extends Component {
       }
 
       if (
-        (change.updateApplianceConfig) ||
-        (change.updateStoneConfig) ||
+        (change.updateApplianceConfig)  ||
+        (change.updateStoneConfig)      ||
+        (change.changeFingerprint)      ||
         (change.stoneRssiUpdated  && change.stoneRssiUpdated.sphereIds[this.props.sphereId]) ||
         (change.stoneUsageUpdated && change.stoneUsageUpdated.sphereIds[this.props.sphereId]) ||
         (change.changeSphereState && change.changeSphereState.sphereIds[this.props.sphereId]) ||
@@ -126,6 +128,8 @@ export class RoomOverview extends Component {
               disabledDescription={ SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' } // either disabled or remote
               dimmable={item.device.config.dimmable}
               showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
+              rssi={item.stone.config.rssi}
+              nearest={stoneId === this.nearestStoneId}
               onChange={(switchState) => {
                 this.showPending(stoneId);
                 let data = {state: switchState};
@@ -151,30 +155,9 @@ export class RoomOverview extends Component {
               onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
               onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
             />
-            {item.stone.config.disabled || this.viewingRemotely ? undefined : this._getRssiRibbon(item.stone.config.rssi)}
           </View>
         </View>
       );
-    }
-  }
-
-  _getRssiRibbon(rssi) {
-    let showNearThreshold = -70;
-    let range = 30;
-    if (rssi > showNearThreshold) {
-      let subRatio = 1 - (-1*(rssi - (showNearThreshold+range))/range);
-      let ratio = Math.max(0,Math.min(1,subRatio));
-      let color = colors.blue.rgba(ratio);
-      return <View style={{
-        width: 0,
-        height: 0,
-        backgroundColor: 'transparent',
-        borderStyle: 'solid',
-        borderRightWidth: 20,
-        borderTopWidth: 25,
-        borderRightColor: 'transparent',
-        borderTopColor: color, position: 'absolute', top: 0, left: 0
-      }} />
     }
   }
 
@@ -306,15 +289,6 @@ export class RoomOverview extends Component {
     let stonesInRoom = Object.keys(stones).length > 0;
     let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
 
-    if (this.props.usedForIndoorLocalizationSetup === true) {
-      if (!stonesInRoom) {
-        setTimeout(() => {
-          Actions.pop();
-          this.props.eventBus.emit("showLocalizationSetupStep2", this.props.sphereId);
-        }, 100);
-      }
-    }
-
     let content = undefined;
     if (!stonesInRoom && seeStoneInSetupMode == false) {
       content = (
@@ -325,10 +299,12 @@ export class RoomOverview extends Component {
     }
     else {
       let {stoneArray, ids} = this._getStoneList(stones);
+      this._getNearestStoneInRoom(stoneArray, ids);
+
       content = (
         <View>
           <ScrollView style={{position:'relative', top:-1}}>
-            <View style={{height:Math.max(Object.keys(stoneArray).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
+            <View style={{height: Math.max(Object.keys(stoneArray).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
               {this.renderStones(stoneArray, ids)}
             </View>
           </ScrollView>
@@ -358,6 +334,17 @@ export class RoomOverview extends Component {
         {content}
       </Background>
     );
+  }
+
+  _getNearestStoneInRoom(stoneArray, ids) {
+    let rssi = -1000;
+    for (let i = 0; i < stoneArray.length; i++) {
+      let stone = stoneArray[i].stone;
+      if (stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
+        rssi = stone.config.rssi;
+        this.nearestStoneId = ids[i];
+      }
+    }
   }
 
   renderStones(stoneArray, ids) {

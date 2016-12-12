@@ -1,5 +1,6 @@
 import { createStore, combineReducers } from 'redux'
 import { update, getTime } from './reducerUtil'
+import { LOG } from '../../../logging/Log'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
 export let TYPES = {
@@ -72,6 +73,8 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_STATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
       if (action.data) {
         let newState = {...state};
+        // todo: remove
+        LOG("CHANGING_DISABILITY ", action.stoneId, false);
         newState.disabled = false;
         return newState;
       }
@@ -93,6 +96,10 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_DISABILITY': // used for crownstones that are not heard from for a while.
       if (action.data) {
         let newState = {...state};
+        // todo: remove
+        if (action.data.disabled !== undefined) {
+          LOG("CHANGING_DISABILITY ", action.stoneId, action.data.disabled)
+        }
         newState.disabled        = update(action.data.disabled, newState.disabled);
         newState.rssi            = update(action.data.rssi, newState.rssi);
         return newState;
@@ -102,6 +109,10 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
         let newState = {...state};
+        // todo: remove
+        if (action.data.disabled !== undefined) {
+          LOG("CHANGING_DISABILITY ", action.stoneId, action.data.disabled)
+        }
         newState.name            = update(action.data.name,            newState.name);
         newState.icon            = update(action.data.icon,            newState.icon);
         newState.type            = update(action.data.type,            newState.type);

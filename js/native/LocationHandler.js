@@ -32,13 +32,12 @@ class LocationHandlerClass {
       NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => {this.exitSphere(sphereId);});
       NativeBus.on(NativeBus.topics.enterRoom,   (data)     => {this._enterRoom(data);}); // data = {region: sphereId, location: locationId}
       NativeBus.on(NativeBus.topics.exitRoom,    (data)     => {this._exitRoom(data);});  // data = {region: sphereId, location: locationId}
-      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, this._iBeaconAdvertisement.bind(this));
+      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => { this._iBeaconAdvertisement(data) });
     }
   }
 
   _iBeaconAdvertisement(data) {
     data.forEach((iBeaconPackage) => {
-      // LOGDebug("iBeaconPackage",iBeaconPackage);
       this.tracker.iBeaconUpdate(iBeaconPackage.major, iBeaconPackage.minor, iBeaconPackage.rssi, iBeaconPackage.referenceId);
     })
   }
@@ -86,17 +85,18 @@ class LocationHandlerClass {
 
 
       LOG("Set Settings.", bluenetSettings);
-      return BleActions.setSettings(bluenetSettings)
-        .then(() => {
-          let sphereActions = [];
-          let stoneIds = Object.keys(state.spheres[sphereId].stones);
-          LOG("Disabling all stones");
-          stoneIds.forEach((stoneId) => {
-            sphereActions.push({type: 'UPDATE_STONE_DISABILITY', stoneId: stoneId, data: { disabled: true }});
-          });
-
-          this.store.batchDispatch(sphereActions);
-        }).catch()
+      return BleActions.setSettings(bluenetSettings);
+        // do not put all stones on disabled on reentering the house
+        // .then(() => {
+        //   let sphereActions = [];
+        //   let stoneIds = Object.keys(state.spheres[sphereId].stones);
+        //   LOG("Disabling all stones");
+        //   stoneIds.forEach((stoneId) => {
+        //     sphereActions.push({type: 'UPDATE_STONE_DISABILITY', stoneId: stoneId, data: { disabled: true }});
+        //   });
+        //
+        //   this.store.batchDispatch(sphereActions);
+        // }).catch()
     }
   }
 
@@ -105,7 +105,6 @@ class LocationHandlerClass {
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
     if (state.spheres[sphereId].config.present === true) {
-      Bluenet.forceClearActiveRegion();
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
     }
   }

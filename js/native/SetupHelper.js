@@ -41,8 +41,12 @@ export class SetupHelper {
         return BleActions.getMACAddress();
       })
       .then((macAddress) => {
-        eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
         this.macAddress = macAddress;
+        eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
+        return BleActions.phoneDisconnect();
+      })
+      .then(() => {
+        eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
         return this.registerInCloud(sphereId);
       })
       .then((cloudResponse) => {

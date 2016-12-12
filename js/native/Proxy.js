@@ -51,7 +51,6 @@ else {
 }
 
 export const BluenetPromise = function(functionName, param, param2) {
-  LOG("called bluenetPromise", functionName, " with param", param, param2);
   return new Promise((resolve, reject) => {
     if (DISABLE_NATIVE === true) {
       resolve()
@@ -59,6 +58,7 @@ export const BluenetPromise = function(functionName, param, param2) {
     else {
       //TODO: cleanup
       if (param2 !== undefined) {
+        LOG("called bluenetPromise", functionName, " with param", param, param2);
         Bluenet[functionName](param, param2, (result) => {
           if (result.error === true) {
             LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, "error:", result.data);
@@ -70,6 +70,7 @@ export const BluenetPromise = function(functionName, param, param2) {
         })
       }
       else if (param !== undefined) {
+        LOG("called bluenetPromise", functionName, " with param", param);
         Bluenet[functionName](param, (result) => {
           if (result.error === true) {
             LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
@@ -81,6 +82,7 @@ export const BluenetPromise = function(functionName, param, param2) {
         })
       }
       else {
+        LOG("called bluenetPromise", functionName, " without params");
         Bluenet[functionName]((result) => {
           if (result.error === true) {
             LOG("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);

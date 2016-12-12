@@ -39,62 +39,64 @@ class KeepAliveHandlerClass {
 
 
   keepAlive() {
-    // const state = this.store.getState();
-    // let sphereIds = Object.keys(state.spheres);
-    //
-    // LOG("Starting KeepAlive call");
-    //
-    // sphereIds.forEach((sphereId) => {
-    //   let sphere = state.spheres[sphereId];
-    //   LOG("Starting KeepAlive round for sphere:", sphere.config.name);
-    //   if (sphere.config.present === true) {
-    //     LOG("Performing round for sphere:", sphere.config.name);
-    //
-    //     // check every sphere where we are present. Usually this is only one of them!!
-    //     let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
-    //     let userLevelInSphere = getUserLevelInSphere(state, sphereId);
-    //
-    //     let stoneIds = Object.keys(sphere.stones);
-    //     stoneIds.forEach((stoneId) => {
-    //       // for each stone in sphere select the behaviour we want to copy into the keep Alive
-    //       let stone = sphere.stones[stoneId];
-    //       let element = this._getElement(sphere, stone);
-    //       let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
-    //       let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
-    //       let behaviourAway = element.behaviour[TYPES.AWAY];
-    //
-    //       let behaviour = undefined;
-    //
-    //       // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
-    //       if      (behaviourHomeExit.active)                   { behaviour = behaviourHomeExit; }
-    //       else if (behaviourRoomExit.active && useRoomLevel)   { behaviour = behaviourRoomExit; }
-    //       else if (behaviourAway.active)                       { behaviour = behaviourAway;     }
-    //
-    //       if (behaviour && stone.config.handle && stone.config.disabled === false) {
-    //         let proxy = BleUtil.getProxy(stone.config.handle);
-    //
-    //         if (userLevelInSphere === 'guest') {
-    //           proxy.perform(BleActions.keepAlive)
-    //             .then(() => {
-    //               LOG("KeepAlive Successful to ", element.config.name, element.config.handle);
-    //             })
-    //             .catch((err) => {
-    //               LOGError("COULD NOT PERFORM KEEP ALIVE AS GUEST TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
-    //             })
-    //         }
-    //         else {
-    //           proxy.perform(BleActions.keepAliveState, behaviour.state, Math.max(1.5*KEEPALIVE_INTERVAL, behaviour.delay)) // the max in time is so that it will not turn off before the next interval.
-    //             .then(() => {
-    //               LOG("keepAliveState Successful to ", element.config.name, element.config.handle);
-    //             })
-    //             .catch((err) => {
-    //               LOGError("COULD NOT PERFORM KEEPALIVE AS", userLevelInSphere, "TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
-    //             })
-    //         }
-    //       }
-    //     });
-    //   }
-    // });
+    const state = this.store.getState();
+    let sphereIds = Object.keys(state.spheres);
+
+    LOG("Starting KeepAlive call");
+
+    sphereIds.forEach((sphereId) => {
+      let sphere = state.spheres[sphereId];
+      LOG("Starting KeepAlive round for sphere:", sphere.config.name);
+
+      // check every sphere where we are present. Usually this is only one of them!!
+      let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
+      let userLevelInSphere = getUserLevelInSphere(state, sphereId);
+
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        // for each stone in sphere select the behaviour we want to copy into the keep Alive
+        let stone = sphere.stones[stoneId];
+        let element = this._getElement(sphere, stone);
+        let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
+        let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
+        let behaviourAway = element.behaviour[TYPES.AWAY];
+
+        let behaviour = undefined;
+
+        // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
+        if      (behaviourHomeExit.active)                   { behaviour = behaviourHomeExit; }
+        else if (behaviourRoomExit.active && useRoomLevel)   { behaviour = behaviourRoomExit; }
+        else if (behaviourAway.active)                       { behaviour = behaviourAway;     }
+
+        if (stone.config.handle && stone.config.disabled === false) {
+          LOG("Performing guest_Keepalive to stone.config.handle", stone.config.handle)
+          let proxy = BleUtil.getProxy(stone.config.handle);
+
+          if (userLevelInSphere === 'guest' || behaviour === undefined) {
+            LOG("Performing guest_Keepalive")
+            proxy.perform(BleActions.keepAlive)
+              .then(() => {
+                LOG("KeepAlive Successful to ", element.config.name, element.config.handle);
+              })
+              .catch((err) => {
+                LOGError("COULD NOT PERFORM KEEP ALIVE AS GUEST TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
+              })
+          }
+          else {
+            proxy.perform(BleActions.keepAliveState, behaviour.state, Math.max(1.5*KEEPALIVE_INTERVAL, behaviour.delay)) // the max in time is so that it will not turn off before the next interval.
+              .then(() => {
+                LOG("keepAliveState Successful to ", element.config.name, element.config.handle);
+              })
+              .catch((err) => {
+                LOGError("COULD NOT PERFORM KEEPALIVE AS", userLevelInSphere, "TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
+              })
+          }
+        }
+        else if (stone.config.disabled === true) {
+          LOG("IgnoreKeepalive_stoneDisabled", stoneId);
+        }
+      });
+    });
   }
 
 

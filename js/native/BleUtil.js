@@ -181,15 +181,22 @@ class SingleCommand {
   perform(action, prop1, prop2) {
     LOG("connecting to ", this.handle, "doing this: ", action, "with prop", prop1, prop2);
     return BlePromiseManager.register(() => {
-      return BleActions.connect(this.handle)
-        .then(() => { return action(prop1, prop2); })
-        .then(() => { return BleActions.disconnect(); })
-        .catch((err) => {
-          LOGError("BLE Single command Error:", err);
-          return new Promise((resolve,reject) => {
-            BleActions.phoneDisconnect().then(reject).catch(reject);
+      if (this.handle) {
+        return BleActions.connect(this.handle)
+          .then(() => { return action(prop1, prop2); })
+          .then(() => { return BleActions.disconnect(); })
+          .catch((err) => {
+            LOGError("BLE Single command Error:", err);
+            return new Promise((resolve,reject) => {
+              BleActions.phoneDisconnect().then(reject).catch(reject);
+            })
           })
+      }
+      else {
+        return new Promise((resolve, reject) => {
+          reject();
         })
+      }
     }, {from:'perform on singleCommand'});
   }
 }

@@ -162,6 +162,7 @@ class SchedulerClass {
     this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
     return () => {
       if (this.singleFireTriggers[uuid]) {
+        this.singleFireTriggers[uuid] = undefined;
         delete this.singleFireTriggers[uuid];
       }
     }
@@ -186,7 +187,7 @@ class SchedulerClass {
       triggerIds.forEach((triggerId) => {
         let trigger = this.triggers[triggerId];
         if (trigger.options.repeatEveryNSeconds) {
-          LOGScheduler("Handling Trigger:", triggerId, trigger.options.repeatEveryNSeconds, Math.round(0.001 * (now - trigger.lastTriggerTime)));
+          // LOGScheduler("Handling Trigger:", triggerId, trigger.options.repeatEveryNSeconds, Math.round(0.001 * (now - trigger.lastTriggerTime)));
           // We use round in the conversion from millis to seconds so 1.5seconds is also accepted when the target is 2 seconds
           // due to timer inaccuracy this gives the most reliable results.
           if (Math.round(0.001 * (now - trigger.lastTriggerTime)) >= trigger.options.repeatEveryNSeconds) {
@@ -218,7 +219,7 @@ class SchedulerClass {
   checkSingleFires(now) {
     let triggerIds = Object.keys(this.singleFireTriggers);
     triggerIds.forEach((triggerId) => {
-      LOGScheduler("Handling singlefire trigger:", triggerId);
+      // LOGScheduler("Handling singlefire trigger:", triggerId);
       let trigger = this.singleFireTriggers[triggerId];
       if (trigger.triggerTime < now) {
         LOGScheduler("Firing singlefire trigger:", triggerId);

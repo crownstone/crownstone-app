@@ -8,8 +8,6 @@ export class ListEditableItems extends Component {
     this.state = {activeElement:undefined};
   }
 
-
-
   _renderer(item, index, itemId, textFieldRegistration, nextFunction, currentFocus) {
     return <EditableItem
       key={index}

@@ -12,7 +12,8 @@ import { TYPES } from '../router/store/reducers/stones'
 
 let MINIMUM_AMOUNT_OF_SAMPLES = 3;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
-let TOUCH_RSSI_THRESHOLD = -52;
+let TOUCH_RSSI_THRESHOLD = -42;
+let TOUCH_RSSI_ENABLE_DISTANCE = -10;
 let TOUCH_TIME_BETWEEN_SWITCHING = 5000; // ms
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
 
@@ -35,29 +36,37 @@ export class StoneTracker {
     eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
 
     // if we detect a setup stone, we disable tap to toggle temporarily
-    eventBus.on("setupStoneChange", (setupCrownstonesAvailable) => { this.tapToToggleDisabled = setupCrownstonesAvailable; });
+    eventBus.on("setupStoneChange", (setupCrownstonesAvailable) => {
+      this.tapToToggleDisabled = setupCrownstonesAvailable;
+      LOG("Stone tracker receiving setupStoneChange, this.tapToToggleDisabled = ", this.tapToToggleDisabled);
+    });
   }
 
 
   iBeaconUpdate(major, minor, rssi, referenceId) {
-    // LOG("major, minor, rssi, ref",major, minor, rssi, referenceId)
     // only use valid rssi measurements, 0 or 128 are not valid measurements
-    if (rssi === undefined || rssi > -1)
+    if (rssi === undefined || rssi > -1) {
+      LOGError("Invalid RSSI");
       return;
+    }
 
-    if (referenceId === undefined || major  === undefined || minor === undefined)
+    if (referenceId === undefined || major  === undefined || minor === undefined) {
+      LOGError(referenceId, major, minor);
       return;
+    }
 
     // check if we have the sphere
     let state = this.store.getState();
     let sphere = state.spheres[referenceId];
     if (!(sphere)) {
+      LOGError("No Sphere");
       return;
     }
 
     // check if we have a stone with this major / minor
     let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
     if (!(stoneId)) {
+      LOGError("Dont have this stone");
       return;
     }
 
@@ -78,6 +87,7 @@ export class StoneTracker {
         lastTriggerTime: 0,
         rssiAverage: rssi,
         samples: 0,
+        touchTempDisabled: false,
         touchTime: now,
         cancelScheduledAwayAction: false,
         cancelScheduledNearAction: false
@@ -89,32 +99,47 @@ export class StoneTracker {
 
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore === true) {
+      LOGError("TempIgnore");
       return;
     }
+
 
     // not all stones have touch to toggle enabled
     if (stone.config.touchToToggle === true) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
       // the sign > is because the rssi is negative!
-      if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
-        if (this.tapToToggleDisabled === false) {
-          // notify the user by vibration that the crownstone will be switched.
-          Vibration.vibrate(400, false);
-
-          if (state.user.seenTapToToggle !== true) {
-            this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_ALERT', data: {seenTapToToggle: true}});
-            Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
-          }
-
-          let newState = stone.state.state > 0 ? 0 : 1;
-          this._applySwitchState(newState, stone, stoneId, referenceId);
-          ref.touchTime = now;
-          return;
+      if (ref.touchTempDisabled === true) {
+        // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to reenable it.
+        // rssi measured must be smaller (-80) < (-49 + -4)
+        if (rssi < (TOUCH_RSSI_THRESHOLD + TOUCH_RSSI_ENABLE_DISTANCE)) {
+          ref.touchTempDisabled = false;
         }
-        else {
-          if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
-            this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
-            Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);
+      }
+      else {
+        LOG("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
+        if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
+          if (this.tapToToggleDisabled === false) {
+            LOG("Tap to Toggle!");
+            // notify the user by vibration that the crownstone will be switched.
+            Vibration.vibrate(400, false);
+
+            if (state.user.seenTapToToggle !== true) {
+              this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_ALERT', data: {seenTapToToggle: true}});
+              Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
+            }
+
+            let newState = stone.state.state > 0 ? 0 : 1;
+            this._applySwitchState(newState, stone, stoneId, referenceId);
+            ref.touchTime = now;
+            ref.touchTempDisabled = true;
+            return;
+          }
+          else {
+            LOG("Tap to Toggle is disabled.");
+            if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
+              this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
+              Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);
+            }
           }
         }
       }

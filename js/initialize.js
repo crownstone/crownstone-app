@@ -1,4 +1,4 @@
-import { Alert } from 'react-native'
+import { Alert, AppState } from 'react-native'
 
 import { LOG, LOGError }              from './logging/Log'
 import { CLOUD }            from './cloud/cloudAPI'
@@ -82,6 +82,13 @@ export const INITIALIZER = {
       };
 
       CLOUD.setNetworkErrorHandler(handler);
+
+      // listen to the state of the app, if it is in the foreground or background
+      AppState.addEventListener('change', (appState) => {
+        if (appState === "active") {
+
+        }
+      });
       this.started = true;
     }
   }

@@ -24,10 +24,10 @@ export class RoomList extends Component {
             width:60,
             height:60,
             borderRadius:30,
-            backgroundColor:  colors.blue.hex,
+            backgroundColor: colors.blue.hex,
           }, styles.centered]}
           >
-            <Icon name={this.props.icon} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+            <Icon name={this.props.icon} size={35} color={'#fff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
           </View>
         </View>
         <View style={{flex:1}}>

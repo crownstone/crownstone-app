@@ -12,12 +12,13 @@ import {
 
 import { TopBar } from './../components/Topbar'
 import { Background } from './../components/Background'
+import { IconCircle } from './../components/IconCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getLocationNamesInSphere } from './../../util/dataUtil'
+import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from './../../util/dataUtil'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { LOGError } from './../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles'
+import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from './../styles'
 
 
 
@@ -25,13 +26,23 @@ import { styles, colors } from './../styles'
 export class RoomAdd extends Component {
   constructor(props) {
     super();
-    this.state = {name:'', icon: 'c1-bookshelf'};
+    this.state = {name:'', icon: 'c1-bookshelf', selectedStones: {}};
     this.refName = "listItems";
   }
 
-  _getItems() {
+  componentWillMount() {
+    if (this.props.movingCrownstone) {
+      let selectedStones = {};
+      selectedStones[this.props.movingCrownstone] = true;
+      this.setState({selectedStones:selectedStones})
+    }
+  }
+
+  _getItems(floatingStones) {
+
+
     let items = [];
-    items.push({label:'ADD ROOM TO ', type:'explanation', below:false});
+    items.push({label:'ADD ROOM TO', type:'explanation', below:false});
     items.push({label:'Room Name', type: 'textEdit', placeholder:'My New Room', value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
@@ -45,6 +56,38 @@ export class RoomAdd extends Component {
       )}
     });
 
+    items.push({label:'PLACE FLOATING CROWNSTONE IN ROOM', type:'explanation', below:false});
+
+    let floatingStoneIds = Object.keys(floatingStones);
+    if (floatingStoneIds.length > 0) {
+      let nearestId = this._getNearestStone(floatingStoneIds, floatingStones);
+      floatingStoneIds.forEach((stoneId) => {
+        let device = floatingStones[stoneId].device;
+        let stone = floatingStones[stoneId].stone;
+        let subtext = stone.config.disabled === false ?
+          (nearestId === stoneId ? 'Nearest' : stone.config.rssi > -60 ? 'Very near' : stone.config.rssi > -70 ? 'Near' : undefined)
+          : undefined;
+
+        items.push({
+          mediumIcon: <IconCircle
+            icon={device.config.icon}
+            size={52}
+            backgroundColor={stone.state.state > 0 && stone.config.disabled === false ? colors.green.hex : colors.menuBackground.hex}
+            color={colors.white.hex}
+            style={{position:'relative', top:2}} />,
+          label: device.config.name,
+          subtext: subtext,
+          type: 'checkbar',
+          value: this.state.selectedStones[stoneId] === true,
+          callback: () => {
+            this.state.selectedStones[stoneId] = !this.state.selectedStones[stoneId] === true;
+            this.setState({selectedStones: this.state.selectedStones})
+          },
+          style: {color: colors.iosBlue.hex},
+        });
+      });
+    }
+
     items.push({type:'spacer'});
 
     items.push({
@@ -54,6 +97,19 @@ export class RoomAdd extends Component {
       callback: () => { this.createRoom(); }
     });
     return items;
+  }
+
+  _getNearestStone(floatingStoneIds, floatingStones) {
+    let rssi = -1000;
+    let id = undefined;
+    for (let i = 0; i < floatingStoneIds.length; i++) {
+      let stone = floatingStones[floatingStoneIds[i]].stone;
+      if (stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
+        rssi = stone.config.rssi;
+        id = floatingStoneIds[i];
+      }
+    }
+    return id;
   }
 
   createRoom() {
@@ -99,6 +155,7 @@ export class RoomAdd extends Component {
   }
 
   render() {
+    let state = this.props.store.getState();
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     if (this.props.sphereId === null) {
@@ -106,6 +163,12 @@ export class RoomAdd extends Component {
       return <View />
     }
 
+
+    let floatingStones = getStonesAndAppliancesInLocation(state, this.props.sphereId, null);
+    let amountOfFloatingStones = Object.keys(floatingStones).length;
+    let items = this._getItems(floatingStones);
+
+    let itemHeight = amountOfFloatingStones * 62 + (items.length - amountOfFloatingStones)*50 + 120;
     return (
       <Background hideInterface={true} image={backgroundImage} >
         <TopBar
@@ -113,7 +176,9 @@ export class RoomAdd extends Component {
           leftAction={ Actions.pop }
           title="Create Room"/>
         <ScrollView>
-          <ListEditableItems ref={this.refName} focusOnLoad={true} items={this._getItems()} />
+          <View style={{height: itemHeight}}>
+            <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} />
+          </View>
         </ScrollView>
       </Background>
     );

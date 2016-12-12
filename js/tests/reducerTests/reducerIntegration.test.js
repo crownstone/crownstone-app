@@ -43,7 +43,7 @@ test('locationsReducer PropegationTest', function (t) {
     sphereId: {
       appliances: {},
       config: {adminKey: null, guestKey: null, memberKey: null, meshAccessAddress: null, name: 'home', updatedAt: 1, iBeaconUUID: undefined},
-      locations: {locationId: {config: {fingerprintParsed: '', fingerprintRaw: '', icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
+      locations: {locationId: {config: {fingerprintParsed: null, fingerprintRaw: null, icon: 'couch', name: 'living room', updatedAt: 1}, presentUsers: []}},
       users: {},
       presets: [],
       stones: {}

@@ -45,7 +45,7 @@ export class DeviceEdit extends Component {
 
       if (
         change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
-        change.updateApplianceConfig && change.updateApplianceConfig.stoneIds[this.props.stoneId]
+        change.updateApplianceConfig
         ) {
         if (this.deleting === false) {
           this.forceUpdate();

@@ -19,6 +19,7 @@ export const LOG = function() {
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
+    logToFile.apply(this, args);
     console.log.apply(this, args);
   }
 };
@@ -30,6 +31,7 @@ export const LOGError = function() {
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
+    logToFile.apply(this, args);
     console.log.apply(this, args);
   }
 };
@@ -41,6 +43,7 @@ export const LOGDebug = function() {
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
+    logToFile.apply(this, args);
     console.log.apply(this, args);
   }
 };
@@ -51,6 +54,7 @@ export const LOGCloud = function() {
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
+    logToFile.apply(this, args);
     console.log.apply(this, args);
   }
 };
@@ -61,6 +65,7 @@ export const LOGBle = function() {
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
+    logToFile.apply(this, args);
     console.log.apply(this, args);
   }
 };
@@ -72,6 +77,7 @@ export const LOGStore = function() {
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
+    logToFile.apply(this, args);
     console.log.apply(this, args);
   }
 };
@@ -83,6 +89,35 @@ export const LOGScheduler = function() {
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
+    logToFile.apply(this, args);
     console.log.apply(this, args);
   }
 };
+
+
+function logToFile() {
+  // create a path you want to write to
+  var path = RNFS.DocumentDirectoryPath + '/consumerAppLog.log';
+
+  //create string
+  let str = '' + new Date().valueOf() + ' - ' + new Date() + " -";
+  for (let i = 0; i < arguments.length; i++) {
+    if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
+      str += " " + JSON.stringify(arguments[i])
+    }
+    else {
+      str += " " + arguments[i]
+    }
+  }
+  str += " \n";
+
+  // write the file
+  RNFS.appendFile(path, str, 'utf8')
+    .then((success) => {
+      // console.log('logWritten');
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+
+}

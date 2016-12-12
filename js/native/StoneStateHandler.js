@@ -31,8 +31,16 @@ class StoneStateHandlerClass {
   }
 
   receivedIBeaconUpdate(sphereId, stoneId, rssi) {
-    // update RSSI, we only use the ibeacon once since it has an average rssi
-    Scheduler.loadOverwritableAction(TRIGGER_ID, stoneId, {type:'UPDATE_STONE_RSSI', sphereId: sphereId, stoneId:stoneId, data:{rssi:rssi}});
+    // only update rssi if there is a measureable difference.
+    if (Math.abs(this.store.getState().spheres[sphereId].stones[stoneId].config.rssi - rssi) > 3) {
+      // update RSSI, we only use the ibeacon once since it has an average rssi
+      Scheduler.loadOverwritableAction(TRIGGER_ID, stoneId, {
+        type: 'UPDATE_STONE_RSSI',
+        sphereId: sphereId,
+        stoneId: stoneId,
+        data: {rssi: rssi}
+      });
+  }
 
     this.update(sphereId, stoneId);
   }
@@ -42,9 +50,25 @@ class StoneStateHandlerClass {
   }
 
   update(sphereId, stoneId) {
+    LOG("StoneStateHandlerUpdate", sphereId, stoneId);
 
+    const state = this.store.getState();
     // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
-    LocationHandler.enterSphere(sphereId);
+
+    if (state.spheres[sphereId].config.present === false) {
+      LOG("FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
+      LocationHandler.enterSphere(sphereId);
+    }
+
+    // if we hear this stone and yet it is set to disabled, we reenable it.
+    if (state.spheres[sphereId].stones[stoneId].config.disabled === true) {
+      this.store.dispatch({
+        type: 'UPDATE_STONE_DISABILITY',
+        sphereId: sphereId,
+        stoneId: stoneId,
+        data: {disabled: false}
+      });
+    }
 
     if (this.timeoutActions[sphereId] === undefined) {
       this.timeoutActions[sphereId] = {};
@@ -54,12 +78,16 @@ class StoneStateHandlerClass {
     }
 
     if (this.timeoutActions[sphereId][stoneId].clearTimeout && typeof this.timeoutActions[sphereId][stoneId].clearTimeout === 'function') {
+      LOG("Cancelling_Timeout");
       this.timeoutActions[sphereId][stoneId].clearTimeout();
     }
 
     if (this.timeoutActions[sphereId][stoneId].clearRSSITimeout && typeof this.timeoutActions[sphereId][stoneId].clearRSSITimeout === 'function') {
+      LOG("Cancelling_RSSI_Timeout");
       this.timeoutActions[sphereId][stoneId].clearRSSITimeout();
     }
+
+
 
     let disableCallback = () => {
       let state = this.store.getState();
@@ -77,9 +105,11 @@ class StoneStateHandlerClass {
 
         // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
         if (allDisabled === true) {
+          LOG("FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
           LocationHandler.exitSphere(sphereId);
         }
 
+        LOG("Disabling stone ", stoneId);
         this.store.dispatch({
           type: 'UPDATE_STONE_DISABILITY',
           sphereId: sphereId,

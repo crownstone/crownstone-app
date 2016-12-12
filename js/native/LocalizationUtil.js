@@ -10,7 +10,7 @@ export const LocalizationUtil = {
   trackSpheres: function (store) {
     BleActions.isReady()
       .then(() => {
-        return BleActions.clearTrackedBeacons()
+        return BleActions.clearTrackedBeacons();
       })
       .then(() => {
         // register the iBeacons UUIDs with the localization system.
