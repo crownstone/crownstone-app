@@ -12,7 +12,7 @@ import {
 let Actions = require('react-native-router-flux').Actions;
 
 import { Icon }               from '../components/Icon'
-import { getUserLevelInSphere } from '../../util/dataUtil'
+import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
 import { RoomLayer }          from './RoomLayer'
 import { LOG, LOGDebug }      from '../../logging/Log'
 import { overviewStyles }     from './SphereOverview'
@@ -39,6 +39,28 @@ export class Sphere extends Component {
     let isAdminInCurrentSphere = getUserLevelInSphere(state, currentSphere) === 'admin';
 
     let newContent = undefined;
+    let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
+    let requiresFingerprints = requireMoreFingerprints(state, currentSphere);
+
+    let stones = state.spheres[this.props.sphereId].stones;
+    let stoneIds = Object.keys(stones);
+    let amountOfVisible = 0;
+    stoneIds.forEach((stoneId) => {
+      if (stones[stoneId].config.rssi > -100 && stones[stoneId].config.rssi.disabled === false) {
+        amountOfVisible += 1;
+      }
+    });
+
+    let inRangeStyle = {position: 'absolute',
+      bottom: bottomDistance,
+      flexDirection:'row',
+      width: screenWidth,
+      backgroundColor: 'transparent',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 15,
+      paddingBottom: 0
+    };
 
     if (this.props.seeStonesInSetupMode === true && isAdminInCurrentSphere === true) {
       newContent = (
@@ -56,17 +78,44 @@ export class Sphere extends Component {
         </View>
       );
     }
-    else if (viewingRemotely === false) {
+    else if (amountOfVisible >= 3 && enoughForLocalization && !requiresFingerprints) {
       newContent = (
-        <View style={{flex:1}}>
-          <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'Currently in ' + state.spheres[currentSphere].config.name + '\'s Sphere.' }</Text>
+        <View style={inRangeStyle}>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I see ' + amountOfVisible}</Text>
+          <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'In range: indoor localization is running.'}</Text>
         </View>
-      );
+      )
+    }
+    else if (amountOfVisible > 0 && enoughForLocalization && !requiresFingerprints) {
+      newContent = (
+        <View style={inRangeStyle}>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I see only ' + amountOfVisible}</Text>
+          <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'in range: indoor localization paused.'}</Text>
+        </View>
+      )
+    }
+    else if (enoughForLocalization && requiresFingerprints) {
+      newContent = (
+        <View style={inRangeStyle}>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'Not all rooms have been trained: indoor localization paused.'}</Text>
+        </View>
+      )
+    }
+    else if (amountOfVisible > 0) {
+      newContent = (
+        <View style={inRangeStyle}>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I see ' + amountOfVisible}</Text>
+          <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'in range.'}</Text>
+        </View>
+      )
     }
     else {
       newContent = (
         <View style={{flex:1}}>
-          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex, bottom: bottomDistance} ]}>{'Currently viewing ' + state.spheres[currentSphere].config.name + '\'s Sphere\s data.' }</Text>
+          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex, bottom: bottomDistance} ]}>{'No Crownstones in range.' }</Text>
         </View>
       );
     }
