@@ -66,7 +66,7 @@ export class StoneTracker {
     // check if we have a stone with this major / minor
     let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
     if (!(stoneId)) {
-      LOGError("Don't have this stone");
+      LOGError("Don't have this stone, maj:", major, "min:", minor);
       return;
     }
 
