@@ -340,7 +340,7 @@ export class RoomOverview extends Component {
     let rssi = -1000;
     for (let i = 0; i < stoneArray.length; i++) {
       let stone = stoneArray[i].stone;
-      if (stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
+      if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
         rssi = stone.config.rssi;
         this.nearestStoneId = ids[i];
       }

@@ -180,42 +180,42 @@ export class AppRouter extends Component {
           <Router createReducer={reducerCreate} store={store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.black.hex}}} backgrounds={this.backgrounds} getBackground={this.getBackground.bind(this)} eventBus={eventBus}>
             <Scene key="drawer" component={SideMenu} open={false} >
               <Scene key="Root" hideNavBar={false}>
-                <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
-                <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
-                <Scene key="register"                   component={Views.Register}                   hideNavBar={false} title="Register" {...navBarStyle} />
-                <Scene key="registerConclusion"         component={Views.RegisterConclusion}         hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} />
-                <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  panHandlers={null} direction="vertical" />
-                <Scene key="picturePreview"             component={Views.PicturePreview}             hideNavBar={true}  panHandlers={null} direction="vertical" />
-                <Scene key="cameraRollView"             component={Views.CameraRollView}             hideNavBar={true}  panHandlers={null} direction="vertical" />
-                <Scene key="aiStart"                    component={Views.AiStart}                    hideNavBar={false} panHandlers={null} direction="vertical" title="Hello!" />
-                <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true}  panHandlers={null} direction="vertical" title="Training" />
-                <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true}  panHandlers={null} direction="vertical" title="Move to which Room?" />
-                <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
-                <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
-                <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
-                <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
-                <Scene key="sphereOverview"             component={Views.SphereOverview}             hideNavBar={true}  initial={this.state.loggedIn} />
-                <Scene key="roomOverview"               component={Views.RoomOverview}               hideNavBar={true}  />
-                <Scene key="roomEdit"                   component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
-                <Scene key="roomAdd"                    component={Views.RoomAdd}                    hideNavBar={true}  title="Create Room" />
-                <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
-                <Scene key="deviceEditLogic"            component={Views.DeviceEditLogic}            hideNavBar={false} title="Device Behaviour" />
-                <Scene key="applianceSelection"         component={Views.ApplianceSelection}         hideNavBar={false} title="Select a Device" />
-                <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
-                <Scene key="deviceStateEdit"            component={Views.DeviceStateEdit}            hideNavBar={false} />
-                <Scene key="delaySelection"             component={Views.DelaySelection}             hideNavBar={false} title="Set Delay" />
-                <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         hideNavBar={false} title="Schedule"   rightTitle="Add" />
-                <Scene key="deviceScheduleAdd"          component={Views.DeviceScheduleAdd}          hideNavBar={false} title="New Event"  rightTitle="Save" />
-                <Scene key="daySelection"               component={Views.DaySelection}               hideNavBar={false} title="Set Active Days" />
-                <Scene key="settingsOverview"           component={Views.SettingsOverview}           hideNavBar={false} title="Settings"/>
-                <Scene key="settingsProfile"            component={Views.SettingsProfile}            hideNavBar={false} title="Your Profile" />
-                <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}     hideNavBar={false} title="Change Password"/>
-                <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     hideNavBar={false} title="Sphere Overview" />
-                <Scene key="settingsSphere"             component={Views.SettingsSphere}             hideNavBar={false} title="[Sphere name here]" />
-                <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         hideNavBar={false} title="[Username here]" />
-                <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  hideNavBar={false} title="[Username here]" />
-                <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       hideNavBar={false} title="Invite" />
-                <Scene key="appComplexity"              component={Views.AppComplexity}              hideNavBar={false} title="Settings"/>
+                <Scene key="loginSplash"                component={Views.LoginSplash}                panHandlers={null} hideNavBar={true}  type="reset" initial={this.state.loggedIn === false} />
+                <Scene key="login"                      component={Views.Login}                      panHandlers={null} hideNavBar={true}  />
+                <Scene key="register"                   component={Views.Register}                   panHandlers={null} hideNavBar={false} title="Register" {...navBarStyle} />
+                <Scene key="registerConclusion"         component={Views.RegisterConclusion}         panHandlers={null} hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} />
+                <Scene key="pictureView"                component={Views.PictureView}                panHandlers={null} hideNavBar={true}  direction="vertical" />
+                <Scene key="picturePreview"             component={Views.PicturePreview}             panHandlers={null} hideNavBar={true}  direction="vertical" />
+                <Scene key="cameraRollView"             component={Views.CameraRollView}             panHandlers={null} hideNavBar={true}  direction="vertical" />
+                <Scene key="aiStart"                    component={Views.AiStart}                    panHandlers={null} hideNavBar={false} direction="vertical" title="Hello!" />
+                <Scene key="roomTraining"               component={Views.RoomTraining}               panHandlers={null} hideNavBar={true}  direction="vertical" title="Training" />
+                <Scene key="roomSelection"              component={Views.RoomSelection}              panHandlers={null} hideNavBar={true}  direction="vertical" title="Move to which Room?" />
+                <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
+                <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
+                <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} panHandlers={null} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
+                <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} panHandlers={null} hideNavBar={false} title="Recover Crownstone" />
+                <Scene key="sphereOverview"             component={Views.SphereOverview}             panHandlers={null} hideNavBar={true}  initial={this.state.loggedIn} />
+                <Scene key="roomOverview"               component={Views.RoomOverview}               panHandlers={null} hideNavBar={true}  />
+                <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={false} title="Room Settings" />
+                <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true}  title="Create Room" />
+                <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={false} title="Edit Device" />
+                <Scene key="deviceEditLogic"            component={Views.DeviceEditLogic}            panHandlers={null} hideNavBar={false} title="Device Behaviour" />
+                <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select a Device" />
+                <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        panHandlers={null} hideNavBar={false} title="Edit Behaviour" />
+                <Scene key="deviceStateEdit"            component={Views.DeviceStateEdit}            panHandlers={null} hideNavBar={false} />
+                <Scene key="delaySelection"             component={Views.DelaySelection}             panHandlers={null} hideNavBar={false} title="Set Delay" />
+                <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         panHandlers={null} hideNavBar={false} title="Schedule"   rightTitle="Add" />
+                <Scene key="deviceScheduleAdd"          component={Views.DeviceScheduleAdd}          panHandlers={null} hideNavBar={false} title="New Event"  rightTitle="Save" />
+                <Scene key="daySelection"               component={Views.DaySelection}               panHandlers={null} hideNavBar={false} title="Set Active Days" />
+                <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
+                <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
+                <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}     panHandlers={null} hideNavBar={false} title="Change Password"/>
+                <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     panHandlers={null} hideNavBar={false} title="Sphere Overview" />
+                <Scene key="settingsSphere"             component={Views.SettingsSphere}             panHandlers={null} hideNavBar={false} title="[Sphere name here]" />
+                <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />
+                <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  panHandlers={null} hideNavBar={false} title="[Username here]" />
+                <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       panHandlers={null} hideNavBar={false} title="Invite" />
+                <Scene key="appComplexity"              component={Views.AppComplexity}              panHandlers={null} hideNavBar={false} title="Settings"/>
               </Scene>
             </Scene>
           </Router>
