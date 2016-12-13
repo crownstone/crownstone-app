@@ -20,7 +20,7 @@ import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/animated/FadeInView'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGError } from '../../logging/Log'
 
 
 
@@ -190,6 +190,17 @@ export class DeviceEdit extends Component {
   _removeCloudOnly() {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
+      .catch((err) => {
+        return new Promise((resolve, reject) => {
+          if (err && err.data && err.data.error && err.data.error.status === 404) {
+            resolve();
+          }
+          else {
+            LOGError("COULD NOT DELETE IN CLOUD", err);
+            reject();
+          }
+        })
+      })
       .then(() => {
         this._removeCrownstoneFromRedux(false);
       })
@@ -206,6 +217,17 @@ export class DeviceEdit extends Component {
   _removeCloudReset(stone) {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
+      .catch((err) => {
+        return new Promise((resolve, reject) => {
+          if (err && err.data && err.data.error && err.data.error.status === 404) {
+            resolve();
+          }
+          else {
+            LOGError("COULD NOT DELETE IN CLOUD", err);
+            reject();
+          }
+        })
+      })
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
         let proxy = BleUtil.getProxy(stone.config.handle);
@@ -214,7 +236,7 @@ export class DeviceEdit extends Component {
             this._removeCrownstoneFromRedux(true);
           })
           .catch((err) => {
-            LOG("ERROR:",err);
+            LOGError("ERROR:",err);
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "You can recover it using the recovery procedure.",
