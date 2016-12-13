@@ -109,6 +109,11 @@ class AdvertisementHandlerClass {
     // look for the crownstone in this sphere which has the same CrownstoneId (CID)
     let refByCID = this.referenceCIDMap[sphereId][serviceData.crownstoneId];
 
+    // check if we have a Crownstone with this CID, if not, ignore it.
+    if (refByCID === undefined) {
+      return;
+    }
+
     // repair mechanism to store the handle.
     if (serviceData.stateOfExternalCrownstone === false && refByCID !== undefined) {
       if (refByCID.handle != advertisement.handle) {
@@ -137,6 +142,8 @@ class AdvertisementHandlerClass {
     if (measuredUsage < 0) {
       measuredUsage = 0;
     }
+
+    console.log("ADV", advertisement)
 
     let update = () => {
       // sometimes we need to ignore any distance based toggling.

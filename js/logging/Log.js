@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import {
   LOGGING,
   ERROR_LOGGING,
@@ -97,7 +99,10 @@ export const LOGScheduler = function() {
 
 function logToFile() {
   // create a path you want to write to
-  var path = RNFS.DocumentDirectoryPath + '/consumerAppLog.log';
+  let path = RNFS.DocumentDirectoryPath + '/consumerAppLog.log';
+  if (Platform.OS === 'android') {
+    path = RNFS.ExternalDirectoryPath + '/consumerAppLog.log';
+  }
 
   //create string
   let str = '' + new Date().valueOf() + ' - ' + new Date() + " -";
