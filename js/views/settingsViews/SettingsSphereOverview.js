@@ -79,7 +79,7 @@ export class SettingsSphereOverview extends Component {
       items = items.concat(guestSpheres);
     }
 
-    if (totalSpheres < 5) {
+    if (totalSpheres < 1) {
       items.push({type: 'spacer'});
       items.push({
         label: 'Create a new Sphere',
@@ -92,7 +92,7 @@ export class SettingsSphereOverview extends Component {
       });
     }
     else {
-      items.push({label:'Max 5 Spheres are currently supported.',  type:'explanation', below:false});
+      items.push({label:'Max 1 Sphere is currently supported.',  type:'explanation', below:false});
     }
 
     // if you do not have, or are part of, any spheres yet.

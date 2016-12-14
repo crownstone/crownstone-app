@@ -162,14 +162,14 @@ class LocationHandlerClass {
       let stone = sphere.stones[stoneId];
       let element = this._getElement(sphere, stone);
       let behaviour = element.behaviour[type];
-
-      if (behaviour.active && stone.config.handle && behaviour.state !== stone.state.state) {
+      // we set the state regardless of the current state since it may not be correct in the background.
+      if (behaviour.active && stone.config.handle) {
         // if we need to switch:
         let data = {state: behaviour.state};
         if (behaviour.state === 0) {
           data.currentUsage = 0;
         }
-        LOGBle("FIRING ", type, " event for ", element.config.name, stoneId);
+        LOG("FIRING ", type, " event for ", element.config.name, stoneId);
         let proxy = BleUtil.getProxy(stone.config.handle);
         proxy.perform(BleActions.setSwitchState, behaviour.state)
           .then(() => {

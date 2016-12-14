@@ -141,7 +141,7 @@ export class RoomEdit extends Component {
       icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback: () => {
         Alert.alert("Are you sure?","Removing this Room will make all contained Crownstones floating.",
-          [{text: "Cancel"}, {text:'OK', onPress: this._removeRoom.bind(this)}])
+          [{text: "Cancel", style: 'cancel'}, {text:'OK', style: 'destructive', onPress: this._removeRoom.bind(this)}])
       }
     });
     items.push({label:'Removing this Room will make all contained Crownstones floating.',  type:'explanation', below:true});

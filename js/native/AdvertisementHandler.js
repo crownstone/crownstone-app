@@ -123,6 +123,7 @@ class AdvertisementHandlerClass {
     }
 
     let ref = this.referenceHandleMap[sphereId][advertisement.handle];
+
     // unknown crownstone
     if (ref === undefined) {
       return;
@@ -143,7 +144,7 @@ class AdvertisementHandlerClass {
       measuredUsage = 0;
     }
 
-    console.log("ADV", advertisement)
+    // LOG("ADV", advertisement)
 
     let update = () => {
       // sometimes we need to ignore any distance based toggling.
@@ -175,6 +176,28 @@ class AdvertisementHandlerClass {
 }
 
 export const AdvertisementHandler = new AdvertisementHandlerClass();
+
+
+
+
+
+
+
+
+
+
+
+
+// office: 'major, minor, rssi, referenceId', 55033, 292, -62, '58469b4e58e525040009fd09' --> dont have
+
+
+
+
+// home: 'major, minor, rssi, referenceId', 50749, 23484, -67, '58469b4e58e525040009fd09'
+
+
+
+
 
 
 

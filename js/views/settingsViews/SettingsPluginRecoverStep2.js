@@ -106,7 +106,7 @@ export class SettingsPluginRecoverStep2 extends Component {
           if (nearestNormal.rssi > -60) {
             Alert.alert("Crownstone in Setup mode nearby.",
               "We detect a Crownstone in setup mode close by, as well as one in normal mode which is already in your Sphere (" + description + "). Do you want to try to recover your own Crownstone?",
-              [{text:'Cancel', onPress: () => { Actions.pop(); }},{text:'Recover', onPress: () => {
+              [{text:'Cancel', style: 'cancel', onPress: () => { Actions.pop(); }},{text:'Recover', onPress: () => {
                 this._removeOwnedCrownstone(nearestNormal.handle);
               }}]
             );
@@ -123,13 +123,13 @@ export class SettingsPluginRecoverStep2 extends Component {
           if (nearestNormal.rssi > -60) {
             Alert.alert("Crownstone in Setup mode nearby.",
               "We detect a Crownstone in setup mode close by, as well as one in normal mode that is not in your Spheres. Do you still want to try to recover the one in normal mode?",
-              [{text:'Cancel', onPress: () => { Actions.pop(); }},{text:'Recover', onPress: () => { this.recoverStone(nearestNormal.handle); }}]
+              [{text:'Cancel', style: 'cancel', onPress: () => { Actions.pop(); }},{text:'Recover', onPress: () => { this.recoverStone(nearestNormal.handle); }}]
             );
           }
           else {
             Alert.alert("Crownstone in Setup mode nearby.",
               "We detect a Crownstone in setup mode close by, and one in normal mode (that is not in your Spheres) a bit further away. Do you still want to try to recover the one in normal mode?",
-              [{text:'Cancel', onPress: () => { Actions.pop(); }},{text:'Recover', onPress: () => { this.recoverStone(nearestNormal.handle); }}]
+              [{text:'Cancel', style: 'cancel', onPress: () => { Actions.pop(); }},{text:'Recover', onPress: () => { this.recoverStone(nearestNormal.handle); }}]
             );
           }
         }
@@ -143,7 +143,7 @@ export class SettingsPluginRecoverStep2 extends Component {
             if (nearestNormal.rssi > -60) {
               Alert.alert("No unknown Crownstone nearby.",
                 "We detect a Crownstone that is already in your Sphere (" + description + "). Do you want to try to recover your own Crownstone?",
-                [{text:'Cancel', onPress: () => { Actions.pop(); Actions.pop(); }},{text:'Recover', onPress: () => {
+                [{text:'Cancel', style: 'cancel', onPress: () => { Actions.pop(); Actions.pop(); }},{text:'Recover', onPress: () => {
                   this._removeOwnedCrownstone(nearestNormal.handle);
                 }}]
               );

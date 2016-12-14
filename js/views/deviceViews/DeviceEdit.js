@@ -68,7 +68,7 @@ export class DeviceEdit extends Component {
         Alert.alert(
           "Are you sure?",
           "Removing a Crownstone from the sphere will revert it to it's factory default settings.",
-          [{text: 'Cancel'}, {text: 'Remove', onPress: () => {
+          [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
             this.props.eventBus.emit('showLoading', 'Looking for the Crownstone...');
             this._removeCrownstone(stone);
           }}]
@@ -131,8 +131,6 @@ export class DeviceEdit extends Component {
     };
     let items = [];
 
-    // let toSchedule  = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
-    // let toLinkedDevices = () => { Alert.alert("Ehh.. Hello!","This feature is not part of the demo, sorry!", [{text:'I understand!'}])};
 
     items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
     items.push({
@@ -180,8 +178,8 @@ export class DeviceEdit extends Component {
         .catch((err) => {
           Alert.alert("Can't see this one!",
             "We can't find this Crownstone while scanning. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
-            [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}},
-              {text:'OK', onPress: () => {this.props.eventBus.emit('hideLoading');}}])
+            [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+              {text:'Cancel',style: 'cancel', onPress: () => {this.props.eventBus.emit('hideLoading');}}])
         })
     })
   }

@@ -62,7 +62,7 @@ export class ApplianceSelection extends Component {
         let selectCallback = () => { this.props.callback(applianceId); Actions.pop(); };
         let deleteCallback = () => {
           Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",
-            [{text:'Cancel'}, {text:'Delete', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
+            [{text:'Cancel', style: 'cancel'}, {text:'Delete', style: 'destructive', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
         };
 
         items.push({__item:
