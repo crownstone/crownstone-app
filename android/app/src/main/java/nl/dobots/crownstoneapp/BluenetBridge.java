@@ -1,6 +1,5 @@
 package nl.dobots.crownstoneapp;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +23,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
@@ -43,10 +43,10 @@ import nl.dobots.bluenet.ble.cfg.BleErrors;
 import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
 import nl.dobots.bluenet.ble.extended.CrownstoneSetup;
-import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
-import nl.dobots.bluenet.ibeacon.BleIbeaconFilter;
 import nl.dobots.bluenet.ble.extended.structs.BleDevice;
 import nl.dobots.bluenet.ble.extended.structs.BleDeviceList;
+import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
+import nl.dobots.bluenet.ibeacon.BleIbeaconFilter;
 import nl.dobots.bluenet.ibeacon.BleIbeaconRanging;
 import nl.dobots.bluenet.service.BleScanService;
 import nl.dobots.bluenet.service.callbacks.EventListener;
@@ -56,6 +56,7 @@ import nl.dobots.bluenet.utils.BleLog;
 import nl.dobots.bluenet.utils.BleUtils;
 import nl.dobots.localization.Fingerprint;
 import nl.dobots.localization.FingerprintLocalization;
+import nl.dobots.localization.FingerprintSamplesMap;
 import nl.dobots.localization.Localization;
 import nl.dobots.localization.LocalizationCallback;
 
@@ -103,8 +104,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private boolean _isTraingingLocalizationPaused = false;
 	private String _lastLocationId = null;
 
-	private boolean _isRequestingPermission = false;
-
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
 
@@ -124,20 +123,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 //		_bleBase = new BleBase();
 		_bleExt = new BleExt();
-		_bleExt.init(_reactContext, new IStatusCallback() {
-			@Override
-			public void onSuccess() {
-				BleLog.LOGi(TAG, "initialized bleExt");
-				_bleExtInitialized = true;
-				_bleExt.enableEncryption(true); // TODO: should be done by setSettings
-				checkReady();
-			}
-
-			@Override
-			public void onError(int error) {
-				BleLog.LOGe(TAG, "error initializing bleExt: " + error);
-			}
-		});
+		initBluetooth();
 
 		// create and bind to the BleScanService
 		BleLog.LOGd(TAG, "binding to service..");
@@ -148,6 +134,42 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_localization = FingerprintLocalization.getInstance();
 
 //		_scanService
+	}
+
+	private boolean _bleTurnedOff = false;
+
+	private void initBluetooth() {
+		_bleExt.init(_reactContext, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.LOGi(TAG, "initialized bleExt");
+				_bleExtInitialized = true;
+				_bleExt.enableEncryption(true); // TODO: should be done by setSettings
+				checkReady();
+				if (_bleTurnedOff) {
+					sendEvent("bleStatus", "poweredOn");
+
+					_bleTurnedOff = false;
+
+					if (_scannerState != ScannerState.DISABLED) {
+						startScanningForCrownstones();
+					}
+
+				}
+			}
+
+			@Override
+			public void onError(int error) {
+				switch(error) {
+					case BleErrors.ERROR_BLUETOOTH_TURNED_OFF: {
+						_bleTurnedOff = true;
+						sendEvent("bleStatus", "poweredOff");
+						break;
+					}
+				}
+				BleLog.LOGe(TAG, "error initializing bleExt: " + error);
+			}
+		});
 	}
 
 	@Override
@@ -326,40 +348,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Command the crownstone to disconnect the phone
 		BleLog.LOGd(TAG, "Disconnect command");
 		// TODO maybe just use disconnectAndClose instead of the command
-		_bleExt.writeDisconnectCommand(new IStatusCallback() {
-			@Override
-			public void onSuccess() {
-				BleLog.LOGd(TAG, "disconnect command success");
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				callback.invoke(retVal);
-			}
-
-			@Override
-			public void onError(int error) {
-				switch (error) {
-					// Regard errors about being disconnected as success
-					case BleErrors.ERROR_NEVER_CONNECTED:
-					case BleErrors.ERROR_NOT_CONNECTED: {
-						BleLog.LOGd(TAG, "disconnect command success");
-						WritableMap retVal = Arguments.createMap();
-						retVal.putBoolean("error", false);
-						callback.invoke(retVal);
-						return;
-					}
-				}
-				BleLog.LOGd(TAG, "disconnect command error: " + error);
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "failed to disconnect: " + error);
-				callback.invoke(retVal);
-			}
-		});
-
-//		_bleExt.disconnectAndClose(false, new IStatusCallback() {
+		// [12.11.16] Note: do not use writeDisconnectCommand, that will just lead to errors if the connection
+		//  is closed before the command succeeds
+//		_bleExt.writeDisconnectCommand(new IStatusCallback() {
 //			@Override
 //			public void onSuccess() {
-//				BleLog.LOGi(TAG, "disconnected");
+//				BleLog.LOGd(TAG, "disconnect command success");
 //				WritableMap retVal = Arguments.createMap();
 //				retVal.putBoolean("error", false);
 //				callback.invoke(retVal);
@@ -367,13 +361,43 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //
 //			@Override
 //			public void onError(int error) {
-//				BleLog.LOGi(TAG, "failed to connect: " + error);
+//				switch (error) {
+//					// Regard errors about being disconnected as success
+//					case BleErrors.ERROR_NEVER_CONNECTED:
+//					case BleErrors.ERROR_NOT_CONNECTED: {
+//						BleLog.LOGd(TAG, "disconnect command success");
+//						WritableMap retVal = Arguments.createMap();
+//						retVal.putBoolean("error", false);
+//						callback.invoke(retVal);
+//						return;
+//					}
+//				}
+//				BleLog.LOGd(TAG, "disconnect command error: " + error);
 //				WritableMap retVal = Arguments.createMap();
 //				retVal.putBoolean("error", true);
 //				retVal.putString("data", "failed to disconnect: " + error);
 //				callback.invoke(retVal);
 //			}
 //		});
+
+		_bleExt.disconnectAndClose(false, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.LOGi(TAG, "disconnected");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.LOGi(TAG, "failed to connect: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "failed to disconnect: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
@@ -642,6 +666,54 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
+	public void keepAliveState(float state, int timeout, final Callback callback) {
+		_bleExt.writeKeepAliveState((int)(100 * state), timeout, new IStatusCallback() {
+				@Override
+				public void onSuccess() {
+					BleLog.LOGi(TAG, "keepAliveState success");
+					WritableMap retVal = Arguments.createMap();
+					retVal.putBoolean("error", false);
+					callback.invoke(retVal);
+				}
+
+				@Override
+				public void onError(int error) {
+					BleLog.LOGi(TAG, "keepAliveState error "+ error);
+					BleLog.LOGi(TAG, Log.getStackTraceString(new Exception()));
+					WritableMap retVal = Arguments.createMap();
+					retVal.putBoolean("error", true);
+					retVal.putString("data", "keepAliveState failed: " + error);
+					callback.invoke(retVal);
+				}
+
+		});
+	}
+
+	@ReactMethod
+	public void keepAlive(final Callback callback) {
+		_bleExt.writeKeepAlive(new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.LOGi(TAG, "keepAlive success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.LOGi(TAG, "keepAlive error "+ error);
+				BleLog.LOGi(TAG, Log.getStackTraceString(new Exception()));
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "keepAlive failed: " + error);
+				callback.invoke(retVal);
+			}
+
+		});
+	}
+
+	@ReactMethod
 	public void trackIBeacon(String ibeaconUUID, String sphereId) {
 		// Add the uuid to the list of tracked iBeacons, associate it with given sphereId
 		// Also starts the tracking
@@ -756,8 +828,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public void getFingerprint(String sphereId, String locationId, Callback callback) {
 		Fingerprint fingerprint = _localization.getFingerprint(sphereId, locationId);
 		if (fingerprint != null) {
-			String fingerprintStr = fingerprint.toJson().toString();
-			callback.invoke(fingerprintStr);
+			String samplesStr = fingerprint.getSamples().toString();
+			callback.invoke(samplesStr);
 		}
 		else {
 			callback.invoke("");
@@ -765,36 +837,25 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void loadFingerprint(String sphereId, String locationId, String fingerPrint) {
+	public void loadFingerprint(String sphereId, String locationId, String samplesStr) {
 		Fingerprint fingerprint = new Fingerprint();
-		if (fingerprint.fromString(fingerPrint)) {
-			_localization.importFingerprint(sphereId, locationId, fingerprint);
-		}
-		else {
-			BleLog.LOGe(TAG, "Failed to load fingerprint: " + fingerPrint);
+		fingerprint.setSphereId(sphereId);
+		fingerprint.setLocationId(locationId);
+
+		try {
+			FingerprintSamplesMap samples = new FingerprintSamplesMap(samplesStr);
+			if (!samples.isEmpty()) {
+				fingerprint.setSamples(samples);
+				_localization.importFingerprint(sphereId, locationId, fingerprint);
+			}
+			else {
+				BleLog.LOGe(TAG, "fingerprint samples empty?!: " + samplesStr);
+			}
+		} catch (JSONException e) {
+			BleLog.LOGe(TAG, "Failed to load fingerprint samples: " + samplesStr);
+			e.printStackTrace();
 		}
 	}
-
-	private Runnable requestPermission = new Runnable() {
-		@Override
-		public void run() {
-			if (_isRequestingPermission) {
-				BleLog.LOGd(TAG, "Already requesting a permission");
-				return;
-			}
-			_handler.removeCallbacks(requestPermission);
-			Activity currentActivity = getCurrentActivity();
-			BleLog.LOGd(TAG, "Request permission on activity " + currentActivity);
-			if (currentActivity != null) {
-				_isRequestingPermission = true;
-				_scanService.requestPermissions(currentActivity);
-			} else {
-				_handler.postDelayed(requestPermission, 1000);
-			}
-		}
-	};
-
-
 
 	private void sendEvent(String eventName, @Nullable WritableMap params) {
 		_reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
@@ -811,7 +872,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private void sendEvent(String eventName, @Nullable Integer params) {
 		_reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
 	}
-
 
 	// if the service was connected successfully, the service connection gives us access to the service
 	private ServiceConnection _connection = new ServiceConnection() {
@@ -840,11 +900,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			// set the scan pause (how many ms should the service wait before starting the next scan)
 			_scanService.setScanPause(SLOW_SCAN_PAUSE);
 
-			_scanService.getBleExt().enableEncryption(true); // TODO: should be done by setSettings
-
-//			_bleExt = _scanService.getBleExt();
-
-			_iBeaconRanger = _scanService.getBleExt().getIbeaconRanger();
+			BleExt bleExt = _scanService.getBleExt();
+			bleExt.enableEncryption(true); // TODO: should be done by setSettings
+			_iBeaconRanger = bleExt.getIbeaconRanger();
 
 			_iBeaconRanger.registerListener(BluenetBridge.this);
 			BleLog.LOGd(TAG, "registered: " + BluenetBridge.this);
@@ -863,8 +921,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@Override
 	public void onEvent(Event event) {
 		switch (event) {
-			case BLE_PERMISSIONS_MISSING: {
-				_handler.post(requestPermission);
+			case BLE_PERMISSIONS_GRANTED: {
+				initBluetooth();
 			}
 		}
 		// TODO: send out event
@@ -972,6 +1030,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				nearestMap.putString("handle", dev.getAddress());
 				nearestMap.putInt("rssi", dev.getRssi());
 				nearestMap.putBoolean("setupMode", dev.isSetupMode());
+				//todo: ask alex what happened to the nearestVerifiedCrownstone event
 				sendEvent("nearestVerifiedCrownstone", nearestMap);
 				BleLog.LOGv(TAG, "nearestVerifiedCrownstone: " + dev);
 				break;
@@ -993,7 +1052,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@Override
 	public void onBeaconScanned(BleDevice device) {
-		String beaconId = device.getProximityUuid().toString() + ".Maj:" + BleUtils.toUint16(device.getMajor()) + ".Min:" + BleUtils.toUint16(device.getMinor());
+		String beaconId = device.getProximityUuid().toString() + ".Maj:" + device.getMajor() + ".Min:" + device.getMinor();
 		BleLog.LOGv(TAG, "event scanned beacon: " + device.getAddress());
 		if (_isTraingingLocalization && !_isTraingingLocalizationPaused) {
 			_localization.feedMeasurement(device, beaconId, null, null);
@@ -1087,6 +1146,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			mapEnter.putString("location", locationId);
 			sendEvent("enterLocation", mapEnter);
 		}
+		//todo: ask alex what the currentLocation event is for
 		_lastLocationId = locationId;
 	}
 
