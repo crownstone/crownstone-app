@@ -45,7 +45,7 @@ export class Login extends Component {
     }
     else {
       Alert.alert('Send Password Reset Email','Would you like us to send an email to reset your password to: ' + this.state.email.toLowerCase() + '?',[
-        {text: 'Cancel'},
+        {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => {this.requestPasswordResetEmail()}}
       ]);
     }

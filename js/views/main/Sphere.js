@@ -51,17 +51,6 @@ export class Sphere extends Component {
       }
     });
 
-    let inRangeStyle = {position: 'absolute',
-      bottom: bottomDistance,
-      flexDirection:'row',
-      width: screenWidth,
-      backgroundColor: 'transparent',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 15,
-      paddingBottom: 0
-    };
-
     if (this.props.seeStonesInSetupMode === true && isAdminInCurrentSphere === true) {
       newContent = (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -80,32 +69,32 @@ export class Sphere extends Component {
     }
     else if (amountOfVisible >= 3 && enoughForLocalization && !requiresFingerprints) {
       newContent = (
-        <View style={inRangeStyle}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I see ' + amountOfVisible}</Text>
+        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+          <Text style={descriptionTextStyle}>{'I see ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'In range: indoor localization is running.'}</Text>
+          <Text style={descriptionTextStyle}>{'In range: indoor localization is running.'}</Text>
         </View>
       )
     }
     else if (amountOfVisible > 0 && enoughForLocalization && !requiresFingerprints) {
       newContent = (
-        <View style={inRangeStyle}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I see only ' + amountOfVisible}</Text>
+        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+          <Text style={descriptionTextStyle}>{'I see only ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'in range: indoor localization paused.'}</Text>
+          <Text style={descriptionTextStyle}>{'in range: indoor localization paused.'}</Text>
         </View>
       )
     }
     else if (enoughForLocalization && requiresFingerprints) {
       newContent = (
-        <View style={inRangeStyle}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'Not all rooms have been trained: indoor localization paused.'}</Text>
+        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained: indoor localization paused.'}</Text>
         </View>
       )
     }
     else if (amountOfVisible > 0) {
       newContent = (
-        <View style={inRangeStyle}>
+        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
           <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I see ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
           <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'in range.'}</Text>
@@ -129,3 +118,20 @@ export class Sphere extends Component {
   }
 
 }
+
+let inRangeStyle = {position: 'absolute',
+  flexDirection:'row',
+  width: screenWidth,
+  backgroundColor: 'transparent',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: 15,
+  paddingBottom: 0
+};
+
+let descriptionTextStyle = {
+  backgroundColor:'transparent',
+  color: colors.darkGreen.hex,
+  fontSize:12,
+  padding:3
+};

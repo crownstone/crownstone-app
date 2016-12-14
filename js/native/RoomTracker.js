@@ -43,7 +43,8 @@ class RoomPresenceTrackerClass {
       let element = this._getElement(sphere, stone);
       let behaviour = element.behaviour[TYPES.ROOM_ENTER];
 
-      if (behaviour.active && stone.config.handle && behaviour.state !== stone.state.state) {
+      // we set the state regardless of the current state since it may not be correct in the background.
+      if (behaviour.active && stone.config.handle) {
         this._handleTrigger(store, behaviour, stoneId, locationId, sphereId);
       }
     });
@@ -70,7 +71,8 @@ class RoomPresenceTrackerClass {
       let element = this._getElement(sphere, stone);
       let behaviour = element.behaviour[TYPES.ROOM_EXIT];
 
-      if (behaviour.active && stone.config.handle && behaviour.state !== stone.state.state) {
+      // we set the state regardless of the current state since it may not be correct in the background.
+      if (behaviour.active && stone.config.handle) {
         // cancel the previous timeout
         if (this.roomStates[sphereId][locationId][stoneId] !== undefined) {
           this.roomStates[sphereId][locationId][stoneId]();

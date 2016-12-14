@@ -135,7 +135,7 @@ export class SettingsProfile extends Component {
           'Are you sure you want to reset your password?',
           'You will receive a password reset email with instructions at \'' + user.email + '\'. You will be logged out when the email has been sent.',
           [
-            {text: 'Cancel'},
+            {text: 'Cancel', style: 'cancel'},
             {text: 'OK', onPress: () => {this.requestPasswordResetEmail(user.email)}}
           ]
         )

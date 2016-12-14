@@ -212,7 +212,7 @@ export class DeviceStateEdit extends Component {
             Alert.alert(
               "How near is near?",
               "You can choose the switching point between near and far! After you press OK you have 5 seconds to hold your phone where it usually is (in your pocket?)",
-              [{text: 'Cancel'}, {
+              [{text: 'Cancel', style: 'cancel'}, {
                 text: 'OK', onPress: () => {
                   // show loading bar
                   this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");

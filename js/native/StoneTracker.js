@@ -44,6 +44,8 @@ export class StoneTracker {
 
 
   iBeaconUpdate(major, minor, rssi, referenceId) {
+    // LOG("major, minor, rssi, referenceId",major, minor, rssi, referenceId)
+
     // only use valid rssi measurements, 0 or 128 are not valid measurements
     if (rssi === undefined || rssi > -1) {
       LOGError("Invalid RSSI");
@@ -116,7 +118,7 @@ export class StoneTracker {
         }
       }
       else {
-        LOG("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
+        // LOG("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
         if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
           if (this.tapToToggleDisabled === false) {
             LOG("Tap to Toggle!");
