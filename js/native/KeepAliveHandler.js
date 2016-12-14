@@ -69,17 +69,17 @@ class KeepAliveHandlerClass {
         else if (behaviourAway.active)                       { behaviour = behaviourAway;     }
 
         if (stone.config.handle && stone.config.disabled === false) {
-          LOG("Performing guest_Keepalive to stone.config.handle", stone.config.handle)
+          LOG("Performing stateless_Keepalive to stone.config.handle", stone.config.handle)
           let proxy = BleUtil.getProxy(stone.config.handle);
 
           if (userLevelInSphere === 'guest' || behaviour === undefined) {
-            LOG("Performing guest_Keepalive")
+            LOG("Performing stateless_Keepalive");
             proxy.perform(BleActions.keepAlive)
               .then(() => {
                 LOG("KeepAlive Successful to ", element.config.name, element.config.handle);
               })
               .catch((err) => {
-                LOGError("COULD NOT PERFORM KEEP ALIVE AS GUEST TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
+                LOGError("COULD NOT PERFORM KEEP ALIVE WITHOUT STATE TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
               })
           }
           else {

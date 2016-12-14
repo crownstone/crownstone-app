@@ -1,6 +1,7 @@
 import React, { Component } from 'react' 
 import {
   Image,
+  Platform,
   Text,
   View
 } from 'react-native';
@@ -59,7 +60,7 @@ export class ProfilePicture extends Component {
           <Icon
             name={this.props.placeHolderIcon || 'ios-contact'}
             size={innerSize} color={this.props.color || colors.menuBackground.hex}
-            style={{paddingTop:0.1*size, margin:0}}
+            style={{paddingTop: Platform.OS === 'android' ? 0 : 0.1*size, margin:0}}
           />
         </View>
         {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}

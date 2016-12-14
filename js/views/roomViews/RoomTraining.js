@@ -14,25 +14,27 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 
-import { TopBar } from '../components/Topbar'
 import { FingerprintManager } from '../../native/FingerprintManager'
 import { Bluenet } from '../../native/Proxy'
 import { canUseIndoorLocalizationInSphere } from '../../util/dataUtil'
 import { Background } from '../components/Background'
-import { styles, colors, screenWidth, screenHeight } from '../styles'
-import { Icon } from '../components/Icon';
 import { getAiData } from '../../util/dataUtil';
 import { LOG, LOGDebug } from '../../logging/Log'
 
-import { IconButton } from '../components/IconButton'
+import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'
+import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
+import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
 
 
 export class RoomTraining extends Component {
   constructor(props) {
     super();
-    this.state = {started: false, text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
+    this.state = {phase: 0, text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
     this.collectedData = [];
-    this.dataLimit = 60;
+    this.amountOfInvalidPoints = 0;
+    this.invalidMeasurements = [];
+    this.invalidPointThreshold = Math.round(0.1*props.sampleSize);
+    this.noSignalTimeout = undefined;
   }
 
   componentDidMount() {
@@ -42,6 +44,7 @@ export class RoomTraining extends Component {
 
   componentWillUnmount() {
     this.stop();
+    clearTimeout(this.noSignalTimeout);
 
     let state = this.props.store.getState();
     if (canUseIndoorLocalizationInSphere(state, this.props.sphereId) === true) {
@@ -52,47 +55,76 @@ export class RoomTraining extends Component {
 
   start() {
     this.collectedData = [];
+    this.amountOfInvalidPoints = 0;
+    this.invalidMeasurements = [];
+
     this.setState({started:true, text:'initializing', active:true});
     FingerprintManager.startFingerprinting((data) => {this.handleCollection(data);});
+    this.noSignalTimeout = setTimeout(() => {
+      // notify the user by vibration that the fingerprint collection is finished
+      Vibration.vibrate(400, false);
+
+      this.stop(true);
+
+      Alert.alert(
+        "No Crownstones in range...",
+        "To be able to identify this room, I need to see at least 3 Crownstones in but I can't see any from here... Try to reposition your Crownstones so I can see more of them.",
+        [{text:"OK", onPress: () => {
+          // pop to the roomSize
+          Actions.pop();
+          // pop to before training
+          Actions.pop();
+        }}])
+    },4000);
   }
 
   stop(forceAbort = false) {
     if (this.state.active === true || forceAbort) {
       FingerprintManager.abortFingerprinting();
       this.collectedData = [];
-      this.setState({active: false});
     }
   }
 
   handleCollection(data) {
+    if (data.length < 3) {
+      this.amountOfInvalidPoints += 1;
+      this.invalidMeasurements.push(data.length);
+    }
+
+    clearTimeout(this.noSignalTimeout);
     this.collectedData.push(data);
-    this.setState({text: this.collectedData.length + " samples"});
+    this.setState({progress: this.collectedData.length / this.props.sampleSize});
     this.animatePulse();
 
-    if (this.collectedData.length == this.dataLimit) {
+    // if we have too many invalid measurements in the fingerprint (less than 3)
+    if (this.amountOfInvalidPoints > this.invalidPointThreshold) {
+      let averageAmountOfMeasurements = 0;
+      this.invalidMeasurements.forEach((amountOfStones) => {
+        averageAmountOfMeasurements += amountOfStones;
+      });
+      averageAmountOfMeasurements = Math.round(averageAmountOfMeasurements/this.invalidMeasurements.length);
+
+      // notify the user by vibration that the fingerprint collection is finished
+      Vibration.vibrate(400, false);
+
+      this.stop(true);
+
+      Alert.alert(
+        "I can not see enough Crownstones...",
+        "To be able to identify this room, I need to see at least 3 Crownstones but I see only " + averageAmountOfMeasurements + "." +
+        "Try to reposition your Crownstones so I can see more of them.",
+        [{text:"OK", onPress: () => {
+          // pop to the roomSize
+          Actions.pop();
+          // pop to before training
+          Actions.pop();
+        }}])
+    }
+
+
+    if (this.collectedData.length == this.props.sampleSize) {
       this.finalizeFingerprint()
     }
-  }
-
-  finalizeFingerprint() {
-    // notify the user by vibration that the fingerprint collection is finished
-    Vibration.vibrate(400, false);
-
-    this.setState({text:'Finished!', active:false});
-    const store = this.props.store;
-    const state = store.getState();
-    let sphereId = state.app.activeSphere;
-    FingerprintManager.finalizeFingerprint(sphereId, this.props.locationId);
-    FingerprintManager.getFingerprint(sphereId, this.props.locationId)
-      .then((result) => {
-        LOG("gathered fingerprint:", result);
-        store.dispatch({
-          type:'UPDATE_LOCATION_FINGERPRINT',
-          sphereId: sphereId,
-          locationId: this.props.locationId,
-          data:{ fingerprintRaw: result }
-        });
-      }).done();
   }
 
   animatePulse() {
@@ -102,111 +134,53 @@ export class RoomTraining extends Component {
     setTimeout(() => {Animated.timing(this.state.opacity, {toValue: 0, duration:450}).start();},80);
   }
 
-  render() {
-    let icons = ['c1-locationPin1','ios-outlet-outline','ios-pin-outline','c1-brain','c1-male','c1-female'];
+  finalizeFingerprint() {
+    // notify the user by vibration that the fingerprint collection is finished
+    Vibration.vibrate(400, false);
 
+    this.setState({text:'Finished!', phase:2});
+    const store = this.props.store;
+    FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId);
+    FingerprintManager.getFingerprint(this.props.sphereId, this.props.locationId)
+      .then((result) => {
+        LOG("gathered fingerprint:", result);
+        store.dispatch({
+          type:'UPDATE_LOCATION_FINGERPRINT',
+          sphereId: this.props.sphereId,
+          locationId: this.props.locationId,
+          data:{ fingerprintRaw: result }
+        });
+      }).done();
+  }
+
+
+
+  render() {
     let state  = this.props.store.getState();
     let ai = getAiData(state, this.props.sphereId);
 
-    if (this.state.started === false) {
-      return (
-        <Background hideInterface={true} image={this.props.backgrounds.main}>
-          <TopBar
-            leftAction={ Actions.pop }
-            title={"Teaching " + ai.name}/>
-            <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
-              <Text style={{
-                backgroundColor:'transparent',
-                fontSize:20,
-                fontWeight:'600',
-                color: colors.menuBackground.hex,
-                textAlign:'center'
-              }}>{"To let " + ai.name + " find you in this room, we need to help " + ai.him + " a little!"}</Text>
-              <Text style={{
-                backgroundColor:'transparent',
-                fontSize:16,
-                fontWeight:'300',
-                color: colors.menuBackground.hex,
-                textAlign:'center',
-                paddingTop:20,
-              }}>To train, walk around the room with your phone in your hand.
-                Try to get to every spot in the room, near the walls as well and through the center.
-                The training process takes 1 minute and you can see the progress on your screen.
-              </Text>
-              <Text style={{
-                backgroundColor:'transparent',
-                fontSize:16,
-                fontWeight:'300',
-                color: colors.menuBackground.hex,
-                textAlign:'center',
-                paddingTop:20,
-                paddingBottom:20,
-              }}>Press the button below to get started!
-              </Text>
-
-              <View style={{flex:1}} />
-              <TouchableOpacity
-                style={[
-                  {borderWidth:5, borderColor:"#fff", backgroundColor:colors.green.hex, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth},
-                  styles.centered
-                ]}
-                onPress={() => {this.start();}}
-              >
-                <Icon name="c1-locationPin1" size={0.32*screenWidth} color="#fff" style={{backgroundColor:"transparent", position:'relative', top:0.01*screenWidth}} />
-              </TouchableOpacity>
-              <View style={{flex:1}} />
-           </View>
-        </Background>
-      );
+    let content = undefined;
+    if (this.state.phase === 0) {
+      content = <RoomTraining_explanation ai={ai} next={() => {this.setState({phase:1}); this.start(); }} sampleSize={this.props.sampleSize} roomSize={this.props.roomSize} />
     }
-    else {
-      return (
-        <Background hideInterface={true} image={this.props.backgrounds.main}>
-          <TopBar
-            left={this.state.active ? "Cancel" : "Back"}
-            notBack={this.state.active}
-            leftAction={this.state.active ? () => {
-              FingerprintManager.pauseCollectingFingerprint();
-              Alert.alert(
-                "Do you want to cancel training?",
-                "Cancelling the training process will revert it to the way it was before.",
-                [
-                  {text:'No', onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
-                  {text:'Yes', onPress: () => { this.stop(true); Actions.pop(); }}
-                ]
-              )}
-              : Actions.pop }
-            title="Train Room"/>
-          <View style={{flexDirection:'column', flex:1}}>
-            <View style={{padding:30, alignItems:'center'}}>
-              <Text style={{
-                backgroundColor:'transparent',
-                fontSize:20,
-                fontWeight:'600',
-                color: colors.menuBackground.hex,
-                textAlign:'center'
-              }}>{this.state.active ?
-                "Walk around the room so " + ai.name + " can learn to locate you within it. Each beat " + ai.he + " learns a bit more about the room!" :
-                "All Done! Once you have taught " + ai.name + " all the rooms, " + ai.he + " will start doing " + ai.his + " best to determine in which room you are!"
-              }</Text>
-            </View>
-
-            <View style={{flex:1}} />
-            <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:-40}} >
-              <View style={{position:'relative'}}>
-                <View style={{backgroundColor:'rgba(255,255,255,1)', width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth}} />
-                <Animated.View style={{marginTop: -0.5*screenWidth, opacity:this.state.opacity, backgroundColor:colors.green.hex, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth, alignItems:'center', justifyContent:'center'}}>
-                  <Icon name={icons[this.state.iconIndex]} size={0.3*screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />
-                </Animated.View>
-                <View style={{backgroundColor:'transparent', marginTop: -0.5*screenWidth, width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth,  alignItems:'center', justifyContent:'center'}}>
-                  <Text style={{backgroundColor:'transparent', fontSize:22, fontWeight:'200'}}>{this.state.text}</Text>
-                </View>
-              </View>
-            </View>
-            <View style={{flex:1}} />
-          </View>
-        </Background>
-      );
+    else if (this.state.phase === 1) {
+      content = (
+        <RoomTraining_training
+          ai={ai}
+          next={() => {this.setState({phase:2});}}
+          abort={() => { this.stop(true); Actions.pop(); Actions.pop();}}
+          {...this.state}
+        />
+      )
     }
+    else if (this.state.phase === 2) {
+      content = <RoomTraining_finished ai={ai} quit={() => { Actions.pop(); Actions.pop(); }} />
+    }
+
+    return (
+      <Background hideInterface={true} image={this.props.backgrounds.main}>
+        {content}
+      </Background>
+    );
   }
 }

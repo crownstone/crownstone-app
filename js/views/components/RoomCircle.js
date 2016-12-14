@@ -18,7 +18,6 @@ import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/da
 import { LOGDebug } from '../../logging/Log';
 const Actions = require('react-native-router-flux').Actions;
 
-
 import { Svg, Circle } from 'react-native-svg';
 
 export class RoomCircle extends Component {
@@ -340,7 +339,7 @@ export class RoomCircle extends Component {
             stroke={colorOfLowerLayer}
             strokeWidth={this.borderWidth}
             strokeDasharray={[pathLength,pathLength]}
-            rotate="-90"
+            rotate="-89.9"
             x={this.props.radius}
             y={this.props.radius}
             strokeLinecap="round"
@@ -365,7 +364,7 @@ export class RoomCircle extends Component {
           stroke={colorOfLowerLayer}
           strokeWidth={this.borderWidth}
           strokeDasharray={[pathLength,pathLength]}
-          rotate="-90"
+          rotate="-89.9"
           x={this.props.radius}
           y={this.props.radius}
           strokeLinecap="round"
@@ -376,7 +375,7 @@ export class RoomCircle extends Component {
           stroke={newColor}
           strokeWidth={this.borderWidth}
           strokeDasharray={[pathLength*levelProgress,pathLength]}
-          rotate="-90"
+          rotate="-89.9"
           x={this.props.radius}
           y={this.props.radius}
           strokeLinecap="round"
@@ -406,15 +405,15 @@ export class RoomCircle extends Component {
   _getAlertIcon() {
     let alertSize = 34;
     return (
-      <View style={[styles.centered, {
+      <TouchableOpacity style={[styles.centered, {
         width:alertSize,
         height:alertSize, borderRadius:alertSize*0.5,
         borderWidth:3,
         borderColor:'#fff',
         position:'absolute',
-        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} >
+        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} onPress={() => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}} >
         <Icon name="c1-locationPin1" color="#fff" size={17} style={{backgroundColor:'transparent'}} />
-      </View>
+      </TouchableOpacity>
     )
   }
 

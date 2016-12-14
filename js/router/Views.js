@@ -11,6 +11,7 @@ import { RoomOverview }               from '../views/roomViews/RoomOverview'
 import { RoomEdit }                   from '../views/roomViews/RoomEdit'
 import { RoomAdd }                    from '../views/roomViews/RoomAdd'
 import { RoomTraining }               from '../views/roomViews/RoomTraining'
+import { RoomTraining_roomSize }      from '../views/roomViews/RoomTraining_roomSize'
 import { RoomSelection }              from '../views/roomViews/RoomSelection'
 import { RoomIconSelection }          from '../views/roomViews/RoomIconSelection'
 import { ApplianceSelection }         from '../views/deviceViews/ApplianceSelection'
@@ -50,6 +51,7 @@ export const Views = {
   RoomSelection,
   RoomIconSelection,
   RoomTraining,
+  RoomTraining_roomSize,
   ApplianceSelection,
   DeviceEdit,
   DeviceEditLogic,

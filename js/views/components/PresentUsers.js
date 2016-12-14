@@ -131,7 +131,7 @@ export class PresentUsers extends Component {
     const state = store.getState();
 
     let presentUsers = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
-    // presentUsers = this.allUsers; // ENABLE FOR DEBUG
+    // let presentUsers = this.allUsers; // ENABLE FOR DEBUG
     let slotCount = 0;
     let drawCount = 0;
     let totalCount = 0;
@@ -175,7 +175,7 @@ export class PresentUsers extends Component {
 
           // create RN object with the references to the animation variables.
           this.positions[user.id].obj = (
-            <Animated.View key={user.id} style={{position:'absolute', top: this.positions[user.id].top, left: this.positions[user.id].left, opacity: this.positions[user.id].opacity}}>
+            <Animated.View key={user.id} style={{position:'absolute', top: this.positions[user.id].top, left: this.positions[user.id].left, opacity: this.positions[user.id].opacityZ }}>
               <ProfilePicture picture={state.spheres[this.props.sphereId].users[user.id].picture} size={1.2 * this.userDiameter} />
             </Animated.View>
           );
@@ -284,9 +284,6 @@ export class PresentUsers extends Component {
       }
     });
 
-    // if (exitAnimations.length > 0) {
-    //   Animated.parallel(exitAnimations).start();
-    // }
   }
 
   getUsers() {

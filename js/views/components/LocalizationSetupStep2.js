@@ -50,7 +50,7 @@ export class LocalizationSetupStep2 extends Component {
             "This new icon indicates that " + ai.name + " is ready to learn how to identify this room!"}</Text>
             <View style={{flex:1}}/>
             <Text style={{fontSize:14, fontWeight:'bold', color: colors.blue.hex, textAlign:'center'}}>
-              {"Tap a room to get started!"}
+              {"Once you're ready, tap one to start training!"}
             </Text>
             <View style={{flex:1}}/>
             <TouchableOpacity onPress={() => {this.setState({visible:false});}}

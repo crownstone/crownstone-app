@@ -160,8 +160,6 @@ export class SphereOverview extends Component {
   }
 
 
-
-
   // experiment
   // shouldComponentUpdate(nextProps, nextState) {
   //   // LOG("Should component update?",nextProps, nextState)
