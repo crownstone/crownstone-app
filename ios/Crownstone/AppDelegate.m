@@ -73,25 +73,25 @@
 @end
 
 void appendLogToFile(NSString *msg) {
-  NSLog(@"%@", msg);
-  
-  NSString *time = [[NSDate date] description];
-  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
-  NSString *message = [NSString stringWithFormat:@"%@ - %@ - %@ \n", date, time, msg];
-//  // get path to Documents/somefile.txt
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [paths objectAtIndex:0];
-  NSString *path = [documentsDirectory stringByAppendingPathComponent:@"/ReactNativeObjC.log"];
-  // create if needed
-  if (![[NSFileManager defaultManager] fileExistsAtPath:path]){
-    fprintf(stderr,"Creating file at %s",[path UTF8String]);
-    [[NSData data] writeToFile:path atomically:YES];
-  }
-  // append
-  NSFileHandle *handle = [NSFileHandle fileHandleForWritingAtPath:path];
-  [handle truncateFileAtOffset:[handle seekToEndOfFile]];
-  [handle writeData:[message dataUsingEncoding:NSUTF8StringEncoding]];
-  [handle closeFile];
+//  NSLog(@"%@", msg);
+//  
+//  NSString *time = [[NSDate date] description];
+//  NSString *date = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+//  NSString *message = [NSString stringWithFormat:@"%@ - %@ - %@ \n", date, time, msg];
+//
+//  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//  NSString *documentsDirectory = [paths objectAtIndex:0];
+//  NSString *path = [documentsDirectory stringByAppendingPathComponent:@"/ReactNativeObjC.log"];
+//  // create if needed
+//  if (![[NSFileManager defaultManager] fileExistsAtPath:path]){
+//    fprintf(stderr,"Creating file at %s",[path UTF8String]);
+//    [[NSData data] writeToFile:path atomically:YES];
+//  }
+//  // append
+//  NSFileHandle *handle = [NSFileHandle fileHandleForWritingAtPath:path];
+//  [handle truncateFileAtOffset:[handle seekToEndOfFile]];
+//  [handle writeData:[message dataUsingEncoding:NSUTF8StringEncoding]];
+//  [handle closeFile];
 }
 
 

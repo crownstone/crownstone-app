@@ -24,7 +24,7 @@ typealias voidCallback = () -> Void
   init(viewController: UIViewController) {
     super.init()
 
-    BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone", loggingFile: true, debugLogEnabled: true)
+    BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone", loggingFile: false, debugLogEnabled: false)
 
     self.bluenet = Bluenet()
     self.bluenetMotion = BluenetMotion()

@@ -9,6 +9,7 @@ import {
   DEBUG_BLE,
   DEBUG_STORE,
   DEBUG_SCHEDULER,
+  LOG_TO_FILE,
 } from '../ExternalConfig'
 import { AsyncStorage } from 'react-native'
 import RNFS from 'react-native-fs'
@@ -98,32 +99,33 @@ export const LOGScheduler = function() {
 
 
 function logToFile() {
-  // create a path you want to write to
-  // TODO: move to util
-  let path = RNFS.DocumentDirectoryPath + '/consumerAppLog.log';
-  if (Platform.OS === 'android') {
-    path = RNFS.ExternalDirectoryPath + '/consumerAppLog.log';
-  }
-
-  //create string
-  let str = '' + new Date().valueOf() + ' - ' + new Date() + " -";
-  for (let i = 0; i < arguments.length; i++) {
-    if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
-      str += " " + JSON.stringify(arguments[i])
+  if (LOG_TO_FILE) {
+    // create a path you want to write to
+    // TODO: move to util
+    let path = RNFS.DocumentDirectoryPath + '/consumerAppLog.log';
+    if (Platform.OS === 'android') {
+      path = RNFS.ExternalDirectoryPath + '/consumerAppLog.log';
     }
-    else {
-      str += " " + arguments[i]
+
+    //create string
+    let str = '' + new Date().valueOf() + ' - ' + new Date() + " -";
+    for (let i = 0; i < arguments.length; i++) {
+      if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
+        str += " " + JSON.stringify(arguments[i])
+      }
+      else {
+        str += " " + arguments[i]
+      }
     }
+    str += " \n";
+
+    // write the file
+    RNFS.appendFile(path, str, 'utf8')
+      .then((success) => {
+        // console.log('logWritten');
+      })
+      .catch((err) => {
+        // console.log(err.message);
+      });
   }
-  str += " \n";
-
-  // write the file
-  RNFS.appendFile(path, str, 'utf8')
-    .then((success) => {
-      // console.log('logWritten');
-    })
-    .catch((err) => {
-      console.log(err.message);
-    });
-
 }
