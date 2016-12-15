@@ -50,14 +50,26 @@ else {
   Bluenet = NativeModules.BluenetJS;
 }
 
-export const BluenetPromise = function(functionName, param, param2) {
+export const BluenetPromise = function(functionName, param, param2, param3) {
   return new Promise((resolve, reject) => {
     if (DISABLE_NATIVE === true) {
       resolve()
     }
     else {
       //TODO: cleanup
-      if (param2 !== undefined) {
+      if (param3 !== undefined) {
+        LOG("called bluenetPromise", functionName, " with param", param, param2, param3);
+        Bluenet[functionName](param, param2, param3, (result) => {
+          if (result.error === true) {
+            LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, param3, "error:", result.data);
+            reject(result.data);
+          }
+          else {
+            resolve(result.data);
+          }
+        })
+      }
+      else if (param2 !== undefined) {
         LOG("called bluenetPromise", functionName, " with param", param, param2);
         Bluenet[functionName](param, param2, (result) => {
           if (result.error === true) {
@@ -131,7 +143,7 @@ export const BleActions = {
       .catch(() => { eventBus.emit("disconnect"); })
   },
   setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',  state);      },
-  keepAliveState:       (state, timeout) => { return BluenetPromise('keepAliveState',  state, timeout); },
+  keepAliveState:       (changeState, state, timeout) => { return BluenetPromise('keepAliveState', changeState, state, timeout); },
   keepAlive:            ()           => { return BluenetPromise('keepAlive');                   },
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },

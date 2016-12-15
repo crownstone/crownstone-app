@@ -27,7 +27,7 @@
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
   rootView.backgroundColor = [[UIColor alloc] initWithRed:0.0f green:0.149f blue:0.243f alpha:1];
-  
+
   appendLogToFile(@" Application starting");
   // Show splash screen (rn-splash-screen)
   [RCTSplashScreen show:rootView];

@@ -333,8 +333,9 @@ open class BluenetJS: NSObject {
       }
   }
   
-  @objc func keepAliveState(_ state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.control.keepAliveState(state: state.floatValue, timeout: timeout.uint16Value)
+  @objc func keepAliveState(_ changeState: Bool, state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    print("changestate: \(changeState), state: \(state) timeout \(timeout)")
+    GLOBAL_BLUENET!.bluenet.control.keepAliveState(changeState: changeState, state: state.floatValue, timeout: timeout.uint16Value)
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {

@@ -20,7 +20,7 @@ import { NativeBus }         from '../../native/Proxy'
 import { Vibration }         from 'react-native'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors} from '../styles'
-
+import { TYPES } from '../../router/store/reducers/stones'
 
 export class DeviceStateEdit extends Component {
   constructor() {
@@ -61,17 +61,17 @@ export class DeviceStateEdit extends Component {
 
   _getExplanationLabel() {
     switch (this.props.eventName) {
-      case 'onHomeEnter':
+      case TYPES.HOME_ENTER:
         return 'enter the house';
-      case 'onHomeExit':
+      case TYPES.HOME_EXIT:
         return 'leave the house';
-      case 'onRoomEnter':
+      case TYPES.ROOM_ENTER:
         return 'enter the room';
-      case 'onRoomExit':
+      case TYPES.ROOM_EXIT:
         return 'leave the room';
-      case 'onNear':
+      case TYPES.NEAR:
         return 'come near';
-      case 'onAway':
+      case TYPES.AWAY:
         return 'are further away';
       default:
         return '--- invalid event: ' + this.props.eventName;
@@ -129,7 +129,11 @@ export class DeviceStateEdit extends Component {
   }
 
   constructStateOptions(store, device, stone) {
-    let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId};
+    let requiredData = {
+      sphereId: this.props.sphereId,
+      stoneId: this.props.stoneId,
+      applianceId: stone.config.applianceId
+    };
     let currentBehaviour = device.behaviour[this.props.eventName];
     let items = [];
 
@@ -138,36 +142,50 @@ export class DeviceStateEdit extends Component {
     items.push({label: "NEW STATE", type: 'explanation', below: false});
     // Dimming control
     if (device.config.dimmable === true) {
-      items.push({label:"State", value: currentBehaviour.state, type: 'slider', callback:(newValue) => {
-        store.dispatch({
-          ...requiredData,
-          type: actionBase + this.props.eventName,
-          data: {state: newValue}
-        });
-      }});
-      items.push({label: 'When you ' + this._getExplanationLabel() + ', the light is dimmed to the level you specify here.', type: 'explanation', below: true});
+      items.push({
+        label: "State", value: currentBehaviour.state, type: 'slider', callback: (newValue) => {
+          store.dispatch({
+            ...requiredData,
+            type: actionBase + this.props.eventName,
+            data: {state: newValue}
+          });
+        }
+      });
+      items.push({
+        label: 'When you ' + this._getExplanationLabel() + ', the light is dimmed to the level you specify here.',
+        type: 'explanation',
+        below: true
+      });
     }
     else {
-      items.push({label:"State", value: currentBehaviour.state === 1, type: 'switch', callback:(newValue) => {
-        store.dispatch({
-          ...requiredData,
-          type: actionBase + this.props.eventName,
-          data: {state: newValue ? 1 : 0}
-        });
-      }});
-      items.push({label:'The device will switched to match the state when you ' + this._getExplanationLabel() + '.', type: 'explanation', below: true});
+      items.push({
+        label: "State", value: currentBehaviour.state === 1, type: 'switch', callback: (newValue) => {
+          store.dispatch({
+            ...requiredData,
+            type: actionBase + this.props.eventName,
+            data: {state: newValue ? 1 : 0}
+          });
+        }
+      });
+      items.push({
+        label: 'The device will switched to match the state when you ' + this._getExplanationLabel() + '.',
+        type: 'explanation',
+        below: true
+      });
     }
 
 
     let options = [];
-    if (this.props.eventName === "onHomeEnter" || this.props.eventName === "onRoomEnter" || this.props.eventName === "onNear") {
+    if (this.props.eventName === TYPES.HOME_ENTER || this.props.eventName === TYPES.ROOM_ENTER || this.props.eventName === TYPES.NEAR) {
       options.push({label: 'None', type: 'checkbar', value: 0});
-      options.push({label: '2 seconds', type: 'checkbar', value: 2});
     }
-    options.push({label: '10 seconds', type: 'checkbar', value: 10});
-    options.push({label: '20 seconds', type: 'checkbar', value: 20});
-    options.push({label: '30 seconds', type: 'checkbar', value: 30});
-    options.push({label: '1 Minute',   type: 'checkbar', value: 60});
+    if (this.props.eventName !== TYPES.HOME_EXIT) {
+      options.push({label: '2 seconds', type: 'checkbar', value: 2});
+      options.push({label: '10 seconds', type: 'checkbar', value: 10});
+      options.push({label: '20 seconds', type: 'checkbar', value: 20});
+      options.push({label: '30 seconds', type: 'checkbar', value: 30});
+      options.push({label: '1 Minute',   type: 'checkbar', value: 60});
+    }
     options.push({label: '2 Minutes',  type: 'checkbar', value: 120});
     options.push({label: '5 Minutes',  type: 'checkbar', value: 300});
     options.push({label: '10 Minutes', type: 'checkbar', value: 600});
@@ -176,7 +194,7 @@ export class DeviceStateEdit extends Component {
 
 
 
-    if (!(this.props.eventName === "onHomeEnter" || this.props.eventName === "onRoomEnter" || this.props.eventName === "onNear")) {
+    if (!(this.props.eventName === TYPES.HOME_ENTER || this.props.eventName === TYPES.ROOM_ENTER || this.props.eventName === TYPES.NEAR)) {
       items.push({
         type: 'dropdown',
         label: 'Delay',
@@ -201,7 +219,7 @@ export class DeviceStateEdit extends Component {
       });
     }
 
-    if (this.props.eventName === "onNear" || this.props.eventName === 'onAway') {
+    if (this.props.eventName === TYPES.NEAR || this.props.eventName === TYPES.AWAY) {
       items.push({
         type: 'button',
         label: 'Define Range',

@@ -68,13 +68,13 @@ class KeepAliveHandlerClass {
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
           if      (behaviourHomeExit.active)                   { behaviour = behaviourHomeExit; }
           else if (behaviourRoomExit.active && useRoomLevel)   { behaviour = behaviourRoomExit; }
-          else if (behaviourAway.active)                       { behaviour = behaviourAway;     }
+          else if (behaviourAway.active && !useRoomLevel)      { behaviour = behaviourAway;     }
 
           if (stone.config.handle && stone.config.disabled === false) {
             LOG("Performing stateless_Keepalive to stone.config.handle", stone.config.handle)
             let proxy = BleUtil.getProxy(stone.config.handle);
 
-            if (userLevelInSphere === 'guest' || behaviour === undefined) {
+            if (userLevelInSphere === 'guest') {
               LOG("Performing stateless_Keepalive");
               proxy.perform(BleActions.keepAlive)
                 .then(() => {
@@ -85,7 +85,17 @@ class KeepAliveHandlerClass {
                 })
             }
             else {
-              proxy.perform(BleActions.keepAliveState, behaviour.state, Math.max(1.5*KEEPALIVE_INTERVAL, behaviour.delay)) // the max in time is so that it will not turn off before the next interval.
+              // determine what to send
+              let newState = 0;
+              let changeState = false;
+              let timeout = 2.5*KEEPALIVE_INTERVAL;
+              if (behaviour !== undefined) {
+                newState = behaviour.state;
+                changeState = false;
+                timeout = Math.max(timeout, behaviour.delay);
+              }
+
+              proxy.perform(BleActions.keepAliveState, changeState, newState, timeout) // the max in time is so that it will not turn off before the next interval.
                 .then(() => {
                   LOG("keepAliveState Successful to ", element.config.name, element.config.handle);
                 })
