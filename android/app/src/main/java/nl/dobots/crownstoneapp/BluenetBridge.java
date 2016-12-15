@@ -58,6 +58,7 @@ import nl.dobots.bluenet.utils.BleUtils;
 import nl.dobots.localization.Fingerprint;
 import nl.dobots.localization.FingerprintLocalization;
 import nl.dobots.localization.FingerprintSamplesMap;
+import nl.dobots.localization.GaussianNaiveBayes;
 import nl.dobots.localization.Localization;
 import nl.dobots.localization.LocalizationCallback;
 
@@ -72,6 +73,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		new Pair<>(BluenetBridge.class, Log.WARN),
 		new Pair<>(BleBaseEncryption.class, Log.WARN),
 		new Pair<>(BleIbeaconRanging.class, Log.WARN),
+		new Pair<>(GaussianNaiveBayes.class, Log.WARN),
+		new Pair<>(BleDevice.class, Log.WARN),
 	};
 
 	public static final int FAST_SCAN_INTERVAL = 20000; // ms scanning
@@ -148,6 +151,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		setLogLevel(BluenetBridge.class);
 		setLogLevel(BleBaseEncryption.class);
 		setLogLevel(CrownstoneServiceData.class);
+		setLogLevel(BleBaseEncryption.class);
+		setLogLevel(GaussianNaiveBayes.class);
+		setLogLevel(BleDevice.class);
 
 //		_scanService
 	}
