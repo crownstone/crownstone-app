@@ -303,7 +303,7 @@ export class RoomOverview extends Component {
 
       content = (
         <View>
-          <ScrollView style={{position:'relative', top:-1}}>
+          <ScrollView style={{position:'relative', top:0}}>
             <View style={{height: Math.max(Object.keys(stoneArray).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
               {this.renderStones(stoneArray, ids)}
             </View>

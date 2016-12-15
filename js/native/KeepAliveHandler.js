@@ -91,7 +91,7 @@ class KeepAliveHandlerClass {
               let timeout = 2.5*KEEPALIVE_INTERVAL;
               if (behaviour !== undefined) {
                 newState = behaviour.state;
-                changeState = false;
+                changeState = true;
                 timeout = Math.max(timeout, behaviour.delay);
               }
 
