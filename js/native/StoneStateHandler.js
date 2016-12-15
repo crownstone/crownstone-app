@@ -6,7 +6,7 @@ import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
 
 let TRIGGER_ID = "RSSI_TRIGGER_FUNCTION";
-let RSSI_TIMEOUT = 6000;
+let RSSI_TIMEOUT = 2500;
 let RSSI_REFRESH = 1;
 /**
  * This class keeps track of the disability state of the crownstone.

@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 
 import { Icon } from './Icon';
-import Slider from 'react-native-slider'
 import { IconButton } from '../components/IconButton'
 import { getUUID } from '../../util/util'
 import { styles, colors, screenWidth } from '../styles'

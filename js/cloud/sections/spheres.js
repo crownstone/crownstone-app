@@ -215,9 +215,11 @@ export const spheres = {
           userData[user.id].accessLevel = type;
           if (user.id !== selfId) {
             profilePicturePromises.push(
-              this.getUserPicture(sphereId, user.email, user.id, options).then((filename) => {
-                userData[user.id].picture = filename;
-              }).catch((err) => {LOGError("failed getting user picture",sphereId, user.email, user.id, options, err)})
+              this.getUserPicture(sphereId, user.email, user.id, options)
+                .then((filename) => {
+                  userData[user.id].picture = filename;
+                })
+                .catch((err) => {LOGError("failed getting user picture",sphereId, user.email, user.id, options, err)})
             );
           }
           return Promise.all(profilePicturePromises);

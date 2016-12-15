@@ -6,11 +6,11 @@ The native libs are not in this project directly.
 
 ## Setup
 
-Assuming you've already installed nodejs, npm and Carthage (for ios)
+Assuming you've already installed nodejs, yarn and Carthage (for ios). You can get Yarn here: https://yarnpkg.com/en/docs/install
 
 ```
-npm install
-rnpm link
+yarn
+react-native link
 cd ios
 carthage bootstrap --platform iOS --no-use-binaries
 cd ..

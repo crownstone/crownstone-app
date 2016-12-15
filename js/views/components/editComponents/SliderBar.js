@@ -4,7 +4,6 @@ import {
   View
 } from 'react-native';
 
-import Slider from 'react-native-slider'
 import { styles, colors } from '../../styles'
 
 

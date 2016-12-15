@@ -7,7 +7,7 @@ import { EventEnhancer }                   from './eventEnhancer'
 import { fakeStore }                       from './overrideStore'
 import { eventBus }                        from '../../util/eventBus'
 import { OVERRIDE_DATABASE }               from '../../ExternalConfig'
-import { LOG, LOGDebug }                   from '../../logging/Log'
+import { LOG, LOGDebug, LOGError }         from '../../logging/Log'
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
@@ -152,7 +152,10 @@ class StoreManagerClass {
               let payload = JSON.stringify(this.store.getState());
               AsyncStorage.setItem(this.storageKey, payload).done();
             }
-          }).done();
+          })
+          .catch((err) => {
+            LOGError("Trouble writing to disk", err)
+          });
       }, 500);
     });
   }
@@ -170,6 +173,9 @@ class StoreManagerClass {
           let parsedData = JSON.parse(data);
           this.store.dispatch({type:"HYDRATE", state: parsedData})
         }
+      })
+      .catch((err) => {
+        LOGError("Error during userLogIn", err);
       });
   }
 
@@ -224,6 +230,9 @@ class StoreManagerClass {
 
             // now that the store only lived in memory, clear it
             this.store.dispatch({type: "USER_LOGGED_OUT_CLEAR_STORE"})
+          })
+          .catch((err) => {
+            LOGError("COULD NOT PERSIST TO DISK", err)
           })
       }
       else {

@@ -5,7 +5,7 @@ import { BleActions } from './Proxy';
 import { BleUtil } from './BleUtil';
 import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/dataUtil'
 
-import { TYPES } from '../router/store/reducers/stones'
+import { stoneTypes, TYPES } from '../router/store/reducers/stones'
 const TRIGGER_ID = "KEEP_ALIVE_HANDLER";
 
 class KeepAliveHandlerClass {
@@ -56,44 +56,47 @@ class KeepAliveHandlerClass {
       stoneIds.forEach((stoneId) => {
         // for each stone in sphere select the behaviour we want to copy into the keep Alive
         let stone = sphere.stones[stoneId];
-        let element = this._getElement(sphere, stone);
-        let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
-        let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
-        let behaviourAway = element.behaviour[TYPES.AWAY];
 
-        let behaviour = undefined;
+        if (stone.config.type !== stoneTypes.guidestone) {
+          let element = this._getElement(sphere, stone);
+          let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
+          let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
+          let behaviourAway = element.behaviour[TYPES.AWAY];
 
-        // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
-        if      (behaviourHomeExit.active)                   { behaviour = behaviourHomeExit; }
-        else if (behaviourRoomExit.active && useRoomLevel)   { behaviour = behaviourRoomExit; }
-        else if (behaviourAway.active)                       { behaviour = behaviourAway;     }
+          let behaviour = undefined;
 
-        if (stone.config.handle && stone.config.disabled === false) {
-          LOG("Performing stateless_Keepalive to stone.config.handle", stone.config.handle)
-          let proxy = BleUtil.getProxy(stone.config.handle);
+          // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
+          if      (behaviourHomeExit.active)                   { behaviour = behaviourHomeExit; }
+          else if (behaviourRoomExit.active && useRoomLevel)   { behaviour = behaviourRoomExit; }
+          else if (behaviourAway.active)                       { behaviour = behaviourAway;     }
 
-          if (userLevelInSphere === 'guest' || behaviour === undefined) {
-            LOG("Performing stateless_Keepalive");
-            proxy.perform(BleActions.keepAlive)
-              .then(() => {
-                LOG("KeepAlive Successful to ", element.config.name, element.config.handle);
-              })
-              .catch((err) => {
-                LOGError("COULD NOT PERFORM KEEP ALIVE WITHOUT STATE TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
-              })
+          if (stone.config.handle && stone.config.disabled === false) {
+            LOG("Performing stateless_Keepalive to stone.config.handle", stone.config.handle)
+            let proxy = BleUtil.getProxy(stone.config.handle);
+
+            if (userLevelInSphere === 'guest' || behaviour === undefined) {
+              LOG("Performing stateless_Keepalive");
+              proxy.perform(BleActions.keepAlive)
+                .then(() => {
+                  LOG("KeepAlive Successful to ", element.config.name, element.config.handle);
+                })
+                .catch((err) => {
+                  LOGError("COULD NOT PERFORM KEEP ALIVE WITHOUT STATE TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
+                })
+            }
+            else {
+              proxy.perform(BleActions.keepAliveState, behaviour.state, Math.max(1.5*KEEPALIVE_INTERVAL, behaviour.delay)) // the max in time is so that it will not turn off before the next interval.
+                .then(() => {
+                  LOG("keepAliveState Successful to ", element.config.name, element.config.handle);
+                })
+                .catch((err) => {
+                  LOGError("COULD NOT PERFORM KEEPALIVE AS", userLevelInSphere, "TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
+                })
+            }
           }
-          else {
-            proxy.perform(BleActions.keepAliveState, behaviour.state, Math.max(1.5*KEEPALIVE_INTERVAL, behaviour.delay)) // the max in time is so that it will not turn off before the next interval.
-              .then(() => {
-                LOG("keepAliveState Successful to ", element.config.name, element.config.handle);
-              })
-              .catch((err) => {
-                LOGError("COULD NOT PERFORM KEEPALIVE AS", userLevelInSphere, "TO ", stone.config.name, stone.config.handle, "DUE TO ", err);
-              })
+          else if (stone.config.disabled === true) {
+            LOG("IgnoreKeepalive_stoneDisabled", stoneId);
           }
-        }
-        else if (stone.config.disabled === true) {
-          LOG("IgnoreKeepalive_stoneDisabled", stoneId);
         }
       });
     });

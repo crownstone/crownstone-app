@@ -1,4 +1,4 @@
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
@@ -123,11 +123,36 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
 
   // this will automatically try to download to a temp file. When not possible it will remove the temp file and resolve with null
   return new Promise((resolve, reject) => {
+
+    // TODO: move to util
+    let path = RNFS.DocumentDirectoryPath;
+    if (Platform.OS === 'android') {
+      path = RNFS.ExternalDirectoryPath;
+    }
+
     // get a temp path
-    let tempPath = RNFS.DocumentDirectoryPath + '/' + (10000 + Math.random() * 1e6).toString(36);
+    let tempPath = path + '/' + (10000 + Math.random() * 1e5).toString(36).replace(".","") + '.tmp';
 
     if (DEBUG)
       LOGCloud('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
+
+    // // send http request in a new thread (using native code)
+    // RNFetchBlob.fetch('GET', CLOUD_ADDRESS + endPoint)
+    //   // when response status code is 200
+    //   .then((res) => {
+    //   console.log(res);
+    //     // the conversion is done in native code
+    //     let base64Str = res.base64()
+    //     // the following conversions are done in js, it's SYNC
+    //     let text = res.text()
+    //     let json = res.json()
+    //
+    //   })
+    //   // Status code is not 200
+    //   .catch((errorMessage, statusCode) => {
+    //     console.log("BLOB ERROR", errorMessage, statusCode)
+    //     // error handling
+    //   })
 
     // download the file.
     RNFS.downloadFile({
@@ -135,8 +160,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
       toFile: tempPath,
       begin: beginCallback,
       progress: progressCallback
-    })
-    .then((status) => {
+    }).promise.then((status) => {
       if (status.statusCode !== 200) {
         // remove the temp file if the download failed
         safeDeleteFile(tempPath)
@@ -144,6 +168,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
             successCallback();
             resolve(null);
           })
+          .catch((err) => {})
       }
       else {
         safeMoveFile(tempPath,toPath)
@@ -152,10 +177,12 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
             successCallback();
             resolve(toPath);
           })
+          .catch((err) => {})
       }
     })
     .catch((err) => {
-      safeDeleteFile(tempPath);
+      console.log("RNFS.downloadFile ERROR", err)
+      safeDeleteFile(tempPath)
       reject(err);
     })
   });

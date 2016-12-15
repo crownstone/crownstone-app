@@ -99,6 +99,7 @@ export const LOGScheduler = function() {
 
 function logToFile() {
   // create a path you want to write to
+  // TODO: move to util
   let path = RNFS.DocumentDirectoryPath + '/consumerAppLog.log';
   if (Platform.OS === 'android') {
     path = RNFS.ExternalDirectoryPath + '/consumerAppLog.log';

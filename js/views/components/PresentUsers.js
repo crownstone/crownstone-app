@@ -112,6 +112,7 @@ export class PresentUsers extends Component {
     this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
+        (change.changeUsers        && change.changeUsers.sphereIds[this.props.sphereId])
         (change.userPositionUpdate && change.userPositionUpdate.sphereIds[this.props.sphereId])
       ) {
         this._getUsers();
