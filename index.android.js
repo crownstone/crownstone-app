@@ -9,6 +9,7 @@ import {
 
 import { AppRouter } from './js/router/Router.android'
 import { eventBus } from './js/util/eventBus'
+import { INITIALIZER } from './js/initialize'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 
 //import SplashScreen from "rn-splash-screen";
@@ -23,6 +24,9 @@ class Root extends Component {
   // this is used to scroll the view up when typing is active
   componentDidMount() {
     // SplashScreen.hide();
+
+    // start the BLE things.
+    INITIALIZER.init();
 
     let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration: 0}).start(); };
     let snapBackKeyboard = () => { Animated.timing(this.state.top, {toValue: 0, duration: 100}).start(); };

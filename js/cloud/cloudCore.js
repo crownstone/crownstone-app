@@ -136,24 +136,6 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
     if (DEBUG)
       LOGCloud('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
 
-    // // send http request in a new thread (using native code)
-    // RNFetchBlob.fetch('GET', CLOUD_ADDRESS + endPoint)
-    //   // when response status code is 200
-    //   .then((res) => {
-    //   console.log(res);
-    //     // the conversion is done in native code
-    //     let base64Str = res.base64()
-    //     // the following conversions are done in js, it's SYNC
-    //     let text = res.text()
-    //     let json = res.json()
-    //
-    //   })
-    //   // Status code is not 200
-    //   .catch((errorMessage, statusCode) => {
-    //     console.log("BLOB ERROR", errorMessage, statusCode)
-    //     // error handling
-    //   })
-
     // download the file.
     RNFS.downloadFile({
       fromUrl: CLOUD_ADDRESS + endPoint,
@@ -181,8 +163,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
       }
     })
     .catch((err) => {
-      console.log("RNFS.downloadFile ERROR", err)
-      safeDeleteFile(tempPath)
+      safeDeleteFile(tempPath).catch();
       reject(err);
     })
   });

@@ -10,7 +10,7 @@ import {
 
 import { Icon } from './Icon';
 import { styles, colors, screenWidth, topBarHeight, statusBarHeight} from '../styles'
-var Actions = require('react-native-router-flux').Actions;
+let Actions = require('react-native-router-flux').Actions;
 
 
 let barHeight = topBarHeight - statusBarHeight;

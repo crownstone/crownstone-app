@@ -210,7 +210,6 @@ export class AppRouter extends Component {
                 <Scene key="daySelection"               component={Views.DaySelection}               panHandlers={null} hideNavBar={false} title="Set Active Days" />
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
                 <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
-                <Scene key="settingsChangePassword"     component={Views.SettingsChangePassword}     panHandlers={null} hideNavBar={false} title="Change Password"/>
                 <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     panHandlers={null} hideNavBar={false} title="Sphere Overview" />
                 <Scene key="settingsSphere"             component={Views.SettingsSphere}             panHandlers={null} hideNavBar={false} title="[Sphere name here]" />
                 <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />

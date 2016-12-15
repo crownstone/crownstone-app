@@ -66,12 +66,12 @@ class KeepAliveHandlerClass {
           let behaviour = undefined;
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
-          if      (behaviourHomeExit.active)                   { behaviour = behaviourHomeExit; }
-          else if (behaviourRoomExit.active && useRoomLevel)   { behaviour = behaviourRoomExit; }
-          else if (behaviourAway.active && !useRoomLevel)      { behaviour = behaviourAway;     }
+          if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
+          else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; }
+          else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     }
 
           if (stone.config.handle && stone.config.disabled === false) {
-            LOG("Performing stateless_Keepalive to stone.config.handle", stone.config.handle)
+            LOG("Performing stateless_Keepalive to stone.config.handle", stone.config.handle);
             let proxy = BleUtil.getProxy(stone.config.handle);
 
             if (userLevelInSphere === 'guest') {
@@ -86,12 +86,13 @@ class KeepAliveHandlerClass {
             }
             else {
               // determine what to send
-              let newState = 0;
               let changeState = false;
+              let newState = 0;
               let timeout = 2.5*KEEPALIVE_INTERVAL;
+              // if we have behaviour, send it to the crownstone.
               if (behaviour !== undefined) {
-                newState = behaviour.state;
                 changeState = true;
+                newState = behaviour.state;
                 timeout = Math.max(timeout, behaviour.delay);
               }
 
