@@ -105,6 +105,7 @@ class LocationHandlerClass {
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
     if (state.spheres[sphereId].config.present === true) {
+      this._removeUserFromRooms(state, sphereId, state.user.userId);
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
     }
   }
@@ -115,20 +116,12 @@ class LocationHandlerClass {
     let locationId = data.location;
     let state = this.store.getState();
     if (sphereId && locationId) {
-      // check if the user is in another location:
-      let locationIds = state.spheres[sphereId].locations;
-      for (let i = 0; i < locationIds.length; i++) {
-        // do not remove and put back in the same room
-        if (locationIds[i] !== locationId) {
-          let location = state.spheres[sphereId].locations[locationIds[i]];
-          if (location.presentUsers.indexOf(state.user.userId) !== -1) {
-            this._exitRoom({region: sphereId, location: locationIds[i]});
-          }
-        }
-        else {
-          // if we are already in the room, do not do anything
-          return;
-        }
+      // remove user from all locations except the locationId, if we are in the location ID, don't trigger anything
+      let presentAtProvidedLocationId = this._removeUserFromRooms(state, sphereId, state.user.userId, locationId);
+
+      // if we are in the location ID, don't trigger anything
+      if (presentAtProvidedLocationId === true) {
+        return;
       }
 
       this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
@@ -151,6 +144,28 @@ class LocationHandlerClass {
         RoomTracker.exitRoom(this.store, sphereId, locationId);
       }
     }
+  }
+
+  _removeUserFromRooms(state, sphereId, userId, locationId = null) {
+    let presentAtProvidedLocationId = false;
+
+    // check if the user is in another location:
+    let locationIds = state.spheres[sphereId].locations;
+    for (let i = 0; i < locationIds.length; i++) {
+      // do not remove and put back in the same room
+      if (locationId === null || locationIds[i] !== locationId) {
+        let location = state.spheres[sphereId].locations[locationIds[i]];
+        if (location.presentUsers.indexOf(userId) !== -1) {
+          this._exitRoom({region: sphereId, location: locationIds[i]});
+        }
+      }
+      else {
+        // if we are already in the room, do not do anything
+        presentAtProvidedLocationId = true;
+      }
+    }
+
+    return presentAtProvidedLocationId;
   }
 
 
