@@ -142,8 +142,8 @@ export const BleActions = {
       .then(() => { eventBus.emit("disconnect"); })
       .catch(() => { eventBus.emit("disconnect"); })
   },
-  setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',  state);      },
-  keepAliveState:       (changeState, state, timeout) => { return BluenetPromise('keepAliveState', changeState, state, timeout); },
+  setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',  state);      },  // Number  (0 .. 1)
+  keepAliveState:       (changeState, state, timeout) => { return BluenetPromise('keepAliveState', changeState, state, timeout); }, //* Bool, Number  (0 .. 1), Number (seconds)
   keepAlive:            ()           => { return BluenetPromise('keepAlive');                   },
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
