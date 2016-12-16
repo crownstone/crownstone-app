@@ -19,6 +19,10 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight }
 
 export class StatusCommunication extends Component {
   componentDidMount() {
+    // watch for setup stones
+    this.unsubscribeSetupEvents = [];
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => { this.forceUpdate(); }));
+
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -32,11 +36,11 @@ export class StatusCommunication extends Component {
   }
 
   componentWillUnmount() {
+    this.unsubscribeSetupEvents.forEach((unsubscribe) => {unsubscribe();});
     this.unsubscribeStoreEvents();
   }
 
   render() {
-    LOG("RENDERING SPHERE");
     const store = this.props.store;
     const state = store.getState();
 
@@ -88,7 +92,7 @@ export class StatusCommunication extends Component {
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
           <Text style={descriptionTextStyle}>{'I see ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={descriptionTextStyle}>{'In range: indoor localization is running.'}</Text>
+          <Text style={descriptionTextStyle}>{' so the indoor localization is running.'}</Text>
         </View>
       )
     }
@@ -97,23 +101,22 @@ export class StatusCommunication extends Component {
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
           <Text style={descriptionTextStyle}>{'I see only ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={descriptionTextStyle}>{'in range: indoor localization paused.'}</Text>
+          <Text style={descriptionTextStyle}>{' so I paused the indoor localization.'}</Text>
         </View>
       )
     }
     else if (enoughForLocalization && requiresFingerprints) {
       return (
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
-          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained: indoor localization paused.'}</Text>
+          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I paused indoor localization.'}</Text>
         </View>
       )
     }
     else { /*if (amountOfVisible > 0)*/
       return (
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I see ' + amountOfVisible}</Text>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I can see ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'in range.'}</Text>
         </View>
       )
     }

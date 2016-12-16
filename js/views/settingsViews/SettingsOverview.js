@@ -59,6 +59,7 @@ export class SettingsOverview extends Component {
     }
 
     items.push({label:'TROUBLESHOOTING',  type:'explanation', below: false});
+    items.push({label:'Help', type:'navigation', icon: <IconButton name="ios-help-circle" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => { Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {})}});
     items.push({
       label: 'Recover a Crownstone',
       icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />,
@@ -83,13 +84,13 @@ export class SettingsOverview extends Component {
           <View style={{flexDirection:'row', padding:6, paddingRight:15, paddingLeft: 15, paddingBottom:12, justifyContent:'center'}}>
             <Text style={{fontSize:12, color:'#444'}}>Crownstone </Text>
             <TouchableHighlight onPress={() => {
-              Linking.openURL('http://crownstone.rocks/terms-of-service/').catch(err => {})
+              Linking.openURL('https://crownstone.rocks/terms-of-service/').catch(err => {})
             }}>
               <Text style={{fontSize:12, color:colors.blue.hex}}>terms </Text>
             </TouchableHighlight>
             <Text style={{fontSize:12, color:'#444'}}>& </Text>
             <TouchableHighlight onPress={() => {
-              Linking.openURL('http://crownstone.rocks/privacy-policy/').catch(err => {})
+              Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {})
             }}>
               <Text style={{fontSize:12, color:colors.blue.hex}}>privacy policy</Text>
             </TouchableHighlight>

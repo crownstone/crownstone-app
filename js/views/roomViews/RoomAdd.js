@@ -39,8 +39,6 @@ export class RoomAdd extends Component {
   }
 
   _getItems(floatingStones) {
-
-
     let items = [];
     items.push({label:'ADD ROOM TO', type:'explanation', below:false});
     items.push({label:'Room Name', type: 'textEdit', placeholder:'My New Room', value: this.state.name, callback: (newText) => {
@@ -137,7 +135,20 @@ export class RoomAdd extends Component {
         CLOUD.forSphere(this.props.sphereId).createLocation(this.state.name, this.state.icon)
           .then((reply) => {
             this.props.eventBus.emit('hideLoading');
-            store.dispatch({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
+            let actions =  [];
+
+            actions.push({type:'ADD_LOCATION', sphereId: this.props.sphereId, locationId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
+
+            // move the selected stones into the location.
+            let floatingStoneIds = Object.keys(this.state.selectedStones);
+            floatingStoneIds.forEach((floatingStoneId) => {
+              if (this.state.selectedStones[floatingStoneId] === true) {
+                actions.push({sphereId: this.props.sphereId, locationId: floatingStoneId, type: "UPDATE_STONE_LOCATION", data: {locationId: reply.id}});
+              }
+            });
+
+            store.batchDispatch(actions);
+
             Actions.pop();
             Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
           }).catch((err) => {

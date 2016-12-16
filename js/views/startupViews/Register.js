@@ -152,13 +152,13 @@ export class Register extends Component {
             <View style={{flexDirection:'row', flexWrap: 'wrap'}}>
               <Text style={{fontSize:11, color:'#444'}}>By registering, you agree to our </Text>
               <TouchableHighlight onPress={() => {
-                Linking.openURL('http://crownstone.rocks/terms-of-service/').catch((err) => {})
+                Linking.openURL('https://crownstone.rocks/terms-of-service/').catch((err) => {})
               }}>
                 <Text style={{fontSize:11, color:colors.blue.hex}}>terms </Text>
               </TouchableHighlight>
               <Text style={{fontSize:11, color:'#444'}}>& </Text>
               <TouchableHighlight onPress={() => {
-                Linking.openURL('http://crownstone.rocks/privacy-policy/').catch(err => {})
+                Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {})
               }}>
                 <Text style={{fontSize:11, color:colors.blue.hex}}>privacy policy</Text>
               </TouchableHighlight>

@@ -176,7 +176,7 @@ export class PresentUsers extends Component {
 
           // create RN object with the references to the animation variables.
           this.positions[user.id].obj = (
-            <Animated.View key={user.id} style={{position:'absolute', top: this.positions[user.id].top, left: this.positions[user.id].left, opacity: this.positions[user.id].opacityZ }}>
+            <Animated.View key={user.id} style={{position:'absolute', top: this.positions[user.id].top, left: this.positions[user.id].left, opacity: this.positions[user.id].opacity }}>
               <ProfilePicture picture={state.spheres[this.props.sphereId].users[user.id].picture} size={1.2 * this.userDiameter} />
             </Animated.View>
           );

@@ -27,7 +27,9 @@ typealias voidCallback = () -> Void
     BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone", loggingFile: false, debugLogEnabled: false)
 
     self.bluenet = Bluenet()
-    self.bluenetMotion = BluenetMotion()
+
+    // do not use the accelerometer.
+    // self.bluenetMotion = BluenetMotion()
     
     self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
     self.bluenetLocalization = BluenetLocalization()

@@ -230,6 +230,10 @@ export class DeviceEdit extends Component {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
         let proxy = BleUtil.getProxy(stone.config.handle);
         proxy.perform(BleActions.commandFactoryReset)
+          .catch(() => {
+            // second attempt
+            return proxy.perform(BleActions.commandFactoryReset)
+          })
           .then(() => {
             this._removeCrownstoneFromRedux(true);
           })
@@ -237,11 +241,10 @@ export class DeviceEdit extends Component {
             LOGError("ERROR:",err);
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
-              "You can recover it using the recovery procedure.",
+              "Try deleting it again or use the recovery procedure to put it in setup mode.",
               [{text:'OK', onPress: () => {
                 this.props.eventBus.emit('hideLoading');
                 Actions.pop();
-                Actions.settingsPluginRecoverStep1();
               }}]
             )
           })

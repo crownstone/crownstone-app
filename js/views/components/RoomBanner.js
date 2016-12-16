@@ -30,7 +30,7 @@ export class RoomBanner extends Component {
     else {
       // TODO: support multiple users
       let user = this.props.presentUsers[0];
-      return <ProfilePicture picture={user.picture} size={30} innerSize={33} name={user.data.firstName} />;
+      return <ProfilePicture picture={user.data.picture} size={30} innerSize={33} name={user.data.firstName} style={{position:'relative', top:2}} />;
     }
   }
 

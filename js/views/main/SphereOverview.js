@@ -229,7 +229,7 @@ export class SphereOverview extends Component {
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
               leftAction={() => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely);}}
-              rightItem={isAdminInCurrentSphere && !blockAddButton ? this._getAddRoomIcon() : null}
+              rightItem={!noStones && isAdminInCurrentSphere && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
             />
             <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
