@@ -192,6 +192,7 @@ export class AppRouter extends Component {
               <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true}  panHandlers={null} direction="horizontal" />
               <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true}  panHandlers={null} direction="vertical" title="Move to which Room?" />
               <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
+              <Scene key="roomAdd"                    component={Views.RoomAdd}                    hideNavBar={true}  title="Create Room" />
               <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
               <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
@@ -200,7 +201,6 @@ export class AppRouter extends Component {
                   <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
                   <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
                   <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
-                  <Scene key="roomAdd"                component={Views.RoomAdd}                    hideNavBar={true} title="Create Room" />
                   <Scene key="deviceEdit"             component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
                   <Scene key="deviceEditLogic"        component={Views.DeviceEditLogic}            hideNavBar={false} title="Device Behaviour" />
                   <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} title="Select a Device" />
