@@ -692,8 +692,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void keepAliveState(float state, int timeout, final Callback callback) {
-		_bleExt.writeKeepAliveState((int)(100 * state), timeout, new IStatusCallback() {
+	public void keepAliveState(boolean action, float state, int timeout, final Callback callback) {
+		int actionInt = 0;
+		if (action) {
+			actionInt = 1;
+		}
+		_bleExt.writeKeepAliveState(actionInt, (int)(100 * state), timeout, new IStatusCallback() {
 				@Override
 				public void onSuccess() {
 					BleLog.getInstance().LOGi(TAG, "keepAliveState success");
@@ -711,7 +715,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 					retVal.putString("data", "keepAliveState failed: " + error);
 					callback.invoke(retVal);
 				}
-
 		});
 	}
 
