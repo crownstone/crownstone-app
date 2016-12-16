@@ -40,7 +40,7 @@ export class RoomAdd extends Component {
 
   _getItems(floatingStones) {
     let items = [];
-    items.push({label:'ADD ROOM TO', type:'explanation', below:false});
+    items.push({label:'NEW ROOM', type:'explanation', below:false});
     items.push({label:'Room Name', type: 'textEdit', placeholder:'My New Room', value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
@@ -54,10 +54,9 @@ export class RoomAdd extends Component {
       )}
     });
 
-    items.push({label:'PLACE FLOATING CROWNSTONE IN ROOM', type:'explanation', below:false});
-
     let floatingStoneIds = Object.keys(floatingStones);
     if (floatingStoneIds.length > 0) {
+      items.push({label:'FLOATING CROWNSTONES', type:'explanation', below:false});
       let nearestId = this._getNearestStone(floatingStoneIds, floatingStones);
       floatingStoneIds.forEach((stoneId) => {
         let device = floatingStones[stoneId].device;
@@ -84,6 +83,7 @@ export class RoomAdd extends Component {
           style: {color: colors.iosBlue.hex},
         });
       });
+      items.push({label:'You can select floating Crownstones to immediately add them to this new room!', type:'explanation', below: true});
     }
 
     items.push({type:'spacer'});
@@ -134,6 +134,11 @@ export class RoomAdd extends Component {
         this.props.eventBus.emit('showLoading', 'Creating room...');
         CLOUD.forSphere(this.props.sphereId).createLocation(this.state.name, this.state.icon)
           .then((reply) => {
+
+            Actions.pop();
+            Actions.pop();
+            Actions.pop();
+
             this.props.eventBus.emit('hideLoading');
             let actions =  [];
 
@@ -143,13 +148,13 @@ export class RoomAdd extends Component {
             let floatingStoneIds = Object.keys(this.state.selectedStones);
             floatingStoneIds.forEach((floatingStoneId) => {
               if (this.state.selectedStones[floatingStoneId] === true) {
-                actions.push({sphereId: this.props.sphereId, locationId: floatingStoneId, type: "UPDATE_STONE_LOCATION", data: {locationId: reply.id}});
+                actions.push({sphereId: this.props.sphereId, stoneId: floatingStoneId, type: "UPDATE_STONE_LOCATION", data: {locationId: reply.id}});
               }
             });
 
             store.batchDispatch(actions);
 
-            Actions.pop();
+
             Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
           }).catch((err) => {
           LOGError("Something went wrong with creation of rooms", err);

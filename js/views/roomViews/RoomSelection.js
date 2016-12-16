@@ -70,6 +70,7 @@ export class RoomSelection extends Component {
       style: {color:colors.blue.hex},
       type: 'navigation',
       callback: () => {
+        Actions.pop();
         Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId})
       }
     });
@@ -96,7 +97,7 @@ export class RoomSelection extends Component {
     return (
       <Background hideInterface={true} image={backgroundImage} >
         <TopBar
-          leftAction={ Actions.pop }
+          leftAction={ () => { Actions.pop(); }}
           title={this.props.title} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
