@@ -8,7 +8,6 @@ import com.vanport.errorreporter.ErrorReporterPackage;
 import com.mehcode.reactnative.splashscreen.SplashScreenPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.RNSvgPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
 import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.rnfs.RNFSPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -42,7 +41,6 @@ public class MainApplication extends Application implements ReactApplication {
 					new MainReactPackage(),
 					new VectorIconsPackage(),
 					new RNSvgPackage(),
-					new RandomBytesPackage(),
 					new ImageResizerPackage(),
 					new RNFSPackage(),
 					new RNDeviceInfo(),
