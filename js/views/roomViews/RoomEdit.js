@@ -113,7 +113,7 @@ export class RoomEdit extends Component {
         items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
           Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
             {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: () => {Actions.roomTraining({roomName: room.config.name, sphereId: this.props.sphereId, locationId: this.props.locationId})}},
+            {text: 'OK', onPress: Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}
           ])
         }});
         items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
@@ -121,7 +121,7 @@ export class RoomEdit extends Component {
       }
       else {
         items.push({label:'Teach ' + ai + ' to find you!', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
-          Actions.roomTraining({roomName: room.config.name, sphereId: this.props.sphereId, locationId: this.props.locationId, store: this.props.store});
+          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
         }});
         items.push({label:'Teach ' + ai + ' to identify when you\'re in this room by walking around in it.', type: 'explanation',  below:true});
       }
