@@ -4,6 +4,7 @@ import {
   Animated,
   AppRegistry,
   Keyboard,
+  StatusBar,
   View
 } from 'react-native';
 
@@ -46,6 +47,7 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('showProgress', snapBack));
     this.unsubscribe.push(eventBus.on('hideLoading', snapBack));
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
+    StatusBar.setBackgroundColor('#00162C', true);
 
   }
 
