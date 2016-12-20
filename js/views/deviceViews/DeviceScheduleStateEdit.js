@@ -53,7 +53,7 @@ export class DeviceScheduleStateEdit extends Component {
     //      data: {state: newValue ? 1 : 0}
     //    });
     //  }});
-    //  items.push({label:'The device will switched to match the state when you ' + this._getExplanationLabel() + '.', type: 'explanation', below: true});
+    //  items.push({label:'The device will be switched to match the state when you ' + this._getExplanationLabel() + '.', type: 'explanation', below: true});
     //}
     //
     //

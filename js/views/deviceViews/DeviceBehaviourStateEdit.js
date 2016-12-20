@@ -168,7 +168,7 @@ export class DeviceStateEdit extends Component {
         }
       });
       items.push({
-        label: 'The device will switched to match the state when you ' + this._getExplanationLabel() + '.',
+        label: 'The device will be switched to match the state when you ' + this._getExplanationLabel() + '.',
         type: 'explanation',
         below: true
       });
