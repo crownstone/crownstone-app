@@ -1,4 +1,4 @@
-package nl.dobots.crownstoneapp;
+package rocks.crownstone.consumerapp;
 
 import com.facebook.react.ReactActivity;
 import com.oblador.vectoricons.VectorIconsPackage;

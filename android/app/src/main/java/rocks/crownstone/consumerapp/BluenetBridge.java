@@ -1,4 +1,4 @@
-package nl.dobots.crownstoneapp;
+package rocks.crownstone.consumerapp;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -65,10 +65,10 @@ import nl.dobots.localization.LocalizationCallback;
 public class BluenetBridge extends ReactContextBaseJavaModule implements IntervalScanListener, EventListener, ScanDeviceListener, BleBeaconRangingListener, LocalizationCallback {
 	private static final String TAG = BluenetBridge.class.getCanonicalName();
 
-	private static final int LOG_LEVEL_DEFAULT = Log.VERBOSE;
+	private static final int LOG_LEVEL_DEFAULT = Log.ERROR;
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Pair[] LOG_LEVELS = new Pair[]{
-		new Pair<>(BleScanService.class, Log.WARN),
+		new Pair<>(BleScanService.class, Log.ERROR),
 		new Pair<>(CrownstoneServiceData.class, Log.WARN),
 		new Pair<>(BluenetBridge.class, Log.WARN),
 		new Pair<>(BleBaseEncryption.class, Log.WARN),
@@ -157,6 +157,26 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
 
 //		_scanService
+//		WritableMap map = Arguments.createMap();
+//		map.putString("str", "a");
+//		map.putInt("int", 2);
+//		BleLog.LOGd(TAG, "map: " + map.getString("map"));
+//		String str = null;
+//		int num=0;
+//		try {
+//			num = map.getInt("str");
+//		} catch (UnexpectedNativeTypeException e) {}
+//		try {
+//			num = map.getInt("int");
+//		} catch (UnexpectedNativeTypeException e) {}
+//		try {
+//			str = map.getString("str");
+//		} catch (UnexpectedNativeTypeException e) {}
+//		try {
+//			str = map.getString("int");
+//		} catch (UnexpectedNativeTypeException e) {}
+//		BleLog.LOGd(TAG, "str=%s int=%d", str, num);
+//		_scanService
 	}
 
 	private void setLogLevel(Class<?> cls) {
@@ -222,6 +242,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (config.hasKey("guestKey")) {
 			guestKey = config.getString("guestKey");
 		}
+//		adminKey = "adminKeyForCrown";
+//		memberKey = "memberKeyForHome";
+//		guestKey = "guestKeyForGirls";
 		adminKey = getKeyFromString(adminKey);
 		memberKey = getKeyFromString(memberKey);
 		guestKey = getKeyFromString(guestKey);
@@ -617,6 +640,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			retVal.putString("data", "invalid crownstoneId");
 		}
 
+//		adminKey = "adminKeyForCrown";
+//		memberKey = "memberKeyForHome";
+//		guestKey = "guestKeyForGirls";
 		adminKey = getKeyFromString(adminKey);
 		if (adminKey == null) {
 			retVal.putString("data", "invalid adminKey");

@@ -1,4 +1,4 @@
-package nl.dobots.crownstoneapp;
+package rocks.crownstone.consumerapp;
 
 import android.app.Application;
 import android.util.Log;
