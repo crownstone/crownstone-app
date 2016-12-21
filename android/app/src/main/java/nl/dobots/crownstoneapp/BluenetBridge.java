@@ -154,6 +154,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		setLogLevel(BleBaseEncryption.class);
 		setLogLevel(GaussianNaiveBayes.class);
 		setLogLevel(BleDevice.class);
+		BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
 
 //		_scanService
 	}
