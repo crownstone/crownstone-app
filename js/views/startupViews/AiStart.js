@@ -8,7 +8,8 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Text,
-  View
+  View,
+  Platform
 } from 'react-native';
 
 const Actions = require('react-native-router-flux').Actions;
@@ -122,7 +123,12 @@ export class AiStart extends Component {
           Actions.pop();
         }
         else {
-          Actions.tabBar();
+          if (Platform.OS === 'android') {
+            Actions.sphereOverview();
+          }
+          else {
+            Actions.tabBar();
+          }
         }
       }}])
 
