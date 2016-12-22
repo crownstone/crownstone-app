@@ -17,7 +17,7 @@ let barHeight = topBarHeight - statusBarHeight;
 
 class TopBarAndroid extends Component {
   _getLeftContent() {
-    if (this.props.left || this.props.leftItem || this.props.right || this.props.rightItem) {
+    if (this.props.left || this.props.leftItem || this.props.right || this.props.rightItem || this.props.showHamburgerMenu === true) {
       return (
         <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true })}} style={[topBarStyle.topBarLeftTouch]}>
           <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>

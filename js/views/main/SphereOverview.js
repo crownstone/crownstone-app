@@ -231,6 +231,7 @@ export class SphereOverview extends Component {
               leftAction={() => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely);}}
               rightItem={!noStones && isAdminInCurrentSphere && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
+              showHamburgerMenu={true}
             />
             <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
               {this._getSpheres(seeStonesInSetupMode)}
@@ -246,6 +247,7 @@ export class SphereOverview extends Component {
           <AnimatedBackground hideTopBar={true} image={background}>
             <TopBar
               title={"Hello There!"}
+              showHamburgerMenu={true}
             />
             {this._getSpheres(false)}
           </AnimatedBackground>
