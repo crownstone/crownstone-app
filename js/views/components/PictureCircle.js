@@ -1,6 +1,8 @@
-import React, { Component } from 'react' 
+import React, { Component } from 'react'
 import {
   Image,
+  PermissionsAndroid,
+  Platform,
   TouchableHighlight,
   TouchableOpacity,
   Text,
@@ -8,7 +10,7 @@ import {
 } from 'react-native';
 
 import { IconCircle }  from './IconCircle'
-
+import { LOGError } from '../../logging/Log'
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 import { eventBus } from '../../util/eventBus'
@@ -17,8 +19,37 @@ const Actions = require('react-native-router-flux').Actions;
 
 export class PictureCircle extends Component {
   triggerOptions() {
-    let buttons = [
-      {text: 'Take Picture', callback: () => {Actions.pictureView({selectCallback:this.props.callback});}},
+    let buttons = [{
+      text: 'Take Picture',
+      callback: () => {
+        if (Platform.OS === 'android') {
+          PermissionsAndroid.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA)
+            .then((granted) => {
+              console.log('Has camera permission:', granted);
+              if (granted === false) {
+                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA,
+                  {'title': 'Crownstone', 'message': 'I need access to your camera to take a picture.'});
+              }
+            })
+            .then((granted) => {
+              console.log('Granted camera permission:', granted);
+              // granted can be undefined, when previous granted was true
+              if (granted === false) {
+                console.log('Can\'t take a picture without permission!');
+                //TODO Can't show alert here? Dunno why not
+              }
+              else {
+                Actions.pictureView({selectCallback: this.props.callback});
+              }
+            })
+            .catch((err) => {
+              LOGError("[PictureCircle.js] Error in checking camera permission:", err);
+            })
+        }
+        else {
+          Actions.pictureView({selectCallback: this.props.callback});
+        }
+      }},
       {text: 'Choose Existing', callback: () => {Actions.cameraRollView({selectCallback:this.props.callback});}}
     ];
     eventBus.emit('showPopup', buttons);
