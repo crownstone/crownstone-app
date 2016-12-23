@@ -546,6 +546,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void recover(String crownstoneHandle, final Callback callback) {
+		// If stone is not in recovery mode, then return string "NOT_IN_RECOVERY_MODE" as error data.
 		String address = crownstoneHandle;
 		BleLog.getInstance().LOGd(TAG, "Recover: " + address);
 		_bleExt.recover(address, new IStatusCallback() {
@@ -563,7 +564,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				BleLog.getInstance().LOGi(TAG, Log.getStackTraceString(new Exception()));
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
-				retVal.putString("data", "recover failed: " + error);
+				if (error == BleErrors.ERROR_NOT_IN_RECOVERY_MODE) {
+					retVal.putString("data", "NOT_IN_RECOVERY_MODE");
+				}
+				else {
+					retVal.putString("data", "recover failed: " + error);
+				}
 				callback.invoke(retVal);
 			}
 		});
