@@ -201,7 +201,6 @@ export class SphereOverview extends Component {
       // do we need more fingerprints?
       let requiresFingerprints = requireMoreFingerprints(state, activeSphere);
 
-
       noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
       isAdminInCurrentSphere = getUserLevelInSphere(state, activeSphere) === 'admin';

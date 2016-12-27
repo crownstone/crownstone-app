@@ -67,7 +67,7 @@ export class StatusCommunication extends Component {
     if (this.props.seeStonesInSetupMode === true && isAdminInCurrentSphere === true) {
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected!'}</Text>
+          <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected! Tap on it!'}</Text>
         </View>
       );
     }
@@ -112,11 +112,18 @@ export class StatusCommunication extends Component {
         </View>
       )
     }
-    else { /*if (amountOfVisible > 0)*/
+    else if (amountOfVisible > 0) {
       return (
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
           <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I can see ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
+        </View>
+      )
+    }
+    else { //if (amountOfVisible === 0) {
+      return (
+        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{"I can't see any Crownstones!"}</Text>
         </View>
       )
     }
