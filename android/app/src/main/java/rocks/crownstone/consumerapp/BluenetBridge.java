@@ -120,8 +120,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
 
-//	WritableArray _ibeaconAdvertisements = Arguments.createArray();
-	List<WritableMap> _ibeaconAdvertisements = new ArrayList<>();
+	Map<String, WritableMap> _ibeaconAdvertisements = new HashMap<>();
 
 	public BluenetBridge(ReactApplicationContext reactContext) {
 		super(reactContext);
@@ -1131,10 +1130,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		advertisementMap.putInt("rssi", device.getAverageRssi());
 		synchronized (BluenetBridge.this) {
 //			BleLog.getInstance().LOGv(TAG, "data: " + advertisementMap.toString());
-//			_ibeaconAdvertisements.pushMap(advertisementMap);
-			_ibeaconAdvertisements.add(advertisementMap);
+			_ibeaconAdvertisements.put(beaconId, advertisementMap); // Overwrite previous value
 		}
-//		sendEvent("iBeaconAdvertisement", advertisementMap);
 	}
 
 	private Runnable iBeaconTick = new Runnable() {
@@ -1142,12 +1139,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		public void run() {
 			synchronized (BluenetBridge.this) {
 				if (_ibeaconAdvertisements.size() > 0) {
-//					BleLog.getInstance().LOGd(TAG, "sendEvent iBeaconAdvertisement: " + _ibeaconAdvertisements.toString());
-//					sendEvent("iBeaconAdvertisement", _ibeaconAdvertisements);
-//					_ibeaconAdvertisements = Arguments.createArray();
 					BleLog.getInstance().LOGv(TAG, "sendEvent iBeaconAdvertisement");
 					WritableArray array = Arguments.createArray();
-					for (WritableMap m : _ibeaconAdvertisements) {
+					for (WritableMap m : _ibeaconAdvertisements.values()) {
 						array.pushMap(m);
 					}
 					sendEvent("iBeaconAdvertisement", array);
