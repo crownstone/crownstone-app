@@ -83,7 +83,7 @@ export class StatusCommunication extends Component {
     else if (this.props.viewingRemotely === true) {
       return (
         <View style={{flex:1}}>
-          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex, bottom: bottomDistance} ]}>{'No Crownstones in range.' }</Text>
+          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex, bottom: bottomDistance} ]}>{'No Crownstones in range.'}</Text>
         </View>
       );
     }
@@ -108,7 +108,7 @@ export class StatusCommunication extends Component {
     else if (enoughForLocalization && requiresFingerprints) {
       return (
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
-          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I paused indoor localization.'}</Text>
+          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I can\'t do indoor localization.'}</Text>
         </View>
       )
     }
