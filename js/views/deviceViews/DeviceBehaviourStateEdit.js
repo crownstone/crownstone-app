@@ -225,30 +225,23 @@ export class DeviceStateEdit extends Component {
         label: 'Define Range',
         style: {color: colors.iosBlue.hex},
         callback: () => {
-          let stoneHandle = stone.config.handle;
-          if (stoneHandle) {
-            Alert.alert(
-              "How near is near?",
-              "You can choose the switching point between near and far! After you press OK you have 5 seconds to hold your phone where it usually is (in your pocket?)",
-              [{text: 'Cancel', style: 'cancel'}, {
-                text: 'OK', onPress: () => {
-                  // show loading bar
-                  this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
-                  this.pocketTimeout = setTimeout(() => {
-                    this.defineThreshold(stoneHandle)
-                  }, 5000);
-                }
-              }]
-            );
-          }
-          else {
-            Alert.alert(
-              "I haven't seen this Crownstone",
-              "Please stand in range of this Crownstone so I can get to know it first!",
-              [{text: 'OK'}]
-            );
-          }
+          let state = store.getState();
+          let iBeaconUUID = state.spheres[this.props.sphereId].config.iBeaconUUID;
+          let iBeaconId = iBeaconUUID + ".Maj:" + stone.config.iBeaconMajor + ".Min:" + stone.config.iBeaconMinor;
 
+          Alert.alert(
+            "How near is near?",
+            "You can choose the switching point between near and far! After you press OK you have 5 seconds to hold your phone where it usually is (in your pocket?)",
+            [{text: 'Cancel', style: 'cancel'}, {
+              text: 'OK', onPress: () => {
+                // show loading bar
+                this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
+                this.pocketTimeout = setTimeout(() => {
+                  this.defineThreshold(iBeaconId)
+                }, 5000);
+              }
+            }]
+          );
         }
       });
       let ai = getAiData(store.getState(), this.props.sphereId);
@@ -258,7 +251,7 @@ export class DeviceStateEdit extends Component {
     return items;
   }
 
-  defineThreshold(stoneHandle) {
+  defineThreshold(iBeaconId) {
     // show loading bar
     this.props.eventBus.emit("showLoading", "Determining range...");
 
@@ -284,39 +277,49 @@ export class DeviceStateEdit extends Component {
           if (this.stopHFScanning)
             this.stopHFScanning();
         }}]);
-      },4000);
+      },10000);
 
 
       // listen to all advertisements
-      this.unsubscribeNative = NativeBus.on(NativeBus.topics.advertisement, (data) => {
-        // filter for our crownstone with only valid rssi measurements.
-        if (stoneHandle === data.handle && data.rssi < 0) {
-          measurements.push(data.rssi);
+      this.unsubscribeNative = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+        data.forEach((iBeaconAdvertisement) => {
+          // filter for our crownstone with only valid rssi measurements.
+          if (iBeaconId === iBeaconAdvertisement.id && iBeaconAdvertisement.rssi < 0) {
+            measurements.push(iBeaconAdvertisement.rssi);
+          }
+        });
+        if (measurements.length > 3) {
+          clearTimeout(this.detectionTimeout);
+          this.unsubscribeNative();
+          this.unsubscribeNative = undefined;
+          let total = 0;
+          measurements.forEach((measurement) => {
+            total += measurement;
+          });
+          let average = Math.round(total / measurements.length) - 5; // the - five makes sure the user is not defining a place where he will sit: on the threshold.
+          this.props.store.dispatch({
+            type: "UPDATE_STONE_CONFIG",
+            sphereId: this.props.sphereId,
+            stoneId: this.props.stoneId,
+            data: {nearThreshold: average}
+          });
 
-          if (measurements.length > 15) {
-            clearTimeout(this.detectionTimeout);
-            this.unsubscribeNative();
-            this.unsubscribeNative = undefined;
-            let total = 0;
-            measurements.forEach((measurement) => { total += measurement; });
-            let average = Math.round(total / measurements.length) - 5; // the - five makes sure the user is not defining a place where he will sit: on the threshold.
-            this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data:{ nearThreshold: average }});
+          // stop the high frequency scanning
+          if (this.stopHFScanning)
+            this.stopHFScanning();
 
-            // stop the high frequency scanning
-            if (this.stopHFScanning)
-              this.stopHFScanning();
+          // tell the user it was a success!
+          this.props.eventBus.emit("showLoading", "Great!");
 
-            // tell the user it was a success!
-            this.props.eventBus.emit("showLoading", "Great!");
+          // notify the user when the measurement is complete!
+          Vibration.vibrate(400, false);
 
-            // notify the user when the measurement is complete!
-            Vibration.vibrate(400, false);
-
-            Alert.alert("Great!", "I'll make sure to respond when you are within this range! When you move out and move back in I can start to respond!", [{text:'OK', onPress: () => {
+          Alert.alert("Great!", "I'll make sure to respond when you are within this range! When you move out and move back in I can start to respond!", [{
+            text: 'OK', onPress: () => {
               this.props.eventBus.emit("hideLoading");
               this.props.eventBus.emit("useTriggers");
-            }}]);
-          }
+            }
+          }]);
         }
       });
 
