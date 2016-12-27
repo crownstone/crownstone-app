@@ -48,12 +48,10 @@ export class StoneTracker {
 
     // only use valid rssi measurements, 0 or 128 are not valid measurements
     if (rssi === undefined || rssi > -1) {
-      LOGError("Invalid RSSI");
       return;
     }
 
     if (referenceId === undefined || major  === undefined || minor === undefined) {
-      LOGError(referenceId, major, minor);
       return;
     }
 
@@ -61,14 +59,12 @@ export class StoneTracker {
     let state = this.store.getState();
     let sphere = state.spheres[referenceId];
     if (!(sphere)) {
-      LOGError("No Sphere");
       return;
     }
 
     // check if we have a stone with this major / minor
     let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
     if (!(stoneId)) {
-      LOGError("Don't have this stone, maj:", major, "min:", minor);
       return;
     }
 
@@ -101,7 +97,6 @@ export class StoneTracker {
 
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore === true) {
-      LOGError("TempIgnore");
       return;
     }
 
@@ -200,7 +195,6 @@ export class StoneTracker {
   _handleTrigger(element, ref, type, stoneId, sphereId) {
     let behaviour = element.behaviour[type];
     if (behaviour.active === true) {
-
       LOG("STARTING TO TRIGGER A ", type, "EVENT, BEHAVIOUR OF TYPE", type, " IS ACTIVE continue:", !(ref.lastTriggerType === type));
       if (ref.lastTriggerType === type) {
         return;

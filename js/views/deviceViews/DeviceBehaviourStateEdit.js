@@ -248,7 +248,6 @@ export class DeviceStateEdit extends Component {
               [{text: 'OK'}]
             );
           }
-
         }
       });
       let ai = getAiData(store.getState(), this.props.sphereId);
