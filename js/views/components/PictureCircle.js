@@ -34,17 +34,17 @@ export class PictureCircle extends Component {
         if (Platform.OS === 'android') {
           PermissionsAndroid.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA)
             .then((granted) => {
-              console.log('Has camera permission:', granted);
+              // console.log('Has camera permission:', granted);
               if (granted === false) {
                 return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA,
                   {'title': 'Crownstone', 'message': 'I need access to your camera to take a picture.'});
               }
             })
             .then((granted) => {
-              console.log('Granted camera permission:', granted);
+              // console.log('Granted camera permission:', granted);
               // granted can be undefined, when previous granted was true
               if (granted === false) {
-                console.log('Can\'t take a picture without permission!');
+                // console.log('Can\'t take a picture without permission!');
                 //TODO Can't show alert here? Dunno why not
               }
               else {
@@ -54,14 +54,14 @@ export class PictureCircle extends Component {
               }
             })
             .then((granted) => {
-              console.log('Granted read external storage:', granted);
+              // console.log('Granted read external storage:', granted);
               if (granted === true) {
                 return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
                   {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
               }
             })
             .then((granted) => {
-              console.log("Granted write external storage:", granted);
+              // console.log("Granted write external storage:", granted);
               if (granted === true) {
                 Actions.pictureView({selectCallback: this.props.callback});
               }
