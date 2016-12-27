@@ -39,6 +39,21 @@ export class PictureCircle extends Component {
                 //TODO Can't show alert here? Dunno why not
               }
               else {
+                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                  {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
+                // Actions.pictureView({selectCallback: this.props.callback});
+              }
+            })
+            .then((granted) => {
+              console.log('Granted read external storage:', granted);
+              if (granted === true) {
+                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                  {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
+              }
+            })
+            .then((granted)=> {
+              console.log("Granted write external storage:", granted);
+              if (granted === true) {
                 Actions.pictureView({selectCallback: this.props.callback});
               }
             })
@@ -49,9 +64,11 @@ export class PictureCircle extends Component {
         else {
           Actions.pictureView({selectCallback: this.props.callback});
         }
-      }},
-      {text: 'Choose Existing', callback: () => {Actions.cameraRollView({selectCallback:this.props.callback});}}
-    ];
+      }}];
+    if (Platform.OS !== 'android') {
+      buttons.push({text: 'Choose Existing', callback: () => {Actions.cameraRollView({selectCallback:this.props.callback});}});
+    }
+
     eventBus.emit('showPopup', buttons);
   }
 
