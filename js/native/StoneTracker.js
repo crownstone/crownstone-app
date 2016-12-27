@@ -142,7 +142,6 @@ export class StoneTracker {
       }
     }
 
-
     // to avoid flickering we do not trigger these events in less than 5 seconds.
     if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING)
       return;

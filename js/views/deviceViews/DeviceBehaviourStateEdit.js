@@ -177,7 +177,7 @@ export class DeviceStateEdit extends Component {
       options.push({label: 'None', type: 'checkbar', value: 0});
     }
     if (this.props.eventName !== TYPES.HOME_EXIT) {
-      options.push({label: '2 seconds', type: 'checkbar', value: 2});
+      options.push({label: '2 seconds',  type: 'checkbar', value: 2});
       options.push({label: '10 seconds', type: 'checkbar', value: 10});
       options.push({label: '20 seconds', type: 'checkbar', value: 20});
       options.push({label: '30 seconds', type: 'checkbar', value: 30});
@@ -275,8 +275,8 @@ export class DeviceStateEdit extends Component {
     // listen to all advertisements
     this.unsubscribeNative = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
       data.forEach((iBeaconAdvertisement) => {
-        // filter for our crownstone with only valid rssi measurements.
-        if (iBeaconId === iBeaconAdvertisement.id && iBeaconAdvertisement.rssi < 0) {
+        // filter for our crownstone with only valid rssi measurements. We force the strings to lowercase to avoid os interpretation of UUIDs
+        if (iBeaconId && iBeaconAdvertisement && iBeaconId.toLowerCase() === iBeaconAdvertisement.id.toLowerCase() && iBeaconAdvertisement.rssi < 0) {
           measurements.push(iBeaconAdvertisement.rssi);
         }
       });
