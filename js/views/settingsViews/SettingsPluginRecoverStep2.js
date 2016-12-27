@@ -21,7 +21,7 @@ import { getUUID } from '../../util/util'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/dataUtil'
 import { BleUtil } from '../../native/BleUtil'
 import { BleActions, Bluenet } from '../../native/Proxy'
-import { LOG } from '../../logging/Log'
+import { LOG, LOGError } from '../../logging/Log'
 
 export class SettingsPluginRecoverStep2 extends Component {
   constructor() {
@@ -197,7 +197,7 @@ export class SettingsPluginRecoverStep2 extends Component {
         )
       })
       .catch((err) => {
-        LOG("ERROR IN RECOVERY", err);
+        LOGError("ERROR IN RECOVERY", err);
         if (err === "NOT_IN_RECOVERY_MODE") {
           Alert.alert("Not in recovery mode.",
             "You have 20 seconds after you plug the Crownstone in to recover. Please follow the steps again to retry.",

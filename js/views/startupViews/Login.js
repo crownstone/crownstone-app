@@ -55,7 +55,7 @@ export class Login extends Component {
     this.props.eventBus.emit('showLoading', 'Requesting new verification email...');
     CLOUD.requestVerificationEmail({email:this.state.email.toLowerCase()})
       .then(() => {
-        SessionMemory.loginEmail = this.state.email;
+        SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
       })
@@ -68,7 +68,7 @@ export class Login extends Component {
     this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email:this.state.email.toLowerCase()})
       .then(() => {
-        SessionMemory.loginEmail = this.state.email;
+        SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
         Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
       })
@@ -265,7 +265,7 @@ export class Login extends Component {
     );
 
     // check if we need to upload a picture that has been set aside during the registration process.
-    let imageFilename = getImageFileFromUser(this.state.email);
+    let imageFilename = getImageFileFromUser(this.state.email.toLowerCase());
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {
         if (picturePath === null)
