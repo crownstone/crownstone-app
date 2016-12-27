@@ -28,60 +28,11 @@ export class PictureCircle extends Component {
       );
       return;
     }
-    let buttons = [{
-      text: 'Take Picture',
-      callback: () => {
-        if (Platform.OS === 'android') {
-          PermissionsAndroid.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA)
-            .then((granted) => {
-              // console.log('Has camera permission:', granted);
-              if (granted === false) {
-                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA,
-                  {'title': 'Crownstone', 'message': 'I need access to your camera to take a picture.'});
-              }
-            })
-            .then((granted) => {
-              // console.log('Granted camera permission:', granted);
-              // granted can be undefined, when previous granted was true
-              if (granted === false) {
-                // console.log('Can\'t take a picture without permission!');
-                //TODO Can't show alert here? Dunno why not
-              }
-              else {
-                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                  {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
-                // Actions.pictureView({selectCallback: this.props.callback});
-              }
-            })
-            .then((granted) => {
-              // console.log('Granted read external storage:', granted);
-              if (granted === true) {
-                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                  {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
-              }
-            })
-            .then((granted) => {
-              // console.log("Granted write external storage:", granted);
-              if (granted === true) {
-                Actions.pictureView({selectCallback: this.props.callback});
-              }
-            })
-            .catch((err) => {
-              LOGError("[PictureCircle.js] Error in checking camera permission:", err);
-            })
-        }
-        else {
-          Actions.pictureView({selectCallback: this.props.callback});
-        }
-      }
-    }];
-    if (Platform.OS !== 'android') {
-      buttons.push({
-        text: 'Choose Existing', callback: () => {
-          Actions.cameraRollView({selectCallback: this.props.callback});
-        }
-      });
-    }
+
+    // for iOS show the popup menu
+    let buttons = [];
+    buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
+    buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     eventBus.emit('showPopup', buttons);
   }
 
@@ -139,3 +90,48 @@ export class PictureCircle extends Component {
     }
   }
 }
+
+
+/*
+ // ANDROID SPECIFIC HANDLING OF PERMISSIONS
+ if (Platform.OS === 'android') {
+          PermissionsAndroid.checkPermission(PermissionsAndroid.PERMISSIONS.CAMERA)
+            .then((granted) => {
+              // console.log('Has camera permission:', granted);
+              if (granted === false) {
+                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA,
+                  {'title': 'Crownstone', 'message': 'I need access to your camera to take a picture.'});
+              }
+            })
+            .then((granted) => {
+              // console.log('Granted camera permission:', granted);
+              // granted can be undefined, when previous granted was true
+              if (granted === false) {
+                // console.log('Can\'t take a picture without permission!');
+                //TODO Can't show alert here? Dunno why not
+              }
+              else {
+                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                  {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
+                // Actions.pictureView({selectCallback: this.props.callback});
+              }
+            })
+            .then((granted) => {
+              // console.log('Granted read external storage:', granted);
+              if (granted === true) {
+                return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                  {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
+              }
+            })
+            .then((granted) => {
+              // console.log("Granted write external storage:", granted);
+              if (granted === true) {
+                Actions.pictureView({selectCallback: this.props.callback});
+              }
+            })
+            .catch((err) => {
+              LOGError("[PictureCircle.js] Error in checking camera permission:", err);
+            })
+        }
+ else {
+*/
