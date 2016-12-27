@@ -70,10 +70,7 @@ export class RoomTraining extends Component {
         "No Crownstones in range...",
         "To be able to identify this room, I need to see at least 3 Crownstones in but I can't see any from here... Try to reposition your Crownstones so I can see more of them.",
         [{text:"OK", onPress: () => {
-          // pop to the roomSize
-          Actions.pop();
-          // pop to before training
-          Actions.pop();
+          Actions.pop({popNum:2});
         }}])
     },4000);
   }
@@ -114,10 +111,7 @@ export class RoomTraining extends Component {
         "To be able to identify this room, I need to see at least 3 Crownstones but I see only " + averageAmountOfMeasurements + "." +
         "Try to reposition your Crownstones so I can see more of them.",
         [{text:"OK", onPress: () => {
-          // pop to the roomSize
-          Actions.pop();
-          // pop to before training
-          Actions.pop();
+          Actions.pop({popNum:2});
         }}])
     }
 
@@ -168,13 +162,13 @@ export class RoomTraining extends Component {
         <RoomTraining_training
           ai={ai}
           next={() => {this.setState({phase:2});}}
-          abort={() => { this.stop(true); Actions.pop(); Actions.pop();}}
+          abort={() => { this.stop(true); Actions.pop({popNum:2}); }}
           {...this.state}
         />
       )
     }
     else if (this.state.phase === 2) {
-      content = <RoomTraining_finished ai={ai} quit={() => { Actions.pop(); Actions.pop(); }} />
+      content = <RoomTraining_finished ai={ai} quit={() => { Actions.pop({popNum:2}); }} />
     }
 
     return (
