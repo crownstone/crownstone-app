@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { DEBUG } from '../ExternalConfig'
 import { StoreManager } from '../router/store/storeManager'
 import { Bluenet, BleActions } from '../native/Proxy'
@@ -81,13 +81,26 @@ export const processImage = function(picture, targetFilename) {
   return new Promise((resolve, reject) => {
     if (picture !== undefined) {
       let targetPath = RNFS.DocumentDirectoryPath + '/' + targetFilename;
+      if (Platform.OS === 'android') {
+        targetPath = RNFS.ExternalDirectoryPath + '/' + targetFilename;
+      }
       let resizedUri = undefined;
-      ImageResizer.createResizedImage(picture, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90)
+      let resizedPath = undefined;
+      if (Platform.OS === 'android') {
+        // TODO: what path to use for temp?
+        resizedPath = RNFS.ExternalDirectoryPath;
+      }
+
+      ImageResizer.createResizedImage(picture, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90, undefined, resizedPath)
         .then((resizedImageUri) => {
           resizedUri = resizedImageUri;
           return safeDeleteFile(targetPath);
         })
         .then(() => {
+          if (Platform.OS === 'android') {
+            // TODO: better way to remove the "file:"
+            resizedUri = resizedUri.replace("file:","");
+          }
           return safeMoveFile(resizedUri, targetPath);
         })
         .then(() => {
