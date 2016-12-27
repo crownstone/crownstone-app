@@ -67,7 +67,7 @@ export class StatusCommunication extends Component {
     if (this.props.seeStonesInSetupMode === true && isAdminInCurrentSphere === true) {
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected!'}</Text>
+          <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected! Tap on it!'}</Text>
         </View>
       );
     }
@@ -83,7 +83,7 @@ export class StatusCommunication extends Component {
     else if (this.props.viewingRemotely === true) {
       return (
         <View style={{flex:1}}>
-          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex, bottom: bottomDistance} ]}>{'No Crownstones in range.' }</Text>
+          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex, bottom: bottomDistance} ]}>{'No Crownstones in range.'}</Text>
         </View>
       );
     }
@@ -108,15 +108,22 @@ export class StatusCommunication extends Component {
     else if (enoughForLocalization && requiresFingerprints) {
       return (
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
-          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I paused indoor localization.'}</Text>
+          <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I can\'t do indoor localization.'}</Text>
         </View>
       )
     }
-    else { /*if (amountOfVisible > 0)*/
+    else if (amountOfVisible > 0) {
       return (
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
           <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I can see ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
+        </View>
+      )
+    }
+    else { //if (amountOfVisible === 0) {
+      return (
+        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{"I can't see any Crownstones!"}</Text>
         </View>
       )
     }

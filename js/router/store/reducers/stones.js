@@ -39,7 +39,7 @@ let defaultSettings = {
     updatedAt: 1,
   },
   state: {
-    state: 1.0,
+    state: 0.0,
     currentUsage: 0,
     updatedAt: 1
   },

@@ -216,7 +216,7 @@ export class Register extends Component {
       lastName: this.state.lastName,
     })
       .then(() => {
-        let imageName = getImageFileFromUser(this.state.email);
+        let imageName = getImageFileFromUser(this.state.email.toLowerCase());
         return processImage(this.state.picture, imageName);
       })
       .then(() => {

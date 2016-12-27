@@ -85,15 +85,17 @@ export class RoomAdd extends Component {
       });
       items.push({label:'You can select floating Crownstones to immediately add them to this new room!', type:'explanation', below: true});
     }
-
-    items.push({type:'spacer'});
-
-    items.push({
-      label: 'Create Room',
-      type: 'button',
-      style: {color: colors.iosBlue.hex},
-      callback: () => { this.createRoom(); }
-    });
+    // else {
+    //   items.push({type:'spacer'});
+    // }
+    //
+    //
+    // items.push({
+    //   label: 'Create Room',
+    //   type: 'button',
+    //   style: {color: colors.iosBlue.hex},
+    //   callback: () => { this.createRoom(); }
+    // });
     return items;
   }
 
@@ -188,8 +190,13 @@ export class RoomAdd extends Component {
     return (
       <Background hideInterface={true} image={backgroundImage} >
         <TopBar
-          notBack={false}
+          notBack={true}
+          left={'Cancel'}
+          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
           leftAction={ Actions.pop }
+          right={'Create'}
+          rightStyle={{fontWeight: 'bold'}}
+          rightAction={ () => { this.createRoom(); }}
           title="Create Room"/>
         <ScrollView>
           <View style={{height: itemHeight}}>

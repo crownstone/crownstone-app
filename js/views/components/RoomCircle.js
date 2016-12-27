@@ -60,10 +60,10 @@ export class RoomCircle extends Component {
     };
 
     this.energyLevels = [
-      {min: 0,    max:200,   color: colors.green.hex},
-      {min: 200,  max:500,   color: colors.orange.hex},
-      {min: 500,  max:1500,  color: colors.red.hex},
-      {min: 1500, max:4000,  color: colors.darkRed.hex},
+      {min: 0,    max:50,    color: colors.green.hex},
+      {min: 50,   max:200,   color: colors.orange.hex},
+      {min: 200,  max:1000,  color: colors.red.hex},
+      {min: 1000, max:4000,  color: colors.darkRed.hex},
     ];
 
     this.usage = 0;

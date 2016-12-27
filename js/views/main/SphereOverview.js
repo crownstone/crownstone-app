@@ -201,7 +201,6 @@ export class SphereOverview extends Component {
       // do we need more fingerprints?
       let requiresFingerprints = requireMoreFingerprints(state, activeSphere);
 
-
       noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
       isAdminInCurrentSphere = getUserLevelInSphere(state, activeSphere) === 'admin';
@@ -218,7 +217,7 @@ export class SphereOverview extends Component {
         isAdminInCurrentSphere                     && // only admins can set this up so only show it if you're an admin.
         viewingRemotely                  === false && // only show this if you're there.
         enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
-        requiresFingerprints             === true     // Need more fingerprints.
+        (noRooms === true || requiresFingerprints === true)     // Need more fingerprints.
       );
 
       return (
@@ -228,7 +227,7 @@ export class SphereOverview extends Component {
               title={state.spheres[activeSphere].config.name + '\'s Sphere'}
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
-              leftAction={() => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely);}}
+              leftAction={() => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms);}}
               rightItem={!noStones && isAdminInCurrentSphere && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
               showHamburgerMenu={true}
@@ -289,12 +288,18 @@ export class SphereOverview extends Component {
     }
   }
 
-  _finalizeIndoorLocalization(state, activeSphere, viewingRemotely) {
-    viewingRemotely = false;
+  _finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms) {
     if (viewingRemotely) {
       Alert.alert(
         "You'll have to be in the Sphere to continue.",
         "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
+        [{text: 'OK'}]
+      );
+    }
+    else if (noRooms) {
+      Alert.alert(
+        "Let's create some rooms!",
+        "Tap the icon on the right to add a room!",
         [{text: 'OK'}]
       );
     }

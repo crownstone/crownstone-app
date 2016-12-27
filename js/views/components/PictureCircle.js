@@ -77,7 +77,7 @@ export class PictureCircle extends Component {
     if (this.props.value !== undefined && this.props.value !== null) {
 
       let imageURI = preparePictureURI(this.props.value);
-      let borderWidth = size/30;
+      let borderWidth = size / 30;
       return (
         <TouchableOpacity onPress={this.props.removePicture} style={{height:size}}>
           <View>

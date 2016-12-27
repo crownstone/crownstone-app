@@ -33,7 +33,7 @@ export class RoomTraining extends Component {
     this.collectedData = [];
     this.amountOfInvalidPoints = 0;
     this.invalidMeasurements = [];
-    this.invalidPointThreshold = Math.round(0.1*props.sampleSize);
+    this.invalidPointThreshold = Math.round(0.75*props.sampleSize);
     this.noSignalTimeout = undefined;
   }
 
