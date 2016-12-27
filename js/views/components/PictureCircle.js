@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   Image,
   PermissionsAndroid,
   Platform,
@@ -19,6 +20,14 @@ const Actions = require('react-native-router-flux').Actions;
 
 export class PictureCircle extends Component {
   triggerOptions() {
+    if (Platform.OS === 'android') {
+      Alert.alert(
+        "Sorry",
+        "This function is not yet available on Android.",
+        [{text: 'OK'}]
+      );
+      return;
+    }
     let buttons = [{
       text: 'Take Picture',
       callback: () => {
@@ -51,7 +60,7 @@ export class PictureCircle extends Component {
                   {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
               }
             })
-            .then((granted)=> {
+            .then((granted) => {
               console.log("Granted write external storage:", granted);
               if (granted === true) {
                 Actions.pictureView({selectCallback: this.props.callback});
@@ -64,11 +73,15 @@ export class PictureCircle extends Component {
         else {
           Actions.pictureView({selectCallback: this.props.callback});
         }
-      }}];
+      }
+    }];
     if (Platform.OS !== 'android') {
-      buttons.push({text: 'Choose Existing', callback: () => {Actions.cameraRollView({selectCallback:this.props.callback});}});
+      buttons.push({
+        text: 'Choose Existing', callback: () => {
+          Actions.cameraRollView({selectCallback: this.props.callback});
+        }
+      });
     }
-
     eventBus.emit('showPopup', buttons);
   }
 
