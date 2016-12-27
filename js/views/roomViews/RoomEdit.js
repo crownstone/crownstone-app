@@ -104,7 +104,6 @@ export class RoomEdit extends Component {
     }});
 
 
-
     // here we do the training if required and possible.
     let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
     if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
@@ -113,7 +112,7 @@ export class RoomEdit extends Component {
         items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
           Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
             {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}
+            {text: 'OK', onPress: () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
           ])
         }});
         items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +

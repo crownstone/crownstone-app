@@ -146,22 +146,33 @@ class LocationHandlerClass {
     }
   }
 
-  _removeUserFromRooms(state, sphereId, userId, locationId = null) {
+
+  /**
+   *
+   * @param state
+   * @param sphereId
+   * @param userId
+   * @param exceptionRoomId   | The exception is a room that this method does not have to take the user out of.
+   * @returns {boolean}
+   * @private
+   */
+  _removeUserFromRooms(state, sphereId, userId, exceptionRoomId = null) {
     let presentAtProvidedLocationId = false;
 
     // check if the user is in another location:
-    let locationIds = state.spheres[sphereId].locations;
+    let locationIds = Object.keys(state.spheres[sphereId].locations);
     for (let i = 0; i < locationIds.length; i++) {
-      // do not remove and put back in the same room
-      if (locationId === null || locationIds[i] !== locationId) {
-        let location = state.spheres[sphereId].locations[locationIds[i]];
-        if (location.presentUsers.indexOf(userId) !== -1) {
+      let location = state.spheres[sphereId].locations[locationIds[i]];
+
+      // check if user is in a room:
+      if (location.presentUsers.indexOf(userId) !== -1) {
+        if (locationIds[i] === exceptionRoomId) {
+          // if this room is the exception, do not take the user out and return true at the end of the method.
+          presentAtProvidedLocationId = true;
+        }
+        else {
           this._exitRoom({region: sphereId, location: locationIds[i]});
         }
-      }
-      else {
-        // if we are already in the room, do not do anything
-        presentAtProvidedLocationId = true;
       }
     }
 

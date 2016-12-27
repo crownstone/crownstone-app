@@ -52,9 +52,6 @@ export class DeviceStateEdit extends Component {
       this.unsubscribeNative();
     }
 
-    // stop the high frequency scanning
-    if (this.stopHFScanning)
-      this.stopHFScanning();
     this.props.eventBus.emit("useTriggers");
   }
 
@@ -258,73 +255,67 @@ export class DeviceStateEdit extends Component {
     // make sure we don't strangely trigger stuff while doing this.
     this.props.eventBus.emit("ignoreTriggers");
 
-    // wait 1 sec for the user to hold the phone in the right position.
+    let measurements = [];
+
+    // in case we do not measure enough samples, notify the user
     this.detectionTimeout = setTimeout(() => {
-      let measurements = [];
+      this.unsubscribeNative();
+      this.unsubscribeNative = undefined;
+      Alert.alert("I'm not sure yet...", "I could not collect enough points.. Could you try again?", [{text:'OK', onPress: () => {
+        this.props.eventBus.emit("hideLoading");
+        this.props.eventBus.emit("useTriggers");
 
-      // in case we dont measure enough:
-      this.detectionTimeout = setTimeout(() => {
-        this.unsubscribeNative();
-        this.unsubscribeNative = undefined;
-        Alert.alert("I'm not sure yet...", "I could not collect enough points.. Could you try again?", [{text:'OK', onPress: () => {
-          this.props.eventBus.emit("hideLoading");
-          this.props.eventBus.emit("useTriggers");
+        // notify the user when the measurement failed
+        Vibration.vibrate(400, false);
 
-          // notify the user when the measurement failed
-          Vibration.vibrate(400, false);
-
-          // stop the high frequency scanning
-          if (this.stopHFScanning)
-            this.stopHFScanning();
-        }}]);
-      },10000);
+      }}]);
+    }, 10000);
 
 
-      // listen to all advertisements
-      this.unsubscribeNative = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-        data.forEach((iBeaconAdvertisement) => {
-          // filter for our crownstone with only valid rssi measurements.
-          if (iBeaconId === iBeaconAdvertisement.id && iBeaconAdvertisement.rssi < 0) {
-            measurements.push(iBeaconAdvertisement.rssi);
-          }
-        });
-        if (measurements.length > 3) {
-          clearTimeout(this.detectionTimeout);
-          this.unsubscribeNative();
-          this.unsubscribeNative = undefined;
-          let total = 0;
-          measurements.forEach((measurement) => {
-            total += measurement;
-          });
-          let average = Math.round(total / measurements.length) - 5; // the - five makes sure the user is not defining a place where he will sit: on the threshold.
-          this.props.store.dispatch({
-            type: "UPDATE_STONE_CONFIG",
-            sphereId: this.props.sphereId,
-            stoneId: this.props.stoneId,
-            data: {nearThreshold: average}
-          });
-
-          // stop the high frequency scanning
-          if (this.stopHFScanning)
-            this.stopHFScanning();
-
-          // tell the user it was a success!
-          this.props.eventBus.emit("showLoading", "Great!");
-
-          // notify the user when the measurement is complete!
-          Vibration.vibrate(400, false);
-
-          Alert.alert("Great!", "I'll make sure to respond when you are within this range! When you move out and move back in I can start to respond!", [{
-            text: 'OK', onPress: () => {
-              this.props.eventBus.emit("hideLoading");
-              this.props.eventBus.emit("useTriggers");
-            }
-          }]);
+    // listen to all advertisements
+    this.unsubscribeNative = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+      data.forEach((iBeaconAdvertisement) => {
+        // filter for our crownstone with only valid rssi measurements.
+        if (iBeaconId === iBeaconAdvertisement.id && iBeaconAdvertisement.rssi < 0) {
+          measurements.push(iBeaconAdvertisement.rssi);
         }
       });
+      if (measurements.length > 3) {
+        clearTimeout(this.detectionTimeout);
 
-      this.stopHFScanning = BleUtil.startHighFrequencyScanning(this._uuid, 4000);
-    }, 1000)
+        // unsubscribe from the iBeacon messages
+        this.unsubscribeNative();
+        this.unsubscribeNative = undefined;
+
+        // get average rssi
+        let total = 0;
+        measurements.forEach((measurement) => {
+          total += measurement;
+        });
+        let average = Math.round(total / measurements.length) - 5; // the - five makes sure the user is not defining a place where he will sit: on the threshold.
+
+        // update trigger range.
+        this.props.store.dispatch({
+          type: "UPDATE_STONE_CONFIG",
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          data: {nearThreshold: average}
+        });
+
+        // tell the user it was a success!
+        this.props.eventBus.emit("showLoading", "Great!");
+
+        // notify the user when the measurement is complete!
+        Vibration.vibrate(400, false);
+
+        Alert.alert("Great!", "I'll make sure to respond when you are within this range! When you move out and move back in I can start to respond!", [{
+          text: 'OK', onPress: () => {
+            this.props.eventBus.emit("hideLoading");
+            this.props.eventBus.emit("useTriggers");
+          }
+        }]);
+      }
+    });
   }
 
   render() {
