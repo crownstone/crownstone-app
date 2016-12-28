@@ -5,6 +5,7 @@ import {
   TouchableHighlight,
   ScrollView,
   Text,
+  TouchableOpacity,
   StyleSheet,
   View
 } from 'react-native';
@@ -28,7 +29,9 @@ import {
   getPresentUsersInLocation,
   getCurrentPowerUsageInLocation,
   getStonesAndAppliancesInLocation,
-  enoughCrownstonesInLocationsForIndoorLocalization
+  enoughCrownstonesInLocationsForIndoorLocalization,
+  canUseIndoorLocalizationInSphere,
+  getFloatingStones
 } from '../../util/dataUtil'
 import { Icon } from '../components/Icon'
 import { Separator } from '../components/Separator'
@@ -200,30 +203,6 @@ export class RoomOverview extends Component {
     return {stoneArray, ids};
   }
 
-  _getExplanation(stonesInRoom, seeStoneInSetupMode) {
-    let explanation = this.props.explanation;
-    if (explanation === undefined && seeStoneInSetupMode === true) {
-      explanation = this.props.locationId === null ? "Crownstones in setup mode have a blue icon." : "Crownstone in setup mode found. Check the overview!";
-    }
-    if (explanation === undefined && !stonesInRoom) {
-      explanation = this.props.locationId === null ? "No Crownstones found." : "No Crownstones in this room.";
-    }
-
-
-    if (explanation === undefined) {
-      return <View />
-    }
-
-    return (
-      <View style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}>
-        <View style={{flexDirection: 'column', padding:10}}>
-          <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
-        </View>
-      </View>
-    )
-  }
-
-
   /**
    * The right item is the flickering icon for localization.
    * @param state
@@ -288,17 +267,15 @@ export class RoomOverview extends Component {
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
     let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
     let userAdmin = getUserLevelInSphere(state, this.props.sphereId) === 'admin';
+    let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
 
-    let stonesInRoom = Object.keys(stones).length > 0;
+
+    let amountOfStonesInRoom = Object.keys(stones).length;
     let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
 
     let content = undefined;
-    if (!stonesInRoom && seeStoneInSetupMode == false) {
-      content = (
-        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-          <Icon name="c2-pluginFront" size={0.75 * screenWidth} color="#fff" style={{backgroundColor:'transparent'}} />
-        </View>
-      );
+    if (amountOfStonesInRoom === 0 && seeStoneInSetupMode == false) {
+      content = undefined;
     }
     else {
       let {stoneArray, ids} = this._getStoneList(stones);
@@ -308,7 +285,12 @@ export class RoomOverview extends Component {
         <View>
           <ScrollView style={{position:'relative', top:-1}}>
             <View style={{height: Math.max(Object.keys(stoneArray).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
-              {this.renderStones(stoneArray, ids)}
+              <SeparatedItemList
+                items={stoneArray}
+                ids={ids}
+                separatorIndent={false}
+                renderer={this._renderer.bind(this)}
+              />
             </View>
           </ScrollView>
         </View>
@@ -327,14 +309,21 @@ export class RoomOverview extends Component {
         />
         <RoomBanner
           presentUsers={users}
-          noCrownstones={!stonesInRoom}
+          noCrownstones={amountOfStonesInRoom === 0}
+          canDoLocalization={canDoLocalization}
+          amountOfStonesInRoom={amountOfStonesInRoom}
           hideRight={this.props.hideRight}
           usage={usage}
           floatingCrownstones={this.props.locationId === null}
           viewingRemotely={this.viewingRemotely}
           overlayText={this.props.overlayText}
         />
-        {this._getExplanation(stonesInRoom, seeStoneInSetupMode)}
+        <RoomOverviewExplanation
+          state={state}
+          explanation={ this.props.explanation }
+          sphereId={ this.props.sphereId }
+          locationId={ this.props.locationId }
+        />
         {content}
       </Background>
     );
@@ -350,16 +339,89 @@ export class RoomOverview extends Component {
       }
     }
   }
+}
 
-  renderStones(stoneArray, ids) {
-    return (
-      <SeparatedItemList
-        items={stoneArray}
-        ids={ids}
-        separatorIndent={false}
-        renderer={this._renderer.bind(this)}
-      />
-    )
+
+/**
+ * This element contains all logic to show the explanation bar in the room overview.
+ * It requires:
+ *  - {object} state
+ *  - {string | undefined} explanation
+ *  - {string} sphereId
+ *  - {string} locationId
+ */
+class RoomOverviewExplanation extends Component {
+  render() {
+    let state = this.props.state;
+    let sphereId = this.props.sphereId;
+    let locationId = this.props.locationId;
+    let explanation = this.props.explanation;
+
+    // check if we have special cases
+    let amountOfStonesInRoom = Object.keys(getStonesAndAppliancesInLocation(state, sphereId, locationId)).length;
+    let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
+
+    // if the button callback is not undefined at draw time, we draw a button, not a view
+    let buttonCallback = undefined;
+
+    // callback to go to the floating crownstones. Is used twice
+    let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
+
+
+    // In case we see a crownstone in setup mode:
+    if (explanation === undefined && seeStoneInSetupMode === true) {
+      // in floating Crownstones
+      if (locationId === null) {
+        explanation = "Crownstones in setup mode have a blue icon."
+      }
+      // Go to the crownstone in setup mode.
+      else {
+        explanation = "Crownstone in setup mode found. Tap here to see it!";
+        buttonCallback = goToFloatingCrownstonesCallback;
+      }
+    }
+    // in case there are no crownstones in the room.
+    else if (explanation === undefined && amountOfStonesInRoom === 0) {
+      // in floating Crownstones
+      if (locationId === null) {
+        explanation = "No Crownstones found."
+      }
+      // there are no crownstones in the sphere
+      else if (Object.keys(state.spheres[sphereId].stones).length === 0) {
+        explanation = "To add a Crownstones to your sphere, hold your phone really close to a new one!"
+      }
+      // there are floating crownstones
+      else if (getFloatingStones(state, sphereId).length > 0) {
+        explanation = "Tap here to see all Crownstones without rooms!";
+        buttonCallback = goToFloatingCrownstonesCallback;
+      }
+      else {
+        explanation = "No Crownstones in this room.";
+      }
+    }
+
+
+    if (explanation === undefined) {
+      return <View />
+    }
+    else if (buttonCallback !== undefined) {
+      return (
+        <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
+          <View style={{flexDirection: 'column', padding:10}}>
+            <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
+          </View>
+        </TouchableOpacity>
+      )
+    }
+    else {
+      return (
+        <View style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}>
+          <View style={{flexDirection: 'column', padding:10}}>
+            <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
+          </View>
+        </View>
+      )
+    }
   }
 }
 
