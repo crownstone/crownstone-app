@@ -70,6 +70,18 @@ function validateFingerprint(fingerprintRaw) {
   let fingerprint = JSON.parse(fingerprintRaw);
   if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
     // yes its neater to return the if statement but this makes it easier to extend.
+    for (let i=0; i<fingerprint.length; i++) {
+      let deviceIds = Object.keys(fingerprint[i].devices);
+      if (deviceIds.length == 0) {
+        return false;
+      }
+      for (let j=0; j<deviceIds.length; j++) {
+        if (deviceIds[j].length < 1 || deviceIds[j].indexOf(":-") > 0) {
+          return false;
+        }
+      }
+    }
+
     return true;
   }
   else {

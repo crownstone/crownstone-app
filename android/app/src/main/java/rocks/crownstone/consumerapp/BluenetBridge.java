@@ -41,6 +41,7 @@ import nl.dobots.bluenet.ble.base.callbacks.IStatusCallback;
 import nl.dobots.bluenet.ble.base.structs.CrownstoneServiceData;
 import nl.dobots.bluenet.ble.base.structs.EncryptionKeys;
 import nl.dobots.bluenet.ble.cfg.BleErrors;
+import nl.dobots.bluenet.ble.core.BleCore;
 import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
 import nl.dobots.bluenet.ble.extended.CrownstoneSetup;
@@ -68,13 +69,15 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private static final int LOG_LEVEL_DEFAULT = Log.ERROR;
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Pair[] LOG_LEVELS = new Pair[]{
-		new Pair<>(BleScanService.class, Log.ERROR),
-		new Pair<>(CrownstoneServiceData.class, Log.WARN),
-		new Pair<>(BluenetBridge.class, Log.WARN),
-		new Pair<>(BleBaseEncryption.class, Log.WARN),
-		new Pair<>(BleIbeaconRanging.class, Log.WARN),
-		new Pair<>(GaussianNaiveBayes.class, Log.WARN),
-		new Pair<>(BleDevice.class, Log.WARN),
+			new Pair<>(BleScanService.class, Log.ERROR),
+			new Pair<>(CrownstoneServiceData.class, Log.WARN),
+			new Pair<>(BluenetBridge.class, Log.WARN),
+			new Pair<>(BleBaseEncryption.class, Log.WARN),
+			new Pair<>(BleIbeaconRanging.class, Log.WARN),
+			new Pair<>(GaussianNaiveBayes.class, Log.WARN),
+			new Pair<>(BleDevice.class, Log.WARN),
+			new Pair<>(BleCore.class, Log.WARN),
+			new Pair<>(BleExt.class, Log.WARN),
 	};
 
 	public static final int FAST_SCAN_INTERVAL = 20000; // ms scanning
@@ -86,6 +89,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private enum ScannerState {
 		DISABLED,
 		LOW_POWER,
+		UNIQUE_ONLY,
 		HIGH_POWER,
 	}
 
@@ -102,6 +106,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //	private Map<UUID, String> _trackedIBeacons = new HashMap<>();
 
 	private Callback _readyCallback = null;
+
+	private Map<String, BleDevice> _scannedDeviceMap = new HashMap<>();
 
 	private ScannerState _scannerState = ScannerState.DISABLED;
 	private boolean _isTrackingIbeacon = false;
@@ -133,8 +139,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 		_handler.postDelayed(iBeaconTick, IBEACON_TICK_INTERVAL);
 
+		setLogLevels();
+		
 //		_bleBase = new BleBase();
 		_bleExt = new BleExt();
+		_bleExt.setConnectTimeout(5000);
+		_bleExt.setNumRetries(0);
 		initBluetooth();
 
 		// create and bind to the BleScanService
@@ -146,40 +156,15 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 		_localization = FingerprintLocalization.getInstance();
 
-		setLogLevel(BleIbeaconRanging.class);
-		setLogLevel(BluenetBridge.class);
-		setLogLevel(BleBaseEncryption.class);
-		setLogLevel(CrownstoneServiceData.class);
-		setLogLevel(BleBaseEncryption.class);
-		setLogLevel(GaussianNaiveBayes.class);
-		setLogLevel(BleDevice.class);
-		BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
-
-//		_scanService
-//		WritableMap map = Arguments.createMap();
-//		map.putString("str", "a");
-//		map.putInt("int", 2);
-//		BleLog.LOGd(TAG, "map: " + map.getString("map"));
-//		String str = null;
-//		int num=0;
-//		try {
-//			num = map.getInt("str");
-//		} catch (UnexpectedNativeTypeException e) {}
-//		try {
-//			num = map.getInt("int");
-//		} catch (UnexpectedNativeTypeException e) {}
-//		try {
-//			str = map.getString("str");
-//		} catch (UnexpectedNativeTypeException e) {}
-//		try {
-//			str = map.getString("int");
-//		} catch (UnexpectedNativeTypeException e) {}
-//		BleLog.LOGd(TAG, "str=%s int=%d", str, num);
-//		_scanService
 	}
 
-	private void setLogLevel(Class<?> cls) {
-		BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), getLogLevel(cls));
+	private void setLogLevels() {
+		BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
+		for (Pair pair: LOG_LEVELS) {
+			Class<?> cls = (Class<?>)pair.first;
+			int logLevel = (int)pair.second;
+			BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), logLevel);
+		}
 	}
 
 	private boolean _bleTurnedOff = false;
@@ -306,14 +291,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void startScanning() {
-		BleLog.getInstance().LOGd(TAG, "startScanning");
+		BleLog.getInstance().LOGi(TAG, "startScanning");
 		setScannerState(ScannerState.HIGH_POWER);
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.all);
 	}
 
 	@ReactMethod
 	public void startScanningForCrownstones() {
-		BleLog.getInstance().LOGd(TAG, "startScanningForCrownstones");
+		BleLog.getInstance().LOGi(TAG, "startScanningForCrownstones");
 		setScannerState(ScannerState.HIGH_POWER);
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
@@ -323,13 +308,15 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Low power scanning!
 		// Only emit an event when the data changed
 		// TODO: only make it send an event when data changed
-		BleLog.getInstance().LOGd(TAG, "startScanningForCrownstonesUniqueOnly");
-		setScannerState(ScannerState.LOW_POWER);
+		BleLog.getInstance().LOGi(TAG, "startScanningForCrownstonesUniqueOnly");
+		_scannedDeviceMap.clear();
+		setScannerState(ScannerState.UNIQUE_ONLY);
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
 	@ReactMethod
 	public void stopScanning() {
+		BleLog.getInstance().LOGi(TAG, "stopScanning");
 		setScannerState(ScannerState.DISABLED);
 		if (isScannerIdle()) {
 			_scanService.stopIntervalScan();
@@ -804,7 +791,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void pauseTracking() {
 		// Same as stopTracking, but keeps the list of tracked iBeacons.
-		BleLog.getInstance().LOGd(TAG, "pauseTracking");
+		BleLog.getInstance().LOGi(TAG, "pauseTracking");
 		setTrackingState(false);
 		if (isScannerIdle()) {
 			_scanService.stopIntervalScan();
@@ -814,7 +801,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void resumeTracking() {
 		// Same as startTracking, but restore the stored list of tracked iBeacons.
-		BleLog.getInstance().LOGd(TAG, "resumeTracking");
+		BleLog.getInstance().LOGi(TAG, "resumeTracking");
 		setTrackingState(true);
 		_scanService.startIntervalScan(getScanInterval(), getScanInterval(), BleDeviceFilter.anyStone);
 	}
@@ -822,7 +809,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void clearTrackedBeacons(Callback callback) {
 		// Clear the list of tracked iBeacons and stop tracking.
-		Log.d(TAG, "clearTrackedBeacons");
+		BleLog.getInstance().LOGi(TAG, "clearTrackedBeacons");
 		setTrackingState(false);
 		_iBeaconRanger.clearIbeaconFilter();
 		_iBeaconSphereIds.clear();
@@ -841,12 +828,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void startIndoorLocalization() {
 		// Start using the classifier
+		BleLog.getInstance().LOGd(TAG, "startIndoorLocalization");
 		_localization.startLocalization(this);
 	}
 
 	@ReactMethod
 	public void stopIndoorLocalization() {
 		// Stop using the classifier
+		BleLog.getInstance().LOGd(TAG, "stopIndoorLocalization");
 		_localization.stopLocalization();
 	}
 
@@ -1002,6 +991,39 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@Override
 	public void onDeviceScanned(BleDevice device) {
 		BleLog.getInstance().LOGv(TAG, "event scanned device: " + device.toString());
+
+		CrownstoneServiceData serviceData = device.getServiceData();
+		if (serviceData == null) {
+			// Don't send events of devices without service data
+			return;
+		}
+
+		if (_scannerState == ScannerState.UNIQUE_ONLY) {
+			String address = device.getAddress();
+			BleDevice prevDev = _scannedDeviceMap.get(address);
+			if (prevDev != null) {
+				CrownstoneServiceData prevServiceData = prevDev.getServiceData();
+				if (prevServiceData.getRandomBytes().equals(serviceData.getRandomBytes())
+						&& prevServiceData.getPowerUsage() == serviceData.getPowerUsage()
+						&& prevServiceData.getAccumulatedEnergy() == serviceData.getAccumulatedEnergy()
+						&& prevServiceData.getSwitchState() == serviceData.getSwitchState()
+						&& prevServiceData.getEventBitmask() == serviceData.getEventBitmask()
+						) {
+					// This advertisement is similar to the previous one
+					BleLog.getInstance().LOGv(TAG, "Advertisement of device " + address + " is not unique");
+					return;
+				}
+				else {
+					// Update the device
+					_scannedDeviceMap.put(device.getAddress(), device);
+				}
+			}
+			else {
+				// Init the device
+				_scannedDeviceMap.put(device.getAddress(), device);
+			}
+		}
+
 		WritableMap advertisementMap = Arguments.createMap();
 		advertisementMap.putString("handle", device.getAddress());
 		advertisementMap.putString("name", device.getName());
@@ -1017,8 +1039,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 
 		WritableMap serviceDataMap = Arguments.createMap();
-		CrownstoneServiceData serviceData = device.getServiceData();
-		if (serviceData != null) {
+//		if (serviceData != null) {
 			// ServiceUUID of the advertisementData
 
 			advertisementMap.putString("serviceUUID", Integer.toHexString(serviceData.getServiceUuid())); // TODO: make sure it's zero padded
@@ -1042,7 +1063,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			serviceDataMap.putBoolean("dfuMode", device.isDfuMode());
 			serviceDataMap.putString("random", serviceData.getRandomBytes());
 			advertisementMap.putMap("serviceData", serviceDataMap);
-		}
+//		}
+
 //		sendEvent("advertisementData", advertisementMap);
 		if (device.isValidatedCrownstone()) {
 			if (device.isDfuMode()) {
@@ -1077,7 +1099,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				WritableMap nearestMap = Arguments.createMap();
 				nearestMap.putString("name", dev.getName());
 				nearestMap.putString("handle", dev.getAddress());
-				nearestMap.putInt("rssi", dev.getRssi());
+				nearestMap.putInt("rssi", dev.getAverageRssi());
 				nearestMap.putBoolean("setupMode", dev.isSetupMode());
 				sendEvent("nearestSetupCrownstone", nearestMap);
 				BleLog.getInstance().LOGv(TAG, "nearestSetupCrownstone: " + dev);
