@@ -20,17 +20,30 @@ let ELEMENT_OFFSET = 0.1*ELEMENT_HEIGHT;
 
 export class RoomBanner extends Component {
   getOverlayContent() {
-    if (this.props.overlayText !== undefined)
+    if (this.props.overlayText !== undefined) {
       return <Text style={styles.roomImageText}>{this.props.overlayText}</Text>;
+    }
     else if (this.props.viewingRemotely === true) {
       return <Text style={styles.roomImageText}>Viewing Data</Text>;
     }
-    else if (this.props.presentUsers.length === 0)
-      return <Text style={styles.roomImageText}>Nobody Present</Text>;
+    else if (this.props.canDoLocalization === true) {
+      if (this.props.presentUsers.length === 0) {
+        return <Text style={styles.roomImageText}>Nobody Present</Text>;
+      }
+      else {
+        // TODO: support multiple users
+        let user = this.props.presentUsers[0];
+        return <ProfilePicture picture={user.data.picture} size={30} innerSize={33} name={user.data.firstName} style={{position:'relative', top:2}} />;
+      }
+    }
+    else if (this.props.amountOfStonesInRoom === 0) {
+      return <Text style={styles.roomImageText}>No Crownstones in this room</Text>;
+    }
+    else if (this.props.amountOfStonesInRoom === 1) {
+      return <Text style={styles.roomImageText}>{this.props.amountOfStonesInRoom + " Crownstone"}</Text>;
+    }
     else {
-      // TODO: support multiple users
-      let user = this.props.presentUsers[0];
-      return <ProfilePicture picture={user.data.picture} size={30} innerSize={33} name={user.data.firstName} style={{position:'relative', top:2}} />;
+      return <Text style={styles.roomImageText}>{this.props.amountOfStonesInRoom + " Crownstones"}</Text>;
     }
   }
 

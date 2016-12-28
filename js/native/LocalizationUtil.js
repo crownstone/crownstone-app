@@ -32,11 +32,9 @@ export const LocalizationUtil = {
           locationIds.forEach((locationId) => {
             if (locations[locationId].config.fingerprintRaw) {
               // check format of the fingerprint:
-              let fingerprint = JSON.parse(locations[locationId].config.fingerprintRaw);
-              if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
+              if (validateFingerprint(locations[locationId].config.fingerprintRaw)) {
                 LOG("-------------- LOADING FINGERPRINT FOR ", locationId, " IN SPHERE ", sphereId);
                 Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw);
-                LOG("-------------- LOADED");
               }
               else {
                 showRemoveFingerprintNotification = true;
@@ -61,3 +59,20 @@ export const LocalizationUtil = {
   },
 };
 
+
+/**
+ * Use this method to catch any case where the fingerprint would be incorrect due to bugs or old formats.
+ *
+ * @param fingerprintRaw
+ * @returns {boolean}
+ */
+function validateFingerprint(fingerprintRaw) {
+  let fingerprint = JSON.parse(fingerprintRaw);
+  if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
+    // yes its neater to return the if statement but this makes it easier to extend.
+    return true;
+  }
+  else {
+    return false;
+  }
+}
