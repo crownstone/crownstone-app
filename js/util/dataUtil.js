@@ -183,6 +183,7 @@ function _getMap(state, requestedKey) {
 
     stoneIds.forEach((stoneId) => {
       let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
+
       map[sphereId][stoneConfig[requestedKey]] = {
         id: stoneId,
         cid: stoneConfig.crownstoneId,

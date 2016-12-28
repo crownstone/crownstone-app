@@ -76,7 +76,6 @@ export class AppRouter extends Component {
     // if there is a user that is listed as logged in, verify his account.
     let dataLoginValidation = () => {
       let state = store.getState();
-
       // pass the store to the singletons
       LocationHandler.loadStore(store);
       AdvertisementHandler.loadStore(store);
@@ -87,8 +86,7 @@ export class AppRouter extends Component {
 
       // clear the temporary data like presence, state and disability of stones so no old data will be shown
       prepareStoreForUser(store);
-
-      // // if we have an accessToken, we proceed with logging in automatically
+      // if we have an accessToken, we proceed with logging in automatically
       if (state.user.accessToken !== null) {
         // in the background we check if we're authenticated, if not we log out.
         CLOUD.setAccess(state.user.accessToken);
@@ -104,7 +102,6 @@ export class AppRouter extends Component {
               Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
             }
           });
-      //
         this.setState({storeInitialized:true, loggedIn:true});
         eventBus.emit("appStarted");
       }

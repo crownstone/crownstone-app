@@ -117,7 +117,7 @@ export class EditableItem extends Component {
       default:
         return (
           <View>
-            <View style={[styles.listView, {barHeight, flex:1}]}>
+            <View style={[styles.listView, {barHeight, flex:1} ]}>
               <Text>{this.props.label + ' - UNHANDLED for ' + this.props.type}</Text>
             </View>
           </View>

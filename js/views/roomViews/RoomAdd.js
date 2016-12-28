@@ -38,6 +38,26 @@ export class RoomAdd extends Component {
     }
   }
 
+  _pushCrownstoneItem(items, device, stone, stoneId, subtext = '') {
+    items.push({
+      mediumIcon: <IconCircle
+        icon={device.config.icon}
+        size={52}
+        backgroundColor={stone.state.state > 0 && stone.config.disabled === false ? colors.green.hex : colors.menuBackground.hex}
+        color={colors.white.hex}
+        style={{position:'relative', top:2}} />,
+      label: device.config.name,
+      subtext: subtext,
+      type: 'checkbar',
+      value: this.state.selectedStones[stoneId] === true,
+      callback: () => {
+        this.state.selectedStones[stoneId] = !this.state.selectedStones[stoneId] === true;
+        this.setState({selectedStones: this.state.selectedStones})
+      },
+      style: {color: colors.iosBlue.hex},
+    });
+  }
+
   _getItems(floatingStones) {
     let items = [];
     items.push({label:'NEW ROOM', type:'explanation', below:false});
@@ -55,47 +75,38 @@ export class RoomAdd extends Component {
     });
 
     let floatingStoneIds = Object.keys(floatingStones);
+    let shownMovingStone = false;
     if (floatingStoneIds.length > 0) {
       items.push({label:'FLOATING CROWNSTONES', type:'explanation', below:false});
       let nearestId = this._getNearestStone(floatingStoneIds, floatingStones);
       floatingStoneIds.forEach((stoneId) => {
+        // check if we have already shown the moving stone
+        shownMovingStone = this.props.movingCrownstone === stoneId ? true : shownMovingStone;
+
         let device = floatingStones[stoneId].device;
         let stone = floatingStones[stoneId].stone;
         let subtext = stone.config.disabled === false ?
           (nearestId === stoneId ? 'Nearest' : stone.config.rssi > -60 ? 'Very near' : stone.config.rssi > -70 ? 'Near' : undefined)
           : undefined;
 
-        items.push({
-          mediumIcon: <IconCircle
-            icon={device.config.icon}
-            size={52}
-            backgroundColor={stone.state.state > 0 && stone.config.disabled === false ? colors.green.hex : colors.menuBackground.hex}
-            color={colors.white.hex}
-            style={{position:'relative', top:2}} />,
-          label: device.config.name,
-          subtext: subtext,
-          type: 'checkbar',
-          value: this.state.selectedStones[stoneId] === true,
-          callback: () => {
-            this.state.selectedStones[stoneId] = !this.state.selectedStones[stoneId] === true;
-            this.setState({selectedStones: this.state.selectedStones})
-          },
-          style: {color: colors.iosBlue.hex},
-        });
+        this._pushCrownstoneItem(items, device, stone, stoneId, subtext);
       });
-      items.push({label:'You can select floating Crownstones to immediately add them to this new room!', type:'explanation', below: true});
+      items.push({label:'You can select floating Crownstones to immediately add them to this new room!', type:'explanation', below: true, style:{paddingBottom:0}});
     }
-    // else {
-    //   items.push({type:'spacer'});
-    // }
-    //
-    //
-    // items.push({
-    //   label: 'Create Room',
-    //   type: 'button',
-    //   style: {color: colors.iosBlue.hex},
-    //   callback: () => { this.createRoom(); }
-    // });
+
+    if (shownMovingStone === false && this.props.movingCrownstone !== undefined) {
+      items.push({label:'CURRENTLY MOVING CROWNSTONE', type:'explanation', below:false});
+      let stoneId = this.props.movingCrownstone;
+      let state = this.props.store.getState();
+      let stone = state.spheres[this.props.sphereId].stones[stoneId];
+      let device = stone;
+      if (stone.config.applianceId) {
+        device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId]
+      }
+
+      this._pushCrownstoneItem(items, device, stone, stoneId);
+    }
+
     return items;
   }
 
@@ -136,10 +147,14 @@ export class RoomAdd extends Component {
         this.props.eventBus.emit('showLoading', 'Creating room...');
         CLOUD.forSphere(this.props.sphereId).createLocation(this.state.name, this.state.icon)
           .then((reply) => {
-
-            Actions.pop();
-            Actions.pop();
-            Actions.pop();
+            if (this.props.fromMovingView === true) {
+              // TODO: implemented this way because of broken pop structure in router-flux
+              Actions.pop({popNum:2});
+              Actions.pop();
+            }
+            else {
+              Actions.pop();
+            }
 
             this.props.eventBus.emit('hideLoading');
             let actions =  [];
@@ -156,8 +171,9 @@ export class RoomAdd extends Component {
 
             store.batchDispatch(actions);
 
-
-            Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
+            setTimeout(() => {
+              Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
+            }, 0);
           }).catch((err) => {
           LOGError("Something went wrong with creation of rooms", err);
           Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: () => {this.props.eventBus.emit('hideLoading');}}])})

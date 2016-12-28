@@ -35,6 +35,24 @@ export class RoomSelection extends Component {
     this.unsubscribe();
   }
 
+  _getRoomItem(store, state, requiredData, roomId, room) {
+    return (
+      <TouchableHighlight key={roomId + '_entry'} onPress={() => {
+        Actions.pop();
+        store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: roomId}})
+      }}>
+        <View style={[styles.listView, {paddingRight:5}]}>
+          <RoomList
+            icon={room.config.icon}
+            name={room.config.name}
+            stoneCount={Object.keys(getStonesInLocation(state, this.props.sphereId, roomId)).length}
+            navigation={true}
+          />
+        </View>
+      </TouchableHighlight>
+    )
+  }
+
   _getItems() {
     let items = [];
     let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId};
@@ -47,21 +65,7 @@ export class RoomSelection extends Component {
     items.push({label:"ROOMS IN CURRENT SPHERE",  type:'explanation', below:false});
     roomIds.forEach((roomId) => {
       let room = rooms[roomId];
-      items.push({__item:
-        <TouchableHighlight key={roomId + '_entry'} onPress={() => {
-          Actions.pop();
-          store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: roomId}})
-        }}>
-          <View style={styles.listView}>
-            <RoomList
-              icon={room.config.icon}
-              name={room.config.name}
-              stoneCount={Object.keys(getStonesInLocation(state, this.props.sphereId, roomId)).length}
-              navigation={true}
-            />
-            </View>
-          </TouchableHighlight>
-      });
+      items.push({__item: this._getRoomItem(store, state, requiredData, roomId, room)});
     });
 
     items.push({
@@ -70,11 +74,9 @@ export class RoomSelection extends Component {
       style: {color:colors.blue.hex},
       type: 'navigation',
       callback: () => {
-        Actions.pop();
-        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId})
+        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true})
       }
     });
-
 
     items.push({label:"DECOUPLE THIS CROWNSTONE",  type:'explanation', below: false});
     items.push({

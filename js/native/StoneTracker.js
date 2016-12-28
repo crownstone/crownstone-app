@@ -12,7 +12,7 @@ import { TYPES } from '../router/store/reducers/stones'
 
 let MINIMUM_AMOUNT_OF_SAMPLES = 3;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
-let TOUCH_RSSI_THRESHOLD = -45;
+export let TOUCH_RSSI_THRESHOLD = -45;
 let TOUCH_RSSI_ENABLE_DISTANCE = -5;
 let TOUCH_TIME_BETWEEN_SWITCHING = 5000; // ms
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms

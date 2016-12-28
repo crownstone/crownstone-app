@@ -24,7 +24,6 @@ export function NativeEnhancer({ getState }) {
     // state after update
     let newState = getState();
 
-
     let evaluateFingerprint = false;
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {

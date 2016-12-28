@@ -36,7 +36,7 @@ export class RoomList extends Component {
             <Text style={{fontSize:14, fontWeight:'100', paddingTop:3}}>{'Number of Crownstones: ' + this.props.stoneCount}</Text>
           </View>
         </View>
-        {this.props.navigation ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'} /> : undefined}
+        {this.props.navigation ? <Icon name="ios-arrow-forward" size={18} color={'#888'} /> : undefined}
       </View>
     );
   }

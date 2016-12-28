@@ -16,6 +16,7 @@ import { Icon } from './Icon';
 import { IconButton } from '../components/IconButton'
 import { getUUID } from '../../util/util'
 import { styles, colors, screenWidth } from '../styles'
+import { TOUCH_RSSI_THRESHOLD } from '../../native/StoneTracker'
 
 
 export class DeviceEntry extends Component {
@@ -173,11 +174,17 @@ export class DeviceEntry extends Component {
 
   _getSubText() {
     if (this.props.disabled === false && this.props.currentUsage !== undefined) {
+      // show it in orange if it's in tap to toggle range
+      let color = colors.iosBlue.hex;
+      if (this.props.rssi >= TOUCH_RSSI_THRESHOLD) {
+        color = colors.orange.hex;
+      }
+
       if (this.props.nearest === true) {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
-            <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Nearest)'}</Text>
+            <Text style={{fontSize: 12, color: color}}>{' (Nearest)'}</Text>
           </View>
         )
       }
@@ -185,7 +192,7 @@ export class DeviceEntry extends Component {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>
-            <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Very near)'}</Text>
+            <Text style={{fontSize: 12, color: color}}>{' (Very near)'}</Text>
           </View>
         )
       }

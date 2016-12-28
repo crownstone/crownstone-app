@@ -133,12 +133,14 @@ export class RoomLayer extends Component {
     }
 
     if (amountOfRooms > 6) {
+      let floatingStoneOffset = 0;
       if (showFloatingCrownstones) {
-        roomNodes.push(this._renderRoom(null, amountOfRooms, 0, state.app.activeSphere))
+        roomNodes.push(this._renderRoom(null, amountOfRooms, 0, state.app.activeSphere));
+        floatingStoneOffset = 1;
       }
 
       for (let i = 0; i < roomIdArray.length; i++) {
-        roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i + 1, state.app.activeSphere))
+        roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i + floatingStoneOffset, state.app.activeSphere))
       }
 
       return (

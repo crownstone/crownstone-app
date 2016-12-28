@@ -25,7 +25,6 @@ export function CloudEnhancer({ getState }) {
     else {
       handleAction(action, returnValue, newState, oldState);
     }
-
     // This will likely be the action itself, unless
     // a middleware further in chain changed it.
     return returnValue;

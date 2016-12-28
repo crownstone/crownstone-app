@@ -140,7 +140,6 @@ export const safeDeleteFile = function(uri) {
         resolve()
       })
       .catch((err) => {
-        // console.log("COULDNT DELETE FILE", err)
       })
   })
 };

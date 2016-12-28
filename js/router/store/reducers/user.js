@@ -26,29 +26,28 @@ export default (state = defaultSettings.user, action = {}) => {
     case 'SET_BETA_ACCESS':
       if (action.data) {
         let newState = {...state};
-        newState.betaAccess   = update(action.data.betaAccess,   newState.betaAccess);
+        newState.betaAccess = update(action.data.betaAccess, newState.betaAccess);
         return newState;
       }
       return state;
     case 'CREATE_APP_IDENTIFIER':
-      if (action.data) {
+      if (state.appIdentifier === null) {
         let newState = {...state};
-        if (state.appIdentifier === null)
-          newState.appIdentifier   = getUUID();
+        newState.appIdentifier = getUUID();
         return newState;
       }
       return state;
     case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
       if (action.data) {
         let newState = {...state};
-        newState.seenTapToToggle   = update(action.data.seenTapToToggle,   newState.seenTapToToggle);
+        newState.seenTapToToggle = update(action.data.seenTapToToggle, newState.seenTapToToggle);
         return newState;
       }
       return state;
     case 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT':
       if (action.data) {
         let newState = {...state};
-        newState.seenTapToToggleDisabledDuringSetup   = update(action.data.seenTapToToggleDisabledDuringSetup,   newState.seenTapToToggleDisabledDuringSetup);
+        newState.seenTapToToggleDisabledDuringSetup = update(action.data.seenTapToToggleDisabledDuringSetup, newState.seenTapToToggleDisabledDuringSetup);
         return newState;
       }
       return state;

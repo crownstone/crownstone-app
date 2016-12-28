@@ -52,7 +52,7 @@ export const DISABLE_TIMEOUT = 30000; //ms
 export const KEEPALIVE_INTERVAL = 60; // s !
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = true;
+export const RELEASE_MODE = false;
 
 if (RELEASE_MODE) {
   DEBUG           = false;
