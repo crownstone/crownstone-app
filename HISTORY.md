@@ -2,6 +2,7 @@
 
 To be Released:
 
+- Removed looking for Crownstone if it is disabled during deletion of Crownstone.
 - [Android] added fingerprint sanity check due to bug in lib.
 - Show range indicator orange if within tap to toggle range.
 - Fixed unsteady app identifier. Should reduce the amount of Devices in the cloud.

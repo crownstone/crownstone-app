@@ -69,8 +69,17 @@ export class DeviceEdit extends Component {
           "Are you sure?",
           "Removing a Crownstone from the sphere will revert it to it's factory default settings.",
           [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
-            this.props.eventBus.emit('showLoading', 'Looking for the Crownstone...');
-            this._removeCrownstone(stone);
+            if (stone.config.disabled === true) {
+              Alert.alert("Can't see this one!",
+                "This Crownstone has not been seen for a while.. Can you move closer to it and try again? If you want to remove it from your Sphere without resetting it, press Delete anyway.",
+                [{text:'Delete anyway', onPress: () => {this._removeCloudOnly()}, style: 'destructive'},
+                {text:'Cancel',style: 'cancel', onPress: () => {this.props.eventBus.emit('hideLoading');}}]
+              )
+            }
+            else {
+              this.props.eventBus.emit('showLoading', 'Looking for the Crownstone...');
+              this._removeCrownstone(stone);
+            }
           }}]
         )
       }
@@ -278,9 +287,9 @@ export class DeviceEdit extends Component {
   }
 
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    const store = this.props.store;
+    const state = store.getState();
+    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let applianceOptions = [];
     let stoneOptions = this.constructStoneOptions(store, stone);
