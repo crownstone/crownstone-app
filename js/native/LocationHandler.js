@@ -54,14 +54,12 @@ class LocationHandlerClass {
       // set the presence
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: true, present: true}});
 
+      // after 10 seconds, start the keepalive run. This gives the app some time for syncing etc.
       Scheduler.scheduleCallback(() => {KeepAliveHandler.fireTrigger();}, 10000, 'keepAlive');
 
       // trigger crownstones on enter sphere
       LOG("TRIGGER ENTER HOME EVENT FOR SPHERE", state.spheres[sphereId].config.name);
       this._triggerCrownstones(state, sphereId, TYPES.HOME_ENTER);
-
-      // start high frequency scan when entering a sphere.
-      BleUtil.startHighFrequencyScanning(this._uuid, 5000);
 
       // prepare the settings for this sphere and pass them onto bluenet
       let bluenetSettings = {
@@ -86,17 +84,6 @@ class LocationHandlerClass {
 
       LOG("Set Settings.", bluenetSettings);
       return BleActions.setSettings(bluenetSettings);
-        // do not put all stones on disabled on reentering the house
-        // .then(() => {
-        //   let sphereActions = [];
-        //   let stoneIds = Object.keys(state.spheres[sphereId].stones);
-        //   LOG("Disabling all stones");
-        //   stoneIds.forEach((stoneId) => {
-        //     sphereActions.push({type: 'UPDATE_STONE_DISABILITY', stoneId: stoneId, data: { disabled: true }});
-        //   });
-        //
-        //   this.store.batchDispatch(sphereActions);
-        // }).catch()
     }
   }
 

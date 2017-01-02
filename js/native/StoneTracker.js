@@ -10,9 +10,9 @@ import { canUseIndoorLocalizationInSphere } from '../util/dataUtil'
 import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
 
-let MINIMUM_AMOUNT_OF_SAMPLES = 3;
+let MINIMUM_AMOUNT_OF_SAMPLES = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
-export let TOUCH_RSSI_THRESHOLD = -45;
+export let TOUCH_RSSI_THRESHOLD = -48;
 let TOUCH_RSSI_ENABLE_DISTANCE = -5;
 let TOUCH_TIME_BETWEEN_SWITCHING = 5000; // ms
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
@@ -44,7 +44,7 @@ export class StoneTracker {
 
 
   iBeaconUpdate(major, minor, rssi, referenceId) {
-    // LOG("major, minor, rssi, referenceId",major, minor, rssi, referenceId)
+    LOG("major, minor, rssi, referenceId",major, minor, rssi, referenceId)
 
     // only use valid rssi measurements, 0 or 128 are not valid measurements
     if (rssi === undefined || rssi > -1) {
@@ -155,21 +155,25 @@ export class StoneTracker {
     if (ref.samples < MINIMUM_AMOUNT_OF_SAMPLES)
       return;
 
+    let farThresholdDistance = Math.pow(10,(-(stone.config.nearThreshold + 60)/(10 * 2))) + 0.5; // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
+    let farThreshold = -(10*2)*Math.log10(farThresholdDistance) - 60;
+
+
     // these event are only used for when there are no room-level options possible
     if (!canUseIndoorLocalizationInSphere(state, referenceId)) {
-      if (ref.rssiAverage > stone.config.nearThreshold) {
+      if (ref.rssiAverage >= stone.config.nearThreshold) {
         // if near, cleanup far pending callback
         this._cleanupPendingOutdatedCallback(element, ref, TYPES.NEAR);
         this._handleTrigger(element, ref, TYPES.NEAR, stoneId, referenceId);
       }
-      // we add the -5 so there is not a single threshold line.
-      else if (ref.rssiAverage < (stone.config.nearThreshold - 5)) {
+      // far threshold is 0.5m more than the near one so there is not a single line
+      else if (ref.rssiAverage < farThreshold) {
         // if near, cleanup far pending callback
         this._cleanupPendingOutdatedCallback(element, ref, TYPES.AWAY);
         this._handleTrigger(element, ref, TYPES.AWAY, stoneId, referenceId);
       }
       // in case we are between near and far, only delete pending callbacks.
-      else if (ref.rssiAverage > stone.config.nearThreshold && ref.rssiAverage < (stone.config.nearThreshold - 5)) {
+      else if (ref.rssiAverage > stone.config.nearThreshold && ref.rssiAverage < farThreshold) {
         this._cleanupPendingOutdatedCallback(element, ref, TYPES.NEAR);
       }
     }
@@ -209,10 +213,7 @@ export class StoneTracker {
         }
 
         LOG("TRIGGERING CALLBACK FOR ", type);
-        // if we need to switch:
-        if (behaviour.state !== stone.state.state) {
-          this._applySwitchState(behaviour.state, stone, stoneId, sphereId);
-        }
+        this._applySwitchState(behaviour.state, stone, stoneId, sphereId);
       };
 
       if (behaviour.delay > 0) {

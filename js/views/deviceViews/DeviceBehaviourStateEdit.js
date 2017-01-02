@@ -27,7 +27,6 @@ export class DeviceStateEdit extends Component {
     super();
     this.detectionTimeout = undefined;
     this.unsubscribeNative = undefined;
-    this.stopHFScanning = undefined;
     this._uuid = getUUID();
   }
 
@@ -292,14 +291,17 @@ export class DeviceStateEdit extends Component {
         measurements.forEach((measurement) => {
           total += measurement;
         });
-        let average = Math.round(total / measurements.length) - 5; // the - five makes sure the user is not defining a place where he will sit: on the threshold.
+
+        let average = Math.round(total / measurements.length);
+        let distance = Math.pow(10,(-(average + 60)/(10 * 2))) + 0.5; // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
+        let averageCorrected = -(10*2)*Math.log10(distance) - 60;
 
         // update trigger range.
         this.props.store.dispatch({
-          type: "UPDATE_STONE_CONFIG",
+          type:     "UPDATE_STONE_CONFIG",
           sphereId: this.props.sphereId,
-          stoneId: this.props.stoneId,
-          data: {nearThreshold: average}
+          stoneId:  this.props.stoneId,
+          data: { nearThreshold: averageCorrected }
         });
 
         // tell the user it was a success!
@@ -319,9 +321,9 @@ export class DeviceStateEdit extends Component {
   }
 
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    let stone     = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    const store = this.props.store;
+    const state = store.getState();
+    let stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let device = stone;
     if (stone.config.applianceId)

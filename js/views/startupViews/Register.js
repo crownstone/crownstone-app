@@ -96,8 +96,7 @@ export class Register extends Component {
         type: 'textEdit',
         validation:'password',
         validationMethod:'icons',
-        verification: true,
-        secureTextEntry: true,
+        secureTextEntry: false,
         value: this.state.password,
         validationCallback: (newState) => {this.inputStates.password = newState; this.setPasswordExplanation(newState)},
         alwaysShowState: this.state.alwaysShowState,
@@ -238,7 +237,7 @@ export class Register extends Component {
   render() {
     return (
       <Background hideTabBar={true} image={this.props.backgrounds.menu}>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={true} >
           <ListEditableItems items={this.getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>
