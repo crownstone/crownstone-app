@@ -2,6 +2,10 @@
 
 To be Released:
 
+- The registration conclusion will not go to the login screen instead of the overview.
+
+--- iOS release submitted 2017-1-2
+
 - Fixed the near/away not always switching.
 - Improved distance estimate for near/far.
 - Made the register and profile page not require a tap to close the keyboard before moving on.
