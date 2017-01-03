@@ -33,9 +33,9 @@ let defaultSettings = {
     crownstoneId: undefined,
     firmwareVersion: 0,
     nearThreshold: -85,
-    rssi: -50,
+    rssi: -1000,
     touchToToggle: true,
-    disabled: false,
+    disabled: true,
     updatedAt: 1,
   },
   state: {
@@ -96,10 +96,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_DISABILITY': // used for crownstones that are not heard from for a while.
       if (action.data) {
         let newState = {...state};
-        // todo: remove
-        if (action.data.disabled !== undefined) {
-          LOG("CHANGING_DISABILITY ", action.stoneId, action.data.disabled)
-        }
         newState.disabled        = update(action.data.disabled, newState.disabled);
         newState.rssi            = update(action.data.rssi, newState.rssi);
         return newState;
@@ -109,10 +105,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
         let newState = {...state};
-        // todo: remove
-        if (action.data.disabled !== undefined) {
-          LOG("CHANGING_DISABILITY ", action.stoneId, action.data.disabled)
-        }
         newState.name            = update(action.data.name,            newState.name);
         newState.icon            = update(action.data.icon,            newState.icon);
         newState.type            = update(action.data.type,            newState.type);
@@ -126,6 +118,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.crownstoneId    = update(action.data.crownstoneId,    newState.crownstoneId);
         newState.nearThreshold   = update(action.data.nearThreshold,   newState.nearThreshold);
         newState.disabled        = update(action.data.disabled,        newState.disabled);
+        newState.rssi            = update(action.data.rssi,            newState.rssi);
         newState.touchToToggle   = update(action.data.touchToToggle,   newState.touchToToggle);
         newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
