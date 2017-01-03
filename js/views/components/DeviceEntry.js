@@ -180,7 +180,7 @@ export class DeviceEntry extends Component {
         color = colors.orange.hex;
       }
 
-      if (this.props.nearest === true) {
+      if (this.props.nearest === true && this.props.rssi > -70) {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{this.props.currentUsage + ' W'}</Text>

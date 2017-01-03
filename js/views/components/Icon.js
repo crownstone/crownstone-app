@@ -10,7 +10,6 @@ import { styles, colors} from '../styles'
 export class Icon extends Component {
   render() {
     if (this.props.name === undefined) {
-      {/*return <CustomIcon {...this.props} name="c1-Crownstone"/>*/}
       return <Ionicon {...this.props} name="ios-document" style={[{backgroundColor:'transparent'}, this.props.style]} />
     }
     let prefix = this.props.name.substr(0,3);

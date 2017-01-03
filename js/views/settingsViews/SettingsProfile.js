@@ -184,7 +184,7 @@ export class SettingsProfile extends Component {
 
     return (
       <Background image={this.props.backgrounds.menu} >
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={true}>
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
               <PictureCircle

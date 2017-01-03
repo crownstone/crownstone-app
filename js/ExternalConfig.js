@@ -24,7 +24,7 @@ LOG("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https:
 export const CLOUD_ADDRESS = 'https://crownstone-cloud.herokuapp.com/api/';
 
 
-export let DEBUG           = false; // enabling Debug behaviour throughout the app.
+export let DEBUG           = true; // enabling Debug behaviour throughout the app.
 export let DEBUG_STORE     = true;  // enabling LOGStore      commands to be shown.
 export let DEBUG_SCHEDULER = false; // enabling LOGScheduler  commands to be shown.
 export let DEBUG_BLE       = false; // enabling LOGBle        commands to be shown.
@@ -52,7 +52,7 @@ export const DISABLE_TIMEOUT = 30000; //ms
 export const KEEPALIVE_INTERVAL = 60; // s !
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = false;
+export const RELEASE_MODE = true;
 
 if (RELEASE_MODE) {
   DEBUG           = false;
