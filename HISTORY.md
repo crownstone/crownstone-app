@@ -2,6 +2,8 @@
 
 To be Released:
 
+- New Crownstones are 'searching' by default if they are never seen before.
+- Improved cleanup when exiting sphere.
 - The registration conclusion will not go to the login screen instead of the overview.
 
 --- iOS release submitted 2017-1-2

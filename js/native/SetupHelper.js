@@ -81,6 +81,8 @@ export class SetupHelper {
               macAddress:     this.macAddress,
               iBeaconMajor:   this.cloudResponse.major,
               iBeaconMinor:   this.cloudResponse.minor,
+              disabled:       false,
+              rssi:           -60
             }
           });
           actions.push({

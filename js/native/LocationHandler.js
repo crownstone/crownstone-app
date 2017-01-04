@@ -3,7 +3,7 @@ import { BleUtil } from './BleUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'
 import { RoomTracker } from './RoomTracker'
-import { canUseIndoorLocalizationInSphere } from './../util/dataUtil'
+import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from './../util/dataUtil'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { getUUID } from '../util/util'
@@ -92,7 +92,16 @@ class LocationHandlerClass {
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
     if (state.spheres[sphereId].config.present === true) {
+
+      // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
+
+      // clear all rssi's
+      clearRSSIs(this.store, sphereId);
+
+      // disable all crownstones
+      disableStones(this.store, sphereId);
+
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
     }
   }
