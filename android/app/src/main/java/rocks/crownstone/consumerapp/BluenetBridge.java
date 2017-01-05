@@ -88,7 +88,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public static final int SLOW_SCAN_PAUSE = 500; // ms pause
 	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
 	public static final int CONNECT_TIMEOUT_MS = 2000;
-	public static final int CONNECT_NUM_RETRIES = 0;
+	public static final int CONNECT_NUM_RETRIES = 3;
 
 	private enum ScannerState {
 		DISABLED,
