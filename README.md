@@ -13,9 +13,9 @@ See below for getting the libraries.
 
 The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/app/). 
 
-![Login screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-login.jpg)
-![Overview screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-overview.jpg)
-![Room screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-room.jpg)
+![Login screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-login.jpeg)
+![Overview screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-overview.jpeg)
+![Room screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-room.jpeg)
 
 ## Setup
 
