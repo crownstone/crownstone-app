@@ -1,9 +1,11 @@
 package rocks.crownstone.consumerapp;
 
+import android.bluetooth.le.ScanSettings;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -85,6 +87,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public static final int SLOW_SCAN_INTERVAL = 500; // ms scanning
 	public static final int SLOW_SCAN_PAUSE = 500; // ms pause
 	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
+	public static final int CONNECT_TIMEOUT_MS = 2000;
+	public static final int CONNECT_NUM_RETRIES = 0;
 
 	private enum ScannerState {
 		DISABLED,
@@ -140,11 +144,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_handler.postDelayed(iBeaconTick, IBEACON_TICK_INTERVAL);
 
 		setLogLevels();
-		
+
 //		_bleBase = new BleBase();
 		_bleExt = new BleExt();
-		_bleExt.setConnectTimeout(5000);
-		_bleExt.setNumRetries(0);
+		_bleExt.setConnectTimeout(CONNECT_TIMEOUT_MS);
+		_bleExt.setNumRetries(CONNECT_NUM_RETRIES);
 		initBluetooth();
 
 		// create and bind to the BleScanService
@@ -293,6 +297,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public void startScanning() {
 		BleLog.getInstance().LOGi(TAG, "startScanning");
 		setScannerState(ScannerState.HIGH_POWER);
+		setScanMode();
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.all);
 	}
 
@@ -300,6 +305,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public void startScanningForCrownstones() {
 		BleLog.getInstance().LOGi(TAG, "startScanningForCrownstones");
 		setScannerState(ScannerState.HIGH_POWER);
+		setScanMode();
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
@@ -311,6 +317,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		BleLog.getInstance().LOGi(TAG, "startScanningForCrownstonesUniqueOnly");
 		_scannedDeviceMap.clear();
 		setScannerState(ScannerState.UNIQUE_ONLY);
+		setScanMode();
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
@@ -775,6 +782,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //		_trackedIBeacons.put(uuid, sphereId);
 		_iBeaconRanger.addIbeaconFilter(new BleIbeaconFilter(uuid));
 		setTrackingState(true);
+		setScanMode();
 		_scanService.startIntervalScan(getScanInterval(), getScanInterval(), BleDeviceFilter.anyStone);
 	}
 
@@ -803,6 +811,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Same as startTracking, but restore the stored list of tracked iBeacons.
 		BleLog.getInstance().LOGi(TAG, "resumeTracking");
 		setTrackingState(true);
+		setScanMode();
 		_scanService.startIntervalScan(getScanInterval(), getScanInterval(), BleDeviceFilter.anyStone);
 	}
 
@@ -1275,12 +1284,25 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			return FAST_SCAN_INTERVAL;
 		}
 		return SLOW_SCAN_INTERVAL;
+//		return FAST_SCAN_INTERVAL;
 	}
 	private int getScanPause() {
 		if (getScannerState() == ScannerState.HIGH_POWER) {
 			return FAST_SCAN_PAUSE;
 		}
 		return SLOW_SCAN_PAUSE;
+//		return FAST_SCAN_PAUSE;
+	}
+	private void setScanMode() {
+		// Balanced has an interval of 5s and a window of 2s, making it rather useless.
+		if (Build.VERSION.SDK_INT >= 21) {
+//			if (getScannerState() == ScannerState.HIGH_POWER) {
+				_scanService.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
+//			}
+//			else {
+//				_scanService.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+//			}
+		}
 	}
 
 	private int getLogLevel(Class<?> cls) {
