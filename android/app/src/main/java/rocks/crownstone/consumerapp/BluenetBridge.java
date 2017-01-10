@@ -1,5 +1,7 @@
 package rocks.crownstone.consumerapp;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.bluetooth.le.ScanSettings;
 import android.content.ComponentName;
 import android.content.Context;
@@ -67,6 +69,7 @@ import nl.dobots.localization.LocalizationCallback;
 
 public class BluenetBridge extends ReactContextBaseJavaModule implements IntervalScanListener, EventListener, ScanDeviceListener, BleBeaconRangingListener, LocalizationCallback {
 	private static final String TAG = BluenetBridge.class.getCanonicalName();
+	public static final int ONGOING_NOTIFICATION_ID = 99115;
 
 	private static final int LOG_LEVEL_DEFAULT = Log.ERROR;
 	// only add classes where you want to change the default level from verbose to something else
@@ -205,6 +208,20 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				BleLog.getInstance().LOGe(TAG, "error initializing bleExt: " + error);
 			}
 		});
+	}
+
+	@ReactMethod
+	public void quitApp() {
+		BleLog.getInstance().LOGw(TAG, "quit");
+		if (_bound) {
+			_reactContext.unbindService(_connection);
+//			_scanService.stopSelf();
+		}
+		// Just to be sure?
+		_reactContext.stopService(new Intent(_reactContext, BleScanService.class));
+		// TODO: don't initialize in constructor, init in onResume i guess?
+//		_reactContext.getCurrentActivity().finish();
+		System.exit(0); // Not recommended
 	}
 
 	@Override
@@ -959,6 +976,30 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			// set the scan pause (how many ms should the service wait before starting the next scan)
 			_scanService.setScanPause(SLOW_SCAN_PAUSE);
 
+
+
+			Intent notificationIntent = new Intent(_reactContext, MainActivity.class);
+//			notificationIntent.setClassName("rocks.crownstone.consumerapp", "MainActivity");
+//			notificationIntent.setAction("ACTION_MAIN");
+			PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, 0);
+
+			Notification notification = new Notification.Builder(_reactContext)
+					.setContentTitle("Crownstone")
+					.setContentText("Crownstone is running in the background")
+					.setContentIntent(pendingIntent)
+//				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+					.setSmallIcon(R.drawable.icon_notification)
+					// TODO: add action to close the app + service
+					// TODO: add action to pause the app?
+//					.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
+//					.setLargeIcon()
+					.build();
+
+			_scanService.startForeground(ONGOING_NOTIFICATION_ID, notification);
+
+
+
+
 			BleExt bleExt = _scanService.getBleExt();
 			bleExt.enableEncryption(true); // TODO: should be done by setSettings
 			_iBeaconRanger = bleExt.getIbeaconRanger();
@@ -1012,7 +1053,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			BleDevice prevDev = _scannedDeviceMap.get(address);
 			if (prevDev != null) {
 				CrownstoneServiceData prevServiceData = prevDev.getServiceData();
-				if (prevServiceData.getRandomBytes().equals(serviceData.getRandomBytes())
+				if (prevServiceData.getRandomBytes() != null
+						&& prevServiceData.getRandomBytes().equals(serviceData.getRandomBytes())
 						&& prevServiceData.getPowerUsage() == serviceData.getPowerUsage()
 						&& prevServiceData.getAccumulatedEnergy() == serviceData.getAccumulatedEnergy()
 						&& prevServiceData.getSwitchState() == serviceData.getSwitchState()

@@ -77,6 +77,10 @@ export const logOut = function() {
   StoreManager.userLogOut();
 };
 
+export const quitApp = function() {
+  Bluenet.quitApp();
+};
+
 export const processImage = function(picture, targetFilename) {
   return new Promise((resolve, reject) => {
     if (picture !== undefined) {

@@ -16,6 +16,7 @@ import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flu
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../styles'
 import { Icon } from './Icon'
 import { logOut } from './../../util/util'
+import { quitApp } from './../../util/util'
 
 let FACTOR = 0.75;
 let BLUE_PADDING = 4;
@@ -73,6 +74,20 @@ export class SideBar extends Component {
             {text: 'Cancel', style: 'cancel'},
             {text: 'OK', onPress: () => {
               logOut();
+              setTimeout(() => {this.props.closeCallback();},0)
+            }}
+          ])
+        }
+      },
+      {
+        id: 'quit',
+        label: 'Quit and stop running in background',
+        element: <Icon name={"md-log-out"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+        action: () => {
+          Alert.alert('Quit','Are you sure?',[
+            {text: 'Cancel', style: 'cancel'},
+            {text: 'OK', onPress: () => {
+              quitApp();
               setTimeout(() => {this.props.closeCallback();},0)
             }}
           ])
