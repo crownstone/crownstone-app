@@ -83,6 +83,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			new Pair<>(BleDevice.class, Log.WARN),
 			new Pair<>(BleCore.class, Log.WARN),
 			new Pair<>(BleExt.class, Log.WARN),
+			new Pair<>(FingerprintLocalization.class, Log.WARN),
 	};
 
 	public static final int FAST_SCAN_INTERVAL = 20000; // ms scanning
