@@ -1029,6 +1029,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			case BLE_PERMISSIONS_GRANTED: {
 				initBluetooth();
 			}
+			case BLUETOOTH_INITIALIZED:{
+				// If bluetooth is turned on, the scanservice doesn't automatically restart.
+				if (_scannerState != ScannerState.DISABLED || _isTrackingIbeacon) {
+					_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
+				}
+			}
 		}
 		// TODO: send out event
 	}
