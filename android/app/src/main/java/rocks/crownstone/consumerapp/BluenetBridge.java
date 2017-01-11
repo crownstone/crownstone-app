@@ -453,7 +453,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onError(int error) {
-				BleLog.getInstance().LOGi(TAG, "failed to connect: " + error);
+				BleLog.getInstance().LOGi(TAG, "failed to disconnect: " + error);
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
 				retVal.putString("data", "failed to disconnect: " + error);
@@ -477,7 +477,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onError(int error) {
-				BleLog.getInstance().LOGi(TAG, "failed to connect: " + error);
+				BleLog.getInstance().LOGi(TAG, "failed to disconnect: " + error);
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
 				retVal.putString("data", "failed to disconnect: " + error);
@@ -989,13 +989,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 					.setContentTitle("Crownstone")
 					.setContentText("Crownstone is running in the background")
 					.setContentIntent(pendingIntent)
-//				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 					.setSmallIcon(R.drawable.icon_notification)
 					// TODO: add action to close the app + service
 					// TODO: add action to pause the app?
 //					.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
 //					.setLargeIcon()
 					.build();
+
+			if (Build.VERSION.SDK_INT >= 21) {
+				notification.visibility = Notification.VISIBILITY_PUBLIC;
+			}
 
 			_scanService.startForeground(ONGOING_NOTIFICATION_ID, notification);
 
