@@ -132,6 +132,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private boolean _isTraingingLocalizationPaused = false;
 	private String _lastLocationId = null;
 
+	private boolean _isResettingBluetooth = false;
+
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
 
@@ -164,6 +166,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		BleLog.getInstance().LOGd(TAG, "success: " + success);
 
 		_localization = FingerprintLocalization.getInstance();
+		_isResettingBluetooth = false;
 
 	}
 
@@ -287,6 +290,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		callback.invoke(retVal);
 	}
 
+	private synchronized void resetBluetooth() {
+		BleLog.getInstance().LOGw(TAG, "resetBluetooth");
+		if (_isResettingBluetooth) {
+			BleLog.getInstance().LOGw(TAG, "Already resetting bluetooth");
+			return;
+		}
+		_isResettingBluetooth = true;
+		_bleExt.getBleBase().resetBle();
+	}
+
 	@ReactMethod
 	public void isReady(Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "isReady: " + callback);
@@ -400,6 +413,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 					retVal.putString("data", "failed to connect: " + error);
 					_connectCallbackInvoked = true;
 					callback.invoke(retVal);
+
+					switch (error) {
+						case 8:
+						case 257:
+							resetBluetooth();
+							break;
+					}
 				}
 			}
 		});
@@ -1028,13 +1048,19 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		switch (event) {
 			case BLE_PERMISSIONS_GRANTED: {
 				initBluetooth();
+				break;
 			}
 			case BLUETOOTH_INITIALIZED:{
 				// If bluetooth is turned on, the scanservice doesn't automatically restart.
 				if (_scannerState != ScannerState.DISABLED || _isTrackingIbeacon) {
 					_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 				}
+				_isResettingBluetooth = false;
+				break;
 			}
+			case BLUETOOTH_START_SCAN_ERROR:
+				resetBluetooth();
+				break;
 		}
 		// TODO: send out event
 	}
