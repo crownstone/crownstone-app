@@ -51,6 +51,8 @@ export const HIGH_FREQUENCY_SCAN_MAX_DURATION = 15000; //ms
 export const DISABLE_TIMEOUT = 30000; //ms
 export const KEEPALIVE_INTERVAL = 60; // s !
 
+export const TOUCH_RSSI_THRESHOLD = -48;
+
 // WHEN RELEASING: SET THIS TO TRUE
 export const RELEASE_MODE = true;
 
