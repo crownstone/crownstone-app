@@ -179,14 +179,14 @@ class SingleCommand {
    * @returns {*}
    */
   perform(action, prop1, prop2, prop3) {
-    LOG("connecting to ", this.handle, "doing this: ", action, "with prop", prop1, prop2, prop3);
+    LOG("BLEProxy: connecting to ", this.handle, "doing this: ", action, "with prop", prop1, prop2, prop3);
     return BlePromiseManager.register(() => {
       if (this.handle) {
         return BleActions.connect(this.handle)
-          .then(() => { return action(prop1, prop2, prop3); })
-          .then(() => { return BleActions.disconnect(); })
+          .then(() => { LOG("BLEProxy: connected, performing: ", action); return action(prop1, prop2, prop3); })
+          .then(() => { LOG("BLEProxy: completed", action, 'disconnecting'); return BleActions.disconnect(); })
           .catch((err) => {
-            LOGError("BLE Single command Error:", err);
+            LOGError("BLEProxy: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
               BleActions.phoneDisconnect().then(reject).catch(reject);
             })
@@ -197,6 +197,6 @@ class SingleCommand {
           reject();
         })
       }
-    }, {from:'perform on singleCommand'});
+    }, {from: 'BLEProxy: connecting to ' + this.handle + 'doing this: ' + action + 'with props' + prop1 + 'and ' + prop2 + ' and ' + prop3});
   }
 }

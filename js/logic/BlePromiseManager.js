@@ -8,31 +8,31 @@ class BlePromiseManagerClass {
   }
 
   register(promise, message) {
-    LOG("registered promise in manager");
+    LOG("BlePromiseManager: registered promise in manager");
     return new Promise((resolve, reject) => {
-      let container = {promise: promise, resolve: resolve, reject: reject, message:message};
+      let container = {promise: promise, resolve: resolve, reject: reject, message: message};
       if (this.promiseInProgress === undefined) {
         this.executePromise(container);
       }
       else {
-        LOG('adding to stack');
-        LOG('currentlyPending:', this.promiseInProgress.message);
+        LOG('BlePromiseManager: adding to stack');
+        LOG('BlePromiseManager: currentlyPending:', this.promiseInProgress.message);
         this.pendingPromises.push(container);
       }
     })
   }
 
   executePromise(promiseContainer) {
-    LOG('executed promise ', promiseContainer.message);
+    LOG('BlePromiseManager: executing promise ', promiseContainer.message);
     this.promiseInProgress = promiseContainer;
     promiseContainer.promise()
       .then(() => {
-        LOG("resolved");
+        LOG("BlePromiseManager: resolved");
         promiseContainer.resolve();
         this.moveOn();
       })
       .catch((err) => {
-        LOG("ERROR in promise (",promiseContainer.message,"):",err);
+        LOG("BlePromiseManager: ERROR in promise (",promiseContainer.message,"):",err);
         promiseContainer.reject(err);
         this.moveOn();
       })
@@ -44,7 +44,7 @@ class BlePromiseManagerClass {
   }
 
   getNextPromise() {
-    LOG('get next');
+    LOG('BlePromiseManager: get next');
     if (this.pendingPromises.length > 0) {
       let nextPromise = this.pendingPromises[0];
       this.executePromise(nextPromise);
