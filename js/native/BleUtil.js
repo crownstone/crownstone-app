@@ -175,28 +175,41 @@ class SingleCommand {
   /**
    * Connect, perform action, disconnect
    * @param action --> a bleAction from Proxy
-   * @param prop   --> Optional property
+   * @param props  --> array of properties
    * @returns {*}
    */
-  perform(action, prop1, prop2, prop3) {
-    LOG("BLEProxy: connecting to ", this.handle, "doing this: ", action, "with prop", prop1, prop2, prop3);
-    return BlePromiseManager.register(() => {
+  perform(action, props = []) {
+    LOG("BLEProxy: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
+    return this._perform(action,props, false);
+  }
+
+  performPriority(action, props = []) {
+    LOG("BLEProxy: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
+    return this._perform(action, props, true)
+  }
+
+  _perform(action, props, priorityCommand) {
+    let actionPromise = () => {
       if (this.handle) {
         return BleActions.connect(this.handle)
-          .then(() => { LOG("BLEProxy: connected, performing: ", action); return action(prop1, prop2, prop3); })
+          .then(() => { LOG("BLEProxy: connected, performing: ", action); return action.apply(this, props); })
           .then(() => { LOG("BLEProxy: completed", action, 'disconnecting'); return BleActions.disconnect(); })
           .catch((err) => {
             LOGError("BLEProxy: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
-              BleActions.phoneDisconnect().then(reject).catch(reject);
+              BleActions.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
             })
           })
       }
       else {
         return new Promise((resolve, reject) => {
-          reject();
+          reject("BLEProxy: cant connect, no handle available.");
         })
       }
-    }, {from: 'BLEProxy: connecting to ' + this.handle + 'doing this: ' + action + 'with props' + prop1 + 'and ' + prop2 + ' and ' + prop3});
+    };
+
+    let details = {from: 'BLEProxy: connecting to ' + this.handle + ' doing this: ' + action + ' with props ' + props};
+
+    return BlePromiseManager.register(actionPromise, details, priorityCommand);
   }
 }

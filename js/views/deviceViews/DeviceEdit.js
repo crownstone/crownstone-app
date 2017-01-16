@@ -238,10 +238,10 @@ export class DeviceEdit extends Component {
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
         let proxy = BleUtil.getProxy(stone.config.handle);
-        proxy.perform(BleActions.commandFactoryReset)
+        proxy.performPriority(BleActions.commandFactoryReset)
           .catch(() => {
             // second attempt
-            return proxy.perform(BleActions.commandFactoryReset)
+            return proxy.performPriority(BleActions.commandFactoryReset)
           })
           .then(() => {
             this._removeCrownstoneFromRedux(true);

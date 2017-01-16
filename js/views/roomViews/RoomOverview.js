@@ -140,7 +140,7 @@ export class RoomOverview extends Component {
                   data.currentUsage = 0;
                 }
                 let proxy = BleUtil.getProxy(item.stone.config.handle);
-                proxy.perform(BleActions.setSwitchState, switchState)
+                proxy.performPriority(BleActions.setSwitchState, [switchState])
                   .then(() => {
                     this.props.store.dispatch({
                       type: 'UPDATE_STONE_STATE',

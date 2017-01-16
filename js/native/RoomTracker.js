@@ -114,7 +114,7 @@ class RoomPresenceTrackerClass {
       data.currentUsage = 0;
     }
     let proxy = BleUtil.getProxy(stone.config.handle);
-    proxy.perform(BleActions.setSwitchState, newState)
+    proxy.perform(BleActions.setSwitchState, [newState])
       .then(() => {
         store.dispatch({
           type: 'UPDATE_STONE_STATE',

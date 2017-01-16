@@ -2,11 +2,14 @@
 
 To be Released:
 
+- Improved logging on essential elements of the app.
+- Keepalive are now repeating to avoid Crownstones turning off while the user is still in the house.
+- User commands will now have priority over background user events.
 - New Crownstones are 'searching' by default if they are never seen before.
 - Improved cleanup when exiting sphere.
 - The registration conclusion will not go to the login screen instead of the overview.
 
---- iOS release submitted 2017-1-2
+--- iOS release submitted 2017-1-2, Released 2017-01-05 as 0.72
 
 - Fixed the near/away not always switching.
 - Improved distance estimate for near/far.

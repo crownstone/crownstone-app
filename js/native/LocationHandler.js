@@ -193,7 +193,7 @@ class LocationHandlerClass {
         }
         LOG("FIRING ", type, " event for ", element.config.name, stoneId);
         let proxy = BleUtil.getProxy(stone.config.handle);
-        proxy.perform(BleActions.setSwitchState, behaviour.state)
+        proxy.perform(BleActions.setSwitchState, [behaviour.state])
           .then(() => {
             this.store.dispatch({
               type: 'UPDATE_STONE_STATE',

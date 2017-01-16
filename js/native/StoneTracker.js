@@ -236,7 +236,7 @@ export class StoneTracker {
       data.currentUsage = 0;
     }
     let proxy = BleUtil.getProxy(stone.config.handle);
-    proxy.perform(BleActions.setSwitchState, newState)
+    proxy.performPriority(BleActions.setSwitchState, [newState])
       .then(() => {
         this.store.dispatch({
           type: 'UPDATE_STONE_STATE',

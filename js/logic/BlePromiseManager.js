@@ -7,7 +7,7 @@ class BlePromiseManagerClass {
     this.promiseInProgress = undefined;
   }
 
-  register(promise, message) {
+  register(promise, message, priorityCommand = false) {
     LOG("BlePromiseManager: registered promise in manager");
     return new Promise((resolve, reject) => {
       let container = {promise: promise, resolve: resolve, reject: reject, message: message};
@@ -15,9 +15,14 @@ class BlePromiseManagerClass {
         this.executePromise(container);
       }
       else {
-        LOG('BlePromiseManager: adding to stack');
-        LOG('BlePromiseManager: currentlyPending:', this.promiseInProgress.message);
-        this.pendingPromises.push(container);
+        if (priorityCommand === true) {
+          LOG('BlePromiseManager: adding to top of stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
+          this.pendingPromises.unshift(container);
+        }
+        else {
+          LOG('BlePromiseManager: adding to stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
+          this.pendingPromises.push(container);
+        }
       }
     })
   }
