@@ -18,7 +18,7 @@ import { Icon } from './Icon'
 import { logOut } from './../../util/util'
 import { quitApp } from './../../util/util'
 
-let FACTOR = 0.75;
+let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
 
 export class SideBar extends Component {
@@ -79,20 +79,19 @@ export class SideBar extends Component {
           ])
         }
       },
-      {
-        id: 'quit',
-        label: 'Quit and stop running in background',
-        element: <Icon name={"md-log-out"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-        action: () => {
-          Alert.alert('Quit','Are you sure?',[
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: () => {
-              quitApp();
-              setTimeout(() => {this.props.closeCallback();},0)
-            }}
-          ])
-        }
-      },
+      // {
+      //   id: 'quit',
+      //   label: 'Quit',
+      //   element: <Icon name={"md-close-circle"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      //   action: () => {
+      //     Alert.alert('Quit','Are you sure?',[
+      //       {text: 'Cancel', style: 'cancel'},
+      //       {text: 'OK', onPress: () => {
+      //         quitApp();
+      //       }}
+      //     ])
+      //   }
+      // },
     ];
   }
 

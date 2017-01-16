@@ -2,7 +2,9 @@
 import React, { Component } from 'react'
 import {
   Animated,
+  Alert,
   AppRegistry,
+  BackAndroid,
   Keyboard,
   StatusBar,
   View
@@ -10,8 +12,10 @@ import {
 
 import { AppRouter } from './js/router/Router.android'
 import { eventBus } from './js/util/eventBus'
+import { quitApp } from './js/util/util'
 import { INITIALIZER } from './js/initialize'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
+
 
 //import SplashScreen from "rn-splash-screen";
 
@@ -48,6 +52,19 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('hideLoading', snapBack));
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
     StatusBar.setBackgroundColor('#00162C', true);
+
+
+    // avoid closing the app by tapping back too often.
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+      Alert.alert("Would you like to leave the app?", "Leave to run in the background, quit to fully quit the app. If you press quit, the Crownstones will not respond to you anymore.",[
+        {text:'Leave', onPress: () => { BackAndroid.exitApp(); }},
+        {text:'Quit', onPress: () => { quitApp(); }},
+        {text:'Not yet'}
+      ]);
+
+      // if the user presses back the second time, we close the app
+      return true;
+    });
 
   }
 
