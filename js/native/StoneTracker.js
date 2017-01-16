@@ -38,7 +38,6 @@ export class StoneTracker {
     // if we detect a setup stone, we disable tap to toggle temporarily
     eventBus.on("setupStoneChange", (setupCrownstonesAvailable) => {
       this.tapToToggleDisabled = setupCrownstonesAvailable;
-      LOG("Stone tracker receiving setupStoneChange, this.tapToToggleDisabled = ", this.tapToToggleDisabled);
     });
   }
 

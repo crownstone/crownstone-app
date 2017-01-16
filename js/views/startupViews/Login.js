@@ -118,11 +118,17 @@ export class Login extends Component {
         })
       })
       .catch((err) => {
-        Alert.alert(
-          "Connection Problem",
-          "Could not connect to the Cloud. Please check your internet connection.",
-          [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); }}]
-        );
+        // do not show a popup if it is a failed request: this has its own pop up
+        if (err.message && err.message === 'Network request failed') {
+          this.props.eventBus.emit('hideLoading');
+        }
+        else {
+          Alert.alert(
+            "Connection Problem",
+            "Could not connect to the Cloud. Please check your internet connection.",
+            [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); }}]
+          );
+        }
         return false;
       })
       .done((response) => {

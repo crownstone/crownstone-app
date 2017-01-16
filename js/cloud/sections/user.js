@@ -30,7 +30,8 @@ export const user = {
    */
   login: function(options) {
     return new Promise((resolve, reject) => {
-      this._post({ endPoint:'users/login', data:{ email: options.email, password: options.password } , type:'body'})
+      let endpoint = 'users/login';
+      this._post({ endPoint: endpoint, data:{ email: options.email, password: options.password } , type:'body'})
         .then((reply) => {
           if (reply.status === 200) {
             resolve(reply.data)
@@ -54,7 +55,7 @@ export const user = {
               this.__debugReject(reply, reject, options);
             }
           }
-        }).catch((error) => {this._handleNetworkError(error, options);});
+        }).catch((error) => {this._handleNetworkError(error, options, endpoint, undefined, reject);});
     })
   },
 

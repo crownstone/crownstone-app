@@ -73,14 +73,14 @@ export function request(
       // add a timeout for the fetching of data.
       setTimeout(() => {
           stopRequest = true;
-          reject(new Error("Timeout"))
+          reject(new Error('Network request failed'))
         },
       NETWORK_REQUEST_TIMEOUT);
 
       fetch(CLOUD_ADDRESS + endPoint, requestConfig)
         .catch((connectionError) => {
           if (stopRequest === false) {
-            reject(connectionError);
+            reject(new Error('Network request failed'));
           }
         })
         .then((response) => {

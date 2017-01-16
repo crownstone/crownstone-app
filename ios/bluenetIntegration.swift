@@ -149,11 +149,6 @@ func getBleErrorString(_ err: BleError) -> String {
 open class BluenetJS: NSObject {
   var bridge: RCTBridge!
   
-  @objc func refreshLocation() {
-    if let globalBluenet = GLOBAL_BLUENET {
-      
-    }
-  }
   
   @objc func rerouteEvents() {
     if let globalBluenet = GLOBAL_BLUENET {
