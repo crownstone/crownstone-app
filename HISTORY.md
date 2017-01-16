@@ -2,8 +2,10 @@
 
 To be Released:
 
+- During Crownstone setup, if the Cloud connection fails, the setup is now properly terminated.
+- Setting up a known Crownstone will correctly transfer the name and icon.
 - Improved logging on essential elements of the app.
-- Keepalive are now repeating to avoid Crownstones turning off while the user is still in the house.
+- KeepAlive are now repeating to avoid Crownstones turning off while the user is still in the house.
 - User commands will now have priority over background user events.
 - New Crownstones are 'searching' by default if they are never seen before.
 - Improved cleanup when exiting sphere.

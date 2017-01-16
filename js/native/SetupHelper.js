@@ -7,6 +7,9 @@ import { eventBus } from '../util/eventBus'
 import { CLOUD } from '../cloud/cloudAPI'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 
+
+const networkError = 'network_error';
+
 export class SetupHelper {
   constructor(setupAdvertisement, name, type, icon) {
     // full advertisement package
@@ -63,18 +66,12 @@ export class SetupHelper {
           let isGuidestone = this.type === stoneTypes.guidestone;
           let state = store.getState();
           let showRestoreAlert = false;
-          if (state.spheres[sphereId].stones[this.stoneIdInCloud] !== undefined) {
-            showRestoreAlert = true;
-          }
-
-          actions.push({
+          let addStoneAction = {
             type:           "ADD_STONE",
             sphereId:       sphereId,
             stoneId:        this.stoneIdInCloud,
             data: {
-              name:           this.name,
               type:           this.type,
-              icon:           this.icon,
               touchToToggle:  !isGuidestone,
               crownstoneId:   this.cloudResponse.uid,
               handle:         this.handle,
@@ -84,7 +81,18 @@ export class SetupHelper {
               disabled:       false,
               rssi:           -60
             }
-          });
+          };
+
+          if (state.spheres[sphereId].stones[this.stoneIdInCloud] !== undefined) {
+            showRestoreAlert = true;
+          }
+          else {
+            // if we do not know the stone, we provide the new name and icon
+            addStoneAction.data.name = this.name;
+            addStoneAction.data.icon = this.icon;
+          }
+
+          actions.push(addStoneAction);
           actions.push({
             type: 'UPDATE_STONE_STATE',
             sphereId: sphereId,
@@ -117,16 +125,21 @@ export class SetupHelper {
         // Restore trigger state
         eventBus.emit("useTriggers");
         eventBus.emit("setupCancelled", this.handle);
+        if (this.stoneIdInCloud !== undefined) {
+          CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOGError("COULD NOT CLEAN UP AFTER SETUP", err)})
+        }
+
         if (err == "INVALID_SESSION_DATA") {
           Alert.alert("Encryption might be off","Error: INVALID_SESSION_DATA, which usually means encryption in this Crownstone is turned off. This app requires encryption to be on.",[{text:'OK'}]);
+        }
+        else if (err === networkError) {
+          // do nothing, alert was already sent
         }
         else {
           // user facing alert
           Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
         }
-        if (this.stoneIdInCloud !== undefined) {
-          CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOGError("COULD NOT CLEAN UP AFTER SETUP", err)})
-        }
+
         LOGError("error during setup phase:", err);
         return BleActions.phoneDisconnect();
       })
@@ -134,10 +147,15 @@ export class SetupHelper {
 
   registerInCloud(sphereId) {
     return new Promise((resolve, reject) => {
-      const processFailure = () => {
-        Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK", onPress:() => {
-          reject();
-        }}]);
+      const processFailure = (err) => {
+        if (err.message && err.message === 'Network request failed') {
+          reject(networkError);
+        }
+        else {
+          Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK", onPress:() => {
+            reject(networkError);
+          }}]);
+        }
       };
 
       CLOUD.forSphere(sphereId).createStone(sphereId, this.macAddress, this.type)
@@ -155,12 +173,12 @@ export class SetupHelper {
               })
               .catch((err) => {
                 LOGError("CONNECTION ERROR on find:",err);
-                processFailure();
+                processFailure(err);
               })
           }
           else {
             LOGError("CONNECTION ERROR on register:",err);
-            processFailure();
+            processFailure(err);
           }
         });
     })

@@ -61,13 +61,14 @@ export const base = {
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
   },
-  _handleNetworkError: function (error, options, endpoint, promiseBody) {
+  _handleNetworkError: function (error, options, endpoint, promiseBody, reject) {
     // this will eliminate all cloud requests.
     if (SILENCE_CLOUD === true)
       return;
 
     if (options.background !== true) {
       this._networkErrorHandler(error);
+      reject(error);
     }
     if (DEBUG === true) {
       LOGCloud(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error, endpoint, promiseBody);
@@ -121,7 +122,7 @@ export const base = {
         })
         .catch((error) => {
           //console.trace(error, this);
-          this._handleNetworkError(error, options, endpoint, promiseBody);
+          this._handleNetworkError(error, options, endpoint, promiseBody, reject);
         })
     });
   },
