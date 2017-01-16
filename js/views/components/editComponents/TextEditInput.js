@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {
-  
+  Keyboard,
   TextInput,
 } from 'react-native';
 
@@ -13,6 +13,9 @@ export class TextEditInput extends Component {
     this.blurred = false;
     this.isInFocus = false;
     this.refName = (Math.random() * 1e9).toString(36);
+
+    // make sure we submit the data if the keyboard is hidden.
+    this.blurListener = Keyboard.addListener('keyboardDidHide', () => { this.blur();  });
   }
   
   componentWillReceiveProps(newProps) {
@@ -26,6 +29,7 @@ export class TextEditInput extends Component {
       this.blur();
     }
     this.unsubscribe();
+    this.blurListener.remove();
   }
 
   componentDidMount() {

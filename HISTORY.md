@@ -2,6 +2,7 @@
 
 To be Released:
 
+- Make sure the textfield data is committed when the keyboard is hidden.
 - During Crownstone setup, if the Cloud connection fails, the setup is now properly terminated.
 - Setting up a known Crownstone will correctly transfer the name and icon.
 - Improved logging on essential elements of the app.
