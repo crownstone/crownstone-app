@@ -27,6 +27,7 @@ import { StoreManager }                       from '../../router/store/storeMana
 import RNFS                                   from 'react-native-fs'
 import loginStyles                            from './LoginStyles'
 
+
 export class Login extends Component {
   constructor() {
     super();
@@ -137,51 +138,6 @@ export class Login extends Component {
       })
   }
 
-  _getLoginButton() {
-    if (screenHeight > 480) {
-      return (
-        <View style={loginStyles.loginButtonContainer}>
-          <TouchableOpacity onPress={this.attemptLogin.bind(this)}>
-            <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
-          </TouchableOpacity>
-        </View>
-      )
-    }
-    else {
-      return (
-        <View style={{
-          position:'absolute',
-          bottom:20,
-          flex:1,
-          width: screenWidth,
-          flexDirection:'row',
-          alignItems:'center',
-          justifyContent:'center',
-          backgroundColor:'transparent'
-        }}>
-          <TouchableOpacity onPress={this.attemptLogin.bind(this)}>
-            <View style={{
-              backgroundColor:'transparent',
-              height: 60,
-              width:  0.6*screenWidth,
-              borderRadius: 30,
-              borderWidth:2,
-              borderColor:'white',
-              alignItems:'center',
-              justifyContent:'center',
-              margin: (screenWidth - 2*110) / 6,
-              marginBottom:0}}>
-              <Text style={{
-                color:'white',
-                fontSize:18,
-                fontWeight:'300'
-              }}>Log In</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      )
-    }
-  }
   render() {
     return (
       <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>
@@ -194,7 +150,7 @@ export class Login extends Component {
             <TextEditInput style={{width: 0.8*screenWidth, padding:10}} secureTextEntry={true} placeholder='password' placeholderTextColor='#888' value={this.state.password} callback={(newValue) => { this.setState({password:newValue});}} />
           </View>
           <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}><Text style={loginStyles.forgot}>Forgot Password?</Text></TouchableHighlight>
-          {this._getLoginButton()}
+          <LoginButton loginCallback={() => {this.attemptLogin()}} />
         </View>
       </Background>
     )
@@ -346,8 +302,55 @@ export class Login extends Component {
       }, 50);
     });
   }
+}
 
 
 
+class LoginButton extends Component {
+  render() {
+    if (screenHeight > 480) {
+      return (
+        <View style={loginStyles.loginButtonContainer}>
+          <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
+            <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+    else {
+      return (
+        <View style={{
+          position:'absolute',
+          bottom:20,
+          flex:1,
+          width: screenWidth,
+          flexDirection:'row',
+          alignItems:'center',
+          justifyContent:'center',
+          backgroundColor:'transparent'
+        }}>
+          <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
+            <View style={{
+              backgroundColor:'transparent',
+              height: 60,
+              width:  0.6*screenWidth,
+              borderRadius: 30,
+              borderWidth:2,
+              borderColor:'white',
+              alignItems:'center',
+              justifyContent:'center',
+              margin: (screenWidth - 2*110) / 6,
+              marginBottom:0}}>
+              <Text style={{
+                color:'white',
+                fontSize:18,
+                fontWeight:'300'
+              }}>Log In</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+  }
 }
 

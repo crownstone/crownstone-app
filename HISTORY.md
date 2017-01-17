@@ -2,6 +2,7 @@
 
 To be Released:
 
+- Added timeout (60 seconds) for pending bluetooth commands that do not complete to make sure we do not block all bluetooth traffic.
 - [Android] Show an alert if the user tries to close the app with the back button.
 - Make sure the textfield data is committed when the keyboard is hidden.
 - During Crownstone setup, if the Cloud connection fails, the setup is now properly terminated.
