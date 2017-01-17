@@ -1,10 +1,12 @@
 import { LOG } from '../logging/Log'
+import { Scheduler } from '../logic/Scheduler'
 
 
 class BlePromiseManagerClass {
   constructor() {
     this.pendingPromises = [];
     this.promiseInProgress = undefined;
+    this.clearPendingPromiseTimeout = undefined;
   }
 
   register(promise, message, priorityCommand = false) {
@@ -29,15 +31,23 @@ class BlePromiseManagerClass {
 
   executePromise(promiseContainer) {
     LOG('BlePromiseManager: executing promise ', promiseContainer.message);
+
     this.promiseInProgress = promiseContainer;
+    this.clearPendingPromiseTimeout = Scheduler.scheduleCallback(() => {
+      promiseContainer.reject(new Error("Forced timeout after 60 seconds."));
+      this.moveOn();
+    }, 60000, 'pendingPromiseTimeout');
+
     promiseContainer.promise()
       .then(() => {
         LOG("BlePromiseManager: resolved");
+        this.clearPendingPromiseTimeout();
         promiseContainer.resolve();
         this.moveOn();
       })
       .catch((err) => {
         LOG("BlePromiseManager: ERROR in promise (",promiseContainer.message,"):",err);
+        this.clearPendingPromiseTimeout();
         promiseContainer.reject(err);
         this.moveOn();
       })
