@@ -16,7 +16,7 @@ import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flu
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../styles'
 import { Icon } from './Icon'
 import { logOut } from './../../util/util'
-import { quitApp } from './../../util/util'
+import { quitApp, resetBle } from './../../util/util'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;

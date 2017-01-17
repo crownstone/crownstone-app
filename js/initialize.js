@@ -1,4 +1,4 @@
-import { Alert, AppState } from 'react-native'
+import { Alert, AppState, Platform, StatusBar } from 'react-native'
 
 import { LOG, LOGError }              from './logging/Log'
 import { CLOUD }            from './cloud/cloudAPI'
@@ -23,6 +23,10 @@ export const INITIALIZER = {
 
       // route the events to React Native
       Bluenet.rerouteEvents();
+
+      if (Platform.OS === 'android') {
+        StatusBar.setBackgroundColor('#00162C', true);
+      }
 
       // listen to the BLE events
       NativeBus.on(NativeBus.topics.bleStatus, (status) => {
