@@ -15,7 +15,7 @@ import { CLOUD } from './../../cloud/cloudAPI'
 import { Background } from './../components/Background'
 import { TopBar } from './../components/Topbar'
 import { ListEditableItems } from './../components/ListEditableItems'
-const Actions = require('react-native-router-flux').Actions;
+import { Actions } from 'react-native-router-flux';
 import { styles, colors } from './../styles'
 import { IconButton } from '../components/IconButton'
 
@@ -50,12 +50,14 @@ export class SettingsOverview extends Component {
     else {
       items.push({label:'Add Sphere', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
         this.props.eventBus.emit('showLoading', 'Creating Sphere...');
-        return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus).then((sphereId) => {
-          this.props.eventBus.emit('hideLoading');
-          let state = this.props.store.getState();
-          let title = state.spheres[sphereId].config.name;
-          Actions.settingsSphere({sphereId: sphereId, title: title})
-        })
+        CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus)
+          .then((sphereId) => {
+            this.props.eventBus.emit('hideLoading');
+            let state = this.props.store.getState();
+            let title = state.spheres[sphereId].config.name;
+            Actions.settingsSphere({sphereId: sphereId, title: title})
+          })
+          .catch(() => {this.props.eventBus.emit('hideLoading');});
       }});
     }
 

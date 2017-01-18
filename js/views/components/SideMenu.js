@@ -37,7 +37,7 @@ export class SideMenu extends Component {
         onOpen={ () => {Actions.refresh({key:state.key, open: true})}}
         onClose={() => {Actions.refresh({key:state.key, open: false})}}
         type="overlay"
-        content={<SideBar closeCallback={()=> {this.setState({open:false});}} />}
+        content={<SideBar closeCallback={()=> {this.setState({open:false});}} store={this.props.store} />}
         tapToClose={true}
         openDrawerOffset={0.25}
         panCloseMask={0.25}

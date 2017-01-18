@@ -5,6 +5,7 @@ import {
   Navigator,
   Dimensions,
   Image,
+  Linking,
   PixelRatio,
   TouchableOpacity,
   StyleSheet,
@@ -12,11 +13,12 @@ import {
   Text,
   View
 } from 'react-native';
-import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../styles'
 import { Icon } from './Icon'
+import { CLOUD } from '../../cloud/cloudAPI'
 import { logOut } from './../../util/util'
-import { quitApp, resetBle } from './../../util/util'
+import { userHasPlugsInSphere } from './../../util/dataUtil'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
@@ -24,75 +26,114 @@ let BLUE_PADDING = 4;
 export class SideBar extends Component {
   constructor() {
     super();
+  }
 
+  _getMenuItems() {
+    return {
+      id: 'overview',
+      label: 'Overview',
+      element: <Icon name={"ios-color-filter-outline"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      action: () => {
+        Actions.sphereOverview({type:'reset'});
+        setTimeout(() => {this.props.closeCallback();},0)
+      }
+    }
+  }
 
-    this.menuItems = [
-      {
-        id: 'overview',
-        label: 'Overview',
-        element: <Icon name={"ios-color-filter-outline"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-        action: () => {
-          Actions.sphereOverview({type:'reset'});
-          setTimeout(() => {this.props.closeCallback();},0)
-        }
-      },
-    ];
-    this.settingItems = [
-      {
-        id: 'profile',
-        label: 'My Profile',
-        element: <Icon name={"ios-body"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-        action: () => {
-          Actions.settingsProfile();
-          setTimeout(() => {this.props.closeCallback();},0)
-        }
-      },
-      {
+  _getSettingsItems() {
+    let state = this.props.store.getState();
+
+    let settingItems = [];
+    settingItems.push({
+      id: 'profile',
+      label: 'My Profile',
+      element: <Icon name={"ios-body"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      action: () => {
+        Actions.settingsProfile();
+        setTimeout(() => {this.props.closeCallback();},0)
+      }
+    });
+
+    if (Object.keys(state.spheres).length > 0) {
+      settingItems.push({
         id: 'spheres',
         label: 'Manage Spheres',
-        element: <Icon name={"c1-house"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+        element: <Icon name={"c1-house"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
         action: () => {
           Actions.settingsSphereOverview();
-          setTimeout(() => {this.props.closeCallback();},0)
+          setTimeout(() => { this.props.closeCallback(); }, 0)
         }
-      },
-      {
-        id: 'recover',
-        label: 'Recover a Crownstone',
-        element: <Icon name={"c1-socket2"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      });
+    }
+    else {
+      settingItems.push({
+        id: 'addSphere',
+        label: 'Add Sphere',
+        element: <Icon name={"c1-house"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
         action: () => {
-          Actions.settingsPluginRecoverStep1();
-          setTimeout(() => {this.props.closeCallback();},0)
+          this.props.eventBus.emit('showLoading', 'Creating Sphere...');
+          setTimeout(() => { this.props.closeCallback(); }, 0);
+
+          CLOUD.createNewSphere(this.props.store, state.user.firstName, this.props.eventBus)
+            .then((sphereId) => {
+              this.props.eventBus.emit('hideLoading');
+              let state = this.props.store.getState();
+              let title = state.spheres[sphereId].config.name;
+              Actions.settingsSphere({sphereId: sphereId, title: title})
+            })
+            .catch(() => {this.props.eventBus.emit('hideLoading');});
         }
-      },
-      {
-        id: 'logout',
-        label: 'Log Out',
-        element: <Icon name={"md-log-out"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      });
+    }
+
+
+
+
+    if (userHasPlugsInSphere(state, state.app.activeSphere)) {
+      settingItems.push({
+        id: 'calibrate',
+        label: 'Manage Spheres',
+        element: <Icon name={"md-flask"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
         action: () => {
-          Alert.alert('Log out','Are you sure?',[
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: () => {
-              logOut();
-              setTimeout(() => {this.props.closeCallback();},0)
-            }}
-          ])
+          this.props.eventBus.emit("CalibrateTapToToggle", {canClose: true, tutorial: false});
+          setTimeout(() => { this.props.closeCallback(); }, 0)
         }
-      },
-      // {
-      //   id: 'quit',
-      //   label: 'Quit',
-      //   element: <Icon name={"md-close-circle"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-      //   action: () => {
-      //     Alert.alert('Quit','Are you sure?',[
-      //       {text: 'Cancel', style: 'cancel'},
-      //       {text: 'OK', onPress: () => {
-      //         quitApp();
-      //       }}
-      //     ])
-      //   }
-      // },
-    ];
+      });
+    }
+    settingItems.push({
+      id: 'help',
+      label: 'Help',
+      element: <Icon name={"md-help-circle"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      action: () => {
+        Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
+        setTimeout(() => {this.props.closeCallback();},0)
+      }
+    });
+    settingItems.push({
+      id: 'recover',
+      label: 'Recover a Crownstone',
+      element: <Icon name={"c1-socket2"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      action: () => {
+        Actions.settingsPluginRecoverStep1();
+        setTimeout(() => {this.props.closeCallback();},0)
+      }
+    });
+    settingItems.push({
+      id: 'logout',
+      label: 'Log Out',
+      element: <Icon name={"md-log-out"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      action: () => {
+        Alert.alert('Log out','Are you sure?',[
+          {text: 'Cancel', style: 'cancel'},
+          {text: 'OK', onPress: () => {
+            logOut();
+            setTimeout(() => {this.props.closeCallback();},0)
+          }}
+        ])
+      }
+    });
+
+    return settingItems;
   }
 
   _fillItemList(content, items) {
@@ -107,13 +148,16 @@ export class SideBar extends Component {
       content.push(<MenuSegmentSeparator key="actionLabel" label="Actions"/>);
       this._fillItemList(content, this.props.actions);
     }
-    if (this.menuItems.length > 0) {
+    let menuItems = this._getMenuItems();
+    if (menuItems.length > 0) {
       content.push(<MenuSegmentSeparator key="categoriesLabel" label="Categories"/>);
-      this._fillItemList(content, this.menuItems);
+      this._fillItemList(content, menuItems);
     }
+
+    let settingsItems = this._getSettingsItems();
     if (this.settingItems.length > 0) {
       content.push(<MenuSegmentSeparator key="settingsLabel" label="Settings"/>);
-      this._fillItemList(content, this.settingItems);
+      this._fillItemList(content, settingsItems);
     }
     content.push(<MenuSegmentSeparator key="spacer1" />);
     return content;
