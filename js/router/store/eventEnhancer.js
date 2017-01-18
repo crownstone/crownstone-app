@@ -175,6 +175,9 @@ function checkAction(action, affectedIds) {
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus.changeUserData = affectedIds; break;
       break;
+    case "SET_DEVELOPER_MODE":
+    case "SET_LOGGING":
+      eventStatus.changeUserDeveloperStatus = true; break;
     case "ADD_DEVICE":
     case "UPDATE_DEVICE_CONFIG":
     case "REMOVE_DEVICE":

@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import { NativeBus }          from '../../native/Proxy'
-import { Icon }               from './Icon'
+import { IconButton }         from './IconButton'
 import { FadeInView }         from './animated/FadeInView'
 import { styles, colors , screenHeight, screenWidth } from './../styles'
 
@@ -15,6 +15,7 @@ export class BleStateOverlay extends Component {
     super();
 
     this.state = {
+
       visible: false,
       notificationType: 'unknown' //"unauthorized", "poweredOff", "poweredOn", "unknown"
     };
@@ -48,7 +49,7 @@ export class BleStateOverlay extends Component {
   _getTitle() {
     switch (this.state.notificationType) {
       case "poweredOff":
-        return "Bluetooth is turned off... :(";
+        return "Bluetooth is turned off.";
       case "poweredOn":
         return "Bluetooth is turned on!";
       case "unauthorized":
@@ -61,7 +62,7 @@ export class BleStateOverlay extends Component {
   _getText() {
     switch (this.state.notificationType) {
       case "poweredOff":
-        return "Bluetooth is turned off... Please turn it on to use the Crownstone app!";
+        return "Crownstones use Bluetooth to talk to your phone so it needs to be turned on to use the app.";
       case "poweredOn":
         return "Bluetooth is turned on, resuming Crownstone services.";
       case "unauthorized":
@@ -74,11 +75,19 @@ export class BleStateOverlay extends Component {
   _getBLEOverlay() {
     return (
       <View style={[styles.centered, {backgroundColor:'#fff', width:0.8*screenWidth, height:0.6*screenHeight, borderRadius: 25, padding: 0.02*screenWidth}]}>
-        <Icon name="ios-bluetooth" size={0.2*screenHeight} color={colors.blue.hex} />
-        <Text style={{fontSize: 17, fontWeight: 'bold', color: colors.blue.hex, padding:15}}>{this._getTitle()}</Text>
-        <Text style={{fontSize:12, color: colors.blue.hex, textAlign:'center'}}>
+        <View style={{flex:1}} />
+        <IconButton
+          name="ios-bluetooth"
+          size={0.15*screenHeight}
+          color="#fff"
+          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.blue.hex, borderRadius: 0.03*screenHeight}}
+          style={{position:'relative', top:0.008*screenHeight}} />
+        <View style={{flex:1}} />
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue.hex, padding:15}}>{this._getTitle()}</Text>
+        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.blue.hex, padding:15, textAlign:'center'}}>
           {this._getText()}
         </Text>
+        <View style={{flex:1}} />
       </View>
     )
   }

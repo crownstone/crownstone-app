@@ -4,9 +4,7 @@ import CrownstoneReducer                   from './reducer'
 import { NativeEnhancer }                  from './nativeEnhancer'
 import { CloudEnhancer }                   from './cloudEnhancer'
 import { EventEnhancer }                   from './eventEnhancer'
-import { fakeStore }                       from './overrideStore'
 import { eventBus }                        from '../../util/eventBus'
-import { OVERRIDE_DATABASE }               from '../../ExternalConfig'
 import { LOG, LOGDebug, LOGError }         from '../../logging/Log'
 
 // from https://github.com/tshelburne/redux-batched-actions

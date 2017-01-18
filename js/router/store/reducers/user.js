@@ -16,6 +16,8 @@ let defaultSettings = {
     seenTapToToggleDisabledDuringSetup: false,
     seenRoomFingerprintAlert: false,
     appIdentifier: null,
+    developer: false,
+    logging: false,
     updatedAt: 1,
   },
 };
@@ -23,6 +25,20 @@ let defaultSettings = {
 // userReducer
 export default (state = defaultSettings.user, action = {}) => {
   switch (action.type) {
+    case 'SET_DEVELOPER_MODE':
+      if (action.data) {
+        let newState = {...state};
+        newState.developer = update(action.data.developer, newState.developer);
+        return newState;
+      }
+      return state;
+    case 'SET_LOGGING':
+      if (action.data) {
+        let newState = {...state};
+        newState.logging = update(action.data.logging, newState.logging);
+        return newState;
+      }
+      return state;
     case 'SET_BETA_ACCESS':
       if (action.data) {
         let newState = {...state};

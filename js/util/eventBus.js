@@ -1,4 +1,3 @@
-import { DEBUG } from '../ExternalConfig'
 import { LOG, LOGError } from '../logging/Log'
 import { getUUID } from './util'
 

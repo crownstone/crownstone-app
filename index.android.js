@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 
-import { AppRouter } from './js/router/Router.android'
+import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/eventBus'
 import { quitApp } from './js/util/util'
 import { INITIALIZER } from './js/initialize'

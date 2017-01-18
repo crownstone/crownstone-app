@@ -276,17 +276,11 @@ export class Login extends Component {
       // finalize the login due to successful download of data. Enables persistence.
       StoreManager.finalizeLogIn(userId);
 
-      // start listening to the ibeacons
-      LocalizationUtil.trackSpheres(store);
-
-      // start scanning
-      BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
-
       let state = store.getState();
       // set a small delay so the user sees "done"
       setTimeout(() => {
         this.props.eventBus.emit('hideProgress');
-        this.props.eventBus.emit("appStarted");
+        this.props.eventBus.emit("appStarted"); // this starts scanning and tracking spheres
 
         prepareStoreForUser(store);
 
