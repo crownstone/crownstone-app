@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 
+import { userHasPlugsInSphere } from './../../util/dataUtil'
 import { logOut } from './../../util/util'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { Background } from './../components/Background'
@@ -57,6 +58,18 @@ export class SettingsOverview extends Component {
         })
       }});
     }
+
+    if (userHasPlugsInSphere(state, state.app.activeSphere)) {
+      items.push({
+        label:'Calibrate Tap-to-Toggle',
+        type:'button',
+        style: {color:'#000'},
+        icon: <IconButton name="md-flask" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+        callback: () => {this.props.eventBus.emit("CalibrateTapToToggle", {canClose: true, tutorial: false});}
+      });
+
+    }
+
 
     items.push({label:'TROUBLESHOOTING',  type:'explanation', below: false});
     items.push({label:'Help', type:'navigation', icon: <IconButton name="ios-help-circle" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => { Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {})}});

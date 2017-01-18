@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { NativeBus }          from '../../../native/Proxy'
-import { IconButton }         from '../IconButton'
 import { BleUtil }            from '../../../native/BleUtil'
 import { addDistanceToRssi }  from '../../../util/util'
 import { OverlayBox }         from './OverlayBox'
@@ -18,13 +16,19 @@ export class TapToToggleCalibration extends Component {
   constructor() {
     super();
 
-    this.state = { visible: true, step:0 };
+    this.state = { visible: false, step:0, tutorial: true, canClose: false};
     this.unsubscribe = [];
   }
 
   componentDidMount() {
-    eventBus.on("CalibrateTapToToggle", () => {
-      this.setState({visible: true, step:0});
+    eventBus.on("CalibrateTapToToggle", (data) => {
+      eventBus.emit("ignoreTriggers");
+      this.setState({
+        visible: true,
+        step: data.tutorial === false ? 1 : 0,
+        tutorial: data.tutorial === undefined ? true  : data.tutorial,
+        canClose: data.canClose === undefined ? false : data.canClose,
+      });
     })
   }
 
@@ -68,7 +72,6 @@ export class TapToToggleCalibration extends Component {
     let props = {};
     switch(this.state.step) {
       case 0:
-        eventBus.emit("ignoreTriggers");
         props = {
           title: 'Using Tap-to-Toggle',
           image: require('../../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
@@ -83,13 +86,19 @@ export class TapToToggleCalibration extends Component {
         props = {
           title: 'Setting it up',
           image: require('../../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-          header: "In order to use tap-to-toggle, you need to help it a little.",
+          header: "In order to use tap-to-toggle, you need to help me a little.",
           explanation: "This will only take a minute and will only have to be done once. Hold your phone really close to a Plug and press 'Next'.",
           back: true,
           backCallback: () => {this.setState({step:0});},
           nextCallback: () => {this.learnDistance()},
           nextLabel: 'Next'
         };
+        if (this.state.tutorial === false) {
+          props.title = "Calibration";
+          props.header = "To start calibrating tap-to-toggle, press 'Next'.";
+          props.explanation = "The new distance will be used for all existing plugs.";
+          props.back = false;
+        }
         break;
       case 2:
         props = {
@@ -102,6 +111,14 @@ export class TapToToggleCalibration extends Component {
           nextCallback: () => {eventBus.emit("useTriggers"); this.setState({step:3})},
           nextLabel: 'Next'
         };
+
+        if (this.state.tutorial === false) {
+          props.title = "Done!";
+          props.header = "The new distance has been stored.";
+          props.explanation = "Once you press 'Done' the new distance will be used for tap-to-toggle.";
+          props.nextCallback = () => {eventBus.emit("useTriggers"); this.setState({visible: false})},
+          props.nextLabel = 'Done'
+        }
         break;
       case 3:
         props = {
@@ -123,7 +140,7 @@ export class TapToToggleCalibration extends Component {
         <Text style={{fontSize: 23, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{props.title}</Text>
         <Image source={props.image} style={{width:0.45*screenWidth, height:0.45*screenWidth, margin:0.025*screenHeight}}/>
         <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.csBlue.hex, textAlign:'center'}}>{props.header}</Text>
-        <Text style={{fontSize: 14, color: colors.blue.hex, textAlign:'center', marginTop:15}}>{props.explanation}</Text>
+        <Text style={{fontSize: 14, color: colors.blue.hex, textAlign:'center', marginTop:15, paddingLeft:10, paddingRight:10}}>{props.explanation}</Text>
         <View style={{flex:1}}/>
 
         {props.back ?
@@ -169,7 +186,7 @@ export class TapToToggleCalibration extends Component {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible}>
+      <OverlayBox visible={this.state.visible} canClose={this.state.canClose} closeCallback={() => {eventBus.emit("useTriggers"); this.setState({visible: false});}} backgroundColor={colors.csBlue.rgba(0.3)} >
         {this.getContent()}
       </OverlayBox>
     );
