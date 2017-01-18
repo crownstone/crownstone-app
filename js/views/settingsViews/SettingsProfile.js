@@ -153,7 +153,7 @@ export class SettingsProfile extends Component {
     }});
     items.push({label: "This will enable certain features in the app that might still be a bit experimental. This is ideal for early adopters or developers!", type: 'explanation', below: true});
 
-    if (user.developer === false) {
+    if (user.developer !== true) {
       items.push({label:"Enable Developer Mode", value: false, type: 'switch', callback:(newValue) => {
         setTimeout(() => {
           store.dispatch({

@@ -38,9 +38,6 @@ export const KEEPALIVE_INTERVAL = 60; // s !
 export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
 export const KEEPALIVE_REPEAT_INTERVAL = 5000; // ms
 
-
-export const TOUCH_RSSI_THRESHOLD = -48;
-
 // WHEN RELEASING: SET THIS TO TRUE
 export const RELEASE_MODE = true;
 

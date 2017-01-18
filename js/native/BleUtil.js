@@ -28,17 +28,17 @@ export const BleUtil = {
   cancelSetupSearch:   function() { this._cancelSearch(this.pendingSetupSearch); },
 
 
-  getNearestSetupCrownstone: function(timeout) {
+  getNearestSetupCrownstone: function(timeoutMilliseconds) {
     this.cancelSetupSearch();
-    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearestSetup, this.pendingSetupSearch, timeout)
+    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearestSetup, this.pendingSetupSearch, timeoutMilliseconds)
   },
 
-  getNearestCrownstone: function(timeout) {
+  getNearestCrownstone: function(timeoutMilliseconds) {
     this.cancelSearch();
-    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearest, this.pendingSearch, timeout)
+    return this._getNearestCrownstoneFromEvent(NativeBus.topics.nearest, this.pendingSearch, timeoutMilliseconds)
   },
 
-  _getNearestCrownstoneFromEvent: function(event, stateContainer, timeout = 10000) {
+  _getNearestCrownstoneFromEvent: function(event, stateContainer, timeoutMilliseconds = 10000) {
     LOGDebug("LOOKING FOR NEAREST");
     return new Promise((resolve, reject) => {
       let measurementMap = {};
@@ -75,7 +75,7 @@ export const BleUtil = {
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         this._cancelSearch(stateContainer);
         reject("Nothing Near");
-      }, timeout);
+      }, timeoutMilliseconds);
     })
   },
 

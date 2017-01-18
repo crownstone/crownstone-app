@@ -52,9 +52,12 @@ export class RoomOverview extends Component {
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data) => { this.forceUpdate();}));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate();}));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate();}));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => { this.justFinishedSetup = handle; this.forceUpdate();}));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => {
+      this.justFinishedSetup = handle;
+      this.forceUpdate();
+    }));
 
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;

@@ -114,6 +114,13 @@ export class SetupHelper {
           eventBus.emit("useTriggers");
           eventBus.emit("setupComplete", this.handle);
 
+          // start the tap-to-toggle tutorial
+          if (this.type === stoneTypes.plug) {
+            if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+              eventBus.emit("CalibrateTapToToggle");
+            }
+          }
+
           // show the celebration of 4 stones
           state = store.getState();
           if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) {

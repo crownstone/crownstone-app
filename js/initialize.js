@@ -6,6 +6,7 @@ import { LocalizationUtil } from './native/LocalizationUtil'
 import { Scheduler } from './logic/Scheduler'
 import { BleActions, Bluenet, NativeBus } from './native/Proxy';
 import { eventBus }         from './util/eventBus'
+import { userHasPlugsInSphere }         from './util/dataUtil'
 
 
 /**
@@ -110,12 +111,23 @@ export const INITIALIZER = {
         );
       };
 
+      // set the global network error handler.
       CLOUD.setNetworkErrorHandler(handler);
 
       // listen to the state of the app, if it is in the foreground or background
       AppState.addEventListener('change', (appState) => {
         if (appState === "active") {
 
+        }
+      });
+
+
+      // trigger the CalibrateTapToToggle tutorial for existing users.
+      NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
+        let state = store.getState();
+        if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+          if (userHasPlugsInSphere(state,sphereId))
+            eventBus.emit("CalibrateTapToToggle");
         }
       });
       this.started = true;

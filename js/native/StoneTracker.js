@@ -4,16 +4,16 @@ import { Bluenet, BleActions, NativeBus } from './Proxy';
 import { BleUtil } from './BleUtil';
 import { StoneStateHandler } from './StoneStateHandler'
 import { eventBus } from './../util/eventBus';
+import { addDistanceToRssi } from './../util/util';
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { canUseIndoorLocalizationInSphere } from '../util/dataUtil'
 import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
-import { TOUCH_RSSI_THRESHOLD } from '../ExternalConfig';
 
-let MINIMUM_AMOUNT_OF_SAMPLES = 2;
+let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
+let TOUCH_RSSI_ENABLE_DISTANCE = -4;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
-let TOUCH_RSSI_ENABLE_DISTANCE = -5;
 let TOUCH_TIME_BETWEEN_SWITCHING = 5000; // ms
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
 
@@ -99,19 +99,19 @@ export class StoneTracker {
 
 
     // not all stones have touch to toggle enabled
-    if (stone.config.touchToToggle === true) {
+    if (stone.config.touchToToggle === true && state.user.tapToToggleCalibration !== null && state.user.tapToToggleCalibration !== undefined) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
       // the sign > is because the rssi is negative!
       if (ref.touchTempDisabled === true) {
         // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to reenable it.
         // rssi measured must be smaller (-80) < (-49 + -4)
-        if (rssi < (TOUCH_RSSI_THRESHOLD + TOUCH_RSSI_ENABLE_DISTANCE)) {
+        if (rssi < (state.user.tapToToggleCalibration + TOUCH_RSSI_ENABLE_DISTANCE)) {
           ref.touchTempDisabled = false;
         }
       }
       else {
         // LOG("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
-        if (rssi > TOUCH_RSSI_THRESHOLD && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
+        if (rssi > state.user.tapToToggleCalibration && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
           if (this.tapToToggleDisabled === false) {
             LOG("Tap to Toggle!");
             // notify the user by vibration that the crownstone will be switched.
@@ -146,15 +146,13 @@ export class StoneTracker {
 
     // update local tracking of data
     ref.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * ref.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
-    ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES ? 1 : 0;
+    ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER ? 1 : 0;
 
     // we need a decent sample set.
-    if (ref.samples < MINIMUM_AMOUNT_OF_SAMPLES)
+    if (ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER)
       return;
 
-    let farThresholdDistance = Math.pow(10,(-(stone.config.nearThreshold + 60)/(10 * 2))) + 0.5; // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
-    let farThreshold = -(10*2)*Math.log10(farThresholdDistance) - 60;
-
+    let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
 
     // these event are only used for when there are no room-level options possible
     if (!canUseIndoorLocalizationInSphere(state, referenceId)) {

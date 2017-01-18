@@ -13,7 +13,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { EditSpacer }        from '../components/editComponents/EditSpacer'
 import { SlideFadeInView }   from '../components/animated/SlideFadeInView'
 import { LOG }               from '../../logging/Log'
-import { getUUID }           from '../../util/util'
+import { getUUID, addDistanceToRssi }           from '../../util/util'
 import { getAiData }         from '../../util/dataUtil'
 import { BleUtil }           from '../../native/BleUtil'
 import { NativeBus }         from '../../native/Proxy'
@@ -248,7 +248,7 @@ export class DeviceStateEdit extends Component {
   }
 
   defineThreshold(iBeaconId) {
-    // show loading bar
+    // show loading screen
     this.props.eventBus.emit("showLoading", "Determining range...");
 
     // make sure we don't strangely trigger stuff while doing this.
@@ -293,8 +293,7 @@ export class DeviceStateEdit extends Component {
         });
 
         let average = Math.round(total / measurements.length);
-        let distance = Math.pow(10,(-(average + 60)/(10 * 2))) + 0.5; // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
-        let averageCorrected = -(10*2)*Math.log10(distance) - 60;
+        let averageCorrected = addDistanceToRssi(average, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
 
         // update trigger range.
         this.props.store.dispatch({

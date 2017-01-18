@@ -1,5 +1,6 @@
 import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOG, LOGError } from '../logging/Log'
+import { stoneTypes } from '../router/store/reducers/stones'
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -204,12 +205,24 @@ export const getAiData = function(state, sphereId) {
     he:  { male:'he',  female:'she' },
   };
 
-  return {
-    name: state.spheres[sphereId].config.aiName,
-    his: sexes.his[state.spheres[sphereId].config.aiSex],
-    him: sexes.him[state.spheres[sphereId].config.aiSex],
-    he:  sexes.he[state.spheres[sphereId].config.aiSex],
+  if (sphereId) {
+    return {
+      name: state.spheres[sphereId].config.aiName,
+      his: sexes.his[state.spheres[sphereId].config.aiSex],
+      him: sexes.him[state.spheres[sphereId].config.aiSex],
+      he:  sexes.he[state.spheres[sphereId].config.aiSex],
+    }
   }
+  else {
+    return {
+      name: 'AI',
+      his: 'her',
+      him: 'her',
+      he:  'she',
+    }
+  }
+
+
 };
 
 export const getDeviceSpecs = function(state) {
@@ -341,4 +354,18 @@ export const requireMoreFingerprints = function (state, sphereId) {
     });
   }
   return requiresFingerprints;
+};
+
+
+export const userHasPlugsInSphere = function(state, sphereId) {
+  let stones = state.spheres[sphereId].stones;
+  let stoneIds = Object.keys(stones);
+
+  for (let i = 0; i < stoneIds.length; i++) {
+    if (stones[stoneIds[i]].config.type === stoneTypes.plug) {
+      return true;
+    }
+  }
+
+  return false;
 };

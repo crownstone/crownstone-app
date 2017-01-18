@@ -9,14 +9,14 @@ import {
   View,
 } from 'react-native';
 
-import { AnimatedLogo }       from './animated/AnimatedLogo'
-import { NativeBus }          from '../../native/Proxy'
-import { FinalizeLocalizationIcon }               from './FinalizeLocalizationIcon'
-import { Icon }               from './Icon'
-import { FadeInView }         from './animated/FadeInView'
-import { styles, colors , tabBarHeight, topBarHeight, screenHeight, screenWidth } from './../styles'
-import { eventBus } from '../../util/eventBus'
-import loginStyles from '../../views/startupViews/LoginStyles'
+import { AnimatedLogo }       from '../animated/AnimatedLogo'
+import { NativeBus }          from '../../../native/Proxy'
+import { FinalizeLocalizationIcon }               from '../FinalizeLocalizationIcon'
+import { Icon }               from '../Icon'
+import { FadeInView }         from '../animated/FadeInView'
+import { styles, colors , tabBarHeight, topBarHeight, screenHeight, screenWidth } from '../../styles'
+import { eventBus } from '../../../util/eventBus'
+import loginStyles from '../../startupViews/LoginStyles'
 
 import Svg,{
   Circle,

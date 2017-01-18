@@ -150,6 +150,7 @@ open class BluenetJS: NSObject {
   var bridge: RCTBridge!
   
   
+  
   @objc func rerouteEvents() {
     if let globalBluenet = GLOBAL_BLUENET {
       print("----- BLUENET BRIDGE: Rerouting events")

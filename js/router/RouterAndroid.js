@@ -18,9 +18,10 @@ import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
 import { SideMenu }               from '../views/components/SideMenu'
-import { LocalizationSetupStep1 } from '../views/components/LocalizationSetupStep1'
-import { LocalizationSetupStep2 } from '../views/components/LocalizationSetupStep2'
-import { BleStateOverlay }        from '../views/components/BleStateOverlay'
+import { LocalizationSetupStep1 } from '../views/components/overlays/LocalizationSetupStep1'
+import { LocalizationSetupStep2 } from '../views/components/overlays/LocalizationSetupStep2'
+import { TapToToggleCalibration } from '../views/components/overlays/TapToToggleCalibration'
+import { BleStateOverlay }        from '../views/components/overlays/BleStateOverlay'
 import { Views }                  from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 
@@ -71,11 +72,12 @@ export class Router_Android extends Component {
             </Scene>
           </Scene>
         </Router>
-        <OptionPopup />
-        <Processing />
-        <BleStateOverlay />
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
+        <TapToToggleCalibration store={this.props.store} />
+        <BleStateOverlay />
+        <OptionPopup />
+        <Processing />
       </View>
     );
   }
