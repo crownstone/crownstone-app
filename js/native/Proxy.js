@@ -163,6 +163,7 @@ class NativeBusClass {
       anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = type_advertisement
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error)
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
+      locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on")
 
       nearest:              "nearestCrownstone",                // data type = type_nearest
       nearestSetup:         "nearestSetupCrownstone",           // data type = type_nearest

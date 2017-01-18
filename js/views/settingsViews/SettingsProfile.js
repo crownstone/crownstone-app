@@ -10,6 +10,8 @@ import {
   View
 } from 'react-native';
 
+
+import { Actions } from 'react-native-router-flux';
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
@@ -151,6 +153,21 @@ export class SettingsProfile extends Component {
     }});
     items.push({label: "This will enable certain features in the app that might still be a bit experimental. This is ideal for early adopters or developers!", type: 'explanation', below: true});
 
+    if (user.developer === false) {
+      items.push({label:"Enable Developer Mode", value: false, type: 'switch', callback:(newValue) => {
+        setTimeout(() => {
+          store.dispatch({
+            type: 'SET_DEVELOPER_MODE',
+            data: {developer: newValue}
+          });
+        }, 300)
+      }});
+      items.push({label: "This will enable certain features that may be used for development of the Crownstone.", type: 'explanation', below: true});
+    }
+    else {
+      items.push({label:"Developer Menu", type: 'navigation', callback:() => { Actions.settingsDeveloper(); }});
+      items.push({type: 'spacer'});
+    }
 
     return items;
   }

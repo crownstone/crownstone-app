@@ -26,7 +26,6 @@ export class RegisterConclusion extends Component {
 
   render() {
     let width = Dimensions.get('window').width;
-    let buttonWidth = 0.5 * width;
 
     return (
       <Background hideInterface={true} image={this.props.backgrounds.mainDark}>
@@ -40,7 +39,8 @@ export class RegisterConclusion extends Component {
           <Text style={style.text}>{
             this.props.passwordReset ?
               'Please click the link in the email and follow the instructions to reset your password.' :
-              'After you click the validation link in the email, you can login to the app using your email address.'
+              'After you click the validation link in the email, you can login to the app using your email address. ' +
+              'It can take up to a minute for the email to be received. Make sure you check your spam folder as well.'
             }
           </Text>
         </View>

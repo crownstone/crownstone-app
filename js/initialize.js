@@ -17,6 +17,7 @@ export const INITIALIZER = {
    * Init happens before start, it triggers
    */
   initialized: false,
+  userReady: false,
   init: function() {
     if (this.initialized === false) {
       LOG("Events forwarded");
@@ -31,11 +32,38 @@ export const INITIALIZER = {
 
             break;
           case "poweredOn":
-            BleActions.isReady().then(() => {
-              Bluenet.startScanningForCrownstonesUniqueOnly();
-            });
+            if (this.userReady) {
+              BleActions.isReady().then(() => {
+                Bluenet.startScanningForCrownstonesUniqueOnly();
+              });
+            }
             break;
           case "unauthorized":
+
+            break;
+          default:
+
+            break;
+        }
+      });
+
+      // listen to the BLE events
+      NativeBus.on(NativeBus.topics.locationStatus, (status) => {
+        switch (status) {
+          case "unknown":
+
+            break;
+          case "on":
+            if (this.userReady) {
+              BleActions.isReady().then(() => {
+                Bluenet.startScanningForCrownstonesUniqueOnly();
+              });
+            }
+            break;
+          case "foreground":
+
+            break;
+          case "off":
 
             break;
           default:
@@ -59,6 +87,7 @@ export const INITIALIZER = {
       eventBus.on(    'appStarted',                       () => {
         BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
         LocalizationUtil.trackSpheres(store);
+        this.userReady = true;
       });
       eventBus.on(    'sphereCreated',                    () => {LocalizationUtil.trackSpheres(store);});
 

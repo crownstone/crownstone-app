@@ -43,7 +43,11 @@ export class PictureCircle extends Component {
       let imageURI = preparePictureURI(this.props.value);
       let borderWidth = size / 30;
       return (
-        <TouchableOpacity onPress={this.props.removePicture} style={{height:size}}>
+        <TouchableOpacity onPress={() => {
+          Alert.alert("Delete this picture?", undefined, [{text:'No'}, {text:'Yes', onPress:() => {
+            this.props.removePicture()
+          }}])
+        }} style={{height:size}}>
           <View>
             <View style={{width:size,
                   height:size,
@@ -63,11 +67,11 @@ export class PictureCircle extends Component {
                     width:size/3,
                     height:size/3,
                     borderRadius:size/6,
-                    backgroundColor: colors.red.hex,
+                    backgroundColor: colors.blue.hex,
                     borderColor: '#ffffff',
                     borderWidth: size/30
                   }, styles.centered]}>
-                <Icon name={'ios-remove'} size={size/5} color={'#ffffff'} />
+                <Icon name={'md-remove'} size={size/5} color={'#ffffff'} />
               </View>
             </View>
           </View>

@@ -75,7 +75,7 @@ export class TextEditInput extends Component {
         style={[{flex:1, position:'relative', top:1}, this.props.style]}
         autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
         value={this.props.optimization === false ? this.props.value : this.state.value}
-        placeholder={this.props.placeholder}
+        placeholder={this.props.placeholder || this.props.label}
         placeholderTextColor={this.props.placeholderTextColor}
         secureTextEntry={this.props.secureTextEntry}
         onChangeText={(newValue) => {this.setState({value:newValue})}}
