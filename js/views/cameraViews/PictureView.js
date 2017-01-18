@@ -29,6 +29,7 @@ export class PictureView extends Component {
 
   takePicture() {
     this.props.eventBus.emit('showLoading', 'Processing...');
+    // this.camera.captureTarget = Camera.constants.CaptureTarget.temp;
     this.camera.capture()
       .then((data) => {
         this.props.eventBus.emit('hideLoading');

@@ -81,6 +81,10 @@ export const quitApp = function() {
   Bluenet.quitApp();
 };
 
+export const resetBle = function() {
+  Bluenet.resetBle();
+};
+
 export const processImage = function(picture, targetFilename) {
   return new Promise((resolve, reject) => {
     if (picture !== undefined) {

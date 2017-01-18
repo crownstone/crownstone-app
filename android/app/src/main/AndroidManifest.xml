@@ -26,6 +26,9 @@
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
+			<intent-filter>
+				<action android:name="rocks.crownstone.consumerapp.QUIT"/>
+			</intent-filter>
 		</activity>
 		<service
 			android:name="nl.dobots.bluenet.service.BleScanService"

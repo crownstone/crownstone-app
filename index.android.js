@@ -51,15 +51,14 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('showProgress', snapBack));
     this.unsubscribe.push(eventBus.on('hideLoading', snapBack));
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
-    StatusBar.setBackgroundColor('#00162C', true);
 
 
     // avoid closing the app by tapping back too often.
     BackAndroid.addEventListener('hardwareBackPress', () => {
-      Alert.alert("Would you like to leave the app?", "Leave to run in the background, quit to fully quit the app. If you press quit, the Crownstones will not respond to you anymore.",[
-        {text:'Leave', onPress: () => { BackAndroid.exitApp(); }},
-        {text:'Quit', onPress: () => { quitApp(); }},
-        {text:'Not yet'}
+      Alert.alert("Would you like to close the app?", "The app will still run in the background, this is required for your Crownstones to respond to you. Choose \"Force quit\" to stop running completely.",[
+        {text:'Force quit', onPress: () => { quitApp(); }},
+        {text:'Cancel'},
+        {text:'Ok', onPress: () => { BackAndroid.exitApp(); }}
       ]);
 
       // if the user presses back the second time, we close the app
@@ -76,6 +75,7 @@ class Root extends Component {
 
 
   render() {
+    StatusBar.setBackgroundColor('#00162C', true);
     return <View style={{flex:1}}>
       <Animated.View style={{flex:1, position:'relative', top: this.state.top}}>
         <AppRouter />

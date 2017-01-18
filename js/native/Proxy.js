@@ -16,6 +16,7 @@ if (DISABLE_NATIVE === true) {
     disconnect: () => {},                 // called through BleActions --> must be promise.
     phoneDisconnect: () => {},            // called through BleActions --> must be promise.
     quitApp: () => {},
+    resetBle: () => {},
     setSwitchState: () => {},             // called through BleActions --> must be promise.
     startScanning: () => {},
     startScanningForCrownstones: () => {},

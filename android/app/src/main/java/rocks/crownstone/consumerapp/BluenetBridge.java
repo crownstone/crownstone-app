@@ -71,12 +71,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private static final String TAG = BluenetBridge.class.getCanonicalName();
 	public static final int ONGOING_NOTIFICATION_ID = 99115;
 
-	private static final int LOG_LEVEL_DEFAULT = Log.ERROR;
+	private static final int LOG_LEVEL_DEFAULT = Log.INFO;
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Pair[] LOG_LEVELS = new Pair[]{
-			new Pair<>(BleScanService.class, Log.ERROR),
+			new Pair<>(BleScanService.class, Log.DEBUG),
 			new Pair<>(CrownstoneServiceData.class, Log.WARN),
-			new Pair<>(BluenetBridge.class, Log.WARN),
+			new Pair<>(BluenetBridge.class, Log.DEBUG),
 			new Pair<>(BleBaseEncryption.class, Log.WARN),
 			new Pair<>(BleIbeaconRanging.class, Log.WARN),
 			new Pair<>(GaussianNaiveBayes.class, Log.WARN),
@@ -88,11 +88,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	};
 
 	public static final int FAST_SCAN_INTERVAL = 20000; // ms scanning
-	public static final int FAST_SCAN_PAUSE = 100; // ms pause
+	public static final int FAST_SCAN_PAUSE = 500; // ms pause
 	public static final int SLOW_SCAN_INTERVAL = 500; // ms scanning
 	public static final int SLOW_SCAN_PAUSE = 500; // ms pause
 	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
-	public static final int CONNECT_TIMEOUT_MS = 2000;
+	public static final int CONNECT_TIMEOUT_MS = 10000;
 	public static final int CONNECT_NUM_RETRIES = 3;
 
 	private enum ScannerState {
@@ -290,6 +290,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		callback.invoke(retVal);
 	}
 
+	@ReactMethod
+	public void resetBle() {
+		BleLog.getInstance().LOGw(TAG, "resetBle");
+		resetBluetooth();
+	}
+
 	private synchronized void resetBluetooth() {
 		BleLog.getInstance().LOGw(TAG, "resetBluetooth");
 		if (_isResettingBluetooth) {
@@ -406,7 +412,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			@Override
 			public void onError(int error) {
 				BleLog.getInstance().LOGi(TAG, "connection error: " + error);
-				BleLog.getInstance().LOGi(TAG, Log.getStackTraceString(new Exception()));
 				if (!_connectCallbackInvoked) {
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", true);
