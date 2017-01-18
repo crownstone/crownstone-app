@@ -51,7 +51,6 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('showProgress', snapBack));
     this.unsubscribe.push(eventBus.on('hideLoading', snapBack));
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
-//    StatusBar.setBackgroundColor('#00162C', true);
 
 
     // avoid closing the app by tapping back too often.
@@ -76,6 +75,7 @@ class Root extends Component {
 
 
   render() {
+    StatusBar.setBackgroundColor('#00162C', true);
     return <View style={{flex:1}}>
       <Animated.View style={{flex:1, position:'relative', top: this.state.top}}>
         <AppRouter />
