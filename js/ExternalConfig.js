@@ -51,9 +51,10 @@ if (RELEASE_MODE) {
   DEBUG_BLE       = false;
   DEBUG_CLOUD     = false;
   DEBUG_LOGGING   = false;
-  LOGGING         = false;
   LOG_TO_FILE     = false;
-  ERROR_LOGGING   = false;
+
+  LOGGING         = true;
+  ERROR_LOGGING   = true;
   DISABLE_NATIVE  = false;
   SILENCE_CLOUD   = false;
   OVERRIDE_DATABASE = false;

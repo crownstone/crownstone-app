@@ -100,7 +100,6 @@ export class AppRouter extends Component {
         eventBus.emit("appStarted");
       }
       else {
-        console.log("XX")
         this.setState({storeInitialized:true, loggedIn:false});
       }
     };

@@ -12,6 +12,7 @@ import {
 } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
 import { eventBus } from '../util/eventBus'
+import { safeDeleteFile } from '../util/util'
 const DeviceInfo = require('react-native-device-info');
 
 export const LOG = function() {
@@ -109,17 +110,61 @@ export const LOGScheduler = function() {
   }
 };
 
+function getFilename(timestamp) {
+  let dateStamp = new Date(timestamp).getFullYear() + "-" + (new Date(timestamp).getMonth()+1) + "-" + (new Date(timestamp).getDate());
+  return 'ConsumerAppLog' + dateStamp + '.log';;
+}
+
+function cleanLogs(logPath, amountOfDaysStored = 3) {
+  let allowedLogFiles = {};
+  for (let i = 0; i < amountOfDaysStored; i++) {
+    let timestamp = new Date().valueOf() - i*86400000;
+    allowedLogFiles[getFilename(timestamp)] = true;
+  }
+
+  let flagForRemoval = [];
+  RNFS.readdir(logPath)
+    .then((files) => {
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].substr(0,14) === "ConsumerAppLog" && allowedLogFiles[files[i]] !== true) {
+          flagForRemoval.push(files[i]);
+        }
+      }
+      for (let i = 0; i < flagForRemoval.length; i++) {
+        safeDeleteFile(logPath + "/" + flagForRemoval[i]);
+      }
+    })
+    .catch((err) => {
+    });
+}
+
+export function clearLogs() {
+  // create a path you want to write to
+  let logPath = RNFS.DocumentDirectoryPath;
+  if (Platform.OS === 'android') {
+    logPath = RNFS.ExternalDirectoryPath;
+  }
+
+  cleanLogs(logPath,0);
+}
 
 function logToFile() {
   if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
     // create a path you want to write to
-    // TODO: move to util
-    let path = RNFS.DocumentDirectoryPath + '/consumerAppLog.log';
+    let logPath = RNFS.DocumentDirectoryPath;
     if (Platform.OS === 'android') {
-      path = RNFS.ExternalDirectoryPath + '/consumerAppLog.log';
+      logPath = RNFS.ExternalDirectoryPath;
     }
 
-    //create string
+    // clean log files that are older than X days
+    let amountOfDaysStored = 3;
+    cleanLogs(logPath, amountOfDaysStored);
+
+    // generate filename based on current date.
+    let filename = getFilename(new Date().valueOf());
+    let filePath = logPath + '/' + filename;
+
+    // create string
     let str = '' + new Date().valueOf() + ' - ' + new Date() + " -";
     for (let i = 0; i < arguments.length; i++) {
       if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
@@ -132,13 +177,9 @@ function logToFile() {
     str += " \n";
 
     // write the file
-    RNFS.appendFile(path, str, 'utf8')
-      .then((success) => {
-        // console.log('logWritten');
-      })
-      .catch((err) => {
-        // console.log(err.message);
-      });
+    RNFS.appendFile(filePath, str, 'utf8')
+      .then((success) => {})
+      .catch((err) => {});
   }
 }
 
