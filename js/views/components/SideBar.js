@@ -89,7 +89,7 @@ export class SideBar extends Component {
 
 
 
-    if (userHasPlugsInSphere(state, state.app.activeSphere)) {
+    if (state.app.activeSphere && userHasPlugsInSphere(state, state.app.activeSphere)) {
       settingItems.push({
         id: 'calibrate',
         label: 'Manage Spheres',
@@ -155,7 +155,7 @@ export class SideBar extends Component {
     }
 
     let settingsItems = this._getSettingsItems();
-    if (this.settingItems.length > 0) {
+    if (settingsItems.length > 0) {
       content.push(<MenuSegmentSeparator key="settingsLabel" label="Settings"/>);
       this._fillItemList(content, settingsItems);
     }
