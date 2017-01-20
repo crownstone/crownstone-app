@@ -39,7 +39,7 @@ export const BleUtil = {
   },
 
   _getNearestCrownstoneFromEvent: function(event, stateContainer, timeoutMilliseconds = 10000) {
-    LOGDebug("LOOKING FOR NEAREST");
+    LOGDebug("_getNearestCrownstoneFromEvent: LOOKING FOR NEAREST");
     return new Promise((resolve, reject) => {
       let measurementMap = {};
       let highFrequencyRequestUUID = getUUID();
@@ -52,7 +52,7 @@ export const BleUtil = {
           nearestItem = JSON.parse(nearestItem);
         }
 
-        LOG("nearestItem", nearestItem, event);
+        LOG("_getNearestCrownstoneFromEvent: nearestItem", nearestItem, event);
 
         if (measurementMap[nearestItem.handle] === undefined) {
           measurementMap[nearestItem.handle] = {count: 0, rssi: nearestItem.rssi};
@@ -61,7 +61,7 @@ export const BleUtil = {
         measurementMap[nearestItem.handle].count += 1;
 
         if (measurementMap[nearestItem.handle].count == 3) {
-          LOG('RESOLVING', nearestItem);
+          LOG('_getNearestCrownstoneFromEvent: RESOLVING', nearestItem);
           this._cancelSearch(stateContainer);
           this.stopHighFrequencyScanning(highFrequencyRequestUUID);
           resolve(nearestItem);
@@ -74,7 +74,7 @@ export const BleUtil = {
       stateContainer.timeout = setTimeout(() => {
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         this._cancelSearch(stateContainer);
-        reject("Nothing Near");
+        reject("_getNearestCrownstoneFromEvent: Nothing Near");
       }, timeoutMilliseconds);
     })
   },
@@ -88,7 +88,7 @@ export const BleUtil = {
 
       let cleanup = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (advertisement) => {
-        LOG("Advertisement in detectCrownstone", stoneHandle, advertisement);
+        LOG("detectCrownstone: Advertisement in detectCrownstone", stoneHandle, advertisement);
 
         if (advertisement.handle === stoneHandle)
           count += 1;
@@ -105,7 +105,7 @@ export const BleUtil = {
         resolve(advertisement.setupPackage);
       };
 
-      LOGDebug("Subscribing TO ", NativeBus.topics.advertisement);
+      LOGDebug("detectCrownstone: Subscribing TO ", NativeBus.topics.advertisement);
       cleanup.unsubscribe = NativeBus.on(NativeBus.topics.advertisement, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
