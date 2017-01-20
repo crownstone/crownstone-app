@@ -1,6 +1,7 @@
 package rocks.crownstone.consumerapp;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.le.ScanSettings;
 import android.content.ComponentName;
@@ -309,7 +310,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void isReady(Callback callback) {
-		BleLog.getInstance().LOGd(TAG, "isReady: " + callback);
+		BleLog.getInstance().LOGi(TAG, "isReady: " + callback);
 		// TODO: what if isReady gets called twice before ready?
 		_readyCallback = callback;
 		checkReady();
@@ -328,7 +329,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //		sendEvent("enterLocation", map);
 //		sendEvent("exitLocation", map);
 //		sendEvent("currentLocation", map);
-		BleLog.getInstance().LOGd(TAG, "rerouteEvents");
+		BleLog.getInstance().LOGi(TAG, "rerouteEvents");
 	}
 
 
@@ -983,6 +984,35 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
 	}
 
+	private Notification getScanServiceNotification(String text) {
+		Intent notificationIntent = new Intent(_reactContext, MainActivity.class);
+//			notificationIntent.setClassName("rocks.crownstone.consumerapp", "MainActivity");
+//			notificationIntent.setAction("ACTION_MAIN");
+		PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, 0);
+
+		Notification notification = new Notification.Builder(_reactContext)
+				.setContentTitle("Crownstone is running")
+				.setContentText(text)
+				.setContentIntent(pendingIntent)
+				.setSmallIcon(R.drawable.icon_notification)
+				// TODO: add action to close the app + service
+				// TODO: add action to pause the app?
+//					.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
+//					.setLargeIcon()
+				.build();
+
+		if (Build.VERSION.SDK_INT >= 21) {
+			notification.visibility = Notification.VISIBILITY_PUBLIC;
+		}
+		return notification;
+	}
+
+	private void updateScanServiceNotification(String text) {
+		Notification notification = getScanServiceNotification(text);
+		NotificationManager mNotificationManager = (NotificationManager) _reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
+	}
+
 	// if the service was connected successfully, the service connection gives us access to the service
 	private ServiceConnection _connection = new ServiceConnection() {
 		@Override
@@ -1011,30 +1041,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			_scanService.setScanPause(SLOW_SCAN_PAUSE);
 
 
-
-			Intent notificationIntent = new Intent(_reactContext, MainActivity.class);
-//			notificationIntent.setClassName("rocks.crownstone.consumerapp", "MainActivity");
-//			notificationIntent.setAction("ACTION_MAIN");
-			PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, 0);
-
-			Notification notification = new Notification.Builder(_reactContext)
-					.setContentTitle("Crownstone")
-					.setContentText("Crownstone is running in the background")
-					.setContentIntent(pendingIntent)
-					.setSmallIcon(R.drawable.icon_notification)
-					// TODO: add action to close the app + service
-					// TODO: add action to pause the app?
-//					.addAction(android.R.drawable.ic_menu_close_clear_cancel, )
-//					.setLargeIcon()
-					.build();
-
-			if (Build.VERSION.SDK_INT >= 21) {
-				notification.visibility = Notification.VISIBILITY_PUBLIC;
-			}
-
+			Notification notification = getScanServiceNotification("Crownstone is running in the background");
 			_scanService.startForeground(ONGOING_NOTIFICATION_ID, notification);
-
-
 
 
 			BleExt bleExt = _scanService.getBleExt();
@@ -1051,6 +1059,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			BleLog.getInstance().LOGi(TAG, "disconnected from service");
+			_scanService = null;
+			_iBeaconRanger = null;
 			_bound = false;
 		}
 	};
@@ -1194,6 +1204,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Check for nearest stone and nearest stone in setup mode
 		// TODO: some more intelligent way than looping over the whole sorted list every time.
 		BleDeviceList sortedList = _scanService.getBleExt().getDeviceMap().getDistanceSortedList();
+//		BleDeviceList sortedBeaconList = _iBeaconRanger.getDeviceMap().getDistanceSortedList();
 		for (BleDevice dev : sortedList) {
 			if (dev.isStone() && dev.isSetupMode()) {
 				WritableMap nearestMap = Arguments.createMap();
@@ -1276,19 +1287,32 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@Override
 	public void onRegionEnter(UUID uuid) {
+		int numEnteredRegions = _iBeaconRanger.getEnteredRegions().size();
 		String referenceId = _iBeaconSphereIds.get(uuid);
-		BleLog.getInstance().LOGd(TAG, "onRegionEnter: uuid=" + uuid + ", referenceId=" + referenceId);
+		BleLog.getInstance().LOGi(TAG, "onRegionEnter: uuid=" + uuid + ", referenceId=" + referenceId + " currently in " + numEnteredRegions + " regions");
 		if (referenceId != null) {
 			sendEvent("enterSphere", referenceId);
+		}
+		if (_bound) {
+			updateScanServiceNotification("Currently in a sphere");
 		}
 	}
 
 	@Override
 	public void onRegionExit(UUID uuid) {
+		int numEnteredRegions = _iBeaconRanger.getEnteredRegions().size();
 		String referenceId = _iBeaconSphereIds.get(uuid);
-		BleLog.getInstance().LOGd(TAG, "onRegionExit: uuid=" + uuid + ", referenceId=" + referenceId);
+		BleLog.getInstance().LOGi(TAG, "onRegionExit: uuid=" + uuid + ", referenceId=" + referenceId + " currently in " + numEnteredRegions + " regions");
 		if (referenceId != null) {
 			sendEvent("exitSphere", referenceId);
+		}
+		if (_bound) {
+			if (numEnteredRegions > 0) {
+				updateScanServiceNotification("Currently in a sphere");
+			}
+			else {
+				updateScanServiceNotification("Not in any sphere");
+			}
 		}
 	}
 
