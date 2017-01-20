@@ -94,6 +94,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
 	public static final int CONNECT_TIMEOUT_MS = 5000;
 	public static final int CONNECT_NUM_RETRIES = 3;
+	public static final int NUM_CONNECT_FAILS_FOR_RESET_BLE = 10; // After this number of consecutive connect failures, bluetooth will be reset.
 
 	private enum ScannerState {
 		DISABLED,
@@ -133,6 +134,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private String _lastLocationId = null;
 
 	private boolean _isResettingBluetooth = false;
+
+	private int _numConsecutiveConnectFailures = 0;
 
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
@@ -374,7 +377,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void connect(String uuid, final Callback callback) {
+	public void connect(final String uuid, final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "Connect to " + uuid);
 		if (_isTraingingLocalization) {
 			BleLog.getInstance().LOGw(TAG, "Connecting while training localization is bad");
@@ -400,7 +403,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onSuccess() {
-				BleLog.getInstance().LOGi(TAG, "connected");
+				BleLog.getInstance().LOGi(TAG, "connected to " + uuid);
+				_numConsecutiveConnectFailures = 0;
 				if (!_connectCallbackInvoked) {
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", false);
@@ -411,7 +415,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onError(int error) {
-				BleLog.getInstance().LOGi(TAG, "connection error: " + error);
+				BleLog.getInstance().LOGi(TAG, "connection error to " + uuid + ": " + error);
+				_numConsecutiveConnectFailures += 1;
 				if (!_connectCallbackInvoked) {
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", true);
@@ -425,6 +430,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 							resetBluetooth();
 							break;
 					}
+				}
+				if (_numConsecutiveConnectFailures > NUM_CONNECT_FAILS_FOR_RESET_BLE) {
+					_numConsecutiveConnectFailures = 0;
+					resetBluetooth();
 				}
 			}
 		});
