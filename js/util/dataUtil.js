@@ -369,3 +369,13 @@ export const userHasPlugsInSphere = function(state, sphereId) {
 
   return false;
 };
+
+export const getPresentSphere = function(state) {
+  let sphereIds = Object.keys(state.spheres);
+  for (let i = 0; i < sphereIds; i++ ) {
+    if (state.spheres[sphereIds[i]].config.present === true) {
+      return sphereIds[i];
+    }
+  }
+  return null;
+};

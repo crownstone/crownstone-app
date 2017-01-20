@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-import { userHasPlugsInSphere } from './../../util/dataUtil'
+import { userHasPlugsInSphere, getPresentSphere } from './../../util/dataUtil'
 import { logOut } from './../../util/util'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { Background } from './../components/Background'
@@ -61,7 +61,8 @@ export class SettingsOverview extends Component {
       }});
     }
 
-    if (userHasPlugsInSphere(state, state.app.activeSphere)) {
+    let presentSphere = getPresentSphere(state);
+    if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
       items.push({
         label:'Calibrate Tap-to-Toggle',
         type:'button',

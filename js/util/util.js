@@ -184,6 +184,6 @@ export const addDistanceToRssi = function(rssi, distanceInMeters) {
   let newDistance = Math.pow(10,(-(rssi + 60)/(10 * 2))) + distanceInMeters; // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
   let newRssi = -(10*2)*Math.log10(newDistance) - 60;
   return newRssi;
-}
+};
 
 

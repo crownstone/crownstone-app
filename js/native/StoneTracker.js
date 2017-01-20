@@ -105,7 +105,8 @@ export class StoneTracker {
       if (ref.touchTempDisabled === true) {
         // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to reenable it.
         // rssi measured must be smaller (-80) < (-49 + -4)
-        if (rssi < (state.user.tapToToggleCalibration + TOUCH_RSSI_ENABLE_DISTANCE)) {
+        let enableDistance = addDistanceToRssi(stone.user.tapToToggleCalibration, 0.35); // the + 0.35 meter makes sure a stationary phone will not continuously tap-to-toggle
+        if (rssi < enableDistance) {
           ref.touchTempDisabled = false;
         }
       }

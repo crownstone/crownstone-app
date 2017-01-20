@@ -14,12 +14,12 @@ import {
   View
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../styles'
-import { Icon } from './Icon'
-import { CLOUD } from '../../cloud/cloudAPI'
-import { NativeBus } from '../../native/Proxy'
-import { logOut } from './../../util/util'
-import { userHasPlugsInSphere } from './../../util/dataUtil'
+import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
+import { Icon } from '../Icon'
+import { CLOUD } from '../../../cloud/cloudAPI'
+import { NativeBus } from '../../../native/Proxy'
+import { logOut } from '../../../util/util'
+import { userHasPlugsInSphere, getPresentSphere } from '../../../util/dataUtil'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
@@ -102,8 +102,9 @@ export class SideBar extends Component {
 
 
 
+    let presentSphere = getPresentSphere(state);
 
-    if (state.app.activeSphere && userHasPlugsInSphere(state, state.app.activeSphere)) {
+    if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
       settingItems.push({
         id: 'calibrate',
         label: 'Calibrate Tap-to-Toggle',
@@ -185,7 +186,7 @@ export class SideBar extends Component {
     return (
       <View style={{flexDirection:'column', flex:1, height:screenHeight,  backgroundColor: color}}>
         <MenuTopBar />
-        <Image source={require('../../images/menuBackground.png')} style={{width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight - topBarHeight}} >
+        <Image source={require('../../../images/menuBackground.png')} style={{width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight - topBarHeight}} >
           <MenuCategoryImage />
           <ScrollView>
             {this._getContent()}
@@ -237,7 +238,7 @@ class MenuItem extends Component {
 class MenuCategoryImage extends Component {
   render(){
     return (
-      <Image source={require('../../images/sideMenu.png')} style={{width: screenWidth * FACTOR - BLUE_PADDING, height: 120}}>
+      <Image source={require('../../../images/sideMenu.png')} style={{width: screenWidth * FACTOR - BLUE_PADDING, height: 120}}>
       </Image>
     );
   }
