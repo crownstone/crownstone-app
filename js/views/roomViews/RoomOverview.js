@@ -47,13 +47,14 @@ export class RoomOverview extends Component {
 
     this.viewingRemotely = true;
     this.justFinishedSetup = "";
+
     this.nearestStoneId = undefined;
   }
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate();}));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate();}));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => {
       this.justFinishedSetup = handle;
       this.forceUpdate();

@@ -121,6 +121,29 @@ test('Promise 5', function (t) {
 });
 
 
+test('Passing Promises', function (t) {
+  let failingPromise = () => {
+    return new Promise((resolve, reject) => {
+      reject(10);
+    })
+      .then((data) => {
+        console.log("resolved1",data)
+      })
+      .catch((err) => {
+        console.log("error1",err)
+      })
+  };
+
+  failingPromise()
+    .then((data) => {
+      console.log("resolved2",data)
+    })
+    .catch((err) => {
+      console.log("error2",err)
+    })
+});
+
+
 test('Promise All', function (t) {
   let promises1 = [];
   let promises2 = [];

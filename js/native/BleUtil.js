@@ -210,6 +210,11 @@ class SingleCommand {
 
     let details = {from: 'BLEProxy: connecting to ' + this.handle + ' doing this: ' + action + ' with props ' + props};
 
-    return BlePromiseManager.register(actionPromise, details, priorityCommand);
+    if (priorityCommand) {
+      return BlePromiseManager.registerPriority(actionPromise, details);
+    }
+    else {
+      return BlePromiseManager.register(actionPromise, details);
+    }
   }
 }

@@ -10,7 +10,15 @@ class BlePromiseManagerClass {
     this.clearPendingPromiseTimeout = undefined;
   }
 
-  register(promise, message, priorityCommand = false) {
+  register(promise, message) {
+    this._register(promise, message, false);
+  }
+
+  registerPriority(promise, message) {
+    this._register(promise, message, true);
+  }
+
+  _register(promise, message, priorityCommand = false) {
     LOG("BlePromiseManager: registered promise in manager");
     return new Promise((resolve, reject) => {
       let container = {promise: promise, resolve: resolve, reject: reject, message: message};

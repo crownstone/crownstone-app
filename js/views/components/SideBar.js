@@ -17,6 +17,7 @@ import { Actions } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../styles'
 import { Icon } from './Icon'
 import { CLOUD } from '../../cloud/cloudAPI'
+import { NativeBus } from '../../native/Proxy'
 import { logOut } from './../../util/util'
 import { userHasPlugsInSphere } from './../../util/dataUtil'
 
@@ -26,6 +27,19 @@ let BLUE_PADDING = 4;
 export class SideBar extends Component {
   constructor() {
     super();
+    this.unsubscribe = [];
+  }
+
+  componentDidMount() {
+    // trigger a redraw then the sphere is entered/left
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.enterSphere, () => { this.forceUpdate() }));
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.exitSphere,  () => { this.forceUpdate() }));
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe.forEach((unsubscribe) => {
+      unsubscribe();
+    })
   }
 
   _getMenuItems() {
@@ -92,7 +106,7 @@ export class SideBar extends Component {
     if (state.app.activeSphere && userHasPlugsInSphere(state, state.app.activeSphere)) {
       settingItems.push({
         id: 'calibrate',
-        label: 'Manage Spheres',
+        label: 'Calibrate Tap-to-Toggle',
         element: <Icon name={"md-flask"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
         action: () => {
           this.props.eventBus.emit("CalibrateTapToToggle", {canClose: true, tutorial: false});

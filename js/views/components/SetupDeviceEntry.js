@@ -42,13 +42,14 @@ export class SetupDeviceEntry extends Component {
   }
 
   componentDidMount() {
-    this.setupEvents.push(this.props.eventBus.on("setupCancelled", (handle) => {
+    this.setupEvents.push(this.props.eventBus.on("setupStarted",  (handle) => {
       if (this.props.handle === handle) {
-        this.setProgress(0);
+        this.setProgress('pending');
       }
-      else {
-        this.setProgress(0);
-      }
+    }));
+
+    this.setupEvents.push(this.props.eventBus.on("setupCancelled", (handle) => {
+      this.setProgress(0);
     }));
     this.setupEvents.push(this.props.eventBus.on("setupComplete", (handle) => {
       if (this.props.handle !== handle) {
@@ -108,6 +109,9 @@ export class SetupDeviceEntry extends Component {
       case 0:
         this.setState({explanation:'', subtext:'Click here to add it to this Sphere!', disabled: false, setupInProgress: false});
         break;
+      case 'pending':
+        this.setState({subtext:"Starting setup...", explanation:'', setupInProgress: true});
+        break;
       case 1:
         this.setState({subtext:"Claiming... Please stay close!", explanation:'', setupInProgress: true});
         break;
@@ -157,7 +161,7 @@ export class SetupDeviceEntry extends Component {
 
   setupStone() {
     if (this.state.disabled === false && this.state.setupInProgress !== true) {
-      SetupStateHandler.setupStone(this.props.handle, this.props.sphereId);
+      SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch();
     }
   }
 }
