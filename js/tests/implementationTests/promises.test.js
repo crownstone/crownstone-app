@@ -127,19 +127,15 @@ test('Passing Promises', function (t) {
       reject(10);
     })
       .then((data) => {
-        console.log("resolved1",data)
       })
       .catch((err) => {
-        console.log("error1",err)
       })
   };
 
   failingPromise()
     .then((data) => {
-      console.log("resolved2",data)
     })
     .catch((err) => {
-      console.log("error2",err)
     })
 });
 
