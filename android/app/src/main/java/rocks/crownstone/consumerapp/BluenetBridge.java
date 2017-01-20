@@ -227,7 +227,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Just to be sure?
 		_reactContext.stopService(new Intent(_reactContext, BleScanService.class));
 		// TODO: don't initialize in constructor, init in onResume i guess?
-//		_reactContext.getCurrentActivity().finish();
+		_reactContext.getCurrentActivity().finish();
 		System.exit(0); // Not recommended
 	}
 
@@ -330,6 +330,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //		sendEvent("exitLocation", map);
 //		sendEvent("currentLocation", map);
 		BleLog.getInstance().LOGi(TAG, "rerouteEvents");
+	}
+
+
+	@ReactMethod
+	public void requestLocationPermission() {
+		BleLog.getInstance().LOGi(TAG, "requestLocationPermission");
 	}
 
 
