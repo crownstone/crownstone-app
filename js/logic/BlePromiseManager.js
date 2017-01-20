@@ -11,11 +11,11 @@ class BlePromiseManagerClass {
   }
 
   register(promise, message) {
-    this._register(promise, message, false);
+    return this._register(promise, message, false);
   }
 
   registerPriority(promise, message) {
-    this._register(promise, message, true);
+    return this._register(promise, message, true);
   }
 
   _register(promise, message, priorityCommand = false) {

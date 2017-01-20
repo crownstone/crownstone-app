@@ -6,8 +6,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import { BlePromiseManager }  from '../../../logic/BlePromiseManager'
 import { BleUtil }            from '../../../native/BleUtil'
 import { addDistanceToRssi }  from '../../../util/util'
+import { stoneTypes }  from '../../../router/store/reducers/stones'
 import { OverlayBox }         from './OverlayBox'
 import { eventBus }                                   from '../../../util/eventBus'
 import { styles, colors , screenHeight, screenWidth } from '../../styles'
@@ -40,17 +42,47 @@ export class TapToToggleCalibration extends Component {
 
   learnDistance() {
     // show loading screen
-    eventBus.emit("showLoading", "Learning Tap-to-Toggle distance...");
+    eventBus.emit("showLoading", "Waiting to start learning...");
 
     // make sure we don't strangely trigger stuff while doing this.
     eventBus.emit("ignoreTriggers");
 
-    BleUtil.getNearestCrownstone(5000)
-      .then((nearestItem) => {
-        if (nearestItem.rssi > -70) {
+    let learnDistancePromise = new Promise((resolve, reject) => {
+      eventBus.emit("showLoading", "Finding Tap-to-Toggle distance...");
+      // timeout for the user to put his phone on the
+      setTimeout(() => {
+        // waiting for the data to be collected. We use the RSSI updates through the iBeacon messages which come in at
+        // StoneStateHandler.js ~ line 35
+        setTimeout(() => {
+          eventBus.emit("showLoading", "Learning Tap-to-Toggle distance...");
+          let state = this.props.store.getState();
+          let sphereIds = Object.keys(state.spheres);
+          let minRSSI = -1000;
+
+          // search through all present spheres for plugs that are not disabled and have RSSI indicators
+          sphereIds.forEach((sphereId) => {
+            let sphere = state.spheres[sphereId];
+            if (sphere.config.present === true) {
+              let stoneIds = Object.keys(sphere.stones);
+              stoneIds.forEach((stoneId) => {
+                let stone = sphere.stones[stoneId];
+                if (stone.config.type === stoneTypes.plug && stone.config.disabled === false) {
+                  minRSSI = Math.max(stone.config.rssi, minRSSI);
+                }
+              });
+            }
+          });
+          resolve(minRSSI);
+        }, 3500);
+      }, 1000);
+    });
+
+    BlePromiseManager.registerPriority(learnDistancePromise, {from:'Tap-to-toggle distance estimation.'})
+      .then((nearestRSSI) => {
+        if (nearestRSSI > -70) {
           this.props.store.dispatch({
             type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
-            data: { tapToToggleCalibration: addDistanceToRssi(nearestItem.rssi, 0.1) }
+            data: { tapToToggleCalibration: addDistanceToRssi(nearestRSSI, 0.1) }
           });
           eventBus.emit("showLoading", "Great!");
           setTimeout(() => {
