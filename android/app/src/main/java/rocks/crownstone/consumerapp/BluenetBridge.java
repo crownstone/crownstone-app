@@ -994,7 +994,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		Intent notificationIntent = new Intent(_reactContext, MainActivity.class);
 //			notificationIntent.setClassName("rocks.crownstone.consumerapp", "MainActivity");
 //			notificationIntent.setAction("ACTION_MAIN");
-		PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, 0);
+		PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+//		PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, 0);
 
 		Notification notification = new Notification.Builder(_reactContext)
 				.setContentTitle("Crownstone is running")
@@ -1014,9 +1015,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	private void updateScanServiceNotification(String text) {
-		Notification notification = getScanServiceNotification(text);
-		NotificationManager mNotificationManager = (NotificationManager) _reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
+		if (_bound) {
+			Notification notification = getScanServiceNotification(text);
+			NotificationManager mNotificationManager = (NotificationManager) _reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
+		}
 	}
 
 	// if the service was connected successfully, the service connection gives us access to the service
@@ -1299,9 +1302,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (referenceId != null) {
 			sendEvent("enterSphere", referenceId);
 		}
-		if (_bound) {
-			updateScanServiceNotification("Currently in a sphere");
-		}
+		updateScanServiceNotification("Currently in a sphere");
 	}
 
 	@Override
@@ -1312,13 +1313,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (referenceId != null) {
 			sendEvent("exitSphere", referenceId);
 		}
-		if (_bound) {
-			if (numEnteredRegions > 0) {
-				updateScanServiceNotification("Currently in a sphere");
-			}
-			else {
-				updateScanServiceNotification("Not in any sphere");
-			}
+		if (numEnteredRegions > 0) {
+			updateScanServiceNotification("Currently in a sphere");
+		}
+		else {
+			updateScanServiceNotification("Not in any sphere");
 		}
 	}
 
