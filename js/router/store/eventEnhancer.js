@@ -184,7 +184,10 @@ function checkAction(action, affectedIds) {
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":
-      break;
+    case 'SET_TAP_TO_TOGGLE_CALIBRATION':
+    case 'SET_DEVELOPER_MODE':
+    case 'SET_LOGGING':
+    case 'SET_BETA_ACCESS':
     default:
       LOGError("UNKNOWN ACTION TYPE:", action);
   }

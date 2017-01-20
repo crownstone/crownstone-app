@@ -50,10 +50,10 @@ class BlePromiseManagerClass {
     }, 60000, 'pendingPromiseTimeout');
 
     promiseContainer.promise()
-      .then(() => {
+      .then((data) => {
         LOG("BlePromiseManager: resolved");
         this.clearPendingPromiseTimeout();
-        promiseContainer.resolve();
+        promiseContainer.resolve(data);
         this.moveOn();
       })
       .catch((err) => {

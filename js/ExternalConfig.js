@@ -39,7 +39,7 @@ export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
 export const KEEPALIVE_REPEAT_INTERVAL = 5000; // ms
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = true;
+export const RELEASE_MODE = false;
 
 if (RELEASE_MODE) {
   DEBUG           = false;

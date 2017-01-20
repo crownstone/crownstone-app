@@ -29,6 +29,7 @@ if (DISABLE_NATIVE === true) {
     startIndoorLocalization: () => {},
     stopIndoorLocalization: () => {},
 
+    requestLocationPermission: () => {},
     trackIBeacon: () => {},
     stopTrackingIBeacon: () => {},
     pauseTracking: () => {},

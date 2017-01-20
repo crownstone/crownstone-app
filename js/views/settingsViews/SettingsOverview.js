@@ -21,16 +21,19 @@ import { IconButton } from '../components/IconButton'
 
 
 export class SettingsOverview extends Component {
+  constructor() {
+    super();
+    this.unsubscribe = [];
+  }
+
 
   componentDidMount() {
     const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      this.forceUpdate();
-    })
+    this.unsubscribe.push(store.subscribe(() => { this.forceUpdate(); }));
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    this.unsubscribe.forEach((unsubscribe) => { unsubscribe(); });
   }
 
   _getItems() {

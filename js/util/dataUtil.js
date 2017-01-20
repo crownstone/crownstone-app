@@ -372,7 +372,7 @@ export const userHasPlugsInSphere = function(state, sphereId) {
 
 export const getPresentSphere = function(state) {
   let sphereIds = Object.keys(state.spheres);
-  for (let i = 0; i < sphereIds; i++ ) {
+  for (let i = 0; i < sphereIds.length; i++ ) {
     if (state.spheres[sphereIds[i]].config.present === true) {
       return sphereIds[i];
     }

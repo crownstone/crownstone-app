@@ -388,6 +388,11 @@ open class BluenetJS: NSObject {
   }
   
 
+  @objc func requestLocationPermission() -> Void {
+    print("Requesting Permission")
+    //GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()
+  }
+  
   @objc func trackIBeacon(_ ibeaconUUID: String, referenceId: String) -> Void {
     print("tracking ibeacons with uuid: \(ibeaconUUID) for sphere: \(referenceId)")
     GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, referenceId: referenceId)

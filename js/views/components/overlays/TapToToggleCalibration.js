@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   Image,
   Text,
   View,
@@ -40,45 +41,48 @@ export class TapToToggleCalibration extends Component {
   }
 
 
-  learnDistance() {
+  learnDistance(attempt = 0) {
     // show loading screen
     eventBus.emit("showLoading", "Waiting to start learning...");
 
     // make sure we don't strangely trigger stuff while doing this.
     eventBus.emit("ignoreTriggers");
 
-    let learnDistancePromise = new Promise((resolve, reject) => {
-      eventBus.emit("showLoading", "Finding Tap-to-Toggle distance...");
-      // timeout for the user to put his phone on the
-      setTimeout(() => {
-        // waiting for the data to be collected. We use the RSSI updates through the iBeacon messages which come in at
-        // StoneStateHandler.js ~ line 35
+    let learnDistancePromise = () => {
+      return new Promise((resolve, reject) => {
+        eventBus.emit("showLoading", "Finding Tap-to-Toggle distance...");
+        // timeout for the user to put his phone on the
         setTimeout(() => {
           eventBus.emit("showLoading", "Learning Tap-to-Toggle distance...");
-          let state = this.props.store.getState();
-          let sphereIds = Object.keys(state.spheres);
-          let minRSSI = -1000;
+          // waiting for the data to be collected. We use the RSSI updates through the iBeacon messages which come in at
+          // StoneStateHandler.js ~ line 35
+          setTimeout(() => {
+            let state = this.props.store.getState();
+            let sphereIds = Object.keys(state.spheres);
+            let minRSSI = -1000;
 
-          // search through all present spheres for plugs that are not disabled and have RSSI indicators
-          sphereIds.forEach((sphereId) => {
-            let sphere = state.spheres[sphereId];
-            if (sphere.config.present === true) {
-              let stoneIds = Object.keys(sphere.stones);
-              stoneIds.forEach((stoneId) => {
-                let stone = sphere.stones[stoneId];
-                if (stone.config.type === stoneTypes.plug && stone.config.disabled === false) {
-                  minRSSI = Math.max(stone.config.rssi, minRSSI);
-                }
-              });
-            }
-          });
-          resolve(minRSSI);
-        }, 3500);
-      }, 1000);
-    });
+            // search through all present spheres for plugs that are not disabled and have RSSI indicators
+            sphereIds.forEach((sphereId) => {
+              let sphere = state.spheres[sphereId];
+              if (sphere.config.present === true) {
+                let stoneIds = Object.keys(sphere.stones);
+                stoneIds.forEach((stoneId) => {
+                  let stone = sphere.stones[stoneId];
+                  if (stone.config.type === stoneTypes.plug && stone.config.disabled === false) {
+                    minRSSI = Math.max(stone.config.rssi, minRSSI);
+                  }
+                });
+              }
+            });
+            resolve(minRSSI);
+          }, 3500);
+        }, 1000);
+      })
+    };
 
     BlePromiseManager.registerPriority(learnDistancePromise, {from:'Tap-to-toggle distance estimation.'})
       .then((nearestRSSI) => {
+        console.log('nearestRSSI,',nearestRSSI);
         if (nearestRSSI > -70) {
           this.props.store.dispatch({
             type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
@@ -92,7 +96,13 @@ export class TapToToggleCalibration extends Component {
         }
         else {
           eventBus.emit("hideLoading");
-          Alert.alert("That's a bit far away.", "Try to hold your phone really close to the Plug and press OK!", [{text:'OK', onPress:() => {this.learnDistance()}}])
+          if (attempt === 2) {
+            Alert.alert("That's a bit far away.", "Maybe try again later.")
+          }
+          else {
+            Alert.alert("That's a bit far away.", "Try to hold your phone really close to the Plug and press OK to retry!", [{text:'OK', onPress:() => {this.learnDistance(attempt + 1)}}])
+          }
+
         }
       })
       .catch((err) => {
@@ -127,9 +137,10 @@ export class TapToToggleCalibration extends Component {
         };
         if (this.state.tutorial === false) {
           props.title = "Calibration";
-          props.header = "To start calibrating tap-to-toggle, press 'Next'.";
+          props.header = "To start calibrating tap-to-toggle, hold your phone very close to a plug and press 'Start'.";
           props.explanation = "The new distance will be used for all existing plugs.";
           props.back = false;
+          props.nextLabel = 'Start';
         }
         break;
       case 2:
