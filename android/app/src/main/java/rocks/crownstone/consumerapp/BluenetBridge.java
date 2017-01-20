@@ -32,9 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -94,7 +92,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
 	public static final int CONNECT_TIMEOUT_MS = 5000;
 	public static final int CONNECT_NUM_RETRIES = 3;
-	public static final int NUM_CONNECT_FAILS_FOR_RESET_BLE = 10; // After this number of consecutive connect failures, bluetooth will be reset.
+	public static final int NUM_CONNECT_FAILS_FOR_RESET_BLE = 20; // After this number of consecutive connect failures, bluetooth will be reset.
 
 	private enum ScannerState {
 		DISABLED,
