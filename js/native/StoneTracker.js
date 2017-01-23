@@ -114,7 +114,7 @@ export class StoneTracker {
         // LOG("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
         if (rssi > state.user.tapToToggleCalibration && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
           if (this.tapToToggleDisabled === false) {
-            LOG("Tap to Toggle!");
+            LOG("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', state.user.tapToToggleCalibration);
             // notify the user by vibration that the crownstone will be switched.
             Vibration.vibrate(400, false);
 
@@ -130,7 +130,7 @@ export class StoneTracker {
             return;
           }
           else {
-            LOG("Tap to Toggle is disabled.");
+            LOG("StoneTracker: Tap to Toggle is disabled.");
             if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
               this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
               Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);
@@ -194,7 +194,7 @@ export class StoneTracker {
   _handleTrigger(element, ref, type, stoneId, sphereId) {
     let behaviour = element.behaviour[type];
     if (behaviour.active === true) {
-      LOG("STARTING TO TRIGGER A ", type, "EVENT, BEHAVIOUR OF TYPE", type, " IS ACTIVE continue:", !(ref.lastTriggerType === type));
+      LOG("StoneTracker: STARTING TO TRIGGER A ", type, "EVENT, BEHAVIOUR OF TYPE", type, " IS ACTIVE continue:", !(ref.lastTriggerType === type));
       if (ref.lastTriggerType === type) {
         return;
       }
@@ -208,7 +208,7 @@ export class StoneTracker {
           ref.lastTriggerTime = new Date().valueOf();
         }
 
-        LOG("TRIGGERING CALLBACK FOR ", type);
+        LOG("StoneTracker: TRIGGERING CALLBACK FOR ", type);
         this._applySwitchState(behaviour.state, stone, stoneId, sphereId);
       };
 

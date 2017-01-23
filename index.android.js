@@ -33,26 +33,6 @@ class Root extends Component {
     // start the BLE things.
     INITIALIZER.init();
 
-    let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration: 0}).start(); };
-    let snapBackKeyboard = () => { Animated.timing(this.state.top, {toValue: 0, duration: 100}).start(); };
-
-    this.unsubscribe.push(eventBus.on('focus', (posY) => {
-      let keyboardHeight = 340;
-      let distFromBottom = screenHeight - posY;
-      Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:200}).start()
-    }));
-    this.unsubscribe.push(eventBus.on('blur', snapBackKeyboard));
-
-    // if the keyboard is minimized, shift back down
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', snapBackKeyboard);
-
-    // catch for the simulator
-    this.unsubscribe.push(eventBus.on('showLoading', snapBack));
-    this.unsubscribe.push(eventBus.on('showProgress', snapBack));
-    this.unsubscribe.push(eventBus.on('hideLoading', snapBack));
-    this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
-
-
     // avoid closing the app by tapping back too often.
     BackAndroid.addEventListener('hardwareBackPress', () => {
       Alert.alert("Would you like to close the app?", "The app will still run in the background, this is required for your Crownstones to respond to you. Choose \"Force quit\" to stop running completely.",[
