@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { LOG }                from '../../../logging/log'
+import { LOG }                from '../../../logging/Log'
 import { BlePromiseManager }  from '../../../logic/BlePromiseManager'
 import { BleUtil }            from '../../../native/BleUtil'
 import { addDistanceToRssi }  from '../../../util/util'
