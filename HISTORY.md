@@ -2,6 +2,7 @@
 
 To be Released:
 
+- [Android] Setup Localization button to sidebar.
 - [Android] Added force quit to sidebar.
 - [Android] Fixed picker object for Android
 - Added Tap to Toggle tutorial

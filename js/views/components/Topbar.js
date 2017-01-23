@@ -11,13 +11,31 @@ import {
 import { Icon } from './Icon';
 import { styles, colors, screenWidth, topBarHeight, statusBarHeight} from '../styles'
 let Actions = require('react-native-router-flux').Actions;
-
+import { AlternatingContent }   from './animated/AlternatingContent'
 
 let barHeight = topBarHeight - statusBarHeight;
 
 class TopBarAndroid extends Component {
   _getLeftContent() {
     if (this.props.left || this.props.leftItem || this.props.right || this.props.rightItem || this.props.showHamburgerMenu === true) {
+      if (this.props.leftItem && this.props.altenateLeftItem === true) {
+        return (
+          <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true, viewProps: this.props})}} style={[topBarStyle.topBarLeftTouch]}>
+            <AlternatingContent
+              style={[topBarStyle.topBarLeftTouch,{paddingLeft:0}]}
+              fadeDuration={500}
+              switchDuration={2000}
+              contentArray={[
+                this.props.leftItem,
+                <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
+                  <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
+                </View>
+              ]}
+            />
+          </TouchableOpacity>
+        )
+      }
+
       return (
         <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true })}} style={[topBarStyle.topBarLeftTouch]}>
           <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>

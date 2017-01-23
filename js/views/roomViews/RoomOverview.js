@@ -373,7 +373,6 @@ class RoomOverviewExplanation extends Component {
     // callback to go to the floating crownstones. Is used twice
     let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
 
-
     // In case we see a crownstone in setup mode:
     if (explanation === undefined && seeStoneInSetupMode === true) {
       // in floating Crownstones
