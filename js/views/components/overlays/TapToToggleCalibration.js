@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import { LOG }                from '../../../logging/log'
 import { BlePromiseManager }  from '../../../logic/BlePromiseManager'
 import { BleUtil }            from '../../../native/BleUtil'
 import { addDistanceToRssi }  from '../../../util/util'
@@ -83,9 +84,11 @@ export class TapToToggleCalibration extends Component {
     BlePromiseManager.registerPriority(learnDistancePromise, {from:'Tap-to-toggle distance estimation.'})
       .then((nearestRSSI) => {
         if (nearestRSSI > -70) {
+          let rssiAddedDistance = addDistanceToRssi(nearestRSSI, 0.1);
+          LOG("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
           this.props.store.dispatch({
             type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
-            data: { tapToToggleCalibration: addDistanceToRssi(nearestRSSI, 0.1) }
+            data: { tapToToggleCalibration: rssiAddedDistance }
           });
           eventBus.emit("showLoading", "Great!");
           setTimeout(() => {

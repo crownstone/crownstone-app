@@ -52,22 +52,20 @@ class LocationHandlerClass {
       LOG("ENTER SPHERE", sphereId);
 
       // set the presence
-      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data:{reachable: true, present: true}});
+      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: true, present: true}});
 
-      // after 10 seconds, start the keepalive run. This gives the app some time for syncing etc.
-      Scheduler.scheduleCallback(() => {KeepAliveHandler.fireTrigger();}, 10000, 'keepAlive');
-
-      // trigger crownstones on enter sphere
-      LOG("TRIGGER ENTER HOME EVENT FOR SPHERE", state.spheres[sphereId].config.name);
-      this._triggerCrownstones(state, sphereId, TYPES.HOME_ENTER);
+      // after 10 seconds, start the keep alive run. This gives the app some time for syncing etc.
+      Scheduler.scheduleCallback(() => {
+        KeepAliveHandler.fireTrigger();
+      }, 10000, 'keepAlive');
 
       // prepare the settings for this sphere and pass them onto bluenet
       let bluenetSettings = {
         encryptionEnabled: ENCRYPTION_ENABLED,
-        adminKey : state.spheres[sphereId].config.adminKey,
+        adminKey: state.spheres[sphereId].config.adminKey,
         memberKey: state.spheres[sphereId].config.memberKey,
-        guestKey : state.spheres[sphereId].config.guestKey,
-        referenceId : sphereId
+        guestKey: state.spheres[sphereId].config.guestKey,
+        referenceId: sphereId
       };
 
       let canUseLocalization = canUseIndoorLocalizationInSphere(state, sphereId);
@@ -83,7 +81,12 @@ class LocationHandlerClass {
 
 
       LOG("Set Settings.", bluenetSettings);
-      return BleActions.setSettings(bluenetSettings);
+      BleActions.setSettings(bluenetSettings)
+        .then(() => {
+          // trigger crownstones on enter sphere
+          LOG("TRIGGER ENTER HOME EVENT FOR SPHERE", state.spheres[sphereId].config.name);
+          this._triggerCrownstones(state, sphereId, TYPES.HOME_ENTER);
+        })
     }
   }
 
