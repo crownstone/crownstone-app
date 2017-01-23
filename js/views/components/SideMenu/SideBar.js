@@ -18,7 +18,7 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../st
 import { Icon } from '../Icon'
 import { CLOUD } from '../../../cloud/cloudAPI'
 import { NativeBus } from '../../../native/Proxy'
-import { logOut } from '../../../util/util'
+import { logOut, quitApp } from '../../../util/util'
 import { userHasPlugsInSphere, getPresentSphere } from '../../../util/dataUtil'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
@@ -143,6 +143,19 @@ export class SideBar extends Component {
           {text: 'OK', onPress: () => {
             logOut();
             setTimeout(() => {this.props.closeCallback();},0)
+          }}
+        ])
+      }
+    });
+    settingItems.push({
+      id: 'quit',
+      label: 'Force Quit',
+      element: <Icon name={"md-remove-circle"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      action: () => {
+        Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
+          {text: 'Cancel', style: 'cancel'},
+          {text: 'OK', onPress: () => {
+            quitApp();
           }}
         ])
       }

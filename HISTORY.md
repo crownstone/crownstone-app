@@ -2,6 +2,7 @@
 
 To be Released:
 
+- [Android] Added force quit to sidebar.
 - [Android] Fixed picker object for Android
 - Added Tap to Toggle tutorial
 - Added timeout (60 seconds) for pending bluetooth commands that do not complete to make sure we do not block all bluetooth traffic.
