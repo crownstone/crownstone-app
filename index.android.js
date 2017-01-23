@@ -1,7 +1,6 @@
 'use strict';
 import React, { Component } from 'react'
 import {
-  Animated,
   Alert,
   AppRegistry,
   BackAndroid,
@@ -17,19 +16,15 @@ import { INITIALIZER } from './js/initialize'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 
 
-//import SplashScreen from "rn-splash-screen";
 
 class Root extends Component {
   constructor() {
     super();
-    this.state = {top: new Animated.Value(0)};
     this.unsubscribe = [];
   }
 
   // this is used to scroll the view up when typing is active
   componentDidMount() {
-    // SplashScreen.hide();
-
     // start the BLE things.
     INITIALIZER.init();
 
@@ -56,11 +51,11 @@ class Root extends Component {
 
   render() {
     StatusBar.setBackgroundColor('#00162C', true);
-    return <View style={{flex:1}}>
-      <Animated.View style={{flex:1, position:'relative', top: this.state.top}}>
+    return (
+      <View style={{flex:1}}>
         <AppRouter />
-      </Animated.View>
-    </View>
+      </View>
+    )
   };
 }
 
