@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {
   Picker,
+  Platform,
   TouchableHighlight,
   TouchableOpacity,
   Text,
@@ -84,6 +85,37 @@ export class Dropdown extends Component {
     }
   }
 
+  _getPicker() {
+    let callback = (value) => {
+      if (this.props.buttons !== true) {
+        this.setState({open: false, value: value});
+        this.props.callback(value);
+      }
+      else {
+        this.setState({value: value})
+      }
+    };
+
+    if (Platform.OS === 'android') {
+      return (
+        <Picker
+          selectedValue={this.state.value}
+          style={{position:'relative', top:-4}}
+          onValueChange={callback}
+        >
+        {this.getItems()}
+      </Picker>)
+
+    }
+    else {
+      return (
+        <Picker selectedValue={this.state.value} onValueChange={callback}>
+          {this.getItems()}
+        </Picker>
+      )
+    }
+  }
+
   render() {
     let dropHeight = this.props.dropdownHeight || 216;
     let totalHeight = dropHeight;
@@ -91,36 +123,35 @@ export class Dropdown extends Component {
       totalHeight += 50;
     }
 
-    return (
-      <View>
-        <TouchableHighlight onPress={() => {this.setState({open:!this.state.open})}}>
+    if (Platform.OS === 'android') {
+      return (
+        <View>
           <View style={[styles.listView, {height:this.props.barHeight}]}>
             <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
-            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
-            {/*<Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.props.buttons !== true ? this.props.value : this.state.value}</Text>*/}
+            <View style={{flex:1}}>
+              {this._getPicker()}
+            </View>
           </View>
-        </TouchableHighlight>
-        <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor:'#fff'}}>
-          <View style={{position:'relative', top: (totalHeight-dropHeight) -0.5*(216-dropHeight), height:dropHeight}}>
-            <Picker
-              selectedValue={this.state.value}
-              onValueChange={(value) => {
-                  if (this.props.buttons !== true) {
-                    this.setState({open: false, value: value});
-                    this.props.callback(value);
-                  }
-                  else {
-                    this.setState({value: value})
-                  }
-                }
-              }
-            >
-              {this.getItems()}
-            </Picker>
-          </View>
-          {this._getButtonBar()}
-        </SlideFadeInView>
-      </View>
-    );
+        </View>
+      );
+    }
+    else {
+      return (
+        <View>
+          <TouchableHighlight onPress={() => {this.setState({open:!this.state.open})}}>
+            <View style={[styles.listView, {height:this.props.barHeight}]}>
+              <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
+              <Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
+            </View>
+          </TouchableHighlight>
+          <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor:'#fff'}}>
+            <View style={{position:'relative', top: 0, height:dropHeight}}>
+              {this._getPicker()}
+            </View>
+            {this._getButtonBar()}
+          </SlideFadeInView>
+        </View>
+      );
+    }
   }
 }

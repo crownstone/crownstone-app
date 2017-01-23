@@ -50,7 +50,7 @@ class Root extends Component {
 
 
   render() {
-    StatusBar.setBackgroundColor('#00162C', true);
+    StatusBar.setBackgroundColor(colors.menuBackgroundDarker.hex, true);
     return (
       <View style={{flex:1}}>
         <AppRouter />

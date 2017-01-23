@@ -2,6 +2,8 @@
 
 To be Released:
 
+- [Android] Fixed picker object for Android
+- Added Tap to Toggle tutorial
 - Added timeout (60 seconds) for pending bluetooth commands that do not complete to make sure we do not block all bluetooth traffic.
 - [Android] Show an alert if the user tries to close the app with the back button.
 - Make sure the text field data is committed when the keyboard is hidden.
