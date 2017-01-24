@@ -13,12 +13,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Process;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Pair;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.NoSuchKeyException;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -102,9 +104,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		HIGH_POWER,
 	}
 
-	private boolean _bound;
-
 	private ReactApplicationContext _reactContext;
+	private boolean _isInitialized = false;
+	private boolean _scanServiceIsBound = false;
 	private BleScanService _scanService;
 //	private BleScanService _trackService;
 //	private BleBase _bleBase;
@@ -139,17 +141,40 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
 
+
 	Map<String, WritableMap> _ibeaconAdvertisements = new HashMap<>();
 
 	public BluenetBridge(ReactApplicationContext reactContext) {
 		super(reactContext);
 		_reactContext = reactContext;
+		_reactContext.addLifecycleEventListener(new LifecycleEventListener() {
+			@Override
+			public void onHostResume() {
+				BleLog.getInstance().LOGi(TAG, "onHostResume");
+
+			}
+
+			@Override
+			public void onHostPause() {
+				BleLog.getInstance().LOGi(TAG, "onHostPause");
+			}
+
+			@Override
+			public void onHostDestroy() {
+				BleLog.getInstance().LOGi(TAG, "onHostDestroy");
+			}
+		});
+
+		init();
+	}
+
+	private void init() {
+		_isInitialized = false;
 
 		// create handler with its own thread
 		HandlerThread handlerThread = new HandlerThread("BluenetBridge");
 		handlerThread.start();
 		_handler = new Handler(handlerThread.getLooper());
-
 		_handler.postDelayed(iBeaconTick, IBEACON_TICK_INTERVAL);
 
 		setLogLevels();
@@ -161,15 +186,17 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		initBluetooth();
 
 		// create and bind to the BleScanService
-		BleLog.getInstance().LOGd(TAG, "binding to service..");
+		BleLog.getInstance().LOGi(TAG, "binding to service..");
 		Intent intent = new Intent(_reactContext, BleScanService.class);
 		intent.putExtra(BleScanService.EXTRA_LOG_LEVEL, getLogLevel(BleScanService.class));
 		boolean success = _reactContext.bindService(intent, _connection, Context.BIND_AUTO_CREATE);
-		BleLog.getInstance().LOGd(TAG, "success: " + success);
+		BleLog.getInstance().LOGi(TAG, "successfully bound to service: " + success);
 
 		_localization = FingerprintLocalization.getInstance();
 		_isResettingBluetooth = false;
 
+		_isInitialized = true;
+		checkReady();
 	}
 
 	private void setLogLevels() {
@@ -184,6 +211,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private boolean _bleTurnedOff = false;
 
 	private void initBluetooth() {
+		_bleExtInitialized = false;
 		_bleExt.init(_reactContext, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -220,15 +248,28 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void quitApp() {
 		BleLog.getInstance().LOGw(TAG, "quit");
-		if (_bound) {
+		if (_scanServiceIsBound) {
 			_reactContext.unbindService(_connection);
-//			_scanService.stopSelf();
+			_scanServiceIsBound = false;
 		}
-		// Just to be sure?
-		_reactContext.stopService(new Intent(_reactContext, BleScanService.class));
-		// TODO: don't initialize in constructor, init in onResume i guess?
-		_reactContext.getCurrentActivity().finish();
-		System.exit(0); // Not recommended
+		// Stop the service just to be sure?
+//		_reactContext.stopService(new Intent(_reactContext, BleScanService.class));
+		_bleExt.destroy();
+		if (_reactContext.getCurrentActivity() != null) {
+			_reactContext.getCurrentActivity().finish();
+		}
+		_handler.removeCallbacksAndMessages(null);
+		_isInitialized = false;
+		_reactContext.runOnUiQueueThread(new Runnable() {
+			@Override
+			public void run() {
+				_reactContext.destroy();
+			}
+		});
+
+		// See: http://stackoverflow.com/questions/2033914/is-quitting-an-application-frowned-upon
+//		System.exit(0); // Not recommended, seems to restart app
+		Process.killProcess(Process.myPid()); // Not recommended either
 	}
 
 	@Override
@@ -992,9 +1033,17 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	private Notification getScanServiceNotification(String text) {
 		Intent notificationIntent = new Intent(_reactContext, MainActivity.class);
+//		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		notificationIntent.setAction(Intent.ACTION_MAIN);
+		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+
 //			notificationIntent.setClassName("rocks.crownstone.consumerapp", "MainActivity");
 //			notificationIntent.setAction("ACTION_MAIN");
-		PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+//		PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+		PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 //		PendingIntent pendingIntent = PendingIntent.getActivity(_reactContext, 0, notificationIntent, 0);
 
 		Notification notification = new Notification.Builder(_reactContext)
@@ -1015,7 +1064,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	private void updateScanServiceNotification(String text) {
-		if (_bound) {
+		if (_scanServiceIsBound) {
 			Notification notification = getScanServiceNotification(text);
 			NotificationManager mNotificationManager = (NotificationManager) _reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
 			mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
@@ -1061,16 +1110,17 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			_iBeaconRanger.registerListener(BluenetBridge.this);
 			BleLog.getInstance().LOGd(TAG, "registered: " + BluenetBridge.this);
 
-			_bound = true;
+			_scanServiceIsBound = true;
 			checkReady();
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
+			// Only called when the service has crashed or has been killed, not when we unbind.
 			BleLog.getInstance().LOGi(TAG, "disconnected from service");
 			_scanService = null;
 			_iBeaconRanger = null;
-			_bound = false;
+			_scanServiceIsBound = false;
 		}
 	};
 
@@ -1362,10 +1412,15 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (_readyCallback == null) {
 			return;
 		}
-		if (!_bound) {
+		if (!_scanServiceIsBound) {
 			return;
 		}
 		if (!_bleExtInitialized) {
+			return;
+		}
+
+		if (!_isInitialized) {
+			init();
 			return;
 		}
 
