@@ -66,6 +66,7 @@ export class SetupHelper {
             setTimeout(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300);
             setTimeout(() => {
               let actions = [];
+              let isPlug = this.type === stoneTypes.plug;
               let isGuidestone = this.type === stoneTypes.guidestone;
               let state = store.getState();
               let showRestoreAlert = false;
@@ -75,7 +76,7 @@ export class SetupHelper {
                 stoneId:        this.stoneIdInCloud,
                 data: {
                   type:           this.type,
-                  touchToToggle:  !isGuidestone,
+                  touchToToggle:  isPlug,
                   crownstoneId:   this.cloudResponse.uid,
                   handle:         this.handle,
                   macAddress:     this.macAddress,
