@@ -882,7 +882,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_iBeaconRanger.addIbeaconFilter(new BleIbeaconFilter(uuid));
 		setTrackingState(true);
 		setScanMode();
-		_scanService.startIntervalScan(getScanInterval(), getScanInterval(), BleDeviceFilter.anyStone);
+		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
 	@ReactMethod
