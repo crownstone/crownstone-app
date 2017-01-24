@@ -11,6 +11,8 @@ import BluenetLibIOS
 import PromiseKit
 import SwiftyJSON
 
+import CrownstoneLocalizationIOS
+
 var GLOBAL_BLUENET : ViewPassThrough?
 
 typealias voidCallback = () -> Void
@@ -19,21 +21,32 @@ typealias voidCallback = () -> Void
   open var bluenet : Bluenet!
   open var bluenetLocalization : BluenetLocalization!
   open var bluenetMotion : BluenetMotion!
+  open var trainingHelper : TrainingHelper!
+  var classifier : CrownstoneBasicClassifier!
+  
+  
   var subscriptions = [voidCallback]()
   
   init(viewController: UIViewController) {
     super.init()
 
     BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone", loggingFile: false, debugLogEnabled: false)
-
+    
+    
+    self.classifier = CrownstoneBasicClassifier()
+    
     self.bluenet = Bluenet()
 
     // do not use the accelerometer.
     // self.bluenetMotion = BluenetMotion()
     
-    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
+    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, collectionId: "unknown")
     self.bluenetLocalization = BluenetLocalization()
     
+    // insert the classifier that will be used for room-level localization.
+    self.bluenetLocalization.insertClassifier(classifier: self.classifier as! BluenetLibIOS.LocalizationClassifier)
+    
+    self.trainingHelper = TrainingHelper(bluenetLocalization: self.bluenetLocalization)
 
     GLOBAL_BLUENET = self
   }
@@ -149,8 +162,6 @@ func getBleErrorString(_ err: BleError) -> String {
 open class BluenetJS: NSObject {
   var bridge: RCTBridge!
   
-  
-  
   @objc func rerouteEvents() {
     if let globalBluenet = GLOBAL_BLUENET {
       print("----- BLUENET BRIDGE: Rerouting events")
@@ -255,9 +266,9 @@ open class BluenetJS: NSObject {
     }
     
     if let encryptionEnabled = settings["encryptionEnabled"] as? Bool {
-      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
+      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, collectionId: referenceId!)
       print("SETTING SETTINGS \(settings)")
-      GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
+      GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, collectionId: referenceId!)
       callback([["error" : false]])
     }
     else {
@@ -387,15 +398,14 @@ open class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenetLocalization.stopIndoorLocalization()
   }
   
-
   @objc func requestLocationPermission() -> Void {
     print("Requesting Permission")
-    //GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()
+    GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()
   }
   
   @objc func trackIBeacon(_ ibeaconUUID: String, referenceId: String) -> Void {
     print("tracking ibeacons with uuid: \(ibeaconUUID) for sphere: \(referenceId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, referenceId: referenceId)
+    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, collectionId: referenceId)
   }
   
   @objc func stopTrackingIBeacon(_ ibeaconUUID: String) -> Void {
@@ -408,8 +418,6 @@ open class BluenetJS: NSObject {
     print("forceClearActiveRegion ")
   }
   
-  
-  
   @objc func pauseTracking() -> Void {
     GLOBAL_BLUENET!.bluenetLocalization.pauseTracking()
     print("stopIBeaconTracking ")
@@ -420,30 +428,42 @@ open class BluenetJS: NSObject {
     print("resumeIBeaconTracking ")
   }
   
-  
   @objc func startCollectingFingerprint() -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.startCollectingFingerprint()
+    // abort collecting fingerprint if it is currently happening.
+    GLOBAL_BLUENET!.trainingHelper.abortCollectingTrainingData()
+    
+    // start collection
+    GLOBAL_BLUENET!.trainingHelper.startCollectingTrainingData()
     print("startCollectingFingerprint ")
   }
   
   @objc func abortCollectingFingerprint() -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.abortCollectingFingerprint()
+    GLOBAL_BLUENET!.trainingHelper.abortCollectingTrainingData()
     print("abortCollectingFingerprint ")
   }
   
   @objc func pauseCollectingFingerprint() -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.pauseCollectingFingerprint()
+    GLOBAL_BLUENET!.trainingHelper.pauseCollectingTrainingData()
     print("pauseCollectingFingerprint ")
   }
   
   @objc func resumeCollectingFingerprint() -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.resumeCollectingFingerprint()
+    GLOBAL_BLUENET!.trainingHelper.resumeCollectingTrainingData()
     print("resumeCollectingFingerprint ")
   }
   
   
-  @objc func finalizeFingerprint(_ sphereId: String, locationId: String) -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.finalizeFingerprint(sphereId, locationId: locationId)
+  @objc func finalizeFingerprint(_ sphereId: String, locationId: String, _ callback: RCTResponseSenderBlock) -> Void {
+    let stringifiedFingerprint = GLOBAL_BLUENET!.trainingHelper.finishCollectingTrainingData()
+    
+    if (stringifiedFingerprint != nil) {
+      GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, collectionId: sphereId, trainingData: stringifiedFingerprint!)
+      callback([["error" : false, "data": stringifiedFingerprint!]])
+    }
+    else {
+      callback([["error" : true, "data": "No samples collected"]])
+    }
+    
     print("finishCollectingFingerprint")
   }
   
@@ -454,22 +474,8 @@ open class BluenetJS: NSObject {
   }
   
   
-  @objc func getFingerprint(_ sphereId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
-    let fingerprint = GLOBAL_BLUENET!.bluenetLocalization.getFingerprint(sphereId, locationId: locationId)
-    if let fingerprintData = fingerprint {
-      callback([fingerprintData.stringify()])
-    }
-    else {
-      callback([])
-    }
-    print("getFingerprint \(sphereId) \(locationId)")
-
-  }
-  
-  
   @objc func loadFingerprint(_ sphereId: String, locationId: String, fingerprint: String) -> Void {
-    let fingerprint = Fingerprint(stringifiedData: fingerprint)
-    GLOBAL_BLUENET!.bluenetLocalization.loadFingerprint(referenceId: sphereId, locationId: locationId, fingerprint: fingerprint)
+    GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, collectionId: sphereId, trainingData: fingerprint)
     print("loadFingerprint \(sphereId) \(locationId)")
   }
   

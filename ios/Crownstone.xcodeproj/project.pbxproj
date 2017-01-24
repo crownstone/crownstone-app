@@ -36,10 +36,13 @@
 		DC918583C2AF48C097A3194A /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65A4166977B84CFC92814718 /* Zocial.ttf */; };
 		F514EC9E1CC04612BFDEAE2C /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C495165BE1E642E783ED320B /* EvilIcons.ttf */; };
 		F6924CA6966B4B7EB647FF24 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 163126FF8FD74B21BF2A4240 /* Entypo.ttf */; };
+		FA1B8EF51E379CDD0071C7DD /* iOSDFULibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1B8EF31E379CDD0071C7DD /* iOSDFULibrary.framework */; };
+		FA1B8EF61E379CDD0071C7DD /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1B8EF41E379CDD0071C7DD /* Zip.framework */; };
+		FA1B8F111E37A6410071C7DD /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1B8F101E37A6410071C7DD /* BluenetLibIOS.framework */; };
+		FA1B8F151E37B8A90071C7DD /* CrownstoneLocalizationIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA1B8F141E37B8A90071C7DD /* CrownstoneLocalizationIOS.framework */; };
 		FA20DAD91DF5C1C6002AB4B0 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA20DAD81DF5C1BE002AB4B0 /* libRNFS.a */; };
 		FA804CE81DDF439500F0A2AD /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA804CD01DDF437F00F0A2AD /* libRCTCameraRoll.a */; };
 		FAF10D8A1DAD421200FD7929 /* Cartfile in Resources */ = {isa = PBXBuildFile; fileRef = FAF10D891DAD421200FD7929 /* Cartfile */; };
-		FAF10D8F1DAD44DB00FD7929 /* BluenetLibIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF10D8B1DAD44DB00FD7929 /* BluenetLibIOS.framework */; };
 		FAF10D901DAD44DB00FD7929 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF10D8C1DAD44DB00FD7929 /* CryptoSwift.framework */; };
 		FAF10D911DAD44DB00FD7929 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF10D8D1DAD44DB00FD7929 /* PromiseKit.framework */; };
 		FAF10D921DAD44DB00FD7929 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAF10D8E1DAD44DB00FD7929 /* SwiftyJSON.framework */; };
@@ -277,10 +280,13 @@
 		DA9C44BCD1474EDA8F695AA0 /* libRCTImageResizer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTImageResizer.a; sourceTree = "<group>"; };
 		DB2AA5DE363C407DBFEAC3F8 /* RCTSplashScreen.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTSplashScreen.xcodeproj; path = "../node_modules/rn-splash-screen/ios/RCTSplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		E997359AAE9F4B1B896E7277 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
+		FA1B8EF31E379CDD0071C7DD /* iOSDFULibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iOSDFULibrary.framework; path = Carthage/Build/iOS/iOSDFULibrary.framework; sourceTree = "<group>"; };
+		FA1B8EF41E379CDD0071C7DD /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
+		FA1B8F101E37A6410071C7DD /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = Carthage/Build/iOS/BluenetLibIOS.framework; sourceTree = "<group>"; };
+		FA1B8F141E37B8A90071C7DD /* CrownstoneLocalizationIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CrownstoneLocalizationIOS.framework; path = Carthage/Build/iOS/CrownstoneLocalizationIOS.framework; sourceTree = "<group>"; };
 		FA20DAD31DF5C1BE002AB4B0 /* RNFS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		FA804CC91DDF437F00F0A2AD /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		FAF10D891DAD421200FD7929 /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
-		FAF10D8B1DAD44DB00FD7929 /* BluenetLibIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLibIOS.framework; path = Carthage/Build/iOS/BluenetLibIOS.framework; sourceTree = "<group>"; };
 		FAF10D8C1DAD44DB00FD7929 /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		FAF10D8D1DAD44DB00FD7929 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 		FAF10D8E1DAD44DB00FD7929 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
@@ -311,6 +317,7 @@
 				FA804CE81DDF439500F0A2AD /* libRCTCameraRoll.a in Frameworks */,
 				FAF10D911DAD44DB00FD7929 /* PromiseKit.framework in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				FA1B8EF61E379CDD0071C7DD /* Zip.framework in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				FAF10D901DAD44DB00FD7929 /* CryptoSwift.framework in Frameworks */,
@@ -320,12 +327,14 @@
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
+				FA1B8F151E37B8A90071C7DD /* CrownstoneLocalizationIOS.framework in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
-				FAF10D8F1DAD44DB00FD7929 /* BluenetLibIOS.framework in Frameworks */,
+				FA1B8EF51E379CDD0071C7DD /* iOSDFULibrary.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				BBB7AE9E6287422384E5A63A /* libRCTCamera.a in Frameworks */,
 				7D5DB44DAD6F4780BD9EDECD /* libRNDeviceInfo.a in Frameworks */,
 				34928BE38C484B0D842834E8 /* libRCTImageResizer.a in Frameworks */,
+				FA1B8F111E37A6410071C7DD /* BluenetLibIOS.framework in Frameworks */,
 				876EE1EDE3474047B831FA2C /* libRNSVG.a in Frameworks */,
 				1FC707CE81FF452DB96B0197 /* libRNVectorIcons.a in Frameworks */,
 				ADC6262D2E4E4162B7F70835 /* libRCTSplashScreen.a in Frameworks */,
@@ -504,7 +513,10 @@
 				FAF10D931DAD458000FD7929 /* Crownstone.ttf */,
 				FAF10D941DAD458000FD7929 /* CustomIcons.ttf */,
 				FAF10D951DAD458000FD7929 /* Lato-Bold.ttf */,
-				FAF10D8B1DAD44DB00FD7929 /* BluenetLibIOS.framework */,
+				FA1B8F141E37B8A90071C7DD /* CrownstoneLocalizationIOS.framework */,
+				FA1B8F101E37A6410071C7DD /* BluenetLibIOS.framework */,
+				FA1B8EF31E379CDD0071C7DD /* iOSDFULibrary.framework */,
+				FA1B8EF41E379CDD0071C7DD /* Zip.framework */,
 				FAF10D8C1DAD44DB00FD7929 /* CryptoSwift.framework */,
 				FAF10D8D1DAD44DB00FD7929 /* PromiseKit.framework */,
 				FAF10D8E1DAD44DB00FD7929 /* SwiftyJSON.framework */,
@@ -982,6 +994,9 @@
 				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CryptoSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/iOSDFULibrary.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/CrownstoneLocalizationIOS.framework",
 			);
 			outputPaths = (
 			);

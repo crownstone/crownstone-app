@@ -43,13 +43,19 @@ class FingerprintManagerClass {
    * @param nativeCall
    */
   _stopFingerprinting(nativeCall) {
+    this._cleanup();
+
+    if (nativeCall)
+      nativeCall();
+  }
+
+  _cleanup() {
     if (this.fingerprintingSession !== null) {
       this.fingerprintingSubscriptions[this.fingerprintingSession]();
       delete this.fingerprintingSubscriptions[this.fingerprintingSession]
     }
 
     if (this.fingerprintingActive) {
-      nativeCall();
       this.fingerprintingSession = null;
       this.fingerprintingActive = false;
     }
@@ -78,21 +84,16 @@ class FingerprintManagerClass {
   }
 
   finalizeFingerprint(sphereId, locationId) {
-    this._stopFingerprinting(() => {
-      Bluenet.finalizeFingerprint(sphereId, locationId);
+    this._stopFingerprinting(() => {});
+    return new Promise((resolve, reject) => {
+      // resolve is pushed ino the fingerprint.
+      Bluenet.finalizeFingerprint(sphereId, locationId, resolve);
     });
   }
 
   pauseCollectingFingerprint() {
     this._stopFingerprinting(() => {
       Bluenet.abortCollectingFingerprint();
-    });
-  }
-
-  getFingerprint(sphereId, locationId) {
-    return new Promise((resolve, reject) => {
-      // resolve is pushed ino the fingerprint.
-      Bluenet.getFingerprint(sphereId, locationId, resolve);
     });
   }
 }

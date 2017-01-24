@@ -15,7 +15,6 @@ if (DISABLE_NATIVE === true) {
     connect: () => {},                    // called through BleActions --> must be promise.
     disconnect: () => {},                 // called through BleActions --> must be promise.
     phoneDisconnect: () => {},            // called through BleActions --> must be promise.
-    quitApp: () => {},
     resetBle: () => {},
     setSwitchState: () => {},             // called through BleActions --> must be promise.
     startScanning: () => {},
@@ -39,14 +38,14 @@ if (DISABLE_NATIVE === true) {
     abortCollectingFingerprint: () => {},
     pauseCollectingFingerprint : () => {},
     resumeCollectingFingerprint: () => {},
-    finalizeFingerprint: () => {},
+    finalizeFingerprint: () => {},       // called through BleActions --> must be promise. Promise return value is a stringified fingerprint
 
-    getFingerprint: () => {},
     loadFingerprint: () => {},
     getMACAddress: () => {},             // called through BleActions --> must be promise.
     commandFactoryReset: () => {},       // called through BleActions --> must be promise.
     recover: () => {},                   // called through BleActions --> must be promise.
     setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
+
     quitApp: () => {},                   // Used in android to force close the app
   }
 }
@@ -153,6 +152,7 @@ export const BleActions = {
   setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
   setSettings:          (dataObject) => { return BluenetPromise('setSettings',     dataObject); },
   recover:              (handle)     => { return BluenetPromise('recover',         handle);     },
+  finalizeFingerprint:  (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:  ()           => { return BluenetPromise('commandFactoryReset');         },
 };
 

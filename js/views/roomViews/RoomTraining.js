@@ -115,7 +115,6 @@ export class RoomTraining extends Component {
         }}])
     }
 
-
     if (this.collectedData.length == this.props.sampleSize) {
       this.finalizeFingerprint()
     }
@@ -134,15 +133,14 @@ export class RoomTraining extends Component {
 
     this.setState({text:'Finished!', phase:2});
     const store = this.props.store;
-    FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId);
-    FingerprintManager.getFingerprint(this.props.sphereId, this.props.locationId)
-      .then((result) => {
-        LOG("gathered fingerprint:", result);
+    FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)
+      .then((stringifiedFingerprint) => {
+        LOG("gathered fingerprint:", stringifiedFingerprint);
         store.dispatch({
           type:'UPDATE_LOCATION_FINGERPRINT',
           sphereId: this.props.sphereId,
           locationId: this.props.locationId,
-          data:{ fingerprintRaw: result }
+          data:{ fingerprintRaw: stringifiedFingerprint }
         });
       }).done();
   }
