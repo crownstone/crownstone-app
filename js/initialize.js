@@ -20,14 +20,16 @@ export const INITIALIZER = {
   initialized: false,
   userReady: false,
   init: function() {
+    LOG("INITIALIZER: called init.");
     if (this.initialized === false) {
-      LOG("Events forwarded");
+      LOG("INITIALIZER: performing init.");
 
       // route the events to React Native
       Bluenet.rerouteEvents();
 
       // listen to the BLE events
       NativeBus.on(NativeBus.topics.bleStatus, (status) => {
+        LOG("INITIALIZER: received NativeBus.topics.bleStatus event.");
         switch (status) {
           case "poweredOff":
 
@@ -50,16 +52,13 @@ export const INITIALIZER = {
 
       // listen to the BLE events
       NativeBus.on(NativeBus.topics.locationStatus, (status) => {
+        LOG("INITIALIZER: received NativeBus.topics.locationStatus event.");
         switch (status) {
           case "unknown":
 
             break;
           case "on":
-            if (this.userReady) {
-              BleActions.isReady().then(() => {
-                Bluenet.startScanningForCrownstonesUniqueOnly();
-              });
-            }
+
             break;
           case "foreground":
 
@@ -82,15 +81,23 @@ export const INITIALIZER = {
    */
   started: false,
   start: function(store) {
+    LOG("INITIALIZER: called start.");
     if (this.started === false) {
-      // subscribe to iBeacons when required.
+      LOG("INITIALIZER: performing start.");
+      // subscribe to iBeacons when the spheres in the cloud change.
       CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});
-      eventBus.on(    'appStarted',                       () => {
-        BleActions.isReady().then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
+
+      // when the app is started we track spheres and scan for Crownstones
+      eventBus.on('appStarted', () => {
+        LOG("INITIALIZER: received appStarted event.");
+        BleActions.isReady()
+          .then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
         LocalizationUtil.trackSpheres(store);
         this.userReady = true;
       });
-      eventBus.on(    'sphereCreated',                    () => {LocalizationUtil.trackSpheres(store);});
+
+      // when a sphere is created, we track all spheres anew.
+      eventBus.on('sphereCreated', () => {LocalizationUtil.trackSpheres(store);});
 
       // sync every 5 minutes
       Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*5});
@@ -114,7 +121,7 @@ export const INITIALIZER = {
       // set the global network error handler.
       CLOUD.setNetworkErrorHandler(handler);
 
-      // listen to the state of the app, if it is in the foreground or background
+      // listen to the state of the app: if it is in the foreground or background
       AppState.addEventListener('change', (appState) => {
         if (appState === "active") {
 
