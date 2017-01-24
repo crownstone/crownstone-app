@@ -220,17 +220,21 @@ export class SphereOverview extends Component {
         (noRooms === true || requiresFingerprints === true)     // Need more fingerprints.
       );
 
+      let showFinalizeIndoorNavigationCallback = () => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms);};
+
       return (
         <View {...this._panResponder.panHandlers}>
           <AnimatedBackground hideTopBar={true} image={background}>
             <TopBar
               title={state.spheres[activeSphere].config.name + '\'s Sphere'}
               notBack={!showFinalizeIndoorNavigationButton}
-              leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon /> : undefined}
-              leftAction={() => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms);}}
+              leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
+              altenateLeftItem={true}
+              leftAction={showFinalizeIndoorNavigationCallback}
               rightItem={!noStones && isAdminInCurrentSphere && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
               showHamburgerMenu={true}
+              actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
             <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
               {this._getSpheres(seeStonesInSetupMode)}

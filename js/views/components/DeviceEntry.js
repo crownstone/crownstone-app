@@ -16,7 +16,6 @@ import { Icon } from './Icon';
 import { IconButton } from '../components/IconButton'
 import { getUUID } from '../../util/util'
 import { styles, colors, screenWidth } from '../styles'
-import { TOUCH_RSSI_THRESHOLD } from '../../native/StoneTracker'
 
 
 export class DeviceEntry extends Component {
@@ -176,7 +175,7 @@ export class DeviceEntry extends Component {
     if (this.props.disabled === false && this.props.currentUsage !== undefined) {
       // show it in orange if it's in tap to toggle range
       let color = colors.iosBlue.hex;
-      if (this.props.rssi >= TOUCH_RSSI_THRESHOLD) {
+      if (this.props.tapToToggleCalibration && this.props.rssi >= this.props.tapToToggleCalibration) {
         color = colors.orange.hex;
       }
 

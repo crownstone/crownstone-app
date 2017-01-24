@@ -18,8 +18,9 @@ import { Actions } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
 import { Icon } from '../Icon'
 import { CLOUD } from '../../../cloud/cloudAPI'
+import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
 import { NativeBus } from '../../../native/Proxy'
-import { logOut } from '../../../util/util'
+import { logOut, quitApp } from '../../../util/util'
 import { userHasPlugsInSphere, getPresentSphere } from '../../../util/dataUtil'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
@@ -43,8 +44,27 @@ export class SideBar extends Component {
     })
   }
 
+  _getActions() {
+    let actionItems = [];
+    if (this.props.viewProps && this.props.viewProps.actions) {
+      if (this.props.viewProps.actions.finalizeLocalization !== undefined) {
+        actionItems.push({
+          id: 'finalizeLocalization',
+          label: 'Setup localization',
+          element: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
+          action: () => {
+            this.props.viewProps.actions.finalizeLocalization();
+            setTimeout(() => {this.props.closeCallback();},0)
+          }
+        });
+      }
+    }
+    return actionItems;
+  }
+
   _getMenuItems() {
-    return {
+    let menuItems = [];
+    menuItems.push({
       id: 'overview',
       label: 'Overview',
       element: <Icon name={"ios-color-filter-outline"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
@@ -52,7 +72,8 @@ export class SideBar extends Component {
         Actions.sphereOverview({type:'reset'});
         setTimeout(() => {this.props.closeCallback();},0)
       }
-    }
+    });
+    return menuItems;
   }
 
   _getSettingsItems() {
@@ -148,6 +169,19 @@ export class SideBar extends Component {
         ])
       }
     });
+    settingItems.push({
+      id: 'quit',
+      label: 'Force Quit',
+      element: <Icon name={"md-remove-circle"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      action: () => {
+        Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
+          {text: 'Cancel', style: 'cancel'},
+          {text: 'OK', onPress: () => {
+            quitApp();
+          }}
+        ])
+      }
+    });
 
     return settingItems;
   }
@@ -160,12 +194,14 @@ export class SideBar extends Component {
 
   _getContent() {
     let content = [];
-    if (this.props.actions !== undefined) {
+    let actions = this._getActions();
+    if (actions.length > 0) {
       content.push(<MenuSegmentSeparator key="actionLabel" label="Actions"/>);
-      this._fillItemList(content, this.props.actions);
+      this._fillItemList(content, actions);
     }
     let menuItems = this._getMenuItems();
-    if (menuItems.length > 0) {
+    // only show menu items when there's actually something to choose.
+    if (menuItems.length > 1) {
       content.push(<MenuSegmentSeparator key="categoriesLabel" label="Categories"/>);
       this._fillItemList(content, menuItems);
     }

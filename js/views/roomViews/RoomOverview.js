@@ -129,6 +129,7 @@ export class RoomOverview extends Component {
               state={item.stone.state.state}
               currentUsage={item.stone.config.type !== stoneTypes.guidestone ? item.stone.state.currentUsage : undefined}
               navigation={false}
+              tapToToggleCalibration={this.tapToToggleCalibration}
               control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
               pending={this.state.pendingRequests[stoneId] !== undefined} // either disabled, pending or remote
               disabled={item.stone.config.disabled || this.viewingRemotely || SetupStateHandler.isSetupInProgress() } // either disabled or remote
@@ -254,6 +255,7 @@ export class RoomOverview extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
+    this.tapToToggleCalibration = state.user.tapToToggleCalibration;
 
     let title = undefined;
     if (this.props.locationId !== null) {
@@ -370,7 +372,6 @@ class RoomOverviewExplanation extends Component {
 
     // callback to go to the floating crownstones. Is used twice
     let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
-
 
     // In case we see a crownstone in setup mode:
     if (explanation === undefined && seeStoneInSetupMode === true) {

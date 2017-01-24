@@ -12,7 +12,6 @@ import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
-let TOUCH_RSSI_ENABLE_DISTANCE = -4;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
 let TOUCH_TIME_BETWEEN_SWITCHING = 5000; // ms
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms

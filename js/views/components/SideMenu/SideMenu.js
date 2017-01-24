@@ -20,14 +20,16 @@ import { styles, colors, screenWidth, screenHeight } from '../../styles'
 export class SideMenu extends Component {
   constructor(props) {
     super();
-    this.state = {open: props.navigationState.open}
+    this.state = {open: props.navigationState.open, viewProps: {}}
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({open: nextProps.navigationState.open})
+    console.log(nextProps.navigationState)
+    this.setState({open: nextProps.navigationState.open, viewProps: nextProps.navigationState.viewProps});
   }
 
   render(){
+    console.log("RENDERING", this.state)
     const state = this.props.navigationState;
     const children = state.children;
     return (
@@ -37,7 +39,7 @@ export class SideMenu extends Component {
         onOpen={ () => {Actions.refresh({key:state.key, open: true})}}
         onClose={() => {Actions.refresh({key:state.key, open: false})}}
         type="overlay"
-        content={<SideBar closeCallback={()=> {this.setState({open:false});}} store={this.props.store} />}
+        content={<SideBar closeCallback={()=> {this.setState({open:false});}} store={this.props.store} viewProps={this.state.viewProps} />}
         tapToClose={true}
         openDrawerOffset={0.25}
         panCloseMask={0.25}

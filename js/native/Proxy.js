@@ -47,6 +47,7 @@ if (DISABLE_NATIVE === true) {
     commandFactoryReset: () => {},       // called through BleActions --> must be promise.
     recover: () => {},                   // called through BleActions --> must be promise.
     setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
+    quitApp: () => {},                   // Used in android to force close the app
   }
 }
 else {
