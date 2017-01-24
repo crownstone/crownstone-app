@@ -74,6 +74,7 @@ export class TapToToggleCalibration extends Component {
                 });
               }
             });
+            LOG("TapToToggleCalibration: measured RSSI", minRSSI);
             resolve(minRSSI);
           }, 3500);
         }, 1000);
@@ -83,7 +84,7 @@ export class TapToToggleCalibration extends Component {
     BlePromiseManager.registerPriority(learnDistancePromise, {from:'Tap-to-toggle distance estimation.'})
       .then((nearestRSSI) => {
         if (nearestRSSI > -70) {
-          let rssiAddedDistance = addDistanceToRssi(nearestRSSI, 0.1);
+          let rssiAddedDistance = Math.max(nearestRSSI-5,addDistanceToRssi(nearestRSSI, 0.1));
           LOG("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
           this.props.store.dispatch({
             type: 'SET_TAP_TO_TOGGLE_CALIBRATION',

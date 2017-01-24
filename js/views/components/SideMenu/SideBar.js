@@ -13,6 +13,7 @@ import {
   Text,
   View
 } from 'react-native';
+import { eventBus } from '../../../util/eventBus'
 import { Actions } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
 import { Icon } from '../Icon'
@@ -106,17 +107,17 @@ export class SideBar extends Component {
         label: 'Add Sphere',
         element: <Icon name={"c1-house"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
         action: () => {
-          this.props.eventBus.emit('showLoading', 'Creating Sphere...');
+          eventBus.emit('showLoading', 'Creating Sphere...');
           setTimeout(() => { this.props.closeCallback(); }, 0);
 
-          CLOUD.createNewSphere(this.props.store, state.user.firstName, this.props.eventBus)
+          CLOUD.createNewSphere(this.props.store, state.user.firstName, eventBus)
             .then((sphereId) => {
-              this.props.eventBus.emit('hideLoading');
+              eventBus.emit('hideLoading');
               let state = this.props.store.getState();
               let title = state.spheres[sphereId].config.name;
               Actions.settingsSphere({sphereId: sphereId, title: title})
             })
-            .catch(() => {this.props.eventBus.emit('hideLoading');});
+            .catch(() => {eventBus.emit('hideLoading');});
         }
       });
     }
@@ -131,7 +132,7 @@ export class SideBar extends Component {
         label: 'Calibrate Tap-to-Toggle',
         element: <Icon name={"md-flask"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
         action: () => {
-          this.props.eventBus.emit("CalibrateTapToToggle", {canClose: true, tutorial: false});
+          eventBus.emit("CalibrateTapToToggle", {canClose: true, tutorial: false});
           setTimeout(() => { this.props.closeCallback(); }, 0)
         }
       });
