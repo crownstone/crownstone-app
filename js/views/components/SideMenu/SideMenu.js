@@ -24,12 +24,10 @@ export class SideMenu extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.navigationState)
     this.setState({open: nextProps.navigationState.open, viewProps: nextProps.navigationState.viewProps});
   }
 
   render(){
-    console.log("RENDERING", this.state)
     const state = this.props.navigationState;
     const children = state.children;
     return (
