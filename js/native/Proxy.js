@@ -47,6 +47,8 @@ if (DISABLE_NATIVE === true) {
     setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
 
     quitApp: () => {},                   // Used in android to force close the app
+    enableLoggingToFile: () => {},
+    clearLogs: () => {},
   }
 }
 else {

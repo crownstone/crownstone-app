@@ -109,6 +109,9 @@ export const INITIALIZER = {
         }
       });
 
+      let state = store.getState();
+      Bluenet.enableLoggingToFile((state.user.logging === true));
+
       // configure the CLOUD network handler.
       let handler = function(error) {
         Alert.alert(

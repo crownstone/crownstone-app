@@ -11,6 +11,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import { IconButton } from './../components/IconButton'
 import { Background } from './../components/Background'
+import { Bluenet } from '../../native/Proxy'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG, clearLogs } from '../../logging/Log'
@@ -42,6 +43,7 @@ export class SettingsDeveloper extends Component {
   _getItems(user) {
     const store = this.props.store;
     let items = [];
+    let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
     items.push({label: "LOGGING", type: 'explanation', below: false});
     items.push({
@@ -51,12 +53,13 @@ export class SettingsDeveloper extends Component {
       icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
       callback:(newValue) => {
       if (newValue === false) {
-        clearLogs();
+        clearAllLogs();
       }
       store.dispatch({
         type: 'SET_LOGGING',
         data: {logging: newValue}
       });
+      Bluenet.enableLoggingToFile(newValue);
     }});
     items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
 
@@ -66,7 +69,7 @@ export class SettingsDeveloper extends Component {
       style: {color: colors.blue.hex},
       icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
       callback:(newValue) => {
-        clearLogs();
+        clearAllLogs();
         Alert.alert("Logs Cleared", undefined, [{text:'OK'}])
       }});
     items.push({label: "Clear all logs that have been stored so far.", type: 'explanation', below: true});
@@ -80,7 +83,7 @@ export class SettingsDeveloper extends Component {
         type: 'SET_DEVELOPER_MODE',
         data: {developer: false}
       });
-      clearLogs();
+      clearAllLogs();
       Actions.pop();
     }});
     items.push({label: "Revert back to the normal user state.", type: 'explanation', below: true});
