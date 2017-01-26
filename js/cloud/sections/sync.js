@@ -499,7 +499,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
     cloudLocationIds,
     cloudApplianceIds,
     addedSphere
-  }
+  };
 };
 
 /**
@@ -512,13 +512,22 @@ const syncDevices = function(store, actions, devices) {
     let {name, address, description} = getDeviceSpecs(state);
 
     let deviceId = undefined;
-    devices.forEach((device) => {
+    for (let i = 0; i < devices.length; i++) {
+      let device = devices[i];
       if (device.address === address) {
         deviceId = device.id;
+        break;
       }
-    });
+      else if (device.name === name && device.description === description) {
+        deviceId = device.id;
+      }
+      else if (device.description === name) {
+        deviceId = device.id;
+      }
+    }
 
     if (deviceId === undefined || state.devices[deviceId] === undefined) {
+      LOG("Sync: Create new device", name, address, description);
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
           actions.push({
@@ -535,6 +544,7 @@ const syncDevices = function(store, actions, devices) {
         .catch(reject)
     }
     else {
+      LOG("Sync: User device found in cloud, updating location.");
       updateUserLocationInCloud(state, deviceId)
         .then(resolve)
         .catch(reject);
