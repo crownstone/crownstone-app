@@ -472,7 +472,7 @@ open class BluenetJS: NSObject {
   }
   
   
-  @objc func finalizeFingerprint(_ sphereId: String, locationId: String, _ callback: RCTResponseSenderBlock) -> Void {
+  @objc func finalizeFingerprint(_ sphereId: String, locationId: String, callback: RCTResponseSenderBlock) -> Void {
     print("BluenetBridge: finishCollectingFingerprint")
     
     let stringifiedFingerprint = GLOBAL_BLUENET!.trainingHelper.finishCollectingTrainingData()
