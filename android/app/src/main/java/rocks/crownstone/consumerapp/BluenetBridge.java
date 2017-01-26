@@ -522,8 +522,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onError(int error) {
-				BleLog.getInstance().LOGi(TAG, "connection error to " + uuid + " error: " + error);
-				_numConsecutiveConnectFailures += 1;
+				BleLog.getInstance().LOGe(TAG, "connection error to " + uuid + " error: " + error);
+				if (!_isResettingBluetooth) {
+					_numConsecutiveConnectFailures += 1;
+				}
 				if (!_connectCallbackInvoked) {
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", true);
@@ -1047,13 +1049,17 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_localization.finalizeFingerprint(sphereId, locationId, null);
 		_isTraingingLocalization = false;
 		Fingerprint fingerprint = _localization.getFingerprint(sphereId, locationId);
+		WritableMap retVal = Arguments.createMap();
 		if (fingerprint != null) {
 			String samplesStr = fingerprint.getSamples().toString();
-			callback.invoke(samplesStr);
+			retVal.putBoolean("error", false);
+			retVal.putString("data", samplesStr);
 		}
 		else {
-			callback.invoke("");
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "");
 		}
+		callback.invoke(retVal);
 	}
 
 	@ReactMethod
