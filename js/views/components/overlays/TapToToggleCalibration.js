@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import {
   Alert,
   Image,
+  Platform,
   Text,
-  View,
   TouchableOpacity,
+  View,
 } from 'react-native';
 
 import { LOG }                from '../../../logging/Log'
@@ -29,8 +30,7 @@ export class TapToToggleCalibration extends Component {
       this.setState({
         visible: true,
         step: data.tutorial === false ? 1 : 0,
-        tutorial: data.tutorial === undefined ? true  : data.tutorial,
-        canClose: true,
+        tutorial: data.tutorial === undefined ? true  : data.tutorial
       });
     })
   }
@@ -229,7 +229,18 @@ export class TapToToggleCalibration extends Component {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible} canClose={true} closeCallback={() => {eventBus.emit("useTriggers"); this.setState({visible: false});}} backgroundColor={colors.csBlue.rgba(0.3)} >
+      <OverlayBox visible={this.state.visible} canClose={true} closeCallback={() => {
+        // when closed without training, tell the user where to find the calibration button.
+        if (this.state.tutorial === true) {
+          let explanationLabel = "You can calibrate tap to toggle through the settings menu any time.";
+          if (Platform.OS === 'android') {
+            explanationLabel = "You can calibrate tap to toggle through the side menu any time.";
+          }
+          Alert.alert("Training Tap-to-Toggle Later", explanationLabel, [{text:'OK'}])
+        }
+        eventBus.emit("useTriggers");
+        this.setState({visible: false});
+      }} backgroundColor={colors.csBlue.rgba(0.3)} >
         {this.getContent()}
       </OverlayBox>
     );

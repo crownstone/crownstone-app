@@ -127,12 +127,17 @@ export class SideBar extends Component {
     let presentSphere = getPresentSphere(state);
 
     if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
+      let tapToToggleSettings = { tutorial: false };
+      if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+        tapToToggleSettings.tutorial = true;
+      }
+
       settingItems.push({
         id: 'calibrate',
         label: 'Calibrate Tap-to-Toggle',
         element: <Icon name={"md-flask"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
         action: () => {
-          eventBus.emit("CalibrateTapToToggle", {canClose: true, tutorial: false});
+          eventBus.emit("CalibrateTapToToggle", tapToToggleSettings);
           setTimeout(() => { this.props.closeCallback(); }, 0)
         }
       });

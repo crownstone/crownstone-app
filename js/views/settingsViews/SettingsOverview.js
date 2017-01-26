@@ -66,12 +66,16 @@ export class SettingsOverview extends Component {
 
     let presentSphere = getPresentSphere(state);
     if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
+      let tapToToggleSettings = { tutorial: false };
+      if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+        tapToToggleSettings.tutorial = true;
+      }
       items.push({
         label:'Calibrate Tap-to-Toggle',
         type:'button',
         style: {color:'#000'},
         icon: <IconButton name="md-flask" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
-        callback: () => {this.props.eventBus.emit("CalibrateTapToToggle", {canClose: true, tutorial: false});}
+        callback: () => {this.props.eventBus.emit("CalibrateTapToToggle", tapToToggleSettings);}
       });
 
     }

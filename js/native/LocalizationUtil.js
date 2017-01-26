@@ -69,24 +69,20 @@ export const LocalizationUtil = {
  * @returns {boolean}
  */
 function validateFingerprint(fingerprintRaw) {
-  console.log("raw meat:", fingerprintRaw);
+  let fingerprint = JSON.parse(fingerprintRaw);
+  if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
+    // check for negative major or minors, coming from casting to Int16 instead of UInt16 in Android.
+    for (let i = 0; i < fingerprint.length; i++) {
+      let deviceIds = Object.keys(fingerprint[i].devices);
+      for (let j = 0; j < deviceIds.length; j++) {
+        if (deviceIds[j].length < 1 || deviceIds[j].indexOf(":-") > 0) {
+          return false;
+        }
+      }
+    }
 
-  // let fingerprint = JSON.parse(fingerprintRaw);
-  // if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
-  //   console.log("parsed meat:",fingerprint);
-  //   // check for negative major or minors, coming from casting to Int16 instead of UInt16 in Android.
-  //   for (let i = 0; i < fingerprint.length; i++) {
-  //     let deviceIds = Object.keys(fingerprint[i].devices);
-  //     for (let j = 0; j < deviceIds.length; j++) {
-  //       if (deviceIds[j].length < 1 || deviceIds[j].indexOf(":-") > 0) {
-  //         return false;
-  //       }
-  //     }
-  //   }
-  //
-  //   return true;
-  // }
-  return true;
+    return true;
+  }
 
   return false;
 }
