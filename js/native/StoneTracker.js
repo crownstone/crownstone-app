@@ -86,7 +86,7 @@ export class StoneTracker {
         cancelScheduledAwayAction: false,
         cancelScheduledNearAction: false
       };
-    }
+    };
 
     // local reference of the device/stone
     let ref = this.elements[stoneId];

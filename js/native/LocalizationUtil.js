@@ -8,6 +8,7 @@ export const LocalizationUtil = {
    * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
    */
   trackSpheres: function (store) {
+    LOG("LocalizationUtil: Track Spheres called.");
     BleActions.isReady()
       .then(() => {
         return BleActions.clearTrackedBeacons();
@@ -25,7 +26,7 @@ export const LocalizationUtil = {
           // track the sphere beacon UUID
           Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
 
-          LOG("-------------- SETUP TRACKING FOR ", sphereIBeaconUUID);
+          LOG("LocalizationUtil: SETUP TRACKING FOR ", sphereIBeaconUUID);
 
           let locations = state.spheres[sphereId].locations;
           let locationIds = Object.keys(locations);
@@ -33,7 +34,7 @@ export const LocalizationUtil = {
             if (locations[locationId].config.fingerprintRaw) {
               // check format of the fingerprint:
               if (validateFingerprint(locations[locationId].config.fingerprintRaw)) {
-                LOG("-------------- LOADING FINGERPRINT FOR ", locationId, " IN SPHERE ", sphereId);
+                LOG("LocalizationUtil: LOADING FINGERPRINT FOR ", locationId, " IN SPHERE ", sphereId);
                 Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw);
               }
               else {

@@ -43,7 +43,7 @@ RCT_EXTERN_METHOD(forceClearActiveRegion)
 RCT_EXTERN_METHOD(startIndoorLocalization)
 RCT_EXTERN_METHOD(stopIndoorLocalization)
 
-RCT_EXTERN_METHOD(trackIBeacon:(NSString *)ibeaconUUID referenceId:(NSString*)referenceId)
+RCT_EXTERN_METHOD(trackIBeacon:(NSString *)ibeaconUUID sphereId:(NSString*)sphereId)
 RCT_EXTERN_METHOD(stopTrackingIBeacon:(NSString *)ibeaconUUID)
 
 RCT_EXTERN_METHOD(startCollectingFingerprint)
@@ -57,4 +57,8 @@ RCT_EXTERN_METHOD(pauseTracking)
 RCT_EXTERN_METHOD(clearTrackedBeacons:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(finalizeFingerprint:(NSString *)sphereId locationId:(NSString *)locationId)
 RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)locationId fingerprint:(NSString *)fingerprint)
+
+RCT_EXTERN_METHOD(enableLoggingToFile:(nonnull NSNumber *)enableLogging)
+RCT_EXTERN_METHOD(clearLogs)
+
 @end

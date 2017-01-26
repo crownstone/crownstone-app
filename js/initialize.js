@@ -92,6 +92,8 @@ export const INITIALIZER = {
         LOG("INITIALIZER: received appStarted event.");
         BleActions.isReady()
           .then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
+
+
         LocalizationUtil.trackSpheres(store);
         this.userReady = true;
       });
@@ -110,7 +112,7 @@ export const INITIALIZER = {
       });
 
       let state = store.getState();
-      Bluenet.enableLoggingToFile((state.user.logging === true));
+      Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
 
       // configure the CLOUD network handler.
       let handler = function(error) {

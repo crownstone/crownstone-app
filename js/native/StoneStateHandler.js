@@ -56,7 +56,7 @@ class StoneStateHandlerClass {
     // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
 
     if (state.spheres[sphereId].config.present === false) {
-      LOG("FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
+      LOG("StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
       LocationHandler.enterSphere(sphereId);
     }
 
@@ -105,11 +105,11 @@ class StoneStateHandlerClass {
 
         // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
         if (allDisabled === true) {
-          LOG("FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
+          LOG("StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
           LocationHandler.exitSphere(sphereId);
         }
 
-        LOG("Disabling stone ", stoneId);
+        LOG("StoneStateHandler: Disabling stone ", stoneId);
         this.store.dispatch({
           type: 'UPDATE_STONE_DISABILITY',
           sphereId: sphereId,

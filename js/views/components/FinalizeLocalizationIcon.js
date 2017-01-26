@@ -11,7 +11,7 @@ export class FinalizeLocalizationIcon extends Component {
   render() {
     let top = Platform.OS === 'android' ? 0 : 1;
     let topOffset = 0;
-    if (this.props.topBar === true) {
+    if (this.props.topBar === true && Platform.OS === 'android') {
       topOffset = 10;
     }
 

@@ -30,7 +30,7 @@ export class TapToToggleCalibration extends Component {
         visible: true,
         step: data.tutorial === false ? 1 : 0,
         tutorial: data.tutorial === undefined ? true  : data.tutorial,
-        canClose: data.canClose === undefined ? false : data.canClose,
+        canClose: true,
       });
     })
   }
@@ -229,7 +229,7 @@ export class TapToToggleCalibration extends Component {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible} canClose={this.state.canClose} closeCallback={() => {eventBus.emit("useTriggers"); this.setState({visible: false});}} backgroundColor={colors.csBlue.rgba(0.3)} >
+      <OverlayBox visible={this.state.visible} canClose={true} closeCallback={() => {eventBus.emit("useTriggers"); this.setState({visible: false});}} backgroundColor={colors.csBlue.rgba(0.3)} >
         {this.getContent()}
       </OverlayBox>
     );

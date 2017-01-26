@@ -222,7 +222,7 @@ if (DEBUG_BLE) {
     LOGBle('crownstoneId', data.name, data.rssi, data.handle);
   });
   NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-    LOGBle('iBeaconAdvertisement', data[0].rssi, data.major, data.minor);
+    LOGBle('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor);
   });
 }
 

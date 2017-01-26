@@ -7,11 +7,13 @@
 //
 
 import Foundation
-import BluenetLibIOS
 import PromiseKit
 import SwiftyJSON
 
-import CrownstoneLocalizationIOS
+import BluenetLib
+import BluenetShared
+import BluenetBasicLocalization
+
 
 var GLOBAL_BLUENET : ViewPassThrough?
 
@@ -24,13 +26,12 @@ typealias voidCallback = () -> Void
   open var trainingHelper : TrainingHelper!
   var classifier : CrownstoneBasicClassifier!
   
-  
   var subscriptions = [voidCallback]()
   
   init(viewController: UIViewController) {
     super.init()
 
-    BluenetLibIOS.setBluenetGlobals(viewController: viewController, appName: "Crownstone", loggingFile: false, debugLogEnabled: false)
+    BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone", loggingFile: false, debugLogEnabled: false)
     
     
     self.classifier = CrownstoneBasicClassifier()
@@ -40,14 +41,14 @@ typealias voidCallback = () -> Void
     // do not use the accelerometer.
     // self.bluenetMotion = BluenetMotion()
     
-    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, collectionId: "unknown")
+    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
     self.bluenetLocalization = BluenetLocalization()
     
     // insert the classifier that will be used for room-level localization.
-    self.bluenetLocalization.insertClassifier(classifier: self.classifier as! BluenetLibIOS.LocalizationClassifier)
+    self.bluenetLocalization.insertClassifier(classifier: self.classifier)
     
     self.trainingHelper = TrainingHelper(bluenetLocalization: self.bluenetLocalization)
-
+    
     GLOBAL_BLUENET = self
   }
   
@@ -60,7 +61,7 @@ typealias voidCallback = () -> Void
   }
   
   deinit {
-    print ("CLEANING UP!")
+    print("BluenetBridge: CLEANING UP!")
     
     // cleanup
     for unsubscribeCallback in self.subscriptions {
@@ -164,7 +165,7 @@ open class BluenetJS: NSObject {
   
   @objc func rerouteEvents() {
     if let globalBluenet = GLOBAL_BLUENET {
-      print("----- BLUENET BRIDGE: Rerouting events")
+      print("BluenetBridge: ----- BLUENET BRIDGE: Rerouting events")
       // forward the event streams to react native
       globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
@@ -189,9 +190,10 @@ open class BluenetJS: NSObject {
       })
       
 //      we will not forward the unverified events
-//      globalBluenet.bluenet.on("advertisementData", {data -> Void in
+//      globalBluenet.bluenetOn("advertisementData", {data -> Void in
 //        if let castData = data as? Advertisement {
-//          self.bridge.eventDispatcher().sendAppEventWithName("advertisementData", body: castData.stringify())
+//          print("BluenetBridge: advertisementData", castData)
+//          self.bridge.eventDispatcher().sendAppEvent(withName: "advertisementData", body: castData.getDictionary())
 //        }
 //      })
 
@@ -224,29 +226,39 @@ open class BluenetJS: NSObject {
         self.bridge.eventDispatcher().sendAppEvent(withName: "iBeaconAdvertisement", body: returnArray)
       })
       
-      
+      globalBluenet.bluenetLocalizationOn("lowLevelEnterRegion", {data -> Void in
+        print("BluenetBridge: lowLevelEnterRegion")
+      })
+      globalBluenet.bluenetLocalizationOn("lowLevelExitRegion", {data -> Void in
+        print("BluenetBridge: lowLevelExitRegion")
+      })
       
       globalBluenet.bluenetLocalizationOn("enterRegion", {data -> Void in
+        print("BluenetBridge: enterRegion")
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitRegion", {data -> Void in
+        print("BluenetBridge: exitRegion")
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEvent(withName: "exitSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("enterLocation", {data -> Void in
+        print("BluenetBridge: enterLocation")
         if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitLocation", {data -> Void in
+        print("BluenetBridge: exitLocation")
         if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("currentLocation", {data -> Void in
+        print("BluenetBridge: currentLocation")
         if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
         }
@@ -266,9 +278,9 @@ open class BluenetJS: NSObject {
     }
     
     if let encryptionEnabled = settings["encryptionEnabled"] as? Bool {
-      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, collectionId: referenceId!)
-      print("SETTING SETTINGS \(settings)")
-      GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, collectionId: referenceId!)
+      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
+      print("BluenetBridge: SETTING SETTINGS \(settings)")
+      GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
       callback([["error" : false]])
     }
     else {
@@ -399,84 +411,95 @@ open class BluenetJS: NSObject {
   }
   
   @objc func requestLocationPermission() -> Void {
-    print("Requesting Permission")
-    GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()
+    print("BluenetBridge: Requesting Permission")
+    DispatchQueue.main.sync {
+      GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()
+    }
   }
   
-  @objc func trackIBeacon(_ ibeaconUUID: String, referenceId: String) -> Void {
-    print("tracking ibeacons with uuid: \(ibeaconUUID) for sphere: \(referenceId)")
-    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, collectionId: referenceId)
+  @objc func trackIBeacon(_ ibeaconUUID: String, sphereId: String) -> Void {
+    print("BluenetBridge: tracking ibeacons with uuid: \(ibeaconUUID) for sphere: \(sphereId)")
+    DispatchQueue.main.sync {
+      GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, referenceId: sphereId)
+    }
   }
   
   @objc func stopTrackingIBeacon(_ ibeaconUUID: String) -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.stopTrackingIBeacon(ibeaconUUID)
-    print("stopIBeaconTracking ")
+    print("BluenetBridge: stopIBeaconTracking ")
+    DispatchQueue.main.sync {
+      GLOBAL_BLUENET!.bluenetLocalization.stopTrackingIBeacon(ibeaconUUID)
+    }
   }
   
   @objc func forceClearActiveRegion() -> Void {
+    print("BluenetBridge: forceClearActiveRegion ")
     GLOBAL_BLUENET!.bluenetLocalization.forceClearActiveRegion()
-    print("forceClearActiveRegion ")
   }
   
   @objc func pauseTracking() -> Void {
+    print("BluenetBridge: stopIBeaconTracking ")
     GLOBAL_BLUENET!.bluenetLocalization.pauseTracking()
-    print("stopIBeaconTracking ")
   }
   
   @objc func resumeTracking() -> Void {
+    print("BluenetBridge: resumeIBeaconTracking ")
     GLOBAL_BLUENET!.bluenetLocalization.resumeTracking()
-    print("resumeIBeaconTracking ")
   }
   
   @objc func startCollectingFingerprint() -> Void {
+    print("BluenetBridge: startCollectingFingerprint ")
+    
     // abort collecting fingerprint if it is currently happening.
     GLOBAL_BLUENET!.trainingHelper.abortCollectingTrainingData()
     
     // start collection
     GLOBAL_BLUENET!.trainingHelper.startCollectingTrainingData()
-    print("startCollectingFingerprint ")
   }
   
   @objc func abortCollectingFingerprint() -> Void {
+    print("BluenetBridge: abortCollectingFingerprint ")
     GLOBAL_BLUENET!.trainingHelper.abortCollectingTrainingData()
-    print("abortCollectingFingerprint ")
   }
   
   @objc func pauseCollectingFingerprint() -> Void {
+    print("BluenetBridge: pauseCollectingFingerprint ")
     GLOBAL_BLUENET!.trainingHelper.pauseCollectingTrainingData()
-    print("pauseCollectingFingerprint ")
   }
   
   @objc func resumeCollectingFingerprint() -> Void {
+    print("BluenetBridge: resumeCollectingFingerprint ")
     GLOBAL_BLUENET!.trainingHelper.resumeCollectingTrainingData()
-    print("resumeCollectingFingerprint ")
   }
   
   
   @objc func finalizeFingerprint(_ sphereId: String, locationId: String, _ callback: RCTResponseSenderBlock) -> Void {
+    print("BluenetBridge: finishCollectingFingerprint")
+    
     let stringifiedFingerprint = GLOBAL_BLUENET!.trainingHelper.finishCollectingTrainingData()
     
     if (stringifiedFingerprint != nil) {
-      GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, collectionId: sphereId, trainingData: stringifiedFingerprint!)
+      GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: stringifiedFingerprint!)
       callback([["error" : false, "data": stringifiedFingerprint!]])
     }
     else {
       callback([["error" : true, "data": "No samples collected"]])
     }
-    
-    print("finishCollectingFingerprint")
   }
   
   // this  has a callback so we can chain it in a promise. External calls are always async in RN, we need this to be done before loading new beacons.
   @objc func clearTrackedBeacons(_ callback: RCTResponseSenderBlock) -> Void {
-    GLOBAL_BLUENET!.bluenetLocalization.clearTrackedBeacons()
+    print("BluenetBridge: clearTrackedBeacons")
+    DispatchQueue.main.sync {
+      GLOBAL_BLUENET!.bluenetLocalization.clearTrackedBeacons()
+    }
     callback([["error" : false]])
   }
   
   
   @objc func loadFingerprint(_ sphereId: String, locationId: String, fingerprint: String) -> Void {
-    GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, collectionId: sphereId, trainingData: fingerprint)
-    print("loadFingerprint \(sphereId) \(locationId)")
+    print("BluenetBridge: loadFingerprint \(sphereId) \(locationId)")
+    
+    GLOBAL_BLUENET!.classifier.loadTrainingData(locationId, referenceId: sphereId, trainingData: fingerprint)
   }
   
   
@@ -521,6 +544,14 @@ open class BluenetJS: NSObject {
       }
   }
   
+  @objc func enableLoggingToFile(_ enableLogging: NSNumber) -> Void {
+    print("BluenetBridge: TODO: enableLoggingToFile ")
+  }
+  
+  @objc func clearLogs() -> Void {
+    print("BluenetBridge: TODO: clearLogs ")
+  }
+  
   @objc func setupCrownstone(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
     let crownstoneId      = data["crownstoneId"] as? NSNumber
     let adminKey          = data["adminKey"] as? String
@@ -531,8 +562,8 @@ open class BluenetJS: NSObject {
     let ibeaconMajor      = data["ibeaconMajor"] as? NSNumber
     let ibeaconMinor      = data["ibeaconMinor"] as? NSNumber
     
-    print("data \(data) 1\(crownstoneId != nil) 2\(adminKey != nil) 3\(memberKey != nil) 4\(guestKey != nil)")
-    print ("5\(meshAccessAddress != nil) 6\(ibeaconUUID != nil) 7\(ibeaconMajor != nil)  8\(ibeaconMinor != nil)")
+    print("BluenetBridge: data \(data) 1\(crownstoneId != nil) 2\(adminKey != nil) 3\(memberKey != nil) 4\(guestKey != nil)")
+    print("BluenetBridge: 5\(meshAccessAddress != nil) 6\(ibeaconUUID != nil) 7\(ibeaconMajor != nil)  8\(ibeaconMinor != nil)")
     if (crownstoneId != nil &&
       adminKey != nil &&
       memberKey != nil &&
@@ -564,5 +595,7 @@ open class BluenetJS: NSObject {
       callback([["error" : true, "data": "Missing one of the datafields required for setup."]])
     }
   }
+  
+  
   
 }

@@ -65,18 +65,12 @@ export class DeviceBehaviourEdit extends Component {
     }
   }
 
-  _getTitle(eventName, fewCrownstones = false) {
+  _getTitle(eventName) {
     switch (eventName) {
       case 'onHomeEnter':
-        if (fewCrownstones)
-          return 'When In Range';
-        else
-          return 'Entering House';
+        return 'Entering Sphere';
       case 'onHomeExit':
-        if (fewCrownstones)
-          return 'Out of Range';
-        else
-          return 'Leaving House';
+          return 'Leaving Sphere';
       case 'onRoomEnter':
         return 'Entering Room';
       case 'onRoomExit':
@@ -94,20 +88,20 @@ export class DeviceBehaviourEdit extends Component {
     let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
 
-    let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title: this._getTitle(eventName, canDoIndoorLocalization === false), ...requiredData})};
+    let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title: this._getTitle(eventName), ...requiredData})};
+
+    // Behaviour for onHomeEnter event
+    let eventLabel = 'onHomeEnter';
+    items.push({label:'WHEN YOU ENTER THE SPHERE', type: 'explanation', style: styles.topExplanation, below:false});
+    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
+
+    // Behaviour for onHomeExit event
+    eventLabel = 'onHomeExit';
+    items.push({label:'WHEN YOU LEAVE THE SPHERE', type: 'explanation',  below:false});
+    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
+    items.push({label:'If there are still people (from your sphere) left in the sphere, this will not be triggered.', type: 'explanation',  below:true});
 
     if (canDoIndoorLocalization === false) {
-      // Behaviour for onHomeEnter event
-      let eventLabel = 'onHomeEnter';
-      items.push({label:'WHEN YOU GET WITHIN RANGE', type: 'explanation', style: styles.topExplanation, below:false});
-      items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-
-      // Behaviour for onHomeExit event
-      eventLabel = 'onHomeExit';
-      items.push({label:'WHEN YOU MOVE OUT OF RANGE', type: 'explanation',  below:false});
-      items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-      items.push({label:'If there are still people (from your sphere) left in range, this will not be triggered.', type: 'explanation',  below:true});
-
       // Behaviour for onNear event
       eventLabel = 'onNear';
       items.push({label:'WHEN YOU GET CLOSE', type: 'explanation', style:{paddingTop:0}, below:false});
@@ -121,17 +115,6 @@ export class DeviceBehaviourEdit extends Component {
       items.push({label:'Will trigger when you move out of the near zone.', type: 'explanation',  below:true});
     }
     else {
-      // Behaviour for onHomeEnter event
-      let eventLabel = 'onHomeEnter';
-      items.push({label:'WHEN YOU COME HOME', type: 'explanation', style: styles.topExplanation, below:false});
-      items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-
-      // Behaviour for onHomeExit event
-      eventLabel = 'onHomeExit';
-      items.push({label:'WHEN YOU LEAVE YOUR HOME', type: 'explanation',  below:false});
-      items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-      items.push({label:'If there are still people (from your sphere) left in the house, this will not be triggered.', type: 'explanation',  below:true});
-
       if (stone.config.locationId !== null) {
         // Behaviour for onRoomEnter event
         eventLabel = 'onRoomEnter';
@@ -167,10 +150,10 @@ export class DeviceBehaviourEdit extends Component {
             type: 'info',
           });
           items.push({
-              label: "You can enable beta access through your profile in the settings. Beta features are not yet considered ready for general use but are actively worked on.",
-              type: 'explanation',
-              below: true
-            });
+            label: "You can enable beta access through your profile in the settings. Beta features are not yet considered ready for general use but are actively worked on.",
+            type: 'explanation',
+            below: true
+          });
         }
       }
       else if (canDoIndoorLocalization === true) {
