@@ -512,6 +512,7 @@ const syncDevices = function(store, actions, devices) {
     let {name, address, description} = getDeviceSpecs(state);
 
     let deviceId = undefined;
+    let deviceAddress = address;
     for (let i = 0; i < devices.length; i++) {
       let device = devices[i];
       if (device.address === address) {
@@ -520,9 +521,11 @@ const syncDevices = function(store, actions, devices) {
       }
       else if (device.name === name && device.description === description) {
         deviceId = device.id;
+        deviceAddress = device.address;
       }
-      else if (device.description === name) {
+      else if (device.description === description) {
         deviceId = device.id;
+        deviceAddress = device.address;
       }
     }
 
@@ -544,6 +547,13 @@ const syncDevices = function(store, actions, devices) {
         .catch(reject)
     }
     else {
+      // if the device is known under a different number in the cloud, we update our local identifier
+      if (deviceAddress !== address) {
+        store.dispatch({
+          type: 'SET_APP_IDENTIFIER',
+          data: {appIdentifier: deviceAddress}
+        })
+      }
       LOG("Sync: User device found in cloud, updating location.");
       updateUserLocationInCloud(state, deviceId)
         .then(resolve)

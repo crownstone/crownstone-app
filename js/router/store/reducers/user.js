@@ -61,6 +61,13 @@ export default (state = defaultSettings.user, action = {}) => {
         return newState;
       }
       return state;
+    case 'SET_APP_IDENTIFIER':
+      if (action.data) {
+        let newState = {...state};
+        newState.appIdentifier = update(action.data.appIdentifier,    newState.appIdentifier);
+        return newState;
+      }
+      return state;
     case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
       if (action.data) {
         let newState = {...state};
