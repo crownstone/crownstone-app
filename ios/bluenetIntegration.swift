@@ -226,39 +226,38 @@ open class BluenetJS: NSObject {
         self.bridge.eventDispatcher().sendAppEvent(withName: "iBeaconAdvertisement", body: returnArray)
       })
       
-      globalBluenet.bluenetLocalizationOn("lowLevelEnterRegion", {data -> Void in
-        print("BluenetBridge: lowLevelEnterRegion")
-      })
-      globalBluenet.bluenetLocalizationOn("lowLevelExitRegion", {data -> Void in
-        print("BluenetBridge: lowLevelExitRegion")
-      })
+//      globalBluenet.bluenetLocalizationOn("lowLevelEnterRegion", {data -> Void in
+//        print("BluenetBridge: lowLevelEnterRegion")
+//      })
+//      globalBluenet.bluenetLocalizationOn("lowLevelExitRegion", {data -> Void in
+//        print("BluenetBridge: lowLevelExitRegion")
+//      })
       
       globalBluenet.bluenetLocalizationOn("enterRegion", {data -> Void in
-        print("BluenetBridge: enterRegion")
+//        print("BluenetBridge: enterRegion")
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitRegion", {data -> Void in
-        print("BluenetBridge: exitRegion")
+//        print("BluenetBridge: exitRegion")
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEvent(withName: "exitSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("enterLocation", {data -> Void in
-        print("BluenetBridge: enterLocation")
+//        print("BluenetBridge: enterLocation")
         if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitLocation", {data -> Void in
-        print("BluenetBridge: exitLocation")
+//        print("BluenetBridge: exitLocation")
         if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("currentLocation", {data -> Void in
-        print("BluenetBridge: currentLocation")
         if let castData = data as? NSDictionary {
           self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
         }

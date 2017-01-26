@@ -85,10 +85,7 @@ class FingerprintManagerClass {
 
   finalizeFingerprint(sphereId, locationId) {
     this._stopFingerprinting(() => {});
-    return new Promise((resolve, reject) => {
-      // resolve is pushed ino the fingerprint.
-      Bluenet.finalizeFingerprint(sphereId, locationId, resolve);
-    });
+    return BleActions.finalizeFingerprint(sphereId, locationId)
   }
 
   pauseCollectingFingerprint() {

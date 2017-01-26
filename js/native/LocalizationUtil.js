@@ -26,15 +26,16 @@ export const LocalizationUtil = {
           // track the sphere beacon UUID
           Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
 
-          LOG("LocalizationUtil: SETUP TRACKING FOR ", sphereIBeaconUUID);
+          LOG("LocalizationUtil: Setup tracking for iBeacon UUID: ", sphereIBeaconUUID);
 
           let locations = state.spheres[sphereId].locations;
           let locationIds = Object.keys(locations);
           locationIds.forEach((locationId) => {
             if (locations[locationId].config.fingerprintRaw) {
               // check format of the fingerprint:
+              LOG("LocalizationUtil: Checking fingerprint format for: ", locationId, " in sphere: ", sphereId);
               if (validateFingerprint(locations[locationId].config.fingerprintRaw)) {
-                LOG("LocalizationUtil: LOADING FINGERPRINT FOR ", locationId, " IN SPHERE ", sphereId);
+                LOG("LocalizationUtil: Loading fingerprint for: ", locationId, " in sphere: ", sphereId);
                 Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw);
               }
               else {
@@ -68,20 +69,24 @@ export const LocalizationUtil = {
  * @returns {boolean}
  */
 function validateFingerprint(fingerprintRaw) {
-  let fingerprint = JSON.parse(fingerprintRaw);
-  if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
-    // check for negative major or minors, coming from casting to Int16 instead of UInt16 in Android.
-    for (let i = 0; i < fingerprint.length; i++) {
-      let deviceIds = Object.keys(fingerprint[i].devices);
-      for (let j = 0; j < deviceIds.length; j++) {
-        if (deviceIds[j].length < 1 || deviceIds[j].indexOf(":-") > 0) {
-          return false;
-        }
-      }
-    }
+  console.log("raw meat:", fingerprintRaw);
 
-    return true;
-  }
+  // let fingerprint = JSON.parse(fingerprintRaw);
+  // if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
+  //   console.log("parsed meat:",fingerprint);
+  //   // check for negative major or minors, coming from casting to Int16 instead of UInt16 in Android.
+  //   for (let i = 0; i < fingerprint.length; i++) {
+  //     let deviceIds = Object.keys(fingerprint[i].devices);
+  //     for (let j = 0; j < deviceIds.length; j++) {
+  //       if (deviceIds[j].length < 1 || deviceIds[j].indexOf(":-") > 0) {
+  //         return false;
+  //       }
+  //     }
+  //   }
+  //
+  //   return true;
+  // }
+  return true;
 
   return false;
 }

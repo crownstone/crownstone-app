@@ -31,7 +31,7 @@ export const LOG = function() {
 
 export const LOGError = function() {
   if (ERROR_LOGGING) {
-    let args = ['LOG ERROR !!!!! -- :'];
+    let args = ['LOG ERROR !!! -- :'];
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }
@@ -45,7 +45,7 @@ export const LOGError = function() {
 
 export const LOGDebug = function() {
   if (DEBUG_LOGGING) {
-    let args = ['LOG Debug ------- :'];
+    let args = ['LOG Debug ------ :'];
     for (let i = 0; i < arguments.length; i++) {
       args.push(arguments[i]);
     }

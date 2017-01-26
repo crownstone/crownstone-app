@@ -47,9 +47,9 @@ export class SphereOverview extends Component {
       let change = data.change;
       let spheres = this.props.store.getState().spheres;
       let sphereIds = Object.keys(spheres);
-      sphereIds.forEach((sphereId) => {
-        LOG("SPHERE_STATE_PRESENT", spheres[sphereId].config.present);
-      });
+      // sphereIds.forEach((sphereId) => {
+      //   LOG("SPHERE_STATE_PRESENT", spheres[sphereId].config.present);
+      // });
 
       if (change.changeSpheres || change.updateActiveSphere) {
         this._setActiveSphere();
