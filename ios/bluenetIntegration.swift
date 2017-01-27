@@ -14,6 +14,14 @@ import BluenetLib
 import BluenetShared
 import BluenetBasicLocalization
 
+let LOGGER = BluenetShared.LogClass(daysToStoreLogs: 3, logBaseFilename: "BridgeLog")
+
+@objc open class ObjectiveCLogger : NSObject {
+  @objc public class func logInfo(log: String) {
+    LOGGER.info(log)
+  }
+}
+
 
 var GLOBAL_BLUENET : ViewPassThrough?
 
@@ -31,7 +39,7 @@ typealias voidCallback = () -> Void
   init(viewController: UIViewController) {
     super.init()
 
-    BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone", loggingFile: false, debugLogEnabled: false)
+    BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
     
     
     self.classifier = CrownstoneBasicClassifier()
@@ -411,23 +419,18 @@ open class BluenetJS: NSObject {
   
   @objc func requestLocationPermission() -> Void {
     print("BluenetBridge: Requesting Permission")
-    DispatchQueue.main.sync {
-      GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()
-    }
+    GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()
   }
   
   @objc func trackIBeacon(_ ibeaconUUID: String, sphereId: String) -> Void {
     print("BluenetBridge: tracking ibeacons with uuid: \(ibeaconUUID) for sphere: \(sphereId)")
-    DispatchQueue.main.sync {
-      GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, referenceId: sphereId)
-    }
+    GLOBAL_BLUENET!.bluenetLocalization.trackIBeacon(uuid: ibeaconUUID, referenceId: sphereId)
   }
   
   @objc func stopTrackingIBeacon(_ ibeaconUUID: String) -> Void {
     print("BluenetBridge: stopIBeaconTracking ")
-    DispatchQueue.main.sync {
-      GLOBAL_BLUENET!.bluenetLocalization.stopTrackingIBeacon(ibeaconUUID)
-    }
+    GLOBAL_BLUENET!.bluenetLocalization.stopTrackingIBeacon(ibeaconUUID)
+    
   }
   
   @objc func forceClearActiveRegion() -> Void {
@@ -488,9 +491,8 @@ open class BluenetJS: NSObject {
   // this  has a callback so we can chain it in a promise. External calls are always async in RN, we need this to be done before loading new beacons.
   @objc func clearTrackedBeacons(_ callback: RCTResponseSenderBlock) -> Void {
     print("BluenetBridge: clearTrackedBeacons")
-    DispatchQueue.main.sync {
-      GLOBAL_BLUENET!.bluenetLocalization.clearTrackedBeacons()
-    }
+    GLOBAL_BLUENET!.bluenetLocalization.clearTrackedBeacons()
+    
     callback([["error" : false]])
   }
   
@@ -544,11 +546,29 @@ open class BluenetJS: NSObject {
   }
   
   @objc func enableLoggingToFile(_ enableLogging: NSNumber) -> Void {
-    print("BluenetBridge: TODO: enableLoggingToFile ")
+    if (enableLogging.boolValue == true) {
+      BluenetLib.LOG.cleanLogs()
+      BluenetLib.LOG.setFileLevel(.INFO)
+      BluenetLib.LOG.setPrintLevel(.INFO)
+      
+      LOGGER.cleanLogs()
+      LOGGER.setFileLevel(.INFO)
+      LOGGER.setPrintLevel(.INFO)
+    }
+    else {
+      BluenetLib.LOG.setFileLevel(.NONE)
+      BluenetLib.LOG.clearLogs()
+      BluenetLib.LOG.setPrintLevel(.INFO)
+      
+      LOGGER.setFileLevel(.NONE)
+      LOGGER.clearLogs()
+      LOGGER.setPrintLevel(.INFO)
+    }
   }
   
   @objc func clearLogs() -> Void {
-    print("BluenetBridge: TODO: clearLogs ")
+    BluenetLib.LOG.clearLogs()
+    LOGGER.clearLogs()
   }
   
   @objc func setupCrownstone(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
