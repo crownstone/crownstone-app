@@ -534,7 +534,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 					callback.invoke(retVal);
 
 					switch (error) {
-						case 8:
+//						case 8: // Connection timeout
 						case 257:
 							resetBluetooth();
 							break;
@@ -1209,6 +1209,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				break;
 			}
 			case BLUETOOTH_START_SCAN_ERROR:
+				// TODO: deal with this better, need more specific events
 				resetBluetooth();
 				break;
 		}
