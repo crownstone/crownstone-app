@@ -1,12 +1,31 @@
-iOS & Android App for the Crownstone.
+# Crownstone iOS & Android app 
 
-This is heavily work in progress. iOS will be done first, after which it will be updated to also support Android.
+The Crownstone iOS and Android apps are work in progress. 
+The roadmap of the software development can be found at [Trello](https://trello.com/b/6rUcIt62/crownstone-transparent-product-roadmap).
 
-The native libs are not in this project directly.
+The Android development is always a few weeks behind the iOS development, especially with respect to the graphical user interface. 
+
+The application makes use of separate libraries (so called bluenet libraries) that are native to the platform. 
+This is on purpose so that people can be make use of the Crownstone libraries without the need to use React Native.
+See below for getting the libraries.
+
+## Download
+
+The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/app/). 
+
+![Login screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-login.jpeg)
+![Overview screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-overview.jpeg)
+![Room screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-room.jpeg)
 
 ## Setup
 
-Assuming you've already installed nodejs, yarn and Carthage (for ios). You can get Yarn here: https://yarnpkg.com/en/docs/install
+Dependencies:
+
+* nodejs
+* Carthage (for iOS)
+* Yarn, can be obtained at [yarnpkg.com](https://yarnpkg.com/en/docs/install).
+
+Setup instructions:
 
 ```
 yarn
@@ -34,22 +53,37 @@ cd ..
 
 Run the tests:
 
-npm test
+    npm test
 
-Run the lint:
+Run the lint task:
 
-npm run lint
+    npm run lint
 
-Run react-native
+Run react-native for iOS:
 
-react-native run-ios
+    react-native run-ios
 
-or:
-```
-react-native run-android
-```
+Alternatively, run reactive for Android:
+
+    react-native run-android
+
 
 If there are problems with PHC folders during iOS compilation, remove the build folder in the ios map.
 Cameraroll has to be manually added to iosbuild in 0.22
 
+## Todo
+
 The slider needs to be edited in order to work, includes are wrong.
+
+File issues at the [Github Issue Tracker](https://github.com/crownstone/CrownstoneApp/issues).
+
+## Copyrights
+
+The copyrights (2014-2017) belongs to the team of Crownstone B.V. and are provided under an noncontagious open-source license:
+
+Authors: Alex de Mulder, Bart van Vliet
+Date: 1 Apr. 2016
+Triple-licensed: LGPL v3+, Apache, MIT
+Crownstone B.V., <https://www.crownstone.rocks>
+Rotterdam, The Netherlands
+
