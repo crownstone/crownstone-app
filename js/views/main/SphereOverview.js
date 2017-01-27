@@ -19,7 +19,7 @@ import { FinalizeLocalizationIcon }                       from '../components/Fi
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
-import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization} from '../../util/dataUtil'
+import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
 import { LOG, LOGError, LOGDebug }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
@@ -45,11 +45,6 @@ export class SphereOverview extends Component {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      let spheres = this.props.store.getState().spheres;
-      let sphereIds = Object.keys(spheres);
-      // sphereIds.forEach((sphereId) => {
-      //   LOG("SPHERE_STATE_PRESENT", spheres[sphereId].config.present);
-      // });
 
       if (change.changeSpheres || change.updateActiveSphere) {
         this._setActiveSphere();

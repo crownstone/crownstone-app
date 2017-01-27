@@ -186,13 +186,12 @@ function logToFile() {
 class LogProcessorClass {
   constructor() {
     this.store = undefined;
-    this.eventListener = undefined;
     this.writeToFile = false;
   }
 
   loadStore(store) {
     this.store = store;
-    this.eventListener = eventBus.on("databaseChange", (data) => {
+    eventBus.on("databaseChange", (data) => {
       if (data.change.changeUserDeveloperStatus === true) {
         this.refreshData();
       }

@@ -17,7 +17,8 @@ let defaultSettings = {
     present: false,
     aiName: 'Rosii',
     aiSex: 'female',
-    updatedAt: 1
+    updatedAt: 1,
+    lastTimePresent: 1
   }
 };
 
@@ -26,8 +27,14 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'SET_SPHERE_STATE':
       if (action.data) {
         let newState = {...state};
+        // store the last time when the sphere went from present to not present
+        if (newState.present === true && action.data.present === false) {
+          newState.lastTimePresent = getTime(action.data.lastTimePresent);
+        }
+
         newState.reachable = update(action.data.reachable, newState.reachable);
         newState.present = update(action.data.present, newState.present);
+
         return newState;
       }
       return state;

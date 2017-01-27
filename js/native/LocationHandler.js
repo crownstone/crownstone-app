@@ -7,7 +7,7 @@ import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from './.
 import { Scheduler } from './../logic/Scheduler';
 import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { getUUID } from '../util/util'
-import { ENCRYPTION_ENABLED } from '../ExternalConfig'
+import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
 
 class LocationHandlerClass {
@@ -20,7 +20,7 @@ class LocationHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE LocationHandler', this._initialized);
+    LOG('LocationHandler: LOADED STORE LocationHandler', this._initialized);
     if (this._initialized === false) {
       this._initialized = true;
       this.store = store;
@@ -49,7 +49,9 @@ class LocationHandlerClass {
       return;
 
     if (state.spheres[sphereId] !== undefined) {
-      LOG("ENTER SPHERE", sphereId);
+      LOG("LocationHandler: ENTER SPHERE", sphereId);
+
+      let lastTimePresent = state.spheres[sphereId].config.lastTimePresent;
 
       // set the presence
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: true, present: true}});
@@ -71,11 +73,11 @@ class LocationHandlerClass {
       let canUseLocalization = canUseIndoorLocalizationInSphere(state, sphereId);
 
       if (canUseLocalization === true) {
-        LOG("Starting indoor localization for sphere", sphereId);
+        LOG("LocationHandler: Starting indoor localization for sphere", sphereId);
         Bluenet.startIndoorLocalization();
       }
       else {
-        LOG("Stopping indoor localization for sphere", sphereId, "due to missing fingerprints.");
+        LOG("LocationHandler: Stopping indoor localization for sphere", sphereId, "due to missing fingerprints.");
         Bluenet.stopIndoorLocalization();
       }
 
@@ -83,15 +85,21 @@ class LocationHandlerClass {
       LOG("Set Settings.", bluenetSettings);
       BleActions.setSettings(bluenetSettings)
         .then(() => {
-          // trigger crownstones on enter sphere
-          LOG("TRIGGER ENTER HOME EVENT FOR SPHERE", state.spheres[sphereId].config.name);
-          this._triggerCrownstones(state, sphereId, TYPES.HOME_ENTER);
+          let exitEnterTimeDifference = new Date().valueOf() - lastTimePresent;
+          if (exitEnterTimeDifference > KEEPALIVE_INTERVAL*1000*1.5) {
+            // trigger crownstones on enter sphere
+            LOG("LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE", state.spheres[sphereId].config.name);
+            this._triggerCrownstones(state, sphereId, TYPES.HOME_ENTER);
+          }
+          else {
+            LOG("LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE HOME EXIT IS ", exitEnterTimeDifference, " WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ", KEEPALIVE_INTERVAL*1000*1.5, " ms");
+          }
         })
     }
   }
 
   exitSphere(sphereId) {
-    LOG("LEAVING SPHERE", sphereId);
+    LOG("LocationHandler: LEAVING SPHERE", sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
     if (state.spheres[sphereId].config.present === true) {
@@ -110,7 +118,7 @@ class LocationHandlerClass {
   }
 
   _enterRoom(data) {
-    LOG("USER_ENTER_LOCATION.", data);
+    LOG("LocationHandler: USER_ENTER_LOCATION.", data);
     let sphereId = data.region;
     let locationId = data.location;
     let state = this.store.getState();
@@ -131,7 +139,7 @@ class LocationHandlerClass {
   }
 
   _exitRoom(data) {
-    LOG("USER_EXIT_LOCATION.", data);
+    LOG("LocationHandler: USER_EXIT_LOCATION.", data);
     let sphereId = data.region;
     let locationId = data.location;
     let state = this.store.getState();
@@ -194,7 +202,7 @@ class LocationHandlerClass {
         if (behaviour.state === 0) {
           data.currentUsage = 0;
         }
-        LOG("FIRING ", type, " event for ", element.config.name, stoneId);
+        LOG("LocationHandler: FIRING ", type, " event for ", element.config.name, stoneId);
         let proxy = BleUtil.getProxy(stone.config.handle);
         proxy.perform(BleActions.setSwitchState, [behaviour.state])
           .then(() => {
