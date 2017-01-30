@@ -104,6 +104,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public static final int SCAN_INTERVAL_OUTSIDE_SPHERE_ANDROID_N = 1000; // ms scanning
 	public static final int SCAN_PAUSE_OUTSIDE_SPHERE_ANDROID_N =    5000; // ms pause
 
+	public static final int IBEACON_RANGING_MIN_RSSI = -90;
 
 	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
 	public static final int CONNECT_TIMEOUT_MS = 5000;
@@ -139,7 +140,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private BleExt _bleExt;
 	private BleIbeaconRanging _iBeaconRanger;
 
-//	private Map<UUID, String> _trackedIBeacons = new HashMap<>();
 
 	private Callback _readyCallback = null;
 
@@ -148,7 +148,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private ScannerState _scannerState = ScannerState.DISABLED;
 	private BleDeviceFilter _deviceFilter = BleDeviceFilter.anyStone;
 	private boolean _isTrackingIbeacon = false;
-//	private BleDeviceFilter _scanFilter = BleDeviceFilter.all;
 
 	private boolean _connectCallbackInvoked;
 
@@ -177,6 +176,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_reactContext = reactContext;
 
 		_reactContext.addLifecycleEventListener(new LifecycleEventListener() {
+			// TODO: use this to determine how fast to scan.
+
 			@Override
 			public void onHostResume() {
 				BleLog.getInstance().LOGi(TAG, "onHostResume");
@@ -433,34 +434,27 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public void startScanning() {
 		BleLog.getInstance().LOGi(TAG, "startScanning");
 		setScannerState(ScannerState.HIGH_POWER);
-		setScanMode();
 		_deviceFilter = BleDeviceFilter.all;
 		updateScanner();
-//		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.all);
 	}
 
 	@ReactMethod
 	public void startScanningForCrownstones() {
 		BleLog.getInstance().LOGi(TAG, "startScanningForCrownstones");
 		setScannerState(ScannerState.HIGH_POWER);
-		setScanMode();
 		_deviceFilter = BleDeviceFilter.anyStone;
 		updateScanner();
-//		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
 	@ReactMethod
 	public void startScanningForCrownstonesUniqueOnly() {
 		// Low power scanning!
 		// Only emit an event when the data changed
-		// TODO: only make it send an event when data changed
 		BleLog.getInstance().LOGi(TAG, "startScanningForCrownstonesUniqueOnly");
 		_scannedDeviceMap.clear();
 		setScannerState(ScannerState.UNIQUE_ONLY);
-		setScanMode();
 		_deviceFilter = BleDeviceFilter.anyStone;
 		updateScanner();
-//		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
 	@ReactMethod
@@ -468,9 +462,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		BleLog.getInstance().LOGi(TAG, "stopScanning");
 		setScannerState(ScannerState.DISABLED);
 		updateScanner();
-//		if (isScannerIdle()) {
-//			_scanService.stopIntervalScan();
-//		}
 	}
 
 	@ReactMethod
@@ -636,8 +627,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				@Override
 				public void onSuccess() {
 					BleLog.getInstance().LOGi(TAG, "relay on success");
-					// power was switch off successfully, update the light bulb
-//						updateLightBulb(false);
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", false);
 					callback.invoke(retVal);
@@ -657,8 +646,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				@Override
 				public void onSuccess() {
 					BleLog.getInstance().LOGi(TAG, "relay off success");
-					// power was switch off successfully, update the light bulb
-//						updateLightBulb(false);
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", false);
 					callback.invoke(retVal);
@@ -801,9 +788,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			retVal.putString("data", "invalid crownstoneId");
 		}
 
-//		adminKey = "adminKeyForCrown";
-//		memberKey = "memberKeyForHome";
-//		guestKey = "guestKeyForGirls";
 		adminKey = getKeyFromString(adminKey);
 		if (adminKey == null) {
 			retVal.putString("data", "invalid adminKey");
@@ -941,13 +925,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		}
 		UUID uuid = UUID.fromString(ibeaconUUID);
 		_iBeaconSphereIds.put(uuid, sphereId);
-//		_trackedIBeacons.put(uuid, sphereId);
-		_iBeaconRanger.addIbeaconFilter(new BleIbeaconFilter(uuid));
+		_iBeaconRanger.addIbeaconFilter(new BleIbeaconFilter(uuid, -1, -1));
 		setTrackingState(true);
-		setScanMode();
 		_deviceFilter = BleDeviceFilter.anyStone;
 		updateScanner();
-//		_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
 	}
 
 	@ReactMethod
@@ -955,9 +936,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Remove the uuid from the list of tracked iBeacons
 		BleLog.getInstance().LOGi(TAG, "stopTrackingIBeacon: " + ibeaconUUID);
 		UUID uuid = UUID.fromString(ibeaconUUID);
-		_iBeaconRanger.remIbeaconFilter(new BleIbeaconFilter(uuid));
+		_iBeaconRanger.remIbeaconFilter(new BleIbeaconFilter(uuid, -1, -1));
 		_iBeaconSphereIds.remove(uuid);
-//		_trackedIBeacons.remove(uuid);
 	}
 
 	@ReactMethod
@@ -966,9 +946,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		BleLog.getInstance().LOGi(TAG, "pauseTracking");
 		setTrackingState(false);
 		updateScanner();
-//		if (isScannerIdle()) {
-//			_scanService.stopIntervalScan();
-//		}
 	}
 
 	@ReactMethod
@@ -976,9 +953,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Same as startTracking, but restore the stored list of tracked iBeacons.
 		BleLog.getInstance().LOGi(TAG, "resumeTracking");
 		setTrackingState(true);
-		setScanMode();
 		_deviceFilter = BleDeviceFilter.anyStone;
-//		_scanService.startIntervalScan(getScanInterval(), getScanInterval(), BleDeviceFilter.anyStone);
 	}
 
 	@ReactMethod
@@ -988,10 +963,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		setTrackingState(false);
 		_iBeaconRanger.clearIbeaconFilter();
 		_iBeaconSphereIds.clear();
-//		_trackedIBeacons.clear();
-//		if (isScannerIdle()) {
-//			_scanService.stopIntervalScan();
-//		}
 		updateScanner();
 
 		WritableMap retVal = Arguments.createMap();
@@ -1174,6 +1145,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			BleExt bleExt = _scanService.getBleExt();
 			bleExt.enableEncryption(true); // TODO: should be done by setSettings
 			_iBeaconRanger = bleExt.getIbeaconRanger();
+			_iBeaconRanger.setRssiThreshold(IBEACON_RANGING_MIN_RSSI);
 
 			_iBeaconRanger.registerListener(BluenetBridge.this);
 			BleLog.getInstance().LOGd(TAG, "registered: " + BluenetBridge.this);
@@ -1533,6 +1505,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			_scanService.stopIntervalScan();
 			return;
 		}
+		setScanMode();
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), _deviceFilter);
 	}
 	private int getScanInterval() {
@@ -1543,12 +1516,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			return SCAN_INTERVAL_FAST;
 		}
 		if (_iBeaconRanger.getEnteredRegions().isEmpty()) {
-			if (Build.VERSION.SDK_INT >= 24) {
+			if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
 				return SCAN_INTERVAL_OUTSIDE_SPHERE_ANDROID_N;
 			}
 			return SCAN_INTERVAL_OUTSIDE_SPHERE;
 		}
-		if (Build.VERSION.SDK_INT >= 24) {
+		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
 			return SCAN_INTERVAL_IN_SPHERE_ANDROID_N;
 		}
 		return SCAN_INTERVAL_IN_SPHERE;
@@ -1561,25 +1534,27 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			return SCAN_PAUSE_FAST;
 		}
 		if (_iBeaconRanger.getEnteredRegions().isEmpty()) {
-			if (Build.VERSION.SDK_INT >= 24) {
-				return SCAN_PAUSE_OUTSIDE_SPHERE_ANDROID_N;
+			if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
+//				return SCAN_PAUSE_OUTSIDE_SPHERE_ANDROID_N;
+				return 0;
 			}
 			return SCAN_PAUSE_OUTSIDE_SPHERE;
 		}
-		if (Build.VERSION.SDK_INT >= 24) {
-			return SCAN_PAUSE_IN_SPHERE_ANDROID_N;
+		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
+//			return SCAN_PAUSE_IN_SPHERE_ANDROID_N;
+			return 0;
 		}
 		return SCAN_PAUSE_IN_SPHERE;
 	}
 	private void setScanMode() {
-		// Balanced has an interval of 5s and a window of 2s, making it rather useless.
-		if (Build.VERSION.SDK_INT >= 21) {
-//			if (getScannerState() == ScannerState.HIGH_POWER) {
+		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
+ 			// Starting from Android 6.0 (API level 23), Android has doze and app standby.
+			// This means that the interval scanner breaks, due to postDelayed() getting deferred.
+			// Balanced has an interval of 5s and a scan window of 2s.
+			_scanService.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+		}
+		else if (Build.VERSION.SDK_INT >= 21) {
 				_scanService.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
-//			}
-//			else {
-//				_scanService.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
-//			}
 		}
 	}
 
