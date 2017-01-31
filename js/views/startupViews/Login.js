@@ -275,14 +275,13 @@ export class Login extends Component {
 
       // finalize the login due to successful download of data. Enables persistence.
       StoreManager.finalizeLogIn(userId);
+      prepareStoreForUser(store);
 
-      let state = store.getState();
       // set a small delay so the user sees "done"
       setTimeout(() => {
+        let state = store.getState();
         this.props.eventBus.emit('hideProgress');
         this.props.eventBus.emit("appStarted"); // this starts scanning and tracking spheres
-
-        prepareStoreForUser(store);
 
         if (state.user.isNew !== false) {
           Actions.aiStart({type: 'reset'});
@@ -293,7 +292,7 @@ export class Login extends Component {
         else {
           Actions.tabBar({type: 'reset'});
         }
-      }, 50);
+      }, 100);
     });
   }
 }
