@@ -64,6 +64,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.name        = update(action.data.name, newState.name);
         newState.aiName      = update(action.data.aiName, newState.aiName);
         newState.aiSex       = update(action.data.aiSex, newState.aiSex);
+        newState.exitDelay   = update(action.data.exitDelay, newState.exitDelay);
         newState.iBeaconUUID = update(action.data.iBeaconUUID, newState.iBeaconUUID);
         newState.adminKey    = update(action.data.adminKey, newState.adminKey);
         newState.memberKey   = update(action.data.memberKey, newState.memberKey);

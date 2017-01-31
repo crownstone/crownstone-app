@@ -199,10 +199,10 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
      */
     if (sphereInState === undefined) {
       addedSphere = true;
-      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex}});
+      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex, exitDelay: sphere.exitDelay || 120}});
     }
     else if (getTimeDifference(sphereInState.config, sphere) < 0) {
-      actions.push({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex}});
+      actions.push({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex, exitDelay: sphere.exitDelay || 120}});
       adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
     else {

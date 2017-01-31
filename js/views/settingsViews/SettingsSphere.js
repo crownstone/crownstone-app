@@ -89,6 +89,18 @@ export class SettingsSphere extends Component {
     return result
   }
 
+  _getDelayLabel(delay) {
+    if (delay === undefined || delay == 0)
+      return 'None';
+
+    if (delay < 60) {
+      return 'after ' + Math.floor(delay) + ' seconds';
+    }
+    else {
+      return 'after ' + Math.floor(delay/60) + ' minutes';
+    }
+  }
+
   _getItems() {
     let items = [];
 
@@ -141,6 +153,38 @@ export class SettingsSphere extends Component {
     });
     items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
 
+    if (getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
+      let options = [];
+      options.push({label: '2 Minutes', type: 'checkbar', value: 120});
+      options.push({label: '5 Minutes', type: 'checkbar', value: 300});
+      options.push({label: '10 Minutes', type: 'checkbar', value: 600});
+      options.push({label: '15 Minutes', type: 'checkbar', value: 900});
+      options.push({label: '30 Minutes', type: 'checkbar', value: 1800});
+      items.push({label: 'SPHERE EXIT DELAY', type: 'explanation', below: false});
+      items.push({
+        type: 'dropdown',
+        label: 'Delay',
+        value: state.spheres[this.props.sphereId].config.exitDelay,
+        valueLabel: this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),
+        // buttons:true,
+        dropdownHeight: 130,
+        items: options,
+        callback: (newValue) => {
+          LOG("SettingsSphere: new Value for exit delay", newValue);
+          store.dispatch({
+            sphereId: this.props.sphereId,
+            type: 'UPDATE_SPHERE_CONFIG',
+            data: {exitDelay: newValue}
+          });
+        }
+      });
+      items.push({
+        label: 'If nobody is left in the sphere, the Crownstones that are configured to switch when you leave the sphere will do so after this delay.',
+        type: 'explanation',
+        below: true,
+        style: {paddingBottom: 0}
+      });
+    }
 
     items.push({label:'ADMINS',  type:'explanation', below:false});
     items = items.concat(this._getUsersWithAccess(state,'admin', adminInSphere));

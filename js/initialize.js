@@ -134,9 +134,8 @@ export const INITIALIZER = {
       });
       store.batchDispatch(refreshActions);
 
-
+      // get the new state
       state = store.getState();
-
       Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
 
       // configure the CLOUD network handler.
