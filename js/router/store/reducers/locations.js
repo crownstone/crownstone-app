@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux'
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 
 
 let defaultSettings = {
@@ -56,6 +56,8 @@ let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.config);
     default:
       return state;
   }

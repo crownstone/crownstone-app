@@ -1,4 +1,4 @@
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 import { getUUID } from '../../../util/util'
 
 let defaultSettings = {
@@ -106,6 +106,8 @@ export default (state = defaultSettings.user, action = {}) => {
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.user);
     default:
       return state;
   }

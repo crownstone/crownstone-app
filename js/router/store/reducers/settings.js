@@ -1,7 +1,7 @@
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
-  complexity: {
+  config: {
     presets: false,
     statistics: false,
     onHomeEnterExit: true,
@@ -12,8 +12,10 @@ let defaultSettings = {
 };
 
 // settingsReducer
-export default (state = defaultSettings.complexity, action = {}) => {
+export default (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.config);
     default:
       return state;
   }

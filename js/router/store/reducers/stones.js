@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux'
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 import { LOG } from '../../../logging/Log'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
@@ -133,6 +133,8 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.config);
     default:
       return state;
   }
@@ -154,6 +156,8 @@ let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.state);
     default:
       return state;
   }

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
 let defaultSettings = {
@@ -40,6 +40,8 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.app);
     default:
       return state;
   }

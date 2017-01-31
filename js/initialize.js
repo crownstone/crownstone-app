@@ -84,6 +84,7 @@ export const INITIALIZER = {
     LOG("INITIALIZER: called start.");
     if (this.started === false) {
       LOG("INITIALIZER: performing start.");
+
       // subscribe to iBeacons when the spheres in the cloud change.
       CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});
 
@@ -111,7 +112,31 @@ export const INITIALIZER = {
         }
       });
 
+
+      // update the store based on new fields in the database
       let state = store.getState();
+      let refreshActions = [];
+      let sphereIds = Object.keys(state.spheres);
+      refreshActions.push({type:'REFRESH_DEFAULTS'});
+      sphereIds.forEach((sphereId) => {
+        let stoneIds = Object.keys(state.spheres[sphereId].stones);
+        let locationIds = Object.keys(state.spheres[sphereId].locations);
+        let applianceIds = Object.keys(state.spheres[sphereId].appliances);
+        let userIds = Object.keys(state.spheres[sphereId].users);
+        let presetIds = state.spheres[sphereId].presets;
+        stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});});
+        locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId: locationId});});
+        applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
+        userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId: userId});});
+        presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId: presetId});});
+
+        refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
+      });
+      store.batchDispatch(refreshActions);
+
+
+      state = store.getState();
+
       Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
 
       // configure the CLOUD network handler.

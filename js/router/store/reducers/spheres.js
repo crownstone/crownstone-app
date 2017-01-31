@@ -3,7 +3,7 @@ import locationsReducer from './locations'
 import sphereUserReducer from './sphereUser'
 import stonesReducer from './stones'
 import appliancesReducer from './appliances'
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
   config: {
@@ -17,6 +17,7 @@ let defaultSettings = {
     present: false,
     aiName: 'Rosii',
     aiSex: 'female',
+    exitDelay: 120,
     updatedAt: 1,
     lastTimePresent: 1
   }
@@ -72,12 +73,16 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      if (action.sphereOnly === true) {
+        return refreshDefaults(state, defaultSettings.config);
+      }
     default:
       return state;
   }
 };
 
-let presetsReducer = (state = [], action = {}) => {
+let presetsReducer = (state = {}, action = {}) => {
   switch (action.type) {
     default:
       return state;

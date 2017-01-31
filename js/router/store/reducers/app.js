@@ -1,4 +1,4 @@
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultState = {
   app: {
@@ -34,6 +34,8 @@ export default (state = defaultState.app, action = {}) => {
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultState.app);
     default:
       return state;
   }

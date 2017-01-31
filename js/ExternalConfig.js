@@ -7,10 +7,10 @@ export const CLOUD_ADDRESS = 'https://crownstone-cloud.herokuapp.com/api/';
 
 
 export let DEBUG           = true;  // enabling Debug behaviour throughout the app.
-export let DEBUG_STORE     = false; // enabling LOGStore      commands to be shown.
+export let DEBUG_STORE     = true; // enabling LOGStore      commands to be shown.
 export let DEBUG_SCHEDULER = false; // enabling LOGScheduler  commands to be shown.
 export let DEBUG_BLE       = false; // enabling LOGBle        commands to be shown.
-export let DEBUG_CLOUD     = true;  // enabling LOGCloud      commands to be shown.
+export let DEBUG_CLOUD     = false;  // enabling LOGCloud      commands to be shown.
 export let DEBUG_LOGGING   = true;  // enabling LOGDebug      commands to be shown.
 export let LOGGING         = true;  // enabling LOG           commands to be shown.
 
@@ -37,7 +37,7 @@ export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
 export const KEEPALIVE_REPEAT_INTERVAL = 5000; // ms
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = true;
+export const RELEASE_MODE = false;
 
 if (RELEASE_MODE) {
   DEBUG           = false;

@@ -189,6 +189,8 @@ function checkAction(action, affectedIds) {
     case 'SET_LOGGING':
     case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_STATE':
+    case 'REFRESH_DEFAULTS':
+      break;
     default:
       LOGError("UNKNOWN ACTION TYPE:", action);
   }
