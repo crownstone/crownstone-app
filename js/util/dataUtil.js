@@ -267,7 +267,7 @@ export const prepareStoreForUser = function(store) {
       actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
     });
 
-    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
+    actions.push({type: 'RESET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
   });
 
   actions.push({type:'CREATE_APP_IDENTIFIER'});

@@ -38,6 +38,15 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'RESET_SPHERE_STATE':
+      if (action.data) {
+        let newState = {...state};
+        newState.reachable = update(action.data.reachable, newState.reachable);
+        newState.present = update(action.data.present, newState.present);
+
+        return newState;
+      }
+      return state;
     case 'SET_SPHERE_KEYS':
       if (action.data) {
         let newState = {...state};
