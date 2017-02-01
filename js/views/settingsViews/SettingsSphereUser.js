@@ -55,6 +55,7 @@ export class SettingsSphereUser extends Component {
     items.push({label:'Email',  type: 'info', value: user.email});
     items.push({
       type:'dropdown',
+      buttons: true,
       label:'Access Level',
       dropdownHeight:150,
       value: user.accessLevel.capitalize(),

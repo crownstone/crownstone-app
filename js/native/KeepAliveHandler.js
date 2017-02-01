@@ -66,14 +66,15 @@ class KeepAliveHandlerClass {
           let behaviourAway = element.behaviour[TYPES.AWAY];
 
           let behaviour = undefined;
+          let delay = state.spheres[sphereId].config.exitDelay || 120;
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
           if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
-          else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; }
-          else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     }
+          else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; delay = behaviour.delay; }
+          else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     delay = behaviour.delay;  }
 
           if (stone.config.handle && stone.config.disabled === false) {
-            this._performKeepAliveForStone(stone, behaviour, userLevelInSphere, element, keepAliveId);
+            this._performKeepAliveForStone(stone, behaviour, delay, userLevelInSphere, element, keepAliveId);
           }
           else if (stone.config.disabled === true) {
             LOG('KeepAliveHandler: (' + keepAliveId + ') skip KeepAlive stone is disabled', stoneId);
@@ -83,7 +84,7 @@ class KeepAliveHandlerClass {
     });
   }
 
-  _performKeepAliveForStone(stone, behaviour, userLevelInSphere, element, keepAliveId, attempt = 0) {
+  _performKeepAliveForStone(stone, behaviour, delay, userLevelInSphere, element, keepAliveId, attempt = 0) {
     LOG('KeepAliveHandler: (' + keepAliveId + ') Performing keep Alive to stone handle', stone.config.handle);
     let proxy = BleUtil.getProxy(stone.config.handle);
 
@@ -91,7 +92,7 @@ class KeepAliveHandlerClass {
     let retry = () => {
       LOG('KeepAliveHandler: (' + keepAliveId + ') Retrying guest keepAlive to ', stone.config.handle);
       Scheduler.scheduleCallback(() => {
-        this._performKeepAliveForStone(stone, behaviour, userLevelInSphere, element, keepAliveId, attempt + 1);
+        this._performKeepAliveForStone(stone, behaviour, delay, userLevelInSphere, element, keepAliveId, attempt + 1);
       }, KEEPALIVE_REPEAT_INTERVAL, 'keepAlive_attempt_' + attempt + '_' + stone.config.handle)
     };
 
@@ -115,7 +116,7 @@ class KeepAliveHandlerClass {
       if (behaviour !== undefined) {
         changeState = true;
         newState = behaviour.state;
-        timeout = Math.max(timeout, behaviour.delay);
+        timeout = Math.max(timeout, delay);
       }
 
       proxy.perform(BleActions.keepAliveState, [changeState, newState, timeout]) // the max in time is so that it will not turn off before the next interval.

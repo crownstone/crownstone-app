@@ -69,12 +69,12 @@ export class Dropdown extends Component {
           borderColor:colors.lightGray.hex,
           borderBottomWidth:1
         }}>
-          <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-start', paddingLeft:10}} onPress={() => {
+          <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-start', paddingLeft:15}} onPress={() => {
             this.setState({value: this.props.value, open: false});
           }}>
-            <Text style={{fontSize:16, color:colors.gray.hex}}>Cancel</Text>
+            <Text style={{fontSize:16, color:colors.blue.hex}}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-end', paddingRight:10}} onPress={() => {
+          <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-end', paddingRight:15}} onPress={() => {
             this.setState({open: false});
             this.props.callback(this.state.value);
           }}>

@@ -243,12 +243,12 @@ function handleSphereInCloud(action, state) {
 
   let sphereConfig = state.spheres[sphereId].config;
   let data = {
-    name: sphereConfig.name,
-    uuid: sphereConfig.iBeaconUUID,
-    exitDelay: sphereConfig.exitDelay,
-    meshAccessAddress: sphereConfig.meshAccessAddress,
     aiName: sphereConfig.aiName,
     aiSex: sphereConfig.aiSex,
+    exitDelay: sphereConfig.exitDelay,
+    meshAccessAddress: sphereConfig.meshAccessAddress,
+    name: sphereConfig.name,
+    uuid: sphereConfig.iBeaconUUID,
     updatedAt: sphereConfig.updatedAt,
   };
 

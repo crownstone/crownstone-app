@@ -196,7 +196,7 @@ export class DeviceStateEdit extends Component {
         label: 'Delay',
         value: currentBehaviour.delay,
         valueLabel: this._getDelayLabel(currentBehaviour),
-        // buttons:true,
+        buttons:true,
         dropdownHeight: 130,
         items: options,
         callback: (newValue) => {

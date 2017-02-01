@@ -169,6 +169,7 @@ export class SettingsSphere extends Component {
         // buttons:true,
         dropdownHeight: 130,
         items: options,
+        buttons: true,
         callback: (newValue) => {
           LOG("SettingsSphere: new Value for exit delay", newValue);
           store.dispatch({
