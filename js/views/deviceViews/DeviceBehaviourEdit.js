@@ -19,20 +19,20 @@ import { NativeBus }         from '../../native/Proxy'
 const Actions = require('react-native-router-flux').Actions;
 
 let toggleOptions = [];
-toggleOptions.push({label: 'turn on.',  value: 1});
-toggleOptions.push({label: 'turn off.', value: 0});
-toggleOptions.push({label: "do nothing.", value: null});
+toggleOptions.push({label: 'turn on',  value: 1});
+toggleOptions.push({label: 'turn off', value: 0});
+toggleOptions.push({label: "do nothing", value: null});
 
 let timeOptions = [];
-timeOptions.push({label: '2 seconds', type: 'checkbar', value: 2});
-timeOptions.push({label: '10 seconds', type: 'checkbar', value: 10});
-timeOptions.push({label: '30 seconds', type: 'checkbar', value: 30});
-timeOptions.push({label: '1 Minute', type: 'checkbar', value: 60});
-timeOptions.push({label: '2 Minutes', type: 'checkbar', value: 120});
-timeOptions.push({label: '5 Minutes', type: 'checkbar', value: 300});
-timeOptions.push({label: '10 Minutes', type: 'checkbar', value: 600});
-timeOptions.push({label: '15 Minutes', type: 'checkbar', value: 900});
-timeOptions.push({label: '30 Minutes', type: 'checkbar', value: 1800});
+timeOptions.push({label: '2 seconds', value: 2});
+timeOptions.push({label: '10 seconds', value: 10});
+timeOptions.push({label: '30 seconds', value: 30});
+timeOptions.push({label: '1 minute', value: 60});
+timeOptions.push({label: '2 minutes', value: 120});
+timeOptions.push({label: '5 minutes', value: 300});
+timeOptions.push({label: '10 minutes', value: 600});
+timeOptions.push({label: '15 minutes', value: 900});
+timeOptions.push({label: '30 minutes', value: 1800});
 
 export class DeviceBehaviourEdit extends Component {
   constructor() {
