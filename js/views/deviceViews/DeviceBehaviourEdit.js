@@ -6,16 +6,42 @@ import {
   Switch,
   TextInput,
   Text,
+  Vibration,
   View
 } from 'react-native';
 import { styles, colors } from '../styles'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-
+import { getUUID, addDistanceToRssi }           from '../../util/util'
+import { LOG } from '../../logging/Log'
+import { NativeBus }         from '../../native/Proxy'
 const Actions = require('react-native-router-flux').Actions;
 
+let toggleOptions = [];
+toggleOptions.push({label: 'turn on.',  value: 1});
+toggleOptions.push({label: 'turn off.', value: 0});
+toggleOptions.push({label: "do nothing.", value: null});
+
+let timeOptions = [];
+timeOptions.push({label: '2 seconds', type: 'checkbar', value: 2});
+timeOptions.push({label: '10 seconds', type: 'checkbar', value: 10});
+timeOptions.push({label: '30 seconds', type: 'checkbar', value: 30});
+timeOptions.push({label: '1 Minute', type: 'checkbar', value: 60});
+timeOptions.push({label: '2 Minutes', type: 'checkbar', value: 120});
+timeOptions.push({label: '5 Minutes', type: 'checkbar', value: 300});
+timeOptions.push({label: '10 Minutes', type: 'checkbar', value: 600});
+timeOptions.push({label: '15 Minutes', type: 'checkbar', value: 900});
+timeOptions.push({label: '30 Minutes', type: 'checkbar', value: 1800});
+
 export class DeviceBehaviourEdit extends Component {
+  constructor() {
+    super();
+    this.detectionTimeout = undefined;
+    this.unsubscribeNative = undefined;
+    this._uuid = getUUID();
+  }
+
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
@@ -32,129 +58,205 @@ export class DeviceBehaviourEdit extends Component {
 
   componentWillUnmount() {
     this.unsubscribe();
+    clearTimeout(this.detectionTimeout);
+    clearTimeout(this.pocketTimeout);
   }
 
-  _getStateLabel(device, event) {
-    if (device.behaviour[event].active === false) {
-      return 'No Change';
-    }
-    else if (device.behaviour[event].state < 1 && device.behaviour[event].state > 0) {
-      return 'On (' + Math.round(100 * device.behaviour[event].state) + '%)'
-    }
-    else if (device.behaviour[event].state === 1) {
-      return 'On'
-    }
-
-    return 'Off'
-  }
-
-  _getDelayLabel(device, event) {
-    let delay = Math.floor(device.behaviour[event].delay);
-
-    if (delay === undefined || delay == 0)
-      return '';
-
-    if (device.behaviour[event].active === false)
-      return '';
-
+  _getDelayLabel(delay) {
     if (delay < 60) {
-      return 'after ' + Math.floor(delay) + ' seconds';
+      return Math.floor(delay) + ' seconds';
     }
     else {
-      return 'after ' + Math.floor(delay/60) + ' minutes';
+      return Math.floor(delay/60) + ' minutes';
     }
   }
 
-  _getTitle(eventName) {
-    switch (eventName) {
-      case 'onHomeEnter':
-        return 'Entering Sphere';
-      case 'onHomeExit':
-          return 'Leaving Sphere';
-      case 'onRoomEnter':
-        return 'Entering Room';
-      case 'onRoomExit':
-        return 'Leaving Room';
-      case 'onNear':
-        return 'Close By';
-      case 'onAway':
-        return 'Further Away';
-      default:
-        return '--- invalid event: ' + eventName;
-    }
+  defineThreshold(iBeaconId) {
+    // show loading screen
+    this.props.eventBus.emit("showLoading", "Determining range...");
+
+    // make sure we don't strangely trigger stuff while doing this.
+    this.props.eventBus.emit("ignoreTriggers");
+
+    let measurements = [];
+
+    // in case we do not measure enough samples, notify the user
+    this.detectionTimeout = setTimeout(() => {
+      this.unsubscribeNative();
+      this.unsubscribeNative = undefined;
+      Alert.alert("I'm not sure yet...", "I could not collect enough points.. Could you try again?", [{text:'OK', onPress: () => {
+        this.props.eventBus.emit("hideLoading");
+        this.props.eventBus.emit("useTriggers");
+
+        // notify the user when the measurement failed
+        Vibration.vibrate(400, false);
+
+      }}]);
+    }, 10000);
+
+
+    // listen to all advertisements
+    this.unsubscribeNative = NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+      data.forEach((iBeaconAdvertisement) => {
+        // filter for our crownstone with only valid rssi measurements. We force the strings to lowercase to avoid os interpretation of UUIDs
+        if (iBeaconId && iBeaconAdvertisement && iBeaconId.toLowerCase() === iBeaconAdvertisement.id.toLowerCase() && iBeaconAdvertisement.rssi < 0) {
+          measurements.push(iBeaconAdvertisement.rssi);
+        }
+      });
+      if (measurements.length > 3) {
+        clearTimeout(this.detectionTimeout);
+
+        // unsubscribe from the iBeacon messages
+        this.unsubscribeNative();
+        this.unsubscribeNative = undefined;
+
+        // get average rssi
+        let total = 0;
+        measurements.forEach((measurement) => {
+          total += measurement;
+        });
+
+        let average = Math.round(total / measurements.length);
+        let averageCorrected = addDistanceToRssi(average, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
+
+        // update trigger range.
+        this.props.store.dispatch({
+          type:     "UPDATE_STONE_CONFIG",
+          sphereId: this.props.sphereId,
+          stoneId:  this.props.stoneId,
+          data: { nearThreshold: averageCorrected }
+        });
+
+        // tell the user it was a success!
+        this.props.eventBus.emit("showLoading", "Great!");
+
+        // notify the user when the measurement is complete!
+        Vibration.vibrate(400, false);
+
+        Alert.alert("Great!", "I'll make sure to respond when you are within this range! When you move out and move back in I can start to respond!", [{
+          text: 'OK', onPress: () => {
+            this.props.eventBus.emit("hideLoading");
+            this.props.eventBus.emit("useTriggers");
+          }
+        }]);
+      }
+    });
   }
 
   constructOptions(state, device, stone, canDoIndoorLocalization) {
-    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
+    let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
 
-    let toDeviceStateSetup = (eventName) => {Actions.deviceStateEdit({eventName, title: this._getTitle(eventName), ...requiredData})};
+    let generateDelayField = (eventLabel, label) => {
+      return {
+        type: 'dropdown',
+        label: label,
+        labelStyle: {fontSize:14, paddingLeft:15},
+        valueRight: true,
+        valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize:14},
+        value: device.behaviour[eventLabel].delay,
+        valueLabel: this._getDelayLabel(device.behaviour[eventLabel].delay),
+        items: timeOptions,
+        callback: (newValue) => {
+          this.props.store.dispatch({...requiredData, type: "UPDATE_STONE_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
+        }
+      };
+    };
+
+    let generateDropdown = (eventLabel, label, options) => {
+      return {
+        type: 'dropdown',
+        label: label,
+        valueRight: true,
+        valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize:14},
+        value: device.behaviour[eventLabel].active === true ? device.behaviour[eventLabel].state : null,
+        labelStyle: {fontSize:14},
+        items: options,
+        callback: (newValue) => {
+          if (newValue === null) {
+            this.props.store.dispatch({...requiredData, type: "UPDATE_STONE_BEHAVIOUR_FOR_" + eventLabel, data: {active: false}})
+          }
+          else {
+            this.props.store.dispatch({...requiredData, type: "UPDATE_STONE_BEHAVIOUR_FOR_" + eventLabel, data: {state: newValue ? 1 : 0, active: true}})
+          }
+        }
+      }
+    };
 
     // Behaviour for onHomeEnter event
     let eventLabel = 'onHomeEnter';
-    items.push({label:'WHEN YOU ENTER THE SPHERE', type: 'explanation', style: styles.topExplanation, below:false});
-    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
+    items.push({label:'ENTERING AND LEAVING THE SPHERE', type: 'explanation', style: styles.topExplanation, below:false});
+    items.push(generateDropdown(eventLabel, 'When I enter the Sphere', toggleOptions));
 
-    // Behaviour for onHomeExit event
     eventLabel = 'onHomeExit';
-    items.push({label:'WHEN YOU LEAVE THE SPHERE', type: 'explanation',  below:false});
-    items.push({label:this._getStateLabel(device, eventLabel), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-    items.push({label:'If there are still people (from your sphere) left in the sphere, this will not be triggered.', type: 'explanation',  below:true});
+    items.push(generateDropdown(eventLabel, 'When I leave for ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay), toggleOptions));
+    items.push({label:'If there are still people (from your Sphere) left in the Sphere, this will not be triggered. The "Leave" delay is defined per Sphere in the Sphere settings.', type: 'explanation',  below:true});
+
 
     if (canDoIndoorLocalization === false) {
-      // Behaviour for onNear event
       eventLabel = 'onNear';
-      items.push({label:'WHEN YOU GET CLOSE', type: 'explanation', style:{paddingTop:0}, below:false});
-      items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-      items.push({label:'Will trigger when you are roughly within a few meters.', type: 'explanation',  below:true});
+      items.push({label:'BEING NEAR OR AWAY FROM THE CROWNSTONE', type: 'explanation', style: styles.topExplanation, below:false});
+      items.push(generateDropdown(eventLabel, 'When I get near', toggleOptions));
 
-      // Behaviour for onAway event
       eventLabel = 'onAway';
-      items.push({label:'WHEN YOU MOVE FURTHER AWAY', type: 'explanation', style:{paddingTop:0}, below:false});
-      items.push({label:this._getStateLabel(device, eventLabel, true), value: this._getDelayLabel(device, eventLabel), type: 'navigation', valueStyle:{color:'#888'}, callback:toDeviceStateSetup.bind(this,eventLabel)});
-      items.push({label:'Will trigger when you move out of the near zone.', type: 'explanation',  below:true});
+      items.push(generateDropdown(eventLabel, "When I'm away for " + this._getDelayLabel(device.behaviour[eventLabel].delay), toggleOptions));
+
+      if (device.behaviour[eventLabel].active === true) {
+        items.push(generateDelayField(eventLabel,'Delay when away'))
+      }
+
+      let defineCallback = () => {
+        let state = this.props.store.getState();
+        let iBeaconUUID = state.spheres[this.props.sphereId].config.iBeaconUUID;
+        let iBeaconId = iBeaconUUID + ".Maj:" + stone.config.iBeaconMajor + ".Min:" + stone.config.iBeaconMinor;
+
+        Alert.alert(
+          "How near is near?",
+          "You can choose the switching point between near and far! After you press OK you have 5 seconds to hold your phone where it usually is (in your pocket?)",
+          [{text: 'Cancel', style: 'cancel'}, {
+            text: 'OK', onPress: () => {
+              // show loading bar
+              this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
+              this.pocketTimeout = setTimeout(() => {
+                this.defineThreshold(iBeaconId)
+              }, 5000);
+            }
+          }]
+        );
+      };
+      if ((device.behaviour['onNear'].active === true || device.behaviour['onAway'].active === true) && stone.config.nearThreshold === null) {
+        items.push({
+          type: 'button',
+          label: 'Define Near',
+          style: {color: colors.iosBlue.hex, fontSize: 14, fontWeight: '600'},
+          callback: defineCallback
+        });
+        items.push({label:'You will need to define near before you can use this feature.', type: 'explanation',  below:true});
+      }
+      else {
+        items.push({
+          type: 'button',
+          label: 'Define Near',
+          style: {color: colors.iosBlue.hex, fontSize: 14},
+          callback: defineCallback
+        });
+        items.push({label:'Away will trigger when you move out of the Near range.', type: 'explanation',  below:true});
+      }
+
     }
     else {
       if (stone.config.locationId !== null) {
-        // Behaviour for onRoomEnter event
         eventLabel = 'onRoomEnter';
-        items.push({label: 'WHEN YOU ENTER THE ROOM', type: 'explanation', below: false, style: {paddingTop: 0}});
-        items.push({
-          label: this._getStateLabel(device, eventLabel),
-          value: this._getDelayLabel(device, eventLabel),
-          type: 'navigation',
-          valueStyle: {color: '#888'},
-          callback: toDeviceStateSetup.bind(this, eventLabel)
-        });
+        items.push({label:'ENTERING AND LEAVING THE ROOM', type: 'explanation', style: styles.topExplanation, below:false});
+        items.push(generateDropdown(eventLabel, 'When I enter the room', toggleOptions));
 
-        // Behaviour for onRoomExit event
         eventLabel = 'onRoomExit';
-        items.push({label: 'WHEN YOU LEAVE THE ROOM *** BETA FEATURE ***', type: 'explanation', below: false});
-        if (state.user.betaAccess) {
-          items.push({
-            label: this._getStateLabel(device, eventLabel),
-            value: this._getDelayLabel(device, eventLabel),
-            type: 'navigation',
-            valueStyle: {color: '#888'},
-            callback: toDeviceStateSetup.bind(this, eventLabel)
-          });
-          // items.push({
-          //   label: 'If there are still people (from your sphere) left in the room, this will not be triggered.',
-          //   type: 'explanation',
-          //   below: true
-          // });
+        items.push(generateDropdown(eventLabel, 'When I leave for ' + this._getDelayLabel(device.behaviour[eventLabel].delay), toggleOptions));
+
+        if (device.behaviour[eventLabel].active === true) {
+          items.push(generateDelayField(eventLabel, 'Delay when leaving room'));
         }
-        else {
-          items.push({
-            label: "No Beta Access",
-            type: 'info',
-          });
-          items.push({
-            label: "You can enable beta access through your profile in the settings. Beta features are not yet considered ready for general use but are actively worked on.",
-            type: 'explanation',
-            below: true
-          });
-        }
+        items.push({label:'If there are still people (from your Sphere) left in the room, Leave will not be triggered. The delay is to avoid switching too quickly.', type: 'explanation',  below:true});
       }
       else if (canDoIndoorLocalization === true) {
         items.push({label: 'Since this Crownstone is not in a room, we cannot give it behaviour for entering or leaving it\'s room.', type: 'explanation', below: false});

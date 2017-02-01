@@ -114,25 +114,7 @@ export const INITIALIZER = {
 
 
       // update the store based on new fields in the database
-      let state = store.getState();
-      let refreshActions = [];
-      let sphereIds = Object.keys(state.spheres);
-      refreshActions.push({type:'REFRESH_DEFAULTS'});
-      sphereIds.forEach((sphereId) => {
-        let stoneIds = Object.keys(state.spheres[sphereId].stones);
-        let locationIds = Object.keys(state.spheres[sphereId].locations);
-        let applianceIds = Object.keys(state.spheres[sphereId].appliances);
-        let userIds = Object.keys(state.spheres[sphereId].users);
-        let presetIds = state.spheres[sphereId].presets;
-        stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});});
-        locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId: locationId});});
-        applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
-        userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId: userId});});
-        presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId: presetId});});
-
-        refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
-      });
-      store.batchDispatch(refreshActions);
+      refreshDatabase(store);
 
       // get the new state
       state = store.getState();
@@ -170,3 +152,35 @@ export const INITIALIZER = {
     }
   }
 };
+
+function refreshDatabase(store) {
+  let state = store.getState();
+  let refreshActions = [];
+  let sphereIds = Object.keys(state.spheres);
+
+  // refresh all fields that do not have an ID requirement
+  refreshActions.push({type:'REFRESH_DEFAULTS'});
+  for (let i = 0; i < sphereIds.length; i++) {
+    let sphereId = sphereIds[i];
+    if (Array.isArray(state.spheres[sphereId].presets)) {
+      LOG("Initialize: transforming Preset dataType");
+      store.dispatch({type:'REFRESH_DEFAULTS', sphereId: sphereId});
+      refreshDatabase(store);
+      return;
+    }
+
+    let stoneIds = Object.keys(state.spheres[sphereId].stones);
+    let locationIds = Object.keys(state.spheres[sphereId].locations);
+    let applianceIds = Object.keys(state.spheres[sphereId].appliances);
+    let userIds = Object.keys(state.spheres[sphereId].users);
+    let presetIds = Object.keys(state.spheres[sphereId].presets);
+
+    refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
+    stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});});
+    locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId: locationId});});
+    applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
+    userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId: userId});});
+    presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId: presetId});});
+  }
+  store.batchDispatch(refreshActions);
+}

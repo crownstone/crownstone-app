@@ -32,7 +32,7 @@ let defaultSettings = {
     handle: undefined,
     crownstoneId: undefined,
     firmwareVersion: 0,
-    nearThreshold: -85,
+    nearThreshold: null,
     rssi: -1000,
     touchToToggle: true,
     disabled: true,

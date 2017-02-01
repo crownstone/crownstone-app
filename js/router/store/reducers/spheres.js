@@ -85,6 +85,10 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
 
 let presetsReducer = (state = {}, action = {}) => {
   switch (action.type) {
+    case 'REFRESH_DEFAULTS':
+      if (Array.isArray(state)) {
+        return {}
+      }
     default:
       return state;
   }

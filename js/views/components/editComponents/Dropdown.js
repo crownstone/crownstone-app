@@ -21,16 +21,19 @@ export class Dropdown extends Component {
   getLabelIfPossible() {
     for (let i = 0; i < this.props.items.length; i++) {
       let item = this.props.items[i];
-      if (item.value !== undefined && item.value == this.state.value) {
-        if (item.label) {
+      if (item.value !== undefined && item.value === this.state.value) {
+        if (item.label !== undefined) {
           return item.label;
         }
         else {
           return item.value;
         }
       }
-      else if (item.label !== undefined && item.label == this.state.value) {
-        if (item.label) {
+    }
+    for (let i = 0; i < this.props.items.length; i++) {
+      let item = this.props.items[i];
+       if (item.label !== undefined && item.label === this.state.value) {
+        if (item.label !== undefined) {
           return item.label;
         }
         else {
@@ -109,7 +112,7 @@ export class Dropdown extends Component {
     }
     else {
       return (
-        <Picker selectedValue={this.state.value} onValueChange={callback}>
+        <Picker selectedValue={this.state.value} onValueChange={callback} style={{position:'relative', top: this.props.buttons === true ? 50 : 0}}>
           {this.getItems()}
         </Picker>
       )
@@ -138,9 +141,18 @@ export class Dropdown extends Component {
     else {
       return (
         <View>
-          <TouchableHighlight onPress={() => {this.setState({open:!this.state.open})}}>
+          <TouchableHighlight onPress={() => {
+            if (this.state.open === true) {
+              this.props.callback(this.state.value);
+            }
+            this.setState({open:!this.state.open});
+          }}>
             <View style={[styles.listView, {height:this.props.barHeight}]}>
-              <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
+              {this.props.valueRight === true ?
+                <Text style={[styles.listTextLarge, this.props.labelStyle]}>{this.props.label}</Text>
+                :
+                <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
+              }
               <Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
             </View>
           </TouchableHighlight>

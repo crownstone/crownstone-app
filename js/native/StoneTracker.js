@@ -152,6 +152,10 @@ export class StoneTracker {
     if (ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER)
       return;
 
+    // if the threshold is not defined yet, don't switch on near or far
+    if (stone.config.nearThreshold === null)
+      return;
+
     let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
 
     // these event are only used for when there are no room-level options possible

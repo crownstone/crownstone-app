@@ -166,7 +166,6 @@ export class SettingsSphere extends Component {
         label: 'Delay',
         value: state.spheres[this.props.sphereId].config.exitDelay,
         valueLabel: this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),
-        // buttons:true,
         dropdownHeight: 130,
         items: options,
         buttons: true,

@@ -29,13 +29,16 @@ export class NavigationBar extends Component {
           {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
           {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
 
-          {this.props.value !== undefined ?
+          {this.props.value !== undefined && this.props.valueRight !== true ?
             <Text style={[styles.listText, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
             :
             <Text style={[styles.listTextLarge, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
           }
           {this.props.value !== undefined ?
-            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+            this.props.valueRight ?
+              <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+              :
+              <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
             :
             <View style={{flex:1}} />
           }
