@@ -36,7 +36,7 @@ import {
 import { Icon } from '../components/Icon'
 import { Separator } from '../components/Separator'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
-import { LOG, LOGDebug, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 
 export class RoomOverview extends Component {

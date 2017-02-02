@@ -46,7 +46,7 @@ export class SettingsProfile extends Component {
       const state = store.getState();
       if (this.renderState && this.renderState.user != state.user) {
         this.renderState = state;
-        // LOG("Force Update Profile", this.renderState.user, state.user)
+        // LOG.info("Force Update Profile", this.renderState.user, state.user)
         this.forceUpdate();
       }
     })
@@ -218,7 +218,7 @@ export class SettingsProfile extends Component {
                     });
                   })
                   .catch((err) => {
-                    LOG("PICTURE ERROR ",err)
+                    LOG.info("PICTURE ERROR ",err)
                   })
               }}
                 removePicture={() => {

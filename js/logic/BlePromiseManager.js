@@ -1,4 +1,4 @@
-import { LOG, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { Scheduler } from '../logic/Scheduler'
 import { BluenetPromises } from '../native/Proxy'
 
@@ -19,7 +19,7 @@ class BlePromiseManagerClass {
   }
 
   _register(promise, message, priorityCommand = false) {
-    LOG("BlePromiseManager: registered promise in manager");
+    LOG.info("BlePromiseManager: registered promise in manager");
     return new Promise((resolve, reject) => {
       let container = {promise: promise, resolve: resolve, reject: reject, message: message};
       if (this.promiseInProgress === undefined) {
@@ -27,11 +27,11 @@ class BlePromiseManagerClass {
       }
       else {
         if (priorityCommand === true) {
-          LOG('BlePromiseManager: adding to top of stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
+          LOG.info('BlePromiseManager: adding to top of stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
           this.pendingPromises.unshift(container);
         }
         else {
-          LOG('BlePromiseManager: adding to stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
+          LOG.info('BlePromiseManager: adding to stack: ', message, ' currentlyPending:', this.promiseInProgress.message);
           this.pendingPromises.push(container);
         }
       }
@@ -39,11 +39,11 @@ class BlePromiseManagerClass {
   }
 
   executePromise(promiseContainer) {
-    LOG('BlePromiseManager: executing promise ', promiseContainer.message);
+    LOG.info('BlePromiseManager: executing promise ', promiseContainer.message);
 
     this.promiseInProgress = promiseContainer;
     this.clearPendingPromiseTimeout = Scheduler.scheduleCallback(() => {
-      LOGError('BlePromiseManager: Forced timeout after 60 seconds.');
+      LOG.error('BlePromiseManager: Forced timeout after 60 seconds.');
       promiseContainer.reject(new Error("Forced timeout after 60 seconds."));
       BluenetPromises.phoneDisconnect().catch();
       this.moveOn();
@@ -51,13 +51,13 @@ class BlePromiseManagerClass {
 
     promiseContainer.promise()
       .then((data) => {
-        LOG("BlePromiseManager: resolved");
+        LOG.info("BlePromiseManager: resolved");
         this.clearPendingPromiseTimeout();
         promiseContainer.resolve(data);
         this.moveOn();
       })
       .catch((err) => {
-        LOG("BlePromiseManager: ERROR in promise (",promiseContainer.message,"):",err);
+        LOG.info("BlePromiseManager: ERROR in promise (",promiseContainer.message,"):",err);
         this.clearPendingPromiseTimeout();
         promiseContainer.reject(err);
         this.moveOn();
@@ -70,7 +70,7 @@ class BlePromiseManagerClass {
   }
 
   getNextPromise() {
-    LOG('BlePromiseManager: get next');
+    LOG.info('BlePromiseManager: get next');
     if (this.pendingPromises.length > 0) {
       let nextPromise = this.pendingPromises[0];
       this.executePromise(nextPromise);

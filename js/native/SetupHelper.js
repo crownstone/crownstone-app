@@ -1,8 +1,8 @@
 import { Alert } from 'react-native';
 
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromises, NativeBus, Bluenet } from './Proxy';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { BluenetPromises, NativeBus } from './Proxy';
+import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus'
 import { CLOUD } from '../cloud/cloudAPI'
@@ -140,7 +140,7 @@ export class SetupHelper {
             eventBus.emit("useTriggers");
             eventBus.emit("setupCancelled", this.handle);
             if (this.stoneIdInCloud !== undefined) {
-              CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOGError("COULD NOT CLEAN UP AFTER SETUP", err)})
+              CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOG.error("COULD NOT CLEAN UP AFTER SETUP", err)})
             }
 
             if (err == "INVALID_SESSION_DATA") {
@@ -154,7 +154,7 @@ export class SetupHelper {
               Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
             }
 
-            LOGError("error during setup phase:", err);
+            LOG.error("error during setup phase:", err);
 
             BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
           })
@@ -192,12 +192,12 @@ export class SetupHelper {
                 }
               })
               .catch((err) => {
-                LOGError("CONNECTION ERROR on find:",err);
+                LOG.error("CONNECTION ERROR on find:",err);
                 processFailure(err);
               })
           }
           else {
-            LOGError("CONNECTION ERROR on register:",err);
+            LOG.error("CONNECTION ERROR on register:",err);
             processFailure(err);
           }
         });

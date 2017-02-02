@@ -1,5 +1,5 @@
 import { CLOUD } from '../cloudAPI'
-import { LOG, LOGDebug, LOGError, LOGCloud } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 import { getDeviceSpecs } from '../../util/dataUtil'
 
 /**
@@ -19,7 +19,7 @@ export const sync = {
       return;
     }
 
-    LOGCloud("Start Syncing");
+    LOG.cloud("Start Syncing");
 
     // set the authentication tokens
     let userId = state.user.userId;
@@ -34,7 +34,7 @@ export const sync = {
         syncKeys(actions, data.keys);
         syncDevices(store, actions, data.devices)
           .then(() => {
-            LOG("SYNC Dispatching ", actions.length, " actions!");
+            LOG.info("SYNC Dispatching ", actions.length, " actions!");
             actions.forEach((action) => {
               action.triggeredBySync = true;
             });
@@ -49,11 +49,11 @@ export const sync = {
             }
           })
           .catch((err) => {
-            LOGError(err);
+            LOG.error(err);
           })
       })
       .catch((err) => {
-        LOGError(err);
+        LOG.error(err);
       })
 
 
@@ -179,7 +179,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
   let cloudApplianceIds = {};
   let addedSphere = false;
 
-  LOGCloud("SyncSpheres", spheresData);
+  LOG.cloud("SyncSpheres", spheresData);
 
   // get the state here so we did not have to wait with an old state on the down sync.
   const state = store.getState();
@@ -298,7 +298,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             sphereId: sphere.id,
             updatedAt: locationInState.config.updatedAt,
           };
-          LOG("@SYNC: Updating location", location_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(location_from_cloud.updatedAt).valueOf(), "local:", locationInState.config.updatedAt, 'diff:', locationInState.config.updatedAt - (new Date(location_from_cloud.updatedAt).valueOf()));
+          LOG.info("@SYNC: Updating location", location_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(location_from_cloud.updatedAt).valueOf(), "local:", locationInState.config.updatedAt, 'diff:', locationInState.config.updatedAt - (new Date(location_from_cloud.updatedAt).valueOf()));
           CLOUD.updateLocation(location_from_cloud.id, data).catch(() => {});
         }
       }
@@ -393,7 +393,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           if (adminInThisSphere === true) {
             data.json = JSON.stringify(stoneInState.behaviour);
           }
-          LOG("@SYNC: Updating Stone", stone_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(stone_from_cloud.updatedAt).valueOf(), "local:", stoneInState.config.updatedAt, 'diff:', stoneInState.config.updatedAt - (new Date(stone_from_cloud.updatedAt).valueOf()));
+          LOG.info("@SYNC: Updating Stone", stone_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(stone_from_cloud.updatedAt).valueOf(), "local:", stoneInState.config.updatedAt, 'diff:', stoneInState.config.updatedAt - (new Date(stone_from_cloud.updatedAt).valueOf()));
           CLOUD.forSphere(sphere.id).updateStone(stone_from_cloud.id, data).catch(() => {});
 
           // check if we have to sync the locations:
@@ -472,7 +472,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
         }
         else if (getTimeDifference(sphereInState.appliances[appliance_from_cloud.id].config, appliance_from_cloud) > 0) {
           // update cloud since our data is newer!
-          LOG("@SYNC: Updating appliance", appliance_from_cloud.id, "in Cloud since our data is newer!");
+          LOG.info("@SYNC: Updating appliance", appliance_from_cloud.id, "in Cloud since our data is newer!");
           let applianceInState = sphereInState.appliances[appliance_from_cloud.id];
           let data = {
             name: applianceInState.config.name,
@@ -488,7 +488,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             data.json = JSON.stringify(applianceInState.behaviour);
           }
 
-          LOG("@SYNC: Updating Appliance", appliance_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(appliance_from_cloud.updatedAt).valueOf(), "local:", applianceInState.config.updatedAt, 'diff:', applianceInState.config.updatedAt - (new Date(appliance_from_cloud.updatedAt).valueOf()));
+          LOG.info("@SYNC: Updating Appliance", appliance_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(appliance_from_cloud.updatedAt).valueOf(), "local:", applianceInState.config.updatedAt, 'diff:', applianceInState.config.updatedAt - (new Date(appliance_from_cloud.updatedAt).valueOf()));
           CLOUD.forSphere(sphere.id).updateAppliance(appliance_from_cloud.id, data).catch(() => {});
         }
       }
@@ -560,7 +560,7 @@ const syncDevices = function(store, actions, devices) {
     }
 
     if (deviceId === undefined || state.devices[deviceId] === undefined) {
-      LOG("Sync: Create new device", name, address, description);
+      LOG.info("Sync: Create new device", name, address, description);
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
           actions.push({
@@ -584,7 +584,7 @@ const syncDevices = function(store, actions, devices) {
           data: {appIdentifier: deviceAddress}
         })
       }
-      LOG("Sync: User device found in cloud, updating location.");
+      LOG.info("Sync: User device found in cloud, updating location.");
       updateUserLocationInCloud(state, deviceId)
         .then(resolve)
         .catch(reject);

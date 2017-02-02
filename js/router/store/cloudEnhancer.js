@@ -1,11 +1,11 @@
 import { CLOUD } from '../../cloud/cloudAPI'
 import { getUserLevelInSphere, getCurrentDeviceId } from '../../util/dataUtil'
 import { BATCH } from './storeManager'
-import { LOG, LOGDebug, LOGError, LOGStore } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    LOGStore('will dispatch', action);
+    LOG.store('will dispatch', action);
 
     // required for some of the actions
     let oldState = getState();
@@ -16,7 +16,7 @@ export function CloudEnhancer({ getState }) {
     // state after update
     let newState = getState();
 
-    //LOGDebug("isNew state:", getState())
+    //LOG.debug("isNew state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, newState, oldState);
@@ -100,7 +100,7 @@ function handleUserInCloud(action, state) {
   if (action.data.picture) {
     CLOUD.uploadProfileImage(action.data.picture)
       .then((data) => {
-        LOG(data)
+        LOG.info(data)
       })
       .catch(() => {});
   }

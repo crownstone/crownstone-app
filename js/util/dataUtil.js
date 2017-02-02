@@ -1,5 +1,5 @@
 import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
-import { LOG, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 
 const DeviceInfo = require('react-native-device-info');
@@ -149,15 +149,15 @@ export const getUserLevelInSphere = function(state, sphereId) {
     return state.spheres[sphereId].users[userId].accessLevel;
   else {
     if (state.spheres[sphereId].config.adminKey !== null) {
-      LOGError("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
+      LOG.error("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
       return 'admin';
     }
     else if (state.spheres[sphereId].config.memberKey !== null) {
-      LOGError("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
+      LOG.error("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
       return 'member';
     }
     else if (state.spheres[sphereId].config.guestKey !== null) {
-      LOGError("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
+      LOG.error("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
       return 'guest';
     }
   }

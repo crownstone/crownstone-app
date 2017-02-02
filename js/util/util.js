@@ -3,7 +3,7 @@ import { DEBUG } from '../ExternalConfig'
 import { StoreManager } from '../router/store/storeManager'
 import { Bluenet, BluenetPromises } from '../native/Proxy'
 import { Actions } from 'react-native-router-flux';
-import { LOG, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'
@@ -49,7 +49,7 @@ export const getImageFileFromUser = function(email) {
 
 export const APPERROR = function (err) {
   if (DEBUG === true) {
-    LOG("APP ERROR FROM PROMISE:", err);
+    LOG.info("APP ERROR FROM PROMISE:", err);
     Alert.alert("APP ERROR", err.message);
   }
 };

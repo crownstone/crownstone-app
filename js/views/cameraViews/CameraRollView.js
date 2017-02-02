@@ -13,7 +13,7 @@ import {
 const Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
 import { styles, colors } from '../styles'
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 export class CameraRollView extends Component {
   constructor() {
@@ -56,7 +56,7 @@ export class CameraRollView extends Component {
             [{text:"OK", onPress:() => {Actions.pop();}}]);
         }
         else {
-          LOGError(err.message, err)
+          LOG.error(err.message, err)
         }
       });
     }

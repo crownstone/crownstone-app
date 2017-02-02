@@ -15,7 +15,7 @@ import Camera from 'react-native-camera';
 import { Icon } from '../components/Icon';
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 export class PictureView extends Component {
   constructor(props) {
@@ -37,7 +37,7 @@ export class PictureView extends Component {
       })
       .catch(err => {
         this.props.eventBus.emit('hideLoading');
-        LOGError(err);
+        LOG.error(err);
       });
   }
 

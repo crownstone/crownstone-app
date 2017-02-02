@@ -170,7 +170,7 @@ export class SettingsSphere extends Component {
         items: options,
         buttons: true,
         callback: (newValue) => {
-          LOG("SettingsSphere: new Value for exit delay", newValue);
+          LOG.info("SettingsSphere: new Value for exit delay", newValue);
           store.dispatch({
             sphereId: this.props.sphereId,
             type: 'UPDATE_SPHERE_CONFIG',

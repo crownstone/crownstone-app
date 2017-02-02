@@ -31,7 +31,7 @@ class FingerprintManagerClass {
             callback(data);
           }
           else {
-            LOG("DATA NOT AN ARRAY:", iBeaconAdvertisement)
+            LOG.info("DATA NOT AN ARRAY:", iBeaconAdvertisement)
           }
         }
       );

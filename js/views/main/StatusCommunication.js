@@ -12,7 +12,7 @@ import {
 
 import { Icon }               from '../components/Icon'
 import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
-import { LOG, LOGDebug }      from '../../logging/Log'
+import { LOG }      from '../../logging/Log'
 import { overviewStyles }     from './SphereOverview'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 

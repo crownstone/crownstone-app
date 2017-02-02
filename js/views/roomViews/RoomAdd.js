@@ -16,7 +16,7 @@ import { IconCircle } from './../components/IconCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from './../../util/dataUtil'
 import { CLOUD } from './../../cloud/cloudAPI'
-import { LOGError } from './../../logging/Log'
+import { LOG } from './../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from './../styles'
 
@@ -175,7 +175,7 @@ export class RoomAdd extends Component {
               Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
             }, 0);
           }).catch((err) => {
-          LOGError("Something went wrong with creation of rooms", err);
+          LOG.error("Something went wrong with creation of rooms", err);
           Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: () => {this.props.eventBus.emit('hideLoading');}}])})
       }
       else {

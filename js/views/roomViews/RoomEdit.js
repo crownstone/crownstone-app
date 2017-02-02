@@ -17,7 +17,7 @@ import { IconButton } from '../components/IconButton'
 import { getStonesInLocation, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors } from './../styles'
-import { LOGDebug, LOG } from './../../logging/Log'
+import { LOG } from './../../logging/Log'
 
 
 

@@ -1,7 +1,7 @@
 import { BluenetPromises } from '../native/Proxy';
 import { BleUtil } from '../native/BleUtil';
 import { Scheduler } from '../logic/Scheduler';
-import { LOG, LOGError } from '../logging/Log';
+import { LOG } from '../logging/Log';
 
 export const BehaviourUtil = {
 
@@ -56,7 +56,7 @@ export const BehaviourUtil = {
           callbacks.onTrigger(sphereId, stoneId);
         }
 
-        LOG("LocationHandler: FIRING ", behaviourType, " event for ", element.config.name, stoneId);
+        LOG.info("LocationHandler: FIRING ", behaviourType, " event for ", element.config.name, stoneId);
 
         // if we need to switch, configure the data to update the store with.
         let data = {state: behaviour.state};
@@ -75,7 +75,7 @@ export const BehaviourUtil = {
             });
           })
           .catch((err) => {
-            LOGError("LocationHandler: Could not fire", behaviourType, ' due to ', err);
+            LOG.error("LocationHandler: Could not fire", behaviourType, ' due to ', err);
           })
       };
 

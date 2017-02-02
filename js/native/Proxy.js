@@ -1,13 +1,13 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
 import { DISABLE_NATIVE, DEBUG_BLE } from '../ExternalConfig'
-import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
 export let Bluenet;
 if (DISABLE_NATIVE === true) {
-  LOG("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
-  LOG("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
-  LOG("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
+  LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
+  LOG.info("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
+  LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   Bluenet = {
     clearTrackedBeacons: () => {},        // called through BluenetPromises --> must be promise.
     rerouteEvents: () => {},
@@ -64,10 +64,10 @@ export const BluenetPromise = function(functionName, param, param2, param3) {
     else {
       //TODO: cleanup
       if (param3 !== undefined) {
-        LOG("called bluenetPromise", functionName, " with param", param, param2, param3);
+        LOG.info("called bluenetPromise", functionName, " with param", param, param2, param3);
         Bluenet[functionName](param, param2, param3, (result) => {
           if (result.error === true) {
-            LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, param3, "error:", result.data);
+            LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, param3, "error:", result.data);
             reject(result.data);
           }
           else {
@@ -76,10 +76,10 @@ export const BluenetPromise = function(functionName, param, param2, param3) {
         })
       }
       else if (param2 !== undefined) {
-        LOG("called bluenetPromise", functionName, " with param", param, param2);
+        LOG.info("called bluenetPromise", functionName, " with param", param, param2);
         Bluenet[functionName](param, param2, (result) => {
           if (result.error === true) {
-            LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, "error:", result.data);
+            LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, "error:", result.data);
             reject(result.data);
           }
           else {
@@ -88,10 +88,10 @@ export const BluenetPromise = function(functionName, param, param2, param3) {
         })
       }
       else if (param !== undefined) {
-        LOG("called bluenetPromise", functionName, " with param", param);
+        LOG.info("called bluenetPromise", functionName, " with param", param);
         Bluenet[functionName](param, (result) => {
           if (result.error === true) {
-            LOG("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
+            LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
             reject(result.data);
           }
           else {
@@ -100,10 +100,10 @@ export const BluenetPromise = function(functionName, param, param2, param3) {
         })
       }
       else {
-        LOG("called bluenetPromise", functionName, " without params");
+        LOG.info("called bluenetPromise", functionName, " without params");
         Bluenet[functionName]((result) => {
           if (result.error === true) {
-            LOG("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
+            LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
             reject(result.data);
           }
           else {
@@ -190,15 +190,15 @@ class NativeBusClass {
 
   on(topic, callback) {
     if (!(topic)) {
-      LOGError("Attempting to subscribe to undefined topic:", topic);
+      LOG.error("Attempting to subscribe to undefined topic:", topic);
       return;
     }
     if (!(callback)) {
-      LOGError("Attempting to subscribe without callback to topic:", topic);
+      LOG.error("Attempting to subscribe without callback to topic:", topic);
       return;
     }
     if (this.refMap[topic] === undefined) {
-      LOGError("Attempting to subscribe to a topic that does not exist in the native bus.", topic);
+      LOG.error("Attempting to subscribe to a topic that does not exist in the native bus.", topic);
       return;
     }
 
@@ -218,13 +218,13 @@ export const NativeBus = new NativeBusClass();
 
 if (DEBUG_BLE) {
   NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
-    LOGBle('setupAdvertisement', data.name, data.rssi, data.handle);
+    LOG.ble('setupAdvertisement', data.name, data.rssi, data.handle);
   });
   NativeBus.on(NativeBus.topics.advertisement, (data) => {
-    LOGBle('crownstoneId', data.name, data.rssi, data.handle);
+    LOG.ble('crownstoneId', data.name, data.rssi, data.handle);
   });
   NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-    LOGBle('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor);
+    LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor);
   });
 }
 

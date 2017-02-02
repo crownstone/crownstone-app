@@ -1,6 +1,6 @@
 import { BlePromiseManager } from '../logic/BlePromiseManager'
 import { BluenetPromises, NativeBus, Bluenet } from './Proxy';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 import { getUUID } from '../util/util'
 
@@ -39,20 +39,20 @@ export const BleUtil = {
   },
 
   _getNearestCrownstoneFromEvent: function(event, stateContainer, timeoutMilliseconds = 10000) {
-    LOGDebug("_getNearestCrownstoneFromEvent: LOOKING FOR NEAREST");
+    LOG.debug("_getNearestCrownstoneFromEvent: LOOKING FOR NEAREST");
     return new Promise((resolve, reject) => {
       let measurementMap = {};
       let highFrequencyRequestUUID = getUUID();
       this.startHighFrequencyScanning(highFrequencyRequestUUID);
 
       let sortingCallback = (nearestItem) => {
-        //LOG("advertisement in nearest", nearestItem)
+        //LOG.info("advertisement in nearest", nearestItem)
 
         if (typeof nearestItem == 'string') {
           nearestItem = JSON.parse(nearestItem);
         }
 
-        LOG("_getNearestCrownstoneFromEvent: nearestItem", nearestItem, event);
+        LOG.info("_getNearestCrownstoneFromEvent: nearestItem", nearestItem, event);
 
         if (measurementMap[nearestItem.handle] === undefined) {
           measurementMap[nearestItem.handle] = {count: 0, rssi: nearestItem.rssi};
@@ -61,7 +61,7 @@ export const BleUtil = {
         measurementMap[nearestItem.handle].count += 1;
 
         if (measurementMap[nearestItem.handle].count == 3) {
-          LOG('_getNearestCrownstoneFromEvent: RESOLVING', nearestItem);
+          LOG.info('_getNearestCrownstoneFromEvent: RESOLVING', nearestItem);
           this._cancelSearch(stateContainer);
           this.stopHighFrequencyScanning(highFrequencyRequestUUID);
           resolve(nearestItem);
@@ -88,7 +88,7 @@ export const BleUtil = {
 
       let cleanup = {unsubscribe:()=>{}, timeout: undefined};
       let sortingCallback = (advertisement) => {
-        LOG("detectCrownstone: Advertisement in detectCrownstone", stoneHandle, advertisement);
+        LOG.info("detectCrownstone: Advertisement in detectCrownstone", stoneHandle, advertisement);
 
         if (advertisement.handle === stoneHandle)
           count += 1;
@@ -105,7 +105,7 @@ export const BleUtil = {
         resolve(advertisement.setupPackage);
       };
 
-      LOGDebug("detectCrownstone: Subscribing TO ", NativeBus.topics.advertisement);
+      LOG.debug("detectCrownstone: Subscribing TO ", NativeBus.topics.advertisement);
       cleanup.unsubscribe = NativeBus.on(NativeBus.topics.advertisement, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
@@ -137,7 +137,7 @@ export const BleUtil = {
 
     if (this.highFrequencyScanUsers[id] === undefined) {
       if (Object.keys(this.highFrequencyScanUsers).length === 0) {
-        LOGDebug("Starting HF Scanning!");
+        LOG.debug("Starting HF Scanning!");
         Bluenet.startScanningForCrownstones();
       }
       this.highFrequencyScanUsers[id] = {timeout: undefined};
@@ -158,7 +158,7 @@ export const BleUtil = {
       clearTimeout(this.highFrequencyScanUsers[id].timeout);
       delete this.highFrequencyScanUsers[id];
       if (Object.keys(this.highFrequencyScanUsers).length === 0) {
-        LOGDebug("Stopping HF Scanning!");
+        LOG.debug("Stopping HF Scanning!");
         Bluenet.startScanningForCrownstonesUniqueOnly();
       }
     }
@@ -179,12 +179,12 @@ class SingleCommand {
    * @returns {*}
    */
   perform(action, props = []) {
-    LOG("BLEProxy: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
+    LOG.info("BLEProxy: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this._perform(action,props, false);
   }
 
   performPriority(action, props = []) {
-    LOG("BLEProxy: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
+    LOG.info("BLEProxy: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this._perform(action, props, true)
   }
 
@@ -197,10 +197,10 @@ class SingleCommand {
     let actionPromise = () => {
       if (this.handle) {
         return BluenetPromises.connect(this.handle)
-          .then(() => { LOG("BLEProxy: connected, performing: ", action); return action.apply(this, props); })
-          .then(() => { LOG("BLEProxy: completed", action, 'disconnecting'); return BluenetPromises.disconnect(); })
+          .then(() => { LOG.info("BLEProxy: connected, performing: ", action); return action.apply(this, props); })
+          .then(() => { LOG.info("BLEProxy: completed", action, 'disconnecting'); return BluenetPromises.disconnect(); })
           .catch((err) => {
-            LOGError("BLEProxy: BLE Single command Error:", err);
+            LOG.error("BLEProxy: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
               BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
             })

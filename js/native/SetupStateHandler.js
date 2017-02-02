@@ -7,7 +7,7 @@ import { eventBus } from '../util/eventBus';
 import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/dataUtil';
 import { CLOUD } from '../cloud/cloudAPI';
 import { getUUID } from '../util/util';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 
 
 const SETUP_MODE_TIMEOUT = 3000; // ms
@@ -33,7 +33,7 @@ class SetupStateHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE SetupStateHandler', this._initialized);
+    LOG.info('LOADED STORE SetupStateHandler', this._initialized);
     if (this._initialized === false) {
       this._store = store;
       this._init();
@@ -130,7 +130,7 @@ class SetupStateHandlerClass {
     else if (advertisement.isGuidestone)
       return {name: 'Guidestone',         icon: 'c2-crownstone',    type:stoneTypes.guidestone, handle: advertisement.handle};
     else {
-      LOGError("UNKNOWN DEVICE in setup procedure", advertisement);
+      LOG.error("UNKNOWN DEVICE in setup procedure", advertisement);
     }
   }
   

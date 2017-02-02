@@ -19,7 +19,7 @@ import { Bluenet } from '../../native/Proxy'
 import { canUseIndoorLocalizationInSphere } from '../../util/dataUtil'
 import { Background } from '../components/Background'
 import { getAiData } from '../../util/dataUtil';
-import { LOG, LOGDebug } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'
 import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
@@ -38,7 +38,7 @@ export class RoomTraining extends Component {
   }
 
   componentDidMount() {
-    LOGDebug("Stopping indoor localization for training purposes");
+    LOG.debug("Stopping indoor localization for training purposes");
     Bluenet.stopIndoorLocalization();
   }
 
@@ -48,7 +48,7 @@ export class RoomTraining extends Component {
 
     let state = this.props.store.getState();
     if (canUseIndoorLocalizationInSphere(state, this.props.sphereId) === true) {
-      LOGDebug("(Re)Starting indoor localization after training");
+      LOG.debug("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
     }
   }
@@ -135,7 +135,7 @@ export class RoomTraining extends Component {
     const store = this.props.store;
     FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)
       .then((stringifiedFingerprint) => {
-        LOG("gathered fingerprint:", stringifiedFingerprint);
+        LOG.info("gathered fingerprint:", stringifiedFingerprint);
         store.dispatch({
           type:'UPDATE_LOCATION_FINGERPRINT',
           sphereId: this.props.sphereId,

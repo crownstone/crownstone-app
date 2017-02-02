@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
-import { Bluenet, BluenetPromises, NativeBus } from './Proxy';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { Bluenet, BluenetPromises } from './Proxy';
+import { LOG } from '../logging/Log'
 
 export const LocalizationUtil = {
 
@@ -8,7 +8,7 @@ export const LocalizationUtil = {
    * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
    */
   trackSpheres: function (store) {
-    LOG("LocalizationUtil: Track Spheres called.");
+    LOG.info("LocalizationUtil: Track Spheres called.");
     BluenetPromises.isReady()
       .then(() => {
         return BluenetPromises.clearTrackedBeacons();
@@ -26,16 +26,16 @@ export const LocalizationUtil = {
           // track the sphere beacon UUID
           Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
 
-          LOG("LocalizationUtil: Setup tracking for iBeacon UUID: ", sphereIBeaconUUID);
+          LOG.info("LocalizationUtil: Setup tracking for iBeacon UUID: ", sphereIBeaconUUID);
 
           let locations = state.spheres[sphereId].locations;
           let locationIds = Object.keys(locations);
           locationIds.forEach((locationId) => {
             if (locations[locationId].config.fingerprintRaw) {
               // check format of the fingerprint:
-              LOG("LocalizationUtil: Checking fingerprint format for: ", locationId, " in sphere: ", sphereId);
+              LOG.info("LocalizationUtil: Checking fingerprint format for: ", locationId, " in sphere: ", sphereId);
               if (validateFingerprint(locations[locationId].config.fingerprintRaw)) {
-                LOG("LocalizationUtil: Loading fingerprint for: ", locationId, " in sphere: ", sphereId);
+                LOG.info("LocalizationUtil: Loading fingerprint for: ", locationId, " in sphere: ", sphereId);
                 Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw);
               }
               else {

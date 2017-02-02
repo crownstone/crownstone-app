@@ -16,7 +16,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getUserLevelInSphere } from '../../util/dataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 export class SettingsSphereInvite extends Component {
   constructor() {
@@ -121,7 +121,7 @@ export class SettingsSphereInvite extends Component {
       })
       .catch((err) => {
         this.props.eventBus.emit('hideLoading');
-        LOGError("Error when inviting using:",err);
+        LOG.error("Error when inviting using:",err);
         Alert.alert("Could not send invite..","Please try again later.", [{text:'OK'}])
       })
   }

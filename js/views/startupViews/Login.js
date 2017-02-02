@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 let Actions = require('react-native-router-flux').Actions;
 let sha1 = require('sha-1');
-import { LOG, LOGDebug, LOGError }            from '../../logging/Log'
+import { LOG }            from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { prepareStoreForUser }                from '../../util/dataUtil'
@@ -242,7 +242,7 @@ export class Login extends Component {
       })
       .catch((err) => {
         // likely a 404, ignore
-        LOGDebug("Could be a problem downloading profile picture: ", err);
+        LOG.debug("Could be a problem downloading profile picture: ", err);
       })
       .then(() => {
         this.progress += parts;
@@ -266,7 +266,7 @@ export class Login extends Component {
         }
       })
       .catch((err) => {
-        LOGDebug("Error creating first Sphere.", err);
+        LOG.debug("Error creating first Sphere.", err);
       })
     );
 

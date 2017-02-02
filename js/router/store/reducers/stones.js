@@ -76,7 +76,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         let newState = {...state};
         // todo: remove
         if (state.disabled !== false)
-          LOG("CHANGING_DISABILITY ", action.stoneId, false);
+          LOG.info("CHANGING_DISABILITY ", action.stoneId, false);
         newState.disabled = false;
         return newState;
       }

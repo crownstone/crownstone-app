@@ -1,5 +1,5 @@
 import { NativeBus } from '../native/Proxy';
-import { LOG, LOGDebug, LOGError, LOGScheduler } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { getUUID } from '../util/util'
 
 
@@ -16,7 +16,7 @@ class SchedulerClass {
 
 
   loadStore(store) {
-    LOG('LOADED STORE SchedulerClass', this._initialized);
+    LOG.info('LOADED STORE SchedulerClass', this._initialized);
     if (this._initialized === false) {
       this.store = store;
       this.init();
@@ -50,7 +50,7 @@ class SchedulerClass {
    */
   setRepeatingTrigger(id, options) {
     if (options.repeatEveryNSeconds && options.repeatEveryNSeconds > 2000) {
-      LOGError(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
+      LOG.error(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
     }
 
     if (this.triggers[id] === undefined) {
@@ -73,11 +73,11 @@ class SchedulerClass {
         this.triggers[triggerId].overwritableActions[actionId] = action;
       }
       else {
-        LOGError("INVALID ACTION", action);
+        LOG.error("INVALID ACTION", action);
       }
     }
     else {
-      LOGError("Invalid trigger ID", triggerId, this.triggers)
+      LOG.error("Invalid trigger ID", triggerId, this.triggers)
     }
   }
 
@@ -108,11 +108,11 @@ class SchedulerClass {
         this.triggers[triggerId].actions.push(action);
       }
       else {
-        LOGError("INVALID ACTION", action);
+        LOG.error("INVALID ACTION", action);
       }
     }
     else {
-      LOGError("Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+      LOG.error("Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
     }
   }
 
@@ -133,11 +133,11 @@ class SchedulerClass {
         }
       }
       else {
-        LOGError("INVALID callback", callback);
+        LOG.error("INVALID callback", callback);
       }
     }
     else {
-      LOGError("Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+      LOG.error("Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
     }
   }
 
@@ -174,7 +174,7 @@ class SchedulerClass {
 
     let now = new Date().valueOf();
 
-    LOGScheduler("Tick", now);
+    LOG.scheduler("Tick", now);
 
     // we use this to avoid a race condition where the user has updated the database, and a tick from advertisements
     // instantly overwrites the value again. This can happen when a Crownstone's first advertisement after switching is
@@ -187,11 +187,11 @@ class SchedulerClass {
       triggerIds.forEach((triggerId) => {
         let trigger = this.triggers[triggerId];
         if (trigger.options.repeatEveryNSeconds) {
-          // LOGScheduler("Handling Trigger:", triggerId, trigger.options.repeatEveryNSeconds, Math.round(0.001 * (now - trigger.lastTriggerTime)));
+          // LOG.scheduler("Handling Trigger:", triggerId, trigger.options.repeatEveryNSeconds, Math.round(0.001 * (now - trigger.lastTriggerTime)));
           // We use round in the conversion from millis to seconds so 1.5seconds is also accepted when the target is 2 seconds
           // due to timer inaccuracy this gives the most reliable results.
           if (Math.round(0.001 * (now - trigger.lastTriggerTime)) >= trigger.options.repeatEveryNSeconds) {
-            LOGScheduler("FIRING Trigger:", triggerId);
+            LOG.scheduler("FIRING Trigger:", triggerId);
             this.flush(trigger, state);
           }
         }
@@ -219,10 +219,10 @@ class SchedulerClass {
   checkSingleFires(now) {
     let triggerIds = Object.keys(this.singleFireTriggers);
     triggerIds.forEach((triggerId) => {
-      // LOGScheduler("Handling singlefire trigger:", triggerId);
+      // LOG.scheduler("Handling singlefire trigger:", triggerId);
       let trigger = this.singleFireTriggers[triggerId];
       if (trigger.triggerTime < now) {
-        LOGScheduler("Firing singlefire trigger:", triggerId);
+        LOG.scheduler("Firing singlefire trigger:", triggerId);
         trigger.callback();
         delete this.singleFireTriggers[triggerId];
       }

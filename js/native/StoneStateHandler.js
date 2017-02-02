@@ -1,6 +1,6 @@
 import { LocationHandler } from '../native/LocationHandler';
 import { Scheduler } from '../logic/Scheduler';
-import { LOG, LOGDebug } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { getUUID } from '../util/util'
 import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
@@ -24,7 +24,7 @@ class StoneStateHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE StoneStateHandlerClass', this._initialized);
+    LOG.info('LOADED STORE StoneStateHandlerClass', this._initialized);
     if (this._initialized === false) {
       this.store = store;
     }
@@ -50,13 +50,13 @@ class StoneStateHandlerClass {
   }
 
   update(sphereId, stoneId) {
-    // LOG("StoneStateHandlerUpdate", sphereId, stoneId);
+    // LOG.info("StoneStateHandlerUpdate", sphereId, stoneId);
 
     const state = this.store.getState();
     // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
 
     if (state.spheres[sphereId].config.present === false) {
-      LOG("StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
+      LOG.info("StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
       LocationHandler.enterSphere(sphereId);
     }
 
@@ -78,12 +78,12 @@ class StoneStateHandlerClass {
     }
 
     if (this.timeoutActions[sphereId][stoneId].clearTimeout && typeof this.timeoutActions[sphereId][stoneId].clearTimeout === 'function') {
-      // LOG("Cancelling_Timeout");
+      // LOG.info("Cancelling_Timeout");
       this.timeoutActions[sphereId][stoneId].clearTimeout();
     }
 
     if (this.timeoutActions[sphereId][stoneId].clearRSSITimeout && typeof this.timeoutActions[sphereId][stoneId].clearRSSITimeout === 'function') {
-      // LOG("Cancelling_RSSI_Timeout");
+      // LOG.info("Cancelling_RSSI_Timeout");
       this.timeoutActions[sphereId][stoneId].clearRSSITimeout();
     }
 
@@ -105,11 +105,11 @@ class StoneStateHandlerClass {
 
         // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
         if (allDisabled === true) {
-          LOG("StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
+          LOG.info("StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
           LocationHandler.exitSphere(sphereId);
         }
 
-        LOG("StoneStateHandler: Disabling stone ", stoneId);
+        LOG.info("StoneStateHandler: Disabling stone ", stoneId);
         this.store.dispatch({
           type: 'UPDATE_STONE_DISABILITY',
           sphereId: sphereId,

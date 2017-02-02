@@ -5,7 +5,7 @@ import { NativeEnhancer }                  from './nativeEnhancer'
 import { CloudEnhancer }                   from './cloudEnhancer'
 import { EventEnhancer }                   from './eventEnhancer'
 import { eventBus }                        from '../../util/eventBus'
-import { LOG, LOGDebug, LOGError }         from '../../logging/Log'
+import { LOG }         from '../../logging/Log'
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
@@ -77,14 +77,14 @@ class StoreManagerClass {
     //   let data = JSON.parse(initialState);
     //   if (data.user && data.user.firstName === null) {
     //     if (OVERRIDE_DATABASE === true) {
-    //       LOG("INJECTING FAKE DATA");
+    //       LOG.info("INJECTING FAKE DATA");
     //       this.store = createStore(CrownstoneReducer, fakeStore);
     //     }
     //   }
     // }
     // else {
     //   if (OVERRIDE_DATABASE === true) {
-    //     LOG("INJECTING FAKE DATA");
+    //     LOG.info("INJECTING FAKE DATA");
     //     this.store = createStore(CrownstoneReducer, fakeStore);
     //   }
     // }
@@ -102,12 +102,12 @@ class StoreManagerClass {
   _setupStore(initialState, enableWriteToDisk) {
     if (initialState && typeof initialState === 'string') {
       let data = JSON.parse(initialState);
-      LOGDebug("CURRENT DATA:", data);
+      LOG.debug("CURRENT DATA:", data);
       this.store = createStore(enableBatching(CrownstoneReducer), data, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }
     else {
-      LOG("Creating an empty database");
+      LOG.info("Creating an empty database");
       this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }
@@ -152,7 +152,7 @@ class StoreManagerClass {
             }
           })
           .catch((err) => {
-            LOGError("Trouble writing to disk", err)
+            LOG.error("Trouble writing to disk", err)
           });
       }, 500);
     });
@@ -173,7 +173,7 @@ class StoreManagerClass {
         }
       })
       .catch((err) => {
-        LOGError("Error during userLogIn", err);
+        LOG.error("Error during userLogIn", err);
       });
   }
 
@@ -230,7 +230,7 @@ class StoreManagerClass {
             this.store.dispatch({type: "USER_LOGGED_OUT_CLEAR_STORE"})
           })
           .catch((err) => {
-            LOGError("COULD NOT PERSIST TO DISK", err)
+            LOG.error("COULD NOT PERSIST TO DISK", err)
           })
       }
       else {

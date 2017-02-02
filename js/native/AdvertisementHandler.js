@@ -1,7 +1,7 @@
 import { Scheduler } from '../logic/Scheduler';
 import { NativeBus } from './Proxy';
 import { StoneStateHandler } from './StoneStateHandler'
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../util/dataUtil'
 import { eventBus }  from '../util/eventBus'
 
@@ -21,7 +21,7 @@ class AdvertisementHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE AdvertisementHandler', this._initialized);
+    LOG.info('LOADED STORE AdvertisementHandler', this._initialized);
     if (this._initialized === false) {
       this.store = store;
       this.init();
@@ -43,7 +43,7 @@ class AdvertisementHandlerClass {
         Scheduler.clearOverwritableTriggerAction(TRIGGER_ID, ADVERTISEMENT_PREFIX + handle);
         // this is a fallback mechanism in case no disconnect event is fired.
         this.stonesInConnectionProcess[handle] = {timeout: setTimeout(() => {
-          LOGError("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 5 seconds.");
+          LOG.error("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 5 seconds.");
           this._restoreConnectionTimeout();
         }, 5000)};
       });
@@ -59,7 +59,7 @@ class AdvertisementHandlerClass {
         this.temporaryIgnore = true;
         this.temporaryIgnoreTimeout = setTimeout(() => {
           if (this.temporaryIgnore === true) {
-            LOGError("Temporary ignore of triggers has been on for more than 20 seconds!!");
+            LOG.error("Temporary ignore of triggers has been on for more than 20 seconds!!");
           }
         }, 20000 );
       });
@@ -144,7 +144,7 @@ class AdvertisementHandlerClass {
       measuredUsage = 0;
     }
 
-    // LOG("ADV", advertisement)
+    // LOG.info("ADV", advertisement)
 
     let update = () => {
       // sometimes we need to ignore any distance based toggling.

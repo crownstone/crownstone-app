@@ -1,5 +1,5 @@
 import RNFS from 'react-native-fs'
-import { LOG, LOGError, LOGCloud } from '../../logging/Log'
+import { LOG} from '../../logging/Log'
 
 export const spheres = {
 
@@ -221,7 +221,7 @@ export const spheres = {
                 .then((filename) => {
                   userData[user.id].picture = filename;
                 })
-                .catch((err) => {LOGError("failed getting user picture",sphereId, user.email, user.id, options, err)})
+                .catch((err) => {LOG.error("failed getting user picture",sphereId, user.email, user.id, options, err)})
             );
           }
           return Promise.all(profilePicturePromises);

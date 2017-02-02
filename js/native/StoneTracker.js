@@ -6,7 +6,7 @@ import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS } from './../ExternalConfig';
 import { addDistanceToRssi } from './../util/util';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { Scheduler } from './../logic/Scheduler';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { canUseIndoorLocalizationInSphere } from '../util/dataUtil'
 import { Vibration } from 'react-native'
 import { TYPES } from '../router/store/reducers/stones'
@@ -28,7 +28,7 @@ export class StoneTracker {
       this.temporaryIgnore = true;
       this.temporaryIgnoreTimeout = setTimeout(() => {
         if (this.temporaryIgnore === true) {
-          LOGError("temporary ignore of triggers has been on for more than 20 seconds!!");
+          LOG.error("temporary ignore of triggers has been on for more than 20 seconds!!");
         }
       }, 20000 );
     });
@@ -115,10 +115,10 @@ export class StoneTracker {
         }
       }
       else {
-        // LOG("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
+        // LOG.info("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
         if (rssi > state.user.tapToToggleCalibration && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
           if (this.tapToToggleDisabled === false) {
-            LOG("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', state.user.tapToToggleCalibration);
+            LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', state.user.tapToToggleCalibration);
             // notify the user by vibration that the crownstone will be switched.
             Vibration.vibrate(400, false);
 
@@ -134,7 +134,7 @@ export class StoneTracker {
             return;
           }
           else {
-            LOG("StoneTracker: Tap to Toggle is disabled.");
+            LOG.info("StoneTracker: Tap to Toggle is disabled.");
             if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
               this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
               Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);

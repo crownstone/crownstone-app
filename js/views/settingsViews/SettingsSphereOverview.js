@@ -17,7 +17,7 @@ import { styles, colors } from './../styles'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { BluenetPromises } from './../../native/Proxy'
 import { IconButton } from '../components/IconButton'
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 
 export class SettingsSphereOverview extends Component {
@@ -127,7 +127,7 @@ export class SettingsSphereOverview extends Component {
           this._createNewSphere(store, name + ' new')
         }
         else {
-          LOGError(err)
+          LOG.error(err)
         }
       })
   }

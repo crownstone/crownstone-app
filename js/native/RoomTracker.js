@@ -16,7 +16,7 @@ class RoomPresenceTrackerClass {
    * @param locationId
    */
   enterRoom(store, sphereId, locationId) {
-    LOG("RoomTracker: Enter room: ", locationId, ' in sphere: ', sphereId);
+    LOG.info("RoomTracker: Enter room: ", locationId, ' in sphere: ', sphereId);
     this._triggerRoomEvent(store, sphereId, locationId, TYPES.ROOM_ENTER);
   }
 
@@ -27,7 +27,7 @@ class RoomPresenceTrackerClass {
    * @param locationId
    */
   exitRoom(store, sphereId, locationId) {
-    LOG("RoomTracker: Exit room: ", locationId, ' in sphere: ', sphereId);
+    LOG.info("RoomTracker: Exit room: ", locationId, ' in sphere: ', sphereId);
     this._triggerRoomEvent(store, sphereId, locationId, TYPES.ROOM_EXIT);
   }
 

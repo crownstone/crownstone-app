@@ -13,13 +13,13 @@ let Actions = require('react-native-router-flux').Actions;
 
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
-import { LOG, LOGDebug }       from '../../logging/Log'
+import { LOG }       from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
 
 export class Sphere extends Component {
   render() {
-    LOG("RENDERING SPHERE");
+    LOG.info("RENDERING SPHERE");
     const store = this.props.store;
     const state = store.getState();
     let viewingRemotely = true;

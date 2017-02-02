@@ -17,7 +17,7 @@ import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { Icon } from './Icon';
 import { styles, colors, screenWidth } from '../styles'
 import { getUserLevelInSphere } from '../../util/dataUtil'
-import { LOG, LOGDebug, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 
 export class SetupDeviceEntry extends Component {

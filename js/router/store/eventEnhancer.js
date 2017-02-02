@@ -1,6 +1,6 @@
 import { eventBus } from '../../util/eventBus'
 import { BATCH } from './storeManager'
-import { LOG, LOGDebug, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 
 /**
@@ -192,7 +192,7 @@ function checkAction(action, affectedIds) {
     case 'REFRESH_DEFAULTS':
       break;
     default:
-      LOGError("UNKNOWN ACTION TYPE:", action);
+      LOG.error("UNKNOWN ACTION TYPE:", action);
   }
 
   eventStatus.totalAffectedIds = affectedIds;
