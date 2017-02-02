@@ -9,13 +9,15 @@ export const spheres = {
    * @param store
    * @param sphereName
    * @param eventBus
+   * @param latitude
+   * @param longitude
    * @returns {Promise.<T>}
    */
-  createNewSphere(store, sphereName, eventBus) {
+  createNewSphere(store, sphereName, eventBus, latitude, longitude) {
     let state = store.getState();
     let sphereId;
     let creationActions = [];
-    return this.forUser(state.user.userId).createSphere(sphereName)
+    return this.forUser(state.user.userId).createSphere(sphereName, latitude, longitude)
       .then((response) => {
         sphereId = response.id;
 
@@ -122,8 +124,8 @@ export const spheres = {
    *
    * @param sphereName
    */
-  createSphere: function(sphereName) {
-    return this._setupRequest('POST', 'users/{id}/spheres', {data:{name:sphereName}}, 'body');
+  createSphere: function(sphereName, latitude, longitude) {
+    return this._setupRequest('POST', 'users/{id}/spheres', {data:{name:sphereName, gpsLocation:{lat:latitude, lng: longitude}}}, 'body');
   },
 
   getUserPicture(sphereId, email, userId, options = {}) {

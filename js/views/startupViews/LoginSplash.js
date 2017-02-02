@@ -13,7 +13,6 @@ import { Background } from './../components/Background'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 import loginStyles from './LoginStyles'
 
-
 export class LoginSplash extends Component {
   render() {
     return (

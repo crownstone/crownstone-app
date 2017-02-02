@@ -1,7 +1,5 @@
-import { Bluenet, BleActions, NativeBus } from './Proxy';
-import { BleUtil } from './BleUtil';
-import { Scheduler } from './../logic/Scheduler';
-import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
+import { BehaviourUtil } from '../util/BehaviourUtil';
+import { LOG } from '../logging/Log'
 import { TYPES } from '../router/store/reducers/stones'
 
 
@@ -12,45 +10,69 @@ class RoomPresenceTrackerClass {
   }
 
   /**
-   * this will clear out all pending timeouts for triggering because of exit room
+   * This will apply the behaviour for each stone in this room on entering the room.
    * @param store
    * @param sphereId
    * @param locationId
    */
   enterRoom(store, sphereId, locationId) {
-    // cleanup pending room exit events
-    if (this.roomStates[sphereId] && this.roomStates[sphereId][locationId]) {
-      let stoneIds = Object.keys(this.roomStates[sphereId][locationId]);
-      stoneIds.forEach((stoneId) => {
-        if (this.roomStates[sphereId][locationId][stoneId] !== undefined) {
+    LOG("RoomTracker: Enter room: ", locationId, ' in sphere: ', sphereId);
+    this._triggerRoomEvent(store, sphereId, locationId, TYPES.ROOM_ENTER);
+  }
+
+  /**
+   * This will apply the behaviour for each stone in this room on leaving the room.
+   * @param store
+   * @param sphereId
+   * @param locationId
+   */
+  exitRoom(store, sphereId, locationId) {
+    LOG("RoomTracker: Exit room: ", locationId, ' in sphere: ', sphereId);
+    this._triggerRoomEvent(store, sphereId, locationId, TYPES.ROOM_EXIT);
+  }
+
+
+  /**
+   * Clean up and cancel pending actions for this room, fire the enter/exit event
+   * @param store
+   * @param sphereId
+   * @param locationId
+   * @param behaviourType
+   * @private
+   */
+  _triggerRoomEvent( store, sphereId, locationId, behaviourType) {
+    // clean up any pending room enter/exit triggers. Only delayed triggers can be pending.
+    this._cleanupPendingRoomTriggers(sphereId, locationId);
+
+    // generate the callbacks to keep track of the state in rooms.
+    let callbacks = {
+      // when we schedule the triggering, we store the abort method in case we leave or exit the room again.
+      onSchedule: (sphereId, stoneId, abortSchedule) => {
+        this.roomStates[sphereId][locationId][stoneId] = abortSchedule;
+      },
+
+      // if there is an existing pending trigger, clear it before we fire the next one.
+      onTrigger: (sphereId, stoneId) => {
+        if (this.roomStates && this.roomStates[sphereId] && this.roomStates[sphereId][locationId]) {
           this.roomStates[sphereId][locationId][stoneId]();
           this.roomStates[sphereId][locationId][stoneId] = undefined;
         }
-      });
-      this.roomStates[sphereId][locationId] = {};
-    }
-
-    // turn on crownstones in room
-    let state = store.getState();
-    let sphere = state.spheres[sphereId];
-    let stoneIds = Object.keys(sphere.stones);
-    stoneIds.forEach((stoneId) => {
-      // for each stone in sphere select the behaviour we want to copy into the keep Alive
-      let stone = sphere.stones[stoneId];
-      if (stone.config.locationId !== locationId)
-        return;
-
-      let element = this._getElement(sphere, stone);
-      let behaviour = element.behaviour[TYPES.ROOM_ENTER];
-
-      // we set the state regardless of the current state since it may not be correct in the background.
-      if (behaviour.active && stone.config.handle) {
-        this._handleTrigger(store, behaviour, stoneId, locationId, sphereId);
       }
-    });
+    };
+
+    // fire TYPES.ROOM_ENTER on crownstones in room
+    BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, callbacks);
   }
 
-  exitRoom(store, sphereId, locationId) {
+
+  /**
+   * Update our index we use the keep track of pending actions. We also clear any pending actions for this specific
+   * Sphere/room.
+   * @param sphereId
+   * @param locationId
+   * @private
+   */
+  _cleanupPendingRoomTriggers(sphereId, locationId) {
     if (!this.roomStates[sphereId]) {
       this.roomStates[sphereId] = {};
     }
@@ -59,84 +81,20 @@ class RoomPresenceTrackerClass {
       this.roomStates[sphereId][locationId] = {};
     }
 
-    let state = store.getState();
-    let sphere = state.spheres[sphereId];
-    let stoneIds = Object.keys(sphere.stones);
+    // cleanup pending room trigger events
+    let stoneIds = Object.keys(this.roomStates[sphereId][locationId]);
     stoneIds.forEach((stoneId) => {
-      // for each stone in sphere select the behaviour we want to copy into the keep Alive
-      let stone = sphere.stones[stoneId];
-      if (stone.config.locationId !== locationId)
-        return;
+      if (this.roomStates[sphereId][locationId][stoneId] !== undefined) {
 
-      let element = this._getElement(sphere, stone);
-      let behaviour = element.behaviour[TYPES.ROOM_EXIT];
-
-      // we set the state regardless of the current state since it may not be correct in the background.
-      if (behaviour.active && stone.config.handle) {
-        // cancel the previous timeout
-        if (this.roomStates[sphereId][locationId][stoneId] !== undefined) {
+        // if this is a function to cancel a pending scheduled action, clear it.
+        if (typeof this.roomStates[sphereId][locationId][stoneId] === 'function') {
           this.roomStates[sphereId][locationId][stoneId]();
-          this.roomStates[sphereId][locationId][stoneId] = undefined;
         }
-        this._handleTrigger(store, behaviour, stoneId, locationId, sphereId);
-      }
-    });
-  }
 
-
-  _handleTrigger(store, behaviour, stoneId, locationId, sphereId) {
-    let changeCallback = () => {
-      let state = store.getState();
-      let stone = state.spheres[sphereId].stones[stoneId];
-      if (this.roomStates && this.roomStates[sphereId] && this.roomStates[sphereId][locationId]) {
         this.roomStates[sphereId][locationId][stoneId] = undefined;
       }
-      // if we need to switch:
-      if (behaviour.state !== stone.state.state) {
-        this._applySwitchState(store, behaviour.state, stone, stoneId, sphereId);
-      }
-    };
-
-    if (behaviour.delay > 0) {
-      // use scheduler
-      if (this.roomStates && this.roomStates[sphereId] && this.roomStates[sphereId][locationId]) {
-        this.roomStates[sphereId][locationId][stoneId] = Scheduler.scheduleCallback(changeCallback, behaviour.delay * 1000);
-      }
-    }
-    else {
-      changeCallback();
-    }
-  }
-
-  _applySwitchState(store, newState, stone, stoneId, sphereId) {
-    let data = {state: newState};
-    if (newState === 0) {
-      data.currentUsage = 0;
-    }
-    let proxy = BleUtil.getProxy(stone.config.handle);
-    proxy.perform(BleActions.setSwitchState, [newState])
-      .then(() => {
-        store.dispatch({
-          type: 'UPDATE_STONE_STATE',
-          sphereId: sphereId,
-          stoneId: stoneId,
-          data: data
-        });
-      })
-      .catch((err) => {
-        LOGError("COULD NOT SET STATE", err);
-      })
-  }
-
-
-  // TODO: remove duplicates
-  _getElement(sphere, stone) {
-    if (stone.config.applianceId) {
-      return sphere.appliances[stone.config.applianceId];
-    }
-    else {
-      return stone;
-    }
+    });
+    this.roomStates[sphereId][locationId] = {};
   }
 }
 

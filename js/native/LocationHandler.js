@@ -1,5 +1,6 @@
-import { Bluenet, BleActions, NativeBus } from './Proxy';
+import { Bluenet, BluenetPromises, NativeBus } from './Proxy';
 import { BleUtil } from './BleUtil';
+import { BehaviourUtil } from '../util/BehaviourUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'
 import { RoomTracker } from './RoomTracker'
@@ -9,6 +10,9 @@ import { LOG, LOGDebug, LOGError, LOGBle } from '../logging/Log'
 import { getUUID } from '../util/util'
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
+
+
+const SunCalc = require('suncalc');
 
 class LocationHandlerClass {
   constructor() {
@@ -44,14 +48,35 @@ class LocationHandlerClass {
 
   enterSphere(sphereId) {
     let state = this.store.getState();
+    let sphere = state.spheres[sphereId];
     // make sure we only do this once per sphere
-    if (state.spheres[sphereId].config.present === true)
+    if (sphere.config.present === true)
       return;
 
-    if (state.spheres[sphereId] !== undefined) {
+    if (sphere !== undefined) {
       LOG("LocationHandler: ENTER SPHERE", sphereId);
 
-      let lastTimePresent = state.spheres[sphereId].config.lastTimePresent;
+      BluenetPromises.requestLocation()
+        .then((location) => {
+          if (location && location.latitude && location.longitude) {
+            if (sphere.config.latitude && sphere.config.longitude) {
+              let dx = location.latitude - sphere.config.latitude;
+              let dy = location.longitude - sphere.config.longitude;
+              let distance = Math.sqrt(dx*dx + dy*dy);
+              if (distance > 0.4) {
+                LOG('LocationHandler: Update sphere location, old: (', sphere.config.latitude, ',', sphere.config.longitude,') to new: (', location.latitude, ',', location.longitude,')');
+                this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+              }
+            }
+            else {
+              LOG('LocationHandler: Setting sphere location to (', location.latitude, ',', location.longitude,')');
+              this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+            }
+          }
+        })
+        .catch();
+
+      let lastTimePresent = sphere.config.lastTimePresent;
 
       // set the presence
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: true, present: true}});
@@ -64,15 +89,13 @@ class LocationHandlerClass {
       // prepare the settings for this sphere and pass them onto bluenet
       let bluenetSettings = {
         encryptionEnabled: ENCRYPTION_ENABLED,
-        adminKey: state.spheres[sphereId].config.adminKey,
-        memberKey: state.spheres[sphereId].config.memberKey,
-        guestKey: state.spheres[sphereId].config.guestKey,
+        adminKey:  sphere.config.adminKey,
+        memberKey: sphere.config.memberKey,
+        guestKey:  sphere.config.guestKey,
         referenceId: sphereId
       };
 
-      let canUseLocalization = canUseIndoorLocalizationInSphere(state, sphereId);
-
-      if (canUseLocalization === true) {
+      if (canUseIndoorLocalizationInSphere(state, sphereId) === true) {
         LOG("LocationHandler: Starting indoor localization for sphere", sphereId);
         Bluenet.startIndoorLocalization();
       }
@@ -83,13 +106,13 @@ class LocationHandlerClass {
 
 
       LOG("Set Settings.", bluenetSettings);
-      BleActions.setSettings(bluenetSettings)
+      BluenetPromises.setSettings(bluenetSettings)
         .then(() => {
           let exitEnterTimeDifference = new Date().valueOf() - lastTimePresent;
           if (exitEnterTimeDifference > KEEPALIVE_INTERVAL*1000*1.5) {
             // trigger crownstones on enter sphere
-            LOG("LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE", state.spheres[sphereId].config.name);
-            this._triggerCrownstones(state, sphereId, TYPES.HOME_ENTER);
+            LOG("LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE", sphere.config.name);
+            BehaviourUtil.enactBehaviourInSphere(this.store, sphereId, TYPES.HOME_ENTER);
           }
           else {
             LOG("LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE HOME EXIT IS ", exitEnterTimeDifference, " WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ", KEEPALIVE_INTERVAL*1000*1.5, " ms");
@@ -186,50 +209,8 @@ class LocationHandlerClass {
     return presentAtProvidedLocationId;
   }
 
-
-  _triggerCrownstones(state, sphereId, type) {
-    let sphere = state.spheres[sphereId];
-    let stoneIds = Object.keys(sphere.stones);
-    stoneIds.forEach((stoneId) => {
-      // for each stone in sphere select the behaviour we want to copy into the keep Alive
-      let stone = sphere.stones[stoneId];
-      let element = this._getElement(sphere, stone);
-      let behaviour = element.behaviour[type];
-      // we set the state regardless of the current state since it may not be correct in the background.
-      if (behaviour.active && stone.config.handle) {
-        // if we need to switch:
-        let data = {state: behaviour.state};
-        if (behaviour.state === 0) {
-          data.currentUsage = 0;
-        }
-        LOG("LocationHandler: FIRING ", type, " event for ", element.config.name, stoneId);
-        let proxy = BleUtil.getProxy(stone.config.handle);
-        proxy.perform(BleActions.setSwitchState, [behaviour.state])
-          .then(() => {
-            this.store.dispatch({
-              type: 'UPDATE_STONE_STATE',
-              sphereId: sphereId,
-              stoneId: stoneId,
-              data: data
-            });
-          })
-          .catch((err) => {
-            LOGError("COULD NOT SET STATE FROM ROOM ENTER", err);
-          })
-      }
-    });
-  }
-
-  // TODO: remove duplicates
-  _getElement(sphere, stone) {
-    if (stone.config.applianceId) {
-      return sphere.appliances[stone.config.applianceId];
-    }
-    else {
-      return stone;
-    }
-  }
 }
+
 
 export const LocationHandler = new LocationHandlerClass();
 

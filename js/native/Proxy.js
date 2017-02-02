@@ -9,14 +9,14 @@ if (DISABLE_NATIVE === true) {
   LOG("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
   LOG("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
   Bluenet = {
-    clearTrackedBeacons: () => {},        // called through BleActions --> must be promise.
+    clearTrackedBeacons: () => {},        // called through BluenetPromises --> must be promise.
     rerouteEvents: () => {},
-    isReady: () => {},                    // called through BleActions --> must be promise.
-    connect: () => {},                    // called through BleActions --> must be promise.
-    disconnect: () => {},                 // called through BleActions --> must be promise.
-    phoneDisconnect: () => {},            // called through BleActions --> must be promise.
+    isReady: () => {},                    // called through BluenetPromises --> must be promise.
+    connect: () => {},                    // called through BluenetPromises --> must be promise.
+    disconnect: () => {},                 // called through BluenetPromises --> must be promise.
+    phoneDisconnect: () => {},            // called through BluenetPromises --> must be promise.
     resetBle: () => {},
-    setSwitchState: () => {},             // called through BleActions --> must be promise.
+    setSwitchState: () => {},             // called through BluenetPromises --> must be promise.
     startScanning: () => {},
     startScanningForCrownstones: () => {},
     startScanningForCrownstonesUniqueOnly: () => {},
@@ -28,7 +28,7 @@ if (DISABLE_NATIVE === true) {
     startIndoorLocalization: () => {},
     stopIndoorLocalization: () => {},
 
-    requestLocation: () => {},          // called through BleActions --> must be promise.
+    requestLocation: () => {},          // called through BluenetPromises --> must be promise.
     requestLocationPermission: () => {},
     trackIBeacon: () => {},
     stopTrackingIBeacon: () => {},
@@ -39,12 +39,12 @@ if (DISABLE_NATIVE === true) {
     abortCollectingFingerprint: () => {},
     pauseCollectingFingerprint : () => {},
     resumeCollectingFingerprint: () => {},
-    finalizeFingerprint: () => {},       // called through BleActions --> must be promise. Promise return value is a stringified fingerprint
+    finalizeFingerprint: () => {},       // called through BluenetPromises --> must be promise. Promise return value is a stringified fingerprint
 
     loadFingerprint: () => {},
-    getMACAddress: () => {},             // called through BleActions --> must be promise.
-    commandFactoryReset: () => {},       // called through BleActions --> must be promise.
-    recover: () => {},                   // called through BleActions --> must be promise.
+    getMACAddress: () => {},             // called through BluenetPromises --> must be promise.
+    commandFactoryReset: () => {},       // called through BluenetPromises --> must be promise.
+    recover: () => {},                   // called through BluenetPromises --> must be promise.
     setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
 
     quitApp: () => {},                   // Used in android to force close the app
@@ -117,7 +117,7 @@ export const BluenetPromise = function(functionName, param, param2, param3) {
 
 
 
-export const BleActions = {
+export const BluenetPromises = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
   connect:             (handle) => {

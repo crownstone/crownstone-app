@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BleActions, NativeBus, Bluenet } from './Proxy';
+import { BluenetPromises, NativeBus, Bluenet } from './Proxy';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus'
@@ -41,15 +41,15 @@ export class SetupHelper {
     let setupPromise = () => {
       return new Promise((resolve, reject) => {
         eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
-        BleActions.connect(this.handle)
+        BluenetPromises.connect(this.handle)
           .then(() => {
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
-            return BleActions.getMACAddress();
+            return BluenetPromises.getMACAddress();
           })
           .then((macAddress) => {
             this.macAddress = macAddress;
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
-            return BleActions.phoneDisconnect();
+            return BluenetPromises.phoneDisconnect();
           })
           .then(() => {
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
@@ -156,7 +156,7 @@ export class SetupHelper {
 
             LOGError("error during setup phase:", err);
 
-            BleActions.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
+            BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
           })
       });
     };
@@ -223,9 +223,9 @@ export class SetupHelper {
     });
 
     return new Promise((resolve, reject) => {
-      BleActions.connect(this.handle)
+      BluenetPromises.connect(this.handle)
         .then(() => {
-          return BleActions.setupCrownstone(data);
+          return BluenetPromises.setupCrownstone(data);
         })
         .then(() => {
           unsubscribe();

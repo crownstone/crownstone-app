@@ -15,8 +15,9 @@ import { ListEditableItems } from './../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { CLOUD } from './../../cloud/cloudAPI'
+import { BluenetPromises } from './../../native/Proxy'
 import { IconButton } from '../components/IconButton'
-import { LOG,LOGError } from '../../logging/Log'
+import { LOG, LOGError } from '../../logging/Log'
 
 
 export class SettingsSphereOverview extends Component {
@@ -105,7 +106,16 @@ export class SettingsSphereOverview extends Component {
 
   _createNewSphere(store, name) {
     this.props.eventBus.emit('showLoading', 'Creating Sphere...');
-    return CLOUD.createNewSphere(store, name, this.props.eventBus)
+    return BluenetPromises.requestLocation()
+      .then((location) => {
+        let latitude = undefined;
+        let longitude = undefined;
+        if (location && location.latitude && location.longitude) {
+          latitude = location.latitude;
+          longitude = location.longitude;
+        }
+        return CLOUD.createNewSphere(store, name, this.props.eventBus, latitude, longitude)
+      })
       .then((sphereId) => {
         this.props.eventBus.emit('hideLoading');
         let state = this.props.store.getState();

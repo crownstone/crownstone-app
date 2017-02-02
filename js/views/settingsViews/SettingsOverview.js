@@ -11,6 +11,7 @@ import {
 
 import { userHasPlugsInSphere, getPresentSphere } from './../../util/dataUtil'
 import { logOut } from './../../util/util'
+import { BluenetPromises } from './../../native/Proxy'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { Background } from './../components/Background'
 import { TopBar } from './../components/Topbar'
@@ -53,7 +54,17 @@ export class SettingsOverview extends Component {
     else {
       items.push({label:'Add Sphere', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
         this.props.eventBus.emit('showLoading', 'Creating Sphere...');
-        CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus)
+
+        BluenetPromises.requestLocation()
+          .then((location) => {
+            let latitude = undefined;
+            let longitude = undefined;
+            if (location && location.latitude && location.longitude) {
+              latitude = location.latitude;
+              longitude = location.longitude;
+            }
+            return  CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus, latitude, longitude)
+          })
           .then((sphereId) => {
             this.props.eventBus.emit('hideLoading');
             let state = this.props.store.getState();

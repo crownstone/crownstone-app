@@ -7,10 +7,10 @@ const DeviceInfo = require('react-native-device-info');
 export let CLOUD_ADDRESS = 'https://crownstone-cloud-dev.herokuapp.com/api/';
 
 export let DEBUG           = true;  // enabling Debug behaviour throughout the app.
-export let DEBUG_STORE     = true; // enabling LOGStore      commands to be shown.
+export let DEBUG_STORE     = true;  // enabling LOGStore      commands to be shown.
 export let DEBUG_SCHEDULER = false; // enabling LOGScheduler  commands to be shown.
 export let DEBUG_BLE       = false; // enabling LOGBle        commands to be shown.
-export let DEBUG_CLOUD     = false;  // enabling LOGCloud      commands to be shown.
+export let DEBUG_CLOUD     = true;  // enabling LOGCloud      commands to be shown.
 export let DEBUG_LOGGING   = true;  // enabling LOGDebug      commands to be shown.
 export let LOGGING         = true;  // enabling LOG           commands to be shown.
 
@@ -19,7 +19,7 @@ export let LOG_TO_FILE     = false; // log everything that is logged to a file.
 export let ERROR_LOGGING   = true;  // enabling LOGError      commands to be shown.
 
 export let DISABLE_NATIVE = DeviceInfo.getModel() === "Simulator"; // this will disable the native calls.
-export let SILENCE_CLOUD = false; // this will silently cancel all calls to the cloud.
+export let SILENCE_CLOUD  = false; // this will silently cancel all calls to the cloud.
 export let OVERRIDE_DATABASE = false;
 
 export let NO_LOCATION_NAME = 'None'; // this is a let because localization may change it.
@@ -35,6 +35,10 @@ export const DISABLE_TIMEOUT = 30000; //ms
 export const KEEPALIVE_INTERVAL = 60; // s !
 export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
 export const KEEPALIVE_REPEAT_INTERVAL = 5000; // ms
+
+// in the event that only an away event (or only a near event) is configured,
+// reset the trigger if you spend this amount of milliseconds in the other zone.
+export const RESET_TIMER_FOR_NEAR_AWAY_EVENTS = 20000; // ms
 
 // WHEN RELEASING: SET THIS TO TRUE
 export const RELEASE_MODE = true && DeviceInfo.getModel() !== "Simulator";

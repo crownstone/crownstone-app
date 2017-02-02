@@ -13,7 +13,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { stoneTypes } from '../../router/store/reducers/stones'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-import { BleActions } from '../../native/Proxy'
+import { BluenetPromises } from '../../native/Proxy'
 import { BleUtil } from '../../native/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
@@ -238,10 +238,10 @@ export class DeviceEdit extends Component {
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
         let proxy = BleUtil.getProxy(stone.config.handle);
-        proxy.performPriority(BleActions.commandFactoryReset)
+        proxy.performPriority(BluenetPromises.commandFactoryReset)
           .catch(() => {
             // second attempt
-            return proxy.performPriority(BleActions.commandFactoryReset)
+            return proxy.performPriority(BluenetPromises.commandFactoryReset)
           })
           .then(() => {
             this._removeCrownstoneFromRedux(true);

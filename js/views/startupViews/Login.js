@@ -17,7 +17,7 @@ import { SessionMemory }                      from './SessionMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { prepareStoreForUser }                from '../../util/dataUtil'
 import { LocalizationUtil }                   from '../../native/LocalizationUtil'
-import { BleActions, Bluenet }                from '../../native/Proxy'
+import { BluenetPromises, Bluenet }                from '../../native/Proxy'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'
@@ -258,6 +258,7 @@ export class Login extends Component {
         let state = store.getState();
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Creating first Sphere.'});
+          // TODO: place in tutorial
           return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus);
         }
         else {

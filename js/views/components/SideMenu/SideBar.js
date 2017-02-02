@@ -19,7 +19,7 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../st
 import { Icon } from '../Icon'
 import { CLOUD } from '../../../cloud/cloudAPI'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
-import { NativeBus } from '../../../native/Proxy'
+import { NativeBus, BluenetPromises } from '../../../native/Proxy'
 import { logOut, quitApp } from '../../../util/util'
 import { userHasPlugsInSphere, getPresentSphere } from '../../../util/dataUtil'
 
@@ -110,7 +110,16 @@ export class SideBar extends Component {
           eventBus.emit('showLoading', 'Creating Sphere...');
           setTimeout(() => { this.props.closeCallback(); }, 0);
 
-          CLOUD.createNewSphere(this.props.store, state.user.firstName, eventBus)
+          BluenetPromises.requestLocation()
+            .then((location) => {
+              let latitude = undefined;
+              let longitude = undefined;
+              if (location && location.latitude && location.longitude) {
+                latitude = location.latitude;
+                longitude = location.longitude;
+              }
+              return CLOUD.createNewSphere(this.props.store, state.user.firstName, eventBus, latitude, longitude)
+            })
             .then((sphereId) => {
               eventBus.emit('hideLoading');
               let state = this.props.store.getState();

@@ -1,5 +1,5 @@
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BleActions, NativeBus, Bluenet } from './Proxy';
+import { BluenetPromises, NativeBus, Bluenet } from './Proxy';
 import { LOG, LOGDebug, LOGError } from '../logging/Log'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 import { getUUID } from '../util/util'
@@ -188,16 +188,21 @@ class SingleCommand {
     return this._perform(action, props, true)
   }
 
+  // TODO: implement search before peforming
+  performWhenFound(action, props = [], rssiThreshold = -1000) {
+    this.perform(action,props);
+  }
+
   _perform(action, props, priorityCommand) {
     let actionPromise = () => {
       if (this.handle) {
-        return BleActions.connect(this.handle)
+        return BluenetPromises.connect(this.handle)
           .then(() => { LOG("BLEProxy: connected, performing: ", action); return action.apply(this, props); })
-          .then(() => { LOG("BLEProxy: completed", action, 'disconnecting'); return BleActions.disconnect(); })
+          .then(() => { LOG("BLEProxy: completed", action, 'disconnecting'); return BluenetPromises.disconnect(); })
           .catch((err) => {
             LOGError("BLEProxy: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
-              BleActions.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
+              BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
             })
           })
       }

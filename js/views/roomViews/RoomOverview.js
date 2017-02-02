@@ -18,7 +18,7 @@ import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
 import { BleUtil } from '../../native/BleUtil'
-import { BleActions, NativeBus } from '../../native/Proxy'
+import { BluenetPromises, NativeBus } from '../../native/Proxy'
 import { TopBar } from '../components/Topbar'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
@@ -145,7 +145,7 @@ export class RoomOverview extends Component {
                   data.currentUsage = 0;
                 }
                 let proxy = BleUtil.getProxy(item.stone.config.handle);
-                proxy.performPriority(BleActions.setSwitchState, [switchState])
+                proxy.performPriority(BluenetPromises.setSwitchState, [switchState])
                   .then(() => {
                     this.props.store.dispatch({
                       type: 'UPDATE_STONE_STATE',
