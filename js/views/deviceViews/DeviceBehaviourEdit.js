@@ -249,28 +249,7 @@ export class DeviceBehaviourEdit extends Component {
     }
 
 
-    if (canDoIndoorLocalization === false || true) {
-      let defineCallback = () => {
-        let state = this.props.store.getState();
-        let iBeaconUUID = state.spheres[this.props.sphereId].config.iBeaconUUID;
-        let iBeaconId = iBeaconUUID + ".Maj:" + stone.config.iBeaconMajor + ".Min:" + stone.config.iBeaconMinor;
-
-        Alert.alert(
-          "How near is near?",
-          "You can choose the switching point between near and far! After you press OK you have 5 seconds to hold your phone where it usually is (in your pocket?)",
-          [{text: 'Cancel', style: 'cancel'}, {
-            text: 'OK', onPress: () => {
-              // show loading bar
-              this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
-              this.pocketTimeout = setTimeout(() => {
-                this.defineThreshold(iBeaconId)
-              }, 5000);
-            }
-          }]
-        );
-      };
-
-
+    if (canDoIndoorLocalization === false) {
       eventLabel = 'onNear';
       items.push({label:'WHEN YOU ...', type: 'explanation', style: styles.topExplanation, below:false});
       items.push(generateDropdown(eventLabel, 'Get near', toggleOptions));
@@ -283,26 +262,48 @@ export class DeviceBehaviourEdit extends Component {
         items.push(generateDelayField(eventLabel, 'Delay'))
       }
 
-      let defineNearLabel = 'Define the "near" distance';
-      if ((device.behaviour['onNear'].active === true || device.behaviour['onAway'].active === true) && stone.config.nearThreshold === null) {
-        defineNearLabel = 'Tap here to define "near"'
-      }
+      // only show the define button when the feature is being used.
+      if (device.behaviour['onNear'].active === true || device.behaviour['onAway'].active === true) {
+        let defineNearLabel = 'Define the "near" distance';
+        if (stone.config.nearThreshold === null) {
+          defineNearLabel = 'Tap here to define "near"'
+        }
 
-      items.push({
-        type: 'button',
-        label: defineNearLabel,
-        style: {color: colors.iosBlue.hex},
-        callback: defineCallback
-      });
-
-      if ((device.behaviour['onNear'].active === true || device.behaviour['onAway'].active === true) && stone.config.nearThreshold === null) {
         items.push({
-          label: 'You need to define the near range before you can use this feature.',
-          style: {paddingBottom: 0},
-          type: 'explanation',
-          below: true
+          type: 'button',
+          label: defineNearLabel,
+          style: {color: colors.iosBlue.hex},
+          callback: () => {
+            let state = this.props.store.getState();
+            let iBeaconUUID = state.spheres[this.props.sphereId].config.iBeaconUUID;
+            let iBeaconId = iBeaconUUID + ".Maj:" + stone.config.iBeaconMajor + ".Min:" + stone.config.iBeaconMinor;
+
+            Alert.alert(
+              "How near is near?",
+              "You can choose the switching point between near and far! After you press OK you have 5 seconds to hold your phone where it usually is (in your pocket?)",
+              [{text: 'Cancel', style: 'cancel'}, {
+                text: 'OK', onPress: () => {
+                  // show loading bar
+                  this.props.eventBus.emit("showLoading", "Put your phone in your pocket or somewhere it usually is!");
+                  this.pocketTimeout = setTimeout(() => {
+                    this.defineThreshold(iBeaconId)
+                  }, 5000);
+                }
+              }]
+            );}
         });
+
+        if (stone.config.nearThreshold === null) {
+          items.push({
+            label: 'You need to define the near range before you can use this feature.',
+            style: {paddingBottom: 0},
+            type: 'explanation',
+            below: true
+          });
+        }
       }
+
+
     }
     else {
       if (stone.config.locationId !== null) {
@@ -331,9 +332,8 @@ export class DeviceBehaviourEdit extends Component {
       }
     }
 
-    items.push({label: 'FEATURES', type: 'explanation', style: styles.topExplanation, below:false});
-    items.push({label: 'Only turn on after sunset', type: 'switch', value: device.config.onlyOnAfterSunset});
-    items.push({label: 'This feature ', style:{paddingBottom:0}, type: 'explanation', below: true});
+    items.push({label: 'EXCEPTIONS', type: 'explanation', style: styles.topExplanation, below:false});
+    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: device.config.onlyOnIfDark});
     items.push({type:  'spacer'});
 
     return items;

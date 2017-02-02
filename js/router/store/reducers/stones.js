@@ -36,7 +36,7 @@ let defaultSettings = {
     rssi: -1000,
     touchToToggle: true,
     disabled: true,
-    onlyOnAfterSunset: false,
+    onlyOnWhenDark: false,
     updatedAt: 1,
   },
   state: {
@@ -117,7 +117,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.iBeaconMinor      = update(action.data.iBeaconMinor,      newState.iBeaconMinor);
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
         newState.handle            = update(action.data.handle,            newState.handle);
-        newState.onlyOnAfterSunset = update(action.data.onlyOnAfterSunset, newState.onlyOnAfterSunset);
+        newState.onlyOnWhenDark = update(action.data.onlyOnWhenDark, newState.onlyOnWhenDark);
         newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
         newState.nearThreshold     = update(action.data.nearThreshold,     newState.nearThreshold);
         newState.disabled          = update(action.data.disabled,          newState.disabled);

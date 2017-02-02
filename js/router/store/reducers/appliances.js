@@ -7,7 +7,7 @@ let defaultSettings = {
     name: undefined,
     icon: undefined,
     dimmable: false,
-    onlyOnAfterSunset: null,
+    onlyOnWhenDark: null,
     updatedAt: 1
   },
   linkedAppliances: { 
@@ -37,7 +37,7 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.name      = update(action.data.name,     newState.name);
         newState.icon      = update(action.data.icon,     newState.icon);
         newState.dimmable  = update(action.data.dimmable, newState.dimmable);
-        newState.onlyOnAfterSunset  = update(action.data.onlyOnAfterSunset, newState.onlyOnAfterSunset);
+        newState.onlyOnWhenDark  = update(action.data.onlyOnWhenDark, newState.onlyOnWhenDark);
         newState.updatedAt = getTime(action.data.updatedAt);
         return newState;
       }

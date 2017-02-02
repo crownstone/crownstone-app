@@ -136,7 +136,7 @@ function handleStoneBehaviourInCloud(action, state) {
       major:       stoneConfig.iBeaconMajor,
       minor:       stoneConfig.iBeaconMinor,
       uid:         stoneConfig.crownstoneId,
-      onlyOnAfterSunset:         stoneConfig.onlyOnAfterSunset,
+      onlyOnWhenDark:         stoneConfig.onlyOnWhenDark,
       json:        behaviourJSON,
       updatedAt:   stoneConfig.updatedAt,
     };
@@ -160,7 +160,7 @@ function handleStoneInCloud(action, state) {
     major:       stoneConfig.iBeaconMajor,
     minor:       stoneConfig.iBeaconMinor,
     uid:         stoneConfig.crownstoneId,
-    onlyOnAfterSunset:         stoneConfig.onlyOnAfterSunset,
+    onlyOnWhenDark:         stoneConfig.onlyOnWhenDark,
     updatedAt:   stoneConfig.updatedAt,
   };
 
@@ -199,7 +199,7 @@ function handleApplianceInCloud(action, state) {
     icon: applianceConfig.icon,
     id: applianceId,
     sphereId: sphereId,
-    onlyOnAfterSunset: applianceConfig.onlyOnAfterSunset,
+    onlyOnWhenDark: applianceConfig.onlyOnWhenDark,
     updatedAt: applianceConfig.updatedAt,
   };
 
@@ -216,7 +216,7 @@ function handleApplianceBehaviourInCloud(action, state) {
     let data = {
       id:       applianceId,
       icon:     applianceConfig.icon,
-      onlyOnAfterSunset: applianceConfig.onlyOnAfterSunset,
+      onlyOnWhenDark: applianceConfig.onlyOnWhenDark,
       sphereId: sphereId,
       json:     behaviourJSON,
       updatedAt: applianceConfig.updatedAt
@@ -251,8 +251,10 @@ function handleSphereInCloud(action, state) {
     aiSex: sphereConfig.aiSex,
     exitDelay: sphereConfig.exitDelay,
     meshAccessAddress: sphereConfig.meshAccessAddress,
-    latitude: sphereConfig.latitude,
-    longitude: sphereConfig.longitude,
+    gpsLocation:{
+      lat: sphereConfig.latitude,
+      lng: sphereConfig.longitude,
+    },
     name: sphereConfig.name,
     uuid: sphereConfig.iBeaconUUID,
     updatedAt: sphereConfig.updatedAt,
