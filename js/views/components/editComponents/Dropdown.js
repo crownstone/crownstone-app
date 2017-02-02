@@ -149,15 +149,15 @@ export class Dropdown extends Component {
           }}>
             <View style={[styles.listView, {height:this.props.barHeight}]}>
               {this.props.valueRight === true ?
-                <Text style={[styles.listTextLarge, this.props.labelStyle]}>{this.props.label}</Text>
+                <Text style={[{fontSize:16}, this.props.labelStyle]}>{this.props.label}</Text>
                 :
                 <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
               }
-              <Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
+              <Text style={[{flex:1, fontSize:16 }, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
             </View>
           </TouchableHighlight>
           <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor:'#fff'}}>
-            <View style={{position:'relative', top: 0, height:dropHeight}}>
+            <View style={{position:'relative', top: -0.5*(dropHeight-this.props.barHeight), height: dropHeight}}>
               {this._getPicker()}
             </View>
             {this._getButtonBar()}

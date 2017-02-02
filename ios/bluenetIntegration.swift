@@ -417,6 +417,16 @@ open class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenetLocalization.stopIndoorLocalization()
   }
   
+  
+  @objc func requestLocation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    let coordinates = GLOBAL_BLUENET!.bluenetLocalization.requestLocation()
+    var returnType = [String: NSNumber]();
+    returnType["latitude"] = NSNumber(value: coordinates.latitude)
+    returnType["longitude"] = NSNumber(value: coordinates.longitude)
+    
+    callback([["error" : false, "data": returnType]])
+  }
+  
   @objc func requestLocationPermission() -> Void {
     print("BluenetBridge: Requesting Permission")
     GLOBAL_BLUENET!.bluenetLocalization.requestLocationPermission()

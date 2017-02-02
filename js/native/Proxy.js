@@ -28,6 +28,7 @@ if (DISABLE_NATIVE === true) {
     startIndoorLocalization: () => {},
     stopIndoorLocalization: () => {},
 
+    requestLocation: () => {},          // called through BleActions --> must be promise.
     requestLocationPermission: () => {},
     trackIBeacon: () => {},
     stopTrackingIBeacon: () => {},
@@ -153,7 +154,8 @@ export const BleActions = {
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },
   setupCrownstone:      (dataObject) => { return BluenetPromise('setupCrownstone', dataObject); },
   setSettings:          (dataObject) => { return BluenetPromise('setSettings',     dataObject); },
-  recover:              (handle)     => { return BluenetPromise('recover',         handle);     },
+  requestLocation:      ()           => { return BluenetPromise('requestLocation');             },
+  recover:              (handle)     => { return BluenetPromise('recover', handle);             },
   finalizeFingerprint:  (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:  ()           => { return BluenetPromise('commandFactoryReset');         },
 };

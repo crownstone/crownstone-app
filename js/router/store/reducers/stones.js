@@ -36,6 +36,7 @@ let defaultSettings = {
     rssi: -1000,
     touchToToggle: true,
     disabled: true,
+    onlyOnAfterSunset: false,
     updatedAt: 1,
   },
   state: {
@@ -106,22 +107,23 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name            = update(action.data.name,            newState.name);
-        newState.icon            = update(action.data.icon,            newState.icon);
-        newState.type            = update(action.data.type,            newState.type);
-        newState.applianceId     = update(action.data.applianceId,     newState.applianceId);
-        newState.locationId      = update(action.data.locationId,      newState.locationId);
-        newState.macAddress      = update(action.data.macAddress,      newState.macAddress);
-        newState.iBeaconMajor    = update(action.data.iBeaconMajor,    newState.iBeaconMajor);
-        newState.iBeaconMinor    = update(action.data.iBeaconMinor,    newState.iBeaconMinor);
-        newState.firmwareVersion = update(action.data.firmwareVersion, newState.firmwareVersion);
-        newState.handle          = update(action.data.handle,          newState.handle);
-        newState.crownstoneId    = update(action.data.crownstoneId,    newState.crownstoneId);
-        newState.nearThreshold   = update(action.data.nearThreshold,   newState.nearThreshold);
-        newState.disabled        = update(action.data.disabled,        newState.disabled);
-        newState.rssi            = update(action.data.rssi,            newState.rssi);
-        newState.touchToToggle   = update(action.data.touchToToggle,   newState.touchToToggle);
-        newState.updatedAt       = getTime(action.data.updatedAt);
+        newState.name              = update(action.data.name,              newState.name);
+        newState.icon              = update(action.data.icon,              newState.icon);
+        newState.type              = update(action.data.type,              newState.type);
+        newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
+        newState.locationId        = update(action.data.locationId,        newState.locationId);
+        newState.macAddress        = update(action.data.macAddress,        newState.macAddress);
+        newState.iBeaconMajor      = update(action.data.iBeaconMajor,      newState.iBeaconMajor);
+        newState.iBeaconMinor      = update(action.data.iBeaconMinor,      newState.iBeaconMinor);
+        newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
+        newState.handle            = update(action.data.handle,            newState.handle);
+        newState.onlyOnAfterSunset = update(action.data.onlyOnAfterSunset, newState.onlyOnAfterSunset);
+        newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
+        newState.nearThreshold     = update(action.data.nearThreshold,     newState.nearThreshold);
+        newState.disabled          = update(action.data.disabled,          newState.disabled);
+        newState.rssi              = update(action.data.rssi,              newState.rssi);
+        newState.touchToToggle     = update(action.data.touchToToggle,     newState.touchToToggle);
+        newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

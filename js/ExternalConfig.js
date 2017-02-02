@@ -3,8 +3,8 @@ import { Platform } from 'react-native'
 
 const DeviceInfo = require('react-native-device-info');
 
-export const CLOUD_ADDRESS = 'https://crownstone-cloud.herokuapp.com/api/';
-
+// refer to the DEV cloud
+export let CLOUD_ADDRESS = 'https://crownstone-cloud-dev.herokuapp.com/api/';
 
 export let DEBUG           = true;  // enabling Debug behaviour throughout the app.
 export let DEBUG_STORE     = true; // enabling LOGStore      commands to be shown.
@@ -37,9 +37,14 @@ export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
 export const KEEPALIVE_REPEAT_INTERVAL = 5000; // ms
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = false;
+export const RELEASE_MODE = true && DeviceInfo.getModel() !== "Simulator";
 
 if (RELEASE_MODE) {
+  LOG("====================   ============================   ===================");
+  LOG("====================   === RUNNING RELEASE MODE ===   ===================");
+  LOG("====================   ============================   ===================");
+  CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
+
   DEBUG           = false;
   DEBUG_STORE     = false;
   DEBUG_SCHEDULER = false;
@@ -54,4 +59,9 @@ if (RELEASE_MODE) {
   SILENCE_CLOUD   = false;
   OVERRIDE_DATABASE = false;
   ENCRYPTION_ENABLED = true;
+}
+else {
+  LOG("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
+  LOG("!!!!!!!!!!!!!!!!!!   !!! RUNNING DEVELOPMENT MODE !!!   !!!!!!!!!!!!!!!!!");
+  LOG("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
 }

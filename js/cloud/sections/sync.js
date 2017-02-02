@@ -199,10 +199,10 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
      */
     if (sphereInState === undefined) {
       addedSphere = true;
-      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex, exitDelay: sphere.exitDelay || 120}});
+      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex, exitDelay: sphere.exitDelay || 120, latitude: sphere.latitude, longitude: sphere.longitude}});
     }
     else if (getTimeDifference(sphereInState.config, sphere) < 0) {
-      actions.push({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex, exitDelay: sphere.exitDelay || 120}});
+      actions.push({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex, exitDelay: sphere.exitDelay || 120, latitude: sphere.latitude, longitude: sphere.longitude}});
       adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
     else {
@@ -337,6 +337,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
               applianceId:   stone_from_cloud.applianceId,
               locationId:    locationLinkId,
               macAddress:    stone_from_cloud.address,
+              onlyOnAfterSunset:    stone_from_cloud.onlyOnAfterSunset,
               iBeaconMajor:  stone_from_cloud.major,
               iBeaconMinor:  stone_from_cloud.minor,
               crownstoneId:  stone_from_cloud.uid,
@@ -354,6 +355,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             id:            stone_from_cloud.id,
             touchToToggle: stoneInState.config.touchToToggle,
             type:          stoneInState.config.type,
+            onlyOnAfterSunset:          stoneInState.config.onlyOnAfterSunset,
             applianceId:   stoneInState.config.applianceId,
             sphereId:      sphere.id,
             major:         stoneInState.config.iBeaconMajor,
@@ -395,6 +397,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             name: stone_from_cloud.name,
             icon: stone_from_cloud.icon,
             type: stone_from_cloud.type,
+            onlyOnAfterSunset: stone_from_cloud.onlyOnAfterSunset,
             touchToToggle: stone_from_cloud.touchToToggle,
             applianceId: stone_from_cloud.applianceId,
             locationId: locationLinkId,
@@ -450,6 +453,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             name: applianceInState.config.name,
             icon: applianceInState.config.icon,
             id: appliance_from_cloud.id,
+            onlyOnAfterSunset: appliance_from_cloud.onlyOnAfterSunset,
             sphereId: sphere.id,
             updatedAt: applianceInState.config.updatedAt,
           };
@@ -467,6 +471,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
         actions.push({
           type: 'ADD_APPLIANCE',
           sphereId: sphere.id,
+          onlyOnAfterSunset: appliance_from_cloud.onlyOnAfterSunset,
           applianceId: appliance_from_cloud.id,
           data: {name: appliance_from_cloud.name, icon: appliance_from_cloud.icon, updatedAt: appliance_from_cloud.updatedAt}
         });

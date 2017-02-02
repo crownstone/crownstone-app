@@ -2,6 +2,9 @@
 
 To be Released:
 
+- Revoked permission of Guest to setup Crownstones.
+- Added option to only turn on Crownstones when it is dark outside.
+- Changed the behaviour interface to be easier to use.
 - [Android] Setup Localization button to sidebar.
 - [Android] Added force quit to sidebar.
 - [Android] Fixed picker object for Android

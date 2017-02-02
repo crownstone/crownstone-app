@@ -38,6 +38,7 @@ RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 
 
 // Bluenet localization
+RCT_EXTERN_METHOD(requestLocation:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(requestLocationPermission)
 RCT_EXTERN_METHOD(forceClearActiveRegion)
 RCT_EXTERN_METHOD(startIndoorLocalization)
