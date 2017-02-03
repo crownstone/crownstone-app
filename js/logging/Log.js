@@ -11,6 +11,7 @@ import {
   LOG_TO_FILE,
 } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
+import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/eventBus'
 import { safeDeleteFile } from '../util/util'
 const DeviceInfo = require('react-native-device-info');
@@ -106,7 +107,7 @@ export const LOG = {
         console.log.apply(this, args);
     }
   },
-}
+};
 
 
 function getFilename(timestamp) {
@@ -194,10 +195,17 @@ class LogProcessorClass {
   constructor() {
     this.store = undefined;
     this.writeToFile = false;
+
   }
 
   loadStore(store) {
     this.store = store;
+
+    // use periodic events to clean the logs.
+    let triggerId = "LOG_CLEANING_TRIGGER";
+    Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds: 5*3600});
+    Scheduler.loadCallback(triggerId,() => { cleanLogs() }, true);
+
     eventBus.on("databaseChange", (data) => {
       if (data.change.changeUserDeveloperStatus === true) {
         this.refreshData();

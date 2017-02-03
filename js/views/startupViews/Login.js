@@ -16,8 +16,6 @@ import { LOG }            from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/util'
 import { prepareStoreForUser }                from '../../util/dataUtil'
-import { LocalizationUtil }                   from '../../native/LocalizationUtil'
-import { BluenetPromises, Bluenet }                from '../../native/Proxy'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'

@@ -6,13 +6,10 @@ import { StoneTracker } from './StoneTracker'
 import { RoomTracker } from './RoomTracker'
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from './../util/dataUtil'
 import { Scheduler } from './../logic/Scheduler';
-import { LOG, cleanLogs } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { getUUID } from '../util/util'
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
-
-
-const SunCalc = require('suncalc');
 
 class LocationHandlerClass {
   constructor() {
@@ -47,9 +44,6 @@ class LocationHandlerClass {
   }
 
   enterSphere(sphereId) {
-    // clean the logs
-    cleanLogs();
-
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
     // make sure we only do this once per sphere
