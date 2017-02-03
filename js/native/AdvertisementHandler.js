@@ -171,7 +171,7 @@ class AdvertisementHandlerClass {
       update();
     }
 
-    StoneStateHandler.receivedUpdate(advertisement.referenceId, ref.id, advertisement.rssi);
+    StoneStateHandler.receivedUpdate(advertisement.referenceId, stone, ref.id, advertisement.rssi);
   }
 }
 

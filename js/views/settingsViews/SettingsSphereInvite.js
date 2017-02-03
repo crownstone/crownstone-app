@@ -31,7 +31,6 @@ export class SettingsSphereInvite extends Component {
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
-    console.log("HERE", this.state)
     let items = [];
     items.push({type:'spacer'});
     items.push({
@@ -45,7 +44,7 @@ export class SettingsSphereInvite extends Component {
       placeholder: 'Send email to...',
       validationCallback: (newState) => {this.inputStates.email = newState},
       alwaysShowState: false,
-      callback: (newValue) => {console.log("INVOKE", newValue); this.setState({email:newValue});}
+      callback: (newValue) => { this.setState({email:newValue}); }
     });
 
 

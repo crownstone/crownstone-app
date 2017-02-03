@@ -67,11 +67,9 @@ export class StoneTracker {
     }
 
     let stone = sphere.stones[stoneId];
-    // element is either an appliance or a stone. If we have an application, we use its behaviour, if not, we use the stone's behaviour
-    let element = this._getElement(sphere, stone);
 
     // tell the handler that this stone/beacon is still in range.
-    StoneStateHandler.receivedIBeaconUpdate(sphereId, stoneId, rssi);
+    StoneStateHandler.receivedIBeaconUpdate(sphereId, stone, stoneId, rssi);
 
     // currentTime
     let now = new Date().valueOf();
@@ -97,7 +95,6 @@ export class StoneTracker {
     if (this.temporaryIgnore === true) {
       return;
     }
-
 
 
     // --------------------- Process the Tap-to-Toggle --------------------------- //
@@ -238,7 +235,6 @@ export class StoneTracker {
     }
   }
 
-
   _cleanupPendingActions(ref) {
     this._cleanupPendingActionsOfType(ref, TYPES.NEAR);
     this._cleanupPendingActionsOfType(ref, TYPES.AWAY);
@@ -255,16 +251,6 @@ export class StoneTracker {
       ref.cancelScheduledNearAction = false;
     }
   }
-
-  _getElement(sphere, stone) {
-    if (stone.config.applianceId) {
-      return sphere.appliances[stone.config.applianceId];
-    }
-    else {
-      return stone;
-    }
-  }
-
 
   /**
    * Todo: get smart map for this.

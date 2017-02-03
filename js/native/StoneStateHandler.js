@@ -2,6 +2,7 @@ import { LocationHandler } from '../native/LocationHandler';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log'
 import { getUUID } from '../util/util'
+import { eventBus } from '../util/eventBus'
 import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
 
@@ -30,9 +31,14 @@ class StoneStateHandlerClass {
     }
   }
 
-  receivedIBeaconUpdate(sphereId, stoneId, rssi) {
+  receivedIBeaconUpdate(sphereId, stone, stoneId, rssi) {
+    // internal event to tell the app this crownstone has been seen.
+    eventBus.emit('update_'+sphereId+'_'+stoneId, rssi);
+    eventBus.emit('updateMeshNetwork_'+stone.config.meshNetworkId, rssi);
+
+
     // only update rssi if there is a measureable difference.
-    if (Math.abs(this.store.getState().spheres[sphereId].stones[stoneId].config.rssi - rssi) > 3) {
+    if (stone.config.rssi - rssi > 3) {
       // update RSSI, we only use the ibeacon once since it has an average rssi
       Scheduler.loadOverwritableAction(TRIGGER_ID, stoneId, {
         type: 'UPDATE_STONE_RSSI',
@@ -45,7 +51,11 @@ class StoneStateHandlerClass {
     this.update(sphereId, stoneId);
   }
 
-  receivedUpdate(sphereId, stoneId, rssi) {
+  receivedUpdate(sphereId, stone, stoneId, rssi) {
+    // internal event to tell the app this crownstone has been seen.
+    eventBus.emit('update_'+sphereId+'_'+stoneId, rssi);
+    eventBus.emit('updateMeshNetwork_'+stone.config.meshNetworkId, rssi);
+    
     this.update(sphereId, stoneId);
   }
 

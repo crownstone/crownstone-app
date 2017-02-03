@@ -127,18 +127,21 @@ function handleStoneBehaviourInCloud(action, state) {
     let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
     let data = {
-      name:        stoneConfig.name,
-      address:     stoneConfig.macAddress,
-      icon:        stoneConfig.icon,
-      id:          stoneId,
-      applianceId: stoneConfig.applianceId,
-      sphereId:    sphereId,
-      major:       stoneConfig.iBeaconMajor,
-      minor:       stoneConfig.iBeaconMinor,
-      uid:         stoneConfig.crownstoneId,
-      onlyOnWhenDark:         stoneConfig.onlyOnWhenDark,
-      json:        behaviourJSON,
-      updatedAt:   stoneConfig.updatedAt,
+      applianceId:     stoneConfig.applianceId,
+      address:         stoneConfig.macAddress,
+      icon:            stoneConfig.icon,
+      id:              stoneId,
+      firmwareVersion: stoneConfig.firmwareVersion,
+      meshNetworkId:   stoneConfig.meshNetworkId,
+      major:           stoneConfig.iBeaconMajor,
+      minor:           stoneConfig.iBeaconMinor,
+      name:            stoneConfig.name,
+      onlyOnWhenDark:  stoneConfig.onlyOnWhenDark,
+      sphereId:        sphereId,
+      touchToToggle:   stoneConfig.touchToToggle,
+      updatedAt:       stoneConfig.updatedAt,
+      uid:             stoneConfig.crownstoneId,
+      json:            behaviourJSON,
     };
     CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
   }
@@ -150,18 +153,20 @@ function handleStoneInCloud(action, state) {
 
   let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
   let data = {
-    name:        stoneConfig.name,
-    address:     stoneConfig.macAddress,
-    icon:        stoneConfig.icon,
-    id:          stoneId,
-    touchToToggle: stoneConfig.touchToToggle,
-    applianceId: stoneConfig.applianceId,
-    sphereId:    sphereId,
-    major:       stoneConfig.iBeaconMajor,
-    minor:       stoneConfig.iBeaconMinor,
-    uid:         stoneConfig.crownstoneId,
-    onlyOnWhenDark:         stoneConfig.onlyOnWhenDark,
-    updatedAt:   stoneConfig.updatedAt,
+    applianceId:     stoneConfig.applianceId,
+    address:         stoneConfig.macAddress,
+    icon:            stoneConfig.icon,
+    id:              stoneId,
+    firmwareVersion: stoneConfig.firmwareVersion,
+    meshNetworkId:   stoneConfig.meshNetworkId,
+    major:           stoneConfig.iBeaconMajor,
+    minor:           stoneConfig.iBeaconMinor,
+    name:            stoneConfig.name,
+    onlyOnWhenDark:  stoneConfig.onlyOnWhenDark,
+    sphereId:        sphereId,
+    touchToToggle:   stoneConfig.touchToToggle,
+    updatedAt:       stoneConfig.updatedAt,
+    uid:             stoneConfig.crownstoneId,
   };
 
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});

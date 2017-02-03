@@ -1,6 +1,7 @@
 import { BlePromiseManager } from '../logic/BlePromiseManager'
 import { BluenetPromises, NativeBus, Bluenet } from './Proxy';
 import { LOG } from '../logging/Log'
+import { eventBus } from '../util/eventBus'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 import { getUUID } from '../util/util'
 
@@ -121,6 +122,10 @@ export const BleUtil = {
     return new SingleCommand(bleHandle)
   },
 
+  getMeshProxy: function (bleHandle) {
+    return new MeshCommand(bleHandle)
+  },
+
   /**
    *
    * @param id
@@ -166,6 +171,74 @@ export const BleUtil = {
 
 };
 
+/**
+ * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
+ */
+class BatchCommand {
+  constructor() {
+    this.commands = [];
+  }
+
+
+  /**
+   *
+   * @param stone
+   * @param commandString
+   * @param props
+   */
+  load(stone, commandString, props) {
+    this.commands.push({stone:stone, commandString:commandString, props: props})
+  }
+
+  execute(priority = true, immediate = false) {
+    let meshNetworks = {};
+
+    this.commands.forEach((todo) => {
+      let stoneConfig = todo.stone.config;
+      // mesh not supported / no mesh detected for this stone
+      if (stoneConfig.meshNetworkId === null) {
+        // handle this 1:1
+      }
+      else {
+        meshNetworks[stoneConfig.meshNetworkId] = {
+          keepAlive:[],
+          keepAliveState:[],
+          setSwitchState: {
+            manual:[],
+            sphereExit: [],
+            sphereEnter:[],
+            roomExit: [],
+            roomEnter:[]
+          },
+          other: []
+        };
+        if (todo.commandString === 'keepAlive') {
+          meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({crownstoneId: stoneConfig.crownstoneId});
+        }
+        else if (todo.commandString === 'keepAliveState') {
+          meshNetworks[stoneConfig.meshNetworkId].keepAliveState.push({
+            crownstoneId: stoneConfig.crownstoneId,
+            timeout: todo.props.timeout,
+            newState: todo.props.state,
+            changeState: todo.props.changeState,
+          });
+        }
+        else if (todo.commandString === 'setSwitchState') {
+          meshNetworks[stoneConfig.meshNetworkId].setSwitchState[todo.props.intent].push({
+            crownstoneId: stoneConfig.crownstoneId,
+            timeout: todo.props.timeout,
+            newState: todo.props.state,
+          });
+        }
+        else {
+          // handle the command via the mesh or 1:1
+        }
+      }
+    })
+  }
+}
+
+
 
 class SingleCommand {
   constructor(handle) {
@@ -186,11 +259,6 @@ class SingleCommand {
   performPriority(action, props = []) {
     LOG.info("BLEProxy: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this._perform(action, props, true)
-  }
-
-  // TODO: implement search before peforming
-  performWhenFound(action, props = [], rssiThreshold = -1000) {
-    this.perform(action,props);
   }
 
   _perform(action, props, priorityCommand) {

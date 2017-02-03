@@ -21,22 +21,23 @@ export let stoneTypes = {
 
 let defaultSettings = {
   config: {
-    name: 'Crownstone Plug',
     icon: 'c2-pluginFilled',
-    type: stoneTypes.plug,
     applianceId: null,
-    locationId: null,
-    macAddress: undefined,
+    crownstoneId: undefined,
+    disabled: true,
+    firmwareVersion: 0,
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
     handle: undefined,
-    crownstoneId: undefined,
-    firmwareVersion: 0,
+    locationId: null,
+    macAddress: undefined,
+    meshNetworkId: null,
+    name: 'Crownstone Plug',
     nearThreshold: null,
     rssi: -1000,
-    touchToToggle: true,
-    disabled: true,
     onlyOnWhenDark: false,
+    touchToToggle: true,
+    type: stoneTypes.plug,
     updatedAt: 1,
   },
   state: {
@@ -107,22 +108,23 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name              = update(action.data.name,              newState.name);
-        newState.icon              = update(action.data.icon,              newState.icon);
-        newState.type              = update(action.data.type,              newState.type);
-        newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
-        newState.locationId        = update(action.data.locationId,        newState.locationId);
-        newState.macAddress        = update(action.data.macAddress,        newState.macAddress);
-        newState.iBeaconMajor      = update(action.data.iBeaconMajor,      newState.iBeaconMajor);
-        newState.iBeaconMinor      = update(action.data.iBeaconMinor,      newState.iBeaconMinor);
-        newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
-        newState.handle            = update(action.data.handle,            newState.handle);
-        newState.onlyOnWhenDark = update(action.data.onlyOnWhenDark, newState.onlyOnWhenDark);
-        newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
-        newState.nearThreshold     = update(action.data.nearThreshold,     newState.nearThreshold);
-        newState.disabled          = update(action.data.disabled,          newState.disabled);
-        newState.rssi              = update(action.data.rssi,              newState.rssi);
-        newState.touchToToggle     = update(action.data.touchToToggle,     newState.touchToToggle);
+        newState.applianceId       = update(action.data.applianceId,     newState.applianceId);
+        newState.crownstoneId      = update(action.data.crownstoneId,    newState.crownstoneId);
+        newState.disabled          = update(action.data.disabled,        newState.disabled);
+        newState.firmwareVersion   = update(action.data.firmwareVersion, newState.firmwareVersion);
+        newState.handle            = update(action.data.handle,          newState.handle);
+        newState.icon              = update(action.data.icon,            newState.icon);
+        newState.iBeaconMajor      = update(action.data.iBeaconMajor,    newState.iBeaconMajor);
+        newState.iBeaconMinor      = update(action.data.iBeaconMinor,    newState.iBeaconMinor);
+        newState.locationId        = update(action.data.locationId,      newState.locationId);
+        newState.macAddress        = update(action.data.macAddress,      newState.macAddress);
+        newState.meshNetworkId     = update(action.data.meshNetworkId,   newState.meshNetworkId);
+        newState.name              = update(action.data.name,            newState.name);
+        newState.nearThreshold     = update(action.data.nearThreshold,   newState.nearThreshold);
+        newState.onlyOnWhenDark    = update(action.data.onlyOnWhenDark,  newState.onlyOnWhenDark);
+        newState.rssi              = update(action.data.rssi,            newState.rssi);
+        newState.touchToToggle     = update(action.data.touchToToggle,   newState.touchToToggle);
+        newState.type              = update(action.data.type,            newState.type);
         newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;
       }

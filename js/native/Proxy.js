@@ -3,6 +3,16 @@ import { DISABLE_NATIVE, DEBUG_BLE } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
+export const INTENTS = {
+  sphereEnter:'sphereEnter',
+  sphereExit:'sphereExit',
+  roomExit:'roomExit',
+  roomEnter:'roomEnter',
+  manual:'manual',
+};
+
+
+
 export let Bluenet;
 if (DISABLE_NATIVE === true) {
   LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
