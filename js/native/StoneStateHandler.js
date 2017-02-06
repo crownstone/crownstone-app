@@ -59,6 +59,11 @@ class StoneStateHandlerClass {
     this.update(sphereId, stoneId);
   }
 
+  receivedUpdateViaMesh(sphereId, stoneId) {
+    // update the visibility of the Crownstone
+    this.update(sphereId, stoneId);
+  }
+
   update(sphereId, stoneId) {
     // LOG.info("StoneStateHandlerUpdate", sphereId, stoneId);
 

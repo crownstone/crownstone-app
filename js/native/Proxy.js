@@ -4,11 +4,11 @@ import { LOG } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
 export const INTENTS = {
-  sphereEnter:'sphereEnter',
-  sphereExit:'sphereExit',
-  roomExit:'roomExit',
-  roomEnter:'roomEnter',
-  manual:'manual',
+  sphereEnter: 'sphereEnter',
+  sphereExit:  'sphereExit',
+  roomExit:    'roomExit',
+  roomEnter:   'roomEnter',
+  manual:      'manual',
 };
 
 

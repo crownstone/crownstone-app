@@ -7,6 +7,14 @@ import { LOG } from '../logging/Log'
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'
+import { MeshUtil } from './MeshUtil'
+
+
+export const Util = {
+  mesh: MeshUtil
+};
+
+
 
 export const getUUID = function() {
   const S4 = function () {

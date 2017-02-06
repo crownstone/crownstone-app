@@ -215,6 +215,13 @@ class SchedulerClass {
       this.flush(trigger, state);
   }
 
+  postponeTrigger(triggerId) {
+    let trigger = this.triggers[triggerId];
+
+    if (trigger)
+      this.postpone(trigger);
+  }
+
 
   checkSingleFires(now) {
     let triggerIds = Object.keys(this.singleFireTriggers);
@@ -239,6 +246,11 @@ class SchedulerClass {
     triggerIds.forEach((triggerId) => {
       this.flush(this.triggers[triggerId], state);
     });
+  }
+
+
+  postpone(trigger) {
+    trigger.lastTriggerTime = new Date().valueOf();
   }
 
 

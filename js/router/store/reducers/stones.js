@@ -82,6 +82,13 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
         return newState;
       }
       return state;
+    case 'UPDATE_MESH_NETWORK_ID': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
+      if (action.data) {
+        let newState = {...state};
+        newState.meshNetworkId   = update(action.data.meshNetworkId, newState.meshNetworkId);
+        return newState;
+      }
+      return state;
     case 'UPDATE_STONE_RSSI':
       if (action.data) {
         let newState = {...state};

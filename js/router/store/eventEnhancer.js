@@ -190,6 +190,7 @@ function checkAction(action, affectedIds) {
     case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_STATE':
     case 'REFRESH_DEFAULTS':
+    case 'UPDATE_MESH_NETWORK_ID':
       break;
     default:
       LOG.error("UNKNOWN ACTION TYPE:", action);
