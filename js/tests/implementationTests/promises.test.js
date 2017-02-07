@@ -121,23 +121,6 @@ test('Promise 5', function (t) {
 });
 
 
-test('Passing Promises', function (t) {
-  let failingPromise = () => {
-    return new Promise((resolve, reject) => {
-      reject(10);
-    })
-      .then((data) => {
-      })
-      .catch((err) => {
-      })
-  };
-
-  failingPromise()
-    .then((data) => {
-    })
-    .catch((err) => {
-    })
-});
 
 
 test('Promise All', function (t) {
@@ -152,3 +135,28 @@ test('Promise All', function (t) {
   })
 });
 
+
+test('Promise catch', function (t) {
+  let promise = new Promise((resolve, reject) => {
+    setTimeout(() => {reject(13)},40);
+  });
+
+  promise
+    .catch((err) => {
+      t.deepEqual(err, 13, 'err 1' );
+      throw new Error("Y")
+    })
+    .catch((err) => {
+      t.deepEqual(err.message, 'Y', 'err 2' );
+      throw new Error("Z")
+    })
+    .then(() => {
+      t.deepEqual(1, 'Z', 'should not be here' );
+    })
+    .catch((err) => {
+      t.deepEqual(err.message, 'Z', 'err 3' );
+      t.end();
+    })
+
+
+});

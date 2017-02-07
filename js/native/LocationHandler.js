@@ -4,10 +4,10 @@ import { BehaviourUtil } from '../util/BehaviourUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'
 import { RoomTracker } from './RoomTracker'
-import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from './../util/dataUtil'
+import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../util/DataUtil'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG } from '../logging/Log'
-import { getUUID } from '../util/util'
+import { getUUID } from '../util/Util'
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
 

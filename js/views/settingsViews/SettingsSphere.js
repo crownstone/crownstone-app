@@ -16,7 +16,7 @@ import { IconButton } from '../components/IconButton'
 import { Bluenet } from '../../native/Proxy'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getUserLevelInSphere, getStonesAndAppliancesInSphere, getAiData } from '../../util/dataUtil';
+import { getUserLevelInSphere, getStonesAndAppliancesInSphere, getAiData } from '../../util/DataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'

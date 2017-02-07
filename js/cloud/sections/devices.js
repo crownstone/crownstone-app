@@ -12,10 +12,10 @@ export const devices = {
     );
   },
 
-  updateDevice: function (data, background = true) {
+  updateDevice: function (deviceId, data, background = true) {
     return this._setupRequest(
       'PUT',
-      '/Devices/{id}',
+      '/Devices/' + deviceId,
       { data: data, background: background },
       'body'
     );
@@ -28,7 +28,6 @@ export const devices = {
       { background: background }
     );
   },
-
 
   deleteDevice: function(deviceId) {
     return this._setupRequest(

@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 
-import { getUUID } from '../../util/util';
+import { getUUID } from '../../util/Util';
 import { Icon } from './Icon';
 import { styles, colors } from '../styles'
 

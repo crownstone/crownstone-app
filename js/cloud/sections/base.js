@@ -1,6 +1,6 @@
 import { request, download } from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
-import { preparePictureURI } from '../../util/util'
+import { preparePictureURI } from '../../util/Util'
 import { EventBus } from '../../util/eventBus'
 import { LOG } from '../../logging/Log'
 

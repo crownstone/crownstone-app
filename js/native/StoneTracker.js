@@ -1,15 +1,15 @@
-import { Alert } from 'react-native';
+import { Alert, Vibration } from 'react-native';
 
-import { StoneStateHandler } from './StoneStateHandler'
-import { eventBus } from './../util/eventBus';
-import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS } from './../ExternalConfig';
-import { addDistanceToRssi } from './../util/util';
-import { BehaviourUtil } from '../util/BehaviourUtil';
-import { Scheduler } from './../logic/Scheduler';
-import { LOG } from '../logging/Log'
-import { canUseIndoorLocalizationInSphere } from '../util/dataUtil'
-import { Vibration } from 'react-native'
-import { TYPES } from '../router/store/reducers/stones'
+import { BleUtil, BluenetPromises, INTENTS }      from './Proxy'
+import { StoneStateHandler }                      from './StoneStateHandler'
+import { eventBus }                               from './../util/eventBus';
+import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS }       from './../ExternalConfig';
+import { addDistanceToRssi, Util }                from '../util/Util';
+import { BehaviourUtil }                          from '../util/BehaviourUtil';
+import { Scheduler }                              from './../logic/Scheduler';
+import { LOG }                                    from '../logging/Log'
+import { canUseIndoorLocalizationInSphere, getDeviceSpecs } from '../util/DataUtil'
+import { TYPES }                                  from '../router/store/reducers/stones'
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
@@ -99,23 +99,25 @@ export class StoneTracker {
 
     // --------------------- Process the Tap-to-Toggle --------------------------- //
 
+
+    let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
     // not all stones have touch to toggle enabled
-    if (stone.config.touchToToggle === true && state.user.tapToToggleCalibration !== null && state.user.tapToToggleCalibration !== undefined) {
+    if (stone.config.touchToToggle === true && tapToToggleCalibration !== null) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
       // the sign > is because the rssi is negative!
       if (ref.touchTempDisabled === true) {
-        // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to reenable it.
+        // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to re-enable it.
         // rssi measured must be smaller (-80) < (-49 + -4)
-        let enableDistance = addDistanceToRssi(state.user.tapToToggleCalibration, 0.35); // the + 0.35 meter makes sure a stationary phone will not continuously tap-to-toggle
+        let enableDistance = addDistanceToRssi(tapToToggleCalibration, 0.35); // the + 0.35 meter makes sure a stationary phone will not continuously tap-to-toggle
         if (rssi < enableDistance) {
           ref.touchTempDisabled = false;
         }
       }
       else {
         // LOG.info("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
-        if (rssi > state.user.tapToToggleCalibration && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
+        if (rssi > tapToToggleCalibration && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
           if (this.tapToToggleDisabled === false) {
-            LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', state.user.tapToToggleCalibration);
+            LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', tapToToggleCalibration);
             // notify the user by vibration that the crownstone will be switched.
             Vibration.vibrate(400, false);
 
@@ -125,7 +127,23 @@ export class StoneTracker {
             }
 
             let newState = stone.state.state > 0 ? 0 : 1;
-            this._applySwitchState(newState, stone, stoneId, sphereId);
+
+            let data = {state: newState};
+            if (newState === 0) {
+              data.currentUsage = 0;
+            }
+            let proxy = BleUtil.getProxy(stone.config.handle);
+            proxy.performPriority(BluenetPromises.setSwitchState, [newState, INTENTS.manual])
+              .then(() => {
+                this.props.store.dispatch({
+                  type: 'UPDATE_STONE_STATE',
+                  sphereId: this.props.sphereId,
+                  stoneId: stoneId,
+                  data: data
+                });
+              })
+              .catch((err) => {});
+
             ref.touchTime = now;
             ref.touchTempDisabled = true;
             return;

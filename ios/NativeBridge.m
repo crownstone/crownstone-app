@@ -27,7 +27,7 @@ RCT_EXTERN_METHOD(connect:(NSString *)uuid callback:(RCTResponseSenderBlock)call
 RCT_EXTERN_METHOD(disconnect:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
-RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state intent(NSString *)intent callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAliveState:(nonnull NSNumber *)changeState state:(nonnull NSNumber *)state timeout:(nonnull NSNumber *)timeout callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAlive:(RCTResponseSenderBlock)callback)
 
@@ -61,5 +61,10 @@ RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)lo
 
 RCT_EXTERN_METHOD(enableLoggingToFile:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)
+
+// MESH
+
+RCT_EXTERN_METHOD(switchCommandOverMesh:([NSArray *])crownstoneIds state(nonnull NSNumber *)state intent(NSString *)intent callback:(RCTResponseSenderBlock)callback)
+
 
 @end

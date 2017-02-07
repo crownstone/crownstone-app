@@ -1,5 +1,5 @@
 import { LOG } from '../logging/Log'
-import { getUUID } from './util'
+import { getUUID } from './Util'
 
 
 export class EventBus {

@@ -1,6 +1,6 @@
 import { CLOUD } from '../cloudAPI'
 import { LOG } from '../../logging/Log'
-import { getDeviceSpecs } from '../../util/dataUtil'
+import { getDeviceSpecs } from '../../util/DataUtil'
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -549,19 +549,23 @@ const syncDevices = function(store, actions, devices) {
 
     let deviceId = undefined;
     let deviceAddress = address;
+    let matchingDevice = undefined;
     for (let i = 0; i < devices.length; i++) {
       let device = devices[i];
       if (device.address === address) {
         deviceId = device.id;
+        matchingDevice = device[i];
         break;
       }
       else if (device.name === name && device.description === description) {
         deviceId = device.id;
         deviceAddress = device.address;
+        matchingDevice = device[i];
       }
       else if (device.description === description) {
         deviceId = device.id;
         deviceAddress = device.address;
+        matchingDevice = device[i];
       }
     }
 
@@ -588,8 +592,17 @@ const syncDevices = function(store, actions, devices) {
         store.dispatch({
           type: 'SET_APP_IDENTIFIER',
           data: {appIdentifier: deviceAddress}
+        });
+      }
+
+      // if the tap to toggle calibration is available and different from what we have stored, update it.
+      if (matchingDevice.tapToToggleCalibration && state.devices[deviceId].config.tapToToggleCalibration === null) {
+        store.dispatch({
+          type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
+          data: {tapToToggleCalibration: matchingDevice.tapToToggleCalibration}
         })
       }
+
       LOG.info("Sync: User device found in cloud, updating location.");
       updateUserLocationInCloud(state, deviceId)
         .then(resolve)

@@ -18,12 +18,12 @@ import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
 import { BleUtil } from '../../native/BleUtil'
-import { BluenetPromises, NativeBus } from '../../native/Proxy'
+import { BluenetPromises, INTENTS } from '../../native/Proxy'
 import { TopBar } from '../components/Topbar'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
-import { getUserLevelInSphere } from '../../util/dataUtil'
-import { getUUID } from '../../util/util'
+import { getUserLevelInSphere } from '../../util/DataUtil'
+import { Util } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
 import { 
   getPresentUsersInLocation,
@@ -32,9 +32,8 @@ import {
   enoughCrownstonesInLocationsForIndoorLocalization,
   canUseIndoorLocalizationInSphere,
   getFloatingStones
-} from '../../util/dataUtil'
+} from '../../util/DataUtil'
 import { Icon } from '../components/Icon'
-import { Separator } from '../components/Separator'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
 import { LOG } from '../../logging/Log'
 
@@ -145,7 +144,7 @@ export class RoomOverview extends Component {
                   data.currentUsage = 0;
                 }
                 let proxy = BleUtil.getProxy(item.stone.config.handle);
-                proxy.performPriority(BluenetPromises.setSwitchState, [switchState])
+                proxy.performPriority(BluenetPromises.setSwitchState, [switchState, INTENTS.manual])
                   .then(() => {
                     this.props.store.dispatch({
                       type: 'UPDATE_STONE_STATE',
@@ -255,7 +254,7 @@ export class RoomOverview extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    this.tapToToggleCalibration = state.user.tapToToggleCalibration;
+    this.tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
 
     let title = undefined;
     if (this.props.locationId !== null) {

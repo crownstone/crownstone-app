@@ -4,6 +4,37 @@ import { stoneTypes } from '../router/store/reducers/stones'
 
 const DeviceInfo = require('react-native-device-info');
 
+
+export const DataUtil = {
+
+  /**
+   * Get the ID of the device (phone model) we are currently using.
+   * @param state
+   * @param deviceAddress
+   * @returns {*}
+   */
+  getDeviceIdFromState: function(state, deviceAddress) {
+    let deviceIds = Object.keys(state.devices);
+    for (let i = 0; i < deviceIds.length; i++) {
+      if (state.devices[deviceIds[i]].config.address === deviceAddress) {
+        return deviceIds[i];
+      }
+    }
+    return null;
+  },
+
+  getTapToToggleCalibration: function(state) {
+    let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
+    let calibration = state.devices[deviceId].config.tapToToggleCalibration;
+    if (calibration) {
+      return calibration;
+    }
+    return null;
+  }
+
+};
+
+
 export const getStonesInLocation = function(state, sphereId, locationId) {
   let filteredStones = {};
   if (sphereId !== undefined) {

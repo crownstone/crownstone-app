@@ -1,7 +1,7 @@
 import { Bluenet } from '../../native/Proxy'
 import { BATCH } from './storeManager'
 import { LOG } from '../../logging/Log'
-import { canUseIndoorLocalizationInSphere } from '../../util/dataUtil'
+import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 
 
 /**

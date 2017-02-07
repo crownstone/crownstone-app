@@ -20,8 +20,8 @@ import { Icon } from '../Icon'
 import { CLOUD } from '../../../cloud/cloudAPI'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
 import { NativeBus, BluenetPromises } from '../../../native/Proxy'
-import { logOut, quitApp } from '../../../util/util'
-import { userHasPlugsInSphere, getPresentSphere } from '../../../util/dataUtil'
+import { logOut, quitApp, Util } from '../../../util/Util'
+import { userHasPlugsInSphere, getPresentSphere } from '../../../util/DataUtil'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
@@ -137,7 +137,7 @@ export class SideBar extends Component {
 
     if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
       let tapToToggleSettings = { tutorial: false };
-      if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+      if (Util.data.getTapToToggleCalibration(state)) {
         tapToToggleSettings.tutorial = true;
       }
 

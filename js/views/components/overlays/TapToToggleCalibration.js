@@ -10,7 +10,7 @@ import {
 
 import { LOG }                from '../../../logging/Log'
 import { BlePromiseManager }  from '../../../logic/BlePromiseManager'
-import { addDistanceToRssi }  from '../../../util/util'
+import { addDistanceToRssi }  from '../../../util/Util'
 import { stoneTypes }  from '../../../router/store/reducers/stones'
 import { OverlayBox }         from './OverlayBox'
 import { eventBus }                                   from '../../../util/eventBus'

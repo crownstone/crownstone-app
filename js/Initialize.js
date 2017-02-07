@@ -1,12 +1,13 @@
 import { Alert, AppState } from 'react-native'
 
-import { LOG }              from './logging/Log'
-import { CLOUD }            from './cloud/cloudAPI'
-import { LocalizationUtil } from './native/LocalizationUtil'
-import { Scheduler } from './logic/Scheduler'
-import { BluenetPromises, Bluenet, NativeBus } from './native/Proxy';
-import { eventBus }         from './util/eventBus'
-import { userHasPlugsInSphere }         from './util/dataUtil'
+import { LOG }                                  from './logging/Log'
+import { CLOUD }                                from './cloud/cloudAPI'
+import { LocalizationUtil }                     from './native/LocalizationUtil'
+import { Scheduler }                            from './logic/Scheduler'
+import { BluenetPromises, Bluenet, NativeBus }  from './native/Proxy';
+import { eventBus }                             from './util/eventBus'
+import { userHasPlugsInSphere, getDeviceSpecs } from './util/DataUtil'
+import { Util }                                 from './util/Util'
 
 
 /**
@@ -117,8 +118,19 @@ export const INITIALIZER = {
       refreshDatabase(store);
 
       // get the new state
-      state = store.getState();
+      let state = store.getState();
       Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
+
+      // update device specs:
+      let currentDeviceSpecs = getDeviceSpecs(state);
+      let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
+      if (currentDeviceSpecs.address && deviceInDatabaseId) {
+        let deviceInDatabase = state.devices[deviceInDatabaseId].config;
+        // if the address matches but the name does not, update the device name in the cloud.
+        if (deviceInDatabase.address === currentDeviceSpecs.address && currentDeviceSpecs.name != deviceInDatabase.name) {
+          store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {name: currentDeviceSpecs.name}})
+        }
+      }
 
       // configure the CLOUD network handler.
       let handler = function(error) {
@@ -143,7 +155,7 @@ export const INITIALIZER = {
       // trigger the CalibrateTapToToggle tutorial for existing users.
       NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
         let state = store.getState();
-        if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+        if (state.devices[deviceInDatabaseId].config.tapToToggleCalibration === null || state.devices[deviceInDatabaseId].config.tapToToggleCalibration === undefined) {
           if (userHasPlugsInSphere(state,sphereId))
             eventBus.emit("CalibrateTapToToggle");
         }

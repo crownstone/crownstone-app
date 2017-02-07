@@ -14,8 +14,8 @@ let Actions = require('react-native-router-flux').Actions;
 let sha1 = require('sha-1');
 import { LOG }            from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
-import { emailChecker, getImageFileFromUser } from '../../util/util'
-import { prepareStoreForUser }                from '../../util/dataUtil'
+import { emailChecker, getImageFileFromUser } from '../../util/Util'
+import { prepareStoreForUser }                from '../../util/DataUtil'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'

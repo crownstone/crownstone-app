@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import { styles, colors} from '../styles'
-import { preparePictureURI } from '../../util/util'
+import { preparePictureURI } from '../../util/Util'
 let Actions = require('react-native-router-flux').Actions;
 import { Icon } from './Icon';
 import { LOG } from '../../logging/Log'

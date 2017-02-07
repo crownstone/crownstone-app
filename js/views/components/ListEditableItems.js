@@ -1,7 +1,7 @@
 import React, { Component } from 'react' 
 import { EditableItem } from './EditableItem'
 import { SeparatedItemList } from './SeparatedItemList'
-import { getUUID } from '../../util/util'
+import { getUUID } from '../../util/Util'
 
 export class ListEditableItems extends Component {
   constructor() {

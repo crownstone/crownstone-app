@@ -13,7 +13,7 @@ import {
 import RNFS from 'react-native-fs'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/eventBus'
-import { safeDeleteFile } from '../util/util'
+import { safeDeleteFile } from '../util/Util'
 const DeviceInfo = require('react-native-device-info');
 
 export const LOG = {

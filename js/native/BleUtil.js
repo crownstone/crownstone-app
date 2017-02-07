@@ -1,9 +1,10 @@
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromises, NativeBus, Bluenet } from './Proxy';
+import { BluenetPromises, NativeBus, Bluenet, INTENTS } from './Proxy';
 import { LOG } from '../logging/Log'
+import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/eventBus'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
-import { getUUID } from '../util/util'
+import { getUUID, Util } from '../util/Util'
 
 
 export const BleUtil = {
@@ -47,8 +48,6 @@ export const BleUtil = {
       this.startHighFrequencyScanning(highFrequencyRequestUUID);
 
       let sortingCallback = (nearestItem) => {
-        //LOG.info("advertisement in nearest", nearestItem)
-
         if (typeof nearestItem == 'string') {
           nearestItem = JSON.parse(nearestItem);
         }
@@ -122,9 +121,9 @@ export const BleUtil = {
     return new SingleCommand(bleHandle)
   },
 
-  getMeshProxy: function (bleHandle) {
-    return new MeshCommand(bleHandle)
-  },
+  // getMeshProxy: function (bleHandle) {
+  //   return new MeshCommand(bleHandle)
+  // },
 
   /**
    *
@@ -175,22 +174,71 @@ export const BleUtil = {
  * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
  */
 class BatchCommand {
-  constructor() {
+  constructor(store, sphereId) {
     this.commands = [];
+
+    this.store = store;
+    this.sphereId = sphereId;
   }
 
 
   /**
    *
-   * @param stone
-   * @param commandString
-   * @param props
+   * @param { Object } stone          // Redux Stone Object
+   * @param { String } commandString  // String of a command that is in the BluenetPromise set
+   * @param { Array }  props          // Array of props that are fed into the BluenetPromise
    */
   load(stone, commandString, props) {
-    this.commands.push({stone:stone, commandString:commandString, props: props})
+    this.commands.push({handle: stone.config.handle, stone:stone, commandString:commandString, props: props})
   }
 
-  execute(priority = true, immediate = false) {
+
+  /**
+   *
+   * @param { Object } searchSettings   //  {
+   *                                    //    immediate: Boolean     // do not search before handling command.
+   *                                    //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
+   *                                    //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
+   *                                    //    timeout: Number        // Amount of time a search can take.
+   *                                    //  }
+   * @param { Boolean } priority        //  this will move any command to the top of the queue
+   */
+  execute(searchSettings = {}, priority = true) {
+    let { directCommands, meshNetworks } = this._extractTodo();
+
+    let meshNetworkIds = Object.keys(meshNetworks);
+    meshNetworkIds.forEach((networkId) => {
+      let promiseGenerator = () => { return new Promise((resolve, reject) => {
+
+        let helper = new MeshHelper(this.store, this.sphereId, networkId, meshNetworks[networkId]);
+        if (searchSettings.immediate === true) {
+
+        }
+        else {
+
+        }
+      })};
+
+      // search for stone in network, alternatively target stone
+
+      // create payload format
+
+      // send
+
+      // disconnect
+
+      // handle error
+    });
+
+    directCommands.forEach((networkId) => {
+
+    });
+
+
+  }
+
+  _extractTodo() {
+    let directCommands = [];
     let meshNetworks = {};
 
     this.commands.forEach((todo) => {
@@ -198,6 +246,7 @@ class BatchCommand {
       // mesh not supported / no mesh detected for this stone
       if (stoneConfig.meshNetworkId === null) {
         // handle this 1:1
+        directCommands.push({ ...todo })
       }
       else {
         meshNetworks[stoneConfig.meshNetworkId] = {
@@ -213,29 +262,298 @@ class BatchCommand {
           other: []
         };
         if (todo.commandString === 'keepAlive') {
-          meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({crownstoneId: stoneConfig.crownstoneId});
+          meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({handle: stoneConfig.handle});
         }
         else if (todo.commandString === 'keepAliveState') {
           meshNetworks[stoneConfig.meshNetworkId].keepAliveState.push({
             crownstoneId: stoneConfig.crownstoneId,
+            handle: stoneConfig.handle,
             timeout: todo.props.timeout,
-            newState: todo.props.state,
+            state: todo.props.state,
             changeState: todo.props.changeState,
           });
         }
         else if (todo.commandString === 'setSwitchState') {
           meshNetworks[stoneConfig.meshNetworkId].setSwitchState[todo.props.intent].push({
             crownstoneId: stoneConfig.crownstoneId,
+            handle: stoneConfig.handle,
             timeout: todo.props.timeout,
-            newState: todo.props.state,
+            state: todo.props.state,
           });
         }
         else {
           // handle the command via the mesh or 1:1
+          meshNetworks[stoneConfig.meshNetworkId].other.push({ ...todo });
+        }
+      }
+    });
+
+    return { directCommands, meshNetworks };
+  }
+
+}
+
+
+class MeshHelper {
+  constructor(store, sphereId, meshNetworkId, meshInstruction) {
+    this.store = store;
+    this.sphereId = sphereId;
+    this.meshNetworkId = meshNetworkId;
+    this.meshInstruction = meshInstruction;
+    this.targets = this._getConnectionTargets();
+
+    this.performAdditionalKeepalive = (this.meshInstruction.keepAlive.length > 0 || this.meshInstruction.keepAliveState.length > 0) === false;
+  }
+
+  /**
+   * Search the commands for all possible targets.
+   * @param commands
+   * @returns {{}}
+   * @private
+   */
+  _getTargetsFromCommands(commands) {
+    let targets = {};
+    if (commands && Array.isArray(commands)) {
+      commands.forEach((command) => {
+        if (command.handle) {
+          targets[command.handle] = true;
+        }
+      })
+
+    }
+    return targets
+  }
+
+  /**
+   * This method return an object of handles as keys. It prioritizes handles that are used for more responsive events.
+   * @returns {{}}
+   * @private
+   */
+  _getConnectionTargets() {
+    let targets = {};
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.manual])};
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.roomEnter])};
+
+    if (Object.keys(targets) > 0) {
+      return targets;
+    }
+
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.roomExit])};
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.sphereEnter])};
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.sphereExit])};
+
+    if (Object.keys(targets) > 0) {
+      return targets;
+    }
+
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.keepAliveState)};
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.keepAlive)};
+
+    if (Object.keys(targets) > 0) {
+      return targets;
+    }
+
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.other)};
+
+    return targets;
+  }
+
+  /**
+   * @param { Object } searchSettings //  {
+   *                                  //    immediate: Boolean     // do not search before handling command.
+   *                                  //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
+   *                                  //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
+   *                                  //    timeout: Number        // Amount of time a search can take.
+   *                                  //  }
+   * @param { Number } rssiThreshold
+   */
+  search(searchSettings, rssiThreshold = null) {
+    if (searchSettings.immediate === true) {
+      return this._searchDatabase(rssiThreshold)
+    }
+    else {
+      return this._searchScan(rssiThreshold, searchSettings.timeout);
+    }
+  }
+
+  /**
+   * return Promise which will resolve to a handle to connect to.
+   * @private
+   */
+  _searchScan(rssiThreshold = null, timeout = 5000) {
+    let state = this.store.getState();
+    let stones = Util.mesh.getStonesInNetwork(state, this.sphereId, this.meshNetworkId);
+
+    return new Promise((resolve, reject) => {
+      // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
+      let unsubscribeListener = eventBus.on('updateMeshNetwork_'+this.sphereId+this.meshNetworkId, (data) => {
+        if (rssiThreshold === null || data.rssi > rssiThreshold) {
+          // remove current listener
+          unsubscribeListener();
+
+          // remove cleanup callback
+          clearCleanupCallback();
+
+          // resolve with the handle.
+          resolve(data.handle);
+        }
+      });
+
+      // scheduled timeout in case the
+      let clearCleanupCallback = Scheduler.scheduleCallback(() => {
+        // remove the listener
+        unsubscribeListener();
+
+        reject(new Error("No stones found before timeout."));
+      }, timeout, 'Looking for MeshNetwork:'+this.meshNetworkId)
+    })
+  }
+
+  /**
+   * return Promise which will resolve to a handle to connect to.
+   * @private
+   */
+  _searchDatabase(rssiThreshold = null) {
+    return new Promise((resolve, reject) => {
+      let state = this.store.getState();
+      let stones = Util.mesh.getStonesInNetwork(state, this.sphereId, this.meshNetworkId, rssiThreshold);
+
+      if (stones.length === 0) {
+        reject(new Error("No stones available with threshold: " + rssiThreshold));
+      }
+      else {
+        let bestRssi = -1000;
+        let bestRssiStoneHandle = null;
+        let bestTargetRssi = -1000;
+        let bestTargetRssiStoneHandle = null;
+
+        for (let i = 0; i < stones.length; i++) {
+          if (stones[i].stone.config.handle) {
+            if (this.targets[stones[i].id] === true) {
+              if (bestTargetRssi < stones[i].stone.config.rssi) {
+                bestTargetRssi = stones[i].stone.config.rssi;
+                bestTargetRssiStoneHandle = stones[i].stone.config.handle;
+              }
+            }
+            if (bestRssi < stones[i].stone.config.rssi) {
+              bestRssi = stones[i].stone.config.rssi;
+              bestRssiStoneHandle = stones[i].stone.config.handle;
+            }
+          }
+        }
+
+        // if one of the targets is in range, see if we want to connect to that.
+        if (bestTargetRssiStoneHandle !== null) {
+          // if the best rssi is really much better than the best target, use the best one for a more reliable connection
+          if (bestRssi - bestTargetRssi > 20 && bestTargetRssiStoneHandle < -85) {
+            resolve(bestRssiStoneHandle);
+          }
+          else {
+            resolve(bestTargetRssiStoneHandle);
+          }
+        }
+        else {
+          resolve(bestRssiStoneHandle)
         }
       }
     })
   }
+
+  /**
+   * Process the mesh request
+   * @param { Object } searchSettings  //  {
+   *                                   //    immediate: Boolean     // do not search before handling command.
+   *                                   //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
+   *                                   //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
+   *                                   //    timeout: Number        // Amount of time a search can take.
+   *                                   //  }
+   */
+  process(searchSettings) {
+    return new Promise((resolve, reject) => {
+      this.search(searchSettings, -90)
+        .catch(() => {
+          // could not find any node withing a -90 threshold
+          LOG.error('MeshHelper: Could not find any nodes of the mesh network:', this.meshNetworkId, 'within -90 db. Attempting removal of threshold...');
+          return this.search(searchSettings, null);
+        })
+        .catch(() => {
+          LOG.error('MeshHelper: Can not connect to any node in the mesh network: ', this.meshNetworkId);
+          throw new Error('Can not connect to any node in the mesh network: ' + this.meshNetworkId);
+        })
+        .then((handle) => {
+          return BluenetPromises.connect(handle)
+        })
+        .then((channelsUsed) => { return this._handleSetSwitchStateCommands(channelsUsed); })
+        .then((channelsUsed) => { return this._handleOtherCommands(channelsUsed);          })
+        .then((channelsUsed) => { return this._handleKeepAliveCommands(channelsUsed);      })
+        .then(() => {
+          LOG.info('MeshHelper: completed disconnecting');
+          resolve();
+          return BluenetPromises.disconnect();
+        })
+        .catch((err) => {
+          LOG.error("MeshHelper: BLE Single command Error:", err);
+          BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
+        });
+
+        // first handle the enter events
+        //    if connected, process all we can over this connection
+        //    we need to do switches, keepalives any time (if t < x)
+
+        // then handle an other
+
+        // then handle a keep alive ( state ? )
+
+        // then loop back around
+    })
+
+
+
+  }
+
+  _handleSetSwitchStateCommands() {
+
+  }
+
+  _handleSetSwitchState(instructionSet) {
+    return new Promise((resolve, reject) => {
+      if (instructionSet.length > 1) {
+
+      }
+      else if (instructionSet.length === 1) {
+        //TODO: resume work on this.
+        return BluenetPromises('commandViaMesh', [instructionSet[0].crownstoneId], 'setSwitchState', { state: instructionSet[0].state, intent:INTENTS.manual })
+      }
+      else {
+        resolve({});
+      }
+    })
+  }
+
+  _handleOtherCommands() {
+    return new Promise((resolve, reject) => {
+
+    })
+  }
+
+  _handleKeepAliveCommands() {
+    return new Promise((resolve, reject) => {
+
+    })
+  }
+
+
+  // search
+
+  // construct messages
+
+  // connect
+
+  // send 1
+
+  // keepalive (?)
+
+  // send more
 }
 
 
@@ -291,3 +609,14 @@ class SingleCommand {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+

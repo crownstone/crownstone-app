@@ -14,7 +14,7 @@ import { TopBar } from './../components/Topbar'
 import { Background } from './../components/Background'
 import { IconCircle } from './../components/IconCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from './../../util/dataUtil'
+import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { LOG } from './../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;

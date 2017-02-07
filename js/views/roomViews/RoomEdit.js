@@ -14,7 +14,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
-import { getStonesInLocation, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
+import { getStonesInLocation, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors } from './../styles'
 import { LOG } from './../../logging/Log'

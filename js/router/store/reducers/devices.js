@@ -6,12 +6,20 @@ let defaultSettings = {
     address: null,
     description: null,
     location: null,
+    tapToToggleCalibration: null,
     updatedAt: 1
   },
 };
 
 let deviceConfigReducer = (state = defaultSettings.config, action = {}) => {
   switch (action.type) {
+    case 'SET_TAP_TO_TOGGLE_CALIBRATION':
+      if (action.data) {
+        let newState = {...state};
+        newState.tapToToggleCalibration = update(action.data.tapToToggleCalibration, newState.tapToToggleCalibration);
+        return newState;
+      }
+      return state;
     case 'ADD_DEVICE':
     case 'UPDATE_DEVICE_CONFIG':
       if (action.data) {
@@ -20,6 +28,7 @@ let deviceConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.address     = update(action.data.address,     newState.address);
         newState.description = update(action.data.description, newState.description);
         newState.location    = update(action.data.location,    newState.location);
+        newState.tapToToggleCalibration = update(action.data.tapToToggleCalibration, newState.tapToToggleCalibration);
         newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;
       }

@@ -4,7 +4,7 @@ import { LOG } from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS, KEEPALIVE_REPEAT_INTERVAL } from '../ExternalConfig';
 import { BluenetPromises } from './Proxy';
 import { BleUtil } from './BleUtil';
-import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/dataUtil'
+import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
 
 import { stoneTypes, TYPES } from '../router/store/reducers/stones'
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';

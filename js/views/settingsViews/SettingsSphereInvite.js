@@ -14,7 +14,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getUserLevelInSphere } from '../../util/dataUtil';
+import { getUserLevelInSphere } from '../../util/DataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 

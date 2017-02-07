@@ -1,6 +1,9 @@
 import { LOG } from './logging/Log'
 import { Platform } from 'react-native'
 
+export const VERSION = '0.8.0:D0.0.0';
+
+
 const DeviceInfo = require('react-native-device-info');
 
 // refer to the DEV cloud

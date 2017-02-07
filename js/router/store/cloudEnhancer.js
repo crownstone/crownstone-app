@@ -1,5 +1,5 @@
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getUserLevelInSphere, getCurrentDeviceId } from '../../util/dataUtil'
+import { getUserLevelInSphere, getCurrentDeviceId } from '../../util/DataUtil'
 import { BATCH } from './storeManager'
 import { LOG } from '../../logging/Log'
 
@@ -89,6 +89,12 @@ function handleAction(action, returnValue, newState, oldState) {
       break;
     case 'USER_ENTER_LOCATION':
       handleUserLocationEnter(action, newState);
+      break;
+
+
+    case 'SET_TAP_TO_TOGGLE_CALIBRATION':
+    case 'UPDATE_DEVICE_CONFIG':
+      handleDeviceInCloud(action, newState);
       break;
   }
 }
@@ -287,4 +293,21 @@ function handleUserLocationExit(action, state) {
     CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {
     });
   }
+}
+
+
+function handleDeviceInCloud(action, state) {
+  let deviceId = action.stoneId;
+
+  let deviceConfig = state.devices[deviceId].config;
+  let data = {
+    name: deviceConfig.name,
+    address: deviceConfig.address,
+    description: deviceConfig.description,
+    location: deviceConfig.location,
+    tapToToggleCalibration: deviceConfig.tapToToggleCalibration,
+    updatedAt: deviceConfig.updatedAt
+  };
+
+  CLOUD.updateDevice(deviceId, data).catch(() => {});
 }

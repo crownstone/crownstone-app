@@ -1,8 +1,15 @@
 export const MeshUtil = {
 
-
-  getStonesInNetwork: function(state, sphereId, networkId) {
-    if (networkId === null) {
+  /**
+   * Returns an array of all the stones in the mesh network, optionally filtered for matching an rssi threshold.
+   * @param state
+   * @param sphereId
+   * @param meshNetworkId
+   * @param rssiThreshold
+   * @returns {Array}
+   */
+  getStonesInNetwork: function(state, sphereId, meshNetworkId, rssiThreshold = null) {
+    if (meshNetworkId === null) {
       return [];
     }
 
@@ -13,8 +20,16 @@ export const MeshUtil = {
 
     for (let i = 0; i < stoneIds.length; i++) {
       let stone = sphere.stones[stoneIds[i]];
-      if (stone.config.meshNetworkId === networkId) {
-        result.push({id: stoneIds[i], stone: stone});
+      if (stone.config.meshNetworkId === meshNetworkId) {
+        // allow this method to be used to filter for specific rssi requirements on the mesh network.
+        if (rssiThreshold !== null) {
+          if (stone.config.disabled === false && stone.config.rssi > rssiThreshold) {
+            result.push({id: stoneIds[i], stone: stone});
+          }
+        }
+        else {
+          result.push({id: stoneIds[i], stone: stone});
+        }
       }
     }
 

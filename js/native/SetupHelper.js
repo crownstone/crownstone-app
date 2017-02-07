@@ -5,6 +5,7 @@ import { BluenetPromises, NativeBus } from './Proxy';
 import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus'
+import { Util } from '../util/Util'
 import { CLOUD } from '../cloud/cloudAPI'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 
@@ -122,8 +123,8 @@ export class SetupHelper {
               resolve();
 
               // start the tap-to-toggle tutorial
-              if (this.type === stoneTypes.plug) {
-                if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+              if (this.type === stoneTypes.plug) { // find the ID
+                if (Util.data.getTapToToggleCalibration(state)) {
                   eventBus.emit("CalibrateTapToToggle");
                 }
               }

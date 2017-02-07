@@ -1,6 +1,6 @@
 import { NativeBus } from '../native/Proxy';
 import { LOG } from '../logging/Log'
-import { getUUID } from '../util/util'
+import { getUUID } from '../util/Util'
 
 
 class SchedulerClass {
@@ -49,7 +49,7 @@ class SchedulerClass {
    *                                    repeatEveryNSeconds
    */
   setRepeatingTrigger(id, options) {
-    if (options.repeatEveryNSeconds && options.repeatEveryNSeconds > 2000) {
+    if (options.repeatEveryNSeconds && options.repeatEveryNSeconds > 20000) {
       LOG.error(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
     }
 

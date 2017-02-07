@@ -16,7 +16,7 @@ import {
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { Icon } from './Icon';
 import { styles, colors, screenWidth } from '../styles'
-import { getUserLevelInSphere } from '../../util/dataUtil'
+import { getUserLevelInSphere } from '../../util/DataUtil'
 import { LOG } from '../../logging/Log'
 
 

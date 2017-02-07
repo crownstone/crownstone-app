@@ -5,7 +5,7 @@ let emptyFunction = function() {};
 import { LOG, LOGDebug, LOGError, LOGCloud } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { defaultHeaders } from './sections/base'
-import { safeMoveFile, safeDeleteFile } from '../util/util'
+import { safeMoveFile, safeDeleteFile } from '../util/Util'
 
 /**
  *

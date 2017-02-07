@@ -9,8 +9,8 @@ import {
   View
 } from 'react-native';
 
-import { userHasPlugsInSphere, getPresentSphere } from './../../util/dataUtil'
-import { logOut } from './../../util/util'
+import { userHasPlugsInSphere, getPresentSphere } from '../../util/DataUtil'
+import { logOut, Util } from '../../util/Util'
 import { BluenetPromises } from './../../native/Proxy'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { Background } from './../components/Background'
@@ -78,7 +78,7 @@ export class SettingsOverview extends Component {
     let presentSphere = getPresentSphere(state);
     if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
       let tapToToggleSettings = { tutorial: false };
-      if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+      if (Util.data.getTapToToggleCalibration(state)) {
         tapToToggleSettings.tutorial = true;
       }
       items.push({

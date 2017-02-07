@@ -9,7 +9,7 @@ import {
 import { OverlayBox }                                 from './OverlayBox'
 import { styles, colors, screenHeight, screenWidth } from '../../styles'
 import { eventBus }                                   from '../../../util/eventBus'
-import { getAiData }                                  from '../../../util/dataUtil'
+import { getAiData }                                  from '../../../util/DataUtil'
 
 export class LocalizationSetupStep2 extends Component {
   constructor() {

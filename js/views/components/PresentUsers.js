@@ -12,7 +12,7 @@ import {
 import { styles, screenWidth, screenHeight, colors } from '../styles'
 import { LOG } from '../../logging/Log'
 import { eventBus } from '../../util/eventBus'
-import { getPresentUsersInLocation } from '../../util/dataUtil'
+import { getPresentUsersInLocation } from '../../util/DataUtil'
 import { ProfilePicture } from './ProfilePicture'
 import { TextCircle } from './TextCircle'
 

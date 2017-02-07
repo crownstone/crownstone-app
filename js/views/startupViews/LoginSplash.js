@@ -8,10 +8,20 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-
+import { VERSION } from '../../ExternalConfig'
 import { Background } from './../components/Background'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 import loginStyles from './LoginStyles'
+
+let versionStyle = {
+  position:'absolute',
+  bottom:3,
+  right:3,
+  backgroundColor:"transparent",
+  color: colors.white.rgba(0.4),
+  fontWeight:'300',
+  fontSize: 9,
+};
 
 export class LoginSplash extends Component {
   render() {
@@ -25,8 +35,8 @@ export class LoginSplash extends Component {
           <TouchableOpacity onPress={() => {Actions.login()}} >
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
           </TouchableOpacity>
-
         </View>
+        <Text style={versionStyle}>{'version: ' + VERSION}</Text>
       </Background>
     )
   }

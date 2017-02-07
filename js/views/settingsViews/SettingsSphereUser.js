@@ -14,7 +14,7 @@ import { Background } from './../components/Background'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getUserLevelInSphere } from '../../util/dataUtil'
+import { getUserLevelInSphere } from '../../util/DataUtil'
 import { styles, colors, width } from './../styles'
 const Actions = require('react-native-router-flux').Actions;
 

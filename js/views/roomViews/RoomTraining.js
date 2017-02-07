@@ -16,9 +16,9 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { FingerprintManager } from '../../native/FingerprintManager'
 import { Bluenet } from '../../native/Proxy'
-import { canUseIndoorLocalizationInSphere } from '../../util/dataUtil'
+import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import { Background } from '../components/Background'
-import { getAiData } from '../../util/dataUtil';
+import { getAiData } from '../../util/DataUtil';
 import { LOG } from '../../logging/Log'
 
 import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'

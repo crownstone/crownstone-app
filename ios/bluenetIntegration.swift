@@ -348,7 +348,7 @@ open class BluenetJS: NSObject {
       }
   }
   
-  @objc func setSwitchState(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+  @objc func setSwitchState(_ state: NSNumber, intent: NSString, callback: @escaping RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.control.setSwitchState(state.floatValue)
       .then{_ in callback([["error" : false]])}
       .catch{err in

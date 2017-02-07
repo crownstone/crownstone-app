@@ -1,5 +1,5 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
-import { getUUID } from '../../../util/util'
+import { getUUID } from '../../../util/Util'
 
 let defaultSettings = {
   user: {
@@ -18,7 +18,6 @@ let defaultSettings = {
     appIdentifier: null,
     developer: false,
     logging: false,
-    tapToToggleCalibration: null,
     updatedAt: 1,
   },
 };
@@ -26,13 +25,6 @@ let defaultSettings = {
 // userReducer
 export default (state = defaultSettings.user, action = {}) => {
   switch (action.type) {
-    case 'SET_TAP_TO_TOGGLE_CALIBRATION':
-      if (action.data) {
-        let newState = {...state};
-        newState.tapToToggleCalibration = update(action.data.tapToToggleCalibration, newState.tapToToggleCalibration);
-        return newState;
-      }
-      return state;
     case 'SET_DEVELOPER_MODE':
       if (action.data) {
         let newState = {...state};

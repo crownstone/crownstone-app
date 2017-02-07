@@ -6,12 +6,19 @@ import { eventBus }  from '../util/eventBus'
 export const INTENTS = {
   sphereEnter: 'sphereEnter',
   sphereExit:  'sphereExit',
-  roomExit:    'roomExit',
-  roomEnter:   'roomEnter',
+  enter:       'enter',  // these are (will be) tracked for ownership
+  exit:        'exit',   // these are (will be) tracked for ownership
   manual:      'manual',
 };
 
-
+export const BEHAVIOUR_TYPE_TO_INTENT = {
+  onNear : 'enter',
+  onAway : 'exit',
+  onRoomEnter : 'enter',
+  onRoomExit  : 'exit',
+  onHomeEnter : 'sphereEnter',
+  onHomeExit  : 'sphereExit',
+};
 
 export let Bluenet;
 if (DISABLE_NATIVE === true) {
@@ -158,7 +165,7 @@ export const BluenetPromises = {
       .then(() => { eventBus.emit("disconnect"); })
       .catch(() => { eventBus.emit("disconnect"); })
   },
-  setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',  state);      },  // Number  (0 .. 1)
+  setSwitchState:       (state, intent)      => { return BluenetPromise('setSwitchState',  state, intent);      },  // Number  (0 .. 1), // String: INTENT (see above)
   keepAliveState:       (changeState, state, timeout) => { return BluenetPromise('keepAliveState', changeState, state, timeout); }, //* Bool (or Number 0 or 1), Number  (0 .. 1), Number (seconds)
   keepAlive:            ()           => { return BluenetPromise('keepAlive');                   },
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },

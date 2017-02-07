@@ -1,10 +1,23 @@
-import { BluenetPromises } from '../native/Proxy';
+import { BluenetPromises, BEHAVIOUR_TYPE_TO_INTENT } from '../native/Proxy';
 import { BleUtil } from '../native/BleUtil';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log';
 
 export const BehaviourUtil = {
 
+  /**
+   * Trigger the behaviour for all crownstones in a certain location
+   * @param { Object } store            // redux store
+   * @param { String } sphereId         // ID of sphere
+   * @param { String } behaviourType    // type of behaviour to be used in the logging and switching intent
+   * @param { String } locationId       // ID of location to get the stones from
+   * @param { Object } callbacks        // hooks for the enacting of the behaviour.
+   *                                        {
+   *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
+   *                                          onTrigger: function(sphereId, stoneId),                 // triggered when the behaviour is executed
+   *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
+   *                                        }
+   */
   enactBehaviourInLocation: function(store, sphereId, locationId, behaviourType, callbacks = {}) {
     // turn on crownstones in room
     let state = store.getState();
@@ -21,6 +34,20 @@ export const BehaviourUtil = {
     });
   },
 
+
+  /**
+   * Trigger the behaviour for all crownstones in a sphere
+   * @param { Object } store            // redux store
+   * @param { String } sphereId         // ID of sphere to get the stones from
+   * @param { String } behaviourType    // type of behaviour to be used in the logging and switching intent
+   * @param { Object } callbacks        // hooks for the enacting of the behaviour.
+   *                                        {
+   *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
+   *                                          onTrigger: function(sphereId, stoneId),                 // triggered when the behaviour is executed
+   *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
+   *                                        }
+
+   */
   enactBehaviourInSphere: function(store, sphereId, behaviourType, callbacks = {}) {
     let state = store.getState();
     let sphere = state.spheres[sphereId];
@@ -31,6 +58,20 @@ export const BehaviourUtil = {
     });
   },
 
+
+  /**
+   * Trigger behaviour for a certain stone in a sphere
+   * @param { Object } store            // redux store
+   * @param { String } sphereId         // ID of sphere
+   * @param { String } behaviourType    // type of behaviour to be used in the logging and switching intent
+   * @param { String } stoneId          // ID of stone
+   * @param { Object } callbacks        // hooks for the enacting of the behaviour.
+   *                                        {
+   *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
+   *                                          onTrigger: function(sphereId, stoneId),                 // triggered when the behaviour is executed
+   *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
+   *                                        }
+   */
   enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
     let state = store.getState();
     let sphere = state.spheres[sphereId];
@@ -41,6 +82,26 @@ export const BehaviourUtil = {
     this.enactBehaviourCore(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, callbacks);
   },
 
+
+  /**
+   * Trigger the behaviour for a certain stone in a sphere. This method is where the actual triggering is done.
+   *
+   *
+   * @param { Object } store            // redux store
+   * @param { Object } sphere           // specific sphere from the state of the store
+   * @param { String } sphereId         // ID of sphere
+   * @param { Object } behaviour        // behaviour object from element object
+   * @param { String } behaviourType    // type of behaviour to be used in the logging and switching intent
+   * @param { Object } stone            // stone object from sphere
+   * @param { String } stoneId          // ID of stone
+   * @param { Object } element          // the appliance or element, depending on if the stone has an appliance. This is used for behaviour
+   * @param { Object } callbacks        // hooks for the enacting of the behaviour.
+   *                                        {
+   *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
+   *                                          onTrigger: function(sphereId, stoneId),                 // triggered when the behaviour is executed
+   *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
+   *                                        }
+   */
   enactBehaviourCore: function(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, callbacks = {}) {
     // we set the state regardless of the current state since it may not be correct in the background.
     if (behaviour.active && stone.config.handle) {
@@ -56,7 +117,7 @@ export const BehaviourUtil = {
           callbacks.onTrigger(sphereId, stoneId);
         }
 
-        LOG.info("LocationHandler: FIRING ", behaviourType, " event for ", element.config.name, stoneId);
+        LOG.info("BehaviourUtil: FIRING ", behaviourType, " event for ", element.config.name, stoneId);
 
         // if we need to switch, configure the data to update the store with.
         let data = {state: behaviour.state};
@@ -65,7 +126,7 @@ export const BehaviourUtil = {
         }
 
         let proxy = BleUtil.getProxy(stone.config.handle);
-        proxy.perform(BluenetPromises.setSwitchState, [behaviour.state])
+        proxy.perform(BluenetPromises.setSwitchState, [behaviour.state, BEHAVIOUR_TYPE_TO_INTENT[behaviourType]])
           .then(() => {
             store.dispatch({
               type: 'UPDATE_STONE_STATE',
@@ -75,7 +136,7 @@ export const BehaviourUtil = {
             });
           })
           .catch((err) => {
-            LOG.error("LocationHandler: Could not fire", behaviourType, ' due to ', err);
+            LOG.error("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
           })
       };
 
@@ -98,6 +159,13 @@ export const BehaviourUtil = {
   },
 
 
+  /**
+   * If the stone has an appliance, return that appliance, otherwise return the stone. This gets you the item that
+   * contains the active behaviour
+   * @param sphere
+   * @param stone
+   * @returns {*}
+   */
   getElement: function (sphere, stone) {
     if (stone.config.applianceId) {
       return sphere.appliances[stone.config.applianceId];
@@ -108,6 +176,13 @@ export const BehaviourUtil = {
   },
 
 
+  /**
+   * Check if you need to switch this device based on the time of sunrise and sunset
+   * @param sphere
+   * @param behaviour
+   * @param element
+   * @returns {boolean}
+   */
   allowBehaviourBasedOnDarkOutside: function(sphere, behaviour, element) {
     // if the device is supposed to go on and it is only allowed to go on when it's dark, check if its dark.
     if (behaviour.state > 0 && element.config.onlyOnWhenDark === true) {

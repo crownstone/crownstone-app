@@ -4,7 +4,6 @@ import { LOG } from '../../../logging/Log'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
 export let TYPES = {
-  TOUCH: 'touch',
   NEAR: 'onNear',
   AWAY: 'onAway',
   HOME_ENTER: 'onHomeEnter',

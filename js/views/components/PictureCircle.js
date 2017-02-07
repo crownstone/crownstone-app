@@ -15,7 +15,7 @@ import { LOG } from '../../logging/Log'
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 import { eventBus } from '../../util/eventBus'
-import { preparePictureURI } from '../../util/util'
+import { preparePictureURI } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
 
 export class PictureCircle extends Component {

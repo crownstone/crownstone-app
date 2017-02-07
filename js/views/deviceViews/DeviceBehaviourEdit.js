@@ -11,10 +11,10 @@ import {
   View
 } from 'react-native';
 import { styles, colors, screenWidth } from '../styles'
-import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
+import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { getUUID, addDistanceToRssi }           from '../../util/util'
+import { getUUID, addDistanceToRssi }           from '../../util/Util'
 import { LOG } from '../../logging/Log'
 import { NativeBus }         from '../../native/Proxy'
 const Actions = require('react-native-router-flux').Actions;

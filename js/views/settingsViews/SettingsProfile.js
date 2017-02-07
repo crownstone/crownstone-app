@@ -15,7 +15,7 @@ import { Actions } from 'react-native-router-flux';
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { logOut, processImage, safeDeleteFile } from '../../util/util'
+import { logOut, processImage, safeDeleteFile } from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { styles, colors, width } from './../styles'

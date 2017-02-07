@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import { Alert } from 'react-native';
 
-import { mixin } from '../util/util';
+import { mixin } from '../util/Util';
 
 import { user } from './sections/user'
 import { base } from './sections/base'

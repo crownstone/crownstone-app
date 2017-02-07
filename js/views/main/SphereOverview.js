@@ -19,7 +19,7 @@ import { FinalizeLocalizationIcon }                       from '../components/Fi
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
-import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
+import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 

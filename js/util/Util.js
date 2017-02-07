@@ -8,10 +8,12 @@ import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/st
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'
 import { MeshUtil } from './MeshUtil'
+import { DataUtil } from './DataUtil'
 
 
 export const Util = {
-  mesh: MeshUtil
+  mesh: MeshUtil,
+  data: DataUtil
 };
 
 
