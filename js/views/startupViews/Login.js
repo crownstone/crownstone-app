@@ -200,7 +200,7 @@ export class Login extends Component {
       type:'USER_LOG_IN',
       data:{
         email:this.state.email.toLowerCase(),
-        passwordHash: sha1(this.state.password),
+        passwordHash: sha1(sha1(this.state.password)), // double hash this so we never store the password we send to the cloud.
         accessToken:accessToken,
         userId:userId,
       }

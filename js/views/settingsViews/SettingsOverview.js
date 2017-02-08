@@ -20,6 +20,7 @@ import { Actions } from 'react-native-router-flux';
 import { styles, colors } from './../styles'
 import { IconButton } from '../components/IconButton'
 
+const DeviceInfo = require('react-native-device-info');
 
 export class SettingsOverview extends Component {
   constructor() {
@@ -63,7 +64,7 @@ export class SettingsOverview extends Component {
               latitude = location.latitude;
               longitude = location.longitude;
             }
-            return  CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus, latitude, longitude)
+            return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus, latitude, longitude)
           })
           .then((sphereId) => {
             this.props.eventBus.emit('hideLoading');
@@ -152,11 +153,21 @@ export class SettingsOverview extends Component {
         />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
+          <Text style={versionStyle}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
         </ScrollView>
       </Background>
     );
   }
 }
+
+let versionStyle = {
+
+  backgroundColor:"transparent",
+  color: colors.darkGray2.rgba(1),
+  textAlign:'center',
+  fontWeight:'300',
+  fontSize: 10,
+};
 
 // TODO: restore once we have a better description for this. Also Location must be working.
 // if (totalAmountOfCrownstones > 0) {

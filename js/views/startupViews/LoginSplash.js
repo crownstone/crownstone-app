@@ -7,11 +7,11 @@ import {
   View
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
-
-import { VERSION } from '../../ExternalConfig'
 import { Background } from './../components/Background'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 import loginStyles from './LoginStyles'
+
+const DeviceInfo = require('react-native-device-info');
 
 let versionStyle = {
   position:'absolute',
@@ -20,7 +20,7 @@ let versionStyle = {
   backgroundColor:"transparent",
   color: colors.white.rgba(0.4),
   fontWeight:'300',
-  fontSize: 9,
+  fontSize: 10,
 };
 
 export class LoginSplash extends Component {
@@ -36,7 +36,7 @@ export class LoginSplash extends Component {
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
           </TouchableOpacity>
         </View>
-        <Text style={versionStyle}>{'version: ' + VERSION}</Text>
+        <Text style={versionStyle}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
       </Background>
     )
   }

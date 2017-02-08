@@ -5,6 +5,7 @@ import {
   DEBUG_LOGGING,
   DEBUG_CLOUD,
   DEBUG_BLE,
+  DEBUG_MESH,
   DEBUG_STORE,
   DEBUG_SCHEDULER,
   RELEASE_MODE,
@@ -18,95 +19,49 @@ const DeviceInfo = require('react-native-device-info');
 
 export const LOG = {
   info: function() {
-    if (LOGGING) {
-      let args = ['LOG ------------ :'];
-      for (let i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
-      logToFile.apply(this, args);
-
-      if (RELEASE_MODE === false)
-        console.log.apply(this, args);
-    }
+    this._log('------------', LOGGING, arguments);
   },
 
   error: function() {
-    if (ERROR_LOGGING) {
-      let args = ['LOG ERROR !!! -- :'];
-      for (let i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
-      logToFile.apply(this, args);
-
-      if (RELEASE_MODE === false)
-        console.log.apply(this, args);
-    }
+    this._log('ERROR !!! --', ERROR_LOGGING, arguments);
   },
 
   debug: function() {
-    if (DEBUG_LOGGING) {
-      let args = ['LOG Debug ------ :'];
-      for (let i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
-      logToFile.apply(this, args);
-
-      if (RELEASE_MODE === false)
-        console.log.apply(this, args);
-    }
+    this._log('Debug ------', DEBUG_LOGGING, arguments);
   },
 
   cloud: function() {
-    if (DEBUG_CLOUD) {
-      let args = ['LOG Cloud ------ :'];
-      for (let i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
-      logToFile.apply(this, args);
-
-      if (RELEASE_MODE === false)
-        console.log.apply(this, args);
-    }
+    this._log('Cloud ------', DEBUG_CLOUD, arguments);
   },
 
   ble: function() {
-    if (DEBUG_BLE) {
-      let args = ['LOG BLE -------- :'];
-      for (let i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
-      logToFile.apply(this, args);
-
-      if (RELEASE_MODE === false)
-        console.log.apply(this, args);
-    }
+    this._log('BLE --------', DEBUG_BLE, arguments);
   },
 
   store: function() {
-    if (DEBUG_STORE) {
-      let args = ['LOG Store ------ :'];
-      for (let i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
-      }
-      logToFile.apply(this, args);
-
-      if (RELEASE_MODE === false)
-        console.log.apply(this, args);
-    }
+    this._log('Store ------', DEBUG_STORE, arguments);
   },
 
   scheduler: function() {
-    if (DEBUG_SCHEDULER) {
-      let args = ['LOG Scheduler --- :'];
-      for (let i = 0; i < arguments.length; i++) {
-        args.push(arguments[i]);
+    this._log('Scheduler --', DEBUG_SCHEDULER, arguments);
+  },
+
+  mesh: function() {
+    this._log('Mesh -------', DEBUG_MESH, arguments);
+  },
+
+  _log: function(type, check, allArguments) {
+    if (check) {
+      let args = ['LOG ' + type + ' :'];
+      for (let i = 0; i < allArguments.length; i++) {
+        args.push(allArguments[i]);
       }
       logToFile.apply(this, args);
 
       if (RELEASE_MODE === false)
         console.log.apply(this, args);
     }
-  },
+  }
 };
 
 

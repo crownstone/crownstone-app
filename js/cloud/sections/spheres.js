@@ -121,11 +121,17 @@ export const spheres = {
 
 
   /**
-   *
    * @param sphereName
+   * @param latitude
+   * @param longitude
    */
   createSphere: function(sphereName, latitude, longitude) {
-    return this._setupRequest('POST', 'users/{id}/spheres', {data:{name:sphereName, gpsLocation:{lat:latitude, lng: longitude}}}, 'body');
+    let payload = {data:{name:sphereName}};
+    // only write gps coordinates if we have them.
+    if (latitude && longitude) {
+      payload.data.gpsLocation = {lat:latitude, lng: longitude}
+    }
+    return this._setupRequest('POST', 'users/{id}/spheres', payload, 'body');
   },
 
   getUserPicture(sphereId, email, userId, options = {}) {

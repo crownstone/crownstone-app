@@ -2,6 +2,7 @@
 
 To be Released:
 
+- Now showing the version number on the splash screen and in the settings overview.
 - Revoked permission of Guest to setup Crownstones.
 - Added option to only turn on Crownstones when it is dark outside.
 - Changed the behaviour interface to be easier to use.

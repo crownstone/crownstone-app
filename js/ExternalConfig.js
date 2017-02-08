@@ -1,21 +1,19 @@
 import { LOG } from './logging/Log'
 import { Platform } from 'react-native'
 
-export const VERSION = '0.8.0:D0.0.0';
-
-
 const DeviceInfo = require('react-native-device-info');
 
 // refer to the DEV cloud
 export let CLOUD_ADDRESS = 'https://crownstone-cloud-dev.herokuapp.com/api/';
 
 export let DEBUG           = true;  // enabling Debug behaviour throughout the app.
-export let DEBUG_STORE     = true;  // enabling LOGStore      commands to be shown.
-export let DEBUG_SCHEDULER = false; // enabling LOGScheduler  commands to be shown.
-export let DEBUG_BLE       = false; // enabling LOGBle        commands to be shown.
-export let DEBUG_CLOUD     = true;  // enabling LOGCloud      commands to be shown.
-export let DEBUG_LOGGING   = true;  // enabling LOGDebug      commands to be shown.
-export let LOGGING         = true;  // enabling LOG           commands to be shown.
+export let DEBUG_STORE     = true;  // enabling LOG.store      commands to be shown.
+export let DEBUG_SCHEDULER = false; // enabling LOG.scheduler  commands to be shown.
+export let DEBUG_BLE       = false; // enabling LOG.ble        commands to be shown.
+export let DEBUG_MESH      = false; // enabling LOG.mesh       commands to be shown.
+export let DEBUG_CLOUD     = true;  // enabling LOG.cloud      commands to be shown.
+export let DEBUG_LOGGING   = true;  // enabling LOG.debug      commands to be shown.
+export let LOGGING         = true;  // enabling LOG.info       commands to be shown.
 
 export let LOG_TO_FILE     = false; // log everything that is logged to a file.
 
@@ -55,6 +53,7 @@ if (RELEASE_MODE) {
   DEBUG           = false;
   DEBUG_STORE     = false;
   DEBUG_SCHEDULER = false;
+  DEBUG_MESH      = false;
   DEBUG_BLE       = false;
   DEBUG_CLOUD     = false;
   DEBUG_LOGGING   = false;

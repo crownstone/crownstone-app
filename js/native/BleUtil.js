@@ -1,5 +1,5 @@
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromises, NativeBus, Bluenet, INTENTS } from './Proxy';
+import { BluenetPromises, NativeBus, Bluenet, INTENTS, MESH_CHANNELS } from './Proxy';
 import { LOG } from '../logging/Log'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/eventBus'
@@ -252,15 +252,15 @@ class BatchCommand {
         meshNetworks[stoneConfig.meshNetworkId] = {
           keepAlive:[],
           keepAliveState:[],
-          setSwitchState: {
-            manual:[],
-            sphereExit: [],
-            sphereEnter:[],
-            roomExit: [],
-            roomEnter:[]
-          },
+          setSwitchState: {},
           other: []
         };
+        // create arrays for each of the intents
+        let intentKeys = Object.keys(INTENTS);
+        intentKeys.forEach((key) => {
+          meshNetworks[stoneConfig.meshNetworkId].setSwitchState[INTENTS[key]] = [];
+        });
+
         if (todo.commandString === 'keepAlive') {
           meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({handle: stoneConfig.handle});
         }
@@ -302,6 +302,8 @@ class MeshHelper {
     this.meshInstruction = meshInstruction;
     this.targets = this._getConnectionTargets();
 
+
+    this.channelsUsed = {};
     this.performAdditionalKeepalive = (this.meshInstruction.keepAlive.length > 0 || this.meshInstruction.keepAliveState.length > 0) === false;
   }
 
@@ -483,11 +485,11 @@ class MeshHelper {
         .then((handle) => {
           return BluenetPromises.connect(handle)
         })
-        .then((channelsUsed) => { return this._handleSetSwitchStateCommands(channelsUsed); })
-        .then((channelsUsed) => { return this._handleOtherCommands(channelsUsed);          })
-        .then((channelsUsed) => { return this._handleKeepAliveCommands(channelsUsed);      })
+        .then(() => { return this._handleSetSwitchStateCommands(); })
+        .then(() => { return this._handleOtherCommands();          })
+        .then(() => { return this._handleKeepAliveCommands();      })
         .then(() => {
-          LOG.info('MeshHelper: completed disconnecting');
+          LOG.mesh('MeshHelper: completed disconnecting');
           resolve();
           return BluenetPromises.disconnect();
         })
@@ -512,22 +514,47 @@ class MeshHelper {
   }
 
   _handleSetSwitchStateCommands() {
+    let switchStateInstructions = this.meshInstruction.setSwitchState;
 
+    let orderedIntents = [INTENTS.manual, INTENTS.enter, INTENTS.exit, INTENTS.sphereEnter, INTENTS.sphereExit];
+
+    // used to keep track of used channels so we can introduce a delay to ensure propagation
+    let channelsUsed = {};
+
+    for (let i = 0; i < orderedIntents.length; i++) {
+      let intent = orderedIntents[i];
+      this._handleSetSwitchState(switchStateInstructions[intent], intent, channelsUsed);
+    }
   }
 
-  _handleSetSwitchState(instructionSet) {
-    return new Promise((resolve, reject) => {
-      if (instructionSet.length > 1) {
+  _handleSetSwitchState(instructionSet, intent) {
+    if (instructionSet.length > 1) {
+      // get data from set
+      let stoneSwitchPackets = [];
+      instructionSet.forEach((instruction) => {
+        if (instruction.crownstoneId && instruction.timeout && instruction.state) {
+          stoneSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, state: instruction.state})
+        }
+        else {
+          LOG.error("MeshHelper: Invalid instruction, required crownstoneId, timeout, state. Got:", instruction);
+        }
+      });
 
-      }
-      else if (instructionSet.length === 1) {
-        //TODO: resume work on this.
-        return BluenetPromises('commandViaMesh', [instructionSet[0].crownstoneId], 'setSwitchState', { state: instructionSet[0].state, intent:INTENTS.manual })
-      }
-      else {
-        resolve({});
-      }
-    })
+      // update the used channels.
+      this.channelsUsed[MESH_CHANNELS.batchSwitch] = new Date().valueOf();
+      LOG.mesh('MeshHelper: Dispatching ', 'batchSwitch', intent, stoneSwitchPackets);
+      return BluenetPromises('batchSwitch', intent, stoneSwitchPackets);
+    }
+    else if (instructionSet.length === 1) {
+      let instruction = instructionSet[0];
+
+      // update the used channels.
+      this.channelsUsed[MESH_CHANNELS.command] = new Date().valueOf();
+
+      // push the command over the mesh to a single target.
+      LOG.mesh('MeshHelper: Dispatching ', 'batchCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent);
+      return BluenetPromises('batchCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent)
+    }
   }
 
   _handleOtherCommands() {

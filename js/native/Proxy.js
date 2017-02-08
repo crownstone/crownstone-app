@@ -4,8 +4,8 @@ import { LOG } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
 export const INTENTS = {
-  sphereEnter: 'sphereEnter',
-  sphereExit:  'sphereExit',
+  sphereEnter: 'regionEnter',
+  sphereExit:  'regionExit',
   enter:       'enter',  // these are (will be) tracked for ownership
   exit:        'exit',   // these are (will be) tracked for ownership
   manual:      'manual',
@@ -18,6 +18,17 @@ export const BEHAVIOUR_TYPE_TO_INTENT = {
   onRoomExit  : 'exit',
   onHomeEnter : 'sphereEnter',
   onHomeExit  : 'sphereExit',
+};
+
+export const MESH_CHANNELS = {
+  keepAlive : 1,
+  stateBroadcast : 2,
+  stateChange : 3,
+  command  : 4,
+  commandReply : 5,
+  scanResult  : 6,
+  bigData  : 7,
+  batchSwitch  : 8,
 };
 
 export let Bluenet;

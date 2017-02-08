@@ -16,7 +16,7 @@ export const DataUtil = {
   getDeviceIdFromState: function(state, deviceAddress) {
     let deviceIds = Object.keys(state.devices);
     for (let i = 0; i < deviceIds.length; i++) {
-      if (state.devices[deviceIds[i]].config.address === deviceAddress) {
+      if (state.devices[deviceIds[i]].address === deviceAddress) {
         return deviceIds[i];
       }
     }
