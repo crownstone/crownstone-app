@@ -22,8 +22,9 @@ The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/ap
 Dependencies:
 
 * nodejs
-* Carthage (for iOS)
 * Yarn, can be obtained at [yarnpkg.com](https://yarnpkg.com/en/docs/install).
+* Carthage (for iOS)
+* Android Studio (for Android)
 
 Setup instructions:
 
@@ -37,13 +38,21 @@ cd ..
 
 ### Android
 
-1. Clone the bluenet lib for android:
+1. Get the nodejs modules:
+
+        yarn
+
+2. Clone the bluenet lib for android:
 
         cd android
         git clone https://github.com/crownstone/bluenet-lib-android.git bluenet
         cd ..
 
-2. Import the project in Android Studio
+3. Get the bluenet localization lib:
+
+todo
+
+4. Import the project in Android Studio
 
         File > New > Import Project ...
 
