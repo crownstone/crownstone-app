@@ -10,7 +10,6 @@ Assuming you've already installed nodejs, yarn and Carthage (for ios). You can g
 
 ```
 yarn
-react-native link
 cd ios
 carthage bootstrap --platform iOS --no-use-binaries
 cd ..
