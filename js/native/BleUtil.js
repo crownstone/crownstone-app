@@ -1,9 +1,9 @@
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromises, NativeBus, Bluenet, INTENTS, MESH_CHANNELS } from './Proxy';
+import { BluenetPromises, NativeBus, Bluenet, INTENTS } from './Proxy';
 import { LOG } from '../logging/Log'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/eventBus'
-import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
+import { HIGH_FREQUENCY_SCAN_MAX_DURATION, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { getUUID, Util } from '../util/Util'
 
 
@@ -208,30 +208,13 @@ class BatchCommand {
 
     let meshNetworkIds = Object.keys(meshNetworks);
     meshNetworkIds.forEach((networkId) => {
-      let promiseGenerator = () => { return new Promise((resolve, reject) => {
-
-        let helper = new MeshHelper(this.store, this.sphereId, networkId, meshNetworks[networkId]);
-        if (searchSettings.immediate === true) {
-
-        }
-        else {
-
-        }
-      })};
-
-      // search for stone in network, alternatively target stone
-
-      // create payload format
-
-      // send
-
-      // disconnect
-
-      // handle error
+      let helper = new MeshHelper(this.store, this.sphereId, networkId, meshNetworks[networkId]);
+      helper.process(searchSettings, priority);
     });
 
-    directCommands.forEach((networkId) => {
-
+    directCommands.forEach((command) => {
+      let singleCommand = new SingleCommand(command.handle);
+      singleCommand.performCommand(command.commandString, command.props, priority)
     });
 
 
@@ -302,9 +285,7 @@ class MeshHelper {
     this.meshInstruction = meshInstruction;
     this.targets = this._getConnectionTargets();
 
-
-    this.channelsUsed = {};
-    this.performAdditionalKeepalive = (this.meshInstruction.keepAlive.length > 0 || this.meshInstruction.keepAliveState.length > 0) === false;
+    // this.performAdditionalKeepAlive = ( this.meshInstruction.keepAlive.length > 0 || this.meshInstruction.keepAliveState.length > 0 ) === false;
   }
 
   /**
@@ -334,13 +315,13 @@ class MeshHelper {
   _getConnectionTargets() {
     let targets = {};
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.manual])};
-    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.roomEnter])};
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.enter])};
 
     if (Object.keys(targets) > 0) {
       return targets;
     }
 
-    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.roomExit])};
+    targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.exit])};
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.sphereEnter])};
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.sphereExit])};
 
@@ -369,7 +350,7 @@ class MeshHelper {
    *                                  //  }
    * @param { Number } rssiThreshold
    */
-  search(searchSettings, rssiThreshold = null) {
+  _search(searchSettings, rssiThreshold = null) {
     if (searchSettings.immediate === true) {
       return this._searchDatabase(rssiThreshold)
     }
@@ -469,48 +450,56 @@ class MeshHelper {
    *                                   //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
    *                                   //    timeout: Number        // Amount of time a search can take.
    *                                   //  }
+   * @param { Boolean } [priorityCommand]
    */
-  process(searchSettings) {
-    return new Promise((resolve, reject) => {
-      this.search(searchSettings, -90)
-        .catch(() => {
-          // could not find any node withing a -90 threshold
-          LOG.error('MeshHelper: Could not find any nodes of the mesh network:', this.meshNetworkId, 'within -90 db. Attempting removal of threshold...');
-          return this.search(searchSettings, null);
-        })
-        .catch(() => {
-          LOG.error('MeshHelper: Can not connect to any node in the mesh network: ', this.meshNetworkId);
-          throw new Error('Can not connect to any node in the mesh network: ' + this.meshNetworkId);
-        })
-        .then((handle) => {
-          return BluenetPromises.connect(handle)
-        })
-        .then(() => { return this._handleSetSwitchStateCommands(); })
-        .then(() => { return this._handleOtherCommands();          })
-        .then(() => { return this._handleKeepAliveCommands();      })
-        .then(() => {
-          LOG.mesh('MeshHelper: completed disconnecting');
-          resolve();
-          return BluenetPromises.disconnect();
-        })
-        .catch((err) => {
-          LOG.error("MeshHelper: BLE Single command Error:", err);
-          BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
-        });
+  process(searchSettings, priorityCommand = true) {
+    let actionPromise = () => {
+      return new Promise((resolve, reject) => {
+        this._search(searchSettings, -90)
+          .catch(() => {
+            // could not find any node withing a -90 threshold
+            LOG.error('MeshHelper: Could not find any nodes of the mesh network:', this.meshNetworkId, 'within -90 db. Attempting removal of threshold...');
+            return this._search(searchSettings, null);
+          })
+          .catch(() => {
+            LOG.error('MeshHelper: Can not connect to any node in the mesh network: ', this.meshNetworkId);
+            throw new Error('Can not connect to any node in the mesh network: ' + this.meshNetworkId);
+          })
+          .then((handle) => {
+            return BluenetPromises.connect(handle)
+          })
+          .then(() => {
+            return this._handleSetSwitchStateCommands();
+          })
+          .then(() => {
+            return this._handleOtherCommands();
+          })
+          .then(() => {
+            return this._handleKeepAliveCommands();
+          })
+          .then(() => {
+            LOG.mesh('MeshHelper: completed disconnecting');
+            resolve();
+            return BluenetPromises.disconnect();
+          })
+          .catch((err) => {
+            LOG.error("MeshHelper: BLE Single command Error:", err);
+            BluenetPromises.phoneDisconnect().then(() => {
+              reject(err)
+            }).catch(() => {
+              reject(err)
+            });
+          });
+      })
+    };
 
-        // first handle the enter events
-        //    if connected, process all we can over this connection
-        //    we need to do switches, keepalives any time (if t < x)
-
-        // then handle an other
-
-        // then handle a keep alive ( state ? )
-
-        // then loop back around
-    })
-
-
-
+    let details = {from: 'MeshHelper: connecting to ' + this.meshNetworkId + '.'};
+    if (priorityCommand) {
+      return BlePromiseManager.registerPriority(actionPromise, details);
+    }
+    else {
+      return BlePromiseManager.register(actionPromise, details);
+    }
   }
 
   _handleSetSwitchStateCommands() {
@@ -518,12 +507,9 @@ class MeshHelper {
 
     let orderedIntents = [INTENTS.manual, INTENTS.enter, INTENTS.exit, INTENTS.sphereEnter, INTENTS.sphereExit];
 
-    // used to keep track of used channels so we can introduce a delay to ensure propagation
-    let channelsUsed = {};
-
     for (let i = 0; i < orderedIntents.length; i++) {
       let intent = orderedIntents[i];
-      this._handleSetSwitchState(switchStateInstructions[intent], intent, channelsUsed);
+      this._handleSetSwitchState(switchStateInstructions[intent], intent);
     }
   }
 
@@ -541,46 +527,51 @@ class MeshHelper {
       });
 
       // update the used channels.
-      this.channelsUsed[MESH_CHANNELS.batchSwitch] = new Date().valueOf();
-      LOG.mesh('MeshHelper: Dispatching ', 'batchSwitch', intent, stoneSwitchPackets);
-      return BluenetPromises('batchSwitch', intent, stoneSwitchPackets);
+      LOG.mesh('MeshHelper: Dispatching ', 'multiSwitch', intent, stoneSwitchPackets);
+      return BluenetPromises('multiSwitch', stoneSwitchPackets, intent);
     }
     else if (instructionSet.length === 1) {
       let instruction = instructionSet[0];
 
-      // update the used channels.
-      this.channelsUsed[MESH_CHANNELS.command] = new Date().valueOf();
-
       // push the command over the mesh to a single target.
-      LOG.mesh('MeshHelper: Dispatching ', 'batchCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent);
-      return BluenetPromises('batchCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent)
+      LOG.mesh('MeshHelper: Dispatching ', 'meshCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent);
+      return BluenetPromises('meshCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent);
     }
   }
 
   _handleOtherCommands() {
     return new Promise((resolve, reject) => {
-
+      LOG.mesh('MeshHelper: Other commands are not implemented.');
     })
   }
 
   _handleKeepAliveCommands() {
-    return new Promise((resolve, reject) => {
+    // TODO: check adding additional keepAlive if none is provided.
 
-    })
+    if (this.meshInstruction.keepAliveState.length > 0) {
+      let keepAliveInstructions = this.meshInstruction.keepAliveState;
+      // get data from set
+      let stoneKeepAlivePackets = [];
+      let timeout = 2.5*KEEPALIVE_INTERVAL;
+      keepAliveInstructions.forEach((instruction) => {
+        if (instruction.crownstoneId && instruction.timeout && instruction.state && instruction.changeState) {
+          timeout = Math.max(timeout, instruction.timeout);
+          stoneKeepAlivePackets.push({crownstoneId: instruction.crownstoneId, action: instruction.changeState, state: instruction.state})
+        }
+        else {
+          LOG.error("MeshHelper: Invalid keepAlive instruction, required crownstoneId, timeout, state, changeState. Got:", instruction);
+        }
+      });
+
+      // update the used channels.
+      LOG.mesh('MeshHelper: Dispatching ', 'keepAlive', stoneKeepAlivePackets);
+      return BluenetPromises('meshKeepAliveState', timeout, stoneKeepAlivePackets);
+    }
+    else if (this.meshInstruction.keepAlive.length > 0) {
+      return BluenetPromises('meshKeepAlive');
+    }
+    return new Promise((resolve, reject) => {resolve()});
   }
-
-
-  // search
-
-  // construct messages
-
-  // connect
-
-  // send 1
-
-  // keepalive (?)
-
-  // send more
 }
 
 
@@ -598,15 +589,15 @@ class SingleCommand {
    */
   perform(action, props = []) {
     LOG.info("BLEProxy: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
-    return this._perform(action,props, false);
+    return this.performCommand(action,props, false);
   }
 
   performPriority(action, props = []) {
     LOG.info("BLEProxy: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
-    return this._perform(action, props, true)
+    return this.performCommand(action, props, true)
   }
 
-  _perform(action, props, priorityCommand) {
+  performCommand(action, props, priorityCommand) {
     let actionPromise = () => {
       if (this.handle) {
         return BluenetPromises.connect(this.handle)
@@ -626,7 +617,7 @@ class SingleCommand {
       }
     };
 
-    let details = {from: 'BLEProxy: connecting to ' + this.handle + ' doing this: ' + action + ' with props ' + props};
+    let details = { from: 'BLEProxy: connecting to ' + this.handle + ' doing this: ' + action + ' with props ' + props };
 
     if (priorityCommand) {
       return BlePromiseManager.registerPriority(actionPromise, details);

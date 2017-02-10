@@ -4,12 +4,14 @@ import { LOG } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
 export const INTENTS = {
-  sphereEnter: 'regionEnter',
-  sphereExit:  'regionExit',
-  enter:       'enter',  // these are (will be) tracked for ownership
-  exit:        'exit',   // these are (will be) tracked for ownership
-  manual:      'manual',
+  sphereEnter: 0,
+  sphereExit:  1,
+  enter:       2,  // these are (will be) tracked for ownership
+  exit:        3,  // these are (will be) tracked for ownership
+  manual:      4,
 };
+
+
 
 export const BEHAVIOUR_TYPE_TO_INTENT = {
   onNear : 'enter',
@@ -20,16 +22,6 @@ export const BEHAVIOUR_TYPE_TO_INTENT = {
   onHomeExit  : 'sphereExit',
 };
 
-export const MESH_CHANNELS = {
-  keepAlive : 1,
-  stateBroadcast : 2,
-  stateChange : 3,
-  command  : 4,
-  commandReply : 5,
-  scanResult  : 6,
-  bigData  : 7,
-  batchSwitch  : 8,
-};
 
 export let Bluenet;
 if (DISABLE_NATIVE === true) {
@@ -78,6 +70,12 @@ if (DISABLE_NATIVE === true) {
     quitApp: () => {},                   // Used in android to force close the app
     enableLoggingToFile: () => {},
     clearLogs: () => {},
+
+    // mesh
+    meshKeepAlive: () => {},
+    meshKeepAliveState: () => {},
+    meshCommandSetSwitchState: () => {},
+    multiSwitch: () => {},
   }
 }
 else {
@@ -173,7 +171,7 @@ export const BluenetPromises = {
   },
   phoneDisconnect: () => {
     return BluenetPromise('phoneDisconnect')
-      .then(() => { eventBus.emit("disconnect"); })
+      .then( () => { eventBus.emit("disconnect"); })
       .catch(() => { eventBus.emit("disconnect"); })
   },
   setSwitchState:       (state, intent)      => { return BluenetPromise('setSwitchState',  state, intent);      },  // Number  (0 .. 1), // String: INTENT (see above)
@@ -186,6 +184,12 @@ export const BluenetPromises = {
   recover:              (handle)     => { return BluenetPromise('recover', handle);             },
   finalizeFingerprint:  (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:  ()           => { return BluenetPromise('commandFactoryReset');         },
+
+  //new
+  meshKeepAlive:              ()                               => { return BluenetPromise('meshKeepAlive'); },
+  meshKeepAliveState:         (timeout, stoneKeepAlivePackets) => { return BluenetPromise('meshKeepAliveState',   timeout, stoneKeepAlivePackets); }, // stoneKeepAlivePackets = {crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}
+  meshCommandSetSwitchState:  (arrayOfIds, state, intent)      => { return BluenetPromise('meshCommandSetSwitchState', arrayOfIds, state, intent); }, // idArray = [number(uint16)]
+  multiSwitch:                (arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch',               arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
 };
 
 class NativeBusClass {
