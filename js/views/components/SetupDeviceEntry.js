@@ -160,7 +160,7 @@ export class SetupDeviceEntry extends Component {
   }
 
   setupStone() {
-    if (getUserLevelInSphere(this.props.store.getState, this.props.sphereId) !== 'admin') {
+    if (getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) !== 'admin') {
       Alert.alert("You don't have permission","You can ask an admin in your Sphere to setup this Crownstone",[{text:'OK'}])
     }
     else {

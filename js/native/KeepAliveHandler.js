@@ -3,7 +3,7 @@ import { BehaviourUtil } from '../util/BehaviourUtil';
 import { LOG } from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS, KEEPALIVE_REPEAT_INTERVAL } from '../ExternalConfig';
 import { BluenetPromises } from './Proxy';
-import { BleUtil } from './BleUtil';
+import { BleUtil, BatchCommand } from './BleUtil';
 import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
 
 import { stoneTypes, TYPES } from '../router/store/reducers/stones'
@@ -53,6 +53,8 @@ class KeepAliveHandlerClass {
       let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
       let userLevelInSphere = getUserLevelInSphere(state, sphereId);
 
+      let bleController = new BatchCommand(this.store, sphereId);
+
       let stoneIds = Object.keys(sphere.stones);
       stoneIds.forEach((stoneId) => {
         // for each stone in sphere select the behaviour we want to copy into the keep Alive
@@ -72,41 +74,27 @@ class KeepAliveHandlerClass {
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
           if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
           else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; delay = behaviour.delay; }
-          else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     delay = behaviour.delay;  }
+          else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     delay = behaviour.delay; }
 
           if (stone.config.handle && stone.config.disabled === false) {
-            this._performKeepAliveForStone(sphere, stone, behaviour, delay, userLevelInSphere, element, keepAliveId);
+            this._performKeepAliveForStone(sphere, stone, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController);
           }
           else if (stone.config.disabled === true) {
             LOG.info('KeepAliveHandler: (' + keepAliveId + ') skip KeepAlive stone is disabled', stoneId);
           }
         }
       });
+
+      bleController.execute({immediate: false, timesToRetry: 1}, false);
     });
   }
 
-  _performKeepAliveForStone(sphere, stone, behaviour, delay, userLevelInSphere, element, keepAliveId, attempt = 0) {
+  _performKeepAliveForStone(sphere, stone, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController) {
     LOG.info('KeepAliveHandler: (' + keepAliveId + ') Performing keep Alive to stone handle', stone.config.handle);
-    let proxy = BleUtil.getProxy(stone.config.handle);
-
-    // this function will retry the keepAlive if it fails.
-    let retry = () => {
-      LOG.info('KeepAliveHandler: (' + keepAliveId + ') Retrying guest keepAlive to ', stone.config.handle);
-      Scheduler.scheduleCallback(() => {
-        this._performKeepAliveForStone(sphere, stone, behaviour, delay, userLevelInSphere, element, keepAliveId, attempt + 1);
-      }, KEEPALIVE_REPEAT_INTERVAL, 'keepAlive_attempt_' + attempt + '_' + stone.config.handle)
-    };
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      proxy.perform(BluenetPromises.keepAlive)
-        .then(() => {
-          LOG.info('KeepAliveHandler: (' + keepAliveId + ') guest KeepAlive Successful to ', element.config.name, element.config.handle);
-        })
-        .catch((err) => {
-          LOG.error('KeepAliveHandler: (' + keepAliveId + ') ATTEMPT ' + attempt + ', COULD NOT PERFORM KEEP ALIVE WITHOUT STATE TO ', stone.config.name, stone.config.handle, 'DUE TO ', err);
-          if (attempt < KEEPALIVE_REPEAT_ATTEMPTS) { retry(); }
-        })
+      bleController.load(stone, 'keepAlive');
     }
     else {
       // determine what to send
@@ -122,14 +110,7 @@ class KeepAliveHandlerClass {
         }
       }
 
-      proxy.perform(BluenetPromises.keepAliveState, [changeState, newState, timeout]) // the max in time is so that it will not turn off before the next interval.
-        .then(() => {
-          LOG.info('KeepAliveHandler: (' + keepAliveId + ') keepAliveState Successful to ', element.config.name, element.config.handle);
-        })
-        .catch((err) => {
-          LOG.error('KeepAliveHandler: (' + keepAliveId + ') ATTEMPT ' + attempt + ', COULD NOT PERFORM KEEPALIVE AS', userLevelInSphere, 'TO ', stone.config.name, stone.config.handle, 'DUE TO ', err);
-          if (attempt < KEEPALIVE_REPEAT_ATTEMPTS) { retry(); }
-        })
+      bleController.load(stone, 'keepAliveState', [changeState, newState, timeout]);
     }
   }
 

@@ -155,7 +155,8 @@ export const INITIALIZER = {
       // trigger the CalibrateTapToToggle tutorial for existing users.
       NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
         let state = store.getState();
-        if (state.devices[deviceInDatabaseId].config.tapToToggleCalibration === null || state.devices[deviceInDatabaseId].config.tapToToggleCalibration === undefined) {
+        if (deviceInDatabaseId &&
+          (state.devices[deviceInDatabaseId].config.tapToToggleCalibration === null || state.devices[deviceInDatabaseId].config.tapToToggleCalibration === undefined)) {
           if (userHasPlugsInSphere(state,sphereId))
             eventBus.emit("CalibrateTapToToggle");
         }

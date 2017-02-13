@@ -173,7 +173,7 @@ export const BleUtil = {
 /**
  * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
  */
-class BatchCommand {
+export class BatchCommand {
   constructor(store, sphereId) {
     this.commands = [];
 
@@ -188,36 +188,38 @@ class BatchCommand {
    * @param { String } commandString  // String of a command that is in the BluenetPromise set
    * @param { Array }  props          // Array of props that are fed into the BluenetPromise
    */
-  load(stone, commandString, props) {
+  load(stone, commandString, props = []) {
     this.commands.push({handle: stone.config.handle, stone:stone, commandString:commandString, props: props})
   }
 
 
   /**
-   *
-   * @param { Object } searchSettings   //  {
+   * @param { Object } batchSettings    //  {
    *                                    //    immediate: Boolean     // do not search before handling command.
    *                                    //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
    *                                    //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
    *                                    //    timeout: Number        // Amount of time a search can take.
+   *                                    //    timesToRetry: Number   // Amount of times we should retry a search or command.
    *                                    //  }
    * @param { Boolean } priority        //  this will move any command to the top of the queue
    */
-  execute(searchSettings = {}, priority = true) {
+  execute(batchSettings = {}, priority = true) {
     let { directCommands, meshNetworks } = this._extractTodo();
+    let promises = [];
 
     let meshNetworkIds = Object.keys(meshNetworks);
     meshNetworkIds.forEach((networkId) => {
       let helper = new MeshHelper(this.store, this.sphereId, networkId, meshNetworks[networkId]);
-      helper.process(searchSettings, priority);
+      promises.push(helper.process(batchSettings, priority));
     });
 
     directCommands.forEach((command) => {
       let singleCommand = new SingleCommand(command.handle);
-      singleCommand.performCommand(command.commandString, command.props, priority)
+      LOG.info("BatchCommand: ");
+      promises.push(singleCommand.performCommand(command.commandString, command.props, priority));
     });
 
-
+    return Promise.all(promises);
   }
 
   _extractTodo() {
@@ -229,7 +231,7 @@ class BatchCommand {
       // mesh not supported / no mesh detected for this stone
       if (stoneConfig.meshNetworkId === null) {
         // handle this 1:1
-        directCommands.push({ ...todo })
+        directCommands.push({ ...todo });
       }
       else {
         meshNetworks[stoneConfig.meshNetworkId] = {
@@ -245,28 +247,31 @@ class BatchCommand {
         });
 
         if (todo.commandString === 'keepAlive') {
-          meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({handle: stoneConfig.handle});
+          meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({handle: stoneConfig.handle, props: []});
         }
         else if (todo.commandString === 'keepAliveState') {
           meshNetworks[stoneConfig.meshNetworkId].keepAliveState.push({
             crownstoneId: stoneConfig.crownstoneId,
             handle: stoneConfig.handle,
-            timeout: todo.props.timeout,
-            state: todo.props.state,
-            changeState: todo.props.changeState,
+            changeState: todo.props[0],
+            state: todo.props[1],
+            timeout: todo.props[2],
           });
         }
         else if (todo.commandString === 'setSwitchState') {
-          meshNetworks[stoneConfig.meshNetworkId].setSwitchState[todo.props.intent].push({
+          meshNetworks[stoneConfig.meshNetworkId].setSwitchState[todo.props[2]].push({
             crownstoneId: stoneConfig.crownstoneId,
             handle: stoneConfig.handle,
-            timeout: todo.props.timeout,
-            state: todo.props.state,
+            state: todo.props[0],
+            timeout: todo.props[1],
           });
         }
         else {
           // handle the command via the mesh or 1:1
-          meshNetworks[stoneConfig.meshNetworkId].other.push({ ...todo });
+          // meshNetworks[stoneConfig.meshNetworkId].other.push({ ...todo });
+
+          // currently we forward all other commands to direct calls, todo: over mesh.
+          directCommands.push({ ...todo });
         }
       }
     });
@@ -347,6 +352,7 @@ class MeshHelper {
    *                                  //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
    *                                  //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
    *                                  //    timeout: Number        // Amount of time a search can take.
+   *                                  //    timesToRetry: Number   // Amount of times we should retry a search or command.
    *                                  //  }
    * @param { Number } rssiThreshold
    */
@@ -444,22 +450,24 @@ class MeshHelper {
 
   /**
    * Process the mesh request
-   * @param { Object } searchSettings  //  {
-   *                                   //    immediate: Boolean     // do not search before handling command.
-   *                                   //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
-   *                                   //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
-   *                                   //    timeout: Number        // Amount of time a search can take.
-   *                                   //  }
-   * @param { Boolean } [priorityCommand]
+   * @param { Object } batchSettings      //  {
+   *                                      //    immediate: Boolean     // do not search before handling command.
+   *                                      //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
+   *                                      //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
+   *                                      //    timeout: Number        // Amount of time a search can take.
+   *                                      //    timesToRetry: Number   // Amount of times we should retry a search or command.
+   *                                      //  }
+   * @param { Boolean } [priorityCommand] // moves the command to the top of the queue
+   * @param { Number }  [attempt]         // if the attempt number < timesToRetry, we retry
    */
-  process(searchSettings, priorityCommand = true) {
+  process(batchSettings, priorityCommand = true, attempt = 0) {
     let actionPromise = () => {
       return new Promise((resolve, reject) => {
-        this._search(searchSettings, -90)
+        this._search(batchSettings, -90)
           .catch(() => {
             // could not find any node withing a -90 threshold
             LOG.error('MeshHelper: Could not find any nodes of the mesh network:', this.meshNetworkId, 'within -90 db. Attempting removal of threshold...');
-            return this._search(searchSettings, null);
+            return this._search(batchSettings, null);
           })
           .catch(() => {
             LOG.error('MeshHelper: Can not connect to any node in the mesh network: ', this.meshNetworkId);
@@ -483,7 +491,10 @@ class MeshHelper {
             return BluenetPromises.disconnect();
           })
           .catch((err) => {
-            LOG.error("MeshHelper: BLE Single command Error:", err);
+            LOG.error("MeshHelper: mesh command Error:", err);
+            if (batchSettings.retry !== undefined && batchSettings.retry > attempt) {
+              this.process( batchSettings, priorityCommand, attempt+1);
+            }
             BluenetPromises.phoneDisconnect().then(() => {
               reject(err)
             }).catch(() => {
@@ -568,6 +579,7 @@ class MeshHelper {
       return BluenetPromises('meshKeepAliveState', timeout, stoneKeepAlivePackets);
     }
     else if (this.meshInstruction.keepAlive.length > 0) {
+      LOG.mesh('MeshHelper: Dispatching meshKeepAlive');
       return BluenetPromises('meshKeepAlive');
     }
     return new Promise((resolve, reject) => {resolve()});
@@ -597,7 +609,7 @@ class SingleCommand {
     return this.performCommand(action, props, true)
   }
 
-  performCommand(action, props, priorityCommand) {
+  performCommand(action, props = [], priorityCommand) {
     let actionPromise = () => {
       if (this.handle) {
         return BluenetPromises.connect(this.handle)

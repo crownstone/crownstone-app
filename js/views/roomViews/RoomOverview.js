@@ -10,14 +10,13 @@ import {
   View
 } from 'react-native';
 
-
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { stoneTypes } from '../../router/store/reducers/stones'
 import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
-import { BleUtil } from '../../native/BleUtil'
+import { BleUtil, BatchCommand } from '../../native/BleUtil'
 import { BluenetPromises, INTENTS } from '../../native/Proxy'
 import { TopBar } from '../components/Topbar'
 import { SeparatedItemList } from '../components/SeparatedItemList'
@@ -143,8 +142,10 @@ export class RoomOverview extends Component {
                 if (switchState === 0) {
                   data.currentUsage = 0;
                 }
-                let proxy = BleUtil.getProxy(item.stone.config.handle);
-                proxy.performPriority(BluenetPromises.setSwitchState, [switchState, INTENTS.manual])
+
+                let bleController = new BatchCommand(this.props.store, this.props.sphereId);
+                bleController.load(item.stone, 'setSwitchState', [switchState, 0, INTENTS.manual]);
+                bleController.execute({}, true)
                   .then(() => {
                     this.props.store.dispatch({
                       type: 'UPDATE_STONE_STATE',

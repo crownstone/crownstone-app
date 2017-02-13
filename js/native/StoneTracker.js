@@ -214,7 +214,7 @@ export class StoneTracker {
 
             }
           };
-          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.NEAR, callbacks);
+          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.NEAR, undefined, callbacks);
         }
       }
       // far threshold is 0.5m more than the near one so there is not a single line
@@ -243,7 +243,7 @@ export class StoneTracker {
               }, RESET_TIMER_FOR_NEAR_AWAY_EVENTS, 'reset near trigger');
             }
           };
-          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.AWAY, callbacks);
+          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.AWAY, undefined, callbacks);
         }
       }
       // in case we are between near and far, only clear pending timeouts. They will be placed back on the next event.

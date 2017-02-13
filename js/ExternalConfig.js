@@ -42,13 +42,13 @@ export const KEEPALIVE_REPEAT_INTERVAL = 5000; // ms
 export const RESET_TIMER_FOR_NEAR_AWAY_EVENTS = 20000; // ms
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = true && DeviceInfo.getModel() !== "Simulator";
+export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
 
+CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
 if (RELEASE_MODE) {
   LOG.info("====================   ============================   ===================");
   LOG.info("====================   === RUNNING RELEASE MODE ===   ===================");
   LOG.info("====================   ============================   ===================");
-  CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
 
   DEBUG           = false;
   DEBUG_STORE     = false;

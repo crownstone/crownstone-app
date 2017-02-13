@@ -61,7 +61,7 @@ class RoomPresenceTrackerClass {
     };
 
     // fire TYPES.ROOM_ENTER on crownstones in room
-    BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, callbacks);
+    BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, undefined, callbacks);
   }
 
 
