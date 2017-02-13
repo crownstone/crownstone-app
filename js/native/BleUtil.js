@@ -193,35 +193,6 @@ export class BatchCommand {
   }
 
 
-  /**
-   * @param { Object } batchSettings    //  {
-   *                                    //    immediate: Boolean     // do not search before handling command.
-   *                                    //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
-   *                                    //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
-   *                                    //    timeout: Number        // Amount of time a search can take.
-   *                                    //    timesToRetry: Number   // Amount of times we should retry a search or command.
-   *                                    //  }
-   * @param { Boolean } priority        //  this will move any command to the top of the queue
-   */
-  execute(batchSettings = {}, priority = true) {
-    let { directCommands, meshNetworks } = this._extractTodo();
-    let promises = [];
-
-    let meshNetworkIds = Object.keys(meshNetworks);
-    meshNetworkIds.forEach((networkId) => {
-      let helper = new MeshHelper(this.store, this.sphereId, networkId, meshNetworks[networkId]);
-      promises.push(helper.process(batchSettings, priority));
-    });
-
-    directCommands.forEach((command) => {
-      let singleCommand = new SingleCommand(command.handle);
-      LOG.info("BatchCommand: ");
-      promises.push(singleCommand.performCommand(command.commandString, command.props, priority));
-    });
-
-    return Promise.all(promises);
-  }
-
   _extractTodo() {
     let directCommands = [];
     let meshNetworks = {};
@@ -277,6 +248,35 @@ export class BatchCommand {
     });
 
     return { directCommands, meshNetworks };
+  }
+
+  /**
+   * @param { Object } batchSettings    //  {
+   *                                    //    immediate: Boolean     // do not search before handling command.
+   *                                    //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
+   *                                    //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
+   *                                    //    timeout: Number        // Amount of time a search can take.
+   *                                    //    timesToRetry: Number   // Amount of times we should retry a search or command.
+   *                                    //  }
+   * @param { Boolean } priority        //  this will move any command to the top of the queue
+   */
+  execute(batchSettings = {}, priority = true) {
+    let { directCommands, meshNetworks } = this._extractTodo();
+    let promises = [];
+
+    let meshNetworkIds = Object.keys(meshNetworks);
+    meshNetworkIds.forEach((networkId) => {
+      let helper = new MeshHelper(this.store, this.sphereId, networkId, meshNetworks[networkId]);
+      promises.push(helper.process(batchSettings, priority));
+    });
+
+    directCommands.forEach((command) => {
+      let singleCommand = new SingleCommand(command.handle);
+      LOG.info("BatchCommand: ");
+      promises.push(singleCommand.performCommand(BluenetPromises[command.commandString], command.props, priority));
+    });
+
+    return Promise.all(promises);
   }
 
 }
@@ -600,12 +600,12 @@ class SingleCommand {
    * @returns {*}
    */
   perform(action, props = []) {
-    LOG.info("BLEProxy: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
+    LOG.info("SingleCommand: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this.performCommand(action,props, false);
   }
 
   performPriority(action, props = []) {
-    LOG.info("BLEProxy: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
+    LOG.info("SingleCommand: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this.performCommand(action, props, true)
   }
 
@@ -613,10 +613,10 @@ class SingleCommand {
     let actionPromise = () => {
       if (this.handle) {
         return BluenetPromises.connect(this.handle)
-          .then(() => { LOG.info("BLEProxy: connected, performing: ", action); return action.apply(this, props); })
-          .then(() => { LOG.info("BLEProxy: completed", action, 'disconnecting'); return BluenetPromises.disconnect(); })
+          .then(() => { LOG.info("SingleCommand: connected, performing: ", action, props); return action.apply(this, props); })
+          .then(() => { LOG.info("SingleCommand: completed", action, 'disconnecting'); return BluenetPromises.disconnect(); })
           .catch((err) => {
-            LOG.error("BLEProxy: BLE Single command Error:", err);
+            LOG.error("SingleCommand: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
               BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
             })
@@ -624,12 +624,12 @@ class SingleCommand {
       }
       else {
         return new Promise((resolve, reject) => {
-          reject("BLEProxy: cant connect, no handle available.");
+          reject("SingleCommand: cant connect, no handle available.");
         })
       }
     };
 
-    let details = { from: 'BLEProxy: connecting to ' + this.handle + ' doing this: ' + action + ' with props ' + props };
+    let details = { from: 'SingleCommand: connecting to ' + this.handle + ' doing this: ' + action + ' with props ' + props };
 
     if (priorityCommand) {
       return BlePromiseManager.registerPriority(actionPromise, details);

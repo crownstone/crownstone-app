@@ -27,7 +27,7 @@ RCT_EXTERN_METHOD(connect:(NSString *)uuid callback:(RCTResponseSenderBlock)call
 RCT_EXTERN_METHOD(disconnect:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
-RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state timeout(nonnull NSNumber *)timeout intent(nonnull NSNumber *)intent callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state timeout:(nonnull NSNumber *)timeout intent:(nonnull NSNumber *)intent callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAliveState:(nonnull NSNumber *)changeState state:(nonnull NSNumber *)state timeout:(nonnull NSNumber *)timeout callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAlive:(RCTResponseSenderBlock)callback)
 
@@ -64,7 +64,9 @@ RCT_EXTERN_METHOD(clearLogs)
 
 // MESH
 
-RCT_EXTERN_METHOD(switchCommandOverMesh:([NSArray *])crownstoneIds state(nonnull NSNumber *)state intent(NSString *)intent callback:(RCTResponseSenderBlock)callback)
-
+RCT_EXTERN_METHOD(meshKeepAlive:([NSArray *])crownstoneIds state(nonnull NSNumber *)state intent(NSString *)intent callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:([NSArray *])stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(meshCommandSetSwitchState:([NSArray *])crownstoneIds state(nonnull NSNumber *)state intent(NSString *)intent callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(multiSwitch:([NSArray *])arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
 
 @end

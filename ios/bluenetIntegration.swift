@@ -625,6 +625,17 @@ open class BluenetJS: NSObject {
     }
   }
   
-  
+  @objc func meshKeepAlive(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([["error" : false]])
+  }
+  @objc func meshKeepAliveState(_ timeout: NSNumber, stoneKeepAlivePackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([["error" : false]])
+  }
+  @objc func meshKeepAlive(_ arrayOfIds: [NSNumber], state: NSNumber, intent: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([["error" : false]])
+  }
+  @objc func meshKeepAlive(_ data: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([["error" : false]])
+  }
   
 }
