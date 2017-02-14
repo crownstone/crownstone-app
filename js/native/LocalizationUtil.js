@@ -57,7 +57,7 @@ export const LocalizationUtil = {
           );
         }
       })
-      .catch()
+      .catch((err) => {})
   },
 };
 

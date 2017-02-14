@@ -77,7 +77,7 @@ class KeepAliveHandlerClass {
           else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     delay = behaviour.delay; }
 
           if (stone.config.handle && stone.config.disabled === false) {
-            this._performKeepAliveForStone(sphere, stone, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController);
+            this._performKeepAliveForStone(sphere, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController);
           }
           else if (stone.config.disabled === true) {
             LOG.info('KeepAliveHandler: (' + keepAliveId + ') skip KeepAlive stone is disabled', stoneId);
@@ -85,16 +85,16 @@ class KeepAliveHandlerClass {
         }
       });
 
-      bleController.execute({immediate: false, timesToRetry: 1}, false);
+      bleController.execute({immediate: false, timesToRetry: 1}, false).catch((err) => {})
     });
   }
 
-  _performKeepAliveForStone(sphere, stone, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController) {
+  _performKeepAliveForStone(sphere, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController) {
     LOG.info('KeepAliveHandler: (' + keepAliveId + ') Performing keep Alive to stone handle', stone.config.handle);
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      bleController.load(stone, 'keepAlive');
+      bleController.load(stone, stoneId, 'keepAlive');
     }
     else {
       // determine what to send
@@ -110,7 +110,7 @@ class KeepAliveHandlerClass {
         }
       }
 
-      bleController.load(stone, 'keepAliveState', [changeState, newState, timeout]);
+      bleController.load(stone, stoneId, 'keepAliveState', [changeState, newState, timeout]);
     }
   }
 

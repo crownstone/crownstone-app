@@ -165,7 +165,7 @@ export class SetupDeviceEntry extends Component {
     }
     else {
       if (this.state.disabled === false && this.state.setupInProgress !== true) {
-        SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch();
+        SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {})
       }
     }
   }

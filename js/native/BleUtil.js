@@ -185,11 +185,12 @@ export class BatchCommand {
   /**
    *
    * @param { Object } stone          // Redux Stone Object
+   * @param { String } stoneId        // StoneId,
    * @param { String } commandString  // String of a command that is in the BluenetPromise set
    * @param { Array }  props          // Array of props that are fed into the BluenetPromise
    */
-  load(stone, commandString, props = []) {
-    this.commands.push({handle: stone.config.handle, stone:stone, commandString:commandString, props: props})
+  load(stone, stoneId, commandString, props = []) {
+    this.commands.push({handle: stone.config.handle, stoneId: stoneId, stone:stone, commandString:commandString, props: props})
   }
 
 
@@ -198,6 +199,8 @@ export class BatchCommand {
     let meshNetworks = {};
 
     this.commands.forEach((todo) => {
+      // LOG.verbose("BatchCommand: _extractTodo:", todo);
+
       let stoneConfig = todo.stone.config;
       // mesh not supported / no mesh detected for this stone
       if (stoneConfig.meshNetworkId === null) {
@@ -271,9 +274,9 @@ export class BatchCommand {
     });
 
     directCommands.forEach((command) => {
-      let singleCommand = new SingleCommand(command.handle);
-      LOG.info("BatchCommand: ");
-      promises.push(singleCommand.performCommand(BluenetPromises[command.commandString], command.props, priority));
+      let singleCommand = new SingleCommand(command.handle, this.sphereId, command.stoneId);
+      LOG.info("BatchCommand: performing direct command:", command.handle, this.sphereId, command.stoneId, priority);
+      promises.push(singleCommand.searchAndPerform(batchSettings, this.store.getState(), BluenetPromises[command.commandString], command.props, priority));
     });
 
     return Promise.all(promises);
@@ -296,7 +299,7 @@ class MeshHelper {
   /**
    * Search the commands for all possible targets.
    * @param commands
-   * @returns {{}}
+   * @returns {{}}targets
    * @private
    */
   _getTargetsFromCommands(commands) {
@@ -361,7 +364,8 @@ class MeshHelper {
       return this._searchDatabase(rssiThreshold)
     }
     else {
-      return this._searchScan(rssiThreshold, searchSettings.timeout);
+      let topic = 'updateMeshNetwork_'+this.sphereId+this.meshNetworkId;
+      return this._searchScan(this.store.getState(), topic, rssiThreshold, searchSettings.timeout);
     }
   }
 
@@ -369,13 +373,12 @@ class MeshHelper {
    * return Promise which will resolve to a handle to connect to.
    * @private
    */
-  _searchScan(rssiThreshold = null, timeout = 5000) {
-    let state = this.store.getState();
+  _searchScan(state, topic, rssiThreshold = null, timeout = 5000) {
     let stones = Util.mesh.getStonesInNetwork(state, this.sphereId, this.meshNetworkId);
 
     return new Promise((resolve, reject) => {
       // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
-      let unsubscribeListener = eventBus.on('updateMeshNetwork_'+this.sphereId+this.meshNetworkId, (data) => {
+      let unsubscribeListener = eventBus.on(topic, (data) => {
         if (rssiThreshold === null || data.rssi > rssiThreshold) {
           // remove current listener
           unsubscribeListener();
@@ -463,7 +466,7 @@ class MeshHelper {
   process(batchSettings, priorityCommand = true, attempt = 0) {
     let actionPromise = () => {
       return new Promise((resolve, reject) => {
-        this._search(batchSettings, -90)
+        this._search(batchSettings, batchSettings.rssiThreshold)
           .catch(() => {
             // could not find any node withing a -90 threshold
             LOG.error('MeshHelper: Could not find any nodes of the mesh network:', this.meshNetworkId, 'within -90 db. Attempting removal of threshold...');
@@ -492,7 +495,7 @@ class MeshHelper {
           })
           .catch((err) => {
             LOG.error("MeshHelper: mesh command Error:", err);
-            if (batchSettings.retry !== undefined && batchSettings.retry > attempt) {
+            if (batchSettings.timesToRetry !== undefined && batchSettings.timesToRetry > attempt) {
               this.process( batchSettings, priorityCommand, attempt+1);
             }
             BluenetPromises.phoneDisconnect().then(() => {
@@ -589,7 +592,9 @@ class MeshHelper {
 
 
 class SingleCommand {
-  constructor(handle) {
+  constructor(handle, sphereId, stoneId) {
+    this.sphereId = sphereId;
+    this.stoneId = stoneId;
     this.handle = handle;
   }
 
@@ -607,6 +612,86 @@ class SingleCommand {
   performPriority(action, props = []) {
     LOG.info("SingleCommand: HIGH PRIORITY: connecting to " +  this.handle + " doing this: ", action, " with props ", props);
     return this.performCommand(action, props, true)
+  }
+
+
+  /**
+   *
+   * @param { Object } searchSettings   //  {
+   *                                    //    immediate: Boolean     // do not search before handling command.
+   *                                    //    rssiThreshold: Number  // when using search, minimum rssi threshold to start
+   *                                    //    highSpeed: Boolean     // if true, the search is performed with high speed scanning instead of a db lookup.
+   *                                    //    timeout: Number        // Amount of time a search can take.
+   *                                    //    timesToRetry: Number   // Amount of times we should retry a search or command.
+   *                                    //  }
+   * @param { Object }   state          // Redux state
+   * @param { Function } action         // BluenetPromise function
+   * @param { Array }    props
+   * @param { Boolean }  priorityCommand
+   */
+  searchAndPerform(searchSettings, state, action, props, priorityCommand) {
+    if (searchSettings.immediate === true) {
+      LOG.verbose("SingleCommand: Immediate trigger requested");
+      let rssiThreshold = searchSettings.rssiThreshold || -90;
+      if (state.spheres[this.sphereId].stones[this.stoneId].config.disabled === false) {
+        if (state.spheres[this.sphereId].stones[this.stoneId].config.rssi >= rssiThreshold) {
+          LOG.info('SingleCommand: Performing immediate action. Known Rssi = ', state.spheres[this.sphereId].stones[this.stoneId].config.rssi);
+          return this.performCommand(action, props, priorityCommand);
+        }
+        else {
+          LOG.warn('SingleCommand: Performing immediate action with less than target RSSI (',rssiThreshold, ') using:', state.spheres[this.sphereId].stones[this.stoneId].config.rssi);
+          return this.performCommand(action, props, priorityCommand);
+        }
+      }
+      else {
+        // search regardless?
+        return new Promise((resolve, reject) => {reject(new Error("Can not connect to disabled Crownstone"))});
+      }
+    }
+    else {
+      LOG.verbose("SingleCommand: Search trigger requested");
+      let topic = 'update_' + this.sphereId + '_' + this.stoneId;
+      return this._searchScan(topic, searchSettings.rssiThreshold, searchSettings.timeout)
+        .catch(() => {
+          // could not find any node withing a -90 threshold
+          LOG.error('MeshHelper: Could not find any nodes of the mesh network:', this.meshNetworkId, 'within -90 db. Attempting removal of threshold...');
+          return this._search(searchSettings, null);
+        })
+        .catch(() => {
+          LOG.error('MeshHelper: Can not connect to any node in the mesh network: ', this.meshNetworkId);
+          throw new Error('Can not connect to any node in the mesh network: ' + this.meshNetworkId);
+        })
+        .then((handle) => {
+          return this.performCommand(action, props, priorityCommand);
+        })
+    }
+  }
+
+
+  _searchScan(topic, rssiThreshold = null, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+      // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
+      let unsubscribeListener = eventBus.on(topic, (data) => {
+        if (rssiThreshold === null || data.rssi > rssiThreshold) {
+          // remove current listener
+          unsubscribeListener();
+
+          // remove cleanup callback
+          clearCleanupCallback();
+
+          // resolve with the handle.
+          resolve(data.handle);
+        }
+      });
+
+      // scheduled timeout in case the
+      let clearCleanupCallback = Scheduler.scheduleCallback(() => {
+        // remove the listener
+        unsubscribeListener();
+
+        reject(new Error("No stones found before timeout."));
+      }, timeout, 'Looking for Crownstone');
+    })
   }
 
   performCommand(action, props = [], priorityCommand) {

@@ -9,12 +9,24 @@ let successfulPromise5 = new Promise((resolve, reject) => {
 let successfulPromise10 = new Promise((resolve, reject) => {
   setTimeout(() => {resolve(10)}, 100);
 });
+let successfulPromise15 = new Promise((resolve, reject) => {
+  setTimeout(() => {resolve(15)}, 100);
+});
+let successfulPromise20 = new Promise((resolve, reject) => {
+  setTimeout(() => {resolve(20)}, 100);
+});
 let failedPromise5 = new Promise((resolve, reject) => {
   setTimeout(() => {reject(5)}, 100);
 });
 let failedPromise10 = new Promise((resolve, reject) => {
   setTimeout(() => {reject(10)}, 100);
 });
+
+function getPromisechain() {
+  return successfulPromise5.then(() => {return successfulPromise10})
+    .then(() => {return successfulPromise15})
+    .then(() => {return successfulPromise20})
+}
 
 function getFailingPromise() {
   return new Promise((resolve, reject) => {
@@ -157,6 +169,12 @@ test('Promise catch', function (t) {
       t.deepEqual(err.message, 'Z', 'err 3' );
       t.end();
     })
+});
 
 
+test('Promise catch', function (t) {
+  getPromisechain().then((handle) => {
+    t.deepEqual(handle, 20, 'should be at the end of the chain' );
+    t.end();
+  })
 });

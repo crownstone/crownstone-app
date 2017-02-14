@@ -149,7 +149,7 @@ export const BehaviourUtil = {
           data.currentUsage = 0;
         }
 
-        bleController.load(stone, 'setSwitchState', [behaviour.state, 0, INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]]]);
+        bleController.load(stone, stoneId, 'setSwitchState', [behaviour.state, 0, INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]]]);
       };
 
       if (behaviour.delay > 0) {

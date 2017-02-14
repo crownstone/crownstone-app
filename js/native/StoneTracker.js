@@ -28,7 +28,7 @@ export class StoneTracker {
       this.temporaryIgnore = true;
       this.temporaryIgnoreTimeout = setTimeout(() => {
         if (this.temporaryIgnore === true) {
-          LOG.error("temporary ignore of triggers has been on for more than 20 seconds!!");
+          LOG.warn("temporary ignore of triggers has been on for more than 20 seconds!!");
         }
       }, 20000 );
     });
@@ -132,7 +132,7 @@ export class StoneTracker {
             if (newState === 0) {
               data.currentUsage = 0;
             }
-            let proxy = BleUtil.getProxy(stone.config.handle);
+            let proxy = BleUtil.getProxy(stone.config.handle, this.props.sphereId, stoneId);
             proxy.performPriority(BluenetPromises.setSwitchState, [newState, INTENTS.manual])
               .then(() => {
                 this.props.store.dispatch({
@@ -142,7 +142,7 @@ export class StoneTracker {
                   data: data
                 });
               })
-              .catch((err) => {});
+              .catch((err) => {})
 
             ref.touchTime = now;
             ref.touchTempDisabled = true;

@@ -237,7 +237,7 @@ export class DeviceEdit extends Component {
       })
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
-        let proxy = BleUtil.getProxy(stone.config.handle);
+        let proxy = BleUtil.getProxy(stone.config.handle, this.props.sphereId, this.props.stoneId);
         proxy.performPriority(BluenetPromises.commandFactoryReset)
           .catch(() => {
             // second attempt

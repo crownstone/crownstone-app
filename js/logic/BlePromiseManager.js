@@ -21,7 +21,7 @@ class BlePromiseManagerClass {
   _register(promise, message, priorityCommand = false) {
     LOG.info("BlePromiseManager: registered promise in manager");
     return new Promise((resolve, reject) => {
-      let container = {promise: promise, resolve: resolve, reject: reject, message: message};
+      let container = { promise: promise, resolve: resolve, reject: reject, message: message };
       if (this.promiseInProgress === undefined) {
         this.executePromise(container);
       }
@@ -45,7 +45,7 @@ class BlePromiseManagerClass {
     this.clearPendingPromiseTimeout = Scheduler.scheduleCallback(() => {
       LOG.error('BlePromiseManager: Forced timeout after 60 seconds.');
       promiseContainer.reject(new Error("Forced timeout after 60 seconds."));
-      BluenetPromises.phoneDisconnect().catch();
+      BluenetPromises.phoneDisconnect().catch((err) => {});
       this.moveOn();
     }, 60000, 'pendingPromiseTimeout');
 

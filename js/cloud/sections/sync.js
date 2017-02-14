@@ -73,13 +73,13 @@ const syncDown = function (userId, options) {
       CLOUD.getKeys(options)
         .then((data) => {
           cloudKeys = data;
-        }).catch()
+        }).catch((err) => {})
     );
     syncPromises.push(
       CLOUD.forUser(userId).getDevices(options)
         .then((data) => {
           cloudDevices = data;
-        }).catch()
+        }).catch((err) => {})
     );
     syncPromises.push(
       CLOUD.getSpheres(options)
@@ -97,7 +97,7 @@ const syncDown = function (userId, options) {
           });
 
           return Promise.all(sphereDataPromises);
-        }).catch()
+        }).catch((err) => {})
     );
 
     Promise.all(syncPromises)

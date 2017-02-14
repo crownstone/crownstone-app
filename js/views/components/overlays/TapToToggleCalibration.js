@@ -107,7 +107,7 @@ export class TapToToggleCalibration extends Component {
 
         }
       })
-      .catch((err) => {});
+      .catch((err) => {})
   }
 
   getContent() {

@@ -216,7 +216,7 @@ export class Login extends Component {
 
     // get more data on the user
     promises.push(
-      CLOUD.getUserData()
+      CLOUD.forUser(userId).getUserData()
         .then((userData) => {
           store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName, isNew: userData.new}});
           this.progress += parts;

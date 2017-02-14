@@ -163,7 +163,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
       }
     })
     .catch((err) => {
-      safeDeleteFile(tempPath).catch();
+      safeDeleteFile(tempPath).catch((err) => {});
       reject(err);
     })
   });

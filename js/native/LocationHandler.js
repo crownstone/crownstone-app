@@ -47,7 +47,7 @@ class LocationHandlerClass {
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
     // make sure we only do this once per sphere
-    if (sphere.config.present === true)
+    if (sphere && sphere.config && sphere.config.present === true)
       return;
 
     if (sphere !== undefined) {
@@ -71,7 +71,7 @@ class LocationHandlerClass {
             }
           }
         })
-        .catch();
+        .catch((err) => {});
 
       let lastTimePresent = sphere.config.lastTimePresent;
 

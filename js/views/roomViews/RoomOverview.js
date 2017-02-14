@@ -144,7 +144,7 @@ export class RoomOverview extends Component {
                 }
 
                 let bleController = new BatchCommand(this.props.store, this.props.sphereId);
-                bleController.load(item.stone, 'setSwitchState', [switchState, 0, INTENTS.manual]);
+                bleController.load(item.stone, stoneId, 'setSwitchState', [switchState, 0, INTENTS.manual]);
                 bleController.execute({}, true)
                   .then(() => {
                     this.props.store.dispatch({

@@ -1,5 +1,5 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
-import { DISABLE_NATIVE, DEBUG_BLE } from '../ExternalConfig'
+import { DISABLE_NATIVE, LOG_BLE } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
 import { eventBus }  from '../util/eventBus'
 
@@ -248,7 +248,7 @@ class NativeBusClass {
 export const NativeBus = new NativeBusClass();
 
 
-if (DEBUG_BLE) {
+if (LOG_BLE) {
   NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
     LOG.ble('setupAdvertisement', data.name, data.rssi, data.handle);
   });

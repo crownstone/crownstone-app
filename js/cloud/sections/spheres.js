@@ -163,7 +163,7 @@ export const spheres = {
       this.getStonesInSphere(options)
         .then((stones) => {
           stoneData = stones;
-        }).catch()
+        }).catch((err) => {})
     );
 
     // for every sphere we get the appliances
@@ -171,7 +171,7 @@ export const spheres = {
       this.getAppliancesInSphere(options)
         .then((appliances) => {
           applianceData = appliances;
-        }).catch()
+        }).catch((err) => {})
     );
 
     // for every sphere, we get the locations
@@ -179,7 +179,7 @@ export const spheres = {
       this.getLocations(options)
         .then((locations) => {
           locationData = locations;
-        }).catch()
+        }).catch((err) => {})
     );
 
     promises.push(
@@ -211,7 +211,7 @@ export const spheres = {
         guests:         guestData,
         pendingInvites: pendingInvites,
       }
-    }).catch()
+    }).catch((err) => {})
   },
 
   getUserFromType: function(userGetter, type, userData, sphereId, selfId, options) {
@@ -259,7 +259,7 @@ export const spheres = {
       this.getStonesInSphere()
         .then((stones) => {
           stoneData = stones;
-        }).catch()
+        }).catch((err) => {})
     );
 
     // for every sphere we get the appliances
@@ -267,7 +267,7 @@ export const spheres = {
       this.getAppliancesInSphere()
         .then((appliances) => {
           applianceData = appliances;
-        }).catch()
+        }).catch((err) => {})
     );
 
     // for every sphere, we get the locations
@@ -275,7 +275,7 @@ export const spheres = {
       this.getLocations()
         .then((locations) => {
           locationData = locations;
-        }).catch()
+        }).catch((err) => {})
     );
 
     return Promise.all(promises)

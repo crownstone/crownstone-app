@@ -1,13 +1,15 @@
 import { Platform } from 'react-native';
 import {
   LOGGING,
-  ERROR_LOGGING,
-  DEBUG_LOGGING,
-  DEBUG_CLOUD,
-  DEBUG_BLE,
-  DEBUG_MESH,
-  DEBUG_STORE,
-  DEBUG_SCHEDULER,
+  LOG_ERRORS,
+  LOG_WARNINGS,
+  LOG_VERBOSE,
+  LOG_DEBUG,
+  LOG_CLOUD,
+  LOG_BLE,
+  LOG_MESH,
+  LOG_STORE,
+  LOG_SCHEDULER,
   RELEASE_MODE,
   LOG_TO_FILE,
 } from '../ExternalConfig'
@@ -22,32 +24,41 @@ export const LOG = {
     this._log('------------', LOGGING, arguments);
   },
 
+  verbose: function() {
+    this._log('VERBOSE ----', LOG_VERBOSE, arguments);
+  },
+
+  warn: function() {
+    this._log('WARNING ! --', LOG_WARNINGS, arguments);
+  },
+
+
   error: function() {
-    this._log('ERROR !!! --', ERROR_LOGGING, arguments);
+    this._log('ERROR !!! --', LOG_ERRORS, arguments);
   },
 
   debug: function() {
-    this._log('Debug ------', DEBUG_LOGGING, arguments);
+    this._log('Debug ------', LOG_DEBUG, arguments);
   },
 
   cloud: function() {
-    this._log('Cloud ------', DEBUG_CLOUD, arguments);
+    this._log('Cloud ------', LOG_CLOUD, arguments);
   },
 
   ble: function() {
-    this._log('BLE --------', DEBUG_BLE, arguments);
+    this._log('BLE --------', LOG_BLE, arguments);
   },
 
   store: function() {
-    this._log('Store ------', DEBUG_STORE, arguments);
+    this._log('Store ------', LOG_STORE, arguments);
   },
 
   scheduler: function() {
-    this._log('Scheduler --', DEBUG_SCHEDULER, arguments);
+    this._log('Scheduler --', LOG_SCHEDULER, arguments);
   },
 
   mesh: function() {
-    this._log('Mesh -------', DEBUG_MESH, arguments);
+    this._log('Mesh -------', LOG_MESH, arguments);
   },
 
   _log: function(type, check, allArguments) {
@@ -142,7 +153,7 @@ function logToFile() {
     // write the file
     RNFS.appendFile(filePath, str, 'utf8')
       .then((success) => {})
-      .catch((err) => {});
+      .catch((err) => {})
   }
 }
 
