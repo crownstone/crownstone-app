@@ -104,7 +104,7 @@ class KeepAliveHandlerClass {
       // if we have behaviour, send it to the crownstone.
       if (behaviour !== undefined) {
         if (BehaviourUtil.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === true) {
-          changeState = true;
+          changeState = behaviour.active;
           newState = behaviour.state;
           timeout = Math.max(timeout, delay);
         }

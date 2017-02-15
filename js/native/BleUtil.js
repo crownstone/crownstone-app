@@ -279,7 +279,7 @@ export class BatchCommand {
 
     directCommands.forEach((command) => {
       let singleCommand = new SingleCommand(command.handle, this.sphereId, command.stoneId);
-      LOG.info("BatchCommand: performing direct command:", command.handle, this.sphereId, command.stoneId, priority);
+      LOG.info("BatchCommand: performing direct command:", command.commandString, command.props);
       promises.push(
         singleCommand.searchAndPerform(batchSettings, this.store.getState(), BluenetPromises[command.commandString], command.props, priority)
           .then(() => {
@@ -702,7 +702,7 @@ class SingleCommand {
       }
     }
     else {
-      LOG.verbose("SingleCommand: Search trigger requested");
+      LOG.verbose("SingleCommand: Search trigger requested", action);
       let topic = 'update_' + this.sphereId + '_' + this.stoneId;
       return this._searchScan(topic, searchSettings.rssiThreshold, searchSettings.timeout)
         .catch(() => {
