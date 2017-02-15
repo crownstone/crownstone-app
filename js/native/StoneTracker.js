@@ -1,6 +1,7 @@
 import { Alert, Vibration } from 'react-native';
 
-import { BleUtil, BluenetPromises, INTENTS }      from './Proxy'
+import { BleUtil }                                from './BleUtil'
+import { BluenetPromises, INTENTS }               from './Proxy'
 import { StoneStateHandler }                      from './StoneStateHandler'
 import { eventBus }                               from './../util/eventBus';
 import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS }       from './../ExternalConfig';
@@ -132,17 +133,17 @@ export class StoneTracker {
             if (newState === 0) {
               data.currentUsage = 0;
             }
-            let proxy = BleUtil.getProxy(stone.config.handle, this.props.sphereId, stoneId);
-            proxy.performPriority(BluenetPromises.setSwitchState, [newState, INTENTS.manual])
+            let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
+            proxy.performPriority(BluenetPromises.setSwitchState, [newState, 0, INTENTS.manual])
               .then(() => {
                 this.props.store.dispatch({
-                  type: 'UPDATE_STONE_STATE',
+                  type: 'UPDATE_STONE_SWITCH_STATE',
                   sphereId: this.props.sphereId,
                   stoneId: stoneId,
                   data: data
                 });
               })
-              .catch((err) => {})
+              .catch((err) => {});
 
             ref.touchTime = now;
             ref.touchTempDisabled = true;

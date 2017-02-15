@@ -144,11 +144,11 @@ export class RoomOverview extends Component {
                 }
 
                 let bleController = new BatchCommand(this.props.store, this.props.sphereId);
-                bleController.load(item.stone, stoneId, 'setSwitchState', [switchState, 0, INTENTS.manual]);
+                bleController.load(item.stone, stoneId, 'setSwitchState', [switchState, 0, INTENTS.manual]).catch((err) => {});
                 bleController.execute({}, true)
                   .then(() => {
                     this.props.store.dispatch({
-                      type: 'UPDATE_STONE_STATE',
+                      type: 'UPDATE_STONE_SWITCH_STATE',
                       sphereId: this.props.sphereId,
                       stoneId: stoneId,
                       data: data

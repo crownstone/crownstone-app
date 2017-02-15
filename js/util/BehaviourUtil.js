@@ -149,7 +149,18 @@ export const BehaviourUtil = {
           data.currentUsage = 0;
         }
 
-        bleController.load(stone, stoneId, 'setSwitchState', [behaviour.state, 0, INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]]]);
+        bleController.load(stone, stoneId, 'setSwitchState', [behaviour.state, 0, INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]]])
+          .then(() => {
+            store.dispatch({
+              type: 'UPDATE_STONE_SWITCH_STATE',
+              sphereId: sphereId,
+              stoneId: stoneId,
+              data: data
+            });
+          })
+          .catch((err) => {
+            LOG.error("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
+          })
       };
 
       if (behaviour.delay > 0) {

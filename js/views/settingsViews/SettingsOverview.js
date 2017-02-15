@@ -44,7 +44,7 @@ export class SettingsOverview extends Component {
     let items = [];
 
     items.push({type:'explanation', label:'UPDATE YOUR PROFILE', below:false});
-    items.push({label:'My Profile', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
+    items.push({label:'My Account', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
 
     items.push({type:'explanation', label:'CONFIGURATION', below:false});
     if (Object.keys(state.spheres).length > 0) {

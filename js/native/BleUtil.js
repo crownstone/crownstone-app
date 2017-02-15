@@ -117,8 +117,8 @@ export const BleUtil = {
     })
   },
 
-  getProxy: function (bleHandle) {
-    return new SingleCommand(bleHandle)
+  getProxy: function (bleHandle, sphereId, stoneId) {
+    return new SingleCommand(bleHandle, sphereId, stoneId);
   },
 
   // getMeshProxy: function (bleHandle) {
@@ -190,7 +190,9 @@ export class BatchCommand {
    * @param { Array }  props          // Array of props that are fed into the BluenetPromise
    */
   load(stone, stoneId, commandString, props = []) {
-    this.commands.push({handle: stone.config.handle, stoneId: stoneId, stone:stone, commandString:commandString, props: props})
+    return new Promise((resolve, reject) => {
+      this.commands.push({handle: stone.config.handle, stoneId: stoneId, stone:stone, commandString:commandString, props: props, promise:{resolve, reject}})
+    });
   }
 
 
@@ -221,7 +223,7 @@ export class BatchCommand {
         });
 
         if (todo.commandString === 'keepAlive') {
-          meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({handle: stoneConfig.handle, props: []});
+          meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({handle: stoneConfig.handle, props: [], promise: todo.promise});
         }
         else if (todo.commandString === 'keepAliveState') {
           meshNetworks[stoneConfig.meshNetworkId].keepAliveState.push({
@@ -230,6 +232,7 @@ export class BatchCommand {
             changeState: todo.props[0],
             state: todo.props[1],
             timeout: todo.props[2],
+            promise: todo.promise
           });
         }
         else if (todo.commandString === 'setSwitchState') {
@@ -238,6 +241,7 @@ export class BatchCommand {
             handle: stoneConfig.handle,
             state: todo.props[0],
             timeout: todo.props[1],
+            promise: todo.promise
           });
         }
         else {
@@ -276,7 +280,15 @@ export class BatchCommand {
     directCommands.forEach((command) => {
       let singleCommand = new SingleCommand(command.handle, this.sphereId, command.stoneId);
       LOG.info("BatchCommand: performing direct command:", command.handle, this.sphereId, command.stoneId, priority);
-      promises.push(singleCommand.searchAndPerform(batchSettings, this.store.getState(), BluenetPromises[command.commandString], command.props, priority));
+      promises.push(
+        singleCommand.searchAndPerform(batchSettings, this.store.getState(), BluenetPromises[command.commandString], command.props, priority)
+          .then(() => {
+            command.promise.resolve();
+          })
+          .catch((err) => {
+            command.promise.reject(err);
+          })
+      );
     });
 
     return Promise.all(promises);
@@ -466,6 +478,7 @@ class MeshHelper {
   process(batchSettings, priorityCommand = true, attempt = 0) {
     let actionPromise = () => {
       return new Promise((resolve, reject) => {
+        this._containedPromises = [];
         this._search(batchSettings, batchSettings.rssiThreshold)
           .catch(() => {
             // could not find any node withing a -90 threshold
@@ -489,15 +502,30 @@ class MeshHelper {
             return this._handleKeepAliveCommands();
           })
           .then(() => {
-            LOG.mesh('MeshHelper: completed disconnecting');
-            resolve();
             return BluenetPromises.disconnect();
+          })
+          .then(() => {
+            LOG.mesh('MeshHelper: completed disconnecting, resolving children');
+            this._resolveContainedPromises();
           })
           .catch((err) => {
             LOG.error("MeshHelper: mesh command Error:", err);
             if (batchSettings.timesToRetry !== undefined && batchSettings.timesToRetry > attempt) {
-              this.process( batchSettings, priorityCommand, attempt+1);
+              LOG.mesh('MeshHelper: failed (', err, '). Attempting retry.');
+              return this.process(batchSettings, priorityCommand, attempt + 1);
             }
+            else {
+              return new Promise((resolveOnRetry, rejectOnRetry) => {
+                rejectOnRetry(err)
+              })
+            }
+          })
+          .then(() => {
+            LOG.mesh('MeshHelper: completed. Resolving.');
+            resolve();
+          })
+          .catch((err) => {
+            this._rejectContainedPromises();
             BluenetPromises.phoneDisconnect().then(() => {
               reject(err)
             }).catch(() => {
@@ -514,6 +542,18 @@ class MeshHelper {
     else {
       return BlePromiseManager.register(actionPromise, details);
     }
+  }
+
+  _resolveContainedPromises() {
+    this._containedPromises.forEach((promise) => {
+      promise.resolve();
+    })
+  }
+
+  _rejectContainedPromises() {
+    this._containedPromises.forEach((promise) => {
+      promise.reject();
+    })
   }
 
   _handleSetSwitchStateCommands() {
@@ -533,6 +573,10 @@ class MeshHelper {
       let stoneSwitchPackets = [];
       instructionSet.forEach((instruction) => {
         if (instruction.crownstoneId && instruction.timeout && instruction.state) {
+          // add the promise of this part of the payload to the list that we will need to resolve or reject
+          this._containedPromises.push( instruction.promise );
+
+          // add the this part of the payload to the message
           stoneSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, state: instruction.state})
         }
         else {
@@ -569,6 +613,9 @@ class MeshHelper {
       let timeout = 2.5*KEEPALIVE_INTERVAL;
       keepAliveInstructions.forEach((instruction) => {
         if (instruction.crownstoneId && instruction.timeout && instruction.state && instruction.changeState) {
+          // add the promise of this part of the payload to the list that we will need to resolve or reject
+          this._containedPromises.push( instruction.promise );
+
           timeout = Math.max(timeout, instruction.timeout);
           stoneKeepAlivePackets.push({crownstoneId: instruction.crownstoneId, action: instruction.changeState, state: instruction.state})
         }
@@ -583,6 +630,12 @@ class MeshHelper {
     }
     else if (this.meshInstruction.keepAlive.length > 0) {
       LOG.mesh('MeshHelper: Dispatching meshKeepAlive');
+
+      // add the promise of this part of the payload to the list that we will need to resolve or reject
+      this.meshInstruction.keepAlive.forEach((instruction) => {
+          this._containedPromises.push( instruction.promise );
+      });
+
       return BluenetPromises('meshKeepAlive');
     }
     return new Promise((resolve, reject) => {resolve()});
@@ -654,14 +707,15 @@ class SingleCommand {
       return this._searchScan(topic, searchSettings.rssiThreshold, searchSettings.timeout)
         .catch(() => {
           // could not find any node withing a -90 threshold
-          LOG.error('MeshHelper: Could not find any nodes of the mesh network:', this.meshNetworkId, 'within -90 db. Attempting removal of threshold...');
+          LOG.warn('SingleCommand: Could not find the target crownstone within -90 db. Attempting removal of threshold...');
           return this._search(searchSettings, null);
         })
         .catch(() => {
-          LOG.error('MeshHelper: Can not connect to any node in the mesh network: ', this.meshNetworkId);
+          LOG.error('SingleCommand: Can not connect to the target crownstone');
           throw new Error('Can not connect to any node in the mesh network: ' + this.meshNetworkId);
         })
         .then((handle) => {
+          LOG.info('SingleCommand: Found Crownstone.');
           return this.performCommand(action, props, priorityCommand);
         })
     }
@@ -699,6 +753,12 @@ class SingleCommand {
       if (this.handle) {
         return BluenetPromises.connect(this.handle)
           .then(() => { LOG.info("SingleCommand: connected, performing: ", action, props); return action.apply(this, props); })
+          .catch((err) => {
+            if (err === 'NOT_CONNECTED') {
+              return BluenetPromises.connect(this.handle)
+                .then(() => { LOG.info("SingleCommand: second attempt, performing: ", action, props); return action.apply(this, props); })
+            }
+          })
           .then(() => { LOG.info("SingleCommand: completed", action, 'disconnecting'); return BluenetPromises.disconnect(); })
           .catch((err) => {
             LOG.error("SingleCommand: BLE Single command Error:", err);

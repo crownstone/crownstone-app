@@ -99,7 +99,7 @@ export class SetupHelper {
 
               actions.push(addStoneAction);
               actions.push({
-                type: 'UPDATE_STONE_STATE',
+                type: 'UPDATE_STONE_SWITCH_STATE',
                 sphereId: sphereId,
                 stoneId: this.stoneIdInCloud,
                 data: { state: isGuidestone ? 0 : 1, currentUsage: 0 },

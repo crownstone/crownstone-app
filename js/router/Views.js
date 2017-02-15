@@ -25,6 +25,7 @@ import { DeviceScheduleAdd }          from '../views/deviceViews/DeviceScheduleA
 import { DaySelection }               from '../views/deviceViews/DaySelection'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
+import { SettingsPrivacy }            from '../views/settingsViews/SettingsPrivacy'
 import { SettingsDeveloper }          from '../views/settingsViews/SettingsDeveloper'
 import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
 import { SettingsSphere }             from '../views/settingsViews/SettingsSphere'
@@ -62,6 +63,7 @@ export const Views = {
   DaySelection,
   SettingsOverview,
   SettingsProfile,
+  SettingsPrivacy,
   SettingsDeveloper,
   SettingsSphereOverview,
   SettingsSphere,

@@ -32,6 +32,21 @@ export const stones = {
     );
   },
 
+  /**
+   * Update a current energy usage
+   * @param data
+   * @param background
+   * @returns {*}
+   */
+  updateUsage: function(data, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Stones/{id}/currentEnergyUsage/',
+      { background: background, data: data },
+      'body'
+    );
+  },
+
 
   /**
    * Update the link from a crownstone to a room.

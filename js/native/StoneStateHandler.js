@@ -21,7 +21,7 @@ class StoneStateHandlerClass {
     this._initialized = false;
 
     // create a trigger to throttle the updates.
-    Scheduler.setRepeatingTrigger(TRIGGER_ID,{repeatEveryNSeconds: RSSI_REFRESH});
+    Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: RSSI_REFRESH});
   }
 
   loadStore(store) {
@@ -34,11 +34,16 @@ class StoneStateHandlerClass {
   receivedIBeaconUpdate(sphereId, stone, stoneId, rssi) {
     // internal event to tell the app this crownstone has been seen.
     eventBus.emit('update_'+sphereId+'_'+stoneId, rssi);
-    if (stone.config.meshNetworkId)
-      eventBus.emit('updateMeshNetwork_'+sphereId+stone.config.meshNetworkId, { handle: stone.config.handle, id: stoneId, rssi: rssi });
+    if (stone.config.meshNetworkId) {
+      eventBus.emit('updateMeshNetwork_' + sphereId + stone.config.meshNetworkId, {
+        handle: stone.config.handle,
+        id: stoneId,
+        rssi: rssi
+      });
+    }
 
     // only update rssi if there is a measurable difference and check if rssi is smaller than 0 to make sure its a valid measurement.
-    if (stone.config.rssi - rssi > 3 && rssi < 0) {
+    if (Math.abs(stone.config.rssi - rssi) > 3 && rssi < 0) {
       // update RSSI, we only use the iBeacon once since it has an average rssi
       Scheduler.loadOverwritableAction(TRIGGER_ID, stoneId, {
         type: 'UPDATE_STONE_RSSI',

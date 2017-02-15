@@ -39,8 +39,9 @@ export const sync = {
               action.triggeredBySync = true;
             });
 
-            if (actions.length > 0)
+            if (actions.length > 0) {
               store.batchDispatch(actions);
+            }
 
             this.events.emit("CloudSyncComplete");
 
@@ -55,8 +56,6 @@ export const sync = {
       .catch((err) => {
         LOG.error(err);
       })
-
-
   }
 };
 
@@ -554,29 +553,29 @@ const syncDevices = function(store, actions, devices) {
       let device = devices[i];
       if (device.address === address) {
         deviceId = device.id;
-        matchingDevice = device[i];
+        matchingDevice = device;
         break;
       }
       else if (device.name === name && device.description === description) {
         deviceId = device.id;
         deviceAddress = device.address;
-        matchingDevice = device[i];
+        matchingDevice = device;
       }
       else if (device.description === description) {
         deviceId = device.id;
         deviceAddress = device.address;
-        matchingDevice = device[i];
+        matchingDevice = device;
       }
     }
-
+    
     if (deviceId === undefined || state.devices[deviceId] === undefined) {
       LOG.info("Sync: Create new device", name, address, description);
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
           actions.push({
             type: 'ADD_DEVICE',
-            deviceId: device.id,
-            data: {name: name, address: deviceId, description: description}
+            deviceId: deviceId,
+            data: {name: name, address: address, description: description}
           });
           /**
            * We now push the location of ourselves to the cloud.
@@ -594,11 +593,11 @@ const syncDevices = function(store, actions, devices) {
           data: {appIdentifier: deviceAddress}
         });
       }
-
       // if the tap to toggle calibration is available and different from what we have stored, update it.
-      if (matchingDevice.tapToToggleCalibration && state.devices[deviceId].config.tapToToggleCalibration === null) {
+      if (matchingDevice.tapToToggleCalibration && state.devices[deviceId].tapToToggleCalibration === null) {
         store.dispatch({
           type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
+          deviceId: deviceId,
           data: {tapToToggleCalibration: matchingDevice.tapToToggleCalibration}
         })
       }
@@ -608,19 +607,43 @@ const syncDevices = function(store, actions, devices) {
         .then(resolve)
         .catch(reject);
     }
+
+    // cleanup
+    let deleteActions = [];
+    let cloudDeviceIdList = {};
+    for (let i = 0; i < devices.length; i++) {
+      cloudDeviceIdList[devices[i].id] = true;
+    }
+    let localDeviceIdList = Object.keys(store.getState().devices);
+    for (let i = 0; i < localDeviceIdList.length; i++) {
+      if (cloudDeviceIdList[localDeviceIdList[i]] === undefined) {
+        deleteActions.push({type: 'REMOVE_DEVICE', deviceId: localDeviceIdList[i]});
+      }
+    }
+    if (deleteActions.length > 0) {
+      LOG.cloud("REMOVING ", deleteActions.length, " devices since they are not in the cloud anymore");
+      store.batchDispatch(deleteActions);
+    }
   });
 };
 
 
 const updateUserLocationInCloud = function(state, deviceId) {
   return new Promise((resolve, reject) => {
-    if (state.user.userId) {
-      let userLocation = findUserLocation(state, state.user.userId);
-      CLOUD.forDevice(deviceId).updateDeviceLocation(userLocation.locationId)
-        .then(resolve)
-        .catch(reject)
+    if (state.user.uploadLocation === true) {
+      if (state.user.userId) {
+        let userLocation = findUserLocation(state, state.user.userId);
+        CLOUD.forDevice(deviceId).updateDeviceLocation(userLocation.locationId)
+          .then(resolve)
+          .catch(reject)
+      }
+      else {
+        resolve();
+      }
     }
-    resolve();
+    else {
+      resolve();
+    }
   });
 };
 

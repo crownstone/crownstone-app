@@ -1,17 +1,15 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
-  config: {
-    name: null,
-    address: null,
-    description: null,
-    location: null,
-    tapToToggleCalibration: null,
-    updatedAt: 1
-  },
+  name: null,
+  address: null,
+  description: null,
+  location: null,
+  tapToToggleCalibration: null,
+  updatedAt: 1
 };
 
-let deviceConfigReducer = (state = defaultSettings.config, action = {}) => {
+let deviceConfigReducer = (state = defaultSettings, action = {}) => {
   switch (action.type) {
     case 'SET_TAP_TO_TOGGLE_CALIBRATION':
       if (action.data) {
@@ -34,7 +32,7 @@ let deviceConfigReducer = (state = defaultSettings.config, action = {}) => {
       }
       return state;
     case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultSettings.config);
+      return refreshDefaults(state, defaultSettings);
     default:
       return state;
   }

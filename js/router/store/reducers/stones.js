@@ -155,8 +155,9 @@ let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
     case 'CLEAR_STONE_USAGE':
       let newState          = {...state};
       newState.currentUsage = 0;
-      newState.updatedAt   = getTime();
+      newState.updatedAt    = getTime();
       return newState;
+    case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
     case 'UPDATE_STONE_STATE':
       if (action.data) {
         let newState          = {...state};
@@ -166,6 +167,7 @@ let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
         return newState;
       }
       return state;
+
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.state);
     default:

@@ -125,7 +125,7 @@ export const INITIALIZER = {
       let currentDeviceSpecs = getDeviceSpecs(state);
       let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
       if (currentDeviceSpecs.address && deviceInDatabaseId) {
-        let deviceInDatabase = state.devices[deviceInDatabaseId].config;
+        let deviceInDatabase = state.devices[deviceInDatabaseId];
         // if the address matches but the name does not, update the device name in the cloud.
         if (deviceInDatabase.address === currentDeviceSpecs.address && currentDeviceSpecs.name != deviceInDatabase.name) {
           store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {name: currentDeviceSpecs.name}})
@@ -156,7 +156,7 @@ export const INITIALIZER = {
       NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
         let state = store.getState();
         if (deviceInDatabaseId &&
-          (state.devices[deviceInDatabaseId].config.tapToToggleCalibration === null || state.devices[deviceInDatabaseId].config.tapToToggleCalibration === undefined)) {
+          (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {
           if (userHasPlugsInSphere(state,sphereId))
             eventBus.emit("CalibrateTapToToggle");
         }

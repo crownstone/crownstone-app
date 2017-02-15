@@ -2,28 +2,29 @@ import { update, getTime, refreshDefaults } from './reducerUtil'
 import { getUUID } from '../../../util/Util'
 
 let defaultSettings = {
-  user: {
-    firstName: null,
-    lastName: null,
-    email: null,
-    accessToken: null,
-    passwordHash: null,
-    userId: null,
-    isNew: true,
-    picture: null,
-    betaAccess: false,
-    seenTapToToggle: false,
-    seenTapToToggleDisabledDuringSetup: false,
-    seenRoomFingerprintAlert: false,
-    appIdentifier: null,
-    developer: false,
-    logging: false,
-    updatedAt: 1,
-  },
+  firstName: null,
+  lastName: null,
+  email: null,
+  accessToken: null,
+  passwordHash: null,
+  userId: null,
+  isNew: true,
+  picture: null,
+  betaAccess: false,
+  seenTapToToggle: false,
+  seenTapToToggleDisabledDuringSetup: false,
+  seenRoomFingerprintAlert: false,
+  appIdentifier: null,
+  developer: false,
+  logging: false,
+  uploadLocation: false,
+  uploadSwitchState: false,
+  uploadPowerUsage: false,
+  updatedAt: 1,
 };
 
 // userReducer
-export default (state = defaultSettings.user, action = {}) => {
+export default (state = defaultSettings, action = {}) => {
   switch (action.type) {
     case 'SET_DEVELOPER_MODE':
       if (action.data) {
@@ -94,12 +95,15 @@ export default (state = defaultSettings.user, action = {}) => {
         newState.accessToken  = update(action.data.accessToken,  newState.accessToken);
         newState.userId       = update(action.data.userId,       newState.userId);
         newState.picture      = update(action.data.picture,      newState.picture);
+        newState.uploadLocation    = update(action.data.uploadLocation,    newState.uploadLocation);
+        newState.uploadSwitchState = update(action.data.uploadSwitchState, newState.uploadSwitchState);
+        newState.uploadPowerUsage  = update(action.data.uploadPowerUsage,  newState.uploadPowerUsage);
         newState.updatedAt    = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
     case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultSettings.user);
+      return refreshDefaults(state, defaultSettings);
     default:
       return state;
   }

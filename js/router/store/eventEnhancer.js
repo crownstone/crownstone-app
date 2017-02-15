@@ -148,6 +148,7 @@ function checkAction(action, affectedIds) {
       eventStatus.stoneLocationUpdated = affectedIds; break;
     case 'CLEAR_STONE_USAGE':
     case 'UPDATE_STONE_STATE':
+    case 'UPDATE_STONE_SWITCH_STATE':
       eventStatus.powerUsageUpdated = affectedIds;
       eventStatus.stoneUsageUpdated = affectedIds; break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
@@ -189,11 +190,12 @@ function checkAction(action, affectedIds) {
     case 'SET_LOGGING':
     case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_STATE':
+    case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
     case 'REFRESH_DEFAULTS':
     case 'UPDATE_MESH_NETWORK_ID':
       break;
     default:
-      LOG.error("UNKNOWN ACTION TYPE:", action);
+      LOG.warn("UNKNOWN ACTION TYPE:", action);
   }
 
   eventStatus.totalAffectedIds = affectedIds;
