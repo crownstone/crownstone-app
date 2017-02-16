@@ -227,8 +227,8 @@ export class DeviceBehaviourEdit extends Component {
     toggleOptions.push({label: "do nothing", value: null});
 
     let toggleOptionsExitSphere = [];
-    toggleOptionsExitSphere.push({label: 'turn on after ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),    value: 1});
-    toggleOptionsExitSphere.push({label: 'turn off after ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),   value: 0});
+    toggleOptionsExitSphere.push({label: 'turn on after ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),  value: 1});
+    toggleOptionsExitSphere.push({label: 'turn off after ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay), value: 0});
     toggleOptionsExitSphere.push({label: "do nothing", value: null});
 
     let toggleOptionsExit = [];

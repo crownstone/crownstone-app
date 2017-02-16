@@ -190,6 +190,7 @@ export class BatchCommand {
    * @param { Array }  props          // Array of props that are fed into the BluenetPromise
    */
   load(stone, stoneId, commandString, props = []) {
+    LOG.verbose("BatchCommand: Loading command,", stoneId, stone.config.name, commandString, props);
     return new Promise((resolve, reject) => {
       this.commands.push({handle: stone.config.handle, stoneId: stoneId, stone:stone, commandString:commandString, props: props, promise:{resolve, reject}})
     });
@@ -289,7 +290,14 @@ export class BatchCommand {
       );
     });
 
-    return Promise.all(promises);
+    return Promise.all(promises)
+      .then(() => {
+        this._reset();
+      });
+  }
+
+  _reset() {
+    this.commands = [];
   }
 
 }

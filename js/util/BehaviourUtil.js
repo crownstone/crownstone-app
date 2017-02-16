@@ -102,6 +102,7 @@ export const BehaviourUtil = {
     this._enactBehaviourCore(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, bleController, callbacks);
 
     if (triggerController) {
+      // trigger all immediate actions.
       bleController.execute({immediate: false, timesToRetry:1}, false);
     }
   },
@@ -136,15 +137,15 @@ export const BehaviourUtil = {
         if (this.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === false) {
           if (callbacks && callbacks.onCancelled && typeof callbacks.onCancelled === 'function') {
             callbacks.onCancelled(sphereId, stoneId);
-            return;
           }
+          return;
         }
 
         if (callbacks && callbacks.onTrigger && typeof callbacks.onTrigger === 'function') {
           callbacks.onTrigger(sphereId, stoneId);
         }
 
-        LOG.info("BehaviourUtil: FIRING ", behaviourType, " event for ", element.config.name, stoneId);
+        LOG.info("BehaviourUtil: FIRING ", behaviourType, " event for ", element.config.name, stoneId, behaviour);
 
         // if we need to switch, configure the data to update the store with.
         let data = {state: behaviour.state};
@@ -163,7 +164,14 @@ export const BehaviourUtil = {
           })
           .catch((err) => {
             LOG.error("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
-          })
+          });
+
+
+        // we fire the execution again to handle all delayed actions. These did not get fired by the immediate execute after loading in the actions without delay
+        // we add a timeout to collect all executions that are delayed.
+        Scheduler.scheduleCallback(() => {
+          bleController.execute({immediate: false, timesToRetry:1}, false).catch((err) => {});
+        }, 200);
       };
 
       if (behaviour.delay > 0) {
@@ -219,7 +227,8 @@ export const BehaviourUtil = {
       let times = SunCalc.getTimes(new Date(), latitude, longitude);
 
       // its light outside between the end of the sunrise and the start of the sunset.
-      if (now > times.sunriseEnd.valueOf() && now < times.sunsetStart.valueOf()) {
+      // we have to add a day to the sunset to ensure we check between sunset today and sunrise tomorrow.
+      if (now < times.sunriseEnd.valueOf() || now > times.sunsetStart.valueOf()) {
         // skip the trigger for this item because it is light outside.
         return false;
       }
