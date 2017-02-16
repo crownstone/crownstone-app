@@ -53,8 +53,10 @@ class RoomPresenceTrackerClass {
 
       // if there is an existing pending trigger, clear it before we fire the next one.
       onTrigger: (sphereId, stoneId) => {
-        if (this.roomStates && this.roomStates[sphereId] && this.roomStates[sphereId][locationId]) {
-          this.roomStates[sphereId][locationId][stoneId]();
+        if (this.roomStates && this.roomStates[sphereId] && this.roomStates[sphereId][locationId] && this.roomStates[sphereId][locationId][stoneId]) {
+          if (typeof this.roomStates[sphereId][locationId][stoneId] === 'function') {
+            this.roomStates[sphereId][locationId][stoneId]();
+          }
           this.roomStates[sphereId][locationId][stoneId] = undefined;
         }
       }

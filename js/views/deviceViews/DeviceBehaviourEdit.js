@@ -174,6 +174,11 @@ export class DeviceBehaviourEdit extends Component {
     let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
 
+    let dataTypeString = "STONE";
+    if (stone.config.applianceId) {
+      dataTypeString = "APPLIANCE"
+    }
+
     let generateDelayField = (eventLabel, label) => {
       return {
         type: 'dropdown',
@@ -186,7 +191,7 @@ export class DeviceBehaviourEdit extends Component {
         valueLabel: this._getDelayLabel(device.behaviour[eventLabel].delay),
         items: timeOptions,
         callback: (newValue) => {
-          this.props.store.dispatch({...requiredData, type: "UPDATE_STONE_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
+          this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
         }
       };
     };
@@ -207,10 +212,10 @@ export class DeviceBehaviourEdit extends Component {
         items: options,
         callback: (newValue) => {
           if (newValue === null) {
-            this.props.store.dispatch({...requiredData, type: "UPDATE_STONE_BEHAVIOUR_FOR_" + eventLabel, data: {active: false}})
+            this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {active: false}})
           }
           else {
-            this.props.store.dispatch({...requiredData, type: "UPDATE_STONE_BEHAVIOUR_FOR_" + eventLabel, data: {state: newValue ? 1 : 0, active: true}})
+            this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {state: newValue ? 1 : 0, active: true}})
           }
         }
       }
@@ -313,7 +318,7 @@ export class DeviceBehaviourEdit extends Component {
 
         eventLabel = 'onRoomExit';
         items.push(generateDropdown(eventLabel, 'Leave the room', toggleOptionsExit));
-
+        console.log('(device.behaviour[eventLabel]',device.behaviour[eventLabel], eventLabel, device)
         if (device.behaviour[eventLabel].active === true) {
           items.push(generateDelayField(eventLabel, 'Delay'));
         }
@@ -333,13 +338,8 @@ export class DeviceBehaviourEdit extends Component {
     }
 
     items.push({label: 'EXCEPTIONS', type: 'explanation', style: styles.topExplanation, below:false});
-    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: device.config.onlyOnIfDark, callback: (newValue) => {
-      if (stone.config.applianceId) {
-        this.props.store.dispatch({type: 'UPDATE_APPLIANCE_CONFIG', applianceId: stone.config.applianceId, sphereId: this.props.sphereId, data: { onlyOnWhenDark : newValue } })
-      }
-      else {
-        this.props.store.dispatch({type: 'UPDATE_STONE_CONFIG', stoneId: this.props.stoneId, sphereId: this.props.sphereId, data: { onlyOnWhenDark : newValue } })
-      }
+    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: device.config.onlyOnWhenDark, callback: (newValue) => {
+      this.props.store.dispatch({type: 'UPDATE_'+dataTypeString+'_CONFIG', ...requiredData, data: { onlyOnWhenDark : newValue } })
     }});
     items.push({type:  'spacer'});
 

@@ -167,9 +167,7 @@ class LocationHandlerClass {
       this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
       // used for clearing the timeouts for this room
-      if (state.user.betaAccess) {
-        RoomTracker.exitRoom(this.store, sphereId, locationId);
-      }
+      RoomTracker.exitRoom(this.store, sphereId, locationId);
     }
   }
 

@@ -201,8 +201,6 @@ export class BatchCommand {
     let meshNetworks = {};
 
     this.commands.forEach((todo) => {
-      // LOG.verbose("BatchCommand: _extractTodo:", todo);
-
       let stoneConfig = todo.stone.config;
       // mesh not supported / no mesh detected for this stone
       if (stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
@@ -711,8 +709,8 @@ class SingleCommand {
           return this._search(searchSettings, null);
         })
         .catch(() => {
-          LOG.error('SingleCommand: Can not connect to the target crownstone');
-          throw new Error('Can not connect to any node in the mesh network: ' + this.meshNetworkId);
+          LOG.error('SingleCommand: Can not connect to the target Crownstone.');
+          throw new Error('Can not connect to the target Crownstone.');
         })
         .then((handle) => {
           LOG.info('SingleCommand: Found Crownstone.');

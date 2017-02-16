@@ -94,7 +94,7 @@ class KeepAliveHandlerClass {
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      bleController.load(stone, stoneId, 'keepAlive');
+      bleController.load(stone, stoneId, 'keepAlive').catch((err) => {});
     }
     else {
       // determine what to send
@@ -110,7 +110,7 @@ class KeepAliveHandlerClass {
         }
       }
 
-      bleController.load(stone, stoneId, 'keepAliveState', [changeState, newState, timeout]);
+      bleController.load(stone, stoneId, 'keepAliveState', [changeState, newState, timeout]).catch((err) => {});
     }
   }
 

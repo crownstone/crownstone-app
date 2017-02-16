@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIFileSharingEnabled</key>
-	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -21,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2.RC-1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -42,7 +40,7 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We require to use bluetooth to communicate with the Crownstone.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We&apos;d like to use your camera so you can take a picture for your profile!</string>
+	<string>We'd like to use your camera so you can take a picture for your profile!</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We use your background location to switch your Crownstones when you move around the house.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -68,6 +66,8 @@
 		<string>bluetooth-central</string>
 		<string>location</string>
 	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

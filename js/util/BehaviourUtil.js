@@ -134,8 +134,10 @@ export const BehaviourUtil = {
       let changeCallback = () => {
         // if the device is supposed to go on and it is only allowed to go on when it's dark, check if its dark.
         if (this.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === false) {
-          callbacks.onCancelled(sphereId, stoneId);
-          return;
+          if (callbacks && callbacks.onCancelled && typeof callbacks.onCancelled === 'function') {
+            callbacks.onCancelled(sphereId, stoneId);
+            return;
+          }
         }
 
         if (callbacks && callbacks.onTrigger && typeof callbacks.onTrigger === 'function') {

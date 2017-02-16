@@ -8,7 +8,7 @@ test('dawn', function (t) {
   let lon = 4.4667693378575288;
   // get today's sunlight times for London
   var times = SunCalc.getTimes(new Date(), lat, lon);
-
+  console.log(times);
   t.end();
 });
 
