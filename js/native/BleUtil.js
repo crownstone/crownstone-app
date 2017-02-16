@@ -205,7 +205,7 @@ export class BatchCommand {
 
       let stoneConfig = todo.stone.config;
       // mesh not supported / no mesh detected for this stone
-      if (stoneConfig.meshNetworkId === null) {
+      if (stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
         // handle this 1:1
         directCommands.push({ ...todo });
       }

@@ -333,7 +333,14 @@ export class DeviceBehaviourEdit extends Component {
     }
 
     items.push({label: 'EXCEPTIONS', type: 'explanation', style: styles.topExplanation, below:false});
-    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: device.config.onlyOnIfDark});
+    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: device.config.onlyOnIfDark, callback: (newValue) => {
+      if (stone.config.applianceId) {
+        this.props.store.dispatch({type: 'UPDATE_APPLIANCE_CONFIG', applianceId: stone.config.applianceId, sphereId: this.props.sphereId, data: { onlyOnWhenDark : newValue } })
+      }
+      else {
+        this.props.store.dispatch({type: 'UPDATE_STONE_CONFIG', stoneId: this.props.stoneId, sphereId: this.props.sphereId, data: { onlyOnWhenDark : newValue } })
+      }
+    }});
     items.push({type:  'spacer'});
 
     return items;
