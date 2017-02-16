@@ -2,6 +2,7 @@ import { BluenetPromises, BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/Pr
 import { BleUtil, BatchCommand } from '../native/BleUtil';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log';
+var SunCalc = require('suncalc');
 
 export const BehaviourUtil = {
 

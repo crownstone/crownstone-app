@@ -43,7 +43,7 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
       }
       return state;
     case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultSettings.app);
+      return refreshDefaults(state, defaultSettings.config);
     default:
       return state;
   }
