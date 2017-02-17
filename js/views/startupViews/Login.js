@@ -29,10 +29,7 @@ import loginStyles                            from './LoginStyles'
 export class Login extends Component {
   constructor() {
     super();
-    // this.state = {email: SessionMemory.email || 'alex@dobots.nl', password:'letmein0'};
     this.state = {email: SessionMemory.loginEmail || '', password:''};
-    // this.state = {email: SessionMemory.email || 'anne@crownstone.rocks', password:'bier'};
-    // this.state = {email: 'bart@almende.org', password:'12'};
     this.progress = 0;
   }
 
@@ -139,7 +136,7 @@ export class Login extends Component {
   render() {
     return (
       <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>
-        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
+        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput style={{width: 0.8*screenWidth, padding:10}} placeholder='email' keyboardType='email-address' autocorrect={false} autoCapitalize="none" placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />

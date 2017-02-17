@@ -42,7 +42,7 @@ export class DeviceBehaviourEdit extends Component {
     this.detectionTimeout = undefined;
     this.unsubscribeNative = undefined;
     this._uuid = getUUID();
-    this.device = undefined;
+    this.element = undefined;
     this.stone = undefined;
     this.canDoIndoorLocalization = false;
   }
@@ -63,7 +63,7 @@ export class DeviceBehaviourEdit extends Component {
 
   componentWillUnmount() {
     if (this.canDoIndoorLocalization === false &&
-          (this.device.behaviour['onNear'].active === true || this.device.behaviour['onAway'].active === true) &&
+          (this.element.behaviour['onNear'].active === true || this.element.behaviour['onAway'].active === true) &&
           this.stone.config.nearThreshold === null) {
       Alert.alert(
         "Near behaviour disabled: define range first.",
@@ -166,10 +166,9 @@ export class DeviceBehaviourEdit extends Component {
     });
   }
 
-  constructOptions(state, device, stone, canDoIndoorLocalization) {
-    this.device = device;
+  constructOptions(state, element, stone, canDoIndoorLocalization) {
+    this.element = element;
     this.stone = stone;
-    this.canDoIndoorLocalization = canDoIndoorLocalization;
 
     let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
@@ -187,8 +186,8 @@ export class DeviceBehaviourEdit extends Component {
         dropdownHeight: 130,
         valueRight: true,
         valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
-        value: device.behaviour[eventLabel].delay,
-        valueLabel: this._getDelayLabel(device.behaviour[eventLabel].delay),
+        value: element.behaviour[eventLabel].delay,
+        valueLabel: this._getDelayLabel(element.behaviour[eventLabel].delay),
         items: timeOptions,
         callback: (newValue) => {
           this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
@@ -208,7 +207,7 @@ export class DeviceBehaviourEdit extends Component {
           textAlign: 'right',
           fontSize: 15
         },
-        value: device.behaviour[eventLabel].active === true ? device.behaviour[eventLabel].state : null,
+        value: element.behaviour[eventLabel].active === true ? element.behaviour[eventLabel].state : null,
         items: options,
         callback: (newValue) => {
           if (newValue === null) {
@@ -244,7 +243,7 @@ export class DeviceBehaviourEdit extends Component {
     eventLabel = 'onHomeExit';
     items.push(generateDropdown(eventLabel, 'Leave the Sphere', toggleOptionsExitSphere));
 
-    if (device.behaviour[eventLabel].active === true) {
+    if (element.behaviour[eventLabel].active === true) {
       items.push({
         label: 'Leaving the sphere will be triggered ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay, true) + ' after leaving. You can customize this in the Sphere settings.',
         style: {paddingBottom: 5},
@@ -263,12 +262,12 @@ export class DeviceBehaviourEdit extends Component {
       items.push(generateDropdown(eventLabel, 'Move away', toggleOptionsExit));
 
 
-      if (device.behaviour[eventLabel].active === true) {
+      if (element.behaviour[eventLabel].active === true) {
         items.push(generateDelayField(eventLabel, 'Delay'))
       }
 
       // only show the define button when the feature is being used.
-      if (device.behaviour['onNear'].active === true || device.behaviour['onAway'].active === true) {
+      if (element.behaviour['onNear'].active === true || element.behaviour['onAway'].active === true) {
         let defineNearLabel = 'Define the "near" distance';
         if (stone.config.nearThreshold === null) {
           defineNearLabel = 'Tap here to define "near"'
@@ -318,12 +317,11 @@ export class DeviceBehaviourEdit extends Component {
 
         eventLabel = 'onRoomExit';
         items.push(generateDropdown(eventLabel, 'Leave the room', toggleOptionsExit));
-        console.log('(device.behaviour[eventLabel]',device.behaviour[eventLabel], eventLabel, device)
-        if (device.behaviour[eventLabel].active === true) {
+        if (element.behaviour[eventLabel].active === true) {
           items.push(generateDelayField(eventLabel, 'Delay'));
         }
 
-        if (device.behaviour[eventLabel].active === true) {
+        if (element.behaviour[eventLabel].active === true) {
           items.push({
             label: 'If there are people (from your Sphere) in the room, the enter/leave events will not be triggered.',
             style: {paddingBottom: 0},
@@ -338,7 +336,7 @@ export class DeviceBehaviourEdit extends Component {
     }
 
     items.push({label: 'EXCEPTIONS', type: 'explanation', style: styles.topExplanation, below:false});
-    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: device.config.onlyOnWhenDark, callback: (newValue) => {
+    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark, callback: (newValue) => {
       this.props.store.dispatch({type: 'UPDATE_'+dataTypeString+'_CONFIG', ...requiredData, data: { onlyOnWhenDark : newValue } })
     }});
     items.push({type:  'spacer'});
@@ -350,12 +348,14 @@ export class DeviceBehaviourEdit extends Component {
     const store = this.props.store;
     const state = store.getState();
     let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
+    this.canDoIndoorLocalization = canDoIndoorLocalization;
+
     let stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let options = [];
     if (stone.config.applianceId) {
-      let device = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
-      options = this.constructOptions(state, device, stone, canDoIndoorLocalization);
+      let appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
+      options = this.constructOptions(state, appliance, stone, canDoIndoorLocalization);
     }
     else {
       options = this.constructOptions(state, stone, stone, canDoIndoorLocalization);

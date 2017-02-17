@@ -187,10 +187,11 @@ export class TapToToggleCalibration extends Component {
 
     return (
       <View style={{flex:1, alignItems:'center'}}>
-        <Text style={{fontSize: 23, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{props.title}</Text>
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{props.title}</Text>
         <Image source={props.image} style={{width:0.45*screenWidth, height:0.45*screenWidth, margin:0.025*screenHeight}}/>
-        <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.csBlue.hex, textAlign:'center'}}>{props.header}</Text>
-        <Text style={{fontSize: 14, color: colors.blue.hex, textAlign:'center', marginTop:15, paddingLeft:10, paddingRight:10}}>{props.explanation}</Text>
+        <Text style={{fontSize: 14, fontWeight: 'bold', color: colors.csBlue.hex, textAlign:'center'}}>{props.header}</Text>
+        <View style={{flex:1}}/>
+        <Text style={{fontSize: 12, color: colors.blue.hex, textAlign:'center', paddingLeft:10, paddingRight:10}}>{props.explanation}</Text>
         <View style={{flex:1}}/>
 
         {props.back ?
@@ -201,7 +202,6 @@ export class TapToToggleCalibration extends Component {
               borderRadius: 18,
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.2),
-              marginBottom: 10
             }]}>
               <Text style={{fontSize: 14, color: colors.blue.rgba(0.6)}}>Back</Text>
             </TouchableOpacity>
@@ -212,7 +212,6 @@ export class TapToToggleCalibration extends Component {
               borderRadius: 18,
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.5),
-              marginBottom: 10
             }]}>
               <Text style={{fontSize: 14, color: colors.blue.hex}}>{props.nextLabel}</Text>
             </TouchableOpacity>
@@ -224,7 +223,6 @@ export class TapToToggleCalibration extends Component {
             borderRadius: 18,
             borderWidth: 2,
             borderColor: colors.blue.rgba(0.5),
-            marginBottom: 10
           }]}>
             <Text style={{fontSize: 14, color: colors.blue.hex}}>{props.nextLabel}</Text>
           </TouchableOpacity>

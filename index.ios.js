@@ -36,6 +36,8 @@ class Root extends Component {
       let distFromBottom = screenHeight - posY;
       Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:200}).start()
     }));
+    this.unsubscribe.push(eventBus.on('hidePopup', snapBackKeyboard));
+    this.unsubscribe.push(eventBus.on('showPopup', snapBackKeyboard));
     this.unsubscribe.push(eventBus.on('blur', snapBackKeyboard));
 
     // if the keyboard is minimized, shift back down

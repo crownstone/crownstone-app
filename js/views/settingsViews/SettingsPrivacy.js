@@ -67,16 +67,22 @@ export class SettingsPrivacy extends Component {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadSwitchState: newValue} });
       }});
 
-    items.push({
-      label:"Share power usage",
-      value: user.uploadPowerUsage,
-      type: 'switch',
-      icon: <IconButton name="ios-flash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
-      callback:(newValue) => {
-        store.dispatch({ type: 'USER_UPDATE', data: {uploadPowerUsage: newValue} });
-      }});
-    items.push({label: "You can choose what you want to share with the cloud and what you prefer to keep on your phone.\n\n" +
-    "If you have multiple users in a Sphere, sharing location is required to see them in the overview.", type: 'explanation', below: true});
+    if (user.developer === true) {
+      items.push({
+        label: "Share power usage",
+        value: user.uploadPowerUsage,
+        type: 'switch',
+        icon: <IconButton name="ios-flash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
+        callback: (newValue) => { store.dispatch({type: 'USER_UPDATE', data: {uploadPowerUsage: newValue}}); }
+      });
+      items.push({
+        label: "You can choose what you want to share with the cloud and what you prefer to keep on your phone.\n\n" +
+        "If you have multiple users in a Sphere, sharing location is required to see them in the overview.",
+        type: 'explanation',
+        below: true
+      });
+
+    }
 
     return items;
   }
