@@ -4,9 +4,11 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.le.ScanSettings;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
@@ -181,7 +183,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			@Override
 			public void onHostResume() {
 				BleLog.getInstance().LOGi(TAG, "onHostResume");
-
 			}
 
 			@Override
@@ -196,6 +197,19 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 
 		init();
+
+		IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+		intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+		_reactContext.registerReceiver(new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+					BleLog.getInstance().LOGi(TAG, "screen 0");
+				} else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+					BleLog.getInstance().LOGi(TAG, "screen 1");
+				}
+			}
+		}, intentFilter);
 	}
 
 	private void init() {
