@@ -395,8 +395,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			BleLog.getInstance().LOGw(TAG, "Already resetting bluetooth");
 			return;
 		}
-		_isResettingBluetooth = true;
-		_bleExt.getBleBase().resetBle();
+//		_isResettingBluetooth = true;
+//		_bleExt.getBleBase().resetBle();
 	}
 
 	@ReactMethod
