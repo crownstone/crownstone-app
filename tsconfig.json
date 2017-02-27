@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "removeComments": true,
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react-native"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
