@@ -41,3 +41,6 @@ android/app/libs
 android/keystores/debug.keystore
 
 logs
+photoshop
+android/bluenet
+android/localization
