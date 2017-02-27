@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Image,
   Platform,
@@ -12,7 +12,7 @@ let Actions = require('react-native-router-flux').Actions;
 import { Icon } from './Icon';
 import { LOG } from '../../logging/Log'
 
-export class ProfilePicture extends Component {
+export class ProfilePicture extends Component<any, any> {
   render() {
     let size = this.props.size || 40;
     let innerSize = this.props.innerSize || size;

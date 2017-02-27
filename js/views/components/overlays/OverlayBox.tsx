@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Image,
   Text,
@@ -10,7 +10,7 @@ import { FadeInView }   from '../animated/FadeInView'
 import { Icon }         from '../Icon'
 import { styles, colors , screenHeight, screenWidth } from '../../styles'
 
-export class OverlayBox extends Component {
+export class OverlayBox extends Component<any, any> {
   render() {
     return (
       <FadeInView

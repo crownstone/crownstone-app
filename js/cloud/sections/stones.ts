@@ -105,7 +105,7 @@ export const stones = {
    * request the data of all crownstones in this sphere
    * @returns {*}
    */
-  getStonesInSphere: function(options = {}) {
+  getStonesInSphere: function(options : any = {}) {
     return this._setupRequest(
       'GET',
       '/Spheres/{id}/ownedStones',

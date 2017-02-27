@@ -10,6 +10,10 @@ import { stoneTypes, TYPES } from '../router/store/reducers/stones'
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 
 class KeepAliveHandlerClass {
+  _initialized : any;
+  store : any;
+  state : any;
+
   constructor() {
     this._initialized = false;
     this.store = undefined;

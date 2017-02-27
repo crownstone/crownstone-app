@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 
 const Ionicon = require('react-native-vector-icons/Ionicons');
 import { CustomIcon,CustomIcon2 } from '../../fonts/customIcons'
@@ -7,7 +7,7 @@ import { styles, colors} from '../styles'
 /**
 
  */
-export class Icon extends Component {
+export class Icon extends Component<any, any> {
   render() {
     if (this.props.name === undefined) {
       return <Ionicon {...this.props} name="ios-document" style={[{backgroundColor:'transparent'}, this.props.style]} />

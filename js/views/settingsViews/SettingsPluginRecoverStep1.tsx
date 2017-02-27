@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Image,
@@ -16,7 +16,7 @@ import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 
-export class SettingsPluginRecoverStep1 extends Component {
+export class SettingsPluginRecoverStep1 extends Component<any, any> {
   render() {
     let imageSize = 0.40;
     return (

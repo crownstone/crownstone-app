@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   TouchableHighlight,
   Text,
@@ -8,7 +8,7 @@ import {
 import { styles, colors, screenWidth } from '../../styles'
 
 
-export class InfoBar extends Component {
+export class InfoBar extends Component<any, any> {
 
   render() {
     let barHeight = this.props.barHeight;

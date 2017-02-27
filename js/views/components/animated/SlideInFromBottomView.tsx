@@ -1,11 +1,13 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Animated,
   
   Dimensions,
 } from 'react-native';
 
-export class SlideInFromBottomView extends Component {
+export class SlideInFromBottomView extends Component<any, any> {
+  visible : boolean;
+
   constructor(props) {
     super();
 

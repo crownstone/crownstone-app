@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Dimensions,
   View
@@ -7,7 +7,7 @@ import {
 import { styles, colors, screenWidth } from '../styles'
 
 
-export class Separator extends Component {
+export class Separator extends Component<any, any> {
   render() {
     if (this.props.fullLength === true)
       return <View style={styles.separator} />;

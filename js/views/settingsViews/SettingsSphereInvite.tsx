@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -18,7 +18,9 @@ import { getUserLevelInSphere } from '../../util/DataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 
-export class SettingsSphereInvite extends Component {
+export class SettingsSphereInvite extends Component<any, any> {
+  inputStates : any;
+
   constructor() {
     super();
     this.state = {

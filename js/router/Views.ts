@@ -34,7 +34,6 @@ import { SettingsSphereUser }         from '../views/settingsViews/SettingsSpher
 import { SettingsSphereInvitedUser }  from '../views/settingsViews/SettingsSphereInvitedUser'
 import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
-import { AppComplexity }              from '../views/settingsViews/AppComplexity'
 
 export const Views = {
   LoginSplash,
@@ -72,6 +71,5 @@ export const Views = {
   SettingsSphereInvitedUser,
   SettingsPluginRecoverStep1,
   SettingsPluginRecoverStep2,
-  AppComplexity,
   AiStart,
 };

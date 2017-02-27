@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Image,
   Text,
@@ -8,7 +8,7 @@ import {
 import { styles, colors} from '../styles'
 import { preparePictureURI } from '../../util/Util'
 
-export class TextCircle extends Component {
+export class TextCircle extends Component<any, any> {
   render() {
     let size = this.props.size || 40;
     let borderWidth = 0.07*size;

@@ -12,6 +12,11 @@ import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
 
 class LocationHandlerClass {
+  _initialized : boolean;
+  store : any;
+  tracker : any;
+  _uuid : string;
+
   constructor() {
     this._initialized = false;
     this.store = undefined;

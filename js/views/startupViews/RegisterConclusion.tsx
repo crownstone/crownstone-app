@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   
@@ -19,7 +19,7 @@ import loginStyles from './LoginStyles'
 import { styles, colors } from './../styles'
 
 
-export class RegisterConclusion extends Component {
+export class RegisterConclusion extends Component<any, any> {
   constructor() {
     super();
   }
@@ -48,7 +48,7 @@ export class RegisterConclusion extends Component {
 
         </View>
         <View style={{alignItems:'center', justifyContent:'center', paddingBottom: 30}}>
-          <TouchableOpacity onPress={ () => { Actions.login() }}>
+          <TouchableOpacity onPress={ () => { (Actions as any).login() }}>
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>OK</Text></View>
           </TouchableOpacity>
         </View>

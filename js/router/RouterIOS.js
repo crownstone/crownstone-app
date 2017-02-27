@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   AppState,
   Alert,
@@ -73,7 +73,6 @@ export class Router_IOS extends Component {
                 <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}        hideNavBar={false} title="[Username here]" />
                 <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser} hideNavBar={false} title="[Username here]" />
                 <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}      hideNavBar={false} title="Invite" />
-                <Scene key="appComplexity"              component={Views.AppComplexity}             hideNavBar={false} title="Settings"/>
               </Scene>
             </Scene>
           </Scene>

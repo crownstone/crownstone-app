@@ -1,10 +1,12 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Animated,
   
 } from 'react-native';
 
-export class SlideFadeInView extends Component {
+export class SlideFadeInView extends Component<any, any> {
+  visible : boolean;
+
   constructor(props) {
     super();
 

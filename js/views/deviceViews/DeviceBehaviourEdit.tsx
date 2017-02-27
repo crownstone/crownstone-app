@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   PixelRatio,
@@ -36,7 +36,17 @@ timeOptions.push({label: '10 minutes',   value: 600});
 timeOptions.push({label: '15 minutes',   value: 900});
 timeOptions.push({label: '30 minutes',   value: 1800});
 
-export class DeviceBehaviourEdit extends Component {
+export class DeviceBehaviourEdit extends Component<any, any> {
+  detectionTimeout : any;
+  unsubscribeNative : any;
+  unsubscribe : any;
+  _uuid : string;
+  element : any;
+  stone : any;
+  pocketTimeout : any;
+  viewingRemotely : any;
+  canDoIndoorLocalization : boolean;
+
   constructor() {
     super();
     this.detectionTimeout = undefined;

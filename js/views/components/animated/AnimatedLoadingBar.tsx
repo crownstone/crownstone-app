@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Animated,
   Image,
@@ -12,7 +12,12 @@ import { styles, colors, screenWidth, screenHeight} from '../../styles'
 /**
  * expects a progress prop [0 .. 1]
  */
-export class AnimatedLoadingBar extends Component {
+export class AnimatedLoadingBar extends Component<any, any> {
+  width : number;
+  barHeight : number;
+  borderWidth : number;
+  progressTarget : any;
+
   constructor(props) {
     super();
     this.width = props.width || screenWidth * 0.6;

@@ -47,3 +47,8 @@ android/localization
 
 # ignore all js files since they are compiled
 *.js
+!js/router/Router.js
+!js/router/RouterAndroid.js
+!js/router/RouterIOS.js
+!index.android.js
+!index.ios.js

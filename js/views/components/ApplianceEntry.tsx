@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   ActivityIndicatorIOS,
   Dimensions,
@@ -16,7 +16,10 @@ import { Icon } from './Icon';
 import { styles, colors } from '../styles'
 
 
-export class ApplianceEntry extends Component {
+export class ApplianceEntry extends Component<any, any> {
+  resetTimeout : any;
+  id : string;
+
   constructor() {
     super();
     this.state = {deleteActive:false};

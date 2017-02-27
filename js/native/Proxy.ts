@@ -82,7 +82,7 @@ else {
   Bluenet = NativeModules.BluenetJS;
 }
 
-export const BluenetPromise = function(functionName, param, param2, param3) {
+export const BluenetPromise : any = function(functionName, param, param2, param3) {
   return new Promise((resolve, reject) => {
     if (DISABLE_NATIVE === true) {
       resolve()
@@ -143,7 +143,7 @@ export const BluenetPromise = function(functionName, param, param2, param3) {
 
 
 
-export const BluenetPromises = {
+export const BluenetPromises : any = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
   connect:             (handle) => {
@@ -193,6 +193,9 @@ export const BluenetPromises = {
 };
 
 class NativeBusClass {
+  topics: any;
+  refMap: any;
+
   constructor() {
     this.topics = {
       setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = type_advertisement

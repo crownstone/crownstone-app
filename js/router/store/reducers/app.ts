@@ -9,7 +9,7 @@ let defaultState = {
 };
 
 // appReducer
-export default (state = defaultState.app, action = {}) => {
+export default (state = defaultState.app, action : any = {}) => {
   let newState;
   switch (action.type) {
     case 'SET_ACTIVE_SPHERE':

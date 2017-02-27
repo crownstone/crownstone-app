@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   TextInput,
   Text,
@@ -10,7 +10,12 @@ import { TextEditInput } from './TextEditInput'
 import { Separator } from '../Separator'
 import { emailChecker, characterChecker, numberChecker } from '../../../util/Util'
 
-export class TextEditBar extends Component {
+export class TextEditBar extends Component<any, any> {
+  verificationContent : any;
+  refName : string;
+  refNameVerification : string;
+  validationTimeout : any;
+
   constructor() {
     super();
     this.state = {validation: undefined};
@@ -27,7 +32,7 @@ export class TextEditBar extends Component {
       // we set the timeout to ensure it has been drawn once. It needs to be rendered for the refs to work.
       this.validationTimeout = setTimeout(() => {
         if (newProps.validation !== undefined) {
-          this.validate(this.refs[this.refName].state.value)
+          this.validate((this.refs[this.refName] as any).state.value)
         }
       }, 10);
     }
@@ -55,7 +60,7 @@ export class TextEditBar extends Component {
       return 'errorNoCharacter';
 
     // check if the verification matches the
-    if (this.props.verification === true && this.verificationContent !== this.refs[this.refName].state.value)
+    if (this.props.verification === true && this.verificationContent !== (this.refs[this.refName] as any).state.value)
       return 'errorNoMatch';
 
     return 'valid'
@@ -88,7 +93,7 @@ export class TextEditBar extends Component {
     else if (this.refs && this.refs[this.refNameVerification]) {
       // copy the content of the validation text area to this.verificationContent to ensure it is persisted across redraws.
       if (this.props.verification)
-        this.verificationContent = this.refs[this.refNameVerification].state.value;
+        this.verificationContent = (this.refs[this.refNameVerification] as any).state.value;
 
       // if we need to do validation, validate the input.
       if (this.props.validation !== undefined || this.props.verification) {
@@ -113,7 +118,7 @@ export class TextEditBar extends Component {
     return undefined;
   }
 
-  getTextBlock(verification) {
+  getTextBlock(verification?) {
     return (
         <View style={[styles.listView, {height:this.props.barHeight}]}>
           <Text style={styles.listText}>{this.props.label}</Text>

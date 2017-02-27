@@ -1,5 +1,5 @@
 export const devices = {
-  getDevices: function (options = {}) {
+  getDevices: function (options : any = {}) {
     return this._setupRequest('GET', '/users/{id}/devices', options);
   },
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Image,
   Text,
@@ -11,7 +11,9 @@ import { styles, colors, screenHeight, screenWidth } from '../../styles'
 import { eventBus }                                   from '../../../util/eventBus'
 import { getAiData }                                  from '../../../util/DataUtil'
 
-export class LocalizationSetupStep2 extends Component {
+export class LocalizationSetupStep2 extends Component<any, any> {
+  unsubscribe : any;
+
   constructor() {
     super();
 

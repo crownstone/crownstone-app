@@ -28,7 +28,7 @@ export const sync = {
     CLOUD.setUserId(userId);
 
     return syncDown( userId, options )
-      .then((data) => {
+      .then((data: any) => {
         let cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
         let deletedSphere = syncCleanupLocal(store, actions, cloudData);
         syncKeys(actions, data.keys);
@@ -394,7 +394,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
 
           // only admins get to update the behaviour
           if (adminInThisSphere === true) {
-            data.json = JSON.stringify(stoneInState.behaviour);
+            data["json"] = JSON.stringify(stoneInState.behaviour);
           }
           LOG.info("@SYNC: Updating Stone", stone_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(stone_from_cloud.updatedAt).valueOf(), "local:", stoneInState.config.updatedAt, 'diff:', stoneInState.config.updatedAt - (new Date(stone_from_cloud.updatedAt).valueOf()));
           CLOUD.forSphere(sphere.id).updateStone(stone_from_cloud.id, data).catch(() => {});
@@ -490,7 +490,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
 
           // only admins get to update the behaviour
           if (adminInThisSphere === true) {
-            data.json = JSON.stringify(applianceInState.behaviour);
+            data["json"] = JSON.stringify(applianceInState.behaviour);
           }
 
           LOG.info("@SYNC: Updating Appliance", appliance_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(appliance_from_cloud.updatedAt).valueOf(), "local:", applianceInState.config.updatedAt, 'diff:', applianceInState.config.updatedAt - (new Date(appliance_from_cloud.updatedAt).valueOf()));

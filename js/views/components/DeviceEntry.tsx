@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Animated,
   ActivityIndicator,
@@ -18,7 +18,17 @@ import { getUUID } from '../../util/Util'
 import { styles, colors, screenWidth } from '../styles'
 
 
-export class DeviceEntry extends Component {
+export class DeviceEntry extends Component<any, any> {
+  baseHeight : number;
+  optionsHeight : number;
+  openHeight : number;
+  unsubscribe : any;
+  optionsAreOpen : boolean;
+  animating : boolean;
+  id : string;
+  initiallyOpenTimeout : any;
+  optionMoveTimeout : any;
+
   constructor(props) {
     super();
 

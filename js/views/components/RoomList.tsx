@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   ActivityIndicatorIOS,
   Dimensions,
@@ -15,7 +15,7 @@ import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 
 
-export class RoomList extends Component {
+export class RoomList extends Component<any, any> {
   render() {
     return (
       <View style={{flexDirection:'row', padding:10, paddingLeft:0, alignItems:'center', flex:1}}>

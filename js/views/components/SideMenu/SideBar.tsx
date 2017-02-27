@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   AppRegistry,
@@ -26,7 +26,9 @@ import { userHasPlugsInSphere, getPresentSphere } from '../../../util/DataUtil'
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
 
-export class SideBar extends Component {
+export class SideBar extends Component<any, any> {
+  unsubscribe : any;
+
   constructor() {
     super();
     this.unsubscribe = [];
@@ -69,7 +71,7 @@ export class SideBar extends Component {
       label: 'Overview',
       element: <Icon name={"ios-color-filter-outline"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
-        Actions.sphereOverview({type:'reset'});
+        (Actions as any).sphereOverview({type:'reset'});
         setTimeout(() => {this.props.closeCallback();},0)
       }
     });
@@ -85,7 +87,7 @@ export class SideBar extends Component {
       label: 'My Profile',
       element: <Icon name={"ios-body"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
-        Actions.settingsProfile();
+        (Actions as any).settingsProfile();
         setTimeout(() => {this.props.closeCallback();},0)
       }
     });
@@ -96,7 +98,7 @@ export class SideBar extends Component {
         label: 'Manage Spheres',
         element: <Icon name={"c1-house"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
         action: () => {
-          Actions.settingsSphereOverview();
+          (Actions as any).settingsSphereOverview();
           setTimeout(() => { this.props.closeCallback(); }, 0)
         }
       });
@@ -124,7 +126,7 @@ export class SideBar extends Component {
               eventBus.emit('hideLoading');
               let state = this.props.store.getState();
               let title = state.spheres[sphereId].config.name;
-              Actions.settingsSphere({sphereId: sphereId, title: title})
+              (Actions as any).settingsSphere({sphereId: sphereId, title: title})
             })
             .catch(() => {eventBus.emit('hideLoading');});
         }
@@ -165,7 +167,7 @@ export class SideBar extends Component {
       label: 'Recover a Crownstone',
       element: <Icon name={"c1-socket2"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
-        Actions.settingsPluginRecoverStep1();
+        (Actions as any).settingsPluginRecoverStep1();
         setTimeout(() => {this.props.closeCallback();},0)
       }
     });
@@ -249,7 +251,7 @@ export class SideBar extends Component {
 }
 
 
-class MenuTopBar extends Component {
+class MenuTopBar extends Component<any, any> {
   render(){
     return (
       <View style={{width: screenWidth*FACTOR - BLUE_PADDING, height: topBarHeight}}>
@@ -262,7 +264,7 @@ class MenuTopBar extends Component {
   }
 }
 
-class MenuItem extends Component {
+class MenuItem extends Component<any, any> {
   render(){
     return (
       <TouchableOpacity style={{
@@ -286,7 +288,7 @@ class MenuItem extends Component {
   }
 }
 
-class MenuCategoryImage extends Component {
+class MenuCategoryImage extends Component<any, any> {
   render(){
     return (
       <Image source={require('../../../images/sideMenu.png')} style={{width: screenWidth * FACTOR - BLUE_PADDING, height: 120}}>
@@ -296,7 +298,7 @@ class MenuCategoryImage extends Component {
 }
 
 
-class MenuSegmentSeparator extends Component {
+class MenuSegmentSeparator extends Component<any, any> {
   render(){
     return (
       <View style={{

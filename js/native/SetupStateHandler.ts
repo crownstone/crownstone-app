@@ -16,6 +16,16 @@ const SETUP_MODE_TIMEOUT = 3000; // ms
  * This class keeps track of the Crownstones in setup state.
  */
 class SetupStateHandlerClass {
+  _uuid : string;
+  _store : any;
+  _setupModeTimeouts : any;
+  _stonesInSetupStateAdvertisements : any;
+  _stonesInSetupStateTypes : any;
+  _currentSetupState : any;
+  referenceHandleMap : object;
+  _initialized : boolean;
+
+
   constructor() {
     this._uuid = getUUID();
 
@@ -23,7 +33,6 @@ class SetupStateHandlerClass {
     this._setupModeTimeouts = {};
     this._stonesInSetupStateAdvertisements = {};
     this._stonesInSetupStateTypes = {};
-    this._resetSetupState();
 
     this._initialized = false;
   }

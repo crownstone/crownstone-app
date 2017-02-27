@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Image,
@@ -8,7 +8,10 @@ import {
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} from '../../styles'
 
 
-export class AnimatedBackground extends Component {
+export class AnimatedBackground extends Component<any, any> {
+  animationStarted : boolean;
+  animating : boolean;
+
   constructor(props) {
     super();
 

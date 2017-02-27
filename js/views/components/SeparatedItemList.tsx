@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   
   ScrollView,
@@ -9,7 +9,12 @@ import {
 import { Separator } from '../components/Separator'
 
 
-export class SeparatedItemList extends Component {
+export class SeparatedItemList extends Component<any, any> {
+  textFields : any;
+  textFieldMap : any;
+  index : any;
+  focusTimeout : any;
+
   constructor() {
     super();
     this.textFields = [];

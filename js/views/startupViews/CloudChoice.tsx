@@ -1,4 +1,4 @@
-/*import React, { Component } from 'react'
+/*import { Component } from 'react'
 import {
   Dimensions,
   StyleSheet,
@@ -19,7 +19,7 @@ import { Icon } from '../components/Icon';
  * CURRENTLY DISABLED
  */
 /*
-export class CloudChoice extends Component {
+export class CloudChoice extends Component<any, any> {
   render() {
     return (
       <Background hideInterface={true} background={require('../../images/mainBackground.png')}>

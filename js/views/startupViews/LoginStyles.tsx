@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { Dimensions, PixelRatio, StyleSheet } from 'react-native'
 import { screenWidth, screenHeight } from '../styles'
 

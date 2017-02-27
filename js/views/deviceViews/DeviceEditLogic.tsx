@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   TouchableOpacity,
@@ -18,7 +18,10 @@ import { FadeInView } from '../components/animated/FadeInView'
 
 
 
-export class DeviceEditLogic extends Component {
+export class DeviceEditLogic extends Component<any, any> {
+  unsubscribe : any;
+  showStone : boolean;
+
   constructor() {
     super();
     this.state = {showStone:false};
@@ -51,7 +54,7 @@ export class DeviceEditLogic extends Component {
     let items = [];
 
     // behaviour link
-    items.push({label:'Behaviour', type: 'navigation', callback:() => { Actions.deviceBehaviourEdit(requiredData) }});
+    items.push({label:'Behaviour', type: 'navigation', callback:() => { (Actions as any).deviceBehaviourEdit(requiredData) }});
 
     items.push({label: 'Customize how this Crownstone reacts to your presence.', type: 'explanation', below: true});
 
@@ -72,7 +75,7 @@ export class DeviceEditLogic extends Component {
     items.push({label: 'Customize how this Device reacts to your presence.', type: 'explanation', below: false});
 
     // behaviour link
-    items.push({label:'Behaviour', type: 'navigation', callback:() => { Actions.deviceBehaviourEdit(requiredData) }});
+    items.push({label:'Behaviour', type: 'navigation', callback:() => { (Actions as any).deviceBehaviourEdit(requiredData) }});
 
     // behaviour explanation
     items.push({label: 'Customize how this Device reacts to your presence.', type: 'explanation', below: true});

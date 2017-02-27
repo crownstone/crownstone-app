@@ -77,7 +77,7 @@ export const user = {
   },
 
 
-  removeProfileImage: function(options = {}) {
+  removeProfileImage: function(options : any = {}) {
     return this._setupRequest(
       'DELETE',
       'users/{id}/profilePic',
@@ -89,7 +89,7 @@ export const user = {
    *
    * @returns {*}
    */
-  getUserData: function (options = {}) {
+  getUserData: function (options : any = {}) {
     return this._setupRequest('GET', '/users/{id}', options);
   },
 
@@ -107,7 +107,7 @@ export const user = {
    *
    * @param options
    */
-  requestVerificationEmail: function(options = {}) {
+  requestVerificationEmail: function(options : any = {}) {
     return this._setupRequest(
       'POST',
       'users/resendVerification',
@@ -120,7 +120,7 @@ export const user = {
    *
    * @param options
    */
-  requestPasswordResetEmail: function(options = {}) {
+  requestPasswordResetEmail: function(options : any = {}) {
     return this._setupRequest(
       'POST',
       'users/reset',
@@ -129,7 +129,7 @@ export const user = {
     );
   },
 
-  getKeys: function(options = {}) {
+  getKeys: function(options : any = {}) {
     return this._setupRequest(
       'GET',
       'users/{id}/keys',

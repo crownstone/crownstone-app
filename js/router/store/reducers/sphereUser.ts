@@ -11,7 +11,7 @@ let defaultSettings = {
   updatedAt: 1
 };
 
-let sphereUserReducer = (state = defaultSettings.users, action = {}) => {
+let sphereUserReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
     case 'USER_ENTER_SPHERE':
       let newState = {...state};
@@ -43,7 +43,7 @@ let sphereUserReducer = (state = defaultSettings.users, action = {}) => {
 };
 
 // sphereUserReducer
-export default (state = {}, action = {}) => {
+export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_SPHERE_USER':
       let newState = {...state};

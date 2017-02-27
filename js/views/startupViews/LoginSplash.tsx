@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Dimensions,
   StyleSheet,
@@ -23,7 +23,7 @@ let versionStyle = {
   fontSize: 10,
 };
 
-export class LoginSplash extends Component {
+export class LoginSplash extends Component<any, any> {
   render() {
     return (
       <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>

@@ -24,7 +24,7 @@ let defaultSettings = {
 };
 
 // userReducer
-export default (state = defaultSettings, action = {}) => {
+export default (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
     case 'SET_DEVELOPER_MODE':
       if (action.data) {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   
   Text,
@@ -9,7 +9,7 @@ import {
 import { styles, colors} from '../../styles'
 
 
-export class Explanation extends Component {
+export class Explanation extends Component<any, any> {
   render() {
     if (this.props.below === true) {
       return (

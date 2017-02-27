@@ -17,7 +17,7 @@ export const LocalizationUtil = {
         // register the iBeacons UUIDs with the localization system.
         const state = store.getState();
         let sphereIds = Object.keys(state.spheres);
-        let showRemoveFingerprintNotification = false;
+        let showRemoveFingerprintNotification : boolean = false;
         let actions = [];
 
         sphereIds.forEach((sphereId) => {
@@ -46,7 +46,7 @@ export const LocalizationUtil = {
           });
         });
 
-        if (showRemoveFingerprintNotification === true) {
+        if (showRemoveFingerprintNotification) { //  === true
           if (actions.length > 0)
             store.batchDispatch(actions);
 

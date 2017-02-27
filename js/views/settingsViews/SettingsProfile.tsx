@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -18,11 +18,14 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { logOut, processImage, safeDeleteFile } from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import { styles, colors, width } from './../styles'
-import RNFS from 'react-native-fs'
+import { styles, colors, screenWidth } from './../styles'
 
 
-export class SettingsProfile extends Component {
+export class SettingsProfile extends Component<any, any> {
+  unsubscribe : any;
+  renderState : any;
+  validationState : any;
+
   constructor() {
     super();
     this.state = {picture:null};
@@ -144,7 +147,7 @@ export class SettingsProfile extends Component {
     });
 
     items.push({type: 'spacer'});
-    items.push({label:'Privacy', type: 'navigation', callback:() => { Actions.settingsPrivacy(); }});
+    items.push({label:'Privacy', type: 'navigation', callback:() => { (Actions as any).settingsPrivacy(); }});
     items.push({label: 'You are in control of which data is shared with the cloud.', type: 'explanation', below: true});
 
     // items.push({label:'Enable Beta Access', value: user.betaAccess, type: 'switch', callback:(newValue) => {
@@ -167,7 +170,7 @@ export class SettingsProfile extends Component {
       items.push({label: 'This will enable certain features that may be used for development of the Crownstone.', type: 'explanation', below: true});
     }
     else {
-      items.push({label:'Developer Menu', type: 'navigation', callback:() => { Actions.settingsDeveloper(); }});
+      items.push({label:'Developer Menu', type: 'navigation', callback:() => { (Actions as any).settingsDeveloper(); }});
       items.push({type: 'spacer'});
     }
 
@@ -205,7 +208,7 @@ export class SettingsProfile extends Component {
       <Background image={this.props.backgrounds.menu} >
         <ScrollView keyboardShouldPersistTaps={true}>
           <View>
-            <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
+            <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
               <PictureCircle
                 value={this.state.picture}
                 callback={(pictureUrl) => {

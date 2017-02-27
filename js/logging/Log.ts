@@ -19,7 +19,7 @@ import { eventBus } from '../util/eventBus'
 import { safeDeleteFile } from '../util/Util'
 const DeviceInfo = require('react-native-device-info');
 
-export const LOG = {
+export const LOG : any = {
   info: function() {
     this._log('------------', LOGGING, arguments);
   },
@@ -107,7 +107,7 @@ function _cleanLogs(logPath, amountOfDaysStored = 3) {
         }
       }
       for (let i = 0; i < flagForRemoval.length; i++) {
-        safeDeleteFile(logPath + "/" + flagForRemoval[i]);
+        safeDeleteFile(logPath + "/" + flagForRemoval[i]).catch(()=>{});
       }
     })
     .catch((err) => {
@@ -158,6 +158,9 @@ function logToFile() {
 }
 
 class LogProcessorClass {
+  store : any;
+  writeToFile : boolean;
+
   constructor() {
     this.store = undefined;
     this.writeToFile = false;
@@ -204,4 +207,4 @@ class LogProcessorClass {
   }
 }
 
-export const LogProcessor = new LogProcessorClass();
+export const LogProcessor : any = new LogProcessorClass();

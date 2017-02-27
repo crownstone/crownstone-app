@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Picker,
   Platform,
@@ -12,7 +12,7 @@ import { SlideFadeInView }  from './../animated/SlideFadeInView'
 import { styles, colors, screenWidth } from '../../styles'
 
 
-export class Dropdown extends Component {
+export class Dropdown extends Component<any, any> {
   constructor(props) {
     super();
     this.state = {open:false, value: props.value};

@@ -5,6 +5,8 @@ import { TYPES } from '../router/store/reducers/stones'
 
 
 class RoomPresenceTrackerClass {
+  roomStates : object;
+
   constructor() {
     this.roomStates = {};
   }

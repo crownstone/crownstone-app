@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   
   Switch,
@@ -9,7 +9,7 @@ import {
 import { styles, colors, screenWidth } from '../../styles'
 
 
-export class SwitchBar extends Component {
+export class SwitchBar extends Component<any, any> {
   render() {
     return (
       <View style={[styles.listView, {height:this.props.barHeight}]}>

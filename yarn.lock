@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/react@^15.0.13":
+  version "15.0.13"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.0.13.tgz#7031530b0d1b77941551cda06e5b56b704505f12"
+
 JSONStream@^1.0.3:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.2.1.tgz#32aa5790e799481083b49b4b7fa94e23bae69bf9"

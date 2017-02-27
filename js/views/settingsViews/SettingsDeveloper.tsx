@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Alert,
   TouchableHighlight,
@@ -12,14 +12,18 @@ import { Actions } from 'react-native-router-flux';
 import { IconButton } from './../components/IconButton'
 import { Background } from './../components/Background'
 import { Bluenet } from '../../native/Proxy'
+import { logOut } from '../../util/Util'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG, clearLogs } from '../../logging/Log'
-import { styles, colors, width } from './../styles'
+import { styles, colors } from './../styles'
 import RNFS from 'react-native-fs'
 
 
-export class SettingsDeveloper extends Component {
+export class SettingsDeveloper extends Component<any, any> {
+  unsubscribe : any;
+  renderState : any;
+
   constructor() {
     super();
   }

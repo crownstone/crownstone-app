@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   
   DatePickerIOS,
@@ -11,7 +11,7 @@ import { SlideFadeInView }  from './../animated/SlideFadeInView'
 import { styles, colors } from '../../styles'
 
 
-export class TimePicker extends Component {
+export class TimePicker extends Component<any, any> {
   render() {
     // TODO: Wait for RN to fix the checking.
     let formatTime = (time) => {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Animated,
   Dimensions,
@@ -20,7 +20,37 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { Svg, Circle } from 'react-native-svg';
 
-export class RoomCircle extends Component {
+export class RoomCircle extends Component<any, any> {
+  initializedPosition : any;
+  energyLevels : any;
+  usage : any;
+  borderWidth : number;
+  innerDiameter : number;
+  outerDiameter : number;
+  iconSize : number;
+  textSize : number;
+
+  animationStarted : boolean;
+  animating : boolean;
+  animatedMoving : boolean;
+
+  previousCircle : any;
+  wiggleInterval : any;
+  wiggleTimeout : any;
+  fadeAnimationTimeout : any;
+  moveAnimationTimeout : any;
+  color : any;
+
+  movementDuration : number;
+  jumpDuration : number;
+  fadeDuration : number;
+
+  unsubscribeSetupEvents : any;
+  unsubscribe : any;
+  unsubscribeStoreEvents : any;
+  renderState : any;
+
+
   constructor(props) {
     super();
 
@@ -411,7 +441,7 @@ export class RoomCircle extends Component {
         borderWidth:3,
         borderColor:'#fff',
         position:'absolute',
-        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} onPress={() => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}} >
+        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} onPress={() => { (Actions as any).roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}} >
         <Icon name="c1-locationPin1" color="#fff" size={17} style={{backgroundColor:'transparent'}} />
       </TouchableOpacity>
     )
@@ -473,7 +503,7 @@ export class RoomCircle extends Component {
 
     return (
       <Animated.View style={{position:'absolute',  top: this.state.top, left: this.state.left, opacity: this.state.componentOpacity}}>
-        <TouchableOpacity onPress={() => Actions.roomOverview(this.props.actionParams)}>
+        <TouchableOpacity onPress={() => (Actions as any).roomOverview(this.props.actionParams)}>
           <View>
             {this.getCircle()}
             {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}

@@ -56,7 +56,7 @@ export const BehaviourUtil = {
    *                                        }
 
    */
-  enactBehaviourInSphere: function(store, sphereId, behaviourType, bleController, callbacks = {}) {
+  enactBehaviourInSphere: function(store : any, sphereId : string, behaviourType : string, bleController? : BatchCommand, callbacks : any = {}) {
     let state = store.getState();
     let sphere = state.spheres[sphereId];
     let stoneIds = Object.keys(sphere.stones);
@@ -128,7 +128,7 @@ export const BehaviourUtil = {
    *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
    *                                        }
    */
-  _enactBehaviourCore: function(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, bleController, callbacks = {}) {
+  _enactBehaviourCore: function(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, bleController?, callbacks : any = {}) {
     // we set the state regardless of the current state since it may not be correct in the background.
     if (behaviour.active && stone.config.handle) {
       // setup the trigger method.
@@ -150,7 +150,7 @@ export const BehaviourUtil = {
         // if we need to switch, configure the data to update the store with.
         let data = {state: behaviour.state};
         if (behaviour.state === 0) {
-          data.currentUsage = 0;
+          data['currentUsage'] = 0;
         }
 
         bleController.load(stone, stoneId, 'setSwitchState', [behaviour.state, 0, INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]]])

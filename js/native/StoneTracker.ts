@@ -18,6 +18,12 @@ let TOUCH_TIME_BETWEEN_SWITCHING = 5000; // ms
 let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
 
 export class StoneTracker {
+ elements : any;
+ store : any;
+ temporaryIgnore : boolean;
+ temporaryIgnoreTimeout : any;
+ tapToToggleDisabled : boolean;
+
   constructor(store) {
     this.elements = {};
     this.store = store;
@@ -131,14 +137,14 @@ export class StoneTracker {
 
             let data = {state: newState};
             if (newState === 0) {
-              data.currentUsage = 0;
+              data["currentUsage"] = 0;
             }
             let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
             proxy.performPriority(BluenetPromises.setSwitchState, [newState, 0, INTENTS.manual])
               .then(() => {
-                this.props.store.dispatch({
+                this.store.dispatch({
                   type: 'UPDATE_STONE_SWITCH_STATE',
-                  sphereId: this.props.sphereId,
+                  sphereId: sphereId,
                   stoneId: stoneId,
                   data: data
                 });

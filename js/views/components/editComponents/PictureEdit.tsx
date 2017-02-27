@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Image,
   StyleSheet,
@@ -12,7 +12,7 @@ let Actions = require('react-native-router-flux').Actions;
 import { PictureCircle }  from '../PictureCircle'
 import { styles, colors} from '../../styles'
 
-export class PictureEdit extends Component {
+export class PictureEdit extends Component<any, any> {
   render() {
       return (
         <View style={{flex:1}}>

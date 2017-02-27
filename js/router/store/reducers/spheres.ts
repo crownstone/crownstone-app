@@ -25,7 +25,7 @@ let defaultSettings = {
   }
 };
 
-let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
+let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
     case 'SET_SPHERE_STATE':
       if (action.data) {
@@ -87,7 +87,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action = {}) => {
   }
 };
 
-let presetsReducer = (state = {}, action = {}) => {
+let presetsReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REFRESH_DEFAULTS':
       if (Array.isArray(state)) {
@@ -108,7 +108,7 @@ let combinedSphereReducer = combineReducers({
 });
 
 // spheresReducer
-export default (state = {}, action = {}) => {
+export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_SPHERE':
       let newState = {...state};

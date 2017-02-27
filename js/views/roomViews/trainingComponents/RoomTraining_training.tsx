@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Alert,
@@ -22,7 +22,8 @@ import { Icon } from '../../components/Icon';
 import { Svg, Circle } from 'react-native-svg';
 
 
-export class RoomTraining_training extends Component {
+export class RoomTraining_training extends Component<any, any> {
+
   render() {
     let icons = ['c1-locationPin1','ios-outlet-outline','ios-pin-outline','c1-brain','c1-male','c1-female'];
 
@@ -34,17 +35,7 @@ export class RoomTraining_training extends Component {
         <TopBar
           left={"Cancel"}
           notBack={true}
-          leftAction={() => {
-              FingerprintManager.pauseCollectingFingerprint();
-              Alert.alert(
-                "Do you want to cancel training?",
-                "Cancelling this process will revert it to the way it was before.",
-                [
-                  {text:'No', onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
-                  {text:'Yes', onPress: () => { this.props.abort(); }}
-                ]
-              )}
-            }
+          leftAction={this.props.cancel()}
           title="Train Room"/>
         <View style={{flexDirection:'column', flex:1}}>
           <View style={{padding:30, alignItems:'center'}}>

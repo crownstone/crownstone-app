@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   
   TouchableOpacity,
@@ -10,7 +10,7 @@ import { IconCircle }  from '../IconCircle'
 import { styles, colors } from '../../styles'
 
 
-export class IconEdit extends Component {
+export class IconEdit extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1, height: this.props.barHeightLarge}}>

@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { Icon } from '../components/Icon';
-import { colors, width, height } from '../styles'
+import { colors, screenWidth, screenHeight } from '../styles'
 
 let fontSize;
-if (width > 370)
+if (screenWidth > 370)
   fontSize = 45;
-else if (width > 300)
+else if (screenWidth > 300)
   fontSize = 40;
 else
   fontSize = 35;
@@ -84,7 +84,7 @@ export const setupStyle = StyleSheet.create({
   },
   buttonContainer: {
     marginBottom:15,
-    width: width,
+    width: screenWidth,
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'center',
@@ -99,7 +99,7 @@ export const setupStyle = StyleSheet.create({
     borderColor:'white',
     alignItems:'center',
     justifyContent:'center',
-    margin: (width - 2*130) / 6,
+    margin: (screenWidth - 2*130) / 6,
     marginBottom:0,
     marginTop:0
   },
@@ -124,11 +124,11 @@ export const setupStyle = StyleSheet.create({
     flexDirection:'column',
     flex:1,
     alignItems:'center',
-    marginTop:height*0.4,
+    marginTop:screenHeight*0.4,
   },
   textBoxView: {
     backgroundColor:'#fff',
-    width:width,
+    width:screenWidth,
     height:40,
     borderRadius:3,
     alignItems:'center',
@@ -147,7 +147,7 @@ export const setupStyle = StyleSheet.create({
   },
 });
 
-export class NextButton extends Component {
+export class NextButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingRight:20, flexDirection:'row', height:30}}>
@@ -157,7 +157,7 @@ export class NextButton extends Component {
     </TouchableOpacity>
   }
 }
-export class StartButton extends Component {
+export class StartButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingRight:20, flexDirection:'row', height:30}}>
@@ -168,7 +168,7 @@ export class StartButton extends Component {
   }
 }
 
-export class SkipButton extends Component {
+export class SkipButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingLeft:20, flexDirection:'row', height:30}}>
@@ -179,7 +179,7 @@ export class SkipButton extends Component {
   }
 }
 
-export class CancelButton extends Component {
+export class CancelButton extends Component<any, any> {
   render() {
     return <TouchableOpacity onPress={this.props.onPress} >
       <View style={{paddingLeft:20, flexDirection:'row', height:30}}>

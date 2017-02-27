@@ -39,7 +39,7 @@ export const DataUtil = {
 };
 
 
-export const getStonesInLocation = function(state, sphereId, locationId) {
+export const getStonesInLocation = function(state, sphereId, locationId?) {
   let filteredStones = {};
   if (sphereId !== undefined) {
     let stones = state.spheres[sphereId].stones;

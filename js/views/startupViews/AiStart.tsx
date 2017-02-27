@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Alert,
@@ -21,14 +21,14 @@ import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
 
-export class AiStart extends Component {
+export class AiStart extends Component<any, any> {
   constructor(props) {
     super();
 
     let state = props.store.getState();
     if (Object.keys(state.spheres).length === 0) {
       LOG.error("User does not have a sphere on startup.");
-      Actions.tabBar();
+      (Actions as any).tabBar();
     }
 
     let sphereId = props.sphereId || Object.keys(state.spheres)[0];
@@ -124,10 +124,10 @@ export class AiStart extends Component {
         }
         else {
           if (Platform.OS === 'android') {
-            Actions.sphereOverview();
+            (Actions as any).sphereOverview();
           }
           else {
-            Actions.tabBar();
+            (Actions as any).tabBar();
           }
         }
       }}])

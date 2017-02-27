@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Dimensions,
   Image,
@@ -195,7 +195,7 @@ let listOfIcons = {
   ]
 };
 
-export class DeviceIconSelection extends Component {
+export class DeviceIconSelection extends Component<any, any> {
   render() {
     const store   = this.props.store;
     const state   = store.getState();

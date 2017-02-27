@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Platform,
   StyleSheet,
@@ -15,7 +15,7 @@ import { AlternatingContent }   from './animated/AlternatingContent'
 
 let barHeight = topBarHeight - statusBarHeight;
 
-class TopBarAndroid extends Component {
+class TopBarAndroid extends Component<any, any> {
   _getLeftContent() {
     if (this.props.left || this.props.leftItem || this.props.right || this.props.rightItem || this.props.showHamburgerMenu === true) {
       if (this.props.leftItem && this.props.altenateLeftItem === true) {
@@ -81,7 +81,7 @@ class TopBarAndroid extends Component {
   }
 }
 
-class TopBarIOS extends Component {
+class TopBarIOS extends Component<any, any> {
   _getLeftContent() {
     if (this.props.notBack !== true && this.props.leftAction !== undefined) {
       if (this.props.leftItem !== undefined) {

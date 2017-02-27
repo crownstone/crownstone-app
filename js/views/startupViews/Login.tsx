@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Image,
@@ -26,7 +26,9 @@ import RNFS                                   from 'react-native-fs'
 import loginStyles                            from './LoginStyles'
 
 
-export class Login extends Component {
+export class Login extends Component<any, any> {
+  progress : number;
+
   constructor() {
     super();
     this.state = {email: SessionMemory.loginEmail || '', password:''};
@@ -53,7 +55,7 @@ export class Login extends Component {
       .then(() => {
         SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
-        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
+        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
       })
       .catch((reply) => {
         Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
@@ -66,7 +68,7 @@ export class Login extends Component {
       .then(() => {
         SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
-        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
+        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
       })
       .catch((reply) => {
         let content = "Please try again.";
@@ -280,13 +282,13 @@ export class Login extends Component {
         this.props.eventBus.emit("appStarted"); // this starts scanning and tracking spheres
 
         if (state.user.isNew !== false) {
-          Actions.aiStart({type: 'reset'});
+          (Actions as any).aiStart({type: 'reset'});
         }
         else if (Platform.OS === 'android') {
-          Actions.sphereOverview({type: 'reset'});
+          (Actions as any).sphereOverview({type: 'reset'});
         }
         else {
-          Actions.tabBar({type: 'reset'});
+          (Actions as any).tabBar({type: 'reset'});
         }
       }, 100);
     });
@@ -295,7 +297,7 @@ export class Login extends Component {
 
 
 
-class LoginButton extends Component {
+class LoginButton extends Component<any, any> {
   render() {
     if (screenHeight > 480) {
       return (

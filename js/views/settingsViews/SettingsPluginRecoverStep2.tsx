@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   ActivityIndicator,
@@ -23,7 +23,10 @@ import { BleUtil } from '../../native/BleUtil'
 import { BluenetPromises, Bluenet } from '../../native/Proxy'
 import { LOG } from '../../logging/Log'
 
-export class SettingsPluginRecoverStep2 extends Component {
+export class SettingsPluginRecoverStep2 extends Component<any, any> {
+  lookingForCrownstone : boolean = true;
+  uuid : string = getUUID();
+
   constructor() {
     super();
     this.state = {
@@ -31,8 +34,6 @@ export class SettingsPluginRecoverStep2 extends Component {
       fade2: new Animated.Value(0),
       fade1: new Animated.Value(1),
     };
-    this.lookingForCrownstone = true;
-    this.uuid = getUUID();
   }
 
   componentDidMount() {

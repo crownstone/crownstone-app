@@ -1,5 +1,4 @@
 'use strict';
-import React, { Component } from 'react'
 import { Alert } from 'react-native';
 
 import { mixin } from '../util/Util';
@@ -29,5 +28,5 @@ function combineSections() {
 /**
  * This adds all sections into the CLOUD
  */
-export const CLOUD = combineSections();
+export const CLOUD : any = combineSections();
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Dimensions,
@@ -36,7 +36,18 @@ import Svg,{
 } from 'react-native-svg';
 
 
-export class LocalizationSetupStep1 extends Component {
+export class LocalizationSetupStep1 extends Component<any, any> {
+  csSize : number;
+  w : number;
+  h : number;
+  fadeInDuration : number;
+  targets : any;
+  targets2 : any;
+  unsubscribe : any;
+  children : any;
+  cleanup : any;
+  cleanup_circle1 : any;
+
   constructor() {
     super();
 

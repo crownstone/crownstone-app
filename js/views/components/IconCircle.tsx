@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Dimensions,
   Image,
@@ -23,7 +23,7 @@ import { styles, colors} from '../styles'
  *   showEdit        : Bool     // show an edit icon in the corner
  * }
  */
-export class IconCircle extends Component {
+export class IconCircle extends Component<any, any> {
   render() {
     let size = this.props.size || 60;
     return (

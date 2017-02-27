@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Image,
   Text,
@@ -10,7 +10,9 @@ import { IconButton }         from '../IconButton'
 import { OverlayBox }         from './OverlayBox'
 import { styles, colors , screenHeight, screenWidth } from '../../styles'
 
-export class BleStateOverlay extends Component {
+export class BleStateOverlay extends Component<any, any> {
+  unsubscribe : any;
+
   constructor() {
     super();
 

@@ -2,7 +2,7 @@ export function update(newValue, original) {
   return (newValue === undefined ? original : newValue);
 }
 
-export let getTime = function (remoteTime) {
+export let getTime = function (remoteTime?) {
   if (remoteTime) {
     return remoteTime;
   }

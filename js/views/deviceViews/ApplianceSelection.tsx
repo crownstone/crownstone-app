@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -21,7 +21,10 @@ const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { Icon } from '../components/Icon';
 
-export class ApplianceSelection extends Component {
+export class ApplianceSelection extends Component<any, any> {
+  deleteEventBus : EventBus;
+  unsubscribe : any;
+
   constructor() {
     super();
     this.deleteEventBus = new EventBus();

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   TouchableOpacity,
   PixelRatio,
@@ -14,7 +14,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { EditSpacer }        from '../components/editComponents/EditSpacer'
 
 
-export class DelaySelection extends Component {
+export class DelaySelection extends Component<any, any> {
 
   constructOptions(optionState) {
     let items = [];

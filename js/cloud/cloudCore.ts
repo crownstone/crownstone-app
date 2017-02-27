@@ -2,7 +2,7 @@ import { Alert, Platform } from 'react-native'
 import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
 let emptyFunction = function() {};
-import { LOG, LOGDebug, LOGError, LOGCloud } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { defaultHeaders } from './sections/base'
 import { safeMoveFile, safeDeleteFile } from '../util/Util'
@@ -19,12 +19,12 @@ import { safeMoveFile, safeDeleteFile } from '../util/Util'
  * @param doNotStringify
  */
 export function request(
-  options,
-  method,
-  headers = defaultHeaders,
-  id,
-  accessToken,
-  doNotStringify) {
+  options : object,
+  method : string,
+  headers : object = defaultHeaders,
+  id : string,
+  accessToken : string,
+  doNotStringify? : boolean) {
   // append _accessToken, data that goes into the query and insert ids
   let { endPoint, body } = prepareEndpointAndBody(options, id, accessToken, doNotStringify);
 

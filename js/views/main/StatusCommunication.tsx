@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Dimensions,
@@ -17,7 +17,10 @@ import { overviewStyles }     from './SphereOverview'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
 
-export class StatusCommunication extends Component {
+export class StatusCommunication extends Component<any, any> {
+  unsubscribeStoreEvents : any;
+  unsubscribeSetupEvents : any;
+
   componentDidMount() {
     // watch for setup stones
     this.unsubscribeSetupEvents = [];

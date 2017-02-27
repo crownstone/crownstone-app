@@ -1,9 +1,9 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   View
 } from 'react-native';
 
-export class EditSpacer extends Component {
+export class EditSpacer extends Component<any, any> {
   render() {
     let height = (this.props.top ? 30 : 40);
 

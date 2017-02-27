@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -20,7 +20,9 @@ import { IconButton } from '../components/IconButton'
 import { LOG } from '../../logging/Log'
 
 
-export class SettingsSphereOverview extends Component {
+export class SettingsSphereOverview extends Component<any, any> {
+  unsubscribe : any;
+
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
@@ -43,7 +45,7 @@ export class SettingsSphereOverview extends Component {
             label: sphere.config.name,
             type:'navigation',
             callback: () => {
-              Actions.settingsSphere({sphereId:sphereId, title: sphere.config.name})
+              (Actions as any).settingsSphere({sphereId:sphereId, title: sphere.config.name})
             }
           });
         }
@@ -120,7 +122,7 @@ export class SettingsSphereOverview extends Component {
         this.props.eventBus.emit('hideLoading');
         let state = this.props.store.getState();
         let title = state.spheres[sphereId].config.name;
-        Actions.settingsSphere({sphereId: sphereId, title: title})
+        (Actions as any).settingsSphere({sphereId: sphereId, title: title})
       })
       .catch((err) => {
         if (err.status == 422) {

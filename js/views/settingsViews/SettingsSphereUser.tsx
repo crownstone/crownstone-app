@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -15,13 +15,17 @@ import { ProfilePicture } from './../components/ProfilePicture'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { getUserLevelInSphere } from '../../util/DataUtil'
-import { styles, colors, width } from './../styles'
+import { styles, colors, screenWidth } from './../styles'
 const Actions = require('react-native-router-flux').Actions;
 
-export class SettingsSphereUser extends Component {
+export class SettingsSphereUser extends Component<any, any> {
+  deleting : boolean;
+  unsubscribe : any;
+
   constructor() {
     super();
     this.deleting = false;
+    this.unsubscribe = undefined;
   }
 
   componentDidMount() {
@@ -58,7 +62,7 @@ export class SettingsSphereUser extends Component {
       buttons: true,
       label:'Access Level',
       dropdownHeight:150,
-      value: user.accessLevel.capitalize(),
+      value: user.accessLevel[0].toUpperCase() + user.accessLevel.substring(1),
       items: availablePermissions,
       callback: (permission) => {
         permission = permission.toLowerCase();
@@ -118,7 +122,7 @@ export class SettingsSphereUser extends Component {
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView>
-          <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
+          <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture
               value={user.picture}
               size={120}

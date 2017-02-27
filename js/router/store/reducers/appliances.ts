@@ -28,7 +28,7 @@ let defaultSettings = {
   },
 };
 
-let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
+let applianceConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
     case 'ADD_APPLIANCE':
     case 'UPDATE_APPLIANCE_CONFIG':
@@ -50,7 +50,7 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
 };
 
 
-let linkedAppliancesReducer = (state = defaultSettings.linkedAppliances, action = {}) => {
+let linkedAppliancesReducer = (state = defaultSettings.linkedAppliances, action : any = {}) => {
   switch (action.type) {
     case 'ADD_LINKED_DEVICES':
     case 'UPDATE_LINKED_DEVICES':
@@ -62,7 +62,7 @@ let linkedAppliancesReducer = (state = defaultSettings.linkedAppliances, action 
 };
 
 
-let behaviourReducerOnHomeEnter = (state = toggleState, action = {}) => {
+let behaviourReducerOnHomeEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeEnter':
       return updateToggleState(state,action);
@@ -70,7 +70,7 @@ let behaviourReducerOnHomeEnter = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnHomeExit = (state = toggleStateAway, action = {}) => {
+let behaviourReducerOnHomeExit = (state = toggleStateAway, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onHomeExit':
       return updateToggleState(state,action);
@@ -78,7 +78,7 @@ let behaviourReducerOnHomeExit = (state = toggleStateAway, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnRoomEnter = (state = toggleState, action = {}) => {
+let behaviourReducerOnRoomEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomEnter':
       return updateToggleState(state,action);
@@ -86,7 +86,7 @@ let behaviourReducerOnRoomEnter = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnRoomExit = (state = toggleStateAway, action = {}) => {
+let behaviourReducerOnRoomExit = (state = toggleStateAway, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onRoomExit':
       return updateToggleState(state,action);
@@ -94,7 +94,7 @@ let behaviourReducerOnRoomExit = (state = toggleStateAway, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnNear = (state = toggleState, action = {}) => {
+let behaviourReducerOnNear = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onNear':
       return updateToggleState(state,action);
@@ -102,7 +102,7 @@ let behaviourReducerOnNear = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnAway = (state = toggleStateAway, action = {}) => {
+let behaviourReducerOnAway = (state = toggleStateAway, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_APPLIANCE_BEHAVIOUR_FOR_onAway':
       return updateToggleState(state,action);
@@ -110,7 +110,7 @@ let behaviourReducerOnAway = (state = toggleStateAway, action = {}) => {
       return state;
   }
 };
-let scheduleReducer = (state = {}, action = {}) => {
+let scheduleReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'ADD_APPLIANCE_SCHEDULE':
     case 'UPDATE_APPLIANCE_SCHEDULE':
@@ -139,7 +139,7 @@ let combinedApplianceReducer = combineReducers({
 });
 
 // stonesReducer
-export default (state = {}, action = {}) => {
+export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_APPLIANCE':
       let stateCopy = {...state};

@@ -1,9 +1,11 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import { EditableItem } from './EditableItem'
 import { SeparatedItemList } from './SeparatedItemList'
 import { getUUID } from '../../util/Util'
 
-export class ListEditableItems extends Component {
+export class ListEditableItems extends Component<any, any> {
+  uuid : string;
+
   constructor() {
     super();
     this.state = {activeElement:undefined};

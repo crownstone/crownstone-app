@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   TouchableOpacity,
@@ -24,7 +24,10 @@ import { LOG } from '../../logging/Log'
 
 
 
-export class DeviceEdit extends Component {
+export class DeviceEdit extends Component<any, any> {
+  deleting : boolean;
+  unsubscribeStoreEvents : any;
+
   constructor() {
     super();
     this.state = {showStone:false};
@@ -107,7 +110,7 @@ export class DeviceEdit extends Component {
       items.push({label: 'PLUGGED IN DEVICE', type: 'explanation', below: false});
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
-          Actions.applianceSelection({
+          (Actions as any).applianceSelection({
             ...requiredData,
             callback: (applianceId) => {
               this.setState({showStone:false});
@@ -150,7 +153,7 @@ export class DeviceEdit extends Component {
 
     // icon picker
     items.push({label:'Icon', type: 'icon', value: appliance.config.icon, callback: () => {
-      Actions.deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, sphereId: this.props.sphereId})
+      (Actions as any).deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, sphereId: this.props.sphereId})
     }});
 
     // unplug device

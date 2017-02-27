@@ -13,6 +13,15 @@ import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig
 const networkError = 'network_error';
 
 export class SetupHelper {
+  advertisement : any;
+  handle : any;
+  name : any;
+  type : any;
+  icon : any;
+  macAddress     : any;
+  cloudResponse  : any;
+  stoneIdInCloud : any;
+  
   constructor(setupAdvertisement, name, type, icon) {
     // full advertisement package
     this.advertisement = setupAdvertisement;
@@ -93,8 +102,8 @@ export class SetupHelper {
               }
               else {
                 // if we do not know the stone, we provide the new name and icon
-                addStoneAction.data.name = this.name;
-                addStoneAction.data.icon = this.icon;
+                addStoneAction.data["name"] = this.name;
+                addStoneAction.data["icon"] = this.icon;
               }
 
               actions.push(addStoneAction);
@@ -168,7 +177,7 @@ export class SetupHelper {
 
   registerInCloud(sphereId) {
     return new Promise((resolve, reject) => {
-      const processFailure = (err) => {
+      const processFailure = (err?) => {
         if (err.message && err.message === 'Network request failed') {
           reject(networkError);
         }
@@ -210,14 +219,14 @@ export class SetupHelper {
     let sphereData = state.spheres[sphereId].config;
 
     let data = {};
-    data.crownstoneId      = this.cloudResponse.uid;
-    data.adminKey          = sphereData.adminKey;
-    data.memberKey         = sphereData.memberKey;
-    data.guestKey          = sphereData.guestKey;
-    data.meshAccessAddress = sphereData.meshAccessAddress;
-    data.ibeaconUUID       = sphereData.iBeaconUUID;
-    data.ibeaconMajor      = this.cloudResponse.major;
-    data.ibeaconMinor      = this.cloudResponse.minor;
+    data["crownstoneId"]      = this.cloudResponse.uid;
+    data["adminKey"]          = sphereData.adminKey;
+    data["memberKey"]         = sphereData.memberKey;
+    data["guestKey"]          = sphereData.guestKey;
+    data["meshAccessAddress"] = sphereData.meshAccessAddress;
+    data["ibeaconUUID"]       = sphereData.iBeaconUUID;
+    data["ibeaconMajor"]      = this.cloudResponse.major;
+    data["ibeaconMinor"]      = this.cloudResponse.minor;
 
     let unsubscribe = NativeBus.on(NativeBus.topics.setupProgress, (progress) => {
       eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 + progress });

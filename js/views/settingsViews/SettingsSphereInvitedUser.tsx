@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -21,7 +21,10 @@ import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth } from './../styles'
 const Actions = require('react-native-router-flux').Actions;
 
-export class SettingsSphereInvitedUser extends Component {
+export class SettingsSphereInvitedUser extends Component<any, any> {
+  deleting : boolean;
+  unsubscribe : any;
+
   constructor() {
     super();
     this.deleting = false;

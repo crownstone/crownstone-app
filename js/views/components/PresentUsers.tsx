@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Dimensions,
@@ -17,7 +17,21 @@ import { ProfilePicture } from './ProfilePicture'
 import { TextCircle } from './TextCircle'
 
 
-export class PresentUsers extends Component {
+export class PresentUsers extends Component<any, any> {
+  renderState : any;
+  introAnimationTimeout : any;
+  exitAnimationTimeout : any;
+  unsubscribeStoreEvents : any;
+  basePositions : any;
+  positions : any;
+  slotPositions : any;
+  userDiameter : number;
+
+
+  allUsersBase : any;
+  allUsers : any;
+  userI : any;
+
   constructor(props) {
     super();
     this.renderState = {};
@@ -191,7 +205,7 @@ export class PresentUsers extends Component {
       else {
 
         // we have hard coded the positions for all users, for 3 users we have a certain config. We put the positions in the case of 3 users in slot segment 3
-        let slotSegment = drawCount;
+        let slotSegment : any = drawCount;
 
         // there is a special case if we need to show the "extra" circle
         if (extra > 0) {

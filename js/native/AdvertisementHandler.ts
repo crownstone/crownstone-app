@@ -10,6 +10,15 @@ let TRIGGER_ID = 'CrownstoneAdvertisement';
 let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
 
 class AdvertisementHandlerClass {
+  _initialized : any;
+  store : any;
+  state : any;
+  referenceHandleMap : any;
+  referenceCIDMap : any;
+  stonesInConnectionProcess : any;
+  temporaryIgnore  : any;
+  temporaryIgnoreTimeout : any;
+
   constructor() {
     this._initialized = false;
     this.store = undefined;
@@ -224,6 +233,6 @@ class AdvertisementHandlerClass {
   }
 }
 
-export const AdvertisementHandler = new AdvertisementHandlerClass();
+export const AdvertisementHandler : any = new AdvertisementHandlerClass();
 
 

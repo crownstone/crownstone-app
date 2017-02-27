@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   
   TouchableOpacity,
@@ -15,7 +15,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { EditSpacer }        from '../components/editComponents/EditSpacer'
 
 
-export class DaySelection extends Component {
+export class DaySelection extends Component<any, any> {
 
   constructOptions(optionState) {
     let items = [];

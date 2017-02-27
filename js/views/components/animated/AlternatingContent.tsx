@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   View
@@ -6,7 +6,10 @@ import {
 import { FadeInView } from './FadeInView'
 import { LOG } from '../../../logging/Log'
 
-export class AlternatingContent extends Component {
+export class AlternatingContent extends Component<any, any> {
+  interval : any;
+  visible : any;
+
   constructor(props) {
     super();
 

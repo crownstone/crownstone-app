@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Dimensions,
   Image,
@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, width } from '../styles'
+import { styles, colors } from '../styles'
 
 import { SlideInView } from './animated/SlideInView'
 import { NavigationBar } from './editComponents/NavigationBar'
@@ -19,7 +19,7 @@ import { CustomIcon } from '../../fonts/customIcons'
 let borderColor = 'rgba(0,0,0,0.1)';
 let rowHeight = 90;
 
-export class IconSelection extends Component {
+export class IconSelection extends Component<any, any> {
   constructor(props) {
     super();
 

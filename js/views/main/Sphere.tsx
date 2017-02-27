@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import {Component} from 'react'
 import {
   Animated,
   Dimensions,
@@ -17,7 +17,7 @@ import { LOG }       from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
 
-export class Sphere extends Component {
+export class Sphere extends Component<any, any> {
   render() {
     LOG.info("RENDERING SPHERE");
     const store = this.props.store;

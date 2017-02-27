@@ -4,6 +4,11 @@ import { BluenetPromises } from '../native/Proxy'
 
 
 class BlePromiseManagerClass {
+  pendingPromises : any;
+  promiseInProgress : any;
+  clearPendingPromiseTimeout : any;
+
+
   constructor() {
     this.pendingPromises = [];
     this.promiseInProgress = undefined;

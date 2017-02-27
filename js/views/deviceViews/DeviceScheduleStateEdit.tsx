@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   
   TouchableOpacity,
@@ -17,7 +17,9 @@ let Actions = require('react-native-router-flux').Actions;
 import { styles, colors} from '../styles'
 import { LOG } from '../../logging/Log'
 
-export class DeviceScheduleStateEdit extends Component {
+export class DeviceScheduleStateEdit extends Component<any, any> {
+  unsubscribe : any;
+
   componentDidMount() {
     this.unsubscribe = this.props.store.subscribe(() => {
       this.forceUpdate();
@@ -58,7 +60,7 @@ export class DeviceScheduleStateEdit extends Component {
     //
     //
     //items.push({label:"Fading", value: this._getDelayLabel(currentBehaviour), valueStyle:styles.rightNavigationValue, type: 'navigation',  callback:() => {
-    //  Actions.delaySelection({
+    //  (Actions as any).delaySelection({
     //    ...requiredData,
     //    extractionMethod: (device) => {return device.behaviour[this.props.eventName].delay;},
     //    callback: (newValue) => {

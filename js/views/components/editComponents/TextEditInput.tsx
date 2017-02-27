@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Keyboard,
   TextInput,
@@ -6,7 +6,15 @@ import {
 
 import { eventBus } from '../../../util/eventBus'
 
-export class TextEditInput extends Component {
+export class TextEditInput extends Component<any, any> {
+
+  blurred : boolean;
+  isInFocus : boolean;
+  refName : string;
+  blurListener : any;
+  unsubscribe : any;
+
+
   constructor(props) {
     super();
     this.state = {value: props.value};
@@ -46,7 +54,7 @@ export class TextEditInput extends Component {
 
     this.isInFocus = true;
     this.blurred = false;
-    this.refs[this.refName].measure((fx, fy, width, height, px, py) => {
+    (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
       if (this.props.setActiveElement)
         this.props.setActiveElement();
       eventBus.emit("focus", py);

@@ -7,7 +7,7 @@ import settingReducer from './reducers/settings'
 import appReducer     from './reducers/app'
 
 // crownstoneReducer
-export default (state = {}, action = {}) => {
+export default (state : any = {}, action : any = {}) => {
   // clearing should only happen once we logged out through the store manager. The state of the old user
   // will be persisted.
   if (action.type === 'USER_LOGGED_OUT_CLEAR_STORE') {

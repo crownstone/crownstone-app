@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Alert,
   Animated,
@@ -20,17 +20,21 @@ import { getUserLevelInSphere } from '../../util/DataUtil'
 import { LOG } from '../../logging/Log'
 
 
-export class SetupDeviceEntry extends Component {
+export class SetupDeviceEntry extends Component<any, any> {
+  baseHeight : any;
+  unsubscribe : any;
+  currentLoadingWidth : any;
+  setupEvents : any;
+
   constructor(props) {
     super();
 
     this.baseHeight = props.height || 80;
     this.unsubscribe = () => {};
 
-    this.props = props;
     this.state = {
       progressWidth: new Animated.Value(0),
-      name: this.props.item.name,
+      name: props.item.name,
       explanation:'',
       subtext: 'Click here to add it to this Sphere!',
       disabled: false,
@@ -101,7 +105,7 @@ export class SetupDeviceEntry extends Component {
   }
 
 
-  setProgress(value = 0) {
+  setProgress(value : any = 0) {
     switch(value) {
       case -1:
         this.setState({explanation:'Another Crownstone is already pairing.', subtext:'Pairing in progress...', setupInProgress:false, disabled: true});

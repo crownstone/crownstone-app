@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   AppRegistry,
@@ -29,8 +29,7 @@ export class Router_Android extends Component {
   render() {
     return (
       <View style={{flex:1, backgroundColor: colors.menuBackground.hex}}>
-        <Router
-          createReducer={reducerCreate} store={this.props.store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.black.hex}}} backgrounds={this.props.backgrounds} getBackground={this.props.getBackground.bind(this)} eventBus={eventBus}>
+        <Router createReducer={reducerCreate} store={this.props.store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.black.hex}}} backgrounds={this.props.backgrounds} getBackground={this.props.getBackground.bind(this)} eventBus={eventBus}>
           <Scene key="drawer" component={SideMenu} open={false} store={this.props.store}>
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                panHandlers={null} hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
@@ -41,8 +40,8 @@ export class Router_Android extends Component {
               <Scene key="picturePreview"             component={Views.PicturePreview}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="aiStart"                    component={Views.AiStart}                    panHandlers={null} hideNavBar={false} direction="vertical" title="Hello!" />
-              <Scene key="roomTraining_roomSize"      component={Views.RoomTraining_roomSize}      hideNavBar={true}  panHandlers={null} direction="vertical" />
-              <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true}  panHandlers={null} direction="horizontal" />
+              <Scene key="roomTraining_roomSize"      component={Views.RoomTraining_roomSize}      panHandlers={null} hideNavBar={true}  direction="vertical" />
+              <Scene key="roomTraining"               component={Views.RoomTraining}               panHandlers={null} hideNavBar={true}  direction="horizontal" />
               <Scene key="roomSelection"              component={Views.RoomSelection}              panHandlers={null} hideNavBar={true}  direction="vertical" title="Move to which Room?" />
               <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
               <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
@@ -69,7 +68,6 @@ export class Router_Android extends Component {
               <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       panHandlers={null} hideNavBar={false} title="Invite" />
-              <Scene key="appComplexity"              component={Views.AppComplexity}              panHandlers={null} hideNavBar={false} title="Settings"/>
             </Scene>
           </Scene>
         </Router>

@@ -13,7 +13,7 @@ let defaultSettings = {
   presentUsers: []
 };
 
-let userPresenceReducer = (state = [], action = {}) => {
+let userPresenceReducer = (state = [], action : any = {}) => {
   switch (action.type) {
     case 'USER_ENTER_LOCATION':
       return [...state, action.data.userId];
@@ -29,7 +29,7 @@ let userPresenceReducer = (state = [], action = {}) => {
   }
 };
 
-let locationConfigReducer = (state = defaultSettings.config, action = {}) => {
+let locationConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_LOCATION_FINGERPRINT':
       let newState = {...state};
@@ -70,7 +70,7 @@ let combinedLocationReducer = combineReducers({
 
 
 // locationsReducer
-export default (state = {}, action = {}) => {
+export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_LOCATION':
       let stateCopy = {...state};

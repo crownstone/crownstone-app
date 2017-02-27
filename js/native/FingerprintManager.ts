@@ -2,6 +2,10 @@ import { Bluenet, NativeBus, BluenetPromises } from './Proxy';
 import { LOG } from '../logging/Log'
 
 class FingerprintManagerClass {
+  fingerprintingActive : any;
+  fingerprintingSession : any;
+  fingerprintingSubscriptions : any;
+
   constructor() {
     this.fingerprintingActive = false;
     this.fingerprintingSession = null;

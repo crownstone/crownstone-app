@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   
   Dimensions,
@@ -79,7 +79,8 @@ import { styles, screenWidth, barHeight, barHeightLarge } from '../styles'
      --> {label: field label, value: text, callback: (newValue) => {}}
 
  */
-export class EditableItem extends Component {
+export class EditableItem extends Component<any, any> {
+  text : any;
 
   render() {
 

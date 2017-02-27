@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   
   Dimensions,
@@ -14,7 +14,9 @@ import { FadeInView }         from './animated/FadeInView'
 import { styles, colors , screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/eventBus'
 
-export class Processing extends Component {
+export class Processing extends Component<any, any> {
+  unsubscribe : any;
+
   constructor() {
     super();
 

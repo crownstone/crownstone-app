@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Image,
   Text,
@@ -10,7 +10,9 @@ import { styles, colors , screenHeight, screenWidth } from './../styles'
 
 let radius = 8; // make sure this is not an odd number
 
-export class Orbs extends Component {
+export class Orbs extends Component<any, any> {
+  unsubscribe : any;
+
   constructor() {
     super();
     this.state = {};

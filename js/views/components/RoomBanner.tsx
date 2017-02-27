@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Dimensions,
   Image,
@@ -18,7 +18,7 @@ let RIGHT_RATIO = 0.30;
 let ELEMENT_HEIGHT = 100;
 let ELEMENT_OFFSET = 0.1*ELEMENT_HEIGHT;
 
-export class RoomBanner extends Component {
+export class RoomBanner extends Component<any, any> {
   getOverlayContent() {
     if (this.props.overlayText !== undefined) {
       return <Text style={styles.roomImageText}>{this.props.overlayText}</Text>;

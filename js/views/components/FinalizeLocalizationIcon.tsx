@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Platform,
   Text,
@@ -7,7 +7,7 @@ import {
 import { Icon } from './Icon'
 import { styles, colors } from '../styles'
 
-export class FinalizeLocalizationIcon extends Component {
+export class FinalizeLocalizationIcon extends Component<any, any> {
   render() {
     let top = Platform.OS === 'android' ? 0 : 1;
     let topOffset = 0;

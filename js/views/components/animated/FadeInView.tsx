@@ -1,11 +1,14 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   View
 } from 'react-native';
 import { LOG } from '../../../logging/Log'
 
-export class FadeInView extends Component {
+export class FadeInView extends Component<any, any> {
+  visible : boolean;
+  pendingTimeout : any;
+
   constructor(props) {
     super();
 

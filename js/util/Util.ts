@@ -5,7 +5,7 @@ import { Bluenet, BluenetPromises } from '../native/Proxy'
 import { Actions } from 'react-native-router-flux';
 import { LOG } from '../logging/Log'
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
-import ImageResizer from 'react-native-image-resizer';
+const ImageResizer = require('react-native-image-resizer');
 import RNFS from 'react-native-fs'
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
@@ -16,9 +16,7 @@ export const Util = {
   data: DataUtil
 };
 
-
-
-export const getUUID = function() {
+export const getUUID = function() : string {
   const S4 = function () {
     return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
   };
@@ -83,7 +81,7 @@ export const removeAllFiles = function() {
 export const logOut = function() {
   BluenetPromises.clearTrackedBeacons();
   Bluenet.stopScanning();
-  Actions.loginSplash();
+  (Actions as any).loginSplash();
   StoreManager.userLogOut();
 };
 
@@ -183,10 +181,6 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
     pictureUri += '?r=' + Math.random(); // cache buster
 
   return pictureUri;
-};
-
-String.prototype.capitalize = function() {
-  return this[0].toUpperCase() + this.substring(1);
 };
 
 

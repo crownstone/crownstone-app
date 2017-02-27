@@ -15,6 +15,10 @@ let RSSI_REFRESH = 1;
  * If a Crownstone is disabled, it means it has not been heard for the last 30 seconds, ibeacon, adv or via mesh.
  */
 class StoneStateHandlerClass {
+  store  : any;
+  timeoutActions : any;
+  _initialized : boolean;
+
   constructor() {
     this.store = {};
     this.timeoutActions = {};

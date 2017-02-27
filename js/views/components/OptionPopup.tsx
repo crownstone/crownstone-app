@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Dimensions,
   Keyboard,
@@ -14,7 +14,9 @@ import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
 import { styles, colors , screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/eventBus'
 
-export class OptionPopup extends Component {
+export class OptionPopup extends Component<any, any> {
+  unsubscribe : any;
+
   constructor() {
     super();
 

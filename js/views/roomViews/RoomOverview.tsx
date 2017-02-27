@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Alert,
   Image,
@@ -37,8 +37,15 @@ import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight }
 import { LOG } from '../../logging/Log'
 
 
-export class RoomOverview extends Component {
-  constructor(props) {
+export class RoomOverview extends Component<any, any> {
+  tapToToggleCalibration : any;
+  unsubscribeStoreEvents : any;
+  unsubscribeSetupEvents : any;
+  viewingRemotely : boolean;
+  justFinishedSetup : any;
+  nearestStoneId : any;
+
+  constructor() {
     super();
     this.state = {pendingRequests:{}};
     this.unsubscribeSetupEvents = [];
@@ -140,7 +147,7 @@ export class RoomOverview extends Component {
                 this.showPending(stoneId);
                 let data = {state: switchState};
                 if (switchState === 0) {
-                  data.currentUsage = 0;
+                  data["currentUsage"] = 0;
                 }
 
                 let bleController = new BatchCommand(this.props.store, this.props.sphereId);
@@ -161,10 +168,10 @@ export class RoomOverview extends Component {
               }}
               onMove={() => {
                 Actions.pop();
-                Actions.roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.viewingRemotely});
+                (Actions as any).roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.viewingRemotely});
               }}
-              onChangeType={() => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
-              onChangeSettings={() => { Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
+              onChangeType={() => { (Actions as any).deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
+              onChangeSettings={() => { (Actions as any).deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
             />
           </View>
         </View>
@@ -309,7 +316,7 @@ export class RoomOverview extends Component {
           title={title}
           right={userAdmin === true && this.props.locationId !== null ? 'Edit' : undefined}
           rightItem={this.getRightItem(state, userAdmin)}
-          rightAction={() => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}
+          rightAction={() => { (Actions as any).roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}
           leftAction={ () => { Actions.pop({refresh: {test:true }}); }}
           showHamburgerMenu={true}
         />
@@ -356,7 +363,7 @@ export class RoomOverview extends Component {
  *  - {string} sphereId
  *  - {string} locationId
  */
-class RoomOverviewExplanation extends Component {
+class RoomOverviewExplanation extends Component<any, any> {
   render() {
     let state = this.props.state;
     let sphereId = this.props.sphereId;
@@ -371,7 +378,7 @@ class RoomOverviewExplanation extends Component {
     let buttonCallback = undefined;
 
     // callback to go to the floating crownstones. Is used twice
-    let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
+    let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { (Actions as any).roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
 
     // In case we see a crownstone in setup mode:
     if (explanation === undefined && seeStoneInSetupMode === true) {

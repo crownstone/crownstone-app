@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Image,
   View
@@ -7,7 +7,7 @@ import {
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} from '../styles'
 
 
-export class Background extends Component {
+export class Background extends Component<any, any> {
   render() {
     return (
       <View style={[styles.fullscreen,{elevation: 0}]} >

@@ -66,22 +66,18 @@ export const spheres = {
     switch (permission) {
       case 'admin':
         return this._setupRequest('PUT', '/Spheres/{id}/admins', { data: { email: email }});
-        break;
       case 'member':
         return this._setupRequest('PUT', '/Spheres/{id}/members', { data: { email: email }});
-        break;
       case 'guest':
         return this._setupRequest('PUT', '/Spheres/{id}/guests', { data: { email: email }});
-        break;
       default:
         return new Promise((resolve, reject) => {
           reject(new Error('Invalid Permission: "' + permission + '"'))
         });
-        break;
     }
   },
 
-  getPendingInvites: function(options = {}) {
+  getPendingInvites: function(options : any = {}) {
     return this._setupRequest('GET', '/Spheres/{id}/pendingInvites', options);
   },
 
@@ -99,23 +95,23 @@ export const spheres = {
    *
    * @returns {*}
    */
-  getSpheres: function (options = {}) {
+  getSpheres: function (options : any = {}) {
     return this._setupRequest('GET', '/users/{id}/spheres', options);
   },
 
-  getUsers: function (options = {}) {
+  getUsers: function (options : any = {}) {
     return this._setupRequest('GET', '/Spheres/{id}/users', options);
   },
 
-  getAdmins: function (options = {}) {
+  getAdmins: function (options : any = {}) {
     return this._setupRequest('GET', '/Spheres/{id}/admins', options);
   },
 
-  getMembers: function (options = {}) {
+  getMembers: function (options : any = {}) {
     return this._setupRequest('GET', '/Spheres/{id}/members', options);
   },
 
-  getGuests: function (options = {}) {
+  getGuests: function (options : any = {}) {
     return this._setupRequest('GET', '/Spheres/{id}/guests', options);
   },
 
@@ -126,7 +122,7 @@ export const spheres = {
    * @param longitude
    */
   createSphere: function(sphereName, latitude, longitude) {
-    let payload = {data:{name:sphereName}};
+    let payload = { data: {name:sphereName, gpsLocation: undefined}};
     // only write gps coordinates if we have them.
     if (latitude && longitude) {
       payload.data.gpsLocation = {lat:latitude, lng: longitude}
@@ -134,7 +130,7 @@ export const spheres = {
     return this._setupRequest('POST', 'users/{id}/spheres', payload, 'body');
   },
 
-  getUserPicture(sphereId, email, userId, options = {}) {
+  getUserPicture(sphereId, email, userId, options : any = {}) {
     let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
     return this.forSphere(sphereId)._download({
       endPoint:'/Spheres/{id}/profilePic',
@@ -145,7 +141,7 @@ export const spheres = {
   },
 
 
-  getSphereData: function(selfId, options = {}) {
+  getSphereData: function(selfId, options : any = {}) {
     let sphereId = this._sphereId;
 
     let promises       = [];

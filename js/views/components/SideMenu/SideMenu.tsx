@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   AppRegistry,
@@ -17,7 +17,7 @@ import Drawer       from 'react-native-drawer';
 import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight } from '../../styles'
 
-export class SideMenu extends Component {
+export class SideMenu extends Component<any, any> {
   constructor(props) {
     super();
     this.state = {open: props.navigationState.open, viewProps: {}}

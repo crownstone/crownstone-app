@@ -1,8 +1,6 @@
-import { eventBus } from '../util/eventBus'
-import { DEBUG } from '../ExternalConfig'
 import { Alert } from 'react-native'
 
-export function prepareEndpointAndBody(options, id, accessToken, doNotStringify) {
+export function prepareEndpointAndBody(options : any, id : any, accessToken : any, doNotStringify? : boolean) {
   let endPoint = options.endPoint;
 
   // inject the ID into the url if required.

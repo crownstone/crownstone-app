@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Alert,
@@ -19,7 +19,7 @@ import { styles, colors, screenWidth, screenHeight } from '../../styles'
 import { Icon } from '../../components/Icon';
 import { LOG } from '../../../logging/Log'
 
-export class RoomTraining_explanation extends Component {
+export class RoomTraining_explanation extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1}}>

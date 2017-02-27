@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   
   TouchableOpacity,
@@ -20,7 +20,9 @@ const Actions = require('react-native-router-flux').Actions;
 import { LOG } from '../../logging/Log'
 
 
-export class DeviceScheduleAdd extends Component {
+export class DeviceScheduleAdd extends Component<any, any> {
+  unsubscribe : any;
+
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {

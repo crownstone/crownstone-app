@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Image,
@@ -17,7 +17,9 @@ import { OverlayBox }         from './OverlayBox'
 import { eventBus }                                   from '../../../util/eventBus'
 import { styles, colors , screenHeight, screenWidth } from '../../styles'
 
-export class TapToToggleCalibration extends Component {
+export class TapToToggleCalibration extends Component<any, any> {
+  unsubscribe : any;
+
   constructor() {
     super();
 
@@ -26,7 +28,7 @@ export class TapToToggleCalibration extends Component {
   }
 
   componentDidMount() {
-    eventBus.on("CalibrateTapToToggle", (data = {}) => {
+    eventBus.on("CalibrateTapToToggle", (data : any = {}) => {
       eventBus.emit("ignoreTriggers");
       this.setState({
         visible: true,
@@ -83,9 +85,9 @@ export class TapToToggleCalibration extends Component {
     };
 
     BlePromiseManager.registerPriority(learnDistancePromise, {from:'Tap-to-toggle distance estimation.'})
-      .then((nearestRSSI) => {
+      .then((nearestRSSI : number) => {
         if (nearestRSSI > -70) {
-          let rssiAddedDistance = Math.max(nearestRSSI-5,addDistanceToRssi(nearestRSSI, 0.1));
+          let rssiAddedDistance = Math.max(nearestRSSI - 5, addDistanceToRssi(nearestRSSI, 0.1));
           LOG.info("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
 
           let state = this.props.store.getState();
@@ -118,7 +120,7 @@ export class TapToToggleCalibration extends Component {
   }
 
   getContent() {
-    let props = {};
+    let props : any = {};
     switch(this.state.step) {
       case 0:
         props = {

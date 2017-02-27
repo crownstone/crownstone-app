@@ -58,7 +58,7 @@ let defaultSettings = {
 };
 
 
-let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
+let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
@@ -150,7 +150,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action = {}) => {
   }
 };
 
-let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
+let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
   switch (action.type) {
     case 'CLEAR_STONE_USAGE':
       let newState          = {...state};
@@ -175,7 +175,7 @@ let stoneStateReducer = (state = defaultSettings.state, action = {}) => {
   }
 };
 
-let stoneStatisticsReducer = (state = [], action = {}) => {
+let stoneStatisticsReducer = (state = [], action : any = {}) => {
   switch (action.type) {
     default:
       return state;
@@ -183,7 +183,7 @@ let stoneStatisticsReducer = (state = [], action = {}) => {
 };
 
 
-let behaviourReducerOnHomeEnter = (state = toggleState, action = {}) => {
+let behaviourReducerOnHomeEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
       return updateToggleState(state,action);
@@ -191,7 +191,7 @@ let behaviourReducerOnHomeEnter = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnHomeExit = (state = toggleStateAway, action = {}) => {
+let behaviourReducerOnHomeExit = (state = toggleStateAway, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
       return updateToggleState(state,action);
@@ -199,7 +199,7 @@ let behaviourReducerOnHomeExit = (state = toggleStateAway, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnRoomEnter = (state = toggleState, action = {}) => {
+let behaviourReducerOnRoomEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
       return updateToggleState(state,action);
@@ -207,7 +207,7 @@ let behaviourReducerOnRoomEnter = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnRoomExit = (state = toggleStateAway, action = {}) => {
+let behaviourReducerOnRoomExit = (state = toggleStateAway, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
       return updateToggleState(state,action);
@@ -215,7 +215,7 @@ let behaviourReducerOnRoomExit = (state = toggleStateAway, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnNear = (state = toggleState, action = {}) => {
+let behaviourReducerOnNear = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
       return updateToggleState(state,action);
@@ -223,7 +223,7 @@ let behaviourReducerOnNear = (state = toggleState, action = {}) => {
       return state;
   }
 };
-let behaviourReducerOnAway = (state = toggleStateAway, action = {}) => {
+let behaviourReducerOnAway = (state = toggleStateAway, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
       return updateToggleState(state,action);
@@ -232,7 +232,7 @@ let behaviourReducerOnAway = (state = toggleStateAway, action = {}) => {
   }
 };
 
-let scheduleReducer = (state = {}, action = {}) => {
+let scheduleReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'ADD_STONE_SCHEDULE':
     case 'UPDATE_STONE_SCHEDULE':
@@ -262,7 +262,7 @@ let combinedStoneReducer = combineReducers({
 });
 
 // stonesReducer
-export default (state = {}, action = {}) => {
+export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_STONE':
       let stateCopy = {...state};

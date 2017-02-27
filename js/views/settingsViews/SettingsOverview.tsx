@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -22,7 +22,9 @@ import { IconButton } from '../components/IconButton'
 
 const DeviceInfo = require('react-native-device-info');
 
-export class SettingsOverview extends Component {
+export class SettingsOverview extends Component<any, any> {
+  unsubscribe : any;
+
   constructor() {
     super();
     this.unsubscribe = [];
@@ -44,12 +46,12 @@ export class SettingsOverview extends Component {
     let items = [];
 
     items.push({type:'explanation', label:'UPDATE YOUR PROFILE', below:false});
-    items.push({label:'My Account', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
+    items.push({label:'My Account', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {(Actions as any).settingsProfile()}});
 
     items.push({type:'explanation', label:'CONFIGURATION', below:false});
     if (Object.keys(state.spheres).length > 0) {
       items.push({label:'Spheres', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
-        Actions.settingsSphereOverview()
+        (Actions as any).settingsSphereOverview()
       }});
     }
     else {
@@ -70,7 +72,7 @@ export class SettingsOverview extends Component {
             this.props.eventBus.emit('hideLoading');
             let state = this.props.store.getState();
             let title = state.spheres[sphereId].config.name;
-            Actions.settingsSphere({sphereId: sphereId, title: title})
+            (Actions as any).settingsSphere({sphereId: sphereId, title: title})
           })
           .catch(() => {this.props.eventBus.emit('hideLoading');});
       }});
@@ -100,7 +102,7 @@ export class SettingsOverview extends Component {
       icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />,
       type: 'navigation',
       callback: () => {
-        Actions.settingsPluginRecoverStep1();
+        (Actions as any).settingsPluginRecoverStep1();
       }
     });
     items.push({label:'If you want to reset a Crownstone because it is not responding correctly, recover it!',  type:'explanation', below: true});

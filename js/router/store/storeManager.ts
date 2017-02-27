@@ -29,6 +29,15 @@ function enableBatching(reducer) {
 // ---------------
 
 class StoreManagerClass {
+  store : any;
+  storeInitialized : any;
+  storageKey : any;
+  storageKeyBase : string;
+  userIdentificationStorageKey : string;
+  writeToDiskTimeout : any;
+  unsubscribe : any;
+
+
   constructor() {
     this.store = {};
     this.storeInitialized = false;

@@ -4,6 +4,14 @@ import { getUUID } from '../util/Util'
 
 
 class SchedulerClass {
+  _initialized : any;
+  store : any;
+  triggers : any;
+  singleFireTriggers : any;
+  allowTicksAfterTime : any;
+  activeSphere : any;
+  scheduledTick : any;
+
   constructor() {
     this._initialized = false;
     this.store = undefined;
@@ -328,4 +336,4 @@ class SchedulerClass {
   }
 }
 
-export const Scheduler = new SchedulerClass();
+export const Scheduler : any = new SchedulerClass();

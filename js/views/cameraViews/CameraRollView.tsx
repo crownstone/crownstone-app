@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Alert,
   CameraRoll,
@@ -15,14 +15,18 @@ import { TopBar } from '../components/Topbar';
 import { styles, colors } from '../styles'
 import { LOG } from '../../logging/Log'
 
-export class CameraRollView extends Component {
+export class CameraRollView extends Component<any, any> {
+  pictureIndex : any;
+  state : any;
+  active : any;
+  fetchPicturesTimeout : any;
+
   constructor() {
     super();
-
     this.pictureIndex = undefined;
     this.state = {pictures:[]};
     this.active = true;
-    this.fetchPicturesTimeout = setTimeout(() => {this.fetchPictures();},350);
+    this.fetchPicturesTimeout = setTimeout(() => { this.fetchPictures(); }, 350);
   }
 
   componentWillUnmount() {
@@ -37,7 +41,7 @@ export class CameraRollView extends Component {
         assetType: 'Photos',
       };
       if (this.pictureIndex !== undefined) {
-        query.after = this.pictureIndex;
+        query["after"] = this.pictureIndex;
       }
       
       CameraRoll.getPhotos(query).then((data) => {

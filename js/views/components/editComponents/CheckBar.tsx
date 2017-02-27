@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   
   TouchableHighlight,
@@ -10,7 +10,7 @@ import { Icon } from '../Icon';
 import { styles, colors, screenWidth, barHeight} from '../../styles'
 
 
-export class CheckBar extends Component {
+export class CheckBar extends Component<any, any> {
   render() {
     let navBarHeight = this.props.barHeight || barHeight;
     if (this.props.largeIcon)

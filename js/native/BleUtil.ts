@@ -174,6 +174,10 @@ export const BleUtil = {
  * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
  */
 export class BatchCommand {
+  commands : any;
+  store : any;
+  sphereId : any;
+
   constructor(store, sphereId) {
     this.commands = [];
 
@@ -304,6 +308,13 @@ export class BatchCommand {
 
 
 class MeshHelper {
+  store : any;
+  sphereId : any;
+  meshNetworkId : any;
+  meshInstruction : any;
+  targets : any;
+  _containedPromises : any;
+
   constructor(store, sphereId, meshNetworkId, meshInstruction) {
     this.store = store;
     this.sphereId = sphereId;
@@ -343,7 +354,7 @@ class MeshHelper {
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.manual])};
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.enter])};
 
-    if (Object.keys(targets) > 0) {
+    if (Object.keys(targets).length > 0) {
       return targets;
     }
 
@@ -351,14 +362,14 @@ class MeshHelper {
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.sphereEnter])};
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.setSwitchState[INTENTS.sphereExit])};
 
-    if (Object.keys(targets) > 0) {
+    if (Object.keys(targets).length > 0) {
       return targets;
     }
 
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.keepAliveState)};
     targets = { ...targets, ...this._getTargetsFromCommands(this.meshInstruction.keepAlive)};
 
-    if (Object.keys(targets) > 0) {
+    if (Object.keys(targets).length > 0) {
       return targets;
     }
 
@@ -651,6 +662,10 @@ class MeshHelper {
 
 
 class SingleCommand {
+  sphereId : any;
+  stoneId  : any;
+  handle   : any;
+
   constructor(handle, sphereId, stoneId) {
     this.sphereId = sphereId;
     this.stoneId = stoneId;
@@ -714,7 +729,7 @@ class SingleCommand {
         .catch(() => {
           // could not find any node withing a -90 threshold
           LOG.warn('SingleCommand: Could not find the target crownstone within -90 db. Attempting removal of threshold...');
-          return this._search(searchSettings, null);
+          return this._searchScan(topic, null, searchSettings.timeout)
         })
         .catch(() => {
           LOG.error('SingleCommand: Can not connect to the target Crownstone.');

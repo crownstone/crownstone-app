@@ -1,11 +1,14 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   Animated,
   Image,
   
 } from 'react-native';
 
-export class AnimatedLogo extends Component {
+export class AnimatedLogo extends Component<any, any> {
+  baseSize : number;
+  animationTimeout : any;
+
   constructor(props) {
     super();
 
@@ -26,7 +29,7 @@ export class AnimatedLogo extends Component {
   }
 
   animate() {
-    // we want a noticable difference from the old size
+    // we want a noticeable difference from the old size
     let newSize = this._getNewSize();
 
     Animated.spring(this.state.size, {toValue: newSize, friction:3}).start();

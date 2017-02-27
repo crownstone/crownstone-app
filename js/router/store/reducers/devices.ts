@@ -9,7 +9,7 @@ let defaultSettings = {
   updatedAt: 1
 };
 
-let deviceConfigReducer = (state = defaultSettings, action = {}) => {
+let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
     case 'SET_TAP_TO_TOGGLE_CALIBRATION':
       if (action.data) {
@@ -40,7 +40,7 @@ let deviceConfigReducer = (state = defaultSettings, action = {}) => {
 
 
 // devices Reducer
-export default (state = {}, action = {}) => {
+export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_DEVICE':
       let newState = {...state};

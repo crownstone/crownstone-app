@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   TouchableHighlight,
   Text,
@@ -9,7 +9,9 @@ import { Icon } from '../Icon';
 import { styles, colors, screenWidth, barHeight } from '../../styles'
 
 
-export class NavigationBar extends Component {
+export class NavigationBar extends Component<any, any> {
+  setActiveElement : any;
+
   constructor(props) {
     super();
     let emptyFunction = () => {};

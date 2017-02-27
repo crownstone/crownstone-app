@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Image,
@@ -18,7 +18,7 @@ import { eventBus } from '../../util/eventBus'
 import { preparePictureURI } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
 
-export class PictureCircle extends Component {
+export class PictureCircle extends Component<any, any> {
   triggerOptions() {
     if (Platform.OS === 'android') {
       Alert.alert(
@@ -31,8 +31,8 @@ export class PictureCircle extends Component {
 
     // for iOS show the popup menu
     let buttons = [];
-    buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
-    buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+    buttons.push({ text: 'Take Picture', callback: () => { (Actions as any).pictureView({selectCallback: this.props.callback});}});
+    buttons.push({ text: 'Choose Existing', callback: () => { (Actions as any).cameraRollView({selectCallback: this.props.callback});}});
     eventBus.emit('showPopup', buttons);
   }
 
@@ -117,7 +117,7 @@ export class PictureCircle extends Component {
               else {
                 return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
                   {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
-                // Actions.pictureView({selectCallback: this.props.callback});
+                // (Actions as any).pictureView({selectCallback: this.props.callback});
               }
             })
             .then((granted) => {
@@ -130,7 +130,7 @@ export class PictureCircle extends Component {
             .then((granted) => {
               // console.log("Granted write external storage:", granted);
               if (granted === true) {
-                Actions.pictureView({selectCallback: this.props.callback});
+                (Actions as any).pictureView({selectCallback: this.props.callback});
               }
             })
             .catch((err) => {

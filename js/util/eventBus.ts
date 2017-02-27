@@ -3,6 +3,9 @@ import { getUUID } from './Util'
 
 
 export class EventBus {
+  _topics : object;
+  _topicIds : object;
+
   constructor() {
     this._topics = {};
     this._topicIds = {};
@@ -68,4 +71,4 @@ export class EventBus {
   }
 }
 
-export let eventBus = new EventBus();
+export let eventBus : any = new EventBus();

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -21,7 +21,11 @@ import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 
-export class SettingsSphere extends Component {
+export class SettingsSphere extends Component<any, any> {
+  deleting : boolean;
+  validationState : any;
+  unsubscribeStoreEvents : any;
+
   constructor() {
     super();
     this.deleting = false;
@@ -59,7 +63,7 @@ export class SettingsSphere extends Component {
               type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
               icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
-                Actions.settingsSphereInvitedUser({
+                (Actions as any).settingsSphereInvitedUser({
                   title: users[userId].email,
                   userId: userId,
                   invitePending: true,
@@ -74,7 +78,7 @@ export class SettingsSphere extends Component {
               type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
               icon: <ProfilePicture picture={users[userId].picture}/>,
               callback: () => {
-                Actions.settingsSphereUser({
+                (Actions as any).settingsSphereUser({
                   title: users[userId].firstName,
                   userId: userId,
                   sphereId: this.props.sphereId
@@ -148,7 +152,7 @@ export class SettingsSphere extends Component {
       type: adminInSphere ? 'navigation' : 'info',
       icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex, marginLeft:3, marginRight:7}}/>,
       callback: () => {
-        Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
+        (Actions as any).aiStart({sphereId: this.props.sphereId, canGoBack: true});
       }
     });
     items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
@@ -212,7 +216,7 @@ export class SettingsSphere extends Component {
         labelStyle: {color:colors.blue.hex},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor:colors.green.hex, marginLeft:3, marginRight:7}} />,
         callback: () => {
-          Actions.settingsSphereInvite({sphereId: this.props.sphereId});
+          (Actions as any).settingsSphereInvite({sphereId: this.props.sphereId});
         }
       });
     }

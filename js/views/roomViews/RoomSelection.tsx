@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -19,7 +19,9 @@ import { TopBar } from '../components/Topbar';
 import { RoomList } from '../components/RoomList';
 import { Icon } from '../components/Icon';
 
-export class RoomSelection extends Component {
+export class RoomSelection extends Component<any, any> {
+  unsubscribe : any;
+
   componentDidMount() {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
@@ -74,7 +76,7 @@ export class RoomSelection extends Component {
       style: {color:colors.blue.hex},
       type: 'navigation',
       callback: () => {
-        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true})
+        (Actions as any).roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true})
       }
     });
 

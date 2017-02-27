@@ -84,7 +84,7 @@ export const base = {
    * @returns {*}
    * @private
    */
-  _setupRequest: function(reqType, endpoint, options = {}, type = 'query') {
+  _setupRequest: function(reqType, endpoint, options : any = {}, type = 'query') {
     let promiseBody = {endPoint: endpoint, data: options.data, type:type};
     let promise;
     switch (reqType) {
@@ -118,7 +118,7 @@ export const base = {
           if (reply.status === 200 || reply.status === 204)
             resolve(reply.data);
           else
-            this.__debugReject(reply, reject, arguments);
+            this.__debugReject(reply, reject, [promise, options, endpoint, promiseBody]);
         })
         .catch((error) => {
           //console.trace(error, this);
@@ -152,7 +152,7 @@ export const base = {
 
 
 
-function _getId(url, obj) {
+function _getId(url, obj) : string {
   let usersLocation = url.indexOf('users');
   if (usersLocation !== -1 && usersLocation < 3)
     return obj._userId;

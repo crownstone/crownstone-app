@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   
   TouchableHighlight,
@@ -9,7 +9,7 @@ import {
 import { styles, colors, screenWidth } from '../../styles'
 
 
-export class ButtonBar extends Component {
+export class ButtonBar extends Component<any, any> {
   render() {
     let barHeight = this.props.barHeight;
     if (this.props.largeIcon)

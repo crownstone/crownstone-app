@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 const sha1 = require('sha-1');
 import {
   Alert,
@@ -25,7 +25,9 @@ let passwordStateNeutral = 'Your password must not be empty.';
 let passwordStateConflict = 'Passwords do not match.';
 let passwordStateOK = '';
 
-export class Register extends Component {
+export class Register extends Component<any, any> {
+  inputStates : any;
+
   constructor() {
     super();
     this.state = {
@@ -221,7 +223,7 @@ export class Register extends Component {
       .then(() => {
         this.props.eventBus.emit("hideLoading");
         SessionMemory.loginEmail = this.state.email.toLowerCase();
-        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
+        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
       })
       .catch((reply) => {
         if (reply.data && reply.data.error && reply.data.error.message) {

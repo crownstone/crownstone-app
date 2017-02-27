@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Animated,
@@ -24,7 +24,15 @@ import { LOG }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
 
-export class SphereOverview extends Component {
+export class SphereOverview extends Component<any, any> {
+  leftValue : number;
+  animating : boolean;
+  sphereIds : any;
+  _activeSphereIndex : number;
+  _panResponder : any;
+  unsubscribeSetupEvents : any;
+  unsubscribeStoreEvents : any;
+
   constructor() {
     super();
     this.state = { presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0) };
@@ -306,7 +314,7 @@ export class SphereOverview extends Component {
       this.props.eventBus.emit("showLocalizationSetupStep2", activeSphere);
     }
     else {
-      Actions.roomOverview({
+      (Actions as any).roomOverview({
         sphereId: activeSphere,
         locationId: null,
         title: 'First things first :)',

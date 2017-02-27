@@ -1,7 +1,5 @@
-import React, { Component } from 'react'
 import { Dimensions, PixelRatio, Platform, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/colorConverters'
-
 
 export const screenWidth = Dimensions.get('window').width;
 
@@ -16,7 +14,7 @@ export const pxRatio = PixelRatio.get();
 export let barHeight = 42;
 export let barHeightLarge = 80;
 
-export let colors = {
+export let colors : any = {
   csBlue: {hex:'#003E52'},
   csOrange: {hex:'#ff8400'},
   menuBackground: {hex:'#00263e'},

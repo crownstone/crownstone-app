@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Dimensions,
@@ -18,7 +18,12 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight }
 import { LOG }               from '../../logging/Log'
 
 
-export class RoomLayer extends Component {
+export class RoomLayer extends Component<any, any> {
+  roomRadius : number;
+  availableSpace : number;
+  roomPositions : any;
+  maxY : number;
+
   constructor() {
     super();
     this.state = {presentUsers: {}};
@@ -69,7 +74,7 @@ export class RoomLayer extends Component {
 
   _renderRoom(locationId, count, index, activeSphere) {
     // get the position for the room
-    let pos = {};
+    let pos : any = {};
     if (count > 6) {
       if (index % 2 == 0) {
         pos = {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Animated,
   Alert,
@@ -26,7 +26,13 @@ import { RoomTraining_training } from './trainingComponents/RoomTraining_trainin
 import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
 
 
-export class RoomTraining extends Component {
+export class RoomTraining extends Component<any, any> {
+  collectedData : any;
+  amountOfInvalidPoints : number;
+  invalidMeasurements : any;
+  invalidPointThreshold : number;
+  noSignalTimeout : any;
+
   constructor(props) {
     super();
     this.state = {phase: 0, text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
@@ -160,7 +166,16 @@ export class RoomTraining extends Component {
         <RoomTraining_training
           ai={ai}
           next={() => {this.setState({phase:2});}}
-          abort={() => { this.stop(true); Actions.pop({popNum:2}); }}
+          cancel={() => {
+              FingerprintManager.pauseCollectingFingerprint();
+              Alert.alert(
+                "Do you want to cancel training?",
+                "Cancelling this process will revert it to the way it was before.",
+                [
+                  {text:'No', onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+                  {text:'Yes', onPress: () => { this.stop(true); Actions.pop({popNum:2}); }}
+                ]
+              )}}
           {...this.state}
         />
       )

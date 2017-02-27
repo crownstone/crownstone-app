@@ -1,4 +1,4 @@
-import React, { Component } from 'react' 
+import { Component } from 'react'
 import {
   
   CameraRoll,
@@ -17,7 +17,9 @@ const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { LOG } from '../../logging/Log'
 
-export class PictureView extends Component {
+export class PictureView extends Component<any, any> {
+  camera : any; // set by reference.
+
   constructor(props) {
     super();
     this.state = {
@@ -33,7 +35,7 @@ export class PictureView extends Component {
     this.camera.capture()
       .then((data) => {
         this.props.eventBus.emit('hideLoading');
-        Actions.picturePreview({image: data.path, selectCallback:this.props.selectCallback, type:'replace', camera: this.state.camera})
+        (Actions as any).picturePreview({image: data.path, selectCallback:this.props.selectCallback, type:'replace', camera: this.state.camera})
       })
       .catch(err => {
         this.props.eventBus.emit('hideLoading');

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {
   Alert,
   Dimensions,
@@ -23,7 +23,9 @@ import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from './../s
 
 
 
-export class RoomAdd extends Component {
+export class RoomAdd extends Component<any, any> {
+  refName : string;
+
   constructor(props) {
     super();
     this.state = {name:'', icon: 'c1-bookshelf', selectedStones: {}};
@@ -66,7 +68,7 @@ export class RoomAdd extends Component {
     }});
     items.push({label:'Icon', type: 'icon', value: this.state.icon,
       callback: () => {
-        Actions.roomIconSelection({
+        (Actions as any).roomIconSelection({
           icon: this.state.icon,
           sphereId: this.props.sphereId,
           selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}
@@ -172,7 +174,7 @@ export class RoomAdd extends Component {
             store.batchDispatch(actions);
 
             setTimeout(() => {
-              Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
+              (Actions as any).roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
             }, 0);
           }).catch((err) => {
           LOG.error("Something went wrong with creation of rooms", err);
