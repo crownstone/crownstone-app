@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 import { Dimensions, PixelRatio, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { Icon } from '../components/Icon';
 import { colors, screenWidth, screenHeight } from '../styles'

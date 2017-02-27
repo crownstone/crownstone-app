@@ -6,7 +6,7 @@ import { Actions } from 'react-native-router-flux';
 import { LOG } from '../logging/Log'
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
 const ImageResizer = require('react-native-image-resizer');
-import RNFS from 'react-native-fs'
+const RNFS = require('react-native-fs');
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 

@@ -1,6 +1,6 @@
 import { Alert, Platform } from 'react-native'
 import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
-import RNFS from 'react-native-fs'
+const RNFS = require('react-native-fs');
 let emptyFunction = function() {};
 import { LOG } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'

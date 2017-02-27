@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 const sha1 = require('sha-1');
 import {
   Alert,

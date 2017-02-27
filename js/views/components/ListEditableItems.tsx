@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 import { EditableItem } from './EditableItem'
 import { SeparatedItemList } from './SeparatedItemList'
 import { getUUID } from '../../util/Util'

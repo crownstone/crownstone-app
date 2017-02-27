@@ -1,7 +1,6 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "allowJs": true,
     "alwaysStrict": true,
     "sourceMap": false,
     "noImplicitAny": false,

@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 import {
   CameraRoll,
   Image,
@@ -13,7 +13,7 @@ import { TopBar } from '../components/Topbar';
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { safeDeleteFile } from '../../util/Util'
-import RNFS from 'react-native-fs'
+const RNFS = require('react-native-fs');
 
 export class PicturePreview extends Component<any, any> {
 
@@ -30,7 +30,7 @@ export class PicturePreview extends Component<any, any> {
           </Image>
           <View style={{flexDirection:'row', width: screenWidth, position:'absolute', bottom:0}}>
             <TouchableHighlight onPress={() => {
-              safeDeleteFile(this.props.image);
+              safeDeleteFile(this.props.image).catch(()=>{});
               (Actions as any).pictureView({selectCallback:this.props.selectCallback, type:'replace', camera: this.props.camera});
             }} style={previewStyles.buttons}>
               <Text style={[styles.menuText,{fontWeight:'bold'}]}>Retake</Text>

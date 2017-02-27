@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
   TouchableHighlight,
@@ -17,7 +17,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from './../styles'
-import RNFS from 'react-native-fs'
+const RNFS = require('react-native-fs');
 
 
 export class SettingsDeveloper extends Component<any, any> {

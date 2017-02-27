@@ -1,4 +1,4 @@
-import RNFS from 'react-native-fs'
+const RNFS = require('react-native-fs');
 import { LOG} from '../../logging/Log'
 
 export const spheres = {

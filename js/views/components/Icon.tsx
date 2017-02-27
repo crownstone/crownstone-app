@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 
 const Ionicon = require('react-native-vector-icons/Ionicons');
 import { CustomIcon,CustomIcon2 } from '../../fonts/customIcons'

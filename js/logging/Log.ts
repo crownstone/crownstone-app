@@ -13,11 +13,13 @@ import {
   RELEASE_MODE,
   LOG_TO_FILE,
 } from '../ExternalConfig'
-import RNFS from 'react-native-fs'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/eventBus'
 import { safeDeleteFile } from '../util/Util'
+
 const DeviceInfo = require('react-native-device-info');
+const RNFS = require('react-native-fs');
+
 
 export const LOG : any = {
   info: function() {
