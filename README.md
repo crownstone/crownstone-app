@@ -1,21 +1,23 @@
 iOS & Android App for the Crownstone.
 
-This is heavily work in progress. iOS will be done first, after which it will be updated to also support Android.
-
 The native libs are not in this project directly.
 
 ## Setup
 
-Assuming you've already installed nodejs, yarn and Carthage (for ios). You can get Yarn here: https://yarnpkg.com/en/docs/install
+### React Native
 
-Make sure typescript 2.2 or higher is installed.
+Assuming you've already installed npm, nodejs and yarn. You can get Yarn here: https://yarnpkg.com/en/docs/install
+
+Make sure typescript 2.2 or higher is installed using:
 
 ```
 npm install -g typescript
+```
+
+To download all dependencies, use Yarn:
+
+```
 yarn
-cd ios
-carthage bootstrap --platform iOS --no-use-binaries
-cd ..
 ```
 
 To run the compiler, use:
@@ -28,6 +30,15 @@ or
 
 ```
 npm start
+```
+
+
+### iOS
+
+In the ios folder, use Carthage to download the dependencies.
+
+```
+carthage bootstrap --platform iOS --no-use-binaries
 ```
 
 ### Android

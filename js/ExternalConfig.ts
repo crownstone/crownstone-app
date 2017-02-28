@@ -49,10 +49,17 @@ export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
 
 export const TESTING_IN_PROCESS = false;
 
+const LOCAL_TESTING = true;
+
+let notifiedCloudEndpoint = false;
 
 if (RELEASE_MODE) {
 
   if (TESTING_IN_PROCESS === false) {
+    LOG.info("------------------   --------------------------------   -----------------");
+    LOG.info("------------------   ----- USING RELEASE CLOUD ------   -----------------");
+    LOG.info("------------------   --------------------------------   -----------------");
+    notifiedCloudEndpoint = true;
     CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
   }
 
@@ -83,4 +90,18 @@ else {
   LOG.info("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
   LOG.info("!!!!!!!!!!!!!!!!!!   !!! RUNNING DEVELOPMENT MODE !!!   !!!!!!!!!!!!!!!!!");
   LOG.info("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
+
+  if (LOCAL_TESTING) {
+    LOG.info("------------------   --------------------------------   -----------------");
+    LOG.info("------------------   ------ USING LOCAL CLOUD -------   -----------------");
+    LOG.info("------------------   --------------------------------   -----------------");
+    notifiedCloudEndpoint = true;
+    CLOUD_ADDRESS = 'http://0.0.0.0:3000/api/';
+  }
+}
+
+if (notifiedCloudEndpoint === false) {
+  LOG.info("------------------   --------------------------------   -----------------");
+  LOG.info("------------------   ------- USING DEV CLOUD --------   -----------------");
+  LOG.info("------------------   --------------------------------   -----------------");
 }

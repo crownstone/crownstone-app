@@ -31,7 +31,7 @@ export class Sphere extends Component<any, any> {
     }
 
     return (
-      <View style={{width:screenWidth, height: screenHeight - topBarHeight - tabBarHeight, position:'absolute', left: this.props.leftPosition}}>
+      <View style={{width:screenWidth, height: screenHeight - topBarHeight - tabBarHeight, position:'absolute', top: topBarHeight, left: this.props.leftPosition}}>
         <StatusCommunication store={store} sphereId={currentSphere} seeStonesInSetupMode={this.props.seeStonesInSetupMode} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
         <RoomLayer store={store} sphereId={currentSphere} seeStonesInSetupMode={this.props.seeStonesInSetupMode} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
       </View>

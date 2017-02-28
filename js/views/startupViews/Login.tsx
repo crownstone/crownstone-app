@@ -22,7 +22,7 @@ import { TextEditInput }                      from '../components/editComponents
 import { Background }                         from '../components/Background'
 import { styles, colors , screenWidth, screenHeight } from '../styles'
 import { StoreManager }                       from '../../router/store/storeManager'
-import RNFS                                   from 'react-native-fs'
+const RNFS = require('react-native-fs');
 import loginStyles                            from './LoginStyles'
 
 
@@ -173,6 +173,7 @@ export class Login extends Component<any, any> {
         }
       };
 
+      console.log(RNFS)
       // read the document dir for files that have been created during the registration process
       RNFS.readDir(RNFS.DocumentDirectoryPath)
         .then(handleFiles)
@@ -247,7 +248,7 @@ export class Login extends Component<any, any> {
         return CLOUD.sync(store, false);
       })
       .catch((err) => {
-        Alert.alert("An error has occurred at Login", err.message, [{text:'OK'}])
+        throw err;
       })
       .then(() => {
         this.progress += parts;
@@ -264,34 +265,40 @@ export class Login extends Component<any, any> {
       })
       .catch((err) => {
         LOG.debug("Error creating first Sphere.", err);
+        Alert.alert("Whoops!", "An error has occurred while syncing with the Cloud. Please try again later.", [{text:'OK', onPress: () => {this.props.eventBus.emit('hideProgress');}}]);
+        throw err;
       })
     );
 
 
-    Promise.all(promises).then(() => {
-      this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
+    Promise.all(promises)
+      .then(() => {
+        this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
 
-      // finalize the login due to successful download of data. Enables persistence.
-      StoreManager.finalizeLogIn(userId);
-      prepareStoreForUser(store);
+        // finalize the login due to successful download of data. Enables persistence.
+        StoreManager.finalizeLogIn(userId);
+        prepareStoreForUser(store);
 
-      // set a small delay so the user sees "done"
-      setTimeout(() => {
-        let state = store.getState();
-        this.props.eventBus.emit('hideProgress');
-        this.props.eventBus.emit("appStarted"); // this starts scanning and tracking spheres
+        // set a small delay so the user sees "done"
+        setTimeout(() => {
+          let state = store.getState();
+          this.props.eventBus.emit('hideProgress');
+          this.props.eventBus.emit("appStarted"); // this starts scanning and tracking spheres
 
-        if (state.user.isNew !== false) {
-          (Actions as any).aiStart({type: 'reset'});
-        }
-        else if (Platform.OS === 'android') {
-          (Actions as any).sphereOverview({type: 'reset'});
-        }
-        else {
-          (Actions as any).tabBar({type: 'reset'});
-        }
-      }, 100);
-    });
+          if (state.user.isNew !== false) {
+            (Actions as any).aiStart({type: 'reset'});
+          }
+          else if (Platform.OS === 'android') {
+            (Actions as any).sphereOverview({type: 'reset'});
+          }
+          else {
+            (Actions as any).tabBar({type: 'reset'});
+          }
+        }, 100);
+      })
+      .catch((err) => {
+
+      });
   }
 }
 

@@ -53,9 +53,6 @@ export const sync = {
             LOG.error(err);
           })
       })
-      .catch((err) => {
-        LOG.error(err);
-      })
   }
 };
 
@@ -72,13 +69,15 @@ const syncDown = function (userId, options) {
       CLOUD.getKeys(options)
         .then((data) => {
           cloudKeys = data;
-        }).catch((err) => {})
+        })
+        // .catch((err) => {console.log("error in getting keys", err)})
     );
     syncPromises.push(
       CLOUD.forUser(userId).getDevices(options)
         .then((data) => {
           cloudDevices = data;
-        }).catch((err) => {})
+        })
+        // .catch((err) => {console.log("error in getting devices", err)})
     );
     syncPromises.push(
       CLOUD.getSpheres(options)
@@ -94,16 +93,18 @@ const syncDown = function (userId, options) {
               })
             );
           });
-
           return Promise.all(sphereDataPromises);
-        }).catch((err) => {})
+        })
+        // .catch((err) => {console.log("error in getting spheres", err)})
     );
 
     Promise.all(syncPromises)
       .then(() => {
+        console.log("RESOLVE")
         resolve({keys: cloudKeys, spheres: cloudSpheres, spheresData: cloudSpheresData, devices: cloudDevices})
       })
       .catch((err) => {
+        console.log("reject", err)
         reject(err);
       })
   });
