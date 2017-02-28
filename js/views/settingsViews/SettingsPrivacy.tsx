@@ -95,7 +95,7 @@ export class SettingsPrivacy extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
-        <ScrollView keyboardShouldPersistTaps={true}>
+        <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>
       </Background>

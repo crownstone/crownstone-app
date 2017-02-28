@@ -75,8 +75,10 @@ export const LOG : any = {
       }
       logToFile.apply(this, args);
 
-      if (RELEASE_MODE === false)
+      if (RELEASE_MODE === false) {
+        console.log("HERE")
         console.log.apply(this, args);
+      }
     }
   }
 };

@@ -69,7 +69,7 @@ export class SideBar extends Component<any, any> {
     menuItems.push({
       id: 'overview',
       label: 'Overview',
-      element: <Icon name={"ios-color-filter-outline"} size={25}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      element: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
         (Actions as any).sphereOverview({type:'reset'});
         setTimeout(() => {this.props.closeCallback();},0)
@@ -85,7 +85,7 @@ export class SideBar extends Component<any, any> {
     settingItems.push({
       id: 'profile',
       label: 'My Profile',
-      element: <Icon name={"ios-body"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      element: <Icon name={"ios-body"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
         (Actions as any).settingsProfile();
         setTimeout(() => {this.props.closeCallback();},0)
@@ -156,7 +156,7 @@ export class SideBar extends Component<any, any> {
     settingItems.push({
       id: 'help',
       label: 'Help',
-      element: <Icon name={"md-help-circle"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      element: <Icon name={"md-help-circle"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
         Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
         setTimeout(() => {this.props.closeCallback();},0)
@@ -165,7 +165,7 @@ export class SideBar extends Component<any, any> {
     settingItems.push({
       id: 'recover',
       label: 'Recover a Crownstone',
-      element: <Icon name={"c1-socket2"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      element: <Icon name={"c1-socket2"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
         (Actions as any).settingsPluginRecoverStep1();
         setTimeout(() => {this.props.closeCallback();},0)
@@ -174,7 +174,7 @@ export class SideBar extends Component<any, any> {
     settingItems.push({
       id: 'logout',
       label: 'Log Out',
-      element: <Icon name={"md-log-out"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      element: <Icon name={"md-log-out"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
         Alert.alert('Log out','Are you sure?',[
           {text: 'Cancel', style: 'cancel'},
@@ -188,7 +188,7 @@ export class SideBar extends Component<any, any> {
     settingItems.push({
       id: 'quit',
       label: 'Force Quit',
-      element: <Icon name={"md-remove-circle"} size={22}  color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      element: <Icon name={"md-remove-circle"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       action: () => {
         Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
           {text: 'Cancel', style: 'cancel'},

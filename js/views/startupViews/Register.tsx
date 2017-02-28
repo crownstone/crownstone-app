@@ -239,7 +239,7 @@ export class Register extends Component<any, any> {
   render() {
     return (
       <Background hideTabBar={true} image={this.props.backgrounds.menu}>
-        <ScrollView keyboardShouldPersistTaps={true} >
+        <ScrollView keyboardShouldPersistTaps="always" >
           <ListEditableItems items={this.getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>

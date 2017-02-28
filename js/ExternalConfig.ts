@@ -11,8 +11,8 @@ export let LOG_SCHEDULER  = false;  // enabling LOG.scheduler  commands to be sh
 export let LOG_BLE        = false;  // enabling LOG.ble        commands to be shown.
 export let LOG_EVENTS     = true;   // enabling LOG.store      commands to be shown.
 export let LOG_STORE      = true;   // enabling LOG.store      commands to be shown.
-export let LOG_MESH       = false;  // enabling LOG.mesh       commands to be shown.
-export let LOG_CLOUD      = false;  // enabling LOG.cloud      commands to be shown.
+export let LOG_MESH       = true;  // enabling LOG.mesh       commands to be shown.
+export let LOG_CLOUD      = true;  // enabling LOG.cloud      commands to be shown.
 export let LOG_DEBUG      = true;   // enabling LOG.debug      commands to be shown.
 export let LOGGING        = true;   // enabling LOG.info       commands to be shown.
 
@@ -45,7 +45,7 @@ export const KEEPALIVE_REPEAT_INTERVAL = 5000; // ms
 export const RESET_TIMER_FOR_NEAR_AWAY_EVENTS = 20000; // ms
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = true && DeviceInfo.getModel() !== "Simulator";
+export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
 
 export const TESTING_IN_PROCESS = false;
 

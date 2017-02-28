@@ -35,6 +35,7 @@ class SetupStateHandlerClass {
     this._stonesInSetupStateTypes = {};
 
     this._initialized = false;
+    this._currentSetupState = {busy: false, handle: undefined, name: undefined, type: undefined, icon: undefined};
   }
 
   _resetSetupState() {

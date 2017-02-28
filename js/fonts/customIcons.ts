@@ -1,5 +1,4 @@
-import { createIconSet } from 'react-native-vector-icons'
-
+import * as VectorIcons from 'react-native-vector-icons'
 
 const glyphMap = {
   'c1-syncDrives':0xf001,
@@ -15,7 +14,7 @@ const glyphMap = {
   'c1-removeDude':0xf00b,
   'c1-emailDude':0xf00c,
   'c1-dude':0xf00d,
-  'c1-dudette':0xf00e,
+  'c1-dudette': 0xf00e,
   'c1-people':0xf00f,
   'c1-pool':0xf010,
   'c1-chatBubbles':0xf011,
@@ -178,7 +177,8 @@ const glyphMap = {
   'c1-brain':0xf0ae,
 };
 
-export const CustomIcon = createIconSet(glyphMap, 'Crownstone', 'Crownstone.ttf');
+
+export const CustomIcon = VectorIcons.createIconSet(glyphMap, 'Crownstone', 'Crownstone.ttf');
 
 
 const glyphMap2 = {
@@ -187,4 +187,5 @@ const glyphMap2 = {
   'c2-pluginFilled':0xf002,
   'c2-pluginFront':0xf003,
 };
-export const CustomIcon2 = createIconSet(glyphMap2,  'CustomIcons', 'CustomIcons.ttf');
+
+export const CustomIcon2 = VectorIcons.createIconSet(glyphMap2,  'CustomIcons', 'CustomIcons.ttf');
