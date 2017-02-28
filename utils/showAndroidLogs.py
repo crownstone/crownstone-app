@@ -75,7 +75,8 @@ if __name__ == '__main__':
 				timestamp = datetime.datetime.strptime(match.group(0), timestampFormat)
 				# print match.group(0), timestamp
 			else:
-				timestamp = -1
+				print "Wrong timestamp format: " + line
+				continue
 
 			match = patternScanIntervalStart.match(line)
 			if (match):
@@ -112,7 +113,7 @@ if __name__ == '__main__':
 
 		# Process
 		scanIntervalStartList = np.array(scanIntervalStartList)
-		scanIntervalStartDt = np.diff(scanIntervalStartList)
+		# scanIntervalStartDt = np.diff(scanIntervalStartList)
 
 		scanIntervalStartDt = []
 		for i in range(0, len(scanIntervalStartList)-1):
