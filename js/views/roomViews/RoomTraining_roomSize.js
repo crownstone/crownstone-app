@@ -18,8 +18,8 @@ import { TopBar } from '../components/Topbar'
 import { Background } from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { Icon } from '../components/Icon';
-import { getAiData } from '../../util/dataUtil';
-import { LOG, LOGDebug } from '../../logging/Log'
+import { getAiData } from '../../util/DataUtil';
+import { LOG } from '../../logging/Log'
 
 
 let buttonTextStyle = {

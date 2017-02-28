@@ -1,5 +1,5 @@
 import RNFS from 'react-native-fs'
-import { LOG, LOGError, LOGCloud } from '../../logging/Log'
+import { LOG} from '../../logging/Log'
 
 export const spheres = {
 
@@ -9,18 +9,20 @@ export const spheres = {
    * @param store
    * @param sphereName
    * @param eventBus
+   * @param latitude
+   * @param longitude
    * @returns {Promise.<T>}
    */
-  createNewSphere(store, sphereName, eventBus) {
+  createNewSphere(store, sphereName, eventBus, latitude, longitude) {
     let state = store.getState();
     let sphereId;
     let creationActions = [];
-    return this.forUser(state.user.userId).createSphere(sphereName)
+    return this.forUser(state.user.userId).createSphere(sphereName, latitude, longitude)
       .then((response) => {
         sphereId = response.id;
 
         // add the sphere to the database once it had been added in the cloud.
-        creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid, meshAccessAddress: response.meshAccessAddress}});
+        creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid, meshAccessAddress: response.meshAccessAddress, exitDelay: response.exitDelay || 120, latitude: response.gpsLocation && response.gpsLocation.lat, longitude: response.gpsLocation && response.gpsLocation.lng}});
         creationActions.push({type:'USER_UPDATE', data: { new: false }});
 
         // add yourself to the sphere members as admin
@@ -119,11 +121,17 @@ export const spheres = {
 
 
   /**
-   *
    * @param sphereName
+   * @param latitude
+   * @param longitude
    */
-  createSphere: function(sphereName) {
-    return this._setupRequest('POST', 'users/{id}/spheres', {data:{name:sphereName}}, 'body');
+  createSphere: function(sphereName, latitude, longitude) {
+    let payload = {data:{name:sphereName}};
+    // only write gps coordinates if we have them.
+    if (latitude && longitude) {
+      payload.data.gpsLocation = {lat:latitude, lng: longitude}
+    }
+    return this._setupRequest('POST', 'users/{id}/spheres', payload, 'body');
   },
 
   getUserPicture(sphereId, email, userId, options = {}) {
@@ -155,7 +163,7 @@ export const spheres = {
       this.getStonesInSphere(options)
         .then((stones) => {
           stoneData = stones;
-        }).catch()
+        }).catch((err) => {})
     );
 
     // for every sphere we get the appliances
@@ -163,7 +171,7 @@ export const spheres = {
       this.getAppliancesInSphere(options)
         .then((appliances) => {
           applianceData = appliances;
-        }).catch()
+        }).catch((err) => {})
     );
 
     // for every sphere, we get the locations
@@ -171,7 +179,7 @@ export const spheres = {
       this.getLocations(options)
         .then((locations) => {
           locationData = locations;
-        }).catch()
+        }).catch((err) => {})
     );
 
     promises.push(
@@ -203,7 +211,7 @@ export const spheres = {
         guests:         guestData,
         pendingInvites: pendingInvites,
       }
-    }).catch()
+    }).catch((err) => {})
   },
 
   getUserFromType: function(userGetter, type, userData, sphereId, selfId, options) {
@@ -219,7 +227,7 @@ export const spheres = {
                 .then((filename) => {
                   userData[user.id].picture = filename;
                 })
-                .catch((err) => {LOGError("failed getting user picture",sphereId, user.email, user.id, options, err)})
+                .catch((err) => {LOG.error("failed getting user picture",sphereId, user.email, user.id, options, err)})
             );
           }
           return Promise.all(profilePicturePromises);
@@ -251,7 +259,7 @@ export const spheres = {
       this.getStonesInSphere()
         .then((stones) => {
           stoneData = stones;
-        }).catch()
+        }).catch((err) => {})
     );
 
     // for every sphere we get the appliances
@@ -259,7 +267,7 @@ export const spheres = {
       this.getAppliancesInSphere()
         .then((appliances) => {
           applianceData = appliances;
-        }).catch()
+        }).catch((err) => {})
     );
 
     // for every sphere, we get the locations
@@ -267,7 +275,7 @@ export const spheres = {
       this.getLocations()
         .then((locations) => {
           locationData = locations;
-        }).catch()
+        }).catch((err) => {})
     );
 
     return Promise.all(promises)

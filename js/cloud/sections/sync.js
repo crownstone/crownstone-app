@@ -1,6 +1,6 @@
 import { CLOUD } from '../cloudAPI'
-import { LOG, LOGDebug, LOGError, LOGCloud } from '../../logging/Log'
-import { getDeviceSpecs } from '../../util/dataUtil'
+import { LOG } from '../../logging/Log'
+import { getDeviceSpecs } from '../../util/DataUtil'
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -19,7 +19,7 @@ export const sync = {
       return;
     }
 
-    LOGCloud("Start Syncing");
+    LOG.cloud("Start Syncing");
 
     // set the authentication tokens
     let userId = state.user.userId;
@@ -34,13 +34,14 @@ export const sync = {
         syncKeys(actions, data.keys);
         syncDevices(store, actions, data.devices)
           .then(() => {
-            LOG("SYNC Dispatching ", actions.length, " actions!");
+            LOG.info("SYNC Dispatching ", actions.length, " actions!");
             actions.forEach((action) => {
               action.triggeredBySync = true;
             });
 
-            if (actions.length > 0)
+            if (actions.length > 0) {
               store.batchDispatch(actions);
+            }
 
             this.events.emit("CloudSyncComplete");
 
@@ -49,14 +50,12 @@ export const sync = {
             }
           })
           .catch((err) => {
-            LOGError(err);
+            LOG.error(err);
           })
       })
       .catch((err) => {
-        LOGError(err);
+        LOG.error(err);
       })
-
-
   }
 };
 
@@ -73,13 +72,13 @@ const syncDown = function (userId, options) {
       CLOUD.getKeys(options)
         .then((data) => {
           cloudKeys = data;
-        }).catch()
+        }).catch((err) => {})
     );
     syncPromises.push(
       CLOUD.forUser(userId).getDevices(options)
         .then((data) => {
           cloudDevices = data;
-        }).catch()
+        }).catch((err) => {})
     );
     syncPromises.push(
       CLOUD.getSpheres(options)
@@ -97,7 +96,7 @@ const syncDown = function (userId, options) {
           });
 
           return Promise.all(sphereDataPromises);
-        }).catch()
+        }).catch((err) => {})
     );
 
     Promise.all(syncPromises)
@@ -179,7 +178,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
   let cloudApplianceIds = {};
   let addedSphere = false;
 
-  LOGCloud("SyncSpheres", spheresData);
+  LOG.cloud("SyncSpheres", spheresData);
 
   // get the state here so we did not have to wait with an old state on the down sync.
   const state = store.getState();
@@ -199,10 +198,35 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
      */
     if (sphereInState === undefined) {
       addedSphere = true;
-      actions.push({type:'ADD_SPHERE', sphereId: sphere.id, data:{name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex}});
+      actions.push({
+        type:'ADD_SPHERE',
+        sphereId: sphere.id,
+        data:{
+          name: sphere.name,
+          iBeaconUUID: sphere.uuid,
+          meshAccessAddress: sphere.meshAccessAddress,
+          aiName: sphere.aiName,
+          aiSex: sphere.aiSex,
+          exitDelay: sphere.exitDelay || 120,
+          latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
+          longitude: sphere.gpsLocation && sphere.gpsLocation.lng
+        }
+      });
     }
     else if (getTimeDifference(sphereInState.config, sphere) < 0) {
-      actions.push({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphere.id, data: {name: sphere.name, iBeaconUUID: sphere.uuid, meshAccessAddress: sphere.meshAccessAddress, aiName: sphere.aiName, aiSex: sphere.aiSex}});
+      actions.push({
+        type: 'UPDATE_SPHERE_CONFIG',
+        sphereId: sphere.id,
+        data: {
+          name: sphere.name,
+          iBeaconUUID: sphere.uuid,
+          meshAccessAddress: sphere.meshAccessAddress,
+          aiName: sphere.aiName,
+          aiSex: sphere.aiSex,
+          exitDelay: sphere.exitDelay || 120,
+          latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
+          longitude: sphere.gpsLocation && sphere.gpsLocation.lng
+        }});
       adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
     else {
@@ -273,7 +297,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             sphereId: sphere.id,
             updatedAt: locationInState.config.updatedAt,
           };
-          LOG("@SYNC: Updating location", location_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(location_from_cloud.updatedAt).valueOf(), "local:", locationInState.config.updatedAt, 'diff:', locationInState.config.updatedAt - (new Date(location_from_cloud.updatedAt).valueOf()));
+          LOG.info("@SYNC: Updating location", location_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(location_from_cloud.updatedAt).valueOf(), "local:", locationInState.config.updatedAt, 'diff:', locationInState.config.updatedAt - (new Date(location_from_cloud.updatedAt).valueOf()));
           CLOUD.updateLocation(location_from_cloud.id, data).catch(() => {});
         }
       }
@@ -326,21 +350,24 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
       if (sphereInState !== undefined && sphereInState.stones[stone_from_cloud.id] !== undefined) {
         if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) < 0) {
           actions.push({
-            type:      'UPDATE_STONE_CONFIG',
-            sphereId:   sphere.id,
-            stoneId:    stone_from_cloud.id,
+            type:    'UPDATE_STONE_CONFIG',
+            sphereId: sphere.id,
+            stoneId:  stone_from_cloud.id,
             data: {
-              name: stone_from_cloud.name,
-              icon: stone_from_cloud.icon,
-              type: stone_from_cloud.type,
-              touchToToggle: stone_from_cloud.touchToToggle,
-              applianceId:   stone_from_cloud.applianceId,
-              locationId:    locationLinkId,
-              macAddress:    stone_from_cloud.address,
-              iBeaconMajor:  stone_from_cloud.major,
-              iBeaconMinor:  stone_from_cloud.minor,
-              crownstoneId:  stone_from_cloud.uid,
-              updatedAt:     stone_from_cloud.updatedAt,
+              applianceId:     stone_from_cloud.applianceId,
+              crownstoneId:    stone_from_cloud.uid,
+              icon:            stone_from_cloud.icon,
+              firmwareVersion: stone_from_cloud.firmwareVersion,
+              iBeaconMajor:    stone_from_cloud.major,
+              iBeaconMinor:    stone_from_cloud.minor,
+              locationId:      locationLinkId,
+              meshNetworkId:   stone_from_cloud.meshNetworkId,
+              macAddress:      stone_from_cloud.address,
+              name:            stone_from_cloud.name,
+              onlyOnWhenDark:  stone_from_cloud.onlyOnWhenDark,
+              touchToToggle:   stone_from_cloud.touchToToggle,
+              type:            stone_from_cloud.type,
+              updatedAt:       stone_from_cloud.updatedAt,
             }
           });
         }
@@ -348,25 +375,28 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           // update cloud since our data is newer!
           let stoneInState = sphereInState.stones[stone_from_cloud.id];
           let data = {
-            name:          stoneInState.config.name,
-            address:       stoneInState.config.macAddress,
-            icon:          stoneInState.config.icon,
-            id:            stone_from_cloud.id,
-            touchToToggle: stoneInState.config.touchToToggle,
-            type:          stoneInState.config.type,
-            applianceId:   stoneInState.config.applianceId,
-            sphereId:      sphere.id,
-            major:         stoneInState.config.iBeaconMajor,
-            minor:         stoneInState.config.iBeaconMinor,
-            uid:           stoneInState.config.crownstoneId,
-            updatedAt:     stoneInState.config.updatedAt,
+            applianceId:     stoneInState.config.applianceId,
+            address:         stoneInState.config.macAddress,
+            icon:            stoneInState.config.icon,
+            id:              stone_from_cloud.id,
+            firmwareVersion: stoneInState.firmwareVersion,
+            meshNetworkId:   stoneInState.meshNetworkId,
+            major:           stoneInState.config.iBeaconMajor,
+            minor:           stoneInState.config.iBeaconMinor,
+            name:            stoneInState.config.name,
+            onlyOnWhenDark:  stoneInState.config.onlyOnWhenDark,
+            sphereId:        sphere.id,
+            touchToToggle:   stoneInState.config.touchToToggle,
+            type:            stoneInState.config.type,
+            uid:             stoneInState.config.crownstoneId,
+            updatedAt:       stoneInState.config.updatedAt,
           };
 
           // only admins get to update the behaviour
           if (adminInThisSphere === true) {
             data.json = JSON.stringify(stoneInState.behaviour);
           }
-          LOG("@SYNC: Updating Stone", stone_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(stone_from_cloud.updatedAt).valueOf(), "local:", stoneInState.config.updatedAt, 'diff:', stoneInState.config.updatedAt - (new Date(stone_from_cloud.updatedAt).valueOf()));
+          LOG.info("@SYNC: Updating Stone", stone_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(stone_from_cloud.updatedAt).valueOf(), "local:", stoneInState.config.updatedAt, 'diff:', stoneInState.config.updatedAt - (new Date(stone_from_cloud.updatedAt).valueOf()));
           CLOUD.forSphere(sphere.id).updateStone(stone_from_cloud.id, data).catch(() => {});
 
           // check if we have to sync the locations:
@@ -392,17 +422,20 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           sphereId: sphere.id,
           stoneId: stone_from_cloud.id,
           data: {
-            name: stone_from_cloud.name,
-            icon: stone_from_cloud.icon,
-            type: stone_from_cloud.type,
-            touchToToggle: stone_from_cloud.touchToToggle,
-            applianceId: stone_from_cloud.applianceId,
-            locationId: locationLinkId,
-            macAddress: stone_from_cloud.address,
-            iBeaconMajor: stone_from_cloud.major,
-            iBeaconMinor: stone_from_cloud.minor,
-            crownstoneId: stone_from_cloud.uid,
-            updatedAt: stone_from_cloud.updatedAt,
+            applianceId:     stone_from_cloud.applianceId,
+            crownstoneId:    stone_from_cloud.uid,
+            icon:            stone_from_cloud.icon,
+            firmwareVersion: stone_from_cloud.firmwareVersion,
+            iBeaconMajor:    stone_from_cloud.major,
+            iBeaconMinor:    stone_from_cloud.minor,
+            locationId:      locationLinkId,
+            meshNetworkId:   stone_from_cloud.meshNetworkId,
+            macAddress:      stone_from_cloud.address,
+            name:            stone_from_cloud.name,
+            onlyOnWhenDark:  stone_from_cloud.onlyOnWhenDark,
+            touchToToggle:   stone_from_cloud.touchToToggle,
+            type:            stone_from_cloud.type,
+            updatedAt:       stone_from_cloud.updatedAt,
           }
         });
 
@@ -444,12 +477,13 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
         }
         else if (getTimeDifference(sphereInState.appliances[appliance_from_cloud.id].config, appliance_from_cloud) > 0) {
           // update cloud since our data is newer!
-          LOG("@SYNC: Updating appliance", appliance_from_cloud.id, "in Cloud since our data is newer!");
+          LOG.info("@SYNC: Updating appliance", appliance_from_cloud.id, "in Cloud since our data is newer!");
           let applianceInState = sphereInState.appliances[appliance_from_cloud.id];
           let data = {
             name: applianceInState.config.name,
             icon: applianceInState.config.icon,
             id: appliance_from_cloud.id,
+            onlyOnWhenDark: appliance_from_cloud.onlyOnWhenDark,
             sphereId: sphere.id,
             updatedAt: applianceInState.config.updatedAt,
           };
@@ -459,7 +493,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             data.json = JSON.stringify(applianceInState.behaviour);
           }
 
-          LOG("@SYNC: Updating Appliance", appliance_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(appliance_from_cloud.updatedAt).valueOf(), "local:", applianceInState.config.updatedAt, 'diff:', applianceInState.config.updatedAt - (new Date(appliance_from_cloud.updatedAt).valueOf()));
+          LOG.info("@SYNC: Updating Appliance", appliance_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(appliance_from_cloud.updatedAt).valueOf(), "local:", applianceInState.config.updatedAt, 'diff:', applianceInState.config.updatedAt - (new Date(appliance_from_cloud.updatedAt).valueOf()));
           CLOUD.forSphere(sphere.id).updateAppliance(appliance_from_cloud.id, data).catch(() => {});
         }
       }
@@ -467,6 +501,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
         actions.push({
           type: 'ADD_APPLIANCE',
           sphereId: sphere.id,
+          onlyOnWhenDark: appliance_from_cloud.onlyOnWhenDark,
           applianceId: appliance_from_cloud.id,
           data: {name: appliance_from_cloud.name, icon: appliance_from_cloud.icon, updatedAt: appliance_from_cloud.updatedAt}
         });
@@ -513,30 +548,34 @@ const syncDevices = function(store, actions, devices) {
 
     let deviceId = undefined;
     let deviceAddress = address;
+    let matchingDevice = undefined;
     for (let i = 0; i < devices.length; i++) {
       let device = devices[i];
       if (device.address === address) {
         deviceId = device.id;
+        matchingDevice = device;
         break;
       }
       else if (device.name === name && device.description === description) {
         deviceId = device.id;
         deviceAddress = device.address;
+        matchingDevice = device;
       }
       else if (device.description === description) {
         deviceId = device.id;
         deviceAddress = device.address;
+        matchingDevice = device;
       }
     }
-
+    
     if (deviceId === undefined || state.devices[deviceId] === undefined) {
-      LOG("Sync: Create new device", name, address, description);
+      LOG.info("Sync: Create new device", name, address, description);
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
           actions.push({
             type: 'ADD_DEVICE',
-            deviceId: device.id,
-            data: {name: name, address: deviceId, description: description}
+            deviceId: deviceId,
+            data: {name: name, address: address, description: description}
           });
           /**
            * We now push the location of ourselves to the cloud.
@@ -552,12 +591,38 @@ const syncDevices = function(store, actions, devices) {
         store.dispatch({
           type: 'SET_APP_IDENTIFIER',
           data: {appIdentifier: deviceAddress}
+        });
+      }
+      // if the tap to toggle calibration is available and different from what we have stored, update it.
+      if (matchingDevice.tapToToggleCalibration && state.devices[deviceId].tapToToggleCalibration === null) {
+        store.dispatch({
+          type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
+          deviceId: deviceId,
+          data: {tapToToggleCalibration: matchingDevice.tapToToggleCalibration}
         })
       }
-      LOG("Sync: User device found in cloud, updating location.");
+
+      LOG.info("Sync: User device found in cloud, updating location.");
       updateUserLocationInCloud(state, deviceId)
         .then(resolve)
         .catch(reject);
+    }
+
+    // cleanup
+    let deleteActions = [];
+    let cloudDeviceIdList = {};
+    for (let i = 0; i < devices.length; i++) {
+      cloudDeviceIdList[devices[i].id] = true;
+    }
+    let localDeviceIdList = Object.keys(store.getState().devices);
+    for (let i = 0; i < localDeviceIdList.length; i++) {
+      if (cloudDeviceIdList[localDeviceIdList[i]] === undefined) {
+        deleteActions.push({type: 'REMOVE_DEVICE', deviceId: localDeviceIdList[i]});
+      }
+    }
+    if (deleteActions.length > 0) {
+      LOG.cloud("REMOVING ", deleteActions.length, " devices since they are not in the cloud anymore");
+      store.batchDispatch(deleteActions);
     }
   });
 };
@@ -565,13 +630,20 @@ const syncDevices = function(store, actions, devices) {
 
 const updateUserLocationInCloud = function(state, deviceId) {
   return new Promise((resolve, reject) => {
-    if (state.user.userId) {
-      let userLocation = findUserLocation(state, state.user.userId);
-      CLOUD.forDevice(deviceId).updateDeviceLocation(userLocation.locationId)
-        .then(resolve)
-        .catch(reject)
+    if (state.user.uploadLocation === true) {
+      if (state.user.userId) {
+        let userLocation = findUserLocation(state, state.user.userId);
+        CLOUD.forDevice(deviceId).updateDeviceLocation(userLocation.locationId)
+          .then(resolve)
+          .catch(reject)
+      }
+      else {
+        resolve();
+      }
     }
-    resolve();
+    else {
+      resolve();
+    }
   });
 };
 

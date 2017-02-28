@@ -5,7 +5,7 @@ let emptyFunction = function() {};
 import { LOG, LOGDebug, LOGError, LOGCloud } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { defaultHeaders } from './sections/base'
-import { safeMoveFile, safeDeleteFile } from '../util/util'
+import { safeMoveFile, safeDeleteFile } from '../util/Util'
 
 /**
  *
@@ -49,10 +49,10 @@ export function request(
         if (response.headers.map['content-length'] &&
           response.headers.map['content-length'].length > 0 &&
           response.headers.map['content-length'][0] == 0) {
-          // LOGDebug("Error: JSON-CONTENT IS EMPTY", response);
+          // LOG.debug("Error: JSON-CONTENT IS EMPTY", response);
           return response.json(); // this is a promise
         }
-        // LOGDebug("JSON CONTENT", response);
+        // LOG.debug("JSON CONTENT", response);
         return response.json(); // this is a promise
       }
     }
@@ -60,7 +60,7 @@ export function request(
   };
 
   if (DEBUG)
-    LOGCloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, " body:", body, "config:",requestConfig);
+    LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, " body:", body, "config:",requestConfig);
 
   // the actual request
   return new Promise((resolve, reject) => {
@@ -90,7 +90,7 @@ export function request(
         })
         .catch((parseError) => {
           // TODO: cleanly fix this
-          // LOGError("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
+          // LOG.error("ERROR DURING PARSING:", parseError, "from request to:", CLOUD_ADDRESS + endPoint, "using config:", requestConfig);
           return '';
         })
         .then((parsedResponse) => {
@@ -134,7 +134,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
     let tempPath = path + '/' + (10000 + Math.random() * 1e5).toString(36).replace(".","") + '.tmp';
 
     if (DEBUG)
-      LOGCloud('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
+      LOG.cloud('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
 
     // download the file.
     RNFS.downloadFile({
@@ -163,7 +163,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
       }
     })
     .catch((err) => {
-      safeDeleteFile(tempPath).catch();
+      safeDeleteFile(tempPath).catch((err) => {});
       reject(err);
     })
   });

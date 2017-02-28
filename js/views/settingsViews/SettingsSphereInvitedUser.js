@@ -15,10 +15,10 @@ import { IconButton } from './../components/IconButton'
 import { Background } from './../components/Background'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { logOut, processImage, safeDeleteFile } from '../../util/util'
+import { logOut, processImage, safeDeleteFile } from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { LOGError } from '../../logging/Log'
-import { styles, colors, width } from './../styles'
+import { LOG } from '../../logging/Log'
+import { styles, colors, screenWidth } from './../styles'
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereInvitedUser extends Component {
@@ -67,7 +67,7 @@ export class SettingsSphereInvitedUser extends Component {
                 Alert.alert("It's sent!", "I have sent a new email to invite this user!", [{text:"OK"}])
               })
               .catch((err) => {
-                LOGError("Could not resend email", err);
+                LOG.error("Could not resend email", err);
               })
         }}]);
     }});
@@ -96,7 +96,7 @@ export class SettingsSphereInvitedUser extends Component {
             })
             .catch((err) => {
               this.deleting = false;
-              LOGError("Could not revoke invitation", err);
+              LOG.error("Could not revoke invitation", err);
             })
           }}]);
     }});
@@ -114,7 +114,7 @@ export class SettingsSphereInvitedUser extends Component {
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView>
-          <View style={{alignItems:'center', justifyContent:'center', width:width, paddingTop:40}}>
+          <View style={{alignItems:'center', justifyContent:'center', width:screenWidth, paddingTop:40}}>
             <ProfilePicture
               value={user.picture}
               size={120}

@@ -7,19 +7,20 @@ import {
   View
 } from 'react-native';
 
-import { ButtonBar }      from './editComponents/ButtonBar'
-import { CheckBar }       from './editComponents/CheckBar'
-import { Dropdown }       from './editComponents/Dropdown'
-import { EditSpacer }     from './editComponents/EditSpacer'
-import { Explanation }    from './editComponents/Explanation'
-import { IconEdit }       from './editComponents/IconEdit'
-import { InfoBar }        from './editComponents/InfoBar'
-import { NavigationBar }  from './editComponents/NavigationBar'
-import { PictureEdit }    from './editComponents/PictureEdit'
-import { SliderBar }      from './editComponents/SliderBar'
-import { SwitchBar }      from './editComponents/SwitchBar'
-import { TextEditBar }    from './editComponents/TextEditBar'
-import { TimePicker }     from './editComponents/TimePicker'
+import { ButtonBar }         from './editComponents/ButtonBar'
+import { CheckBar }          from './editComponents/CheckBar'
+import { Dropdown }          from './editComponents/Dropdown'
+import { EditSpacer }        from './editComponents/EditSpacer'
+import { Explanation }       from './editComponents/Explanation'
+import { IconEdit }          from './editComponents/IconEdit'
+import { InfoBar }           from './editComponents/InfoBar'
+import { NavigationBar }     from './editComponents/NavigationBar'
+import { PictureEdit }       from './editComponents/PictureEdit'
+import { SliderBar }         from './editComponents/SliderBar'
+import { OptionalSwitchBar } from './editComponents/OptionalSwitchBar'
+import { SwitchBar }         from './editComponents/SwitchBar'
+import { TextEditBar }       from './editComponents/TextEditBar'
+import { TimePicker }        from './editComponents/TimePicker'
 
 import { styles, screenWidth, barHeight, barHeightLarge } from '../styles'
 
@@ -68,6 +69,9 @@ import { styles, screenWidth, barHeight, barHeightLarge } from '../styles'
  * spacer - Empty space to separate editable items.
      --> {}
 
+ * optionalSwitch - native boolean switch with a cancel button
+ --> {label: field label, value: boolean, callback: (newValue) => {}}
+
  * switch - native boolean switch
      --> {label: field label, value: boolean, callback: (newValue) => {}}
 
@@ -104,6 +108,8 @@ export class EditableItem extends Component {
         return <NavigationBar barHeight={barHeight} {...this.props} />;
       case 'picture':
         return <PictureEdit barHeightLarge={barHeightLarge} {...this.props} />;
+      case 'optionalSwitch':
+        return <OptionalSwitchBar barHeight={barHeight} {...this.props} />;
       case 'switch':
         return <SwitchBar barHeight={barHeight} {...this.props} />;
       case 'slider':

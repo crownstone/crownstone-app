@@ -12,7 +12,7 @@ import {
 
 import { CLOUD } from '../../cloud/cloudAPI'
 
-import { getImageFileFromUser, processImage } from '../../util/util'
+import { getImageFileFromUser, processImage } from '../../util/Util'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;

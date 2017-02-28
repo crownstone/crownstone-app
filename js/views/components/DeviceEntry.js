@@ -14,7 +14,7 @@ import {
 
 import { Icon } from './Icon';
 import { IconButton } from '../components/IconButton'
-import { getUUID } from '../../util/util'
+import { getUUID } from '../../util/Util'
 import { styles, colors, screenWidth } from '../styles'
 
 

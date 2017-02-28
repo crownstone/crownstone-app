@@ -1,10 +1,11 @@
 import { Alert } from 'react-native';
 
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BleActions, NativeBus, Bluenet } from './Proxy';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { BluenetPromises, NativeBus } from './Proxy';
+import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus'
+import { Util } from '../util/Util'
 import { CLOUD } from '../cloud/cloudAPI'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 
@@ -41,15 +42,15 @@ export class SetupHelper {
     let setupPromise = () => {
       return new Promise((resolve, reject) => {
         eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
-        BleActions.connect(this.handle)
+        BluenetPromises.connect(this.handle)
           .then(() => {
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
-            return BleActions.getMACAddress();
+            return BluenetPromises.getMACAddress();
           })
           .then((macAddress) => {
             this.macAddress = macAddress;
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
-            return BleActions.phoneDisconnect();
+            return BluenetPromises.phoneDisconnect();
           })
           .then(() => {
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
@@ -98,7 +99,7 @@ export class SetupHelper {
 
               actions.push(addStoneAction);
               actions.push({
-                type: 'UPDATE_STONE_STATE',
+                type: 'UPDATE_STONE_SWITCH_STATE',
                 sphereId: sphereId,
                 stoneId: this.stoneIdInCloud,
                 data: { state: isGuidestone ? 0 : 1, currentUsage: 0 },
@@ -122,8 +123,8 @@ export class SetupHelper {
               resolve();
 
               // start the tap-to-toggle tutorial
-              if (this.type === stoneTypes.plug) {
-                if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+              if (this.type === stoneTypes.plug) { // find the ID
+                if (Util.data.getTapToToggleCalibration(state)) {
                   eventBus.emit("CalibrateTapToToggle");
                 }
               }
@@ -140,7 +141,7 @@ export class SetupHelper {
             eventBus.emit("useTriggers");
             eventBus.emit("setupCancelled", this.handle);
             if (this.stoneIdInCloud !== undefined) {
-              CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOGError("COULD NOT CLEAN UP AFTER SETUP", err)})
+              CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOG.error("COULD NOT CLEAN UP AFTER SETUP", err)})
             }
 
             if (err == "INVALID_SESSION_DATA") {
@@ -154,9 +155,9 @@ export class SetupHelper {
               Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
             }
 
-            LOGError("error during setup phase:", err);
+            LOG.error("error during setup phase:", err);
 
-            BleActions.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
+            BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
           })
       });
     };
@@ -192,12 +193,12 @@ export class SetupHelper {
                 }
               })
               .catch((err) => {
-                LOGError("CONNECTION ERROR on find:",err);
+                LOG.error("CONNECTION ERROR on find:",err);
                 processFailure(err);
               })
           }
           else {
-            LOGError("CONNECTION ERROR on register:",err);
+            LOG.error("CONNECTION ERROR on register:",err);
             processFailure(err);
           }
         });
@@ -223,9 +224,9 @@ export class SetupHelper {
     });
 
     return new Promise((resolve, reject) => {
-      BleActions.connect(this.handle)
+      BluenetPromises.connect(this.handle)
         .then(() => {
-          return BleActions.setupCrownstone(data);
+          return BluenetPromises.setupCrownstone(data);
         })
         .then(() => {
           unsubscribe();

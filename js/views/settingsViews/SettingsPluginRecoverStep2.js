@@ -17,11 +17,11 @@ const Actions = require('react-native-router-flux').Actions;
 import { Background } from '../components/Background'
 import { setupStyle } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
-import { getUUID } from '../../util/util'
-import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/dataUtil'
+import { getUUID } from '../../util/Util'
+import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil'
 import { BleUtil } from '../../native/BleUtil'
-import { BleActions, Bluenet } from '../../native/Proxy'
-import { LOG, LOGError } from '../../logging/Log'
+import { BluenetPromises, Bluenet } from '../../native/Proxy'
+import { LOG } from '../../logging/Log'
 
 export class SettingsPluginRecoverStep2 extends Component {
   constructor() {
@@ -184,8 +184,8 @@ export class SettingsPluginRecoverStep2 extends Component {
 
   recoverStone(handle) {
     this.switchImages();
-    LOG('attempting to recover handle:', handle);
-    BleActions.recover(handle)
+    LOG.info('attempting to recover handle:', handle);
+    BluenetPromises.recover(handle)
       .then(() => {
         Alert.alert("Success!",
           "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a new Sphere.",
@@ -197,7 +197,7 @@ export class SettingsPluginRecoverStep2 extends Component {
         )
       })
       .catch((err) => {
-        LOGError("ERROR IN RECOVERY", err);
+        LOG.error("ERROR IN RECOVERY", err);
         if (err === "NOT_IN_RECOVERY_MODE") {
           Alert.alert("Not in recovery mode.",
             "You have 20 seconds after you plug the Crownstone in to recover. Please follow the steps again to retry.",

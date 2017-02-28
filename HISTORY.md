@@ -2,6 +2,12 @@
 
 To be Released:
 
+- Added privacy options
+- Large refactor of the switching on location changes
+- Now showing the version number on the splash screen and in the settings overview.
+- Revoked permission of Guest to setup Crownstones.
+- Added option to only turn on Crownstones when it is dark outside.
+- Changed the behaviour interface to be easier to use.
 - [Android] Setup Localization button to sidebar.
 - [Android] Added force quit to sidebar.
 - [Android] Fixed picker object for Android

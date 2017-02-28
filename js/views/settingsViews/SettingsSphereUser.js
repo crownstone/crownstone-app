@@ -14,7 +14,7 @@ import { Background } from './../components/Background'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getUserLevelInSphere } from '../../util/dataUtil'
+import { getUserLevelInSphere } from '../../util/DataUtil'
 import { styles, colors, width } from './../styles'
 const Actions = require('react-native-router-flux').Actions;
 
@@ -55,6 +55,7 @@ export class SettingsSphereUser extends Component {
     items.push({label:'Email',  type: 'info', value: user.email});
     items.push({
       type:'dropdown',
+      buttons: true,
       label:'Access Level',
       dropdownHeight:150,
       value: user.accessLevel.capitalize(),

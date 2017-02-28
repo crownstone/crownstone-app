@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
 let defaultSettings = {
@@ -7,6 +7,7 @@ let defaultSettings = {
     name: undefined,
     icon: undefined,
     dimmable: false,
+    onlyOnWhenDark: null,
     updatedAt: 1
   },
   linkedAppliances: { 
@@ -36,10 +37,13 @@ let applianceConfigReducer = (state = defaultSettings.config, action = {}) => {
         newState.name      = update(action.data.name,     newState.name);
         newState.icon      = update(action.data.icon,     newState.icon);
         newState.dimmable  = update(action.data.dimmable, newState.dimmable);
+        newState.onlyOnWhenDark  = update(action.data.onlyOnWhenDark, newState.onlyOnWhenDark);
         newState.updatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.config);
     default:
       return state;
   }

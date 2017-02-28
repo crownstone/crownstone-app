@@ -10,7 +10,8 @@ import {
 
 import { LOG }                from '../../../logging/Log'
 import { BlePromiseManager }  from '../../../logic/BlePromiseManager'
-import { addDistanceToRssi }  from '../../../util/util'
+import { addDistanceToRssi, Util }  from '../../../util/Util'
+import { getDeviceSpecs }  from '../../../util/DataUtil'
 import { stoneTypes }  from '../../../router/store/reducers/stones'
 import { OverlayBox }         from './OverlayBox'
 import { eventBus }                                   from '../../../util/eventBus'
@@ -74,7 +75,7 @@ export class TapToToggleCalibration extends Component {
                 });
               }
             });
-            LOG("TapToToggleCalibration: measured RSSI", minRSSI);
+            LOG.info("TapToToggleCalibration: measured RSSI", minRSSI);
             resolve(minRSSI);
           }, 3500);
         }, 1000);
@@ -85,12 +86,18 @@ export class TapToToggleCalibration extends Component {
       .then((nearestRSSI) => {
         if (nearestRSSI > -70) {
           let rssiAddedDistance = Math.max(nearestRSSI-5,addDistanceToRssi(nearestRSSI, 0.1));
-          LOG("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
+          LOG.info("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
+
+          let state = this.props.store.getState();
+          let currentDeviceSpecs = getDeviceSpecs(state);
+          let deviceId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
           this.props.store.dispatch({
             type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
+            deviceId: deviceId,
             data: { tapToToggleCalibration: rssiAddedDistance }
           });
           eventBus.emit("showLoading", "Great!");
+
           setTimeout(() => {
             eventBus.emit("hideLoading");
           }, 500);
@@ -107,7 +114,7 @@ export class TapToToggleCalibration extends Component {
 
         }
       })
-      .catch((err) => {});
+      .catch((err) => { })
   }
 
   getContent() {
@@ -180,10 +187,11 @@ export class TapToToggleCalibration extends Component {
 
     return (
       <View style={{flex:1, alignItems:'center'}}>
-        <Text style={{fontSize: 23, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{props.title}</Text>
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{props.title}</Text>
         <Image source={props.image} style={{width:0.45*screenWidth, height:0.45*screenWidth, margin:0.025*screenHeight}}/>
-        <Text style={{fontSize: 15, fontWeight: 'bold', color: colors.csBlue.hex, textAlign:'center'}}>{props.header}</Text>
-        <Text style={{fontSize: 14, color: colors.blue.hex, textAlign:'center', marginTop:15, paddingLeft:10, paddingRight:10}}>{props.explanation}</Text>
+        <Text style={{fontSize: 14, fontWeight: 'bold', color: colors.csBlue.hex, textAlign:'center'}}>{props.header}</Text>
+        <View style={{flex:1}}/>
+        <Text style={{fontSize: 12, color: colors.blue.hex, textAlign:'center', paddingLeft:10, paddingRight:10}}>{props.explanation}</Text>
         <View style={{flex:1}}/>
 
         {props.back ?
@@ -194,7 +202,6 @@ export class TapToToggleCalibration extends Component {
               borderRadius: 18,
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.2),
-              marginBottom: 10
             }]}>
               <Text style={{fontSize: 14, color: colors.blue.rgba(0.6)}}>Back</Text>
             </TouchableOpacity>
@@ -205,7 +212,6 @@ export class TapToToggleCalibration extends Component {
               borderRadius: 18,
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.5),
-              marginBottom: 10
             }]}>
               <Text style={{fontSize: 14, color: colors.blue.hex}}>{props.nextLabel}</Text>
             </TouchableOpacity>
@@ -217,7 +223,6 @@ export class TapToToggleCalibration extends Component {
             borderRadius: 18,
             borderWidth: 2,
             borderColor: colors.blue.rgba(0.5),
-            marginBottom: 10
           }]}>
             <Text style={{fontSize: 14, color: colors.blue.hex}}>{props.nextLabel}</Text>
           </TouchableOpacity>

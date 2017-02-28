@@ -28,6 +28,7 @@ export let colors = {
   gray: {hex:'#ccc'},
   notConnected: {hex:'#64897f'},
   darkGray: {hex:'#555'},
+  darkGray2: {hex:'#888'},
   lightGray2: {hex:'#dedede'},
   lightGray: {hex:'#eee'},
   purple: {hex:'#8a01ff'},

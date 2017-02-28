@@ -1,4 +1,4 @@
-import { Bluenet, NativeBus, BleActions } from './Proxy';
+import { Bluenet, NativeBus, BluenetPromises } from './Proxy';
 import { LOG } from '../logging/Log'
 
 class FingerprintManagerClass {
@@ -31,7 +31,7 @@ class FingerprintManagerClass {
             callback(data);
           }
           else {
-            LOG("DATA NOT AN ARRAY:", iBeaconAdvertisement)
+            LOG.info("DATA NOT AN ARRAY:", iBeaconAdvertisement)
           }
         }
       );
@@ -85,7 +85,7 @@ class FingerprintManagerClass {
 
   finalizeFingerprint(sphereId, locationId) {
     this._stopFingerprinting(() => {});
-    return BleActions.finalizeFingerprint(sphereId, locationId)
+    return BluenetPromises.finalizeFingerprint(sphereId, locationId)
   }
 
   pauseCollectingFingerprint() {

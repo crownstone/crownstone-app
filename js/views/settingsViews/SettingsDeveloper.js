@@ -29,7 +29,7 @@ export class SettingsDeveloper extends Component {
     this.unsubscribe = store.subscribe(() => {
       const state = store.getState();
       if (this.renderState && this.renderState.user != state.user) {
-        // LOG("Force Update Profile", this.renderState.user, state.user)
+        // LOG.info("Force Update Profile", this.renderState.user, state.user)
         this.forceUpdate();
       }
     })

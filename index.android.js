@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import { AppRouter } from './js/router/Router'
-import { INITIALIZER } from './js/initialize'
+import { INITIALIZER } from './js/Initialize'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 
 

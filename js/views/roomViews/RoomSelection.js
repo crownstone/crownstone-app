@@ -12,7 +12,7 @@ import {
 
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getStonesInLocation } from './../../util/dataUtil'
+import { getStonesInLocation } from '../../util/DataUtil'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { TopBar } from '../components/Topbar';

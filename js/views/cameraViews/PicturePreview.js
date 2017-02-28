@@ -12,7 +12,7 @@ import {
 import { TopBar } from '../components/Topbar';
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-import { safeDeleteFile } from '../../util/util'
+import { safeDeleteFile } from '../../util/Util'
 import RNFS from 'react-native-fs'
 
 export class PicturePreview extends Component {

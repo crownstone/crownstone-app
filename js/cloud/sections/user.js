@@ -31,7 +31,8 @@ export const user = {
   login: function(options) {
     return new Promise((resolve, reject) => {
       let endpoint = 'users/login';
-      this._post({ endPoint: endpoint, data:{ email: options.email, password: options.password } , type:'body'})
+      // max ttl (time to live) for the access token is 31556926 (1 year in seconds)
+      this._post({ endPoint: endpoint, data:{ email: options.email, password: options.password, ttl: 6*24*3600 } , type:'body'})
         .then((reply) => {
           if (reply.status === 200) {
             resolve(reply.data)
@@ -89,7 +90,7 @@ export const user = {
    * @returns {*}
    */
   getUserData: function (options = {}) {
-    return this._setupRequest('GET', '/users/me', options);
+    return this._setupRequest('GET', '/users/{id}', options);
   },
 
   /**

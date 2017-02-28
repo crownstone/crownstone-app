@@ -65,7 +65,7 @@ export class DeviceScheduleEdit extends Component {
   }
 
   render() {
-    LOG("the schedule uses an old data model.");
+    LOG.info("the schedule uses an old data model.");
     return <View />;
     // const store   = this.props.store;
     // const state   = store.getState();

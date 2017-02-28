@@ -10,20 +10,19 @@ import {
   View
 } from 'react-native';
 
-
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { stoneTypes } from '../../router/store/reducers/stones'
 import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
-import { BleUtil } from '../../native/BleUtil'
-import { BleActions, NativeBus } from '../../native/Proxy'
+import { BleUtil, BatchCommand } from '../../native/BleUtil'
+import { BluenetPromises, INTENTS } from '../../native/Proxy'
 import { TopBar } from '../components/Topbar'
 import { SeparatedItemList } from '../components/SeparatedItemList'
 import { RoomBanner }  from '../components/RoomBanner'
-import { getUserLevelInSphere } from '../../util/dataUtil'
-import { getUUID } from '../../util/util'
+import { getUserLevelInSphere } from '../../util/DataUtil'
+import { Util } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
 import { 
   getPresentUsersInLocation,
@@ -32,11 +31,10 @@ import {
   enoughCrownstonesInLocationsForIndoorLocalization,
   canUseIndoorLocalizationInSphere,
   getFloatingStones
-} from '../../util/dataUtil'
+} from '../../util/DataUtil'
 import { Icon } from '../components/Icon'
-import { Separator } from '../components/Separator'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
-import { LOG, LOGDebug, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 
 export class RoomOverview extends Component {
@@ -144,11 +142,13 @@ export class RoomOverview extends Component {
                 if (switchState === 0) {
                   data.currentUsage = 0;
                 }
-                let proxy = BleUtil.getProxy(item.stone.config.handle);
-                proxy.performPriority(BleActions.setSwitchState, [switchState])
+
+                let bleController = new BatchCommand(this.props.store, this.props.sphereId);
+                bleController.load(item.stone, stoneId, 'setSwitchState', [switchState, 0, INTENTS.manual]).catch((err) => {});
+                bleController.execute({}, true)
                   .then(() => {
                     this.props.store.dispatch({
-                      type: 'UPDATE_STONE_STATE',
+                      type: 'UPDATE_STONE_SWITCH_STATE',
                       sphereId: this.props.sphereId,
                       stoneId: stoneId,
                       data: data
@@ -255,7 +255,7 @@ export class RoomOverview extends Component {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    this.tapToToggleCalibration = state.user.tapToToggleCalibration;
+    this.tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
 
     let title = undefined;
     if (this.props.locationId !== null) {

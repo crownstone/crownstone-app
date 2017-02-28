@@ -14,9 +14,9 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { ProfilePicture } from './../components/ProfilePicture'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getUserLevelInSphere } from '../../util/dataUtil';
+import { getUserLevelInSphere } from '../../util/DataUtil';
 import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 export class SettingsSphereInvite extends Component {
   constructor() {
@@ -31,7 +31,6 @@ export class SettingsSphereInvite extends Component {
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
-
     let items = [];
     items.push({type:'spacer'});
     items.push({
@@ -45,7 +44,7 @@ export class SettingsSphereInvite extends Component {
       placeholder: 'Send email to...',
       validationCallback: (newState) => {this.inputStates.email = newState},
       alwaysShowState: false,
-      callback: (newValue) => {this.setState({email:newValue});}
+      callback: (newValue) => { this.setState({email:newValue}); }
     });
 
 
@@ -54,8 +53,9 @@ export class SettingsSphereInvite extends Component {
       items.push({
         type:'dropdown',
         label:'Access Level',
+        buttons: true,
         value: this.state.permission,
-        dropdownHeight:100,
+        dropdownHeight:130,
         items:[{label:'Member'},{label:'Guest'}],
         callback: (permission) => {
           this.setState({permission:permission});
@@ -85,6 +85,16 @@ export class SettingsSphereInvite extends Component {
   }
 
   validateAndContinue(state) {
+    if (!this.state.email) {
+      Alert.alert("Please provide an email address","",[{text:'OK'}]);
+      return;
+    }
+    else if (!this.inputStates.email) {
+      Alert.alert("Please provide a valid email address","",[{text:'OK'}]);
+      return;
+    }
+
+
     // verify if there is already a user with this email address in this sphere.
     let users = state.spheres[this.props.sphereId].users;
     let userIds = Object.keys(users);
@@ -110,7 +120,7 @@ export class SettingsSphereInvite extends Component {
       })
       .catch((err) => {
         this.props.eventBus.emit('hideLoading');
-        LOGError("Error when inviting using:",err);
+        LOG.error("Error when inviting using:",err);
         Alert.alert("Could not send invite..","Please try again later.", [{text:'OK'}])
       })
   }

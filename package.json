@@ -10,6 +10,7 @@
     "lint": "eslint ./js"
   },
   "dependencies": {
+    "babel-preset-airbnb": "^2.2.3",
     "react": "~15.3.2",
     "react-native": "~0.36.1",
     "react-native-camera": "https://github.com/lwansbrough/react-native-camera.git",
@@ -25,7 +26,8 @@
     "react-tween-state": "~0.1.5",
     "redux": "~3.6.0",
     "rn-splash-screen": "~2.1.0",
-    "sha-1": "~0.1.1"
+    "sha-1": "~0.1.1",
+    "suncalc": "^1.8.0"
   },
   "devDependencies": {
     "babel-eslint": "~6.0.4",

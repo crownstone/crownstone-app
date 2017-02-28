@@ -12,12 +12,10 @@ import {
 } from 'react-native';
 let Actions = require('react-native-router-flux').Actions;
 let sha1 = require('sha-1');
-import { LOG, LOGDebug, LOGError }            from '../../logging/Log'
+import { LOG }            from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
-import { emailChecker, getImageFileFromUser } from '../../util/util'
-import { prepareStoreForUser }                from '../../util/dataUtil'
-import { LocalizationUtil }                   from '../../native/LocalizationUtil'
-import { BleActions, Bluenet }                from '../../native/Proxy'
+import { emailChecker, getImageFileFromUser } from '../../util/Util'
+import { prepareStoreForUser }                from '../../util/DataUtil'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'
@@ -31,10 +29,7 @@ import loginStyles                            from './LoginStyles'
 export class Login extends Component {
   constructor() {
     super();
-    // this.state = {email: SessionMemory.email || 'alex@dobots.nl', password:'letmein0'};
     this.state = {email: SessionMemory.loginEmail || '', password:''};
-    // this.state = {email: SessionMemory.email || 'anne@crownstone.rocks', password:'bier'};
-    // this.state = {email: 'bart@almende.org', password:'12'};
     this.progress = 0;
   }
 
@@ -141,7 +136,7 @@ export class Login extends Component {
   render() {
     return (
       <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>
-        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={Actions.pop} style={{backgroundColor:'transparent'}} shadeStatus={true} />
+        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput style={{width: 0.8*screenWidth, padding:10}} placeholder='email' keyboardType='email-address' autocorrect={false} autoCapitalize="none" placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
@@ -202,7 +197,7 @@ export class Login extends Component {
       type:'USER_LOG_IN',
       data:{
         email:this.state.email.toLowerCase(),
-        passwordHash: sha1(this.state.password),
+        passwordHash: sha1(sha1(this.state.password)), // double hash this so we never store the password we send to the cloud.
         accessToken:accessToken,
         userId:userId,
       }
@@ -218,7 +213,7 @@ export class Login extends Component {
 
     // get more data on the user
     promises.push(
-      CLOUD.getUserData()
+      CLOUD.forUser(userId).getUserData()
         .then((userData) => {
           store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName, isNew: userData.new}});
           this.progress += parts;
@@ -242,7 +237,7 @@ export class Login extends Component {
       })
       .catch((err) => {
         // likely a 404, ignore
-        LOGDebug("Could be a problem downloading profile picture: ", err);
+        LOG.debug("Could be a problem downloading profile picture: ", err);
       })
       .then(() => {
         this.progress += parts;
@@ -258,6 +253,7 @@ export class Login extends Component {
         let state = store.getState();
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Creating first Sphere.'});
+          // TODO: place in tutorial
           return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus);
         }
         else {
@@ -265,7 +261,7 @@ export class Login extends Component {
         }
       })
       .catch((err) => {
-        LOGDebug("Error creating first Sphere.", err);
+        LOG.debug("Error creating first Sphere.", err);
       })
     );
 
@@ -275,14 +271,13 @@ export class Login extends Component {
 
       // finalize the login due to successful download of data. Enables persistence.
       StoreManager.finalizeLogIn(userId);
+      prepareStoreForUser(store);
 
-      let state = store.getState();
       // set a small delay so the user sees "done"
       setTimeout(() => {
+        let state = store.getState();
         this.props.eventBus.emit('hideProgress');
         this.props.eventBus.emit("appStarted"); // this starts scanning and tracking spheres
-
-        prepareStoreForUser(store);
 
         if (state.user.isNew !== false) {
           Actions.aiStart({type: 'reset'});
@@ -293,7 +288,7 @@ export class Login extends Component {
         else {
           Actions.tabBar({type: 'reset'});
         }
-      }, 50);
+      }, 100);
     });
   }
 }

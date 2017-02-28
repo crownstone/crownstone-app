@@ -18,7 +18,6 @@ import { ApplianceSelection }         from '../views/deviceViews/ApplianceSelect
 import { DeviceEdit }                 from '../views/deviceViews/DeviceEdit'
 import { DeviceEditLogic }            from '../views/deviceViews/DeviceEditLogic'
 import { DeviceBehaviourEdit }        from '../views/deviceViews/DeviceBehaviourEdit'
-import { DeviceStateEdit }            from '../views/deviceViews/DeviceBehaviourStateEdit'
 import { DeviceIconSelection }        from '../views/deviceViews/DeviceIconSelection'
 import { DelaySelection }             from '../views/deviceViews/DelaySelection'
 import { DeviceScheduleEdit }         from '../views/deviceViews/DeviceScheduleEdit'
@@ -26,6 +25,7 @@ import { DeviceScheduleAdd }          from '../views/deviceViews/DeviceScheduleA
 import { DaySelection }               from '../views/deviceViews/DaySelection'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
+import { SettingsPrivacy }            from '../views/settingsViews/SettingsPrivacy'
 import { SettingsDeveloper }          from '../views/settingsViews/SettingsDeveloper'
 import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
 import { SettingsSphere }             from '../views/settingsViews/SettingsSphere'
@@ -57,13 +57,13 @@ export const Views = {
   DeviceEditLogic,
   DeviceBehaviourEdit,
   DeviceIconSelection,
-  DeviceStateEdit,
   DelaySelection,
   DeviceScheduleEdit,
   DeviceScheduleAdd,
   DaySelection,
   SettingsOverview,
   SettingsProfile,
+  SettingsPrivacy,
   SettingsDeveloper,
   SettingsSphereOverview,
   SettingsSphere,

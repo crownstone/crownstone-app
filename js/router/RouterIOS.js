@@ -58,7 +58,6 @@ export class Router_IOS extends Component {
                 <Scene key="deviceEditLogic"        component={Views.DeviceEditLogic}            hideNavBar={false} title="Device Behaviour" />
                 <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} title="Select a Device" />
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
-                <Scene key="deviceStateEdit"        component={Views.DeviceStateEdit}            hideNavBar={false} />
                 <Scene key="delaySelection"         component={Views.DelaySelection}             hideNavBar={false} title="Set Delay" />
                 <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={false} title="Schedule"   rightTitle="Add" />
                 <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}          hideNavBar={false} title="New Event"  rightTitle="Save" />
@@ -67,6 +66,7 @@ export class Router_IOS extends Component {
               <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>
                 <Scene key="settingsProfile"            component={Views.SettingsProfile}           hideNavBar={false} title="Your Profile" />
+                <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           hideNavBar={false} title="Privacy" />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         hideNavBar={false} title="Developer" />
                 <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    hideNavBar={false} title="Sphere Overview" />
                 <Scene key="settingsSphere"             component={Views.SettingsSphere}            hideNavBar={false} title="[Sphere name here]" />

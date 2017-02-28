@@ -21,16 +21,19 @@ export class Dropdown extends Component {
   getLabelIfPossible() {
     for (let i = 0; i < this.props.items.length; i++) {
       let item = this.props.items[i];
-      if (item.value !== undefined && item.value == this.state.value) {
-        if (item.label) {
+      if (item.value !== undefined && item.value === this.state.value) {
+        if (item.label !== undefined) {
           return item.label;
         }
         else {
           return item.value;
         }
       }
-      else if (item.label !== undefined && item.label == this.state.value) {
-        if (item.label) {
+    }
+    for (let i = 0; i < this.props.items.length; i++) {
+      let item = this.props.items[i];
+       if (item.label !== undefined && item.label === this.state.value) {
+        if (item.label !== undefined) {
           return item.label;
         }
         else {
@@ -69,12 +72,12 @@ export class Dropdown extends Component {
           borderColor:colors.lightGray.hex,
           borderBottomWidth:1
         }}>
-          <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-start', paddingLeft:10}} onPress={() => {
+          <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-start', paddingLeft:15}} onPress={() => {
             this.setState({value: this.props.value, open: false});
           }}>
-            <Text style={{fontSize:16, color:colors.gray.hex}}>Cancel</Text>
+            <Text style={{fontSize:16, color:colors.blue.hex}}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-end', paddingRight:10}} onPress={() => {
+          <TouchableOpacity style={{flex:1, justifyContent:'center', alignItems:'flex-end', paddingRight:15}} onPress={() => {
             this.setState({open: false});
             this.props.callback(this.state.value);
           }}>
@@ -109,7 +112,7 @@ export class Dropdown extends Component {
     }
     else {
       return (
-        <Picker selectedValue={this.state.value} onValueChange={callback}>
+        <Picker selectedValue={this.state.value} onValueChange={callback} style={{position:'relative', top: this.props.buttons === true ? 50 : 0}}>
           {this.getItems()}
         </Picker>
       )
@@ -138,14 +141,23 @@ export class Dropdown extends Component {
     else {
       return (
         <View>
-          <TouchableHighlight onPress={() => {this.setState({open:!this.state.open})}}>
+          <TouchableHighlight onPress={() => {
+            if (this.state.open === true) {
+              this.props.callback(this.state.value);
+            }
+            this.setState({open:!this.state.open});
+          }}>
             <View style={[styles.listView, {height:this.props.barHeight}]}>
-              <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
-              <Text style={[{flex:1, fontSize:16}, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
+              {this.props.valueRight === true ?
+                <Text style={[{fontSize:16}, this.props.labelStyle]}>{this.props.label}</Text>
+                :
+                <Text style={[styles.listText, this.props.labelStyle]}>{this.props.label}</Text>
+              }
+              <Text style={[{flex:1, fontSize:16 }, this.props.valueStyle]}>{this.getLabelIfPossible()}</Text>
             </View>
           </TouchableHighlight>
           <SlideFadeInView height={totalHeight} visible={this.state.open === true}  style={{backgroundColor:'#fff'}}>
-            <View style={{position:'relative', top: 0, height:dropHeight}}>
+            <View style={{position:'relative', top: -0.5*(dropHeight-this.props.barHeight), height: dropHeight}}>
               {this._getPicker()}
             </View>
             {this._getButtonBar()}

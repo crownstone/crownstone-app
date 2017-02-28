@@ -16,8 +16,8 @@ import {
 import { SetupStateHandler } from '../../native/SetupStateHandler'
 import { Icon } from './Icon';
 import { styles, colors, screenWidth } from '../styles'
-import { BleUtil, SetupCrownstone } from '../../native/BleUtil'
-import { LOG, LOGDebug, LOGError } from '../../logging/Log'
+import { getUserLevelInSphere } from '../../util/DataUtil'
+import { LOG } from '../../logging/Log'
 
 
 export class SetupDeviceEntry extends Component {
@@ -160,8 +160,13 @@ export class SetupDeviceEntry extends Component {
   }
 
   setupStone() {
-    if (this.state.disabled === false && this.state.setupInProgress !== true) {
-      SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch();
+    if (getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) !== 'admin') {
+      Alert.alert("You don't have permission","You can ask an admin in your Sphere to setup this Crownstone",[{text:'OK'}])
+    }
+    else {
+      if (this.state.disabled === false && this.state.setupInProgress !== true) {
+        SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {})
+      }
     }
   }
 }

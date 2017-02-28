@@ -52,7 +52,7 @@ export const reducerCreate = (params) => {
     //     // snap to root.
     //     let rootName = getTabRootName(state);
     //     if (rootName) {
-    //       LOG("ACTION Overruled", {key:rootName, type:'reset'});
+    //       LOG.info("ACTION Overruled", {key:rootName, type:'reset'});
     //       return defaultReducer(state, {key:rootName, type:'reset'});
     //     }
     //   }

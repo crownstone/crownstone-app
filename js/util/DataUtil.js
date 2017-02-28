@@ -1,8 +1,43 @@
 import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
-import { LOG, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 
 const DeviceInfo = require('react-native-device-info');
+
+
+export const DataUtil = {
+
+  /**
+   * Get the ID of the device (phone model) we are currently using.
+   * @param state
+   * @param deviceAddress
+   * @returns {*}
+   */
+  getDeviceIdFromState: function(state, deviceAddress) {
+    let deviceIds = Object.keys(state.devices);
+    for (let i = 0; i < deviceIds.length; i++) {
+      if (state.devices[deviceIds[i]].address === deviceAddress) {
+        return deviceIds[i];
+      }
+    }
+    return null;
+  },
+
+  getTapToToggleCalibration: function(state) {
+    if (state && state.devices) {
+      let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
+      if (state.devices[deviceId] && state.devices[deviceId]) {
+        let calibration = state.devices[deviceId].tapToToggleCalibration;
+        if (calibration) {
+          return calibration;
+        }
+      }
+    }
+    return null;
+  }
+
+};
+
 
 export const getStonesInLocation = function(state, sphereId, locationId) {
   let filteredStones = {};
@@ -149,15 +184,15 @@ export const getUserLevelInSphere = function(state, sphereId) {
     return state.spheres[sphereId].users[userId].accessLevel;
   else {
     if (state.spheres[sphereId].config.adminKey !== null) {
-      LOGError("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
+      LOG.error("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
       return 'admin';
     }
     else if (state.spheres[sphereId].config.memberKey !== null) {
-      LOGError("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
+      LOG.error("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
       return 'member';
     }
     else if (state.spheres[sphereId].config.guestKey !== null) {
-      LOGError("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
+      LOG.error("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
       return 'guest';
     }
   }
@@ -267,7 +302,7 @@ export const prepareStoreForUser = function(store) {
       actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
     });
 
-    actions.push({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
+    actions.push({type: 'RESET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
   });
 
   actions.push({type:'CREATE_APP_IDENTIFIER'});

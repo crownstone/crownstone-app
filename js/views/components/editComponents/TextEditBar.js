@@ -8,7 +8,7 @@ import { Icon } from '../Icon';
 import { styles, colors } from '../../styles'
 import { TextEditInput } from './TextEditInput'
 import { Separator } from '../Separator'
-import { emailChecker, characterChecker, numberChecker } from '../../../util/util'
+import { emailChecker, characterChecker, numberChecker } from '../../../util/Util'
 
 export class TextEditBar extends Component {
   constructor() {

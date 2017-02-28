@@ -1,121 +1,97 @@
 import { Platform } from 'react-native';
 import {
   LOGGING,
-  ERROR_LOGGING,
-  DEBUG_LOGGING,
-  DEBUG_CLOUD,
-  DEBUG_BLE,
-  DEBUG_STORE,
-  DEBUG_SCHEDULER,
+  LOG_ERRORS,
+  LOG_WARNINGS,
+  LOG_VERBOSE,
+  LOG_DEBUG,
+  LOG_CLOUD,
+  LOG_BLE,
+  LOG_MESH,
+  LOG_STORE,
+  LOG_SCHEDULER,
   RELEASE_MODE,
   LOG_TO_FILE,
 } from '../ExternalConfig'
 import RNFS from 'react-native-fs'
+import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/eventBus'
-import { safeDeleteFile } from '../util/util'
+import { safeDeleteFile } from '../util/Util'
 const DeviceInfo = require('react-native-device-info');
 
-export const LOG = function() {
-  if (LOGGING) {
-    let args = ['LOG ------------ :'];
-    for (let i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    logToFile.apply(this, args);
+export const LOG = {
+  info: function() {
+    this._log('------------', LOGGING, arguments);
+  },
 
-    if (RELEASE_MODE === false)
-      console.log.apply(this, args);
+  verbose: function() {
+    this._log('VERBOSE ----', LOG_VERBOSE, arguments);
+  },
+
+  warn: function() {
+    this._log('WARNING ! --', LOG_WARNINGS, arguments);
+  },
+
+
+  error: function() {
+    this._log('ERROR !!! --', LOG_ERRORS, arguments);
+  },
+
+  debug: function() {
+    this._log('Debug ------', LOG_DEBUG, arguments);
+  },
+
+  cloud: function() {
+    this._log('Cloud ------', LOG_CLOUD, arguments);
+  },
+
+  ble: function() {
+    this._log('BLE --------', LOG_BLE, arguments);
+  },
+
+  store: function() {
+    this._log('Store ------', LOG_STORE, arguments);
+  },
+
+  scheduler: function() {
+    this._log('Scheduler --', LOG_SCHEDULER, arguments);
+  },
+
+  mesh: function() {
+    this._log('Mesh -------', LOG_MESH, arguments);
+  },
+
+  _log: function(type, check, allArguments) {
+    if (check) {
+      let args = ['LOG ' + type + ' :'];
+      for (let i = 0; i < allArguments.length; i++) {
+        args.push(allArguments[i]);
+      }
+      logToFile.apply(this, args);
+
+      if (RELEASE_MODE === false)
+        console.log.apply(this, args);
+    }
   }
 };
 
-
-export const LOGError = function() {
-  if (ERROR_LOGGING) {
-    let args = ['LOG ERROR !!! -- :'];
-    for (let i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    logToFile.apply(this, args);
-
-    if (RELEASE_MODE === false)
-      console.log.apply(this, args);
-  }
-};
-
-
-export const LOGDebug = function() {
-  if (DEBUG_LOGGING) {
-    let args = ['LOG Debug ------ :'];
-    for (let i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    logToFile.apply(this, args);
-
-    if (RELEASE_MODE === false)
-      console.log.apply(this, args);
-  }
-};
-
-export const LOGCloud = function() {
-  if (DEBUG_CLOUD) {
-    let args = ['LOG Cloud ------ :'];
-    for (let i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    logToFile.apply(this, args);
-
-    if (RELEASE_MODE === false)
-      console.log.apply(this, args);
-  }
-};
-
-export const LOGBle = function() {
-  if (DEBUG_BLE) {
-    let args = ['LOG BLE -------- :'];
-    for (let i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    logToFile.apply(this, args);
-
-    if (RELEASE_MODE === false)
-      console.log.apply(this, args);
-  }
-};
-
-
-export const LOGStore = function() {
-  if (DEBUG_STORE) {
-    let args = ['LOG Store ------ :'];
-    for (let i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    logToFile.apply(this, args);
-
-    if (RELEASE_MODE === false)
-      console.log.apply(this, args);
-  }
-};
-
-
-export const LOGScheduler = function() {
-  if (DEBUG_SCHEDULER) {
-    let args = ['LOG Scheduler --- :'];
-    for (let i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    logToFile.apply(this, args);
-
-    if (RELEASE_MODE === false)
-      console.log.apply(this, args);
-  }
-};
 
 function getFilename(timestamp) {
   let dateStamp = new Date(timestamp).getFullYear() + "-" + (new Date(timestamp).getMonth()+1) + "-" + (new Date(timestamp).getDate());
   return 'ConsumerAppLog' + dateStamp + '.log';;
 }
 
-function cleanLogs(logPath, amountOfDaysStored = 3) {
+export function cleanLogs() {
+  // create a path you want to write to
+  let logPath = RNFS.DocumentDirectoryPath;
+  if (Platform.OS === 'android') {
+    logPath = RNFS.ExternalDirectoryPath;
+  }
+
+  _cleanLogs(logPath);
+}
+
+function _cleanLogs(logPath, amountOfDaysStored = 3) {
   let allowedLogFiles = {};
   for (let i = 0; i < amountOfDaysStored; i++) {
     let timestamp = new Date().valueOf() - i*86400000;
@@ -145,8 +121,10 @@ export function clearLogs() {
     logPath = RNFS.ExternalDirectoryPath;
   }
 
-  cleanLogs(logPath,0);
+  _cleanLogs(logPath,0);
 }
+
+
 
 function logToFile() {
   if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
@@ -155,10 +133,6 @@ function logToFile() {
     if (Platform.OS === 'android') {
       logPath = RNFS.ExternalDirectoryPath;
     }
-
-    // clean log files that are older than X days
-    let amountOfDaysStored = 3;
-    cleanLogs(logPath, amountOfDaysStored);
 
     // generate filename based on current date.
     let filename = getFilename(new Date().valueOf());
@@ -179,7 +153,7 @@ function logToFile() {
     // write the file
     RNFS.appendFile(filePath, str, 'utf8')
       .then((success) => {})
-      .catch((err) => {});
+      .catch((err) => {})
   }
 }
 
@@ -187,10 +161,17 @@ class LogProcessorClass {
   constructor() {
     this.store = undefined;
     this.writeToFile = false;
+
   }
 
   loadStore(store) {
     this.store = store;
+
+    // use periodic events to clean the logs.
+    let triggerId = "LOG_CLEANING_TRIGGER";
+    Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds: 5*3600});
+    Scheduler.loadCallback(triggerId,() => { cleanLogs() }, true);
+
     eventBus.on("databaseChange", (data) => {
       if (data.change.changeUserDeveloperStatus === true) {
         this.refreshData();
@@ -198,21 +179,21 @@ class LogProcessorClass {
     });
     this.refreshData();
 
-    LOG("Device Manufacturer", DeviceInfo.getManufacturer());  // e.g. Apple
-    LOG("Device Brand", DeviceInfo.getBrand());  // e.g. Apple / htc / Xiaomi
-    LOG("Device Model", DeviceInfo.getModel());  // e.g. iPhone 6
-    LOG("Device ID", DeviceInfo.getDeviceId());  // e.g. iPhone7,2 / or the board on Android e.g. goldfish
-    LOG("System Name", DeviceInfo.getSystemName());  // e.g. iPhone OS
-    LOG("System Version", DeviceInfo.getSystemVersion());  // e.g. 9.0
-    LOG("Bundle ID", DeviceInfo.getBundleId());  // e.g. com.learnium.mobile
-    LOG("Build Number", DeviceInfo.getBuildNumber());  // e.g. 89
-    LOG("App Version", DeviceInfo.getVersion());  // e.g. 1.1.0
-    LOG("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
-    LOG("Device Name", DeviceInfo.getDeviceName());  // e.g. Becca's iPhone 6
-    LOG("User Agent", DeviceInfo.getUserAgent()); // e.g. Dalvik/2.1.0 (Linux; U; Android 5.1; Google Nexus 4 - 5.1.0 - API 22 - 768x1280 Build/LMY47D)
-    LOG("Device Locale", DeviceInfo.getDeviceLocale()); // e.g en-US
-    LOG("Device Country", DeviceInfo.getDeviceCountry()); // e.g US
-    LOG("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https://developers.google.com/instance-id/
+    LOG.info("Device Manufacturer", DeviceInfo.getManufacturer());  // e.g. Apple
+    LOG.info("Device Brand", DeviceInfo.getBrand());  // e.g. Apple / htc / Xiaomi
+    LOG.info("Device Model", DeviceInfo.getModel());  // e.g. iPhone 6
+    LOG.info("Device ID", DeviceInfo.getDeviceId());  // e.g. iPhone7,2 / or the board on Android e.g. goldfish
+    LOG.info("System Name", DeviceInfo.getSystemName());  // e.g. iPhone OS
+    LOG.info("System Version", DeviceInfo.getSystemVersion());  // e.g. 9.0
+    LOG.info("Bundle ID", DeviceInfo.getBundleId());  // e.g. com.learnium.mobile
+    LOG.info("Build Number", DeviceInfo.getBuildNumber());  // e.g. 89
+    LOG.info("App Version", DeviceInfo.getVersion());  // e.g. 1.1.0
+    LOG.info("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
+    LOG.info("Device Name", DeviceInfo.getDeviceName());  // e.g. Becca's iPhone 6
+    LOG.info("User Agent", DeviceInfo.getUserAgent()); // e.g. Dalvik/2.1.0 (Linux; U; Android 5.1; Google Nexus 4 - 5.1.0 - API 22 - 768x1280 Build/LMY47D)
+    LOG.info("Device Locale", DeviceInfo.getDeviceLocale()); // e.g en-US
+    LOG.info("Device Country", DeviceInfo.getDeviceCountry()); // e.g US
+    LOG.info("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https://developers.google.com/instance-id/
   }
 
   refreshData() {

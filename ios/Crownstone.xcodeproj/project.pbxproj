@@ -994,7 +994,7 @@
 			files = (
 			);
 			inputPaths = (
-				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetWorkspace-ctwjboexknfjsaemurnuvcntfmgk/Build/Products/Debug-iphoneos/BluenetLib.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CryptoSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/SwiftyJSON.framework",

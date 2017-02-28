@@ -1,5 +1,5 @@
-import { LOG, LOGError } from '../logging/Log'
-import { getUUID } from './util'
+import { LOG } from '../logging/Log'
+import { getUUID } from './Util'
 
 
 export class EventBus {
@@ -10,11 +10,11 @@ export class EventBus {
   
   on(topic, callback) {
     if (!(topic)) {
-      LOGError("Attempting to subscribe to undefined topic:", topic);
+      LOG.error("Attempting to subscribe to undefined topic:", topic);
       return;
     }
     if (!(callback)) {
-      LOGError("Attempting to subscribe without callback to topic:", topic);
+      LOG.error("Attempting to subscribe without callback to topic:", topic);
       return;
     }
 

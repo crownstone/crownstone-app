@@ -348,8 +348,8 @@ open class BluenetJS: NSObject {
       }
   }
   
-  @objc func setSwitchState(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.control.setSwitchState(state.floatValue)
+  @objc func setSwitchState(_ state: NSNumber, timeout: NSNumber, intent: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.setSwitchState(state.floatValue, intent: intent.uint8Value)
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {
@@ -415,6 +415,16 @@ open class BluenetJS: NSObject {
   
   @objc func stopIndoorLocalization() {
     GLOBAL_BLUENET!.bluenetLocalization.stopIndoorLocalization()
+  }
+  
+  
+  @objc func requestLocation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    let coordinates = GLOBAL_BLUENET!.bluenetLocalization.requestLocation()
+    var returnType = [String: NSNumber]();
+    returnType["latitude"] = NSNumber(value: coordinates.latitude)
+    returnType["longitude"] = NSNumber(value: coordinates.longitude)
+    
+    callback([["error" : false, "data": returnType]])
   }
   
   @objc func requestLocationPermission() -> Void {
@@ -615,6 +625,17 @@ open class BluenetJS: NSObject {
     }
   }
   
-  
+  @objc func meshKeepAlive(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([["error" : false]])
+  }
+  @objc func meshKeepAliveState(_ timeout: NSNumber, stoneKeepAlivePackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([["error" : false]])
+  }
+  @objc func meshKeepAlive(_ arrayOfIds: [NSNumber], state: NSNumber, intent: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([["error" : false]])
+  }
+  @objc func meshKeepAlive(_ data: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    callback([["error" : false]])
+  }
   
 }

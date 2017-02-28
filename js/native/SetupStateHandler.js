@@ -4,10 +4,10 @@ import { SetupHelper } from './SetupHelper';
 import { BleUtil } from './BleUtil';
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus';
-import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/dataUtil';
+import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/DataUtil';
 import { CLOUD } from '../cloud/cloudAPI';
-import { getUUID } from '../util/util';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { getUUID } from '../util/Util';
+import { LOG } from '../logging/Log'
 
 
 const SETUP_MODE_TIMEOUT = 3000; // ms
@@ -33,7 +33,7 @@ class SetupStateHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE SetupStateHandler', this._initialized);
+    LOG.info('LOADED STORE SetupStateHandler', this._initialized);
     if (this._initialized === false) {
       this._store = store;
       this._init();
@@ -52,17 +52,17 @@ class SetupStateHandlerClass {
     if (this._initialized === false) {
       this._initialized = true;
       // these events are emitted from the setupUtil
-      eventBus.on("setupStarted",     (handle) => {});
+      eventBus.on("setupStarted",   (handle) => {});
 
       // when the setup is finished, we clean up the handle from the list of stones in setup mode
-      eventBus.on("setupComplete",    (handle) => {
+      eventBus.on("setupComplete",  (handle) => {
         this._resetSetupState();
         // cleaning up the entry of the setup stone
         this._cleanup(handle);
       });
 
       // if we cancel the setup mode because of an error, we reset the timeout for this handle.
-      eventBus.on("setupCancelled",   (handle) => {
+      eventBus.on("setupCancelled", (handle) => {
         this._resetSetupState();
         this._setSetupTimeout(handle);
       });
@@ -130,7 +130,7 @@ class SetupStateHandlerClass {
     else if (advertisement.isGuidestone)
       return {name: 'Guidestone',         icon: 'c2-crownstone',    type:stoneTypes.guidestone, handle: advertisement.handle};
     else {
-      LOGError("UNKNOWN DEVICE in setup procedure", advertisement);
+      LOG.error("UNKNOWN DEVICE in setup procedure", advertisement);
     }
   }
   

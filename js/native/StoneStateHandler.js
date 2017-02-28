@@ -1,7 +1,8 @@
 import { LocationHandler } from '../native/LocationHandler';
 import { Scheduler } from '../logic/Scheduler';
-import { LOG, LOGDebug } from '../logging/Log'
-import { getUUID } from '../util/util'
+import { LOG } from '../logging/Log'
+import { getUUID } from '../util/Util'
+import { eventBus } from '../util/eventBus'
 import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
 
@@ -20,20 +21,30 @@ class StoneStateHandlerClass {
     this._initialized = false;
 
     // create a trigger to throttle the updates.
-    Scheduler.setRepeatingTrigger(TRIGGER_ID,{repeatEveryNSeconds: RSSI_REFRESH});
+    Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: RSSI_REFRESH});
   }
 
   loadStore(store) {
-    LOG('LOADED STORE StoneStateHandlerClass', this._initialized);
+    LOG.info('LOADED STORE StoneStateHandlerClass', this._initialized);
     if (this._initialized === false) {
       this.store = store;
     }
   }
 
-  receivedIBeaconUpdate(sphereId, stoneId, rssi) {
-    // only update rssi if there is a measureable difference.
-    if (Math.abs(this.store.getState().spheres[sphereId].stones[stoneId].config.rssi - rssi) > 3) {
-      // update RSSI, we only use the ibeacon once since it has an average rssi
+  receivedIBeaconUpdate(sphereId, stone, stoneId, rssi) {
+    // internal event to tell the app this crownstone has been seen.
+    eventBus.emit('update_'+sphereId+'_'+stoneId, rssi);
+    if (stone.config.meshNetworkId) {
+      eventBus.emit('updateMeshNetwork_' + sphereId + stone.config.meshNetworkId, {
+        handle: stone.config.handle,
+        id: stoneId,
+        rssi: rssi
+      });
+    }
+
+    // only update rssi if there is a measurable difference and check if rssi is smaller than 0 to make sure its a valid measurement.
+    if (Math.abs(stone.config.rssi - rssi) > 3 && rssi < 0) {
+      // update RSSI, we only use the iBeacon once since it has an average rssi
       Scheduler.loadOverwritableAction(TRIGGER_ID, stoneId, {
         type: 'UPDATE_STONE_RSSI',
         sphereId: sphereId,
@@ -45,18 +56,28 @@ class StoneStateHandlerClass {
     this.update(sphereId, stoneId);
   }
 
-  receivedUpdate(sphereId, stoneId, rssi) {
+  receivedUpdate(sphereId, stone, stoneId, rssi) {
+    // internal event to tell the app this crownstone has been seen.
+    eventBus.emit('update_'+sphereId+'_'+stoneId, rssi);
+    if (stone.config.meshNetworkId)
+      eventBus.emit('updateMeshNetwork_'+sphereId+stone.config.meshNetworkId, { handle: stone.config.handle, id: stoneId, rssi: rssi });
+
+    this.update(sphereId, stoneId);
+  }
+
+  receivedUpdateViaMesh(sphereId, stoneId) {
+    // update the visibility of the Crownstone
     this.update(sphereId, stoneId);
   }
 
   update(sphereId, stoneId) {
-    // LOG("StoneStateHandlerUpdate", sphereId, stoneId);
+    // LOG.info("StoneStateHandlerUpdate", sphereId, stoneId);
 
     const state = this.store.getState();
     // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
 
     if (state.spheres[sphereId].config.present === false) {
-      LOG("StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
+      LOG.info("StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
       LocationHandler.enterSphere(sphereId);
     }
 
@@ -78,12 +99,12 @@ class StoneStateHandlerClass {
     }
 
     if (this.timeoutActions[sphereId][stoneId].clearTimeout && typeof this.timeoutActions[sphereId][stoneId].clearTimeout === 'function') {
-      // LOG("Cancelling_Timeout");
+      // LOG.info("Cancelling_Timeout");
       this.timeoutActions[sphereId][stoneId].clearTimeout();
     }
 
     if (this.timeoutActions[sphereId][stoneId].clearRSSITimeout && typeof this.timeoutActions[sphereId][stoneId].clearRSSITimeout === 'function') {
-      // LOG("Cancelling_RSSI_Timeout");
+      // LOG.info("Cancelling_RSSI_Timeout");
       this.timeoutActions[sphereId][stoneId].clearRSSITimeout();
     }
 
@@ -105,11 +126,11 @@ class StoneStateHandlerClass {
 
         // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
         if (allDisabled === true) {
-          LOG("StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
+          LOG.info("StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
           LocationHandler.exitSphere(sphereId);
         }
 
-        LOG("StoneStateHandler: Disabling stone ", stoneId);
+        LOG.info("StoneStateHandler: Disabling stone ", stoneId);
         this.store.dispatch({
           type: 'UPDATE_STONE_DISABILITY',
           sphereId: sphereId,

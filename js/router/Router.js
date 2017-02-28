@@ -21,10 +21,10 @@ import { SetupStateHandler }      from '../native/SetupStateHandler'
 import { StoneStateHandler }      from '../native/StoneStateHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
-import { prepareStoreForUser }    from '../util/dataUtil'
-import { logOut }                 from '../util/util'
-import { LOG, LOGDebug, LogProcessor }          from '../logging/Log'
-import { INITIALIZER }            from '../initialize'
+import { prepareStoreForUser }    from '../util/DataUtil'
+import { logOut }                 from '../util/Util'
+import { LOG, LogProcessor }      from '../logging/Log'
+import { INITIALIZER }            from '../Initialize'
 import { CLOUD }                  from '../cloud/cloudAPI'
 import { Background }             from '../views/components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
@@ -84,13 +84,13 @@ export class AppRouter extends Component {
       if (state.user.accessToken !== null) {
         // in the background we check if we're authenticated, if not we log out.
         CLOUD.setAccess(state.user.accessToken);
-        CLOUD.getUserData({background:true})
+        CLOUD.forUser(state.user.userId).getUserData({background:true})
           .then((reply) => {
-            LOG("Verified User.", reply);
+            LOG.info("Verified User.", reply);
             CLOUD.sync(store, true);
           })
           .catch((reply) => {
-            LOG("COULD NOT VERIFY USER -- ERROR", reply);
+            LOG.info("COULD NOT VERIFY USER -- ERROR", reply);
             if (reply.status === 401) {
               logOut();
               Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
@@ -165,7 +165,7 @@ export class AppRouter extends Component {
   }
 
   render() {
-    LOGDebug("RENDERING ROUTER");
+    LOG.debug("RENDERING ROUTER");
     if (this.state.storeInitialized === true) {
       if (Platform.OS === 'android') {
         return (

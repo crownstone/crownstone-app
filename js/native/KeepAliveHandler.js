@@ -1,9 +1,10 @@
 import { Scheduler } from '../logic/Scheduler';
-import { LOG, LOGDebug, LOGError } from '../logging/Log'
+import { BehaviourUtil } from '../util/BehaviourUtil';
+import { LOG } from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS, KEEPALIVE_REPEAT_INTERVAL } from '../ExternalConfig';
-import { BleActions } from './Proxy';
-import { BleUtil } from './BleUtil';
-import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/dataUtil'
+import { BluenetPromises } from './Proxy';
+import { BleUtil, BatchCommand } from './BleUtil';
+import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
 
 import { stoneTypes, TYPES } from '../router/store/reducers/stones'
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
@@ -16,7 +17,7 @@ class KeepAliveHandlerClass {
   }
 
   loadStore(store) {
-    LOG('LOADED STORE KeepAliveHandler', this._initialized);
+    LOG.info('LOADED STORE KeepAliveHandler', this._initialized);
     if (this._initialized === false) {
       this.store = store;
       this.init();
@@ -42,15 +43,17 @@ class KeepAliveHandlerClass {
     const state = this.store.getState();
     let sphereIds = Object.keys(state.spheres);
 
-    LOG('KeepAliveHandler: Starting KeepAlive call');
+    LOG.info('KeepAliveHandler: Starting KeepAlive call');
 
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      LOG('KeepAliveHandler: Starting KeepAlive round for sphere:', sphere.config.name);
+      LOG.info('KeepAliveHandler: Starting KeepAlive round for sphere:', sphere.config.name);
 
       // check every sphere where we are present. Usually this is only one of them!!
       let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
       let userLevelInSphere = getUserLevelInSphere(state, sphereId);
+
+      let bleController = new BatchCommand(this.store, sphereId);
 
       let stoneIds = Object.keys(sphere.stones);
       stoneIds.forEach((stoneId) => {
@@ -66,45 +69,32 @@ class KeepAliveHandlerClass {
           let behaviourAway = element.behaviour[TYPES.AWAY];
 
           let behaviour = undefined;
+          let delay = state.spheres[sphereId].config.exitDelay || 120;
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
           if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
-          else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; }
-          else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     }
+          else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; delay = behaviour.delay; }
+          else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     delay = behaviour.delay; }
 
           if (stone.config.handle && stone.config.disabled === false) {
-            this._performKeepAliveForStone(stone, behaviour, userLevelInSphere, element, keepAliveId);
+            this._performKeepAliveForStone(sphere, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController);
           }
           else if (stone.config.disabled === true) {
-            LOG('KeepAliveHandler: (' + keepAliveId + ') skip KeepAlive stone is disabled', stoneId);
+            LOG.info('KeepAliveHandler: (' + keepAliveId + ') skip KeepAlive stone is disabled', stoneId);
           }
         }
       });
+
+      bleController.execute({immediate: false, timesToRetry: 1}, false).catch((err) => {})
     });
   }
 
-  _performKeepAliveForStone(stone, behaviour, userLevelInSphere, element, keepAliveId, attempt = 0) {
-    LOG('KeepAliveHandler: (' + keepAliveId + ') Performing keep Alive to stone handle', stone.config.handle);
-    let proxy = BleUtil.getProxy(stone.config.handle);
-
-    // this function will retry the keepAlive if it fails.
-    let retry = () => {
-      LOG('KeepAliveHandler: (' + keepAliveId + ') Retrying guest keepAlive to ', stone.config.handle);
-      Scheduler.scheduleCallback(() => {
-        this._performKeepAliveForStone(stone, behaviour, userLevelInSphere, element, keepAliveId, attempt + 1);
-      }, KEEPALIVE_REPEAT_INTERVAL, 'keepAlive_attempt_' + attempt + '_' + stone.config.handle)
-    };
+  _performKeepAliveForStone(sphere, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController) {
+    LOG.info('KeepAliveHandler: (' + keepAliveId + ') Performing keep Alive to stone handle', stone.config.handle);
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      proxy.perform(BleActions.keepAlive)
-        .then(() => {
-          LOG('KeepAliveHandler: (' + keepAliveId + ') guest KeepAlive Successful to ', element.config.name, element.config.handle);
-        })
-        .catch((err) => {
-          LOGError('KeepAliveHandler: (' + keepAliveId + ') ATTEMPT ' + attempt + ', COULD NOT PERFORM KEEP ALIVE WITHOUT STATE TO ', stone.config.name, stone.config.handle, 'DUE TO ', err);
-          if (attempt < KEEPALIVE_REPEAT_ATTEMPTS) { retry(); }
-        })
+      bleController.load(stone, stoneId, 'keepAlive').catch((err) => {});
     }
     else {
       // determine what to send
@@ -113,23 +103,18 @@ class KeepAliveHandlerClass {
       let timeout = 2.5*KEEPALIVE_INTERVAL;
       // if we have behaviour, send it to the crownstone.
       if (behaviour !== undefined) {
-        changeState = true;
-        newState = behaviour.state;
-        timeout = Math.max(timeout, behaviour.delay);
+        if (BehaviourUtil.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === true) {
+          changeState = behaviour.active;
+          newState = behaviour.state;
+          timeout = Math.max(timeout, delay);
+        }
       }
 
-      proxy.perform(BleActions.keepAliveState, [changeState, newState, timeout]) // the max in time is so that it will not turn off before the next interval.
-        .then(() => {
-          LOG('KeepAliveHandler: (' + keepAliveId + ') keepAliveState Successful to ', element.config.name, element.config.handle);
-        })
-        .catch((err) => {
-          LOGError('KeepAliveHandler: (' + keepAliveId + ') ATTEMPT ' + attempt + ', COULD NOT PERFORM KEEPALIVE AS', userLevelInSphere, 'TO ', stone.config.name, stone.config.handle, 'DUE TO ', err);
-          if (attempt < KEEPALIVE_REPEAT_ATTEMPTS) { retry(); }
-        })
+      bleController.load(stone, stoneId, 'keepAliveState', [changeState, newState, timeout]).catch((err) => {});
     }
   }
 
-  // TODO: remove duplicate versions of this method
+
   _getElement(sphere, stone) {
     if (stone.config.applianceId) {
       return sphere.appliances[stone.config.applianceId];

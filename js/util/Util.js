@@ -1,12 +1,22 @@
 import { Alert, Platform } from 'react-native';
 import { DEBUG } from '../ExternalConfig'
 import { StoreManager } from '../router/store/storeManager'
-import { Bluenet, BleActions } from '../native/Proxy'
+import { Bluenet, BluenetPromises } from '../native/Proxy'
 import { Actions } from 'react-native-router-flux';
-import { LOG, LOGError } from '../logging/Log'
+import { LOG } from '../logging/Log'
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
 import ImageResizer from 'react-native-image-resizer';
 import RNFS from 'react-native-fs'
+import { MeshUtil } from './MeshUtil'
+import { DataUtil } from './DataUtil'
+
+
+export const Util = {
+  mesh: MeshUtil,
+  data: DataUtil
+};
+
+
 
 export const getUUID = function() {
   const S4 = function () {
@@ -49,7 +59,7 @@ export const getImageFileFromUser = function(email) {
 
 export const APPERROR = function (err) {
   if (DEBUG === true) {
-    LOG("APP ERROR FROM PROMISE:", err);
+    LOG.info("APP ERROR FROM PROMISE:", err);
     Alert.alert("APP ERROR", err.message);
   }
 };
@@ -71,7 +81,7 @@ export const removeAllFiles = function() {
 };
 
 export const logOut = function() {
-  BleActions.clearTrackedBeacons();
+  BluenetPromises.clearTrackedBeacons();
   Bluenet.stopScanning();
   Actions.loginSplash();
   StoreManager.userLogOut();

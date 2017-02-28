@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 
 import { IconCircle }  from './IconCircle'
-import { LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
 import { eventBus } from '../../util/eventBus'
-import { preparePictureURI } from '../../util/util'
+import { preparePictureURI } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
 
 export class PictureCircle extends Component {
@@ -134,7 +134,7 @@ export class PictureCircle extends Component {
               }
             })
             .catch((err) => {
-              LOGError("[PictureCircle.js] Error in checking camera permission:", err);
+              LOG.error("[PictureCircle.js] Error in checking camera permission:", err);
             })
         }
  else {

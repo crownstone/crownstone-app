@@ -9,8 +9,9 @@ import {
   View
 } from 'react-native';
 
-import { userHasPlugsInSphere, getPresentSphere } from './../../util/dataUtil'
-import { logOut } from './../../util/util'
+import { userHasPlugsInSphere, getPresentSphere } from '../../util/DataUtil'
+import { logOut, Util } from '../../util/Util'
+import { BluenetPromises } from './../../native/Proxy'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { Background } from './../components/Background'
 import { TopBar } from './../components/Topbar'
@@ -19,6 +20,7 @@ import { Actions } from 'react-native-router-flux';
 import { styles, colors } from './../styles'
 import { IconButton } from '../components/IconButton'
 
+const DeviceInfo = require('react-native-device-info');
 
 export class SettingsOverview extends Component {
   constructor() {
@@ -42,7 +44,7 @@ export class SettingsOverview extends Component {
     let items = [];
 
     items.push({type:'explanation', label:'UPDATE YOUR PROFILE', below:false});
-    items.push({label:'My Profile', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
+    items.push({label:'My Account', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {Actions.settingsProfile()}});
 
     items.push({type:'explanation', label:'CONFIGURATION', below:false});
     if (Object.keys(state.spheres).length > 0) {
@@ -53,7 +55,17 @@ export class SettingsOverview extends Component {
     else {
       items.push({label:'Add Sphere', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
         this.props.eventBus.emit('showLoading', 'Creating Sphere...');
-        CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus)
+
+        BluenetPromises.requestLocation()
+          .then((location) => {
+            let latitude = undefined;
+            let longitude = undefined;
+            if (location && location.latitude && location.longitude) {
+              latitude = location.latitude;
+              longitude = location.longitude;
+            }
+            return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus, latitude, longitude)
+          })
           .then((sphereId) => {
             this.props.eventBus.emit('hideLoading');
             let state = this.props.store.getState();
@@ -67,7 +79,7 @@ export class SettingsOverview extends Component {
     let presentSphere = getPresentSphere(state);
     if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
       let tapToToggleSettings = { tutorial: false };
-      if (state.user.tapToToggleCalibration === null || state.user.tapToToggleCalibration === undefined) {
+      if (Util.data.getTapToToggleCalibration(state)) {
         tapToToggleSettings.tutorial = true;
       }
       items.push({
@@ -141,11 +153,21 @@ export class SettingsOverview extends Component {
         />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
+          <Text style={versionStyle}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
         </ScrollView>
       </Background>
     );
   }
 }
+
+let versionStyle = {
+
+  backgroundColor:"transparent",
+  color: colors.darkGray2.rgba(1),
+  textAlign:'center',
+  fontWeight:'300',
+  fontSize: 10,
+};
 
 // TODO: restore once we have a better description for this. Also Location must be working.
 // if (totalAmountOfCrownstones > 0) {

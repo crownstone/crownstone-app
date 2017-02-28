@@ -1,8 +1,8 @@
 import { request, download } from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
-import { preparePictureURI } from '../../util/util'
+import { preparePictureURI } from '../../util/Util'
 import { EventBus } from '../../util/eventBus'
-import { LOG, LOGError, LOGCloud } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 export const defaultHeaders = {
   'Accept': 'application/json',
@@ -71,7 +71,7 @@ export const base = {
       reject(error);
     }
     if (DEBUG === true) {
-      LOGCloud(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error, endpoint, promiseBody);
+      LOG.cloud(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error, endpoint, promiseBody);
     }
   },
 
@@ -104,7 +104,7 @@ export const base = {
         promise = this._head(promiseBody);
         break;
       default:
-        LOGError("UNKNOWN TYPE:", reqType);
+        LOG.error("UNKNOWN TYPE:", reqType);
         return;
     }
     return this._finalizeRequest(promise, options, endpoint, promiseBody);
@@ -114,7 +114,7 @@ export const base = {
     return new Promise((resolve, reject) => {
       promise
         .then((reply) => {
-          LOGCloud("REPLY from", endpoint, " with options: ", options, " is: ", reply);
+          LOG.cloud("REPLY from", endpoint, " with options: ", options, " is: ", reply);
           if (reply.status === 200 || reply.status === 204)
             resolve(reply.data);
           else
@@ -144,7 +144,7 @@ export const base = {
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
-      LOGError("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
+      LOG.error("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
     }
     reject(reply);
   }

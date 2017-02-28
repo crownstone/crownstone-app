@@ -15,7 +15,7 @@ import {
 const Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
-import { LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight } from '../styles'
 import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
@@ -27,7 +27,7 @@ export class AiStart extends Component {
 
     let state = props.store.getState();
     if (Object.keys(state.spheres).length === 0) {
-      LOGError("User does not have a sphere on startup.");
+      LOG.error("User does not have a sphere on startup.");
       Actions.tabBar();
     }
 

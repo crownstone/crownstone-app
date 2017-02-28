@@ -23,7 +23,7 @@ export class ButtonBar extends Component {
           {this.props.largeIcon !== undefined ?
             <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
           {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
-          <Text style={[styles.listTextLarge, {color:colors.menuRed.hex}, this.props.style]}>{this.props.label}</Text>
+          <Text style={[{fontSize:16, color:colors.menuRed.hex}, this.props.style]}>{this.props.label}</Text>
         </View>
       </TouchableHighlight>
     );

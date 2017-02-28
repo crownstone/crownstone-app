@@ -1,11 +1,11 @@
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getUserLevelInSphere, getCurrentDeviceId } from '../../util/dataUtil'
+import { getUserLevelInSphere, getCurrentDeviceId } from '../../util/DataUtil'
 import { BATCH } from './storeManager'
-import { LOG, LOGDebug, LOGError, LOGStore } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    LOGStore('will dispatch', action);
+    LOG.store('will dispatch', action);
 
     // required for some of the actions
     let oldState = getState();
@@ -16,7 +16,7 @@ export function CloudEnhancer({ getState }) {
     // state after update
     let newState = getState();
 
-    //LOGDebug("isNew state:", getState())
+    //LOG.debug("isNew state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, newState, oldState);
@@ -58,6 +58,7 @@ function handleAction(action, returnValue, newState, oldState) {
 
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
+    case 'UPDATE_MESH_NETWORK_ID':
       handleStoneInCloud(action, newState);
       break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
@@ -71,8 +72,6 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'UPDATE_STONE_LOCATION':
       handleStoneLocationUpdateInCloud(action, newState, oldState);
       break;
-
-
     case 'UPDATE_LOCATION_CONFIG':
       handleLocationInCloud(action, newState);
       break;
@@ -89,6 +88,21 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'USER_ENTER_LOCATION':
       handleUserLocationEnter(action, newState);
       break;
+    case 'SET_TAP_TO_TOGGLE_CALIBRATION':
+    case 'UPDATE_DEVICE_CONFIG':
+      handleDeviceInCloud(action, newState);
+      break;
+
+
+    case "UPDATE_STONE_STATE":
+      handleStoneState(action, newState);
+      break;
+    case "UPDATE_STONE_SWITCH_STATE":
+      handleStoneState(action, newState, true);
+      break;
+
+
+
   }
 }
 
@@ -100,7 +114,7 @@ function handleUserInCloud(action, state) {
   if (action.data.picture) {
     CLOUD.uploadProfileImage(action.data.picture)
       .then((data) => {
-        LOG(data)
+        LOG.info(data)
       })
       .catch(() => {});
   }
@@ -113,6 +127,9 @@ function handleUserInCloud(action, state) {
       firstName: state.user.firstName,
       lastName: state.user.lastName,
       new: state.user.isNew,
+      uploadLocation:    state.user.uploadLocation,
+      uploadSwitchState: state.user.uploadSwitchState,
+      uploadPowerUsage:  state.user.uploadPowerUsage,
       updatedAt: state.user.updatedAt
     };
     CLOUD.updateUserData(data).catch(() => {});
@@ -127,17 +144,21 @@ function handleStoneBehaviourInCloud(action, state) {
     let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
     let data = {
-      name:        stoneConfig.name,
-      address:     stoneConfig.macAddress,
-      icon:        stoneConfig.icon,
-      id:          stoneId,
-      applianceId: stoneConfig.applianceId,
-      sphereId:    sphereId,
-      major:       stoneConfig.iBeaconMajor,
-      minor:       stoneConfig.iBeaconMinor,
-      uid:         stoneConfig.crownstoneId,
-      json:        behaviourJSON,
-      updatedAt:   stoneConfig.updatedAt,
+      applianceId:     stoneConfig.applianceId,
+      address:         stoneConfig.macAddress,
+      icon:            stoneConfig.icon,
+      id:              stoneId,
+      firmwareVersion: stoneConfig.firmwareVersion,
+      meshNetworkId:   stoneConfig.meshNetworkId,
+      major:           stoneConfig.iBeaconMajor,
+      minor:           stoneConfig.iBeaconMinor,
+      name:            stoneConfig.name,
+      onlyOnWhenDark:  stoneConfig.onlyOnWhenDark,
+      sphereId:        sphereId,
+      touchToToggle:   stoneConfig.touchToToggle,
+      updatedAt:       stoneConfig.updatedAt,
+      uid:             stoneConfig.crownstoneId,
+      json:            behaviourJSON,
     };
     CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
   }
@@ -149,17 +170,20 @@ function handleStoneInCloud(action, state) {
 
   let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
   let data = {
-    name:        stoneConfig.name,
-    address:     stoneConfig.macAddress,
-    icon:        stoneConfig.icon,
-    id:          stoneId,
-    touchToToggle: stoneConfig.touchToToggle,
-    applianceId: stoneConfig.applianceId,
-    sphereId:    sphereId,
-    major:       stoneConfig.iBeaconMajor,
-    minor:       stoneConfig.iBeaconMinor,
-    uid:         stoneConfig.crownstoneId,
-    updatedAt:   stoneConfig.updatedAt,
+    applianceId:       stoneConfig.applianceId,
+    address:           stoneConfig.macAddress,
+    icon:              stoneConfig.icon,
+    id:                stoneId,
+    firmwareVersion:   stoneConfig.firmwareVersion,
+    meshNetworkId:     stoneConfig.meshNetworkId,
+    major:             stoneConfig.iBeaconMajor,
+    minor:             stoneConfig.iBeaconMinor,
+    name:              stoneConfig.name,
+    onlyOnWhenDark:    stoneConfig.onlyOnWhenDark,
+    sphereId:          sphereId,
+    touchToToggle:     stoneConfig.touchToToggle,
+    uid:               stoneConfig.crownstoneId,
+    updatedAt:         stoneConfig.updatedAt,
   };
 
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
@@ -197,6 +221,7 @@ function handleApplianceInCloud(action, state) {
     icon: applianceConfig.icon,
     id: applianceId,
     sphereId: sphereId,
+    onlyOnWhenDark: applianceConfig.onlyOnWhenDark,
     updatedAt: applianceConfig.updatedAt,
   };
 
@@ -213,6 +238,7 @@ function handleApplianceBehaviourInCloud(action, state) {
     let data = {
       id:       applianceId,
       icon:     applianceConfig.icon,
+      onlyOnWhenDark: applianceConfig.onlyOnWhenDark,
       sphereId: sphereId,
       json:     behaviourJSON,
       updatedAt: applianceConfig.updatedAt
@@ -243,11 +269,16 @@ function handleSphereInCloud(action, state) {
 
   let sphereConfig = state.spheres[sphereId].config;
   let data = {
-    name: sphereConfig.name,
-    uuid: sphereConfig.iBeaconUUID,
-    meshAccessAddress: sphereConfig.meshAccessAddress,
     aiName: sphereConfig.aiName,
     aiSex: sphereConfig.aiSex,
+    exitDelay: sphereConfig.exitDelay,
+    meshAccessAddress: sphereConfig.meshAccessAddress,
+    gpsLocation:{
+      lat: sphereConfig.latitude,
+      lng: sphereConfig.longitude,
+    },
+    name: sphereConfig.name,
+    uuid: sphereConfig.iBeaconUUID,
     updatedAt: sphereConfig.updatedAt,
   };
 
@@ -259,17 +290,61 @@ function handleSphereUserInCloud(action, state) {
 }
 
 function handleUserLocationEnter(action, state) {
-  let deviceId = getCurrentDeviceId(state);
-  if (deviceId) {
-    CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => {
-    });
+  if (state.user.uploadLocation === true) {
+    let deviceId = getCurrentDeviceId(state);
+    if (deviceId) {
+      CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => {
+      });
+    }
   }
 }
 
 function handleUserLocationExit(action, state) {
-  let deviceId = getCurrentDeviceId(state);
-  if (deviceId) {
-    CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {
-    });
+  if (state.user.uploadLocation === true) {
+    let deviceId = getCurrentDeviceId(state);
+    if (deviceId) {
+      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {
+      });
+    }
+  }
+}
+
+
+function handleDeviceInCloud(action, state) {
+  let deviceId = action.deviceId;
+  let deviceConfig = state.devices[deviceId];
+  let data = {
+    name: deviceConfig.name,
+    address: deviceConfig.address,
+    description: deviceConfig.description,
+    location: state.user.uploadLocation === true ? deviceConfig.location : undefined,
+    tapToToggleCalibration: deviceConfig.tapToToggleCalibration,
+    updatedAt: deviceConfig.updatedAt
+  };
+
+  CLOUD.updateDevice(deviceId, data).catch(() => {});
+}
+
+
+function handleStoneState(action, state, pureSwitch = false) {
+  let sphereId = action.sphereId;
+  let stoneId = action.stoneId;
+
+  if (state.user.uploadSwitchState === true && pureSwitch === true) {
+    let stone = state.spheres[sphereId].stones[stoneId];
+    let data  = {
+      id:          stoneId,
+      switchState: stone.state.state,
+      updatedAt:   stone.state.updatedAt,
+    };
+
+    CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
+  }
+
+  if (state.user.uploadPowerUsage === true) {
+    let stone = state.spheres[sphereId].stones[stoneId];
+    let data  = { energy:   stone.state.currentUsage, duration: 1 };
+
+    CLOUD.forStone(stoneId).updateUsage(data).catch(() => {});
   }
 }

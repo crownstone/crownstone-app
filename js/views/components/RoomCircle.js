@@ -11,11 +11,11 @@ import {
 
 import { styles, screenWidth, screenHeight, colors } from '../styles'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
-import { getCurrentPowerUsageInLocation } from '../../util/dataUtil'
+import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
 import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
-import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil' // maybe move away from native?
-import { LOGDebug } from '../../logging/Log';
+import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import { LOG } from '../../logging/Log';
 const Actions = require('react-native-router-flux').Actions;
 
 import { Svg, Circle } from 'react-native-svg';

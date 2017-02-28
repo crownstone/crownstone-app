@@ -1,4 +1,4 @@
-import { update, getTime } from './reducerUtil'
+import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
   firstName: null,
@@ -35,6 +35,8 @@ let sphereUserReducer = (state = defaultSettings.users, action = {}) => {
         return newState;
       }
       return state;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings);
     default:
       return state
   }

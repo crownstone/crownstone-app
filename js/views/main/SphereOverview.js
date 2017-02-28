@@ -19,8 +19,8 @@ import { FinalizeLocalizationIcon }                       from '../components/Fi
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
-import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/dataUtil'
-import { LOG, LOGError, LOGDebug }                        from '../../logging/Log'
+import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import { LOG }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 
 
@@ -157,13 +157,13 @@ export class SphereOverview extends Component {
 
   // experiment
   // shouldComponentUpdate(nextProps, nextState) {
-  //   // LOG("Should component update?",nextProps, nextState)
+  //   // LOG.info("Should component update?",nextProps, nextState)
   //   return false
   // }
 
 
   render() {
-    LOG("RENDERING_OVERVIEW");
+    LOG.info("RENDERING_OVERVIEW");
     const store = this.props.store;
     const state = store.getState();
 

@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import { styles, colors} from '../styles'
-import { preparePictureURI } from '../../util/util'
+import { preparePictureURI } from '../../util/Util'
 
 export class TextCircle extends Component {
   render() {

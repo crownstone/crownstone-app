@@ -1,7 +1,7 @@
 import React, { Component } from 'react' 
 import {
-  
   Dimensions,
+  Keyboard,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -11,7 +11,7 @@ import {
 
 import { FadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
-import { styles, colors , screenHeight, width } from './../styles'
+import { styles, colors , screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/eventBus'
 
 export class OptionPopup extends Component {
@@ -26,7 +26,10 @@ export class OptionPopup extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on('showPopup', (buttons) => {this.setState({buttons:buttons, visible:true})}));
+    this.unsubscribe.push(eventBus.on('showPopup', (buttons) => {
+      Keyboard.dismiss();
+      this.setState({buttons:buttons, visible:true});
+    }));
     this.unsubscribe.push(eventBus.on('hidePopup', () => {this.setState({visible:false})}));
   }
 

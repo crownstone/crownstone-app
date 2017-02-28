@@ -13,14 +13,14 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { stoneTypes } from '../../router/store/reducers/stones'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-import { BleActions } from '../../native/Proxy'
+import { BluenetPromises } from '../../native/Proxy'
 import { BleUtil } from '../../native/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/animated/FadeInView'
-import { LOG, LOGError } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 
 
 
@@ -203,7 +203,7 @@ export class DeviceEdit extends Component {
             resolve();
           }
           else {
-            LOGError("COULD NOT DELETE IN CLOUD", err);
+            LOG.error("COULD NOT DELETE IN CLOUD", err);
             reject();
           }
         })
@@ -212,7 +212,7 @@ export class DeviceEdit extends Component {
         this._removeCrownstoneFromRedux(false);
       })
       .catch((err) => {
-        LOG("error while asking the cloud to remove this crownstone", err);
+        LOG.info("error while asking the cloud to remove this crownstone", err);
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Crownstone in the cloud. Please try again later",
           [{text:'OK', onPress: () => {
@@ -230,24 +230,24 @@ export class DeviceEdit extends Component {
             resolve();
           }
           else {
-            LOGError("COULD NOT DELETE IN CLOUD", err);
+            LOG.error("COULD NOT DELETE IN CLOUD", err);
             reject();
           }
         })
       })
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Factory resetting the Crownstone...');
-        let proxy = BleUtil.getProxy(stone.config.handle);
-        proxy.performPriority(BleActions.commandFactoryReset)
+        let proxy = BleUtil.getProxy(stone.config.handle, this.props.sphereId, this.props.stoneId);
+        proxy.performPriority(BluenetPromises.commandFactoryReset)
           .catch(() => {
             // second attempt
-            return proxy.performPriority(BleActions.commandFactoryReset)
+            return proxy.performPriority(BluenetPromises.commandFactoryReset)
           })
           .then(() => {
             this._removeCrownstoneFromRedux(true);
           })
           .catch((err) => {
-            LOGError("ERROR:",err);
+            LOG.error("ERROR:",err);
             Alert.alert("Encountered a problem.",
               "We cannot Factory reset this Crownstone. Unfortunately, it has already been removed from the cloud. " +
               "Try deleting it again or use the recovery procedure to put it in setup mode.",
@@ -259,7 +259,7 @@ export class DeviceEdit extends Component {
           })
       })
       .catch((err) => {
-        LOG("error while asking the cloud to remove this crownstone", err);
+        LOG.info("error while asking the cloud to remove this crownstone", err);
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Crownstone in the cloud. Please try again later",
           [{text:'OK', onPress: () => {
