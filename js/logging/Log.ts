@@ -5,6 +5,7 @@ import {
   LOG_WARNINGS,
   LOG_VERBOSE,
   LOG_DEBUG,
+  LOG_EVENTS,
   LOG_CLOUD,
   LOG_BLE,
   LOG_MESH,
@@ -34,6 +35,9 @@ export const LOG : any = {
     this._log('WARNING ! --', LOG_WARNINGS, arguments);
   },
 
+  event: function() {
+    this._log('EVENT ------', LOG_EVENTS, arguments);
+  },
 
   error: function() {
     this._log('ERROR !!! --', LOG_ERRORS, arguments);

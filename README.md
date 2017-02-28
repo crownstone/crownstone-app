@@ -8,11 +8,26 @@ The native libs are not in this project directly.
 
 Assuming you've already installed nodejs, yarn and Carthage (for ios). You can get Yarn here: https://yarnpkg.com/en/docs/install
 
+Make sure typescript 2.2 or higher is installed.
+
 ```
+npm install -g typescript
 yarn
 cd ios
 carthage bootstrap --platform iOS --no-use-binaries
 cd ..
+```
+
+To run the compiler, use:
+
+```
+tsc --watch
+```
+
+or
+
+```
+npm start
 ```
 
 ### Android
