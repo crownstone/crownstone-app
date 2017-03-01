@@ -2,6 +2,7 @@ import { BluenetPromises, BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/Pr
 import { BleUtil, BatchCommand } from '../native/BleUtil';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log';
+import { Util } from '../util/Util';
 var SunCalc = require('suncalc');
 
 export const BehaviourUtil = {
@@ -90,7 +91,7 @@ export const BehaviourUtil = {
     let state = store.getState();
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
-    let element = this.getElement(sphere, stone);
+    let element = Util.data.getElement(sphere, stone);
     let behaviour = element.behaviour[behaviourType];
 
     let triggerController = false;
@@ -189,23 +190,6 @@ export const BehaviourUtil = {
       if (callbacks && callbacks.onCancelled && typeof callbacks.onCancelled === 'function') {
         callbacks.onCancelled(sphereId, stoneId);
       }
-    }
-  },
-
-
-  /**
-   * If the stone has an appliance, return that appliance, otherwise return the stone. This gets you the item that
-   * contains the active behaviour
-   * @param sphere
-   * @param stone
-   * @returns {*}
-   */
-  getElement: function (sphere, stone) {
-    if (stone.config.applianceId) {
-      return sphere.appliances[stone.config.applianceId];
-    }
-    else {
-      return stone;
     }
   },
 

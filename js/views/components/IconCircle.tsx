@@ -16,6 +16,7 @@ import { styles, colors} from '../styles'
  * props: {
  *   icon            : String   // icon name (ionicons only without the ion- prefix)
  *   size            : Number   // size of the iconCircle
+ *   iconSize        : Number   // size of the iconCircle
  *   color           : String   // change the color of the icon, default menu dark blue
  *   borderColor     : String   // change the color of the background, default same as icon
  *   backgroundColor : String   // change the color of the background, default white
@@ -27,7 +28,7 @@ export class IconCircle extends Component<any, any> {
   render() {
     let size = this.props.size || 60;
     return (
-      <View style={{width:size, height:size}}>
+      <View style={[this.props.style, {width:size, height:size}]}>
         <View style={[{
           width:size,
           height:size,
@@ -36,7 +37,7 @@ export class IconCircle extends Component<any, any> {
           borderColor: this.props.borderColor || this.props.color || colors.menuBackground.hex,
           borderWidth: 2
           }, styles.centered]}>
-          <Icon name={this.props.icon} size={size*0.6} color={this.props.color || colors.menuBackground.hex} />
+          <Icon name={this.props.icon} size={this.props.iconSize || size*0.6} color={this.props.color || colors.menuBackground.hex} />
         </View>
         {this.props.showEdit === true ?
           <View style={[{

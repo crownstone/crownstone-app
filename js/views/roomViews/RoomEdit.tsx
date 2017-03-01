@@ -14,7 +14,8 @@ const Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
-import { getStonesInLocation, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import { Util } from '../../util/Util'
+import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors } from './../styles'
 import { LOG } from './../../logging/Log'
@@ -65,12 +66,11 @@ export class RoomEdit extends Component<any, any> {
     CLOUD.forSphere(this.props.sphereId).deleteLocation(this.props.locationId)
       .then(() => {
         let removeActions = [];
-        let stones = getStonesInLocation(state, this.props.sphereId, this.props.locationId);
+        let stones = Util.data.getStonesInLocation(state, this.props.sphereId, this.props.locationId);
+        let stoneIds = Object.keys(stones);
         removeActions.push({sphereId: this.props.sphereId, locationId: this.props.locationId, type: "REMOVE_LOCATION"});
-        for (let stoneId in stones) {
-          if (stones.hasOwnProperty(stoneId)) {
-            removeActions.push({sphereId: this.props.sphereId, stoneId: stoneId, type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
-          }
+        for (let i = 0; i < stoneIds.length; i++) {
+          removeActions.push({sphereId: this.props.sphereId, stoneId: stoneIds[i], type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
         }
         store.batchDispatch(removeActions);
         // jump back to root

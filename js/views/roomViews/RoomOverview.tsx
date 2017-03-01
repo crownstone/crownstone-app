@@ -274,7 +274,6 @@ export class RoomOverview extends Component<any, any> {
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true;
-    // this.viewingRemotely = false; // used for development: forcing remote off
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
@@ -282,6 +281,8 @@ export class RoomOverview extends Component<any, any> {
     let userAdmin = getUserLevelInSphere(state, this.props.sphereId) === 'admin';
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
 
+    // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
+    this.viewingRemotely = this.props.locationId === null && Object.keys(stones).length === 0 ? false : this.viewingRemotely;
 
     let amountOfStonesInRoom = Object.keys(stones).length;
     let backgroundImage = this.props.getBackground('main', this.viewingRemotely);

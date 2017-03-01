@@ -27,6 +27,7 @@ import { SettingsOverview }           from '../views/settingsViews/SettingsOverv
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
 import { SettingsPrivacy }            from '../views/settingsViews/SettingsPrivacy'
 import { SettingsDeveloper }          from '../views/settingsViews/SettingsDeveloper'
+import { SettingsMeshOverview }       from '../views/settingsViews/SettingsMeshOverview'
 import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
 import { SettingsSphere }             from '../views/settingsViews/SettingsSphere'
 import { SettingsSphereInvite }       from '../views/settingsViews/SettingsSphereInvite'
@@ -64,6 +65,7 @@ export const Views = {
   SettingsProfile,
   SettingsPrivacy,
   SettingsDeveloper,
+  SettingsMeshOverview,
   SettingsSphereOverview,
   SettingsSphere,
   SettingsSphereInvite,

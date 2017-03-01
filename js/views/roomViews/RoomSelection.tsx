@@ -12,7 +12,7 @@ import {
 
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { getStonesInLocation } from '../../util/DataUtil'
+import { Util } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { TopBar } from '../components/Topbar';
@@ -47,7 +47,7 @@ export class RoomSelection extends Component<any, any> {
           <RoomList
             icon={room.config.icon}
             name={room.config.name}
-            stoneCount={Object.keys(getStonesInLocation(state, this.props.sphereId, roomId)).length}
+            stoneCount={Object.keys(Util.data.getStonesInLocation(state, this.props.sphereId, roomId)).length}
             navigation={true}
           />
         </View>

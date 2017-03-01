@@ -158,7 +158,7 @@ export class SetupDeviceEntry extends Component<any, any> {
           </TouchableOpacity>
           {this._getActivityIndicator()}
         </View>
-        <Animated.View style={{position:'relative', left:-15, top:-loadingHeight, width: this.state.progressWidth, height:loadingHeight, backgroundColor:colors.green2.hex}} />
+        <Animated.View style={{position:'relative', left:-15, top: 0, width: this.state.progressWidth, height:loadingHeight, backgroundColor:colors.green2.hex}} />
       </View>
     );
   }

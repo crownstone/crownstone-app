@@ -21,7 +21,7 @@ import { CLOUD } from '../../../cloud/cloudAPI'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
 import { NativeBus, BluenetPromises } from '../../../native/Proxy'
 import { logOut, quitApp, Util } from '../../../util/Util'
-import { userHasPlugsInSphere, getPresentSphere } from '../../../util/DataUtil'
+import { userHasPlugsInSphere } from '../../../util/DataUtil'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
@@ -135,7 +135,7 @@ export class SideBar extends Component<any, any> {
 
 
 
-    let presentSphere = getPresentSphere(state);
+    let presentSphere = Util.data.getPresentSphere(state);
 
     if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
       let tapToToggleSettings = { tutorial: false };

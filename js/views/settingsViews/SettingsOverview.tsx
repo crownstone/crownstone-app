@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-import { userHasPlugsInSphere, getPresentSphere } from '../../util/DataUtil'
+import { userHasPlugsInSphere } from '../../util/DataUtil'
 import { logOut, Util } from '../../util/Util'
 import { BluenetPromises } from './../../native/Proxy'
 import { CLOUD } from './../../cloud/cloudAPI'
@@ -45,41 +45,75 @@ export class SettingsOverview extends Component<any, any> {
     const state = store.getState();
     let items = [];
 
-    items.push({type:'explanation', label:'UPDATE YOUR PROFILE', below:false});
-    items.push({label:'My Account', icon: <IconButton name="ios-body" size={23} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />, type:'navigation', callback: () => {(Actions as any).settingsProfile()}});
+    items.push({type: 'explanation', label: 'UPDATE YOUR PROFILE', below: false});
+    items.push({label: 'My Account',
+      icon: <IconButton name="ios-body" size={23} button={true} color="#fff"
+                        buttonStyle={{backgroundColor:colors.purple.hex}}/>,
+      type: 'navigation',
+      callback: () => {
+        (Actions as any).settingsProfile()
+      }
+    });
 
-    items.push({type:'explanation', label:'CONFIGURATION', below:false});
+    items.push({type: 'explanation', label: 'CONFIGURATION', below: false});
     if (Object.keys(state.spheres).length > 0) {
-      items.push({label:'Spheres', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
-        (Actions as any).settingsSphereOverview()
-      }});
+      items.push({
+        label: 'Spheres',
+        icon: <IconButton name="c1-house" size={22} button={true} color="#fff"
+                          buttonStyle={{backgroundColor:colors.blue.hex}}/>,
+        type: 'navigation',
+        callback: () => {
+          (Actions as any).settingsSphereOverview()
+        }
+      });
     }
     else {
-      items.push({label:'Add Sphere', icon: <IconButton name="c1-house" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, type:'navigation', callback: () => {
-        this.props.eventBus.emit('showLoading', 'Creating Sphere...');
+      items.push({
+        label: 'Add Sphere',
+        icon: <IconButton name="c1-house" size={22} button={true} color="#fff"
+                          buttonStyle={{backgroundColor:colors.blue.hex}}/>,
+        type: 'navigation',
+        callback: () => {
+          this.props.eventBus.emit('showLoading', 'Creating Sphere...');
 
-        BluenetPromises.requestLocation()
-          .then((location) => {
-            let latitude = undefined;
-            let longitude = undefined;
-            if (location && location.latitude && location.longitude) {
-              latitude = location.latitude;
-              longitude = location.longitude;
-            }
-            return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus, latitude, longitude)
-          })
-          .then((sphereId) => {
-            this.props.eventBus.emit('hideLoading');
-            let state = this.props.store.getState();
-            let title = state.spheres[sphereId].config.name;
-            (Actions as any).settingsSphere({sphereId: sphereId, title: title})
-          })
-          .catch(() => {this.props.eventBus.emit('hideLoading');});
-      }});
+          BluenetPromises.requestLocation()
+            .then((location) => {
+              let latitude = undefined;
+              let longitude = undefined;
+              if (location && location.latitude && location.longitude) {
+                latitude = location.latitude;
+                longitude = location.longitude;
+              }
+              return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus, latitude, longitude)
+            })
+            .then((sphereId) => {
+              this.props.eventBus.emit('hideLoading');
+              let state = this.props.store.getState();
+              let title = state.spheres[sphereId].config.name;
+              (Actions as any).settingsSphere({sphereId: sphereId, title: title})
+            })
+            .catch(() => {
+              this.props.eventBus.emit('hideLoading');
+            });
+        }
+      });
     }
 
-    let presentSphere = getPresentSphere(state);
-    if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
+    if (Object.keys(state.spheres).length > 0) {
+      items.push({
+        label: 'Mesh Overview',
+        type: 'navigation',
+        style: {color: '#000'},
+        icon: <IconButton name="md-share" size={23} button={true} style={{position:'relative', top:1}} color="#fff"
+                          buttonStyle={{backgroundColor:colors.menuBackground.hex}}/>,
+        callback: () => {
+          (Actions as any).settingsMeshOverview();
+        }
+      });
+    }
+
+    let presentSphere = Util.data.getPresentSphere(state);
+    if (presentSphere && userHasPlugsInSphere(state, presentSphere) || true) {
       let tapToToggleSettings = { tutorial: false };
       if (Util.data.getTapToToggleCalibration(state)) {
         tapToToggleSettings.tutorial = true;
@@ -88,18 +122,17 @@ export class SettingsOverview extends Component<any, any> {
         label:'Calibrate Tap-to-Toggle',
         type:'button',
         style: {color:'#000'},
-        icon: <IconButton name="md-flask" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
-        callback: () => {this.props.eventBus.emit("CalibrateTapToToggle", tapToToggleSettings);}
+        icon: <IconButton name="md-flask" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
+        callback: () => { this.props.eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
       });
 
     }
-
 
     items.push({label:'TROUBLESHOOTING',  type:'explanation', below: false});
     items.push({label:'Help', type:'navigation', icon: <IconButton name="ios-help-circle" size={22} button={true} style={{position:'relative', top:1}} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />, callback: () => { Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {})}});
     items.push({
       label: 'Recover a Crownstone',
-      icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />,
+      icon: <IconButton name="c1-socket2" size={23} button={true} color="#fff" style={{position:'relative', top:1}} buttonStyle={{backgroundColor:colors.menuTextSelected.hex}} />,
       type: 'navigation',
       callback: () => {
         (Actions as any).settingsPluginRecoverStep1();

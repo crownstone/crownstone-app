@@ -13,7 +13,7 @@ export const DataUtil = {
    * @param deviceAddress
    * @returns {*}
    */
-  getDeviceIdFromState: function(state, deviceAddress) {
+  getDeviceIdFromState: function(state, deviceAddress : string) : string {
     let deviceIds = Object.keys(state.devices);
     for (let i = 0; i < deviceIds.length; i++) {
       if (state.devices[deviceIds[i]].address === deviceAddress) {
@@ -23,7 +23,7 @@ export const DataUtil = {
     return null;
   },
 
-  getTapToToggleCalibration: function(state) {
+  getTapToToggleCalibration: function(state) : number {
     if (state && state.devices) {
       let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
       if (state.devices[deviceId] && state.devices[deviceId]) {
@@ -34,23 +34,63 @@ export const DataUtil = {
       }
     }
     return null;
-  }
+  },
 
-};
-
-
-export const getStonesInLocation = function(state, sphereId, locationId?) {
-  let filteredStones = {};
-  if (sphereId !== undefined) {
-    let stones = state.spheres[sphereId].stones;
-    let stoneIds = Object.keys(stones);
-    stoneIds.forEach((stoneId) => {
-      if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
-        filteredStones[stoneId] = (stones[stoneId]);
+  getPresentSphere: function(state) {
+    let sphereIds = Object.keys(state.spheres);
+    for (let i = 0; i < sphereIds.length; i++ ) {
+      if (state.spheres[sphereIds[i]].config.present === true) {
+        return sphereIds[i];
       }
-    })
-  }
-  return filteredStones;
+    }
+    return null;
+  },
+
+  getStonesInLocation: function(state : any, sphereId : string, locationId?) : object {
+    let filteredStones = {};
+    if (sphereId !== undefined) {
+      let stones = state.spheres[sphereId].stones;
+      let stoneIds = Object.keys(stones);
+      stoneIds.forEach((stoneId) => {
+        if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
+          filteredStones[stoneId] = (stones[stoneId]);
+        }
+      })
+    }
+    return filteredStones;
+  },
+
+  getStonesInLocationArray: function(state : any, sphereId : string, locationId?) : any[] {
+    let filteredStones = [];
+    if (sphereId !== undefined) {
+      let stones = state.spheres[sphereId].stones;
+      let stoneIds = Object.keys(stones);
+      stoneIds.forEach((stoneId) => {
+        if (stones[stoneId].config.locationId === locationId || locationId === undefined) {
+          filteredStones.push(stones[stoneId]);
+        }
+      })
+    }
+    return filteredStones;
+  },
+
+
+  /**
+   * If the stone has an appliance, return that appliance, otherwise return the stone. This gets you the item that
+   * contains the active behaviour
+   * @param sphere
+   * @param stone
+   * @returns {*}
+   */
+  getElement(sphere, stone) {
+    if (stone.config.applianceId) {
+      return sphere.appliances[stone.config.applianceId];
+    }
+    else {
+      return stone;
+    }
+  },
+
 };
 
 export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {
@@ -67,6 +107,7 @@ export const getAmountOfStonesInLocation = function(state, sphereId, locationId)
   return counter;
 };
 
+// TODO: replace by dataUtil method
 export const getFloatingStones = function(state, sphereId) {
   let floatingStones = [];
   if (sphereId !== undefined) {
@@ -104,11 +145,11 @@ export const getPresentUsersInLocation = function(state, sphereId, locationId, a
 
 export const getCurrentPowerUsageInLocation = function(state, sphereId, locationId) {
   let usage = 0;
-  let stones = getStonesInLocation(state, sphereId, locationId);
-  for (let stoneId in stones) {
-    if (stones.hasOwnProperty(stoneId)) {
-      usage += stones[stoneId].state.currentUsage
-    }
+  let stones = DataUtil.getStonesInLocation(state, sphereId, locationId);
+  let stoneIds = Object.keys(stones);
+
+  for (let i = 0; i < stoneIds.length; i++) {
+    usage += stones[stoneIds[i]].state.currentUsage
   }
 
   return usage
@@ -116,7 +157,7 @@ export const getCurrentPowerUsageInLocation = function(state, sphereId, location
 
 
 export const getStonesAndAppliancesInSphere = function(state, sphereId) {
-  let stones = getStonesInLocation(state, sphereId);
+  let stones = DataUtil.getStonesInLocation(state, sphereId);
   let appliances = state.spheres[sphereId].appliances;
 
   let items = {};
@@ -132,19 +173,20 @@ export const getStonesAndAppliancesInSphere = function(state, sphereId) {
 };
 
 
-export const getStonesAndAppliancesInLocation = function(state, sphereId, locationId) {
-  let stones = getStonesInLocation(state, sphereId, locationId);
+export const getStonesAndAppliancesInLocation = function(state, sphereId, locationId) : object {
+  let stones = DataUtil.getStonesInLocation(state, sphereId, locationId);
+  let stoneIds = Object.keys(stones);
   let appliances = state.spheres[sphereId].appliances;
 
   let items = {};
-  for (let stoneId in stones) {
-    if (stones.hasOwnProperty(stoneId)) {
-      let stone = stones[stoneId];
-      if (stone.config.applianceId)
-        items[stoneId] = {stone: stone, device: appliances[stone.config.applianceId]};
-      else
-        items[stoneId] = {stone: stone, device: stone}
-    }
+
+  for (let i = 0; i < stoneIds.length; i++) {
+    let stoneId = stoneIds[i];
+    let stone = stones[stoneId];
+    if (stone.config.applianceId)
+      items[stoneId] = {stone: stone, device: appliances[stone.config.applianceId]};
+    else
+      items[stoneId] = {stone: stone, device: stone}
   }
   return items;
 };
@@ -403,14 +445,4 @@ export const userHasPlugsInSphere = function(state, sphereId) {
   }
 
   return false;
-};
-
-export const getPresentSphere = function(state) {
-  let sphereIds = Object.keys(state.spheres);
-  for (let i = 0; i < sphereIds.length; i++ ) {
-    if (state.spheres[sphereIds[i]].config.present === true) {
-      return sphereIds[i];
-    }
-  }
-  return null;
 };

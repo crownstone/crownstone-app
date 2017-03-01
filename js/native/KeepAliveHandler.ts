@@ -1,10 +1,10 @@
 import { Scheduler } from '../logic/Scheduler';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { LOG } from '../logging/Log'
-import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS, KEEPALIVE_REPEAT_INTERVAL } from '../ExternalConfig';
-import { BluenetPromises } from './Proxy';
-import { BleUtil, BatchCommand } from './BleUtil';
+import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS } from '../ExternalConfig';
+import { BatchCommand } from './BleUtil';
 import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
+import { Util } from '../util/Util'
 
 import { stoneTypes, TYPES } from '../router/store/reducers/stones'
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
@@ -67,7 +67,7 @@ class KeepAliveHandlerClass {
         let keepAliveId = (Math.floor(Math.random()*1e6)).toString(36);
 
         if (stone.config.type !== stoneTypes.guidestone) {
-          let element = this._getElement(sphere, stone);
+          let element = Util.data.getElement(sphere, stone);
           let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
           let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
           let behaviourAway = element.behaviour[TYPES.AWAY];
@@ -89,7 +89,7 @@ class KeepAliveHandlerClass {
         }
       });
 
-      bleController.execute({immediate: false, timesToRetry: 1}, false).catch((err) => {})
+      bleController.execute({immediate: false, timesToRetry: KEEPALIVE_REPEAT_ATTEMPTS}, false).catch((err) => {})
     });
   }
 
@@ -117,17 +117,6 @@ class KeepAliveHandlerClass {
       bleController.load(stone, stoneId, 'keepAliveState', [changeState, newState, timeout]).catch((err) => {});
     }
   }
-
-
-  _getElement(sphere, stone) {
-    if (stone.config.applianceId) {
-      return sphere.appliances[stone.config.applianceId];
-    }
-    else {
-      return stone;
-    }
-  }
-
 }
 
 export const KeepAliveHandler = new KeepAliveHandlerClass();

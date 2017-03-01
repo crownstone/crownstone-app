@@ -38,7 +38,6 @@ export const DISABLE_TIMEOUT = 30000; //ms
 
 export const KEEPALIVE_INTERVAL = 60; // s !
 export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
-export const KEEPALIVE_REPEAT_INTERVAL = 5000; // ms
 
 // in the event that only an away event (or only a near event) is configured,
 // reset the trigger if you spend this amount of milliseconds in the other zone.
@@ -49,7 +48,7 @@ export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
 
 export const TESTING_IN_PROCESS = false;
 
-const LOCAL_TESTING = true;
+let LOCAL_TESTING = false;
 
 let notifiedCloudEndpoint = false;
 
@@ -62,6 +61,8 @@ if (RELEASE_MODE) {
     notifiedCloudEndpoint = true;
     CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
   }
+
+  LOCAL_TESTING = false;
 
   LOG.info("====================   ============================   ===================");
   LOG.info("====================   === RUNNING RELEASE MODE ===   ===================");

@@ -62,6 +62,6 @@ export const MeshUtil = {
       stoneId: stoneId,
       data: {meshNetworkId: networkId}
     }
-  }
+  },
 
 };

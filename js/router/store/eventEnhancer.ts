@@ -190,8 +190,9 @@ function checkAction(action, affectedIds) {
     case 'RESET_SPHERE_STATE':
     case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
     case 'REFRESH_DEFAULTS':
-    case 'UPDATE_MESH_NETWORK_ID':
       break;
+    case 'UPDATE_MESH_NETWORK_ID':
+      eventStatus['meshIdUpdated'] = affectedIds; break;
     default:
       LOG.warn("UNKNOWN ACTION TYPE:", action);
   }
