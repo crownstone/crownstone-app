@@ -37,7 +37,7 @@ export class DeviceEntry extends Component<any, any> {
     this.openHeight = this.baseHeight + this.optionsHeight;
     this.unsubscribe = () => {};
 
-    this.state = {height: new Animated.Value(this.baseHeight), optionsOpen: false};
+    this.state = {height: new Animated.Value(this.baseHeight), optionsHeight:  new Animated.Value(0), optionsOpen: false};
     this.optionsAreOpen = false;
     this.animating = false;
     this.id = getUUID();
@@ -70,6 +70,7 @@ export class DeviceEntry extends Component<any, any> {
       this.animating = true;
       this.setState({optionsOpen: false});
       Animated.timing(this.state.height, {toValue: this.baseHeight, duration: this.props.duration || delay}).start();
+      Animated.timing(this.state.optionsHeight, {toValue: 0, duration: this.props.duration || delay}).start();
       this.optionMoveTimeout = setTimeout(() => {this.optionsAreOpen = false; this.animating = false;}, delay);
     }
   }
@@ -80,6 +81,7 @@ export class DeviceEntry extends Component<any, any> {
       this.animating = true;
       this.setState({optionsOpen: true});
       Animated.timing(this.state.height, {toValue: this.openHeight, duration: this.props.duration || delay}).start();
+      Animated.timing(this.state.optionsHeight, {toValue: this.optionsHeight, duration: this.props.duration || delay}).start();
       this.optionMoveTimeout = setTimeout(() => {this.optionsAreOpen = true; this.animating = false;}, delay);
     }
   }
@@ -136,7 +138,7 @@ export class DeviceEntry extends Component<any, any> {
   _getOptions() {
     if (this.state.optionsOpen || this.animating) {
       return (
-        <View style={{height: this.optionsHeight, flex: 1, alignItems: 'center'}}>
+        <Animated.View style={{height: this.state.optionsHeight, width: screenWidth, alignItems: 'center', overflow: 'hidden'}}>
           <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
           <View style={{flexDirection: 'row', flex: 1, alignItems: "center"}}>
             <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onMove()}>
@@ -149,7 +151,7 @@ export class DeviceEntry extends Component<any, any> {
               <Icon name="ios-cog" size={29} color="#aaa" style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
             </TouchableOpacity> : undefined}
           </View>
-        </View>
+        </Animated.View>
       )
     }
   }

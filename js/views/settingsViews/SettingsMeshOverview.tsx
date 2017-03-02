@@ -159,10 +159,7 @@ export class Network extends Component<any, any> {
       );
       if (this.props.connected !== false) {
         items.push(
-          <View key={'spacer'+i} style={{flexDirection:'row',width: width, height: 50, alignItems:'center', justifyContent:'center'}}>
-            <View style={{backgroundColor:colors.csBlue.hex, width:14, height:14, borderRadius:7, position:'relative', left:-42, borderColor:colors.white.hex, borderWidth:2}} />
-            <View style={{backgroundColor:colors.green.hex, width:16, height:16, borderRadius:8, position:'relative', left:-92, borderColor:colors.white.hex, borderWidth:2}} />
-          </View>
+          <View key={'spacer'+i} style={{flexDirection:'row',width: width, height: 50, alignItems:'center', justifyContent:'center'}} />
         );
       }
       else {
