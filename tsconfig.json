@@ -6,7 +6,7 @@
     "noImplicitAny": false,
     "noImplicitReturns": false,
     "noImplicitThis": false,
-    "removeComments": true,
+    "removeComments": false,
     "module": "commonjs",
     "target": "es2015",
     "jsx": "react-native",
