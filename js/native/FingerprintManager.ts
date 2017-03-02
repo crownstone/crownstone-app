@@ -1,4 +1,4 @@
-import { Bluenet, NativeBus, BluenetPromises } from './Proxy';
+import { Bluenet, NativeBus, BluenetPromiseWrapper } from './Proxy';
 import { LOG } from '../logging/Log'
 
 class FingerprintManagerClass {
@@ -89,7 +89,7 @@ class FingerprintManagerClass {
 
   finalizeFingerprint(sphereId, locationId) {
     this._stopFingerprinting(() => {});
-    return BluenetPromises.finalizeFingerprint(sphereId, locationId)
+    return BluenetPromiseWrapper.finalizeFingerprint(sphereId, locationId)
   }
 
   pauseCollectingFingerprint() {

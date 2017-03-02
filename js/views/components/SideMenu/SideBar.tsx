@@ -19,7 +19,7 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../st
 import { Icon } from '../Icon'
 import { CLOUD } from '../../../cloud/cloudAPI'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
-import { NativeBus, BluenetPromises } from '../../../native/Proxy'
+import { NativeBus, BluenetPromiseWrapper } from '../../../native/Proxy'
 import { logOut, quitApp, Util } from '../../../util/Util'
 import { userHasPlugsInSphere } from '../../../util/DataUtil'
 
@@ -112,7 +112,7 @@ export class SideBar extends Component<any, any> {
           eventBus.emit('showLoading', 'Creating Sphere...');
           setTimeout(() => { this.props.closeCallback(); }, 0);
 
-          BluenetPromises.requestLocation()
+          BluenetPromiseWrapper.requestLocation()
             .then((location) => {
               let latitude = undefined;
               let longitude = undefined;

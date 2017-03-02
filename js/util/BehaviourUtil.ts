@@ -1,4 +1,4 @@
-import { BluenetPromises, BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/Proxy';
+import { BluenetPromiseWrapper, BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/Proxy';
 import { BleUtil, BatchCommand } from '../native/BleUtil';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log';

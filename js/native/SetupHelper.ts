@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromises, NativeBus } from './Proxy';
+import { BluenetPromiseWrapper, NativeBus } from './Proxy';
 import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus'
@@ -51,21 +51,21 @@ export class SetupHelper {
     let setupPromise = () => {
       return new Promise((resolve, reject) => {
         eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
-        BluenetPromises.connect(this.handle)
+        BluenetPromiseWrapper.connect(this.handle)
           .then(() => {
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
-            return BluenetPromises.getMACAddress();
+            return BluenetPromiseWrapper.getMACAddress();
           })
           .then((macAddress) => {
             this.macAddress = macAddress;
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
-            return BluenetPromises.phoneDisconnect();
+            return BluenetPromiseWrapper.phoneDisconnect();
           })
           .then(() => {
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
             return this.registerInCloud(sphereId);
           })
-          .then((cloudResponse) => {
+          .then((cloudResponse : any) => {
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 });
             this.cloudResponse = cloudResponse;
             this.stoneIdInCloud = cloudResponse.id;
@@ -166,7 +166,7 @@ export class SetupHelper {
 
             LOG.error("error during setup phase:", err);
 
-            BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
+            BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
           })
       });
     };
@@ -233,9 +233,9 @@ export class SetupHelper {
     });
 
     return new Promise((resolve, reject) => {
-      BluenetPromises.connect(this.handle)
+      BluenetPromiseWrapper.connect(this.handle)
         .then(() => {
-          return BluenetPromises.setupCrownstone(data);
+          return BluenetPromiseWrapper.setupCrownstone(data);
         })
         .then(() => {
           unsubscribe();

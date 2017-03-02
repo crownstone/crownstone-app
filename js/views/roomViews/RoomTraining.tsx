@@ -148,7 +148,7 @@ export class RoomTraining extends Component<any, any> {
           locationId: this.props.locationId,
           data:{ fingerprintRaw: stringifiedFingerprint }
         });
-      }).done();
+      }).catch(() => {});
   }
 
 

@@ -1,4 +1,4 @@
-import { Bluenet, BluenetPromises, NativeBus } from './Proxy';
+import { Bluenet, BluenetPromiseWrapper, NativeBus } from './Proxy';
 import { BleUtil } from './BleUtil';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
@@ -58,7 +58,7 @@ class LocationHandlerClass {
     if (sphere !== undefined) {
       LOG.info("LocationHandler: ENTER SPHERE", sphereId);
 
-      BluenetPromises.requestLocation()
+      BluenetPromiseWrapper.requestLocation()
         .then((location) => {
           if (location && location.latitude && location.longitude) {
             if (sphere.config.latitude && sphere.config.longitude) {
@@ -108,7 +108,7 @@ class LocationHandlerClass {
 
 
       LOG.info("Set Settings.", bluenetSettings);
-      BluenetPromises.setSettings(bluenetSettings)
+      BluenetPromiseWrapper.setSettings(bluenetSettings)
         .then(() => {
           let exitEnterTimeDifference = new Date().valueOf() - lastTimePresent;
           if (exitEnterTimeDifference > KEEPALIVE_INTERVAL*1000*1.5) {

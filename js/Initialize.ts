@@ -4,7 +4,7 @@ import { LOG }                                  from './logging/Log'
 import { CLOUD }                                from './cloud/cloudAPI'
 import { LocalizationUtil }                     from './native/LocalizationUtil'
 import { Scheduler }                            from './logic/Scheduler'
-import { BluenetPromises, Bluenet, NativeBus }  from './native/Proxy';
+import { BluenetPromiseWrapper, Bluenet, NativeBus }  from './native/Proxy';
 import { eventBus }                             from './util/eventBus'
 import { userHasPlugsInSphere, getDeviceSpecs } from './util/DataUtil'
 import { Util }                                 from './util/Util'
@@ -37,7 +37,7 @@ export const INITIALIZER = {
             break;
           case "poweredOn":
             if (this.userReady) {
-              BluenetPromises.isReady().then(() => {
+              BluenetPromiseWrapper.isReady().then(() => {
                 Bluenet.startScanningForCrownstonesUniqueOnly();
               });
             }
@@ -92,7 +92,7 @@ export const INITIALIZER = {
       // when the app is started we track spheres and scan for Crownstones
       eventBus.on('appStarted', () => {
         LOG.info("INITIALIZER: received appStarted event.");
-        BluenetPromises.isReady()
+        BluenetPromiseWrapper.isReady()
           .then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
 
 

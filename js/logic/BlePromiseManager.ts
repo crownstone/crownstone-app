@@ -1,6 +1,6 @@
 import { LOG } from '../logging/Log'
 import { Scheduler } from '../logic/Scheduler'
-import { BluenetPromises } from '../native/Proxy'
+import { BluenetPromiseWrapper } from '../native/Proxy'
 
 
 class BlePromiseManagerClass {
@@ -50,7 +50,7 @@ class BlePromiseManagerClass {
     this.clearPendingPromiseTimeout = Scheduler.scheduleCallback(() => {
       LOG.error('BlePromiseManager: Forced timeout after 60 seconds.');
       promiseContainer.reject(new Error("Forced timeout after 60 seconds."));
-      BluenetPromises.phoneDisconnect().catch((err) => {});
+      BluenetPromiseWrapper.phoneDisconnect().catch((err) => {});
       this.moveOn();
     }, 60000, 'pendingPromiseTimeout');
 

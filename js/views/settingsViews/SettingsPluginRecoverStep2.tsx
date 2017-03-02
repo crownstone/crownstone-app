@@ -20,7 +20,7 @@ import { styles, colors, screenWidth, screenHeight } from './../styles'
 import { getUUID } from '../../util/Util'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil'
 import { BleUtil } from '../../native/BleUtil'
-import { BluenetPromises, Bluenet } from '../../native/Proxy'
+import { BluenetPromiseWrapper, Bluenet } from '../../native/Proxy'
 import { LOG } from '../../logging/Log'
 
 export class SettingsPluginRecoverStep2 extends Component<any, any> {
@@ -186,7 +186,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
   recoverStone(handle) {
     this.switchImages();
     LOG.info('attempting to recover handle:', handle);
-    BluenetPromises.recover(handle)
+    BluenetPromiseWrapper.recover(handle)
       .then(() => {
         Alert.alert("Success!",
           "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a new Sphere.",

@@ -11,7 +11,7 @@ import {
 
 import { userHasPlugsInSphere } from '../../util/DataUtil'
 import { logOut, Util } from '../../util/Util'
-import { BluenetPromises } from './../../native/Proxy'
+import { BluenetPromiseWrapper } from './../../native/Proxy'
 import { CLOUD } from './../../cloud/cloudAPI'
 import { Background } from './../components/Background'
 import { TopBar } from './../components/Topbar'
@@ -76,7 +76,7 @@ export class SettingsOverview extends Component<any, any> {
         callback: () => {
           this.props.eventBus.emit('showLoading', 'Creating Sphere...');
 
-          BluenetPromises.requestLocation()
+          BluenetPromiseWrapper.requestLocation()
             .then((location) => {
               let latitude = undefined;
               let longitude = undefined;

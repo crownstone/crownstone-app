@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { Bluenet, BluenetPromises } from './Proxy';
+import { Bluenet, BluenetPromiseWrapper } from './Proxy';
 import { LOG } from '../logging/Log'
 
 export const LocalizationUtil = {
@@ -9,9 +9,9 @@ export const LocalizationUtil = {
    */
   trackSpheres: function (store) {
     LOG.info("LocalizationUtil: Track Spheres called.");
-    BluenetPromises.isReady()
+    BluenetPromiseWrapper.isReady()
       .then(() => {
-        return BluenetPromises.clearTrackedBeacons();
+        return BluenetPromiseWrapper.clearTrackedBeacons();
       })
       .then(() => {
         // register the iBeacons UUIDs with the localization system.

@@ -94,7 +94,7 @@ class KeepAliveHandlerClass {
   }
 
   _performKeepAliveForStone(sphere, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController) {
-    LOG.info('KeepAliveHandler: (' + keepAliveId + ') Performing keep Alive to stone handle', stone.config.handle);
+    LOG.info('KeepAliveHandler: (' + keepAliveId + ') setting up keep Alive to stone handle', stone.config.handle);
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {

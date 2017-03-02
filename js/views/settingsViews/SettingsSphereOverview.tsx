@@ -15,7 +15,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { CLOUD } from './../../cloud/cloudAPI'
-import { BluenetPromises } from './../../native/Proxy'
+import { BluenetPromiseWrapper } from './../../native/Proxy'
 import { IconButton } from '../components/IconButton'
 import { LOG } from '../../logging/Log'
 
@@ -108,7 +108,7 @@ export class SettingsSphereOverview extends Component<any, any> {
 
   _createNewSphere(store, name) {
     this.props.eventBus.emit('showLoading', 'Creating Sphere...');
-    return BluenetPromises.requestLocation()
+    return BluenetPromiseWrapper.requestLocation()
       .then((location) => {
         let latitude = undefined;
         let longitude = undefined;

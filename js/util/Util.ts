@@ -1,7 +1,7 @@
 import { Alert, Platform } from 'react-native';
 import { DEBUG } from '../ExternalConfig'
 import { StoreManager } from '../router/store/storeManager'
-import { Bluenet, BluenetPromises } from '../native/Proxy'
+import { Bluenet, BluenetPromiseWrapper } from '../native/Proxy'
 import { Actions } from 'react-native-router-flux';
 import { LOG } from '../logging/Log'
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
@@ -79,7 +79,7 @@ export const removeAllFiles = function() {
 };
 
 export const logOut = function() {
-  BluenetPromises.clearTrackedBeacons();
+  BluenetPromiseWrapper.clearTrackedBeacons();
   Bluenet.stopScanning();
   (Actions as any).loginSplash();
   StoreManager.userLogOut();

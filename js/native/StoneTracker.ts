@@ -1,7 +1,7 @@
 import { Alert, Vibration } from 'react-native';
 
 import { BleUtil }                                from './BleUtil'
-import { BluenetPromises, INTENTS }               from './Proxy'
+import { BluenetPromiseWrapper, INTENTS }               from './Proxy'
 import { StoneStateHandler }                      from './StoneStateHandler'
 import { eventBus }                               from './../util/eventBus';
 import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS }       from './../ExternalConfig';
@@ -140,7 +140,7 @@ export class StoneTracker {
               data["currentUsage"] = 0;
             }
             let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
-            proxy.performPriority(BluenetPromises.setSwitchState, [newState, 0, INTENTS.manual])
+            proxy.performPriority(BluenetPromiseWrapper.setSwitchState, [newState, 0, INTENTS.manual])
               .then(() => {
                 this.store.dispatch({
                   type: 'UPDATE_STONE_SWITCH_STATE',

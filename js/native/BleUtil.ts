@@ -1,5 +1,5 @@
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromises, NativeBus, Bluenet, INTENTS } from './Proxy';
+import { BluenetPromiseWrapper, NativeBus, Bluenet, INTENTS } from './Proxy';
 import { LOG } from '../logging/Log'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/eventBus'
@@ -284,7 +284,7 @@ export class BatchCommand {
       let singleCommand = new SingleCommand(command.handle, this.sphereId, command.stoneId);
       LOG.info("BatchCommand: performing direct command:", command.commandString, command.props);
       promises.push(
-        singleCommand.searchAndPerform(batchSettings, this.store.getState(), BluenetPromises[command.commandString], command.props, priority)
+        singleCommand.searchAndPerform(batchSettings, this.store.getState(), BluenetPromiseWrapper[command.commandString], command.props, priority)
           .then(() => {
             command.promise.resolve();
           })
@@ -506,8 +506,8 @@ class MeshHelper {
             LOG.error('MeshHelper: Can not connect to any node in the mesh network: ', this.meshNetworkId);
             throw new Error('Can not connect to any node in the mesh network: ' + this.meshNetworkId);
           })
-          .then((handle) => {
-            return BluenetPromises.connect(handle)
+          .then((handle : string) => {
+            return BluenetPromiseWrapper.connect(handle)
           })
           .then(() => {
             return this._handleSetSwitchStateCommands();
@@ -519,7 +519,7 @@ class MeshHelper {
             return this._handleKeepAliveCommands();
           })
           .then(() => {
-            return BluenetPromises.disconnect();
+            return BluenetPromiseWrapper.disconnect();
           })
           .then(() => {
             LOG.mesh('MeshHelper: completed disconnecting, resolving children');
@@ -543,7 +543,7 @@ class MeshHelper {
           })
           .catch((err) => {
             this._rejectContainedPromises();
-            BluenetPromises.phoneDisconnect().then(() => {
+            BluenetPromiseWrapper.phoneDisconnect().then(() => {
               reject(err)
             }).catch(() => {
               reject(err)
@@ -589,34 +589,41 @@ class MeshHelper {
       // get data from set
       let stoneSwitchPackets = [];
       instructionSet.forEach((instruction) => {
-        if (instruction.crownstoneId && instruction.timeout && instruction.state) {
+        if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
           // add the promise of this part of the payload to the list that we will need to resolve or reject
           this._containedPromises.push( instruction.promise );
 
           // add the this part of the payload to the message
-          stoneSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, state: instruction.state})
+          stoneSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, state: instruction.state, intent: instruction.intent})
         }
         else {
-          LOG.error("MeshHelper: Invalid instruction, required crownstoneId, timeout, state. Got:", instruction);
+          LOG.error("MeshHelper: Invalid instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
         }
       });
 
       // update the used channels.
-      LOG.mesh('MeshHelper: Dispatching ', 'multiSwitch', intent, stoneSwitchPackets);
-      return BluenetPromises('multiSwitch', stoneSwitchPackets, intent);
+      LOG.mesh('MeshHelper: Dispatching ', 'multiSwitch', stoneSwitchPackets);
+      return BluenetPromiseWrapper.multiSwitch(stoneSwitchPackets);
     }
     else if (instructionSet.length === 1) {
       let instruction = instructionSet[0];
 
-      // push the command over the mesh to a single target.
-      LOG.mesh('MeshHelper: Dispatching ', 'meshCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent);
-      return BluenetPromises('meshCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent);
+      if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
+        // push the command over the mesh to a single target.
+        LOG.mesh('MeshHelper: Dispatching ', 'meshCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent);
+        return BluenetPromiseWrapper.meshCommandSetSwitchState([instruction.crownstoneId], instruction.state, intent);
+      }
+      else {
+        LOG.error("MeshHelper: Invalid instruction, required crownstoneId, state, intent. Got:", instruction);
+      }
+
     }
   }
 
   _handleOtherCommands() {
     return new Promise((resolve, reject) => {
-      LOG.mesh('MeshHelper: Other commands are not implemented.');
+      // LOG.mesh('MeshHelper: Other commands are not implemented.');
+      resolve();
     })
   }
 
@@ -629,7 +636,7 @@ class MeshHelper {
       let stoneKeepAlivePackets = [];
       let timeout = 2.5*KEEPALIVE_INTERVAL;
       keepAliveInstructions.forEach((instruction) => {
-        if (instruction.crownstoneId && instruction.timeout && instruction.state && instruction.changeState) {
+        if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.changeState !== undefined) {
           // add the promise of this part of the payload to the list that we will need to resolve or reject
           this._containedPromises.push( instruction.promise );
 
@@ -643,7 +650,7 @@ class MeshHelper {
 
       // update the used channels.
       LOG.mesh('MeshHelper: Dispatching ', 'keepAlive', stoneKeepAlivePackets);
-      return BluenetPromises('meshKeepAliveState', timeout, stoneKeepAlivePackets);
+      return BluenetPromiseWrapper.meshKeepAliveState(timeout, stoneKeepAlivePackets);
     }
     else if (this.meshInstruction.keepAlive.length > 0) {
       LOG.mesh('MeshHelper: Dispatching meshKeepAlive');
@@ -653,7 +660,7 @@ class MeshHelper {
           this._containedPromises.push( instruction.promise );
       });
 
-      return BluenetPromises('meshKeepAlive');
+      return BluenetPromiseWrapper.meshKeepAlive();
     }
     return new Promise((resolve, reject) => {resolve()});
   }
@@ -772,19 +779,19 @@ class SingleCommand {
   performCommand(action, props = [], priorityCommand) {
     let actionPromise = () => {
       if (this.handle) {
-        return BluenetPromises.connect(this.handle)
+        return BluenetPromiseWrapper.connect(this.handle)
           .then(() => { LOG.info("SingleCommand: connected, performing: ", action, props); return action.apply(this, props); })
           .catch((err) => {
             if (err === 'NOT_CONNECTED') {
-              return BluenetPromises.connect(this.handle)
+              return BluenetPromiseWrapper.connect(this.handle)
                 .then(() => { LOG.info("SingleCommand: second attempt, performing: ", action, props); return action.apply(this, props); })
             }
           })
-          .then(() => { LOG.info("SingleCommand: completed", action, 'disconnecting'); return BluenetPromises.disconnect(); })
+          .then(() => { LOG.info("SingleCommand: completed", action, 'disconnecting'); return BluenetPromiseWrapper.disconnect(); })
           .catch((err) => {
             LOG.error("SingleCommand: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {
-              BluenetPromises.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
+              BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
             })
           })
       }

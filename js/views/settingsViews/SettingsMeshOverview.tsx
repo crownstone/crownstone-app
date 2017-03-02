@@ -81,6 +81,7 @@ export class SettingsMeshOverview extends Component<any, any> {
 
     let networks = {};
 
+    // collect all mesh networks
     locationIds.forEach((locationId) => {
       let stonesInLocation = Util.data.getStonesInLocationArray(state, sphereId, locationId);
       stonesInLocation.forEach((stone) => {
@@ -95,7 +96,18 @@ export class SettingsMeshOverview extends Component<any, any> {
       });
     });
 
+
+    // refine to hide networks with only one contestant
     let networkKeys = Object.keys(networks);
+    networkKeys.forEach((networkKey) => {
+      if (networks[networkKey].length === 1 && networkKey !== floatingNetworkKey) {
+        networks[floatingNetworkKey].push(networks[networkKey][0]);
+        delete networks[networkKey];
+      }
+    });
+
+    // get the final network keys
+    networkKeys = Object.keys(networks);
 
     return (
       <Background image={this.props.backgrounds.main}>
