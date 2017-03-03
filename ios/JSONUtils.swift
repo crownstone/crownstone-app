@@ -19,11 +19,11 @@ open class JSONUtils{
     }
   }
   
-  open static func stringify(_ json:JSON) -> String{
+  open static func stringify(_ json:JSON) -> String {
     return json.rawString(options: JSONSerialization.WritingOptions(rawValue: 0))!;
   }
   
-  open static func jsonToData(_ json:JSON) throws -> Data{
+  open static func jsonToData(_ json:JSON) throws -> Data {
     return try json.rawData();
   }
   
@@ -39,11 +39,11 @@ open class JSONUtils{
     return NSString(string: jsonString).boolValue
   }
   
-  static func getStringValue(_ jsonString: String) -> String{
+  static func getStringValue(_ jsonString: String) -> String {
     return self.unquote(jsonString)
   }
   
-  static func getDictionaryValue(_ jsonString: String) -> [String: AnyObject]{
+  static func getDictionaryValue(_ jsonString: String) -> [String: AnyObject] {
     if (jsonString.isEmpty){
       return [String: AnyObject]()
     }

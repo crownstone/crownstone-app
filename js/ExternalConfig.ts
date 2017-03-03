@@ -8,10 +8,10 @@ export let CLOUD_ADDRESS = 'https://crownstone-cloud-dev.herokuapp.com/api/';
 
 export let DEBUG          = true;   // enabling Debug behaviour throughout the app.
 export let LOG_SCHEDULER  = false;  // enabling LOG.scheduler  commands to be shown.
-export let LOG_BLE        = false;  // enabling LOG.ble        commands to be shown.
-export let LOG_EVENTS     = false;   // enabling LOG.store      commands to be shown.
+export let LOG_BLE        = false;   // enabling LOG.ble        commands to be shown.
+export let LOG_EVENTS     = false;   // enabling LOG.event      commands to be shown.
 export let LOG_STORE      = false;   // enabling LOG.store      commands to be shown.
-export let LOG_MESH       = true;  // enabling LOG.mesh       commands to be shown.
+export let LOG_MESH       = true;   // enabling LOG.mesh       commands to be shown.
 export let LOG_CLOUD      = false;  // enabling LOG.cloud      commands to be shown.
 export let LOG_DEBUG      = true;   // enabling LOG.debug      commands to be shown.
 export let LOGGING        = true;   // enabling LOG.info       commands to be shown.

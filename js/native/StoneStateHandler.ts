@@ -1,7 +1,8 @@
 import { LocationHandler } from '../native/LocationHandler';
+import { IndividualStoneTracker } from '../native/IndividualStoneTracker';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log'
-import { getUUID } from '../util/Util'
+import { Util, getUUID } from '../util/Util'
 import { eventBus } from '../util/eventBus'
 import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
@@ -16,13 +17,13 @@ let RSSI_REFRESH = 1;
  */
 class StoneStateHandlerClass {
   store  : any;
-  timeoutActions : any;
-  _initialized : boolean;
+  timeoutActions : any = {};
+  advertisementIdsPerStoneId : any = {};
+  stonesThatUpdate : any = {};
+  _initialized : boolean = false;
 
   constructor() {
     this.store = {};
-    this.timeoutActions = {};
-    this._initialized = false;
 
     // create a trigger to throttle the updates.
     Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: RSSI_REFRESH});
@@ -32,6 +33,14 @@ class StoneStateHandlerClass {
     LOG.info('LOADED STORE StoneStateHandlerClass', this._initialized);
     if (this._initialized === false) {
       this.store = store;
+
+      Util.data.callOnAllStones(this.store.getState(), (sphereId, stoneId, stone) => {
+        // create an individual tracker for each stone to keep track of the mesh.
+        if (this.stonesThatUpdate[sphereId + stoneId] === undefined) {
+          LOG.info("Creating IndividualStoneTracker for sphere: ", sphereId, 'stone:', stone.config.name, '(',stoneId,')');
+          this.stonesThatUpdate[sphereId + stoneId] = new IndividualStoneTracker(this.store, sphereId, stoneId);
+        }
+      })
     }
   }
 
@@ -63,29 +72,55 @@ class StoneStateHandlerClass {
   receivedUpdate(sphereId, stone, stoneId, rssi) {
     // internal event to tell the app this crownstone has been seen.
     eventBus.emit('update_'+sphereId+'_'+stoneId, rssi);
-    if (stone.config.meshNetworkId)
-      eventBus.emit('updateMeshNetwork_'+sphereId+stone.config.meshNetworkId, { handle: stone.config.handle, id: stoneId, rssi: rssi });
+    if (stone.config.meshNetworkId) {
+      eventBus.emit('updateMeshNetwork_' + sphereId + stone.config.meshNetworkId, {
+        handle: stone.config.handle,
+        id: stoneId,
+        rssi: rssi
+      });
+    }
 
     this.update(sphereId, stoneId);
   }
 
-  receivedUpdateViaMesh(sphereId, stoneId) {
+  /**
+   *
+   * @param sphereId
+   * @param remoteStoneId       The remote stone id (the one who owns the payload, not the advertisement)
+   * @param meshNetworkId
+   * @param randomFromServiceData
+   */
+  receivedUpdateViaMesh(sphereId: string, remoteStoneId: string, meshNetworkId: number, randomFromServiceData : string, serviceData) {
+    // emit the mesh update event only for unique advertisements
+    if (this.advertisementIdsPerStoneId[remoteStoneId] && this.advertisementIdsPerStoneId[remoteStoneId] !== randomFromServiceData) {
+      eventBus.emit('updateViaMeshNetwork_' + sphereId + meshNetworkId, {
+        id: remoteStoneId,
+        serviceData: serviceData
+      });
+    }
+    this.advertisementIdsPerStoneId[remoteStoneId] = randomFromServiceData;
+
     // update the visibility of the Crownstone
-    this.update(sphereId, stoneId);
+    this.update(sphereId, remoteStoneId);
   }
 
   update(sphereId, stoneId) {
+    // create an individual tracker for each stone to keep track of the mesh.
+    if (this.stonesThatUpdate[sphereId + stoneId] === undefined) {
+      LOG.info("Dynamically creating IndividualStoneTracker for sphere: ", sphereId, '(',stoneId,')');
+      this.stonesThatUpdate[sphereId + stoneId] = new IndividualStoneTracker(this.store, sphereId, stoneId);
+    }
+
     // LOG.info("StoneStateHandlerUpdate", sphereId, stoneId);
-
     const state = this.store.getState();
-    // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
 
+    // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
     if (state.spheres[sphereId].config.present === false) {
-      LOG.info("StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
+      LOG.warn("StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
       LocationHandler.enterSphere(sphereId);
     }
 
-    // if we hear this stone and yet it is set to disabled, we reenable it.
+    // if we hear this stone and yet it is set to disabled, we re-enable it.
     if (state.spheres[sphereId].stones[stoneId].config.disabled === true) {
       this.store.dispatch({
         type: 'UPDATE_STONE_DISABILITY',
@@ -111,8 +146,6 @@ class StoneStateHandlerClass {
       // LOG.info("Cancelling_RSSI_Timeout");
       this.timeoutActions[sphereId][stoneId].clearRSSITimeout();
     }
-
-
 
     let disableCallback = () => {
       let state = this.store.getState();

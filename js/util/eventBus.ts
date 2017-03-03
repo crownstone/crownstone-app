@@ -13,11 +13,11 @@ export class EventBus {
   
   on(topic, callback) {
     if (!(topic)) {
-      LOG.error("Attempting to subscribe to undefined topic:", topic);
+      LOG.error('Attempting to subscribe to undefined topic:', topic);
       return;
     }
     if (!(callback)) {
-      LOG.error("Attempting to subscribe without callback to topic:", topic);
+      LOG.error('Attempting to subscribe without callback to topic:', topic);
       return;
     }
 
@@ -26,6 +26,8 @@ export class EventBus {
 
     // generate unique id
     let id = getUUID();
+
+    LOG.event('Something is subscribing to ', topic, 'got ID:', id);
 
     this._topics[topic].push({id,callback});
     this._topicIds[id] = true;
@@ -45,9 +47,11 @@ export class EventBus {
         this._topicIds[id] = undefined;
         delete this._topicIds[id];
 
-        if (Object.keys(this._topics[topic]).length === 0)
+        if (Object.keys(this._topics[topic]).length === 0) {
           delete this._topics[topic];
+        }
 
+        LOG.event('Something with ID ', id ,' unsubscribed from ', topic);
       }
     };
   }

@@ -8,6 +8,22 @@ const DeviceInfo = require('react-native-device-info');
 export const DataUtil = {
 
   /**
+   * Call a callback on all stones in all spheres
+   * @param state
+   * @param callback
+   */
+  callOnAllStones: function(state: any, callback: (sphereId: string, stoneId: string, stone: any) => void) {
+    let sphereIds = Object.keys(state.spheres);
+    for (let i = 0; i < sphereIds.length; i++) {
+      let stones = state.spheres[sphereIds[i]].stones;
+      let stoneIds = Object.keys(stones);
+      for (let j = 0; j < stoneIds.length; j++) {
+        callback(sphereIds[i], stoneIds[j], stones[stoneIds[j]])
+      }
+    }
+  },
+
+  /**
    * Get the ID of the device (phone model) we are currently using.
    * @param state
    * @param deviceAddress

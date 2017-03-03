@@ -196,10 +196,10 @@ class NativeBusClass {
 
   constructor() {
     this.topics = {
-      setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = type_advertisement
-      dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = type_advertisement
-      advertisement:        "verifiedAdvertisementData",        // data type = type_advertisement // = from crownstone in normal operation mode.
-      anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = type_advertisement
+      setupAdvertisement:   "verifiedSetupAdvertisementData",   // data type = crownstoneAdvertisement
+      dfuAdvertisement:     "verifiedDFUAdvertisementData",     // data type = crownstoneAdvertisement
+      advertisement:        "verifiedAdvertisementData",        // data type = crownstoneAdvertisement // = from crownstone in normal operation mode.
+      anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error)
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
       locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on")
@@ -218,7 +218,7 @@ class NativeBusClass {
     this.refMap = {};
     Object.keys(this.topics).forEach((key) => {
       this.refMap[this.topics[key]] = true;
-    })
+    });
   }
 
   on(topic, callback) {
@@ -249,49 +249,8 @@ class NativeBusClass {
 export const NativeBus = new NativeBusClass();
 
 
-if (LOG_BLE) {
-  NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
-    LOG.ble('setupAdvertisement', data.name, data.rssi, data.handle);
-  });
-  NativeBus.on(NativeBus.topics.advertisement, (data) => {
-    LOG.ble('crownstoneId', data.name, data.rssi, data.handle);
-  });
-  NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-    LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor);
-  });
-}
-
-
 /** type defs **/
 
-// type type_serviceData = {  // this is part of the advertisement
-//   firmwareVersion   : number,
-//   crownstoneId      : string,
-//   switchState       : number,
-//   eventBitmask      : number,
-//   temperature       : number,
-//   powerUsage        : number,
-//   accumulatedEnergy : number,
-//   newDataAvailable  : boolean,
-//   stateOfExternalCrownstone: boolean,
-//   setupMode         : boolean,
-//   dfuMode           : boolean,
-//   random            : string
-// }
-//
-// type type_advertisement = {
-//   handle            : string,
-//   name              : string,
-//   rssi              : number,
-//   referenceId       : string,
-//   isCrownstoneFamily  : boolean,
-//   isCrownstonePlug    : boolean,
-//   isCrownstoneBuiltin : boolean,
-//   isGuidestone        : boolean,
-//   serviceUUID       : string,
-//   serviceData       : type_serviceData
-// }
-//
 // type type_nearest = {
 //   name      : string,
 //   handle    : string,
@@ -307,5 +266,6 @@ if (LOG_BLE) {
 //   rssi      : number,
 //   referenceId : string,
 // }
+
 
 /** end of type **/

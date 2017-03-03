@@ -2,6 +2,7 @@ import { Scheduler } from '../logic/Scheduler';
 import { NativeBus } from './Proxy';
 import { StoneStateHandler } from './StoneStateHandler'
 import { LOG } from '../logging/Log'
+import { LOG_BLE } from '../ExternalConfig'
 import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../util/DataUtil'
 import { eventBus }  from '../util/eventBus'
 import { Util }  from '../util/Util'
@@ -80,6 +81,21 @@ class AdvertisementHandlerClass {
 
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
       NativeBus.on(NativeBus.topics.advertisement, this.handleEvent.bind(this));
+
+      // Debug logging of all BLE related events.
+      if (LOG_BLE) {
+        LOG.ble("Subscribing to all BLE Topics");
+        NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
+          LOG.ble('setupAdvertisement', data.name, data.rssi, data.handle, data);
+        });
+        NativeBus.on(NativeBus.topics.advertisement, (data) => {
+          LOG.ble('crownstoneId', data.name, data.rssi, data.handle, data);
+        });
+        NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+          LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor);
+        });
+      }
+
       this._initialized = true;
     }
   }
@@ -91,13 +107,13 @@ class AdvertisementHandlerClass {
     this.stonesInConnectionProcess = {};
   }
 
-  handleEvent(advertisement) {
+  handleEvent(advertisement : crownstoneAdvertisement) {
     if (this.stonesInConnectionProcess[advertisement.handle] !== undefined) {
       return;
     }
 
     // the service data in this advertisement;
-    let serviceData = advertisement.serviceData;
+    let serviceData : crownstoneServiceData = advertisement.serviceData;
 
     // service data not available
     if (typeof serviceData !== 'object') {
@@ -143,32 +159,36 @@ class AdvertisementHandlerClass {
     let stoneFromAdvertisement = this.state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
 
 
-
-
     // --------------------- Update the Mesh Network --------------------------- //
 
     // update mesh network map.
+    let meshNetworkId = undefined;
     if (serviceData.stateOfExternalCrownstone === true) {
       let networkId_external = stoneFromServiceData.config.meshNetworkId;
       let networkId_advertiser = stoneFromAdvertisement.config.meshNetworkId;
 
+      // initially it does not matter which we select.
+      meshNetworkId = networkId_advertiser;
+
       // if these stones are not known to be in a mesh network, they are in the same, new, network.
       if (networkId_external === null && networkId_advertiser === null) {
-        let newId = Math.round(Math.random()*1e6);
+        meshNetworkId = Math.round(Math.random()*1e6);
         let actions = [];
-        actions.push(Util.mesh.getChangeMeshIdAction(sphereId, referenceByCrownstoneId.id, newId));
-        actions.push(Util.mesh.getChangeMeshIdAction(sphereId, referenceByHandle.id, newId));
+        actions.push(Util.mesh.getChangeMeshIdAction(sphereId, referenceByCrownstoneId.id, meshNetworkId));
+        actions.push(Util.mesh.getChangeMeshIdAction(sphereId, referenceByHandle.id, meshNetworkId));
         this.store.batchDispatch(actions);
       }
       // if they are in a different mesh network, place them in the same one.
       else if (networkId_external !== networkId_advertiser) {
         if (networkId_external === null) {
           // copy mesh id from stoneFromAdvertisement to stoneFromServiceData
-          this.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, referenceByCrownstoneId.id, networkId_advertiser));
+          meshNetworkId = networkId_advertiser;
+          this.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, referenceByCrownstoneId.id, meshNetworkId));
         }
         else if (networkId_advertiser === null) {
           // copy mesh id from stoneFromServiceData to stoneFromAdvertisement
-          this.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, referenceByHandle.id, networkId_external));
+          meshNetworkId = networkId_external;
+          this.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, referenceByHandle.id, meshNetworkId));
         }
         else {
           // copy the mesh id from the largest mesh to the smallest mesh
@@ -177,10 +197,12 @@ class AdvertisementHandlerClass {
           let network_advertiser = Util.mesh.getStonesInNetwork(state, sphereId, networkId_advertiser);
 
           if (network_external.length > network_advertiser.length) {
-            Util.mesh.setNetworkId(this.store, sphereId, network_advertiser, networkId_external);
+            meshNetworkId = network_external;
+            Util.mesh.setNetworkId(this.store, sphereId, network_advertiser, meshNetworkId);
           }
           else {
-            Util.mesh.setNetworkId(this.store, sphereId, network_external, networkId_advertiser);
+            meshNetworkId = network_external;
+            Util.mesh.setNetworkId(this.store, sphereId, network_external, meshNetworkId);
           }
         }
       }
@@ -225,7 +247,7 @@ class AdvertisementHandlerClass {
 
     // if the advertisement contains the state of a different Crownstone, we update its disability state
     if (serviceData.stateOfExternalCrownstone === true) {
-      StoneStateHandler.receivedUpdateViaMesh(sphereId, referenceByCrownstoneId.id);
+      StoneStateHandler.receivedUpdateViaMesh(sphereId, referenceByCrownstoneId.id, meshNetworkId, serviceData.random, serviceData);
     }
 
     // we always update the disability (and rssi) of the Crownstone that is broadcasting.

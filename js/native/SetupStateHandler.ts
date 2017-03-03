@@ -1,7 +1,7 @@
 import { Scheduler } from '../logic/Scheduler';
 import { NativeBus } from './Proxy';
 import { SetupHelper } from './SetupHelper';
-import { BleUtil } from './BleUtil';
+import { BleUtil } from '../util/BleUtil';
 import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus';
 import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/DataUtil';

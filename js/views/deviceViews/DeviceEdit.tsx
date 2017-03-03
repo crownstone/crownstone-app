@@ -14,7 +14,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { stoneTypes } from '../../router/store/reducers/stones'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { BluenetPromiseWrapper } from '../../native/Proxy'
-import { BleUtil } from '../../native/BleUtil'
+import { BleUtil } from '../../util/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'

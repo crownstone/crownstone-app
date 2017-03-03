@@ -64,9 +64,9 @@ RCT_EXTERN_METHOD(clearLogs)
 
 // MESH
 
-RCT_EXTERN_METHOD(meshKeepAlive:([NSArray *])crownstoneIds state(nonnull NSNumber *)state intent(NSString *)intent callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:([NSArray *])stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(meshCommandSetSwitchState:([NSArray *])crownstoneIds state(nonnull NSNumber *)state intent(NSString *)intent callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(multiSwitch:([NSArray *])arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(meshKeepAlive:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:(NSArray *)stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(meshCommandSetSwitchState:(NSArray<NSNumber *> *)crownstoneIds state:(nonnull NSNumber *)state intent:(nonnull NSNumber *)intent callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
 
 @end

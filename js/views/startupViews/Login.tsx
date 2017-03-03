@@ -173,7 +173,6 @@ export class Login extends Component<any, any> {
         }
       };
 
-      console.log(RNFS)
       // read the document dir for files that have been created during the registration process
       RNFS.readDir(RNFS.DocumentDirectoryPath)
         .then(handleFiles)

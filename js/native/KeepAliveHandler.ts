@@ -2,7 +2,7 @@ import { Scheduler } from '../logic/Scheduler';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { LOG } from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS } from '../ExternalConfig';
-import { BatchCommand } from './BleUtil';
+import { BatchCommand } from '../util/BleUtil';
 import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
 import { Util } from '../util/Util'
 

@@ -1,6 +1,6 @@
 import { Alert, Vibration } from 'react-native';
 
-import { BleUtil }                                from './BleUtil'
+import { BleUtil }                                from '../util/BleUtil'
 import { BluenetPromiseWrapper, INTENTS }               from './Proxy'
 import { StoneStateHandler }                      from './StoneStateHandler'
 import { eventBus }                               from './../util/eventBus';

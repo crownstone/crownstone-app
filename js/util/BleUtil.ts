@@ -1,10 +1,10 @@
 import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromiseWrapper, NativeBus, Bluenet, INTENTS } from './Proxy';
+import { BluenetPromiseWrapper, NativeBus, Bluenet, INTENTS } from '../native/Proxy';
 import { LOG } from '../logging/Log'
 import { Scheduler } from '../logic/Scheduler'
-import { eventBus } from '../util/eventBus'
+import { eventBus } from './eventBus'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION, KEEPALIVE_INTERVAL } from '../ExternalConfig'
-import { getUUID, Util } from '../util/Util'
+import { getUUID, Util } from './Util'
 
 
 export const BleUtil = {
@@ -243,7 +243,7 @@ export class BatchCommand {
             crownstoneId: stoneConfig.crownstoneId,
             handle: stoneConfig.handle,
             state: todo.props[0],
-            timeout: todo.props[1],
+            intent: todo.props[1],
             promise: todo.promise
           });
         }
@@ -574,14 +574,19 @@ class MeshHelper {
   }
 
   _handleSetSwitchStateCommands() {
-    let switchStateInstructions = this.meshInstruction.setSwitchState;
+    return new Promise((resolve, reject) => {
+      let switchStateInstructions = this.meshInstruction.setSwitchState;
 
-    let orderedIntents = [INTENTS.manual, INTENTS.enter, INTENTS.exit, INTENTS.sphereEnter, INTENTS.sphereExit];
+      let orderedIntents = [INTENTS.manual, INTENTS.enter, INTENTS.exit, INTENTS.sphereEnter, INTENTS.sphereExit];
 
-    for (let i = 0; i < orderedIntents.length; i++) {
-      let intent = orderedIntents[i];
-      this._handleSetSwitchState(switchStateInstructions[intent], intent);
-    }
+      let promises = [];
+      for (let i = 0; i < orderedIntents.length; i++) {
+        let intent = orderedIntents[i];
+        promises.push(this._handleSetSwitchState(switchStateInstructions[intent], intent));
+      }
+
+      Promise.all(promises).then(() => {resolve()}).catch((err) => {reject(err);})
+    })
   }
 
   _handleSetSwitchState(instructionSet, intent) {
@@ -597,26 +602,29 @@ class MeshHelper {
           stoneSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, state: instruction.state, intent: instruction.intent})
         }
         else {
-          LOG.error("MeshHelper: Invalid instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
+          LOG.error("MeshHelper: Invalid multiSwitch instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
         }
       });
 
       // update the used channels.
-      LOG.mesh('MeshHelper: Dispatching ', 'multiSwitch', stoneSwitchPackets);
-      return BluenetPromiseWrapper.multiSwitch(stoneSwitchPackets);
+      if (stoneSwitchPackets.length > 0) {
+        LOG.mesh('MeshHelper: Dispatching ', 'multiSwitch', stoneSwitchPackets);
+        return BluenetPromiseWrapper.multiSwitch(stoneSwitchPackets);
+      }
+      return new Promise((resolve, reject) => { reject("No switchStates to apply!") });
     }
     else if (instructionSet.length === 1) {
       let instruction = instructionSet[0];
 
-      if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
+      if (instruction.crownstoneId !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
         // push the command over the mesh to a single target.
         LOG.mesh('MeshHelper: Dispatching ', 'meshCommandSetSwitchState', [instruction.crownstoneId], instruction.state, intent);
         return BluenetPromiseWrapper.meshCommandSetSwitchState([instruction.crownstoneId], instruction.state, intent);
       }
       else {
-        LOG.error("MeshHelper: Invalid instruction, required crownstoneId, state, intent. Got:", instruction);
+        LOG.error("MeshHelper: Invalid meshCommandSetSwitchState instruction, required crownstoneId, state, intent. Got:", instruction);
+        return new Promise((resolve, reject) => { reject("No switchState to apply!") });
       }
-
     }
   }
 

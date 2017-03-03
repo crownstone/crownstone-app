@@ -19,3 +19,32 @@ interface BluenetPromiseWrapper {
   meshCommandSetSwitchState(arrayOfIds : number[], state : number, intent: string): Promise<void>,
   multiSwitch(arrayOfStoneSwitchPackets: any[]): Promise<void>,
 }
+
+interface crownstoneServiceData {
+  firmwareVersion   : number,
+  crownstoneId      : string,
+  switchState       : number,
+  eventBitmask      : number,
+  temperature       : number,
+  powerUsage        : number,
+  accumulatedEnergy : number,
+  newDataAvailable  : boolean,
+  stateOfExternalCrownstone: boolean,
+  setupMode         : boolean,
+  dfuMode           : boolean,
+  random            : string
+}
+
+interface crownstoneAdvertisement {
+  handle            : string,
+  name              : string,
+  rssi              : number,
+  referenceId       : string,
+  isCrownstoneFamily  : boolean,
+  isCrownstonePlug    : boolean,
+  isCrownstoneBuiltin : boolean,
+  isGuidestone        : boolean,
+  serviceUUID       : string,
+  serviceData       : crownstoneServiceData
+}
+

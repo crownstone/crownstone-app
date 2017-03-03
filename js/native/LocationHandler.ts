@@ -1,5 +1,5 @@
 import { Bluenet, BluenetPromiseWrapper, NativeBus } from './Proxy';
-import { BleUtil } from './BleUtil';
+import { BleUtil } from '../util/BleUtil';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'
@@ -102,7 +102,7 @@ class LocationHandlerClass {
         Bluenet.startIndoorLocalization();
       }
       else {
-        LOG.info("LocationHandler: Stopping indoor localization for sphere", sphereId, "due to missing fingerprints.");
+        LOG.info("LocationHandler: Stopping indoor localization for sphere", sphereId, "due to missing fingerprints or not enough Crownstones.");
         Bluenet.stopIndoorLocalization();
       }
 

@@ -67,9 +67,7 @@ export class SettingsMeshOverview extends Component<any, any> {
         </ScrollView>
       );
     }
-
   }
-
 
   render() {
     const store = this.props.store;

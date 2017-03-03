@@ -100,11 +100,9 @@ const syncDown = function (userId, options) {
 
     Promise.all(syncPromises)
       .then(() => {
-        console.log("RESOLVE")
         resolve({keys: cloudKeys, spheres: cloudSpheres, spheresData: cloudSpheresData, devices: cloudDevices})
       })
       .catch((err) => {
-        console.log("reject", err)
         reject(err);
       })
   });
