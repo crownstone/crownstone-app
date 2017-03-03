@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
+  Animated,
   Dimensions,
   TouchableHighlight,
   PixelRatio,
@@ -9,7 +10,6 @@ import {
   Text,
   View
 } from 'react-native';
-
 
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
@@ -21,6 +21,12 @@ let floatingNetworkKey = '__null';
 
 export class SettingsMeshOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
+  lastOffset : number = null;
+
+  constructor() {
+    super();
+    this.state = { leftOffset: new Animated.Value() };
+  }
 
   componentDidMount() {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
@@ -39,34 +45,36 @@ export class SettingsMeshOverview extends Component<any, any> {
   getNetworks(networks) {
     let networksAvailable = Object.keys(networks);
     let networkElements = [];
-
     networksAvailable.forEach((networkKey, i) => {
       networkElements.push(<Network
-        key={"network_" + i}
+        key={networkKey}
         label={networkKey === floatingNetworkKey? 'Unconnected:' : 'Network #' + networkKey + ':'}
         data={networks[networkKey]}
         connected={networkKey !== floatingNetworkKey}
       />)
     });
 
+    let offset = 0;
+    let networkWidth = 270 * networksAvailable.length;
     if (networksAvailable.length < 2) {
-      return (
-        <View style={{flex:1, alignItems:'center'}}>
-          <View style={{flex:1, flexDirection:'row', width: 270 * networksAvailable.length}}>
-            {networkElements}
-          </View>
-        </View>
-      );
+      offset = screenWidth * 0.5 - networkWidth * 0.5;
+    }
+
+    if (this.lastOffset === null) {
+      this.state.leftOffset = new Animated.Value(offset);
     }
     else {
-      return (
-        <ScrollView horizontal={true} style={{flex:1}}>
-          <View style={{flex:1, flexDirection:'row', width: 270 * networksAvailable.length}}>
-            {networkElements}
-          </View>
-        </ScrollView>
-      );
+      Animated.timing(this.state.leftOffset, {toValue: offset, duration: 400}).start();
     }
+    this.lastOffset = offset;
+
+    return (
+      <ScrollView horizontal={true} style={{flex:1}}>
+        <Animated.View style={{flex:1, flexDirection:'row', width: networkWidth, position:'relative', left: this.state.leftOffset }}>
+          {networkElements}
+        </Animated.View>
+      </ScrollView>
+    );
   }
 
   render() {
@@ -155,6 +163,53 @@ export class SettingsMeshOverview extends Component<any, any> {
 
 export class Network extends Component<any, any> {
   padding : number = 10;
+  connectedDistance : number = 50;
+  unconnectedDistance : number = 20;
+  nodeHeight : number = 50;
+
+  constructor(props) {
+    super();
+
+    this.state = {
+      connectionLineHeight: new Animated.Value(this.getLineHeight(props)),
+      height: new Animated.Value(this.getHeight(props)),
+      opacity: new Animated.Value(0)
+    };
+  }
+
+  componentDidMount() {
+    Animated.timing(this.state.opacity, {toValue: 1, duration: 400}).start();
+  }
+
+  getLineHeight(props) {
+    let dataPointsCount = props.data.length;
+    return (this.connectedDistance + this.nodeHeight) * (dataPointsCount-1);
+  }
+  getHeight(props) {
+    let dataPointsCount = props.data.length;
+    let interNodeDistance = this.unconnectedDistance;
+    if (props.connected !== false) {
+      interNodeDistance = this.connectedDistance;
+    }
+    return dataPointsCount * this.nodeHeight + (dataPointsCount-1) * interNodeDistance + 50;
+  }
+
+  componentWillUpdate( nextProps, nextState ) {
+    if (nextProps.remove === true) {
+      Animated.timing(this.state.opacity, {toValue: 0, duration: 200}).start();
+      return;
+    }
+
+    let currentHeight = this.getLineHeight(this.props);
+    let newHeight = this.getLineHeight(nextProps);
+
+    if (currentHeight !== newHeight) {
+      let fullHeight = this.getHeight(nextProps);
+
+      Animated.timing(this.state.height, {toValue: fullHeight, duration: 400}).start();
+      Animated.timing(this.state.connectionLineHeight, {toValue: newHeight, duration: 400}).start();
+    }
+  }
 
   getStones() {
     let items = [];
@@ -162,18 +217,18 @@ export class Network extends Component<any, any> {
     this.props.data.forEach((dataPoint, i) => {
       items.push(
         <View key={'items'+i} style={{width: width, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', position:'relative', left:-5}}>
-          <IconCircle icon={dataPoint.location ? dataPoint.location.config.icon : 'c2-pluginFilled'} size={50} backgroundColor={colors.green.hex} color={colors.csBlue.hex} borderColor={colors.csBlue.hex} style={{position:'relative', top:0, left:10}} />
+          <IconCircle icon={dataPoint.location ? dataPoint.location.config.icon : 'c2-pluginFilled'} size={this.nodeHeight} backgroundColor={colors.green.hex} color={colors.csBlue.hex} borderColor={colors.csBlue.hex} style={{position:'relative', top:0, left:10}} />
           <IconCircle icon={dataPoint.element.config.icon}  size={40} backgroundColor={colors.csBlue.hex} color="#fff" borderColor={colors.csBlue.hex} />
           <Text style={{paddingLeft:5, backgroundColor:'transparent'}}>{dataPoint.element.config.name}</Text>
         </View>
       );
       if (this.props.connected !== false) {
         items.push(
-          <View key={'spacer'+i} style={{flexDirection:'row',width: width, height: 50, alignItems:'center', justifyContent:'center'}} />
+          <View key={'spacer'+i} style={{flexDirection:'row',width: width, height: this.connectedDistance, alignItems:'center', justifyContent:'center'}} />
         );
       }
       else {
-        items.push(<View key={'spacer'+i} style={{height: 20}}/>);
+        items.push(<View key={'spacer'+i} style={{height: this.unconnectedDistance}}/>);
       }
     });
 
@@ -189,14 +244,13 @@ export class Network extends Component<any, any> {
       let w2 = 4;
       let w3 = 2;
       let w4 = 6;
-      let height = 100 * (this.props.data.length-1);
       return (
-        <View style={{position:'absolute', top: 60, left: offset, width: 100, height: height}}>
-          <View style={{position:'absolute', backgroundColor: colors.csBlue.rgba(0.05), top: 0, left: 25 - 0.5*w2, width: w2, height: height}} />
-          <View style={{position:'absolute', backgroundColor: colors.csBlue.rgba(0.05), top: 0, left: 60 - 0.5*w1, width: w1, height: height}} />
-          <View style={{position:'absolute', backgroundColor: colors.white.hex,         top: 0, left: 25 - 0.5*w3, width: w3, height: height}} />
-          <View style={{position:'absolute', backgroundColor: colors.white.hex,         top: 0, left: 60 - 0.5*w2, width: w2, height: height}} />
-        </View>
+        <Animated.View style={{position:'absolute', top: 60, left: offset, width: 100, height: this.state.connectionLineHeight}}>
+          <Animated.View style={{position:'absolute', backgroundColor: colors.csBlue.rgba(0.05), top: 0, left: 25 - 0.5*w2, width: w2, height: this.state.connectionLineHeight }} />
+          <Animated.View style={{position:'absolute', backgroundColor: colors.csBlue.rgba(0.05), top: 0, left: 60 - 0.5*w1, width: w1, height: this.state.connectionLineHeight }} />
+          <Animated.View style={{position:'absolute', backgroundColor: colors.white.hex,         top: 0, left: 25 - 0.5*w3, width: w3, height: this.state.connectionLineHeight }} />
+          <Animated.View style={{position:'absolute', backgroundColor: colors.white.hex,         top: 0, left: 60 - 0.5*w2, width: w2, height: this.state.connectionLineHeight }} />
+        </Animated.View>
       );
     }
     return undefined;
@@ -204,7 +258,7 @@ export class Network extends Component<any, any> {
 
   render() {
     return (
-      <View style={{
+      <Animated.View style={{
         marginLeft: 10,
         marginTop: 10,
         padding: this.padding,
@@ -214,13 +268,15 @@ export class Network extends Component<any, any> {
         borderWidth:  3,
         borderRadius: 8,
         backgroundColor: colors.white.rgba(0.35),
+        height: this.state.height,
+        opacity: this.state.opacity
       }}>
         {this.getConnector()}
         <Text style={{backgroundColor:'transparent', paddingBottom:10}}>{this.props.label}</Text>
         <View style={{paddingBottom: 5}}>
           { this.getStones() }
         </View>
-      </View>
+      </Animated.View>
     );
 
   }
