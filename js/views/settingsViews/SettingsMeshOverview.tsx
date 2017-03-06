@@ -14,8 +14,7 @@ import {
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
 import { styles, colors, screenWidth } from './../styles'
-import {IconCircle} from "../components/IconCircle";
-
+import { IconCircle } from "../components/IconCircle";
 
 let floatingNetworkKey = '__null';
 

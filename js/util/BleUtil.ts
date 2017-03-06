@@ -213,17 +213,20 @@ export class BatchCommand {
         directCommands.push({ ...todo });
       }
       else {
-        meshNetworks[stoneConfig.meshNetworkId] = {
-          keepAlive:[],
-          keepAliveState:[],
-          setSwitchState: {},
-          other: []
-        };
-        // create arrays for each of the intents
-        let intentKeys = Object.keys(INTENTS);
-        intentKeys.forEach((key) => {
-          meshNetworks[stoneConfig.meshNetworkId].setSwitchState[INTENTS[key]] = [];
-        });
+        if (meshNetworks[stoneConfig.meshNetworkId] === undefined) {
+          meshNetworks[stoneConfig.meshNetworkId] = {
+            keepAlive:[],
+            keepAliveState:[],
+            setSwitchState: {},
+            other: []
+          };
+
+          // create arrays for each of the intents
+          let intentKeys = Object.keys(INTENTS);
+          intentKeys.forEach((key) => {
+            meshNetworks[stoneConfig.meshNetworkId].setSwitchState[INTENTS[key]] = [];
+          });
+        }
 
         if (todo.commandString === 'keepAlive') {
           meshNetworks[stoneConfig.meshNetworkId].keepAlive.push({handle: stoneConfig.handle, props: [], promise: todo.promise});
@@ -271,7 +274,13 @@ export class BatchCommand {
    * @param { Boolean } priority        //  this will move any command to the top of the queue
    */
   execute(batchSettings = {}, priority = true) {
+    LOG.info("BatchCommand: Executing!");
+
     let { directCommands, meshNetworks } = this._extractTodo();
+
+    LOG.info("BatchCommand: directCommands:", directCommands);
+    LOG.info("BatchCommand: meshNetworks:", meshNetworks);
+
     let promises = [];
 
     let meshNetworkIds = Object.keys(meshNetworks);
@@ -657,13 +666,14 @@ class MeshHelper {
       });
 
       // update the used channels.
-      LOG.mesh('MeshHelper: Dispatching ', 'keepAlive', stoneKeepAlivePackets);
+      LOG.mesh('MeshHelper: Dispatching ', 'keepAliveState', stoneKeepAlivePackets);
       return BluenetPromiseWrapper.meshKeepAliveState(timeout, stoneKeepAlivePackets);
     }
     else if (this.meshInstruction.keepAlive.length > 0) {
       LOG.mesh('MeshHelper: Dispatching meshKeepAlive');
 
-      // add the promise of this part of the payload to the list that we will need to resolve or reject
+      // add the promise of this part of the payload to the list that we will need to resolve or reject when the mesh message is delivered.
+      // these promises are loaded into the handler when load called.
       this.meshInstruction.keepAlive.forEach((instruction) => {
           this._containedPromises.push( instruction.promise );
       });

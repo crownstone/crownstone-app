@@ -115,7 +115,8 @@ export class SetupDeviceEntry extends Component<any, any> {
         break;
       case 'pending':
         this.setState({subtext:"Starting setup...", explanation:'', setupInProgress: true});
-        break;
+        Animated.timing(this.state.progressWidth, {toValue: 0, duration: 100}).start();
+        return;
       case 1:
         this.setState({subtext:"Claiming... Please stay close!", explanation:'', setupInProgress: true});
         break;
@@ -132,6 +133,7 @@ export class SetupDeviceEntry extends Component<any, any> {
         this.setState({setupInProgress: true});
       }
     }
+
 
     let max = 19;
     let loadingWidth = screenWidth * (Math.max(0,value)/max);

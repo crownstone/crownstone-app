@@ -102,7 +102,7 @@ export class SetupHelper {
               }
               else {
                 // if we do not know the stone, we provide the new name and icon
-                addStoneAction.data["name"] = this.name;
+                addStoneAction.data["name"] = this.name + ' ' + this.cloudResponse.uid;
                 addStoneAction.data["icon"] = this.icon;
               }
 

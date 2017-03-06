@@ -627,23 +627,58 @@ open class BluenetJS: NSObject {
   }
   
   @objc func meshKeepAlive(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    // TODO: implement
-    callback([["error" : false]])
+    GLOBAL_BLUENET!.bluenet.mesh.keepAlive()
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN meshKeepAlive \(err)"]])
+        }
+    }
   }
   
   @objc func meshKeepAliveState(_ timeout: NSNumber, stoneKeepAlivePackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-    // TODO: implement
-    callback([["error" : false]])
+    print("-- Firing meshKeepAliveState timeout: \(timeout), packets: \(stoneKeepAlivePackets)")
+    GLOBAL_BLUENET!.bluenet.mesh.keepAliveState(timeout: timeout.uint16Value, stones: stoneKeepAlivePackets as! [[String : NSNumber]])
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN meshKeepAliveState \(err)"]])
+        }
+    }
   }
   
   @objc func meshCommandSetSwitchState(_ crownstoneIds: [NSNumber], state: NSNumber, intent: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    // TODO: implement
-    callback([["error" : false]])
+    print("-- Firing meshCommandSetSwitchState crownstoneIds: \(crownstoneIds), state: \(state), intent: \(intent)")
+    GLOBAL_BLUENET!.bluenet.mesh.meshCommandSetSwitchState(crownstoneIds: crownstoneIds as [UInt16], state: state.floatValue, intent: state.uint8Value)
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN meshKeepAliveState \(err)"]])
+        }
+    }
   }
   
   @objc func multiSwitch(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-    // TODO: implement
-    callback([["error" : false]])
+    print("-- Firing multiSwitch arrayOfStoneSwitchPackets: \(arrayOfStoneSwitchPackets)")
+    GLOBAL_BLUENET!.bluenet.mesh.multiSwitch(stones: arrayOfStoneSwitchPackets as! [[String : NSNumber]])
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN meshKeepAliveState \(err)"]])
+        }
+    }
   }
 
 }
