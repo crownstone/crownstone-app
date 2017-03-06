@@ -1,5 +1,5 @@
 'use strict';
-import React, { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
   AppRegistry,
@@ -16,6 +16,7 @@ import { colors, screenWidth, screenHeight } from './js/views/styles'
 
 
 class Root extends Component {
+
   constructor() {
     super();
     this.unsubscribe = [];

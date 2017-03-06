@@ -1,5 +1,5 @@
 'use strict';
-import React, { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
   AppRegistry,
@@ -15,6 +15,7 @@ import { colors, screenWidth, screenHeight } from './js/views/styles'
 import SplashScreen from "rn-splash-screen";
 
 class Root extends Component {
+
   constructor() {
     super();
     this.state = {top: new Animated.Value(0)};

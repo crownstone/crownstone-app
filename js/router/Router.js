@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 import {
   AppState,
   Alert,
@@ -34,6 +34,7 @@ import { Router_Android } from './RouterAndroid';
 let store = {};
 
 export class AppRouter extends Component {
+
   constructor() {
     super();
     this.state = {initialized:false, loggedIn: false};

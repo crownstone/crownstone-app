@@ -177,6 +177,7 @@ open class BluenetJS: NSObject {
       // forward the event streams to react native
       globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
+//          print("VERIFIED \(castData.getDictionary())")
           if (castData.isSetupPackage()) {
             self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
           }
@@ -200,7 +201,7 @@ open class BluenetJS: NSObject {
 //      we will not forward the unverified events
 //      globalBluenet.bluenetOn("advertisementData", {data -> Void in
 //        if let castData = data as? Advertisement {
-//          print("BluenetBridge: advertisementData", castData)
+//          print("BluenetBridge: advertisementData", castData.getDictionary())
 //          self.bridge.eventDispatcher().sendAppEvent(withName: "advertisementData", body: castData.getDictionary())
 //        }
 //      })
@@ -626,16 +627,23 @@ open class BluenetJS: NSObject {
   }
   
   @objc func meshKeepAlive(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    callback([["error" : false]])
-  }
-  @objc func meshKeepAliveState(_ timeout: NSNumber, stoneKeepAlivePackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
-    callback([["error" : false]])
-  }
-  @objc func meshKeepAlive(_ arrayOfIds: [NSNumber], state: NSNumber, intent: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    callback([["error" : false]])
-  }
-  @objc func meshKeepAlive(_ data: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    // TODO: implement
     callback([["error" : false]])
   }
   
+  @objc func meshKeepAliveState(_ timeout: NSNumber, stoneKeepAlivePackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    // TODO: implement
+    callback([["error" : false]])
+  }
+  
+  @objc func meshCommandSetSwitchState(_ crownstoneIds: [NSNumber], state: NSNumber, intent: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    // TODO: implement
+    callback([["error" : false]])
+  }
+  
+  @objc func multiSwitch(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
+    // TODO: implement
+    callback([["error" : false]])
+  }
+
 }

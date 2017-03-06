@@ -1,18 +1,44 @@
 iOS & Android App for the Crownstone.
 
-This is heavily work in progress. iOS will be done first, after which it will be updated to also support Android.
-
 The native libs are not in this project directly.
 
 ## Setup
 
-Assuming you've already installed nodejs, yarn and Carthage (for ios). You can get Yarn here: https://yarnpkg.com/en/docs/install
+### React Native
+
+Assuming you've already installed npm, nodejs and yarn. You can get Yarn here: https://yarnpkg.com/en/docs/install
+
+Make sure typescript 2.2 or higher is installed using:
+
+```
+npm install -g typescript
+```
+
+To download all dependencies, use Yarn:
 
 ```
 yarn
-cd ios
+```
+
+To run the compiler, use:
+
+```
+tsc --watch
+```
+
+or
+
+```
+npm start
+```
+
+
+### iOS
+
+In the ios folder, use Carthage to download the dependencies.
+
+```
 carthage bootstrap --platform iOS --no-use-binaries
-cd ..
 ```
 
 ### Android
@@ -50,5 +76,3 @@ react-native run-android
 
 If there are problems with PHC folders during iOS compilation, remove the build folder in the ios map.
 Cameraroll has to be manually added to iosbuild in 0.22
-
-The slider needs to be edited in order to work, includes are wrong.
