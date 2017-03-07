@@ -3,11 +3,12 @@ import { Alert, Vibration } from 'react-native';
 import { eventBus } from './../util/eventBus';
 import { LOG }      from '../logging/Log'
 
-const meshRemovalThreshold : number = 20;
+const meshRemovalThreshold : number = 200;
 
 export class IndividualStoneTracker {
   unsubscribeMeshListener : any;
   meshNetworkId : number;
+  stoneUID      : number;
   store         : any;
   sphereId      : string;
   stoneId       : string;
@@ -19,6 +20,8 @@ export class IndividualStoneTracker {
     this.store = store;
     this.sphereId  = sphereId;
     this.stoneId = stoneId;
+
+    // this.stoneUID = store.getState().spheres[sphereId].stones[stoneId].config.crownstoneId;
 
     this.init()
   }
@@ -49,11 +52,11 @@ export class IndividualStoneTracker {
     if (this.meshNetworkId !== null) {
       this.unsubscribeMeshListener = eventBus.on('updateViaMeshNetwork_' + this.sphereId + this.meshNetworkId, (data) => {
         if (data.id === this.stoneId) {
-          // LOG.info("PROGRESSING RESET ", this.stoneId, " from ", this.meshNetworkId, "to ", 0);
+          // LOG.info("PROGRESSING RESET ", this.stoneUID, " from ", this.meshNetworkId, "to ", 0);
           this.notThisStoneCounter = 0;
         }
         else {
-          // LOG.info("PROGRESSING ", this.stoneId, " from ", this.meshNetworkId, "to ", this.notThisStoneCounter);
+          // LOG.info("PROGRESSING ", this.stoneUID, " from ", this.meshNetworkId, "to ", this.notThisStoneCounter);
           this.notThisStoneCounter += 1;
         }
 
@@ -65,7 +68,7 @@ export class IndividualStoneTracker {
   }
 
   removeFromMesh() {
-    LOG.info("Removing stone", this.stoneId, " from ", this.meshNetworkId);
+    // LOG.info("Removing stone", this.stoneUID, " from ", this.meshNetworkId);
     this.notThisStoneCounter = 0;
     this.store.dispatch({
       type: 'UPDATE_MESH_NETWORK_ID',

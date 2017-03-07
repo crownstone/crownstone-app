@@ -278,8 +278,8 @@ export class BatchCommand {
 
     let { directCommands, meshNetworks } = this._extractTodo();
 
-    LOG.info("BatchCommand: directCommands:", directCommands);
-    LOG.info("BatchCommand: meshNetworks:", meshNetworks);
+    // LOG.info("BatchCommand: directCommands:", directCommands);
+    // LOG.info("BatchCommand: meshNetworks:", meshNetworks);
 
     let promises = [];
 

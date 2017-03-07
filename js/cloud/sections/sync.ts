@@ -70,14 +70,12 @@ const syncDown = function (userId, options) {
         .then((data) => {
           cloudKeys = data;
         })
-        // .catch((err) => {console.log("error in getting keys", err)})
     );
     syncPromises.push(
       CLOUD.forUser(userId).getDevices(options)
         .then((data) => {
           cloudDevices = data;
         })
-        // .catch((err) => {console.log("error in getting devices", err)})
     );
     syncPromises.push(
       CLOUD.getSpheres(options)
@@ -95,7 +93,6 @@ const syncDown = function (userId, options) {
           });
           return Promise.all(sphereDataPromises);
         })
-        // .catch((err) => {console.log("error in getting spheres", err)})
     );
 
     Promise.all(syncPromises)
