@@ -47,7 +47,7 @@ export class EventBus {
         this._topicIds[id] = undefined;
         delete this._topicIds[id];
 
-        if (Object.keys(this._topics[topic]).length === 0) {
+        if (this._topics[topic].length === 0) {
           delete this._topics[topic];
         }
 

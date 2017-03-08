@@ -15,7 +15,7 @@ import { Actions } from 'react-native-router-flux';
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { logOut, processImage, safeDeleteFile } from '../../util/Util'
+import { Util, processImage, safeDeleteFile } from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth } from './../styles'
@@ -187,7 +187,7 @@ export class SettingsProfile extends Component<any, any> {
           'You will now be logged out. Follow the instructions on the email and log in with your new password.',
           [{text: 'OK', onPress: () => {
             this.props.eventBus.emit('hideLoading');
-            logOut();
+            Util.app.logOut();
           }}]
         )
       })

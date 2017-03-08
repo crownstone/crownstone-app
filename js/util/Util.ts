@@ -11,9 +11,26 @@ import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 
 
-export const Util = {
-  mesh: MeshUtil,
-  data: DataUtil
+
+const AppUtil = {
+  quit: function() {
+    if (Platform.OS === 'android') {
+      Bluenet.quitApp();
+    }
+  },
+
+  resetBle:  function() {
+    if (Platform.OS === 'android') {
+      Bluenet.resetBle();
+    }
+  },
+
+  logOut: function() {
+    BluenetPromiseWrapper.clearTrackedBeacons().catch(() => {});
+    Bluenet.stopScanning();
+    (Actions as any).loginSplash();
+    StoreManager.userLogOut().catch(() => {});
+  },
 };
 
 export const getUUID = function() : string {
@@ -76,21 +93,6 @@ export const removeAllFiles = function() {
       })
     })
     .catch(APPERROR)
-};
-
-export const logOut = function() {
-  BluenetPromiseWrapper.clearTrackedBeacons();
-  Bluenet.stopScanning();
-  (Actions as any).loginSplash();
-  StoreManager.userLogOut();
-};
-
-export const quitApp = function() {
-  Bluenet.quitApp();
-};
-
-export const resetBle = function() {
-  Bluenet.resetBle();
 };
 
 export const processImage = function(picture, targetFilename) {
@@ -191,3 +193,10 @@ export const addDistanceToRssi = function(rssi, distanceInMeters) {
 };
 
 
+
+
+export const Util = {
+  mesh: MeshUtil,
+  data: DataUtil,
+  app:  AppUtil,
+};

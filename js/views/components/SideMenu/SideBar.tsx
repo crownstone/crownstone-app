@@ -17,11 +17,10 @@ import { eventBus } from '../../../util/eventBus'
 import { Actions } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
 import { Icon } from '../Icon'
-import { CLOUD } from '../../../cloud/cloudAPI'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
 import { NativeBus, BluenetPromiseWrapper } from '../../../native/Proxy'
-import { logOut, quitApp, Util } from '../../../util/Util'
-import { userHasPlugsInSphere } from '../../../util/DataUtil'
+import { Util } from '../../../util/Util'
+import { SettingConstructor } from '../../../util/SettingConstructor'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
@@ -81,110 +80,8 @@ export class SideBar extends Component<any, any> {
   _getSettingsItems() {
     let state = this.props.store.getState();
 
-    let settingItems = [];
-    settingItems.push({
-      id: 'profile',
-      label: 'My Profile',
-      element: <Icon name={"ios-body"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-      action: () => {
-        (Actions as any).settingsProfile();
-        setTimeout(() => {this.props.closeCallback();},0)
-      }
-    });
+    let settingItems = SettingConstructor(this.props.store, state, eventBus);
 
-    if (Object.keys(state.spheres).length > 0) {
-      settingItems.push({
-        id: 'spheres',
-        label: 'Manage Spheres',
-        element: <Icon name={"c1-house"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
-        action: () => {
-          (Actions as any).settingsSphereOverview();
-          setTimeout(() => { this.props.closeCallback(); }, 0)
-        }
-      });
-    }
-    else {
-      settingItems.push({
-        id: 'addSphere',
-        label: 'Add Sphere',
-        element: <Icon name={"c1-house"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
-        action: () => {
-          eventBus.emit('showLoading', 'Creating Sphere...');
-          setTimeout(() => { this.props.closeCallback(); }, 0);
-
-          BluenetPromiseWrapper.requestLocation()
-            .then((location) => {
-              let latitude = undefined;
-              let longitude = undefined;
-              if (location && location.latitude && location.longitude) {
-                latitude = location.latitude;
-                longitude = location.longitude;
-              }
-              return CLOUD.createNewSphere(this.props.store, state.user.firstName, eventBus, latitude, longitude)
-            })
-            .then((sphereId) => {
-              eventBus.emit('hideLoading');
-              let state = this.props.store.getState();
-              let title = state.spheres[sphereId].config.name;
-              (Actions as any).settingsSphere({sphereId: sphereId, title: title})
-            })
-            .catch(() => {eventBus.emit('hideLoading');});
-        }
-      });
-    }
-
-
-
-    let presentSphere = Util.data.getPresentSphere(state);
-
-    if (presentSphere && userHasPlugsInSphere(state, presentSphere)) {
-      let tapToToggleSettings = { tutorial: false };
-      if (Util.data.getTapToToggleCalibration(state)) {
-        tapToToggleSettings.tutorial = true;
-      }
-
-      settingItems.push({
-        id: 'calibrate',
-        label: 'Calibrate Tap-to-Toggle',
-        element: <Icon name={"md-flask"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor: 'transparent', padding: 0, margin: 0}}/>,
-        action: () => {
-          eventBus.emit("CalibrateTapToToggle", tapToToggleSettings);
-          setTimeout(() => { this.props.closeCallback(); }, 0)
-        }
-      });
-    }
-    settingItems.push({
-      id: 'help',
-      label: 'Help',
-      element: <Icon name={"md-help-circle"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-      action: () => {
-        Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
-        setTimeout(() => {this.props.closeCallback();},0)
-      }
-    });
-    settingItems.push({
-      id: 'recover',
-      label: 'Recover a Crownstone',
-      element: <Icon name={"c1-socket2"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-      action: () => {
-        (Actions as any).settingsPluginRecoverStep1();
-        setTimeout(() => {this.props.closeCallback();},0)
-      }
-    });
-    settingItems.push({
-      id: 'logout',
-      label: 'Log Out',
-      element: <Icon name={"md-log-out"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-      action: () => {
-        Alert.alert('Log out','Are you sure?',[
-          {text: 'Cancel', style: 'cancel'},
-          {text: 'OK', onPress: () => {
-            logOut();
-            setTimeout(() => {this.props.closeCallback();},0)
-          }}
-        ])
-      }
-    });
     settingItems.push({
       id: 'quit',
       label: 'Force Quit',
@@ -193,7 +90,7 @@ export class SideBar extends Component<any, any> {
         Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
           {text: 'Cancel', style: 'cancel'},
           {text: 'OK', onPress: () => {
-            quitApp();
+            Util.app.quit();
           }}
         ])
       }
