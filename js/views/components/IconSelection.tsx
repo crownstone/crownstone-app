@@ -79,7 +79,7 @@ export class IconSelection extends Component<any, any> {
           {this._getBorder( icons, iconIndex+1)}
           {this._getIcon(   icons, iconIndex+2)}
         </View>
-        <View style={{height:1, flex:1, backgroundColor: borderColor}} />
+        <View style={{height:1, backgroundColor: borderColor}} />
       </View>
     )
   }
@@ -106,7 +106,7 @@ export class IconSelection extends Component<any, any> {
   render() {
     return (
       <View style={{flexDirection:'column', backgroundColor:"rgba(255,255,255,0.5)"}}>
-        <View style={{height:1, flex:1, backgroundColor: borderColor}} />
+        <View style={{height:1, backgroundColor: borderColor}} />
         {this._getIcons()}
       </View>
     );
