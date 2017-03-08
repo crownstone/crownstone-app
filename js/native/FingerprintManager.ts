@@ -94,7 +94,7 @@ class FingerprintManagerClass {
 
   pauseCollectingFingerprint() {
     this._stopFingerprinting(() => {
-      Bluenet.abortCollectingFingerprint();
+      Bluenet.pauseCollectingFingerprint();
     });
   }
 }
