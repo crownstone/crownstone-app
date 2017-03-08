@@ -199,7 +199,6 @@ export class RoomAdd extends Component<any, any> {
       return <View />
     }
 
-
     let floatingStones = getStonesAndAppliancesInLocation(state, this.props.sphereId, null);
     let amountOfFloatingStones = Object.keys(floatingStones).length;
     let items = this._getItems(floatingStones);

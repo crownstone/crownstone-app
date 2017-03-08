@@ -146,7 +146,11 @@ export const INITIALIZER = {
 
       // listen to the state of the app: if it is in the foreground or background
       AppState.addEventListener('change', (appState) => {
+        LOG.info("App State Change", appState);
         if (appState === "active") {
+
+        }
+        else if (appState === "background") {
 
         }
       });
