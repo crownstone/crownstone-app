@@ -6,7 +6,7 @@ import { LocalizationUtil }                     from './native/LocalizationUtil'
 import { Scheduler }                            from './logic/Scheduler'
 import { BluenetPromiseWrapper, Bluenet, NativeBus }  from './native/Proxy';
 import { eventBus }                             from './util/eventBus'
-import { userHasPlugsInSphere, getDeviceSpecs } from './util/DataUtil'
+import { getDeviceSpecs }                       from './util/DataUtil'
 import { Util }                                 from './util/Util'
 
 
@@ -146,7 +146,11 @@ export const INITIALIZER = {
 
       // listen to the state of the app: if it is in the foreground or background
       AppState.addEventListener('change', (appState) => {
+        LOG.info("App State Change", appState);
         if (appState === "active") {
+
+        }
+        else if (appState === "background") {
 
         }
       });
@@ -157,7 +161,7 @@ export const INITIALIZER = {
         let state = store.getState();
         if (deviceInDatabaseId &&
           (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {
-          if (userHasPlugsInSphere(state,sphereId))
+          if (Util.data.userHasPlugsInSphere(state,sphereId))
             eventBus.emit("CalibrateTapToToggle");
         }
       });

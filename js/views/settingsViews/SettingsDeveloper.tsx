@@ -9,14 +9,13 @@ import {
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
-import { IconButton } from './../components/IconButton'
-import { Background } from './../components/Background'
+import { IconButton } from '../components/IconButton'
+import { Background } from '../components/Background'
 import { Bluenet } from '../../native/Proxy'
-import { logOut } from '../../util/Util'
-import { ListEditableItems } from './../components/ListEditableItems'
+import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG, clearLogs } from '../../logging/Log'
-import { styles, colors } from './../styles'
+import { styles, colors } from '../styles'
 const RNFS = require('react-native-fs');
 
 
@@ -33,7 +32,6 @@ export class SettingsDeveloper extends Component<any, any> {
     this.unsubscribe = store.subscribe(() => {
       const state = store.getState();
       if (this.renderState && this.renderState.user != state.user) {
-        // LOG.info("Force Update Profile", this.renderState.user, state.user)
         this.forceUpdate();
       }
     })
@@ -94,26 +92,6 @@ export class SettingsDeveloper extends Component<any, any> {
 
     return items;
   }
-
-
-  requestPasswordResetEmail(email) {
-    this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
-    CLOUD.requestPasswordResetEmail({email: email.toLowerCase()})
-      .then(() => {
-        Alert.alert(
-          'Reset email has been sent',
-          'You will now be logged out. Follow the instructions on the email and log in with your new password.',
-          [{text: 'OK', onPress: () => {
-            this.props.eventBus.emit('hideLoading');
-            logOut();
-          }}]
-        )
-      })
-      .catch((reply) => {
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
-      });
-  }
-
 
   render() {
     const store = this.props.store;

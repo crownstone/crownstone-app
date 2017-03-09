@@ -247,7 +247,7 @@ class AdvertisementHandlerClass {
 
     // if the advertisement contains the state of a different Crownstone, we update its disability state
     if (serviceData.stateOfExternalCrownstone === true) {
-      StoneStateHandler.receivedUpdateViaMesh(sphereId, referenceByCrownstoneId.id, meshNetworkId, serviceData.random, serviceData);
+      StoneStateHandler.receivedUpdateViaMesh(sphereId, referenceByCrownstoneId.id, meshNetworkId, serviceData.random, referenceByHandle.id, serviceData);
     }
 
     // we always update the disability (and rssi) of the Crownstone that is broadcasting.

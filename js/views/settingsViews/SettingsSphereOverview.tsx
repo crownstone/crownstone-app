@@ -90,7 +90,7 @@ export class SettingsSphereOverview extends Component<any, any> {
         style: {color: colors.blue.hex},
         type: 'button',
         callback: () => {
-          this._createNewSphere(store, state.user.firstName);
+          this._createNewSphere(store, state.user.firstName).catch(() => {})
         }
       });
     }
@@ -126,11 +126,16 @@ export class SettingsSphereOverview extends Component<any, any> {
       })
       .catch((err) => {
         if (err.status == 422) {
-          this._createNewSphere(store, name + ' new')
+          return this._createNewSphere(store, name + ' new')
         }
         else {
-          LOG.error(err)
+          return new Promise((resolve, reject) => {reject(err);})
         }
+      })
+      .catch((err) => {
+        this.props.eventBus.emit('hideLoading');
+        LOG.error("Could not create sphere", err);
+        Alert.alert("Could not create sphere", "Please try again later.", [{text:'OK'}])
       })
   }
 

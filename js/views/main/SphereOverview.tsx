@@ -239,7 +239,7 @@ export class SphereOverview extends Component<any, any> {
               showHamburgerMenu={true}
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
-            <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute',  left: this.state.left}}>
+            <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute', top: topBarHeight, left: this.state.left}}>
               {this._getSpheres(seeStonesInSetupMode)}
             </Animated.View>
             <Orbs amount={this.sphereIds.length} active={this._activeSphereIndex} />

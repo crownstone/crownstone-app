@@ -35,7 +35,7 @@ export class RoomTraining_training extends Component<any, any> {
         <TopBar
           left={"Cancel"}
           notBack={true}
-          leftAction={this.props.cancel()}
+          leftAction={() => {this.props.cancel()}}
           title="Train Room"/>
         <View style={{flexDirection:'column', flex:1}}>
           <View style={{padding:30, alignItems:'center'}}>

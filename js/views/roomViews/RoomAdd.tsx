@@ -10,16 +10,15 @@ import {
   View
 } from 'react-native';
 
-import { TopBar } from './../components/Topbar'
-import { Background } from './../components/Background'
-import { IconCircle } from './../components/IconCircle'
-import { ListEditableItems } from './../components/ListEditableItems'
+import { TopBar } from '../components/Topbar'
+import { Background } from '../components/Background'
+import { IconCircle } from '../components/IconCircle'
+import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
-import { CLOUD } from './../../cloud/cloudAPI'
-import { LOG } from './../../logging/Log'
+import { CLOUD } from '../../cloud/cloudAPI'
+import { LOG } from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from './../styles'
-
+import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from '../styles'
 
 
 
@@ -198,7 +197,6 @@ export class RoomAdd extends Component<any, any> {
       Actions.pop();
       return <View />
     }
-
 
     let floatingStones = getStonesAndAppliancesInLocation(state, this.props.sphereId, null);
     let amountOfFloatingStones = Object.keys(floatingStones).length;

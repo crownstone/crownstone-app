@@ -55,7 +55,6 @@
 		FA2DAF501E6581F60029D4A8 /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2DAF4C1E6581F60029D4A8 /* JSONUtils.swift */; };
 		FA2DAF511E6581F60029D4A8 /* NativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DAF4E1E6581F60029D4A8 /* NativeBridge.m */; };
 		FA2DAF6B1E65857C0029D4A8 /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF631E65857C0029D4A8 /* BluenetBasicLocalization.framework */; };
-		FA2DAF6C1E65857C0029D4A8 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF641E65857C0029D4A8 /* BluenetLib.framework */; };
 		FA2DAF6D1E65857C0029D4A8 /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF651E65857C0029D4A8 /* BluenetShared.framework */; };
 		FA2DAF6E1E65857C0029D4A8 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF661E65857C0029D4A8 /* CryptoSwift.framework */; };
 		FA2DAF6F1E65857C0029D4A8 /* iOSDFULibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF671E65857C0029D4A8 /* iOSDFULibrary.framework */; };
@@ -66,6 +65,7 @@
 		FA2DAFBC1E659A810029D4A8 /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAFB91E659A810029D4A8 /* Crownstone.ttf */; };
 		FA2DAFBD1E659A810029D4A8 /* CustomIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAFBA1E659A810029D4A8 /* CustomIcons.ttf */; };
 		FA2DAFBE1E659A810029D4A8 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAFBB1E659A810029D4A8 /* Lato-Bold.ttf */; };
+		FA43B6811E6EF3F30033B7EF /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43B6801E6EF3F30033B7EF /* BluenetLib.framework */; };
 		FDCE7CF86D3F474ABA13E6CE /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADB770CECFC34DA6845E5CF0 /* libRNDeviceInfo.a */; };
 /* End PBXBuildFile section */
 
@@ -372,7 +372,6 @@
 		FA2DAF4E1E6581F60029D4A8 /* NativeBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NativeBridge.m; sourceTree = "<group>"; };
 		FA2DAF521E6582A90029D4A8 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		FA2DAF631E65857C0029D4A8 /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
-		FA2DAF641E65857C0029D4A8 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA2DAF651E65857C0029D4A8 /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
 		FA2DAF661E65857C0029D4A8 /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		FA2DAF671E65857C0029D4A8 /* iOSDFULibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iOSDFULibrary.framework; path = Carthage/Build/iOS/iOSDFULibrary.framework; sourceTree = "<group>"; };
@@ -383,6 +382,7 @@
 		FA2DAFBA1E659A810029D4A8 /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
 		FA2DAFBB1E659A810029D4A8 /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../js/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
 		FA2DAFBF1E65DA380029D4A8 /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
+		FA43B6801E6EF3F30033B7EF /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/BluenetWorkspace-ctwjboexknfjsaemurnuvcntfmgk/Build/Products/Debug-iphoneos/BluenetLib.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,12 +406,12 @@
 				FA2DAF721E65857C0029D4A8 /* Zip.framework in Frameworks */,
 				FA2DAF6D1E65857C0029D4A8 /* BluenetShared.framework in Frameworks */,
 				FA2DAF701E65857C0029D4A8 /* PromiseKit.framework in Frameworks */,
+				FA43B6811E6EF3F30033B7EF /* BluenetLib.framework in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
-				FA2DAF6C1E65857C0029D4A8 /* BluenetLib.framework in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
@@ -623,8 +623,8 @@
 				FA2DAFB91E659A810029D4A8 /* Crownstone.ttf */,
 				FA2DAFBA1E659A810029D4A8 /* CustomIcons.ttf */,
 				FA2DAFBB1E659A810029D4A8 /* Lato-Bold.ttf */,
+				FA43B6801E6EF3F30033B7EF /* BluenetLib.framework */,
 				FA2DAF631E65857C0029D4A8 /* BluenetBasicLocalization.framework */,
-				FA2DAF641E65857C0029D4A8 /* BluenetLib.framework */,
 				FA2DAF651E65857C0029D4A8 /* BluenetShared.framework */,
 				FA2DAF661E65857C0029D4A8 /* CryptoSwift.framework */,
 				FA2DAF671E65857C0029D4A8 /* iOSDFULibrary.framework */,
@@ -1257,7 +1257,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
+				"/Users/alex/Library/Developer/Xcode/DerivedData/BluenetWorkspace-ctwjboexknfjsaemurnuvcntfmgk/Build/Products/Debug-iphoneos/BluenetLib.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CryptoSwift.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/iOSDFULibrary.framework",

@@ -89,16 +89,18 @@ class StoneStateHandlerClass {
    * @param remoteStoneId       The remote stone id (the one who owns the payload, not the advertisement)
    * @param meshNetworkId
    * @param randomFromServiceData
+   * @param advertisingStoneId
+   * @param serviceData
    */
-  receivedUpdateViaMesh(sphereId: string, remoteStoneId: string, meshNetworkId: number, randomFromServiceData : string, serviceData) {
-    // emit the mesh update event only for unique advertisements
-    if (this.advertisementIdsPerStoneId[remoteStoneId] && this.advertisementIdsPerStoneId[remoteStoneId] !== randomFromServiceData) {
+  receivedUpdateViaMesh(sphereId: string, remoteStoneId: string, meshNetworkId: number, randomFromServiceData : string, advertisingStoneId : string, serviceData) {
+    // emit the mesh update event only for unique advertisements. Due to ibeacon connectable on/off the unique filter is not always working.
+    if (this.advertisementIdsPerStoneId[advertisingStoneId] && this.advertisementIdsPerStoneId[advertisingStoneId] !== randomFromServiceData) {
       eventBus.emit('updateViaMeshNetwork_' + sphereId + meshNetworkId, {
         id: remoteStoneId,
         serviceData: serviceData
       });
     }
-    this.advertisementIdsPerStoneId[remoteStoneId] = randomFromServiceData;
+    this.advertisementIdsPerStoneId[advertisingStoneId] = randomFromServiceData;
 
     // update the visibility of the Crownstone
     this.update(sphereId, remoteStoneId);

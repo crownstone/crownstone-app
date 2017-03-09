@@ -12,7 +12,7 @@ export let LOG_BLE        = false;   // enabling LOG.ble        commands to be s
 export let LOG_EVENTS     = false;   // enabling LOG.event      commands to be shown.
 export let LOG_STORE      = false;   // enabling LOG.store      commands to be shown.
 export let LOG_MESH       = true;   // enabling LOG.mesh       commands to be shown.
-export let LOG_CLOUD      = false;  // enabling LOG.cloud      commands to be shown.
+export let LOG_CLOUD      = true;  // enabling LOG.cloud      commands to be shown.
 export let LOG_DEBUG      = true;   // enabling LOG.debug      commands to be shown.
 export let LOGGING        = true;   // enabling LOG.info       commands to be shown.
 
@@ -44,9 +44,9 @@ export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
 export const RESET_TIMER_FOR_NEAR_AWAY_EVENTS = 20000; // ms
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
+export const RELEASE_MODE = true && DeviceInfo.getModel() !== "Simulator";
 
-export const TESTING_IN_PROCESS = false;
+export const TESTING_IN_PROCESS : boolean = true;
 
 let LOCAL_TESTING = false;
 
@@ -54,7 +54,7 @@ let notifiedCloudEndpoint = false;
 
 if (RELEASE_MODE) {
 
-  if (TESTING_IN_PROCESS === false) {
+  if (!TESTING_IN_PROCESS) {
     LOG.info("------------------   --------------------------------   -----------------");
     LOG.info("------------------   ----- USING RELEASE CLOUD ------   -----------------");
     LOG.info("------------------   --------------------------------   -----------------");
