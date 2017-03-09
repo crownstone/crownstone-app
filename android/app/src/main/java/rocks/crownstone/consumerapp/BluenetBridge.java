@@ -10,6 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +20,8 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Pair;
 
@@ -27,6 +32,7 @@ import com.facebook.react.bridge.NoSuchKeyException;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UnexpectedNativeTypeException;
 import com.facebook.react.bridge.WritableArray;
@@ -38,27 +44,35 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import nl.dobots.bluenet.ble.base.BleBaseEncryption;
 import nl.dobots.bluenet.ble.base.callbacks.IDiscoveryCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IProgressCallback;
-import nl.dobots.bluenet.ble.base.callbacks.IStatusCallback;
+import nl.dobots.bluenet.ble.base.structs.ControlMsg;
 import nl.dobots.bluenet.ble.base.structs.CrownstoneServiceData;
 import nl.dobots.bluenet.ble.base.structs.EncryptionKeys;
 import nl.dobots.bluenet.ble.cfg.BleErrors;
+import nl.dobots.bluenet.ble.cfg.BluenetConfig;
 import nl.dobots.bluenet.ble.core.BleCore;
+import nl.dobots.bluenet.ble.core.callbacks.IStatusCallback;
 import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
+import nl.dobots.bluenet.ble.extended.callbacks.EventListener;
 import nl.dobots.bluenet.ble.extended.CrownstoneSetup;
 import nl.dobots.bluenet.ble.extended.structs.BleDevice;
 import nl.dobots.bluenet.ble.extended.structs.BleDeviceList;
+import nl.dobots.bluenet.ble.mesh.structs.MeshControlMsg;
+import nl.dobots.bluenet.ble.mesh.structs.MeshKeepAlivePacket;
+import nl.dobots.bluenet.ble.mesh.structs.MeshMultiSwitchPacket;
+import nl.dobots.bluenet.ble.mesh.structs.cmd.MeshControlPacket;
 import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
 import nl.dobots.bluenet.ibeacon.BleIbeaconFilter;
 import nl.dobots.bluenet.ibeacon.BleIbeaconRanging;
+import nl.dobots.bluenet.localization.locations.Location;
 import nl.dobots.bluenet.service.BleScanService;
-import nl.dobots.bluenet.service.callbacks.EventListener;
 import nl.dobots.bluenet.service.callbacks.IntervalScanListener;
 import nl.dobots.bluenet.service.callbacks.ScanDeviceListener;
 import nl.dobots.bluenet.utils.BleLog;
@@ -287,13 +301,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onError(int error) {
-				switch(error) {
-					case BleErrors.ERROR_BLUETOOTH_TURNED_OFF: {
-						_bleTurnedOff = true;
-						sendEvent("bleStatus", "poweredOff");
-						break;
-					}
-				}
+//				switch(error) {
+//					case BleErrors.ERROR_BLUETOOTH_TURNED_OFF: {
+//						_bleTurnedOff = true;
+//						sendEvent("bleStatus", "poweredOff");
+//						break;
+//					}
+//				}
 				BleLog.getInstance().LOGe(TAG, "error initializing bleExt: " + error);
 			}
 		});
@@ -443,6 +457,60 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		BleLog.getInstance().LOGi(TAG, "requestLocationPermission");
 	}
 
+	@ReactMethod
+	public void requestLocation(Callback callback) {
+		// Should return data {"latitude": number, "longitude": number}
+		WritableMap retVal = Arguments.createMap();
+
+		if (ContextCompat.checkSelfPermission(_reactContext, "android.permission.ACCESS_COARSE_LOCATION") != PackageManager.PERMISSION_GRANTED) {
+//			ActivityCompat.requestPermissions( this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION }, MY_PERMISSIONS_REQUEST_COURSE_LOCATION);
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "no permission to get location");
+			callback.invoke(retVal);
+			return;
+		}
+
+		LocationManager locationManager = (LocationManager) _reactContext.getSystemService(Context.LOCATION_SERVICE);
+		if (locationManager == null) {
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "no location manager");
+			callback.invoke(retVal);
+			return;
+		}
+
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+		criteria.setAltitudeRequired(false);
+		criteria.setBearingRequired(false);
+		criteria.setSpeedRequired(false);
+		String provider = locationManager.getBestProvider(criteria, true);
+		if (provider == null) {
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "no location provider available");
+			callback.invoke(retVal);
+			return;
+		}
+
+		android.location.Location location = locationManager.getLastKnownLocation(provider);
+		if (location == null) {
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "no location available");
+			callback.invoke(retVal);
+			return;
+		}
+
+		WritableMap dataVal = Arguments.createMap();
+		dataVal.putDouble("latitude", location.getLatitude());
+		dataVal.putDouble("longitude", location.getLongitude());
+		retVal.putBoolean("error", false);
+		retVal.putMap("data", dataVal);
+		callback.invoke(retVal);
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//                       Start / stop scanning
+	//////////////////////////////////////////////////////////////////////////////////////////
 
 	@ReactMethod
 	public void startScanning() {
@@ -482,6 +550,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public void forceClearActiveRegion() {
 		// Forces not being in an ibeacon region (not needed for android as far as I know)
 	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//                       Connect / disconnect
+	//////////////////////////////////////////////////////////////////////////////////////////
 
 	@ReactMethod
 	public void connect(final String uuid, final Callback callback) {
@@ -634,8 +707,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//                       Commands
+	//////////////////////////////////////////////////////////////////////////////////////////
+
 	@ReactMethod
-	public void setSwitchState(Float switchState, final Callback callback) {
+	public void setSwitchState(Float switchState, int timeout, int intent, final Callback callback) {
 		if (switchState > 0) {
 			_bleExt.relayOn(new IStatusCallback() {
 				@Override
@@ -929,6 +1007,185 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
+	public void meshKeepAlive(final Callback callback) {
+		// Write a message with no payload, as per protocol.
+		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, 0, new byte[0]);
+		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "meshKeepAlive failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void meshKeepAliveState(int timeout, ReadableArray keepAliveItems, final Callback callback) {
+		// keepAliveItems = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}, {}, ...]
+
+		// Create new packet, fill it with keep alive items.
+		MeshKeepAlivePacket packet = new MeshKeepAlivePacket(timeout);
+		boolean success = true;
+		for (int i=0; i<keepAliveItems.size(); i++) {
+			ReadableMap itemMap = keepAliveItems.getMap(i);
+			int crownstoneId = itemMap.getInt("crownstoneId");
+			int actionSwitchState = BluenetConfig.KEEP_ALIVE_NO_ACTION;
+			if (itemMap.getBoolean("action")) {
+				double switchStateDouble = itemMap.getDouble("state");
+//				actionSwitchState = (int) Math.round(100*switchStateDouble);
+				if (switchStateDouble > 0) {
+					actionSwitchState = BluenetConfig.RELAY_ON;
+				}
+				else {
+					actionSwitchState = BluenetConfig.RELAY_OFF;
+				}
+			}
+			if (!packet.addKeepAlive(crownstoneId, actionSwitchState)) {
+				success = false;
+				BleLog.getInstance().LOGe(TAG, "Unable to add keep alive item: " + itemMap);
+				break;
+			}
+		}
+		if (!success) {
+			BleLog.getInstance().LOGe(TAG, "Failed to send mesh keep alive: " + keepAliveItems);
+			WritableMap retVal = Arguments.createMap();
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "Invalid meshKeepAliveState data");
+			callback.invoke(retVal);
+			return;
+		}
+
+		// Write a mesh control msg with the packet as payload
+		byte[] payload = packet.toArray();
+		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, payload.length, payload);
+		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "meshKeepAliveState failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void meshCommandSetSwitchState(ReadableArray ids, Float switchStateFloat, int intent, final Callback callback) {
+		// ids = [number(uint16), ..]
+
+		// Create the control msg
+		int switchState = Math.round(switchStateFloat*100);
+		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_SWITCH, 1, new byte[]{(byte) switchState});
+
+		// Copy crownstone ids to an int array
+		int[] idsArr = new int[ids.size()];
+		for (int i=0; i<ids.size(); i++) {
+			idsArr[i] = ids.getInt(i);
+		}
+
+		// Create the mesh control packet: a control msg combined with target ids
+		MeshControlPacket packet = new MeshControlPacket(controlMsg, idsArr);
+
+		// Write a mesh control msg with the packet as payload
+		byte[] payload = packet.toArray();
+		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_COMMAND, payload.length, payload);
+		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "meshCommandSetSwitchState failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void multiSwitch(ReadableArray switchItems, final Callback callback) {
+		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
+
+		// Create the multi switch packet
+		MeshMultiSwitchPacket packet = new MeshMultiSwitchPacket();
+		boolean success = true;
+		for (int i=0; i<switchItems.size(); i++) {
+			ReadableMap itemMap = switchItems.getMap(i);
+			int crownstoneId =         itemMap.getInt("crownstoneId");
+			int timeout =              itemMap.getInt("timeout");
+			int intent =               itemMap.getInt("inent");
+			double switchStateDouble = itemMap.getDouble("state");
+//			int switchState = (int) Math.round(100*switchStateDouble);
+			int switchState;
+			if (switchStateDouble > 0) {
+				switchState = BluenetConfig.RELAY_ON;
+			}
+			else {
+				switchState = BluenetConfig.RELAY_OFF;
+			}
+			if (!packet.addMultiSwitch(crownstoneId, switchState, timeout, intent)) {
+				success = false;
+				BleLog.getInstance().LOGe(TAG, "Unable to add multi switch item: " + itemMap);
+				break;
+			}
+		}
+		if (!success) {
+			BleLog.getInstance().LOGe(TAG, "Failed to send mesh multi switch: " + switchItems);
+			WritableMap retVal = Arguments.createMap();
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "Invalid multiSwitch data");
+			callback.invoke(retVal);
+			return;
+		}
+
+		// Write a mesh control msg with the packet as payload
+		byte[] payload = packet.toArray();
+		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, payload.length, payload);
+		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "meshKeepAliveState failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//                       iBeacon tracking
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	@ReactMethod
 	public void trackIBeacon(String ibeaconUUID, String sphereId) {
 		// Add the uuid to the list of tracked iBeacons, associate it with given sphereId
 		// Also starts the tracking
@@ -985,6 +1242,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//                       Localization
+	//////////////////////////////////////////////////////////////////////////////////////////
 
 	@ReactMethod
 	public void startIndoorLocalization() {
@@ -1067,6 +1327,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			e.printStackTrace();
 		}
 	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//                       private
+	//////////////////////////////////////////////////////////////////////////////////////////
 
 	private void sendEvent(String eventName, @Nullable WritableMap params) {
 		_reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
@@ -1185,13 +1450,15 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				initBluetooth();
 				break;
 			}
-			case BLUETOOTH_INITIALIZED:{
+			case BLUETOOTH_TURNED_ON:{
 				// If bluetooth is turned on, the scanservice doesn't automatically restart.
 				updateScanner();
-//				if (_scannerState != ScannerState.DISABLED || _isTrackingIbeacon) {
-//					_scanService.startIntervalScan(getScanInterval(), getScanPause(), BleDeviceFilter.anyStone);
-//				}
 				_isResettingBluetooth = false;
+				break;
+			}
+			case BLUETOOTH_TURNED_OFF: {
+				_bleTurnedOff = true;
+				sendEvent("bleStatus", "poweredOff");
 				break;
 			}
 			case BLUETOOTH_START_SCAN_ERROR:
