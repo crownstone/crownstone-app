@@ -56,6 +56,7 @@ let textContainerStyle = {
 };
 
 export class RoomTraining_roomSize extends Component<any, any> {
+
   _getButton(sampleSize, iconSize, text, roomSize) {
     return (
       <TouchableOpacity style={buttonStyle} onPress={() => { (Actions as any).roomTraining({sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
@@ -68,7 +69,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
           <Text style={buttonTextStyle}>)</Text>
         </View>
       </TouchableOpacity>
-    )
+    );
   }
 
   render() {

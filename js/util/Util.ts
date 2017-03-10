@@ -33,19 +33,6 @@ const AppUtil = {
   },
 };
 
-export const getUUID = function() : string {
-  const S4 = function () {
-    return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
-  };
-
-  return (
-    S4() + S4() + '-' +
-    S4() + '-' +
-    S4() + '-' +
-    S4() + '-' +
-    S4() + S4() + S4()
-  );
-};
 
 export const mixin = function(base, section) {
   for (let key in section) {
@@ -199,4 +186,18 @@ export const Util = {
   mesh: MeshUtil,
   data: DataUtil,
   app:  AppUtil,
+
+  getUUID : () : string => {
+    const S4 = function () {
+      return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
+    };
+
+    return (
+      S4() + S4() + '-' +
+      S4() + '-' +
+      S4() + '-' +
+      S4() + '-' +
+      S4() + S4() + S4()
+    );
+  },
 };

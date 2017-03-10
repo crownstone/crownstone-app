@@ -1,6 +1,6 @@
 import { NativeBus } from '../native/Proxy';
 import { LOG } from '../logging/Log'
-import { getUUID } from '../util/Util'
+import { Util } from '../util/Util'
 
 
 class SchedulerClass {
@@ -166,7 +166,7 @@ class SchedulerClass {
   }
 
   scheduleCallback(callback, afterMilliseconds, label = "unlabeled") {
-    let uuid = label + getUUID();
+    let uuid = label + Util.getUUID();
     this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
     return () => {
       if (this.singleFireTriggers[uuid]) {

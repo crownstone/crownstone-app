@@ -14,7 +14,7 @@ import {
 
 import { Icon } from './Icon';
 import { IconButton } from '../components/IconButton'
-import { getUUID } from '../../util/Util'
+import { Util } from '../../util/Util'
 import { styles, colors, screenWidth } from '../styles'
 
 
@@ -40,7 +40,7 @@ export class DeviceEntry extends Component<any, any> {
     this.state = {height: new Animated.Value(this.baseHeight), optionsHeight:  new Animated.Value(0), optionsOpen: false};
     this.optionsAreOpen = false;
     this.animating = false;
-    this.id = getUUID();
+    this.id = Util.getUUID();
     this.initiallyOpenTimeout = undefined;
     this.optionMoveTimeout = undefined;
   }
@@ -50,13 +50,11 @@ export class DeviceEntry extends Component<any, any> {
       this.initiallyOpenTimeout = setTimeout(() => {this._openOptions(600);}, 200);
     }
 
-    if (this.props.eventbus) {
-      this.unsubscribe = this.props.eventBus.on("focusDeviceEntry", (id) => {
-        if (id != this.id) {
-          this._closeOptions();
-        }
-      })
-    }
+    this.unsubscribe = this.props.eventBus.on("focusDeviceEntry", (id) => {
+      if (id != this.id) {
+        this._closeOptions();
+      }
+    })
   }
 
   componentWillUnmount() { // cleanup

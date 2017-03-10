@@ -2,7 +2,7 @@ import { LocationHandler } from '../native/LocationHandler';
 import { IndividualStoneTracker } from '../native/IndividualStoneTracker';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log'
-import { Util, getUUID } from '../util/Util'
+import { Util } from '../util/Util'
 import { eventBus } from '../util/eventBus'
 import { DISABLE_TIMEOUT } from '../ExternalConfig'
 

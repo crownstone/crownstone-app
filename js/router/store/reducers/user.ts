@@ -1,5 +1,5 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
-import { getUUID } from '../../../util/Util'
+import { Util } from '../../../util/Util'
 
 let defaultSettings = {
   firstName: null,
@@ -50,7 +50,7 @@ export default (state = defaultSettings, action : any = {}) => {
     case 'CREATE_APP_IDENTIFIER':
       if (state.appIdentifier === null) {
         let newState = {...state};
-        newState.appIdentifier = getUUID();
+        newState.appIdentifier = Util.getUUID();
         return newState;
       }
       return state;

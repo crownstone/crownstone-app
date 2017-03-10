@@ -44,7 +44,7 @@ export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
 export const RESET_TIMER_FOR_NEAR_AWAY_EVENTS = 20000; // ms
 
 // WHEN RELEASING: SET THIS TO TRUE
-export const RELEASE_MODE = true && DeviceInfo.getModel() !== "Simulator";
+export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
 
 export const TESTING_IN_PROCESS : boolean = true;
 

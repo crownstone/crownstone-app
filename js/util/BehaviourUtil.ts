@@ -1,5 +1,6 @@
 import { BluenetPromiseWrapper, BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/Proxy';
-import { BleUtil, BatchCommand } from './BleUtil';
+import { BleUtil } from './BleUtil';
+import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log';
 import { Util } from '../util/Util';
@@ -21,14 +22,11 @@ export const BehaviourUtil = {
    *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
    *                                        }
    */
-  enactBehaviourInLocation: function(store, sphereId, locationId, behaviourType, bleController, callbacks = {}) {
+  enactBehaviourInLocation: function(store, sphereId, locationId, behaviourType, callbacks = {}) {
     // turn on crownstones in room
     let state = store.getState();
     let sphere = state.spheres[sphereId];
     let stoneIds = Object.keys(sphere.stones);
-
-    if (!bleController)
-     bleController = new BatchCommand(store, sphereId);
 
     stoneIds.forEach((stoneId) => {
       // for each stone in sphere select the behaviour we want to copy into the keep Alive
@@ -36,10 +34,11 @@ export const BehaviourUtil = {
       if (stone.config.locationId !== locationId)
         return;
 
-      this.enactBehaviour(store, sphereId, stoneId, behaviourType, bleController, callbacks);
+      this.enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks);
     });
 
-    bleController.execute({immediate: false, timesToRetry:1}, false);
+    console.log("Triggering execute in enactBehaviourInLocation");
+    BatchCommandHandler.execute({immediate: false, timesToRetry:1}, false);
   },
 
 
@@ -48,7 +47,6 @@ export const BehaviourUtil = {
    * @param { Object } store            // redux store
    * @param { String } sphereId         // ID of sphere to get the stones from
    * @param { String } behaviourType    // type of behaviour to be used in the logging and switching intent
-   * @param { BatchCommand } bleController    // type of behaviour to be used in the logging and switching intent
    * @param { Object } callbacks        // hooks for the enacting of the behaviour.
    *                                        {
    *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
@@ -57,19 +55,18 @@ export const BehaviourUtil = {
    *                                        }
 
    */
-  enactBehaviourInSphere: function(store : any, sphereId : string, behaviourType : string, bleController? : BatchCommand, callbacks : any = {}) {
+  enactBehaviourInSphere: function(store : any, sphereId : string, behaviourType : string, callbacks : any = {}) {
     let state = store.getState();
     let sphere = state.spheres[sphereId];
     let stoneIds = Object.keys(sphere.stones);
 
-    if (!bleController)
-      bleController = new BatchCommand(store, sphereId);
 
     stoneIds.forEach((stoneId) => {
-      this.enactBehaviour(store, sphereId, stoneId, behaviourType, bleController, callbacks = {})
+      this.enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks = {})
     });
 
-    bleController.execute({immediate: false, timesToRetry:1}, false);
+    console.log("Triggering execute in enactBehaviourInSphere");
+    BatchCommandHandler.execute({immediate: false, timesToRetry:1}, false);
   },
 
 
@@ -79,7 +76,6 @@ export const BehaviourUtil = {
    * @param { String } sphereId         // ID of sphere
    * @param { String } behaviourType    // type of behaviour to be used in the logging and switching intent
    * @param { String } stoneId          // ID of stone
-   * @param { BatchCommand } bleController          // ID of stone
    * @param { Object } callbacks        // hooks for the enacting of the behaviour.
    *                                        {
    *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
@@ -94,18 +90,7 @@ export const BehaviourUtil = {
     let element = Util.data.getElement(sphere, stone);
     let behaviour = element.behaviour[behaviourType];
 
-    let triggerController = false;
-    if (!bleController) {
-      bleController = new BatchCommand(store, sphereId);
-      triggerController = true;
-    }
-
-    this._enactBehaviourCore(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, bleController, callbacks);
-
-    if (triggerController) {
-      // trigger all immediate actions.
-      bleController.execute({immediate: false, timesToRetry:1}, false);
-    }
+    this._enactBehaviourCore(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, callbacks);
   },
 
 
@@ -121,7 +106,6 @@ export const BehaviourUtil = {
    * @param { Object } stone            // stone object from sphere
    * @param { String } stoneId          // ID of stone
    * @param { Object } element          // the appliance or element, depending on if the stone has an appliance. This is used for behaviour
-   * @param { BatchCommand } bleController // the appliance or element, depending on if the stone has an appliance. This is used for behaviour
    * @param { Object } callbacks        // hooks for the enacting of the behaviour.
    *                                        {
    *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
@@ -129,62 +113,41 @@ export const BehaviourUtil = {
    *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
    *                                        }
    */
-  _enactBehaviourCore: function(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, bleController?, callbacks : any = {}) {
+  _enactBehaviourCore: function(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, callbacks : any = {}) {
     // we set the state regardless of the current state since it may not be correct in the background.
     if (behaviour.active && stone.config.handle) {
       // setup the trigger method.
-      let changeCallback = () => {
-        // if the device is supposed to go on and it is only allowed to go on when it's dark, check if its dark.
-        if (this.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === false) {
-          if (callbacks && callbacks.onCancelled && typeof callbacks.onCancelled === 'function') {
-            callbacks.onCancelled(sphereId, stoneId);
-          }
-          return;
+
+      // if the device is supposed to go on and it is only allowed to go on when it's dark, check if its dark.
+      if (this.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === false) {
+        if (callbacks && callbacks.onCancelled && typeof callbacks.onCancelled === 'function') {
+          callbacks.onCancelled(sphereId, stoneId);
         }
+        return;
+      }
 
-        if (callbacks && callbacks.onTrigger && typeof callbacks.onTrigger === 'function') {
-          callbacks.onTrigger(sphereId, stoneId);
-        }
+      if (callbacks && callbacks.onTrigger && typeof callbacks.onTrigger === 'function') {
+        callbacks.onTrigger(sphereId, stoneId);
+      }
 
-        LOG.info("BehaviourUtil: FIRING ", behaviourType, " event for ", element.config.name, stoneId, behaviour);
+      // if we need to switch, configure the data to update the store with.
+      let data = {state: behaviour.state};
+      if (behaviour.state === 0) {
+        data['currentUsage'] = 0;
+      }
 
-        // if we need to switch, configure the data to update the store with.
-        let data = {state: behaviour.state};
-        if (behaviour.state === 0) {
-          data['currentUsage'] = 0;
-        }
-
-        bleController.load(stone, stoneId, 'setSwitchState', [behaviour.state, 0, INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]]])
-          .then(() => {
-            store.dispatch({
-              type: 'UPDATE_STONE_SWITCH_STATE',
-              sphereId: sphereId,
-              stoneId: stoneId,
-              data: data
-            });
-          })
-          .catch((err) => {
-            LOG.error("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
+      BatchCommandHandler.load(stone, stoneId, sphereId, {command:'multiSwitch', state: behaviour.state, intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]], timeout:behaviour.delay})
+        .then(() => {
+          store.dispatch({
+            type: 'UPDATE_STONE_SWITCH_STATE',
+            sphereId: sphereId,
+            stoneId: stoneId,
+            data: data
           });
-
-
-        // we fire the execution again to handle all delayed actions. These did not get fired by the immediate execute after loading in the actions without delay
-        // we add a timeout to collect all executions that are delayed.
-        Scheduler.scheduleCallback(() => {
-          bleController.execute({immediate: false, timesToRetry:1}, false).catch((err) => {});
-        }, 200);
-      };
-
-      if (behaviour.delay > 0) {
-        // use scheduler
-        let abortSchedule = Scheduler.scheduleCallback(changeCallback, behaviour.delay * 1000);
-        if (callbacks && callbacks.onSchedule && typeof callbacks.onSchedule === 'function') {
-          callbacks.onSchedule(sphereId, stoneId, abortSchedule);
-        }
-      }
-      else {
-        changeCallback();
-      }
+        })
+        .catch((err) => {
+          LOG.error("BehaviourUtil: Could not fire", behaviourType, ' due to ', err);
+        });
     }
     else {
       if (callbacks && callbacks.onCancelled && typeof callbacks.onCancelled === 'function') {

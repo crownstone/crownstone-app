@@ -16,7 +16,8 @@ import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }   from '../components/Background'
 import { DeviceEntry } from '../components/DeviceEntry'
 import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
-import { BleUtil, BatchCommand } from '../../util/BleUtil'
+import { BleUtil } from '../../util/BleUtil'
+import { BatchCommandHandler } from '../../logic/BatchCommandHandler'
 import { BluenetPromiseWrapper, INTENTS } from '../../native/Proxy'
 import { TopBar } from '../components/Topbar'
 import { SeparatedItemList } from '../components/SeparatedItemList'
@@ -136,9 +137,9 @@ export class RoomOverview extends Component<any, any> {
               navigation={false}
               tapToToggleCalibration={this.tapToToggleCalibration}
               control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
-              pending={this.state.pendingRequests[stoneId] !== undefined} // either disabled, pending or remote
-              disabled={item.stone.config.disabled || this.viewingRemotely || SetupStateHandler.isSetupInProgress() } // either disabled or remote
-              disabledDescription={ SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' } // either disabled or remote
+              pending={this.state.pendingRequests[stoneId] !== undefined}
+              disabled={item.stone.config.disabled || this.viewingRemotely || SetupStateHandler.isSetupInProgress() }
+              disabledDescription={ SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' }
               dimmable={item.device.config.dimmable}
               showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
               rssi={item.stone.config.rssi}
@@ -150,9 +151,7 @@ export class RoomOverview extends Component<any, any> {
                   data["currentUsage"] = 0;
                 }
 
-                let bleController = new BatchCommand(this.props.store, this.props.sphereId);
-                bleController.load(item.stone, stoneId, 'setSwitchState', [switchState, 0, INTENTS.manual]).catch((err) => {});
-                bleController.execute({}, true)
+                BatchCommandHandler.load(item.stone, stoneId, this.props.sphereId, {command:'multiSwitch', state: switchState, intent:INTENTS.manual, timeout: 0})
                   .then(() => {
                     this.props.store.dispatch({
                       type: 'UPDATE_STONE_SWITCH_STATE',
@@ -165,6 +164,8 @@ export class RoomOverview extends Component<any, any> {
                   .catch((err) => {
                     this.clearPending(stoneId);
                   })
+
+                BatchCommandHandler.execute({}, true)
               }}
               onMove={() => {
                 Actions.pop();

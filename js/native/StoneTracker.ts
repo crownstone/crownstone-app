@@ -221,7 +221,7 @@ export class StoneTracker {
 
             }
           };
-          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.NEAR, undefined, callbacks);
+          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.NEAR, callbacks);
         }
       }
       // far threshold is 0.5m more than the near one so there is not a single line

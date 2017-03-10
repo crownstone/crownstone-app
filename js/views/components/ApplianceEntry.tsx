@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 
-import { getUUID } from '../../util/Util';
+import { Util } from '../../util/Util';
 import { Icon } from './Icon';
 import { styles, colors } from '../styles'
 
@@ -24,7 +24,7 @@ export class ApplianceEntry extends Component<any, any> {
     super();
     this.state = {deleteActive:false};
     this.resetTimeout = undefined;
-    this.id = getUUID();
+    this.id = Util.getUUID();
   }
 
   componentDidMount() {

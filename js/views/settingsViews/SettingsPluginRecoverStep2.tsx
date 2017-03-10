@@ -17,7 +17,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { Background } from '../components/Background'
 import { setupStyle } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
-import { getUUID } from '../../util/Util'
+import { Util } from '../../util/Util'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil'
 import { BleUtil } from '../../util/BleUtil'
 import { BluenetPromiseWrapper, Bluenet } from '../../native/Proxy'
@@ -25,7 +25,7 @@ import { LOG } from '../../logging/Log'
 
 export class SettingsPluginRecoverStep2 extends Component<any, any> {
   lookingForCrownstone : boolean = true;
-  uuid : string = getUUID();
+  uuid : string = Util.getUUID();
 
   constructor() {
     super();

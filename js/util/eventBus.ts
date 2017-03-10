@@ -1,5 +1,5 @@
 import { LOG } from '../logging/Log'
-import { getUUID } from './Util'
+import { Util } from './Util'
 
 
 export class EventBus {
@@ -25,7 +25,7 @@ export class EventBus {
       this._topics[topic] = [];
 
     // generate unique id
-    let id = getUUID();
+    let id = Util.getUUID();
 
     LOG.event('Something is subscribing to ', topic, 'got ID:', id);
 

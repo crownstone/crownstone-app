@@ -7,7 +7,7 @@ import { RoomTracker } from './RoomTracker'
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../util/DataUtil'
 import { Scheduler } from './../logic/Scheduler';
 import { LOG } from '../logging/Log'
-import { getUUID } from '../util/Util'
+import { Util } from '../util/Util'
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
 
@@ -22,7 +22,7 @@ class LocationHandlerClass {
     this.store = undefined;
     this.tracker = undefined;
 
-    this._uuid = getUUID();
+    this._uuid = Util.getUUID();
   }
 
   loadStore(store) {

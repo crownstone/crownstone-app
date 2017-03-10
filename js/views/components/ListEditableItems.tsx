@@ -1,7 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import { EditableItem } from './EditableItem'
 import { SeparatedItemList } from './SeparatedItemList'
-import { getUUID } from '../../util/Util'
+import { Util } from '../../util/Util'
 
 export class ListEditableItems extends Component<any, any> {
   uuid : string;
@@ -9,7 +9,7 @@ export class ListEditableItems extends Component<any, any> {
   constructor() {
     super();
     this.state = {activeElement:undefined};
-    this.uuid = getUUID();
+    this.uuid = Util.getUUID();
   }
 
   _renderer(item, index, itemId, textFieldRegistration, nextFunction, currentFocus) {

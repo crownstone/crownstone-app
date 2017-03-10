@@ -6,7 +6,7 @@ import { stoneTypes } from '../router/store/reducers/stones'
 import { eventBus } from '../util/eventBus';
 import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/DataUtil';
 import { CLOUD } from '../cloud/cloudAPI';
-import { getUUID } from '../util/Util';
+import { Util } from '../util/Util';
 import { LOG } from '../logging/Log'
 
 
@@ -27,7 +27,7 @@ class SetupStateHandlerClass {
 
 
   constructor() {
-    this._uuid = getUUID();
+    this._uuid = Util.getUUID();
 
     this._store = undefined;
     this._setupModeTimeouts = {};

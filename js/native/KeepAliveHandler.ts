@@ -2,7 +2,7 @@ import { Scheduler } from '../logic/Scheduler';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { LOG } from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS } from '../ExternalConfig';
-import { BatchCommand } from '../util/BleUtil';
+import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
 import { Util } from '../util/Util'
 
@@ -57,8 +57,6 @@ class KeepAliveHandlerClass {
       let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
       let userLevelInSphere = getUserLevelInSphere(state, sphereId);
 
-      let bleController = new BatchCommand(this.store, sphereId);
-
       let stoneIds = Object.keys(sphere.stones);
       stoneIds.forEach((stoneId) => {
         // for each stone in sphere select the behaviour we want to copy into the keep Alive
@@ -81,7 +79,7 @@ class KeepAliveHandlerClass {
           else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     delay = behaviour.delay; }
 
           if (stone.config.handle && stone.config.disabled === false) {
-            this._performKeepAliveForStone(sphere, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController);
+            this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId);
           }
           else if (stone.config.disabled === true) {
             LOG.info('KeepAliveHandler: (' + keepAliveId + ') skip KeepAlive stone is disabled', stoneId);
@@ -89,16 +87,16 @@ class KeepAliveHandlerClass {
         }
       });
 
-      bleController.execute({immediate: false, timesToRetry: KEEPALIVE_REPEAT_ATTEMPTS}, false).catch((err) => {})
+      BatchCommandHandler.execute({immediate: false, timesToRetry: KEEPALIVE_REPEAT_ATTEMPTS}, false).catch((err) => {})
     });
   }
 
-  _performKeepAliveForStone(sphere, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId, bleController) {
+  _performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId) {
     LOG.info('KeepAliveHandler: (' + keepAliveId + ') setting up keep Alive to stone handle', stone.config.handle);
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      bleController.load(stone, stoneId, 'keepAlive').catch((err) => {});
+      BatchCommandHandler.load(stone, stoneId, sphereId, {command:'keepAlive'}).catch((err) => {});
     }
     else {
       // determine what to send
@@ -114,7 +112,7 @@ class KeepAliveHandlerClass {
         }
       }
 
-      bleController.load(stone, stoneId, 'keepAliveState', [changeState, newState, timeout]).catch((err) => {});
+      BatchCommandHandler.load(stone, stoneId, sphereId, {command:'keepAliveState', changeState:changeState, state: newState, timeout:timeout}).catch((err) => {});
     }
   }
 }
