@@ -32,7 +32,6 @@ class LocationHandlerClass {
       this.store = store;
       this.tracker = new StoneTracker(store);
 
-
       // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOG.debug('CURRENT ROOM', data)});
       NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); });
       NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });

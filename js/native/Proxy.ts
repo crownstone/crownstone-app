@@ -172,7 +172,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapper = {
       .then( () => { eventBus.emit("disconnect"); })
       .catch(() => { eventBus.emit("disconnect"); })
   },
-  setSwitchState:       (state, timeout, intent)      => { return BluenetPromise('setSwitchState',  state, timeout, intent);      },  // Number  (0 .. 1), // String: INTENT (see above)
+  setSwitchState:       (state)      => { return BluenetPromise('setSwitchState',  state);      },  // Number  (0 .. 1),
   keepAliveState:       (changeState, state, timeout) => { return BluenetPromise('keepAliveState', changeState, state, timeout); }, //* Bool (or Number 0 or 1), Number  (0 .. 1), Number (seconds)
   keepAlive:            ()           => { return BluenetPromise('keepAlive');                   },
   getMACAddress:        ()           => { return BluenetPromise('getMACAddress');               },

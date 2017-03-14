@@ -4,7 +4,7 @@ interface BluenetPromiseWrapper {
   connect(handle: string): Promise<void>,
   disconnect(): Promise<void>,
   phoneDisconnect(): Promise<void>,
-  setSwitchState(state: number, timeout: number, intent: string): Promise<void>,
+  setSwitchState(state: number): Promise<void>,
   keepAliveState(changeState : boolean, state : number, timeout: number): Promise<void>,
   keepAlive(): Promise<void>,
   getMACAddress(): Promise<string>,

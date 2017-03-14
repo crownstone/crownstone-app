@@ -52,7 +52,7 @@ export const SettingConstructor = function(store, state, eventBus) {
   if (Object.keys(state.spheres).length > 0) {
     items.push({
       label: 'Spheres',
-      icon: getIcon('ios-house', 22, colors.white.hex, colors.blue.hex),
+      icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => { (Actions as any).settingsSphereOverview() }
     });
@@ -60,7 +60,7 @@ export const SettingConstructor = function(store, state, eventBus) {
   else {
     items.push({
       label: 'Add Sphere',
-      icon: getIcon('ios-house', 22, colors.white.hex, colors.blue.hex),
+      icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => {
         eventBus.emit('showLoading', 'Creating Sphere...');

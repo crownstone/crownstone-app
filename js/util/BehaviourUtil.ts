@@ -38,7 +38,7 @@ export const BehaviourUtil = {
     });
 
     console.log("Triggering execute in enactBehaviourInLocation");
-    BatchCommandHandler.execute({immediate: false, timesToRetry:1}, false);
+    BatchCommandHandler.execute(false);
   },
 
 
@@ -66,7 +66,7 @@ export const BehaviourUtil = {
     });
 
     console.log("Triggering execute in enactBehaviourInSphere");
-    BatchCommandHandler.execute({immediate: false, timesToRetry:1}, false);
+    BatchCommandHandler.execute(false);
   },
 
 
@@ -136,7 +136,7 @@ export const BehaviourUtil = {
         data['currentUsage'] = 0;
       }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId, {command:'multiSwitch', state: behaviour.state, intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]], timeout:behaviour.delay})
+      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'multiSwitch', state: behaviour.state, intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]], timeout:behaviour.delay})
         .then(() => {
           store.dispatch({
             type: 'UPDATE_STONE_SWITCH_STATE',

@@ -121,6 +121,22 @@ export const DataUtil = {
     return false;
   },
 
+  getStoneIdFromHandle(state, sphereId, handle) {
+    let stones = state.spheres[sphereId].stones;
+    let stoneIds = Object.keys(stones);
+    for (let i = 0; i < stoneIds.length; i++) {
+      if (stones[stoneIds[i]].config.handle === handle) {
+        return stoneIds[i]
+      }
+    }
+  },
+
+  getStoneFromHandle(state, sphereId, handle) {
+    let stoneId = this.getStoneIdFromHandle(state, sphereId, handle);
+    return state.spheres[sphereId].stones[stoneId];
+  },
+
+
 };
 
 export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {

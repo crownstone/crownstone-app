@@ -50,7 +50,7 @@ export class IndividualStoneTracker {
 
     // if we have a network, listen for its advertisements
     if (this.meshNetworkId !== null) {
-      this.unsubscribeMeshListener = eventBus.on('updateViaMeshNetwork_' + this.sphereId + this.meshNetworkId, (data) => {
+      this.unsubscribeMeshListener = eventBus.on('updateViaMeshNetwork_' + this.sphereId + '_' + this.meshNetworkId, (data) => {
         if (data.id === this.stoneId) {
           // LOG.info("PROGRESSING RESET ", this.stoneUID, " from ", this.meshNetworkId, "to ", 0);
           this.notThisStoneCounter = 0;

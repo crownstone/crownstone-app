@@ -1,5 +1,6 @@
 import { Alert, Platform } from 'react-native';
 import { DEBUG } from '../ExternalConfig'
+import { Scheduler } from '../logic/Scheduler'
 import { StoreManager } from '../router/store/storeManager'
 import { Bluenet, BluenetPromiseWrapper } from '../native/Proxy'
 import { Actions } from 'react-native-router-flux';
@@ -28,6 +29,7 @@ const AppUtil = {
   logOut: function() {
     BluenetPromiseWrapper.clearTrackedBeacons().catch(() => {});
     Bluenet.stopScanning();
+    Scheduler.reset();
     (Actions as any).loginSplash();
     StoreManager.userLogOut().catch(() => {});
   },

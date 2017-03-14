@@ -46,9 +46,9 @@ class StoneStateHandlerClass {
 
   receivedIBeaconUpdate(sphereId, stone, stoneId, rssi) {
     // internal event to tell the app this crownstone has been seen.
-    eventBus.emit('update_'+sphereId+'_'+stoneId, rssi);
+    eventBus.emit('update_' + sphereId + '_' + stoneId, rssi);
     if (stone.config.meshNetworkId) {
-      eventBus.emit('updateMeshNetwork_' + sphereId + stone.config.meshNetworkId, {
+      eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
         handle: stone.config.handle,
         id: stoneId,
         rssi: rssi
@@ -71,9 +71,9 @@ class StoneStateHandlerClass {
 
   receivedUpdate(sphereId, stone, stoneId, rssi) {
     // internal event to tell the app this crownstone has been seen.
-    eventBus.emit('update_'+sphereId+'_'+stoneId, rssi);
+    eventBus.emit('update_' + sphereId + '_' + stoneId, rssi);
     if (stone.config.meshNetworkId) {
-      eventBus.emit('updateMeshNetwork_' + sphereId + stone.config.meshNetworkId, {
+      eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
         handle: stone.config.handle,
         id: stoneId,
         rssi: rssi
@@ -95,7 +95,7 @@ class StoneStateHandlerClass {
   receivedUpdateViaMesh(sphereId: string, remoteStoneId: string, meshNetworkId: number, randomFromServiceData : string, advertisingStoneId : string, serviceData) {
     // emit the mesh update event only for unique advertisements. Due to ibeacon connectable on/off the unique filter is not always working.
     if (this.advertisementIdsPerStoneId[advertisingStoneId] && this.advertisementIdsPerStoneId[advertisingStoneId] !== randomFromServiceData) {
-      eventBus.emit('updateViaMeshNetwork_' + sphereId + meshNetworkId, {
+      eventBus.emit('updateViaMeshNetwork_' + sphereId + '_' + meshNetworkId, {
         id: remoteStoneId,
         serviceData: serviceData
       });

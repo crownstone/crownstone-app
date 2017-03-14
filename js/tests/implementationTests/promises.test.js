@@ -178,3 +178,56 @@ test('Promise catch', function (t) {
     t.end();
   })
 });
+
+
+
+test('Promise parts', function (t) {
+  let promise = new Promise((resolve, reject) => {
+    setTimeout(() => {resolve(5)}, 100);
+  });
+
+
+  setTimeout(() => {
+    promise
+      .then((res) => {
+        t.deepEqual(res, 5, 'return 5' );
+        return successfulPromise10;
+      })
+      .then((res) => {
+        t.deepEqual(res, 10, 'return 10' );
+        return failedPromise5;
+      })
+      .catch((err) => {
+        t.deepEqual(err, 5, 'ERROR: FIRST 5, now correct error...' );
+        return failedPromise10
+      })
+      .then(() => {
+        t.deepEqual(true, false, 'this should not be fired');
+      })
+      .catch((err) => {
+        t.deepEqual(err, 10, 'ERROR: return 5' );
+        t.end();
+      });
+  }, 200)
+
+});
+
+
+test('Promise skips', function (t) {
+    successfulPromise5
+      .then((res) => {
+        t.deepEqual(res, 5, 'return 5' );
+      })
+      .then((res) => {
+        t.deepEqual(res, undefined, 'return undefined');
+      })
+      .then((res) => {
+        t.deepEqual(res, undefined, 'return undefined' );
+        return failedPromise5;
+      })
+      .catch((err) => {
+        t.deepEqual(err, 5, 'ERROR: return 5' );
+        t.end();
+      });
+});
+

@@ -349,8 +349,8 @@ open class BluenetJS: NSObject {
       }
   }
   
-  @objc func setSwitchState(_ state: NSNumber, timeout: NSNumber, intent: NSNumber, callback: @escaping RCTResponseSenderBlock) {
-    GLOBAL_BLUENET!.bluenet.control.setSwitchState(state.floatValue, intent: intent.uint8Value)
+  @objc func setSwitchState(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.setSwitchState(state.floatValue)
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {
@@ -653,9 +653,9 @@ open class BluenetJS: NSObject {
     }
   }
   
-  @objc func meshCommandSetSwitchState(_ crownstoneIds: [NSNumber], state: NSNumber, intent: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+  @objc func meshCommandSetSwitchState(_ crownstoneIds: [NSNumber], state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
 //    print("-- Firing meshCommandSetSwitchState crownstoneIds: \(crownstoneIds), state: \(state), intent: \(intent)")
-    GLOBAL_BLUENET!.bluenet.mesh.meshCommandSetSwitchState(crownstoneIds: crownstoneIds as [UInt16], state: state.floatValue, intent: state.uint8Value)
+    GLOBAL_BLUENET!.bluenet.mesh.meshCommandSetSwitchState(crownstoneIds: crownstoneIds as [UInt16], state: state.floatValue)
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {

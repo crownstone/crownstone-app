@@ -31,6 +31,11 @@ class SchedulerClass {
     }
   }
 
+  reset() {
+    this.triggers = {};
+    this.singleFireTriggers = {};
+  }
+
 
   init() {
     if (this._initialized === false) {

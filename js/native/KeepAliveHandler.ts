@@ -87,7 +87,7 @@ class KeepAliveHandlerClass {
         }
       });
 
-      BatchCommandHandler.execute({immediate: false, timesToRetry: KEEPALIVE_REPEAT_ATTEMPTS}, false).catch((err) => {})
+      BatchCommandHandler.execute(false).catch((err) => {})
     });
   }
 
@@ -96,7 +96,7 @@ class KeepAliveHandlerClass {
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      BatchCommandHandler.load(stone, stoneId, sphereId, {command:'keepAlive'}).catch((err) => {});
+      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'keepAlive'}, KEEPALIVE_REPEAT_ATTEMPTS).catch((err) => {});
     }
     else {
       // determine what to send
@@ -112,7 +112,13 @@ class KeepAliveHandlerClass {
         }
       }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId, {command:'keepAliveState', changeState:changeState, state: newState, timeout:timeout}).catch((err) => {});
+      BatchCommandHandler.load(
+        stone,
+        stoneId,
+        sphereId,
+        {commandName:'keepAliveState', changeState:changeState, state: newState, timeout:timeout},
+        KEEPALIVE_REPEAT_ATTEMPTS
+      ).catch((err) => {});
     }
   }
 }

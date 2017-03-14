@@ -45,8 +45,23 @@ interface multiSwitchPayload {
   }
 }
 
+interface sphereMeshNetworks  {
+  [propName: string] : meshNetworks
+}
+
 interface meshNetworks  {
   [propName: number] : meshTodo
+}
+
+interface connectionInfo  {
+  sphereId : string,
+  handle : string,
+  stoneId : string,
+}
+
+interface stoneObject  {
+  stone : any,
+  stoneId : string,
 }
 
 interface meshTodo {
@@ -57,22 +72,27 @@ interface meshTodo {
   other:          any[]
 }
 
-type commandInterface = { command: 'keepAlive' } |
-  { command : 'keepAliveState', state : number, timeout : number, changeState : boolean } |
-  { command : 'setSwitchState', state : number } |
-  { command : 'multiSwitch', state : number, timeout : number, intent: number }
+type commandInterface = { commandName: 'keepAlive' } |
+  { commandName : 'keepAliveState', state : number, timeout : number, changeState : boolean } |
+  { commandName : 'setSwitchState', state : number } |
+  { commandName : 'multiSwitch', state : number, timeout : number, intent: number }
 
 
 interface batchCommands  {
   [propName: string] : batchCommandEntry
 }
 
+interface directCommands  {
+  [propName: string] : batchCommandEntry[]
+}
+
 interface batchCommandEntry {
-  handle: string,
+  handle:   string,
   sphereId: string,
-  stoneId: string,
-  stone: any,
-  command: commandInterface,
+  stoneId:  string,
+  stone:    any,
+  attempts: number,
+  command:  commandInterface,
   cleanup(): void,
   promise:{
     resolve(any?) : void,

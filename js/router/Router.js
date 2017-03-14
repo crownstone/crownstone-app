@@ -23,7 +23,7 @@ import { BatchCommandHandler }    from '../logic/BatchCommandHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/eventBus'
 import { prepareStoreForUser }    from '../util/DataUtil'
-import { logOut }                 from '../util/Util'
+import { Util }                   from '../util/Util'
 import { LOG, LogProcessor }      from '../logging/Log'
 import { INITIALIZER }            from '../Initialize'
 import { CLOUD }                  from '../cloud/cloudAPI'
@@ -95,7 +95,7 @@ export class AppRouter extends Component {
           .catch((reply) => {
             LOG.info("COULD NOT VERIFY USER -- ERROR", reply);
             if (reply.status === 401) {
-              logOut();
+              Util.app.logOut();
               Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
             }
           });
