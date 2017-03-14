@@ -99,8 +99,8 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 10
-        versionName "0.7.9"
+        versionCode 11
+        versionName "0.7.10"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -147,7 +147,6 @@ dependencies {
     compile project(':react-native-fs')
     compile project(':react-native-device-info')
     compile project(':react-native-camera')
-    compile project(':react-native-error-reporter')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
