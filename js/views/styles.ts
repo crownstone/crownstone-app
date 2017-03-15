@@ -1,4 +1,4 @@
-import { Dimensions, PixelRatio, Platform, StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import { Dimensions, PixelRatio, Platform, StyleSheet } from 'react-native'
 import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/colorConverters'
 
 export const screenWidth = Dimensions.get('window').width;

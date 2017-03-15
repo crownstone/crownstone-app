@@ -1,9 +1,9 @@
+import { eventBus } from '../util/EventBus'
+import { Util } from '../util/Util'
 import { BlePromiseManager } from './BlePromiseManager'
 import { BluenetPromiseWrapper } from '../native/Proxy';
 import { LOG } from '../logging/Log'
 import { Scheduler } from './Scheduler'
-import { eventBus } from '../util/eventBus'
-import { Util } from '../util/Util'
 import { MeshHelper } from './MeshHelper'
 
 
@@ -11,20 +11,12 @@ import { MeshHelper } from './MeshHelper'
  * This can be used to batch commands over the mesh or 1:1 to the Crownstones.
  */
 class BatchCommandHandlerClass {
-  _initialized = false;
-  commands : batchCommands = {};
-  store : any;
-  sphereId : any;
+  commands  : batchCommands = {};
+  sphereId  : any;
   executing : boolean = false;
 
   constructor() { }
 
-  loadStore(store) {
-    LOG.info('LOADED STORE BatchCommandHandlerClass', this._initialized);
-    if (this._initialized === false) {
-      this.store = store;
-    }
-  }
 
   /**
    * @param { Object } stone              // Redux Stone Object
@@ -201,7 +193,7 @@ class BatchCommandHandlerClass {
    * @returns {Array}
    * @private
    */
-  _getTopicsToScan() {
+  _getObjectsToScan() {
     let { directCommands, meshNetworks } = this._extractTodo();
 
     LOG.info("BatchCommand: directCommands from all spheres:", directCommands);
@@ -232,12 +224,12 @@ class BatchCommandHandlerClass {
 
   /**
    * This will commands one by one to the connected Crownstone.
-   * @param stoneObject
+   * @param connectionInfo
    * @returns {Promise<T>}
    */
-  _handleAllActionsForStone(stoneObject: stoneObject) {
+  _handleAllActionsForStone(connectionInfo: connectionInfo) {
     return new Promise((resolve, reject) => {
-      let { directCommands, meshNetworks } = this._extractTodo(stoneObject.stoneId, stoneObject.stone.config.meshNetworkId);
+      let { directCommands, meshNetworks } = this._extractTodo(connectionInfo.stoneId, connectionInfo.meshNetworkId);
 
       // check if we have to perform any mesh commands for this Crownstone.
       let meshSphereIds = Object.keys(meshNetworks);
@@ -247,7 +239,8 @@ class BatchCommandHandlerClass {
         let meshNetworkIds = Object.keys(networksInSphere);
         // pick the first network to handle
         if (meshNetworkIds.length > 0) {
-          let helper = new MeshHelper(this.store, meshSphereIds[i], meshNetworkIds[i], networksInSphere[meshNetworkIds[0]]);
+          console.log("networksInSphere", meshNetworkIds[0], networksInSphere[meshNetworkIds[0]]);
+          let helper = new MeshHelper(meshSphereIds[i], meshNetworkIds[i], networksInSphere[meshNetworkIds[0]]);
           promise = helper.performAction();
           break;
         }
@@ -304,7 +297,7 @@ class BatchCommandHandlerClass {
         promise
           .then(() => {
             // we assume the cleanup of the action(s) has been called.
-            return this._handleAllActionsForStone(stoneObject);
+            return this._handleAllActionsForStone(connectionInfo);
           })
           .then(() => {
             resolve()
@@ -318,16 +311,16 @@ class BatchCommandHandlerClass {
 
 
   /**
-   * This method will search for Crownstones using the topics provided by the _getTopicsToScan.
+   * This method will search for Crownstones using the topics provided by the _getObjectsToScan.
    * It will connect to the first responder and perform all commands for that Crownstone. It will then move on to the next one.
    * @param skipDisconnect
    * @returns {Promise<T>}
    */
   _connectAndPerformCommands(skipDisconnect = false) {
     return new Promise((resolve, reject) => {
-      let topicsToScan = this._getTopicsToScan();
+      let topicsToScan = this._getObjectsToScan();
       if (topicsToScan.length === 0) {
-        LOG.info("BatchCommand: No topics to scan during BatchCommandHandler exectution");
+        LOG.info("BatchCommand: No topics to scan during BatchCommandHandler execution");
         resolve();
 
         // abort the rest of the method.
@@ -341,14 +334,12 @@ class BatchCommandHandlerClass {
           return this._searchScan(topicsToScan, null, 5000)
         })
         .then((connectionInfo : connectionInfo) => {
-          connectedCrownstone = {
-            id:    Util.data.getStoneIdFromHandle(this.store.getState(), connectionInfo.sphereId, connectionInfo.handle),
-            stone: Util.data.getStoneFromHandle(this.store.getState(),   connectionInfo.sphereId, connectionInfo.handle),
-          };
-
+          connectedCrownstone = connectionInfo;
+          LOG.info("BatchCommandHandler: connecting to ", connectionInfo);
           return BluenetPromiseWrapper.connect(connectionInfo.handle);
         })
         .then(() => {
+          LOG.info("BatchCommandHandler: Connected to ", connectedCrownstone);
           return this._handleAllActionsForStone(connectedCrownstone);
         })
         .then(() => {
@@ -408,7 +399,7 @@ class BatchCommandHandlerClass {
    * return Promise which will resolve to a handle to connect to.
    * @private
    */
-  _searchScan(topicsToScan : any[], rssiThreshold = null, timeout = 5000) {
+  _searchScan(objectsToScan : any[], rssiThreshold = null, timeout = 5000) {
     return new Promise((resolve, reject) => {
       let unsubscribeListeners = [];
 
@@ -431,7 +422,7 @@ class BatchCommandHandlerClass {
 
 
       // cleanup timeout
-      topicsToScan.forEach((topic) => {
+      objectsToScan.forEach((topic) => {
         // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
         unsubscribeListeners.push( eventBus.on(topic.topic, (data) => {
           if (rssiThreshold === null || data.rssi > rssiThreshold) {
@@ -442,7 +433,12 @@ class BatchCommandHandlerClass {
             clearCleanupCallback();
 
             // resolve with the handle.
-            resolve({sphereId: topic.sphereId, handle: data.handle});
+            resolve({
+              stoneId: data.handle,
+              meshNetworkId: data.meshNetworkId || null,
+              sphereId: topic.sphereId,
+              handle: data.handle
+            });
           }
         }));
       });

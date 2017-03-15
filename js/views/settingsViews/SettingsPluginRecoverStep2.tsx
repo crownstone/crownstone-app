@@ -20,7 +20,7 @@ import { styles, colors, screenWidth, screenHeight } from './../styles'
 import { Util } from '../../util/Util'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil'
 import { BleUtil } from '../../util/BleUtil'
-import { BluenetPromiseWrapper, Bluenet } from '../../native/Proxy'
+import { BluenetPromiseWrapper } from '../../native/Proxy'
 import { LOG } from '../../logging/Log'
 
 export class SettingsPluginRecoverStep2 extends Component<any, any> {

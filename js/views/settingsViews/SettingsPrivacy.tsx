@@ -8,12 +8,12 @@ import {
   View
 } from 'react-native';
 
-import { IconButton } from './../components/IconButton'
-import { Background } from './../components/Background'
-import { Bluenet } from '../../native/Proxy'
-import { ListEditableItems } from './../components/ListEditableItems'
+import { IconButton } from '../components/IconButton'
+import { Background } from '../components/Background'
+import { Bluenet } from '../../native/Bluenet'
+import { ListEditableItems } from '../components/ListEditableItems'
 import { LOG, clearLogs } from '../../logging/Log'
-import { styles, colors } from './../styles'
+import { styles, colors } from '../styles'
 
 
 export class SettingsPrivacy extends Component<any, any> {

@@ -1,11 +1,11 @@
-import { AsyncStorage }                    from 'react-native'
-import { createStore, applyMiddleware }    from 'redux'
-import CrownstoneReducer                   from './reducer'
-import { NativeEnhancer }                  from './nativeEnhancer'
-import { CloudEnhancer }                   from './cloudEnhancer'
-import { EventEnhancer }                   from './eventEnhancer'
-import { eventBus }                        from '../../util/eventBus'
-import { LOG }         from '../../logging/Log'
+import { AsyncStorage }                 from 'react-native'
+import { createStore, applyMiddleware } from 'redux'
+import CrownstoneReducer                from './reducer'
+import { NativeEnhancer }               from './nativeEnhancer'
+import { CloudEnhancer }                from './cloudEnhancer'
+import { EventEnhancer }                from './eventEnhancer'
+import { eventBus }                     from '../../util/EventBus'
+import { LOG }                          from '../../logging/Log'
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version

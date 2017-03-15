@@ -9,11 +9,11 @@ import {
   Text,
   View
 } from 'react-native';
-import { Background } from './../components/Background'
-import { ListEditableItems } from './../components/ListEditableItems'
-import { ProfilePicture } from './../components/ProfilePicture'
+import { Background } from '../components/Background'
+import { ListEditableItems } from '../components/ListEditableItems'
+import { ProfilePicture } from '../components/ProfilePicture'
 import { IconButton } from '../components/IconButton'
-import { Bluenet } from '../../native/Proxy'
+import { Bluenet } from '../../native/Bluenet'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
 import { getUserLevelInSphere, getStonesAndAppliancesInSphere, getAiData } from '../../util/DataUtil';

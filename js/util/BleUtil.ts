@@ -1,5 +1,5 @@
-import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromiseWrapper, NativeBus, Bluenet, INTENTS } from '../native/Proxy';
+import { NativeBus } from '../native/Proxy';
+import { Bluenet  }  from '../native/Bluenet';
 import { LOG } from '../logging/Log'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from './eventBus'

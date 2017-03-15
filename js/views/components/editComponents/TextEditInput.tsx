@@ -4,7 +4,7 @@ import {
   TextInput,
 } from 'react-native';
 
-import { eventBus } from '../../../util/eventBus'
+import { eventBus } from '../../../util/EventBus'
 
 export class TextEditInput extends Component<any, any> {
 

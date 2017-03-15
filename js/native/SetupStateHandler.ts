@@ -3,7 +3,7 @@ import { NativeBus } from './Proxy';
 import { SetupHelper } from './SetupHelper';
 import { BleUtil } from '../util/BleUtil';
 import { stoneTypes } from '../router/store/reducers/stones'
-import { eventBus } from '../util/eventBus';
+import { eventBus } from '../util/EventBus';
 import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/DataUtil';
 import { CLOUD } from '../cloud/cloudAPI';
 import { Util } from '../util/Util';

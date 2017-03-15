@@ -15,7 +15,7 @@ import { FinalizeLocalizationIcon }               from '../FinalizeLocalizationI
 import { Icon }               from '../Icon'
 import { FadeInView }         from '../animated/FadeInView'
 import { styles, colors , tabBarHeight, topBarHeight, screenHeight, screenWidth } from '../../styles'
-import { eventBus } from '../../../util/eventBus'
+import { eventBus } from '../../../util/EventBus'
 import loginStyles from '../../startupViews/LoginStyles'
 
 import Svg,{

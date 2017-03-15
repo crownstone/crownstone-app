@@ -1,5 +1,5 @@
-import { Bluenet, BluenetPromiseWrapper, NativeBus } from './Proxy';
-import { BleUtil } from '../util/BleUtil';
+import { BluenetPromiseWrapper, NativeBus } from './Proxy';
+import { Bluenet  }                         from './Bluenet';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
 import { StoneTracker } from './StoneTracker'

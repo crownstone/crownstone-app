@@ -68,3 +68,5 @@ android/localization
 !js/router/RouterIOS.js
 !index.android.js
 !index.ios.js
+!__tests__/**
+!**.tapetest.js

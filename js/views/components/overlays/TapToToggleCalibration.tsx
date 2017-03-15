@@ -14,7 +14,7 @@ import { addDistanceToRssi, Util }  from '../../../util/Util'
 import { getDeviceSpecs }  from '../../../util/DataUtil'
 import { stoneTypes }  from '../../../router/store/reducers/stones'
 import { OverlayBox }         from './OverlayBox'
-import { eventBus }                                   from '../../../util/eventBus'
+import { eventBus }                                   from '../../../util/EventBus'
 import { styles, colors , screenHeight, screenWidth } from '../../styles'
 
 export class TapToToggleCalibration extends Component<any, any> {

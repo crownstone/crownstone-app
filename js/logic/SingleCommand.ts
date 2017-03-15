@@ -1,10 +1,6 @@
 import { BlePromiseManager } from './BlePromiseManager'
-import { BluenetPromiseWrapper, NativeBus, Bluenet, INTENTS } from '../native/Proxy';
+import { BluenetPromiseWrapper } from '../native/Proxy';
 import { LOG } from '../logging/Log'
-import { Scheduler } from './Scheduler'
-import { eventBus } from '../util/eventBus'
-import { HIGH_FREQUENCY_SCAN_MAX_DURATION, KEEPALIVE_INTERVAL } from '../ExternalConfig'
-import { Util } from '../util/Util'
 
 export class SingleCommand {
   sphereId : any;

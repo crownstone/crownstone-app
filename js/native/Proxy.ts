@@ -1,7 +1,8 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
-import { DISABLE_NATIVE, LOG_BLE } from '../ExternalConfig'
+import { DISABLE_NATIVE } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
-import { eventBus }  from '../util/eventBus'
+import { Bluenet } from './Bluenet'
+import { eventBus }  from '../util/EventBus'
 
 export const INTENTS = {
   sphereEnter: 0,
@@ -23,64 +24,6 @@ export const BEHAVIOUR_TYPE_TO_INTENT = {
 };
 
 
-export let Bluenet;
-if (DISABLE_NATIVE === true) {
-  LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
-  LOG.info("!-----------  NATIVE CALLS ARE DISABLED BY EXTERNALCONFIG.JS -----------!");
-  LOG.info("!----------- --- --- --- -- -- -- - - - -- -- -- --- --- --- -----------!");
-  Bluenet = {
-    clearTrackedBeacons: () => {},        // called through BluenetPromiseWrapper --> must be promise.
-    rerouteEvents: () => {},
-    isReady: () => {},                    // called through BluenetPromiseWrapper --> must be promise.
-    connect: () => {},                    // called through BluenetPromiseWrapper --> must be promise.
-    disconnect: () => {},                 // called through BluenetPromiseWrapper --> must be promise.
-    phoneDisconnect: () => {},            // called through BluenetPromiseWrapper --> must be promise.
-    resetBle: () => {},
-    setSwitchState: () => {},             // called through BluenetPromiseWrapper --> must be promise.
-    startScanning: () => {},
-    startScanningForCrownstones: () => {},
-    startScanningForCrownstonesUniqueOnly: () => {},
-    stopScanning: () => {},
-    keepAliveState: () => {},
-    keepAlive: () => {},
-
-    forceClearActiveRegion: () => {},
-    startIndoorLocalization: () => {},
-    stopIndoorLocalization: () => {},
-
-    requestLocation: () => {},          // called through BluenetPromiseWrapper --> must be promise.
-    requestLocationPermission: () => {},
-    trackIBeacon: () => {},
-    stopTrackingIBeacon: () => {},
-    pauseTracking: () => {},
-    resumeTracking: () => {},
-
-    startCollectingFingerprint: () => {},
-    abortCollectingFingerprint: () => {},
-    pauseCollectingFingerprint : () => {},
-    resumeCollectingFingerprint: () => {},
-    finalizeFingerprint: () => {},       // called through BluenetPromiseWrapper --> must be promise. Promise return value is a stringified fingerprint
-
-    loadFingerprint: () => {},
-    getMACAddress: () => {},             // called through BluenetPromiseWrapper --> must be promise.
-    commandFactoryReset: () => {},       // called through BluenetPromiseWrapper --> must be promise.
-    recover: () => {},                   // called through BluenetPromiseWrapper --> must be promise.
-    setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
-
-    quitApp: () => {},                   // Used in android to force close the app
-    enableLoggingToFile: () => {},
-    clearLogs: () => {},
-
-    // mesh
-    meshKeepAlive: () => {},
-    meshKeepAliveState: () => {},
-    meshCommandSetSwitchState: () => {},
-    multiSwitch: () => {},
-  }
-}
-else {
-  Bluenet = NativeModules.BluenetJS;
-}
 
 export const BluenetPromise : any = function(functionName, param, param2, param3) {
   return new Promise((resolve, reject) => {
@@ -186,7 +129,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapper = {
   //new
   meshKeepAlive:              ()                               => { return BluenetPromise('meshKeepAlive'); },
   meshKeepAliveState:         (timeout, stoneKeepAlivePackets) => { return BluenetPromise('meshKeepAliveState',   timeout, stoneKeepAlivePackets); }, // stoneKeepAlivePackets = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
-  meshCommandSetSwitchState:  (arrayOfIds, state, intent)      => { return BluenetPromise('meshCommandSetSwitchState', arrayOfIds, state, intent); }, // idArray = [number(uint16)]
+  meshCommandSetSwitchState:  (arrayOfIds, state)              => { return BluenetPromise('meshCommandSetSwitchState', arrayOfIds, state);         }, // idArray = [number(uint16)]
   multiSwitch:                (arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch',               arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
 };
 

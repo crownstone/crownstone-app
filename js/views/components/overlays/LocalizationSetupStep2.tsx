@@ -8,7 +8,7 @@ import {
 
 import { OverlayBox }                                 from './OverlayBox'
 import { styles, colors, screenHeight, screenWidth } from '../../styles'
-import { eventBus }                                   from '../../../util/eventBus'
+import { eventBus }                                   from '../../../util/EventBus'
 import { getAiData }                                  from '../../../util/DataUtil'
 
 export class LocalizationSetupStep2 extends Component<any, any> {

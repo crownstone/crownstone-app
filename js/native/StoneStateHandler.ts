@@ -3,7 +3,7 @@ import { IndividualStoneTracker } from '../native/IndividualStoneTracker';
 import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
-import { eventBus } from '../util/eventBus'
+import { eventBus } from '../util/EventBus'
 import { DISABLE_TIMEOUT } from '../ExternalConfig'
 
 
@@ -46,12 +46,17 @@ class StoneStateHandlerClass {
 
   receivedIBeaconUpdate(sphereId, stone, stoneId, rssi) {
     // internal event to tell the app this crownstone has been seen.
-    eventBus.emit('update_' + sphereId + '_' + stoneId, rssi);
+    eventBus.emit('update_' + sphereId + '_' + stoneId, {
+      handle: stone.config.handle,
+      stoneId: stoneId,
+      rssi: rssi,
+    });
     if (stone.config.meshNetworkId) {
       eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
         handle: stone.config.handle,
-        id: stoneId,
-        rssi: rssi
+        stoneId: stoneId,
+        meshNetworkId: stone.config.meshNetworkId,
+        rssi: rssi,
       });
     }
 
@@ -69,14 +74,19 @@ class StoneStateHandlerClass {
     this.update(sphereId, stoneId);
   }
 
-  receivedUpdate(sphereId, stone, stoneId, rssi) {
+  receivedAdvertisementUpdate(sphereId, stone, stoneId, rssi) {
     // internal event to tell the app this crownstone has been seen.
-    eventBus.emit('update_' + sphereId + '_' + stoneId, rssi);
+    eventBus.emit('update_' + sphereId + '_' + stoneId, {
+      handle: stone.config.handle,
+      stoneId: stoneId,
+      rssi: rssi,
+    });
     if (stone.config.meshNetworkId) {
       eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
         handle: stone.config.handle,
-        id: stoneId,
-        rssi: rssi
+        stoneId: stoneId,
+        meshNetworkId: stone.config.meshNetworkId,
+        rssi: rssi,
       });
     }
 

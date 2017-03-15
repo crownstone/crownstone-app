@@ -12,7 +12,7 @@ import { AnimatedLogo }       from './animated/AnimatedLogo'
 import { AnimatedLoadingBar } from './animated/AnimatedLoadingBar'
 import { FadeInView }         from './animated/FadeInView'
 import { styles, colors , screenHeight, screenWidth } from './../styles'
-import { eventBus } from '../../util/eventBus'
+import { eventBus } from '../../util/EventBus'
 
 export class Processing extends Component<any, any> {
   unsubscribe : any;

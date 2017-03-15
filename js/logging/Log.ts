@@ -13,14 +13,15 @@ import {
   LOG_SCHEDULER,
   RELEASE_MODE,
   LOG_TO_FILE,
+  LOCAL_TESTING,
+  TESTING_IN_PROCESS
 } from '../ExternalConfig'
 import { Scheduler } from '../logic/Scheduler'
-import { eventBus } from '../util/eventBus'
+import { eventBus } from '../util/EventBus'
 import { safeDeleteFile } from '../util/Util'
 
 const DeviceInfo = require('react-native-device-info');
 const RNFS = require('react-native-fs');
-
 
 export const LOG : any = {
   info: function() {
@@ -215,3 +216,35 @@ class LogProcessorClass {
 }
 
 export const LogProcessor : any = new LogProcessorClass();
+
+
+let notifiedCloudEndpoint = false;
+if (RELEASE_MODE) {
+  if (!TESTING_IN_PROCESS) {
+    LOG.info("------------------   --------------------------------   -----------------");
+    LOG.info("------------------   ----- USING RELEASE CLOUD ------   -----------------");
+    LOG.info("------------------   --------------------------------   -----------------");
+    notifiedCloudEndpoint = true;
+  }
+  LOG.info("====================   ============================   ===================");
+  LOG.info("====================   === RUNNING RELEASE MODE ===   ===================");
+  LOG.info("====================   ============================   ===================");
+}
+else {
+  LOG.info("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
+  LOG.info("!!!!!!!!!!!!!!!!!!   !!! RUNNING DEVELOPMENT MODE !!!   !!!!!!!!!!!!!!!!!");
+  LOG.info("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
+
+  if (LOCAL_TESTING) {
+    LOG.info("------------------   --------------------------------   -----------------");
+    LOG.info("------------------   ------ USING LOCAL CLOUD -------   -----------------");
+    LOG.info("------------------   --------------------------------   -----------------");
+    notifiedCloudEndpoint = true;
+  }
+}
+
+if (notifiedCloudEndpoint === false) {
+  LOG.info("------------------   --------------------------------   -----------------");
+  LOG.info("------------------   ------- USING DEV CLOUD --------   -----------------");
+  LOG.info("------------------   --------------------------------   -----------------");
+}

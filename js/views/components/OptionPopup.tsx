@@ -12,7 +12,7 @@ import {
 import { FadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
 import { styles, colors , screenHeight, screenWidth } from './../styles'
-import { eventBus } from '../../util/eventBus'
+import { eventBus } from '../../util/EventBus'
 
 export class OptionPopup extends Component<any, any> {
   unsubscribe : any;

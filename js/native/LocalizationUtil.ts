@@ -1,5 +1,6 @@
 import { Alert } from 'react-native';
-import { Bluenet, BluenetPromiseWrapper } from './Proxy';
+import { BluenetPromiseWrapper } from './Proxy';
+import { Bluenet  }              from './Bluenet';
 import { LOG } from '../logging/Log'
 
 export const LocalizationUtil = {

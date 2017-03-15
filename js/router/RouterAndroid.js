@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
-import { eventBus }               from '../util/eventBus'
+import { eventBus }               from '../util/EventBus'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'

@@ -1,4 +1,5 @@
-import { Bluenet, NativeBus, BluenetPromiseWrapper } from './Proxy';
+import { NativeBus, BluenetPromiseWrapper } from './Proxy';
+import { Bluenet  }                         from './Bluenet';
 import { LOG } from '../logging/Log'
 
 class FingerprintManagerClass {

@@ -1,4 +1,4 @@
-import { eventBus } from '../../util/eventBus'
+import { eventBus } from '../../util/EventBus'
 import { BATCH } from './storeManager'
 import { LOG } from '../../logging/Log'
 

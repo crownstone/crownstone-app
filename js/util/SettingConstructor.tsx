@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { Util } from './Util'
+import { AppUtil } from './AppUtil'
 import { BluenetPromiseWrapper } from '../native/Proxy'
 import { CLOUD } from '../cloud/cloudAPI'
 import { Actions } from 'react-native-router-flux';
@@ -33,7 +34,6 @@ const insertExplanation = function(items: any[], label : string, below : boolean
     items.push({type: 'explanation', label: label, below: below});
   }
 };
-
 
 export const SettingConstructor = function(store, state, eventBus) {
   let items = [];
@@ -135,7 +135,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     callback: () => {
       Alert.alert('Log out','Are you sure?',[
         {text: 'Cancel', style: 'cancel'},
-        {text: 'OK', onPress: () => { Util.app.logOut() }}
+        {text: 'OK', onPress: () => { AppUtil.logOut() }}
       ])
     }});
 

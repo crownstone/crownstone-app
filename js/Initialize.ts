@@ -1,13 +1,14 @@
 import { Alert, AppState } from 'react-native'
 
-import { LOG }                                  from './logging/Log'
-import { CLOUD }                                from './cloud/cloudAPI'
-import { LocalizationUtil }                     from './native/LocalizationUtil'
-import { Scheduler }                            from './logic/Scheduler'
-import { BluenetPromiseWrapper, Bluenet, NativeBus }  from './native/Proxy';
-import { eventBus }                             from './util/eventBus'
-import { getDeviceSpecs }                       from './util/DataUtil'
-import { Util }                                 from './util/Util'
+import { LOG }                              from './logging/Log'
+import { CLOUD }                            from './cloud/cloudAPI'
+import { LocalizationUtil }                 from './native/LocalizationUtil'
+import { Scheduler }                        from './logic/Scheduler'
+import { BluenetPromiseWrapper, NativeBus } from './native/Proxy';
+import { Bluenet  }                         from './native/Bluenet';
+import { eventBus }                         from './util/EventBus'
+import { getDeviceSpecs }                   from './util/DataUtil'
+import { Util }                             from './util/Util'
 
 
 /**

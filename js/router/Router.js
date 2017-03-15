@@ -21,9 +21,10 @@ import { SetupStateHandler }      from '../native/SetupStateHandler'
 import { StoneStateHandler }      from '../native/StoneStateHandler'
 import { BatchCommandHandler }    from '../logic/BatchCommandHandler'
 import { Scheduler }              from '../logic/Scheduler'
-import { eventBus }               from '../util/eventBus'
+import { eventBus }               from '../util/EventBus'
 import { prepareStoreForUser }    from '../util/DataUtil'
 import { Util }                   from '../util/Util'
+import { AppUtil }                from '../util/AppUtil'
 import { LOG, LogProcessor }      from '../logging/Log'
 import { INITIALIZER }            from '../Initialize'
 import { CLOUD }                  from '../cloud/cloudAPI'
@@ -50,7 +51,6 @@ export class AppRouter extends Component {
       mainDark: undefined
     };
   }
-
 
   componentDidMount() {
     // check what we should do with this data.
@@ -79,7 +79,6 @@ export class AppRouter extends Component {
       StoneStateHandler.loadStore(store);
       SetupStateHandler.loadStore(store);
       KeepAliveHandler.loadStore(store);
-      BatchCommandHandler.loadStore(store);
 
       // clear the temporary data like presence, state and disability of stones so no old data will be shown
       prepareStoreForUser(store);
@@ -95,7 +94,7 @@ export class AppRouter extends Component {
           .catch((reply) => {
             LOG.info("COULD NOT VERIFY USER -- ERROR", reply);
             if (reply.status === 401) {
-              Util.app.logOut();
+              AppUtil.logOut();
               Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
             }
           });

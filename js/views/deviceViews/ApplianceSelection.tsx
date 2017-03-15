@@ -15,19 +15,19 @@ import { Background } from './../components/Background'
 import { ApplianceEntry } from '../components/ApplianceEntry'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { EventBus } from '../../util/eventBus'
+import { EventBusClass } from '../../util/EventBus'
 
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles'
 import { Icon } from '../components/Icon';
 
 export class ApplianceSelection extends Component<any, any> {
-  deleteEventBus : EventBus;
+  deleteEventBus : EventBusClass;
   unsubscribe : any;
 
   constructor() {
     super();
-    this.deleteEventBus = new EventBus();
+    this.deleteEventBus = new EventBusClass();
   }
 
   componentDidMount() {

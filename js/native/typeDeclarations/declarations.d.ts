@@ -55,8 +55,9 @@ interface meshNetworks  {
 
 interface connectionInfo  {
   sphereId : string,
+  stoneId: string,
+  meshNetworkId?: string,
   handle : string,
-  stoneId : string,
 }
 
 interface stoneObject  {

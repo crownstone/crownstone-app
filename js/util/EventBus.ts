@@ -2,7 +2,7 @@ import { LOG } from '../logging/Log'
 import { Util } from './Util'
 
 
-export class EventBus {
+export class EventBusClass {
   _topics : object;
   _topicIds : object;
 
@@ -76,4 +76,4 @@ export class EventBus {
   }
 }
 
-export let eventBus : any = new EventBus();
+export let eventBus : any = new EventBusClass();

@@ -1,6 +1,3 @@
-import { LOG } from './logging/Log'
-import { Platform } from 'react-native'
-
 const DeviceInfo = require('react-native-device-info');
 
 // refer to the DEV cloud
@@ -48,25 +45,15 @@ export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
 
 export const TESTING_IN_PROCESS : boolean = true;
 
-let LOCAL_TESTING = false;
-
-let notifiedCloudEndpoint = false;
+export let LOCAL_TESTING = false;
 
 if (RELEASE_MODE) {
 
   if (!TESTING_IN_PROCESS) {
-    LOG.info("------------------   --------------------------------   -----------------");
-    LOG.info("------------------   ----- USING RELEASE CLOUD ------   -----------------");
-    LOG.info("------------------   --------------------------------   -----------------");
-    notifiedCloudEndpoint = true;
     CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
   }
 
   LOCAL_TESTING = false;
-
-  LOG.info("====================   ============================   ===================");
-  LOG.info("====================   === RUNNING RELEASE MODE ===   ===================");
-  LOG.info("====================   ============================   ===================");
 
   DEBUG           = false;
   LOG_STORE       = false;
@@ -88,21 +75,7 @@ if (RELEASE_MODE) {
   ENCRYPTION_ENABLED = true;
 }
 else {
-  LOG.info("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
-  LOG.info("!!!!!!!!!!!!!!!!!!   !!! RUNNING DEVELOPMENT MODE !!!   !!!!!!!!!!!!!!!!!");
-  LOG.info("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
-
   if (LOCAL_TESTING) {
-    LOG.info("------------------   --------------------------------   -----------------");
-    LOG.info("------------------   ------ USING LOCAL CLOUD -------   -----------------");
-    LOG.info("------------------   --------------------------------   -----------------");
-    notifiedCloudEndpoint = true;
     CLOUD_ADDRESS = 'http://0.0.0.0:3000/api/';
   }
-}
-
-if (notifiedCloudEndpoint === false) {
-  LOG.info("------------------   --------------------------------   -----------------");
-  LOG.info("------------------   ------- USING DEV CLOUD --------   -----------------");
-  LOG.info("------------------   --------------------------------   -----------------");
 }

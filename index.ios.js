@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import { AppRouter } from './js/router/Router'
-import { eventBus } from './js/util/eventBus'
+import { eventBus } from './js/util/EventBus'
 import { INITIALIZER } from './js/Initialize'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 import SplashScreen from "rn-splash-screen";

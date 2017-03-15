@@ -13,13 +13,14 @@ import {
   Text,
   View
 } from 'react-native';
-import { eventBus } from '../../../util/eventBus'
+import { eventBus } from '../../../util/EventBus'
 import { Actions } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
 import { Icon } from '../Icon'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
 import { NativeBus, BluenetPromiseWrapper } from '../../../native/Proxy'
 import { Util } from '../../../util/Util'
+import { AppUtil } from '../../../util/AppUtil'
 import { SettingConstructor } from '../../../util/SettingConstructor'
 
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
@@ -90,7 +91,7 @@ export class SideBar extends Component<any, any> {
         Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
           {text: 'Cancel', style: 'cancel'},
           {text: 'OK', onPress: () => {
-            Util.app.quit();
+            AppUtil.quit();
           }}
         ])
       }

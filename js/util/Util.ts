@@ -1,47 +1,11 @@
 import { Alert, Platform } from 'react-native';
-import { DEBUG } from '../ExternalConfig'
-import { Scheduler } from '../logic/Scheduler'
-import { StoreManager } from '../router/store/storeManager'
-import { Bluenet, BluenetPromiseWrapper } from '../native/Proxy'
-import { Actions } from 'react-native-router-flux';
-import { LOG } from '../logging/Log'
-import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
 const ImageResizer = require('react-native-image-resizer');
 const RNFS = require('react-native-fs');
+
+import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
+
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
-
-
-
-const AppUtil = {
-  quit: function() {
-    if (Platform.OS === 'android') {
-      Bluenet.quitApp();
-    }
-  },
-
-  resetBle:  function() {
-    if (Platform.OS === 'android') {
-      Bluenet.resetBle();
-    }
-  },
-
-  logOut: function() {
-    BluenetPromiseWrapper.clearTrackedBeacons().catch(() => {});
-    Bluenet.stopScanning();
-    Scheduler.reset();
-    (Actions as any).loginSplash();
-    StoreManager.userLogOut().catch(() => {});
-  },
-};
-
-
-export const mixin = function(base, section) {
-  for (let key in section) {
-    if (section.hasOwnProperty(key))
-      base[key] = section[key]
-  }
-};
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -61,28 +25,6 @@ export const getImageFileFromUser = function(email) {
   return email.replace(/[^\w\s]/gi, '') + '.jpg';
 };
 
-export const APPERROR = function (err) {
-  if (DEBUG === true) {
-    LOG.info("APP ERROR FROM PROMISE:", err);
-    Alert.alert("APP ERROR", err.message);
-  }
-};
-
-export const removeAllFiles = function() {
-  RNFS.readDir(RNFS.DocumentDirectoryPath)
-    .then((result) => {
-      result.forEach((file) => {
-        // we only want to remove files, not folders
-        // removing folders breaks the async storage.
-        RNFS.stat(file.path).then((fileData) => {
-          if (fileData.isDirectory() !== true) {
-            RNFS.unlink(file.path);
-          }
-        })
-      })
-    })
-    .catch(APPERROR)
-};
 
 export const processImage = function(picture, targetFilename) {
   return new Promise((resolve, reject) => {
@@ -187,7 +129,6 @@ export const addDistanceToRssi = function(rssi, distanceInMeters) {
 export const Util = {
   mesh: MeshUtil,
   data: DataUtil,
-  app:  AppUtil,
 
   getUUID : () : string => {
     const S4 = function () {
@@ -201,5 +142,13 @@ export const Util = {
       S4() + '-' +
       S4() + S4() + S4()
     );
+  },
+
+
+  mixin: function(base, section) {
+    for (let key in section) {
+      if (section.hasOwnProperty(key))
+        base[key] = section[key]
+    }
   },
 };

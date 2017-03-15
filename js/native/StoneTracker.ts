@@ -3,7 +3,7 @@ import { Alert, Vibration } from 'react-native';
 import { BleUtil }                                from '../util/BleUtil'
 import { BluenetPromiseWrapper, INTENTS }               from './Proxy'
 import { StoneStateHandler }                      from './StoneStateHandler'
-import { eventBus }                               from './../util/eventBus';
+import { eventBus }                               from './../util/EventBus';
 import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS }       from './../ExternalConfig';
 import { addDistanceToRssi, Util }                from '../util/Util';
 import { BehaviourUtil }                          from '../util/BehaviourUtil';

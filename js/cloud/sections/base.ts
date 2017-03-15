@@ -1,7 +1,7 @@
 import { request, download } from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/Util'
-import { EventBus } from '../../util/eventBus'
+import { EventBusClass } from '../../util/EventBus'
 import { LOG } from '../../logging/Log'
 
 export const defaultHeaders = {
@@ -20,8 +20,9 @@ export const  uploadHeaders = {
  * When the reponses come back successfully, the convenience wrappers allow callbacks for relevant scenarios.
  *
  */
+
 export const base = {
-  events: new EventBus(),
+  events: new EventBusClass(),
   _accessToken: undefined,
   _userId: undefined,
   _deviceId: undefined,

@@ -4,7 +4,7 @@ import { StoneStateHandler } from './StoneStateHandler'
 import { LOG } from '../logging/Log'
 import { LOG_BLE } from '../ExternalConfig'
 import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../util/DataUtil'
-import { eventBus }  from '../util/eventBus'
+import { eventBus }  from '../util/EventBus'
 import { Util }  from '../util/Util'
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
@@ -216,7 +216,7 @@ class AdvertisementHandlerClass {
 
     let currentTime = new Date().valueOf();
 
-    let switchState = serviceData.switchState / 128;
+    let switchState = Math.min(1,serviceData.switchState / 100);
 
     // small aesthetic fix: force no measurement when its supposed to be off.
     if (switchState === 0 && measuredUsage !== 0) {
@@ -251,7 +251,7 @@ class AdvertisementHandlerClass {
     }
 
     // we always update the disability (and rssi) of the Crownstone that is broadcasting.
-    StoneStateHandler.receivedUpdate(sphereId, stoneFromAdvertisement, referenceByCrownstoneId.id, advertisement.rssi);
+    StoneStateHandler.receivedAdvertisementUpdate(sphereId, stoneFromAdvertisement, referenceByCrownstoneId.id, advertisement.rssi);
   }
 }
 

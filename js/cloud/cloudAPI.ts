@@ -1,8 +1,7 @@
 'use strict';
 import { Alert } from 'react-native';
 
-import { mixin } from '../util/Util';
-
+import { Util } from '../util/Util';
 import { user } from './sections/user'
 import { base } from './sections/base'
 import { stones } from './sections/stones'
@@ -12,16 +11,17 @@ import { devices } from './sections/devices'
 import { appliances } from './sections/appliances'
 import { sync } from './sections/sync'
 
+
 function combineSections() {
   let result = {};
-  mixin(result, base);
-  mixin(result, user);
-  mixin(result, stones);
-  mixin(result, locations);
-  mixin(result, spheres);
-  mixin(result, devices);
-  mixin(result, appliances);
-  mixin(result, sync);
+  Util.mixin(result, base);
+  Util.mixin(result, user);
+  Util.mixin(result, stones);
+  Util.mixin(result, locations);
+  Util.mixin(result, spheres);
+  Util.mixin(result, devices);
+  Util.mixin(result, appliances);
+  Util.mixin(result, sync);
   return result;
 }
 

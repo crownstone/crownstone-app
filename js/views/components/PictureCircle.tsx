@@ -14,7 +14,7 @@ import { IconCircle }  from './IconCircle'
 import { LOG } from '../../logging/Log'
 import { Icon } from './Icon';
 import { styles, colors} from '../styles'
-import { eventBus } from '../../util/eventBus'
+import { eventBus } from '../../util/EventBus'
 import { preparePictureURI } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
 
