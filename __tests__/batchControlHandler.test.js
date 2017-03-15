@@ -20,7 +20,7 @@ jest.mock('../js/ExternalConfig', () => {
     LOG_WARNINGS: true,
     LOG_VERBOSE: true,
     LOG_TO_FILE: false,
-    DISABLE_NATIVE: true,
+    DISABLE_NATIVE: false,
     SILENCE_CLOUD: true,
     OVERRIDE_DATABASE: false,
     NO_LOCATION_NAME: 'None',
@@ -38,48 +38,84 @@ jest.mock('../js/ExternalConfig', () => {
   }
 });
 
+import { eventBus } from "../js/util/EventBus"
+
 jest.mock('../js/native/Bluenet', () => {
   return {
+    eventBus: null,
+    success: true,
     Bluenet: {
-      connect: (handle, callback) => {console.log("connecting to ", handle); setTimeout(() => {callback({error:false});},250)},
-      multiSwitch: (arr, callback) => {console.log("multiSwitch to ", arr); callback({error:false});},
-      disconnect: (callback) => {console.log("disconnect"); callback({error:false});},
-      phoneDisconnect: (callback) => {console.log("disconnect"); callback({error:false});},
+      connect: (handle, callback) => {
+        this.eventBus.emit('test', 'connect', arguments);
+        console.log("connecting to ", handle);
+        setTimeout(() => {
+          callback({error: !this.success});
+        },250)
+      },
+      multiSwitch: (arr, callback) => {
+        this.eventBus.emit('test', 'multiSwitch', arguments);
+        console.log("multiSwitch to ", arr);
+        callback({error: !this.success});
+      },
+      disconnect: (callback) => {
+        this.eventBus.emit('test', 'disconnect', arguments);
+        console.log("disconnect");
+        callback({error: !this.success});
+      },
+      phoneDisconnect: (callback) => {
+        this.eventBus.emit('test', 'phoneDisconnect', arguments);
+        console.log("disconnect");
+        callback({error: !this.success});
+      },
+    },
+    loadEventBus: (bus) => {
+      this.eventBus = bus;
+      bus.on("setState", (success) => { this.success = success; })
     }
   }
 });
 
-import { Bluenet } from "../js/native/Bluenet"
+import * as mockBluenet from "../js/native/Bluenet"
+import { EventBusClass } from "../js/util/EventBus"
 import { BatchCommandHandler } from "../js/logic/BatchCommandHandler"
-import { eventBus } from "../js/util/EventBus"
+
 
 test('object assignment', () => {
-  let mockStone = {config: {crownstoneId:'iAmFrank', meshNetworkId : 123, handle:'yet to find me'}};
-  let keepAlive =      { commandName:'keepAlive'};
-  let keepAliveState = { commandName:'keepAliveState', state: 1, timeout: 150, changeState: true };
-  let setSwitchState = { commandName:'setSwitchState', state: 1};
-  let multiSwitch =    { commandName:'multiSwitch',    state: 1, timeout: 0, intent: 4};
+  // prep
+  let testBus = new EventBusClass();
+  mockBluenet.loadEventBus(testBus);
 
-  let meshEmit = {
-    handle: 'this is my handle',
-    stoneId: 'la stone id',
-    meshNetworkId: 123,
-    rssi: -60,
-  };
-  let directEmit = {
-    handle: 'this is my handle',
-    stoneId: 'la stone id',
-    rssi: -60,
-  };
+  testBus.on('test', (functionName, params) => {console.log("receivedTestEvent", functionName, params);})
+  return new Promise((resolve, reject) => {
+    let mockStone = {config: {crownstoneId:'iAmFrank', meshNetworkId : 123, handle:'yet to find me'}};
+    let keepAlive =      { commandName:'keepAlive'};
+    let keepAliveState = { commandName:'keepAliveState', state: 1, timeout: 150, changeState: true };
+    let setSwitchState = { commandName:'setSwitchState', state: 1};
+    let multiSwitch =    { commandName:'multiSwitch',    state: 1, timeout: 0, intent: 4};
+
+    let meshEmit = {
+      handle: 'this is my handle',
+      stoneId: 'la stone id',
+      meshNetworkId: 123,
+      rssi: -60,
+    };
+    let directEmit = {
+      handle: 'this is my handle',
+      stoneId: 'la stone id',
+      rssi: -60,
+    };
+
+    BatchCommandHandler.load(mockStone, 'stoneId', 'sphereId', multiSwitch).catch((x) => {console.log('load',x)});
+    BatchCommandHandler.execute().catch((x) => {console.log('execute',x)});
+    let { directCommands, meshNetworks } = BatchCommandHandler._extractTodo();
+
+    console.log(BatchCommandHandler._extractTodo().meshNetworks.sphereId['123']);
+
+    eventBus.emit("updateMeshNetwork_sphereId_123", meshEmit);
+
+    expect({one: 1, two: 2}).toEqual({one: 1, two: 2});
 
 
-  BatchCommandHandler.load(mockStone, 'stoneId', 'sphereId', multiSwitch).catch((x) => {console.log('load',x)});
-  BatchCommandHandler.execute().catch((x) => {console.log('execute',x)});
-  let { directCommands, meshNetworks } = BatchCommandHandler._extractTodo();
-
-  expect(directCommands).toEqual({sphereId:[]});
-  console.log(BatchCommandHandler._extractTodo().meshNetworks.sphereId['123']);
-  eventBus.emit("updateMeshNetwork_sphereId_123", meshEmit);
-
-  expect({one: 1, two: 2}).toEqual({one: 1, two: 2});
+    setTimeout(() => {resolve()}, 500)
+  })
 });
