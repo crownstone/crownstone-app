@@ -39,7 +39,7 @@ class BatchCommandHandlerClass {
         command:  command,
         attempts: attempts,
         cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
-        promise:  { resolve: resolve, reject: reject }
+        promise:  { resolve: resolve, reject: reject, pending: false}
       };
     });
   }
@@ -56,8 +56,14 @@ class BatchCommandHandlerClass {
     for (let i = 0; i < uuids.length; i++) {
       let todo = this.commands[uuids[i]];
       if (todo.sphereId === sphereId && todo.stoneId === stoneId && todo.command.commandName === command.commandName) {
-        LOG.warn("BatchCommand: removing duplicate entry for ", stoneId, command.commandName);
-        todo.cleanup();
+        if (todo.promise.pending === false) {
+          LOG.warn("BatchCommand: removing duplicate entry for ", stoneId, command.commandName);
+          todo.promise.reject("Removed because of duplicate");
+          todo.cleanup();
+        }
+        else {
+          LOG.warn("BatchCommand: Detected pending duplicate entry for ", stoneId, command.commandName);
+        }
       }
     }
   }
@@ -239,7 +245,6 @@ class BatchCommandHandlerClass {
         let meshNetworkIds = Object.keys(networksInSphere);
         // pick the first network to handle
         if (meshNetworkIds.length > 0) {
-          console.log("networksInSphere", meshNetworkIds[0], networksInSphere[meshNetworkIds[0]]);
           let helper = new MeshHelper(meshSphereIds[i], meshNetworkIds[i], networksInSphere[meshNetworkIds[0]]);
           promise = helper.performAction();
           break;
@@ -293,6 +298,7 @@ class BatchCommandHandlerClass {
         }
       }
 
+
       if (promise !== null) {
         promise
           .then(() => {
@@ -301,6 +307,9 @@ class BatchCommandHandlerClass {
           })
           .then(() => {
             resolve()
+          })
+          .catch((err) => {
+            reject(err);
           })
       }
       else {
@@ -343,13 +352,13 @@ class BatchCommandHandlerClass {
           return this._handleAllActionsForStone(connectedCrownstone);
         })
         .then(() => {
-          if (Object.keys(this.commands).length > 0) {
-            return this._connectAndPerformCommands( true );
+          if (skipDisconnect !== true) {
+            return BluenetPromiseWrapper.disconnect();
           }
         })
         .then(() => {
-          if (skipDisconnect !== true) {
-            return BluenetPromiseWrapper.disconnect();
+          if (Object.keys(this.commands).length > 0) {
+            return this._connectAndPerformCommands();
           }
         })
         .then(() => {

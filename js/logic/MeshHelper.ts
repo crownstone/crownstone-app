@@ -24,6 +24,10 @@ export class MeshHelper {
     if (actionPromise === null) { actionPromise = this._handleKeepAliveCommands(); }
     if (actionPromise === null) { actionPromise = this._handleOtherCommands(); }
 
+    if (actionPromise === null) {
+      return actionPromise;
+    }
+
     // This will return a BluenetPromiseWrapper promise
     return actionPromise
       .then(() => {
@@ -35,6 +39,7 @@ export class MeshHelper {
       .catch((err) => {
         this._containedInstructions.forEach((instruction) => {
           instruction.attempts -= 1;
+          instruction.promise.pending = false;
           if (instruction.attemps <= 0) {
             instruction.promise.reject();
             instruction.cleanup();
@@ -54,6 +59,7 @@ export class MeshHelper {
           if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
             // get the longest timeout and use that
             multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
+            instruction.promise.pending = true;
             this._containedInstructions.push(instruction);
           }
           else {
@@ -90,6 +96,7 @@ export class MeshHelper {
 
             if (sharedState === instruction.state) {
               crownstoneIds.push(instruction.crownstoneId);
+              instruction.promise.pending = true;
               this._containedInstructions.push(instruction);
             }
           }
@@ -119,6 +126,7 @@ export class MeshHelper {
           // get the longest timeout and use that
           maxTimeout = Math.max(maxTimeout, instruction.timeout);
           stoneKeepAlivePackets.push({crownstoneId: instruction.crownstoneId, action: instruction.changeState, state: instruction.state});
+          instruction.promise.pending = true;
           this._containedInstructions.push(instruction);
         }
         else {
@@ -145,6 +153,7 @@ export class MeshHelper {
       // add the promise of this part of the payload to the list that we will need to resolve or reject when the mesh message is delivered.
       // these promises are loaded into the handler when load called.
       this.meshInstruction.keepAlive.forEach((instruction) => {
+        instruction.promise.pending = true;
         this._containedInstructions.push( instruction.promise );
       });
 

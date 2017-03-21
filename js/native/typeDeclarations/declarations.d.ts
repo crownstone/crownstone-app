@@ -2,7 +2,8 @@ interface keepAlivePayload {
   cleanup(): void,
   promise:{
     resolve(any?) : void,
-    reject(any?): void
+    reject(any?)  : void,
+    pending: boolean
   }
 }
 
@@ -15,7 +16,8 @@ interface keepAliveStatePayload {
   cleanup(): void,
   promise:{
     resolve(any?) : void,
-    reject(any?): void
+    reject(any?)  : void,
+    pending: boolean
   }
 }
 
@@ -27,7 +29,8 @@ interface setSwitchStatePayload {
   cleanup(): void,
   promise:{
     resolve(any?) : void,
-    reject(any?): void
+    reject(any?)  : void,
+    pending: boolean
   }
 }
 
@@ -41,7 +44,8 @@ interface multiSwitchPayload {
   cleanup(): void,
   promise:{
     resolve(any?) : void,
-    reject(any?): void
+    reject(any?)  : void,
+    pending: boolean
   }
 }
 
@@ -97,6 +101,7 @@ interface batchCommandEntry {
   cleanup(): void,
   promise:{
     resolve(any?) : void,
-    reject(any?): void
+    reject(any?) : void,
+    pending: boolean,
   }
 }
