@@ -126,7 +126,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     type: 'navigation',
     callback: () => { (Actions as any).settingsPluginRecoverStep1(); }
   });
-  items.push({label:'If you want to reset a Crownstone because it is not responding correctly, recover it!',  type:'explanation', below: true});
+  insertExplanation(items, 'If you want to reset a Crownstone because it is not responding correctly, recover it!', true);
 
   items.push({
     label:'Log Out',
