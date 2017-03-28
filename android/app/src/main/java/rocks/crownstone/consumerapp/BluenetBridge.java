@@ -71,19 +71,17 @@ import nl.dobots.bluenet.ble.mesh.structs.cmd.MeshControlPacket;
 import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
 import nl.dobots.bluenet.ibeacon.BleIbeaconFilter;
 import nl.dobots.bluenet.ibeacon.BleIbeaconRanging;
-import nl.dobots.bluenet.localization.locations.Location;
 import nl.dobots.bluenet.service.BleScanService;
 import nl.dobots.bluenet.service.callbacks.IntervalScanListener;
 import nl.dobots.bluenet.service.callbacks.ScanDeviceListener;
 import nl.dobots.bluenet.utils.BleLog;
 import nl.dobots.bluenet.utils.BleUtils;
 import nl.dobots.bluenet.utils.FileLogger;
-import nl.dobots.localization.Fingerprint;
-import nl.dobots.localization.FingerprintLocalization;
-import nl.dobots.localization.FingerprintSamplesMap;
-import nl.dobots.localization.GaussianNaiveBayes;
-import nl.dobots.localization.Localization;
-import nl.dobots.localization.LocalizationCallback;
+import rocks.crownstone.localization.Fingerprint;
+import rocks.crownstone.localization.FingerprintLocalization;
+import rocks.crownstone.localization.FingerprintSamplesMap;
+import rocks.crownstone.localization.Localization;
+import rocks.crownstone.localization.LocalizationCallback;
 
 public class BluenetBridge extends ReactContextBaseJavaModule implements IntervalScanListener, EventListener, ScanDeviceListener, BleBeaconRangingListener, LocalizationCallback {
 	private static final String TAG = BluenetBridge.class.getCanonicalName();
@@ -92,16 +90,15 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private static final int LOG_LEVEL_DEFAULT =         Log.WARN;
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Triplet[] LOG_LEVELS = new Triplet[]{
+			                                             // log lvl   file log lvl
 			new Triplet<>(BleScanService.class,          Log.WARN,    Log.DEBUG),
 			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,    Log.WARN),
 			new Triplet<>(BluenetBridge.class,           Log.WARN,    Log.DEBUG),
 			new Triplet<>(BleBaseEncryption.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
-			new Triplet<>(GaussianNaiveBayes.class,      Log.WARN,    Log.WARN),
 			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
 			new Triplet<>(BleCore.class,                 Log.WARN,    Log.WARN),
 			new Triplet<>(BleExt.class,                  Log.WARN,    Log.WARN),
-			new Triplet<>(FingerprintLocalization.class, Log.WARN,    Log.WARN),
 			new Triplet<>(CrownstoneSetup.class,         Log.WARN,    Log.WARN),
 	};
 
@@ -713,46 +710,30 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	@ReactMethod
-	public void setSwitchState(Float switchState, int timeout, int intent, final Callback callback) {
-		if (switchState > 0) {
-			_bleExt.relayOn(new IStatusCallback() {
-				@Override
-				public void onSuccess() {
-					BleLog.getInstance().LOGi(TAG, "relay on success");
-					WritableMap retVal = Arguments.createMap();
-					retVal.putBoolean("error", false);
-					callback.invoke(retVal);
-				}
-
-				@Override
-				public void onError(int error) {
-					BleLog.getInstance().LOGi(TAG, "power on failed: " + error);
-					WritableMap retVal = Arguments.createMap();
-					retVal.putBoolean("error", true);
-					retVal.putString("data", "power on failed: " + error);
-					callback.invoke(retVal);
-				}
-			});
-		} else {
-			_bleExt.relayOff(new IStatusCallback() {
-				@Override
-				public void onSuccess() {
-					BleLog.getInstance().LOGi(TAG, "relay off success");
-					WritableMap retVal = Arguments.createMap();
-					retVal.putBoolean("error", false);
-					callback.invoke(retVal);
-				}
-
-				@Override
-				public void onError(int error) {
-					BleLog.getInstance().LOGi(TAG, "power off failed: " + error);
-					WritableMap retVal = Arguments.createMap();
-					retVal.putBoolean("error", true);
-					retVal.putString("data", "power off failed: " + error);
-					callback.invoke(retVal);
-				}
-			});
+	public void setSwitchState(Float switchStateFloat, int timeout, int intent, final Callback callback) {
+		// For now: no dimming
+		int switchState = 0;
+		if (switchStateFloat > 0) {
+			switchState = BluenetConfig.SWITCH_ON;
 		}
+		_bleExt.writeSwitch(switchState, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGi(TAG, "set switch success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGi(TAG, "set switch failed: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "set switch failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
@@ -961,7 +942,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (action) {
 			actionInt = 1;
 		}
-		_bleExt.writeKeepAliveState(actionInt, (int)(100 * state), timeout, new IStatusCallback() {
+		// For now: no dimming
+		int switchState = 0;
+		if (state > 0) {
+			switchState = BluenetConfig.SWITCH_ON;
+		}
+		_bleExt.writeKeepAliveState(actionInt, switchState, timeout, new IStatusCallback() {
 				@Override
 				public void onSuccess() {
 					BleLog.getInstance().LOGi(TAG, "keepAliveState success");
@@ -1041,12 +1027,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			int actionSwitchState = BluenetConfig.KEEP_ALIVE_NO_ACTION;
 			if (itemMap.getBoolean("action")) {
 				double switchStateDouble = itemMap.getDouble("state");
-//				actionSwitchState = (int) Math.round(100*switchStateDouble);
+				// For now: no dimming
+//				actionSwitchState = (int) Math.round(BluenetConfig.SWITCH_ON * switchStateDouble);
 				if (switchStateDouble > 0) {
-					actionSwitchState = BluenetConfig.RELAY_ON;
+					actionSwitchState = BluenetConfig.SWITCH_ON;
 				}
 				else {
-					actionSwitchState = BluenetConfig.RELAY_OFF;
+					actionSwitchState = 0;
 				}
 			}
 			if (!packet.addKeepAlive(crownstoneId, actionSwitchState)) {
@@ -1090,7 +1077,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// ids = [number(uint16), ..]
 
 		// Create the control msg
-		int switchState = Math.round(switchStateFloat*100);
+		// For now: no dimming
+//		int switchState = Math.round(switchStateFloat * BluenetConfig.SWITCH_ON);
+		int switchState = 0;
+		if (switchStateFloat > 0) {
+			switchState = BluenetConfig.SWITCH_ON;
+		}
 		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_SWITCH, 1, new byte[]{(byte) switchState});
 
 		// Copy crownstone ids to an int array
@@ -1136,13 +1128,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			int timeout =              itemMap.getInt("timeout");
 			int intent =               itemMap.getInt("inent");
 			double switchStateDouble = itemMap.getDouble("state");
-//			int switchState = (int) Math.round(100*switchStateDouble);
-			int switchState;
+//			int switchState = (int) Math.round(BluenetConfig.SWITCH_ON * switchStateDouble);
+			int switchState = 0;
 			if (switchStateDouble > 0) {
-				switchState = BluenetConfig.RELAY_ON;
-			}
-			else {
-				switchState = BluenetConfig.RELAY_OFF;
+				switchState = BluenetConfig.SWITCH_ON;
 			}
 			if (!packet.addMultiSwitch(crownstoneId, switchState, timeout, intent)) {
 				success = false;
@@ -1633,9 +1622,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		String beaconId = device.getProximityUuid().toString() + ".Maj:" + device.getMajor() + ".Min:" + device.getMinor();
 		BleLog.getInstance().LOGv(TAG, "event scanned beacon: " + device.getAddress());
 		if (_isTraingingLocalization && !_isTraingingLocalizationPaused) {
-			_localization.feedMeasurement(device, beaconId, null, null);
+			_localization.feedMeasurement(device.getRssi(), beaconId, null, null);
 		}
-		_localization.track(device, beaconId, null);
+		_localization.track(device.getRssi(), beaconId, null);
 		WritableMap advertisementMap = Arguments.createMap();
 		advertisementMap.putString("id", beaconId);
 		advertisementMap.putString("uuid", device.getProximityUuid().toString());
