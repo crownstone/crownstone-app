@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "react": "~15.4.1",
-    "react-native": "^0.42.0",
+    "react-native": "0.42.0",
     "react-native-camera": "~0.6.0",
     "react-native-device-info": "~0.9.9",
     "react-native-drawer": "~2.3.0",
