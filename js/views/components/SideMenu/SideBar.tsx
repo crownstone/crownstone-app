@@ -53,8 +53,8 @@ export class SideBar extends Component<any, any> {
         actionItems.push({
           id: 'finalizeLocalization',
           label: 'Setup localization',
-          element: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
-          action: () => {
+          icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
+          callback: () => {
             this.props.viewProps.actions.finalizeLocalization();
             setTimeout(() => {this.props.closeCallback();},0)
           }
@@ -69,8 +69,8 @@ export class SideBar extends Component<any, any> {
     menuItems.push({
       id: 'overview',
       label: 'Overview',
-      element: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-      action: () => {
+      icon: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      callback: () => {
         (Actions as any).sphereOverview({type:'reset'});
         setTimeout(() => {this.props.closeCallback();},0)
       }
@@ -86,8 +86,8 @@ export class SideBar extends Component<any, any> {
     settingItems.push({
       id: 'quit',
       label: 'Force Quit',
-      element: <Icon name={"md-remove-circle"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-      action: () => {
+      icon: <Icon name={"md-remove-circle"} size={22} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      callback: () => {
         Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
           {text: 'Cancel', style: 'cancel'},
           {text: 'OK', onPress: () => {
@@ -102,6 +102,7 @@ export class SideBar extends Component<any, any> {
 
   _fillItemList(content, items) {
     for (let i = 0; i < items.length; i++) {
+      console.log("item id = " + items[i].id);
       content.push(<MenuItem key={items[i].id} {...items[i]} closeCallback={this.props.closeCallback} />);
     }
   }
@@ -175,10 +176,11 @@ class MenuItem extends Component<any, any> {
         backgroundColor: colors.lightGray.rgba(0.5),
         alignItems:'center'
       }} onPress={() => {
-        this.props.action()
+        this.props.callback();
+        setTimeout(() => { this.props.closeCallback(); }, 0)
       }}>
         <View style={[styles.centered,{width:25, marginRight:10}]}>
-        {this.props.element}
+        {this.props.icon}
         </View>
         <Text style={{paddingLeft: 15, fontSize:16, fontWeight: '300', color: colors.darkGray.rgba(0.5)}}>{this.props.label}</Text>
       </TouchableOpacity>

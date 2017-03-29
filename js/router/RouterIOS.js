@@ -67,7 +67,7 @@ export class Router_IOS extends Component {
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>
                 <Scene key="settingsProfile"            component={Views.SettingsProfile}           hideNavBar={false} title="Your Profile" />
                 <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           hideNavBar={false} title="Privacy" />
-                <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      hideNavBar={false} title="Mesh Overview" initial={false} />
+                <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      hideNavBar={false} title="Mesh Overview" />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         hideNavBar={false} title="Developer" />
                 <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    hideNavBar={false} title="Sphere Overview" />
                 <Scene key="settingsSphere"             component={Views.SettingsSphere}            hideNavBar={false} title="[Sphere name here]" />

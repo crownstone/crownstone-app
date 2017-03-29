@@ -40,6 +40,7 @@ export const SettingConstructor = function(store, state, eventBus) {
 
   insertExplanation(items, 'UPDATE YOUR PROFILE', false);
   items.push({
+    id: 'My Account',
     label: 'My Account',
     icon: getIcon('ios-body', 23, colors.white.hex, colors.purple.hex),
     type: 'navigation',
@@ -51,6 +52,7 @@ export const SettingConstructor = function(store, state, eventBus) {
   insertExplanation(items, 'CONFIGURATION', false);
   if (Object.keys(state.spheres).length > 0) {
     items.push({
+      id: 'Spheres',
       label: 'Spheres',
       icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
@@ -59,6 +61,7 @@ export const SettingConstructor = function(store, state, eventBus) {
   }
   else {
     items.push({
+      id: 'Add Sphere',
       label: 'Add Sphere',
       icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
@@ -90,6 +93,7 @@ export const SettingConstructor = function(store, state, eventBus) {
 
   if (Object.keys(state.spheres).length > 0) {
     items.push({
+      id: 'Mesh Overview',
       label: 'Mesh Overview',
       type: 'navigation',
       style: {color: '#000'},
@@ -105,6 +109,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       tapToToggleSettings.tutorial = true;
     }
     items.push({
+      id:'Calibrate Tap-to-Toggle',
       label:'Calibrate Tap-to-Toggle',
       type:'button',
       style: {color:'#000'},
@@ -115,12 +120,14 @@ export const SettingConstructor = function(store, state, eventBus) {
 
   insertExplanation(items, 'TROUBLESHOOTING', false);
   items.push({
+    id:'Help',
     label:'Help',
     type:'navigation',
     icon: getIcon('ios-help-circle', 22, colors.white.hex, colors.green2.hex),
     callback: () => { Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {})}
   });
   items.push({
+    id: 'Recover a Crownstone',
     label: 'Recover a Crownstone',
     icon: getIcon('c1-socket2', 23, colors.white.hex, colors.menuTextSelected.hex),
     type: 'navigation',
@@ -129,6 +136,7 @@ export const SettingConstructor = function(store, state, eventBus) {
   insertExplanation(items, 'If you want to reset a Crownstone because it is not responding correctly, recover it!', true);
 
   items.push({
+    id:'Log Out',
     label:'Log Out',
     type:'button',
     icon: getIcon('md-log-out', 22, colors.white.hex, colors.menuRed.hex),
