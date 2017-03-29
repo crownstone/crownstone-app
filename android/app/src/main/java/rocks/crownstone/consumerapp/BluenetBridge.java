@@ -710,7 +710,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	@ReactMethod
-	public void setSwitchState(Float switchStateFloat, int timeout, int intent, final Callback callback) {
+	public void setSwitchState(Float switchStateFloat, final Callback callback) {
 		// For now: no dimming
 		int switchState = 0;
 		if (switchStateFloat > 0) {
