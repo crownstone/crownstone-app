@@ -7,10 +7,9 @@ import { eventBus } from '../util/EventBus';
 import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/DataUtil';
 import { CLOUD } from '../cloud/cloudAPI';
 import { Util } from '../util/Util';
-import { LOG } from '../logging/Log'
+import { LOG } from '../logging/Log';
+import { SETUP_MODE_TIMEOUT } from '../ExternalConfig';
 
-
-const SETUP_MODE_TIMEOUT = 3000; // ms
 
 /**
  * This class keeps track of the Crownstones in setup state.

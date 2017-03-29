@@ -40,6 +40,9 @@ export const KEEPALIVE_REPEAT_ATTEMPTS = 1;
 // reset the trigger if you spend this amount of milliseconds in the other zone.
 export const RESET_TIMER_FOR_NEAR_AWAY_EVENTS = 20000; // ms
 
+// Time until a scanned crownstone in setup mode is regarded to be gone.
+export const SETUP_MODE_TIMEOUT = 15000; // ms
+
 // WHEN RELEASING: SET THIS TO TRUE
 export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
 
