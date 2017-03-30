@@ -284,6 +284,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				_bleExtInitialized = true;
 				_bleExt.enableEncryption(true); // TODO: should be done by setSettings
 				checkReady();
+
+				// TODO: didn't this move to the "onEvent" ?
 				if (_bleTurnedOff) {
 					sendEvent("bleStatus", "poweredOn");
 
@@ -1301,6 +1303,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		Fingerprint fingerprint = new Fingerprint();
 		fingerprint.setSphereId(sphereId);
 		fingerprint.setLocationId(locationId);
+		BleLog.getInstance().LOGd(TAG, "load finger print: [%s] [%s] %s", sphereId, locationId, samplesStr);
 
 		try {
 			FingerprintSamplesMap samples = new FingerprintSamplesMap(samplesStr);
@@ -1434,6 +1437,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@Override
 	public void onEvent(Event event) {
+		BleLog.getInstance().LOGi(TAG, "event: " + event);
 		switch (event) {
 			case BLE_PERMISSIONS_GRANTED: {
 				initBluetooth();
@@ -1443,6 +1447,15 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				// If bluetooth is turned on, the scanservice doesn't automatically restart.
 				updateScanner();
 				_isResettingBluetooth = false;
+				if (_bleTurnedOff) {
+					_bleTurnedOff = false;
+					sendEvent("bleStatus", "poweredOn");
+					// Scanner already starts automatically in BleScanService
+					// But this sets the correct mode
+					if (_scannerState != ScannerState.DISABLED) {
+						startScanningForCrownstones();
+					}
+				}
 				break;
 			}
 			case BLUETOOTH_TURNED_OFF: {
