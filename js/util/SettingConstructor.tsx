@@ -18,6 +18,7 @@ import { Actions } from 'react-native-router-flux';
 import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
+import {LOG} from "../logging/Log";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -69,6 +70,9 @@ export const SettingConstructor = function(store, state, eventBus) {
         eventBus.emit('showLoading', 'Creating Sphere...');
 
         BluenetPromiseWrapper.requestLocation()
+          .catch((err) => {
+            LOG.error("Failed to request location: ", err);
+          })
           .then((location) => {
             let latitude = undefined;
             let longitude = undefined;
@@ -84,8 +88,11 @@ export const SettingConstructor = function(store, state, eventBus) {
             let title = state.spheres[sphereId].config.name;
             (Actions as any).settingsSphere({sphereId: sphereId, title: title})
           })
-          .catch(() => {
+          .catch((err) => {
             eventBus.emit('hideLoading');
+            Alert.alert('Oops','I seem to be unable to create a Sphere. Please try again later.',[
+              {text: 'OK'}
+            ])
           });
       }
     });
