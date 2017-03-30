@@ -10,14 +10,13 @@ import {
   View
 } from 'react-native';
 
-import { Background } from './../components/Background'
-import { ListEditableItems } from './../components/ListEditableItems'
+import { Background } from '../components/Background'
+import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles'
-import { CLOUD } from './../../cloud/cloudAPI'
-import { BluenetPromiseWrapper } from './../../native/Proxy'
+import { styles, colors } from '../styles'
 import { IconButton } from '../components/IconButton'
 import { LOG } from '../../logging/Log'
+import {Util} from "../../util/Util";
 
 
 export class SettingsSphereOverview extends Component<any, any> {
@@ -107,36 +106,7 @@ export class SettingsSphereOverview extends Component<any, any> {
   }
 
   _createNewSphere(store, name) {
-    this.props.eventBus.emit('showLoading', 'Creating Sphere...');
-    return BluenetPromiseWrapper.requestLocation()
-      .then((location) => {
-        let latitude = undefined;
-        let longitude = undefined;
-        if (location && location.latitude && location.longitude) {
-          latitude = location.latitude;
-          longitude = location.longitude;
-        }
-        return CLOUD.createNewSphere(store, name, this.props.eventBus, latitude, longitude)
-      })
-      .then((sphereId) => {
-        this.props.eventBus.emit('hideLoading');
-        let state = this.props.store.getState();
-        let title = state.spheres[sphereId].config.name;
-        (Actions as any).settingsSphere({sphereId: sphereId, title: title})
-      })
-      .catch((err) => {
-        if (err.status == 422) {
-          return this._createNewSphere(store, name + ' new')
-        }
-        else {
-          return new Promise((resolve, reject) => {reject(err);})
-        }
-      })
-      .catch((err) => {
-        this.props.eventBus.emit('hideLoading');
-        LOG.error("Could not create sphere", err);
-        Alert.alert("Could not create sphere", "Please try again later.", [{text:'OK'}])
-      })
+    return Util.data.createNewSphere(this.props.eventBus, store, name);
   }
 
   render() {

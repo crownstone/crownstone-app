@@ -67,34 +67,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => {
-        eventBus.emit('showLoading', 'Creating Sphere...');
-
-        BluenetPromiseWrapper.requestLocation()
-          .catch((err) => {
-            LOG.error("Failed to request location: ", err);
-          })
-          .then((location) => {
-            let latitude = undefined;
-            let longitude = undefined;
-            if (location && location.latitude && location.longitude) {
-              latitude = location.latitude;
-              longitude = location.longitude;
-            }
-            return CLOUD.createNewSphere(store, state.user.firstName, eventBus, latitude, longitude)
-          })
-          .then((sphereId) => {
-            eventBus.emit('hideLoading');
-            let state = store.getState();
-            let title = state.spheres[sphereId].config.name;
-            (Actions as any).settingsSphere({sphereId: sphereId, title: title})
-          })
-          .catch((err) => {
-            eventBus.emit('hideLoading');
-            LOG.error("Error during creation of new Sphere", err);
-            Alert.alert('Oops','I seem to be unable to create a Sphere. Please try again later.',[
-              {text: 'OK'}
-            ])
-          });
+        Util.data.createNewSphere(eventBus, store, state.user.firstName).catch(() => {});
       }
     });
   }

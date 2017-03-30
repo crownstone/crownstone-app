@@ -3,7 +3,6 @@ import { LOG} from '../../logging/Log'
 
 export const spheres = {
 
-
   /**
    * self contained method to create a sphere and set the keys and users correctly.
    * @param store
