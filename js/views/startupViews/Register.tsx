@@ -157,7 +157,7 @@ export class Register extends Component<any, any> {
               }}>
                 <Text style={{fontSize:11, color:colors.blue.hex}}>terms </Text>
               </TouchableHighlight>
-              <Text style={{fontSize:11, color:'#444'}}>& </Text>
+              <Text style={{fontSize:11, color:'#444'}}>{"& "}</Text>
               <TouchableHighlight onPress={() => {
                 Linking.openURL('https://crownstone.rocks/privacy-policy/').catch(err => {})
               }}>

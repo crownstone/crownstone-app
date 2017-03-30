@@ -84,7 +84,6 @@ export class SettingsOverview extends Component<any, any> {
 }
 
 let versionStyle = {
-
   backgroundColor:"transparent",
   color: colors.darkGray2.rgba(1),
   textAlign:'center',

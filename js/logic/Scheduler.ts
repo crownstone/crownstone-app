@@ -231,18 +231,19 @@ class SchedulerClass {
   postponeTrigger(triggerId) {
     let trigger = this.triggers[triggerId];
 
-    if (trigger)
+    if (trigger) {
       this.postpone(trigger);
+    }
   }
 
 
   checkSingleFires(now) {
     let triggerIds = Object.keys(this.singleFireTriggers);
     triggerIds.forEach((triggerId) => {
-      // LOG.scheduler("Handling singlefire trigger:", triggerId);
+      // LOG.scheduler("Handling single fire trigger:", triggerId);
       let trigger = this.singleFireTriggers[triggerId];
       if (trigger.triggerTime < now) {
-        LOG.scheduler("Firing singlefire trigger:", triggerId);
+        LOG.scheduler("Firing single fire trigger:", triggerId);
         trigger.callback();
         delete this.singleFireTriggers[triggerId];
       }

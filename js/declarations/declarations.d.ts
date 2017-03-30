@@ -6,3 +6,8 @@ declare var require: {
     ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
 };
 
+
+declare module 'react-native-image-resizer' {
+    const createResizedImage: any;
+    export default createResizedImage;
+}

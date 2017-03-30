@@ -335,7 +335,8 @@ function handleStoneState(action, state, pureSwitch = false) {
     let data  = {
       id:          stoneId,
       switchState: stone.state.state,
-      updatedAt:   stone.state.updatedAt,
+      switchStateUpdatedAt: stone.state.updatedAt,
+      updatedAt:   stone.updatedAt,
     };
 
     CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});

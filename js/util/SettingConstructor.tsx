@@ -15,10 +15,10 @@ import { AppUtil } from './AppUtil'
 import { BluenetPromiseWrapper } from '../native/Proxy'
 import { CLOUD } from '../cloud/cloudAPI'
 import { Actions } from 'react-native-router-flux';
+import { LOG } from '../logging/Log'
 import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
-import {LOG} from "../logging/Log";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -90,6 +90,7 @@ export const SettingConstructor = function(store, state, eventBus) {
           })
           .catch((err) => {
             eventBus.emit('hideLoading');
+            LOG.error("Error during creation of new Sphere", err);
             Alert.alert('Oops','I seem to be unable to create a Sphere. Please try again later.',[
               {text: 'OK'}
             ])

@@ -37,7 +37,6 @@ export const BehaviourUtil = {
       this.enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks);
     });
 
-    console.log("Triggering execute in enactBehaviourInLocation");
     BatchCommandHandler.execute(false);
   },
 
@@ -65,7 +64,6 @@ export const BehaviourUtil = {
       this.enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks = {})
     });
 
-    console.log("Triggering execute in enactBehaviourInSphere");
     BatchCommandHandler.execute(false);
   },
 

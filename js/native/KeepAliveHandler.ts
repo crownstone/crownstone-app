@@ -2,6 +2,7 @@ import { Scheduler } from '../logic/Scheduler';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { LOG } from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS } from '../ExternalConfig';
+import { NativeBus } from './Proxy';
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
 import { Util } from '../util/Util'
@@ -13,6 +14,7 @@ class KeepAliveHandlerClass {
   _initialized : any;
   store : any;
   state : any;
+  lastTimeFired : number = 0;
 
   constructor() {
     this._initialized = false;
@@ -24,6 +26,8 @@ class KeepAliveHandlerClass {
     LOG.info('LOADED STORE KeepAliveHandler', this._initialized);
     if (this._initialized === false) {
       this.store = store;
+      // reset last time fired to 0 so the time diff method will
+      NativeBus.on(NativeBus.topics.enterSphere, () => { this.lastTimeFired = 0; });
       this.init();
 
     }
@@ -38,12 +42,26 @@ class KeepAliveHandlerClass {
   }
 
 
+  timeUntilNextTrigger() {
+    let now = new Date().valueOf();
+    let nextTriggerTime = this.lastTimeFired + KEEPALIVE_INTERVAL*1000;
+    if (nextTriggerTime < now) {
+      return 0;
+    }
+    else {
+      return nextTriggerTime - now;
+    }
+  }
+
+
   fireTrigger() {
     Scheduler.fireTrigger(TRIGGER_ID);
   }
 
 
   keepAlive() {
+    this.lastTimeFired = new Date().valueOf();
+
     const state = this.store.getState();
     let sphereIds = Object.keys(state.spheres);
 
@@ -96,7 +114,8 @@ class KeepAliveHandlerClass {
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'keepAlive'}, KEEPALIVE_REPEAT_ATTEMPTS).catch((err) => {});
+      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'keepAlive'}, KEEPALIVE_REPEAT_ATTEMPTS)
+        .catch((err) => {});
     }
     else {
       // determine what to send
@@ -118,7 +137,8 @@ class KeepAliveHandlerClass {
         sphereId,
         {commandName:'keepAliveState', changeState:changeState, state: newState, timeout:timeout},
         KEEPALIVE_REPEAT_ATTEMPTS
-      ).catch((err) => {});
+      )
+        .catch((err) => {});
     }
   }
 }
