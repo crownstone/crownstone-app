@@ -109,6 +109,9 @@ export class SettingsSphereOverview extends Component<any, any> {
   _createNewSphere(store, name) {
     this.props.eventBus.emit('showLoading', 'Creating Sphere...');
     return BluenetPromiseWrapper.requestLocation()
+      .catch((err) => {
+        LOG.error("Failed to request location: ", err);
+      })
       .then((location) => {
         let latitude = undefined;
         let longitude = undefined;
