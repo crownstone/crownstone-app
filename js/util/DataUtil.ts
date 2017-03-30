@@ -1,9 +1,6 @@
 import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
-import {BluenetPromiseWrapper} from "../native/Proxy";
-import {CLOUD} from "../cloud/cloudAPI";
-import {Actions} from "react-native-router-flux";
 
 import {
   Alert,
@@ -141,40 +138,6 @@ export const DataUtil = {
   getStoneFromHandle: function(state, sphereId, handle) {
     let stoneId = this.getStoneIdFromHandle(state, sphereId, handle);
     return state.spheres[sphereId].stones[stoneId];
-  },
-
-
-  createNewSphere: function(eventBus, store, name) {
-    eventBus.emit('showLoading', 'Creating Sphere...');
-    return BluenetPromiseWrapper.requestLocation()
-      .then((location) => {
-        let latitude = undefined;
-        let longitude = undefined;
-        if (location && location.latitude && location.longitude) {
-          latitude = location.latitude;
-          longitude = location.longitude;
-        }
-        return CLOUD.createNewSphere(store, name, eventBus, latitude, longitude)
-      })
-      .then((sphereId) => {
-        eventBus.emit('hideLoading');
-        let state = store.getState();
-        let title = state.spheres[sphereId].config.name;
-        (Actions as any).settingsSphere({sphereId: sphereId, title: title})
-      })
-      .catch((err) => {
-        if (err.status == 422) {
-          return this.createNewSphere(eventBus, store, name + ' new')
-        }
-        else {
-          return new Promise((resolve, reject) => {reject(err);})
-        }
-      })
-      .catch((err) => {
-        eventBus.emit('hideLoading');
-        LOG.error("Could not create sphere", err);
-        Alert.alert("Could not create sphere", "Please try again later.", [{text:'OK'}])
-      })
   },
 
 

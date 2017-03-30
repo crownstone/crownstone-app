@@ -47,7 +47,7 @@ export class SettingsMeshOverview extends Component<any, any> {
     networksAvailable.forEach((networkKey, i) => {
       networkElements.push(<Network
         key={networkKey}
-        label={networkKey === floatingNetworkKey? 'Unconnected:' : 'Network #' + networkKey + ':'}
+        label={networkKey === floatingNetworkKey? 'Not in Mesh:' : 'Network #' + networkKey + ':'}
         data={networks[networkKey]}
         connected={networkKey !== floatingNetworkKey}
       />)

@@ -19,6 +19,7 @@ import { LOG } from '../logging/Log'
 import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
+import {createNewSphere} from "./createSphere";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -67,7 +68,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => {
-        Util.data.createNewSphere(eventBus, store, state.user.firstName).catch(() => {});
+        createNewSphere(eventBus, store, state.user.firstName).catch(() => {});
       }
     });
   }

@@ -17,6 +17,7 @@ import { styles, colors } from '../styles'
 import { IconButton } from '../components/IconButton'
 import { LOG } from '../../logging/Log'
 import {Util} from "../../util/Util";
+import {createNewSphere} from "../../util/createSphere";
 
 
 export class SettingsSphereOverview extends Component<any, any> {
@@ -106,7 +107,7 @@ export class SettingsSphereOverview extends Component<any, any> {
   }
 
   _createNewSphere(store, name) {
-    return Util.data.createNewSphere(this.props.eventBus, store, name);
+    return createNewSphere(this.props.eventBus, store, name);
   }
 
   render() {
