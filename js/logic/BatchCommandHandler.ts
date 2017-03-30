@@ -5,6 +5,8 @@ import { BluenetPromiseWrapper } from '../native/Proxy';
 import { LOG } from '../logging/Log'
 import { Scheduler } from './Scheduler'
 import { MeshHelper } from './MeshHelper'
+import { KeepAliveHandler } from "../native/KeepAliveHandler";
+import {KEEPALIVE_INTERVAL} from "../ExternalConfig";
 
 
 /**
@@ -322,10 +324,9 @@ class BatchCommandHandlerClass {
   /**
    * This method will search for Crownstones using the topics provided by the _getObjectsToScan.
    * It will connect to the first responder and perform all commands for that Crownstone. It will then move on to the next one.
-   * @param skipDisconnect
    * @returns {Promise<T>}
    */
-  _connectAndPerformCommands(skipDisconnect = false) {
+  _connectAndPerformCommands() {
     return new Promise((resolve, reject) => {
       let topicsToScan = this._getObjectsToScan();
       if (topicsToScan.length === 0) {
@@ -352,9 +353,14 @@ class BatchCommandHandlerClass {
           return this._handleAllActionsForStone(connectedCrownstone);
         })
         .then(() => {
-          if (skipDisconnect !== true) {
-            return BluenetPromiseWrapper.disconnect();
+          // check if we should to add a keepalive since we're connected anyway
+          if (KeepAliveHandler.timeUntilNextTrigger() < 0.5 * KEEPALIVE_INTERVAL * 1000 ) {
+            KeepAliveHandler.fireTrigger();
+            return this._handleAllActionsForStone(connectedCrownstone)
           }
+        })
+        .then(() => {
+          return BluenetPromiseWrapper.disconnect();
         })
         .then(() => {
           if (Object.keys(this.commands).length > 0) {

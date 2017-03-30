@@ -140,7 +140,6 @@ export class SettingsSphereOverview extends Component<any, any> {
   }
 
   render() {
-
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView>

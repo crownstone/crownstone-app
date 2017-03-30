@@ -40,6 +40,16 @@ jest.mock('../js/ExternalConfig', () => {
 });
 
 
+jest.mock('../js/native/KeepAliveHandler', () => {
+  return {
+    KeepAliveHandler : {
+      timeUntilNextTrigger: () => { return 50; },
+      fireTrigger: () => { },
+    }
+  }
+});
+
+
 let mockStone1 =      {config: {crownstoneId:'CSID1', meshNetworkId : 1, handle:'handle-CSID-1'}};
 let mockStone2 =      {config: {crownstoneId:'CSID2', meshNetworkId : 1, handle:'handle-CSID-2'}};
 let mockStone3 =      {config: {crownstoneId:'CSID3', meshNetworkId : 1, handle:'handle-CSID-3'}};

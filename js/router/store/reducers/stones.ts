@@ -74,9 +74,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'UPDATE_STONE_STATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
       if (action.data) {
         let newState = {...state};
-        // todo: remove
-        if (state.disabled !== false)
-          LOG.info("CHANGING_DISABILITY ", action.stoneId, false);
         newState.disabled = false;
         return newState;
       }

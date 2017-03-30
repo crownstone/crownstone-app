@@ -1,5 +1,5 @@
 import { Alert, Platform } from 'react-native';
-const ImageResizer = require('react-native-image-resizer');
+import ImageResizer from 'react-native-image-resizer';
 const RNFS = require('react-native-fs');
 
 import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
@@ -40,7 +40,9 @@ export const processImage = function(picture, targetFilename) {
         resizedPath = RNFS.ExternalDirectoryPath;
       }
 
-      ImageResizer.createResizedImage(picture, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90, undefined, resizedPath)
+      let pictureURI = picture.indexOf("file://") === -1 ? picture : picture;
+
+      ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90, 0, resizedPath)
         .then((resizedImageUri) => {
           resizedUri = resizedImageUri;
           return safeDeleteFile(targetPath);

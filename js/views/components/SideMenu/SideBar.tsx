@@ -102,7 +102,6 @@ export class SideBar extends Component<any, any> {
 
   _fillItemList(content, items) {
     for (let i = 0; i < items.length; i++) {
-      console.log("item id = " + items[i].id);
       content.push(<MenuItem key={items[i].id} {...items[i]} closeCallback={this.props.closeCallback} />);
     }
   }
