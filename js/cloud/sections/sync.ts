@@ -563,8 +563,32 @@ const syncDevices = function(store, actions, devices) {
         matchingDevice = device;
       }
     }
+
+
+    // this method will clean up any devices that are in our local database but not in the cloud. Cloud is leading.
+    // It will also resolve the promise so the sync can continue.
+    let resolveAndCleanup = () => {
+      // cleanup
+      let deleteActions = [];
+      let cloudDeviceIdList = {};
+      for (let i = 0; i < devices.length; i++) {
+        cloudDeviceIdList[devices[i].id] = true;
+      }
+      let localDeviceIdList = Object.keys(store.getState().devices);
+      for (let i = 0; i < localDeviceIdList.length; i++) {
+        if (cloudDeviceIdList[localDeviceIdList[i]] === undefined) {
+          deleteActions.push({type: 'REMOVE_DEVICE', deviceId: localDeviceIdList[i]});
+        }
+      }
+      if (deleteActions.length > 0) {
+        LOG.cloud("REMOVING ", deleteActions.length, " devices since they are not in the cloud anymore");
+        store.batchDispatch(deleteActions);
+      }
+
+      resolve();
+    };
     
-    if (deviceId === undefined || state.devices[deviceId] === undefined) {
+    if (deviceId === undefined) {
       LOG.info("Sync: Create new device", name, address, description);
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
@@ -578,8 +602,25 @@ const syncDevices = function(store, actions, devices) {
            */
           return updateUserLocationInCloud(state, deviceId);
         })
-        .then(resolve)
+        .then(resolveAndCleanup)
         .catch(reject)
+    }
+    else if (state.devices[deviceId] === undefined) {
+      LOG.info("Sync: User device found in cloud, updating local.");
+      // add the device from the cloud to the redux database
+      actions.push({
+        type: 'ADD_DEVICE',
+        deviceId: deviceId,
+        data: {name: name, address: address, description: description}
+      });
+
+      // update our unique identifier to match the new device.
+      store.dispatch({
+        type: 'SET_APP_IDENTIFIER',
+        data: {appIdentifier: deviceAddress}
+      });
+
+      resolveAndCleanup();
     }
     else {
       // if the device is known under a different number in the cloud, we update our local identifier
@@ -600,25 +641,8 @@ const syncDevices = function(store, actions, devices) {
 
       LOG.info("Sync: User device found in cloud, updating location.");
       updateUserLocationInCloud(state, deviceId)
-        .then(resolve)
+        .then(resolveAndCleanup)
         .catch(reject);
-    }
-
-    // cleanup
-    let deleteActions = [];
-    let cloudDeviceIdList = {};
-    for (let i = 0; i < devices.length; i++) {
-      cloudDeviceIdList[devices[i].id] = true;
-    }
-    let localDeviceIdList = Object.keys(store.getState().devices);
-    for (let i = 0; i < localDeviceIdList.length; i++) {
-      if (cloudDeviceIdList[localDeviceIdList[i]] === undefined) {
-        deleteActions.push({type: 'REMOVE_DEVICE', deviceId: localDeviceIdList[i]});
-      }
-    }
-    if (deleteActions.length > 0) {
-      LOG.cloud("REMOVING ", deleteActions.length, " devices since they are not in the cloud anymore");
-      store.batchDispatch(deleteActions);
     }
   });
 };

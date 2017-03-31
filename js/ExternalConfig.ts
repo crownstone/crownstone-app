@@ -119,7 +119,8 @@ if (RELEASE_MODE_USED === false) {
     let localConfig = require('./LocalConfig');
     let localKeys = Object.keys(localConfig);
     for (let i = 0; i < localKeys.length; i++) {
-      if (module.exports[localKeys[i]]) {
+      if (module.exports[localKeys[i]] !== undefined && module.exports[localKeys[i]] !== localConfig[localKeys[i]]) {
+        console.log("LOCAL CONFIG OVERRIDE", localKeys[i], module.exports[localKeys[i]], 'to', localConfig[localKeys[i]]);
         module.exports[localKeys[i]] = localConfig[localKeys[i]];
       }
     }

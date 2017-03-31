@@ -188,6 +188,7 @@ function checkAction(action, affectedIds) {
     case 'SET_LOGGING':
     case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_STATE':
+    case 'SET_APP_IDENTIFIER':
     case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
     case 'REFRESH_DEFAULTS':
       break;
