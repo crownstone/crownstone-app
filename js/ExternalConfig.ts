@@ -48,7 +48,7 @@ export const RELEASE_MODE = false && DeviceInfo.getModel() !== "Simulator";
 
 export const TESTING_IN_PROCESS : boolean = true;
 
-export let LOCAL_TESTING = true;
+export let LOCAL_TESTING = false;
 
 if (RELEASE_MODE) {
 
