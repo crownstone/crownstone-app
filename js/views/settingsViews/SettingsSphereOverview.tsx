@@ -17,7 +17,7 @@ import { styles, colors } from '../styles'
 import { IconButton } from '../components/IconButton'
 import { LOG } from '../../logging/Log'
 import {Util} from "../../util/Util";
-import {createNewSphere} from "../../util/createSphere";
+import {createNewSphere} from "../../util/CreateSphere";
 
 
 export class SettingsSphereOverview extends Component<any, any> {
