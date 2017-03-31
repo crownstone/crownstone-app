@@ -1,7 +1,7 @@
 import { Scheduler } from '../logic/Scheduler';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { LOG } from '../logging/Log'
-import { KEEPALIVE_INTERVAL, KEEPALIVE_REPEAT_ATTEMPTS } from '../ExternalConfig';
+import { KEEPALIVE_INTERVAL, KEEPALIVE_ATTEMPTS } from '../ExternalConfig';
 import { NativeBus } from './Proxy';
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
@@ -114,7 +114,7 @@ class KeepAliveHandlerClass {
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'keepAlive'}, KEEPALIVE_REPEAT_ATTEMPTS)
+      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'keepAlive'}, KEEPALIVE_ATTEMPTS)
         .catch((err) => {});
     }
     else {
@@ -136,7 +136,7 @@ class KeepAliveHandlerClass {
         stoneId,
         sphereId,
         {commandName:'keepAliveState', changeState:changeState, state: newState, timeout:timeout},
-        KEEPALIVE_REPEAT_ATTEMPTS
+        KEEPALIVE_ATTEMPTS
       )
         .catch((err) => {});
     }
