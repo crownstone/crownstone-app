@@ -19,7 +19,7 @@ import { LOG } from '../logging/Log'
 import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
-import {createNewSphere} from "./createSphere";
+import {createNewSphere} from "./CreateSphere";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
