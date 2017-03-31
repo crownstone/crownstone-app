@@ -1,5 +1,5 @@
 // node require
-declare var require: {
+declare const require: {
     (path: string): any;
     <T>(path: string): T;
     (paths: string[], callback: (...modules: any[]) => void): void;
@@ -11,3 +11,9 @@ declare module 'react-native-image-resizer' {
     const createResizedImage: any;
     export default createResizedImage;
 }
+
+declare const global: {
+    __DEV__: boolean
+};
+
+declare const module: any;

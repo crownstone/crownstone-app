@@ -1,4 +1,4 @@
-import { NO_LOCATION_NAME, AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 

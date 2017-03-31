@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import {
-  LOGGING,
+  LOG_INFO,
   LOG_ERRORS,
   LOG_WARNINGS,
   LOG_VERBOSE,
@@ -11,10 +11,8 @@ import {
   LOG_MESH,
   LOG_STORE,
   LOG_SCHEDULER,
-  RELEASE_MODE,
   LOG_TO_FILE,
-  LOCAL_TESTING,
-  TESTING_IN_PROCESS
+  RELEASE_MODE_USED,
 } from '../ExternalConfig'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/EventBus'
@@ -25,7 +23,7 @@ const RNFS = require('react-native-fs');
 
 export const LOG : any = {
   info: function() {
-    this._log('------------', LOGGING, arguments);
+    this._log('------------', LOG_INFO, arguments);
   },
 
   verbose: function() {
@@ -76,7 +74,7 @@ export const LOG : any = {
       }
       logToFile.apply(this, args);
 
-      if (RELEASE_MODE === false) {
+      if (RELEASE_MODE_USED === false) {
         console.log.apply(this, args);
       }
     }
@@ -216,35 +214,3 @@ class LogProcessorClass {
 }
 
 export const LogProcessor : any = new LogProcessorClass();
-
-
-let notifiedCloudEndpoint = false;
-if (RELEASE_MODE) {
-  if (!TESTING_IN_PROCESS) {
-    LOG.info("------------------   --------------------------------   -----------------");
-    LOG.info("------------------   ----- USING RELEASE CLOUD ------   -----------------");
-    LOG.info("------------------   --------------------------------   -----------------");
-    notifiedCloudEndpoint = true;
-  }
-  LOG.info("====================   ============================   ===================");
-  LOG.info("====================   === RUNNING RELEASE MODE ===   ===================");
-  LOG.info("====================   ============================   ===================");
-}
-else {
-  LOG.info("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
-  LOG.info("!!!!!!!!!!!!!!!!!!   !!! RUNNING DEVELOPMENT MODE !!!   !!!!!!!!!!!!!!!!!");
-  LOG.info("!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   !!!!!!!!!!!!!!!!!");
-
-  if (LOCAL_TESTING) {
-    LOG.info("------------------   --------------------------------   -----------------");
-    LOG.info("------------------   ------ USING LOCAL CLOUD -------   -----------------");
-    LOG.info("------------------   --------------------------------   -----------------");
-    notifiedCloudEndpoint = true;
-  }
-}
-
-if (notifiedCloudEndpoint === false) {
-  LOG.info("------------------   --------------------------------   -----------------");
-  LOG.info("------------------   ------- USING DEV CLOUD --------   -----------------");
-  LOG.info("------------------   --------------------------------   -----------------");
-}

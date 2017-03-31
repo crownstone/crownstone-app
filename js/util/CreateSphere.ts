@@ -7,6 +7,9 @@ import { LOG } from '../logging/Log'
 export const createNewSphere = function(eventBus, store, name) {
   eventBus.emit('showLoading', 'Creating Sphere...');
   return BluenetPromiseWrapper.requestLocation()
+    .catch((err) => {
+      LOG.error("Could not get Location when creating a sphere: ", err);
+    })
     .then((location) => {
       let latitude = undefined;
       let longitude = undefined;
