@@ -84,12 +84,12 @@ class KeepAliveHandlerClass {
 
         if (stone.config.type !== stoneTypes.guidestone) {
           let element = Util.data.getElement(sphere, stone);
-          let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
           let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
+          let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
           let behaviourAway = element.behaviour[TYPES.AWAY];
 
           let behaviour = undefined;
-          let delay = state.spheres[sphereId].config.exitDelay || 120;
+          let delay = Math.max(300, state.spheres[sphereId].config.exitDelay) + 0.5*KEEPALIVE_INTERVAL;
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
           if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
@@ -114,20 +114,17 @@ class KeepAliveHandlerClass {
 
     // guests do not send a state, they just prolong the existing keepAlive.
     if (userLevelInSphere === 'guest') {
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'keepAlive'}, KEEPALIVE_ATTEMPTS)
-        .catch((err) => {});
+      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'keepAlive'}, KEEPALIVE_ATTEMPTS).catch((err) => {});
     }
     else {
       // determine what to send
       let changeState = false;
       let newState = 0;
-      let timeout = 2.5*KEEPALIVE_INTERVAL;
       // if we have behaviour, send it to the crownstone.
       if (behaviour !== undefined) {
         if (BehaviourUtil.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === true) {
           changeState = behaviour.active;
           newState = behaviour.state;
-          timeout = Math.max(timeout, delay);
         }
       }
 
@@ -135,7 +132,7 @@ class KeepAliveHandlerClass {
         stone,
         stoneId,
         sphereId,
-        {commandName:'keepAliveState', changeState:changeState, state: newState, timeout:timeout},
+        {commandName:'keepAliveState', changeState:changeState, state: newState, timeout: delay},
         KEEPALIVE_ATTEMPTS
       )
         .catch((err) => {});

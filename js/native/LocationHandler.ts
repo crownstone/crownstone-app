@@ -105,6 +105,9 @@ class LocationHandlerClass {
         Bluenet.stopIndoorLocalization();
       }
 
+      // scan for crownstones on entering a sphere.
+      Bluenet.startScanningForCrownstonesUniqueOnly();
+
 
       LOG.info("Set Settings.", bluenetSettings);
       BluenetPromiseWrapper.setSettings(bluenetSettings)
@@ -126,6 +129,7 @@ class LocationHandlerClass {
     LOG.info("LocationHandler: LEAVING SPHERE", sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
+
     if (state.spheres[sphereId].config.present === true) {
 
       // remove user from all rooms
@@ -136,6 +140,18 @@ class LocationHandlerClass {
 
       // disable all crownstones
       disableStones(this.store, sphereId);
+
+      // check if you are present in A sphere. If not, stop scanning.
+      // let presentSomewhere = false;
+      // Object.keys(state.spheres).forEach((checkSphereId) => {
+      //   if (state.spheres[checkSphereId].config.present === true && checkSphereId !== sphereId) {
+      //     presentSomewhere = true;
+      //   }
+      // });
+      //
+      // if (presentSomewhere === false) {
+      //   Bluenet.stopScanning();
+      // }
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
     }

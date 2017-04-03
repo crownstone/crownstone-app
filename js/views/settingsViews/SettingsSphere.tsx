@@ -36,9 +36,9 @@ export class SettingsSphere extends Component<any, any> {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
-        change.changeSphereUsers  && change.changeSphereUsers.sphereIds[this.props.sphereId] ||
-        change.updateSphereUser   && change.updateSphereUser.sphereIds[this.props.sphereId]  ||
-        change.changeSpheres      && change.changeSpheres.sphereIds[this.props.sphereId]     ||
+        change.changeSphereUsers  && change.changeSphereUsers.sphereIds[this.props.sphereId]  ||
+        change.updateSphereUser   && change.updateSphereUser.sphereIds[this.props.sphereId]   ||
+        change.changeSpheres      && change.changeSpheres.sphereIds[this.props.sphereId]      ||
         change.changeSphereConfig && change.changeSphereConfig.sphereIds[this.props.sphereId]
       ) {
         if (this.deleting === false)
@@ -159,7 +159,6 @@ export class SettingsSphere extends Component<any, any> {
 
     if (getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
       let options = [];
-      options.push({label: '2 Minutes', type: 'checkbar', value: 120});
       options.push({label: '5 Minutes', type: 'checkbar', value: 300});
       options.push({label: '10 Minutes', type: 'checkbar', value: 600});
       options.push({label: '15 Minutes', type: 'checkbar', value: 900});
@@ -168,7 +167,7 @@ export class SettingsSphere extends Component<any, any> {
       items.push({
         type: 'dropdown',
         label: 'Delay',
-        value: state.spheres[this.props.sphereId].config.exitDelay,
+        value: Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), // max to allow older versions of the app that have a timeout of 2 minutes to also turn off at 5
         valueLabel: this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),
         dropdownHeight: 130,
         items: options,

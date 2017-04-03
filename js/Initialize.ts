@@ -52,7 +52,7 @@ export const INITIALIZER = {
         }
       });
 
-      // listen to the BLE events
+      // listen to the Location status events
       NativeBus.on(NativeBus.topics.locationStatus, (status) => {
         LOG.info("INITIALIZER: received NativeBus.topics.locationStatus event.");
         switch (status) {
@@ -149,13 +149,16 @@ export const INITIALIZER = {
       AppState.addEventListener('change', (appState) => {
         LOG.info("App State Change", appState);
         if (appState === "active") {
-
+          // BluenetPromiseWrapper.isReady().then(() => {
+          //   Bluenet.startScanningForCrownstonesUniqueOnly();
+          // });
         }
         else if (appState === "background") {
-
+          // BluenetPromiseWrapper.isReady().then(() => {
+          //   Bluenet.stopScanning();
+          // });
         }
       });
-
 
       // trigger the CalibrateTapToToggle tutorial for existing users.
       NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {

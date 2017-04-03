@@ -95,7 +95,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       label:'Calibrate Tap-to-Toggle',
       type:'button',
       style: {color:'#000'},
-      icon: getIcon('md-flask', 22, colors.white.hex, colors.darkGreen.hex),
+      icon: getIcon('md-flask', 22, colors.white.hex, colors.menuBackground.hex),
       callback: () => { eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
     });
   }
