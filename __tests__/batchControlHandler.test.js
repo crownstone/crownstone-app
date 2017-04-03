@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 // __tests__/Intro-test.js
 // Note: test renderer must be required after react-native.
-let jest = require("jest");
+let jest = require('jest');
 jest.mock('react-native-fs', () => {return {};});
 jest.mock('react-native-device-info');
 
@@ -73,13 +73,8 @@ let meshEmit2 = {
   meshNetworkId: 2,
   rssi: -60,
 };
-let directEmit = {
-  handle: 'this is my handle',
-  stoneId: 'la stone id',
-  rssi: -60,
-};
 
-import { eventBus } from "../js/util/EventBus"
+import { eventBus } from '../js/util/EventBus'
 
 jest.mock('../js/native/Bluenet', () => {
   return {
@@ -131,79 +126,82 @@ jest.mock('../js/native/Bluenet', () => {
   }
 });
 
-import * as mockBluenet from "../js/native/Bluenet"
-import { EventBusClass } from "../js/util/EventBus"
-import { BatchCommandHandler } from "../js/logic/BatchCommandHandler"
+let timeStart = new Date().valueOf();
+function time(string) {
+  console.log(string,' @time since start:', new Date().valueOf() - timeStart);
+}
+let counter = 0;
+let expectedArray = [];
 
-test('BatchCommandHandler Success', () => {
-  let timeStart = new Date().valueOf();
-  function time(string) {
-    console.log(string,' @time since start:', new Date().valueOf() - timeStart);
+let checker = (data, reject) => {
+  if (expectedArray.length - 1 < counter) {
+    reject('Got test event while not expecting one: ' + JSON.stringify(data, undefined, 2));
+    return;
   }
+
+  let expected = expectedArray[counter];
+  if (data.promise !== undefined) {
+    try{
+      expect(data.command).toEqual(expected.command);
+      expect(data.id).toEqual(expected.id);
+      expect(data.promise).toEqual(expected.promise);
+    }
+    catch(err) {
+      console.log('FAILED ON :',data, 'EXPECTED', expectedArray[counter]);
+      reject(err);
+      return;
+    }
+  }
+  else {
+    try {
+      expect(data.command).toEqual(expected.command);
+      expect(data.args).toEqual(expected.args);
+    }
+    catch (err) {
+      console.log('FAILED ON :', data.command, JSON.stringify(data.args, undefined, 2), 'EXPECTED', expectedArray[counter]);
+      reject(err);
+      return;
+    }
+  }
+  counter += 1;
+};
+
+import * as mockBluenet from '../js/native/Bluenet'
+import { EventBusClass } from '../js/util/EventBus'
+import { BatchCommandHandler } from '../js/logic/BatchCommandHandler'
+
+test('BatchCommandHandler Mesh', () => {
   // prep
   let testBus = new EventBusClass();
   mockBluenet.loadEventBus(testBus);
   mockBluenet.doSuccess();
 
-  let expectedOrder = 0;
-  let expectedArray = [
-    {command: "connect", args: ["handle-CSID-1"]},
-    {command: "multiSwitch", args: [[{"crownstoneId": "CSID1", "intent": 4, "state": 1, "timeout": 0}, {"crownstoneId": "CSID2", "intent": 4, "state": 1, "timeout": 0}, {"crownstoneId": "CSID3", "intent": 4, "state": 1, "timeout": 0}]]},
-    {promise:'resolved', command: "multiSwitch", id: 'load_stoneId1'},
-    {promise:'resolved', command: "multiSwitch", id: 'load_stoneId2'},
-    {promise:'resolved', command: "multiSwitch", id: 'load_stoneId3'},
-    {command: "meshKeepAliveState", args: [150, [{"action": true, "crownstoneId": "CSID2", "state": 1}, {"action": true, "crownstoneId": "CSID3", "state": 1}]]},
-    {promise:'resolved', command: "keepAliveState", id: 'load_stoneId2'},
-    {promise:'resolved', command: "keepAliveState", id: 'load_stoneId3'},
-    {command: "meshKeepAliveState", args: [150, [{"action": true, "crownstoneId": "CSID1", "state": 1}, {"action": true, "crownstoneId": "CSID3", "state": 1}]]},
-    {promise:'resolved', command: "keepAliveState", id: 'load_stoneId1'},
-    {promise:'resolved', command: "keepAliveState", id: 'load_stoneId3'},
-    {command: "disconnect", args: []},
-    {command: "connect", args: ["handle-CSID-4"]},
-    {command: "multiSwitch",  args: [[{"crownstoneId": "CSID4", "intent": 4, "state": 1, "timeout": 0}]]},
-    {promise:'resolved', command: "multiSwitch", id: 'load_stoneId4', order: expectedOrder++},
-    {command: "disconnect", args: []},
-    {promise:'resolved', command: "execute", id: 'execute', order: expectedOrder++},
+  timeStart = new Date().valueOf();
+  counter = 0;
+  expectedArray = [
+    {command: 'connect', args: ['handle-CSID-1']},
+    {command: 'multiSwitch', args: [[{'crownstoneId': 'CSID1', 'intent': 4, 'state': 1, 'timeout': 0}, {'crownstoneId': 'CSID2', 'intent': 4, 'state': 1, 'timeout': 0}, {'crownstoneId': 'CSID3', 'intent': 4, 'state': 1, 'timeout': 0}]]},
+    {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId1'},
+    {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId2'},
+    {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId3'},
+    {command: 'meshKeepAliveState', args: [150, [{'action': true, 'crownstoneId': 'CSID2', 'state': 1}, {'action': true, 'crownstoneId': 'CSID3', 'state': 1}]]},
+    {promise:'resolved', command: 'keepAliveState', id: 'load_stoneId2'},
+    {promise:'resolved', command: 'keepAliveState', id: 'load_stoneId3'},
+    {command: 'meshKeepAliveState', args: [150, [{'action': true, 'crownstoneId': 'CSID1', 'state': 1}, {'action': true, 'crownstoneId': 'CSID3', 'state': 1}]]},
+    {promise:'resolved', command: 'keepAliveState', id: 'load_stoneId1'},
+    {promise:'resolved', command: 'keepAliveState', id: 'load_stoneId3'},
+    {command: 'disconnect', args: []},
+    {command: 'connect', args: ['handle-CSID-4']},
+    {command: 'multiSwitch',  args: [[{'crownstoneId': 'CSID4', 'intent': 4, 'state': 1, 'timeout': 0}]]},
+    {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId4'},
+    {command: 'disconnect', args: []},
+    {promise:'resolved', command: 'execute', id: 'execute'},
   ];
 
-  let counter = 0;
-
-  let checker = (data, reject) => {
-    if (expectedArray.length - 1 < counter) {
-      reject('Got test event while not expecting one: ' + JSON.stringify(data, undefined, 2));
-      return;
-    }
-
-    let expected = expectedArray[counter];
-    if (data.promise !== undefined) {
-      try{
-        expect(data.command).toEqual(expected.command);
-        expect(data.id).toEqual(expected.id);
-        expect(data.promise).toEqual(expected.promise);
-      }
-      catch(err) {
-        console.log("FAILED ON :",data);
-        reject(err);
-        return;
-      }
-    }
-    else {
-      try {
-        expect(data.command).toEqual(expected.command);
-        expect(data.args).toEqual(expected.args);
-      }
-      catch (err) {
-        console.log("FAILED ON :", data.command, JSON.stringify(data.args, undefined, 2));
-        reject(err);
-        return;
-      }
-    }
-    counter += 1;
-  };
 
   return new Promise((testResolve, testReject) => {
     // attach test listener
-    testBus.on("test", (data) => { checker(data, testReject) });
+    testBus.on('test', (data) => { checker(data, testReject) });
 
     BatchCommandHandler.load(mockStone1, 'stoneId1', 'sphereId', multiSwitch).then(() => { testBus.emit('test', {command:'multiSwitch', promise:'resolved', id:'load_stoneId1'}) });
     BatchCommandHandler.load(mockStone2, 'stoneId2', 'sphereId', multiSwitch).then(() => { testBus.emit('test', {command:'multiSwitch', promise:'resolved', id:'load_stoneId2'}) });
@@ -235,12 +233,83 @@ test('BatchCommandHandler Success', () => {
       expect(meshNetworks).toMatchSnapshot();   // snapshot 6
     },250);
 
-    eventBus.emit("updateMeshNetwork_sphereId_1", meshEmit1);
+    eventBus.emit('updateMeshNetwork_sphereId_1', meshEmit1);
 
     setTimeout(() => {
-      eventBus.emit("updateMeshNetwork_sphereId_1", meshEmit1);
-      eventBus.emit("updateMeshNetwork_sphereId_2", meshEmit2);
+      eventBus.emit('updateMeshNetwork_sphereId_1', meshEmit1);
+      eventBus.emit('updateMeshNetwork_sphereId_2', meshEmit2);
     }, 600);
+
+    setTimeout(() => {testResolve()}, 2000)
+  })
+    .then(() => {
+      return new Promise((testResolve, testReject) => {
+        if (counter < expectedArray.length) {
+          testReject('Did not get all expected events');
+          return;
+        }
+        testResolve();
+      });
+    })
+});
+
+
+
+
+
+let stone8 = {config: {crownstoneId:'CSID8', meshNetworkId : null, handle:'handle-CSID-8'}};
+let stone9 = {config: {crownstoneId:'CSID9', meshNetworkId : null, handle:'handle-CSID-9'}};
+let stone10 = {config: {crownstoneId:'CSID10', meshNetworkId : null, handle:'handle-CSID-10'}};
+let stone11 = {config: {crownstoneId:'CSID11', meshNetworkId : null, handle:'handle-CSID-11'}};
+
+test('BatchCommandHandler Direct', () => {
+  // prep
+  let testBus = new EventBusClass();
+  mockBluenet.loadEventBus(testBus);
+  mockBluenet.doSuccess();
+
+  // prep globals
+  timeStart = new Date().valueOf();
+  counter = 0;
+  expectedArray = [
+    {command: 'connect', args: ['handle8']},
+    {command: 'keepAliveState', args:  [true, 1, 150]},
+    {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId8'},
+    {command: 'disconnect', args: []},
+    {command: 'connect', args: ['handle9']},
+    {command: 'keepAliveState', args:  [true, 1, 150]},
+    {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId9'},
+    {command: 'disconnect', args: []},
+    {command: 'connect', args: ['handle10']},
+    {command: 'keepAliveState', args:  [true, 1, 150]},
+    {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId10'},
+    {command: 'disconnect', args: []},
+    {command: 'connect', args: ['handle11']},
+    {command: 'keepAliveState', args:  [true, 1, 150]},
+    {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId11'},
+    {command: 'disconnect', args: []},
+    {promise:'resolved', command: 'execute', id: 'execute'},
+  ];
+
+
+  return new Promise((testResolve, testReject) => {
+    // attach test listener
+    testBus.on('test', (data) => { checker(data, testReject) });
+
+    let sphereId = 'sphereId';
+
+    BatchCommandHandler.load(stone8, 'stoneId8', sphereId, keepAliveState).then(() => { testBus.emit('test', {command:'keepAliveStatePromise', promise:'resolved', id:'load_stoneId8'}) });
+    BatchCommandHandler.load(stone9, 'stoneId9', sphereId, keepAliveState).then(() => { testBus.emit('test', {command:'keepAliveStatePromise', promise:'resolved', id:'load_stoneId9'}) });
+    BatchCommandHandler.load(stone10, 'stoneId10', sphereId, keepAliveState).then(() => { testBus.emit('test', {command:'keepAliveStatePromise', promise:'resolved', id:'load_stoneId10'}) });
+    BatchCommandHandler.load(stone11, 'stoneId11', sphereId, keepAliveState).then(() => { testBus.emit('test', {command:'keepAliveStatePromise', promise:'resolved', id:'load_stoneId11'}) });
+
+    BatchCommandHandler.execute().then(() => { testBus.emit('test', {promise:'resolved', id:'execute', command:'execute'}) });
+
+
+    eventBus.emit('update_' + sphereId + '_stoneId8', { handle: 'handle8', stoneId: 'stoneId8', rssi: -60 });
+    setTimeout(() => { eventBus.emit('update_' + sphereId + '_stoneId9', { handle: 'handle9', stoneId: 'stoneId9', rssi: -60 }); }, 400);
+    setTimeout(() => { eventBus.emit('update_' + sphereId + '_stoneId10', { handle: 'handle10', stoneId: 'stoneId10', rssi: -60 }); }, 800);
+    setTimeout(() => { eventBus.emit('update_' + sphereId + '_stoneId11', { handle: 'handle11', stoneId: 'stoneId11', rssi: -60 }); }, 1200);
 
     setTimeout(() => {testResolve()}, 2000)
   })

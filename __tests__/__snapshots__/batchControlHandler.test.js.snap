@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BatchCommandHandler Success 1`] = `
+exports[`BatchCommandHandler Mesh 1`] = `
 Object {
   "sphereId": Array [],
 }
 `;
 
-exports[`BatchCommandHandler Success 2`] = `
+exports[`BatchCommandHandler Mesh 2`] = `
 Object {
   "sphereId": Object {
     "1": Object {
@@ -81,13 +81,13 @@ Object {
 }
 `;
 
-exports[`BatchCommandHandler Success 3`] = `
+exports[`BatchCommandHandler Mesh 3`] = `
 Object {
   "sphereId": Array [],
 }
 `;
 
-exports[`BatchCommandHandler Success 4`] = `
+exports[`BatchCommandHandler Mesh 4`] = `
 Object {
   "sphereId": Object {
     "1": Object {
@@ -189,13 +189,13 @@ Object {
 }
 `;
 
-exports[`BatchCommandHandler Success 5`] = `
+exports[`BatchCommandHandler Mesh 5`] = `
 Object {
   "sphereId": Array [],
 }
 `;
 
-exports[`BatchCommandHandler Success 6`] = `
+exports[`BatchCommandHandler Mesh 6`] = `
 Object {
   "sphereId": Object {
     "1": Object {

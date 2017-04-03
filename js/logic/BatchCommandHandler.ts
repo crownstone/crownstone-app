@@ -71,7 +71,11 @@ class BatchCommandHandlerClass {
   }
 
   /**
-   * @param targetStoneId   // database id of stone. If provided, we only put todos for this stone in the list.
+   *
+   * If a target network id is provided, the filter will only allow stones which match that id unless the stoneId specifically matches the targetStoneId
+   * If only a targetStoneId is provided, the filter will allow only matching stoneIds
+   *
+   * @param targetStoneId     // database id of stone. If provided, we only put todos for this stone in the list.
    * @param targetNetworkId   // Mesh network id of the Crownstone. If provided, we only put todos for this mesh network in the list.
    * @returns {{directCommands: {}, meshNetworks: sphereMeshNetworks}}
    * @private
@@ -87,14 +91,16 @@ class BatchCommandHandlerClass {
       let command = todo.command;
       let stoneConfig = todo.stone.config;
 
-      // filter on stoneId or targetNetworkId if one is provided
-      // Not inverted for readability.
-      if ((targetNetworkId === stoneConfig.meshNetworkId || !targetNetworkId) ||
-          (targetStoneId   === todo.stoneId              || !targetStoneId)) {
-        // pass
+      // apply filter if required.
+      if (targetNetworkId !== null) {
+        if (targetNetworkId !== stoneConfig.meshNetworkId && targetStoneId !== todo.stoneId) {
+          continue;
+        }
       }
-      else {
-        continue;
+      else if (targetStoneId !== null) {
+        if (targetStoneId !== todo.stoneId) {
+          continue;
+        }
       }
 
       // create the data fields for each sphere if they have not been created yet.
@@ -449,7 +455,7 @@ class BatchCommandHandlerClass {
 
             // resolve with the handle.
             resolve({
-              stoneId: data.handle,
+              stoneId: data.stoneId,
               meshNetworkId: data.meshNetworkId || null,
               sphereId: topic.sphereId,
               handle: data.handle
@@ -457,8 +463,6 @@ class BatchCommandHandlerClass {
           }
         }));
       });
-
-
     })
   }
 
