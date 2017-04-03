@@ -629,7 +629,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public void disconnect(final Callback callback) {
 		// Command the crownstone to disconnect the phone
 		BleLog.getInstance().LOGd(TAG, "Disconnect command");
-		// TODO maybe just use disconnectAndClose instead of the command
+		// Just use disconnectAndClose instead of the command
 		// [12.11.16] Note: do not use writeDisconnectCommand, that will just lead to errors if the connection
 		//  is closed before the command succeeds
 //		_bleExt.writeDisconnectCommand(new IStatusCallback() {
@@ -1456,6 +1456,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 						startScanningForCrownstones();
 					}
 				}
+				initBluetooth();
 				break;
 			}
 			case BLUETOOTH_TURNED_OFF: {
@@ -1739,16 +1740,20 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private void checkReady() {
 		BleLog.getInstance().LOGd(TAG, "checkReady");
 		if (_readyCallback == null) {
+			BleLog.getInstance().LOGd(TAG, "no ready callback");
 			return;
 		}
 		if (!_scanServiceIsBound) {
+			BleLog.getInstance().LOGd(TAG, "scan service not bound");
 			return;
 		}
 		if (!_bleExtInitialized) {
+			BleLog.getInstance().LOGd(TAG, "ble ext not initialized");
 			return;
 		}
 
 		if (!_isInitialized) {
+			BleLog.getInstance().LOGd(TAG, "not initialized");
 			init();
 			return;
 		}
