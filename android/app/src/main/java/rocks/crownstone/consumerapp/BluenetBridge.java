@@ -1468,6 +1468,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				// TODO: deal with this better, need more specific events
 				resetBluetooth();
 				break;
+			case LOCATION_SERVICES_TURNED_OFF:
+				sendEvent("locationStatus", "off");
+				break;
+			case LOCATION_SERVICES_TURNED_ON:
+				sendEvent("locationStatus", "on");
+				break;
 		}
 		// TODO: send out event
 	}
