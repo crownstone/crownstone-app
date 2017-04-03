@@ -73,16 +73,16 @@ export const SettingConstructor = function(store, state, eventBus) {
     });
   }
 
-  if (Object.keys(state.spheres).length > 0) {
-    items.push({
-      id: 'Mesh Overview',
-      label: 'Mesh Overview',
-      type: 'navigation',
-      style: {color: '#000'},
-      icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { (Actions as any).settingsMeshOverview(); }
-    });
-  }
+  // if (Object.keys(state.spheres).length > 0) {
+  //   items.push({
+  //     id: 'Mesh Overview',
+  //     label: 'Mesh Overview',
+  //     type: 'navigation',
+  //     style: {color: '#000'},
+  //     icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
+  //     callback: () => { (Actions as any).settingsMeshOverview(); }
+  //   });
+  // }
 
   let presentSphere = Util.data.getPresentSphere(state);
   if (presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere) || true) {
