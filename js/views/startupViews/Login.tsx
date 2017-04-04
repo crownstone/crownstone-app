@@ -141,10 +141,28 @@ export class Login extends Component<any, any> {
         <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent'}} shadeStatus={true} />
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
-            <TextEditInput style={{width: 0.8*screenWidth, padding:10}} placeholder='email' keyboardType='email-address' autocorrect={false} autoCapitalize="none" placeholderTextColor='#888' value={this.state.email} callback={(newValue) => {this.setState({email:newValue});}} />
+            <TextEditInput
+              optimization={false}
+              style={{width: 0.8*screenWidth, padding:10}}
+              placeholder='email'
+              keyboardType='email-address'
+              autocorrect={false}
+              autoCapitalize="none"
+              placeholderTextColor='#888'
+              value={this.state.email}
+              callback={(newValue) => { this.setState({email:newValue});}}
+            />
           </View>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
-            <TextEditInput style={{width: 0.8*screenWidth, padding:10}} secureTextEntry={true} placeholder='password' placeholderTextColor='#888' value={this.state.password} callback={(newValue) => { this.setState({password:newValue});}} />
+            <TextEditInput
+              optimization={false}
+              style={{width: 0.8*screenWidth, padding:10}}
+              secureTextEntry={true}
+              placeholder='password'
+              placeholderTextColor='#888'
+              value={this.state.password}
+              callback={(newValue) => { this.setState({password:newValue});}}
+            />
           </View>
           <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}><Text style={loginStyles.forgot}>Forgot Password?</Text></TouchableHighlight>
           <LoginButton loginCallback={() => {this.attemptLogin()}} />

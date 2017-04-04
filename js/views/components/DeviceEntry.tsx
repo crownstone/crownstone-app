@@ -145,7 +145,7 @@ export class DeviceEntry extends Component<any, any> {
             <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeType()}>
               <Icon name="ios-outlet" size={26} color="#aaa" style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
             </TouchableOpacity>
-            {this.props.showBehaviour === true ? <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeSettings()}>
+              {this.props.showBehaviour === true ? <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => this.props.onChangeSettings()}>
               <Icon name="ios-cog" size={29} color="#aaa" style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
             </TouchableOpacity> : undefined}
           </View>

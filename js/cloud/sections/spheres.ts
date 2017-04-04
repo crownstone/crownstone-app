@@ -21,7 +21,7 @@ export const spheres = {
         sphereId = response.id;
 
         // add the sphere to the database once it had been added in the cloud.
-        creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid, meshAccessAddress: response.meshAccessAddress, exitDelay: response.exitDelay || 120, latitude: response.gpsLocation && response.gpsLocation.lat, longitude: response.gpsLocation && response.gpsLocation.lng}});
+        creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid, meshAccessAddress: response.meshAccessAddress, exitDelay: response.exitDelay || 600, latitude: response.gpsLocation && response.gpsLocation.lat, longitude: response.gpsLocation && response.gpsLocation.lng}});
         creationActions.push({type:'USER_UPDATE', data: { new: false }});
 
         // add yourself to the sphere members as admin

@@ -141,7 +141,7 @@ class LocationHandlerClass {
       // disable all crownstones
       disableStones(this.store, sphereId);
 
-      // check if you are present in A sphere. If not, stop scanning.
+      // check if you are present in any sphere. If not, stop scanning.
       // let presentSomewhere = false;
       // Object.keys(state.spheres).forEach((checkSphereId) => {
       //   if (state.spheres[checkSphereId].config.present === true && checkSphereId !== sphereId) {

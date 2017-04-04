@@ -121,7 +121,7 @@ export class RoomOverview extends Component<any, any> {
             />
           </View>
         </View>
-      )
+      );
     }
     else {
       return (
@@ -163,9 +163,9 @@ export class RoomOverview extends Component<any, any> {
                   })
                   .catch((err) => {
                     this.clearPending(stoneId);
-                  })
+                  });
 
-                BatchCommandHandler.execute(true)
+                BatchCommandHandler.execute(true);
               }}
               onMove={() => {
                 Actions.pop();
