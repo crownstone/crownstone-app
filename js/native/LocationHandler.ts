@@ -51,8 +51,10 @@ class LocationHandlerClass {
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
     // make sure we only do this once per sphere
-    if (sphere && sphere.config && sphere.config.present === true)
+    if (sphere && sphere.config && sphere.config.present === true) {
+      LOG.info("LocationHandler: IGNORE ENTER SPHERE because I'm already in the sphere.");
       return;
+    }
 
     if (sphere !== undefined) {
       LOG.info("LocationHandler: ENTER SPHERE", sphereId);
