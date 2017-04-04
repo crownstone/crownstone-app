@@ -4,6 +4,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.facebook.react.flat.FlatUIImplementationProvider;
+import com.facebook.react.uimanager.UIImplementationProvider;
 import com.mehcode.reactnative.splashscreen.SplashScreenPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
@@ -47,6 +49,11 @@ public class MainApplication extends Application implements ReactApplication {
 					new SplashScreenPackage()
 			);
 		}
+
+//		@Override
+//		protected UIImplementationProvider getUIImplementationProvider() {
+//			return new FlatUIImplementationProvider();
+//		}
 	};
 
 	@Override

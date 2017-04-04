@@ -84,7 +84,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
-    // buildToolsVersion '25.0.0'
+//    buildToolsVersion '25.0.0'
     buildToolsVersion '23.0.1'
 
     signingConfigs {
@@ -93,6 +93,7 @@ android {
             storePassword "$System.env.CS_ANDROID_STORE_PASSWORD"
             keyAlias "$System.env.CS_ANDROID_KEY_ALIAS"
             keyPassword "$System.env.CS_ANDROID_KEY_PASSWORD"
+            v2SigningEnabled false
         }
     }
 
@@ -100,8 +101,8 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 11
-        versionName "0.7.10"
+        versionCode 12
+        versionName "0.7.11"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
