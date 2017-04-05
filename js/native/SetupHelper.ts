@@ -53,25 +53,30 @@ export class SetupHelper {
         eventBus.emit("setupInProgress", { handle: this.handle, progress: 1 });
         BluenetPromiseWrapper.connect(this.handle)
           .then(() => {
+            LOG.info("setup progress: connected");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
             return BluenetPromiseWrapper.getMACAddress();
           })
           .then((macAddress) => {
             this.macAddress = macAddress;
+            LOG.info("setup progress: have mac address");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
             return BluenetPromiseWrapper.phoneDisconnect();
           })
           .then(() => {
+            LOG.info("setup progress: disconnected");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 3 });
             return this.registerInCloud(sphereId);
           })
           .then((cloudResponse : any) => {
+            LOG.info("setup progress: registered in cloud");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 4 });
             this.cloudResponse = cloudResponse;
             this.stoneIdInCloud = cloudResponse.id;
             return this.setupCrownstone(store, sphereId);
           })
           .then(() => {
+            LOG.info("setup progress: connected");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
             setTimeout(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300);
             setTimeout(() => {
@@ -127,6 +132,7 @@ export class SetupHelper {
               // Restore trigger state
               eventBus.emit("useTriggers");
               eventBus.emit("setupComplete", this.handle);
+              LOG.info("setup complete");
 
               // Resolve the setup promise.
               resolve();
