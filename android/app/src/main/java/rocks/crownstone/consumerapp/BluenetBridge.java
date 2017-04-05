@@ -117,7 +117,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public static final int SCAN_INTERVAL_OUTSIDE_SPHERE_ANDROID_N = 1000; // ms scanning
 	public static final int SCAN_PAUSE_OUTSIDE_SPHERE_ANDROID_N =    5000; // ms pause
 
-	public static final int IBEACON_RANGING_MIN_RSSI = -90;
+	public static final int IBEACON_RANGING_MIN_RSSI = -110;
 
 	public static final int IBEACON_TICK_INTERVAL = 1000; // ms interval
 	public static final int CONNECT_TIMEOUT_MS = 5000;
@@ -276,6 +276,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private boolean _bleTurnedOff = false;
 
 	private void initBluetooth() {
+		BleLog.getInstance().LOGd(TAG, "init Bluetooth");
 		_bleExtInitialized = false;
 		_bleExt.init(_reactContext, new IStatusCallback() {
 			@Override
@@ -348,6 +349,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void clearLogs() {
 		BleLog.getInstance().LOGi(TAG, "clearLogs");
+		_fileLogger.enable(false);
 		_fileLogger.clearLogFiles();
 	}
 
@@ -778,7 +780,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			@Override
 			public void onError(int error) {
 				BleLog.getInstance().LOGe(TAG, "recover error "+ error);
-				BleLog.getInstance().LOGd(TAG, Log.getStackTraceString(new Exception()));
+//				BleLog.getInstance().LOGd(TAG, Log.getStackTraceString(new Exception()));
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
 				if (error == BleErrors.ERROR_NOT_IN_RECOVERY_MODE) {
@@ -836,8 +838,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				meshAccessAddress = BleUtils.byteArrayToInt(meshAccessAddressBytes);
 			}
 		} catch (NoSuchKeyException | UnexpectedNativeTypeException e) {
+			String errStr = "wrong setup arguments: " + config.toString();
+			BleLog.getInstance().LOGw(TAG, errStr);
 			retVal.putBoolean("error", true);
-			retVal.putString("data", "wrong arguments: " + config.toString());
+			retVal.putString("data", errStr);
 			callback.invoke(retVal);
 			return;
 		}
@@ -890,7 +894,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		}
 
 		if (retVal.hasKey("data")) {
-			BleLog.getInstance().LOGw(TAG, "Wrong setup data");
+			BleLog.getInstance().LOGw(TAG, "Wrong setup data: " + config.toString());
 			retVal.putBoolean("error", true);
 			callback.invoke(retVal);
 			return;
@@ -906,16 +910,19 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			@Override
 			public void onError(int error) {
 				// Already fires status callback onError
+				BleLog.getInstance().LOGd(TAG, "Setup progress error: " + error);
 			}
 		}, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Setup success");
 				retVal.putBoolean("error", false);
 				callback.invoke(retVal);
 			}
 
 			@Override
 			public void onError(int error) {
+				BleLog.getInstance().LOGw(TAG, "Setup error: " + error);
 				retVal.putBoolean("error", true);
 				retVal.putString("data", "setup error: " + error);
 				callback.invoke(retVal);
