@@ -43,6 +43,16 @@ Android 6.0.1
 
 
 
+## HTC One
+
+Android 6.0.1
+
+- Scans well
+- Discovery speed:
+- Connect errors: very few.
+
+
+
 ## Nexus 4
 
 Android ..
