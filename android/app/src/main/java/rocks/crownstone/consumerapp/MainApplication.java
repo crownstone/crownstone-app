@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.facebook.react.flat.FlatUIImplementationProvider;
 import com.facebook.react.uimanager.UIImplementationProvider;
 import com.mehcode.reactnative.splashscreen.SplashScreenPackage;
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
+            new ReactNativePushNotificationPackage(),
 					new VectorIconsPackage(),
 					new SvgPackage(),
 					new ImageResizerPackage(),

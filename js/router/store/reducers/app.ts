@@ -3,6 +3,7 @@ import { update, getTime, refreshDefaults } from './reducerUtil'
 let defaultState = {
   app: {
     activeSphere: null,
+    notificationToken: null,
     enableLocalization: true,
     updatedAt: 1
   }
@@ -12,6 +13,14 @@ let defaultState = {
 export default (state = defaultState.app, action : any = {}) => {
   let newState;
   switch (action.type) {
+    case 'SET_NOTIFICATION_TOKEN':
+      if (action.data) {
+        newState = {...state};
+        newState.notificationToken      = update(action.data.notificationToken, newState.notificationToken);
+        newState.updatedAt              = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
     case 'SET_ACTIVE_SPHERE':
       if (action.data) {
         newState = {...state};

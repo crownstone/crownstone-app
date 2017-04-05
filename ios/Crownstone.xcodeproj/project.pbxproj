@@ -65,6 +65,7 @@
 		FA43BB201E951CE5009760F7 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB181E951CE5009760F7 /* PromiseKit.framework */; };
 		FA43BB211E951CE5009760F7 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB191E951CE5009760F7 /* SwiftyJSON.framework */; };
 		FA43BB221E951CE5009760F7 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB1A1E951CE5009760F7 /* Zip.framework */; };
+		FADA36D01E9558E000B947F6 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FADA36B91E9558CF00B947F6 /* libRCTPushNotification.a */; };
 		FDCE7CF86D3F474ABA13E6CE /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADB770CECFC34DA6845E5CF0 /* libRNDeviceInfo.a */; };
 /* End PBXBuildFile section */
 
@@ -314,6 +315,20 @@
 			remoteGlobalIDString = 3245CDED1BFEE35C00EABF68;
 			remoteInfo = RCTSplashScreen;
 		};
+		FADA36B81E9558CF00B947F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FADA36A61E9558CF00B947F6 /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
+		FADA36BA1E9558CF00B947F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FADA36A61E9558CF00B947F6 /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
+			remoteInfo = "RCTPushNotification-tvOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -381,6 +396,7 @@
 		FA43BB181E951CE5009760F7 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 		FA43BB191E951CE5009760F7 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		FA43BB1A1E951CE5009760F7 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
+		FADA36A61E9558CF00B947F6 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -396,6 +412,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FADA36D01E9558E000B947F6 /* libRCTPushNotification.a in Frameworks */,
 				FA43BB211E951CE5009760F7 /* SwiftyJSON.framework in Frameworks */,
 				FA2DAF7A1E65883E0029D4A8 /* libRCTCameraRoll.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -582,6 +599,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				FADA36A61E9558CF00B947F6 /* RCTPushNotification.xcodeproj */,
 				FA2DAF521E6582A90029D4A8 /* RCTCameraRoll.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -725,6 +743,15 @@
 			isa = PBXGroup;
 			children = (
 				FA2DAFB81E6589190029D4A8 /* libRCTSplashScreen.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FADA36A71E9558CF00B947F6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FADA36B91E9558CF00B947F6 /* libRCTPushNotification.a */,
+				FADA36BB1E9558CF00B947F6 /* libRCTPushNotification-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -885,6 +912,10 @@
 				{
 					ProductGroup = 00C302D41ABCB9D200DB3ED1 /* Products */;
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
+				},
+				{
+					ProductGroup = FADA36A71E9558CF00B947F6 /* Products */;
+					ProjectRef = FADA36A61E9558CF00B947F6 /* RCTPushNotification.xcodeproj */;
 				},
 				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
@@ -1169,6 +1200,20 @@
 			remoteRef = FA2DAFB71E6589190029D4A8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FADA36B91E9558CF00B947F6 /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = FADA36B81E9558CF00B947F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FADA36BB1E9558CF00B947F6 /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = FADA36BA1E9558CF00B947F6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1398,6 +1443,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**";
 				INFOPLIST_FILE = Crownstone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1429,6 +1475,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**";
 				INFOPLIST_FILE = Crownstone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

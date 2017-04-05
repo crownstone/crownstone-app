@@ -22,12 +22,11 @@ let LOGGER = BluenetShared.LogClass(daysToStoreLogs: 3, logBaseFilename: "Bridge
   }
 }
 
-
-var GLOBAL_BLUENET : ViewPassThrough?
+var GLOBAL_BLUENET : Portal?
 
 typealias voidCallback = () -> Void
 
-@objc open class ViewPassThrough : NSObject {
+@objc open class Portal : NSObject {
   open var bluenet : Bluenet!
   open var bluenetLocalization : BluenetLocalization!
   open var bluenetMotion : BluenetMotion!
@@ -38,9 +37,7 @@ typealias voidCallback = () -> Void
   
   init(viewController: UIViewController) {
     super.init()
-
     BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
-    
     
     self.classifier = CrownstoneBasicClassifier()
     
@@ -684,5 +681,5 @@ open class BluenetJS: NSObject {
         }
     }
   }
-
+  
 }
