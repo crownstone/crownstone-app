@@ -418,6 +418,10 @@ open class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenetLocalization.stopIndoorLocalization()
   }
   
+  @objc func quitApp() {
+    exit(0)
+  }
+  
   
   @objc func requestLocation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     let coordinates = GLOBAL_BLUENET!.bluenetLocalization.requestLocation()

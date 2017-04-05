@@ -5,6 +5,7 @@ const DeviceInfo = require('react-native-device-info');
 
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
     const RELEASE_MODE = true;
+    export const FALLBACKS_ENABLED = true;
 
     // DO NOT CHANGE THIS LINE.
     // the global is meant as a last resort, forcing release to true when compiled in release mode.

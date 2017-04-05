@@ -10,6 +10,7 @@ import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
+import {StoneStateHandler} from "./StoneStateHandler";
 
 class LocationHandlerClass {
   _initialized : boolean;
@@ -127,7 +128,13 @@ class LocationHandlerClass {
     }
   }
 
-  exitSphere(sphereId) {
+
+  /**
+   * Reset will clear the last time present from the check. This will cause the enter sphere event to work as it should.
+   * @param sphereId
+   * @param reset
+   */
+  exitSphere(sphereId, reset = false) {
     LOG.info("LocationHandler: LEAVING SPHERE", sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
@@ -155,7 +162,7 @@ class LocationHandlerClass {
       //   Bluenet.stopScanning();
       // }
 
-      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
+      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false, lastTimePresent: reset === true ? 1 : undefined}});
     }
   }
 

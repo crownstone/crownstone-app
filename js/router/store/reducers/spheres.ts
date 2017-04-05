@@ -21,12 +21,18 @@ let defaultSettings = {
     latitude: null,
     longitude: null,
     updatedAt: 1,
-    lastTimePresent: 1
+    lastTimePresent: 1,
+    lastSeen: 1,
   }
 };
 
 let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_STONE_RSSI':
+      // update the time this user has seen the sphere last.
+      let newState = {...state};
+      newState.lastSeen = getTime(action && action.data && action.data.lastSeen);
+      return newState;
     case 'SET_SPHERE_STATE':
       if (action.data) {
         let newState = {...state};

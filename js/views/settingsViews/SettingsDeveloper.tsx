@@ -81,12 +81,15 @@ export class SettingsDeveloper extends Component<any, any> {
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
       callback:(newValue) => {
-      store.dispatch({
-        type: 'SET_DEVELOPER_MODE',
-        data: {developer: false}
-      });
-      clearAllLogs();
-      Actions.pop();
+        store.dispatch({
+          type: 'SET_DEVELOPER_MODE',
+          data: {developer: false}
+        });
+
+        clearAllLogs();
+        Bluenet.enableLoggingToFile(false);
+
+        Actions.pop();
     }});
     items.push({label: "Revert back to the normal user state.", type: 'explanation', below: true});
 

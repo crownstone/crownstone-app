@@ -96,13 +96,13 @@ export const INITIALIZER = {
         BluenetPromiseWrapper.isReady()
           .then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
 
-
         LocalizationUtil.trackSpheres(store);
         this.userReady = true;
       });
 
       // when a sphere is created, we track all spheres anew.
       eventBus.on('sphereCreated', () => {LocalizationUtil.trackSpheres(store);});
+
 
       // sync every 5 minutes
       Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*5});

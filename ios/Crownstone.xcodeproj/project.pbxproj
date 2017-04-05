@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -53,18 +54,17 @@
 		FA2DAF4F1E6581F60029D4A8 /* bluenetIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2DAF4B1E6581F60029D4A8 /* bluenetIntegration.swift */; };
 		FA2DAF501E6581F60029D4A8 /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2DAF4C1E6581F60029D4A8 /* JSONUtils.swift */; };
 		FA2DAF511E6581F60029D4A8 /* NativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DAF4E1E6581F60029D4A8 /* NativeBridge.m */; };
-		FA2DAF6B1E65857C0029D4A8 /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF631E65857C0029D4A8 /* BluenetBasicLocalization.framework */; };
-		FA2DAF6D1E65857C0029D4A8 /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF651E65857C0029D4A8 /* BluenetShared.framework */; };
-		FA2DAF6E1E65857C0029D4A8 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF661E65857C0029D4A8 /* CryptoSwift.framework */; };
-		FA2DAF6F1E65857C0029D4A8 /* iOSDFULibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF671E65857C0029D4A8 /* iOSDFULibrary.framework */; };
-		FA2DAF701E65857C0029D4A8 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF681E65857C0029D4A8 /* PromiseKit.framework */; };
-		FA2DAF711E65857C0029D4A8 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF691E65857C0029D4A8 /* SwiftyJSON.framework */; };
-		FA2DAF721E65857C0029D4A8 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF6A1E65857C0029D4A8 /* Zip.framework */; };
 		FA2DAF7A1E65883E0029D4A8 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2DAF571E6582A90029D4A8 /* libRCTCameraRoll.a */; };
 		FA2DAFBC1E659A810029D4A8 /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAFB91E659A810029D4A8 /* Crownstone.ttf */; };
 		FA2DAFBD1E659A810029D4A8 /* CustomIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAFBA1E659A810029D4A8 /* CustomIcons.ttf */; };
 		FA2DAFBE1E659A810029D4A8 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAFBB1E659A810029D4A8 /* Lato-Bold.ttf */; };
-		FA84BD9B1E78309E00EE5EB6 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA84BD9A1E78309E00EE5EB6 /* BluenetLib.framework */; };
+		FA43BB1C1E951CE5009760F7 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB141E951CE5009760F7 /* BluenetLib.framework */; };
+		FA43BB1D1E951CE5009760F7 /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB151E951CE5009760F7 /* BluenetShared.framework */; };
+		FA43BB1E1E951CE5009760F7 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB161E951CE5009760F7 /* CryptoSwift.framework */; };
+		FA43BB1F1E951CE5009760F7 /* iOSDFULibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB171E951CE5009760F7 /* iOSDFULibrary.framework */; };
+		FA43BB201E951CE5009760F7 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB181E951CE5009760F7 /* PromiseKit.framework */; };
+		FA43BB211E951CE5009760F7 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB191E951CE5009760F7 /* SwiftyJSON.framework */; };
+		FA43BB221E951CE5009760F7 /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA43BB1A1E951CE5009760F7 /* Zip.framework */; };
 		FDCE7CF86D3F474ABA13E6CE /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADB770CECFC34DA6845E5CF0 /* libRNDeviceInfo.a */; };
 /* End PBXBuildFile section */
 
@@ -370,18 +370,17 @@
 		FA2DAF4D1E6581F60029D4A8 /* NativeBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NativeBridge.h; sourceTree = "<group>"; };
 		FA2DAF4E1E6581F60029D4A8 /* NativeBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NativeBridge.m; sourceTree = "<group>"; };
 		FA2DAF521E6582A90029D4A8 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
-		FA2DAF631E65857C0029D4A8 /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
-		FA2DAF651E65857C0029D4A8 /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
-		FA2DAF661E65857C0029D4A8 /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
-		FA2DAF671E65857C0029D4A8 /* iOSDFULibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iOSDFULibrary.framework; path = Carthage/Build/iOS/iOSDFULibrary.framework; sourceTree = "<group>"; };
-		FA2DAF681E65857C0029D4A8 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
-		FA2DAF691E65857C0029D4A8 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
-		FA2DAF6A1E65857C0029D4A8 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
 		FA2DAFB91E659A810029D4A8 /* Crownstone.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone.ttf; path = ../js/fonts/Crownstone.ttf; sourceTree = "<group>"; };
 		FA2DAFBA1E659A810029D4A8 /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
 		FA2DAFBB1E659A810029D4A8 /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../js/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
 		FA2DAFBF1E65DA380029D4A8 /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
-		FA84BD9A1E78309E00EE5EB6 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
+		FA43BB141E951CE5009760F7 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
+		FA43BB151E951CE5009760F7 /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
+		FA43BB161E951CE5009760F7 /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
+		FA43BB171E951CE5009760F7 /* iOSDFULibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iOSDFULibrary.framework; path = Carthage/Build/iOS/iOSDFULibrary.framework; sourceTree = "<group>"; };
+		FA43BB181E951CE5009760F7 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
+		FA43BB191E951CE5009760F7 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
+		FA43BB1A1E951CE5009760F7 /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -397,30 +396,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA43BB211E951CE5009760F7 /* SwiftyJSON.framework in Frameworks */,
 				FA2DAF7A1E65883E0029D4A8 /* libRCTCameraRoll.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
-				FA2DAF6E1E65857C0029D4A8 /* CryptoSwift.framework in Frameworks */,
-				FA2DAF721E65857C0029D4A8 /* Zip.framework in Frameworks */,
-				FA2DAF6D1E65857C0029D4A8 /* BluenetShared.framework in Frameworks */,
-				FA2DAF701E65857C0029D4A8 /* PromiseKit.framework in Frameworks */,
-				FA84BD9B1E78309E00EE5EB6 /* BluenetLib.framework in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
+				FA43BB1E1E951CE5009760F7 /* CryptoSwift.framework in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
+				FA43BB221E951CE5009760F7 /* Zip.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
+				FA43BB201E951CE5009760F7 /* PromiseKit.framework in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				D1B84C8C9EA8466ABD72FC27 /* libRCTCamera.a in Frameworks */,
 				FDCE7CF86D3F474ABA13E6CE /* libRNDeviceInfo.a in Frameworks */,
+				FA43BB1D1E951CE5009760F7 /* BluenetShared.framework in Frameworks */,
 				7D5E3748AE2C494984FBB37B /* libRNFS.a in Frameworks */,
-				FA2DAF711E65857C0029D4A8 /* SwiftyJSON.framework in Frameworks */,
-				FA2DAF6F1E65857C0029D4A8 /* iOSDFULibrary.framework in Frameworks */,
+				FA43BB1F1E951CE5009760F7 /* iOSDFULibrary.framework in Frameworks */,
 				0F3B227C61184D1E9D624AE9 /* libRCTImageResizer.a in Frameworks */,
-				FA2DAF6B1E65857C0029D4A8 /* BluenetBasicLocalization.framework in Frameworks */,
+				FA43BB1C1E951CE5009760F7 /* BluenetLib.framework in Frameworks */,
 				5370E57CC48E4193AC408CDD /* libRNSVG.a in Frameworks */,
 				BED4C3CC4B4440EBB9E3128B /* libRNVectorIcons.a in Frameworks */,
 				AFCBC84B706A41B1B5FA68ED /* libRCTSplashScreen.a in Frameworks */,
@@ -622,14 +620,13 @@
 				FA2DAFB91E659A810029D4A8 /* Crownstone.ttf */,
 				FA2DAFBA1E659A810029D4A8 /* CustomIcons.ttf */,
 				FA2DAFBB1E659A810029D4A8 /* Lato-Bold.ttf */,
-				FA84BD9A1E78309E00EE5EB6 /* BluenetLib.framework */,
-				FA2DAF631E65857C0029D4A8 /* BluenetBasicLocalization.framework */,
-				FA2DAF651E65857C0029D4A8 /* BluenetShared.framework */,
-				FA2DAF661E65857C0029D4A8 /* CryptoSwift.framework */,
-				FA2DAF671E65857C0029D4A8 /* iOSDFULibrary.framework */,
-				FA2DAF681E65857C0029D4A8 /* PromiseKit.framework */,
-				FA2DAF691E65857C0029D4A8 /* SwiftyJSON.framework */,
-				FA2DAF6A1E65857C0029D4A8 /* Zip.framework */,
+				FA43BB141E951CE5009760F7 /* BluenetLib.framework */,
+				FA43BB151E951CE5009760F7 /* BluenetShared.framework */,
+				FA43BB161E951CE5009760F7 /* CryptoSwift.framework */,
+				FA43BB171E951CE5009760F7 /* iOSDFULibrary.framework */,
+				FA43BB181E951CE5009760F7 /* PromiseKit.framework */,
+				FA43BB191E951CE5009760F7 /* SwiftyJSON.framework */,
+				FA43BB1A1E951CE5009760F7 /* Zip.framework */,
 				13B07FAE1A68108700A75B9A /* Crownstone */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CrownstoneTests */,

@@ -2,9 +2,7 @@ import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig
 import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
 
-import {
-  Alert,
-} from 'react-native';
+import { Alert } from 'react-native';
 
 const DeviceInfo = require('react-native-device-info');
 

@@ -236,10 +236,12 @@ class StoreManagerClass {
             }
 
             // now that the store only lived in memory, clear it
-            this.store.dispatch({type: "USER_LOGGED_OUT_CLEAR_STORE"})
+            this.store.dispatch({type: "USER_LOGGED_OUT_CLEAR_STORE"});
+            resolve();
           })
           .catch((err) => {
-            LOG.error("COULD NOT PERSIST TO DISK", err)
+            LOG.error("COULD NOT PERSIST TO DISK", err);
+            reject(err);
           })
       }
       else {
