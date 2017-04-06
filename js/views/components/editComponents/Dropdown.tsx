@@ -18,6 +18,12 @@ export class Dropdown extends Component<any, any> {
     this.state = {open:false, value: props.value};
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.value !== this.state.value) {
+      this.setState({value: nextProps.value});
+    }
+  }
+
   getLabelIfPossible() {
     for (let i = 0; i < this.props.items.length; i++) {
       let item = this.props.items[i];
@@ -89,30 +95,28 @@ export class Dropdown extends Component<any, any> {
   }
 
   _getPicker() {
-    let callback = (value) => {
-      if (this.props.buttons !== true) {
-        this.setState({open: false, value: value});
-        this.props.callback(value);
-      }
-      else {
-        this.setState({value: value})
-      }
-    };
-
     if (Platform.OS === 'android') {
       return (
         <Picker
-          selectedValue={this.state.value}
-          style={{position:'relative', top:-4}}
-          onValueChange={callback}
+          selectedValue={this.props.value}
+          onValueChange={(newValue) => { this.props.callback(newValue); }}
         >
         {this.getItems()}
       </Picker>)
 
     }
-    else {
+    else {  // iOS
+      let callback = (value) => {
+        if (this.props.buttons !== true) {
+          this.setState({open: false, value: value});
+          this.props.callback(value);
+        }
+        else {
+          this.setState({value: value})
+        }
+      };
       return (
-        <Picker selectedValue={this.state.value} onValueChange={callback} style={{position:'relative', top: this.props.buttons === true ? 50 : 0}}>
+        <Picker key={this.props.key || this.props.label || undefined} selectedValue={this.state.value} onValueChange={callback} style={{position:'relative', top: this.props.buttons === true ? 50 : 0}}>
           {this.getItems()}
         </Picker>
       )

@@ -208,7 +208,7 @@ export class SphereOverview extends Component<any, any> {
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
       isAdminInCurrentSphere = getUserLevelInSphere(state, activeSphere) === 'admin';
 
-      if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true && isAdminInCurrentSphere == true)) {
+      if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
       }
 
