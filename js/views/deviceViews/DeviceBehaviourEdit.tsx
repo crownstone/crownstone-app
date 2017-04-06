@@ -209,6 +209,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
       return {
         type: 'dropdown',
         label: label,
+        key: eventLabel + '_dropdown',
         // labelStyle: {fontSize: 15},
         valueRight: true,
         dropdownHeight: 130,
@@ -217,10 +218,10 @@ export class DeviceBehaviourEdit extends Component<any, any> {
           textAlign: 'right',
           fontSize: 15
         },
-        value: element.behaviour[eventLabel].active === true ? element.behaviour[eventLabel].state : null,
+        value: element.behaviour[eventLabel].active === true ? element.behaviour[eventLabel].state : -1,
         items: options,
         callback: (newValue) => {
-          if (newValue === null) {
+          if (newValue === -1) {
             this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {active: false}})
           }
           else {
@@ -233,35 +234,34 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     let toggleOptions = [];
     toggleOptions.push({label: 'turn on',    value: 1});
     toggleOptions.push({label: 'turn off',   value: 0});
-    toggleOptions.push({label: "do nothing", value: null});
+    toggleOptions.push({label: "do nothing", value: -1});
 
     let toggleOptionsExitSphere = [];
-    toggleOptionsExitSphere.push({label: 'turn on after ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay),  value: 1});
-    toggleOptionsExitSphere.push({label: 'turn off after ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay), value: 0});
-    toggleOptionsExitSphere.push({label: "do nothing", value: null});
+    toggleOptionsExitSphere.push({label: 'turn on after ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)),  value: 1});
+    toggleOptionsExitSphere.push({label: 'turn off after ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)), value: 0});
+    toggleOptionsExitSphere.push({label: "do nothing", value: -1});
 
     let toggleOptionsExit = [];
     toggleOptionsExit.push({label: 'turn on with delay',   value: 1});
     toggleOptionsExit.push({label: 'turn off with delay' , value: 0});
-    toggleOptionsExit.push({label: "do nothing", value: null});
+    toggleOptionsExit.push({label: "do nothing", value: -1});
 
     // Behaviour for onHomeEnter event
     let eventLabel = 'onHomeEnter';
     items.push({label:'WHEN YOU ...', type: 'explanation', style: styles.topExplanation, below:false});
-    items.push(generateDropdown(eventLabel, 'Enter the Sphere', toggleOptions));
+    items.push(generateDropdown(eventLabel, 'Enter Sphere', toggleOptions));
 
     eventLabel = 'onHomeExit';
-    items.push(generateDropdown(eventLabel, 'Leave the Sphere', toggleOptionsExitSphere));
+    items.push(generateDropdown(eventLabel, 'Leave Sphere', toggleOptionsExitSphere));
 
     if (element.behaviour[eventLabel].active === true) {
       items.push({
-        label: 'Leaving the sphere will be triggered ' + this._getDelayLabel(state.spheres[this.props.sphereId].config.exitDelay, true) + ' after leaving. You can customize this in the Sphere settings.',
+        label: 'Leaving the sphere will be triggered ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true) + ' after leaving. You can customize this in the Sphere settings.',
         style: {paddingBottom: 5},
         type: 'explanation',
         below: true
       });
     }
-
 
     if (canDoIndoorLocalization === false) {
       eventLabel = 'onNear';
@@ -323,10 +323,10 @@ export class DeviceBehaviourEdit extends Component<any, any> {
       if (stone.config.locationId !== null) {
         eventLabel = 'onRoomEnter';
         items.push({label:'WHEN YOU ...', type: 'explanation', style: styles.topExplanation, below:false});
-        items.push(generateDropdown(eventLabel, 'Enter the room', toggleOptions));
+        items.push(generateDropdown(eventLabel, 'Enter room', toggleOptions));
 
         eventLabel = 'onRoomExit';
-        items.push(generateDropdown(eventLabel, 'Leave the room', toggleOptionsExit));
+        items.push(generateDropdown(eventLabel, 'Leave room', toggleOptionsExit));
         if (element.behaviour[eventLabel].active === true) {
           items.push(generateDelayField(eventLabel, 'Delay'));
         }

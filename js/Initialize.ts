@@ -96,7 +96,6 @@ export const INITIALIZER = {
         BluenetPromiseWrapper.isReady()
           .then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
 
-
         LocalizationUtil.trackSpheres(store);
         this.userReady = true;
       });
