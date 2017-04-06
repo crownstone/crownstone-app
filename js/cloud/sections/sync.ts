@@ -594,7 +594,7 @@ const syncDevices = function(store, actions, devices) {
         .then((device) => {
           actions.push({
             type: 'ADD_DEVICE',
-            deviceId: deviceId,
+            deviceId: device.id,
             data: {name: name, address: address, description: description}
           });
           /**

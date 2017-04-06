@@ -122,7 +122,7 @@ export const INITIALIZER = {
       let state = store.getState();
       Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
 
-      // update device specs:
+      // Update device specs: Since name is user editable, it can change over time. We use this to update the model.
       let currentDeviceSpecs = getDeviceSpecs(state);
       let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
       if (currentDeviceSpecs.address && deviceInDatabaseId) {
@@ -174,6 +174,12 @@ export const INITIALIZER = {
   }
 };
 
+
+/**
+ * If we change the reducer default values, this adds any new fields to the redux database
+ * so we don't have to error catch everywhere.
+ * @param store
+ */
 function refreshDatabase(store) {
   let state = store.getState();
   let refreshActions = [];
