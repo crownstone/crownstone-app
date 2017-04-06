@@ -1,2 +1,5 @@
 ./bluenet
 ./localization
+keys.sh
+keystores
+app/google-services.json
