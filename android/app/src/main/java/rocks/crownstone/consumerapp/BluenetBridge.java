@@ -461,6 +461,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void requestLocation(Callback callback) {
 		// Should return data {"latitude": number, "longitude": number}
+		BleLog.getInstance().LOGi(TAG, "requestLocation");
 		WritableMap retVal = Arguments.createMap();
 
 		if (ContextCompat.checkSelfPermission(_reactContext, "android.permission.ACCESS_COARSE_LOCATION") != PackageManager.PERMISSION_GRANTED) {
@@ -715,6 +716,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void setSwitchState(Float switchStateFloat, final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "set switch to: " + switchStateFloat);
 		// For now: no dimming
 		int switchState = 0;
 		if (switchStateFloat > 0) {
@@ -933,6 +935,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void getMACAddress(Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "getMacAddress");
 		WritableMap retVal = Arguments.createMap();
 		if (_bleExt.isConnected(null)) {
 			retVal.putBoolean("error", false);
@@ -947,6 +950,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void keepAliveState(boolean action, float state, int timeout, final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "keepAliveState: action=" + action + " state=" + state + " timeout=" + timeout);
 		int actionInt = 0;
 		if (action) {
 			actionInt = 1;
@@ -959,7 +963,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_bleExt.writeKeepAliveState(actionInt, switchState, timeout, new IStatusCallback() {
 				@Override
 				public void onSuccess() {
-					BleLog.getInstance().LOGi(TAG, "keepAliveState success");
+					BleLog.getInstance().LOGd(TAG, "keepAliveState success");
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", false);
 					callback.invoke(retVal);
@@ -979,10 +983,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void keepAlive(final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "keepAlive");
 		_bleExt.writeKeepAlive(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
-				BleLog.getInstance().LOGi(TAG, "keepAlive success");
+				BleLog.getInstance().LOGd(TAG, "keepAlive success");
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", false);
 				callback.invoke(retVal);
@@ -1004,6 +1009,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void meshKeepAlive(final Callback callback) {
 		// Write a message with no payload, as per protocol.
+		BleLog.getInstance().LOGd(TAG, "meshKeepAlive");
+
 		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, 0, new byte[0]);
 		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
 			@Override
@@ -1026,6 +1033,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void meshKeepAliveState(int timeout, ReadableArray keepAliveItems, final Callback callback) {
 		// keepAliveItems = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}, {}, ...]
+		BleLog.getInstance().LOGd(TAG, "keepAliveState: " + keepAliveItems.toString());
 
 		// Create new packet, fill it with keep alive items.
 		MeshKeepAlivePacket packet = new MeshKeepAlivePacket(timeout);
@@ -1084,6 +1092,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void meshCommandSetSwitchState(ReadableArray ids, Float switchStateFloat, int intent, final Callback callback) {
 		// ids = [number(uint16), ..]
+		BleLog.getInstance().LOGd(TAG, "meshCommandSetSwitch: state=" + switchStateFloat + " intent=" + intent + " ids=" + ids.toString());
 
 		// Create the control msg
 		// For now: no dimming
@@ -1127,6 +1136,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void multiSwitch(ReadableArray switchItems, final Callback callback) {
 		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
+		BleLog.getInstance().LOGd(TAG, "multiSwitch " + switchItems.toString());
 
 		// Create the multi switch packet
 		MeshMultiSwitchPacket packet = new MeshMultiSwitchPacket();
@@ -1260,6 +1270,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void startCollectingFingerprint() {
+		BleLog.getInstance().LOGi(TAG, "startCollectingFingerprint");
 		_isTraingingLocalization = true;
 		_isTraingingLocalizationPaused = false;
 		_localization.startFingerprint();
@@ -1267,6 +1278,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void abortCollectingFingerprint() {
+		BleLog.getInstance().LOGi(TAG, "abortCollectingFingerprint");
 		_localization.abortFingerprint();
 		_isTraingingLocalization = false;
 	}
@@ -1274,6 +1286,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void pauseCollectingFingerprint() {
 		// Stop feeding scans to the localization class
+		BleLog.getInstance().LOGi(TAG, "pauseCollectingFingerprint");
 		// TODO: implementation
 //		_isTraingingLocalization = false;
 		_isTraingingLocalizationPaused = true;
@@ -1282,6 +1295,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void resumeCollectingFingerprint() {
 		// Start feeding scans to the localization class again
+		BleLog.getInstance().LOGi(TAG, "resumeCollectingFingerprint");
 		// TODO: implementation
 //		_isTraingingLocalization = true;
 		_isTraingingLocalizationPaused = false;
@@ -1289,6 +1303,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void finalizeFingerprint(String sphereId, String locationId, Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "finalizeFingerprint: [%s] [%s]", sphereId, locationId);
 		_localization.finalizeFingerprint(sphereId, locationId, null);
 		_isTraingingLocalization = false;
 		Fingerprint fingerprint = _localization.getFingerprint(sphereId, locationId);
@@ -1307,10 +1322,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void loadFingerprint(String sphereId, String locationId, String samplesStr) {
+		BleLog.getInstance().LOGi(TAG, "loadFingerprint: [%s] [%s] %s", sphereId, locationId, samplesStr);
 		Fingerprint fingerprint = new Fingerprint();
 		fingerprint.setSphereId(sphereId);
 		fingerprint.setLocationId(locationId);
-		BleLog.getInstance().LOGd(TAG, "load finger print: [%s] [%s] %s", sphereId, locationId, samplesStr);
 
 		try {
 			FingerprintSamplesMap samples = new FingerprintSamplesMap(samplesStr);
