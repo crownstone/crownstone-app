@@ -589,12 +589,12 @@ const syncDevices = function(store, actions, devices) {
     };
     
     if (deviceId === undefined) {
-      LOG.info("Sync: Create new device", name, address, description);
+      LOG.info("Sync: Create new device in cloud", name, address, description);
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
           actions.push({
             type: 'ADD_DEVICE',
-            deviceId: deviceId,
+            deviceId: device.id,
             data: {name: name, address: address, description: description}
           });
           /**
