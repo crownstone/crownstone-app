@@ -611,7 +611,7 @@ const syncDevices = function(store, actions, cloudDevices) {
       actions.push({
         type: 'ADD_DEVICE',
         deviceId: deviceId,
-        data: {name: name, address: address, description: description}
+        data: {name: name, address: deviceAddress, description: description}
       });
 
       // update our unique identifier to match the new device.
