@@ -312,6 +312,10 @@ function handleUserLocationExit(action, state) {
 
 function handleDeviceInCloud(action, state) {
   let deviceId = action.deviceId;
+  if (!deviceId) {
+    LOG.error("handleDeviceInCloud: invalid device id: ", deviceId);
+    return;
+  }
   let deviceConfig = state.devices[deviceId];
   let data = {
     name: deviceConfig.name,
