@@ -972,7 +972,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				@Override
 				public void onError(int error) {
 					BleLog.getInstance().LOGi(TAG, "keepAliveState error "+ error);
-					BleLog.getInstance().LOGi(TAG, Log.getStackTraceString(new Exception()));
+//					BleLog.getInstance().LOGi(TAG, Log.getStackTraceString(new Exception()));
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", true);
 					retVal.putString("data", "keepAliveState failed: " + error);

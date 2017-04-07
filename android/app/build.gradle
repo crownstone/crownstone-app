@@ -101,8 +101,8 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 12
-        versionName "0.7.11"
+        versionCode 13
+        versionName "0.7.12"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
