@@ -30,7 +30,9 @@ class PushNotificationHandlerClass {
           data: {
             notificationToken: token
           }
-        })
+        });
+
+
       },
 
       // (required) Called when a remote or local notification is opened or received

@@ -26,6 +26,7 @@ export const base = {
   _accessToken: undefined,
   _userId: undefined,
   _deviceId: undefined,
+  _installationId: undefined,
   _eventId: undefined,
   _sphereId: undefined,
   _locationId: undefined,
@@ -132,16 +133,17 @@ export const base = {
   // END USER API
   // These methods have all the endpoints embedded in them.
 
-  setNetworkErrorHandler: function(handler) {this._networkErrorHandler = handler},
-  setAccess:   function(accessToken) { this._accessToken = accessToken; return this; },
-  setUserId:   function(userId)      { this._userId = userId;           return this; },
-  forUser:     function(userId)      { this._userId = userId;           return this; },
-  forStone:    function(stoneId)     { this._stoneId = stoneId;         return this; },
-  forSphere:   function(sphereId)    { this._sphereId = sphereId;       return this; },
-  forLocation: function(locationId)  { this._locationId = locationId;   return this; },
-  forEvent:    function(eventId)     { this._eventId = eventId;         return this; },
-  forDevice:   function(deviceId)    { this._deviceId = deviceId;       return this; },
-  forAppliance:function(applianceId) { this._applianceId = applianceId; return this; },
+  setNetworkErrorHandler: function(handler)         {this._networkErrorHandler = handler},
+  setAccess:              function(accessToken)     { this._accessToken = accessToken;        return this; },
+  setUserId:              function(userId)          { this._userId = userId;                  return this; },
+  forUser:                function(userId)          { this._userId = userId;                  return this; },
+  forStone:               function(stoneId)         { this._stoneId = stoneId;                return this; },
+  forSphere:              function(sphereId)        { this._sphereId = sphereId;              return this; },
+  forLocation:            function(locationId)      { this._locationId = locationId;          return this; },
+  forEvent:               function(eventId)         { this._eventId = eventId;                return this; },
+  forDevice:              function(deviceId)        { this._deviceId = deviceId;              return this; },
+  forAppliance:           function(applianceId)     { this._applianceId = applianceId;        return this; },
+  forInstallation:        function(installationId)  { this._installationId = installationId;  return this; },
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
@@ -181,5 +183,9 @@ function _getId(url, obj) : string {
   let stoneLocation = url.indexOf('Stones');
   if (stoneLocation !== -1 && stoneLocation < 3)
     return obj._stoneId;
+
+  let installationLocation = url.indexOf('AppInstallation');
+  if (installationLocation !== -1 && installationLocation < 3)
+    return obj._installationId;
 }
 

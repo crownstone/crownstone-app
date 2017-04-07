@@ -11,7 +11,12 @@ const DeviceInfo = require('react-native-device-info');
     // the global is meant as a last resort, forcing release to true when compiled in release mode.
     export const RELEASE_MODE_USED = (RELEASE_MODE && DeviceInfo.getModel() !== "Simulator") || global.__DEV__ !== true;
 
+    // this is the name of the app in the database. It has to be exactly this to match the database entry for push notifications.
+    // it is used to link an installation to a specific App.
+    export const APP_NAME = 'Crownstone.consumer';
+
 /******************** /RELEASE FLAGS ********************/
+
 
 /**
  *  DO NOT CHANGE THESE VALUES BELOW THIS LINE. YOU CAN CHANGE THEM IN THE LOCAL CONFIG FILE!
