@@ -536,7 +536,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
 /**
  * Sync devices
  */
-const syncDevices = function(store, actions, devices) {
+const syncDevices = function(store, actions, cloudDevices) {
   return new Promise((resolve, reject) => {
     const state = store.getState();
 
@@ -545,22 +545,22 @@ const syncDevices = function(store, actions, devices) {
     let deviceId = undefined;
     let deviceAddress = address;
     let matchingDevice = undefined;
-    for (let i = 0; i < devices.length; i++) {
-      let device = devices[i];
-      if (device.address === address) {
-        deviceId = device.id;
-        matchingDevice = device;
+    for (let i = 0; i < cloudDevices.length; i++) {
+      let cloudDevice = cloudDevices[i];
+      if (cloudDevice.address === address) {
+        deviceId = cloudDevice.id;
+        matchingDevice = cloudDevice;
         break;
       }
-      else if (device.name === name && device.description === description) {
-        deviceId = device.id;
-        deviceAddress = device.address;
-        matchingDevice = device;
+      else if (cloudDevice.name === name && cloudDevice.description === description) {
+        deviceId = cloudDevice.id;
+        deviceAddress = cloudDevice.address;
+        matchingDevice = cloudDevice;
       }
-      else if (device.description === description) {
-        deviceId = device.id;
-        deviceAddress = device.address;
-        matchingDevice = device;
+      else if (cloudDevice.description === description) {
+        deviceId = cloudDevice.id;
+        deviceAddress = cloudDevice.address;
+        matchingDevice = cloudDevice;
       }
     }
 
@@ -571,8 +571,8 @@ const syncDevices = function(store, actions, devices) {
       // cleanup
       let deleteActions = [];
       let cloudDeviceIdList = {};
-      for (let i = 0; i < devices.length; i++) {
-        cloudDeviceIdList[devices[i].id] = true;
+      for (let i = 0; i < cloudDevices.length; i++) {
+        cloudDeviceIdList[cloudDevices[i].id] = true;
       }
       let localDeviceIdList = Object.keys(store.getState().devices);
       for (let i = 0; i < localDeviceIdList.length; i++) {
@@ -589,7 +589,7 @@ const syncDevices = function(store, actions, devices) {
     };
     
     if (deviceId === undefined) {
-      LOG.info("Sync: Create new device", name, address, description);
+      LOG.info("Sync: Create new device in cloud", name, address, description);
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
           actions.push({
@@ -628,6 +628,15 @@ const syncDevices = function(store, actions, devices) {
         store.dispatch({
           type: 'SET_APP_IDENTIFIER',
           data: {appIdentifier: deviceAddress}
+        });
+      }
+      // Old bug caused the local db to have a device address of null. This should fix that.
+      if (state.devices[deviceId].address !== deviceAddress) {
+        LOG.info("update address to", deviceAddress);
+        actions.push({
+          type:"UPDATE_DEVICE_CONFIG",
+          deviceId: deviceId,
+          data:{address:deviceAddress}
         });
       }
       // if the tap to toggle calibration is available and different from what we have stored, update it.
