@@ -366,6 +366,7 @@ class BatchCommandHandlerClass {
           }
         })
         .then(() => {
+          // TODO: ignore exceptions.
           return BluenetPromiseWrapper.disconnect();
         })
         .then(() => {
