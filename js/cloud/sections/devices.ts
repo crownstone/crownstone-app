@@ -1,5 +1,3 @@
-import { Platform } from 'react-native'
-
 export const devices = {
   getDevices: function (options : any = {}) {
     return this._setupRequest('GET', '/users/{id}/devices', options);
@@ -11,18 +9,7 @@ export const devices = {
       '/users/{id}/devices',
       { data: data, background: background},
       'body'
-    ).then((createdDevice) => {
-      return new Promise((resolve, reject) => {
-        this.createInstallation({ deviceType: Platform.OS }, background)
-          .then((installation) => {
-            createdDevice.installationId = installation.id;
-            resolve(createdDevice);
-          })
-          .catch((err) => {
-            reject(err);
-          })
-      })
-    })
+    );
   },
 
   updateDevice: function (deviceId, data, background = true) {

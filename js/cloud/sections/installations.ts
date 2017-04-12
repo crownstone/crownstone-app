@@ -1,7 +1,6 @@
 import {APP_NAME} from "../../ExternalConfig";
 
-
-export const devices = {
+export const installations = {
   getInstallations: function (options : any = {}) {
     return this._setupRequest('GET', '/Devices/{id}/installations', options);
   },

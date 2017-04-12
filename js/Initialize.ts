@@ -7,7 +7,6 @@ import { Scheduler }                        from './logic/Scheduler'
 import { BluenetPromiseWrapper, NativeBus } from './native/Proxy';
 import { Bluenet  }                         from './native/Bluenet';
 import { eventBus }                         from './util/EventBus'
-import { getDeviceSpecs }                   from './util/DataUtil'
 import { Util }                             from './util/Util'
 
 
@@ -123,7 +122,7 @@ export const INITIALIZER = {
       Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
 
       // Update device specs: Since name is user editable, it can change over time. We use this to update the model.
-      let currentDeviceSpecs = getDeviceSpecs(state);
+      let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
       let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
       if (currentDeviceSpecs.address && deviceInDatabaseId) {
         let deviceInDatabase = state.devices[deviceInDatabaseId];

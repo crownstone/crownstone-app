@@ -16,7 +16,6 @@ export class TextEditInput extends Component<any, any> {
 
   constructor(props) {
     super();
-    console.log("CONSTRUCT")
     this.state = {value: props.value};
     this.blurred = false;
     this.isInFocus = false;

@@ -1,6 +1,7 @@
 import { CLOUD } from '../cloudAPI'
 import { LOG } from '../../logging/Log'
-import { getDeviceSpecs } from '../../util/DataUtil'
+import { Util } from '../../util/Util'
+import { Platform } from 'react-native'
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -540,7 +541,7 @@ const syncDevices = function(store, actions, cloudDevices) {
   return new Promise((resolve, reject) => {
     const state = store.getState();
 
-    let {name, address, description} = getDeviceSpecs(state);
+    let {name, address, description} = Util.data.getDeviceSpecs(state);
 
     let deviceId = undefined;
     let deviceAddress = address;
@@ -587,19 +588,31 @@ const syncDevices = function(store, actions, cloudDevices) {
 
       resolve();
     };
-    
+
     if (deviceId === undefined) {
+      let newDevice = null;
       LOG.info("Sync: Create new device in cloud", name, address, description);
       CLOUD.createDevice({name:name, address:address, description: description})
         .then((device) => {
+          newDevice = device;
+          return CLOUD.forDevice(device.id).createInstallation({
+            deviceType: Platform.OS,
+          })
+        })
+        .then((installation) => {
+          actions.push({
+            type: 'ADD_INSTALLATION',
+            installationId: installation.id,
+            data: {deviceToken: null}
+          });
+
           actions.push({
             type: 'ADD_DEVICE',
-            deviceId: device.id,
-            data: {name: name, address: address, description: description}
+            deviceId: newDevice.id,
+            data: {name: name, address: address, description: description, installationId: installation.id}
           });
-          /**
-           * We now push the location of ourselves to the cloud.
-           */
+
+          // We now push the location of ourselves to the cloud.
           return updateUserLocationInCloud(state, deviceId);
         })
         .then(resolveAndCleanup)
@@ -611,7 +624,7 @@ const syncDevices = function(store, actions, cloudDevices) {
       actions.push({
         type: 'ADD_DEVICE',
         deviceId: deviceId,
-        data: {name: name, address: address, description: description}
+        data: {name: name, address: deviceAddress, description: description}
       });
 
       // update our unique identifier to match the new device.

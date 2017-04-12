@@ -134,11 +134,29 @@ export const DataUtil = {
   },
 
   getStoneFromHandle: function(state, sphereId, handle) {
-    let stoneId = this.getStoneIdFromHandle(state, sphereId, handle);
+    let stoneId = DataUtil.getStoneIdFromHandle(state, sphereId, handle);
     return state.spheres[sphereId].stones[stoneId];
   },
 
+  getDeviceSpecs: function(state) {
+    let address = state.user.appIdentifier;
+    let name = DeviceInfo.getDeviceName();
+    let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
 
+    return { name, address, description };
+  },
+
+  getCurrentDeviceId: function(state) {
+    let specs = DataUtil.getDeviceSpecs(state);
+
+    let deviceIds = Object.keys(state.devices);
+    for (let i = 0; i < deviceIds.length; i++) {
+      if (state.devices[deviceIds[i]].address == specs.address) {
+        return deviceIds[i];
+      }
+    }
+    return undefined;
+  },
 };
 
 export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {
@@ -349,27 +367,6 @@ export const getAiData = function(state, sphereId) {
 
 
 };
-
-export const getDeviceSpecs = function(state) {
-  let address = state.user.appIdentifier;
-  let name = DeviceInfo.getDeviceName();
-  let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
-
-  return { name, address, description };
-};
-
-export const getCurrentDeviceId = function(state) {
-  let specs = getDeviceSpecs(state);
-
-  let deviceIds = Object.keys(state.devices);
-  for (let i = 0; i < deviceIds.length; i++) {
-    if (state.devices[deviceIds[i]].address == specs.address) {
-      return deviceIds[i];
-    }
-  }
-  return undefined;
-};
-
 
 export const prepareStoreForUser = function(store) {
   const state = store.getState();

@@ -1,3 +1,19 @@
+const DeviceInfo = require('react-native-device-info');
+
+/******************** RELEASE FLAGS ********************/
+
+  // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
+  export const FALLBACKS_ENABLED = true;
+
+  // this is the name of the app in the database. It has to be exactly this to match the database entry for push notifications.
+  // it is used to link an installation to a specific App.
+  export const APP_NAME = 'Crownstone.consumer';
+
+/******************** /RELEASE FLAGS ********************/
+
+
+
+
 /******************** APP ********************/
 
   /**
@@ -23,7 +39,9 @@
    */
   // export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';            // point to the production cloud.
   export let CLOUD_ADDRESS = 'https://crownstone-cloud-dev.herokuapp.com/api/';   // point to the dev cloud.
-  // export let CLOUD_ADDRESS = 'http://0.0.0.0:3000/api/';                       // point to the local cloud.
+
+  // point to the local cloud when using a phone
+  // export let CLOUD_ADDRESS = DeviceInfo.getModel() !== "Simulator" ? 'http://10.27.8.130:3000/api/' : 'http://0.0.0.0:3000/api/';
 
 /******************** /APP ********************/
 

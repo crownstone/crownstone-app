@@ -5,6 +5,7 @@ let defaultSettings = {
   address: null,
   description: null,
   location: null,
+  hubFunction: false,
   tapToToggleCalibration: null,
   installationId: null,
   updatedAt: 1
@@ -27,6 +28,7 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         newState.address        = update(action.data.address,        newState.address);
         newState.description    = update(action.data.description,    newState.description);
         newState.location       = update(action.data.location,       newState.location);
+        newState.hubFunction    = update(action.data.hubFunction,    newState.hubFunction);
         newState.installationId = update(action.data.installationId, newState.installationId);
         newState.tapToToggleCalibration = update(action.data.tapToToggleCalibration, newState.tapToToggleCalibration);
         newState.updatedAt      = getTime(action.data.updatedAt);
