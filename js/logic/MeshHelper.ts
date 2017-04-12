@@ -36,17 +36,6 @@ export class MeshHelper {
           instruction.cleanup();
         })
       })
-      .catch((err) => {
-        this._containedInstructions.forEach((instruction) => {
-          instruction.attempts -= 1;
-          instruction.promise.pending = false;
-          if (instruction.attemps <= 0) {
-            instruction.promise.reject();
-            instruction.cleanup();
-          }
-        });
-        throw err;
-      });
   }
 
 

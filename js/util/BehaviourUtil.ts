@@ -14,7 +14,6 @@ export const BehaviourUtil = {
    * @param { String } sphereId         // ID of sphere
    * @param { String } behaviourType    // type of behaviour to be used in the logging and switching intent
    * @param { String } locationId       // ID of location to get the stones from
-   * @param { BatchCommand } bleController  // ID of location to get the stones from
    * @param { Object } callbacks        // hooks for the enacting of the behaviour.
    *                                        {
    *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
@@ -37,7 +36,7 @@ export const BehaviourUtil = {
       this.enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks);
     });
 
-    BatchCommandHandler.execute(false);
+    BatchCommandHandler.execute();
   },
 
 
@@ -59,12 +58,11 @@ export const BehaviourUtil = {
     let sphere = state.spheres[sphereId];
     let stoneIds = Object.keys(sphere.stones);
 
-
     stoneIds.forEach((stoneId) => {
       this.enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks = {})
     });
 
-    BatchCommandHandler.execute(false);
+    BatchCommandHandler.execute();
   },
 
 

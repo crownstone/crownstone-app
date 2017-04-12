@@ -5,8 +5,6 @@ import { BluenetPromiseWrapper } from '../native/Proxy';
 import { LOG } from '../logging/Log'
 import { Scheduler } from './Scheduler'
 import { MeshHelper } from './MeshHelper'
-import { KeepAliveHandler } from "../native/KeepAliveHandler";
-import {KEEPALIVE_INTERVAL} from "../ExternalConfig";
 
 
 /**
@@ -28,12 +26,29 @@ class BatchCommandHandlerClass {
    * @param { Number } attempts           // sphereId,
    */
   load(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1) {
-    LOG.verbose("BatchCommand: Loading command,", stoneId, stone.config.name, command);
+    LOG.verbose("BatchCommand: Loading Command,", stoneId, stone.config.name, command);
+    return this._load(stone, stoneId, sphereId, command, false, attempts );
+  }
+
+  /**
+   * @param { Object } stone              // Redux Stone Object
+   * @param { String } stoneId            // StoneId,
+   * @param { String } sphereId           // sphereId,
+   * @param { commandInterface } command  // Object containing a command that is in the BluenetPromise set
+   * @param { Number } attempts           // sphereId,
+   */
+  loadPriority(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1) {
+    LOG.verbose("BatchCommand: Loading High Priority Command,", stoneId, stone.config.name, command);
+    return this._load(stone, stoneId, sphereId, command, true, attempts );
+  }
+
+  _load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number) {
     return new Promise((resolve, reject) => {
       // remove duplicates from list.
       this._clearDuplicates(stoneId, sphereId, command);
       let uuid = Util.getUUID();
       this.commands[uuid] = {
+        priority: priority,
         handle:   stone.config.handle,
         sphereId: sphereId,
         stoneId:  stoneId,
@@ -70,6 +85,65 @@ class BatchCommandHandlerClass {
     }
   }
 
+
+  _isHighPriority() : boolean {
+    // first we check if there is a high priority element in the list.
+    let uuids = Object.keys(this.commands);
+
+    // loop over all commands to look for a high priority one.
+    for (let i = 0; i < uuids.length; i++) {
+      if (this.commands[uuids[i]].priority === true) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  _getCommandsToHandle() : batchCommands {
+    // this is the list we will iterate over and process.
+    let todoList = this.commands;
+
+    // first we check if there is a high priority element in the list.
+    let uuids = Object.keys(todoList);
+    let highPriorityCommands : batchCommands = {};
+    let highPriorityCrownstones = {};
+    let highPriorityMeshNetworks = {};
+    let highPriorityActive = false;
+
+    // loop over all commands to look for a high priority one. If there is, also store the stoneId and meshNetworkId if available.
+    // if a crownstone has a high priority command, also do the accompanying low priority ones if it has any.
+    for (let i = 0; i < uuids.length; i++) {
+      let currentTodo = this.commands[uuids[i]];
+      if (currentTodo.priority === true) {
+        highPriorityActive = true;
+        highPriorityCrownstones[currentTodo.stoneId] = true;
+
+        let meshNetworkId = currentTodo.stone.config.meshNetworkId;
+        if (meshNetworkId) {
+          highPriorityMeshNetworks[meshNetworkId] = true;
+        }
+      }
+    }
+
+    // Now that we know there is a high priority command, we fill it based on priority or whether or not it belongs to the same stone or mesh.
+    if (highPriorityActive) {
+      for (let i = 0; i < uuids.length; i++) {
+        let currentTodo = this.commands[uuids[i]];
+        let meshNetworkId = currentTodo.stone.config.meshNetworkId;
+        if (currentTodo.priority === true || highPriorityCrownstones[currentTodo.stoneId] || (meshNetworkId !== null && highPriorityMeshNetworks[meshNetworkId])) {
+          highPriorityCommands[uuids[i]] = this.commands[uuids[i]];
+        }
+      }
+
+      // if there are high priority tasks, we switch the todoList from the full set to the high priority subset.
+      todoList = highPriorityCommands;
+    }
+
+    return todoList;
+  }
+
+
+
   /**
    *
    * If a target network id is provided, the filter will only allow stones which match that id unless the stoneId specifically matches the targetStoneId
@@ -81,12 +155,14 @@ class BatchCommandHandlerClass {
    * @private
    */
   _extractTodo(targetStoneId : string = null, targetNetworkId : string = null) {
+    let commandsToHandle = this._getCommandsToHandle();
+
     let directCommands : directCommands = {};
     let meshNetworks : sphereMeshNetworks = {};
 
-    let uuids = Object.keys(this.commands);
+    let uuids = Object.keys(commandsToHandle);
     for (let i = 0; i < uuids.length; i++) {
-      let todo = this.commands[uuids[i]];
+      let todo = commandsToHandle[uuids[i]];
 
       let command = todo.command;
       let stoneConfig = todo.stone.config;
@@ -153,17 +229,17 @@ class BatchCommandHandlerClass {
 
   /**
    * Extract the payload from the commands for the 4 supported states.
-   * @param commands
+   * @param batchCommand
    * @returns {any}
    * @private
    */
-  _getPayloadFromCommand(commands : batchCommandEntry) {
+  _getPayloadFromCommand(batchCommand : batchCommandEntry) {
     let payload;
-    let command = commands.command;
-    let stoneConfig = commands.stone.config;
+    let command = batchCommand.command;
+    let stoneConfig = batchCommand.stone.config;
 
     if (command.commandName === 'keepAlive') {
-      payload = {cleanup: commands.cleanup, promise: commands.promise};
+      payload = {cleanup: batchCommand.cleanup, promise: batchCommand.promise};
     }
     else if (command.commandName === 'keepAliveState') {
       payload = {
@@ -171,9 +247,10 @@ class BatchCommandHandlerClass {
         handle: stoneConfig.handle,
         changeState: command.changeState,
         state: command.state,
+        attempts: batchCommand.attempts,
         timeout: command.timeout,
-        cleanup: commands.cleanup,
-        promise: commands.promise
+        cleanup: batchCommand.cleanup,
+        promise: batchCommand.promise
       };
     }
     else if (command.commandName === 'setSwitchState') {
@@ -181,8 +258,9 @@ class BatchCommandHandlerClass {
         crownstoneId: stoneConfig.crownstoneId,
         handle: stoneConfig.handle,
         state: command.state,
-        cleanup: commands.cleanup,
-        promise: commands.promise
+        attempts: batchCommand.attempts,
+        cleanup: batchCommand.cleanup,
+        promise: batchCommand.promise
       };
     }
     else if (command.commandName === 'multiSwitch') {
@@ -192,8 +270,9 @@ class BatchCommandHandlerClass {
         state: command.state,
         intent: command.intent,
         timeout: command.timeout,
-        cleanup: commands.cleanup,
-        promise: commands.promise
+        attempts: batchCommand.attempts,
+        cleanup: batchCommand.cleanup,
+        promise: batchCommand.promise
       };
     }
 
@@ -217,6 +296,7 @@ class BatchCommandHandlerClass {
     let meshSphereIds = Object.keys(meshNetworks);
     let directSphereIds = Object.keys(directCommands);
     let topicsToScan = [];
+
     // find all topics in the mesh sphereId
     meshSphereIds.forEach((sphereId) => {
       let meshNetworkIds = Object.keys(meshNetworks[sphereId]);
@@ -292,17 +372,9 @@ class BatchCommandHandlerClass {
         if (actionPromise !== null) {
           // clean up by resolving the promises of the items contained in the mesh messages.
           promise = actionPromise.then(() => {
-              performedAction.promise.resolve();
-              performedAction.cleanup();
-            })
-            .catch((err) => {
-              performedAction.attempts -= 1;
-              if (performedAction.attemps <= 0) {
-                performedAction.promise.reject();
-                performedAction.cleanup();
-              }
-              throw err;
-            });
+            performedAction.promise.resolve();
+            performedAction.cleanup();
+          })
         }
       }
 
@@ -343,12 +415,16 @@ class BatchCommandHandlerClass {
         return;
       }
 
+      // if there is a high priority call that we need to do, ignore the rssi limit.
+      let highPriorityActive = this._isHighPriority();
+      let rssiScanThreshold = -90;
+      if (highPriorityActive) {
+        rssiScanThreshold = null;
+      }
+
       let connectedCrownstone = null;
       // scan for target
-      this._searchScan(topicsToScan, -90, 5000)
-        .catch((err) => {
-          return this._searchScan(topicsToScan, null, 5000)
-        })
+      this._searchScan(topicsToScan, rssiScanThreshold, 5000)
         .then((connectionInfo : connectionInfo) => {
           connectedCrownstone = connectionInfo;
           LOG.info("BatchCommandHandler: connecting to ", connectionInfo);
@@ -358,25 +434,42 @@ class BatchCommandHandlerClass {
           LOG.info("BatchCommandHandler: Connected to ", connectedCrownstone);
           return this._handleAllActionsForStone(connectedCrownstone);
         })
+        // .then(() => {
+        //   // check if we should to add a keepalive since we're connected anyway
+        //   if (KeepAliveHandler.timeUntilNextTrigger() < 0.5 * KEEPALIVE_INTERVAL * 1000 ) {
+        //     KeepAliveHandler.fireTrigger();
+        //     return this._handleAllActionsForStone(connectedCrownstone)
+        //   }
+        // })
         .then(() => {
-          // check if we should to add a keepalive since we're connected anyway
-          if (KeepAliveHandler.timeUntilNextTrigger() < 0.5 * KEEPALIVE_INTERVAL * 1000 ) {
-            KeepAliveHandler.fireTrigger();
-            return this._handleAllActionsForStone(connectedCrownstone)
-          }
-        })
-        .then(() => {
-          return BluenetPromiseWrapper.disconnect();
+          return new Promise((disconnectResolve, disconnectReject) => {
+            BluenetPromiseWrapper.disconnect()
+              .then(() => {disconnectResolve()})
+              .catch((err) => {
+                LOG.warn("BatchCommandHandler: Could not normally disconnect from device.", err);
+                return BluenetPromiseWrapper.phoneDisconnect();
+              })
+              .then(() => {
+                disconnectResolve();
+              })
+              .catch((err) => {
+                LOG.warn("BatchCommandHandler: Could not phone disconnect from device.", err);
+                disconnectResolve();
+              })
+          });
         })
         .then(() => {
           if (Object.keys(this.commands).length > 0) {
-            return this._connectAndPerformCommands();
+            this._scheduleNextStone();
           }
         })
         .then(() => {
           resolve();
         })
         .catch((err) => {
+          // Use the attempt handler to clean up after something fails.
+          this.attemptHandler(connectedCrownstone);
+
           LOG.error("ERROR DURING EXECUTE", err);
           BluenetPromiseWrapper.phoneDisconnect().catch((err) => {});
           reject();
@@ -384,34 +477,87 @@ class BatchCommandHandlerClass {
     })
   }
 
+  /**
+   * This is invoked after something during the process fails.
+   * It reduces the attempt counter in the affected processes by 1. If the attempt count is at 0, it will remove the command
+   * from the list.
+   * @param connectedCrownstone
+   */
+  attemptHandler(connectedCrownstone) {
+    let handleAttempt = (command) => {
+      command.attempts -= 1;
+      if (command.attempts <= 0) {
+        command.promise.reject();
+        command.cleanup();
+      }
+    };
+
+    let { directCommands, meshNetworks } = this._extractTodo(connectedCrownstone.stoneId, connectedCrownstone.meshNetworkId);
+    let directCommandSpheres = Object.keys(directCommands);
+    directCommandSpheres.forEach((sphereId) => {
+      let commandsInSphere = directCommands[sphereId];
+      commandsInSphere.forEach(handleAttempt);
+    });
+
+    let meshNetworkSpheres = Object.keys(meshNetworks);
+    meshNetworkSpheres.forEach((sphereId) => {
+      let networkTodo = meshNetworks[sphereId][connectedCrownstone.meshNetworkId];
+      networkTodo.keepAlive.forEach(handleAttempt);
+      networkTodo.keepAliveState.forEach(handleAttempt);
+      networkTodo.setSwitchState.forEach(handleAttempt);
+      networkTodo.multiSwitch.forEach(handleAttempt);
+      networkTodo.other.forEach(handleAttempt);
+    });
+  }
+
+
+  execute() {
+    this._execute(false);
+  }
+
+  executePriority() {
+    this._execute(true);
+  }
+
+  _scheduleNextStone() {
+    this._scheduleExecute(false);
+  }
 
   /**
    * @param { Boolean } priority        //  this will move any command to the top of the queue
    */
-  execute(priority = true) : Promise<any> {
+  _execute(priority) {
     LOG.info("BatchCommand: Requesting execute");
-    if (this.executing) {
+    if (this.executing === true) {
       LOG.info("BatchCommand: Denied; pending.");
-      return new Promise((resolve, reject) => { resolve() });
+      return;
     }
 
-    this.executing = true;
+    this._scheduleExecute(priority);
+  }
 
+  _scheduleExecute(priority) {
     LOG.info("BatchCommand: Scheduling");
     let actionPromise = () => {
+      this.executing = true;
+
       LOG.info("BatchCommand: Executing!");
       return this._connectAndPerformCommands()
-        .then(() => {this.executing = false})
+        .then(() => {this.executing = false; })
         .catch((err) => {this.executing = false; throw err;});
     };
 
-    let details = {from: 'BatchCommandHandler: executing.'};
-    if (priority) {
-      return BlePromiseManager.registerPriority(actionPromise, details);
-    }
-    else {
-      return BlePromiseManager.register(actionPromise, details);
-    }
+    let promiseRegistration = null;
+
+    if (priority) { promiseRegistration = BlePromiseManager.registerPriority; }
+    else          { promiseRegistration = BlePromiseManager.register; }
+
+    promiseRegistration(actionPromise, {from: 'BatchCommandHandler: executing.'})
+      .catch((err) => {
+        // disable execution and forward the error
+        this.executing = false;
+        LOG.error("BatchCommandHandler: Error completing promise.", err);
+      });
   }
 
 

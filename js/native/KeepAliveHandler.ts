@@ -105,7 +105,7 @@ class KeepAliveHandlerClass {
         }
       });
 
-      BatchCommandHandler.execute(false).catch((err) => {})
+      BatchCommandHandler.execute()
     });
   }
 

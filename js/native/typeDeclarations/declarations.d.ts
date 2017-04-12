@@ -1,5 +1,6 @@
 interface keepAlivePayload {
   cleanup(): void,
+  attempts: number,
   promise:{
     resolve(any?) : void,
     reject(any?)  : void,
@@ -13,6 +14,7 @@ interface keepAliveStatePayload {
   changeState: boolean,
   state: number,
   timeout: number,
+  attempts: number,
   cleanup(): void,
   promise:{
     resolve(any?) : void,
@@ -26,6 +28,7 @@ interface setSwitchStatePayload {
   handle: string,
   crownstoneId: string,
   state: number,
+  attempts: number,
   cleanup(): void,
   promise:{
     resolve(any?) : void,
@@ -41,6 +44,7 @@ interface multiSwitchPayload {
   state: number,
   intent: number,
   timeout: number,
+  attempts: number,
   cleanup(): void,
   promise:{
     resolve(any?) : void,
@@ -49,10 +53,12 @@ interface multiSwitchPayload {
   }
 }
 
+// key is sphereId
 interface sphereMeshNetworks  {
   [propName: string] : meshNetworks
 }
 
+// key is meshNetwork
 interface meshNetworks  {
   [propName: number] : meshTodo
 }
@@ -62,11 +68,6 @@ interface connectionInfo  {
   stoneId: string,
   meshNetworkId?: string,
   handle : string,
-}
-
-interface stoneObject  {
-  stone : any,
-  stoneId : string,
 }
 
 interface meshTodo {
@@ -87,11 +88,13 @@ interface batchCommands  {
   [propName: string] : batchCommandEntry
 }
 
+// keys are sphereIds
 interface directCommands  {
   [propName: string] : batchCommandEntry[]
 }
 
 interface batchCommandEntry {
+  priority: boolean,
   handle:   string,
   sphereId: string,
   stoneId:  string,

@@ -151,7 +151,7 @@ export class RoomOverview extends Component<any, any> {
                   data["currentUsage"] = 0;
                 }
 
-                BatchCommandHandler.load(item.stone, stoneId, this.props.sphereId, {commandName:'multiSwitch', state: switchState, intent:INTENTS.manual, timeout: 0})
+                BatchCommandHandler.loadPriority(item.stone, stoneId, this.props.sphereId, {commandName:'multiSwitch', state: switchState, intent:INTENTS.manual, timeout: 0})
                   .then(() => {
                     this.props.store.dispatch({
                       type: 'UPDATE_STONE_SWITCH_STATE',
@@ -163,9 +163,9 @@ export class RoomOverview extends Component<any, any> {
                   })
                   .catch((err) => {
                     this.clearPending(stoneId);
-                  })
+                  });
 
-                BatchCommandHandler.execute(true)
+                BatchCommandHandler.executePriority();
               }}
               onMove={() => {
                 Actions.pop();
