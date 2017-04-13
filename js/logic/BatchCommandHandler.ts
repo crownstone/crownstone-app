@@ -289,9 +289,6 @@ class BatchCommandHandlerClass {
   _getObjectsToScan() {
     let { directCommands, meshNetworks } = this._extractTodo();
 
-    LOG.info("BatchCommand: directCommands from all spheres:", directCommands);
-    LOG.info("BatchCommand: meshNetworks from all spheres:", meshNetworks);
-
     // get sphereIds of the spheres we need to do things in.
     let meshSphereIds = Object.keys(meshNetworks);
     let directSphereIds = Object.keys(directCommands);
@@ -301,6 +298,7 @@ class BatchCommandHandlerClass {
     meshSphereIds.forEach((sphereId) => {
       let meshNetworkIds = Object.keys(meshNetworks[sphereId]);
       meshNetworkIds.forEach((networkId) => {
+        LOG.info("BatchCommandHandler: meshNetworkCommands for sphere", sphereId, ", command:", meshNetworks[sphereId][networkId]);
         topicsToScan.push({ sphereId: sphereId, topic: 'updateMeshNetwork_' + sphereId + '_' + networkId });
       });
     });
@@ -308,6 +306,7 @@ class BatchCommandHandlerClass {
     // find all the topics for individual crownstones.
     directSphereIds.forEach((sphereId) => {
       directCommands[sphereId].forEach((command) => {
+        LOG.info("BatchCommandHandler: directCommands for sphere", sphereId, ", command:", command.command);
         topicsToScan.push({ sphereId: sphereId, topic: 'update_' + sphereId + '_' + command.stoneId });
       });
     });
@@ -408,7 +407,7 @@ class BatchCommandHandlerClass {
     return new Promise((resolve, reject) => {
       let topicsToScan = this._getObjectsToScan();
       if (topicsToScan.length === 0) {
-        LOG.info("BatchCommand: No topics to scan during BatchCommandHandler execution");
+        LOG.info("BatchCommandHandler: No topics to scan during BatchCommandHandler execution");
         resolve();
 
         // abort the rest of the method.
@@ -462,6 +461,7 @@ class BatchCommandHandlerClass {
           if (Object.keys(this.commands).length > 0) {
             this._scheduleNextStone();
           }
+
         })
         .then(() => {
           resolve();
@@ -527,11 +527,11 @@ class BatchCommandHandlerClass {
    * @param { Boolean } priority        //  this will move any command to the top of the queue
    */
   _execute(priority) {
-    LOG.info("BatchCommand: Requesting execute");
-    if (this.executing === true) {
-      LOG.info("BatchCommand: Denied; pending.");
-      return;
-    }
+    // LOG.info("BatchCommand: Requesting execute");
+    // if (this.executing === true) {
+    //   LOG.info("BatchCommand: Denied; pending.");
+    //   return;
+    // }
 
     this._scheduleExecute(priority);
   }
@@ -583,7 +583,7 @@ class BatchCommandHandlerClass {
       let clearCleanupCallback = Scheduler.scheduleCallback(() => {
         // remove the listeners
         cleanup();
-
+        LOG.warn("No stones found before timeout.");
         reject(new Error("No stones found before timeout."));
       }, timeout, 'Looking for target...');
 
@@ -592,6 +592,7 @@ class BatchCommandHandlerClass {
       objectsToScan.forEach((topic) => {
         // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
         unsubscribeListeners.push( eventBus.on(topic.topic, (data) => {
+          LOG.info("Got a notification:", data);
           if (rssiThreshold === null || data.rssi > rssiThreshold) {
             // remove the listeners
             cleanup();
