@@ -91,9 +91,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Triplet[] LOG_LEVELS = new Triplet[]{
 			                                             // log lvl   file log lvl
-			new Triplet<>(BleScanService.class,          Log.WARN,    Log.DEBUG),
+			new Triplet<>(BleScanService.class,          Log.DEBUG,    Log.DEBUG),
 			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,    Log.WARN),
-			new Triplet<>(BluenetBridge.class,           Log.WARN,    Log.DEBUG),
+			new Triplet<>(BluenetBridge.class,           Log.DEBUG,    Log.DEBUG),
 			new Triplet<>(BleBaseEncryption.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
@@ -181,7 +181,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
 
-
 	private Map<String, WritableMap> _ibeaconAdvertisements = new HashMap<>();
 
 	public BluenetBridge(ReactApplicationContext reactContext) {
@@ -264,12 +263,22 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	private void setLogLevels() {
-		BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
+		if (BuildConfig.DEBUG) {
+			BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
+		}
+		else {
+			BleLog.getInstance().setLogLevel(Log.ERROR);
+		}
 		for (Triplet triplet: LOG_LEVELS) {
 			Class<?> cls = (Class<?>)triplet.first;
 			int logLevel = (int)triplet.second;
 			int fileLogLevel = (int)triplet.third;
-			BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), logLevel, fileLogLevel);
+			if (BuildConfig.DEBUG) {
+				BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), logLevel, fileLogLevel);
+			}
+			else {
+				BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), Log.ERROR, fileLogLevel);
+			}
 		}
 	}
 
