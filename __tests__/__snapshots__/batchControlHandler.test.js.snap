@@ -14,6 +14,7 @@ Object {
       "keepAliveState": Array [],
       "multiSwitch": Array [
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID1",
           "handle": "handle-CSID-1",
@@ -27,6 +28,7 @@ Object {
           "timeout": 0,
         },
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID2",
           "handle": "handle-CSID-2",
@@ -40,6 +42,7 @@ Object {
           "timeout": 0,
         },
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID3",
           "handle": "handle-CSID-3",
@@ -61,6 +64,7 @@ Object {
       "keepAliveState": Array [],
       "multiSwitch": Array [
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID4",
           "handle": "handle-CSID-4",
@@ -94,6 +98,7 @@ Object {
       "keepAlive": Array [],
       "keepAliveState": Array [
         Object {
+          "attempts": 1,
           "changeState": true,
           "cleanup": [Function],
           "crownstoneId": "CSID2",
@@ -107,6 +112,7 @@ Object {
           "timeout": 150,
         },
         Object {
+          "attempts": 1,
           "changeState": true,
           "cleanup": [Function],
           "crownstoneId": "CSID3",
@@ -122,6 +128,7 @@ Object {
       ],
       "multiSwitch": Array [
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID1",
           "handle": "handle-CSID-1",
@@ -135,6 +142,7 @@ Object {
           "timeout": 0,
         },
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID2",
           "handle": "handle-CSID-2",
@@ -148,6 +156,7 @@ Object {
           "timeout": 0,
         },
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID3",
           "handle": "handle-CSID-3",
@@ -169,6 +178,7 @@ Object {
       "keepAliveState": Array [],
       "multiSwitch": Array [
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID4",
           "handle": "handle-CSID-4",
@@ -202,6 +212,7 @@ Object {
       "keepAlive": Array [],
       "keepAliveState": Array [
         Object {
+          "attempts": 1,
           "changeState": true,
           "cleanup": [Function],
           "crownstoneId": "CSID2",
@@ -215,6 +226,7 @@ Object {
           "timeout": 150,
         },
         Object {
+          "attempts": 1,
           "changeState": true,
           "cleanup": [Function],
           "crownstoneId": "CSID3",
@@ -228,6 +240,7 @@ Object {
           "timeout": 150,
         },
         Object {
+          "attempts": 1,
           "changeState": true,
           "cleanup": [Function],
           "crownstoneId": "CSID1",
@@ -241,6 +254,7 @@ Object {
           "timeout": 150,
         },
         Object {
+          "attempts": 1,
           "changeState": true,
           "cleanup": [Function],
           "crownstoneId": "CSID3",
@@ -263,6 +277,7 @@ Object {
       "keepAliveState": Array [],
       "multiSwitch": Array [
         Object {
+          "attempts": 1,
           "cleanup": [Function],
           "crownstoneId": "CSID4",
           "handle": "handle-CSID-4",
