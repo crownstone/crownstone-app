@@ -77,6 +77,11 @@ import nl.dobots.bluenet.service.callbacks.ScanDeviceListener;
 import nl.dobots.bluenet.utils.BleLog;
 import nl.dobots.bluenet.utils.BleUtils;
 import nl.dobots.bluenet.utils.FileLogger;
+import no.nordicsemi.android.dfu.DfuProgressListener;
+import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
+import no.nordicsemi.android.dfu.DfuServiceController;
+import no.nordicsemi.android.dfu.DfuServiceInitiator;
+import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 import rocks.crownstone.localization.Fingerprint;
 import rocks.crownstone.localization.FingerprintLocalization;
 import rocks.crownstone.localization.FingerprintSamplesMap;
@@ -91,9 +96,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Triplet[] LOG_LEVELS = new Triplet[]{
 			                                             // log lvl   file log lvl
-			new Triplet<>(BleScanService.class,          Log.WARN,    Log.DEBUG),
+			new Triplet<>(BleScanService.class,          Log.DEBUG,    Log.DEBUG),
 			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,    Log.WARN),
-			new Triplet<>(BluenetBridge.class,           Log.WARN,    Log.DEBUG),
+			new Triplet<>(BluenetBridge.class,           Log.DEBUG,    Log.DEBUG),
 			new Triplet<>(BleBaseEncryption.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
@@ -181,8 +186,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// handler used for delayed execution and timeouts
 	private Handler _handler;
 
-
 	private Map<String, WritableMap> _ibeaconAdvertisements = new HashMap<>();
+
+
+	private DfuServiceInitiator _dfuServiceInitiator = null;
+	private DfuServiceController _dfuServiceController = null;
+	private Callback _dfuCallback = null;
+
 
 	public BluenetBridge(ReactApplicationContext reactContext) {
 		super(reactContext);
@@ -259,17 +269,29 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_localization = FingerprintLocalization.getInstance();
 		_isResettingBluetooth = false;
 
+		DfuServiceListenerHelper.registerProgressListener(_reactContext, _dfuProgressListener);
+
 		_isInitialized = true;
 		checkReady();
 	}
 
 	private void setLogLevels() {
-		BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
+		if (BuildConfig.DEBUG) {
+			BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
+		}
+		else {
+			BleLog.getInstance().setLogLevel(Log.ERROR);
+		}
 		for (Triplet triplet: LOG_LEVELS) {
 			Class<?> cls = (Class<?>)triplet.first;
 			int logLevel = (int)triplet.second;
 			int fileLogLevel = (int)triplet.third;
-			BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), logLevel, fileLogLevel);
+			if (BuildConfig.DEBUG) {
+				BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), logLevel, fileLogLevel);
+			}
+			else {
+				BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), Log.ERROR, fileLogLevel);
+			}
 		}
 	}
 
@@ -932,6 +954,46 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 
 	}
+
+	@ReactMethod
+	public void enableDfuMode(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "enableDfuMode");
+		_bleExt.resetToBootloader(new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void startDfu(String address, String filePath, final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "startDfu");
+		if (_dfuCallback != null) {
+			BleLog.getInstance().LOGw(TAG, "previous callback was not called");
+		}
+		_dfuCallback = callback;
+
+		String name = "unknown";
+		BleDevice dev = _scanService.getBleExt().getDeviceMap().get(address);
+		if (dev != null) {
+			name = dev.getName();
+		}
+
+		startDfu(address, name, filePath);
+	}
+
+
 
 	@ReactMethod
 	public void getMACAddress(Callback callback) {
@@ -1882,6 +1944,109 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		}
 		return new Pair<>(LOG_LEVEL_DEFAULT, LOG_LEVEL_DEFAULT);
 	}
+
+
+
+	private boolean startDfu(String address, String name, String filePath) {
+		_dfuServiceInitiator = new DfuServiceInitiator(address);
+		_dfuServiceInitiator.setDeviceName(name);
+		_dfuServiceInitiator.setKeepBond(false);
+
+		// Enable experimental buttonless DFU feature.
+		// But be aware of this: https://devzone.nordicsemi.com/question/100609/sdk-12-bootloader-erased-after-programming/
+		// and other issues related to this experimental service.
+		_dfuServiceInitiator.setUnsafeExperimentalButtonlessServiceInSecureDfuEnabled(false);
+		_dfuServiceInitiator.setZip(null, filePath);
+
+		// Can be used to pause/resume, or abort the dfu process.
+		_dfuServiceController = _dfuServiceInitiator.start(_reactContext, DfuService.class);
+
+		return true;
+	}
+
+	private final DfuProgressListener _dfuProgressListener = new DfuProgressListenerAdapter() {
+		@Override
+		public void onDeviceConnecting(final String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: connecting");
+		}
+
+		@Override
+		public void onDeviceConnected(String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: connected");
+		}
+
+		@Override
+		public void onDfuProcessStarting(final String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: start dfu process");
+		}
+
+		@Override
+		public void onDfuProcessStarted(String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: started dfu process");
+		}
+
+		@Override
+		public void onEnablingDfuMode(String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: enabling dfu mode");
+		}
+
+		@Override
+		public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+			BleLog.getInstance().LOGd(TAG, "dfu: progress=%d (%d / %d) speed=%f (%f avg)", percent, currentPart, partsTotal, speed, avgSpeed);
+		}
+
+		@Override
+		public void onFirmwareValidating(String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: validating firmware");
+		}
+
+		@Override
+		public void onDeviceDisconnecting(String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: disconnecting");
+		}
+
+		@Override
+		public void onDeviceDisconnected(String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: disconnected");
+		}
+
+		@Override
+		public void onDfuCompleted(String deviceAddress) {
+			BleLog.getInstance().LOGd(TAG, "dfu: completed");
+			if (_dfuCallback != null) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				_dfuCallback.invoke(retVal);
+				_dfuCallback = null;
+			}
+		}
+
+		@Override
+		public void onDfuAborted(String deviceAddress) {
+			BleLog.getInstance().LOGw(TAG, "dfu: aborted");
+			if (_dfuCallback != null) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "dfu aborted");
+				_dfuCallback.invoke(retVal);
+				_dfuCallback = null;
+			}
+		}
+
+		@Override
+		public void onError(String deviceAddress, int error, int errorType, String message) {
+			BleLog.getInstance().LOGe(TAG, "dfu: error %d (%d): %s", error, errorType, message);
+			if (_dfuCallback != null) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "dfu error:" + message);
+				_dfuCallback.invoke(retVal);
+				_dfuCallback = null;
+			}
+		}
+	};
+
+
 
 	//@ReactMethod
 	//public void bla() { }
