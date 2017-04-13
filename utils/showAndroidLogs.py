@@ -47,14 +47,19 @@ if __name__ == '__main__':
 		patternScannedDevice = re.compile('.* scanned device: (\S+) \[(\S+)\] \((\d+)\) .*', re.IGNORECASE)
 		patternRegionEnter = re.compile('.* onRegionEnter: uuid=(\S+), referenceId=(\S+) .*', re.IGNORECASE)
 		patternRegionExit = re.compile('.* onRegionExit: uuid=(\S+), referenceId=(\S+) .*', re.IGNORECASE)
+		patternConnectStart = re.compile('.* Connect to ([0-9A-F:]+) rssi: ([\-0-9]+)', re.IGNORECASE)
+		patternConnectSuccess = re.compile('.* connected to ([0-9A-F:]+)', re.IGNORECASE)
+		patternConnectFail = re.compile('.* connection error to ([0-9A-F:]+) error: (.+)', re.IGNORECASE)
 
 		scanIntervalStartList = []
 		scanIntervalStopList = []
 
+		connectStartList = [] # Contains the handles (mac addresses)
 		connectStartTimeList = []
-		connectHandleList = []
-		connectResultList = [] # -1 for connect fail, 1 for connect success
-		connectResultTimeList = []
+		connectSuccessTimeList = []
+		connectFailList = [] # Contains the failure reasons
+		connectFailTimeList = []
+
 		handles = {}
 
 		scannedDeviceList = []
@@ -108,7 +113,25 @@ if __name__ == '__main__':
 				regionExitList.append(uuid)
 				regionExitTimeList.append(timestamp)
 
+			match = patternConnectStart.match(line)
+			if (match):
+				handle = match.group(1)
+				rssi = match.group(2)
+				handles[handle] = 1
+				connectStartList.append(handle)
+				connectStartTimeList.append(timestamp)
 
+			match = patternConnectSuccess.match(line)
+			if (match):
+				handle = match.group(1)
+				connectSuccessTimeList.append(timestamp)
+
+			match = patternConnectFail.match(line)
+			if (match):
+				handle = match.group(1)
+				errorMsg = match.group(2)
+				connectFailList.append(errorMsg)
+				connectFailTimeList.append(timestamp)
 
 
 		# Process
@@ -258,6 +281,15 @@ if __name__ == '__main__':
 		# plt.subplots_adjust(bottom=0.2)
 		# plt.xticks( rotation=tickRotation )
 
+		plt.figure()
+		plt.plot(connectStartTimeList,   [0.5]*len(connectStartTimeList),   "o", label="connect start")
+		plt.hold(True)
+		plt.plot(connectSuccessTimeList, [0.9]*len(connectSuccessTimeList), "o", label="connect success")
+		plt.plot(connectFailTimeList,    [0.1]*len(connectFailTimeList),    "o", label="connect fail")
+		plt.hold(False)
+		plt.ylim([0, 1])
+		plt.xticks( rotation=tickRotation )
+		plt.legend()
 
 		plt.show()
 
