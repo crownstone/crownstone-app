@@ -195,7 +195,6 @@ test('BatchCommandHandler Mesh', () => {
     {command: 'multiSwitch',  args: [[{'crownstoneId': 'CSID4', 'intent': 4, 'state': 1, 'timeout': 0}]]},
     {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId4'},
     {command: 'disconnect', args: []},
-    {promise:'resolved', command: 'execute', id: 'execute'},
   ];
 
 
@@ -207,7 +206,7 @@ test('BatchCommandHandler Mesh', () => {
     BatchCommandHandler.load(mockStone2, 'stoneId2', 'sphereId', multiSwitch).then(() => { testBus.emit('test', {command:'multiSwitch', promise:'resolved', id:'load_stoneId2'}) });
     BatchCommandHandler.load(mockStone3, 'stoneId3', 'sphereId', multiSwitch).then(() => { testBus.emit('test', {command:'multiSwitch', promise:'resolved', id:'load_stoneId3'}) });
     BatchCommandHandler.load(mockStone4, 'stoneId4', 'sphereId', multiSwitch).then(() => { testBus.emit('test', {command:'multiSwitch', promise:'resolved', id:'load_stoneId4'}) });
-    BatchCommandHandler.execute().then(() => { testBus.emit('test', {promise:'resolved', id:'execute', command:'execute'}) });
+    BatchCommandHandler.execute()
 
     let { directCommands, meshNetworks } = BatchCommandHandler._extractTodo();
     expect(directCommands).toMatchSnapshot(); // snapshot 1
@@ -288,7 +287,6 @@ test('BatchCommandHandler Direct', () => {
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId11'},
     {command: 'disconnect', args: []},
-    {promise:'resolved', command: 'execute', id: 'execute'},
   ];
 
 
@@ -303,7 +301,7 @@ test('BatchCommandHandler Direct', () => {
     BatchCommandHandler.load(stone10, 'stoneId10', sphereId, keepAliveState).then(() => { testBus.emit('test', {command:'keepAliveStatePromise', promise:'resolved', id:'load_stoneId10'}) });
     BatchCommandHandler.load(stone11, 'stoneId11', sphereId, keepAliveState).then(() => { testBus.emit('test', {command:'keepAliveStatePromise', promise:'resolved', id:'load_stoneId11'}) });
 
-    BatchCommandHandler.execute().then(() => { testBus.emit('test', {promise:'resolved', id:'execute', command:'execute'}) });
+    BatchCommandHandler.execute()
 
 
     eventBus.emit('update_' + sphereId + '_stoneId8', { handle: 'handle8', stoneId: 'stoneId8', rssi: -60 });

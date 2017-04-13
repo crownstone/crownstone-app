@@ -549,8 +549,8 @@ class BatchCommandHandlerClass {
 
     let promiseRegistration = null;
 
-    if (priority) { promiseRegistration = BlePromiseManager.registerPriority; }
-    else          { promiseRegistration = BlePromiseManager.register; }
+    if (priority) { promiseRegistration = BlePromiseManager.registerPriority.bind(BlePromiseManager); }
+    else          { promiseRegistration = BlePromiseManager.register.bind(BlePromiseManager); }
 
     promiseRegistration(actionPromise, {from: 'BatchCommandHandler: executing.'})
       .catch((err) => {
