@@ -20,7 +20,7 @@ import { KeepAliveHandler }       from '../native/KeepAliveHandler'
 import { SetupStateHandler }      from '../native/SetupStateHandler'
 import { StoneStateHandler }      from '../native/StoneStateHandler'
 import { BatchCommandHandler }    from '../logic/BatchCommandHandler'
-import { NotificationHandler }    from '../notifications/NotificationHandler'
+// import { NotificationHandler }    from '../notifications/NotificationHandler'
 import { Scheduler }              from '../logic/Scheduler'
 import { eventBus }               from '../util/EventBus'
 import { prepareStoreForUser }    from '../util/DataUtil'
@@ -80,7 +80,7 @@ export class AppRouter extends Component {
       StoneStateHandler.loadStore(store);
       SetupStateHandler.loadStore(store);
       KeepAliveHandler.loadStore(store);
-      NotificationHandler.loadStore(store);
+      // NotificationHandler.loadStore(store);
 
       // clear the temporary data like presence, state and disability of stones so no old data will be shown
       prepareStoreForUser(store);

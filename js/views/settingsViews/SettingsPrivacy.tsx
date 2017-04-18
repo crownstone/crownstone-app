@@ -15,7 +15,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from '../styles'
 import { Util } from "../../util/Util";
-import { NotificationHandler } from "../../notifications/NotificationHandler";
+// import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
 export class SettingsPrivacy extends Component<any, any> {
@@ -90,31 +90,31 @@ export class SettingsPrivacy extends Component<any, any> {
       });
 
 
-      items.push({
-        label: "ENABLE THIS DEVICE AS HUB",
-        type: 'explanation',
-        below: false
-      });
-      items.push({
-        label: "Hub",
-        value: device.hubFunction,
-        type: 'switch',
-        icon: <IconButton name="md-cloudy" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
-        callback: (newValue) => {
-          if (newValue === true) {
-            NotificationHandler.request();
-          }
-          else {
-
-          }
-          store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceId, data: { hubFunction: newValue }});
-        }
-      });
-      items.push({
-        label: "If this device can be used as a hub, it can respond to switchRemotely commands from the Crownstone Cloud API.",
-        type: 'explanation',
-        below: true
-      });
+      // items.push({
+      //   label: "ENABLE THIS DEVICE AS HUB",
+      //   type: 'explanation',
+      //   below: false
+      // });
+      // items.push({
+      //   label: "Hub",
+      //   value: device.hubFunction,
+      //   type: 'switch',
+      //   icon: <IconButton name="md-cloudy" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
+      //   callback: (newValue) => {
+      //     if (newValue === true) {
+      //       NotificationHandler.request();
+      //     }
+      //     else {
+      //
+      //     }
+      //     store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceId, data: { hubFunction: newValue }});
+      //   }
+      // });
+      // items.push({
+      //   label: "If this device can be used as a hub, it can respond to switchRemotely commands from the Crownstone Cloud API.",
+      //   type: 'explanation',
+      //   below: true
+      // });
 
     }
 
