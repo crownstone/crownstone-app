@@ -45,7 +45,7 @@ if (DISABLE_NATIVE === true) {
     recover: () => {},                   // called through BluenetPromiseWrapper --> must be promise.
     setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
 
-    quitApp: () => {},                   // Used in android to force close the app
+    quitApp: () => { NativeModules.BluenetJS.quitApp() },                   // Used to quit the app during logout
     enableLoggingToFile: () => {},
     clearLogs: () => {},
 

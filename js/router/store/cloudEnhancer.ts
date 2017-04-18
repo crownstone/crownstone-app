@@ -1,5 +1,6 @@
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getUserLevelInSphere, getCurrentDeviceId } from '../../util/DataUtil'
+import { getUserLevelInSphere } from '../../util/DataUtil'
+import { Util } from '../../util/Util'
 import { BATCH } from './storeManager'
 import { LOG } from '../../logging/Log'
 
@@ -291,7 +292,7 @@ function handleSphereUserInCloud(action, state) {
 
 function handleUserLocationEnter(action, state) {
   if (state.user.uploadLocation === true) {
-    let deviceId = getCurrentDeviceId(state);
+    let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
       CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => {
       });
@@ -301,7 +302,7 @@ function handleUserLocationEnter(action, state) {
 
 function handleUserLocationExit(action, state) {
   if (state.user.uploadLocation === true) {
-    let deviceId = getCurrentDeviceId(state);
+    let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
       CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {
       });
@@ -321,6 +322,7 @@ function handleDeviceInCloud(action, state) {
     name: deviceConfig.name,
     address: deviceConfig.address,
     description: deviceConfig.description,
+    hubFunction: deviceConfig.hubFunction,
     location: state.user.uploadLocation === true ? deviceConfig.location : undefined,
     tapToToggleCalibration: deviceConfig.tapToToggleCalibration,
     updatedAt: deviceConfig.updatedAt

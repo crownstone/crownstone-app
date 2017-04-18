@@ -10,6 +10,7 @@ import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
 import { TYPES } from '../router/store/reducers/stones'
+import {StoneStateHandler} from "./StoneStateHandler";
 
 class LocationHandlerClass {
   _initialized : boolean;
@@ -51,8 +52,10 @@ class LocationHandlerClass {
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
     // make sure we only do this once per sphere
-    if (sphere && sphere.config && sphere.config.present === true)
+    if (sphere && sphere.config && sphere.config.present === true) {
+      LOG.info("LocationHandler: IGNORE ENTER SPHERE because I'm already in the sphere.");
       return;
+    }
 
     if (sphere !== undefined) {
       LOG.info("LocationHandler: ENTER SPHERE", sphereId);
@@ -125,7 +128,13 @@ class LocationHandlerClass {
     }
   }
 
-  exitSphere(sphereId) {
+
+  /**
+   * Reset will clear the last time present from the check. This will cause the enter sphere event to work as it should.
+   * @param sphereId
+   * @param reset
+   */
+  exitSphere(sphereId, reset = false) {
     LOG.info("LocationHandler: LEAVING SPHERE", sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
@@ -141,7 +150,7 @@ class LocationHandlerClass {
       // disable all crownstones
       disableStones(this.store, sphereId);
 
-      // check if you are present in A sphere. If not, stop scanning.
+      // check if you are present in any sphere. If not, stop scanning.
       // let presentSomewhere = false;
       // Object.keys(state.spheres).forEach((checkSphereId) => {
       //   if (state.spheres[checkSphereId].config.present === true && checkSphereId !== sphereId) {
@@ -153,7 +162,7 @@ class LocationHandlerClass {
       //   Bluenet.stopScanning();
       // }
 
-      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
+      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false, lastTimePresent: reset === true ? 1 : undefined}});
     }
   }
 

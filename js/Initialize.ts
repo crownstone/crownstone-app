@@ -7,7 +7,6 @@ import { Scheduler }                        from './logic/Scheduler'
 import { BluenetPromiseWrapper, NativeBus } from './native/Proxy';
 import { Bluenet  }                         from './native/Bluenet';
 import { eventBus }                         from './util/EventBus'
-import { getDeviceSpecs }                   from './util/DataUtil'
 import { Util }                             from './util/Util'
 
 
@@ -103,6 +102,7 @@ export const INITIALIZER = {
       // when a sphere is created, we track all spheres anew.
       eventBus.on('sphereCreated', () => {LocalizationUtil.trackSpheres(store);});
 
+
       // sync every 5 minutes
       Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*5});
       Scheduler.loadCallback('backgroundSync', () => {
@@ -121,8 +121,8 @@ export const INITIALIZER = {
       let state = store.getState();
       Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
 
-      // update device specs:
-      let currentDeviceSpecs = getDeviceSpecs(state);
+      // Update device specs: Since name is user editable, it can change over time. We use this to update the model.
+      let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
       let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
       if (currentDeviceSpecs.address && deviceInDatabaseId) {
         let deviceInDatabase = state.devices[deviceInDatabaseId];
@@ -173,6 +173,12 @@ export const INITIALIZER = {
   }
 };
 
+
+/**
+ * If we change the reducer default values, this adds any new fields to the redux database
+ * so we don't have to error catch everywhere.
+ * @param store
+ */
 function refreshDatabase(store) {
   let state = store.getState();
   let refreshActions = [];

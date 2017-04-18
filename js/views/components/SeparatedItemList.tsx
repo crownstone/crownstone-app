@@ -23,41 +23,10 @@ export class SeparatedItemList extends Component<any, any> {
     this.focusTimeout = undefined;
   }
 
-  componentDidMount() {
-    this.focusTimeout = setTimeout(() => {
-      if (this.props.focusOnLoad === true) {
-        this.textFields[0].focus();
-      }
-    },50);
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.focusTimeout)
-  }
-
-  _focusOnNextField() {
-    this.index += 1;
-    if (this.index < this.textFields.length) {
-      this.textFields[this.index].focus();
-    }
-  }
 
   _getItems() {
     let items = this.props.items;
     let renderItems = [];
-
-
-    // these make sure we can skip to the next textField when we press enter.
-    let textFieldRegistration = (key,ref) => {
-      this.textFieldMap[key] = this.textFields.length;
-      this.textFields.push(ref);
-    };
-    let nextFunction = () => {
-      this._focusOnNextField();
-    };
-    let currentFocus = (key) => {
-      this.index = this.textFieldMap[key];
-    };
 
 
     let indentSeparator = this.props.separatorIndent === true;
@@ -78,7 +47,7 @@ export class SeparatedItemList extends Component<any, any> {
         renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} />);
       }
 
-      renderItems.push(this.props.renderer(item, index, itemId, textFieldRegistration, nextFunction, currentFocus));
+      renderItems.push(this.props.renderer(item, index, itemId));
 
       if (nextItem === undefined) {
         if (isItemEditable) {

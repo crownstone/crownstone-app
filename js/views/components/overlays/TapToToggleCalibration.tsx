@@ -11,7 +11,6 @@ import {
 import { LOG }                from '../../../logging/Log'
 import { BlePromiseManager }  from '../../../logic/BlePromiseManager'
 import { addDistanceToRssi, Util }  from '../../../util/Util'
-import { getDeviceSpecs }  from '../../../util/DataUtil'
 import { stoneTypes }  from '../../../router/store/reducers/stones'
 import { OverlayBox }         from './OverlayBox'
 import { eventBus }                                   from '../../../util/EventBus'
@@ -91,7 +90,7 @@ export class TapToToggleCalibration extends Component<any, any> {
           LOG.info("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
 
           let state = this.props.store.getState();
-          let currentDeviceSpecs = getDeviceSpecs(state);
+          let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
           let deviceId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
           this.props.store.dispatch({
             type: 'SET_TAP_TO_TOGGLE_CALIBRATION',

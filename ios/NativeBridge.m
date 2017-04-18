@@ -61,6 +61,7 @@ RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)lo
 
 RCT_EXTERN_METHOD(enableLoggingToFile:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)
+RCT_EXTERN_METHOD(quitApp)
 
 // MESH
 

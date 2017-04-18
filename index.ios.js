@@ -29,20 +29,25 @@ class Root extends Component {
     // start the BLE things.
     INITIALIZER.init();
 
+    this.snapBackKeyboardTimeout = 0;
+    this.focusTime = 0;
+
     let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration:0}).start(); };
-    let snapBackKeyboard = () => { Animated.timing(this.state.top, {toValue: 0, duration: 200}).start(); };
+    let snapBackKeyboard = () => {
+      if (new Date().valueOf() - this.focusTime > 100) {
+        Animated.timing(this.state.top, {toValue: 0, duration: 200}).start();
+      }
+    };
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
       let keyboardHeight = 340;
-      let distFromBottom = screenHeight - posY;
-      Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration:200}).start()
+      let distFromBottom = screenHeight - (posY - this.state.top._value);
+      this.focusTime = new Date().valueOf();
+      Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration: 200}).start()
     }));
     this.unsubscribe.push(eventBus.on('hidePopup', snapBackKeyboard));
     this.unsubscribe.push(eventBus.on('showPopup', snapBackKeyboard));
     this.unsubscribe.push(eventBus.on('blur', snapBackKeyboard));
-
-    // if the keyboard is minimized, shift back down
-    // this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', snapBack);
 
     // catch for the simulator
     this.unsubscribe.push(eventBus.on('showLoading',  snapBack));

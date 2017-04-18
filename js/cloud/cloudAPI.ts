@@ -9,6 +9,7 @@ import { spheres } from './sections/spheres'
 import { locations } from './sections/locations'
 import { devices } from './sections/devices'
 import { appliances } from './sections/appliances'
+import { installations } from './sections/installations'
 import { sync } from './sections/sync'
 
 
@@ -21,6 +22,7 @@ function combineSections() {
   Util.mixin(result, spheres);
   Util.mixin(result, devices);
   Util.mixin(result, appliances);
+  Util.mixin(result, installations);
   Util.mixin(result, sync);
   return result;
 }

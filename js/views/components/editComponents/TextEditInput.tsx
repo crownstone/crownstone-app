@@ -7,7 +7,6 @@ import {
 import { eventBus } from '../../../util/EventBus'
 
 export class TextEditInput extends Component<any, any> {
-
   blurred : boolean;
   isInFocus : boolean;
   refName : string;
@@ -24,12 +23,11 @@ export class TextEditInput extends Component<any, any> {
 
     // make sure we submit the data if the keyboard is hidden.
     this.blurListener = Keyboard.addListener('keyboardDidHide', () => { this.blur();  });
+    this.unsubscribe = eventBus.on("inputComplete", () => { console.log("TRIG"); this.blur(); })
   }
-  
+
   componentWillReceiveProps(newProps) {
-    if (newProps.value !== this.state.value) {
-      this.setState({value: newProps.value})
-    }
+
   }
 
   componentWillUnmount() {
@@ -40,37 +38,24 @@ export class TextEditInput extends Component<any, any> {
     this.blurListener.remove();
   }
 
-  componentDidMount() {
-    if (this.props.textFieldRegistration) {
-      this.props.textFieldRegistration(this.refName, this.refs[this.refName]);
-    }
-    this.unsubscribe = eventBus.on("blurAll", () => { this.blur();})
-  }
+  componentDidMount() { }
 
   focus() {
-    if (this.props.currentFocus) {
-      this.props.currentFocus(this.refName);
-    }
-
     this.isInFocus = true;
     this.blurred = false;
     (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
-      if (this.props.setActiveElement)
-        this.props.setActiveElement();
       eventBus.emit("focus", py);
     })
   }
 
   blur() {
     if (this.blurred === false) {
-      this.isInFocus = false;
       this.blurred = true;
-      if (this.props.__validate) {
-        this.props.__validate(this.state.value);
+      this.isInFocus = false;
+      if (this.props.optimization === true) {
+        this.props.callback(this.state.value);
       }
-      this.props.callback(this.state.value);
-
-      eventBus.emit("blur");
+      eventBus.emit('blur');
     }
   }
 
@@ -79,17 +64,28 @@ export class TextEditInput extends Component<any, any> {
       <TextInput
         ref={this.refName}
         autoCorrect={this.props.autoCorrect || false}
-        onFocus={this.props.onFocus ? () => {this.focus(); this.props.onFocus();} : () => {this.focus();}}
+        onFocus={() => {this.focus();}}
         style={[{flex:1, position:'relative', top:1}, this.props.style]}
         autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
-        value={this.props.optimization === false ? this.props.value : this.state.value}
+        value={this.props.optimization !== true ? this.props.value : this.state.value}
         placeholder={this.props.placeholder || this.props.label}
         placeholderTextColor={this.props.placeholderTextColor}
         secureTextEntry={this.props.secureTextEntry}
-        onChangeText={(newValue) => {this.setState({value:newValue})}}
-        keyboardType={this.props.keyboardType || 'default'}
-        onEndEditing={() => {this.blur();}}
-        onSubmitEditing={() => {this.blur(); if (this.props.nextFunction) { this.props.nextFunction(); }}}
+        onChangeText={(newValue) => {
+          if (this.props.optimization !== true) {
+            this.props.callback(newValue);
+          }
+          else {
+            this.setState({value: newValue});
+          }
+        }}
+        keyboardType={ this.props.keyboardType || 'default'}
+        onEndEditing={() => {
+          this.blur();
+          if (this.props.__validate) {
+            this.props.__validate(this.props.optimization !== true ? this.props.value : this.state.value);
+          }
+        }}
       />
     );
   }

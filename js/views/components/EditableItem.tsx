@@ -80,13 +80,7 @@ import { styles, screenWidth, barHeight, barHeightLarge } from '../styles'
 
  */
 export class EditableItem extends Component<any, any> {
-  text : any;
-
   render() {
-
-    if (this.props.setActiveElement === undefined) {
-      this.props.setActiveElement = () => {};
-    }
 
     if (this.props.__item !== undefined) {
       return this.props.__item;
@@ -118,7 +112,7 @@ export class EditableItem extends Component<any, any> {
       case 'spacer':
         return <EditSpacer {...this.props} />;
       case 'textEdit':
-        return <TextEditBar ref={this.text} barHeight={barHeight} {...this.props} />;
+        return <TextEditBar barHeight={barHeight} {...this.props} />;
       case 'timePicker':
         return <TimePicker barHeight={barHeight} {...this.props} />;
       default:

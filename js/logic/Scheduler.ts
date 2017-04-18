@@ -63,7 +63,7 @@ class SchedulerClass {
    */
   setRepeatingTrigger(id, options) {
     if (options.repeatEveryNSeconds && options.repeatEveryNSeconds > 20000) {
-      LOG.error(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
+      LOG.warn(id, "Probably passed milliseconds to scheduler", options.repeatEveryNSeconds);
     }
 
     if (this.triggers[id] === undefined) {

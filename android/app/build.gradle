@@ -140,6 +140,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-push-notification')
     compile project(':bluenet')
     compile project(':localization')
     compile project(':rn-splash-screen')

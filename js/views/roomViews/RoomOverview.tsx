@@ -121,7 +121,7 @@ export class RoomOverview extends Component<any, any> {
             />
           </View>
         </View>
-      )
+      );
     }
     else {
       return (

@@ -126,7 +126,7 @@ export class RoomAdd extends Component<any, any> {
 
   createRoom() {
     // make sure all textfields are blurred
-    this.props.eventBus.emit("blurAll");
+    this.props.eventBus.emit("inputComplete");
     setTimeout(() => { this._createRoom(); }, 20);
   }
 
@@ -134,9 +134,9 @@ export class RoomAdd extends Component<any, any> {
     const store = this.props.store;
     const state = store.getState();
 
-    if (this.state.name.length < 3) {
+    if (this.state.name.length === 0) {
       Alert.alert(
-        'Room name must be at least 3 characters long.',
+        'Room name must be at least 1 character long.',
         'Please change the name and try again.',
         [{text:'OK'}]
       )

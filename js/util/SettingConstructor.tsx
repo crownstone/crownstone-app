@@ -123,7 +123,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     type:'button',
     icon: getIcon('md-log-out', 22, colors.white.hex, colors.menuRed.hex),
     callback: () => {
-      Alert.alert('Log out','Are you sure?',[
+      Alert.alert('Log out','Are you sure? I will tidy up and close the app. Next time you open it you can log in again!',[
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => { AppUtil.logOut() }}
       ])

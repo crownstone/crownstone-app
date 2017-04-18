@@ -7,7 +7,6 @@ import {
 import { Icon } from '../Icon';
 import { styles, colors } from '../../styles'
 import { TextEditInput } from './TextEditInput'
-import { Separator } from '../Separator'
 import { emailChecker, characterChecker, numberChecker } from '../../../util/Util'
 
 export class TextEditBar extends Component<any, any> {
@@ -118,29 +117,21 @@ export class TextEditBar extends Component<any, any> {
     return undefined;
   }
 
-  getTextBlock(verification?) {
-    return (
-        <View style={[styles.listView, {height:this.props.barHeight}]}>
-          <Text style={styles.listText}>{this.props.label}</Text>
-          <TextEditInput
-            ref={verification ? this.refNameVerification : this.refName}
-            __validate={(value) => {this.validate(value)}}
-            {...this.props}
-            placeholder={verification ? 'Verification' : this.props.placeholder || this.props.label}
-            value={verification ? this.verificationContent : this.props.value}
-          />
-          {this.getValidationIcons()}
-        </View>
-    );
-  }
 
   render() {
-    if (this.props.verification === true) {
-      return <View>{this.getTextBlock(false)}<Separator />{this.getTextBlock(true)}</View>;
-    }
-    else {
-      return this.getTextBlock();
-    }
+    return (
+      <View style={[styles.listView, {height:this.props.barHeight}]}>
+        <Text style={styles.listText}>{this.props.label}</Text>
+        <TextEditInput
+          ref={this.refName}
+          __validate={(value) => {this.validate(value)}}
+          {...this.props}
+          placeholder={this.props.placeholder || this.props.label}
+          value={this.props.value}
+        />
+        {this.getValidationIcons()}
+      </View>
+    );
 
   }
 }
