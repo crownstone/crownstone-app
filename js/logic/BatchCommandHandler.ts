@@ -26,7 +26,7 @@ class BatchCommandHandlerClass {
    * @param { Number } attempts           // sphereId,
    */
   load(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1) {
-    LOG.verbose("BatchCommand: Loading Command,", stoneId, stone.config.name, command);
+    LOG.verbose("BatchCommandHandler: Loading Command,", stoneId, stone.config.name, command);
     return this._load(stone, stoneId, sphereId, command, false, attempts );
   }
 
@@ -38,7 +38,7 @@ class BatchCommandHandlerClass {
    * @param { Number } attempts           // sphereId,
    */
   loadPriority(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1) {
-    LOG.verbose("BatchCommand: Loading High Priority Command,", stoneId, stone.config.name, command);
+    LOG.verbose("BatchCommandHandler: Loading High Priority Command,", stoneId, stone.config.name, command);
     return this._load(stone, stoneId, sphereId, command, true, attempts );
   }
 
@@ -74,12 +74,12 @@ class BatchCommandHandlerClass {
       let todo = this.commands[uuids[i]];
       if (todo.sphereId === sphereId && todo.stoneId === stoneId && todo.command.commandName === command.commandName) {
         if (todo.promise.pending === false) {
-          LOG.warn("BatchCommand: removing duplicate entry for ", stoneId, command.commandName);
+          LOG.warn("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
           todo.promise.reject("Removed because of duplicate");
           todo.cleanup();
         }
         else {
-          LOG.warn("BatchCommand: Detected pending duplicate entry for ", stoneId, command.commandName);
+          LOG.warn("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
         }
       }
     }
@@ -306,7 +306,7 @@ class BatchCommandHandlerClass {
     // find all the topics for individual crownstones.
     directSphereIds.forEach((sphereId) => {
       directCommands[sphereId].forEach((command) => {
-        LOG.info("BatchCommandHandler: directCommands for sphere", sphereId, ", command:", command.command);
+        LOG.info("BatchCommandHandler: directCommands for sphere:", sphereId, " stone:", command.stoneId, ", command:", command.command);
         topicsToScan.push({ sphereId: sphereId, topic: 'update_' + sphereId + '_' + command.stoneId });
       });
     });
@@ -421,7 +421,7 @@ class BatchCommandHandlerClass {
         rssiScanThreshold = null;
       }
 
-      let connectedCrownstone = null;
+      let connectedCrownstone : connectionInfo = null;
       // scan for target
       this._searchScan(topicsToScan, rssiScanThreshold, 5000)
         .then((connectionInfo : connectionInfo) => {
@@ -473,7 +473,13 @@ class BatchCommandHandlerClass {
           LOG.error("ERROR DURING EXECUTE", err);
           BluenetPromiseWrapper.phoneDisconnect().catch((err) => {});
           reject();
-        });
+        })
+        .catch((err) => {
+          // this fallback catches errors in the attemptHandler.
+          LOG.error("FATAL ERROR DURING EXECUTE", err);
+          BluenetPromiseWrapper.phoneDisconnect().catch((err) => {});
+          reject();
+        })
     })
   }
 
@@ -492,6 +498,11 @@ class BatchCommandHandlerClass {
       }
     };
 
+    // if we did not find anything to connect to, we will reduce app open attempts.
+    if (!connectedCrownstone) {
+      connectedCrownstone = {stoneId: null, meshNetworkId: null};
+    }
+
     let { directCommands, meshNetworks } = this._extractTodo(connectedCrownstone.stoneId, connectedCrownstone.meshNetworkId);
     let directCommandSpheres = Object.keys(directCommands);
     directCommandSpheres.forEach((sphereId) => {
@@ -502,6 +513,12 @@ class BatchCommandHandlerClass {
     let meshNetworkSpheres = Object.keys(meshNetworks);
     meshNetworkSpheres.forEach((sphereId) => {
       let networkTodo = meshNetworks[sphereId][connectedCrownstone.meshNetworkId];
+
+      // only handle the attempts if there are any for this sphere.
+      if (!networkTodo) {
+        return;
+      }
+
       networkTodo.keepAlive.forEach(handleAttempt);
       networkTodo.keepAliveState.forEach(handleAttempt);
       networkTodo.setSwitchState.forEach(handleAttempt);
@@ -537,11 +554,11 @@ class BatchCommandHandlerClass {
   }
 
   _scheduleExecute(priority) {
-    LOG.info("BatchCommand: Scheduling");
+    LOG.info("BatchCommandHandler: Scheduling");
     let actionPromise = () => {
       this.executing = true;
 
-      LOG.info("BatchCommand: Executing!");
+      LOG.info("BatchCommandHandler: Executing!");
       return this._connectAndPerformCommands()
         .then(() => {this.executing = false; })
         .catch((err) => {this.executing = false; throw err;});
