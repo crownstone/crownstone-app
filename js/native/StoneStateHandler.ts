@@ -60,14 +60,13 @@ class StoneStateHandlerClass {
       });
     }
 
-    // check if there is a gap in the receiving of any of the RSSI values of this Crownstone. This is a fallback in case the internal timer has stopped
-    // and the app has dozed off.
+    let state = this.store.getState();
+
+    // fallback to ensure we never miss an enter event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
-      let state = this.store.getState();
-      let now = new Date().valueOf();
-      if (now - state.spheres[sphereId].config.lastSeen > KEEPALIVE_INTERVAL * 1000 * 1.5) {
-        LOG.warn("FALLBACK: StoneStateHandler: Force EXIT SPHERE due to detection of gap. Time difference: ", now - state.spheres[sphereId].config.lastSeen);
-        LocationHandler.exitSphere(sphereId, true);
+      if (state.spheres[sphereId].config.present === false) {
+        LOG.warn("FALLBACK: StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
+        LocationHandler.enterSphere(sphereId);
       }
     }
 
@@ -78,9 +77,9 @@ class StoneStateHandlerClass {
         type: 'UPDATE_STONE_RSSI',
         sphereId: sphereId,
         stoneId: stoneId,
-        data: {rssi: rssi}
+        data: { rssi: rssi, lastSeen: new Date().valueOf() }
       });
-  }
+    }
 
     this.update(sphereId, stoneId);
   }
@@ -92,6 +91,8 @@ class StoneStateHandlerClass {
       stoneId: stoneId,
       rssi: rssi,
     });
+
+    // emit that something from this mesh network has broadcasted
     if (stone.config.meshNetworkId) {
       eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
         handle: stone.config.handle,
@@ -136,14 +137,6 @@ class StoneStateHandlerClass {
 
     // LOG.info("StoneStateHandlerUpdate", sphereId, stoneId);
     const state = this.store.getState();
-
-    // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
-    if (FALLBACKS_ENABLED) {
-      if (state.spheres[sphereId].config.present === false) {
-        LOG.warn("FALLBACK: StoneStateHandler: FORCE ENTER SPHERE BY ADVERTISEMENT UPDATE (or ibeacon)");
-        LocationHandler.enterSphere(sphereId);
-      }
-    }
 
     // if we hear this stone and yet it is set to disabled, we re-enable it.
     if (state.spheres[sphereId].stones[stoneId].config.disabled === true) {
@@ -190,7 +183,7 @@ class StoneStateHandlerClass {
         if (FALLBACKS_ENABLED) {
           if (allDisabled === true) {
             LOG.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
-            LocationHandler.exitSphere(sphereId, true);
+            LocationHandler.exitSphere(sphereId);
           }
         }
 

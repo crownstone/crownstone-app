@@ -90,7 +90,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.rssi            = update(action.data.rssi, newState.rssi);
-        newState.lastSeen        = getTime(action.data.lastSeen);
+        newState.lastSeen        = update(action.data.lastSeen, newState.lastSeen);
         return newState;
       }
       return state;

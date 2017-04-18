@@ -114,8 +114,11 @@ export const BehaviourUtil = {
     if (behaviour.active && stone.config.handle) {
       // setup the trigger method.
 
+      LOG.info("ENACT BEHAVIOUR", sphereId, behaviour, behaviourType, this.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element));
+
       // if the device is supposed to go on and it is only allowed to go on when it's dark, check if its dark.
       if (this.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === false) {
+
         if (callbacks && callbacks.onCancelled && typeof callbacks.onCancelled === 'function') {
           callbacks.onCancelled(sphereId, stoneId);
         }
@@ -169,12 +172,9 @@ export const BehaviourUtil = {
       let longitude = sphere.config.longitude || 4.4667693378575288;
       let times = SunCalc.getTimes(new Date(), latitude, longitude);
 
-      // its light outside between the end of the sunrise and the start of the sunset.
-      // we have to add a day to the sunset to ensure we check between sunset today and sunrise tomorrow.
-      if (now < times.sunriseEnd.valueOf() || now > times.sunsetStart.valueOf()) {
-        // skip the trigger for this item because it is light outside.
-        return false;
-      }
+      // if it is light outside and the onlyOnWhenDark is on, we have to return false.
+      // it is light outside between the end of the sunrise and the start of the sunset.
+      return (now < times.sunriseEnd.valueOf() || now > times.sunsetStart.valueOf()); // = is dark outside
     }
     return true;
   }

@@ -79,8 +79,6 @@ class LocationHandlerClass {
         })
         .catch((err) => {});
 
-      let lastTimePresent = sphere.config.lastTimePresent;
-
       // set the presence
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: true, present: true}});
 
@@ -114,14 +112,25 @@ class LocationHandlerClass {
       LOG.info("Set Settings.", bluenetSettings);
       BluenetPromiseWrapper.setSettings(bluenetSettings)
         .then(() => {
-          let exitEnterTimeDifference = new Date().valueOf() - lastTimePresent;
-          if (exitEnterTimeDifference > KEEPALIVE_INTERVAL*1000*1.5) {
+          // get the time last seen of the crownstones in this sphere
+          let stones = state.spheres[sphereId].stones;
+          let stoneIds = Object.keys(stones);
+          let timeLastSeen = 0;
+          stoneIds.forEach((stoneId) => {
+            // get the most recent time.
+            if (stones[stoneId].config.lastSeen && timeLastSeen < stones[stoneId].config.lastSeen) {
+              timeLastSeen = stones[stoneId].config.lastSeen;
+            }
+          });
+
+          let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
+          if (timeSinceLastCrownstoneWasSeen > KEEPALIVE_INTERVAL*1000*1.5) {
             // trigger crownstones on enter sphere
             LOG.info("LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE", sphere.config.name);
             BehaviourUtil.enactBehaviourInSphere(this.store, sphereId, TYPES.HOME_ENTER);
           }
           else {
-            LOG.info("LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE HOME EXIT IS ", exitEnterTimeDifference, " WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ", KEEPALIVE_INTERVAL*1000*1.5, " ms");
+            LOG.info("LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ", timeSinceLastCrownstoneWasSeen, " WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ", KEEPALIVE_INTERVAL*1000*1.5, " ms");
           }
         })
     }
@@ -133,7 +142,7 @@ class LocationHandlerClass {
    * @param sphereId
    * @param reset
    */
-  exitSphere(sphereId, reset = false) {
+  exitSphere(sphereId) {
     LOG.info("LocationHandler: LEAVING SPHERE", sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
@@ -162,7 +171,7 @@ class LocationHandlerClass {
         Bluenet.stopScanning();
       }
 
-      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false, lastTimePresent: reset === true ? 1 : new Date().valueOf()}});
+      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
     }
   }
 

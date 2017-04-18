@@ -388,8 +388,6 @@ export const prepareStoreForUser = function(store) {
       actions.push({type:'CLEAR_STONE_USAGE', sphereId:sphereId, stoneId:stoneId});
       actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
     });
-
-    actions.push({type: 'RESET_SPHERE_STATE', sphereId: sphereId, data: { reachable: false, present: false }});
   });
 
   actions.push({type:'CREATE_APP_IDENTIFIER'});
