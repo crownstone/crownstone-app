@@ -2,15 +2,14 @@ import { BluenetPromiseWrapper, NativeBus } from './Proxy';
 import { Bluenet  }                         from './Bluenet';
 import { BehaviourUtil } from '../util/BehaviourUtil';
 import { KeepAliveHandler } from './KeepAliveHandler';
-import { StoneTracker } from './StoneTracker'
-import { RoomTracker } from './RoomTracker'
-import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../util/DataUtil'
-import { Scheduler } from './../logic/Scheduler';
-import { LOG } from '../logging/Log'
-import { Util } from '../util/Util'
-import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig'
-import { TYPES } from '../router/store/reducers/stones'
-import {StoneStateHandler} from "./StoneStateHandler";
+import { StoneTracker } from './StoneTracker';
+import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../util/DataUtil';
+import { Scheduler } from './../logic/Scheduler';;
+import { LOG } from '../logging/Log';
+import { Util } from '../util/Util';
+import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig';
+import { TYPES } from '../router/store/reducers/stones';
+import { StoneStateHandler } from "./StoneStateHandler";
 
 class LocationHandlerClass {
   _initialized : boolean;
@@ -38,7 +37,7 @@ class LocationHandlerClass {
       NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
       NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
       NativeBus.on(NativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
-      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => { this._iBeaconAdvertisement(data) });
+      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => { this._iBeaconAdvertisement(data); });
     }
   }
 
@@ -151,16 +150,17 @@ class LocationHandlerClass {
       disableStones(this.store, sphereId);
 
       // check if you are present in any sphere. If not, stop scanning.
-      // let presentSomewhere = false;
-      // Object.keys(state.spheres).forEach((checkSphereId) => {
-      //   if (state.spheres[checkSphereId].config.present === true && checkSphereId !== sphereId) {
-      //     presentSomewhere = true;
-      //   }
-      // });
-      //
-      // if (presentSomewhere === false) {
-      //   Bluenet.stopScanning();
-      // }
+      let presentSomewhere = false;
+      Object.keys(state.spheres).forEach((checkSphereId) => {
+        if (state.spheres[checkSphereId].config.present === true && checkSphereId !== sphereId) {
+          presentSomewhere = true;
+        }
+      });
+
+      // if we're not in any sphere, stop scanning to save battery
+      if (presentSomewhere === false) {
+        Bluenet.stopScanning();
+      }
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false, lastTimePresent: reset === true ? 1 : undefined}});
     }
@@ -183,7 +183,8 @@ class LocationHandlerClass {
       this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
       // used for clearing the timeouts for this room and toggling stones in this room
-      RoomTracker.enterRoom(this.store, sphereId, locationId);
+      LOG.info("RoomTracker: Enter room: ", locationId, ' in sphere: ', sphereId);
+      this._triggerRoomEvent(this.store, sphereId, locationId, TYPES.ROOM_ENTER);
     }
   }
 
@@ -196,7 +197,8 @@ class LocationHandlerClass {
       this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
       // used for clearing the timeouts for this room
-      RoomTracker.exitRoom(this.store, sphereId, locationId);
+      LOG.info("RoomTracker: Exit room: ", locationId, ' in sphere: ', sphereId);
+      this._triggerRoomEvent(this.store, sphereId, locationId, TYPES.ROOM_EXIT);
     }
   }
 
@@ -231,6 +233,20 @@ class LocationHandlerClass {
     }
 
     return presentAtProvidedLocationId;
+  }
+
+  /**
+   * Clean up and cancel pending actions for this room, fire the enter/exit event
+   * @param store
+   * @param sphereId
+   * @param locationId
+   * @param behaviourType
+   * @param [ bleController ]
+   * @private
+   */
+  _triggerRoomEvent( store, sphereId, locationId, behaviourType, bleController?) {
+    // fire TYPES.ROOM_ENTER on crownstones in room
+    BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, bleController);
   }
 
 }
