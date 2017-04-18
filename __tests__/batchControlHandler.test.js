@@ -76,7 +76,7 @@ let meshEmit2 = {
 
 import { eventBus } from '../js/util/EventBus'
 
-jest.mock('../js/native/Bluenet', () => {
+jest.mock('../js/native/libInterface/Bluenet', () => {
   return {
     eventBus: null,
     success: true,
