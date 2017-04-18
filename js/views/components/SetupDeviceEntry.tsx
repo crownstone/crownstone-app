@@ -13,11 +13,10 @@ import {
   View
 } from 'react-native';
 
-import { SetupStateHandler } from '../../native/SetupStateHandler'
+import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
 import { Icon } from './Icon';
 import { styles, colors, screenWidth } from '../styles'
 import { getUserLevelInSphere } from '../../util/DataUtil'
-import { LOG } from '../../logging/Log'
 
 
 export class SetupDeviceEntry extends Component<any, any> {

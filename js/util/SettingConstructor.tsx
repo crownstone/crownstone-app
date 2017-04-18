@@ -12,10 +12,7 @@ import {
 
 import { Util } from './Util'
 import { AppUtil } from './AppUtil'
-import { BluenetPromiseWrapper } from '../native/Proxy'
-import { CLOUD } from '../cloud/cloudAPI'
 import { Actions } from 'react-native-router-flux';
-import { LOG } from '../logging/Log'
 import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'

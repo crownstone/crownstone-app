@@ -12,7 +12,7 @@ import {
   View
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
-import { SetupStateHandler }                              from '../../native/SetupStateHandler'
+import { SetupStateHandler }                              from '../../native/setup/SetupStateHandler'
 import { Orbs }                                           from '../components/Orbs'
 import { TopBar }                                         from '../components/Topbar'
 import { FinalizeLocalizationIcon }                       from '../components/FinalizeLocalizationIcon'

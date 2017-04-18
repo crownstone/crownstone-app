@@ -11,12 +11,11 @@ import {
   View
 } from 'react-native';
 import { styles, colors, screenWidth } from '../styles'
+import { Background }                  from '../components/Background'
+import { ListEditableItems }           from '../components/ListEditableItems'
+import { Util, addDistanceToRssi }     from '../../util/Util'
+import { NativeBus }                   from '../../native/libInterface/NativeBus'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-import { Background } from '../components/Background'
-import { ListEditableItems } from '../components/ListEditableItems'
-import { Util, addDistanceToRssi }           from '../../util/Util'
-import { LOG } from '../../logging/Log'
-import { NativeBus }         from '../../native/Proxy'
 const Actions = require('react-native-router-flux').Actions;
 
 

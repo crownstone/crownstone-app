@@ -10,7 +10,7 @@ import {
 
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
-import { Bluenet } from '../../native/Bluenet'
+import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from '../styles'

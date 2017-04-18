@@ -1,6 +1,7 @@
-import { NativeBus, BluenetPromiseWrapper } from './Proxy';
-import { Bluenet  }                         from './Bluenet';
-import { LOG } from '../logging/Log'
+import { BluenetPromiseWrapper } from './libInterface/BluenetPromise';
+import { NativeBus }             from './libInterface/NativeBus';
+import { Bluenet  }              from './libInterface/Bluenet';
+import { LOG }                   from '../logging/Log'
 
 class FingerprintManagerClass {
   fingerprintingActive : any;

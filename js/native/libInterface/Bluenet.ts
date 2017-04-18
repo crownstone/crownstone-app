@@ -1,5 +1,5 @@
 import { NativeModules } from 'react-native';
-import { DISABLE_NATIVE } from '../ExternalConfig'
+import { DISABLE_NATIVE } from '../../ExternalConfig'
 
 export let Bluenet;
 if (DISABLE_NATIVE === true) {

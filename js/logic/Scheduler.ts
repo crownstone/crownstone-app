@@ -1,4 +1,4 @@
-import { NativeBus } from '../native/Proxy';
+import { NativeBus } from '../native/libInterface/NativeBus';
 import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
 

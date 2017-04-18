@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { BluenetPromiseWrapper } from "../native/Proxy";
+import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { CLOUD } from "../cloud/cloudAPI";
 import { Actions } from "react-native-router-flux";
 import { LOG } from '../logging/Log'

@@ -10,22 +10,22 @@ import {
   View
 } from 'react-native';
 
-import { SetupStateHandler } from '../../native/SetupStateHandler'
-import { stoneTypes } from '../../router/store/reducers/stones'
+import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
+import { stoneTypes }           from '../../router/store/reducers/stones'
 import { AlternatingContent }   from '../components/animated/AlternatingContent'
-import { Background }   from '../components/Background'
-import { DeviceEntry } from '../components/DeviceEntry'
-import { SetupDeviceEntry } from '../components/SetupDeviceEntry'
-import { BleUtil } from '../../util/BleUtil'
-import { BatchCommandHandler } from '../../logic/BatchCommandHandler'
-import { BluenetPromiseWrapper, INTENTS } from '../../native/Proxy'
-import { TopBar } from '../components/Topbar'
-import { SeparatedItemList } from '../components/SeparatedItemList'
-import { RoomBanner }  from '../components/RoomBanner'
+import { Background }           from '../components/Background'
+import { DeviceEntry }          from '../components/DeviceEntry'
+import { SetupDeviceEntry }     from '../components/SetupDeviceEntry'
+import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
+import { INTENTS }              from '../../native/libInterface/Constants'
+import { TopBar }               from '../components/Topbar'
+import { SeparatedItemList }    from '../components/SeparatedItemList'
+import { RoomBanner }           from '../components/RoomBanner'
 import { getUserLevelInSphere } from '../../util/DataUtil'
-import { Util } from '../../util/Util'
+import { Util }                 from '../../util/Util'
+import { Icon }                 from '../components/Icon'
 const Actions = require('react-native-router-flux').Actions;
-import { 
+import {
   getPresentUsersInLocation,
   getCurrentPowerUsageInLocation,
   getStonesAndAppliancesInLocation,
@@ -33,9 +33,7 @@ import {
   canUseIndoorLocalizationInSphere,
   getFloatingStones
 } from '../../util/DataUtil'
-import { Icon } from '../components/Icon'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
-import { LOG } from '../../logging/Log'
 
 
 export class RoomOverview extends Component<any, any> {

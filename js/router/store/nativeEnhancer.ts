@@ -1,4 +1,4 @@
-import { Bluenet } from '../../native/Bluenet'
+import { Bluenet } from '../../native/libInterface/Bluenet'
 import { BATCH } from './storeManager'
 import { LOG } from '../../logging/Log'
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'

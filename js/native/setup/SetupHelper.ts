@@ -1,13 +1,14 @@
 import { Alert } from 'react-native';
 
-import { BlePromiseManager } from '../logic/BlePromiseManager'
-import { BluenetPromiseWrapper, NativeBus } from './Proxy';
-import { LOG } from '../logging/Log'
-import { stoneTypes } from '../router/store/reducers/stones'
-import { eventBus } from '../util/EventBus'
-import { Util } from '../util/Util'
-import { CLOUD } from '../cloud/cloudAPI'
-import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
+import { BlePromiseManager }     from '../../logic/BlePromiseManager'
+import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
+import { NativeBus }             from '../libInterface/NativeBus';
+import { LOG }                   from '../../logging/Log'
+import { stoneTypes }            from '../../router/store/reducers/stones'
+import { eventBus }              from '../../util/EventBus'
+import { Util }                  from '../../util/Util'
+import { CLOUD }                 from '../../cloud/cloudAPI'
+import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
 
 
 const networkError = 'network_error';

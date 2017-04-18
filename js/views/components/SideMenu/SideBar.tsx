@@ -18,8 +18,7 @@ import { Actions } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight, topBarHeight} from '../../styles'
 import { Icon } from '../Icon'
 import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
-import { NativeBus, BluenetPromiseWrapper } from '../../../native/Proxy'
-import { Util } from '../../../util/Util'
+import { NativeBus } from '../../../native/libInterface/NativeBus'
 import { AppUtil } from '../../../util/AppUtil'
 import { SettingConstructor } from '../../../util/SettingConstructor'
 

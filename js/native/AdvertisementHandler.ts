@@ -1,5 +1,5 @@
 import { Scheduler } from '../logic/Scheduler';
-import { NativeBus } from './Proxy';
+import { NativeBus } from './libInterface/NativeBus';
 import { StoneStateHandler } from './StoneStateHandler'
 import { LOG } from '../logging/Log'
 import { LOG_BLE } from '../ExternalConfig'

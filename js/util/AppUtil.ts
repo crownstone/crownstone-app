@@ -1,11 +1,9 @@
 import { Alert, Platform }       from 'react-native';
-import { Scheduler }             from '../logic/Scheduler'
 import { StoreManager }          from '../router/store/storeManager'
-import { BluenetPromiseWrapper } from '../native/Proxy'
-import { Bluenet  }              from '../native/Bluenet';
-import { eventBus  }              from '../util/EventBus';
-import { Actions }               from 'react-native-router-flux';
-import {LOG} from "../logging/Log";
+import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise'
+import { Bluenet }               from '../native/libInterface/Bluenet';
+import { eventBus }              from './EventBus';
+import { LOG }                   from "../logging/Log";
 
 export const AppUtil = {
   quit: function() {

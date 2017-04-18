@@ -166,7 +166,7 @@ let checker = (data, reject) => {
   counter += 1;
 };
 
-import * as mockBluenet from '../js/native/Bluenet'
+import * as mockBluenet from '../js/native/libInterface/Bluenet'
 import { EventBusClass } from '../js/util/EventBus'
 import { BatchCommandHandler } from '../js/logic/BatchCommandHandler'
 

@@ -14,15 +14,15 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import { Background } from '../components/Background'
-import { setupStyle } from './SetupShared'
+import { Background }            from '../components/Background'
+import { setupStyle }            from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
-import { Util } from '../../util/Util'
+import { Util }                  from '../../util/Util'
 import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil'
-import { BleUtil } from '../../util/BleUtil'
-import { BluenetPromiseWrapper } from '../../native/Proxy'
-import { LOG } from '../../logging/Log'
-import {BlePromiseManager} from "../../logic/BlePromiseManager";
+import { BleUtil }               from '../../util/BleUtil'
+import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
+import { LOG }                   from '../../logging/Log'
+import { BlePromiseManager }     from "../../logic/BlePromiseManager";
 
 export class SettingsPluginRecoverStep2 extends Component<any, any> {
   lookingForCrownstone : boolean = true;

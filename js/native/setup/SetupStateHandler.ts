@@ -1,14 +1,12 @@
-import { Scheduler } from '../logic/Scheduler';
-import { NativeBus } from './Proxy';
-import { SetupHelper } from './SetupHelper';
-import { BleUtil } from '../util/BleUtil';
-import { stoneTypes } from '../router/store/reducers/stones'
-import { eventBus } from '../util/EventBus';
-import { getMapOfCrownstonesInAllSpheresByHandle, getUserLevelInSphere } from '../util/DataUtil';
-import { CLOUD } from '../cloud/cloudAPI';
-import { Util } from '../util/Util';
-import { LOG } from '../logging/Log';
-import { SETUP_MODE_TIMEOUT } from '../ExternalConfig';
+import { NativeBus }          from '../libInterface/NativeBus';
+import { SetupHelper }        from './SetupHelper';
+import { BleUtil }            from '../../util/BleUtil';
+import { stoneTypes }         from '../../router/store/reducers/stones'
+import { eventBus }           from '../../util/EventBus';
+import { Util }               from '../../util/Util';
+import { LOG }                from '../../logging/Log';
+import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
+import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil';
 
 
 /**

@@ -14,7 +14,6 @@ import { INITIALIZER } from './js/Initialize'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 
 
-
 class Root extends Component {
 
   constructor() {

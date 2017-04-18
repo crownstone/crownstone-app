@@ -1,9 +1,7 @@
-import { NativeBus } from '../native/Proxy';
-import { Bluenet  }  from '../native/Bluenet';
+import { NativeBus } from '../native/libInterface/NativeBus';
+import { Bluenet  }  from '../native/libInterface/Bluenet';
 import { LOG } from '../logging/Log'
-import { Scheduler } from '../logic/Scheduler'
-import { eventBus } from './EventBus'
-import { HIGH_FREQUENCY_SCAN_MAX_DURATION, KEEPALIVE_INTERVAL } from '../ExternalConfig'
+import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 import { Util } from './Util'
 
 import { SingleCommand } from '../logic/SingleCommand'

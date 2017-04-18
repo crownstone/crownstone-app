@@ -1,10 +1,8 @@
-import { BluenetPromiseWrapper, BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/Proxy';
-import { BleUtil } from './BleUtil';
+import { BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/libInterface/Constants';
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
-import { Scheduler } from '../logic/Scheduler';
 import { LOG } from '../logging/Log';
-import { Util } from '../util/Util';
-var SunCalc = require('suncalc');
+import { Util } from './Util';
+const SunCalc = require('suncalc');
 
 export const BehaviourUtil = {
 

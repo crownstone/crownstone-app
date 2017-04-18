@@ -1,13 +1,14 @@
 import { Alert, AppState } from 'react-native'
 
-import { LOG }                              from './logging/Log'
-import { CLOUD }                            from './cloud/cloudAPI'
-import { LocalizationUtil }                 from './native/LocalizationUtil'
-import { Scheduler }                        from './logic/Scheduler'
-import { BluenetPromiseWrapper, NativeBus } from './native/Proxy';
-import { Bluenet  }                         from './native/Bluenet';
-import { eventBus }                         from './util/EventBus'
-import { Util }                             from './util/Util'
+import { LOG }                   from './logging/Log'
+import { CLOUD }                 from './cloud/cloudAPI'
+import { LocationHandler }       from './native/LocationHandler'
+import { Scheduler }             from './logic/Scheduler'
+import { BluenetPromiseWrapper } from './native/libInterface/BluenetPromise';
+import { NativeBus }             from './native/libInterface/NativeBus';
+import { Bluenet  }              from './native/libInterface/Bluenet';
+import { eventBus }              from './util/EventBus'
+import { Util }                  from './util/Util'
 
 
 /**
@@ -87,7 +88,7 @@ export const INITIALIZER = {
       LOG.info("INITIALIZER: performing start.");
 
       // subscribe to iBeacons when the spheres in the cloud change.
-      CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocalizationUtil.trackSpheres(store);});
+      CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {LocationHandler.trackSpheres();});
 
       // when the app is started we track spheres and scan for Crownstones
       eventBus.on('appStarted', () => {
@@ -95,12 +96,12 @@ export const INITIALIZER = {
         BluenetPromiseWrapper.isReady()
           .then(() => {Bluenet.startScanningForCrownstonesUniqueOnly()});
 
-        LocalizationUtil.trackSpheres(store);
+        LocationHandler.trackSpheres();
         this.userReady = true;
       });
 
       // when a sphere is created, we track all spheres anew.
-      eventBus.on('sphereCreated', () => {LocalizationUtil.trackSpheres(store);});
+      eventBus.on('sphereCreated', () => {LocationHandler.trackSpheres();});
 
       // sync every 8 minutes
       Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*8});

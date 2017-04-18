@@ -1,5 +1,5 @@
-import { BluenetPromiseWrapper } from '../native/Proxy';
-import { LOG } from '../logging/Log'
+import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
+import { LOG }                   from '../logging/Log'
 
 
 export class MeshHelper {

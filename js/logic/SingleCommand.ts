@@ -1,5 +1,5 @@
 import { BlePromiseManager } from './BlePromiseManager'
-import { BluenetPromiseWrapper } from '../native/Proxy';
+import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG } from '../logging/Log'
 
 export class SingleCommand {

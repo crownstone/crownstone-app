@@ -1,10 +1,10 @@
-import { eventBus } from '../util/EventBus'
-import { Util } from '../util/Util'
-import { BlePromiseManager } from './BlePromiseManager'
-import { BluenetPromiseWrapper } from '../native/Proxy';
-import { LOG } from '../logging/Log'
-import { Scheduler } from './Scheduler'
-import { MeshHelper } from './MeshHelper'
+import { eventBus }              from '../util/EventBus'
+import { Util }                  from '../util/Util'
+import { BlePromiseManager }     from './BlePromiseManager'
+import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
+import { LOG }                   from '../logging/Log'
+import { Scheduler }             from './Scheduler'
+import { MeshHelper }            from './MeshHelper'
 
 
 /**
@@ -422,9 +422,12 @@ class BatchCommandHandlerClass {
         rssiScanThreshold = null;
       }
 
+      let activeCrownstone = null;
+
       // scan for target
       this._searchScan(topicsToScan, rssiScanThreshold, highPriorityActive, 5000)
         .then((crownstoneToHandle : connectionInfo) => {
+          activeCrownstone = crownstoneToHandle;
           if (crownstoneToHandle === null) {
             // this happens during a priority interrupt
             return;
@@ -436,7 +439,18 @@ class BatchCommandHandlerClass {
         .then(() => {
           resolve();
         })
-        .catch((err) => { reject(err); })
+        .catch((err) => {
+          // Use the attempt handler to clean up after something fails.
+          this.attemptHandler(activeCrownstone);
+
+          LOG.error("ERROR DURING EXECUTE", err);
+          reject();
+        })
+        .catch((err) => {
+          // this fallback catches errors in the attemptHandler.
+          LOG.error("FATAL ERROR DURING EXECUTE", err);
+          reject();
+        })
     })
   }
 
@@ -483,16 +497,7 @@ class BatchCommandHandlerClass {
           resolve();
         })
         .catch((err) => {
-          // Use the attempt handler to clean up after something fails.
-          this.attemptHandler(crownstoneToHandle);
-
           LOG.error("ERROR DURING EXECUTE", err);
-          BluenetPromiseWrapper.phoneDisconnect().catch((err) => { });
-          reject();
-        })
-        .catch((err) => {
-          // this fallback catches errors in the attemptHandler.
-          LOG.error("FATAL ERROR DURING EXECUTE", err);
           BluenetPromiseWrapper.phoneDisconnect().catch((err) => { });
           reject();
         })

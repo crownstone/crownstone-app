@@ -5,7 +5,7 @@ import {
   View,
 } from 'react-native';
 
-import { NativeBus }          from '../../../native/Proxy'
+import { NativeBus }          from '../../../native/libInterface/NativeBus'
 import { IconButton }         from '../IconButton'
 import { OverlayBox }         from './OverlayBox'
 import { styles, colors , screenHeight, screenWidth } from '../../styles'

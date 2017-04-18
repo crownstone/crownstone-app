@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 let Actions = require('react-native-router-flux').Actions;
-import { SetupStateHandler } from '../../native/SetupStateHandler'
+import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
 import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/DataUtil'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'

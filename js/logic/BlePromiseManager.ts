@@ -1,13 +1,12 @@
-import { LOG } from '../logging/Log'
-import { Scheduler } from '../logic/Scheduler'
-import { BluenetPromiseWrapper } from '../native/Proxy'
+import { LOG }                   from '../logging/Log'
+import { Scheduler }             from '../logic/Scheduler'
+import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise'
 
 
 class BlePromiseManagerClass {
   pendingPromises : any;
   promiseInProgress : any;
   clearPendingPromiseTimeout : any;
-
 
   constructor() {
     this.pendingPromises = [];
