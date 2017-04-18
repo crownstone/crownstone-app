@@ -102,9 +102,8 @@ export const INITIALIZER = {
       // when a sphere is created, we track all spheres anew.
       eventBus.on('sphereCreated', () => {LocalizationUtil.trackSpheres(store);});
 
-
-      // sync every 5 minutes
-      Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*5});
+      // sync every 8 minutes
+      Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*8});
       Scheduler.loadCallback('backgroundSync', () => {
         let state = store.getState();
         if (state.user.userId) {
@@ -147,15 +146,17 @@ export const INITIALIZER = {
       // listen to the state of the app: if it is in the foreground or background
       AppState.addEventListener('change', (appState) => {
         LOG.info("App State Change", appState);
+        // in the foreground: start scanning!
         if (appState === "active") {
-          // BluenetPromiseWrapper.isReady().then(() => {
-          //   Bluenet.startScanningForCrownstonesUniqueOnly();
-          // });
+          BluenetPromiseWrapper.isReady().then(() => {
+            Bluenet.startScanningForCrownstonesUniqueOnly();
+          });
         }
+        // in the background: stop scanning to save battery!
         else if (appState === "background") {
-          // BluenetPromiseWrapper.isReady().then(() => {
-          //   Bluenet.stopScanning();
-          // });
+          BluenetPromiseWrapper.isReady().then(() => {
+            Bluenet.stopScanning();
+          });
         }
       });
 
