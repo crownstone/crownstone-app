@@ -190,7 +190,7 @@ class StoneStateHandlerClass {
         if (FALLBACKS_ENABLED) {
           if (allDisabled === true) {
             LOG.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
-            LocationHandler.exitSphere(sphereId);
+            LocationHandler.exitSphere(sphereId, true);
           }
         }
 

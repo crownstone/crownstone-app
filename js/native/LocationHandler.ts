@@ -162,7 +162,7 @@ class LocationHandlerClass {
         Bluenet.stopScanning();
       }
 
-      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false, lastTimePresent: reset === true ? 1 : undefined}});
+      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false, lastTimePresent: reset === true ? 1 : new Date().valueOf()}});
     }
   }
 
