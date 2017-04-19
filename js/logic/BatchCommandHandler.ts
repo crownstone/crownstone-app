@@ -411,6 +411,9 @@ class BatchCommandHandlerClass {
     return new Promise((resolve, reject) => {
       let topicsToScan = this._getObjectsToScan();
       if (topicsToScan.length === 0) {
+        // Use the attempt handler to clean up after something fails.
+        this.attemptHandler(null);
+
         LOG.info("BatchCommandHandler: No topics to scan during BatchCommandHandler execution");
         resolve();
 
@@ -420,7 +423,7 @@ class BatchCommandHandlerClass {
 
       // if there is a high priority call that we need to do, ignore the rssi limit.
       let highPriorityActive = this._isHighPriority();
-      let rssiScanThreshold = -90;
+      let rssiScanThreshold = -91;
       if (highPriorityActive) {
         rssiScanThreshold = null;
       }
@@ -445,6 +448,11 @@ class BatchCommandHandlerClass {
         .catch((err) => {
           // Use the attempt handler to clean up after something fails.
           this.attemptHandler(activeCrownstone);
+
+          // attempt to reschedule on failure.
+          if (Object.keys(this.commands).length > 0) {
+            this._scheduleNextStone();
+          }
 
           LOG.error("ERROR DURING EXECUTE", err);
           reject();
@@ -588,6 +596,7 @@ class BatchCommandHandlerClass {
       .catch((err) => {
         // disable execution and forward the error
         LOG.error("BatchCommandHandler: Error completing promise.", err);
+
       });
   }
 
@@ -639,7 +648,7 @@ class BatchCommandHandlerClass {
       objectsToScan.forEach((topic) => {
         // data: { handle: stone.config.handle, id: stoneId, rssi: rssi }
         unsubscribeListeners.push( eventBus.on(topic.topic, (data) => {
-          LOG.info("Got a notification:", data);
+          LOG.debug("Got a notification:", data);
           if (rssiThreshold === null || data.rssi > rssiThreshold) {
             // remove the listeners
             cleanup();

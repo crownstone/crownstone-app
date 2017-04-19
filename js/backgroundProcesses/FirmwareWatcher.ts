@@ -20,11 +20,19 @@ class FirmwareWatcherClass {
   }
 
   checkFirmware(sphereId) {
+    LOG.info("FirmwareWatcher: Starting Firmware Check");
+
     let state = this.store.getState();
     let loadedCommands = false;
+    let randomCheck = Math.random() < 0.05;
+    if (randomCheck) {
+      LOG.info("FirmwareWatcher: Random Firmware Check Forced.");
+    }
+
     Util.data.callOnStonesInSphere(state, sphereId, (stoneId, stone) => {
+      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: ", stone.config.firmwareVersion);
       // random chance to check the firmware again.
-      if (!stone.config.firmwareVersion || Math.random() < 0.05) {
+      if (!stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck) {
         BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'}, 1e5)
           .then((firmwareVersion) => {
             this.store.dispatch({
@@ -42,6 +50,7 @@ class FirmwareWatcherClass {
     });
 
     if (loadedCommands) {
+      LOG.info("FirmwareWatcher: Firmware commands loaded into BatchCommandHandler. Executing!");
       BatchCommandHandler.execute();
     }
   }
