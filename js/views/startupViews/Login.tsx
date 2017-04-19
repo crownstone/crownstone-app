@@ -216,10 +216,10 @@ export class Login extends Component<any, any> {
     store.dispatch({
       type:'USER_LOG_IN',
       data:{
-        email:this.state.email.toLowerCase(),
-        passwordHash: sha1(sha1(this.state.password)), // double hash this so we never store the password we send to the cloud.
-        accessToken:accessToken,
-        userId:userId,
+        email:        this.state.email.toLowerCase(),
+        passwordHash: sha1(this.state.password),
+        accessToken:  accessToken,
+        userId:       userId,
       }
     });
     
@@ -294,13 +294,15 @@ export class Login extends Component<any, any> {
 
         // finalize the login due to successful download of data. Enables persistence.
         StoreManager.finalizeLogIn(userId);
-        prepareStoreForUser(store);
+
+        // this starts scanning, tracking spheres and prepping the database for the user
+        this.props.eventBus.emit("userLoggedIn");
 
         // set a small delay so the user sees "done"
         setTimeout(() => {
           let state = store.getState();
           this.props.eventBus.emit('hideProgress');
-          this.props.eventBus.emit("appStarted"); // this starts scanning and tracking spheres
+
 
           if (state.user.isNew !== false) {
             (Actions as any).aiStart({type: 'reset'});

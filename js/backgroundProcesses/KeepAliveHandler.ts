@@ -2,7 +2,7 @@ import { Scheduler }                              from '../logic/Scheduler';
 import { BehaviourUtil }                          from '../util/BehaviourUtil';
 import { LOG }                                    from '../logging/Log'
 import { KEEPALIVE_INTERVAL, KEEPALIVE_ATTEMPTS } from '../ExternalConfig';
-import { NativeBus }                              from './libInterface/NativeBus';
+import { NativeBus }                              from '../native/libInterface/NativeBus';
 import { BatchCommandHandler }                    from '../logic/BatchCommandHandler';
 import { Util }                                   from '../util/Util'
 import { stoneTypes, TYPES }                      from '../router/store/reducers/stones'

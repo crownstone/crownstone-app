@@ -10,28 +10,14 @@ import {
 } from 'react-native';
 
 import { AppRouter } from './js/router/Router'
-import { INITIALIZER } from './js/Initialize'
+import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 
 
 class Root extends Component {
-
-  constructor() {
-    super();
-    this.unsubscribe = [];
+  componentWillMount() {
+    BackgroundProcessHandler.start();
   }
-
-  // this is used to scroll the view up when typing is active
-  componentDidMount() {
-    // start the BLE things.
-    INITIALIZER.init();
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe.forEach((callback) => {callback()});
-    this.unsubscribe = [];
-  }
-
 
   render() {
     StatusBar.setBackgroundColor(colors.menuBackgroundDarker.hex, true);

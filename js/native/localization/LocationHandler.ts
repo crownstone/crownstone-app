@@ -4,7 +4,7 @@ import { NativeBus }                from '../libInterface/NativeBus';
 import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
 import { Bluenet  }                 from '../libInterface/Bluenet';
 import { BehaviourUtil }            from '../../util/BehaviourUtil';
-import { KeepAliveHandler }         from '../KeepAliveHandler';
+import { KeepAliveHandler }         from '../../backgroundProcesses/KeepAliveHandler';
 import { StoneTracker }             from '../advertisements/StoneTracker';
 import { Scheduler }                from '../../logic/Scheduler';
 import { LOG }                      from '../../logging/Log';
@@ -12,6 +12,8 @@ import { Util }                     from '../../util/Util';
 import { TYPES }                    from '../../router/store/reducers/stones';
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
+import {eventBus} from "../../util/EventBus";
+import {CLOUD} from "../../cloud/cloudAPI";
 
 
 class LocationHandlerClass {
@@ -26,6 +28,13 @@ class LocationHandlerClass {
     this.tracker = undefined;
 
     this._uuid = Util.getUUID();
+
+
+    // subscribe to iBeacons when the spheres in the cloud change.
+    CLOUD.events.on('CloudSyncComplete_spheresChanged', () => { LocationHandler.trackSpheres(); });
+
+    // when a sphere is created, we track all spheres anew.
+    eventBus.on('sphereCreated', () => { LocationHandler.trackSpheres(); });
   }
 
   loadStore(store) {

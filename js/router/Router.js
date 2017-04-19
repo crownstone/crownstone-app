@@ -13,28 +13,14 @@ import {
   Text,
   View
 } from 'react-native';
-import { StoreManager }           from './store/storeManager'
-import { LocationHandler }        from '../native/LocationHandler'
-import { AdvertisementHandler }   from '../native/AdvertisementHandler'
-import { KeepAliveHandler }       from '../native/KeepAliveHandler'
-import { SetupStateHandler }      from '../native/setup/SetupStateHandler'
-import { StoneStateHandler }      from '../native/StoneStateHandler'
-import { BatchCommandHandler }    from '../logic/BatchCommandHandler'
-// import { NotificationHandler }    from '../notifications/NotificationHandler'
-import { Scheduler }              from '../logic/Scheduler'
-import { eventBus }               from '../util/EventBus'
-import { prepareStoreForUser }    from '../util/DataUtil'
-import { Util }                   from '../util/Util'
-import { AppUtil }                from '../util/AppUtil'
-import { LOG, LogProcessor }      from '../logging/Log'
-import { INITIALIZER }            from '../Initialize'
-import { CLOUD }                  from '../cloud/cloudAPI'
-import { Background }             from '../views/components/Background'
+import { StoreManager }    from './store/storeManager'
+import { eventBus }        from '../util/EventBus'
+import { LOG }             from '../logging/Log'
+import { Background }      from '../views/components/Background'
+import { Router_IOS }      from './RouterIOS';
+import { Router_Android }  from './RouterAndroid';
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
-import { Router_IOS } from './RouterIOS';
-import { Router_Android } from './RouterAndroid';
 
-let store = {};
 
 export class AppRouter extends Component {
 
@@ -54,69 +40,11 @@ export class AppRouter extends Component {
   }
 
   componentDidMount() {
-    // check what we should do with this data.
-    let interpretData = () => {
-      store = StoreManager.getStore();
-      INITIALIZER.start(store);
-      if (store.hasOwnProperty('getState')) {
-        dataLoginValidation()
-      }
-      else {
-        this.setState({storeInitialized:true, loggedIn:false});
-      }
-
-      this.unsubscribe.forEach((callback) => {callback()});
-      this.unsubscribe = [];
-    };
-
-    // if there is a user that is listed as logged in, verify his account.
-    let dataLoginValidation = () => {
-      let state = store.getState();
-      // pass the store to the singletons
-      LogProcessor.loadStore(store);
-      LocationHandler.loadStore(store);
-      AdvertisementHandler.loadStore(store);
-      Scheduler.loadStore(store);
-      StoneStateHandler.loadStore(store);
-      SetupStateHandler.loadStore(store);
-      KeepAliveHandler.loadStore(store);
-      // NotificationHandler.loadStore(store);
-
-      // clear the temporary data like presence, state and disability of stones so no old data will be shown
-      prepareStoreForUser(store);
-      
-      // if we have an accessToken, we proceed with logging in automatically
-      if (state.user.accessToken !== null) {
-        // in the background we check if we're authenticated, if not we log out.
-        CLOUD.setAccess(state.user.accessToken);
-        CLOUD.forUser(state.user.userId).getUserData({background:true})
-          .then((reply) => {
-            LOG.info("Verified User.", reply);
-            CLOUD.sync(store, true);
-          })
-          .catch((reply) => {
-            LOG.info("COULD NOT VERIFY USER -- ERROR", reply);
-            if (reply.status === 401) {
-              AppUtil.logOut();
-              Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
-            }
-          });
-        this.setState({storeInitialized:true, loggedIn:true});
-        eventBus.emit("appStarted");
-      }
-      else {
-        this.setState({storeInitialized:true, loggedIn:false});
-      }
-    };
-
-    // there can be a race condition where the event has already been fired before this module has initialized
-    // This check is to ensure that it doesn't matter what comes first.
-    if (StoreManager.isInitialized() === true) {
-      interpretData();
-    }
-    else {
-      this.unsubscribe.push(eventBus.on('storeInitialized', interpretData));
-    }
+    this.unsubscribe.push(
+      eventBus.on('storePrepared', (result) => {
+        this.setState({storeInitialized:true, loggedIn: result.userLoggedIn});
+      })
+    );
   }
 
   /**
@@ -172,6 +100,7 @@ export class AppRouter extends Component {
   render() {
     LOG.debug("RENDERING ROUTER");
     if (this.state.storeInitialized === true) {
+      let store = StoreManager.getStore();
       if (Platform.OS === 'android') {
         return (
           <Router_Android

@@ -10,7 +10,7 @@ import {
 
 import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/EventBus'
-import { INITIALIZER } from './js/Initialize'
+import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 import SplashScreen from "rn-splash-screen";
 
@@ -22,12 +22,13 @@ class Root extends Component {
     this.unsubscribe = [];
   }
 
+  componentWillMount() {
+    BackgroundProcessHandler.start();
+  }
+
   // this is used to scroll the view up when typing is active
   componentDidMount() {
     SplashScreen.hide();
-
-    // start the BLE things.
-    INITIALIZER.init();
 
     this.snapBackKeyboardTimeout = 0;
     this.focusTime = 0;

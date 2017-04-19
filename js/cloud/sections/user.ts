@@ -60,6 +60,7 @@ export const user = {
     })
   },
 
+
   /**
    *
    * @param file {String} --> full path string.

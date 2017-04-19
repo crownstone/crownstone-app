@@ -56,7 +56,8 @@ class StoreManagerClass {
     AsyncStorage.getItem(this.userIdentificationStorageKey) // this will just contain a string of the logged in user.
       .then((userId) => {
         this._initializeStore(userId);
-      });
+      })
+      .catch((err) => { LOG.error("StoreManager: Could not get store from AsyncStorage", err)});
   }
 
   _initializeStore(userId) {
