@@ -2,7 +2,7 @@ import { Alert, AppState } from 'react-native'
 
 import { LOG }                   from './logging/Log'
 import { CLOUD }                 from './cloud/cloudAPI'
-import { LocationHandler }       from './native/LocationHandler'
+import { LocationHandler }       from './native/localization/LocationHandler'
 import { Scheduler }             from './logic/Scheduler'
 import { BluenetPromiseWrapper } from './native/libInterface/BluenetPromise';
 import { NativeBus }             from './native/libInterface/NativeBus';

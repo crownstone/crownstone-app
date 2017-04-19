@@ -1,17 +1,17 @@
 import { Alert }                    from 'react-native';
 
-import { NativeBus }                from './libInterface/NativeBus';
-import { BluenetPromiseWrapper }    from './libInterface/BluenetPromise';
-import { Bluenet  }                 from './libInterface/Bluenet';
-import { BehaviourUtil }            from '../util/BehaviourUtil';
-import { KeepAliveHandler }         from './KeepAliveHandler';
-import { StoneTracker }             from './StoneTracker';
-import { Scheduler }                from '../logic/Scheduler';
-import { LOG }                      from '../logging/Log';
-import { Util }                     from '../util/Util';
-import { TYPES }                    from '../router/store/reducers/stones';
-import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../ExternalConfig';
-import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../util/DataUtil';
+import { NativeBus }                from '../libInterface/NativeBus';
+import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
+import { Bluenet  }                 from '../libInterface/Bluenet';
+import { BehaviourUtil }            from '../../util/BehaviourUtil';
+import { KeepAliveHandler }         from '../KeepAliveHandler';
+import { StoneTracker }             from '../advertisements/StoneTracker';
+import { Scheduler }                from '../../logic/Scheduler';
+import { LOG }                      from '../../logging/Log';
+import { Util }                     from '../../util/Util';
+import { TYPES }                    from '../../router/store/reducers/stones';
+import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
+import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
 
 
 class LocationHandlerClass {

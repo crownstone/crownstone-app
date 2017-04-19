@@ -15,7 +15,6 @@ import {
 const Actions = require('react-native-router-flux').Actions;
 
 import { TopBar } from '../../components/Topbar'
-import { FingerprintManager } from '../../../native/FingerprintManager'
 import { styles, colors, screenWidth, screenHeight } from '../../styles'
 import { Icon } from '../../components/Icon';
 

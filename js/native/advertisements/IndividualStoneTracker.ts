@@ -1,7 +1,7 @@
 import { Alert, Vibration } from 'react-native';
 
-import { eventBus } from './../util/EventBus';
-import { LOG }      from '../logging/Log'
+import { eventBus } from '../../util/EventBus';
+import { LOG }      from '../../logging/Log'
 
 const meshRemovalThreshold : number = 200;
 

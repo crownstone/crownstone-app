@@ -1,17 +1,17 @@
 import { Alert, Vibration } from 'react-native';
 
-import { BleUtil }                            from '../util/BleUtil'
-import { BluenetPromiseWrapper }              from './libInterface/BluenetPromise'
-import { INTENTS }                            from './libInterface/Constants'
+import { BleUtil }                            from '../../util/BleUtil'
+import { BluenetPromiseWrapper }              from '../libInterface/BluenetPromise'
+import { INTENTS }                            from '../libInterface/Constants'
 import { StoneStateHandler }                  from './StoneStateHandler'
-import { eventBus }                           from './../util/EventBus';
-import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS }   from './../ExternalConfig';
-import { addDistanceToRssi, Util }            from '../util/Util';
-import { BehaviourUtil }                      from '../util/BehaviourUtil';
-import { Scheduler }                          from './../logic/Scheduler';
-import { LOG }                                from '../logging/Log'
-import { canUseIndoorLocalizationInSphere }   from '../util/DataUtil'
-import { TYPES }                              from '../router/store/reducers/stones'
+import { eventBus }                           from '../../util/EventBus';
+import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS }   from '../../ExternalConfig';
+import { addDistanceToRssi, Util }            from '../../util/Util';
+import { BehaviourUtil }                      from '../../util/BehaviourUtil';
+import { Scheduler }                          from '../../logic/Scheduler';
+import { LOG }                                from '../../logging/Log'
+import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
+import { TYPES }                              from '../../router/store/reducers/stones'
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive

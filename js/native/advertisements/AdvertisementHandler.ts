@@ -1,11 +1,11 @@
-import { Scheduler } from '../logic/Scheduler';
-import { NativeBus } from './libInterface/NativeBus';
+import { Scheduler } from '../../logic/Scheduler';
+import { NativeBus } from '../libInterface/NativeBus';
 import { StoneStateHandler } from './StoneStateHandler'
-import { LOG } from '../logging/Log'
-import { LOG_BLE } from '../ExternalConfig'
-import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../util/DataUtil'
-import { eventBus }  from '../util/EventBus'
-import { Util }  from '../util/Util'
+import { LOG } from '../../logging/Log'
+import { LOG_BLE } from '../../ExternalConfig'
+import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../../util/DataUtil'
+import { eventBus }  from '../../util/EventBus'
+import { Util }  from '../../util/Util'
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
 let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
