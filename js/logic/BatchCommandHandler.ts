@@ -349,6 +349,9 @@ class BatchCommandHandlerClass {
             let command = action.command;
             performedAction = action;
             switch (command.commandName) {
+              case 'getFirmwareVersion':
+                actionPromise = BluenetPromiseWrapper.getFirmwareVersion();
+                break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive();
                 break;
@@ -369,8 +372,8 @@ class BatchCommandHandlerClass {
         // if the direct command is performed, clean up the command afterwards.
         if (actionPromise !== null) {
           // clean up by resolving the promises of the items contained in the mesh messages.
-          promise = actionPromise.then(() => {
-            performedAction.promise.resolve();
+          promise = actionPromise.then((data) => {
+            performedAction.promise.resolve(data);
             performedAction.cleanup();
           })
         }

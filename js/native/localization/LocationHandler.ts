@@ -63,6 +63,9 @@ class LocationHandlerClass {
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
 
+    // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
+    eventBus.emit("enterSphere", sphereId);
+
     // We load the settings and start the localization regardless if we are already in the sphere. The calls themselves
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
     // right settings in the lib.

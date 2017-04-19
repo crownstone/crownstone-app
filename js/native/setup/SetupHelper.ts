@@ -19,9 +19,12 @@ export class SetupHelper {
   name : any;
   type : any;
   icon : any;
-  macAddress     : any;
-  cloudResponse  : any;
-  stoneIdInCloud : any;
+
+  // things to be filled out during setup process
+  macAddress      : any;
+  firmwareVersion : any;
+  cloudResponse   : any;
+  stoneIdInCloud  : any;
   
   constructor(setupAdvertisement, name, type, icon) {
     // full advertisement package
@@ -33,17 +36,13 @@ export class SetupHelper {
     this.name = name;
     this.type = type;
     this.icon = icon;
-
-    // things to be filled out during setup process
-    this.macAddress = undefined;
-    this.cloudResponse = undefined;
-    this.stoneIdInCloud = undefined; // shorthand to the cloud id
   }
 
   claim(store, sphereId) {
     // things to be filled out during setup process
     this.macAddress = undefined;
     this.cloudResponse = undefined;
+    this.firmwareVersion = undefined; // ie. 1.1.1
     this.stoneIdInCloud = undefined; // shorthand to the cloud id
 
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
@@ -60,8 +59,12 @@ export class SetupHelper {
           })
           .then((macAddress) => {
             this.macAddress = macAddress;
-            LOG.info("setup progress: have mac address");
-            eventBus.emit("setupInProgress", { handle: this.handle, progress: 2 });
+            LOG.info("setup progress: have mac address: ", macAddress);
+            return BluenetPromiseWrapper.getFirmwareVersion();
+          })
+          .then((firmwareVersion) => {
+            this.firmwareVersion = firmwareVersion;
+            LOG.info("setup progress: have firmware version: ", firmwareVersion);
             return BluenetPromiseWrapper.phoneDisconnect();
           })
           .then(() => {
@@ -91,15 +94,16 @@ export class SetupHelper {
                 sphereId:       sphereId,
                 stoneId:        this.stoneIdInCloud,
                 data: {
-                  type:           this.type,
-                  touchToToggle:  isPlug,
-                  crownstoneId:   this.cloudResponse.uid,
-                  handle:         this.handle,
-                  macAddress:     this.macAddress,
-                  iBeaconMajor:   this.cloudResponse.major,
-                  iBeaconMinor:   this.cloudResponse.minor,
-                  disabled:       false,
-                  rssi:           -60
+                  type:            this.type,
+                  touchToToggle:   isPlug,
+                  crownstoneId:    this.cloudResponse.uid,
+                  firmwareVersion: this.firmwareVersion,
+                  handle:          this.handle,
+                  macAddress:      this.macAddress,
+                  iBeaconMajor:    this.cloudResponse.major,
+                  iBeaconMinor:    this.cloudResponse.minor,
+                  disabled:        false,
+                  rssi:            -60
                 }
               };
 

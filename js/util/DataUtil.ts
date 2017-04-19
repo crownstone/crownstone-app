@@ -26,6 +26,20 @@ export const DataUtil = {
   },
 
   /**
+   * Call a callback on all stones in all spheres
+   * @param state
+   * @param sphereId
+   * @param callback
+   */
+  callOnStonesInSphere: function(state: any, sphereId: string, callback: (stoneId: string, stone: any) => void) {
+    let stones = state.spheres[sphereId].stones;
+    let stoneIds = Object.keys(stones);
+    for (let j = 0; j < stoneIds.length; j++) {
+      callback(stoneIds[j], stones[stoneIds[j]])
+    }
+  },
+
+  /**
    * Get the ID of the device (phone model) we are currently using.
    * @param state
    * @param deviceAddress

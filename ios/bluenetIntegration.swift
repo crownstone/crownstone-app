@@ -531,6 +531,20 @@ open class BluenetJS: NSObject {
   
   
   
+  @objc func getFirmwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.device.getFirmwareRevision()
+      .then{(firmwareVersion : String) -> Void in callback([["error" : false, "data": firmwareVersion]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getFirmwareVersion"]])
+        }
+    }
+  }
+
+  
   @objc func getMACAddress(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenet.setup.getMACAddress()
       .then{(macAddress : String) -> Void in callback([["error" : false, "data": macAddress]])}

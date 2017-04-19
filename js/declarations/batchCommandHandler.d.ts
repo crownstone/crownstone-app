@@ -81,7 +81,8 @@ interface meshTodo {
 type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'keepAliveState', state : number, timeout : number, changeState : boolean } |
   { commandName : 'setSwitchState', state : number } |
-  { commandName : 'multiSwitch', state : number, timeout : number, intent: number }
+  { commandName : 'multiSwitch', state : number, timeout : number, intent: number } |
+  { commandName : 'getFirmwareVersion' }
 
 
 interface batchCommands  {

@@ -30,9 +30,9 @@ export class MeshHelper {
 
     // This will return a BluenetPromiseWrapper promise
     return actionPromise
-      .then(() => {
+      .then((result) => {
         this._containedInstructions.forEach((instruction) => {
-          instruction.promise.resolve();
+          instruction.promise.resolve(result);
           instruction.cleanup();
         })
       })
