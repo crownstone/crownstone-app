@@ -70,4 +70,9 @@ RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAliveP
 RCT_EXTERN_METHOD(meshCommandSetSwitchState:(NSArray<NSNumber *> *)crownstoneIds state:(nonnull NSNumber *)state intent:(nonnull NSNumber *)intent callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
 
+// DFU
+RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *) callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
+
 @end

@@ -696,4 +696,49 @@ open class BluenetJS: NSObject {
     }
   }
   
+  
+  // DFU
+  
+  
+  @objc func putInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.control.putInDFU()
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN putInDFU \(err)"]])
+        }
+    }
+  }
+  
+  @objc func performDFU(_ handle: String, uri: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let firmwareURL = URL(fileURLWithPath: uri)
+    GLOBAL_BLUENET!.bluenet.dfu.startDFU(handle: handle, firmwareURL: firmwareURL)
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN putInDFU \(err)"]])
+        }
+    }
+  }
+  
+  @objc func setupFactoryReset(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.setup.factoryReset()
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN putInDFU \(err)"]])
+        }
+    }
+  }
+
+  
 }

@@ -9,16 +9,23 @@ interface BluenetPromiseWrapper {
   isReady(): Promise<void>,
   keepAlive(): Promise<void>,
   keepAliveState(changeState : boolean, state : number, timeout: number): Promise<void>,
-  meshKeepAlive(): Promise<void>,
-  meshKeepAliveState(timeout: number, stoneKeepAlivePackets: any): Promise<void>,
-  meshCommandSetSwitchState(arrayOfIds : number[], state : number): Promise<void>,
-  multiSwitch(arrayOfStoneSwitchPackets: any[]): Promise<void>,
   phoneDisconnect(): Promise<void>,
   setSwitchState(state: number): Promise<void>,
   setupCrownstone(dataObject): Promise<void>,
   setSettings(dataObject): Promise<void>,
   requestLocation(): Promise<any>,
   recover(handle: string): Promise<void>,
+
+  // Mesh
+  meshKeepAlive(): Promise<void>,
+  meshKeepAliveState(timeout: number, stoneKeepAlivePackets: any): Promise<void>,
+  meshCommandSetSwitchState(arrayOfIds : number[], state : number): Promise<void>,
+  multiSwitch(arrayOfStoneSwitchPackets: any[]): Promise<void>,
+
+  // DFU
+  putInDFU(): Promise<void>,
+  performDFU(handle : string, uri: string): Promise<void>,
+  setupFactoryReset(): Promise<void>,
 }
 
 interface crownstoneServiceData {

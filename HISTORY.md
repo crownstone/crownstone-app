@@ -2,6 +2,13 @@
 
 To be Released:
 
+- Improved responsiveness of text fields.
+- Added ability to update the firmware of the Crownstones from the app.
+- Introducing a new architecture for more efficient and reliable communication with the Cloud.
+- Increased the minimum sphere exit timeout to 5 minutes, with a default of 10.
+- Added battery saver
+- Fixed Option to turn Crownstones on when its dark outside
+
 - Added privacy options
 - Large refactor of the switching on location changes
 - Now showing the version number on the splash screen and in the settings overview.
