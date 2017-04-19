@@ -78,7 +78,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapper = {
       return new Promise((resolve, reject) => {
         Alert.alert(
           "Can't connect to this Crownstone.",
-          "Please move a little closer to this Crownstone and try again.",
+          "Please move a little closer to it and try again.",
           [{text:'OK', onPress: reject}]
         )
       });

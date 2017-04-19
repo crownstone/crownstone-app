@@ -21,6 +21,7 @@ import { Scheduler }             from "../logic/Scheduler";
 import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
 import { SYNC_INTERVAL }         from "../ExternalConfig";
+import {BatterySavingUtil} from "../util/BatterySavingUtil";
 
 
 
@@ -149,12 +150,7 @@ class BackgroundProcessHandlerClass {
     // Ensure we start scanning when the bluetooth module is powered on.
     NativeBus.on(NativeBus.topics.bleStatus, (status) => {
       if (this.userLoggedIn && status === 'poweredOn') {
-
-        // TODO: check if we're in the foreground or background
-        // TODO: check if we're in a sphere
-        BluenetPromiseWrapper.isReady().then(() => {
-          Bluenet.startScanningForCrownstonesUniqueOnly();
-        });
+        BatterySavingUtil.scanOnlyIfNeeded();
       }
     });
 
@@ -163,17 +159,11 @@ class BackgroundProcessHandlerClass {
       LOG.info("App State Change", appState);
       // in the foreground: start scanning!
       if (appState === "active" && this.userLoggedIn) {
-        // TODO: check if we're in a sphere
-
-        BluenetPromiseWrapper.isReady().then(() => {
-          Bluenet.startScanningForCrownstonesUniqueOnly();
-        });
+        BatterySavingUtil.scanOnlyIfNeeded();
       }
       // in the background: stop scanning to save battery!
       else if (appState === "background") {
-        BluenetPromiseWrapper.isReady().then(() => {
-          Bluenet.stopScanning();
-        });
+        BatterySavingUtil.stopScanningIfPossible();
       }
     });
   }
@@ -245,6 +235,7 @@ class BackgroundProcessHandlerClass {
     SetupStateHandler.loadStore(this.store);
     KeepAliveHandler.loadStore(this.store);
     FirmwareWatcher.loadStore(this.store);
+    BatterySavingUtil.loadStore(this.store);
     // NotificationHandler.loadStore(store);
   }
 }

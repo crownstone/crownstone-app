@@ -14,6 +14,7 @@ import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
 import {eventBus} from "../../util/EventBus";
 import {CLOUD} from "../../cloud/cloudAPI";
+import {BatterySavingUtil} from "../../util/BatterySavingUtil";
 
 
 class LocationHandlerClass {
@@ -89,7 +90,7 @@ class LocationHandlerClass {
     }
 
     // scan for crownstones on entering a sphere.
-    Bluenet.startScanningForCrownstonesUniqueOnly();
+    BatterySavingUtil.scanOnlyIfNeeded(sphereId);
 
 
     LOG.info("Set Settings.", bluenetSettings);
@@ -190,7 +191,7 @@ class LocationHandlerClass {
 
       // if we're not in any sphere, stop scanning to save battery
       if (presentSomewhere === false) {
-        Bluenet.stopScanning();
+        BatterySavingUtil.stopScanningIfPossible(true);
       }
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});

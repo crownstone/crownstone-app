@@ -45,19 +45,24 @@ class StoneStateHandlerClass {
   }
 
   receivedIBeaconUpdate(sphereId, stone, stoneId, rssi) {
-    // internal event to tell the app this crownstone has been seen.
-    eventBus.emit('update_' + sphereId + '_' + stoneId, {
-      handle: stone.config.handle,
-      stoneId: stoneId,
-      rssi: rssi,
-    });
-    if (stone.config.meshNetworkId) {
-      eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
+    // If the app has not yet seen this crownstone, it could be that it does not have a handle.
+    // Without handle we do not propagate the update events since we do not know what how to connect to it
+    // if we only hear the ibeacon event.
+    if (stone.config.handle) {
+      // internal events to tell the app this crownstone has been seen.
+      eventBus.emit('update_' + sphereId + '_' + stoneId, {
         handle: stone.config.handle,
         stoneId: stoneId,
-        meshNetworkId: stone.config.meshNetworkId,
         rssi: rssi,
       });
+      if (stone.config.meshNetworkId) {
+        eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
+          handle: stone.config.handle,
+          stoneId: stoneId,
+          meshNetworkId: stone.config.meshNetworkId,
+          rssi: rssi,
+        });
+      }
     }
 
     let state = this.store.getState();
