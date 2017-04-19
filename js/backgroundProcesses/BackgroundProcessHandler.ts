@@ -20,6 +20,7 @@ import { AdvertisementHandler }  from "../native/advertisements/AdvertisementHan
 import { Scheduler }             from "../logic/Scheduler";
 import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
+import { SYNC_INTERVAL }         from "../ExternalConfig";
 
 
 
@@ -27,20 +28,45 @@ import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
 class BackgroundProcessHandlerClass {
   started : boolean = false;
   userLoggedIn : boolean = false;
+  storeInitialized : boolean = false;
   store : any;
 
   constructor() { }
 
   start() {
     if (!this.started) {
+      LOG.info("BackgroundProcessHandler: Starting the background processes.");
       // start the BLE things.
       // route the events to React Native
       Bluenet.rerouteEvents();
 
-      // this puts the store into this.store!! all methods that require the store should be called after.
-      this.startStore();
+      // we first setup the event listeners since these events can be fired by the this.startStore().
 
+      // when the user is logged in we track spheres and scan for Crownstones
+      // This event is triggered on boot by the start store or by the login process.
+      eventBus.on('userLoggedIn', () => {
+        // clear the temporary data like state and disability of stones so no old data will be shown
+        prepareStoreForUser(this.store);
+
+        LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
+        BluenetPromiseWrapper.isReady()
+          .then(() => {
+            Bluenet.startScanningForCrownstonesUniqueOnly()
+          });
+
+        LocationHandler.trackSpheres();
+        this.userLoggedIn = true;
+      });
+
+      // wait for store to be prepared in order to continue.
       eventBus.on("storePrepared", () => {
+        LOG.info("BackgroundProcessHandler: Store is prepared.");
+        this.storeInitialized = true;
+
+        // pass the store to the singletons
+        LOG.info("BackgroundProcessHandler: Starting singletons.");
+        this.startSingletons();
+
         this.startCloudService();
 
         this.startEventTriggers();
@@ -51,7 +77,10 @@ class BackgroundProcessHandlerClass {
 
         let state = this.store.getState();
         Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
-      })
+      });
+
+      // Create the store from local storage. If there is no local store yet (first open), this is synchronous
+      this.startStore();
     }
     this.started = true;
   }
@@ -62,7 +91,7 @@ class BackgroundProcessHandlerClass {
    */
   startCloudService() {
     // sync every 10 minutes
-    Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:60*10});
+    Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:SYNC_INTERVAL});
     Scheduler.loadCallback('backgroundSync', () => {
       let state = this.store.getState();
       if (state.user.userId) {
@@ -103,22 +132,6 @@ class BackgroundProcessHandlerClass {
    *
    */
   startEventTriggers() {
-    // when the app is started we track spheres and scan for Crownstones
-    eventBus.on('userLoggedIn', () => {
-      // clear the temporary data like state and disability of stones so no old data will be shown
-      prepareStoreForUser(this.store);
-
-      LOG.info("INITIALIZER: received userLoggedIn event.");
-      BluenetPromiseWrapper.isReady()
-        .then(() => {
-          Bluenet.startScanningForCrownstonesUniqueOnly()
-        });
-
-      LocationHandler.trackSpheres();
-      this.userLoggedIn = true;
-    });
-
-
     // trigger the CalibrateTapToToggle tutorial for existing users when they open the app
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
@@ -182,9 +195,6 @@ class BackgroundProcessHandlerClass {
     // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
     refreshDatabase(this.store);
 
-    // pass the store to the singletons
-    this._startSingletons();
-
     // if we have an accessToken, we proceed with logging in automatically
     let state = this.store.getState();
     if (state.user.accessToken !== null) {
@@ -226,7 +236,7 @@ class BackgroundProcessHandlerClass {
   }
 
 
-  _startSingletons() {
+  startSingletons() {
     LogProcessor.loadStore(this.store);
     LocationHandler.loadStore(this.store);
     AdvertisementHandler.loadStore(this.store);

@@ -10,7 +10,7 @@ class FirmwareWatcherClass {
   constructor() { }
 
   loadStore(store: any) {
-    LOG.info('LOADED STORE KeepAliveHandler', this._initialized);
+    LOG.info('LOADED STORE FirmwareWatcher', this._initialized);
     if (this._initialized === false) {
       this.store = store;
       // once the user is logged in, we will check if there are crownstones that we do not know the firmware of.

@@ -82,26 +82,6 @@ class StoreManagerClass {
   }
 
 
-  _handleDEBUG(initialState) {
-    // if (initialState) {
-    //   let data = JSON.parse(initialState);
-    //   if (data.user && data.user.firstName === null) {
-    //     if (OVERRIDE_DATABASE === true) {
-    //       LOG.info("INJECTING FAKE DATA");
-    //       this.store = createStore(CrownstoneReducer, fakeStore);
-    //     }
-    //   }
-    // }
-    // else {
-    //   if (OVERRIDE_DATABASE === true) {
-    //     LOG.info("INJECTING FAKE DATA");
-    //     this.store = createStore(CrownstoneReducer, fakeStore);
-    //   }
-    // }
-    // // used for DEBUG
-    //
-  }
-
   /**
    * actually create the store, either filled with an initial state or empty.
    * @param initialState

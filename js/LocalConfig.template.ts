@@ -92,7 +92,7 @@ const DeviceInfo = require('react-native-device-info');
   export const DISABLE_TIMEOUT = 30000; //ms
 
   // settings for the keepAlive. The interval determines how often the keep alive fires, the attemps are the times it will try in total. 2 means 1 retry.
-  export const KEEPALIVE_INTERVAL = 60; // s !
+  export const KEEPALIVE_INTERVAL = 70; // s !
   export const KEEPALIVE_ATTEMPTS = 2;
 
   // in the event that only an away event (or only a near event) is configured,
@@ -101,6 +101,9 @@ const DeviceInfo = require('react-native-device-info');
 
   // Time until a scanned crownstone in setup mode is regarded to be gone.
   export const SETUP_MODE_TIMEOUT = 15000; // ms
+
+  // interval for syncing with the cloud.
+  export const SYNC_INTERVAL = 60*10; // s
 
 /******************** /TIMINGS ********************/
 

@@ -469,7 +469,13 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             type: 'UPDATE_APPLIANCE_CONFIG',
             sphereId: sphere.id,
             applianceId: appliance_from_cloud.id,
-            data: {name: appliance_from_cloud.name, icon: appliance_from_cloud.icon, updatedAt: appliance_from_cloud.updatedAt}
+            data: {
+              name: appliance_from_cloud.name,
+              icon: appliance_from_cloud.icon,
+              dimmable: appliance_from_cloud.dimmable,
+              onlyOnWhenDark: appliance_from_cloud.onlyOnWhenDark,
+              updatedAt: appliance_from_cloud.updatedAt
+            }
           });
         }
         else if (getTimeDifference(sphereInState.appliances[appliance_from_cloud.id].config, appliance_from_cloud) > 0) {
@@ -477,9 +483,10 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           LOG.info("@SYNC: Updating appliance", appliance_from_cloud.id, "in Cloud since our data is newer!");
           let applianceInState = sphereInState.appliances[appliance_from_cloud.id];
           let data = {
+            id: appliance_from_cloud.id,
             name: applianceInState.config.name,
             icon: applianceInState.config.icon,
-            id: appliance_from_cloud.id,
+            dimmable: appliance_from_cloud.dimmable,
             onlyOnWhenDark: appliance_from_cloud.onlyOnWhenDark,
             sphereId: sphere.id,
             updatedAt: applianceInState.config.updatedAt,
@@ -498,9 +505,14 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
         actions.push({
           type: 'ADD_APPLIANCE',
           sphereId: sphere.id,
-          onlyOnWhenDark: appliance_from_cloud.onlyOnWhenDark,
           applianceId: appliance_from_cloud.id,
-          data: {name: appliance_from_cloud.name, icon: appliance_from_cloud.icon, updatedAt: appliance_from_cloud.updatedAt}
+          data: {
+            name: appliance_from_cloud.name,
+            icon: appliance_from_cloud.icon,
+            dimmable: appliance_from_cloud.dimmable,
+            onlyOnWhenDark: appliance_from_cloud.onlyOnWhenDark,
+            updatedAt: appliance_from_cloud.updatedAt
+          }
         });
 
         // we only download the behaviour the first time we add the stone.

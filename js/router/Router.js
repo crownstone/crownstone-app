@@ -14,6 +14,7 @@ import {
   View
 } from 'react-native';
 import { StoreManager }    from './store/storeManager'
+import { BackgroundProcessHandler } from '../backgroundProcesses/BackgroundProcessHandler'
 import { eventBus }        from '../util/EventBus'
 import { LOG }             from '../logging/Log'
 import { Background }      from '../views/components/Background'
@@ -39,18 +40,21 @@ export class AppRouter extends Component {
     };
   }
 
-  componentDidMount() {
-    this.unsubscribe.push(
-      eventBus.on('storePrepared', (result) => {
-        this.setState({storeInitialized:true, loggedIn: result.userLoggedIn});
-      })
-    );
-  }
-
   /**
    * Preloading backgrounds
    */
   componentWillMount() {
+    if (BackgroundProcessHandler.storeInitialized === true) {
+      this.setState({storeInitialized: true, loggedIn: BackgroundProcessHandler.userLoggedIn});
+    }
+    else {
+      this.unsubscribe.push(
+        eventBus.on('storePrepared', (result) => {
+          this.setState({storeInitialized:true, loggedIn: result.userLoggedIn});
+        })
+      );
+    }
+
     this.backgrounds.setup                   = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/setupBackground.png')} />;
     this.backgrounds.main                    = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLight.png')} />;
     this.backgrounds.mainRemoteNotConnected  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/mainBackgroundLightNotConnected.png')} />;
