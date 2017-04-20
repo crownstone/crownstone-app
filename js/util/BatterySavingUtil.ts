@@ -8,7 +8,7 @@ import { Scheduler } from "../logic/Scheduler";
 class BatterySavingClass {
   store: any;
   _initialized: boolean = false;
-  _cancelPostponedScanStop : any;
+  _cancelPostponedScanStop : any = null;
 
   constructor() { }
 
@@ -49,7 +49,7 @@ class BatterySavingClass {
     }
 
     if (appInForeground && inSphere || inSphere && notAllHandlesAreKnown === true) {
-      if (this._cancelPostponedScanStop !== null) {
+      if (typeof this._cancelPostponedScanStop === 'function') {
         this._cancelPostponedScanStop();
         this._cancelPostponedScanStop = null;
       }

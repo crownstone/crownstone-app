@@ -76,6 +76,11 @@ export class SettingsPrivacy extends Component<any, any> {
 
     if (user.developer === true) {
       items.push({
+        label: "WARNING HIGH BATTERY USAGE IF ENABLED:",
+        type: 'explanation',
+        below: false
+      });
+      items.push({
         label: "Share power usage",
         value: user.uploadPowerUsage,
         type: 'switch',
