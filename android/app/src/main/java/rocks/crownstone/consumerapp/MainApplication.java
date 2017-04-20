@@ -41,14 +41,14 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
-            new ReactNativePushNotificationPackage(),
 					new VectorIconsPackage(),
 					new SvgPackage(),
 					new ImageResizerPackage(),
 					new RNFSPackage(),
 					new RNDeviceInfo(),
 					new RCTCameraPackage(),
-					new SplashScreenPackage()
+					new SplashScreenPackage(),
+					new ReactNativePushNotificationPackage()
 			);
 		}
 
