@@ -55,6 +55,18 @@ carthage bootstrap --platform iOS --no-use-binaries
 
     Choose the android dir.
 
+3. Clone the dfu lib for android:
+
+        cd android
+        git clone https://github.com/NordicSemiconductor/Android-DFU-Library.git
+        cd ..
+
+4. Modify the build tools version of the dfu lib in _Android-DFU-Library/dfu/build.gradle_:
+    - `compileSdkVersion 23`
+    - `buildToolsVersion '23.0.1'`
+    - `targetSdkVersion 23`
+    - `compile 'com.android.support:support-v4:23.0.1'`
+
 ## Commands
 
 Run the tests:
