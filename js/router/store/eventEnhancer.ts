@@ -191,6 +191,7 @@ function checkAction(action, affectedIds) {
     case 'SET_APP_IDENTIFIER':
     case 'USER_SEEN_TAP_TO_TOGGLE_ALERT':
     case 'USER_SEEN_ROOM_FINGERPRINT_ALERT':
+    case 'SET_NEW_FIRMWARE_VERSIONS':
     case 'REFRESH_DEFAULTS':
       break;
     case 'UPDATE_MESH_NETWORK_ID':

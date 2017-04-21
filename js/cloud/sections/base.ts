@@ -116,7 +116,6 @@ export const base = {
     return new Promise((resolve, reject) => {
       promise
         .then((reply) => {
-          LOG.cloud("REPLY from", endpoint, " with options: ", options, " is: ", reply);
           if (reply.status === 200 || reply.status === 204)
             resolve(reply.data);
           else

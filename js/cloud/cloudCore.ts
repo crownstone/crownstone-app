@@ -95,6 +95,7 @@ export function request(
         })
         .then((parsedResponse) => {
           if (stopRequest === false) {
+            LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: STATUS, data: parsedResponse});
             resolve({status: STATUS, data: parsedResponse});
           }
         })

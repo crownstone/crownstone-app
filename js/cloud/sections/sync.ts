@@ -30,6 +30,7 @@ export const sync = {
 
     return syncDown( userId, options )
       .then((data: any) => {
+        syncUser(store, actions, data.user);
         let cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
         let deletedSphere = syncCleanupLocal(store, actions, cloudData);
         syncKeys(actions, data.keys);
@@ -63,8 +64,16 @@ const syncDown = function (userId, options) {
     let cloudSpheresData = {};
     let cloudKeys = [];
     let cloudDevices = [];
+    let cloudUser = {};
 
     let syncPromises = [];
+
+    syncPromises.push(
+      CLOUD.getUserData(options)
+        .then((data) => {
+          cloudUser = data;
+        })
+    );
 
     syncPromises.push(
       CLOUD.getKeys(options)
@@ -98,12 +107,27 @@ const syncDown = function (userId, options) {
 
     Promise.all(syncPromises)
       .then(() => {
-        resolve({keys: cloudKeys, spheres: cloudSpheres, spheresData: cloudSpheresData, devices: cloudDevices})
+        resolve({keys: cloudKeys, spheres: cloudSpheres, spheresData: cloudSpheresData, devices: cloudDevices, user: cloudUser})
       })
       .catch((err) => {
         reject(err);
       })
   });
+};
+
+
+const syncUser = function(store, actions, userData) {
+  let state = store.getState();
+
+  let cloudFirmwareVersion = userData.firmwareVersionAvailable || null;
+  let cloudBootloaderVersion = userData.bootloaderVersionAvailable || null;
+
+  if (
+      state.user.config.firmwareVersion   !== cloudFirmwareVersion  && cloudFirmwareVersion ||
+      state.user.config.bootloaderVersion !== cloudBootloaderVersion && cloudBootloaderVersion
+     ) {
+    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersion: cloudFirmwareVersion, bootloaderVersion: cloudBootloaderVersion}})
+  }
 };
 
 const getTimeDifference = function(localVersion, cloudVersion) {

@@ -10,6 +10,8 @@ let defaultSettings = {
   userId: null,
   isNew: true,
   picture: null,
+  firmwareVersion: null,
+  bootloaderVersion: null,
   betaAccess: false,
   seenTapToToggle: false,
   seenTapToToggleDisabledDuringSetup: false,
@@ -44,6 +46,14 @@ export default (state = defaultSettings, action : any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.betaAccess = update(action.data.betaAccess, newState.betaAccess);
+        return newState;
+      }
+      return state;
+    case 'SET_NEW_FIRMWARE_VERSIONS':
+      if (action.data) {
+        let newState = {...state};
+        newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);
+        newState.firmwareVersion = update(action.data.firmwareVersion, newState.firmwareVersion);
         return newState;
       }
       return state;
