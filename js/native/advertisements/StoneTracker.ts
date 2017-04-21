@@ -36,9 +36,9 @@ export class StoneTracker {
       this.temporaryIgnore = true;
       this.temporaryIgnoreTimeout = setTimeout(() => {
         if (this.temporaryIgnore === true) {
-          LOG.warn("temporary ignore of triggers has been on for more than 20 seconds!!");
+          LOG.warn("temporary ignore of triggers has been on for more than 30 seconds!!");
         }
-      }, 20000 );
+      }, 30000 );
     });
     eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
 

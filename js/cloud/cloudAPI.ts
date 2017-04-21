@@ -10,6 +10,7 @@ import { locations } from './sections/locations'
 import { devices } from './sections/devices'
 import { appliances } from './sections/appliances'
 import { installations } from './sections/installations'
+import { dfu } from './sections/dfu'
 import { sync } from './sections/sync'
 
 
@@ -24,6 +25,7 @@ function combineSections() {
   Util.mixin(result, appliances);
   Util.mixin(result, installations);
   Util.mixin(result, sync);
+  Util.mixin(result, dfu);
   return result;
 }
 

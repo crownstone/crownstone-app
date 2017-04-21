@@ -10,20 +10,19 @@ import {
   Text,
   View
 } from 'react-native';
-let Actions = require('react-native-router-flux').Actions;
-let sha1 = require('sha-1');
-import { LOG }            from '../../logging/Log'
+const Actions = require('react-native-router-flux').Actions;
+const sha1    = require('sha-1');
+const RNFS    = require('react-native-fs');
+import { LOG }                                from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/Util'
-import { prepareStoreForUser }                from '../../util/DataUtil'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'
 import { Background }                         from '../components/Background'
-import { styles, colors , screenWidth, screenHeight } from '../styles'
 import { StoreManager }                       from '../../router/store/storeManager'
-const RNFS = require('react-native-fs');
 import loginStyles                            from './LoginStyles'
+import { styles, colors , screenWidth, screenHeight } from '../styles'
 
 
 export class Login extends Component<any, any> {
@@ -316,7 +315,7 @@ export class Login extends Component<any, any> {
         }, 100);
       })
       .catch((err) => {
-
+        LOG.error("ERROR during login.", err);
       });
   }
 }

@@ -1,4 +1,4 @@
-import { request, download } from '../cloudCore'
+import {request, download, downloadFile} from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/Util'
 import { EventBusClass } from '../../util/EventBus'
@@ -35,19 +35,19 @@ export const base = {
   _networkErrorHandler: () => {},
 
   _post: function(options) {
-    return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, this), this._accessToken)
+    return request(options, 'POST',   defaultHeaders, _getId(options.endPoint, this), this._accessToken);
   },
   _get: function(options) {
-    return request(options, 'GET',    defaultHeaders, _getId(options.endPoint, this), this._accessToken)
+    return request(options, 'GET',    defaultHeaders, _getId(options.endPoint, this), this._accessToken);
   },
   _delete: function(options) {
-    return request(options, 'DELETE', defaultHeaders, _getId(options.endPoint, this), this._accessToken)
+    return request(options, 'DELETE', defaultHeaders, _getId(options.endPoint, this), this._accessToken);
   },
   _put: function(options) {
-    return request(options, 'PUT',    defaultHeaders, _getId(options.endPoint, this), this._accessToken)
+    return request(options, 'PUT',    defaultHeaders, _getId(options.endPoint, this), this._accessToken);
   },
   _head: function(options) {
-    return request(options, 'HEAD',   defaultHeaders, _getId(options.endPoint, this), this._accessToken)
+    return request(options, 'HEAD',   defaultHeaders, _getId(options.endPoint, this), this._accessToken);
   },
   _uploadImage: function(options) {
     let formData = new FormData();
@@ -62,6 +62,9 @@ export const base = {
   },
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)
+  },
+  downloadFile: function(url, targetPath, callbacks) {
+    return downloadFile(url, targetPath, callbacks);
   },
   _handleNetworkError: function (error, options, endpoint, promiseBody, reject) {
     // this will eliminate all cloud requests.

@@ -2,6 +2,7 @@
 
 To be Released:
 
+- Fixed issue that a setup stone is still visible after it has been set up.
 - Improved responsiveness of text fields.
 - Added ability to update the firmware of the Crownstones from the app.
 - Introducing a new architecture for more efficient and reliable communication with the Cloud.

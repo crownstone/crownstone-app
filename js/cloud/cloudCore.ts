@@ -123,8 +123,11 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
   let {endPoint} = prepareEndpointAndBody(options, id, accessToken);
 
   // this will automatically try to download to a temp file. When not possible it will remove the temp file and resolve with null
-  return new Promise((resolve, reject) => {
+  return downloadFile(CLOUD_ADDRESS + endPoint, toPath, {begin: beginCallback, progress: progressCallback, success: successCallback});
+}
 
+export function downloadFile(url, targetPath, callbacks) {
+  return new Promise((resolve, reject) => {
     // TODO: move to util
     let path = RNFS.DocumentDirectoryPath;
     if (Platform.OS === 'android') {
@@ -132,40 +135,42 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
     }
 
     // get a temp path
-    let tempPath = path + '/' + (10000 + Math.random() * 1e5).toString(36).replace(".","") + '.tmp';
+    let tempPath = path + '/' + (10000 + Math.random() * 1e5).toString(36).replace(".", "") + '.tmp';
 
     if (DEBUG)
-      LOG.cloud('download',"requesting from URL:", CLOUD_ADDRESS + endPoint, tempPath);
+      LOG.cloud('download requesting from URL:', url, 'temp:', tempPath, 'target:', targetPath);
 
     // download the file.
     RNFS.downloadFile({
-      fromUrl: CLOUD_ADDRESS + endPoint,
+      fromUrl: url,
       toFile: tempPath,
-      begin: beginCallback,
-      progress: progressCallback
-    }).promise.then((status) => {
-      if (status.statusCode !== 200) {
-        // remove the temp file if the download failed
-        safeDeleteFile(tempPath)
-          .then(() => {
-            successCallback();
-            resolve(null);
-          })
-          .catch((err) => {})
-      }
-      else {
-        safeMoveFile(tempPath,toPath)
-          .then((toPath) => {
-            // if we have renamed the file, we resolve the promise so we can store the changed filename.
-            successCallback();
-            resolve(toPath);
-          })
-          .catch((err) => {})
-      }
-    })
-    .catch((err) => {
-      safeDeleteFile(tempPath).catch((err) => {});
-      reject(err);
-    })
+      begin: callbacks.begin,
+      progress: callbacks.progress
+    }).promise
+      .then((status) => {
+        if (status.statusCode !== 200) {
+          // remove the temp file if the download failed
+          safeDeleteFile(tempPath)
+            .then(() => {
+              callbacks.success();
+              resolve(null);
+            })
+            .catch((err) => { });
+        }
+        else {
+          safeMoveFile(tempPath, targetPath)
+            .then((toPath) => {
+              // if we have renamed the file, we resolve the promise so we can store the changed filename.
+              callbacks.success();
+              resolve(toPath);
+            })
+            .catch((err) => { });
+        }
+      })
+      .catch((err) => {
+        safeDeleteFile(tempPath).catch((err) => { });
+        reject(err);
+      })
   });
 }
+

@@ -1,13 +1,12 @@
 import { Alert } from 'react-native';
 
-import { BlePromiseManager }     from '../logic/BlePromiseManager'
-import {BluenetPromise, BluenetPromiseWrapper} from '../native/libInterface/BluenetPromise';
-import { NativeBus }             from '../native/libInterface/NativeBus';
-import { LOG }                   from '../logging/Log'
-// import { stoneTypes }            from '../../router/store/reducers/stones'
-import { eventBus }              from '../util/EventBus'
-import { Util }                  from '../util/Util'
-import {SetupStateHandler} from "../native/setup/SetupStateHandler";
+import { BlePromiseManager }     from '../../logic/BlePromiseManager'
+import {BluenetPromise, BluenetPromiseWrapper} from '../libInterface/BluenetPromise';
+import { NativeBus }             from '../libInterface/NativeBus';
+import { LOG }                   from '../../logging/Log'
+import { eventBus }              from '../../util/EventBus'
+import { Util }                  from '../../util/Util'
+import {SetupStateHandler} from "../setup/SetupStateHandler";
 
 export class FirmwareHelper {
   handle : any;

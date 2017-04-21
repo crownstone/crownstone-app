@@ -21,6 +21,7 @@ class SetupStateHandlerClass {
   _currentSetupState : any;
   referenceHandleMap : object;
   _initialized : boolean;
+  _ignoreStoneAfterSetup : any;
 
 
   constructor() {
@@ -30,6 +31,8 @@ class SetupStateHandlerClass {
     this._setupModeTimeouts = {};
     this._stonesInSetupStateAdvertisements = {};
     this._stonesInSetupStateTypes = {};
+
+    this._ignoreStoneAfterSetup = {};
 
     this._initialized = false;
     this._currentSetupState = {busy: false, handle: undefined, name: undefined, type: undefined, icon: undefined};
@@ -63,6 +66,14 @@ class SetupStateHandlerClass {
 
       // when the setup is finished, we clean up the handle from the list of stones in setup mode
       eventBus.on("setupComplete",  (handle) => {
+        this._ignoreStoneAfterSetup[handle] = true;
+
+        // we ignore the stone that just completed setup for 5 seconds after completion to avoid duplicates in the view.
+        setTimeout(() => {
+          this._ignoreStoneAfterSetup[handle] = undefined;
+          delete this._ignoreStoneAfterSetup[handle];
+        }, 5000);
+
         this._resetSetupState();
         // cleaning up the entry of the setup stone
         this._cleanup(handle);
@@ -77,6 +88,12 @@ class SetupStateHandlerClass {
       NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
+
+        // if we just completed the setup of this stone, we ignore it for a while to avoid duplicates.
+        if (this._ignoreStoneAfterSetup[handle]) {
+          return;
+        }
+
         // we scan high frequency when we see a setup node
         BleUtil.startHighFrequencyScanning(this._uuid);
 

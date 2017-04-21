@@ -80,7 +80,7 @@ export class SetupHelper {
             return this.setupCrownstone(store, sphereId);
           })
           .then(() => {
-            LOG.info("setup progress: connected");
+            LOG.info("setup progress: setupCrownstone done");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
             setTimeout(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300);
             setTimeout(() => {
