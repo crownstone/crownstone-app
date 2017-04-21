@@ -22,6 +22,7 @@ import { StoneStateHandler }     from "../native/advertisements/StoneStateHandle
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
 import { SYNC_INTERVAL }         from "../ExternalConfig";
 import {BatterySavingUtil} from "../util/BatterySavingUtil";
+import {FirmwareHandler} from "../native/firmware/FirmwareHandler";
 
 
 

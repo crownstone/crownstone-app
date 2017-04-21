@@ -91,6 +91,7 @@ export const safeDeleteFile = function(uri) {
         resolve()
       })
       .catch((err) => {
+        reject(err);
       })
   })
 };

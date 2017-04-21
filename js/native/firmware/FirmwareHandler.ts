@@ -1,5 +1,6 @@
 import {CLOUD} from "../../cloud/cloudAPI";
 import {LOG} from "../../logging/Log";
+import {safeDeleteFile} from "../../util/Util";
 const RNFS    = require('react-native-fs');
 const sha1    = require('sha-1');
 
@@ -31,28 +32,63 @@ class FirmwareHandlerClass {
   }
 
 
-  download() {
-    let toPath = RNFS.DocumentDirectoryPath + '/firmware.zip';
-    CLOUD.downloadFile(this.firmware.downloadUrl, toPath, {
-      start:    (data) => { LOG.info("start DOWNLOAD", data); },
-      progress: (data) => { LOG.info("progress DOWNLOAD", data); },
-      success:  (data) => { LOG.info("success DOWNLOAD", data); },
-    })
+  download(source, type) {
+    let toPath = RNFS.DocumentDirectoryPath + '/' + type + '.zip';
+    // remove the file we will write to if it exists
+    return safeDeleteFile(toPath)
+      .then(() => {
+        return CLOUD.downloadFile(source.downloadUrl, toPath, {
+          start: (data) => {
+            LOG.info("start DOWNLOAD", data);
+          },
+          progress: (data) => {
+            LOG.info("progress DOWNLOAD", data);
+          },
+          success: (data) => {
+            LOG.info("success DOWNLOAD", data);
+          },
+        })
+      })
       .then((resultPath) => {
-        this.downloadedFirmwareVersion = this.firmware.version;
         LOG.info("Downloaded file", resultPath);
+        return RNFS.readFile(resultPath, 'ascii');
+      })
+      .then((fileContent) => {
+        return new Promise((resolve, reject) => {
+          let hash = sha1(fileContent);
+          LOG.info(type, "HASH", '"' + hash + '"', '"' + source.sha1hash + '"')
+          if (hash === source.sha1hash) {
+            LOG.info("Verified hash");
+            resolve();
+          }
+          else {
+            safeDeleteFile(toPath).catch(() => {});
+            reject("Invalid hash");
+          }
+        })
       })
       .catch((err) => {
+        safeDeleteFile(toPath).catch(() => {});
         LOG.error("Could not download file", err);
+
+        // propagate the error
+        throw err;
       })
   }
 
   test() {
     this.getVersions()
       .then(() => {
-        return this.download();
+        return this.download(this.firmware,'firmware');
       })
       .then(() => {
+        LOG.info("FINISHED DOWNLOADING FIRMWARE");
+        this.downloadedFirmwareVersion = this.firmware.version;
+        return this.download(this.bootloader,'bootloader');
+      })
+      .then(() => {
+        LOG.info("FINISHED DOWNLOADING BOOTLOADER");
+        this.downloadedBootloaderVersion = this.bootloader.version;
         LOG.info("All tests done.")
       })
       .catch((err) => { LOG.error("Failed test", err)})
