@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import nl.dobots.bluenet.ble.base.BleBaseEncryption;
+import nl.dobots.bluenet.ble.base.callbacks.IByteArrayCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IDiscoveryCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IProgressCallback;
 import nl.dobots.bluenet.ble.base.structs.ControlMsg;
@@ -953,6 +954,30 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			}
 		});
 
+	}
+
+	@ReactMethod
+	public void getFirmwareVersion(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getFirmwareVersion");
+		// Returns firmware string as data
+		_bleExt.readFirmwareRevision(new IByteArrayCallback() {
+			@Override
+			public void onSuccess(byte[] result) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				String firmwareString = new String(result);
+				retVal.putString("data", firmwareString);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
