@@ -412,7 +412,7 @@ class BatchCommandHandlerClass {
       let topicsToScan = this._getObjectsToScan();
       if (topicsToScan.length === 0) {
         // Use the attempt handler to clean up after something fails.
-        this.attemptHandler(null);
+        this.attemptHandler(null, 'Nothing to scan');
 
         LOG.info("BatchCommandHandler: No topics to scan during BatchCommandHandler execution");
         resolve();
@@ -447,7 +447,7 @@ class BatchCommandHandlerClass {
         })
         .catch((err) => {
           // Use the attempt handler to clean up after something fails.
-          this.attemptHandler(activeCrownstone);
+          this.attemptHandler(activeCrownstone, err);
 
           // attempt to reschedule on failure.
           if (Object.keys(this.commands).length > 0) {
@@ -455,12 +455,12 @@ class BatchCommandHandlerClass {
           }
 
           LOG.error("ERROR DURING EXECUTE", err);
-          reject();
+          reject(err);
         })
         .catch((err) => {
           // this fallback catches errors in the attemptHandler.
           LOG.error("FATAL ERROR DURING EXECUTE", err);
-          reject();
+          reject(err);
         })
     })
   }
@@ -510,7 +510,7 @@ class BatchCommandHandlerClass {
         .catch((err) => {
           LOG.error("ERROR DURING EXECUTE", err);
           BluenetPromiseWrapper.phoneDisconnect().catch((err) => { });
-          reject();
+          reject(err);
         })
     })
   }
@@ -520,12 +520,13 @@ class BatchCommandHandlerClass {
    * It reduces the attempt counter in the affected processes by 1. If the attempt count is at 0, it will remove the command
    * from the list.
    * @param connectedCrownstone
+   * @param err
    */
-  attemptHandler(connectedCrownstone) {
+  attemptHandler(connectedCrownstone, err) {
     let handleAttempt = (command) => {
       command.attempts -= 1;
       if (command.attempts <= 0) {
-        command.promise.reject();
+        command.promise.reject(err);
         command.cleanup();
       }
     };
@@ -596,7 +597,6 @@ class BatchCommandHandlerClass {
       .catch((err) => {
         // disable execution and forward the error
         LOG.error("BatchCommandHandler: Error completing promise.", err);
-
       });
   }
 
@@ -633,6 +633,7 @@ class BatchCommandHandlerClass {
       // if we're busy with a low priority command, we will stop the search if a high priority execute comes in.
       if (highPriorityActive !== true) {
         unsubscribeListeners.push(eventBus.on('PriorityExecute', () => {
+          LOG.debug("Stopped listening for Crownstones due to Priority Execute.");
           // remove the listeners
           cleanup();
 

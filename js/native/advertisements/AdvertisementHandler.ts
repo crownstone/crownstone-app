@@ -54,9 +54,9 @@ class AdvertisementHandlerClass {
         Scheduler.clearOverwritableTriggerAction(TRIGGER_ID, ADVERTISEMENT_PREFIX + handle);
         // this is a fallback mechanism in case no disconnect event is fired.
         this.stonesInConnectionProcess[handle] = {timeout: setTimeout(() => {
-          LOG.warn("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 5 seconds.");
+          LOG.warn("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");
           this._restoreConnectionTimeout();
-        }, 5000)};
+        }, 15000)};
       });
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
@@ -108,6 +108,7 @@ class AdvertisementHandlerClass {
   }
 
   handleEvent(advertisement : crownstoneAdvertisement) {
+    // ignore stones that we are attempting to connect to.
     if (this.stonesInConnectionProcess[advertisement.handle] !== undefined) {
       return;
     }
