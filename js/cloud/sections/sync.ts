@@ -29,6 +29,25 @@ export const sync = {
     CLOUD.setUserId(userId);
 
     return syncDown( userId, options )
+      .catch((err) => {
+        // perhaps there is a 401, user token expired or replaced. Retry logging in.
+        if (err.status === 401) {
+          LOG.warn("Could not verify user, attempting to login again and retry sync.");
+          return CLOUD.login({
+            email: state.user.email,
+            password: state.user.password,
+            background: true,
+            onUnverified: () => {},
+            onInvalidCredentials: () => {}
+          })
+          .then(() => {
+            return syncDown(userId, options);
+          })
+        }
+        else {
+          throw err;
+        }
+      })
       .then((data: any) => {
         syncUser(store, actions, data.user);
         let cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
