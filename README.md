@@ -73,10 +73,6 @@ Run the tests:
 
 npm test
 
-Run the lint:
-
-npm run lint
-
 Run react-native
 
 react-native run-ios
@@ -86,5 +82,20 @@ or:
 react-native run-android
 ```
 
+## Troubleshooting
+
 If there are problems with PHC folders during iOS compilation, remove the build folder in the ios map.
 Cameraroll has to be manually added to iosbuild in 0.42
+
+
+If you get a lot of these messages in the XCode console:
+```
+__nw_connection_get_connected_socket_block_invoke
+```
+
+Add this global variable to your build config:
+
+```
+Xcode menu -> Product -> Edit Scheme...
+Environment Variables -> Add -> Name: "OS_ACTIVITY_MODE", Value:"disable"
+```

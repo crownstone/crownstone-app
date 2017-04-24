@@ -105,5 +105,12 @@ const DeviceInfo = require('react-native-device-info');
   // interval for syncing with the cloud.
   export const SYNC_INTERVAL = 60*10; // s
 
+  // The amount of time to wait until the promise manager gives up on a pending promise.
+  export const PROMISE_MANAGER_FALLBACK_TIMEOUT = 60000; // ms --> 1 minute
+
+  // The amount of time the scheduler tick (setTimeout) waits between ticks. The normal heartbeat is by the ibeacon messages (once a second)
+  export const SCHEDULER_FALLBACK_TICK = 4000; // ms --> 1 minute
+
+
 /******************** /TIMINGS ********************/
 

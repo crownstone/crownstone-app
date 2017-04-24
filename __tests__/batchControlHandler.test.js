@@ -40,7 +40,7 @@ jest.mock('../js/ExternalConfig', () => {
 });
 
 
-jest.mock('../js/native/KeepAliveHandler', () => {
+jest.mock('../js/backgroundProcesses/KeepAliveHandler', () => {
   return {
     KeepAliveHandler : {
       timeUntilNextTrigger: () => { return 50; },

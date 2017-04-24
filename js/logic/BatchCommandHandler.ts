@@ -518,8 +518,20 @@ class BatchCommandHandlerClass {
         })
         .catch((err) => {
           LOG.error("ERROR DURING EXECUTE", err);
-          BluenetPromiseWrapper.phoneDisconnect().catch(() => { });
-          reject(err);
+          // TODO: make this a 'safeDisconnect' in bluenetPromise
+          new Promise((disconnectResolve, disconnectReject) => {
+            BluenetPromiseWrapper.phoneDisconnect()
+              .then(() => {
+                disconnectResolve();
+              })
+              .catch((err) => {
+                LOG.warn("BatchCommandHandler: Could not phone disconnect from device.", err);
+                disconnectResolve();
+              })
+          })
+          .then(() => {
+            reject(err);
+          })
         })
     })
   }
@@ -591,7 +603,7 @@ class BatchCommandHandlerClass {
   }
 
   _scheduleExecute(priority) {
-    LOG.info("BatchCommandHandler: Scheduling");
+    LOG.info("BatchCommandHandler: Scheduling command in promiseManager");
     let actionPromise = () => {
       LOG.info("BatchCommandHandler: Executing!");
       return this._searchAndHandleCommands();

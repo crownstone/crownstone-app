@@ -2,6 +2,7 @@ import { NativeBus } from '../native/libInterface/NativeBus';
 import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
 import {eventBus} from "../util/EventBus";
+import {SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 
 
 class SchedulerClass {
@@ -170,11 +171,12 @@ class SchedulerClass {
    */
   schedule() {
     this.clearSchedule();
-    this.scheduledTick = setTimeout(() => { this.tick() }, 4000);
+    this.scheduledTick = setTimeout(() => { this.tick() }, SCHEDULER_FALLBACK_TICK);
   }
 
   scheduleCallback(callback, afterMilliseconds, label = "unlabeled") {
     let uuid = label + Util.getUUID();
+    LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
     this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
     return () => {
       if (this.singleFireTriggers[uuid]) {

@@ -58,7 +58,7 @@ export const DataUtil = {
   getTapToToggleCalibration: function(state) : number {
     if (state && state.devices) {
       let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
-      if (state.devices[deviceId] && state.devices[deviceId]) {
+      if (deviceId && state.devices[deviceId] && state.devices[deviceId]) {
         let calibration = state.devices[deviceId].tapToToggleCalibration;
         if (calibration) {
           return calibration;
