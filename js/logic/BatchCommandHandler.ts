@@ -432,6 +432,15 @@ class BatchCommandHandlerClass {
 
       // scan for target
       this._searchScan(topicsToScan, rssiScanThreshold, highPriorityActive, 5000)
+        .catch((err) => {
+          // nothing found within -91. if this is a low priority call, we will attempt it without the rssi threshold.
+          if (rssiScanThreshold !== null && highPriorityActive === false) {
+            return this._searchScan(topicsToScan, null, false, 5000)
+          }
+          else {
+            throw err;
+          }
+        })
         .then((crownstoneToHandle : connectionInfo) => {
           activeCrownstone = crownstoneToHandle;
           if (crownstoneToHandle === null) {

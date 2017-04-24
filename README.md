@@ -87,4 +87,4 @@ react-native run-android
 ```
 
 If there are problems with PHC folders during iOS compilation, remove the build folder in the ios map.
-Cameraroll has to be manually added to iosbuild in 0.22
+Cameraroll has to be manually added to iosbuild in 0.42
