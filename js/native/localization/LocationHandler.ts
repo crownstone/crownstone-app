@@ -108,6 +108,9 @@ class LocationHandlerClass {
       LOG.info("LocationHandler: ENTER SPHERE", sphereId);
 
       BluenetPromiseWrapper.requestLocation()
+        .catch((err) => {
+          LOG.error("Could not get Location when entering a sphere: ", err);
+        })
         .then((location) => {
           if (location && location.latitude && location.longitude) {
             if (sphere.config.latitude && sphere.config.longitude) {

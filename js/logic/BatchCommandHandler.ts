@@ -509,7 +509,7 @@ class BatchCommandHandlerClass {
         })
         .catch((err) => {
           LOG.error("ERROR DURING EXECUTE", err);
-          BluenetPromiseWrapper.phoneDisconnect().catch((err) => { });
+          BluenetPromiseWrapper.phoneDisconnect().catch(() => { });
           reject(err);
         })
     })
@@ -626,7 +626,7 @@ class BatchCommandHandlerClass {
         cleanup();
 
         LOG.warn("No stones found before timeout.");
-        reject(new Error("No stones found before timeout."));
+        reject("No stones found before timeout.");
       }, timeout, 'Looking for target...');
 
 

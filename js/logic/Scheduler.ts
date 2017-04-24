@@ -1,6 +1,7 @@
 import { NativeBus } from '../native/libInterface/NativeBus';
 import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
+import {eventBus} from "../util/EventBus";
 
 
 class SchedulerClass {
@@ -44,6 +45,8 @@ class SchedulerClass {
         this.activeSphere = state.app.activeSphere;
         this.allowTicksAfterTime = new Date().valueOf() + 2000;
       });
+      // we use the local event instead of the native one to also trigger when enter is triggered by fallback.
+      eventBus.on("enterSphere", this.flushAll.bind(this));
       NativeBus.on(NativeBus.topics.exitSphere, this.flushAll.bind(this));
       NativeBus.on(NativeBus.topics.iBeaconAdvertisement, () => {
         this.tick();
