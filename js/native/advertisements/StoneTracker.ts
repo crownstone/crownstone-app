@@ -5,18 +5,19 @@ import { BluenetPromiseWrapper }              from '../libInterface/BluenetPromi
 import { INTENTS }                            from '../libInterface/Constants'
 import { StoneStateHandler }                  from './StoneStateHandler'
 import { eventBus }                           from '../../util/EventBus';
-import { RESET_TIMER_FOR_NEAR_AWAY_EVENTS }   from '../../ExternalConfig';
+import {
+  TIME_BETWEEN_TAP_TO_TOGGLES,
+  TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY
+} from '../../ExternalConfig';
 import { addDistanceToRssi, Util }            from '../../util/Util';
 import { BehaviourUtil }                      from '../../util/BehaviourUtil';
-import { Scheduler }                          from '../../logic/Scheduler';
 import { LOG }                                from '../../logging/Log'
 import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
 import { TYPES }                              from '../../router/store/reducers/stones'
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
-let TOUCH_TIME_BETWEEN_SWITCHING = 5000; // ms
-let TRIGGER_TIME_BETWEEN_SWITCHING = 2000; // ms
+
 
 export class StoneTracker {
  elements : any;
@@ -122,8 +123,8 @@ export class StoneTracker {
         }
       }
       else {
-        // LOG.info("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TOUCH_TIME_BETWEEN_SWITCHING);
-        if (rssi > tapToToggleCalibration && (now - ref.touchTime) > TOUCH_TIME_BETWEEN_SWITCHING) {
+        // LOG.info("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TIME_BETWEEN_TAP_TO_TOGGLES);
+        if (rssi > tapToToggleCalibration && (now - ref.touchTime) > TIME_BETWEEN_TAP_TO_TOGGLES) {
           if (this.tapToToggleDisabled === false) {
             LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', tapToToggleCalibration);
             // notify the user by vibration that the crownstone will be switched.
@@ -171,7 +172,7 @@ export class StoneTracker {
     // --------------------- Finished Tap-to-Toggle --------------------------- //
 
     // to avoid flickering we do not trigger these events in less than 5 seconds.
-    if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING)
+    if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY)
       return;
 
 

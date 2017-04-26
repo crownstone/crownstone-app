@@ -31,7 +31,7 @@ export const BehaviourUtil = {
       if (stone.config.locationId !== locationId)
         return;
 
-      this.enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks);
+      this._enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks);
     });
 
     BatchCommandHandler.execute();
@@ -57,7 +57,7 @@ export const BehaviourUtil = {
     let stoneIds = Object.keys(sphere.stones);
 
     stoneIds.forEach((stoneId) => {
-      this.enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks = {})
+      this._enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks = {})
     });
 
     BatchCommandHandler.execute();
@@ -78,6 +78,24 @@ export const BehaviourUtil = {
    *                                        }
    */
   enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
+    this._enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks);
+    BatchCommandHandler.execute();
+  },
+
+  /**
+   * Trigger behaviour for a certain stone in a sphere, this internal method does not execute by itself!
+   * @param { Object } store            // redux store
+   * @param { String } sphereId         // ID of sphere
+   * @param { String } behaviourType    // type of behaviour to be used in the logging and switching intent
+   * @param { String } stoneId          // ID of stone
+   * @param { Object } callbacks        // hooks for the enacting of the behaviour.
+   *                                        {
+   *                                          onCancelled: function(sphereId, stoneId),               // triggered if the behaviour is not used
+   *                                          onTrigger: function(sphereId, stoneId),                 // triggered when the behaviour is executed
+   *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
+   *                                        }
+   */
+  _enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
     let state = store.getState();
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];

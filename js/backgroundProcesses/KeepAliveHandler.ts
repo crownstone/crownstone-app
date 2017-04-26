@@ -89,12 +89,13 @@ class KeepAliveHandlerClass {
           let behaviourAway = element.behaviour[TYPES.AWAY];
 
           let behaviour = undefined;
-          let delay = Math.max(300, state.spheres[sphereId].config.exitDelay) + 0.5*KEEPALIVE_INTERVAL;
+          let determineDelay = (initial) => { return Math.max(300, initial) + 0.5*KEEPALIVE_INTERVAL };
+          let delay = determineDelay(state.spheres[sphereId].config.exitDelay);
 
           // if the home exit is not defined, the room exit and the away should take its place. They are not in the room either!
           if      (behaviourHomeExit.active === true)                   { behaviour = behaviourHomeExit; }
-          else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; delay = behaviour.delay; }
-          else if (behaviourAway.active === true && !useRoomLevel)      { behaviour = behaviourAway;     delay = behaviour.delay; }
+          else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; delay = determineDelay(behaviour.delay); }
+          else if (behaviourAway.active     === true && !useRoomLevel)  { behaviour = behaviourAway;     delay = determineDelay(behaviour.delay); }
 
           if (stone.config.handle && stone.config.disabled === false) {
             this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId);

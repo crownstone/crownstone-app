@@ -39,17 +39,6 @@ jest.mock('../js/ExternalConfig', () => {
   }
 });
 
-
-jest.mock('../js/backgroundProcesses/KeepAliveHandler', () => {
-  return {
-    KeepAliveHandler : {
-      timeUntilNextTrigger: () => { return 50; },
-      fireTrigger: () => { },
-    }
-  }
-});
-
-
 let mockStone1 =      {config: {crownstoneId:'CSID1', meshNetworkId : 1, handle:'handle-CSID-1'}};
 let mockStone2 =      {config: {crownstoneId:'CSID2', meshNetworkId : 1, handle:'handle-CSID-2'}};
 let mockStone3 =      {config: {crownstoneId:'CSID3', meshNetworkId : 1, handle:'handle-CSID-3'}};
@@ -181,19 +170,19 @@ test('BatchCommandHandler Mesh', () => {
   expectedArray = [
     {command: 'connect', args: ['handle-CSID-1']},
     {command: 'multiSwitch', args: [[{'crownstoneId': 'CSID1', 'intent': 4, 'state': 1, 'timeout': 0}, {'crownstoneId': 'CSID2', 'intent': 4, 'state': 1, 'timeout': 0}, {'crownstoneId': 'CSID3', 'intent': 4, 'state': 1, 'timeout': 0}]]},
-    {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId1'},
-    {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId2'},
-    {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId3'},
+    {promise: 'resolved', command: 'multiSwitch', id: 'load_stoneId1'},
+    {promise: 'resolved', command: 'multiSwitch', id: 'load_stoneId2'},
+    {promise: 'resolved', command: 'multiSwitch', id: 'load_stoneId3'},
     {command: 'meshKeepAliveState', args: [150, [{'action': true, 'crownstoneId': 'CSID2', 'state': 1}, {'action': true, 'crownstoneId': 'CSID3', 'state': 1}]]},
-    {promise:'resolved', command: 'keepAliveState', id: 'load_stoneId2'},
-    {promise:'resolved', command: 'keepAliveState', id: 'load_stoneId3'},
+    {promise: 'resolved', command: 'keepAliveState', id: 'load_stoneId2'},
+    {promise: 'resolved', command: 'keepAliveState', id: 'load_stoneId3'},
     {command: 'meshKeepAliveState', args: [150, [{'action': true, 'crownstoneId': 'CSID1', 'state': 1}, {'action': true, 'crownstoneId': 'CSID3', 'state': 1}]]},
-    {promise:'resolved', command: 'keepAliveState', id: 'load_stoneId1'},
-    {promise:'resolved', command: 'keepAliveState', id: 'load_stoneId3'},
+    {promise: 'resolved', command: 'keepAliveState', id: 'load_stoneId1'},
+    {promise: 'resolved', command: 'keepAliveState', id: 'load_stoneId3'},
     {command: 'disconnect', args: []},
     {command: 'connect', args: ['handle-CSID-4']},
     {command: 'multiSwitch',  args: [[{'crownstoneId': 'CSID4', 'intent': 4, 'state': 1, 'timeout': 0}]]},
-    {promise:'resolved', command: 'multiSwitch', id: 'load_stoneId4'},
+    {promise: 'resolved', command: 'multiSwitch', id: 'load_stoneId4'},
     {command: 'disconnect', args: []},
   ];
 
@@ -206,7 +195,7 @@ test('BatchCommandHandler Mesh', () => {
     BatchCommandHandler.load(mockStone2, 'stoneId2', 'sphereId', multiSwitch).then(() => { testBus.emit('test', {command:'multiSwitch', promise:'resolved', id:'load_stoneId2'}) });
     BatchCommandHandler.load(mockStone3, 'stoneId3', 'sphereId', multiSwitch).then(() => { testBus.emit('test', {command:'multiSwitch', promise:'resolved', id:'load_stoneId3'}) });
     BatchCommandHandler.load(mockStone4, 'stoneId4', 'sphereId', multiSwitch).then(() => { testBus.emit('test', {command:'multiSwitch', promise:'resolved', id:'load_stoneId4'}) });
-    BatchCommandHandler.execute()
+    BatchCommandHandler.execute();
 
     let { directCommands, meshNetworks } = BatchCommandHandler._extractTodo();
     expect(directCommands).toMatchSnapshot(); // snapshot 1
