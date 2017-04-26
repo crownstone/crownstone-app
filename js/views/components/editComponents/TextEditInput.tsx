@@ -23,11 +23,7 @@ export class TextEditInput extends Component<any, any> {
 
     // make sure we submit the data if the keyboard is hidden.
     this.blurListener = Keyboard.addListener('keyboardDidHide', () => { this.blur();  });
-    this.unsubscribe = eventBus.on("inputComplete", () => { console.log("TRIG"); this.blur(); })
-  }
-
-  componentWillReceiveProps(newProps) {
-
+    this.unsubscribe = eventBus.on("inputComplete", () => { this.blur(); })
   }
 
   componentWillUnmount() {
@@ -52,6 +48,9 @@ export class TextEditInput extends Component<any, any> {
     if (this.blurred === false) {
       this.blurred = true;
       this.isInFocus = false;
+      if (this.props.__validate) {
+        this.props.__validate(this.props.optimization !== true ? this.props.value : this.state.value);
+      }
       if (this.props.optimization === true) {
         this.props.callback(this.state.value);
       }
@@ -82,9 +81,6 @@ export class TextEditInput extends Component<any, any> {
         keyboardType={ this.props.keyboardType || 'default'}
         onEndEditing={() => {
           this.blur();
-          if (this.props.__validate) {
-            this.props.__validate(this.props.optimization !== true ? this.props.value : this.state.value);
-          }
         }}
       />
     );
