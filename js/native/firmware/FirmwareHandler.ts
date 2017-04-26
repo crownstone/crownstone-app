@@ -1,8 +1,10 @@
-import {CLOUD} from "../../cloud/cloudAPI";
-import {LOG} from "../../logging/Log";
-import {safeDeleteFile} from "../../util/Util";
-const RNFS    = require('react-native-fs');
-const sha1    = require('sha-1');
+import { CLOUD }          from "../../cloud/cloudAPI";
+import { LOG }            from "../../logging/Log";
+import { safeDeleteFile } from "../../util/Util";
+import { FirmwareHelper } from "./FirmwareHelper";
+
+const RNFS = require('react-native-fs');
+const sha1 = require('sha-1');
 
 class FirmwareHandlerClass {
   firmware: any = {};
@@ -11,8 +13,9 @@ class FirmwareHandlerClass {
   downloadedFirmwareVersion : string = null;
   downloadedBootloaderVersion : string = null;
 
-  constructor() { }
+  paths: any = {};
 
+  constructor() { }
 
   getVersions() {
     let promises = [];
@@ -34,6 +37,7 @@ class FirmwareHandlerClass {
 
   download(source, type) {
     let toPath = RNFS.DocumentDirectoryPath + '/' + type + '.zip';
+    this.paths[type] = toPath;
     // remove the file we will write to if it exists
     return safeDeleteFile(toPath)
       .then(() => {
@@ -56,7 +60,7 @@ class FirmwareHandlerClass {
       .then((fileContent) => {
         return new Promise((resolve, reject) => {
           let hash = sha1(fileContent);
-          LOG.info(type, "HASH", '"' + hash + '"', '"' + source.sha1hash + '"')
+          LOG.info(type, "HASH", '"' + hash + '"', '"' + source.sha1hash + '"');
           if (hash === source.sha1hash) {
             LOG.info("Verified hash");
             resolve();
@@ -76,8 +80,8 @@ class FirmwareHandlerClass {
       })
   }
 
-  test() {
-    this.getVersions()
+  getNewVersions() {
+    return this.getVersions()
       .then(() => {
         return this.download(this.firmware,'firmware');
       })
@@ -89,20 +93,21 @@ class FirmwareHandlerClass {
       .then(() => {
         LOG.info("FINISHED DOWNLOADING BOOTLOADER");
         this.downloadedBootloaderVersion = this.bootloader.version;
-        LOG.info("All tests done.")
       })
-      .catch((err) => { LOG.error("Failed test", err)})
   }
 
 
   /**
    * This expects the stone to be not connected and not in DFU mode.
    * @param store
+   * @param sphereId
    * @param stoneId
-   * @param stone
    */
-  update(store, stoneId, stone) {
-
+  getFirmwareHelper(store, sphereId, stoneId) {
+    let state = store.getState();
+    let stone = state.spheres[sphereId].stones[stoneId];
+    let helper = new FirmwareHelper(stone.config.handle, sphereId, this.paths['firmware'], this.paths['bootloader']);
+    return helper;
   }
 }
 

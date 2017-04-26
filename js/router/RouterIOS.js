@@ -18,6 +18,7 @@ import { eventBus }               from '../util/EventBus'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
+import { DfuOverlay }             from '../views/components/overlays/DfuOverlay'
 import { LocalizationSetupStep1 } from '../views/components/overlays/LocalizationSetupStep1'
 import { LocalizationSetupStep2 } from '../views/components/overlays/LocalizationSetupStep2'
 import { TapToToggleCalibration } from '../views/components/overlays/TapToToggleCalibration'
@@ -78,6 +79,7 @@ export class Router_IOS extends Component {
             </Scene>
           </Scene>
         </Router>
+        <DfuOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
