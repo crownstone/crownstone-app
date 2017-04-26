@@ -26,8 +26,13 @@ export class SettingsSphere extends Component<any, any> {
   validationState : any;
   unsubscribeStoreEvents : any;
 
-  constructor() {
+  constructor(props) {
     super();
+
+    const state = props.store.getState();
+    let sphereSettings = state.spheres[props.sphereId].config;
+
+    this.state = {sphereName: sphereSettings.name};
     this.deleting = false;
     this.validationState = {sphereName:'valid'};
   }
@@ -120,10 +125,13 @@ export class SettingsSphere extends Component<any, any> {
       items.push({
         type:'textEdit',
         label:'Name',
-        value: sphereSettings.name,
+        value: this.state.sphereName,
         validation:{minLength:2},
         validationCallback: (result) => {this.validationState.sphereName = result;},
         callback: (newText) => {
+          this.setState({sphereName: newText});
+        },
+        endCallback: (newText) => {
           if (sphereSettings.name !== newText) {
             if (this.validationState.sphereName === 'valid') {
               this.props.eventBus.emit('showLoading', 'Changing sphere name...');

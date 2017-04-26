@@ -131,7 +131,7 @@ export class Register extends Component<any, any> {
         validationMethod:'icons',
         validationCallback: (newState) => {this.inputStates.lastName = newState},
         alwaysShowState: this.state.alwaysShowState,
-        callback: (newValue) => {this.setState({lastName: newValue })}
+        callback: (newValue) => { this.setState({lastName: newValue })}
       },
       {
         label: 'Picture',

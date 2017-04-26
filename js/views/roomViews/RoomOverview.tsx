@@ -268,7 +268,7 @@ export class RoomOverview extends Component<any, any> {
       title = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name;
     }
     else {
-      title = "Floating Crownstones"
+      title = "Floating Crownstones";
     }
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();

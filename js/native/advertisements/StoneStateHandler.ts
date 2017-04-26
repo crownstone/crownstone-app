@@ -23,6 +23,7 @@ class StoneStateHandlerClass {
   _initialized : boolean = false;
   lastSeen: any = {};
 
+
   constructor() {
     this.store = {};
     // create a trigger to throttle the updates.
@@ -50,13 +51,13 @@ class StoneStateHandlerClass {
     // if we only hear the ibeacon event.
     if (stone.config.handle) {
       // internal events to tell the app this crownstone has been seen.
-      eventBus.emit('update_' + sphereId + '_' + stoneId, {
+      eventBus.emit(Util.events.getCrownstoneTopic(sphereId, stoneId), {
         handle: stone.config.handle,
         stoneId: stoneId,
         rssi: rssi,
       });
       if (stone.config.meshNetworkId) {
-        eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
+        eventBus.emit(Util.events.getMeshTopic(sphereId, stone.config.meshNetworkId), {
           handle: stone.config.handle,
           stoneId: stoneId,
           meshNetworkId: stone.config.meshNetworkId,
@@ -91,7 +92,7 @@ class StoneStateHandlerClass {
 
   receivedAdvertisementUpdate(sphereId, stone, stoneId, rssi) {
     // internal event to tell the app this crownstone has been seen.
-    eventBus.emit('update_' + sphereId + '_' + stoneId, {
+    eventBus.emit(Util.events.getCrownstoneTopic(sphereId, stoneId), {
       handle: stone.config.handle,
       stoneId: stoneId,
       rssi: rssi,
@@ -99,7 +100,7 @@ class StoneStateHandlerClass {
 
     // emit that something from this mesh network has broadcasted
     if (stone.config.meshNetworkId) {
-      eventBus.emit('updateMeshNetwork_' + sphereId + '_' + stone.config.meshNetworkId, {
+      eventBus.emit(Util.events.getMeshTopic(sphereId, stone.config.meshNetworkId), {
         handle: stone.config.handle,
         stoneId: stoneId,
         meshNetworkId: stone.config.meshNetworkId,
@@ -122,7 +123,7 @@ class StoneStateHandlerClass {
   receivedUpdateViaMesh(sphereId: string, remoteStoneId: string, meshNetworkId: number, randomFromServiceData : string, advertisingStoneId : string, serviceData) {
     // emit the mesh update event only for unique advertisements. Due to ibeacon connectable on/off the unique filter is not always working.
     if (this.advertisementIdsPerStoneId[advertisingStoneId] && this.advertisementIdsPerStoneId[advertisingStoneId] !== randomFromServiceData) {
-      eventBus.emit('updateViaMeshNetwork_' + sphereId + '_' + meshNetworkId, {
+      eventBus.emit(Util.events.getViaMeshTopic(sphereId, meshNetworkId), {
         id: remoteStoneId,
         serviceData: serviceData
       });

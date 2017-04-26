@@ -89,7 +89,7 @@ export class StoneTracker {
         lastTriggerTime: 0,
         rssiAverage: rssi,
         samples: 0,
-        touchTempDisabled: false,
+        touchTemporarilyDisabled: false,
         touchTime: now,
         cancelScheduledAwayAction: false,
         cancelScheduledNearAction: false
@@ -113,12 +113,12 @@ export class StoneTracker {
     if (stone.config.touchToToggle === true && tapToToggleCalibration !== null) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
       // the sign > is because the rssi is negative!
-      if (ref.touchTempDisabled === true) {
+      if (ref.touchTemporarilyDisabled === true) {
         // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to re-enable it.
         // rssi measured must be smaller (-80) < (-49 + -4)
         let enableDistance = addDistanceToRssi(tapToToggleCalibration, 0.35); // the + 0.35 meter makes sure a stationary phone will not continuously tap-to-toggle
         if (rssi < enableDistance) {
-          ref.touchTempDisabled = false;
+          ref.touchTemporarilyDisabled = false;
         }
       }
       else {
@@ -153,7 +153,7 @@ export class StoneTracker {
               .catch((err) => {});
 
             ref.touchTime = now;
-            ref.touchTempDisabled = true;
+            ref.touchTemporarilyDisabled = true;
             return;
           }
           else {
@@ -196,17 +196,10 @@ export class StoneTracker {
     // these event are only used for when there are no room-level options possible
     if (!canUseIndoorLocalizationInSphere(state, sphereId)) {
       if (ref.rssiAverage >= stone.config.nearThreshold) {
-        // if we're NEAR, clear any pending AWAY actions
-        this._cleanupPendingActionsOfType(ref, TYPES.AWAY);
-
         // only trigger if the last type of event this module triggered was NOT a near event.
         if (ref.lastTriggerType !== TYPES.NEAR) {
           // these callbacks will store the cancelable action when there is a delay and store the type of trigger that was fires last.
           let callbacks = {
-            // store the cancellation if we need to use it.
-            onSchedule: (sphereId, stoneId, abortSchedule) => {
-              ref.cancelScheduledNearAction = abortSchedule;
-            },
             // identify that we triggered the event.
             onTrigger: (sphereId, stoneId) => {
               ref.lastTriggerType = TYPES.NEAR;
@@ -215,11 +208,8 @@ export class StoneTracker {
             onCancelled: (sphereId, stoneId) => {
               // in the event that only an away event is configured, reset the trigger after being in the near for RESET_TIMER_FOR_NEAR_AWAY_EVENTS seconds
               // by placing this in the cancelScheduledAwayAction, it will be cleared upon the next time the user enters AWAY.
-              ref.cancelScheduledNearAction = Scheduler.scheduleCallback(() => {
-                ref.lastTriggerType = TYPES.NEAR;
-                ref.lastTriggerTime = new Date().valueOf();
-              }, RESET_TIMER_FOR_NEAR_AWAY_EVENTS, 'reset away trigger');
-
+              ref.lastTriggerType = TYPES.NEAR;
+              ref.lastTriggerTime = new Date().valueOf();
             }
           };
           BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.NEAR, callbacks);
@@ -227,16 +217,10 @@ export class StoneTracker {
       }
       // far threshold is 0.5m more than the near one so there is not a single line
       else if (ref.rssiAverage < farThreshold) {
-        // if we're FAR, clear any pending NEAR actions
-        this._cleanupPendingActionsOfType(ref, TYPES.NEAR);
-
         // only trigger if the last type of event this module triggered was NOT an AWAY event.
         if (ref.lastTriggerType !== TYPES.AWAY) {
           let callbacks = {
             // store the cancellation if we need to use it.
-            onSchedule: (sphereId, stoneId, abortSchedule) => {
-              ref.cancelScheduledAwayAction = abortSchedule;
-            },
             onTrigger: (sphereId, stoneId) => {
               // identify that we triggered the event
               ref.lastTriggerType = TYPES.AWAY;
@@ -245,36 +229,17 @@ export class StoneTracker {
             onCancelled: (sphereId, stoneId) => {
               // in the event that only an away event is configured, reset the trigger after being in the near for RESET_TIMER_FOR_NEAR_AWAY_EVENTS seconds
               // by placing this in the cancelScheduledAwayAction, it will be cleared upon the next time the user enters NEAR.
-              ref.cancelScheduledAwayAction = Scheduler.scheduleCallback(() => {
-                ref.lastTriggerType = TYPES.AWAY;
-                ref.lastTriggerTime = new Date().valueOf();
-              }, RESET_TIMER_FOR_NEAR_AWAY_EVENTS, 'reset near trigger');
+              ref.lastTriggerType = TYPES.AWAY;
+              ref.lastTriggerTime = new Date().valueOf();
             }
           };
-          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.AWAY, undefined, callbacks);
+          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.AWAY, callbacks);
         }
       }
       // in case we are between near and far, only clear pending timeouts. They will be placed back on the next event.
       else if (ref.rssiAverage > stone.config.nearThreshold && ref.rssiAverage < farThreshold) {
-        this._cleanupPendingActions(ref);
+        // this._cleanupPendingActions(ref);
       }
-    }
-  }
-
-  _cleanupPendingActions(ref) {
-    this._cleanupPendingActionsOfType(ref, TYPES.NEAR);
-    this._cleanupPendingActionsOfType(ref, TYPES.AWAY);
-  }
-
-  _cleanupPendingActionsOfType(ref, type) {
-    // intercept pending timeouts because they are no longer relevant.
-    if (type === TYPES.AWAY && ref.cancelScheduledAwayAction !== false) {
-      ref.cancelScheduledAwayAction();
-      ref.cancelScheduledAwayAction = false;
-    }
-    else if (ref.cancelScheduledNearAction !== false) {
-      ref.cancelScheduledNearAction();
-      ref.cancelScheduledNearAction = false;
     }
   }
 

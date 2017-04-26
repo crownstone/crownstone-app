@@ -77,7 +77,7 @@ export const BehaviourUtil = {
    *                                          onSchedule: function(sphereId, stoneId, abortSchedule)  // triggered if the behaviour is scheduled
    *                                        }
    */
-  enactBehaviour: function(store, sphereId, stoneId, behaviourType, bleController, callbacks = {}) {
+  enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
     let state = store.getState();
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
@@ -116,7 +116,6 @@ export const BehaviourUtil = {
 
       // if the device is supposed to go on and it is only allowed to go on when it's dark, check if its dark.
       if (this.allowBehaviourBasedOnDarkOutside(sphere, behaviour, element) === false) {
-
         if (callbacks && callbacks.onCancelled && typeof callbacks.onCancelled === 'function') {
           callbacks.onCancelled(sphereId, stoneId);
         }

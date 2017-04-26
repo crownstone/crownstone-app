@@ -203,11 +203,24 @@ open class BluenetJS: NSObject {
 //        }
 //      })
 
+      globalBluenet.bluenetOn("dfuProgress", {data -> Void in
+        if let castData = data as? [String: NSNumber] {
+          // data["percentage"]  = NSNumber(value: percentage)
+          // data["part"]        = NSNumber(value: part)
+          // data["totalParts"]  = NSNumber(value: totalParts)
+          // data["progress"]    = NSNumber(value: progress)
+          // data["currentSpeedBytesPerSecond"] = NSNumber(value: currentSpeedBytesPerSecond)
+          // data["avgSpeedBytesPerSecond"]     = NSNumber(value: avgSpeedBytesPerSecond)
+          self.bridge.eventDispatcher().sendAppEvent(withName: "dfuProgress", body: castData)
+        }
+      })
+      
       globalBluenet.bluenetOn("setupProgress", {data -> Void in
         if let castData = data as? NSNumber {
           self.bridge.eventDispatcher().sendAppEvent(withName: "setupProgress", body: castData)
         }
       })
+
       
       globalBluenet.bluenetOn("nearestSetupCrownstone", {data -> Void in
         if let castData = data as? NearestItem {

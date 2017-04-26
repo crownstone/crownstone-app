@@ -2,6 +2,7 @@ import { Alert, Vibration } from 'react-native';
 
 import { eventBus } from '../../util/EventBus';
 import { LOG }      from '../../logging/Log'
+import {Util} from "../../util/Util";
 
 const meshRemovalThreshold : number = 200;
 
@@ -50,7 +51,7 @@ export class IndividualStoneTracker {
 
     // if we have a network, listen for its advertisements
     if (this.meshNetworkId !== null) {
-      this.unsubscribeMeshListener = eventBus.on('updateViaMeshNetwork_' + this.sphereId + '_' + this.meshNetworkId, (data) => {
+      this.unsubscribeMeshListener = eventBus.on(Util.events.getViaMeshTopic(this.sphereId, this.meshNetworkId), (data) => {
         if (data.id === this.stoneId) {
           // LOG.info("PROGRESSING RESET ", this.stoneUID, " from ", this.meshNetworkId, "to ", 0);
           this.notThisStoneCounter = 0;

@@ -125,7 +125,7 @@ export class RoomAdd extends Component<any, any> {
   }
 
   createRoom() {
-    // make sure all textfields are blurred
+    // make sure all text fields are blurred
     this.props.eventBus.emit("inputComplete");
     setTimeout(() => { this._createRoom(); }, 20);
   }

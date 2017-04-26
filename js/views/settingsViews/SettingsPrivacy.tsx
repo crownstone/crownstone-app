@@ -45,12 +45,10 @@ export class SettingsPrivacy extends Component<any, any> {
   _getItems(user) {
     const store = this.props.store;
     let state = store.getState();
-    console.log("state", state);
     let items = [];
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
     let deviceId = Util.data.getCurrentDeviceId(state);
     let device = state.devices[deviceId];
-    console.log(deviceId, device, Util.data.getDeviceSpecs(state));
 
     items.push({type: 'spacer'});
     items.push({

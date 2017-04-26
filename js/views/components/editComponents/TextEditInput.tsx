@@ -14,9 +14,8 @@ export class TextEditInput extends Component<any, any> {
   unsubscribe : any;
 
 
-  constructor(props) {
+  constructor() {
     super();
-    this.state = {value: props.value};
     this.blurred = false;
     this.isInFocus = false;
     this.refName = (Math.random() * 1e9).toString(36);
@@ -49,10 +48,10 @@ export class TextEditInput extends Component<any, any> {
       this.blurred = true;
       this.isInFocus = false;
       if (this.props.__validate) {
-        this.props.__validate(this.props.optimization !== true ? this.props.value : this.state.value);
+        this.props.__validate(this.props.value);
       }
-      if (this.props.optimization === true) {
-        this.props.callback(this.state.value);
+      if (this.props.endCallback) {
+        this.props.endCallback(this.props.value);
       }
       eventBus.emit('blur');
     }
@@ -66,22 +65,17 @@ export class TextEditInput extends Component<any, any> {
         onFocus={() => {this.focus();}}
         style={[{flex:1, position:'relative', top:1}, this.props.style]}
         autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
-        value={this.props.optimization !== true ? this.props.value : this.state.value}
+        value={this.props.value}
         placeholder={this.props.placeholder || this.props.label}
         placeholderTextColor={this.props.placeholderTextColor}
         secureTextEntry={this.props.secureTextEntry}
         onChangeText={(newValue) => {
-          if (this.props.optimization !== true) {
-            this.props.callback(newValue);
-          }
-          else {
-            this.setState({value: newValue});
-          }
+          this.props.callback(newValue);
         }}
         keyboardType={ this.props.keyboardType || 'default'}
-        onEndEditing={() => {
-          this.blur();
-        }}
+        onEndEditing={() => { this.blur(); }}
+        onBlur={() => { this.blur(); }}
+        onSubmitEditing={() => { this.blur(); }}
       />
     );
   }

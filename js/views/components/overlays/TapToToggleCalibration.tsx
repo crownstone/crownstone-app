@@ -193,13 +193,13 @@ export class TapToToggleCalibration extends Component<any, any> {
     return (
       <View style={{flex:1, alignItems:'center'}}>
         <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{props.title}</Text>
-        <Image source={props.image} style={{width:0.45*screenWidth, height:0.45*screenWidth, margin:0.025*screenHeight}}/>
+        <Image source={props.image} style={{width:0.45*screenWidth, height:0.45*screenWidth, margin:0.025*screenHeight}} />
         <Text style={{fontSize: 14, fontWeight: 'bold', color: colors.csBlue.hex, textAlign:'center'}}>{props.header}</Text>
         <View style={{flex:1}}/>
         <Text style={{fontSize: 12, color: colors.blue.hex, textAlign:'center', paddingLeft:10, paddingRight:10}}>{props.explanation}</Text>
         <View style={{flex:1}}/>
 
-        {props.back ?
+        { props.back ?
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={props.backCallback} style={[styles.centered, {
               width: 0.3 * screenWidth,

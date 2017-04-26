@@ -298,7 +298,7 @@ class BatchCommandHandlerClass {
       let meshNetworkIds = Object.keys(meshNetworks[sphereId]);
       meshNetworkIds.forEach((networkId) => {
         LOG.info("BatchCommandHandler: meshNetworkCommands for sphere", sphereId, ", command:", meshNetworks[sphereId][networkId]);
-        topicsToScan.push({ sphereId: sphereId, topic: 'updateMeshNetwork_' + sphereId + '_' + networkId });
+        topicsToScan.push({ sphereId: sphereId, topic: Util.events.getMeshTopic(sphereId, networkId) });
       });
     });
 
@@ -306,7 +306,7 @@ class BatchCommandHandlerClass {
     directSphereIds.forEach((sphereId) => {
       directCommands[sphereId].forEach((command) => {
         LOG.info("BatchCommandHandler: directCommands for sphere:", sphereId, " stone:", command.stoneId, ", command:", command.command);
-        topicsToScan.push({ sphereId: sphereId, topic: 'update_' + sphereId + '_' + command.stoneId });
+        topicsToScan.push({ sphereId: sphereId, topic: Util.events.getCrownstoneTopic(sphereId, command.stoneId) });
       });
     });
 

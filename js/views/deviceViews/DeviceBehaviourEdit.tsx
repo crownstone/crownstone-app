@@ -26,14 +26,17 @@ toggleOptions.push({label: "do nothing", value: null});
 
 let timeOptions = [];
 timeOptions.push({label: '2 seconds',    value: 2});
-timeOptions.push({label: '10 seconds',   value: 10});
-timeOptions.push({label: '30 seconds',   value: 30});
-timeOptions.push({label: '1 minute',     value: 60});
-timeOptions.push({label: '2 minutes',    value: 120});
-timeOptions.push({label: '5 minutes',    value: 300});
-timeOptions.push({label: '10 minutes',   value: 600});
-timeOptions.push({label: '15 minutes',   value: 900});
-timeOptions.push({label: '30 minutes',   value: 1800});
+
+let timeOptionsV2 = [];
+timeOptionsV2.push({label: '2 seconds',    value: 2});
+timeOptionsV2.push({label: '10 seconds',   value: 10});
+timeOptionsV2.push({label: '30 seconds',   value: 30});
+timeOptionsV2.push({label: '1 minute',     value: 60});
+timeOptionsV2.push({label: '2 minutes',    value: 120});
+timeOptionsV2.push({label: '5 minutes',    value: 300});
+timeOptionsV2.push({label: '10 minutes',   value: 600});
+timeOptionsV2.push({label: '15 minutes',   value: 900});
+timeOptionsV2.push({label: '30 minutes',   value: 1800});
 
 export class DeviceBehaviourEdit extends Component<any, any> {
   detectionTimeout : any;
@@ -187,8 +190,23 @@ export class DeviceBehaviourEdit extends Component<any, any> {
       dataTypeString = "APPLIANCE"
     }
 
-    let generateDelayField = (eventLabel, label) => {
-      return {
+    let addDelayFieldToItems = (items, eventLabel, label, stone) => {
+      let delays = timeOptions;
+      let explanation = null;
+      if (stone.config.firmwareVersion) {
+        let version = stone.config.firmwareVersion.split('.');
+        if (version.length === 3 && Number(version[0]) >= 2)  {
+          delays = timeOptionsV2;
+        }
+        else {
+          explanation = "More delay options will be enabled when this Crownstone's firmware is updated. You will be notified when this is possible.";
+        }
+      }
+      else {
+        explanation = "More delay options will be enabled when this Crownstone's firmware is identified. This will be done automatically. Please check back later.";
+      }
+
+      items.push({
         type: 'dropdown',
         label: label,
         labelStyle: { paddingLeft: 15 },
@@ -197,11 +215,15 @@ export class DeviceBehaviourEdit extends Component<any, any> {
         valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
         value: element.behaviour[eventLabel].delay,
         valueLabel: this._getDelayLabel(element.behaviour[eventLabel].delay),
-        items: timeOptions,
+        items: delays,
         callback: (newValue) => {
           this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
         }
-      };
+      });
+
+      if (explanation) {
+        items.push({type:'explanation', label: explanation, below: true});
+      }
     };
 
     let generateDropdown = (eventLabel, label, options) => {
@@ -272,7 +294,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
 
 
       if (element.behaviour[eventLabel].active === true) {
-        items.push(generateDelayField(eventLabel, 'Delay'))
+        addDelayFieldToItems(items, eventLabel, 'Delay', stone);
       }
 
       // only show the define button when the feature is being used.
@@ -327,7 +349,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
         eventLabel = 'onRoomExit';
         items.push(generateDropdown(eventLabel, 'Leave room', toggleOptionsExit));
         if (element.behaviour[eventLabel].active === true) {
-          items.push(generateDelayField(eventLabel, 'Delay'));
+          addDelayFieldToItems(items, eventLabel, 'Delay', stone);
         }
 
         if (element.behaviour[eventLabel].active === true) {

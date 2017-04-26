@@ -33,7 +33,7 @@ class FirmwareWatcherClass {
       LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: ", stone.config.firmwareVersion);
       // random chance to check the firmware again.
       if (!stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck) {
-        BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'}, 1e5)
+        BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'}, 100)
           .then((firmwareVersion) => {
             this.store.dispatch({
               type: "UPDATE_STONE_CONFIG",

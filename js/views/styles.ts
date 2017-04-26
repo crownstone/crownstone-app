@@ -1,5 +1,5 @@
 import { Dimensions, PixelRatio, Platform, StyleSheet } from 'react-native'
-import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/colorConverters'
+import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/ColorConverters'
 
 export const screenWidth = Dimensions.get('window').width;
 
@@ -30,6 +30,7 @@ export let colors : any = {
   lightGray2: {hex:'#dedede'},
   lightGray: {hex:'#eee'},
   purple: {hex:'#8a01ff'},
+  darkPurple: {hex:'#5801a9'},
   blue: {hex:'#0075c9'},
   green: {hex:'#a0eb58'},
   darkGreen: {hex:'#1f4c43'},

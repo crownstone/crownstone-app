@@ -6,6 +6,7 @@ import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/st
 
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
+import {EventUtil} from "./EventUtil";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -132,6 +133,7 @@ export const addDistanceToRssi = function(rssi, distanceInMeters) {
 export const Util = {
   mesh: MeshUtil,
   data: DataUtil,
+  events: EventUtil,
 
   getUUID : () : string => {
     const S4 = function () {
