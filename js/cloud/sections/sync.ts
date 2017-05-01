@@ -40,7 +40,9 @@ export const sync = {
             onUnverified: () => {},
             onInvalidCredentials: () => {}
           })
-          .then(() => {
+          .then((response) => {
+            CLOUD.setAccess(response.id);
+            CLOUD.setUserId(response.userId);
             return syncDown(userId, options);
           })
         }

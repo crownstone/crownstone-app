@@ -31,6 +31,10 @@ export const user = {
   login: function(options) {
     return new Promise((resolve, reject) => {
       let endpoint = 'users/login';
+
+      // accessToken has to be null when attempting a login.
+      let prevAccessToken = this.accessToken;
+      this.accessToken = null;
       // max ttl (time to live) for the access token is 31556926 (1 year in seconds)
       this._post({ endPoint: endpoint, data:{ email: options.email, password: options.password, ttl: 6*24*3600 } , type:'body'})
         .then((reply) => {
@@ -38,6 +42,7 @@ export const user = {
             resolve(reply.data)
           }
           else {
+            this.accessToken = prevAccessToken;
             if (reply.data && reply.data.error && reply.data.error.code) {
               switch (reply.data.error.code) {
                 case 'LOGIN_FAILED_EMAIL_NOT_VERIFIED':
@@ -56,7 +61,7 @@ export const user = {
               this.__debugReject(reply, reject, options);
             }
           }
-        }).catch((error) => {this._handleNetworkError(error, options, endpoint, undefined, reject);});
+        }).catch((error) => { this._handleNetworkError(error, options, endpoint, undefined, reject); });
     })
   },
 

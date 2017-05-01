@@ -202,6 +202,10 @@ class BackgroundProcessHandlerClass {
               onUnverified: () => {},
               onInvalidCredentials: () => {}
             })
+              .then((response) => {
+                CLOUD.setAccess(response.id);
+                CLOUD.setUserId(response.userId);
+              })
           }
           else {
             throw err;
