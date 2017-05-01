@@ -5,10 +5,10 @@ import {
   View,
 } from 'react-native';
 
-import { NativeBus }          from '../../../native/libInterface/NativeBus'
-import { IconButton }         from '../IconButton'
-import { OverlayBox }         from './OverlayBox'
-import { styles, colors , screenHeight, screenWidth } from '../../styles'
+import { NativeBus }          from '../../native/libInterface/NativeBus'
+import { IconButton }         from '../components/IconButton'
+import { OverlayBox }         from '../components/overlays/OverlayBox'
+import { styles, colors , screenHeight, screenWidth } from '../styles'
 
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;

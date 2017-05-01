@@ -105,15 +105,6 @@ export class Login extends Component<any, any> {
       onUnverified: unverifiedEmailCallback,
       onInvalidCredentials: invalidLoginCallback,
     })
-      .then((response) => {
-        return new Promise((resolve, reject) => {
-        // start the login process from the store manager.
-        StoreManager.userLogIn(response.userId)
-          .then(() => {
-            resolve(response);
-          }).catch((err) => {reject(err)})
-        })
-      })
       .catch((err) => {
         // do not show a popup if it is a failed request: this has its own pop up
         if (err.message && err.message === 'Network request failed') {
@@ -126,12 +117,22 @@ export class Login extends Component<any, any> {
             [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); }}]
           );
         }
-        return false;
+        throw err;
       })
-      .done((response) => {
-        if (response === false) {return;}
+      .then((response) => {
+        return new Promise((resolve, reject) => {
+          // start the login process from the store manager.
+          StoreManager.userLogIn(response.userId)
+            .then(() => {
+              resolve(response);
+            })
+            .catch((err) => {reject(err)})
+        })
+      })
+      .then((response) => {
         this.finalizeLogin(response.id, response.userId);
       })
+      .catch((err) => { LOG.error("Error during login.", err); })
   }
 
   render() {

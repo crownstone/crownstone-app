@@ -40,7 +40,7 @@ export class FirmwareHelper {
           })
           .then(() => {
             LOG.info("FirmwareHelper: DFU progress: Placed in DFU mode.");
-            return BluenetPromiseWrapper.disconnect()
+            return BluenetPromiseWrapper.disconnect();
           })
           .then(() => {
             return new Promise((resolve, reject) => { setTimeout(() => { resolve(); }, 1000 ); })
@@ -72,6 +72,9 @@ export class FirmwareHelper {
             LOG.info("FirmwareHelper: DFU progress: Obtained bootloader version:", bootloaderVersion);
             stoneBootloaderVersion = bootloaderVersion;
             return BluenetPromiseWrapper.phoneDisconnect()
+          })
+          .then(() => {
+            return new Promise((resolve, reject) => { setTimeout(() => { resolve(stoneBootloaderVersion); }, 1000 ); })
           })
           .catch((err) => {
             LOG.error("FirmwareHelper: Error during getBootloaderVersion.", err);

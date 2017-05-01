@@ -6,10 +6,10 @@ import {
   View,
 } from 'react-native';
 
-import { OverlayBox }                                 from './OverlayBox'
-import { styles, colors, screenHeight, screenWidth } from '../../styles'
-import { eventBus }                                   from '../../../util/EventBus'
-import { getAiData }                                  from '../../../util/DataUtil'
+import { OverlayBox }                                from '../components/overlays/OverlayBox'
+import { styles, colors, screenHeight, screenWidth } from '../styles'
+import { eventBus }                                  from '../../util/EventBus'
+import { getAiData }                                 from '../../util/DataUtil'
 
 export class LocalizationSetupStep2 extends Component<any, any> {
   unsubscribe : any;
@@ -36,11 +36,10 @@ export class LocalizationSetupStep2 extends Component<any, any> {
     let state = this.props.store.getState();
     let ai = getAiData(state, this.state.sphereId);
 
-
     return (
       <OverlayBox visible={this.state.visible}>
         <Text style={{fontSize: 23, fontWeight: 'bold', color: colors.menuBackground.hex, padding:15}}>{"The Next Step"}</Text>
-        <Image source={require('../../../images/localizationExplanation.png')} style={{width:0.6*screenWidth, height:0.6*screenWidth}}/>
+        <Image source={require('../../images/localizationExplanation.png')} style={{width:0.6*screenWidth, height:0.6*screenWidth}}/>
         <Text style={{fontSize: 13, color: colors.blue.hex, textAlign:'center'}}>{"You can now teach " + ai.name + " when you are in certain rooms. " +
         "This new icon indicates that " + ai.name + " is ready to learn how to identify this room!"}</Text>
         <View style={{flex:1}}/>

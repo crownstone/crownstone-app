@@ -9,11 +9,11 @@ import {
   View,
 } from 'react-native';
 
-import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
-import { Icon }                     from '../Icon'
-import { FadeInView }               from '../animated/FadeInView'
-import { styles, colors, tabBarHeight, topBarHeight, screenHeight, screenWidth } from '../../styles'
-import { eventBus } from '../../../util/EventBus'
+import { FinalizeLocalizationIcon } from '../components/FinalizeLocalizationIcon'
+import { Icon }                     from '../components/Icon'
+import { FadeInView }               from '../components/animated/FadeInView'
+import { styles, colors, tabBarHeight, topBarHeight, screenHeight, screenWidth } from '../styles'
+import { eventBus } from '../../util/EventBus'
 
 import Svg,{
   Circle,
