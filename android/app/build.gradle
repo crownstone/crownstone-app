@@ -99,7 +99,7 @@ android {
 
     defaultConfig {
         applicationId "rocks.crownstone.consumerapp"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 13
         versionName "0.7.12"

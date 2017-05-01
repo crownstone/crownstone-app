@@ -97,15 +97,15 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Triplet[] LOG_LEVELS = new Triplet[]{
 			                                             // log lvl   file log lvl
-			new Triplet<>(BleScanService.class,          Log.DEBUG,    Log.DEBUG),
+			new Triplet<>(BleScanService.class,          Log.DEBUG,   Log.DEBUG),
 			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,    Log.WARN),
-			new Triplet<>(BluenetBridge.class,           Log.DEBUG,    Log.DEBUG),
+			new Triplet<>(BluenetBridge.class,           Log.DEBUG,   Log.DEBUG),
 			new Triplet<>(BleBaseEncryption.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
 			new Triplet<>(BleCore.class,                 Log.WARN,    Log.WARN),
 			new Triplet<>(BleExt.class,                  Log.WARN,    Log.WARN),
-			new Triplet<>(CrownstoneSetup.class,         Log.WARN,    Log.WARN),
+			new Triplet<>(CrownstoneSetup.class,         Log.WARN,    Log.DEBUG),
 	};
 
 
