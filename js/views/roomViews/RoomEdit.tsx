@@ -98,6 +98,8 @@ export class RoomEdit extends Component<any, any> {
 
     items.push({label:'ROOM SETTINGS',  type:'explanation', below:false});
     items.push({label:'Room Name', type: 'textEdit', value: room.config.name, callback: (newText) => {
+      store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
+    }, endCallback: (newText) => {
       newText = (newText === '') ? 'Untitled Room' : newText;
       store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
     }});
