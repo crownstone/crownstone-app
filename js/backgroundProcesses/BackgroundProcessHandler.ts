@@ -144,7 +144,7 @@ class BackgroundProcessHandlerClass {
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
       let state = this.store.getState();
-      if (deviceInDatabaseId &&
+      if (state && state.devices && deviceInDatabaseId &&
         (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {
         if (Util.data.userHasPlugsInSphere(state,sphereId))
           eventBus.emit("CalibrateTapToToggle");
