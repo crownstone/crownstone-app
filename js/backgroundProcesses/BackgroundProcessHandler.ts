@@ -96,9 +96,14 @@ class BackgroundProcessHandlerClass {
     Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:SYNC_INTERVAL});
     Scheduler.loadCallback('backgroundSync', () => {
       let state = this.store.getState();
-      if (state.user.userId) {
-        LOG.info("STARTING ROUTINE SYNCING IN BACKGROUND");
-        CLOUD.sync(this.store, true).catch((err) => { LOG.error("Error during background sync: ", err)});
+      if (SetupStateHandler.isSetupInProgress() === false) {
+        if (state.user.userId) {
+          LOG.info("STARTING ROUTINE SYNCING IN BACKGROUND");
+          CLOUD.sync(this.store, true).catch((err) => { LOG.error("Error during background sync: ", err)});
+        }
+      }
+      else {
+        LOG.info("SKIPPING STARTING ROUTINE SYNCING IN BACKGROUND");
       }
     });
 
