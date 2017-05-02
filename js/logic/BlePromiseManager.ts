@@ -15,17 +15,17 @@ class BlePromiseManagerClass {
   }
 
   register(promise : () => Promise<any>, message) {
-    return this._register(promise, message, false);
+    return this._register(promise, message, false, PROMISE_MANAGER_FALLBACK_TIMEOUT);
   }
 
-  registerPriority(promise : () => Promise<any>, message) {
-    return this._register(promise, message, true);
+  registerPriority(promise : () => Promise<any>, message, customTimeout: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {
+    return this._register(promise, message, true, customTimeout);
   }
 
-  _register(promise : () => Promise<any>, message, priorityCommand : boolean = false) {
+  _register(promise : () => Promise<any>, message, priorityCommand : boolean = false, timeout: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {
     LOG.info("BlePromiseManager: registered promise in manager");
     return new Promise((resolve, reject) => {
-      let container = { promise: promise, resolve: resolve, reject: reject, message: message, completed: false };
+      let container = { promise: promise, resolve: resolve, reject: reject, message: message, completed: false, timeout: timeout };
       if (this.promiseInProgress === undefined) {
         this.executePromise(container);
       }
@@ -54,7 +54,7 @@ class BlePromiseManagerClass {
       this.finalize(promiseContainer, () => {
         promiseContainer.reject('Forced timeout after ' + PROMISE_MANAGER_FALLBACK_TIMEOUT*0.001 + ' seconds.');
       });
-    }, PROMISE_MANAGER_FALLBACK_TIMEOUT, 'pendingPromiseTimeout');
+    }, promiseContainer.timeout, 'pendingPromiseTimeout');
 
     promiseContainer.promise()
       .then((data) => {

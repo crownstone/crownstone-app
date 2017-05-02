@@ -146,10 +146,10 @@ const syncUser = function(store, actions, userData) {
   if (
       state.user &&
       state.user.config && (
-      state.user.config.firmwareVersion   !== cloudFirmwareVersion  && cloudFirmwareVersion ||
-      state.user.config.bootloaderVersion !== cloudBootloaderVersion && cloudBootloaderVersion
+      state.user.config.firmwareVersionAvailable   !== cloudFirmwareVersion  && cloudFirmwareVersion ||
+      state.user.config.bootloaderVersionAvailable !== cloudBootloaderVersion && cloudBootloaderVersion
      )) {
-    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersion: cloudFirmwareVersion, bootloaderVersion: cloudBootloaderVersion}})
+    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionAvailable: cloudFirmwareVersion, bootloaderVersionAvailable: cloudBootloaderVersion}})
   }
 };
 
@@ -402,6 +402,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
               crownstoneId:    stone_from_cloud.uid,
               icon:            stone_from_cloud.icon,
               firmwareVersion: stone_from_cloud.firmwareVersion,
+              bootloaderVersion: stone_from_cloud.bootloaderVersion,
               iBeaconMajor:    stone_from_cloud.major,
               iBeaconMinor:    stone_from_cloud.minor,
               locationId:      locationLinkId,
@@ -424,6 +425,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             icon:            stoneInState.config.icon,
             id:              stone_from_cloud.id,
             firmwareVersion: stoneInState.firmwareVersion,
+            bootloaderVersion: stoneInState.bootloaderVersion,
             meshNetworkId:   stoneInState.meshNetworkId,
             major:           stoneInState.config.iBeaconMajor,
             minor:           stoneInState.config.iBeaconMinor,
@@ -470,6 +472,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             crownstoneId:    stone_from_cloud.uid,
             icon:            stone_from_cloud.icon,
             firmwareVersion: stone_from_cloud.firmwareVersion,
+            bootloaderVersion: stone_from_cloud.bootloaderVersion,
             iBeaconMajor:    stone_from_cloud.major,
             iBeaconMinor:    stone_from_cloud.minor,
             locationId:      locationLinkId,

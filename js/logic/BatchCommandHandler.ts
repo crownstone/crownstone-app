@@ -490,23 +490,7 @@ class BatchCommandHandlerClass {
         //   }
         // })
         .then(() => {
-          return new Promise((disconnectResolve, disconnectReject) => {
-            BluenetPromiseWrapper.disconnect()
-              .then(() => {
-                disconnectResolve()
-              })
-              .catch((err) => {
-                LOG.warn("BatchCommandHandler: Could not normally disconnect from device.", err);
-                return BluenetPromiseWrapper.phoneDisconnect();
-              })
-              .then(() => {
-                disconnectResolve();
-              })
-              .catch((err) => {
-                LOG.warn("BatchCommandHandler: Could not phone disconnect from device.", err);
-                disconnectResolve();
-              })
-          });
+          return BluenetPromiseWrapper.disconnectCommand()
         })
         .then(() => {
           if (Object.keys(this.commands).length > 0) {
@@ -518,20 +502,10 @@ class BatchCommandHandlerClass {
         })
         .catch((err) => {
           LOG.error("ERROR DURING EXECUTE", err);
-          // TODO: make this a 'safeDisconnect' in bluenetPromise
-          new Promise((disconnectResolve, disconnectReject) => {
-            BluenetPromiseWrapper.phoneDisconnect()
-              .then(() => {
-                disconnectResolve();
-              })
-              .catch((err) => {
-                LOG.warn("BatchCommandHandler: Could not phone disconnect from device.", err);
-                disconnectResolve();
-              })
-          })
-          .then(() => {
-            reject(err);
-          })
+          BluenetPromiseWrapper.phoneDisconnect()
+            .then(() => {
+              reject(err);
+            })
         })
     })
   }

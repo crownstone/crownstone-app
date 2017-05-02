@@ -109,13 +109,13 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
 
   let pictureUri = picture;
   // check if the image is an location on the disk or if it is from the assets.
-  if (picture.substr(0, 4) !== 'file' &&
-    picture.substr(0, 6) !== 'assets' &&
-    picture.substr(0, 4) !== 'http')
+  if (picture.substr(0, 4) !== 'file' && picture.substr(0, 6) !== 'assets' && picture.substr(0, 4) !== 'http') {
     pictureUri = 'file://' + picture;
+  }
 
-  if (cacheBuster)
+  if (cacheBuster) {
     pictureUri += '?r=' + Math.random(); // cache buster
+  }
 
   return pictureUri;
 };
@@ -156,4 +156,37 @@ export const Util = {
         base[key] = section[key]
     }
   },
+
+
+  versions: {
+    isHigher: function(version, compareWithVersion) {
+      if (!version) {
+        return false;
+      }
+
+      let A = version.split('.');
+      let B = compareWithVersion.split('.');
+
+      if (A[0] < B[0]) return false;
+      else if (A[0] > B[0]) return true;
+      else { // A[0] == B[0]
+        if (A[1] < B[1]) return false;
+        else if (A[1] > B[1]) return true;
+        else { // A[1] == B[1]
+          return (A[2] > B[2]);
+        }
+      }
+    },
+
+    isHigherOrEqual: function(version, compareWithVersion) {
+      if (version === compareWithVersion) return true;
+      return Util.versions.isHigher(version, compareWithVersion);
+    },
+
+    isLower: function(version, compareWithVersion) {
+      return !Util.versions.isHigherOrEqual(version, compareWithVersion);
+    }
+
+
+  }
 };

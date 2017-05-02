@@ -2,7 +2,7 @@ interface BluenetPromiseWrapper {
   clearTrackedBeacons(): Promise<void>,
   commandFactoryReset(): Promise<void>,
   connect(handle: string): Promise<void>,
-  disconnect(): Promise<void>,
+  disconnectCommand(): Promise<void>,
   getMACAddress(): Promise<string>,
   getFirmwareVersion(): Promise<string>,
   finalizeFingerprint(sphereId: string, locationId: string): Promise<void>,

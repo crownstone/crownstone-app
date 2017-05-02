@@ -27,7 +27,7 @@ export class DfuOverlay extends Component<any, any> {
 
   constructor() {
     super();
-    this.state = { visible: true, step: 5, stoneId: null };
+    this.state = { visible: false, step: 5, stoneId: null, progress:0, phases: 'determining...', currentPhase:0, phasesRequired: null, detail:'' };
   }
 
   componentDidMount() {
@@ -36,7 +36,12 @@ export class DfuOverlay extends Component<any, any> {
         visible: true,
         step: 0,
         stoneId: data.stoneId,
-        sphereId: data.sphereId
+        sphereId: data.sphereId,
+        progress: 0,
+        phases: '',
+        currentPhase: 0,
+        phasesRequired: 0,
+        detail: '',
       });
     })
   }
@@ -50,7 +55,10 @@ export class DfuOverlay extends Component<any, any> {
 
   startProcess() {
     this.setState({step:1});
-    FirmwareHandler.getNewVersions()
+    let state = this.props.store.getState();
+    let userConfig = state.user.config;
+    let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
+    FirmwareHandler.getNewVersions(userConfig.firmwareVersionAvailable, userConfig.bootloaderVersionAvailable)
       .then(() => {
         return new Promise((resolve, reject) => {
           this.setState({step:2});
@@ -75,19 +83,39 @@ export class DfuOverlay extends Component<any, any> {
       .then((data) => {
         this.processReject = null;
         this.sessionCleanup();
-        this.setState({ step: 5 });
-        let state = this.props.store.getState();
-        let stone = state.spheres[this.state.sphereId].stones[this.state.stoneId];
+        this.setState({ step: 5, phases:'setting up...', detail:'putting Crownstone in update mode...' });
         this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
         return this.helper.putInDFU();
       })
       .then(() => {
+        this.setState({phases:'determining...', detail: 'Getting bootloader version...'});
         return this.helper.getBootloaderVersion();
+      })
+      .then(() => {
+        let phasesRequired = this.helper.getAmountOfPhases();
+        this.setState({ phasesRequired: phasesRequired, phases: this.state.currentPhase + ' / '+ phasesRequired });
+        if (phasesRequired > 0) {
+          return this.helper.performPhase(0)
+        }
+      })
+      .then(() => {
+
       })
       .catch((err) => {
         this.processReject = null;
         this.sessionCleanup();
-        LOG.error("ERROR DURING DFU: ", err);
+        LOG.error("DfuOverlay: ERROR DURING DFU: ", err);
+      })
+  }
+
+  handlePhase(phase) {
+    this.setState({ currentPhase: phase, phases: phase + ' / '+ this.state.phasesRequired});
+    return this.helper.performPhase(phase)
+      .then(() => {
+        let nextPhase = phase + 1;
+        if (nextPhase <= this.state.requiredPhases) {
+          return this.handlePhase(nextPhase);
+        }
       })
   }
 
@@ -171,7 +199,6 @@ export class DfuOverlay extends Component<any, any> {
         );
       case 5:
         let radius = 0.28*screenWidth;
-        let progress = 0.23;
         return (
           <OverlayContent
             title={'Updating Crownstone'}
@@ -188,20 +215,22 @@ export class DfuOverlay extends Component<any, any> {
                   <ProgressCircle
                     radius={radius}
                     borderWidth={0.25*radius}
-                    progress={0.4}
+                    progress={this.state.progress}
                     color={colors.green.hex}
                     absolute={true}
                   />
-                  <Text style={{fontSize:25, paddingBottom:10}}>{100*progress + ' %'}</Text>
-                  <Text style={{fontSize:13}}>{'phase 1 of 3'}</Text>
+                  <Text style={{fontSize:25, paddingBottom:10}}>{100*this.state.progress + ' %'}</Text>
+                  <Text style={{fontSize:13}}>{this.state.phases}</Text>
                 </View>
               </View>}
             header={'Update is in progress. Please stay close to the Crownstone.'}
+            text={this.props.detail}
           />
         )
     }
-
   }
+
+  _getLoadingColor
 
   render() {
     return (

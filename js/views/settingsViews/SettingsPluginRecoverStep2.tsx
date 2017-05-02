@@ -188,7 +188,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
     this.switchImages();
     LOG.info('attempting to recover handle:', handle);
     let recoveryPromise = () => {
-      return BluenetPromiseWrapper.recover(handle)
+      return BluenetPromiseWrapper.recover(handle);
     };
 
     BlePromiseManager.registerPriority(recoveryPromise, {from: 'Recovering stone'})

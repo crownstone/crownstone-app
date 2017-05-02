@@ -7,8 +7,8 @@ const RNFS = require('react-native-fs');
 const sha1 = require('sha-1');
 
 class FirmwareHandlerClass {
-  firmware: any = {};
-  bootloader: any = {};
+  newFirmwareDetails: any = {};
+  newBootloaderDetails: any = {};
 
   downloadedFirmwareVersion : string = null;
   downloadedBootloaderVersion : string = null;
@@ -17,31 +17,34 @@ class FirmwareHandlerClass {
 
   constructor() { }
 
-  getVersions() {
+  getVersions(firmwareVersion, bootloaderVersion) {
+    if (!firmwareVersion || !bootloaderVersion) {
+      throw "No version available!";
+    }
     let promises = [];
-    promises.push(CLOUD.getFirmwareDetails('1.3.1')
+    promises.push(CLOUD.getFirmwareDetails(firmwareVersion)
       .then((result) => {
         if (result) {
-          this.firmware = result;
+          this.newFirmwareDetails = result;
         }
       }));
-    promises.push(CLOUD.getBootloaderDetails('1.2.2')
+    promises.push(CLOUD.getBootloaderDetails(bootloaderVersion)
       .then((result) => {
         if (result) {
-          this.bootloader = result;
+          this.newBootloaderDetails = result;
         }
       }));
     return Promise.all(promises);
   }
 
 
-  download(source, type) {
+  download(sourceDetails, type) {
     let toPath = RNFS.DocumentDirectoryPath + '/' + type + '.zip';
     this.paths[type] = toPath;
     // remove the file we will write to if it exists
     return safeDeleteFile(toPath)
       .then(() => {
-        return CLOUD.downloadFile(source.downloadUrl, toPath, {
+        return CLOUD.downloadFile(sourceDetails.downloadUrl, toPath, {
           start: (data) => {
             LOG.info("start DOWNLOAD", data);
           },
@@ -60,8 +63,8 @@ class FirmwareHandlerClass {
       .then((fileContent) => {
         return new Promise((resolve, reject) => {
           let hash = sha1(fileContent);
-          LOG.info(type, "HASH", '"' + hash + '"', '"' + source.sha1hash + '"');
-          if (hash === source.sha1hash) {
+          LOG.info(type, "HASH", '"' + hash + '"', '"' + sourceDetails.sha1hash + '"');
+          if (hash === sourceDetails.sha1hash) {
             LOG.info("Verified hash");
             resolve();
           }
@@ -80,19 +83,19 @@ class FirmwareHandlerClass {
       })
   }
 
-  getNewVersions() {
-    return this.getVersions()
+  getNewVersions(firmwareVersion, bootloaderVersion) {
+    return this.getVersions(firmwareVersion, bootloaderVersion)
       .then(() => {
-        return this.download(this.firmware,'firmware');
+        return this.download(this.newFirmwareDetails,'firmware');
       })
       .then(() => {
         LOG.info("FINISHED DOWNLOADING FIRMWARE");
-        this.downloadedFirmwareVersion = this.firmware.version;
-        return this.download(this.bootloader,'bootloader');
+        this.downloadedFirmwareVersion = this.newFirmwareDetails.version;
+        return this.download(this.newBootloaderDetails,'bootloader');
       })
       .then(() => {
         LOG.info("FINISHED DOWNLOADING BOOTLOADER");
-        this.downloadedBootloaderVersion = this.bootloader.version;
+        this.downloadedBootloaderVersion = this.newBootloaderDetails.version;
       })
   }
 
@@ -106,7 +109,16 @@ class FirmwareHandlerClass {
   getFirmwareHelper(store, sphereId, stoneId) {
     let state = store.getState();
     let stone = state.spheres[sphereId].stones[stoneId];
-    let helper = new FirmwareHelper(stone.config.handle, sphereId, this.paths['firmware'], this.paths['bootloader']);
+    let helper = new FirmwareHelper({
+      handle: stone,
+      sphereId: sphereId,
+      firmwareURI: this.paths['firmware'],
+      bootloaderURI: this.paths['bootloader'],
+      stoneFirmwareVersion: stone.config.firmwareVersion,
+      stoneBootloaderVersion: stone.config.bootloaderVersion,
+      newFirmwareDetails: this.newFirmwareDetails,
+      newBootloaderDetails: this.newBootloaderDetails,
+    });
     return helper;
   }
 }

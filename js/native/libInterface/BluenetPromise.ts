@@ -84,11 +84,13 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapper = {
       });
     }
   },
-  disconnect: () => {
+  // this never rejects
+  disconnectCommand: () => {
     return BluenetPromise('disconnect')
       .then( () => { eventBus.emit("disconnect"); })
       .catch(() => { eventBus.emit("disconnect"); })
   },
+  // this never rejects
   phoneDisconnect: () => {
     return BluenetPromise('phoneDisconnect')
       .then( () => { eventBus.emit("disconnect"); })

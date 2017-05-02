@@ -95,7 +95,7 @@ jest.mock('../js/native/libInterface/Bluenet', () => {
         setTimeout(() => { callback({error: !this.success}); }, 100);
       },
       disconnect: (callback) => {
-        this.eventBus.emit('test', {command:'disconnect', args:[]});
+        this.eventBus.emit('test', {command:'disconnectCommand', args:[]});
         setTimeout(() => { callback({error: !this.success}); }, 100);
       },
       phoneDisconnect: (callback) => {
@@ -179,11 +179,11 @@ test('BatchCommandHandler Mesh', () => {
     {command: 'meshKeepAliveState', args: [150, [{'action': true, 'crownstoneId': 'CSID1', 'state': 1}, {'action': true, 'crownstoneId': 'CSID3', 'state': 1}]]},
     {promise: 'resolved', command: 'keepAliveState', id: 'load_stoneId1'},
     {promise: 'resolved', command: 'keepAliveState', id: 'load_stoneId3'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
     {command: 'connect', args: ['handle-CSID-4']},
     {command: 'multiSwitch',  args: [[{'crownstoneId': 'CSID4', 'intent': 4, 'state': 1, 'timeout': 0}]]},
     {promise: 'resolved', command: 'multiSwitch', id: 'load_stoneId4'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
   ];
 
 
@@ -263,19 +263,19 @@ test('BatchCommandHandler Direct', () => {
     {command: 'connect', args: ['handle8']},
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId8'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
     {command: 'connect', args: ['handle9']},
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId9'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
     {command: 'connect', args: ['handle10']},
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId10'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
     {command: 'connect', args: ['handle11']},
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId11'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
   ];
 
 

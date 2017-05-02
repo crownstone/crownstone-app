@@ -194,8 +194,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
       let delays = timeOptions;
       let explanation = null;
       if (stone.config.firmwareVersion) {
-        let version = stone.config.firmwareVersion.split('.');
-        if (version.length === 3 && Number(version[0]) >= 2)  {
+        if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '2.0.0')) {
           delays = timeOptionsV2;
         }
         else {
