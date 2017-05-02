@@ -160,7 +160,7 @@ export const Util = {
 
   versions: {
     isHigher: function(version, compareWithVersion) {
-      if (!version) {
+      if (!version || !compareWithVersion) {
         return false;
       }
 
@@ -179,11 +179,17 @@ export const Util = {
     },
 
     isHigherOrEqual: function(version, compareWithVersion) {
-      if (version === compareWithVersion) return true;
+      if (version === compareWithVersion && version && compareWithVersion) {
+        return true;
+      }
+
       return Util.versions.isHigher(version, compareWithVersion);
     },
 
     isLower: function(version, compareWithVersion) {
+      if (!version || !compareWithVersion) {
+        return false;
+      }
       return !Util.versions.isHigherOrEqual(version, compareWithVersion);
     }
 

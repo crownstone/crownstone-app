@@ -4,7 +4,7 @@ const DeviceInfo = require('react-native-device-info');
 
 
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
-    const RELEASE_MODE = true;
+    const RELEASE_MODE = false;
     export const FALLBACKS_ENABLED = true;
 
     // DO NOT CHANGE THIS LINE.

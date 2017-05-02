@@ -17,6 +17,7 @@ import { LOG }             from "../../logging/Log";
 import { Util }            from "../../util/Util";
 import { ProgressCircle }  from "../components/ProgressCircle";
 import { styles, colors , screenHeight, screenWidth } from '../styles'
+import {Icon} from "../components/Icon";
 
 export class DfuOverlay extends Component<any, any> {
   unsubscribe : any = [];
@@ -27,10 +28,21 @@ export class DfuOverlay extends Component<any, any> {
 
   constructor() {
     super();
-    this.state = { visible: false, step: 5, stoneId: null, progress:0, phases: 'determining...', currentPhase:0, phasesRequired: null, detail:'' };
+    this.state = {
+      visible: false,
+      step: 0,
+      stoneId: null,
+      sphereId: null,
+      progress: 0,
+      phaseDescription: 'determining...',
+      currentPhase: 0,
+      phasesRequired: null,
+      detail: ''
+    };
   }
 
   componentDidMount() {
+    // data = { stoneId : string , sphereId: string };
     eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
       this.setState({
         visible: true,
@@ -38,7 +50,7 @@ export class DfuOverlay extends Component<any, any> {
         stoneId: data.stoneId,
         sphereId: data.sphereId,
         progress: 0,
-        phases: '',
+        phaseDescription: '',
         currentPhase: 0,
         phasesRequired: 0,
         detail: '',
@@ -57,7 +69,6 @@ export class DfuOverlay extends Component<any, any> {
     this.setState({step:1});
     let state = this.props.store.getState();
     let userConfig = state.user.config;
-    let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
     FirmwareHandler.getNewVersions(userConfig.firmwareVersionAvailable, userConfig.bootloaderVersionAvailable)
       .then(() => {
         return new Promise((resolve, reject) => {
@@ -83,23 +94,22 @@ export class DfuOverlay extends Component<any, any> {
       .then((data) => {
         this.processReject = null;
         this.sessionCleanup();
-        this.setState({ step: 5, phases:'setting up...', detail:'putting Crownstone in update mode...' });
+        this.setState({ step: 5, phaseDescription:'setting up...', detail:'putting Crownstone in update mode...' });
         this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
         return this.helper.putInDFU();
       })
       .then(() => {
-        this.setState({phases:'determining...', detail: 'Getting bootloader version...'});
+        this.setState({phaseDescription:'determining...', detail: 'Getting bootloader version...'});
         return this.helper.getBootloaderVersion();
       })
       .then(() => {
         let phasesRequired = this.helper.getAmountOfPhases();
-        this.setState({ phasesRequired: phasesRequired, phases: this.state.currentPhase + ' / '+ phasesRequired });
         if (phasesRequired > 0) {
-          return this.helper.performPhase(0)
+          return this.helper.performPhase(0, (progress) => { this.setState({progress:progress}); })
         }
       })
       .then(() => {
-
+        this.setState({ step: 6 });
       })
       .catch((err) => {
         this.processReject = null;
@@ -108,13 +118,13 @@ export class DfuOverlay extends Component<any, any> {
       })
   }
 
-  handlePhase(phase) {
-    this.setState({ currentPhase: phase, phases: phase + ' / '+ this.state.phasesRequired});
-    return this.helper.performPhase(phase)
+  handlePhase(phase, progressCallback) {
+    this.setState({ currentPhase: phase, phaseDescription: phase + ' / '+ this.state.phasesRequired, progress: 0});
+    return this.helper.performPhase(phase, progressCallback)
       .then(() => {
         let nextPhase = phase + 1;
         if (nextPhase <= this.state.requiredPhases) {
-          return this.handlePhase(nextPhase);
+          return this.handlePhase(nextPhase, progressCallback);
         }
       })
   }
@@ -142,7 +152,7 @@ export class DfuOverlay extends Component<any, any> {
           this.setState({visible: false});
         }}]);
     };
-
+    let radius = 0.28*screenWidth;
     switch (this.state.step) {
       case 0:
         return <OverlayContent
@@ -198,7 +208,6 @@ export class DfuOverlay extends Component<any, any> {
           </OverlayContent>
         );
       case 5:
-        let radius = 0.28*screenWidth;
         return (
           <OverlayContent
             title={'Updating Crownstone'}
@@ -209,28 +218,72 @@ export class DfuOverlay extends Component<any, any> {
                     radius={radius}
                     borderWidth={0.25*radius}
                     progress={1}
-                    color={colors.gray.rgba(0.3)}
+                    color={this._getLoadingColor(true)}
                     absolute={true}
                   />
                   <ProgressCircle
                     radius={radius}
                     borderWidth={0.25*radius}
                     progress={this.state.progress}
-                    color={colors.green.hex}
+                    color={this._getLoadingColor(false)}
                     absolute={true}
                   />
                   <Text style={{fontSize:25, paddingBottom:10}}>{100*this.state.progress + ' %'}</Text>
-                  <Text style={{fontSize:13}}>{this.state.phases}</Text>
+                  <Text style={{fontSize:13}}>{this.state.phaseDescription}</Text>
                 </View>
               </View>}
             header={'Update is in progress. Please stay close to the Crownstone.'}
-            text={this.props.detail}
+            text={this.state.detail}
+          />
+        );
+      case 6:
+        return (
+          <OverlayContent
+            title={'Updating Done!'}
+            eyeCatcher={
+              <View style={{flex:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
+                <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
+                  <ProgressCircle
+                    radius={radius}
+                    borderWidth={0.25*radius}
+                    progress={1}
+                    color={this._getLoadingColor(false)}
+                    absolute={true}
+                  />
+                  <Icon name="md-checkmark" size={1.0*radius} color={this._getLoadingColor(false)} style={{position:'relative', left:0, top:0.05*radius}} />
+                </View>
+              </View>}
+            header={'Everything is finished, enjoy the new version!'}
+            buttonCallback={ () => { this.setState({visible: false}); }}
+            buttonLabel={"Thanks!"}
           />
         )
     }
   }
 
-  _getLoadingColor
+  _getLoadingColor(background : boolean) {
+    if (background) {
+      switch (this.state.currentPhase) {
+        case 0:
+          return colors.gray.rgba(0.3);
+        case 1:
+          return colors.green.hex;
+        case 2:
+          return colors.iosBlue.hex;
+      }
+    }
+    else {
+      switch (this.state.currentPhase) {
+        case 0:
+          return colors.green.hex;
+        case 1:
+          return colors.iosBlue.hex;
+        case 2:
+          return colors.csBlue.hex;
+      }
+    }
+
+  }
 
   render() {
     return (

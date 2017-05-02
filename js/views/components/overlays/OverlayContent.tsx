@@ -85,7 +85,8 @@ export class OverlayContent extends Component<any, any> {
   getButtonSpacer() {
     // only do this if there is a button
     if (this.props.buttonCallback || this.props.text) {
-      return <View style={{flex: 1}}/>
+      if (this.props.text || !this.props.header)
+        return <View style={{flex: 1}} />
     }
   }
 

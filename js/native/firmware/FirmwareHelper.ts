@@ -39,6 +39,8 @@ export class FirmwareHelper {
   newFirmwareDetails : any;
   newBootloaderDetails : any;
 
+  eventSubscription : any = null;
+
   stoneIsInDFU : boolean = false;
 
   phases : string[];
@@ -77,31 +79,33 @@ export class FirmwareHelper {
 
   putInDFU() {
     let setupPromise = () => {
-      return new Promise((resolve, reject) => {
-        eventBus.emit("dfuInProgress", {handle: this.handle, progress: 1});
-        BluenetPromiseWrapper.connect(this.handle)
-          .then(() => {
-            LOG.info("FirmwareHelper: DFU progress: Connected.");
-            eventBus.emit("dfuInProgress", {handle: this.handle, progress: 2});
-            return BluenetPromiseWrapper.putInDFU();
-          })
-          .then(() => {
-            LOG.info("FirmwareHelper: DFU progress: Placed in DFU mode.");
-            this.stoneIsInDFU = true;
-            return BluenetPromiseWrapper.disconnectCommand();
-          })
-          .then(() => {
-            return new Promise((resolve, reject) => { setTimeout(() => { resolve(); }, 1000 ); })
-          })
-          .catch((err) => {
-            LOG.error("FirmwareHelper: Error during putInDFU.", err);
-            reject(err);
-          })
-      })
+      return this._putInDFU()
     };
 
     // we load the DFU into the promise manager with priority so we are not interrupted
     return BlePromiseManager.registerPriority(setupPromise, {from: 'DFU: setting in dfu mode: ' + this.handle});
+  }
+
+  _putInDFU() {
+    return new Promise((resolve, reject) => {
+      BluenetPromiseWrapper.connect(this.handle)
+        .then(() => {
+          LOG.info("FirmwareHelper: DFU progress: Connected.");
+          return BluenetPromiseWrapper.putInDFU();
+        })
+        .then(() => {
+          LOG.info("FirmwareHelper: DFU progress: Placed in DFU mode.");
+          this.stoneIsInDFU = true;
+          return BluenetPromiseWrapper.disconnectCommand();
+        })
+        .then(() => {
+          return new Promise((resolve, reject) => { setTimeout(() => { resolve(); }, 1000 ); })
+        })
+        .catch((err) => {
+          LOG.error("FirmwareHelper: Error during putInDFU.", err);
+          reject(err);
+        })
+    })
   }
 
   getBootloaderVersion() {
@@ -133,12 +137,17 @@ export class FirmwareHelper {
     return BlePromiseManager.registerPriority(setupPromise, {from: 'Setup: determining bootloader version: ' + this.handle});
   }
 
-  performPhase(phaseNumber) {
+  performPhase(phaseNumber, progressCallback) {
     if (this.phases.length < phaseNumber - 1) {
       return new Promise((resolve, reject) => {
         reject("This phase does not exist in the queue" + JSON.stringify(this.phases));
       })
     }
+
+    this.eventSubscription = NativeBus.on(NativeBus.topics.dfuProgress, (data) => {
+      console.log("GOT EVENT FROM DFU", data)
+      progressCallback(data.progress);
+    });
 
     switch (this.phases[phaseNumber]) {
       case bootloaderUpdate:
@@ -152,9 +161,21 @@ export class FirmwareHelper {
     }
   }
 
+  finish() {
+
+  }
+
   updateBootloader() {
     let action = () => {
-      return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI).then(() => { this.stoneIsInDFU = false; });
+      if (this.stoneIsInDFU === false) {
+        return this._putInDFU()
+          .then(() => {
+            return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI).then(() => { this.stoneIsInDFU = false; });
+          })
+      }
+      else {
+        return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI).then(() => { this.stoneIsInDFU = false; });
+      }
     };
     // we load the DFU into the promise manager with priority so we are not interrupted
     return BlePromiseManager.registerPriority(action, {from: 'DFU: updating Bootloader ' + this.handle}, 300000); // 5 min timeout
@@ -162,7 +183,15 @@ export class FirmwareHelper {
 
   updateFirmware() {
     let action = () => {
-      return BluenetPromiseWrapper.performDFU(this.handle, this.firmwareURI).then(() => { this.stoneIsInDFU = false; });
+      if (this.stoneIsInDFU === false) {
+        return this._putInDFU()
+          .then(() => {
+            return BluenetPromiseWrapper.performDFU(this.handle, this.firmwareURI).then(() => { this.stoneIsInDFU = false; });
+          })
+      }
+      else {
+        return BluenetPromiseWrapper.performDFU(this.handle, this.firmwareURI).then(() => { this.stoneIsInDFU = false; });
+      }
     };
     // we load the DFU into the promise manager with priority so we are not interrupted
     return BlePromiseManager.registerPriority(action, {from: 'DFU: updating firmware ' + this.handle}, 300000); // 5 min timeout

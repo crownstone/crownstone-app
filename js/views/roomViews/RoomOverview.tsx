@@ -43,6 +43,7 @@ export class RoomOverview extends Component<any, any> {
   viewingRemotely : boolean;
   justFinishedSetup : any;
   nearestStoneId : any;
+  firmwareVersionAvailable : string = null;
 
   constructor() {
     super();
@@ -129,8 +130,11 @@ export class RoomOverview extends Component<any, any> {
               initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
               eventBus={this.props.eventBus}
               name={item.device.config.name}
+              stoneId={stoneId}
+              sphereId={this.props.sphereId}
               icon={item.device.config.icon}
               state={item.stone.state.state}
+              canUpdate={Util.versions.isLower(item.stone.config.firmwareVersion, this.firmwareVersionAvailable)}
               currentUsage={item.stone.config.type !== stoneTypes.guidestone ? item.stone.state.currentUsage : undefined}
               navigation={false}
               tapToToggleCalibration={this.tapToToggleCalibration}
@@ -261,6 +265,7 @@ export class RoomOverview extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
+    this.firmwareVersionAvailable = state.user.firmwareVersionAvailable;
     this.tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
 
     let title = undefined;

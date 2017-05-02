@@ -129,10 +129,8 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _iconPressed() {
-    let updatePossible = true;
-
-    if (updatePossible) {
-
+    if (this.props.canUpdate === true && this.props.disabled === false || true) {
+      this.props.eventBus.emit("updateCrownstoneFirmware", {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
     }
     else {
       this._toggleOptions();
@@ -146,9 +144,8 @@ export class DeviceEntry extends Component<any, any> {
           (this.props.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
 
-    let updatePossible = false;
 
-    if (updatePossible) {
+    if (this.props.canUpdate === true && this.props.disabled === false || true) {
       return (
         <View style={[{
           width:60,
