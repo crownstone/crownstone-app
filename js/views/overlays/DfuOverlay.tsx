@@ -68,7 +68,7 @@ export class DfuOverlay extends Component<any, any> {
   startProcess() {
     this.setState({step:1});
     let state = this.props.store.getState();
-    let userConfig = state.user.config;
+    let userConfig = state.user;
     FirmwareHandler.getNewVersions(userConfig.firmwareVersionAvailable, userConfig.bootloaderVersionAvailable)
       .then(() => {
         return new Promise((resolve, reject) => {
@@ -81,7 +81,7 @@ export class DfuOverlay extends Component<any, any> {
           this.processReject = reject;
           this.processSubscriptions.push(
             eventBus.on(Util.events.getCrownstoneTopic(this.state.sphereId, this.state.stoneId), (data) => {
-              if (data.rssi > -85) {
+              if (data.rssi < -70) {
                 this.setState({ step: 4 });
               }
               else if (this.paused === false) {
@@ -114,6 +114,7 @@ export class DfuOverlay extends Component<any, any> {
       .catch((err) => {
         this.processReject = null;
         this.sessionCleanup();
+        this.setState({ step: -1 });
         LOG.error("DfuOverlay: ERROR DURING DFU: ", err);
       })
   }
@@ -193,6 +194,7 @@ export class DfuOverlay extends Component<any, any> {
             buttonLabel={'Abort'}
           >
             <ActivityIndicator animating={true} size="large" />
+            <View style={{flex:1}} />
           </OverlayContent>
         );
       case 4:
@@ -256,6 +258,28 @@ export class DfuOverlay extends Component<any, any> {
             header={'Everything is finished, enjoy the new version!'}
             buttonCallback={ () => { this.setState({visible: false}); }}
             buttonLabel={"Thanks!"}
+          />
+        )
+      case -1:
+        return (
+          <OverlayContent
+            title={'Updating failed...'}
+            eyeCatcher={
+              <View style={{flex:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
+                <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
+                  <ProgressCircle
+                    radius={radius}
+                    borderWidth={0.25*radius}
+                    progress={1}
+                    color={colors.csBlue.hex}
+                    absolute={true}
+                  />
+                  <Icon name="ios-sad" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
+                </View>
+              </View>}
+            header={'We\'re sorry... Maybe try it again?'}
+            buttonCallback={ () => { this.setState({visible: false}); }}
+            buttonLabel={"Fine..."}
           />
         )
     }

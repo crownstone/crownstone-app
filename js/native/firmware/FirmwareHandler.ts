@@ -19,7 +19,7 @@ class FirmwareHandlerClass {
 
   getVersions(firmwareVersion, bootloaderVersion) {
     if (!firmwareVersion || !bootloaderVersion) {
-      throw "No version available!";
+      return new Promise((resolve, reject) => { reject("No version available!"); });
     }
     let promises = [];
     promises.push(CLOUD.getFirmwareDetails(firmwareVersion)
@@ -110,7 +110,7 @@ class FirmwareHandlerClass {
     let state = store.getState();
     let stone = state.spheres[sphereId].stones[stoneId];
     let helper = new FirmwareHelper({
-      handle: stone,
+      handle: stone.config.handle,
       sphereId: sphereId,
       firmwareURI: this.paths['firmware'],
       bootloaderURI: this.paths['bootloader'],

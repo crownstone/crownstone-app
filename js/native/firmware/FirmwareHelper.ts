@@ -99,7 +99,7 @@ export class FirmwareHelper {
           return BluenetPromiseWrapper.disconnectCommand();
         })
         .then(() => {
-          return new Promise((resolve, reject) => { setTimeout(() => { resolve(); }, 1000 ); })
+          setTimeout(() => { resolve(); }, 3000 )
         })
         .catch((err) => {
           LOG.error("FirmwareHelper: Error during putInDFU.", err);
@@ -124,7 +124,7 @@ export class FirmwareHelper {
             return BluenetPromiseWrapper.phoneDisconnect()
           })
           .then(() => {
-            return new Promise((resolve, reject) => { setTimeout(() => { resolve(this.stoneBootloaderVersion); }, 1000 ); })
+            setTimeout(() => { resolve(this.stoneBootloaderVersion); }, 1000 );
           })
           .catch((err) => {
             LOG.error("FirmwareHelper: Error during getBootloaderVersion.", err);
@@ -146,7 +146,7 @@ export class FirmwareHelper {
 
     this.eventSubscription = NativeBus.on(NativeBus.topics.dfuProgress, (data) => {
       console.log("GOT EVENT FROM DFU", data)
-      progressCallback(data.progress);
+      progressCallback(data.progress*0.01);
     });
 
     switch (this.phases[phaseNumber]) {

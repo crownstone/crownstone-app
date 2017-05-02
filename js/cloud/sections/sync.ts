@@ -144,10 +144,8 @@ const syncUser = function(store, actions, userData) {
   let cloudBootloaderVersion = userData.bootloaderVersionAvailable || null;
 
   if (
-      state.user &&
-      state.user.config && (
-      state.user.config.firmwareVersionAvailable   !== cloudFirmwareVersion  && cloudFirmwareVersion ||
-      state.user.config.bootloaderVersionAvailable !== cloudBootloaderVersion && cloudBootloaderVersion
+      state.user && (state.user.firmwareVersionAvailable   !== cloudFirmwareVersion  && cloudFirmwareVersion ||
+      state.user.bootloaderVersionAvailable !== cloudBootloaderVersion && cloudBootloaderVersion
      )) {
     actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionAvailable: cloudFirmwareVersion, bootloaderVersionAvailable: cloudBootloaderVersion}})
   }

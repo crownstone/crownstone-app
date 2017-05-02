@@ -72,7 +72,7 @@ RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCT
 
 // DFU
 RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *) callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
 
 @end

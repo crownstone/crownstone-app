@@ -129,7 +129,7 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _iconPressed() {
-    if (this.props.canUpdate === true && this.props.disabled === false || true) {
+    if ((true || this.props.canUpdate === true) && this.props.disabled === false) {
       this.props.eventBus.emit("updateCrownstoneFirmware", {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
     }
     else {
@@ -145,7 +145,7 @@ export class DeviceEntry extends Component<any, any> {
     );
 
 
-    if (this.props.canUpdate === true && this.props.disabled === false || true) {
+    if ((true || this.props.canUpdate === true) && this.props.disabled === false) {
       return (
         <View style={[{
           width:60,
@@ -160,7 +160,7 @@ export class DeviceEntry extends Component<any, any> {
             fadeDuration={500}
             switchDuration={2000}
             contentArray={[
-              <Icon name={'c1-update-arrow'} size={45} color={color} style={{position:'relative', top:0, left:0, backgroundColor:'transparent'}} />,
+              <Icon name={'c1-update-arrow'} size={44} color={color} style={{position:'relative', top:-1, left:0, backgroundColor:'transparent'}} />,
               <Icon name={this.props.icon} size={35} color={color} style={{position:'relative', backgroundColor:'transparent'}} />,
             ]} />
         </View>

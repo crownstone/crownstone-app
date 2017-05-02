@@ -96,6 +96,7 @@ class BackgroundProcessHandlerClass {
     Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:SYNC_INTERVAL});
     Scheduler.loadCallback('backgroundSync', () => {
       let state = this.store.getState();
+      // if a crownstone is in setup mode, we
       if (SetupStateHandler.isSetupInProgress() === false) {
         if (state.user.userId) {
           LOG.info("STARTING ROUTINE SYNCING IN BACKGROUND");
