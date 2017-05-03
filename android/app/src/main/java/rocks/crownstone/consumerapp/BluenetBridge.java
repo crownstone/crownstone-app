@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import nl.dobots.bluenet.ble.base.BleBase;
 import nl.dobots.bluenet.ble.base.BleBaseEncryption;
 import nl.dobots.bluenet.ble.base.callbacks.IByteArrayCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IDiscoveryCallback;
@@ -104,6 +105,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
 			new Triplet<>(BleCore.class,                 Log.WARN,    Log.WARN),
+			new Triplet<>(BleBase.class,                 Log.DEBUG,   Log.WARN),
 			new Triplet<>(BleExt.class,                  Log.WARN,    Log.WARN),
 			new Triplet<>(CrownstoneSetup.class,         Log.WARN,    Log.DEBUG),
 	};
