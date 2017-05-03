@@ -9,12 +9,12 @@ import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
 import { CLOUD }                 from '../../cloud/cloudAPI'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
+import {SetupStateHandler} from "./SetupStateHandler";
 
 
 const networkError = 'network_error';
 
 export class SetupHelper {
-  advertisement : any;
   handle : any;
   name : any;
   type : any;
@@ -25,25 +25,31 @@ export class SetupHelper {
   firmwareVersion : any;
   cloudResponse   : any;
   stoneIdInCloud  : any;
-  
-  constructor(setupAdvertisement, name, type, icon) {
-    // full advertisement package
-    this.advertisement = setupAdvertisement;
+  stoneWasAlreadyInCloud : boolean = false;
 
+  constructor(handle, name, type, icon) {
     // shorthand to the handle
-    this.handle = setupAdvertisement.handle;
-
+    this.handle = handle;
     this.name = name;
     this.type = type;
     this.icon = icon;
   }
 
-  claim(store, sphereId) {
+
+  /**
+   * This claims a stone, this means it will perform setup, register in cloud and clean up after itself.
+   * @param store
+   * @param sphereId
+   * @param silent            // if silent is true, this means no popups will be sent or triggered.
+   * @returns {Promise<T>}
+   */
+  claim(store, sphereId, silent : boolean = false) {
     // things to be filled out during setup process
     this.macAddress = undefined;
     this.cloudResponse = undefined;
     this.firmwareVersion = undefined; // ie. 1.1.1
     this.stoneIdInCloud = undefined; // shorthand to the cloud id
+    this.stoneWasAlreadyInCloud = undefined; // shorthand to the cloud id
 
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     eventBus.emit("ignoreTriggers");
@@ -126,7 +132,7 @@ export class SetupHelper {
 
               store.batchDispatch(actions);
 
-              if (showRestoreAlert) {
+              if (showRestoreAlert && silent === false) {
                 Alert.alert(
                   "I know this one!",
                   "This Crownstone was already your sphere. I've combined the existing Crownstone " +
@@ -143,9 +149,13 @@ export class SetupHelper {
               resolve();
 
               // start the tap-to-toggle tutorial
-              if (this.type === stoneTypes.plug) { // find the ID
+              if (this.type === stoneTypes.plug && silent === false) { // find the ID
                 if (Util.data.getTapToToggleCalibration(state)) {
-                  eventBus.emit("CalibrateTapToToggle");
+                  setTimeout(() => {
+                    if (SetupStateHandler.isSetupInProgress() === false) {
+                      eventBus.emit("CalibrateTapToToggle")
+                    }
+                  }, 3000);
                 }
               }
 
@@ -160,17 +170,17 @@ export class SetupHelper {
             // Restore trigger state
             eventBus.emit("useTriggers");
             eventBus.emit("setupCancelled", this.handle);
-            if (this.stoneIdInCloud !== undefined) {
+            if (this.stoneIdInCloud !== undefined && this.stoneWasAlreadyInCloud === false) {
               CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOG.error("COULD NOT CLEAN UP AFTER SETUP", err)})
             }
 
-            if (err == "INVALID_SESSION_DATA") {
+            if (err == "INVALID_SESSION_DATA" && silent === false) {
               Alert.alert("Encryption might be off","Error: INVALID_SESSION_DATA, which usually means encryption in this Crownstone is turned off. This app requires encryption to be on.",[{text:'OK'}]);
             }
             else if (err === networkError) {
               // do nothing, alert was already sent
             }
-            else {
+            else if (silent === false) {
               // user facing alert
               Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
             }
@@ -206,6 +216,7 @@ export class SetupHelper {
             CLOUD.forSphere(sphereId).findStone(this.macAddress)
               .then((foundCrownstones) => {
                 if (foundCrownstones.length === 1) {
+                  this.stoneWasAlreadyInCloud = true;
                   resolve(foundCrownstones[0]);
                 }
                 else {

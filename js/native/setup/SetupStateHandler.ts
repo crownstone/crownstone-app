@@ -163,33 +163,48 @@ class SetupStateHandlerClass {
   
   setupStone(handle, sphereId) {
     if (this._stonesInSetupStateAdvertisements[handle] !== undefined) {
-      let helper = new SetupHelper(
-        this._stonesInSetupStateAdvertisements[handle],
+      return this._setupStone(
+        handle,
+        sphereId,
         this._stonesInSetupStateTypes[handle].name,
         this._stonesInSetupStateTypes[handle].type,
         this._stonesInSetupStateTypes[handle].icon
       );
-
-      this._currentSetupState = {
-        busy: true,
-        handle: handle,
-        name: this._stonesInSetupStateTypes[handle].name,
-        type: this._stonesInSetupStateTypes[handle].type,
-        icon: this._stonesInSetupStateTypes[handle].icon,
-      };
-
-      // stop the timeout that removed this stone from the list.
-      if (this._setupModeTimeouts[handle] !== undefined) {
-        clearTimeout(this._setupModeTimeouts[handle]);
-      }
-
-      return helper.claim(this._store, sphereId);
     }
     else {
       return new Promise((resolve, reject) => {
         reject({code: 1, message:"Stone not available"})
       })
     }
+  }
+
+  setupExistingStone(handle, sphereId, stoneId, silent : boolean = false) {
+    let stoneConfig = this._store.getState().spheres[sphereId].stones[stoneId].config;
+    return this._setupStone(handle, sphereId, stoneConfig.name, stoneConfig.type, stoneConfig.icon, silent);
+  }
+
+  _setupStone(handle, sphereId, name, type, icon, silent : boolean = false) {
+    let helper = new SetupHelper(
+      handle,
+      name,
+      type,
+      icon
+    );
+
+    this._currentSetupState = {
+      busy: true,
+      handle: handle,
+      name: name,
+      type: type,
+      icon: icon,
+    };
+
+    // stop the timeout that removed this stone from the list.
+    if (this._setupModeTimeouts[handle] !== undefined) {
+      clearTimeout(this._setupModeTimeouts[handle]);
+    }
+
+    return helper.claim(this._store, sphereId, silent);
   }
 
   getSetupStones() {

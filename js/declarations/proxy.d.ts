@@ -40,7 +40,6 @@ interface crownstoneServiceData {
   newDataAvailable  : boolean,
   stateOfExternalCrownstone: boolean,
   setupMode         : boolean,
-  dfuMode           : boolean,
   random            : string
 }
 
@@ -53,6 +52,7 @@ interface crownstoneAdvertisement {
   isCrownstonePlug    : boolean,
   isCrownstoneBuiltin : boolean,
   isGuidestone        : boolean,
+  isInDFUMode         : boolean,
   serviceUUID       : string,
   serviceData       : crownstoneServiceData
 }

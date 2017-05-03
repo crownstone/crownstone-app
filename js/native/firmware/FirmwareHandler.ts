@@ -13,6 +13,8 @@ class FirmwareHandlerClass {
   downloadedFirmwareVersion : string = null;
   downloadedBootloaderVersion : string = null;
 
+  dfuInProgress : boolean = false;
+
   paths: any = {};
 
   constructor() { }
@@ -112,6 +114,7 @@ class FirmwareHandlerClass {
     let helper = new FirmwareHelper({
       handle: stone.config.handle,
       sphereId: sphereId,
+      stoneId: stoneId,
       firmwareURI: this.paths['firmware'],
       bootloaderURI: this.paths['bootloader'],
       stoneFirmwareVersion: stone.config.firmwareVersion,
@@ -120,6 +123,11 @@ class FirmwareHandlerClass {
       newBootloaderDetails: this.newBootloaderDetails,
     });
     return helper;
+  }
+
+
+  isDfuInProgress() {
+    return this.dfuInProgress;
   }
 }
 

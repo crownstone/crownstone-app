@@ -59,7 +59,13 @@ export class DfuOverlay extends Component<any, any> {
         phasesRequired: 0,
         detail: '',
       });
-    })
+    });
+    eventBus.on("updateDfuProgress", (progress : number) => {
+      this.setState({progress:progress});
+    });
+    eventBus.on("updateDfuStep", (step : number) => {
+      this.setState({step:step});
+    });
   }
 
   componentWillUnmount() {
@@ -95,23 +101,25 @@ export class DfuOverlay extends Component<any, any> {
       .then(() => {
         let phasesRequired = this.helper.getAmountOfPhases();
         if (phasesRequired > 0) {
-          return this.handlePhase(0, phasesRequired, true, (progress) => { this.setState({progress:progress}); });
+          return this.handlePhase(0, phasesRequired);
         }
       })
       .then(() => {
+        this.helper.finish();
         this.setState({ step: 7 });
       })
       .catch((err) => {
         this.processReject = null;
         this.sessionCleanup();
         this.setState({ step: -1 });
+        this.helper.finish();
         LOG.error("DfuOverlay: ERROR DURING DFU: ", err);
       })
   }
 
   _searchForCrownstone(minimumTimeVisibleWhenShown = 2000) : Promise<any> {
     let timeStart = new Date().valueOf();
-    let searchTimeBeforeView = 1000;
+    let searchTimeBeforeView = 2000;
     let state = this.props.store.getState();
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
 
@@ -119,28 +127,25 @@ export class DfuOverlay extends Component<any, any> {
       this.processReject = reject;
 
       // this allows us to initially hide this view and to only show it when the user requires it.
-      // this.showTimeout = setTimeout(() => {
-      //   if (this.state.step !== 3) {
-      //     LOG.info("SET STEP TO 3");
-      //     this.setState({ step: 3 });
-      //   }
-      // }, searchTimeBeforeView);
+      this.showTimeout = setTimeout(() => {
+        if (this.state.step !== 3) {
+          eventBus.emit("updateDfuStep", 3);
+        }
+      }, searchTimeBeforeView);
 
       // the timeout will show the "get closer" even if nothing is found up to that point.
-      // this.fallbackTimeout = setTimeout(() => {
-      //   if (this.state.step !== 4) {
-      //     this.setState({ step: 4 });
-      //   }
-      // }, 2000);
+      this.fallbackTimeout = setTimeout(() => {
+        if (this.state.step !== 4) {
+          eventBus.emit("updateDfuStep", 4);
+        }
+      }, 3000);
       // this will show the user that he has to move closer to the crownstone or resolve if the user is close enough.
       let rssiResolver = (data, setupMode, dfuMode) => {
         data.setupMode = setupMode || false;
         data.dfuMode = dfuMode || false;
 
-        console.log("DATA",data);
-
-        if (data.rssi < -70) {
-          this.setState({ step: 4 });
+        if (data.rssi < -75) {
+          eventBus.emit("updateDfuStep", 4);
         }
         else if (this.paused === false) {
           let timeSeenView = new Date().valueOf() - timeStart;
@@ -155,17 +160,14 @@ export class DfuOverlay extends Component<any, any> {
         }
       };
       this.processSubscriptions.push(eventBus.on(Util.events.getCrownstoneTopic(this.state.sphereId, this.state.stoneId), (data) => {
-        console.log("IN EVENT", data);
         rssiResolver(data, false, false);
       }));
       this.processSubscriptions.push(NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
-        console.log("IN SETUP PART", setupAdvertisement);
         if (setupAdvertisement.handle === stoneConfig.handle) {
           rssiResolver(setupAdvertisement, true, false);
         }
       }));
       this.processSubscriptions.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
-        console.log("IN DFU PART", dfuAdvertisement);
         if (dfuAdvertisement.handle === stoneConfig.handle) {
           rssiResolver(dfuAdvertisement, false, true);
         }
@@ -173,20 +175,24 @@ export class DfuOverlay extends Component<any, any> {
     })
   }
 
-  handlePhase(phase, phasesRequired, skipSearch, progressCallback) {
+  handlePhase(phase, phasesRequired) {
+    LOG.info("DfuOverlay: Handling phase:", phase, " out of ", phasesRequired);
     return new Promise((resolve, reject) => {
       this._searchForCrownstone(0)
         .then((data) => {
           this.setState({ step:6,  currentPhase: phase, phaseDescription: (phase + 1) + ' / '+ phasesRequired, phasesRequired: phasesRequired, progress: 0});
-          this.helper.performPhase(phase, progressCallback, data.setupMode)
+          this.helper.performPhase(phase, data.setupMode)
             .then(() => {
               let nextPhase = phase + 1;
               if (nextPhase <= phasesRequired) {
-                return this.handlePhase(nextPhase, phasesRequired, false, progressCallback);
+                return this.handlePhase(nextPhase, phasesRequired);
               }
               else {
                 resolve()
               }
+            })
+            .then(() => {
+              resolve();
             })
             .catch((err) => { reject(err) })
         })
@@ -242,7 +248,7 @@ export class DfuOverlay extends Component<any, any> {
             header={'Downloading updates from cloud...'}
           >
             <ActivityIndicator animating={true} size="large" />
-            <View style={{flex:1}} />
+            <View style={{flexGrow:1}} />
           </OverlayContent>
         );
       case 2:
@@ -264,7 +270,7 @@ export class DfuOverlay extends Component<any, any> {
             buttonLabel={'Abort'}
           >
             <ActivityIndicator animating={true} size="large" />
-            <View style={{flex:1}} />
+            <View style={{flexGrow:1}} />
           </OverlayContent>
         );
       case 4:
@@ -277,7 +283,7 @@ export class DfuOverlay extends Component<any, any> {
             buttonLabel={'Abort'}
           >
             <ActivityIndicator animating={true} size="large" />
-            <View style={{flex:1}} />
+            <View style={{flexGrow:1}} />
           </OverlayContent>
         );
       case 5:
@@ -285,7 +291,7 @@ export class DfuOverlay extends Component<any, any> {
           <OverlayContent
             title={'Preparing Crownstone'}
             eyeCatcher={
-              <View style={{flex:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
+              <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
                   <ProgressCircle
                     radius={radius}
@@ -305,7 +311,7 @@ export class DfuOverlay extends Component<any, any> {
           <OverlayContent
             title={'Updating Crownstone'}
             eyeCatcher={
-              <View style={{flex:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
+              <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
                   <ProgressCircle
                     radius={radius}
@@ -314,14 +320,17 @@ export class DfuOverlay extends Component<any, any> {
                     color={this._getLoadingColor(true)}
                     absolute={true}
                   />
-                  <ProgressCircle
+                  { this.state.progress > 0 ? <ProgressCircle
                     radius={radius}
                     borderWidth={0.25*radius}
                     progress={this.state.progress}
                     color={this._getLoadingColor(false)}
                     absolute={true}
-                  />
-                  <Text style={{fontSize:25, paddingBottom:10}}>{Math.floor(100*this.state.progress) + ' %'}</Text>
+                  /> : undefined }
+                  { this.state.progress > 0 ?
+                    <Text style={{fontSize: 25, paddingBottom: 10}}>{Math.floor(100 * this.state.progress) + ' %'}</Text> :
+                    <ActivityIndicator animating={true} size="large" style={{position:'relative', top:2,left:2}} />
+                  }
                   <Text style={{fontSize:13}}>{this.state.phaseDescription}</Text>
                 </View>
               </View>}
@@ -333,7 +342,7 @@ export class DfuOverlay extends Component<any, any> {
           <OverlayContent
             title={'Updating Done!'}
             eyeCatcher={
-              <View style={{flex:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
+              <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
                   <ProgressCircle
                     radius={radius}
@@ -355,7 +364,7 @@ export class DfuOverlay extends Component<any, any> {
           <OverlayContent
             title={'Update failed...'}
             eyeCatcher={
-              <View style={{flex:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
+              <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
                   <ProgressCircle
                     radius={radius}
@@ -384,6 +393,8 @@ export class DfuOverlay extends Component<any, any> {
           return colors.green.hex;
         case 2:
           return colors.lightBlue2.hex;
+        case 3:
+          return colors.blue2.hex;
       }
     }
     else {
@@ -393,6 +404,8 @@ export class DfuOverlay extends Component<any, any> {
         case 1:
           return colors.lightBlue2.hex;
         case 2:
+          return colors.blue2.hex;
+        case 3:
           return colors.csBlue.hex;
       }
     }

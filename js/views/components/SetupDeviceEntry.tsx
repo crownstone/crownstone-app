@@ -178,24 +178,24 @@ export class SetupDeviceEntry extends Component<any, any> {
   _getSubText() {
     if (this.props.rssi > -70) {
       return <View style={{flexDirection:'row'}}>
-        <Text style={{fontSize: 12}}>{this.state.subText}</Text>
+        <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
         <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Very near)'}</Text>
       </View>;
     }
     else if (this.props.rssi > -80) {
       return <View style={{flexDirection:'row'}}>
-        <Text style={{fontSize: 12}}>{this.state.subText}</Text>
+        <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
         <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Near)'}</Text>
       </View>;
     }
     else if (this.props.rssi > -90) {
       return <View style={{flexDirection:'row'}}>
-        <Text style={{fontSize: 12}}>{this.state.subText}</Text>
+        <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
         <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Barely visible)'}</Text>
       </View>;
     }
     else {
-      <Text style={{fontSize: 12}}>{this.state.subText}</Text>
+      return <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
     }
   }
 }

@@ -174,11 +174,12 @@ open class BluenetJS: NSObject {
       // forward the event streams to react native
       globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
-//          print("VERIFIED \(castData.getDictionary())")
+          
           if (castData.isSetupPackage()) {
             self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
           }
           else if (castData.isDFUPackage()) {
+            print("VERIFIED DFU \(castData.getDictionary())")
             self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
           }
           else {
