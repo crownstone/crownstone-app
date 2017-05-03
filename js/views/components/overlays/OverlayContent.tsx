@@ -17,20 +17,20 @@ export class OverlayContent extends Component<any, any> {
     if (this.props.icon) {
       return (
         <View style={{
-        width: 0.45 * screenWidth,
+          width: 0.45 * screenWidth,
           height: 0.5 * screenWidth,
           margin: 0.025 * screenHeight,
           alignItems: 'center',
           justifyContent: 'center'
-      }}>
-      <Icon
-        name={this.props.icon}
-      size={this.props.iconSize || 0.40 * screenWidth}
-      color={colors.csBlue.hex}
-      style={{position: 'relative', top: 0, left: 0, backgroundColor: 'transparent'}}
-    />
-      </View>
-    );
+        }}>
+        <Icon
+          name={this.props.icon}
+          size={this.props.iconSize || 0.40 * screenWidth}
+          color={colors.csBlue.hex}
+          style={{position: 'relative', top: 0, left: 0, backgroundColor: 'transparent'}}
+        />
+        </View>
+      );
     }
     else if (this.props.image) {
       return (
@@ -50,7 +50,7 @@ export class OverlayContent extends Component<any, any> {
       return <TouchableOpacity onPress={() => {
         this.props.buttonCallback();
       }} style={[styles.centered, {
-        width: 0.4 * screenWidth,
+          width: 0.4 * screenWidth,
           height: 36,
           borderRadius: 18,
           borderWidth: 2,
@@ -93,14 +93,14 @@ export class OverlayContent extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1, alignItems:'center'}}>
-    <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
-    { this.getEyeCatcher() }
-    { this.getHeader() }
-    { this.getContentSpacer() }
-    { this.getContent() }
-    { this.getButtonSpacer() }
-    { this.getButton() }
-    </View>
-  )
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
+        { this.getEyeCatcher() }
+        { this.getHeader() }
+        { this.getContentSpacer() }
+        { this.getContent() }
+        { this.getButtonSpacer() }
+        { this.getButton() }
+      </View>
+    )
   }
 }

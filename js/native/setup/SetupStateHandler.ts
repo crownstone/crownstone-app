@@ -109,6 +109,9 @@ class SetupStateHandlerClass {
           eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
         }
 
+        // update rssi
+        this._stonesInSetupStateTypes[handle].rssi = setupAdvertisement.rssi;
+
         if (emitDiscovery) {
           eventBus.emit("setupStonesDetected");
         }
@@ -148,11 +151,11 @@ class SetupStateHandlerClass {
 
   static _getTypeData(advertisement) {
     if (advertisement.isCrownstonePlug)
-      return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:stoneTypes.plug,       handle: advertisement.handle};
+      return {rssi: advertisement.rssi, name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:stoneTypes.plug,       handle: advertisement.handle};
     else if (advertisement.isCrownstoneBuiltin)
-      return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:stoneTypes.builtin,    handle: advertisement.handle};
+      return {rssi: advertisement.rssi, name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:stoneTypes.builtin,    handle: advertisement.handle};
     else if (advertisement.isGuidestone)
-      return {name: 'Guidestone',         icon: 'c2-crownstone',    type:stoneTypes.guidestone, handle: advertisement.handle};
+      return {rssi: advertisement.rssi, name: 'Guidestone',         icon: 'c2-crownstone',    type:stoneTypes.guidestone, handle: advertisement.handle};
     else {
       LOG.error("UNKNOWN DEVICE in setup procedure", advertisement);
     }

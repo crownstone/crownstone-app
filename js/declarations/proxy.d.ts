@@ -24,6 +24,7 @@ interface BluenetPromiseWrapper {
 
   // DFU
   putInDFU(): Promise<void>,
+  setupPutInDFU(): Promise<void>,
   performDFU(handle : string, uri: string): Promise<void>,
   setupFactoryReset(): Promise<void>,
 }

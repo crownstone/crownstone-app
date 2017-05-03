@@ -144,6 +144,11 @@ class BackgroundProcessHandlerClass {
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
+      // do not show popup during setup.
+      if (SetupStateHandler.isSetupInProgress() === true) {
+        return;
+      }
+
       let state = this.store.getState();
       if (state && state.devices && deviceInDatabaseId &&
         (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {

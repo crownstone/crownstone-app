@@ -153,7 +153,7 @@ export class SetupDeviceEntry extends Component<any, any> {
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.setupStone(); }}>
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text>
-              <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
+              {this._getSubText()}
               <Text style={{fontSize: 10}}>{this.state.explanation}</Text>
             </View>
           </TouchableOpacity>
@@ -172,6 +172,30 @@ export class SetupDeviceEntry extends Component<any, any> {
       if (this.state.disabled === false && this.state.setupInProgress !== true) {
         SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {})
       }
+    }
+  }
+
+  _getSubText() {
+    if (this.props.rssi > -70) {
+      return <View style={{flexDirection:'row'}}>
+        <Text style={{fontSize: 12}}>{this.state.subText}</Text>
+        <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Very near)'}</Text>
+      </View>;
+    }
+    else if (this.props.rssi > -80) {
+      return <View style={{flexDirection:'row'}}>
+        <Text style={{fontSize: 12}}>{this.state.subText}</Text>
+        <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Near)'}</Text>
+      </View>;
+    }
+    else if (this.props.rssi > -90) {
+      return <View style={{flexDirection:'row'}}>
+        <Text style={{fontSize: 12}}>{this.state.subText}</Text>
+        <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Barely visible)'}</Text>
+      </View>;
+    }
+    else {
+      <Text style={{fontSize: 12}}>{this.state.subText}</Text>
     }
   }
 }

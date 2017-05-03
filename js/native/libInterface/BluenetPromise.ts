@@ -116,6 +116,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapper = {
   getFirmwareVersion:         () => { return BluenetPromise('getFirmwareVersion'); },
   setupFactoryReset:          () => { return BluenetPromise('setupFactoryReset'); },
   putInDFU:                   () => { return BluenetPromise('putInDFU'); },
+  setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },
   performDFU:                 (handle, uri) => { return BluenetPromise('performDFU', handle, uri); },
 };
 

@@ -7,6 +7,7 @@ import { LOG }                   from '../../logging/Log'
 import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
 import {SetupStateHandler} from "../setup/SetupStateHandler";
+import {Bluenet} from "../libInterface/Bluenet";
 
 
 interface dfuData {
@@ -58,19 +59,23 @@ export class FirmwareHelper {
 
   getAmountOfPhases() {
     this.phases = [];
-    if (Util.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion)) {
+    LOG.info("FirmwareHelper: Getting Phases...");
+    if (Util.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion) || true) {
       // UPDATE BOOTLOADER
+      LOG.info("FirmwareHelper: Phase: Require Bootloader.");
       this.phases.push(bootloaderUpdate);
     }
 
-    if (Util.versions.isHigher(this.newFirmwareDetails.version, this.stoneFirmwareVersion)) {
+    if (Util.versions.isHigher(this.newFirmwareDetails.version, this.stoneFirmwareVersion) || true) {
       // UPDATE firmware
+      LOG.info("FirmwareHelper: Phase: Require Firmware.");
       this.phases.push(firmwareUpdate);
     }
 
-    if (Util.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
+    if (true || Util.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
         Util.versions.isLower(this.stoneFirmwareVersion,   this.newFirmwareDetails.minimumCompatibleVersion)) {
       // PERFORM SETUP AFTERWARDS
+      LOG.info("FirmwareHelper: Phase: Require Setup Afterwards.");
       this.phases.push(setupAfterUpdate);
     }
 
@@ -79,19 +84,24 @@ export class FirmwareHelper {
 
   putInDFU() {
     let setupPromise = () => {
-      return this._putInDFU()
+      return this._putInDFU(false)
     };
 
     // we load the DFU into the promise manager with priority so we are not interrupted
     return BlePromiseManager.registerPriority(setupPromise, {from: 'DFU: setting in dfu mode: ' + this.handle});
   }
 
-  _putInDFU() {
+  _putInDFU(stoneIsInSetupMode : boolean) {
     return new Promise((resolve, reject) => {
       BluenetPromiseWrapper.connect(this.handle)
         .then(() => {
           LOG.info("FirmwareHelper: DFU progress: Connected.");
-          return BluenetPromiseWrapper.putInDFU();
+          if (stoneIsInSetupMode) {
+            return BluenetPromiseWrapper.setupPutInDFU();
+          }
+          else {
+            return BluenetPromiseWrapper.putInDFU();
+          }
         })
         .then(() => {
           LOG.info("FirmwareHelper: DFU progress: Placed in DFU mode.");
@@ -111,7 +121,6 @@ export class FirmwareHelper {
   getBootloaderVersion() {
     let setupPromise = () => {
       return new Promise((resolve, reject) => {
-        eventBus.emit("dfuInProgress", {handle: this.handle, progress: 1});
         BluenetPromiseWrapper.connect(this.handle)
           .then(() => {
             LOG.info("FirmwareHelper: DFU progress: Reconnected.");
@@ -137,7 +146,7 @@ export class FirmwareHelper {
     return BlePromiseManager.registerPriority(setupPromise, {from: 'Setup: determining bootloader version: ' + this.handle});
   }
 
-  performPhase(phaseNumber, progressCallback) {
+  performPhase(phaseNumber, progressCallback, stoneIsInSetupMode = false) {
     if (this.phases.length < phaseNumber - 1) {
       return new Promise((resolve, reject) => {
         reject("This phase does not exist in the queue" + JSON.stringify(this.phases));
@@ -145,17 +154,17 @@ export class FirmwareHelper {
     }
 
     this.eventSubscription = NativeBus.on(NativeBus.topics.dfuProgress, (data) => {
-      console.log("GOT EVENT FROM DFU", data)
+      LOG.verbose("FirmwareHelper: DFU event:", data);
       progressCallback(data.progress*0.01);
     });
 
     switch (this.phases[phaseNumber]) {
       case bootloaderUpdate:
-        return this.updateBootloader();
+        return this._updateBootloader(stoneIsInSetupMode);
       case firmwareUpdate:
-        return this.updateFirmware();
+        return this._updateFirmware(stoneIsInSetupMode);
       case setupAfterUpdate:
-        return this.reset();
+        return this._resetAndSetup(stoneIsInSetupMode);
       default:
         break;
     }
@@ -165,10 +174,10 @@ export class FirmwareHelper {
 
   }
 
-  updateBootloader() {
+  _updateBootloader(stoneIsInSetupMode: boolean) {
     let action = () => {
       if (this.stoneIsInDFU === false) {
-        return this._putInDFU()
+        return this._putInDFU(stoneIsInSetupMode)
           .then(() => {
             return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI).then(() => { this.stoneIsInDFU = false; });
           })
@@ -181,10 +190,10 @@ export class FirmwareHelper {
     return BlePromiseManager.registerPriority(action, {from: 'DFU: updating Bootloader ' + this.handle}, 300000); // 5 min timeout
   }
 
-  updateFirmware() {
+  _updateFirmware(stoneIsInSetupMode: boolean) {
     let action = () => {
       if (this.stoneIsInDFU === false) {
-        return this._putInDFU()
+        return this._putInDFU(stoneIsInSetupMode)
           .then(() => {
             return BluenetPromiseWrapper.performDFU(this.handle, this.firmwareURI).then(() => { this.stoneIsInDFU = false; });
           })
@@ -199,12 +208,17 @@ export class FirmwareHelper {
 
 
 
-  reset() {
+  _resetAndSetup(stoneIsInSetupMode : boolean) {
     let action = () => {
       return BluenetPromiseWrapper.connect(this.handle)
         .then(() => {
           LOG.info("FirmwareHelper: DFU progress: Reconnected.");
-          return BluenetPromiseWrapper.setupFactoryReset();
+          if (stoneIsInSetupMode) {
+            return BluenetPromiseWrapper.setupFactoryReset();
+          }
+          else {
+            return BluenetPromiseWrapper.commandFactoryReset();
+          }
         })
         .then(() => {
           return new Promise((resolve, reject) => {
