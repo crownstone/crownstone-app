@@ -54,6 +54,10 @@ if (DISABLE_NATIVE === true) {
     meshKeepAliveState: () => {},
     meshCommandSetSwitchState: () => {},
     multiSwitch: () => {},
+
+
+    getHardwareVersion: () => {},
+    getFirmwareVersion: () => {},
   }
 }
 else {

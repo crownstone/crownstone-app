@@ -63,7 +63,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
   })
 };
 
-export const BluenetPromiseWrapper : BluenetPromiseWrapper = {
+export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   clearTrackedBeacons: () => { return BluenetPromise('clearTrackedBeacons');  },
   isReady:             () => { return BluenetPromise('isReady');              },
   connect:             (handle) => {
@@ -107,7 +107,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapper = {
   finalizeFingerprint:  (sphereId, locationId) => { return BluenetPromise('finalizeFingerprint', sphereId, locationId); }, //  will load the fingerprint into the classifier and return the stringified fingerprint.
   commandFactoryReset:  ()           => { return BluenetPromise('commandFactoryReset');         },
 
-  //new
   meshKeepAlive:              ()                               => { return BluenetPromise('meshKeepAlive'); },
   meshKeepAliveState:         (timeout, stoneKeepAlivePackets) => { return BluenetPromise('meshKeepAliveState',   timeout, stoneKeepAlivePackets); }, // stoneKeepAlivePackets = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
   meshCommandSetSwitchState:  (arrayOfIds, state)              => { return BluenetPromise('meshCommandSetSwitchState', arrayOfIds, state);         }, // idArray = [number(uint16)]
@@ -116,7 +115,12 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapper = {
   getFirmwareVersion:         () => { return BluenetPromise('getFirmwareVersion'); },
   setupFactoryReset:          () => { return BluenetPromise('setupFactoryReset'); },
   putInDFU:                   () => { return BluenetPromise('putInDFU'); },
-  setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },
   performDFU:                 (handle, uri) => { return BluenetPromise('performDFU', handle, uri); },
+
+
+  //new
+  getHardwareVersion:         () => { return BluenetPromise('getHardwareVersion'); },
+  setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },
+  toggleSwitchState:          () => { return BluenetPromise('toggleSwitchState'); },
 };
 

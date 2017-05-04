@@ -135,15 +135,13 @@ export class StoneTracker {
               Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
             }
 
-            let newState = stone.state.state > 0 ? 0 : 1;
-
-            let data = {state: newState};
-            if (newState === 0) {
-              data["currentUsage"] = 0;
-            }
             let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
-            proxy.performPriority(BluenetPromiseWrapper.setSwitchState, [newState, 0, INTENTS.manual])
-              .then(() => {
+            proxy.performPriority(BluenetPromiseWrapper.toggleSwitchState)
+              .then((newState) => {
+                let data = {state: newState};
+                if (newState === 0) {
+                  data["currentUsage"] = 0;
+                }
                 this.store.dispatch({
                   type: 'UPDATE_STONE_SWITCH_STATE',
                   sphereId: sphereId,

@@ -27,6 +27,7 @@ RCT_EXTERN_METHOD(connect:(NSString *)uuid callback:(RCTResponseSenderBlock)call
 RCT_EXTERN_METHOD(disconnect:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
+RCT_EXTERN_METHOD(toggleSwitchState:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAliveState:(nonnull NSNumber *)changeState state:(nonnull NSNumber *)state timeout:(nonnull NSNumber *)timeout callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAlive:(RCTResponseSenderBlock)callback)
@@ -36,6 +37,7 @@ RCT_EXTERN_METHOD(recover:(NSString *)crownstoneUUID callback:(RCTResponseSender
 RCT_EXTERN_METHOD(setupCrownstone:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getFirmwareVersion:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getHardwareVersion:(RCTResponseSenderBlock)callback)
 
 // Bluenet localization
 RCT_EXTERN_METHOD(requestLocation:(RCTResponseSenderBlock)callback)

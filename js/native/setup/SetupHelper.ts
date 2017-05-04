@@ -23,6 +23,7 @@ export class SetupHelper {
   // things to be filled out during setup process
   macAddress      : any;
   firmwareVersion : any;
+  hardwareVersion : any;
   cloudResponse   : any;
   stoneIdInCloud  : any;
   stoneWasAlreadyInCloud : boolean = false;
@@ -48,6 +49,7 @@ export class SetupHelper {
     this.macAddress = undefined;
     this.cloudResponse = undefined;
     this.firmwareVersion = undefined; // ie. 1.1.1
+    this.hardwareVersion = undefined; // ie. 1.1.1
     this.stoneIdInCloud = undefined; // shorthand to the cloud id
     this.stoneWasAlreadyInCloud = undefined; // shorthand to the cloud id
 
@@ -71,6 +73,11 @@ export class SetupHelper {
           .then((firmwareVersion) => {
             this.firmwareVersion = firmwareVersion;
             LOG.info("setup progress: have firmware version: ", firmwareVersion);
+            return BluenetPromiseWrapper.getHardwareVersion();
+          })
+          .then((hardwareVersion) => {
+            this.hardwareVersion = hardwareVersion;
+            LOG.info("setup progress: have hardware version: ", hardwareVersion);
             return BluenetPromiseWrapper.phoneDisconnect();
           })
           .then(() => {
@@ -104,6 +111,7 @@ export class SetupHelper {
                   touchToToggle:   isPlug,
                   crownstoneId:    this.cloudResponse.uid,
                   firmwareVersion: this.firmwareVersion,
+                  hardwareVersion: this.hardwareVersion,
                   handle:          this.handle,
                   macAddress:      this.macAddress,
                   iBeaconMajor:    this.cloudResponse.major,
@@ -150,7 +158,7 @@ export class SetupHelper {
 
               // start the tap-to-toggle tutorial
               if (this.type === stoneTypes.plug && silent === false) { // find the ID
-                if (Util.data.getTapToToggleCalibration(state)) {
+                if (Util.data.getTapToToggleCalibration(state) === null) {
                   setTimeout(() => {
                     if (SetupStateHandler.isSetupInProgress() === false) {
                       eventBus.emit("CalibrateTapToToggle")

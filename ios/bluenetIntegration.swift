@@ -359,6 +359,19 @@ open class BluenetJS: NSObject {
       }
   }
   
+  @objc func toggleSwitchState(_ callback: @escaping RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.toggleSwitchState()
+      .then{newState in callback([["error" : false, "data": newState]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN toggleSwitchState \(err)"]])
+        }
+      }
+  }
+  
   @objc func setSwitchState(_ state: NSNumber, callback: @escaping RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.control.setSwitchState(state.floatValue)
       .then{_ in callback([["error" : false]])}
@@ -369,7 +382,7 @@ open class BluenetJS: NSObject {
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState \(err)"]])
         }
-      }
+    }
   }
   
   @objc func keepAliveState(_ changeState: NSNumber, state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
@@ -542,7 +555,21 @@ open class BluenetJS: NSObject {
       }
   }
   
-  
+  @objc func getHardwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.device.getHardwareRevision()
+      .then{(harwareVersion : String) -> Void in
+        print("harwareVersion \(harwareVersion)")
+        callback([["error" : false, "data": harwareVersion]]
+        )}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getHardwareVersion"]])
+        }
+    }
+  }
   
   @objc func getFirmwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenet.device.getFirmwareRevision()

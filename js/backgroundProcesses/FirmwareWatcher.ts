@@ -24,15 +24,16 @@ class FirmwareWatcherClass {
 
     let state = this.store.getState();
     let loadedCommands = false;
-    let randomCheck = Math.random() < 0.05;
+    let randomCheck = Math.random() < 0.025;
     if (randomCheck) {
       LOG.info("FirmwareWatcher: Random Firmware Check Forced.");
     }
 
     Util.data.callOnStonesInSphere(state, sphereId, (stoneId, stone) => {
-      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: ", stone.config.firmwareVersion);
+      LOG.info("FirmwareWatcher: Looping over stones:", stoneId, " has: fw", stone.config.firmwareVersion, 'hardware:', stone.config.hardwareVersion);
       // random chance to check the firmware again.
-      if (!stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck) {
+      if (!stone.config.firmwareVersion || stone.config.firmwareVersion === '0' || randomCheck  ||
+          !stone.config.hardwareVersion || stone.config.hardwareVersion === '0') {
         BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'}, 100)
           .then((firmwareVersion) => {
             this.store.dispatch({
@@ -44,7 +45,19 @@ class FirmwareWatcherClass {
               }
             });
           })
-          .catch((err) => { LOG.error("FirmwareWatcher: Failed to get firmware from stone.", err)});
+          .catch((err) => { LOG.error("FirmwareWatcher: Failed to get firmware version from stone.", err)});
+        BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getHardwareVersion'}, 100)
+          .then((hardwareVersion) => {
+            this.store.dispatch({
+              type: "UPDATE_STONE_CONFIG",
+              stoneId: stoneId,
+              sphereId: sphereId,
+              data: {
+                hardwareVersion: hardwareVersion
+              }
+            });
+          })
+          .catch((err) => { LOG.error("FirmwareWatcher: Failed to get hardware version from stone.", err)});
         loadedCommands = true;
       }
     });
@@ -52,6 +65,9 @@ class FirmwareWatcherClass {
     if (loadedCommands) {
       LOG.info("FirmwareWatcher: Firmware commands loaded into BatchCommandHandler. Executing!");
       BatchCommandHandler.execute();
+    }
+    else {
+      LOG.info("FirmwareWatcher: No need to run a firmware/hardware version check.");
     }
   }
 }

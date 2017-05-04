@@ -106,6 +106,15 @@ export class DfuOverlay extends Component<any, any> {
       })
       .then(() => {
         this.helper.finish();
+        this.props.store.dispatch({
+          type: "UPDATE_STONE_CONFIG",
+          stoneId: this.state.stoneId,
+          sphereId: this.state.sphereId,
+          data: {
+            firmwareVersion: userConfig.firmwareVersionAvailable,
+            bootloaderVersion: userConfig.bootloaderVersionAvailable,
+          }
+        });
         this.setState({ step: 7 });
       })
       .catch((err) => {

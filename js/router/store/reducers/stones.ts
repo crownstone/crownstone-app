@@ -26,6 +26,7 @@ let defaultSettings = {
     disabled: true,
     firmwareVersion: null,
     bootloaderVersion: null,
+    hardwareVersion: null,
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
     handle: undefined,
@@ -119,6 +120,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.disabled          = update(action.data.disabled,          newState.disabled);
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
         newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);
+        newState.hardwareVersion   = update(action.data.hardwareVersion,   newState.hardwareVersion);
         newState.handle            = update(action.data.handle,            newState.handle);
         newState.icon              = update(action.data.icon,              newState.icon);
         newState.iBeaconMajor      = update(action.data.iBeaconMajor,      newState.iBeaconMajor);

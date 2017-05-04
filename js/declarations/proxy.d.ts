@@ -1,15 +1,17 @@
-interface BluenetPromiseWrapper {
+interface BluenetPromiseWrapperProtocol {
   clearTrackedBeacons(): Promise<void>,
   commandFactoryReset(): Promise<void>,
   connect(handle: string): Promise<void>,
   disconnectCommand(): Promise<void>,
   getMACAddress(): Promise<string>,
   getFirmwareVersion(): Promise<string>,
+  getHardwareVersion(): Promise<string>,
   finalizeFingerprint(sphereId: string, locationId: string): Promise<void>,
   isReady(): Promise<void>,
   keepAlive(): Promise<void>,
   keepAliveState(changeState : boolean, state : number, timeout: number): Promise<void>,
   phoneDisconnect(): Promise<void>,
+  toggleSwitchState(): Promise<void>,
   setSwitchState(state: number): Promise<void>,
   setupCrownstone(dataObject): Promise<void>,
   setSettings(dataObject): Promise<void>,
