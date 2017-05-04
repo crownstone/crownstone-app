@@ -77,6 +77,20 @@ export class SettingsDeveloper extends Component<any, any> {
     items.push({label: "Clear all logs that have been stored so far.", type: 'explanation', below: true});
 
     items.push({
+      label:"Sync Now!",
+      type: 'button',
+      style: {color: colors.blue.hex},
+      icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+      callback:(newValue) => {
+        Alert.alert("Syncing Starting...", undefined, [{text:'OK'}]);
+        CLOUD.sync(store, true)
+          .then(() => { Alert.alert("Syncing Done!", undefined, [{text:'OK'}]) })
+          .catch((err) => { Alert.alert("Error during sync.", undefined, [{text:'OK'}]) })
+      }});
+    items.push({label: "Trigger a sync with the Cloud.", type: 'explanation', below: true});
+
+
+    items.push({
       label:"Disable Developer Mode",
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,

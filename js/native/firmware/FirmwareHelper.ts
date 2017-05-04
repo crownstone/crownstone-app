@@ -41,6 +41,7 @@ export class FirmwareHelper {
   stoneBootloaderVersion : string;
   newFirmwareDetails : any;
   newBootloaderDetails : any;
+  dfuSuccessful : boolean = false;
 
   eventSubscriptions : any = [];
 
@@ -63,19 +64,19 @@ export class FirmwareHelper {
   getAmountOfPhases() {
     this.phases = [];
     LOG.info("FirmwareHelper: Getting Phases...");
-    if (Util.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion) || true) {
+    if (Util.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion)) {
       // UPDATE BOOTLOADER
       LOG.info("FirmwareHelper: Phase: Require Bootloader.");
       this.phases.push(bootloaderUpdate);
     }
 
-    if (Util.versions.isHigher(this.newFirmwareDetails.version, this.stoneFirmwareVersion) || true) {
+    if (Util.versions.isHigher(this.newFirmwareDetails.version, this.stoneFirmwareVersion)) {
       // UPDATE firmware
       LOG.info("FirmwareHelper: Phase: Require Firmware.");
       this.phases.push(firmwareUpdate);
     }
 
-    if (true || Util.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
+    if (Util.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
         Util.versions.isLower(this.stoneFirmwareVersion,   this.newFirmwareDetails.minimumCompatibleVersion)) {
       // PERFORM SETUP AFTERWARDS
       LOG.info("FirmwareHelper: Phase: Require Setup Afterwards.");
@@ -244,6 +245,7 @@ export class FirmwareHelper {
           }
         })
         .then(() => {
+          this.dfuSuccessful = true;
           eventBus.emit("updateDfuProgress", 0.50);
         })
         .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.6); }); })

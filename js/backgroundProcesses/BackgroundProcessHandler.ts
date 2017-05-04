@@ -150,7 +150,7 @@ class BackgroundProcessHandlerClass {
       }
 
       let state = this.store.getState();
-      if (state && state.devices && deviceInDatabaseId &&
+      if (state && state.devices && deviceInDatabaseId && state.devices[deviceInDatabaseId] &&
         (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {
         if (Util.data.userHasPlugsInSphere(state,sphereId))
           eventBus.emit("CalibrateTapToToggle");

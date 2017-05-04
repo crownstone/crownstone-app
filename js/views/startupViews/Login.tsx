@@ -142,7 +142,6 @@ export class Login extends Component<any, any> {
         <View style={loginStyles.spacer}>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput
-              optimization={false}
               style={{width: 0.8*screenWidth, padding:10}}
               placeholder='email'
               keyboardType='email-address'
@@ -155,7 +154,6 @@ export class Login extends Component<any, any> {
           </View>
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput
-              optimization={false}
               style={{width: 0.8*screenWidth, padding:10}}
               secureTextEntry={true}
               placeholder='password'

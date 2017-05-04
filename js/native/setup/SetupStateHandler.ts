@@ -86,6 +86,9 @@ class SetupStateHandlerClass {
       });
 
       NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+        // emit advertisements for other views
+        eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
+
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
 
@@ -108,9 +111,6 @@ class SetupStateHandlerClass {
           this._stonesInSetupStateTypes[handle] = SetupStateHandlerClass._getTypeData(setupAdvertisement);
           eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
         }
-
-        // update rssi
-        this._stonesInSetupStateTypes[handle].rssi = setupAdvertisement.rssi;
 
         if (emitDiscovery) {
           eventBus.emit("setupStonesDetected");
@@ -151,11 +151,11 @@ class SetupStateHandlerClass {
 
   static _getTypeData(advertisement) {
     if (advertisement.isCrownstonePlug)
-      return {rssi: advertisement.rssi, name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:stoneTypes.plug,       handle: advertisement.handle};
+      return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:stoneTypes.plug,       handle: advertisement.handle};
     else if (advertisement.isCrownstoneBuiltin)
-      return {rssi: advertisement.rssi, name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:stoneTypes.builtin,    handle: advertisement.handle};
+      return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:stoneTypes.builtin,    handle: advertisement.handle};
     else if (advertisement.isGuidestone)
-      return {rssi: advertisement.rssi, name: 'Guidestone',         icon: 'c2-crownstone',    type:stoneTypes.guidestone, handle: advertisement.handle};
+      return {name: 'Guidestone',         icon: 'c2-crownstone',    type:stoneTypes.guidestone, handle: advertisement.handle};
     else {
       LOG.error("UNKNOWN DEVICE in setup procedure", advertisement);
     }

@@ -1,5 +1,3 @@
-import { LOG } from '../logging/Log'
-
 export const EventUtil = {
   getViaMeshTopic: function (sphereId, meshNetworkId) {
     return 'updateViaMeshNetwork_' + sphereId + '_' + meshNetworkId;
@@ -9,5 +7,8 @@ export const EventUtil = {
   },
   getCrownstoneTopic: function (sphereId, stoneId) {
     return 'update_' + sphereId + '_' + stoneId;
-  }
+  },
+  getSetupTopic: function (handle) {
+    return 'setupAdvertisement_' + handle;
+  },
 };

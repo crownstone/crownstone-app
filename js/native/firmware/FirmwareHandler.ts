@@ -19,22 +19,24 @@ class FirmwareHandlerClass {
 
   constructor() { }
 
-  getVersions(firmwareVersion, bootloaderVersion) {
+  getVersions(firmwareVersion, bootloaderVersion, hardwareVersion) {
     if (!firmwareVersion || !bootloaderVersion) {
       return new Promise((resolve, reject) => { reject("No version available!"); });
     }
     let promises = [];
-    promises.push(CLOUD.getFirmwareDetails(firmwareVersion)
+    promises.push(CLOUD.getFirmwareDetails(firmwareVersion, hardwareVersion)
       .then((result) => {
-        if (result) {
-          this.newFirmwareDetails = result;
+        if (result === null) {
+          throw "No firmware available.";
         }
+        this.newFirmwareDetails = result;
       }));
-    promises.push(CLOUD.getBootloaderDetails(bootloaderVersion)
+    promises.push(CLOUD.getBootloaderDetails(bootloaderVersion, hardwareVersion)
       .then((result) => {
-        if (result) {
-          this.newBootloaderDetails = result;
+        if (result === null) {
+          throw "No bootloader available.";
         }
+        this.newBootloaderDetails = result;
       }));
     return Promise.all(promises);
   }
@@ -85,8 +87,8 @@ class FirmwareHandlerClass {
       })
   }
 
-  getNewVersions(firmwareVersion, bootloaderVersion) {
-    return this.getVersions(firmwareVersion, bootloaderVersion)
+  getNewVersions(firmwareVersion, bootloaderVersion, hardwareVersion) {
+    return this.getVersions(firmwareVersion, bootloaderVersion, hardwareVersion)
       .then(() => {
         return this.download(this.newFirmwareDetails,'firmware');
       })

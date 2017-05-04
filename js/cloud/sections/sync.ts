@@ -140,14 +140,17 @@ const syncDown = function (userId, options) {
 const syncUser = function(store, actions, userData) {
   let state = store.getState();
 
-  let cloudFirmwareVersion = userData.firmwareVersionAvailable || null;
-  let cloudBootloaderVersion = userData.bootloaderVersionAvailable || null;
+  let cloudFirmwareVersions = userData.firmwareVersionsAvailable || null;
+  let cloudBootloaderVersions = userData.bootloaderVersionsAvailable || null;
 
   if (
-      state.user && (state.user.firmwareVersionAvailable   !== cloudFirmwareVersion  && cloudFirmwareVersion ||
-      state.user.bootloaderVersionAvailable !== cloudBootloaderVersion && cloudBootloaderVersion
-     )) {
-    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionAvailable: cloudFirmwareVersion, bootloaderVersionAvailable: cloudBootloaderVersion}})
+      state.user && cloudFirmwareVersions && cloudBootloaderVersions &&
+      (
+        state.user.firmwareVersionsAvailable !== cloudFirmwareVersions ||
+        state.user.bootloaderVersionsAvailable !== cloudBootloaderVersions
+      )
+    ) {
+    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionsAvailable: cloudFirmwareVersions, bootloaderVersionsAvailable: cloudBootloaderVersions}})
   }
 };
 

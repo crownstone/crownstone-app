@@ -43,7 +43,7 @@ export class RoomOverview extends Component<any, any> {
   viewingRemotely : boolean;
   justFinishedSetup : any;
   nearestStoneId : any;
-  firmwareVersionAvailable : string = null;
+  firmwareVersionsAvailable : any = {};
 
   constructor() {
     super();
@@ -134,14 +134,14 @@ export class RoomOverview extends Component<any, any> {
               sphereId={this.props.sphereId}
               icon={item.device.config.icon}
               state={item.stone.state.state}
-              canUpdate={Util.versions.isLower(item.stone.config.firmwareVersion, this.firmwareVersionAvailable)}
+              canUpdate={Util.versions.isLower(item.stone.config.firmwareVersion, this.firmwareVersionsAvailable[item.stone.config.hardwareVersion])}
               currentUsage={item.stone.config.type !== stoneTypes.guidestone ? item.stone.state.currentUsage : undefined}
               navigation={false}
               tapToToggleCalibration={this.tapToToggleCalibration}
               control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
               pending={this.state.pendingRequests[stoneId] !== undefined}
               disabled={item.stone.config.disabled || this.viewingRemotely || SetupStateHandler.isSetupInProgress() }
-              disabledDescription={ SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' }
+              disabledDescription={SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' }
               dimmable={item.device.config.dimmable}
               showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
               rssi={item.stone.config.rssi}
@@ -265,7 +265,7 @@ export class RoomOverview extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    this.firmwareVersionAvailable = state.user.firmwareVersionAvailable;
+    this.firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
     this.tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
 
     let title = undefined;

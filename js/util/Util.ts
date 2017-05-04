@@ -164,7 +164,16 @@ export const Util = {
         return false;
       }
 
+      // a git commit hash is never higher, we pick 12 so 123.122.1234 is the max semver length.
+      if (version.length > 12) {
+        return false;
+      }
+
       let A = version.split('.');
+      // further ensure only semver is compared
+      if (A.length !== 3) {
+        return false;
+      }
       let B = compareWithVersion.split('.');
 
       if (A[0] < B[0]) return false;

@@ -347,8 +347,8 @@ function _getMap(state, requestedKey) {
         cid: stoneConfig.crownstoneId,
         handle: stoneConfig.handle,
         name: stoneConfig.name,
-        applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
-        locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
+        applianceName: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? appliances[stoneConfig.applianceId].config.name : undefined,
+        locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : undefined
       };
     })
   });
