@@ -64,7 +64,7 @@ export class TextEditInput extends Component<any, any> {
         ref={this.refName}
         autoCorrect={this.props.autoCorrect || false}
         onFocus={() => {this.focus();}}
-        style={[{flex:1, position:'relative', top:1}, this.props.style]}
+        style={[{flex:1, position:'relative', top:1, fontSize:16}, this.props.style]}
         autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
         value={this.props.value}
         placeholder={this.props.placeholder || this.props.label}

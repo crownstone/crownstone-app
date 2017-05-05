@@ -29,7 +29,7 @@ export class SettingsProfile extends Component<any, any> {
 
   constructor() {
     super();
-    this.state = {picture:null};
+    this.state = {picture:null, firstName: null, lastName: null};
     this.renderState = {};
     this.validationState = {firstName:undefined, lastName:undefined, email:undefined}
   }
@@ -39,9 +39,7 @@ export class SettingsProfile extends Component<any, any> {
     const state = store.getState();
     let user = state.user;
 
-    if (this.state.picture !== user.picture) {
-      this.setState({picture: user.picture});
-    }
+    this.setState({picture: user.picture, firstName: user.firstName, lastName: user.lastName});
   }
 
   componentDidMount() {
@@ -71,39 +69,41 @@ export class SettingsProfile extends Component<any, any> {
     items.push({
       label:'First Name',
       type: 'textEdit',
-      value: user.firstName,
+      value: this.state.firstName,
       validation:{minLength:2, numbers:{allowed:false}},
       validationCallback: (result) => {this.validationState.firstName = result;},
       callback: (newText) => {
-        if (user.firstName !== newText) {
-          if (this.validationState.firstName === 'valid') {
-            store.dispatch({type: 'USER_UPDATE', data: {firstName: newText}});
-            // update your settings in every sphere that you belong to.
-            sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{firstName: newText}}); });
-          }
-          else {
-            Alert.alert('First name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
-          }
+        this.setState({firstName: newText});
+      },
+      endCallback: (newText) => {
+        if (this.validationState.firstName === 'valid') {
+          store.dispatch({type: 'USER_UPDATE', data: {firstName: newText}});
+          // update your settings in every sphere that you belong to.
+          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{firstName: newText}}); });
+        }
+        else {
+          Alert.alert('First name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
         }
       }
     });
     items.push({
       label:'Last Name', 
       type: 'textEdit',
-      value: user.lastName,
+      value: this.state.lastName,
       validation:{minLength:2, numbers:{allowed:false}},
       validationCallback: (result) => {this.validationState.lastName = result;},
       callback: (newText) => {
-        if (user.lastName !== newText) {
-          if (this.validationState.lastName === 'valid') {
-            store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
-            // update your settings in every sphere that you belong to.
-            sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{lastName: newText}}); });
+        this.setState({lastName: newText});
+      },
+      endCallback: (newText) => {
+        if (this.validationState.lastName === 'valid') {
+          store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
+          // update your settings in every sphere that you belong to.
+          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{lastName: newText}}); });
 
-          }
-          else {
-            Alert.alert('Last name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
-          }
+        }
+        else {
+          Alert.alert('Last name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
         }
       }
     });
@@ -183,11 +183,11 @@ export class SettingsProfile extends Component<any, any> {
     this.props.eventBus.emit('showLoading', 'Requesting password reset email...');
     CLOUD.requestPasswordResetEmail({email: email.toLowerCase()})
       .then(() => {
+        this.props.eventBus.emit('showLoading', 'Email sent!');
         Alert.alert(
           'Reset email has been sent',
           'You will now be logged out. Follow the instructions in the email and log in with your new password.',
           [{text: 'OK', onPress: () => {
-            this.props.eventBus.emit('hideLoading');
             AppUtil.logOut();
           }}]
         )

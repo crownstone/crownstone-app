@@ -24,7 +24,7 @@ export const AppUtil = {
       eventBus.emit("showLoading", "Logging out and closing app...");
       setTimeout(() => {
         Bluenet.quitApp();
-      }, 1500);
+      }, 3500);
     };
 
     BluenetPromiseWrapper.clearTrackedBeacons().catch(() => {});

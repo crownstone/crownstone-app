@@ -21,10 +21,9 @@ import { Scheduler }             from "../logic/Scheduler";
 import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
 import { SYNC_INTERVAL }         from "../ExternalConfig";
-import {BatterySavingUtil} from "../util/BatterySavingUtil";
-import {FirmwareHandler} from "../native/firmware/FirmwareHandler";
-import {MapProvider} from "./MapProvider";
-import {DfuStateHandler} from "../native/firmware/DfuStateHandler";
+import { BatterySavingUtil }     from "../util/BatterySavingUtil";
+import { MapProvider }           from "./MapProvider";
+import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 
 
 
@@ -98,7 +97,7 @@ class BackgroundProcessHandlerClass {
     Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:SYNC_INTERVAL});
     Scheduler.loadCallback('backgroundSync', () => {
       let state = this.store.getState();
-      // if a crownstone is in setup mode, we
+      // if a crownstone is in setup mode, we do not sync at that time
       if (SetupStateHandler.isSetupInProgress() === false) {
         if (state.user.userId) {
           LOG.info("STARTING ROUTINE SYNCING IN BACKGROUND");
