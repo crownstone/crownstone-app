@@ -70,6 +70,8 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
                 Alert.alert("It's sent!", "I have sent a new email to invite this user!", [{text:"OK"}])
               })
               .catch((err) => {
+                this.props.eventBus.emit('hideLoading');
+                Alert.alert("Could not resend email..", "Please try again later.", [{text:"OK"}]);
                 LOG.error("Could not resend email", err);
               })
         }}]);
@@ -99,6 +101,8 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
             })
             .catch((err) => {
               this.deleting = false;
+              this.props.eventBus.emit('hideLoading');
+              Alert.alert("Could not revoke invitation..", "Please try again later.", [{text:"OK"}]);
               LOG.error("Could not revoke invitation", err);
             })
           }}]);

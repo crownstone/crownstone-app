@@ -216,11 +216,10 @@ export class DeviceEdit extends Component<any, any> {
       })
       .catch((err) => {
         LOG.info("error while asking the cloud to remove this crownstone", err);
+        this.props.eventBus.emit('hideLoading');
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Crownstone in the cloud. Please try again later",
-          [{text:'OK', onPress: () => {
-            this.props.eventBus.emit('hideLoading');}
-          }])
+          [{text:'OK'}])
       })
   }
 

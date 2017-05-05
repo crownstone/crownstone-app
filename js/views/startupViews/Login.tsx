@@ -263,9 +263,6 @@ export class Login extends Component<any, any> {
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         return CLOUD.sync(store, false);
       })
-      .catch((err) => {
-        throw err;
-      })
       .then(() => {
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});

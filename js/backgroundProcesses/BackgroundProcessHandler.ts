@@ -222,7 +222,7 @@ class BackgroundProcessHandlerClass {
         })
         .then((reply) => {
           LOG.info("Verified User.", reply);
-          CLOUD.sync(this.store, true);
+          CLOUD.sync(this.store, true).catch(() => {})
         })
         .catch((err) => {
           LOG.info("COULD NOT VERIFY USER -- ERROR", err);

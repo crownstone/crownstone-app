@@ -296,7 +296,7 @@ open class BluenetJS: NSObject {
     }
     
     if let encryptionEnabled = settings["encryptionEnabled"] as? Bool {
-      let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
+      //let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
       print("BluenetBridge: SETTING SETTINGS \(settings)")
       GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
       callback([["error" : false]])

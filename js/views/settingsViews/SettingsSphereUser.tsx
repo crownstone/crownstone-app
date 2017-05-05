@@ -16,6 +16,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { getUserLevelInSphere } from '../../util/DataUtil'
 import { styles, colors, screenWidth } from './../styles'
+import {LOG} from "../../logging/Log";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereUser extends Component<any, any> {
@@ -73,8 +74,9 @@ export class SettingsSphereUser extends Component<any, any> {
             store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: this.props.sphereId, userId: this.props.userId, data:{accessLevel: permission}});
           })
           .catch((err) => {
-            Alert.alert("Something went wrong", err.message, [{text:"OK"}]);
+            Alert.alert("Something went wrong", "Please try again later.", [{text:"OK"}]);
             this.props.eventBus.emit('hideLoading');
+            LOG.error("Something went wrong during Updating user permissions.", err);
           })
         }
       }
@@ -101,9 +103,10 @@ export class SettingsSphereUser extends Component<any, any> {
             }}]);
           })
           .catch((err) => {
-            Alert.alert("Something went wrong", err.message, [{text:"OK"}]);
-            this.props.eventBus.emit('hideLoading');
             this.deleting = false;
+            this.props.eventBus.emit('hideLoading');
+            Alert.alert("Something went wrong", "Please try again later.", [{text:"OK"}]);
+            LOG.error("Something went wrong during Updating user permissions.", err);
           })
 
       }}])
