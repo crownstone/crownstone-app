@@ -112,10 +112,10 @@ export class RoomOverview extends Component<any, any> {
   _renderer(item, index, stoneId) {
     if (item.dfuMode === true) {
       return (
-        <View key={stoneId + '_entry'}>
+        <View key={stoneId + '_dfu_entry'}>
         <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
           <DfuDeviceEntry
-            key={stoneId + '_element'}
+            key={stoneId + '_dfu_element'}
             eventBus={this.props.eventBus}
             store={this.props.store}
             sphereId={this.props.sphereId}
@@ -129,10 +129,10 @@ export class RoomOverview extends Component<any, any> {
     }
     else if (item.setupMode === true && item.handle) {
       return (
-        <View key={stoneId + '_entry'}>
+        <View key={stoneId + '_setup_entry'}>
           <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
             <SetupDeviceEntry
-              key={stoneId + '_element'}
+              key={stoneId + '_setup_element'}
               eventBus={this.props.eventBus}
               store={this.props.store}
               sphereId={this.props.sphereId}
@@ -219,6 +219,7 @@ export class RoomOverview extends Component<any, any> {
     let stoneArray = [];
     let ids = [];
     let stoneIds = Object.keys(stones);
+    let shownHandles = {};
 
     // add the stoneIds of the Crownstones in setup mode to the list but only if we're in the floating category
     if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null) {
@@ -226,6 +227,7 @@ export class RoomOverview extends Component<any, any> {
       let setupIds = Object.keys(setupStones);
       setupIds.forEach((setupId) => {
         ids.push(setupId);
+        shownHandles[setupStones[setupId].handle] = true;
         setupStones[setupId].setupMode = true;
         stoneArray.push(setupStones[setupId]);
       });
@@ -235,6 +237,7 @@ export class RoomOverview extends Component<any, any> {
       let dfuStones = DfuStateHandler.getDfuStones();
       let dfuIds = Object.keys(dfuStones);
       dfuIds.forEach((dfuId) => {
+        shownHandles[dfuStones[dfuId].advertisement.handle] = true;
         ids.push(dfuId);
         dfuStones[dfuId].dfuMode = true;
         stoneArray.push(dfuStones[dfuId]);
@@ -242,8 +245,11 @@ export class RoomOverview extends Component<any, any> {
     }
 
     stoneIds.forEach((stoneId) => {
-      ids.push(stoneId);
-      stoneArray.push(stones[stoneId]);
+      // do not show the same device twice
+      if (shownHandles[stones[stoneId].config.handle] === undefined) {
+        ids.push(stoneId);
+        stoneArray.push(stones[stoneId]);
+      }
     });
 
     return {stoneArray, ids};
