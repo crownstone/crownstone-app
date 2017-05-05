@@ -93,7 +93,7 @@ export class SettingsProfile extends Component<any, any> {
       validation:{minLength:2, numbers:{allowed:false}},
       validationCallback: (result) => {this.validationState.lastName = result;},
       callback: (newText) => {
-        this.setState({firstName: newText});
+        this.setState({lastName: newText});
       },
       endCallback: (newText) => {
         if (this.validationState.lastName === 'valid') {
