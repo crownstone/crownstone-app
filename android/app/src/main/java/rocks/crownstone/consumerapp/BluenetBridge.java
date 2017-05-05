@@ -104,7 +104,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			new Triplet<>(BleBaseEncryption.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
-			new Triplet<>(BleCore.class,                 Log.WARN,    Log.WARN),
+			new Triplet<>(BleCore.class,                 Log.DEBUG,    Log.WARN),
 			new Triplet<>(BleBase.class,                 Log.DEBUG,   Log.WARN),
 			new Triplet<>(BleExt.class,                  Log.WARN,    Log.WARN),
 			new Triplet<>(CrownstoneSetup.class,         Log.WARN,    Log.DEBUG),
@@ -660,40 +660,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// Just use disconnectAndClose instead of the command
 		// [12.11.16] Note: do not use writeDisconnectCommand, that will just lead to errors if the connection
 		//  is closed before the command succeeds
-//		_bleExt.writeDisconnectCommand(new IStatusCallback() {
-//			@Override
-//			public void onSuccess() {
-//				BleLog.getInstance().LOGd(TAG, "disconnect command success");
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", false);
-//				callback.invoke(retVal);
-//			}
-//
-//			@Override
-//			public void onError(int error) {
-//				switch (error) {
-//					// Regard errors about being disconnected as success
-//					case BleErrors.ERROR_NEVER_CONNECTED:
-//					case BleErrors.ERROR_NOT_CONNECTED: {
-//						BleLog.getInstance().LOGd(TAG, "disconnect command success");
-//						WritableMap retVal = Arguments.createMap();
-//						retVal.putBoolean("error", false);
-//						callback.invoke(retVal);
-//						return;
-//					}
-//				}
-//				BleLog.getInstance().LOGd(TAG, "disconnect command error: " + error);
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", true);
-//				retVal.putString("data", "failed to disconnect: " + error);
-//				callback.invoke(retVal);
-//			}
-//		});
-
-		_bleExt.disconnectAndClose(false, new IStatusCallback() {
+		// [04.05.2017] On some phones, the connection stays open for some reason...
+		_bleExt.writeDisconnectCommand(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
-				BleLog.getInstance().LOGi(TAG, "disconnected");
+				BleLog.getInstance().LOGd(TAG, "disconnect command success");
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", false);
 				callback.invoke(retVal);
@@ -701,13 +672,44 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 			@Override
 			public void onError(int error) {
-				BleLog.getInstance().LOGi(TAG, "failed to disconnect: " + error);
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "failed to disconnect: " + error);
-				callback.invoke(retVal);
+				switch (error) {
+					// Regard errors about being disconnected as success
+					case BleErrors.ERROR_NEVER_CONNECTED:
+					case BleErrors.ERROR_NOT_CONNECTED: {
+						BleLog.getInstance().LOGd(TAG, "disconnect command success (already disconnected)");
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", false);
+						callback.invoke(retVal);
+						return;
+					}
+				}
+				// Try to disconnect from our side instead.
+				phoneDisconnect(callback);
+//				BleLog.getInstance().LOGd(TAG, "disconnect command error: " + error);
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", true);
+//				retVal.putString("data", "failed to disconnect: " + error);
+//				callback.invoke(retVal);
 			}
 		});
+
+//		_bleExt.disconnectAndClose(false, new IStatusCallback() {
+//			@Override
+//			public void onSuccess() {
+//				BleLog.getInstance().LOGi(TAG, "disconnected");
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", false);
+//				callback.invoke(retVal);
+//			}
+//			@Override
+//			public void onError(int error) {
+//				BleLog.getInstance().LOGi(TAG, "failed to disconnect: " + error);
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", true);
+//				retVal.putString("data", "failed to disconnect: " + error);
+//				callback.invoke(retVal);
+//			}
+//		});
 	}
 
 	@ReactMethod
