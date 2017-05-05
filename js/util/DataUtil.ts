@@ -321,35 +321,49 @@ export const getUserLevelInSphere = function(state, sphereId) {
 };
 
 
-
 export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
-  return _getMap(state, 'handle');
+  return _getMap(state, 'handle', false);
+};
+
+export const getMapOfCrownstonesBySphereByHandle = function(state) {
+  return _getMap(state, 'handle', true);
 };
 
 export const getMapOfCrownstonesInAllSpheresByCID = function(state) {
-  return _getMap(state, 'crownstoneId');
+  return _getMap(state, 'crownstoneId', true);
 };
 
-function _getMap(state, requestedKey) {
+function _getMap(state, requestedKey, sphereMap : boolean) {
   let sphereIds = Object.keys(state.spheres);
   let map = {};
   sphereIds.forEach((sphereId) => {
     let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let locations = state.spheres[sphereId].locations;
     let appliances = state.spheres[sphereId].appliances;
-    map[sphereId] = {};
+
+    if (sphereMap) {
+      map[sphereId] = {};
+    }
 
     stoneIds.forEach((stoneId) => {
       let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
 
-      map[sphereId][stoneConfig[requestedKey]] = {
+      let data = {
         id: stoneId,
         cid: stoneConfig.crownstoneId,
         handle: stoneConfig.handle,
         name: stoneConfig.name,
+        sphereId: sphereId,
         applianceName: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? appliances[stoneConfig.applianceId].config.name : undefined,
         locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : undefined
       };
+
+      if (sphereMap) {
+        map[sphereId][stoneConfig[requestedKey]] = data
+      }
+      else {
+        map[stoneConfig[requestedKey]] = data
+      }
     })
   });
   return map;

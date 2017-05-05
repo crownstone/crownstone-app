@@ -13,16 +13,15 @@ import {
   View
 } from 'react-native';
 
-import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
-import { Icon } from './Icon';
-import { styles, colors, screenWidth } from '../styles'
-import { getUserLevelInSphere } from '../../util/DataUtil'
-import {Util} from "../../util/Util";
+import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
+import { Icon } from '../Icon';
+import { styles, colors, screenWidth } from '../../styles'
+import { getUserLevelInSphere } from '../../../util/DataUtil'
+import {Util} from "../../../util/Util";
 
 
 export class SetupDeviceEntry extends Component<any, any> {
   baseHeight : any;
-  unsubscribe : any;
   currentLoadingWidth : any;
   setupEvents : any;
   rssiTimeout : any = null;
@@ -31,13 +30,11 @@ export class SetupDeviceEntry extends Component<any, any> {
     super();
 
     this.baseHeight = props.height || 80;
-    this.unsubscribe = () => {};
 
     this.state = {
       progressWidth: new Animated.Value(0),
       name: props.item.name,
-      explanation:'',
-      subtext: 'Click here to add it to this Sphere!',
+      subtext: 'Tap here to add it to this Sphere!',
       disabled: false,
       setupInProgress: false,
       showRssi: false,
@@ -88,7 +85,6 @@ export class SetupDeviceEntry extends Component<any, any> {
 
   componentWillUnmount() { // cleanup
     clearTimeout(this.rssiTimeout);
-    this.unsubscribe();
     this.setupEvents.forEach((unsubscribe) => { unsubscribe(); });
   }
 
@@ -131,11 +127,11 @@ export class SetupDeviceEntry extends Component<any, any> {
         this.setState({subtext:'Click here to add it to this Sphere!', disabled: false, setupInProgress: false});
         break;
       case 'pending':
-        this.setState({subtext:'Starting setup...', explanation:'', setupInProgress: true});
+        this.setState({subtext:'Starting setup...', setupInProgress: true});
         Animated.timing(this.state.progressWidth, {toValue: 0, duration: 100}).start();
         return;
       case 1:
-        this.setState({subtext:"Claiming... Please stay close!", explanation:'', setupInProgress: true});
+        this.setState({subtext:"Claiming... Please stay close!", setupInProgress: true});
         break;
       case 3:
         this.setState({subtext:"Registering in the Cloud...", setupInProgress: true});
@@ -144,7 +140,7 @@ export class SetupDeviceEntry extends Component<any, any> {
         this.setState({subtext:"Setting up Crownstone...", setupInProgress: true});
         break;
       case 19:
-        this.setState({subtext:"Finalizing setup...", explanation:"Rebooting Crownstone..."});
+        this.setState({subtext:"Finalizing setup..."});
         break;
       default: {
         this.setState({setupInProgress: true});

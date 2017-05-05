@@ -107,6 +107,9 @@ const DeviceInfo = require('react-native-device-info');
     // Time until a scanned crownstone in setup mode is regarded to be gone.
     export const SETUP_MODE_TIMEOUT = 15000; // ms
 
+    // Time until a scanned crownstone in DFU mode is regarded to be gone
+    export const DFU_MODE_TIMEOUT = 15000; // ms
+
     // interval for syncing with the cloud.
     export const SYNC_INTERVAL = 60*10; // s --> 10 minutes
 

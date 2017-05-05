@@ -26,6 +26,7 @@ let defaultSettings = {
     disabled: true,
     firmwareVersion: null,
     bootloaderVersion: null,
+    dfuResetRequired: false,
     hardwareVersion: null,
     iBeaconMajor: undefined,
     iBeaconMinor: undefined,
@@ -111,6 +112,13 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
+    case 'UPDATE_STONE_DFU_RESET':
+      if (action.data) {
+        let newState = {...state};
+        newState.dfuResetRequired = update(action.data.dfuResetRequired, newState.dfuResetRequired);
+        return newState;
+      }
+      return state;
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
@@ -121,6 +129,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
         newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);
         newState.hardwareVersion   = update(action.data.hardwareVersion,   newState.hardwareVersion);
+        newState.dfuResetRequired  = update(action.data.dfuResetRequired,  newState.dfuResetRequired);
         newState.handle            = update(action.data.handle,            newState.handle);
         newState.icon              = update(action.data.icon,              newState.icon);
         newState.iBeaconMajor      = update(action.data.iBeaconMajor,      newState.iBeaconMajor);

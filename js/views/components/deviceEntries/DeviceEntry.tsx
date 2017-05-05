@@ -12,10 +12,10 @@ import {
   View
 } from 'react-native';
 
-import { Icon } from './Icon';
-import { Util } from '../../util/Util'
-import { styles, colors, screenWidth } from '../styles'
-import {AlternatingContent} from "./animated/AlternatingContent";
+import { Icon } from '../Icon';
+import { Util } from '../../../util/Util'
+import { styles, colors, screenWidth } from '../../styles'
+import {AlternatingContent} from "../animated/AlternatingContent";
 
 
 export class DeviceEntry extends Component<any, any> {

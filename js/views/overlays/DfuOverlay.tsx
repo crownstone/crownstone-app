@@ -92,7 +92,7 @@ export class DfuOverlay extends Component<any, any> {
         throw err;
       })
       .then(() => {
-        return this.startDFU(userConfig);
+        return this.startDFU(userConfig, stoneConfig);
       })
       .catch((err) => {
         BleUtil.stopHighFrequencyScanning(this.uuid);
@@ -103,6 +103,14 @@ export class DfuOverlay extends Component<any, any> {
             this.helper.finish();
             // this means that DFU was successful but we failed at performing setup.
             if (this.helper.dfuSuccessful === true) {
+              this.props.store.dispatch({
+                type: "UPDATE_STONE_DFU_RESET",
+                stoneId: this.state.stoneId,
+                sphereId: this.state.sphereId,
+                data: {
+                  dfuResetRequired: false,
+                }
+              });
               this.setState({step: -3});
             }
             else {
@@ -117,7 +125,7 @@ export class DfuOverlay extends Component<any, any> {
       })
   }
 
-  startDFU(userConfig) {
+  startDFU(userConfig, stoneConfig) {
     return new Promise((resolve, reject) => {
       this.setState({step:2});
       setTimeout(() => { resolve(); }, 2500);
@@ -135,7 +143,17 @@ export class DfuOverlay extends Component<any, any> {
       return this.helper.getBootloaderVersion();
     })
     .then(() => {
-      let phasesRequired = this.helper.getAmountOfPhases();
+      let phasesRequired = this.helper.getAmountOfPhases(stoneConfig.dfuResetRequired);
+      if (this.helper.resetRequired === true) {
+        this.props.store.dispatch({
+          type: "UPDATE_STONE_DFU_RESET",
+          stoneId: this.state.stoneId,
+          sphereId: this.state.sphereId,
+          data: {
+            dfuResetRequired: true,
+          }
+        });
+      }
       if (phasesRequired > 0) {
         return this.handlePhase(0, phasesRequired);
       }
@@ -149,6 +167,7 @@ export class DfuOverlay extends Component<any, any> {
         data: {
           firmwareVersion: userConfig.firmwareVersionAvailable,
           bootloaderVersion: userConfig.bootloaderVersionAvailable,
+          dfuResetRequired: false,
         }
       });
       this.setState({ step: 7 });

@@ -3,9 +3,9 @@ import { NativeBus } from '../libInterface/NativeBus';
 import { StoneStateHandler } from './StoneStateHandler'
 import { LOG } from '../../logging/Log'
 import { LOG_BLE } from '../../ExternalConfig'
-import { getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByCID } from '../../util/DataUtil'
 import { eventBus }  from '../../util/EventBus'
 import { Util }  from '../../util/Util'
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
 let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
@@ -14,8 +14,6 @@ class AdvertisementHandlerClass {
   _initialized : any;
   store : any;
   state : any;
-  referenceHandleMap : any;
-  referenceCIDMap : any;
   stonesInConnectionProcess : any;
   temporaryIgnore  : any;
   temporaryIgnoreTimeout : any;
@@ -24,8 +22,6 @@ class AdvertisementHandlerClass {
     this._initialized = false;
     this.store = undefined;
     this.state = {};
-    this.referenceHandleMap = {};
-    this.referenceCIDMap = {};
     this.stonesInConnectionProcess = {};
     this.temporaryIgnore = false;
     this.temporaryIgnoreTimeout = undefined;
@@ -41,14 +37,6 @@ class AdvertisementHandlerClass {
 
   init() {
     if (this._initialized === false) {
-      // TODO: Make into map entity so this is only done once.
-      // refresh maps when the database changes
-      this.store.subscribe(() => {
-        this.state = this.store.getState();
-        this.referenceHandleMap = getMapOfCrownstonesInAllSpheresByHandle(this.state);
-        this.referenceCIDMap = getMapOfCrownstonesInAllSpheresByCID(this.state);
-      });
-
       // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
       eventBus.on("connect", (handle) => {
         Scheduler.clearOverwritableTriggerAction(TRIGGER_ID, ADVERTISEMENT_PREFIX + handle);
@@ -134,7 +122,7 @@ class AdvertisementHandlerClass {
     let sphereId = advertisement.referenceId;
 
     // look for the crownstone in this sphere which has the same CrownstoneId (CID)
-    let referenceByCrownstoneId = this.referenceCIDMap[sphereId][serviceData.crownstoneId];
+    let referenceByCrownstoneId = MapProvider.stoneCIDMap[sphereId][serviceData.crownstoneId];
 
     // check if we have a Crownstone with this CID, if not, ignore it.
     if (referenceByCrownstoneId === undefined) {
@@ -149,7 +137,7 @@ class AdvertisementHandlerClass {
       }
     }
 
-    let referenceByHandle = this.referenceHandleMap[sphereId][advertisement.handle];
+    let referenceByHandle = MapProvider.stoneSphereHandleMap[sphereId][advertisement.handle];
 
     // unknown crownstone
     if (referenceByHandle === undefined) {

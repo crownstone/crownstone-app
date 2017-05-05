@@ -42,6 +42,7 @@ export class FirmwareHelper {
   newFirmwareDetails : any;
   newBootloaderDetails : any;
   dfuSuccessful : boolean = false;
+  resetRequired : boolean = false;
 
   eventSubscriptions : any = [];
 
@@ -61,7 +62,7 @@ export class FirmwareHelper {
     this.newBootloaderDetails = dfuData.newBootloaderDetails;
   }
 
-  getAmountOfPhases() {
+  getAmountOfPhases(dfuResetRequired) {
     this.phases = [];
     LOG.info("FirmwareHelper: Getting Phases...");
     if (Util.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion)) {
@@ -76,10 +77,12 @@ export class FirmwareHelper {
       this.phases.push(firmwareUpdate);
     }
 
-    if (Util.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
+    if (dfuResetRequired ||
+        Util.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
         Util.versions.isLower(this.stoneFirmwareVersion,   this.newFirmwareDetails.minimumCompatibleVersion)) {
       // PERFORM SETUP AFTERWARDS
       LOG.info("FirmwareHelper: Phase: Require Setup Afterwards.");
+      this.resetRequired = true;
       this.phases.push(resetAfterUpdate);
       this.phases.push(setupAfterUpdate);
     }

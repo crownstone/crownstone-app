@@ -170,10 +170,12 @@ export const Util = {
       }
 
       let A = version.split('.');
+
       // further ensure only semver is compared
       if (A.length !== 3) {
         return false;
       }
+
       let B = compareWithVersion.split('.');
 
       if (A[0] < B[0]) return false;
@@ -199,6 +201,13 @@ export const Util = {
       if (!version || !compareWithVersion) {
         return false;
       }
+
+      // Do not allow compareWithVersion to be semver
+      if (compareWithVersion.split(".").length !== 3) {
+        return false;
+      }
+
+      // if version is NOT semver, is higher will be false so is lower is true.
       return !Util.versions.isHigherOrEqual(version, compareWithVersion);
     }
 

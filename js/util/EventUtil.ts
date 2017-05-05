@@ -11,4 +11,7 @@ export const EventUtil = {
   getSetupTopic: function (handle) {
     return 'setupAdvertisement_' + handle;
   },
+  getDfuTopic: function (handle) {
+    return 'dfuAdvertisement_' + handle;
+  },
 };

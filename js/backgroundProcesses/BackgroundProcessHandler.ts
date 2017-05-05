@@ -23,6 +23,8 @@ import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
 import { SYNC_INTERVAL }         from "../ExternalConfig";
 import {BatterySavingUtil} from "../util/BatterySavingUtil";
 import {FirmwareHandler} from "../native/firmware/FirmwareHandler";
+import {MapProvider} from "./MapProvider";
+import {DfuStateHandler} from "../native/firmware/DfuStateHandler";
 
 
 
@@ -243,11 +245,13 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
+    MapProvider.loadStore(this.store);
     LogProcessor.loadStore(this.store);
     LocationHandler.loadStore(this.store);
     AdvertisementHandler.loadStore(this.store);
     Scheduler.loadStore(this.store);
     StoneStateHandler.loadStore(this.store);
+    DfuStateHandler.loadStore(this.store);
     SetupStateHandler.loadStore(this.store);
     KeepAliveHandler.loadStore(this.store);
     FirmwareWatcher.loadStore(this.store);

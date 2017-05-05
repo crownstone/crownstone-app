@@ -6,7 +6,6 @@ import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
 import { LOG }                from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
-import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil';
 
 
 /**
@@ -19,7 +18,6 @@ class SetupStateHandlerClass {
   _stonesInSetupStateAdvertisements : any;
   _stonesInSetupStateTypes : any;
   _currentSetupState : any;
-  referenceHandleMap : object;
   _initialized : boolean;
   _ignoreStoneAfterSetup : any;
 
@@ -47,14 +45,6 @@ class SetupStateHandlerClass {
     if (this._initialized === false) {
       this._store = store;
       this._init();
-
-      // TODO: Make into map entity so this is only done once.
-      // refresh maps when the database changes
-      this._store.subscribe(() => {
-        const state = this._store.getState();
-        this.referenceHandleMap = getMapOfCrownstonesInAllSpheresByHandle(state);
-      });
-
     }
   }
 
