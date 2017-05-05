@@ -27,6 +27,8 @@ export const sync = {
     let accessToken = state.user.accessToken;
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
+    let cloudData;
+    let deletedSphere;
 
     return syncDown( userId, options )
       .catch((err) => {
@@ -52,29 +54,26 @@ export const sync = {
       })
       .then((data: any) => {
         syncUser(store, actions, data.user);
-        let cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
-        let deletedSphere = syncCleanupLocal(store, actions, cloudData);
+        cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
+        deletedSphere = syncCleanupLocal(store, actions, cloudData);
         syncKeys(actions, data.keys);
-        syncDevices(store, actions, data.devices)
-          .then(() => {
-            LOG.info("SYNC Dispatching ", actions.length, " actions!");
-            actions.forEach((action) => {
-              action.triggeredBySync = true;
-            });
+        return syncDevices(store, actions, data.devices)
+      })
+      .then(() => {
+        LOG.info("SYNC Dispatching ", actions.length, " actions!");
+        actions.forEach((action) => {
+          action.triggeredBySync = true;
+        });
 
-            if (actions.length > 0) {
-              store.batchDispatch(actions);
-            }
+        if (actions.length > 0) {
+          store.batchDispatch(actions);
+        }
 
-            this.events.emit("CloudSyncComplete");
+        this.events.emit("CloudSyncComplete");
 
-            if (cloudData.addedSphere === true || deletedSphere === true) {
-              this.events.emit("CloudSyncComplete_spheresChanged");
-            }
-          })
-          .catch((err) => {
-            LOG.error(err);
-          })
+        if (cloudData.addedSphere === true || deletedSphere === true) {
+          this.events.emit("CloudSyncComplete_spheresChanged");
+        }
       })
   }
 };
