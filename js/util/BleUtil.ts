@@ -166,6 +166,10 @@ export const BleUtil = {
         Bluenet.startScanningForCrownstonesUniqueOnly();
       }
     }
+  },
+
+  highFrequencyScanUsed: function() {
+    return Object.keys(this.highFrequencyScanUsers).length > 0;
   }
 
 };

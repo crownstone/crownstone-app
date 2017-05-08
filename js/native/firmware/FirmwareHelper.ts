@@ -90,7 +90,12 @@ export class FirmwareHelper {
     return this.phases.length;
   }
 
-  putInDFU() {
+  putInDFU(isInDfu : boolean = false) {
+    if (isInDfu) {
+      return new Promise((resolve, reject) => { resolve(); });
+    }
+
+
     let setupPromise = () => {
       return this._putInDFU(false)
     };

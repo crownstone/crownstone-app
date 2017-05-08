@@ -221,17 +221,6 @@ export class RoomOverview extends Component<any, any> {
     let stoneIds = Object.keys(stones);
     let shownHandles = {};
 
-    // add the stoneIds of the Crownstones in setup mode to the list but only if we're in the floating category
-    if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null) {
-      let setupStones = SetupStateHandler.getSetupStones();
-      let setupIds = Object.keys(setupStones);
-      setupIds.forEach((setupId) => {
-        ids.push(setupId);
-        shownHandles[setupStones[setupId].handle] = true;
-        setupStones[setupId].setupMode = true;
-        stoneArray.push(setupStones[setupId]);
-      });
-    }
 
     if (DfuStateHandler.areDfuStonesAvailable() === true) {
       let dfuStones = DfuStateHandler.getDfuStones();
@@ -244,9 +233,26 @@ export class RoomOverview extends Component<any, any> {
       });
     }
 
+    // add the stoneIds of the Crownstones in setup mode to the list but only if we're in the floating category
+    if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null) {
+      let setupStones = SetupStateHandler.getSetupStones();
+      let setupIds = Object.keys(setupStones);
+      setupIds.forEach((setupId) => {
+        if (shownHandles[setupStones[setupId].handle] === undefined) {
+          ids.push(setupId);
+          shownHandles[setupStones[setupId].handle] = true;
+          setupStones[setupId].setupMode = true;
+          stoneArray.push(setupStones[setupId]);
+        }
+      });
+    }
+
+
+
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
-      if (shownHandles[stones[stoneId].config.handle] === undefined) {
+      let handle = stones[stoneId].stone.config.handle;
+      if (shownHandles[handle] === undefined) {
         ids.push(stoneId);
         stoneArray.push(stones[stoneId]);
       }
@@ -335,7 +341,6 @@ export class RoomOverview extends Component<any, any> {
     else {
       let {stoneArray, ids} = this._getStoneList(stones);
       this._getNearestStoneInRoom(stoneArray, ids);
-
       content = (
         <View>
           <ScrollView style={{position:'relative', top:-1}}>

@@ -37,6 +37,7 @@ class DfuStateHandlerClass {
         let emitDiscovery = false;
 
         if (MapProvider.stoneHandleMap[handle] === undefined) {
+          LOG.info("DfuStateHandler: DFU Crownstone found but could not match it with our database.");
           return;
         }
 
@@ -54,6 +55,7 @@ class DfuStateHandlerClass {
           }
 
           this._stonesInDfuMode[handle] = {advertisement: dfuAdvertisement, data: MapProvider.stoneHandleMap[handle]};
+          LOG.info("DfuStateHandler: Found new DFU Crownstone.");
           eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
         }
 
@@ -80,10 +82,10 @@ class DfuStateHandlerClass {
 
   _cleanup(handle) {
     delete this._stonesInDfuMode[handle];
-    delete this._stonesInDfuMode[handle];
     delete this._dfuTimeouts[handle];
     eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
     if (Object.keys(this._stonesInDfuMode).length === 0) {
+      LOG.info("DfuStateHandler: No DFU stones visible. Disabling HF scanning.");
       eventBus.emit("noDfuStonesVisible");
       BleUtil.stopHighFrequencyScanning(this._uuid);
     }

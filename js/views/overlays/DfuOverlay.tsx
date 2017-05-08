@@ -133,10 +133,10 @@ export class DfuOverlay extends Component<any, any> {
     .then(() => {
       return this._searchForCrownstone(2000);
     })
-    .then(() => {
+    .then((data : any) => {
       this.setState({ step: 5, phaseDescription:'setting up...', detail:'putting Crownstone in update mode...' });
       this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
-      return this.helper.putInDFU();
+      return this.helper.putInDFU(data.dfuMode);
     })
     .then(() => {
       this.setState({phaseDescription:'determining...',});
@@ -181,6 +181,7 @@ export class DfuOverlay extends Component<any, any> {
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
 
     // we need high frequency scanning to get duplicates of the DFU crownstone.
+    LOG.info("Start HF Scanning for all Crownstones");
     BleUtil.startHighFrequencyScanning(this.uuid, true);
     return new Promise((resolve, reject) => {
       this.processReject = reject;
@@ -208,6 +209,7 @@ export class DfuOverlay extends Component<any, any> {
         }
         else if (this.paused === false) {
           // no need to HF scan any more
+          LOG.info("Stop HF Scanning for all Crownstones");
           BleUtil.stopHighFrequencyScanning(this.uuid);
           let timeSeenView = new Date().valueOf() - timeStart;
           this.processReject = null;

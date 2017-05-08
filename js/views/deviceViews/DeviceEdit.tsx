@@ -202,7 +202,7 @@ export class DeviceEdit extends Component<any, any> {
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
-          if (err && err.data && err.data.error && err.data.error.status === 404) {
+          if (err && err.status === 404) {
             resolve();
           }
           else {
@@ -228,7 +228,7 @@ export class DeviceEdit extends Component<any, any> {
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
       .catch((err) => {
         return new Promise((resolve, reject) => {
-          if (err && err.data && err.data.error && err.data.error.status === 404) {
+          if (err && err.status === 404) {
             resolve();
           }
           else {

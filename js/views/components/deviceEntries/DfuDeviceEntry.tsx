@@ -67,18 +67,12 @@ export class DfuDeviceEntry extends Component<any, any> {
   }
 
   _getIcon() {
-    let color = colors.blinkColor1.hex;
-    if (this.state.disabled === true)
-      color = colors.gray.hex;
-    else if (this.state.setupInProgress === true)
-       color = colors.blinkColor2.hex;
-
     return (
       <View style={[{
         width:60,
         height:60,
         borderRadius:30,
-        backgroundColor: color,
+        backgroundColor: colors.purple.hex,
         }, styles.centered]}>
         <Icon name={'ios-settings'} size={50} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
       </View>
