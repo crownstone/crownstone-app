@@ -657,10 +657,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	public void disconnect(final Callback callback) {
 		// Command the crownstone to disconnect the phone
 		BleLog.getInstance().LOGd(TAG, "Disconnect command");
-		// Just use disconnectAndClose instead of the command
+
+/*
 		// [12.11.16] Note: do not use writeDisconnectCommand, that will just lead to errors if the connection
 		//  is closed before the command succeeds
 		// [04.05.2017] On some phones, the connection stays open for some reason... (even though disconnect and connect events come in)
+		// [09.05.2017] A bug in the firmware (up to 1.3.1) makes the device crash with this command, so for now, just use disconnect.
 		_bleExt.writeDisconnectCommand(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -669,13 +671,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //				retVal.putBoolean("error", false);
 //				callback.invoke(retVal);
 				// Also disconnect, to be extra sure?
-				// With small delay, otherwise the crownstone may get confused?
-				_handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
+//				// With small delay, otherwise the crownstone may get confused?
+//				_handler.postDelayed(new Runnable() {
+//					@Override
+//					public void run() {
 						phoneDisconnect(callback);
-					}
-				}, 200);
+//					}
+//				}, 200);
 			}
 
 			@Override
@@ -700,6 +702,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				phoneDisconnect(callback);
 			}
 		});
+*/
+
+		// Just use disconnectAndClose instead of the command
+		phoneDisconnect(callback);
 	}
 
 	@ReactMethod
