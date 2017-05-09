@@ -13,7 +13,6 @@ See below for getting the libraries.
 
 The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/app/). 
 
-![Login screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-login.jpeg)
 ![Overview screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-overview.jpeg)
 ![Room screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-room.jpeg)
 
@@ -90,9 +89,9 @@ File issues at the [Github Issue Tracker](https://github.com/crownstone/Crownsto
 
 The copyrights (2014-2017) belongs to the team of Crownstone B.V. and are provided under an noncontagious open-source license:
 
-Authors: Alex de Mulder, Bart van Vliet
-Date: 1 Apr. 2016
-Triple-licensed: LGPL v3+, Apache, MIT
-Crownstone B.V., <https://www.crownstone.rocks>
-Rotterdam, The Netherlands
+* Authors: Alex de Mulder, Bart van Vliet
+* Date: 1 Apr. 2016
+* Triple-licensed: LGPL v3+, Apache, MIT
+* Crownstone B.V., <https://www.crownstone.rocks>
+* Rotterdam, The Netherlands
 
