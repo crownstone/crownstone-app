@@ -3,21 +3,13 @@
 A document to collect info about android phones.
 
 
+## Samsung Galaxy S5 mini
 
-## OnePlus 3
+- Scanning stops working after some time, requires to restart bluetooth
+- Discover speed: ..
+- Connecting fails often, especially with a crownstone plug in setup mode.
 
-Android 7.0
-
-- Scans very well, more sensitive than other phones (higher rssi)
-- Discovery speed: 1.5s, no caching.
-
-#### Known app issues
-
-- App gets killed by the OS. No known solution yet (disabling "auto close high power usage apps" doesn't seem to disable it.)
-
-
-
-## Samsung Galaxy S6??
+## Samsung Galaxy S6
 
 - Scans not so well: misses many advertisements
 - Discovery speed: ..s, no caching.
@@ -59,6 +51,17 @@ Android ..
 
 - Scans very poorly: often takes seconds before you see an advertisement
 
+
+## OnePlus 3
+
+Android 7.0
+
+- Scans very well, more sensitive than other phones (higher rssi)
+- Discovery speed: 1.5s, no caching.
+
+#### Known app issues
+
+- App gets killed by the OS. No known solution yet (disabling "auto close high power usage apps" doesn't seem to disable it.)
 
 
 ## Lenovo Pad TB3-710F
