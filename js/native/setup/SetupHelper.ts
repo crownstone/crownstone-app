@@ -156,8 +156,16 @@ export class SetupHelper {
               // Resolve the setup promise.
               resolve();
 
-              // start the tap-to-toggle tutorial
-              if (this.type === stoneTypes.plug && silent === false) { // find the ID
+              // show the celebration of 4 stones
+              state = store.getState();
+              let popupShown = false;
+              if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) {
+                eventBus.emit('showLocalizationSetupStep1', sphereId);
+                popupShown = true;
+              }
+
+              // start the tap-to-toggle tutorial, only if there is no other popup shown
+              if (this.type === stoneTypes.plug && silent === false && popupShown === false) { // find the ID
                 if (Util.data.getTapToToggleCalibration(state) === null) {
                   setTimeout(() => {
                     if (SetupStateHandler.isSetupInProgress() === false) {
@@ -165,12 +173,6 @@ export class SetupHelper {
                     }
                   }, 3000);
                 }
-              }
-
-              // show the celebration of 4 stones
-              state = store.getState();
-              if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) {
-                eventBus.emit('showLocalizationSetupStep1', sphereId);
               }
             }, 2500);
           })

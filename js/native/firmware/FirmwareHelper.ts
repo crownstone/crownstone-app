@@ -194,7 +194,7 @@ export class FirmwareHelper {
   }
 
   restartInAppMode() {
-    return BluenetPromiseWrapper.bootloaderToNormalMode();
+    return BluenetPromiseWrapper.bootloaderToNormalMode( this.handle );
   }
 
   _updateBootloader(stoneIsInSetupMode: boolean) {

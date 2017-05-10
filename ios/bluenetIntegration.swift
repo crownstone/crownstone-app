@@ -704,15 +704,15 @@ open class BluenetJS: NSObject {
     }
   }
   
-  @objc func bootloaderToNormalMode(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    GLOBAL_BLUENET!.bluenet.dfu.bootloaderToNormalMode()
+  @objc func bootloaderToNormalMode(_ uuid: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.dfu.bootloaderToNormalMode(uuid: uuid)
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
         }
         else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN putInDFU \(err)"]])
+          callback([["error" : true, "data": "UNKNOWN ERROR IN bootloaderToNormalMode \(err)"]])
         }
     }
   }

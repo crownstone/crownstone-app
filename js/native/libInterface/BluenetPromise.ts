@@ -4,61 +4,33 @@ import { LOG } from '../../logging/Log'
 import { Bluenet } from './Bluenet'
 import { eventBus }  from '../../util/EventBus'
 
-export const BluenetPromise : any = function(functionName, param, param2, param3) {
+export const BluenetPromise : any = function(functionName, param, param2, param3, param4, param5) {
   return new Promise((resolve, reject) => {
     if (DISABLE_NATIVE === true) {
       resolve()
     }
     else {
-      //TODO: cleanup
-      if (param3 !== undefined) {
-        LOG.info("called bluenetPromise", functionName, " with param", param, param2, param3);
-        Bluenet[functionName](param, param2, param3, (result) => {
-          if (result.error === true) {
-            LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, param3, "error:", result.data);
-            reject(result.data);
-          }
-          else {
-            resolve(result.data);
-          }
-        })
+      let bluenetArguments = [];
+      let promiseResolver = (result) => {
+        if (result.error === true) {
+          LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
+          reject(result.data);
+        }
+        else {
+          resolve(result.data);
+        }
+      };
+
+      // fill the bluenet arguments list with all arguments we will send to bluenet.
+      for (let i = 1; i < arguments.length; i++) {
+        bluenetArguments.push(arguments[i])
       }
-      else if (param2 !== undefined) {
-        LOG.info("called bluenetPromise", functionName, " with param", param, param2);
-        Bluenet[functionName](param, param2, (result) => {
-          if (result.error === true) {
-            LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, param2, "error:", result.data);
-            reject(result.data);
-          }
-          else {
-            resolve(result.data);
-          }
-        })
-      }
-      else if (param !== undefined) {
-        LOG.info("called bluenetPromise", functionName, " with param", param);
-        Bluenet[functionName](param, (result) => {
-          if (result.error === true) {
-            LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, "WITH PARAM:", param, "error:", result.data);
-            reject(result.data);
-          }
-          else {
-            resolve(result.data);
-          }
-        })
-      }
-      else {
-        LOG.info("called bluenetPromise", functionName, " without params");
-        Bluenet[functionName]((result) => {
-          if (result.error === true) {
-            LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
-            reject(result.data);
-          }
-          else {
-            resolve(result.data);
-          }
-        })
-      }
+
+      LOG.info("called bluenetPromise", functionName, " with params", bluenetArguments);
+
+      // add the promise resolver to this list
+      bluenetArguments.push(promiseResolver);
+      Bluenet[functionName].apply(this, bluenetArguments);
     }
   })
 };
@@ -122,6 +94,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getHardwareVersion:         () => { return BluenetPromise('getHardwareVersion'); },
   setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },
   toggleSwitchState:          () => { return BluenetPromise('toggleSwitchState'); },
-  bootloaderToNormalMode:     () => { return BluenetPromise('bootloaderToNormalMode'); },
+  bootloaderToNormalMode:     ( handle ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
 };
 

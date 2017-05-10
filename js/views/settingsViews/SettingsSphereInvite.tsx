@@ -55,7 +55,7 @@ export class SettingsSphereInvite extends Component<any, any> {
       items.push({
         type:'dropdown',
         label:'Access Level',
-        buttons: true,
+        buttons: false,
         value: this.state.permission,
         dropdownHeight:130,
         items:[{label:'Member'},{label:'Guest'}],
