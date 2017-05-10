@@ -122,5 +122,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getHardwareVersion:         () => { return BluenetPromise('getHardwareVersion'); },
   setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },
   toggleSwitchState:          () => { return BluenetPromise('toggleSwitchState'); },
+  bootloaderToNormalMode:     () => { return BluenetPromise('bootloaderToNormalMode'); },
 };
 

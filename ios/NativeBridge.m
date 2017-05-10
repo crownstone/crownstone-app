@@ -77,5 +77,6 @@ RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupPutInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(bootloaderToNormalMode:(RCTResponseSenderBlock)callback)
 
 @end

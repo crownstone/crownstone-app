@@ -58,6 +58,7 @@ if (DISABLE_NATIVE === true) {
 
     getHardwareVersion: () => {},
     getFirmwareVersion: () => {},
+    bootloaderToNormalMode: () => {},
   }
 }
 else {

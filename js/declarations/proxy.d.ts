@@ -29,6 +29,7 @@ interface BluenetPromiseWrapperProtocol {
   setupPutInDFU(): Promise<void>,
   performDFU(handle : string, uri: string): Promise<void>,
   setupFactoryReset(): Promise<void>,
+  bootloaderToNormalMode(): Promise<void>,
 }
 
 interface crownstoneServiceData {

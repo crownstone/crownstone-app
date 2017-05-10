@@ -103,7 +103,7 @@ export class DfuDeviceEntry extends Component<any, any> {
       Alert.alert("You don't have permission","You can ask an admin in your Sphere to setup this Crownstone",[{text:'OK'}])
     }
     else {
-      this.props.eventBus.emit("updateCrownstoneFirmware", {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
+      this.props.eventBus.emit("updateCrownstoneFirmware", {stoneId: this.props.stoneId, sphereId: this.props.sphereId, alreadyInDfuMode: true});
     }
   }
 

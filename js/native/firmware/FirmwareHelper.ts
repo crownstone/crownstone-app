@@ -193,6 +193,10 @@ export class FirmwareHelper {
     this.eventSubscriptions.forEach((unsubscribe) => { unsubscribe(); });
   }
 
+  restartInAppMode() {
+    return BluenetPromiseWrapper.bootloaderToNormalMode();
+  }
+
   _updateBootloader(stoneIsInSetupMode: boolean) {
     let action = () => {
       if (this.stoneIsInDFU === false) {

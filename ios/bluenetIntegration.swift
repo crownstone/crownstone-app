@@ -703,6 +703,19 @@ open class BluenetJS: NSObject {
         }
     }
   }
+  
+  @objc func bootloaderToNormalMode(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.dfu.bootloaderToNormalMode()
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN putInDFU \(err)"]])
+        }
+    }
+  }
 
   
 }

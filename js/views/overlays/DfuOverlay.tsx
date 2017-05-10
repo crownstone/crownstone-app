@@ -43,7 +43,8 @@ export class DfuOverlay extends Component<any, any> {
       phaseDescription: 'determining...',
       currentPhase: 0,
       phasesRequired: null,
-      detail: ''
+      detail: '',
+      alreadyInDfuMode: false
     };
   }
 
@@ -60,6 +61,7 @@ export class DfuOverlay extends Component<any, any> {
         currentPhase: 0,
         phasesRequired: 0,
         detail: '',
+        alreadyInDfuMode: data.alreadyInDfuMode || false
       });
     });
     eventBus.on("updateDfuProgress", (progress : number) => {
@@ -156,6 +158,9 @@ export class DfuOverlay extends Component<any, any> {
       }
       if (phasesRequired > 0) {
         return this.handlePhase(0, phasesRequired);
+      }
+      else if (this.state.alreadyInDfuMode === true) {
+        return this.helper.restartInAppMode()
       }
     })
     .then(() => {
