@@ -69,20 +69,20 @@ const DeviceInfo = require('react-native-device-info');
     /**
      * Specific logging settings used for debugging mostly.
      */
-    export let LOG_VERBOSE    = true;   // enabling LOG.verbose    commands to be shown.
-    export let LOG_SCHEDULER  = true;   // enabling LOG.scheduler  commands to be shown.
-    export let LOG_BLE        = true;   // enabling LOG.ble        commands to be shown.
-    export let LOG_EVENTS     = true;   // enabling LOG.event      commands to be shown.
-    export let LOG_STORE      = true;   // enabling LOG.store      commands to be shown.
-    export let LOG_MESH       = true;   // enabling LOG.mesh       commands to be shown.
-    export let LOG_CLOUD      = true;   // enabling LOG.cloud      commands to be shown.
-    export let LOG_DEBUG      = true;   // enabling LOG.debug      commands to be shown.
+    export let LOG_VERBOSE    = false;   // enabling LOG.verbose    commands to be shown.
+    export let LOG_SCHEDULER  = false;   // enabling LOG.scheduler  commands to be shown.
+    export let LOG_BLE        = false;   // enabling LOG.ble        commands to be shown.
+    export let LOG_EVENTS     = false;   // enabling LOG.event      commands to be shown.
+    export let LOG_STORE      = false;   // enabling LOG.store      commands to be shown.
+    export let LOG_MESH       = false;   // enabling LOG.mesh       commands to be shown.
+    export let LOG_CLOUD      = false;   // enabling LOG.cloud      commands to be shown.
+    export let LOG_DEBUG      = false;   // enabling LOG.debug      commands to be shown.
 
     /**
      * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.
      * This flag is meant to just always log to file, regardless of the user input. Used for debugging.
      */
-    export let LOG_TO_FILE    = true;   // log everything that is logged to a file.
+    export let LOG_TO_FILE    = false;   // log everything that is logged to a file.
 
 /******************** /LOGGING ********************/
 
