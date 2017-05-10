@@ -21,7 +21,6 @@ class AdvertisementHandlerClass {
   constructor() {
     this._initialized = false;
     this.store = undefined;
-    this.state = {};
     this.stonesInConnectionProcess = {};
     this.temporaryIgnore = false;
     this.temporaryIgnoreTimeout = undefined;
@@ -80,7 +79,7 @@ class AdvertisementHandlerClass {
           LOG.ble('crownstoneId', data.name, data.rssi, data.handle, data);
         });
         NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-          LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor);
+          LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor, data);
         });
       }
 
@@ -98,24 +97,29 @@ class AdvertisementHandlerClass {
   handleEvent(advertisement : crownstoneAdvertisement) {
     // ignore stones that we are attempting to connect to.
     if (this.stonesInConnectionProcess[advertisement.handle] !== undefined) {
+      LOG.debug("AdvertisementHandler: IGNORE: connecting to stone.");
       return;
     }
 
     // the service data in this advertisement;
     let serviceData : crownstoneServiceData = advertisement.serviceData;
+    let state = MapProvider.state;
 
     // service data not available
     if (typeof serviceData !== 'object') {
+      LOG.debug("AdvertisementHandler: IGNORE: serviceData is no object.");
       return;
     }
 
     // check if we have a state
-    if (this.state.spheres === undefined) {
+    if (state.spheres === undefined) {
+      LOG.debug("AdvertisementHandler: IGNORE: We have no spheres.");
       return;
     }
 
     // only relevant if we are in a sphere.
-    if (this.state.spheres[advertisement.referenceId] === undefined) {
+    if (state.spheres[advertisement.referenceId] === undefined) {
+      LOG.debug("AdvertisementHandler: IGNORE: This specific sphere is unknown to us.");
       return;
     }
 
@@ -132,6 +136,7 @@ class AdvertisementHandlerClass {
     // repair mechanism to store the handle.
     if (serviceData.stateOfExternalCrownstone === false && referenceByCrownstoneId !== undefined) {
       if (referenceByCrownstoneId.handle != advertisement.handle) {
+        LOG.debug("AdvertisementHandler: IGNORE: Store handle in our database so we can use the next advertisement.");
         this.store.dispatch({type: "UPDATE_STONE_HANDLE", sphereId: advertisement.referenceId, stoneId: referenceByCrownstoneId.id, data:{handle: advertisement.handle}});
         return;
       }
@@ -144,8 +149,8 @@ class AdvertisementHandlerClass {
       return;
     }
 
-    let stoneFromServiceData   = this.state.spheres[advertisement.referenceId].stones[referenceByCrownstoneId.id];
-    let stoneFromAdvertisement = this.state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
+    let stoneFromServiceData   = state.spheres[advertisement.referenceId].stones[referenceByCrownstoneId.id];
+    let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
 
 
     // --------------------- Update the Mesh Network --------------------------- //
