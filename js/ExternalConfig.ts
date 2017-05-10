@@ -48,6 +48,11 @@ const DeviceInfo = require('react-native-device-info');
     export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
 
     /**
+     * Switch to disable the usage of the mesh in the app
+     */
+    export const MESH_ENABLED = false;
+
+    /**
      * Point to the production cloud.
      */
     export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';

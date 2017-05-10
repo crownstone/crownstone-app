@@ -5,6 +5,7 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
+import {MESH_ENABLED} from "../ExternalConfig";
 
 
 /**
@@ -185,7 +186,7 @@ class BatchCommandHandlerClass {
       if (meshNetworks[todo.sphereId]   === undefined) { meshNetworks[todo.sphereId]   = {}; }
 
       // mesh not supported / no mesh detected for this stone
-      if (stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
+      if (MESH_ENABLED === false || stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
         // handle this 1:1
         directCommands[todo.sphereId].push(todo);
       }
