@@ -65,6 +65,9 @@ class StoneStateHandlerClass {
         });
       }
     }
+    else {
+      LOG.debug("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
+    }
 
     let state = this.store.getState();
 

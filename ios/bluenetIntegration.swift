@@ -526,21 +526,19 @@ open class BluenetJS: NSObject {
   
   @objc func enableLoggingToFile(_ enableLogging: NSNumber) -> Void {
     if (enableLogging.boolValue == true) {
-      BluenetLib.LOG.cleanLogs()
       BluenetLib.LOG.setFileLevel(.INFO)
       BluenetLib.LOG.setPrintLevel(.INFO)
       
-      LOGGER.cleanLogs()
       LOGGER.setFileLevel(.INFO)
       LOGGER.setPrintLevel(.INFO)
     }
     else {
-      BluenetLib.LOG.setFileLevel(.NONE)
       BluenetLib.LOG.clearLogs()
+      BluenetLib.LOG.setFileLevel(.NONE)
       BluenetLib.LOG.setPrintLevel(.INFO)
       
-      LOGGER.setFileLevel(.NONE)
       LOGGER.clearLogs()
+      LOGGER.setFileLevel(.NONE)
       LOGGER.setPrintLevel(.INFO)
     }
   }

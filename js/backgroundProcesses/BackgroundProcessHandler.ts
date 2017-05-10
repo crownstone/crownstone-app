@@ -230,7 +230,7 @@ class BackgroundProcessHandlerClass {
         .catch((err) => {
           LOG.info("COULD NOT VERIFY USER -- ERROR", err);
           if (err.status === 401) {
-            AppUtil.logOut();
+            AppUtil.logOut(this.store);
             Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
           }
         });

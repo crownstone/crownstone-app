@@ -29,6 +29,7 @@ class MapProviderClass {
   stoneSphereHandleMap : any = {};
   stoneHandleMap : any = {};
   stoneCIDMap : any = {};
+  state : any = {};
 
   loadStore(store) {
     if (this._initialized === false) {
@@ -36,10 +37,10 @@ class MapProviderClass {
 
       // refresh maps when the database changes
       this._store.subscribe(() => {
-        const state = this._store.getState();
-        this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(state);
-        this.stoneHandleMap = getMapOfCrownstonesInAllSpheresByHandle(state);
-        this.stoneCIDMap = getMapOfCrownstonesInAllSpheresByCID(state);
+        this.state = this._store.getState();
+        this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(this.state);
+        this.stoneHandleMap = getMapOfCrownstonesInAllSpheresByHandle(this.state);
+        this.stoneCIDMap = getMapOfCrownstonesInAllSpheresByCID(this.state);
       });
 
     }

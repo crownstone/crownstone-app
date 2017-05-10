@@ -740,6 +740,7 @@ const updateUserLocationInCloud = function(state, deviceId) {
     if (state.user.uploadLocation === true) {
       if (state.user.userId) {
         let userLocation = findUserLocation(state, state.user.userId);
+
         CLOUD.forDevice(deviceId).updateDeviceLocation(userLocation.locationId)
           .then(resolve)
           .catch(reject)

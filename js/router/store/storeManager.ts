@@ -92,7 +92,7 @@ class StoreManagerClass {
   _setupStore(initialState, enableWriteToDisk) {
     if (initialState && typeof initialState === 'string') {
       let data = JSON.parse(initialState);
-      LOG.debug("CURRENT DATA:", data);
+      LOG.info("CURRENT DATA:", data);
       this.store = createStore(enableBatching(CrownstoneReducer), data, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }

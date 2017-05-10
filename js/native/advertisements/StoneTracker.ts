@@ -55,10 +55,12 @@ export class StoneTracker {
 
     // only use valid rssi measurements, 0 or 128 are not valid measurements
     if (rssi === undefined || rssi > -1) {
+      LOG.debug("StoneTracker: IGNORE: no rssi.");
       return;
     }
 
     if (sphereId === undefined || major  === undefined || minor === undefined) {
+      LOG.debug("StoneTracker: IGNORE: no sphereId or no major or no minor.");
       return;
     }
 
@@ -66,12 +68,14 @@ export class StoneTracker {
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
     if (!(sphere)) {
+      LOG.debug("StoneTracker: IGNORE: unknown sphere.");
       return;
     }
 
     // check if we have a stone with this major / minor
     let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
     if (!(stoneId)) {
+      LOG.debug("StoneTracker: IGNORE: unknown stone.");
       return;
     }
 
@@ -102,6 +106,7 @@ export class StoneTracker {
 
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore === true) {
+      LOG.debug("StoneTracker: IGNORE: temporary ignore enabled.");
       return;
     }
 
@@ -170,8 +175,9 @@ export class StoneTracker {
     // --------------------- Finished Tap-to-Toggle --------------------------- //
 
     // to avoid flickering we do not trigger these events in less than 5 seconds.
-    if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY)
+    if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY) {
       return;
+    }
 
 
     // update local tracking of data
@@ -183,8 +189,9 @@ export class StoneTracker {
       return;
 
     // if the threshold is not defined yet, don't switch on near or far
-    if (stone.config.nearThreshold === null)
+    if (stone.config.nearThreshold === null) {
       return;
+    }
 
 
 

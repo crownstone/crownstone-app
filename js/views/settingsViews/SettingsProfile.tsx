@@ -188,7 +188,7 @@ export class SettingsProfile extends Component<any, any> {
           'Reset email has been sent',
           'You will now be logged out. Follow the instructions in the email and log in with your new password.',
           [{text: 'OK', onPress: () => {
-            AppUtil.logOut();
+            AppUtil.logOut(this.props.store);
           }}]
         )
       })

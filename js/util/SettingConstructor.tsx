@@ -44,7 +44,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     icon: getIcon('ios-body', 23, colors.white.hex, colors.purple.hex),
     type: 'navigation',
     callback: () => {
-    (Actions as any).settingsProfile()
+      (Actions as any).settingsProfile()
     }
   });
 
@@ -122,7 +122,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     callback: () => {
       Alert.alert('Log out','Are you sure? I will tidy up and close the app. Next time you open it you can log in again!',[
         {text: 'Cancel', style: 'cancel'},
-        {text: 'OK', onPress: () => { AppUtil.logOut() }}
+        {text: 'OK', onPress: () => { AppUtil.logOut(store); }}
       ])
     }});
 
