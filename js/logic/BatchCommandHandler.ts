@@ -185,7 +185,7 @@ class BatchCommandHandlerClass {
       let payload = this._getPayloadFromCommand(todo);
 
       // mesh not supported / no mesh detected for this stone
-      if (stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
+      if (MESH_ENABLED === false || stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
         // handle this 1:1
         directCommands[todo.sphereId].push(todo);
       }
