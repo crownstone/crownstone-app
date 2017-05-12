@@ -5,6 +5,7 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
+import { MESH_ENABLED }          from '../ExternalConfig'
 
 
 /**
