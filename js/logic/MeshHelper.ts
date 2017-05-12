@@ -19,7 +19,6 @@ export class MeshHelper {
     let actionPromise = null;
 
     if (actionPromise === null) { actionPromise = this._handleMultiSwitchCommands(); }
-    if (actionPromise === null) { actionPromise = this._handleSetSwitchStateCommands(); }
     if (actionPromise === null) { actionPromise = this._handleKeepAliveStateCommands(); }
     if (actionPromise === null) { actionPromise = this._handleKeepAliveCommands(); }
     if (actionPromise === null) { actionPromise = this._handleOtherCommands(); }
@@ -65,43 +64,6 @@ export class MeshHelper {
         return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets);
       }
     return null;
-  }
-
-  _handleSetSwitchStateCommands() {
-      if (this.meshInstruction.setSwitchState.length > 0) {
-        let switchStateInstructions = this.meshInstruction.setSwitchState;
-        // get data from set
-        let crownstoneIds = [];
-        let sharedState = null;
-        for (let i = 0; i < switchStateInstructions.length; i++) {
-          let instruction = switchStateInstructions[i];
-          // if the payload has enough information to work with:
-          if (instruction.crownstoneId !== undefined && instruction.state !== undefined && instruction.state !== null) {
-            // we will try to collect all setSwitchStates in the same message as long as they have the same state that we need to set.
-            // the sharedState is the state we will look for.
-            if (sharedState === null) {
-              sharedState = instruction.state;
-            }
-
-            if (sharedState === instruction.state) {
-              crownstoneIds.push(instruction.crownstoneId);
-              instruction.promise.pending = true;
-              this._containedInstructions.push(instruction);
-            }
-          }
-          else {
-            LOG.error("MeshHelper: Invalid meshCommandSetSwitchState instruction, required crownstoneId, state. Got:", instruction);
-          }
-        }
-
-        if (crownstoneIds.length === 0) {
-          return null;
-        }
-        // update the used channels.
-        LOG.mesh('MeshHelper: Dispatching meshCommandSetSwitchState to state', sharedState, crownstoneIds);
-        return BluenetPromiseWrapper.meshCommandSetSwitchState(crownstoneIds, sharedState);
-      }
-      return null;
   }
 
   _handleKeepAliveStateCommands() {

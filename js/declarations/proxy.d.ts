@@ -19,7 +19,6 @@ interface BluenetPromiseWrapper {
   // Mesh
   meshKeepAlive(): Promise<void>,
   meshKeepAliveState(timeout: number, stoneKeepAlivePackets: any): Promise<void>,
-  meshCommandSetSwitchState(arrayOfIds : number[], state : number): Promise<void>,
   multiSwitch(arrayOfStoneSwitchPackets: any[]): Promise<void>,
 
   // DFU
