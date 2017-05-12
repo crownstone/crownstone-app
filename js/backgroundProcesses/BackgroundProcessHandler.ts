@@ -58,6 +58,7 @@ class BackgroundProcessHandlerClass {
           });
 
         LocationHandler.trackSpheres();
+
         this.userLoggedIn = true;
       });
 
@@ -77,6 +78,8 @@ class BackgroundProcessHandlerClass {
         this.startBluetoothListener();
 
         this.updateDeviceName();
+
+        LocationHandler.applySphereStateFromStore();
 
         let state = this.store.getState();
         Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));

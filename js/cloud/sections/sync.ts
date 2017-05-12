@@ -251,7 +251,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           meshAccessAddress: sphere.meshAccessAddress,
           aiName: sphere.aiName,
           aiSex: sphere.aiSex,
-          exitDelay: sphere.exitDelay || 120,
+          exitDelay: sphere.exitDelay || 300,
           latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
           longitude: sphere.gpsLocation && sphere.gpsLocation.lng
         }
@@ -267,7 +267,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           meshAccessAddress: sphere.meshAccessAddress,
           aiName: sphere.aiName,
           aiSex: sphere.aiSex,
-          exitDelay: sphere.exitDelay || 120,
+          exitDelay: sphere.exitDelay || 300,
           latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
           longitude: sphere.gpsLocation && sphere.gpsLocation.lng
         }});

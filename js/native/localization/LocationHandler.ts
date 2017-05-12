@@ -150,8 +150,9 @@ class LocationHandlerClass {
         }
       });
 
+      let sphereTimeout = state.spheres[sphereId].config.exitDelay;
       let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
-      if (timeSinceLastCrownstoneWasSeen > KEEPALIVE_INTERVAL*1000*1.5) {
+      if (timeSinceLastCrownstoneWasSeen > sphereTimeout) {
         // trigger crownstones on enter sphere
         LOG.info("LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE", sphere.config.name);
         BehaviourUtil.enactBehaviourInSphere(this.store, sphereId, TYPES.HOME_ENTER);
@@ -174,7 +175,7 @@ class LocationHandlerClass {
     let state = this.store.getState();
 
     if (state.spheres[sphereId].config.present === true) {
-
+      LOG.info("Applying EXIT SPHERE");
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
 
@@ -283,6 +284,42 @@ class LocationHandlerClass {
     // fire TYPES.ROOM_ENTER on crownstones in room
     BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, bleController);
   }
+
+
+  applySphereStateFromStore() {
+    let state = this.store.getState();
+
+    let lastSeenPerSphere = {};
+    Util.data.callOnAllStones(state, (sphereId, stoneId, stone) => {
+      lastSeenPerSphere[sphereId] = Math.max(stone.config.lastSeen || 0, lastSeenPerSphere[sphereId] || 0);
+    });
+
+    let sphereIds = Object.keys(lastSeenPerSphere);
+    let currentSphere = null;
+    let mostRecent = 0;
+    for (let i = 0; i < sphereIds.length; i++) {
+      if (lastSeenPerSphere[sphereIds[i]] > mostRecent) {
+        currentSphere = sphereIds[i];
+        mostRecent = lastSeenPerSphere[sphereIds[i]];
+      }
+    }
+
+    if (currentSphere === null) {
+      return;
+    }
+
+    let sphereTimeout = state.spheres[currentSphere].config.exitDelay;
+    if (mostRecent > (new Date().valueOf() - sphereTimeout)) {
+      this.enterSphere(currentSphere);
+    }
+    else {
+      // exit all spheres
+      Object.keys(state.spheres).forEach((sphereId) => {
+        this.exitSphere(sphereId);
+      });
+    }
+  }
+
 
   /**
    * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
