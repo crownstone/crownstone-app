@@ -22,6 +22,8 @@ import { NativeBus } from '../../../native/libInterface/NativeBus'
 import { AppUtil } from '../../../util/AppUtil'
 import { SettingConstructor } from '../../../util/SettingConstructor'
 
+const DeviceInfo = require('react-native-device-info');
+
 let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
 
@@ -124,7 +126,7 @@ export class SideBar extends Component<any, any> {
       content.push(<MenuSegmentSeparator key="settingsLabel" label="Settings"/>);
       this._fillItemList(content, settingsItems);
     }
-    content.push(<MenuSegmentSeparator key="spacer1" />);
+    content.push(<MenuSegmentSeparator key="version" label={"Version: " + DeviceInfo.getReadableVersion()} smallText={true}/>);
     return content;
   }
 
@@ -209,7 +211,7 @@ class MenuSegmentSeparator extends Component<any, any> {
         borderColor: colors.darkGray.rgba(0.2),
         backgroundColor: this.props.label ? colors.white.rgba(0.5) : 'transparent',
       }}>
-        {this.props.label ? <Text style={{fontSize:16, fontWeight: '200', color: colors.darkGray.rgba(0.35)}}>{this.props.label}</Text> : undefined}
+        {this.props.label ? <Text style={{fontSize:this.props.smallText?14:16, fontWeight: '200', color: colors.darkGray.rgba(0.35)}}>{this.props.label}</Text> : undefined}
       </View>
     );
   }
