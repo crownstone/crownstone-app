@@ -198,11 +198,11 @@ class AdvertisementHandlerClass {
           let network_advertiser = Util.mesh.getStonesInNetwork(state, sphereId, networkId_advertiser);
 
           if (network_external.length > network_advertiser.length) {
-            meshNetworkId = network_external;
+            meshNetworkId = networkId_external;
             Util.mesh.setNetworkId(this.store, sphereId, network_advertiser, meshNetworkId);
           }
           else {
-            meshNetworkId = network_external;
+            meshNetworkId = networkId_external;
             Util.mesh.setNetworkId(this.store, sphereId, network_external, meshNetworkId);
           }
         }
