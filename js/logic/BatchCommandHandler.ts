@@ -5,7 +5,7 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
-import {MESH_ENABLED} from "../ExternalConfig";
+import { MESH_ENABLED }          from '../ExternalConfig'
 
 
 /**
@@ -195,7 +195,6 @@ class BatchCommandHandlerClass {
           meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] = {
             keepAlive:      [],
             keepAliveState: [],
-            setSwitchState: [],
             multiSwitch:    [],
             other:          []
           };
@@ -208,9 +207,6 @@ class BatchCommandHandlerClass {
         }
         else if (command.commandName === 'keepAliveState') {
           meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAliveState.push(payload);
-        }
-        else if (command.commandName === 'setSwitchState') {
-          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].setSwitchState.push(payload);
         }
         else if (command.commandName === 'multiSwitch') {
           meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
@@ -555,7 +551,6 @@ class BatchCommandHandlerClass {
 
       networkTodo.keepAlive.forEach(handleAttempt);
       networkTodo.keepAliveState.forEach(handleAttempt);
-      networkTodo.setSwitchState.forEach(handleAttempt);
       networkTodo.multiSwitch.forEach(handleAttempt);
       networkTodo.other.forEach(handleAttempt);
     });

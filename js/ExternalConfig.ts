@@ -57,6 +57,8 @@ const DeviceInfo = require('react-native-device-info');
      */
     export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
 
+    export let MESH_ENABLED = false;
+
 /******************** /APP ********************/
 
 

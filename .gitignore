@@ -60,6 +60,7 @@ logs
 photoshop
 android/bluenet
 android/localization
+app-logs
 
 # ignore all js files since they are compiled
 *.js

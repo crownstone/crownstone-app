@@ -73,7 +73,6 @@ interface connectionInfo  {
 interface meshTodo {
   keepAlive:      keepAlivePayload[],
   keepAliveState: keepAliveStatePayload[],
-  setSwitchState: setSwitchStatePayload[],
   multiSwitch:    multiSwitchPayload[],
   other:          any[]
 }

@@ -52,7 +52,6 @@ if (DISABLE_NATIVE === true) {
     // mesh
     meshKeepAlive: () => {},
     meshKeepAliveState: () => {},
-    meshCommandSetSwitchState: () => {},
     multiSwitch: () => {},
 
 
