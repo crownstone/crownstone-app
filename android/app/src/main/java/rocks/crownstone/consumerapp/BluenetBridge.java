@@ -1089,17 +1089,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				retVal.putString("data", "keepAlive failed: " + error);
 				callback.invoke(retVal);
 			}
-
 		});
 	}
 
 	@ReactMethod
 	public void meshKeepAlive(final Callback callback) {
-		// Write a message with no payload, as per protocol.
 		BleLog.getInstance().LOGd(TAG, "meshKeepAlive");
 
-		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, 0, new byte[0]);
-		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+		_bleExt.writeControl(new ControlMsg(BluenetConfig.CMD_KEEP_ALIVE_MESH), new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				WritableMap retVal = Arguments.createMap();
@@ -1115,6 +1112,25 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				callback.invoke(retVal);
 			}
 		});
+
+//		// Write a message with no payload, as per protocol.
+//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, 0, new byte[0]);
+//		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+//			@Override
+//			public void onSuccess() {
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", false);
+//				callback.invoke(retVal);
+//			}
+//
+//			@Override
+//			public void onError(int error) {
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", true);
+//				retVal.putString("data", "meshKeepAlive failed: " + error);
+//				callback.invoke(retVal);
+//			}
+//		});
 	}
 
 	@ReactMethod
@@ -1156,8 +1172,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		}
 
 		// Write a mesh control msg with the packet as payload
-		byte[] payload = packet.toArray();
-		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, payload.length, payload);
+//		byte[] payload = packet.toArray();
+//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, payload.length, payload);
+		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, packet);
 		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1176,49 +1193,56 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
-	@ReactMethod
-	public void meshCommandSetSwitchState(ReadableArray ids, Float switchStateFloat, int intent, final Callback callback) {
-		// ids = [number(uint16), ..]
-		BleLog.getInstance().LOGd(TAG, "meshCommandSetSwitch: state=" + switchStateFloat + " intent=" + intent + " ids=" + ids.toString());
-
-		// Create the control msg
-		// For now: no dimming
-//		int switchState = Math.round(switchStateFloat * BluenetConfig.SWITCH_ON);
-		int switchState = 0;
-		if (switchStateFloat > 0) {
-			switchState = BluenetConfig.SWITCH_ON;
-		}
-		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_SWITCH, 1, new byte[]{(byte) switchState});
-
-		// Copy crownstone ids to an int array
-		int[] idsArr = new int[ids.size()];
-		for (int i=0; i<ids.size(); i++) {
-			idsArr[i] = ids.getInt(i);
-		}
-
-		// Create the mesh control packet: a control msg combined with target ids
-		MeshControlPacket packet = new MeshControlPacket(controlMsg, idsArr);
-
-		// Write a mesh control msg with the packet as payload
-		byte[] payload = packet.toArray();
-		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_COMMAND, payload.length, payload);
-		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
-			@Override
-			public void onSuccess() {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				callback.invoke(retVal);
-			}
-
-			@Override
-			public void onError(int error) {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "meshCommandSetSwitchState failed: " + error);
-				callback.invoke(retVal);
-			}
-		});
-	}
+//	@ReactMethod
+//	public void meshCommandSetSwitchState(ReadableArray ids, Float switchStateFloat, int intent, final Callback callback) {
+//		// ids = [number(uint16), ..]
+//		BleLog.getInstance().LOGd(TAG, "meshCommandSetSwitch: state=" + switchStateFloat + " intent=" + intent + " ids=" + ids.toString());
+//
+//		// Create the control msg
+//		// For now: no dimming
+////		int switchState = Math.round(switchStateFloat * BluenetConfig.SWITCH_ON);
+//		int switchState = 0;
+//		if (switchStateFloat > 0) {
+//			switchState = BluenetConfig.SWITCH_ON;
+//		}
+//		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_SWITCH, 1, new byte[]{(byte) switchState});
+//
+////		// Copy crownstone ids to an int array
+////		int[] idsArr = new int[ids.size()];
+////		for (int i=0; i<ids.size(); i++) {
+////			idsArr[i] = ids.getInt(i);
+////		}
+////
+////		// Create the mesh control packet: a control msg combined with target ids
+////		MeshControlPacket packet = new MeshControlPacket(controlMsg, idsArr);
+//
+//		MeshControlPacket packet = new MeshControlPacket();
+//		packet.setControlPacket(controlMsg);
+//		for (int i=0; i<ids.size(); i++) {
+//			packet.addId(ids.getInt(i));
+//		}
+//
+//		// Write a mesh control msg with the packet as payload
+////		byte[] payload = packet.toArray();
+////		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_COMMAND, payload.length, payload);
+//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_COMMAND, packet);
+//		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+//			@Override
+//			public void onSuccess() {
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", false);
+//				callback.invoke(retVal);
+//			}
+//
+//			@Override
+//			public void onError(int error) {
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", true);
+//				retVal.putString("data", "meshCommandSetSwitchState failed: " + error);
+//				callback.invoke(retVal);
+//			}
+//		});
+//	}
 
 	@ReactMethod
 	public void multiSwitch(ReadableArray switchItems, final Callback callback) {
@@ -1232,7 +1256,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			ReadableMap itemMap = switchItems.getMap(i);
 			int crownstoneId =         itemMap.getInt("crownstoneId");
 			int timeout =              itemMap.getInt("timeout");
-			int intent =               itemMap.getInt("inent");
+			int intent =               itemMap.getInt("intent");
 			double switchStateDouble = itemMap.getDouble("state");
 //			int switchState = (int) Math.round(BluenetConfig.SWITCH_ON * switchStateDouble);
 			int switchState = 0;
@@ -1241,12 +1265,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			}
 			if (!packet.addMultiSwitch(crownstoneId, switchState, timeout, intent)) {
 				success = false;
-				BleLog.getInstance().LOGe(TAG, "Unable to add multi switch item: " + itemMap);
+				BleLog.getInstance().LOGe(TAG, "Unable to add multiSwitch item: " + itemMap);
 				break;
 			}
 		}
 		if (!success) {
-			BleLog.getInstance().LOGe(TAG, "Failed to send mesh multi switch: " + switchItems);
+			BleLog.getInstance().LOGe(TAG, "Failed to send multiSwitch: " + switchItems);
 			WritableMap retVal = Arguments.createMap();
 			retVal.putBoolean("error", true);
 			retVal.putString("data", "Invalid multiSwitch data");
@@ -1254,10 +1278,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			return;
 		}
 
-		// Write a mesh control msg with the packet as payload
 		byte[] payload = packet.toArray();
-		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, payload.length, payload);
-		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+		_bleExt.writeControl(new ControlMsg(BluenetConfig.CMD_MULTI_SWITCH, payload.length, payload), new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				WritableMap retVal = Arguments.createMap();
@@ -1269,10 +1291,31 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			public void onError(int error) {
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
-				retVal.putString("data", "meshKeepAliveState failed: " + error);
+				retVal.putString("data", "multiSwitch failed: " + error);
 				callback.invoke(retVal);
 			}
 		});
+
+//		// Write a mesh control msg with the packet as payload
+////		byte[] payload = packet.toArray();
+////		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, payload.length, payload);
+//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, packet);
+//		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+//			@Override
+//			public void onSuccess() {
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", false);
+//				callback.invoke(retVal);
+//			}
+//
+//			@Override
+//			public void onError(int error) {
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", true);
+//				retVal.putString("data", "multiSwitch failed: " + error);
+//				callback.invoke(retVal);
+//			}
+//		});
 	}
 
 
