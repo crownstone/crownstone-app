@@ -145,7 +145,8 @@ export class SetupHelper {
                   "I know this one!",
                   "This Crownstone was already your sphere. I've combined the existing Crownstone " +
                   "data with the one you just set up!",
-                  [{text: "OK"}]);
+                  [{text: "OK"}]
+                );
               }
 
               // Restore trigger state
@@ -213,9 +214,8 @@ export class SetupHelper {
           reject(networkError);
         }
         else {
-          Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{text:"OK", onPress:() => {
-            reject(networkError);
-          }}]);
+          let defaultAction = () => { reject(networkError); };
+          Alert.alert("Whoops!", "Something went wrong in the Cloud. Please try again later.",[{ text:"OK", onPress: defaultAction }], { onDismiss: defaultAction });
         }
       };
 

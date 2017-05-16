@@ -118,7 +118,8 @@ export class SettingsSphereInvite extends Component<any, any> {
           userId: this.state.email.toLowerCase(),
           data: { email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}
         });
-        Alert.alert("Invite has been sent!","An email has been sent to " + this.state.email + ".", [{text:'OK', onPress: () => {Actions.pop();}}])
+        let defaultAction = () => { Actions.pop(); };
+        Alert.alert("Invite has been sent!","An email has been sent to " + this.state.email + ".", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction })
       })
       .catch((err) => {
         this.props.eventBus.emit('hideLoading');

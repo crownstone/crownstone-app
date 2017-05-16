@@ -119,14 +119,14 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     this.detectionTimeout = setTimeout(() => {
       this.unsubscribeNative();
       this.unsubscribeNative = undefined;
+
+      // notify the user when the measurement failed
+      Vibration.vibrate(400, false);
+
       Alert.alert("I'm not sure yet...", "I could not collect enough points.. Could you try again?", [{text:'OK', onPress: () => {
         this.props.eventBus.emit("hideLoading");
         this.props.eventBus.emit("useTriggers");
-
-        // notify the user when the measurement failed
-        Vibration.vibrate(400, false);
-
-      }}]);
+      }}], { cancelable: false });
     }, 10000);
 
 
@@ -173,7 +173,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
             this.props.eventBus.emit("hideLoading");
             this.props.eventBus.emit("useTriggers");
           }
-        }]);
+        }], { cancelable: false });
       }
     });
   }

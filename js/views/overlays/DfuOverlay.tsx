@@ -294,13 +294,15 @@ export class DfuOverlay extends Component<any, any> {
   getContent() {
     let abort = () => {
       this.paused = true;
+      let defaultAction = () => { this.paused = false; };
       Alert.alert(
         "Are you sure?",
         "You can always update this Crownstone later by tapping on it again.",
-        [{text:'Not yet', onPress: () => { this.paused = false; }}, {text:'OK', onPress: () => {
+        [{text:'Not yet', onPress: defaultAction }, {text:'OK', onPress: () => {
           this.sessionCleanup();
           this.setState({visible: false});
-        }}]);
+        }}],
+        { onDismiss: defaultAction });
     };
     let radius = 0.28*screenWidth;
     switch (this.state.step) {

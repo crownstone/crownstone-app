@@ -184,16 +184,19 @@ export class SettingsProfile extends Component<any, any> {
     CLOUD.requestPasswordResetEmail({email: email.toLowerCase()})
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Email sent!');
+        let defaultAction = () => {
+          AppUtil.logOut(this.props.store);
+        };
         Alert.alert(
           'Reset email has been sent',
           'You will now be logged out. Follow the instructions in the email and log in with your new password.',
-          [{text: 'OK', onPress: () => {
-            AppUtil.logOut(this.props.store);
-          }}]
+          [{text: 'OK', onPress: defaultAction}],
+          { onDismiss: defaultAction }
         )
       })
       .catch((reply) => {
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+        let defaultAction = () => {this.props.eventBus.emit('hideLoading'); };
+        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction });
       });
   }
 

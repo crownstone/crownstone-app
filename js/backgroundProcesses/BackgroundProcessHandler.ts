@@ -114,10 +114,12 @@ class BackgroundProcessHandlerClass {
 
     // set the global network error handler.
     CLOUD.setNetworkErrorHandler((error) => {
+      let defaultAction = () => { eventBus.emit('hideLoading');};
       Alert.alert(
         "Connection Problem",
         "Could not connect to the Cloud. Please check your internet connection.",
-        [{text: 'OK', onPress: () => {eventBus.emit('hideLoading');}}]
+        [{text: 'OK', onPress: defaultAction }],
+        { onDismiss: defaultAction }
       );
     });
   }

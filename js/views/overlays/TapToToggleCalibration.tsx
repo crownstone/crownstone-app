@@ -110,7 +110,8 @@ export class TapToToggleCalibration extends Component<any, any> {
             Alert.alert("That's a bit far away.", "Maybe try again later.")
           }
           else {
-            Alert.alert("That's a bit far away.", "Try to hold your phone really close to the Plug and press OK to retry!", [{text:'OK', onPress:() => {this.learnDistance(attempt + 1)}}])
+            let defaultAction = () => {this.learnDistance(attempt + 1)};
+            Alert.alert("That's a bit far away.", "Try to hold your phone really close to the Plug and press OK to retry!", [{text:'OK', onPress: defaultAction }], { onDismiss: defaultAction })
           }
 
         }
@@ -118,7 +119,7 @@ export class TapToToggleCalibration extends Component<any, any> {
       .catch((err) => {
         LOG.error("TapToToggleCalibration error:", err);
         eventBus.emit("hideLoading");
-        Alert.alert("Something went wrong", "Maybe try again later.")
+        Alert.alert("Something went wrong", "Maybe try again later.", [{text:'OK'}])
       })
   }
 

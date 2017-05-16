@@ -43,7 +43,7 @@ export class Login extends Component<any, any> {
     else {
       Alert.alert('Send Password Reset Email','Would you like us to send an email to reset your password to: ' + this.state.email.toLowerCase() + '?',[
         {text: 'Cancel', style: 'cancel'},
-        {text: 'OK', onPress: () => {this.requestPasswordResetEmail()}}
+        {text: 'OK', onPress: () => { this.requestPasswordResetEmail(); }}
       ]);
     }
   }
@@ -57,7 +57,8 @@ export class Login extends Component<any, any> {
         (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
       })
       .catch((reply) => {
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+        let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
+        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction });
       });
   }
 
@@ -78,7 +79,8 @@ export class Login extends Component<any, any> {
             title = "Unknown Email";
           }
         }
-        Alert.alert(title, content, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+        let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
+        Alert.alert(title, content, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction});
       });
   }
 
@@ -89,14 +91,16 @@ export class Login extends Component<any, any> {
     }
 
     this.props.eventBus.emit('showLoading', 'Logging in...');
+    let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
     let unverifiedEmailCallback = () => {
       Alert.alert('Your email address has not been verified', 'Please click on the link in the email that was sent to you. If you did not receive an email, press Resend Email to try again.', [
         {text: 'Resend Email', onPress: () => this.requestVerificationEmail()},
-        {text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}
-      ]);
+        {text: 'OK', onPress: defaultAction}
+      ],
+      { onDismiss: defaultAction });
     };
     let invalidLoginCallback = () => {
-      Alert.alert('Incorrect Email or Password.','Could not log in.',[{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+      Alert.alert('Incorrect Email or Password.','Could not log in.',[{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction });
     };
 
     CLOUD.login({
@@ -111,10 +115,12 @@ export class Login extends Component<any, any> {
           this.props.eventBus.emit('hideLoading');
         }
         else {
+          let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
           Alert.alert(
             "Connection Problem",
             "Could not connect to the Cloud. Please check your internet connection.",
-            [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading'); }}]
+            [{text:'OK', onPress: defaultAction}],
+            { onDismiss: defaultAction }
           );
         }
         throw err;
@@ -277,7 +283,8 @@ export class Login extends Component<any, any> {
       })
       .catch((err) => {
         LOG.debug("Error creating first Sphere.", err);
-        Alert.alert("Whoops!", "An error has occurred while syncing with the Cloud. Please try again later.", [{text:'OK', onPress: () => {this.props.eventBus.emit('hideProgress');}}]);
+        let defaultAction = () => {this.props.eventBus.emit('hideProgress')};
+        Alert.alert("Whoops!", "An error has occurred while syncing with the Cloud. Please try again later.", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
         throw err;
       })
     );

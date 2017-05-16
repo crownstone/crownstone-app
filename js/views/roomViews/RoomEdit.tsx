@@ -79,9 +79,12 @@ export class RoomEdit extends Component<any, any> {
       })
       .catch((err) => {
         this.deleting = false;
+        let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Room in the Cloud. Please try again later.",
-          [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading');} }])
+          [{text:'OK', onPress: defaultAction }],
+          { onDismiss: defaultAction }
+        )
       });
   }
 
