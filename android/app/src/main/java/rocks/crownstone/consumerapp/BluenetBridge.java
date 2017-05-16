@@ -1193,57 +1193,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
-//	@ReactMethod
-//	public void meshCommandSetSwitchState(ReadableArray ids, Float switchStateFloat, int intent, final Callback callback) {
-//		// ids = [number(uint16), ..]
-//		BleLog.getInstance().LOGd(TAG, "meshCommandSetSwitch: state=" + switchStateFloat + " intent=" + intent + " ids=" + ids.toString());
-//
-//		// Create the control msg
-//		// For now: no dimming
-////		int switchState = Math.round(switchStateFloat * BluenetConfig.SWITCH_ON);
-//		int switchState = 0;
-//		if (switchStateFloat > 0) {
-//			switchState = BluenetConfig.SWITCH_ON;
-//		}
-//		ControlMsg controlMsg = new ControlMsg(BluenetConfig.CMD_SWITCH, 1, new byte[]{(byte) switchState});
-//
-////		// Copy crownstone ids to an int array
-////		int[] idsArr = new int[ids.size()];
-////		for (int i=0; i<ids.size(); i++) {
-////			idsArr[i] = ids.getInt(i);
-////		}
-////
-////		// Create the mesh control packet: a control msg combined with target ids
-////		MeshControlPacket packet = new MeshControlPacket(controlMsg, idsArr);
-//
-//		MeshControlPacket packet = new MeshControlPacket();
-//		packet.setControlPacket(controlMsg);
-//		for (int i=0; i<ids.size(); i++) {
-//			packet.addId(ids.getInt(i));
-//		}
-//
-//		// Write a mesh control msg with the packet as payload
-////		byte[] payload = packet.toArray();
-////		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_COMMAND, payload.length, payload);
-//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_COMMAND, packet);
-//		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
-//			@Override
-//			public void onSuccess() {
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", false);
-//				callback.invoke(retVal);
-//			}
-//
-//			@Override
-//			public void onError(int error) {
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", true);
-//				retVal.putString("data", "meshCommandSetSwitchState failed: " + error);
-//				callback.invoke(retVal);
-//			}
-//		});
-//	}
-
 	@ReactMethod
 	public void multiSwitch(ReadableArray switchItems, final Callback callback) {
 		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
