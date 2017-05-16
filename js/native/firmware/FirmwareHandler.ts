@@ -50,18 +50,18 @@ class FirmwareHandlerClass {
       .then(() => {
         return CLOUD.downloadFile(sourceDetails.downloadUrl, toPath, {
           start: (data) => {
-            LOG.info("start DOWNLOAD", data);
+            LOG.info("FirmwareHandler: start DOWNLOAD", data);
           },
           progress: (data) => {
-            LOG.info("progress DOWNLOAD", data);
+            LOG.info("FirmwareHandler: progress DOWNLOAD", data);
           },
           success: (data) => {
-            LOG.info("success DOWNLOAD", data);
+            LOG.info("FirmwareHandler: success DOWNLOAD", data);
           },
         })
       })
       .then((resultPath) => {
-        LOG.info("Downloaded file", resultPath);
+        LOG.info("FirmwareHandler: Downloaded file", resultPath);
         return RNFS.readFile(resultPath, 'ascii');
       })
       .then((fileContent) => {
@@ -69,7 +69,7 @@ class FirmwareHandlerClass {
           let hash = sha1(fileContent);
           LOG.info(type, "HASH", '"' + hash + '"', '"' + sourceDetails.sha1hash + '"');
           if (hash === sourceDetails.sha1hash) {
-            LOG.info("Verified hash");
+            LOG.info("FirmwareHandler: Verified hash");
             resolve();
           }
           else {
@@ -80,7 +80,7 @@ class FirmwareHandlerClass {
       })
       .catch((err) => {
         safeDeleteFile(toPath).catch(() => {});
-        LOG.error("Could not download file", err);
+        LOG.error("FirmwareHandler: Could not download file", err);
 
         // propagate the error
         throw err;
@@ -93,12 +93,12 @@ class FirmwareHandlerClass {
         return this.download(this.newFirmwareDetails,'firmware');
       })
       .then(() => {
-        LOG.info("FINISHED DOWNLOADING FIRMWARE");
+        LOG.info("FirmwareHandler: FINISHED DOWNLOADING FIRMWARE");
         this.downloadedFirmwareVersion = this.newFirmwareDetails.version;
         return this.download(this.newBootloaderDetails,'bootloader');
       })
       .then(() => {
-        LOG.info("FINISHED DOWNLOADING BOOTLOADER");
+        LOG.info("FirmwareHandler: FINISHED DOWNLOADING BOOTLOADER");
         this.downloadedBootloaderVersion = this.newBootloaderDetails.version;
       })
   }

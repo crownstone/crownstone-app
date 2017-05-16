@@ -58,7 +58,7 @@ export const DataUtil = {
   getTapToToggleCalibration: function(state) : number {
     if (state && state.devices) {
       let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
-      if (deviceId && state.devices[deviceId] && state.devices[deviceId]) {
+      if (deviceId && state.devices[deviceId]) {
         let calibration = state.devices[deviceId].tapToToggleCalibration;
         if (calibration) {
           return calibration;
@@ -417,8 +417,6 @@ export const prepareStoreForUser = function(store) {
       actions.push({type:'UPDATE_STONE_DISABILITY', sphereId:sphereId, stoneId:stoneId, data: { disabled: true }});
     });
   });
-
-  actions.push({type:'CREATE_APP_IDENTIFIER'});
 
   store.batchDispatch(actions);
 };

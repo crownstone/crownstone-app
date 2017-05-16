@@ -199,6 +199,7 @@ class BackgroundProcessHandlerClass {
     this.store = StoreManager.getStore();
 
     // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
+    // also add the app identifier if we dont already have one.
     refreshDatabase(this.store);
 
     // if we have an accessToken, we proceed with logging in automatically
@@ -266,6 +267,8 @@ class BackgroundProcessHandlerClass {
 /**
  * If we change the reducer default values, this adds any new fields to the redux database
  * so we don't have to error catch everywhere.
+ *
+ * Finally we create the app identifier
  * @param store
  */
 function refreshDatabase(store) {
@@ -291,12 +294,16 @@ function refreshDatabase(store) {
     let presetIds = Object.keys(state.spheres[sphereId].presets);
 
     refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
-    stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});});
-    locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId: locationId});});
+    stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId:     stoneId});});
+    locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId:  locationId});});
     applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
-    userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId: userId});});
-    presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId: presetId});});
+    userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId:      userId});});
+    presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId:    presetId});});
   }
+
+  // create an app identifier if we do not already have one.
+  refreshActions.push({type:'CREATE_APP_IDENTIFIER'});
+
   store.batchDispatch(refreshActions);
 }
 

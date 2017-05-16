@@ -171,7 +171,7 @@ export class SetupHelper {
                     if (SetupStateHandler.isSetupInProgress() === false) {
                       eventBus.emit("CalibrateTapToToggle")
                     }
-                  }, 3000);
+                  }, 1500);
                 }
               }
             }, 2500);

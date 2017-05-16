@@ -202,18 +202,23 @@ export class FirmwareHelper {
       if (this.stoneIsInDFU === false) {
         return this._putInDFU(stoneIsInSetupMode)
           .then(() => {
+            LOG.info("FirmwareHelper: performing bootloader update.");
             return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI)
           })
           .then(() => { this.stoneIsInDFU = false; })
           .then(() => { return delay(1500); })
+          .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
       }
       else {
+        LOG.info("FirmwareHelper: performing bootloader update.");
         return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI)
           .then(() => { this.stoneIsInDFU = false; })
           .then(() => { return delay(1500); })
+          .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
       }
     };
     // we load the DFU into the promise manager with priority so we are not interrupted
+    LOG.info("FirmwareHelper: Scheduling bootloader update in promise manager for handle:", this.handle);
     return BlePromiseManager.registerPriority(action, {from: 'DFU: updating Bootloader ' + this.handle}, 300000); // 5 min timeout
   }
 
@@ -226,11 +231,13 @@ export class FirmwareHelper {
           })
           .then(() => { this.stoneIsInDFU = false; })
           .then(() => { return delay(1500); })
+          .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
       }
       else {
         return BluenetPromiseWrapper.performDFU(this.handle, this.firmwareURI)
           .then(() => { this.stoneIsInDFU = false; })
           .then(() => { return delay(1500); })
+          .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
       }
     };
     // we load the DFU into the promise manager with priority so we are not interrupted

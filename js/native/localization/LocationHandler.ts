@@ -150,7 +150,8 @@ class LocationHandlerClass {
         }
       });
 
-      let sphereTimeout = state.spheres[sphereId].config.exitDelay;
+      // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
+      let sphereTimeout = state.spheres[sphereId].config.exitDelay - KEEPALIVE_INTERVAL;
       let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
       if (timeSinceLastCrownstoneWasSeen > sphereTimeout) {
         // trigger crownstones on enter sphere
@@ -296,11 +297,11 @@ class LocationHandlerClass {
 
     let sphereIds = Object.keys(lastSeenPerSphere);
     let currentSphere = null;
-    let mostRecent = 0;
+    let mostRecentSeenTime = 0;
     for (let i = 0; i < sphereIds.length; i++) {
-      if (lastSeenPerSphere[sphereIds[i]] > mostRecent) {
+      if (lastSeenPerSphere[sphereIds[i]] > mostRecentSeenTime) {
         currentSphere = sphereIds[i];
-        mostRecent = lastSeenPerSphere[sphereIds[i]];
+        mostRecentSeenTime = lastSeenPerSphere[sphereIds[i]];
       }
     }
 
@@ -308,8 +309,9 @@ class LocationHandlerClass {
       return;
     }
 
-    let sphereTimeout = state.spheres[currentSphere].config.exitDelay;
-    if (mostRecent > (new Date().valueOf() - sphereTimeout)) {
+    // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
+    let sphereTimeout = state.spheres[currentSphere].config.exitDelay - KEEPALIVE_INTERVAL;
+    if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout)) {
       this.enterSphere(currentSphere);
     }
     else {
