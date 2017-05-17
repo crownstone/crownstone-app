@@ -6,7 +6,8 @@ import { NativeBus }             from '../libInterface/NativeBus';
 import { LOG }                   from '../../logging/Log'
 import { Util }                  from '../../util/Util'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
-import {eventBus} from "../../util/EventBus";
+import { eventBus } from "../../util/EventBus";
+import { ALWAYS_DFU_UPDATE } from "../../ExternalConfig";
 
 
 interface dfuData {
@@ -23,7 +24,7 @@ interface dfuData {
 
 
 const bootloaderUpdate = "PERFORM_UPDATE_BOOTLOADER";
-const firmwareUpdate = "PERFORM_UPDATE_FIRMWARE";
+const firmwareUpdate   = "PERFORM_UPDATE_FIRMWARE";
 const resetAfterUpdate = "PERFORM_FACTORY_RESET";
 const setupAfterUpdate = "PERFORM_SETUP";
 
@@ -32,7 +33,6 @@ export class FirmwareHelper {
   handle : any;
 
   // things to be filled out during setup process
-  fullReset : boolean = false;
   sphereId : string;
   stoneId : string;
   firmwareURI : string;
@@ -65,21 +65,24 @@ export class FirmwareHelper {
   getAmountOfPhases(dfuResetRequired) {
     this.phases = [];
     LOG.info("FirmwareHelper: Getting Phases...");
-    if (Util.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion)) {
+    if (Util.versions.isHigher(this.newBootloaderDetails.version, this.stoneBootloaderVersion) || ALWAYS_DFU_UPDATE) {
       // UPDATE BOOTLOADER
       LOG.info("FirmwareHelper: Phase: Require Bootloader.");
       this.phases.push(bootloaderUpdate);
     }
 
-    if (Util.versions.isHigher(this.newFirmwareDetails.version, this.stoneFirmwareVersion)) {
+    if (Util.versions.isHigher(this.newFirmwareDetails.version, this.stoneFirmwareVersion) || ALWAYS_DFU_UPDATE) {
       // UPDATE firmware
       LOG.info("FirmwareHelper: Phase: Require Firmware.");
       this.phases.push(firmwareUpdate);
     }
 
-    if (dfuResetRequired ||
+    if (
+        dfuResetRequired ||
         Util.versions.isLower(this.stoneBootloaderVersion, this.newBootloaderDetails.minimumCompatibleVersion) ||
-        Util.versions.isLower(this.stoneFirmwareVersion,   this.newFirmwareDetails.minimumCompatibleVersion)) {
+        Util.versions.isLower(this.stoneFirmwareVersion,   this.newFirmwareDetails.minimumCompatibleVersion) ||
+        ALWAYS_DFU_UPDATE
+       ) {
       // PERFORM SETUP AFTERWARDS
       LOG.info("FirmwareHelper: Phase: Require Setup Afterwards.");
       this.resetRequired = true;

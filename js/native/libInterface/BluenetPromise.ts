@@ -88,7 +88,6 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   putInDFU:                   () => { return BluenetPromise('putInDFU'); },
   performDFU:                 (handle, uri) => { return BluenetPromise('performDFU', handle, uri); },
 
-
   //new
   getHardwareVersion:         () => { return BluenetPromise('getHardwareVersion'); },
   setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },

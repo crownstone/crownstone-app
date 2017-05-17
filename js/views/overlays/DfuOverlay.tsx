@@ -186,7 +186,7 @@ export class DfuOverlay extends Component<any, any> {
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
 
     // we need high frequency scanning to get duplicates of the DFU crownstone.
-    LOG.info("Start HF Scanning for all Crownstones");
+    LOG.info("DfuOverlay: Start HF Scanning for all Crownstones");
     BleUtil.startHighFrequencyScanning(this.uuid, true);
     return new Promise((resolve, reject) => {
       this.processReject = reject;
@@ -214,7 +214,7 @@ export class DfuOverlay extends Component<any, any> {
         }
         else if (this.paused === false) {
           // no need to HF scan any more
-          LOG.info("Stop HF Scanning for all Crownstones");
+          LOG.info("DfuOverlay: Stop HF Scanning for all Crownstones");
           BleUtil.stopHighFrequencyScanning(this.uuid);
           let timeSeenView = new Date().valueOf() - timeStart;
           this.processReject = null;
@@ -300,9 +300,15 @@ export class DfuOverlay extends Component<any, any> {
         "You can always update this Crownstone later by tapping on it again.",
         [{text:'Not yet', onPress: defaultAction }, {text:'OK', onPress: () => {
           this.sessionCleanup();
+          eventBus.emit("updateCrownstoneFirmwareEnded");
           this.setState({visible: false});
         }}],
         { onDismiss: defaultAction });
+    };
+
+    let closeOverlay = () => {
+        eventBus.emit("updateCrownstoneFirmwareEnded");
+        this.setState({visible: false});
     };
     let radius = 0.28*screenWidth;
     switch (this.state.step) {
@@ -431,7 +437,7 @@ export class DfuOverlay extends Component<any, any> {
                 </View>
               </View>}
             header={'Everything is finished, enjoy the new version!'}
-            buttonCallback={ () => { this.setState({visible: false}); }}
+            buttonCallback={closeOverlay}
             buttonLabel={"Thanks!"}
           />
         );
@@ -453,7 +459,7 @@ export class DfuOverlay extends Component<any, any> {
                 </View>
               </View>}
             header={'We\'re sorry... Maybe try it again?'}
-            buttonCallback={ () => { this.setState({visible: false}); }}
+            buttonCallback={closeOverlay}
             buttonLabel={"Fine..."}
           />
         );
@@ -475,7 +481,7 @@ export class DfuOverlay extends Component<any, any> {
                 </View>
               </View>}
             header={'We could not download the requested firmware version from the Cloud. Maybe try again later?'}
-            buttonCallback={ () => { this.setState({visible: false}); }}
+            buttonCallback={closeOverlay}
             buttonLabel={"Fine..."}
           />
         );
@@ -497,7 +503,7 @@ export class DfuOverlay extends Component<any, any> {
                 </View>
               </View>}
             header={'The update was successful but something went wrong with the setup phase afterwards. You can just setup it like a normal Crownstone to finalize the process.'}
-            buttonCallback={ () => { this.setState({visible: false}); }}
+            buttonCallback={closeOverlay}
             buttonLabel={"OK!"}
           />
         );
@@ -537,6 +543,7 @@ export class DfuOverlay extends Component<any, any> {
       <OverlayBox visible={this.state.visible} canClose={true} closeCallback={() => {
           let finish = () => {
             this.sessionCleanup();
+            eventBus.emit("updateCrownstoneFirmwareEnded");
             this.setState({visible: false});
           };
           if (this.state.step > 0) {

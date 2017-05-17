@@ -38,22 +38,22 @@ export class SettingsSphere extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
-      let change = data.change;
-      if (
-        change.changeSphereUsers  && change.changeSphereUsers.sphereIds[this.props.sphereId]  ||
-        change.updateSphereUser   && change.updateSphereUser.sphereIds[this.props.sphereId]   ||
-        change.changeSpheres      && change.changeSpheres.sphereIds[this.props.sphereId]      ||
-        change.changeSphereConfig && change.changeSphereConfig.sphereIds[this.props.sphereId]
-      ) {
-        if (this.deleting === false)
-          this.forceUpdate();
-      }
-    });
+    // this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    //   let change = data.change;
+    //   if (
+    //     change.changeSphereUsers  && change.changeSphereUsers.sphereIds[this.props.sphereId]  ||
+    //     change.updateSphereUser   && change.updateSphereUser.sphereIds[this.props.sphereId]   ||
+    //     change.changeSpheres      && change.changeSpheres.sphereIds[this.props.sphereId]      ||
+    //     change.changeSphereConfig && change.changeSphereConfig.sphereIds[this.props.sphereId]
+    //   ) {
+    //     if (this.deleting === false)
+    //       this.forceUpdate();
+    //   }
+    // });
   }
 
   componentWillUnmount() {
-    this.unsubscribeStoreEvents();
+    // this.unsubscribeStoreEvents();
   }
 
   _getUsersWithAccess(state, accessLevel, adminInSphere) {

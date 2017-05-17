@@ -16,6 +16,7 @@ import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
 import { styles, colors, screenWidth } from '../../styles'
 import {AlternatingContent} from "../animated/AlternatingContent";
+import {ALWAYS_DFU_UPDATE} from "../../../ExternalConfig";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -128,7 +129,7 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _iconPressed() {
-    if ((this.props.canUpdate === true) && this.props.disabled === false) {
+    if ((this.props.canUpdate === true || ALWAYS_DFU_UPDATE) && this.props.disabled === false) {
       this.props.eventBus.emit("updateCrownstoneFirmware", {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
     }
     else {
@@ -144,7 +145,7 @@ export class DeviceEntry extends Component<any, any> {
     );
 
 
-    if ((this.props.canUpdate === true) && this.props.disabled === false) {
+    if ((this.props.canUpdate === true || ALWAYS_DFU_UPDATE) && this.props.disabled === false) {
       return (
         <View style={[{
           width:60,

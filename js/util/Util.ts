@@ -178,6 +178,10 @@ export const Util = {
 
       let B = compareWithVersion.split('.');
 
+      if (B.length !== 3) {
+        return false;
+      }
+
       if (A[0] < B[0]) return false;
       else if (A[0] > B[0]) return true;
       else { // A[0] == B[0]

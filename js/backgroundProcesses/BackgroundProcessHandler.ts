@@ -103,12 +103,12 @@ class BackgroundProcessHandlerClass {
       // if a crownstone is in setup mode, we do not sync at that time
       if (SetupStateHandler.isSetupInProgress() === false) {
         if (state.user.userId) {
-          LOG.info("STARTING ROUTINE SYNCING IN BACKGROUND");
+          LOG.info("BackgroundProcessHandler: STARTING ROUTINE SYNCING IN BACKGROUND");
           CLOUD.sync(this.store, true).catch((err) => { LOG.error("Error during background sync: ", err)});
         }
       }
       else {
-        LOG.info("SKIPPING STARTING ROUTINE SYNCING IN BACKGROUND");
+        LOG.info("BackgroundProcessHandler: Skipping routine sync due to active setup phase.");
       }
     });
 
@@ -201,7 +201,7 @@ class BackgroundProcessHandlerClass {
     this.store = StoreManager.getStore();
 
     // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
-    // also add the app identifier if we dont already have one.
+    // also add the app identifier if we don't already have one.
     refreshDatabase(this.store);
 
     // if we have an accessToken, we proceed with logging in automatically
@@ -212,7 +212,7 @@ class BackgroundProcessHandlerClass {
       CLOUD.forUser(state.user.userId).getUserData({background:true})
         .catch((err) => {
           if (err.status === 401) {
-            LOG.warn("Could not verify user, attempting to login again.");
+            LOG.warn("BackgroundProcessHandler: Could not verify user, attempting to login again.");
             return CLOUD.login({
               email: state.user.email,
               password: state.user.password,
@@ -230,11 +230,11 @@ class BackgroundProcessHandlerClass {
           }
         })
         .then((reply) => {
-          LOG.info("Verified User.", reply);
+          LOG.info("BackgroundProcessHandler: Verified User.", reply);
           CLOUD.sync(this.store, true).catch(() => {})
         })
         .catch((err) => {
-          LOG.info("COULD NOT VERIFY USER -- ERROR", err);
+          LOG.info("BackgroundProcessHandler: COULD NOT VERIFY USER -- ERROR", err);
           if (err.status === 401) {
             AppUtil.logOut(this.store);
             Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
