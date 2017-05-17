@@ -289,6 +289,10 @@ function refreshDatabase(store) {
     userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId: userId});});
     presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId: presetId});});
   }
+
+  // create an app identifier if we do not already have one.
+  refreshActions.push({type:'CREATE_APP_IDENTIFIER'});
+
   store.batchDispatch(refreshActions);
 }
 
