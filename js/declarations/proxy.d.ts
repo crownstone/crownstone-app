@@ -5,6 +5,7 @@ interface BluenetPromiseWrapperProtocol {
   disconnectCommand(): Promise<void>,
   getMACAddress(): Promise<string>,
   getFirmwareVersion(): Promise<string>,
+  getBootloaderVersion(): Promise<string>,
   getHardwareVersion(): Promise<string>,
   finalizeFingerprint(sphereId: string, locationId: string): Promise<void>,
   isReady(): Promise<void>,

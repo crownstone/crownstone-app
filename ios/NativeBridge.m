@@ -37,6 +37,7 @@ RCT_EXTERN_METHOD(recover:(NSString *)crownstoneUUID callback:(RCTResponseSender
 RCT_EXTERN_METHOD(setupCrownstone:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getFirmwareVersion:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getBootloaderVersion:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getHardwareVersion:(RCTResponseSenderBlock)callback)
 
 // Bluenet localization

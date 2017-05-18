@@ -541,20 +541,24 @@ export class DfuOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible} canClose={true} closeCallback={() => {
-          let finish = () => {
-            this.sessionCleanup();
-            eventBus.emit("updateCrownstoneFirmwareEnded");
-            this.setState({visible: false});
-          };
-          if (this.state.step > 0) {
-            Alert.alert("Are you sure?", "You can always update this Crownstone later.", [{text:'No'}, {text:'Yes', onPress: finish}]);
-          }
-          else {
-            finish();
-          }
-        }
-      } backgroundColor={colors.csBlue.rgba(0.3)}>
+      <OverlayBox
+        visible={this.state.visible}
+        canClose={this.state.step === 0}
+        closeCallback={() => {
+          Alert.alert(
+            "Are you sure?",
+            "You can always update this Crownstone later.",
+            [
+              {text:'No'},
+              {text:'Yes', onPress: () => {
+                this.sessionCleanup();
+                eventBus.emit("updateCrownstoneFirmwareEnded");
+                this.setState({visible: false});
+              }}
+            ]
+          );
+        }}
+        backgroundColor={colors.csBlue.rgba(0.3)}>
         {this.getContent()}
       </OverlayBox>
     );

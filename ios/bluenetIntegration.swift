@@ -177,6 +177,8 @@ func getBleErrorString(_ err: BleError) -> String {
     return "COULD_NOT_FIND_PERIPHERAL"
   case .PACKETS_DO_NOT_MATCH:
     return "PACKETS_DO_NOT_MATCH"
+  case .NOT_IN_DFU_MODE:
+    return "NOT_IN_DFU_MODE"
   case .REPLACED_WITH_OTHER_PROMISE:
     return "REPLACED_WITH_OTHER_PROMISE"
   }
@@ -602,6 +604,19 @@ open class BluenetJS: NSObject {
         }
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN getFirmwareVersion"]])
+        }
+    }
+  }
+  
+  @objc func getBootloaderVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.device.getBootloaderRevision()
+      .then{(bootloaderVersion : String) -> Void in callback([["error" : false, "data": bootloaderVersion]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getBootloaderRevision"]])
         }
     }
   }

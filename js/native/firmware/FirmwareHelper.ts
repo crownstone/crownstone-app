@@ -122,12 +122,18 @@ export class FirmwareHelper {
         .then(() => {
           LOG.info("FirmwareHelper: DFU progress: Placed in DFU mode.");
           this.stoneIsInDFU = true;
-          return BluenetPromiseWrapper.disconnectCommand();
+          if (stoneIsInSetupMode) {
+            return BluenetPromiseWrapper.phoneDisconnect();
+          }
+          else {
+            return BluenetPromiseWrapper.disconnectCommand();
+          }
         })
         .then(() => { return delay(3000); })
         .then(() => { resolve(); })
         .catch((err) => {
           LOG.error("FirmwareHelper: Error during putInDFU.", err);
+          BluenetPromiseWrapper.phoneDisconnect().catch();
           reject(err);
         })
     })
@@ -139,8 +145,7 @@ export class FirmwareHelper {
         BluenetPromiseWrapper.connect(this.handle)
           .then(() => {
             LOG.info("FirmwareHelper: DFU progress: Reconnected.");
-            // Since we are in DFU, getFirmwareVersion actually gets the bootloader version.
-            return BluenetPromiseWrapper.getFirmwareVersion();
+            return BluenetPromiseWrapper.getBootloaderVersion();
           })
           .then((bootloaderVersion) => {
             LOG.info("FirmwareHelper: DFU progress: Obtained bootloader version:", bootloaderVersion);
@@ -153,6 +158,7 @@ export class FirmwareHelper {
           })
           .catch((err) => {
             LOG.error("FirmwareHelper: Error during getBootloaderVersion.", err);
+            BluenetPromiseWrapper.phoneDisconnect().catch();
             reject(err);
           })
       })
@@ -202,22 +208,20 @@ export class FirmwareHelper {
 
   _updateBootloader(stoneIsInSetupMode: boolean) {
     let action = () => {
-      if (this.stoneIsInDFU === false) {
-        return this._putInDFU(stoneIsInSetupMode)
-          .then(() => {
-            LOG.info("FirmwareHelper: performing bootloader update.");
-            return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI)
-          })
-          .then(() => { this.stoneIsInDFU = false; })
-          .then(() => { return delay(1500); })
-          .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
-      }
-      else {
+      let updateProcess = () => {
         LOG.info("FirmwareHelper: performing bootloader update.");
         return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI)
           .then(() => { this.stoneIsInDFU = false; })
           .then(() => { return delay(1500); })
           .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
+      };
+
+      if (this.stoneIsInDFU === false) {
+        return this._putInDFU(stoneIsInSetupMode)
+          .then(() => { return updateProcess(); })
+      }
+      else {
+        return updateProcess();
       }
     };
     // we load the DFU into the promise manager with priority so we are not interrupted
@@ -227,20 +231,19 @@ export class FirmwareHelper {
 
   _updateFirmware(stoneIsInSetupMode: boolean) {
     let action = () => {
-      if (this.stoneIsInDFU === false) {
-        return this._putInDFU(stoneIsInSetupMode)
-          .then(() => {
-            return BluenetPromiseWrapper.performDFU(this.handle, this.firmwareURI)
-          })
-          .then(() => { this.stoneIsInDFU = false; })
-          .then(() => { return delay(1500); })
-          .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
-      }
-      else {
+      let updateProcess = () => {
         return BluenetPromiseWrapper.performDFU(this.handle, this.firmwareURI)
           .then(() => { this.stoneIsInDFU = false; })
           .then(() => { return delay(1500); })
           .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
+      };
+
+      if (this.stoneIsInDFU === false) {
+        return this._putInDFU(stoneIsInSetupMode)
+          .then(() => { return updateProcess(); })
+      }
+      else {
+        return updateProcess()
       }
     };
     // we load the DFU into the promise manager with priority so we are not interrupted

@@ -84,6 +84,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   multiSwitch:                (arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch',               arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
 
   getFirmwareVersion:         () => { return BluenetPromise('getFirmwareVersion'); },
+  getBootloaderVersion:       () => { return BluenetPromise('getBootloaderVersion'); },
   setupFactoryReset:          () => { return BluenetPromise('setupFactoryReset'); },
   putInDFU:                   () => { return BluenetPromise('putInDFU'); },
   performDFU:                 (handle, uri) => { return BluenetPromise('performDFU', handle, uri); },
