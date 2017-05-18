@@ -45,7 +45,6 @@ class DfuStateHandlerClass {
         eventBus.emit(Util.events.getDfuTopic(dfuAdvertisement.handle), dfuAdvertisement);
 
         // we scan high frequency when we see a setup node
-        LOG.info("DfuStateHandler: Start HF Scanning.");
         BleUtil.startHighFrequencyScanning(this._uuid, true);
 
         // store the data of this setup Crownstone
@@ -88,7 +87,6 @@ class DfuStateHandlerClass {
     if (Object.keys(this._stonesInDfuMode).length === 0) {
       LOG.info("DfuStateHandler: No DFU stones visible. Disabling HF scanning.");
       eventBus.emit("noDfuStonesVisible");
-      LOG.info("DfuStateHandler: Stop HF Scanning.");
       BleUtil.stopHighFrequencyScanning(this._uuid);
     }
   }

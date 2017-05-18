@@ -212,6 +212,12 @@ open class BluenetJS: NSObject {
         }
       })
       
+      globalBluenet.bluenetLocalizationOn("locationStatus", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEvent(withName: "locationStatus", body: castData)
+        }
+      })
+      
 //      we will not forward the unverified events
 //      globalBluenet.bluenetOn("advertisementData", {data -> Void in
 //        if let castData = data as? Advertisement {

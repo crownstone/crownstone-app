@@ -14,16 +14,17 @@ import {
   View
 } from 'react-native';
 import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
-import { eventBus }               from '../util/EventBus'
-import { reducerCreate }          from './store/reducers/navigation'
-import { OptionPopup }            from '../views/components/OptionPopup'
-import { Processing }             from '../views/components/Processing'
-import { DfuOverlay }             from '../views/overlays/DfuOverlay'
-import { LocalizationSetupStep1 } from '../views/overlays/LocalizationSetupStep1'
-import { LocalizationSetupStep2 } from '../views/overlays/LocalizationSetupStep2'
-import { TapToToggleCalibration } from '../views/overlays/TapToToggleCalibration'
-import { BleStateOverlay }        from '../views/overlays/BleStateOverlay'
-import { Views }                  from './Views'
+import { eventBus }                  from '../util/EventBus'
+import { reducerCreate }             from './store/reducers/navigation'
+import { OptionPopup }               from '../views/components/OptionPopup'
+import { Processing }                from '../views/components/Processing'
+import { DfuOverlay }                from '../views/overlays/DfuOverlay'
+import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
+import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
+import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
+import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
+import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
+import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
 
@@ -83,6 +84,7 @@ export class Router_IOS extends Component {
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
+        <LocationPermissionOverlay />
         <BleStateOverlay />
         <OptionPopup />
         <Processing />
