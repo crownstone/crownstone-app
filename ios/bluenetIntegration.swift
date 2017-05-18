@@ -362,7 +362,7 @@ open class BluenetJS: NSObject {
       }
   }
   
-  @objc func disconnect(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func disconnectCommand(_ callback: @escaping RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.control.disconnect()
       .then{_ in callback([["error" : false]])}
       .catch{err in

@@ -58,7 +58,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   },
   // this never rejects
   disconnectCommand: () => {
-    return BluenetPromise('disconnect')
+    return BluenetPromise('disconnectCommand')
       .then( () => { eventBus.emit("disconnect"); })
       .catch(() => { eventBus.emit("disconnect"); })
   },

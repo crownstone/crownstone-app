@@ -245,7 +245,8 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   handlePhase(phase, phasesRequired) {
-    LOG.info("DfuOverlay: Handling phase:", phase, " out of ", phasesRequired);
+    // the +1 in the log is to match the UI.
+    LOG.info("DfuOverlay: Handling phase:", phase + 1, " out of ", phasesRequired);
     return new Promise((resolve, reject) => {
       this._searchForCrownstone(0)
         .then((data) => {

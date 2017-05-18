@@ -42,7 +42,6 @@
 		D66D923EEACD45AB8110538B /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3850D22C8FD340C8B78DA044 /* libRCTCamera.a */; };
 		ECECF241F5E043BB8962D8D8 /* libRCTImageResizer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81720DF7A506458AA65323BF /* libRCTImageResizer.a */; };
 		FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */; };
-		FA570EAA1EAE30F9001C625D /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA21EAE30F9001C625D /* BluenetLib.framework */; };
 		FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA31EAE30F9001C625D /* BluenetShared.framework */; };
 		FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA41EAE30F9001C625D /* CryptoSwift.framework */; };
 		FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */; };
@@ -57,6 +56,7 @@
 		FA570ECE1EAE3D73001C625D /* Crownstone.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECB1EAE3D73001C625D /* Crownstone.ttf */; };
 		FA570ECF1EAE3D73001C625D /* CustomIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */; };
 		FA570ED01EAE3D73001C625D /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */; };
+		FA80B06C1ECDBCE600CE3474 /* BluenetLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA80B06B1ECDBCE600CE3474 /* BluenetLib.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,7 +362,6 @@
 		F536239263194292A885D7A7 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
 		F76F3A8FD7B44DD79A442EF9 /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
-		FA570EA21EAE30F9001C625D /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 		FA570EA31EAE30F9001C625D /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
 		FA570EA41EAE30F9001C625D /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iOSDFULibrary.framework; path = Carthage/Build/iOS/iOSDFULibrary.framework; sourceTree = "<group>"; };
@@ -379,6 +378,7 @@
 		FA570ECB1EAE3D73001C625D /* Crownstone.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Crownstone.ttf; path = ../js/fonts/Crownstone.ttf; sourceTree = "<group>"; };
 		FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
 		FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../js/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
+		FA80B06B1ECDBCE600CE3474 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -404,6 +404,7 @@
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
+				FA80B06C1ECDBCE600CE3474 /* BluenetLib.framework in Frameworks */,
 				FA570EB01EAE30F9001C625D /* Zip.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
@@ -415,7 +416,6 @@
 				FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */,
 				FA570EAE1EAE30F9001C625D /* PromiseKit.framework in Frameworks */,
 				C1770742DC1E48B386AA917E /* libRNDeviceInfo.a in Frameworks */,
-				FA570EAA1EAE30F9001C625D /* BluenetLib.framework in Frameworks */,
 				5D0DDA5E1C014AB38EC2AD63 /* libRNFS.a in Frameworks */,
 				FA570EAC1EAE30F9001C625D /* CryptoSwift.framework in Frameworks */,
 				ECECF241F5E043BB8962D8D8 /* libRCTImageResizer.a in Frameworks */,
@@ -599,8 +599,8 @@
 				FA570ECB1EAE3D73001C625D /* Crownstone.ttf */,
 				FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */,
 				FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */,
+				FA80B06B1ECDBCE600CE3474 /* BluenetLib.framework */,
 				FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */,
-				FA570EA21EAE30F9001C625D /* BluenetLib.framework */,
 				FA570EA31EAE30F9001C625D /* BluenetShared.framework */,
 				FA570EA41EAE30F9001C625D /* CryptoSwift.framework */,
 				FA570EA51EAE30F9001C625D /* iOSDFULibrary.framework */,
@@ -1183,8 +1183,8 @@
 				"$(SRCROOT)/Carthage/Build/iOS/iOSDFULibrary.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Zip.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetShared.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/BluenetBasicLocalization.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/BluenetLib.framework",
 			);
 			outputPaths = (
 			);

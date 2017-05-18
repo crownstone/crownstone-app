@@ -261,8 +261,8 @@ export class FirmwareHelper {
               .then(() => {
                 return BluenetPromiseWrapper.disconnectCommand();
               })
-              .catch(() => {
-                return BluenetPromiseWrapper.phoneDisconnect();
+              .catch((err) => {
+                BluenetPromiseWrapper.phoneDisconnect(); throw err;
               })
           }
         })

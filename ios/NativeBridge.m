@@ -24,7 +24,7 @@ RCT_EXTERN_METHOD(stopScanning)
 
 // Bluenet
 RCT_EXTERN_METHOD(connect:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(disconnect:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(disconnectCommand:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
 RCT_EXTERN_METHOD(toggleSwitchState:(RCTResponseSenderBlock)callback)
