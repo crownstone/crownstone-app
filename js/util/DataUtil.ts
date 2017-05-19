@@ -520,10 +520,18 @@ export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
 
 
 export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) {
+  if (!(state && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
+    return false;
+  }
+
   return Object.keys(state.spheres[sphereId].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
 
 export const enoughCrownstonesInLocationsForIndoorLocalization = function(state, sphereId) {
+  if (!(state && sphereId && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
+    return false;
+  }
+
   let stoneIds = Object.keys(state.spheres[sphereId].stones);
   let count = 0;
 
