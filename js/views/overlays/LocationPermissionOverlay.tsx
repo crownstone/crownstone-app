@@ -10,7 +10,7 @@ import { NativeBus }    from '../../native/libInterface/NativeBus'
 import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/overlays/OverlayBox'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
-import {Bluenet} from "../../native/libInterface/Bluenet";
+import { Bluenet } from "../../native/libInterface/Bluenet";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -19,8 +19,8 @@ export class LocationPermissionOverlay extends Component<any, any> {
     super();
 
     this.state = {
-      visible: false,
-      notificationType: 'unknown' //"unknown", "off", "foreground", "on"
+      visible: true,
+      notificationType: 'off' //"unknown", "off", "foreground", "on"
     };
     this.unsubscribe = [];
   }
@@ -101,12 +101,12 @@ export class LocationPermissionOverlay extends Component<any, any> {
         <View style={{flex:1}} />
         <Icon
           name="ios-navigate"
-          size={0.30*screenHeight}
+          size={Math.min(0.30*screenHeight, 0.5*screenWidth)}
           color={colors.blue.hex}
         />
         <View style={{flex:1}} />
-        <Text style={{fontSize: 18, fontWeight: 'bold', color: colors.blue.hex, padding:15, textAlign:'center'}}>{this._getTitle()}</Text>
-        <Text style={{fontSize: 12, fontWeight: '400',  color: colors.blue.hex, padding:15, textAlign:'center'}}>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue.hex, padding:5, textAlign:'center'}}>{this._getTitle()}</Text>
+        <Text style={{fontSize: 11, fontWeight: '400',  color: colors.blue.hex, padding:5, textAlign:'center'}}>
           {this._getText()}
         </Text>
         <View style={{flex:1}} />
