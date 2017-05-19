@@ -31,9 +31,9 @@ class DfuStateHandlerClass {
   _init() {
     if (this._initialized === false) {
       this._initialized = true;
-      // these events are emitted from the setupUtil
-      NativeBus.on(NativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
-        let handle = dfuAdvertisement.handle;
+
+      let handleDfuAdvertisement = (data) => {
+        let handle = data.handle;
         let emitDiscovery = false;
 
         if (MapProvider.stoneHandleMap[handle] === undefined) {
@@ -42,7 +42,7 @@ class DfuStateHandlerClass {
         }
 
         // emit advertisements for other views
-        eventBus.emit(Util.events.getDfuTopic(dfuAdvertisement.handle), dfuAdvertisement);
+        eventBus.emit(Util.events.getDfuTopic(data.handle), data);
 
         // we scan high frequency when we see a setup node
         BleUtil.startHighFrequencyScanning(this._uuid, true);
@@ -54,7 +54,7 @@ class DfuStateHandlerClass {
             emitDiscovery = true;
           }
 
-          this._stonesInDfuMode[handle] = {advertisement: dfuAdvertisement, data: MapProvider.stoneHandleMap[handle]};
+          this._stonesInDfuMode[handle] = {advertisement: data, data: MapProvider.stoneHandleMap[handle]};
           LOG.info("DfuStateHandler: Found new DFU Crownstone.");
           eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
         }
@@ -65,6 +65,28 @@ class DfuStateHandlerClass {
 
         // (re)start setup timeout
         this._setDfuTimeout(handle);
+      };
+
+
+      // add setup events in case they are from crownstones that did not finish their DFU process.
+      NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
+        let stoneData = MapProvider.stoneHandleMap[data.handle];
+        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
+          handleDfuAdvertisement(data);
+        }
+      });
+
+      // add advertisement events in case they are from crownstones that did not finish their DFU process.
+      NativeBus.on(NativeBus.topics.advertisement, (data) => {
+        let stoneData = MapProvider.stoneHandleMap[data.handle];
+        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
+          handleDfuAdvertisement(data);
+        }
+      });
+
+      // these events are emitted from the setupUtil
+      NativeBus.on(NativeBus.topics.dfuAdvertisement, (data) => {
+        handleDfuAdvertisement(data);
       });
     }
   }

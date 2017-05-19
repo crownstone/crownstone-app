@@ -228,20 +228,22 @@ export class DfuOverlay extends Component<any, any> {
         }
       };
 
-      this.processSubscriptions.push(eventBus.on(Util.events.getCrownstoneTopic(this.state.sphereId, this.state.stoneId), (data) => {
+      this.processSubscriptions.push(NativeBus.on(NativeBus.topics.advertisement, (data) => {
         rssiResolver(data, false, false);
       }));
+
       this.processSubscriptions.push(NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
         if (setupAdvertisement.handle === stoneConfig.handle) {
           rssiResolver(setupAdvertisement, true, false);
         }
       }));
+
       this.processSubscriptions.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (dfuAdvertisement) => {
         if (dfuAdvertisement.handle === stoneConfig.handle) {
           rssiResolver(dfuAdvertisement, false, true);
         }
       }))
-    })
+    });
   }
 
   handlePhase(phase, phasesRequired) {

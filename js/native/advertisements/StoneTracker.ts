@@ -81,6 +81,13 @@ export class StoneTracker {
 
     let stone = sphere.stones[stoneId];
 
+    // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
+    // reset is complete.
+    if (stone.config.dfuResetRequired === true) {
+      LOG.debug("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
+      return;
+    }
+
     // tell the handler that this stone/beacon is still in range.
     StoneStateHandler.receivedIBeaconUpdate(sphereId, stone, stoneId, rssi);
 

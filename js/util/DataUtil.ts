@@ -321,14 +321,65 @@ export const getUserLevelInSphere = function(state, sphereId) {
 };
 
 
+/**
+ * @param state
+ * @returns {{}}
+ *
+ * return dataType = { handle: details }
+ *
+ * details = {
+      id:  reduxStoneId
+      cid: crownstoneId (smallId)
+      handle: handle
+      name: stone name in config
+      sphereId: sphere id that contains stone
+      stoneConfig: config of stone
+      applianceName: name of appliance
+      locationName: name of location
+    }
+ */
 export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
   return _getMap(state, 'handle', false);
 };
 
+/**
+ * @param state
+ * @returns {{}}
+ *
+ * return dataType = { sphereId: { handle: details }}
+ *
+ * details = {
+      id:  reduxStoneId
+      cid: crownstoneId (smallId)
+      handle: handle
+      name: stone name in config
+      sphereId: sphere id that contains stone
+      stoneConfig: config of stone
+      applianceName: name of appliance
+      locationName: name of location
+    }
+ */
 export const getMapOfCrownstonesBySphereByHandle = function(state) {
   return _getMap(state, 'handle', true);
 };
 
+/**
+ * @param state
+ * @returns {{}}
+ *
+ * return dataType = { sphereId: { crownstoneId: details }}
+ *
+ * details = {
+      id:  reduxStoneId
+      cid: crownstoneId (smallId)
+      handle: handle
+      name: stone name in config
+      sphereId: sphere id that contains stone
+      stoneConfig: config of stone
+      applianceName: name of appliance
+      locationName: name of location
+    }
+ */
 export const getMapOfCrownstonesInAllSpheresByCID = function(state) {
   return _getMap(state, 'crownstoneId', true);
 };
@@ -354,6 +405,7 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
         handle: stoneConfig.handle,
         name: stoneConfig.name,
         sphereId: sphereId,
+        stoneConfig: stoneConfig,
         applianceName: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? appliances[stoneConfig.applianceId].config.name : undefined,
         locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : undefined
       };

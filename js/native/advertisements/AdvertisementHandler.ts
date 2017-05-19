@@ -156,6 +156,14 @@ class AdvertisementHandlerClass {
     let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
 
 
+    // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
+    // reset is complete.
+    if (stoneFromAdvertisement.config.dfuResetRequired === true) {
+      LOG.debug("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
+      return;
+    }
+
+
     // --------------------- Update the Mesh Network --------------------------- //
 
     // update mesh network map.

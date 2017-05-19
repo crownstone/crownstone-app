@@ -63,7 +63,7 @@ export class OverlayContent extends Component<any, any> {
 
   getContent() {
     if (this.props.text) {
-      return <Text style={{fontSize: 12, color: colors.blue.hex, textAlign:'center', paddingLeft:10, paddingRight:10}}>{this.props.text}</Text>
+      return <Text style={{fontSize: 12, color: colors.csBlue.hex, textAlign:'center', paddingLeft:10, paddingRight:10}}>{this.props.text}</Text>
     }
     else {
       return this.props.children;
