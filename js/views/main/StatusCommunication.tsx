@@ -126,7 +126,7 @@ export class StatusCommunication extends Component<any, any> {
     else { //if (amountOfVisible === 0) {
       return (
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{"I can't see any Crownstones!"}</Text>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{"Looking for Crownstones..."}</Text>
         </View>
       )
     }

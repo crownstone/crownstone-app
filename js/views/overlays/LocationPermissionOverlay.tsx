@@ -19,8 +19,8 @@ export class LocationPermissionOverlay extends Component<any, any> {
     super();
 
     this.state = {
-      visible: true,
-      notificationType: 'off' //"unknown", "off", "foreground", "on"
+      visible: false,
+      notificationType: 'unknown' //"unknown", "off", "foreground", "on"
     };
     this.unsubscribe = [];
   }
@@ -38,7 +38,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
           this.setState({visible: false, notificationType: status});
           break;
         default: // "unknown":
-          this.setState({visible: true, notificationType: status});
+          this.setState({visible: this.state.visible, notificationType: status});
           break;
       }
     });
