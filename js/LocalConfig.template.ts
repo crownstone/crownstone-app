@@ -62,6 +62,7 @@ const DeviceInfo = require('react-native-device-info');
   export let LOG_INFO       = true;    // enabling LOG.info       commands to be shown.
   export let LOG_WARNINGS   = true;    // enabling LOG.warn       commands to be shown.
   export let LOG_ERRORS     = true;    // enabling LOG.error      commands to be shown.
+  export let LOG_MESH       = true;    // enabling LOG.mesh       commands to be shown.
 
   /**
    * Specific logging settings used for debugging mostly.
@@ -70,9 +71,8 @@ const DeviceInfo = require('react-native-device-info');
   export let LOG_SCHEDULER  = false;   // enabling LOG.scheduler  commands to be shown.
   export let LOG_BLE        = false;   // enabling LOG.ble        commands to be shown.
   export let LOG_EVENTS     = false;   // enabling LOG.event      commands to be shown.
-  export let LOG_STORE      = true;   // enabling LOG.store      commands to be shown.
-  export let LOG_MESH       = false;   // enabling LOG.mesh       commands to be shown.
-  export let LOG_CLOUD      = true;   // enabling LOG.cloud      commands to be shown.
+  export let LOG_STORE      = true;    // enabling LOG.store      commands to be shown.
+  export let LOG_CLOUD      = true;    // enabling LOG.cloud      commands to be shown.
   export let LOG_DEBUG      = false;   // enabling LOG.debug      commands to be shown.
 
   /**
