@@ -1,12 +1,30 @@
 iOS & Android App for the Crownstone.
 
-The native libs are not in this project directly.
+The Crownstone iOS and Android apps are work in progress. 
+The roadmap of the software development can be found at [Trello](https://trello.com/b/6rUcIt62/crownstone-transparent-product-roadmap).
+
+The Android development is always a few weeks behind the iOS development, especially with respect to the graphical user interface. 
+
+The application makes use of separate libraries (so called bluenet libraries) that are native to the platform. 
+This is on purpose so that people can be make use of the Crownstone libraries without the need to use React Native.
+See below for getting the libraries.
+
+## Download
+
+The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/app/). 
+
+![Overview screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-overview.jpeg)
+![Room screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-room.jpeg)
 
 ## Setup
 
 ### React Native
 
 Assuming you've already installed npm, nodejs and yarn. You can get Yarn here: https://yarnpkg.com/en/docs/install
+* nodejs
+* Yarn, can be obtained at [yarnpkg.com](https://yarnpkg.com/en/docs/install).
+* Carthage (for iOS)
+* Android Studio (for Android)
 
 Make sure typescript 2.2 or higher is installed using:
 
@@ -43,7 +61,11 @@ carthage bootstrap --platform iOS --no-use-binaries
 
 ### Android
 
-1. Clone the bluenet lib for android:
+1. Get the nodejs modules:
+
+        yarn
+
+2. Clone the bluenet lib for android:
 
         cd android
         git clone https://github.com/crownstone/bluenet-lib-android.git bluenet
@@ -94,8 +116,18 @@ __nw_connection_get_connected_socket_block_invoke
 ```
 
 Add this global variable to your build config:
-
 ```
 Xcode menu -> Product -> Edit Scheme...
 Environment Variables -> Add -> Name: "OS_ACTIVITY_MODE", Value:"disable"
 ```
+
+## Copyrights
+
+The copyrights (2014-2017) belongs to the team of Crownstone B.V. and are provided under an noncontagious open-source license:
+
+* Authors: Alex de Mulder, Bart van Vliet
+* Date: 1 Apr. 2016
+* Triple-licensed: LGPL v3+, Apache, MIT
+* Crownstone B.V., <https://www.crownstone.rocks>
+* Rotterdam, The Netherlands
+
