@@ -288,6 +288,17 @@ export class DeviceEdit extends Component<any, any> {
     )
   }
 
+  _getVersionInformation(stone) {
+    let unknownString = "Not checked.";
+    return (
+      <View style={{paddingTop:15}}>
+        <Text style={styles.version}>{'hardware: '   + (stone.config.hardwareVersion || unknownString)}</Text>
+        <Text style={styles.version}>{'bootloader: ' + (stone.config.bootloaderVersion || unknownString)}</Text>
+        <Text style={styles.version}>{'firmware: '   + (stone.config.firmwareVersion || unknownString)}</Text>
+      </View>
+    )
+  }
+
   render() {
     const store = this.props.store;
     const state = store.getState();
@@ -306,11 +317,13 @@ export class DeviceEdit extends Component<any, any> {
       <Background image={backgroundImage} >
         <ScrollView>
           <View style={{height:screenHeight}}>
-            <FadeInView visible={!this.state.showStone} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
+            <FadeInView visible={!this.state.showStone && applianceOptions.length > 0} style={{position:'absolute', top:0, left:0, width: screenWidth}} duration={300}>
               <ListEditableItems items={applianceOptions} separatorIndent={true}/>
+              {this._getVersionInformation(stone)}
             </FadeInView>
             <FadeInView visible={this.state.showStone || applianceOptions.length == 0} style={{position:'absolute', top:0, left:0, width:screenWidth}} duration={300}>
               <ListEditableItems items={stoneOptions} separatorIndent={false}/>
+              {this._getVersionInformation(stone)}
             </FadeInView>
           </View>
         </ScrollView>

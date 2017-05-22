@@ -165,6 +165,14 @@ export const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     color: colors.menuText.hex,
+  },
+  version: {
+    backgroundColor:"transparent",
+    color: colors.darkGray2.rgba(1),
+    textAlign:'center',
+    fontWeight:'300',
+    fontSize: 10,
   }
+
 });
 

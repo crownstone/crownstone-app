@@ -2,6 +2,8 @@
 
 To be Released:
 
+--- iOS release submitted 2017-5-22 as 1.8.2
+
 - Fixed issue that a setup stone is still visible after it has been set up.
 - Improved responsiveness of text fields.
 - Added ability to update the bootloader of the Crownstones from the app.
