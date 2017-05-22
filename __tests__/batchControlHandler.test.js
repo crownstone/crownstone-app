@@ -5,21 +5,23 @@ let jest = require('jest');
 jest.mock('react-native-fs', () => {return {};});
 jest.mock('react-native-device-info');
 
+
 jest.mock('../js/ExternalConfig', () => {
+  const FORCE_ENABLE_LOGS = false;
   return {
     CLOUD_ADDRESS: 'https://crownstone-cloud-dev.herokuapp.com/api/',
-    DEBUG: true,
-    LOG_SCHEDULER: false,
-    LOG_BLE: false,
-    LOG_EVENTS: false,
-    LOG_STORE: false,
-    LOG_MESH: true,
-    LOG_CLOUD: true,
-    LOG_DEBUG: true,
-    LOGGING: false,
-    LOG_ERRORS: true,
-    LOG_WARNINGS: true,
-    LOG_VERBOSE: true,
+    DEBUG:          true || FORCE_ENABLE_LOGS,
+    LOG_SCHEDULER:  false || FORCE_ENABLE_LOGS,
+    LOG_BLE:        false || FORCE_ENABLE_LOGS,
+    LOG_EVENTS:     false || FORCE_ENABLE_LOGS,
+    LOG_STORE:      false || FORCE_ENABLE_LOGS,
+    LOG_MESH:       false || FORCE_ENABLE_LOGS,
+    LOG_CLOUD:      false || FORCE_ENABLE_LOGS,
+    LOG_DEBUG:      false || FORCE_ENABLE_LOGS,
+    LOG_INFO:       false || FORCE_ENABLE_LOGS,
+    LOG_ERRORS:     false || FORCE_ENABLE_LOGS,
+    LOG_WARNINGS:   false || FORCE_ENABLE_LOGS,
+    LOG_VERBOSE:    false || FORCE_ENABLE_LOGS,
     LOG_TO_FILE: false,
     DISABLE_NATIVE: false,
     SILENCE_CLOUD: true,
@@ -33,7 +35,7 @@ jest.mock('../js/ExternalConfig', () => {
     KEEPALIVE_INTERVAL: 60,
     KEEPALIVE_REPEAT_ATTEMPTS: 1,
     RESET_TIMER_FOR_NEAR_AWAY_EVENTS: 20000,
-    RELEASE_MODE: false,
+    RELEASE_MODE_USED: false || FORCE_ENABLE_LOGS,
     TESTING_IN_PROCESS: true,
     LOCAL_TESTING: false
   }
@@ -46,6 +48,7 @@ let mockStone4 =      {config: {crownstoneId:'CSID4', meshNetworkId : 2, handle:
 let mockStone5 =      {config: {crownstoneId:'CSID5', meshNetworkId : 3, handle:'handle-CSID-5'}};
 let mockStone6 =      {config: {crownstoneId:'CSID6', meshNetworkId : null, handle:'handle-CSID-6'}};
 let keepAlive =      { commandName:'keepAlive'};
+let getHardwareVersion = { commandName:'getHardwareVersion'};
 let keepAliveState = { commandName:'keepAliveState', state: 1, timeout: 150, changeState: true };
 let setSwitchState = { commandName:'setSwitchState', state: 1};
 let multiSwitch =    { commandName:'multiSwitch',    state: 1, timeout: 0, intent: 4};
@@ -95,11 +98,15 @@ jest.mock('../js/native/libInterface/Bluenet', () => {
         setTimeout(() => { callback({error: !this.success}); }, 100);
       },
       disconnect: (callback) => {
-        this.eventBus.emit('test', {command:'disconnect', args:[]});
+        this.eventBus.emit('test', {command:'disconnectCommand', args:[]});
         setTimeout(() => { callback({error: !this.success}); }, 100);
       },
       phoneDisconnect: (callback) => {
         this.eventBus.emit('test', {command:'phoneDisconnect', args:[]});
+        setTimeout(() => { callback({error: !this.success}); }, 100);
+      },
+      getHardwareVersion: (callback) => {
+        this.eventBus.emit('test', {command:'getHardwareVersion', args:[]});
         setTimeout(() => { callback({error: !this.success}); }, 100);
       },
     },
@@ -179,11 +186,11 @@ test('BatchCommandHandler Mesh', () => {
     {command: 'meshKeepAliveState', args: [150, [{'action': true, 'crownstoneId': 'CSID1', 'state': 1}, {'action': true, 'crownstoneId': 'CSID3', 'state': 1}]]},
     {promise: 'resolved', command: 'keepAliveState', id: 'load_stoneId1'},
     {promise: 'resolved', command: 'keepAliveState', id: 'load_stoneId3'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
     {command: 'connect', args: ['handle-CSID-4']},
     {command: 'multiSwitch',  args: [[{'crownstoneId': 'CSID4', 'intent': 4, 'state': 1, 'timeout': 0}]]},
     {promise: 'resolved', command: 'multiSwitch', id: 'load_stoneId4'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
   ];
 
 
@@ -263,19 +270,19 @@ test('BatchCommandHandler Direct', () => {
     {command: 'connect', args: ['handle8']},
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId8'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
     {command: 'connect', args: ['handle9']},
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId9'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
     {command: 'connect', args: ['handle10']},
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId10'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
     {command: 'connect', args: ['handle11']},
     {command: 'keepAliveState', args:  [true, 1, 150]},
     {promise: 'resolved', command: 'keepAliveStatePromise', id: 'load_stoneId11'},
-    {command: 'disconnect', args: []},
+    {command: 'disconnectCommand', args: []},
   ];
 
 
@@ -310,3 +317,49 @@ test('BatchCommandHandler Direct', () => {
       });
     })
 });
+
+test('BatchCommandHandler getHardwareVersion', () => {
+  // prep
+  let testBus = new EventBusClass();
+  mockBluenet.loadEventBus(testBus);
+  mockBluenet.doSuccess();
+
+  // prep globals
+  timeStart = new Date().valueOf();
+  counter = 0;
+  expectedArray = [
+    {command: 'connect', args: ['handle8']},
+    {command: 'getHardwareVersion', args:  []},
+    {promise: 'resolved', command: 'getHardwareVersion', id: 'load_stoneId8'},
+    {command: 'disconnectCommand', args: []},
+  ];
+
+  return new Promise((testResolve, testReject) => {
+    // attach test listener
+    testBus.on('test', (data) => { checker(data, testReject) });
+
+    let sphereId = 'sphereId';
+
+    BatchCommandHandler.load(stone8, 'stoneId8', sphereId, getHardwareVersion).then(() => { testBus.emit('test', {command:'getHardwareVersion', promise:'resolved', id:'load_stoneId8'}) });
+    BatchCommandHandler.execute();
+
+
+    eventBus.emit('update_' + sphereId + '_stoneId8', { handle: 'handle8', stoneId: 'stoneId8', rssi: -60 });
+
+    setTimeout(() => {testResolve()}, 2000)
+  })
+    .then(() => {
+      return new Promise((testResolve, testReject) => {
+        if (counter < expectedArray.length) {
+          testReject('Did not get all expected events');
+          return;
+        }
+        testResolve();
+      });
+    })
+});
+
+
+//
+// 101020100000000000000000000QFAAB0\n\u0013t\u0001
+// 101020100000000000000000000QFAAB0\u0001

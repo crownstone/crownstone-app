@@ -17,7 +17,7 @@ let defaultSettings = {
     present: false,
     aiName: 'Rosii',
     aiSex: 'female',
-    exitDelay: 120,
+    exitDelay: 300,
     latitude: null,
     longitude: null,
     updatedAt: 1,

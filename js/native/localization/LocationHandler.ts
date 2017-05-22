@@ -133,11 +133,10 @@ class LocationHandlerClass {
       // set the presence
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: true, present: true}});
 
-      // after 10 seconds, start the keep alive run. This gives the app some time for syncing etc.
+      // start the keep alive run. This gives the app some time for syncing and pointing out which stones are NOT disabled.
       Scheduler.scheduleCallback(() => {
         KeepAliveHandler.fireTrigger();
-      }, 10000, 'keepAlive');
-
+      }, 1000);
 
       // get the time last seen of the crownstones in this sphere
       let stones = state.spheres[sphereId].stones;
@@ -150,8 +149,10 @@ class LocationHandlerClass {
         }
       });
 
+      // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
+      let sphereTimeout = state.spheres[sphereId].config.exitDelay - KEEPALIVE_INTERVAL;
       let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
-      if (timeSinceLastCrownstoneWasSeen > KEEPALIVE_INTERVAL*1000*1.5) {
+      if (timeSinceLastCrownstoneWasSeen > sphereTimeout) {
         // trigger crownstones on enter sphere
         LOG.info("LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE", sphere.config.name);
         BehaviourUtil.enactBehaviourInSphere(this.store, sphereId, TYPES.HOME_ENTER);
@@ -174,7 +175,7 @@ class LocationHandlerClass {
     let state = this.store.getState();
 
     if (state.spheres[sphereId].config.present === true) {
-
+      LOG.info("Applying EXIT SPHERE");
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
 
@@ -283,6 +284,43 @@ class LocationHandlerClass {
     // fire TYPES.ROOM_ENTER on crownstones in room
     BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, bleController);
   }
+
+
+  applySphereStateFromStore() {
+    let state = this.store.getState();
+
+    let lastSeenPerSphere = {};
+    Util.data.callOnAllStones(state, (sphereId, stoneId, stone) => {
+      lastSeenPerSphere[sphereId] = Math.max(stone.config.lastSeen || 0, lastSeenPerSphere[sphereId] || 0);
+    });
+
+    let sphereIds = Object.keys(lastSeenPerSphere);
+    let currentSphere = null;
+    let mostRecentSeenTime = 0;
+    for (let i = 0; i < sphereIds.length; i++) {
+      if (lastSeenPerSphere[sphereIds[i]] > mostRecentSeenTime) {
+        currentSphere = sphereIds[i];
+        mostRecentSeenTime = lastSeenPerSphere[sphereIds[i]];
+      }
+    }
+
+    if (currentSphere === null) {
+      return;
+    }
+
+    // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
+    let sphereTimeout = state.spheres[currentSphere].config.exitDelay - KEEPALIVE_INTERVAL;
+    if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout)) {
+      this.enterSphere(currentSphere);
+    }
+    else {
+      // exit all spheres
+      Object.keys(state.spheres).forEach((sphereId) => {
+        this.exitSphere(sphereId);
+      });
+    }
+  }
+
 
   /**
    * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.

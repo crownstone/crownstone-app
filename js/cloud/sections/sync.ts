@@ -139,16 +139,17 @@ const syncDown = function (userId, options) {
 const syncUser = function(store, actions, userData) {
   let state = store.getState();
 
-  let cloudFirmwareVersion = userData.firmwareVersionAvailable || null;
-  let cloudBootloaderVersion = userData.bootloaderVersionAvailable || null;
+  let cloudFirmwareVersions = userData.firmwareVersionsAvailable || null;
+  let cloudBootloaderVersions = userData.bootloaderVersionsAvailable || null;
 
   if (
-      state.user &&
-      state.user.config && (
-      state.user.config.firmwareVersion   !== cloudFirmwareVersion  && cloudFirmwareVersion ||
-      state.user.config.bootloaderVersion !== cloudBootloaderVersion && cloudBootloaderVersion
-     )) {
-    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersion: cloudFirmwareVersion, bootloaderVersion: cloudBootloaderVersion}})
+      state.user && cloudFirmwareVersions && cloudBootloaderVersions &&
+      (
+        state.user.firmwareVersionsAvailable !== cloudFirmwareVersions ||
+        state.user.bootloaderVersionsAvailable !== cloudBootloaderVersions
+      )
+    ) {
+    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionsAvailable: cloudFirmwareVersions, bootloaderVersionsAvailable: cloudBootloaderVersions}})
   }
 };
 
@@ -250,7 +251,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           meshAccessAddress: sphere.meshAccessAddress,
           aiName: sphere.aiName,
           aiSex: sphere.aiSex,
-          exitDelay: sphere.exitDelay || 120,
+          exitDelay: sphere.exitDelay || 300,
           latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
           longitude: sphere.gpsLocation && sphere.gpsLocation.lng
         }
@@ -266,7 +267,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           meshAccessAddress: sphere.meshAccessAddress,
           aiName: sphere.aiName,
           aiSex: sphere.aiSex,
-          exitDelay: sphere.exitDelay || 120,
+          exitDelay: sphere.exitDelay || 300,
           latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
           longitude: sphere.gpsLocation && sphere.gpsLocation.lng
         }});
@@ -401,6 +402,8 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
               crownstoneId:    stone_from_cloud.uid,
               icon:            stone_from_cloud.icon,
               firmwareVersion: stone_from_cloud.firmwareVersion,
+              bootloaderVersion: stone_from_cloud.bootloaderVersion,
+              hardwareVersion: stone_from_cloud.hardwareVersion,
               iBeaconMajor:    stone_from_cloud.major,
               iBeaconMinor:    stone_from_cloud.minor,
               locationId:      locationLinkId,
@@ -423,6 +426,8 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             icon:            stoneInState.config.icon,
             id:              stone_from_cloud.id,
             firmwareVersion: stoneInState.firmwareVersion,
+            bootloaderVersion: stoneInState.bootloaderVersion,
+            hardwareVersion: stoneInState.hardwareVersion,
             meshNetworkId:   stoneInState.meshNetworkId,
             major:           stoneInState.config.iBeaconMajor,
             minor:           stoneInState.config.iBeaconMinor,
@@ -469,6 +474,8 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             crownstoneId:    stone_from_cloud.uid,
             icon:            stone_from_cloud.icon,
             firmwareVersion: stone_from_cloud.firmwareVersion,
+            bootloaderVersion: stone_from_cloud.bootloaderVersion,
+            hardwareVersion: stone_from_cloud.hardwareVersion,
             iBeaconMajor:    stone_from_cloud.major,
             iBeaconMinor:    stone_from_cloud.minor,
             locationId:      locationLinkId,
@@ -733,6 +740,7 @@ const updateUserLocationInCloud = function(state, deviceId) {
     if (state.user.uploadLocation === true) {
       if (state.user.userId) {
         let userLocation = findUserLocation(state, state.user.userId);
+
         CLOUD.forDevice(deviceId).updateDeviceLocation(userLocation.locationId)
           .then(resolve)
           .catch(reject)

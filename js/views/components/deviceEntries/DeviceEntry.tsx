@@ -12,10 +12,11 @@ import {
   View
 } from 'react-native';
 
-import { Icon } from './Icon';
-import { IconButton } from '../components/IconButton'
-import { Util } from '../../util/Util'
-import { styles, colors, screenWidth } from '../styles'
+import { Icon } from '../Icon';
+import { Util } from '../../../util/Util'
+import { styles, colors, screenWidth } from '../../styles'
+import {AlternatingContent} from "../animated/AlternatingContent";
+import {ALWAYS_DFU_UPDATE} from "../../../ExternalConfig";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -55,6 +56,19 @@ export class DeviceEntry extends Component<any, any> {
         this._closeOptions();
       }
     })
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    // If the component is already mounted and it gets a new set of props that want it to be initially open,
+    // we open it if it is not already open, opening or already initiallyOpen
+    if (
+      this.props.initiallyOpen !== nextProps.initiallyOpen &&
+      nextProps.initiallyOpen === true &&
+      this.state.optionsOpen === false &&
+      this.animating === false
+       ) {
+      this._openOptions(600);
+    }
   }
 
   componentWillUnmount() { // cleanup
@@ -114,6 +128,15 @@ export class DeviceEntry extends Component<any, any> {
     );
   }
 
+  _iconPressed() {
+    if ((this.props.canUpdate === true || ALWAYS_DFU_UPDATE) && this.props.disabled === false) {
+      this.props.eventBus.emit("updateCrownstoneFirmware", {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
+    }
+    else {
+      this._toggleOptions();
+    }
+  }
+
   _getIcon() {
     let color = (
       this.props.disabled === true ?
@@ -121,16 +144,42 @@ export class DeviceEntry extends Component<any, any> {
           (this.props.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
 
-    return (
-      <View style={[{
-        width:60,
-        height:60,
-        borderRadius:30,
-        backgroundColor: color,
+
+    if ((this.props.canUpdate === true || ALWAYS_DFU_UPDATE) && this.props.disabled === false) {
+      return (
+        <View style={[{
+          width:60,
+          height:60,
+          borderRadius:30,
+          backgroundColor: colors.white.hex,
+          borderWidth: 2,
+          borderColor: color,
         }, styles.centered]}>
-        <Icon name={this.props.icon} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
-      </View>
-    );
+          <AlternatingContent
+            style={{flex:1, width:60, height:60, justifyContent:'center', alignItems:'center'}}
+            fadeDuration={500}
+            switchDuration={2000}
+            contentArray={[
+              <Icon name={'c1-update-arrow'} size={44} color={color} style={{position:'relative', top:-1, left:0, backgroundColor:'transparent'}} />,
+              <Icon name={this.props.icon} size={35} color={color} style={{position:'relative', backgroundColor:'transparent'}} />,
+            ]} />
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={[{
+          width:60,
+          height:60,
+          borderRadius:30,
+          backgroundColor: color,
+        }, styles.centered]}>
+          <Icon name={this.props.icon} size={35} color={'#ffffff'} style={{position:'relative', backgroundColor:'transparent'}} />
+        </View>
+      );
+    }
+
+
   }
 
   _getOptions() {
@@ -159,7 +208,7 @@ export class DeviceEntry extends Component<any, any> {
       <Animated.View style={{flexDirection: 'column', height: this.state.height,  flex: 1, overflow:'hidden'}}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
           <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
-                            onPress={() => { this._toggleOptions(); }}>
+                            onPress={() => { this._iconPressed(); }}>
             {this._getIcon()}
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {

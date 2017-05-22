@@ -91,12 +91,12 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     clearTimeout(this.pocketTimeout);
   }
 
-  _getDelayLabel(delay, full = false) {
+  _getDelayLabel(delay, fullLengthText = false) {
     if (delay < 60) {
       return Math.floor(delay) + ' seconds';
     }
     else {
-      if (full === true) {
+      if (fullLengthText === true) {
         return Math.floor(delay / 60) + ' minutes';
       }
       else {
@@ -119,14 +119,14 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     this.detectionTimeout = setTimeout(() => {
       this.unsubscribeNative();
       this.unsubscribeNative = undefined;
+
+      // notify the user when the measurement failed
+      Vibration.vibrate(400, false);
+
       Alert.alert("I'm not sure yet...", "I could not collect enough points.. Could you try again?", [{text:'OK', onPress: () => {
         this.props.eventBus.emit("hideLoading");
         this.props.eventBus.emit("useTriggers");
-
-        // notify the user when the measurement failed
-        Vibration.vibrate(400, false);
-
-      }}]);
+      }}], { cancelable: false });
     }, 10000);
 
 
@@ -173,7 +173,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
             this.props.eventBus.emit("hideLoading");
             this.props.eventBus.emit("useTriggers");
           }
-        }]);
+        }], { cancelable: false });
       }
     });
   }
@@ -194,11 +194,20 @@ export class DeviceBehaviourEdit extends Component<any, any> {
       let delays = timeOptions;
       let explanation = null;
       if (stone.config.firmwareVersion) {
-        let version = stone.config.firmwareVersion.split('.');
-        if (version.length === 3 && Number(version[0]) >= 2)  {
+        if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '2.0.0')) {
           delays = timeOptionsV2;
         }
         else {
+          // In case the default value does not match with the only allowed value, force it to a higher one now. This is
+          // not very clean but it is a one time event. I do not want to change the default value from 2 minutes to 2 seconds,
+          // because that would not be the optimal setting for normal users.
+          if (element.behaviour[eventLabel].delay !== timeOptionsV2[0].value) {
+            this.props.store.dispatch({
+              ...requiredData,
+              type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel,
+              data: {delay: timeOptionsV2[0].value}
+            });
+          }
           explanation = "More delay options will be enabled when this Crownstone's firmware is updated. You will be notified when this is possible.";
         }
       }
@@ -212,9 +221,10 @@ export class DeviceBehaviourEdit extends Component<any, any> {
         labelStyle: { paddingLeft: 15 },
         dropdownHeight: 130,
         valueRight: true,
+        buttons: delays.length === 1,
         valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
         value: element.behaviour[eventLabel].delay,
-        valueLabel: this._getDelayLabel(element.behaviour[eventLabel].delay),
+        valueLabel: this._getDelayLabel(element.behaviour[eventLabel].delay, true),
         items: delays,
         callback: (newValue) => {
           this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})

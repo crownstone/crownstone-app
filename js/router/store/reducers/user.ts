@@ -10,8 +10,8 @@ let defaultSettings = {
   userId: null,
   isNew: true,
   picture: null,
-  firmwareVersion: null,
-  bootloaderVersion: null,
+  firmwareVersionsAvailable: {},
+  bootloaderVersionsAvailable: {},
   betaAccess: false,
   seenTapToToggle: false,
   seenTapToToggleDisabledDuringSetup: false,
@@ -52,8 +52,8 @@ export default (state = defaultSettings, action : any = {}) => {
     case 'SET_NEW_FIRMWARE_VERSIONS':
       if (action.data) {
         let newState = {...state};
-        newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);
-        newState.firmwareVersion = update(action.data.firmwareVersion, newState.firmwareVersion);
+        newState.bootloaderVersionsAvailable = update(action.data.bootloaderVersionsAvailable, newState.bootloaderVersionsAvailable);
+        newState.firmwareVersionsAvailable = update(action.data.firmwareVersionsAvailable, newState.firmwareVersionsAvailable);
         return newState;
       }
       return state;

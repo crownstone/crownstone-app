@@ -116,7 +116,7 @@ export class AiStart extends Component<any, any> {
           button = "Nice to meet you too!";
         }
       }
-      Alert.alert(title, detail, [{text: button, onPress:() => {
+      let defaultAction = () => {
         this.props.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
         this.props.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {aiName: this.state.aiName, aiSex: this.state.aiSex}});
         if (this.props.canGoBack === true) {
@@ -130,8 +130,8 @@ export class AiStart extends Component<any, any> {
             (Actions as any).tabBar();
           }
         }
-      }}])
-
+      };
+      Alert.alert(title, detail, [{text: button, onPress: defaultAction}], { onDismiss: defaultAction })
     }
   }
 }

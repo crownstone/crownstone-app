@@ -121,10 +121,6 @@ export const BleUtil = {
     return new SingleCommand(bleHandle, sphereId, stoneId);
   },
 
-  // getMeshProxy: function (bleHandle) {
-  //   return new MeshCommand(bleHandle)
-  // },
-
   /**
    *
    * @param id
@@ -166,6 +162,10 @@ export const BleUtil = {
         Bluenet.startScanningForCrownstonesUniqueOnly();
       }
     }
+  },
+
+  highFrequencyScanUsed: function() {
+    return Object.keys(this.highFrequencyScanUsers).length > 0;
   }
 
 };

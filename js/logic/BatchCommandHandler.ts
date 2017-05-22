@@ -14,6 +14,8 @@ import { MESH_ENABLED }          from '../ExternalConfig'
 class BatchCommandHandlerClass {
   commands  : batchCommands = {};
   sphereId  : any;
+  activePromiseId : string = null;
+
 
   constructor() { }
 
@@ -183,8 +185,6 @@ class BatchCommandHandlerClass {
       if (directCommands[todo.sphereId] === undefined) { directCommands[todo.sphereId] = []; }
       if (meshNetworks[todo.sphereId]   === undefined) { meshNetworks[todo.sphereId]   = {}; }
 
-      let payload = this._getPayloadFromCommand(todo);
-
       // mesh not supported / no mesh detected for this stone
       if (MESH_ENABLED === false || stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
         // handle this 1:1
@@ -199,6 +199,8 @@ class BatchCommandHandlerClass {
             other:          []
           };
         }
+
+        let payload = this._getPayloadFromCommand(todo);
 
         if (command.commandName === 'keepAlive') {
           meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAlive.push(payload);
@@ -294,7 +296,7 @@ class BatchCommandHandlerClass {
     meshSphereIds.forEach((sphereId) => {
       let meshNetworkIds = Object.keys(meshNetworks[sphereId]);
       meshNetworkIds.forEach((networkId) => {
-        LOG.info("BatchCommandHandler: meshNetworkCommands for sphere", sphereId, ", command:", meshNetworks[sphereId][networkId]);
+        LOG.info("BatchCommandHandler: meshNetworkCommands for sphere", sphereId, ", command:", meshNetworks[sphereId][networkId], this.activePromiseId);
         topicsToScan.push({ sphereId: sphereId, topic: Util.events.getMeshTopic(sphereId, networkId) });
       });
     });
@@ -302,7 +304,7 @@ class BatchCommandHandlerClass {
     // find all the topics for individual crownstones.
     directSphereIds.forEach((sphereId) => {
       directCommands[sphereId].forEach((command) => {
-        LOG.info("BatchCommandHandler: directCommands for sphere:", sphereId, " stone:", command.stoneId, ", command:", command.command);
+        LOG.info("BatchCommandHandler: directCommands for sphere:", sphereId, " stone:", command.stoneId, ", command:", command.command, this.activePromiseId);
         topicsToScan.push({ sphereId: sphereId, topic: Util.events.getCrownstoneTopic(sphereId, command.stoneId) });
       });
     });
@@ -348,6 +350,9 @@ class BatchCommandHandlerClass {
             switch (command.commandName) {
               case 'getFirmwareVersion':
                 actionPromise = BluenetPromiseWrapper.getFirmwareVersion();
+                break;
+              case 'getHardwareVersion':
+                actionPromise = BluenetPromiseWrapper.getHardwareVersion();
                 break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive();
@@ -411,7 +416,7 @@ class BatchCommandHandlerClass {
         // Use the attempt handler to clean up after something fails.
         this.attemptHandler(null, 'Nothing to scan');
 
-        LOG.info("BatchCommandHandler: No topics to scan during BatchCommandHandler execution");
+        LOG.info("BatchCommandHandler: No topics to scan during BatchCommandHandler execution", this.activePromiseId);
         resolve();
 
         // abort the rest of the method.
@@ -460,12 +465,12 @@ class BatchCommandHandlerClass {
             this._scheduleNextStone();
           }
 
-          LOG.error("ERROR DURING EXECUTE", err);
+          LOG.error("ERROR DURING EXECUTE", err, this.activePromiseId);
           reject(err);
         })
         .catch((err) => {
           // this fallback catches errors in the attemptHandler.
-          LOG.error("FATAL ERROR DURING EXECUTE", err);
+          LOG.error("FATAL ERROR DURING EXECUTE", err, this.activePromiseId);
           reject(err);
         })
     })
@@ -473,10 +478,10 @@ class BatchCommandHandlerClass {
 
   _connectAndHandleCommands(crownstoneToHandle : connectionInfo) {
     return new Promise((resolve, reject) => {
-      LOG.info("BatchCommandHandler: connecting to ", crownstoneToHandle);
+      LOG.info("BatchCommandHandler: connecting to ", crownstoneToHandle, this.activePromiseId);
       BluenetPromiseWrapper.connect(crownstoneToHandle.handle)
         .then(() => {
-          LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle);
+          LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle, this.activePromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle);
         })
         // .then(() => {
@@ -487,23 +492,7 @@ class BatchCommandHandlerClass {
         //   }
         // })
         .then(() => {
-          return new Promise((disconnectResolve, disconnectReject) => {
-            BluenetPromiseWrapper.disconnect()
-              .then(() => {
-                disconnectResolve()
-              })
-              .catch((err) => {
-                LOG.warn("BatchCommandHandler: Could not normally disconnect from device.", err);
-                return BluenetPromiseWrapper.phoneDisconnect();
-              })
-              .then(() => {
-                disconnectResolve();
-              })
-              .catch((err) => {
-                LOG.warn("BatchCommandHandler: Could not phone disconnect from device.", err);
-                disconnectResolve();
-              })
-          });
+          return BluenetPromiseWrapper.disconnectCommand()
         })
         .then(() => {
           if (Object.keys(this.commands).length > 0) {
@@ -514,21 +503,11 @@ class BatchCommandHandlerClass {
           resolve();
         })
         .catch((err) => {
-          LOG.error("ERROR DURING EXECUTE", err);
-          // TODO: make this a 'safeDisconnect' in bluenetPromise
-          new Promise((disconnectResolve, disconnectReject) => {
-            BluenetPromiseWrapper.phoneDisconnect()
-              .then(() => {
-                disconnectResolve();
-              })
-              .catch((err) => {
-                LOG.warn("BatchCommandHandler: Could not phone disconnect from device.", err);
-                disconnectResolve();
-              })
-          })
-          .then(() => {
-            reject(err);
-          })
+          LOG.error("BatchCommandHandler: ERROR DURING EXECUTE", err, this.activePromiseId);
+          BluenetPromiseWrapper.phoneDisconnect()
+            .then(() => {
+              reject(err);
+            })
         })
     })
   }
@@ -601,7 +580,8 @@ class BatchCommandHandlerClass {
   _scheduleExecute(priority) {
     LOG.info("BatchCommandHandler: Scheduling command in promiseManager");
     let actionPromise = () => {
-      LOG.info("BatchCommandHandler: Executing!");
+      this.activePromiseId = Util.getUUID();
+      LOG.info("BatchCommandHandler: Executing!", this.activePromiseId);
       return this._searchAndHandleCommands();
     };
 
@@ -613,7 +593,7 @@ class BatchCommandHandlerClass {
     promiseRegistration(actionPromise, {from: 'BatchCommandHandler: executing.'})
       .catch((err) => {
         // disable execution and forward the error
-        LOG.error("BatchCommandHandler: Error completing promise.", err);
+        LOG.error("BatchCommandHandler: Error completing promise.", err, this.activePromiseId);
       });
   }
 
@@ -642,7 +622,7 @@ class BatchCommandHandlerClass {
         // remove the listeners
         cleanup();
 
-        LOG.warn("No stones found before timeout.");
+        LOG.warn("BatchCommandHandler: No stones found before timeout.");
         reject("No stones found before timeout.");
       }, timeout, 'Looking for target...');
 
@@ -650,7 +630,7 @@ class BatchCommandHandlerClass {
       // if we're busy with a low priority command, we will stop the search if a high priority execute comes in.
       if (highPriorityActive !== true) {
         unsubscribeListeners.push(eventBus.on('PriorityExecute', () => {
-          LOG.debug("Stopped listening for Crownstones due to Priority Execute.");
+          LOG.info("BatchCommandHandler: Stopped listening for Crownstones due to Priority Execute.");
           // remove the listeners
           cleanup();
 

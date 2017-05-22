@@ -100,7 +100,7 @@ export class SettingsSphereUser extends Component<any, any> {
                 userId: this.props.userId,
               });
               Actions.pop();
-            }}]);
+            }}], {cancelable : false});
           })
           .catch((err) => {
             this.deleting = false;

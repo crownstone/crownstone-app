@@ -259,6 +259,7 @@ class SchedulerClass {
    * fire all triggers.
    */
   flushAll() {
+    LOG.scheduler("Flush All!");
     let triggerIds = Object.keys(this.triggers);
     let state = this.store.getState();
 

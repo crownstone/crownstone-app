@@ -104,9 +104,12 @@ export class ApplianceSelection extends Component<any, any> {
             Actions.pop();
           })
           .catch((err) => {
+            let defaultAction = () => { this.props.eventBus.emit('hideLoading');}
             Alert.alert("Encountered Cloud Issue.",
               "We cannot create an Appliance in the Cloud. Please try again later.",
-              [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading');} }])
+              [{ text:'OK', onPress: defaultAction }],
+              { onDismiss: defaultAction }
+            )
           });
       }
     });
@@ -129,9 +132,12 @@ export class ApplianceSelection extends Component<any, any> {
         store.dispatch({sphereId: this.props.sphereId, applianceId: applianceId, type: 'REMOVE_APPLIANCE'});
       })
       .catch((err) => {
+        let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
         Alert.alert("Encountered Cloud Issue.",
           "We cannot delete this Appliance in the Cloud. Please try again later.",
-          [{text:'OK', onPress: () => { this.props.eventBus.emit('hideLoading');} }])
+          [{text:'OK', onPress: defaultAction }],
+          { onDismiss: defaultAction }
+        )
       });
   }
 

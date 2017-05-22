@@ -74,7 +74,7 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
                 Alert.alert("Could not resend email..", "Please try again later.", [{text:"OK"}]);
                 LOG.error("Could not resend email", err);
               })
-        }}]);
+        }}], { cancelable : false });
     }});
     items.push({
       label:'Revoke Invite',
@@ -89,7 +89,7 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
           this.deleting = true;
           CLOUD.forSphere(this.props.sphereId).revokeInvite(user.email)
             .then(() => {
-              Alert.alert("Invitation Revoked!", "", [{text:"OK", onPress: () => {
+              let defaultAction = () => {
                 this.props.eventBus.emit('hideLoading');
                 this.props.store.dispatch({
                   type: 'REMOVE_SPHERE_USER',
@@ -97,7 +97,8 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
                   userId: this.props.userId,
                 });
                 Actions.pop();
-              }}]);
+              };
+              Alert.alert("Invitation Revoked!", "", [{text:"OK", onPress: defaultAction}], { onDismiss: defaultAction });
             })
             .catch((err) => {
               this.deleting = false;
@@ -105,7 +106,9 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
               Alert.alert("Could not revoke invitation..", "Please try again later.", [{text:"OK"}]);
               LOG.error("Could not revoke invitation", err);
             })
-          }}]);
+          }}
+        ],
+        {cancelable:false});
     }});
 
     return items;

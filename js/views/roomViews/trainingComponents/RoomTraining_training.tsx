@@ -12,22 +12,17 @@ import {
   Vibration
 } from 'react-native';
 
-const Actions = require('react-native-router-flux').Actions;
-
 import { TopBar } from '../../components/Topbar'
 import { styles, colors, screenWidth, screenHeight } from '../../styles'
 import { Icon } from '../../components/Icon';
 
 import { Svg, Circle } from 'react-native-svg';
+import {ProgressCircle} from "../../components/ProgressCircle";
 
 
 export class RoomTraining_training extends Component<any, any> {
-
   render() {
     let icons = ['c1-locationPin1','ios-outlet-outline','ios-pin-outline','c1-brain','c1-male','c1-female'];
-
-    let radius = 0.25*screenWidth;
-    let pathLength = Math.PI * 2 * (radius - 10); // 10 for borderWidth;
 
     return (
       <View style={{flex:1}}>
@@ -57,22 +52,12 @@ export class RoomTraining_training extends Component<any, any> {
                   <View style={{backgroundColor:'#fff', width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth}} />
                 </View>
                 <View style={{position: 'absolute', top:0}}>
-                  <Svg style={{
-                    width: 0.5*screenWidth,
-                    height: 0.5*screenWidth,
-                  }}>
-                    <Circle
-                      r={radius-10}
-                      stroke={colors.lightBlue.hex}
-                      strokeWidth={5}
-                      strokeDasharray={[pathLength*this.props.progress,pathLength]}
-                      rotate="-89.9"
-                      x={radius}
-                      y={radius}
-                      strokeLinecap="round"
-                      fill="transparent"
-                    />
-                  </Svg>
+                  <ProgressCircle
+                    radius={0.25*screenWidth}
+                    borderWidth={10}
+                    color={colors.lightBlue.hex}
+                    progress={this.props.progress}
+                  />
                 </View>
                 <View style={{position: 'absolute', top:0}}>
                   <View style={{backgroundColor:'transparent', width:0.5*screenWidth, height:0.5*screenWidth, borderRadius:0.25*screenWidth}} />

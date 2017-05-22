@@ -193,6 +193,7 @@ function checkAction(action, affectedIds) {
     case 'USER_SEEN_ROOM_FINGERPRINT_ALERT':
     case 'SET_NEW_FIRMWARE_VERSIONS':
     case 'REFRESH_DEFAULTS':
+    case 'UPDATE_STONE_DFU_RESET':
       break;
     case 'UPDATE_MESH_NETWORK_ID':
       eventStatus['meshIdUpdated'] = affectedIds; break;

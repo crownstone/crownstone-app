@@ -58,7 +58,7 @@ export const DataUtil = {
   getTapToToggleCalibration: function(state) : number {
     if (state && state.devices) {
       let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
-      if (deviceId && state.devices[deviceId] && state.devices[deviceId]) {
+      if (deviceId && state.devices[deviceId]) {
         let calibration = state.devices[deviceId].tapToToggleCalibration;
         if (calibration) {
           return calibration;
@@ -321,35 +321,101 @@ export const getUserLevelInSphere = function(state, sphereId) {
 };
 
 
-
+/**
+ * @param state
+ * @returns {{}}
+ *
+ * return dataType = { handle: details }
+ *
+ * details = {
+      id:  reduxStoneId
+      cid: crownstoneId (smallId)
+      handle: handle
+      name: stone name in config
+      sphereId: sphere id that contains stone
+      stoneConfig: config of stone
+      applianceName: name of appliance
+      locationName: name of location
+    }
+ */
 export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
-  return _getMap(state, 'handle');
+  return _getMap(state, 'handle', false);
 };
 
+/**
+ * @param state
+ * @returns {{}}
+ *
+ * return dataType = { sphereId: { handle: details }}
+ *
+ * details = {
+      id:  reduxStoneId
+      cid: crownstoneId (smallId)
+      handle: handle
+      name: stone name in config
+      sphereId: sphere id that contains stone
+      stoneConfig: config of stone
+      applianceName: name of appliance
+      locationName: name of location
+    }
+ */
+export const getMapOfCrownstonesBySphereByHandle = function(state) {
+  return _getMap(state, 'handle', true);
+};
+
+/**
+ * @param state
+ * @returns {{}}
+ *
+ * return dataType = { sphereId: { crownstoneId: details }}
+ *
+ * details = {
+      id:  reduxStoneId
+      cid: crownstoneId (smallId)
+      handle: handle
+      name: stone name in config
+      sphereId: sphere id that contains stone
+      stoneConfig: config of stone
+      applianceName: name of appliance
+      locationName: name of location
+    }
+ */
 export const getMapOfCrownstonesInAllSpheresByCID = function(state) {
-  return _getMap(state, 'crownstoneId');
+  return _getMap(state, 'crownstoneId', true);
 };
 
-function _getMap(state, requestedKey) {
+function _getMap(state, requestedKey, sphereMap : boolean) {
   let sphereIds = Object.keys(state.spheres);
   let map = {};
   sphereIds.forEach((sphereId) => {
     let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let locations = state.spheres[sphereId].locations;
     let appliances = state.spheres[sphereId].appliances;
-    map[sphereId] = {};
+
+    if (sphereMap) {
+      map[sphereId] = {};
+    }
 
     stoneIds.forEach((stoneId) => {
       let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
 
-      map[sphereId][stoneConfig[requestedKey]] = {
+      let data = {
         id: stoneId,
         cid: stoneConfig.crownstoneId,
         handle: stoneConfig.handle,
         name: stoneConfig.name,
-        applianceName: stoneConfig.applianceId ? appliances[stoneConfig.applianceId].config.name : undefined,
-        locationName: stoneConfig.locationId ? locations[stoneConfig.locationId].config.name : undefined
+        sphereId: sphereId,
+        stoneConfig: stoneConfig,
+        applianceName: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? appliances[stoneConfig.applianceId].config.name : undefined,
+        locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : undefined
       };
+
+      if (sphereMap) {
+        map[sphereId][stoneConfig[requestedKey]] = data
+      }
+      else {
+        map[stoneConfig[requestedKey]] = data
+      }
     })
   });
   return map;
@@ -404,8 +470,6 @@ export const prepareStoreForUser = function(store) {
     });
   });
 
-  actions.push({type:'CREATE_APP_IDENTIFIER'});
-
   store.batchDispatch(actions);
 };
 
@@ -456,10 +520,18 @@ export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
 
 
 export const enoughCrownstonesForIndoorLocalization = function(state, sphereId) {
+  if (!(state && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
+    return false;
+  }
+
   return Object.keys(state.spheres[sphereId].stones).length >= AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION;
 };
 
 export const enoughCrownstonesInLocationsForIndoorLocalization = function(state, sphereId) {
+  if (!(state && sphereId && state.spheres && state.spheres[sphereId] && state.spheres[sphereId].stones)) {
+    return false;
+  }
+
   let stoneIds = Object.keys(state.spheres[sphereId].stones);
   let count = 0;
 

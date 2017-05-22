@@ -13,31 +13,32 @@ import {
   View
 } from 'react-native';
 
-import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
-import { Icon } from './Icon';
-import { styles, colors, screenWidth } from '../styles'
-import { getUserLevelInSphere } from '../../util/DataUtil'
+import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
+import { Icon } from '../Icon';
+import { styles, colors, screenWidth } from '../../styles'
+import { getUserLevelInSphere } from '../../../util/DataUtil'
+import {Util} from "../../../util/Util";
 
 
 export class SetupDeviceEntry extends Component<any, any> {
   baseHeight : any;
-  unsubscribe : any;
   currentLoadingWidth : any;
   setupEvents : any;
+  rssiTimeout : any = null;
 
   constructor(props) {
     super();
 
     this.baseHeight = props.height || 80;
-    this.unsubscribe = () => {};
 
     this.state = {
       progressWidth: new Animated.Value(0),
       name: props.item.name,
-      explanation:'',
-      subtext: 'Click here to add it to this Sphere!',
+      subtext: 'Tap here to add it to this Sphere!',
       disabled: false,
-      setupInProgress: false
+      setupInProgress: false,
+      showRssi: false,
+      rssi: null
     };
 
     this.currentLoadingWidth = 0;
@@ -45,6 +46,19 @@ export class SetupDeviceEntry extends Component<any, any> {
   }
 
   componentDidMount() {
+    this.setupEvents.push(this.props.eventBus.on(Util.events.getSetupTopic(this.props.handle), (data) => {
+      if (data.rssi < 0) {
+        if (this.state.rssi === null) {
+          this.setState({rssi: data.rssi, showRssi: true});
+        }
+        else {
+          this.setState({rssi: Math.round(0.2 * data.rssi + 0.8 * this.state.rssi), showRssi: true});
+        }
+        clearTimeout(this.rssiTimeout);
+        this.rssiTimeout = setTimeout(() => { this.setState({showRssi: false, rssi: null}) }, 5000);
+      }
+    }));
+
     this.setupEvents.push(this.props.eventBus.on("setupStarted",  (handle) => {
       if (this.props.handle === handle) {
         this.setProgress('pending');
@@ -70,7 +84,7 @@ export class SetupDeviceEntry extends Component<any, any> {
   }
 
   componentWillUnmount() { // cleanup
-    this.unsubscribe();
+    clearTimeout(this.rssiTimeout);
     this.setupEvents.forEach((unsubscribe) => { unsubscribe(); });
   }
 
@@ -107,26 +121,26 @@ export class SetupDeviceEntry extends Component<any, any> {
   setProgress(value : any = 0) {
     switch(value) {
       case -1:
-        this.setState({explanation:'Another Crownstone is already pairing.', subtext:'Pairing in progress...', setupInProgress:false, disabled: true});
+        this.setState({subtext:'Another Crownstone is pairing.', setupInProgress:false, disabled: true});
         break;
       case 0:
-        this.setState({explanation:'', subtext:'Click here to add it to this Sphere!', disabled: false, setupInProgress: false});
+        this.setState({subtext:'Click here to add it to this Sphere!', disabled: false, setupInProgress: false});
         break;
       case 'pending':
-        this.setState({subtext:"Starting setup...", explanation:'', setupInProgress: true});
+        this.setState({subtext:'Starting setup...', setupInProgress: true});
         Animated.timing(this.state.progressWidth, {toValue: 0, duration: 100}).start();
         return;
       case 1:
-        this.setState({subtext:"Claiming... Please stay close!", explanation:'', setupInProgress: true});
+        this.setState({subtext:"Claiming... Please stay close!", setupInProgress: true});
         break;
       case 3:
-        this.setState({explanation:"Registering in the Cloud...", setupInProgress: true});
+        this.setState({subtext:"Registering in the Cloud...", setupInProgress: true});
         break;
       case 4:
-        this.setState({explanation:"Setting up Crownstone...", setupInProgress: true});
+        this.setState({subtext:"Setting up Crownstone...", setupInProgress: true});
         break;
       case 19:
-        this.setState({subtext:"Finalizing setup...", explanation:"Rebooting Crownstone..."});
+        this.setState({subtext:"Finalizing setup..."});
         break;
       default: {
         this.setState({setupInProgress: true});
@@ -153,8 +167,7 @@ export class SetupDeviceEntry extends Component<any, any> {
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this.setupStone(); }}>
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17, fontWeight: '100'}}>{this.state.name}</Text>
-              <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
-              <Text style={{fontSize: 10}}>{this.state.explanation}</Text>
+              {this._getSubText()}
             </View>
           </TouchableOpacity>
           {this._getActivityIndicator()}
@@ -172,6 +185,47 @@ export class SetupDeviceEntry extends Component<any, any> {
       if (this.state.disabled === false && this.state.setupInProgress !== true) {
         SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {})
       }
+    }
+  }
+
+  _getSubText() {
+    if (this.state.showRssi && SetupStateHandler.isSetupInProgress() === false) {
+      if (this.state.rssi > -50) {
+        return <View style={{flexDirection: 'column'}}>
+          <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{'(Very Near)'}</Text>
+        </View>;
+      }
+      if (this.state.rssi > -75) {
+        return <View style={{flexDirection: 'column'}}>
+          <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{'(Near)'}</Text>
+        </View>;
+      }
+      else if (this.state.rssi > -90) {
+        return <View style={{flexDirection: 'column'}}>
+          <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{'(Visible)'}</Text>
+        </View>;
+      }
+      else if (this.state.rssi > -95) {
+        return <View style={{flexDirection: 'column'}}>
+          <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{'(Barely visible)'}</Text>
+        </View>;
+      }
+      else {
+        return <View style={{flexDirection: 'column'}}>
+          <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
+          <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{'(Too far away)'}</Text>
+        </View>;
+      }
+    }
+    else {
+      return <View style={{flexDirection: 'column'}}>
+        <Text style={{fontSize: 12}}>{this.state.subtext}</Text>
+        <Text style={{fontSize: 12, color: colors.iosBlue.hex}}>{''}</Text>
+      </View>;
     }
   }
 }

@@ -14,8 +14,8 @@ import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
 import { stoneTypes }           from '../../router/store/reducers/stones'
 import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }           from '../components/Background'
-import { DeviceEntry }          from '../components/DeviceEntry'
-import { SetupDeviceEntry }     from '../components/SetupDeviceEntry'
+import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
+import { SetupDeviceEntry }     from '../components/deviceEntries/SetupDeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { INTENTS }              from '../../native/libInterface/Constants'
 import { TopBar }               from '../components/Topbar'
@@ -34,6 +34,9 @@ import {
   getFloatingStones
 } from '../../util/DataUtil'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
+import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
+import {DfuDeviceEntry} from "../components/deviceEntries/DfuDeviceEntry";
+import {RoomExplanation} from "../components/RoomExplanation";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -43,6 +46,7 @@ export class RoomOverview extends Component<any, any> {
   viewingRemotely : boolean;
   justFinishedSetup : any;
   nearestStoneId : any;
+  firmwareVersionsAvailable : any = {};
 
   constructor() {
     super();
@@ -59,6 +63,7 @@ export class RoomOverview extends Component<any, any> {
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => {
       this.justFinishedSetup = handle;
       this.forceUpdate();
@@ -105,12 +110,29 @@ export class RoomOverview extends Component<any, any> {
   }
 
   _renderer(item, index, stoneId) {
-    if (item.setupMode === true && item.handle) {
+    if (item.dfuMode === true) {
       return (
-        <View key={stoneId + '_entry'}>
+        <View key={stoneId + '_dfu_entry'}>
+        <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
+          <DfuDeviceEntry
+            key={stoneId + '_dfu_element'}
+            eventBus={this.props.eventBus}
+            store={this.props.store}
+            sphereId={this.props.sphereId}
+            handle={item.advertisement && item.advertisement.handle}
+            name={item.data && item.data.name}
+            stoneId={item.data && item.data.id}
+          />
+        </View>
+      </View>
+      )
+    }
+    else if (item.setupMode === true && item.handle) {
+      return (
+        <View key={stoneId + '_setup_entry'}>
           <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
             <SetupDeviceEntry
-              key={stoneId + '_element'}
+              key={stoneId + '_setup_element'}
               eventBus={this.props.eventBus}
               store={this.props.store}
               sphereId={this.props.sphereId}
@@ -129,15 +151,18 @@ export class RoomOverview extends Component<any, any> {
               initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
               eventBus={this.props.eventBus}
               name={item.device.config.name}
+              stoneId={stoneId}
+              sphereId={this.props.sphereId}
               icon={item.device.config.icon}
               state={item.stone.state.state}
+              canUpdate={Util.versions.isLower(item.stone.config.firmwareVersion, this.firmwareVersionsAvailable[item.stone.config.hardwareVersion])}
               currentUsage={item.stone.config.type !== stoneTypes.guidestone ? item.stone.state.currentUsage : undefined}
               navigation={false}
               tapToToggleCalibration={this.tapToToggleCalibration}
               control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
               pending={this.state.pendingRequests[stoneId] !== undefined}
               disabled={item.stone.config.disabled || this.viewingRemotely || SetupStateHandler.isSetupInProgress() }
-              disabledDescription={ SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' }
+              disabledDescription={SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' }
               dimmable={item.device.config.dimmable}
               showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
               rssi={item.stone.config.rssi}
@@ -194,21 +219,43 @@ export class RoomOverview extends Component<any, any> {
     let stoneArray = [];
     let ids = [];
     let stoneIds = Object.keys(stones);
+    let shownHandles = {};
+
+
+    if (DfuStateHandler.areDfuStonesAvailable() === true) {
+      let dfuStones = DfuStateHandler.getDfuStones();
+      let dfuIds = Object.keys(dfuStones);
+      dfuIds.forEach((dfuId) => {
+        shownHandles[dfuStones[dfuId].advertisement.handle] = true;
+        ids.push(dfuId);
+        dfuStones[dfuId].dfuMode = true;
+        stoneArray.push(dfuStones[dfuId]);
+      });
+    }
 
     // add the stoneIds of the Crownstones in setup mode to the list but only if we're in the floating category
     if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null) {
       let setupStones = SetupStateHandler.getSetupStones();
       let setupIds = Object.keys(setupStones);
       setupIds.forEach((setupId) => {
-        ids.push(setupId);
-        setupStones[setupId].setupMode = true;
-        stoneArray.push(setupStones[setupId]);
+        if (shownHandles[setupStones[setupId].handle] === undefined) {
+          ids.push(setupId);
+          shownHandles[setupStones[setupId].handle] = true;
+          setupStones[setupId].setupMode = true;
+          stoneArray.push(setupStones[setupId]);
+        }
       });
     }
 
+
+
     stoneIds.forEach((stoneId) => {
-      ids.push(stoneId);
-      stoneArray.push(stones[stoneId]);
+      // do not show the same device twice
+      let handle = stones[stoneId].stone.config.handle;
+      if (shownHandles[handle] === undefined) {
+        ids.push(stoneId);
+        stoneArray.push(stones[stoneId]);
+      }
     });
 
     return {stoneArray, ids};
@@ -261,6 +308,7 @@ export class RoomOverview extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
+    this.firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
     this.tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
 
     let title = undefined;
@@ -293,7 +341,6 @@ export class RoomOverview extends Component<any, any> {
     else {
       let {stoneArray, ids} = this._getStoneList(stones);
       this._getNearestStoneInRoom(stoneArray, ids);
-
       content = (
         <View>
           <ScrollView style={{position:'relative', top:-1}}>
@@ -331,7 +378,7 @@ export class RoomOverview extends Component<any, any> {
           viewingRemotely={this.viewingRemotely}
           overlayText={this.props.overlayText}
         />
-        <RoomOverviewExplanation
+        <RoomExplanation
           state={state}
           explanation={ this.props.explanation }
           sphereId={ this.props.sphereId }
@@ -355,87 +402,6 @@ export class RoomOverview extends Component<any, any> {
 }
 
 
-/**
- * This element contains all logic to show the explanation bar in the room overview.
- * It requires:
- *  - {object} state
- *  - {string | undefined} explanation
- *  - {string} sphereId
- *  - {string} locationId
- */
-class RoomOverviewExplanation extends Component<any, any> {
-  render() {
-    let state = this.props.state;
-    let sphereId = this.props.sphereId;
-    let locationId = this.props.locationId;
-    let explanation = this.props.explanation;
-
-    // check if we have special cases
-    let amountOfStonesInRoom = Object.keys(getStonesAndAppliancesInLocation(state, sphereId, locationId)).length;
-    let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
-
-    // if the button callback is not undefined at draw time, we draw a button, not a view
-    let buttonCallback = undefined;
-
-    // callback to go to the floating crownstones. Is used twice
-    let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { (Actions as any).roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
-
-    // In case we see a crownstone in setup mode:
-    if (explanation === undefined && seeStoneInSetupMode === true) {
-      // in floating Crownstones
-      if (locationId === null) {
-        explanation = "Crownstones in setup mode have a blue icon."
-      }
-      // Go to the crownstone in setup mode.
-      else {
-        explanation = "Crownstone in setup mode found. Tap here to see it!";
-        buttonCallback = goToFloatingCrownstonesCallback;
-      }
-    }
-    // in case there are no crownstones in the room.
-    else if (explanation === undefined && amountOfStonesInRoom === 0) {
-      // in floating Crownstones
-      if (locationId === null) {
-        explanation = "No Crownstones found."
-      }
-      // there are no crownstones in the sphere
-      else if (Object.keys(state.spheres[sphereId].stones).length === 0) {
-        explanation = "To add a Crownstones to your sphere, hold your phone really close to a new one!"
-      }
-      // there are floating crownstones
-      else if (getFloatingStones(state, sphereId).length > 0) {
-        explanation = "Tap here to see all Crownstones without rooms!";
-        buttonCallback = goToFloatingCrownstonesCallback;
-      }
-      else {
-        explanation = "No Crownstones in this room.";
-      }
-    }
-
-
-    if (explanation === undefined) {
-      return <View />
-    }
-    else if (buttonCallback !== undefined) {
-      return (
-        <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
-          <View style={{flexDirection: 'column', padding:10}}>
-            <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
-          </View>
-        </TouchableOpacity>
-      )
-    }
-    else {
-      return (
-        <View style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}>
-          <View style={{flexDirection: 'column', padding:10}}>
-            <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
-          </View>
-        </View>
-      )
-    }
-  }
-}
 
 export const topBarStyle = StyleSheet.create({
   topBar: {

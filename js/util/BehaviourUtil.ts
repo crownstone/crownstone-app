@@ -150,7 +150,7 @@ export const BehaviourUtil = {
         data['currentUsage'] = 0;
       }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'multiSwitch', state: behaviour.state, intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]], timeout:behaviour.delay}, 3)
+      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'multiSwitch', state: behaviour.state, intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]], timeout:behaviour.delay}, 15)
         .then(() => {
           store.dispatch({
             type: 'UPDATE_STONE_SWITCH_STATE',
@@ -189,7 +189,7 @@ export const BehaviourUtil = {
 
       // if it is light outside and the onlyOnWhenDark is on, we have to return false.
       // it is light outside between the end of the sunrise and the start of the sunset.
-      return (now < times.sunriseEnd.valueOf() || now > times.sunsetStart.valueOf()); // = is dark outside
+      return (now < times.dawn.valueOf() || now > times.dusk.valueOf()); // = is dark outside
     }
     return true;
   }

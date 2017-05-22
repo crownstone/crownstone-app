@@ -4,16 +4,19 @@ To be Released:
 
 - Fixed issue that a setup stone is still visible after it has been set up.
 - Improved responsiveness of text fields.
+- Added ability to update the bootloader of the Crownstones from the app.
 - Added ability to update the firmware of the Crownstones from the app.
 - Introducing a new architecture for more efficient and reliable communication with the Cloud.
 - Increased the minimum sphere exit timeout to 5 minutes, with a default of 10.
 - Added battery saver
 - Fixed Option to turn Crownstones on when its dark outside
-
 - Added privacy options
 - Large refactor of the switching on location changes
 - Now showing the version number on the splash screen and in the settings overview.
 - Revoked permission of Guest to setup Crownstones.
+
+--- iOS release submitted 2017-1-2, Released 2017-02-17 as 1.6.0.4
+
 - Added option to only turn on Crownstones when it is dark outside.
 - Changed the behaviour interface to be easier to use.
 - [Android] Setup Localization button to sidebar.

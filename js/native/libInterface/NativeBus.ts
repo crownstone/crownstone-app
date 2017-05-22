@@ -12,6 +12,7 @@ class NativeBusClass {
       advertisement:        "verifiedAdvertisementData",        // data type = crownstoneAdvertisement // = from crownstone in normal operation mode.
       anyAdvertisement:     "anyVerifiedAdvertisementData",     // data type = crownstoneAdvertisement
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error)
+      dfuProgress:          "dfuProgress",                      // data type = {percentage: number, part: number, totalParts: number, progress: number, currentSpeedBytesPerSecond: number, avgSpeedBytesPerSecond: number}
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
       locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on")
 

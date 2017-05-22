@@ -6,7 +6,6 @@ import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
 import { LOG }                from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
-import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil';
 
 
 /**
@@ -19,7 +18,6 @@ class SetupStateHandlerClass {
   _stonesInSetupStateAdvertisements : any;
   _stonesInSetupStateTypes : any;
   _currentSetupState : any;
-  referenceHandleMap : object;
   _initialized : boolean;
   _ignoreStoneAfterSetup : any;
 
@@ -47,14 +45,6 @@ class SetupStateHandlerClass {
     if (this._initialized === false) {
       this._store = store;
       this._init();
-
-      // TODO: Make into map entity so this is only done once.
-      // refresh maps when the database changes
-      this._store.subscribe(() => {
-        const state = this._store.getState();
-        this.referenceHandleMap = getMapOfCrownstonesInAllSpheresByHandle(state);
-      });
-
     }
   }
 
@@ -86,6 +76,9 @@ class SetupStateHandlerClass {
       });
 
       NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
+        // emit advertisements for other views
+        eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
+
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
 
@@ -160,33 +153,48 @@ class SetupStateHandlerClass {
   
   setupStone(handle, sphereId) {
     if (this._stonesInSetupStateAdvertisements[handle] !== undefined) {
-      let helper = new SetupHelper(
-        this._stonesInSetupStateAdvertisements[handle],
+      return this._setupStone(
+        handle,
+        sphereId,
         this._stonesInSetupStateTypes[handle].name,
         this._stonesInSetupStateTypes[handle].type,
         this._stonesInSetupStateTypes[handle].icon
       );
-
-      this._currentSetupState = {
-        busy: true,
-        handle: handle,
-        name: this._stonesInSetupStateTypes[handle].name,
-        type: this._stonesInSetupStateTypes[handle].type,
-        icon: this._stonesInSetupStateTypes[handle].icon,
-      };
-
-      // stop the timeout that removed this stone from the list.
-      if (this._setupModeTimeouts[handle] !== undefined) {
-        clearTimeout(this._setupModeTimeouts[handle]);
-      }
-
-      return helper.claim(this._store, sphereId);
     }
     else {
       return new Promise((resolve, reject) => {
         reject({code: 1, message:"Stone not available"})
       })
     }
+  }
+
+  setupExistingStone(handle, sphereId, stoneId, silent : boolean = false) {
+    let stoneConfig = this._store.getState().spheres[sphereId].stones[stoneId].config;
+    return this._setupStone(handle, sphereId, stoneConfig.name, stoneConfig.type, stoneConfig.icon, silent);
+  }
+
+  _setupStone(handle, sphereId, name, type, icon, silent : boolean = false) {
+    let helper = new SetupHelper(
+      handle,
+      name,
+      type,
+      icon
+    );
+
+    this._currentSetupState = {
+      busy: true,
+      handle: handle,
+      name: name,
+      type: type,
+      icon: icon,
+    };
+
+    // stop the timeout that removed this stone from the list.
+    if (this._setupModeTimeouts[handle] !== undefined) {
+      clearTimeout(this._setupModeTimeouts[handle]);
+    }
+
+    return helper.claim(this._store, sphereId, silent);
   }
 
   getSetupStones() {
@@ -197,7 +205,7 @@ class SetupStateHandlerClass {
   areSetupStonesAvailable() {
     return (Object.keys(this._stonesInSetupStateAdvertisements).length > 0 || this._currentSetupState.busy);
   }
-  
+
   isSetupInProgress() {
     return this._currentSetupState.busy;
   }
@@ -205,7 +213,6 @@ class SetupStateHandlerClass {
   getStoneInSetupProcess() {
     return {...this._currentSetupState}; 
   }
-
 
 }
 

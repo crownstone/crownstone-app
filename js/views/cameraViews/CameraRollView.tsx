@@ -54,10 +54,13 @@ export class CameraRollView extends Component<any, any> {
         this.setState({pictures: pictures})
       }).catch((err) => {
         if (err.code === "E_UNABLE_TO_LOAD") {
+          let defaultActions = () => {Actions.pop();};
           Alert.alert(
             "I do not have access to your pictures...",
             "You can give me access by going to the settings on your phone, select Crownstone and enable the picture permissions.",
-            [{text:"OK", onPress:() => {Actions.pop();}}]);
+            [{text:"OK", onPress: defaultActions }],
+            { onDismiss: defaultActions}
+          );
         }
         else {
           LOG.error(err.message, err)
