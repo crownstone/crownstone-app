@@ -51,8 +51,9 @@ export class RoomExplanation extends Component<any, any> {
       }
       // Go to the crownstone in setup mode.
       else {
-        explanation = "Crownstone in setup mode found. Tap here to see it!";
-        buttonCallback = goToFloatingCrownstonesCallback;
+        // do nothing at the moment
+        // explanation = "Crownstone in setup mode found. Tap here to see it!";
+        // buttonCallback = goToFloatingCrownstonesCallback;
       }
     }
     // in case there are no crownstones in the room.
@@ -82,20 +83,20 @@ export class RoomExplanation extends Component<any, any> {
     else if (buttonCallback !== undefined) {
       return (
         <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
-      <View style={{flexDirection: 'column', padding:10}}>
-      <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
-      </View>
+        <View style={{flexDirection: 'column', padding:10}}>
+          <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
+        </View>
       </TouchableOpacity>
     )
     }
     else {
       return (
         <View style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}>
-      <View style={{flexDirection: 'column', padding:10}}>
-      <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
-      </View>
-      </View>
-    )
+          <View style={{flexDirection: 'column', padding:10}}>
+            <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
+          </View>
+        </View>
+      )
     }
   }
 }

@@ -123,7 +123,7 @@ const DeviceInfo = require('react-native-device-info');
   // the amount of time between the near/far switching. If you go from near->far, it will ignore the messages for the next TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY ms
   export const TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY = 2000; // ms
 
-  // the amout of time we wait before accepting another tap to toggle to the same crownstone.
+  // the amount of time we wait before accepting another tap to toggle to the same crownstone.
   export const TIME_BETWEEN_TAP_TO_TOGGLES = 5000; // ms
 
 /******************** /TIMINGS ********************/
