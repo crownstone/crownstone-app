@@ -50,8 +50,10 @@ import java.util.UUID;
 
 import nl.dobots.bluenet.ble.base.BleBase;
 import nl.dobots.bluenet.ble.base.BleBaseEncryption;
+import nl.dobots.bluenet.ble.base.callbacks.IBooleanCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IByteArrayCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IDiscoveryCallback;
+import nl.dobots.bluenet.ble.base.callbacks.IIntegerCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IProgressCallback;
 import nl.dobots.bluenet.ble.base.structs.ControlMsg;
 import nl.dobots.bluenet.ble.base.structs.CrownstoneServiceData;
@@ -59,6 +61,7 @@ import nl.dobots.bluenet.ble.base.structs.EncryptionKeys;
 import nl.dobots.bluenet.ble.cfg.BleErrors;
 import nl.dobots.bluenet.ble.cfg.BluenetConfig;
 import nl.dobots.bluenet.ble.core.BleCore;
+import nl.dobots.bluenet.ble.core.callbacks.IDataCallback;
 import nl.dobots.bluenet.ble.core.callbacks.IStatusCallback;
 import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
@@ -105,7 +108,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
 			new Triplet<>(BleCore.class,                 Log.DEBUG,    Log.WARN),
-			new Triplet<>(BleBase.class,                 Log.DEBUG,   Log.WARN),
+			new Triplet<>(BleBase.class,                 Log.DEBUG,   Log.DEBUG),
 			new Triplet<>(BleExt.class,                  Log.WARN,    Log.WARN),
 			new Triplet<>(CrownstoneSetup.class,         Log.WARN,    Log.DEBUG),
 	};
@@ -654,7 +657,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void disconnect(final Callback callback) {
+	public void disconnectCommand(final Callback callback) {
 		// Command the crownstone to disconnect the phone
 		BleLog.getInstance().LOGd(TAG, "Disconnect command");
 
@@ -766,6 +769,31 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
+	public void toggleSwitchState(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "toggleSwitchState");
+		// For now: just toggle relay
+		_bleExt.toggleRelay(new IBooleanCallback() {
+			@Override
+			public void onSuccess(boolean value) {
+				String switchRes = value ? "on" : "off";
+				BleLog.getInstance().LOGi(TAG, "toggled switch " + switchRes);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGi(TAG, "toggle switch failed: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "toggle switch failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
 	public void commandFactoryReset(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "commandFactoryReset");
 		_bleExt.writeFactoryReset(new IStatusCallback() {
@@ -786,6 +814,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				callback.invoke(retVal);
 			}
 		});
+	}
+
+	@ReactMethod
+	public void setupFactoryReset(Callback callback) {
+		commandFactoryReset(callback);
 	}
 
 	@ReactMethod
@@ -981,8 +1014,102 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void enableDfuMode(final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "enableDfuMode");
+	public void getHardwareVersion(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getHardwareVersion");
+		// Returns firmware string as data
+		_bleExt.readHardwareRevision(new IByteArrayCallback() {
+			@Override
+			public void onSuccess(byte[] result) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				String hardwareString = new String(result);
+				retVal.putString("data", hardwareString);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void bootloaderToNormalMode(final String address, final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "bootloaderToNormalMode: " + address);
+		_bleExt.connectAndDiscover(address, new IDiscoveryCallback() {
+			@Override
+			public void onDiscovery(String serviceUuid, String characteristicUuid) {
+
+			}
+
+			@Override
+			public void onSuccess() {
+				_bleExt.getBleBase().subscribe(address, BluenetConfig.DFU_SERVICE_UUID, BluenetConfig.DFU_CONTROL_UUID,
+						new IIntegerCallback() {
+							@Override
+							public void onSuccess(int result) {
+								BleLog.getInstance().LOGd(TAG, "onSuccess: " + result);
+								byte[] val = new byte[1];
+								val[0] = 0x06;
+								_bleExt.getBleBase().write(address, BluenetConfig.DFU_SERVICE_UUID, BluenetConfig.DFU_CONTROL_UUID, val, BleBaseEncryption.ACCESS_LEVEL_ENCRYPTION_DISABLED, new IStatusCallback() {
+									@Override
+									public void onSuccess() {
+										WritableMap retVal = Arguments.createMap();
+										retVal.putBoolean("error", false);
+										callback.invoke(retVal);
+									}
+
+									@Override
+									public void onError(int error) {
+										BleLog.getInstance().LOGd(TAG, "onError: " + error);
+										WritableMap retVal = Arguments.createMap();
+										retVal.putBoolean("error", true);
+										retVal.putString("data", "error: " + error);
+										callback.invoke(retVal);
+									}
+								});
+							}
+
+							@Override
+							public void onError(int error) {
+								BleLog.getInstance().LOGd(TAG, "onError: " + error);
+								WritableMap retVal = Arguments.createMap();
+								retVal.putBoolean("error", true);
+								retVal.putString("data", "error: " + error);
+								callback.invoke(retVal);
+							}
+						},
+						new IDataCallback() {
+							@Override
+							public void onData(JSONObject json) {
+								BleLog.getInstance().LOGd(TAG, "onData: " + json);
+							}
+
+							@Override
+							public void onError(int error) {
+								BleLog.getInstance().LOGd(TAG, "onError: " + error);
+							}
+						});
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "onError: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		}, false); // Don't read session nonce
+	}
+
+	@ReactMethod
+	public void putInDFU(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "putInDFU");
 		_bleExt.resetToBootloader(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
@@ -1002,8 +1129,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void startDfu(String address, String filePath, final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "startDfu");
+	public void setupPutInDFU(Callback callback) {
+		putInDFU(callback);
+	}
+
+	@ReactMethod
+	public void performDfu(String address, String fileUri, final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "performDfu: " + address + " file: " + fileUri);
 		if (_dfuCallback != null) {
 			BleLog.getInstance().LOGw(TAG, "previous callback was not called");
 		}
@@ -1014,11 +1146,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (dev != null) {
 			name = dev.getName();
 		}
-
-		startDfu(address, name, filePath);
+//		startDfu(address, name, fileUri);
+		WritableMap retVal = Arguments.createMap();
+		retVal.putBoolean("error", true);
+		retVal.putString("data", "error: test");
+		_dfuCallback.invoke(retVal);
+		_dfuCallback = null;
 	}
-
-
 
 	@ReactMethod
 	public void getMACAddress(Callback callback) {
@@ -1287,6 +1421,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		setTrackingState(true);
 		_deviceFilter = BleDeviceFilter.anyStone;
 		updateScanner();
+
+		//TODO: send event?
+
 	}
 
 	@ReactMethod
@@ -1595,6 +1732,21 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 		// TODO: should we send the nearest events before returning due to lacking of servicedata / uniqueness?
 
+		if (device.isDfuMode()) {
+			WritableMap dfuAdvertisementMap = Arguments.createMap();
+			dfuAdvertisementMap.putString("handle", device.getAddress());
+			dfuAdvertisementMap.putString("name", device.getName());
+			dfuAdvertisementMap.putInt("rssi", device.getRssi());
+			dfuAdvertisementMap.putBoolean("isCrownstoneFamily", device.isStone());
+			dfuAdvertisementMap.putBoolean("isCrownstonePlug", device.isCrownstonePlug());
+			dfuAdvertisementMap.putBoolean("isCrownstoneBuiltin", device.isCrownstoneBuiltin());
+			dfuAdvertisementMap.putBoolean("isGuidestone", device.isGuidestone());
+			dfuAdvertisementMap.putBoolean("isInDFUMode", device.isDfuMode());
+			dfuAdvertisementMap.putString("serviceUUID", BluenetConfig.DFU_SERVICE_UUID); // not really used
+
+			sendEvent("verifiedDFUAdvertisementData", dfuAdvertisementMap);
+		}
+
 		CrownstoneServiceData serviceData = device.getServiceData();
 		if (serviceData == null) {
 			// Don't send events of devices without service data
@@ -1632,14 +1784,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		advertisementMap.putString("handle", device.getAddress());
 		advertisementMap.putString("name", device.getName());
 		advertisementMap.putInt("rssi", device.getRssi());
-//		advertisementMap.putBoolean("setupPackage", device.isSetupMode());
 		advertisementMap.putBoolean("isCrownstoneFamily", device.isStone());
 		advertisementMap.putBoolean("isCrownstonePlug", device.isCrownstonePlug());
 		advertisementMap.putBoolean("isCrownstoneBuiltin", device.isCrownstoneBuiltin());
 		advertisementMap.putBoolean("isGuidestone", device.isGuidestone());
-		advertisementMap.putBoolean("isValidated", device.isValidatedCrownstone()); // todo: not used anymore?
-
-		advertisementMap.putBoolean("serviceDataAvailable", device.getServiceData() != null);
+		advertisementMap.putBoolean("isInDFUMode", device.isDfuMode());
 
 
 		WritableMap serviceDataMap = Arguments.createMap();
@@ -1671,11 +1820,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 //		sendEvent("advertisementData", advertisementMap);
 		if (device.isValidatedCrownstone()) {
-			if (device.isDfuMode()) {
-				BleLog.getInstance().LOGv(TAG, "sendEvent verifiedDFUAdvertisementData: " + advertisementMap);
-				sendEvent("verifiedDFUAdvertisementData", advertisementMap);
-			}
-			else if(device.isSetupMode()) {
+//			if (device.isDfuMode()) {
+//				BleLog.getInstance().LOGv(TAG, "sendEvent verifiedDFUAdvertisementData: " + advertisementMap);
+//				sendEvent("verifiedDFUAdvertisementData", advertisementMap);
+//			}
+//			else
+			if(device.isSetupMode()) {
 				BleLog.getInstance().LOGv(TAG, "sendEvent verifiedSetupAdvertisementData: " + advertisementMap);
 				sendEvent("verifiedSetupAdvertisementData", advertisementMap);
 			}
@@ -2010,6 +2160,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		@Override
 		public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
 			BleLog.getInstance().LOGd(TAG, "dfu: progress=%d (%d / %d) speed=%f (%f avg)", percent, currentPart, partsTotal, speed, avgSpeed);
+			WritableMap progressMap = Arguments.createMap();
+			progressMap.putInt("part", currentPart);
+			progressMap.putInt("totalParts", partsTotal);
+			progressMap.putInt("progress", percent);
+			progressMap.putDouble("currentSpeedBytesPerSecond", speed);
+			progressMap.putDouble("avgSpeedBytesPerSecond", avgSpeed);
+			sendEvent("dfuProgress", progressMap);
 		}
 
 		@Override
