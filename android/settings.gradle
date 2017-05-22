@@ -3,6 +3,8 @@ rootProject.name = 'Crownstone'
 include ':app'
 include ':bluenet'
 include ':localization'
+include ':dfu'
+project(':dfu').projectDir = new File(rootProject.projectDir, 'Android-DFU-Library/dfu')
 include ':rn-splash-screen'
 project(':rn-splash-screen').projectDir = new File(rootProject.projectDir, '../node_modules/rn-splash-screen/android')
 include ':react-native-vector-icons'
@@ -17,5 +19,5 @@ include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-camera'
 project(':react-native-camera').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-camera/android')
-include ':react-native-error-reporter'
-project(':react-native-error-reporter').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-error-reporter/android')
+include ':react-native-push-notification'
+project(':react-native-push-notification').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-push-notification/android')

@@ -7,7 +7,7 @@
 //
 
 // CalendarManagerBridge.m
-#import "RCTBridgeModule.h"
+#import <React/RCTBridgeModule.h>
 
 
 @interface RCT_EXTERN_MODULE(BluenetJS, NSObject)
@@ -35,9 +35,10 @@ RCT_EXTERN_METHOD(commandFactoryReset:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(recover:(NSString *)crownstoneUUID callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupCrownstone:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
-
+RCT_EXTERN_METHOD(getFirmwareVersion:(RCTResponseSenderBlock)callback)
 
 // Bluenet localization
+RCT_EXTERN_METHOD(requestLocation:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(requestLocationPermission)
 RCT_EXTERN_METHOD(forceClearActiveRegion)
 RCT_EXTERN_METHOD(startIndoorLocalization)
@@ -60,5 +61,18 @@ RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)lo
 
 RCT_EXTERN_METHOD(enableLoggingToFile:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)
+RCT_EXTERN_METHOD(quitApp)
+
+// MESH
+
+RCT_EXTERN_METHOD(meshKeepAlive:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:(NSArray *)stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(meshCommandSetSwitchState:(NSArray<NSNumber *> *)crownstoneIds state:(nonnull NSNumber *)state intent:(nonnull NSNumber *)intent callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
+
+// DFU
+RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *) callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
 
 @end

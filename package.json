@@ -3,50 +3,45 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "initFlow": "flow init",
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "tape -r babel-register ./js/tests/*/*",
-    "clearCloud": "node -r babel-register ./helpers/clearCloud.js",
-    "lint": "eslint ./js"
+    "start": "tsc --watch",
+    "test": "jest --useStderr",
+    "cleanTest": "jest --useStderr --no-cache"
   },
   "dependencies": {
-    "react": "~15.3.2",
-    "react-native": "~0.36.1",
-    "react-native-camera": "https://github.com/lwansbrough/react-native-camera.git",
-    "react-native-device-info": "~0.9.5",
+    "react": "~15.4.1",
+    "react-native": "0.42.0",
+    "react-native-camera": "~0.6.0",
+    "react-native-device-info": "~0.10.2",
     "react-native-drawer": "~2.3.0",
-    "react-native-error-reporter": "~1.0.7",
-    "react-native-fs": "~2.0.1-rc.2",
-    "react-native-image-resizer": "~0.0.10",
-    "react-native-router-flux": "~3.35.0",
-    "react-native-svg": "4.3.0",
-    "react-native-vector-icons": "~2.1.0",
-    "react-redux": "~4.4.5",
-    "react-tween-state": "~0.1.5",
+    "react-native-fs": "~2.1.0-rc.1",
+    "react-native-image-resizer": "~0.1.0",
+    "react-native-push-notification": "^2.2.1",
+    "react-native-router-flux": "~3.37.0",
+    "react-native-svg": "5.1.5",
+    "react-native-vector-icons": "~4.0.0",
+    "react-redux": "~5.0.3",
     "redux": "~3.6.0",
-    "rn-splash-screen": "~2.1.0",
-    "sha-1": "~0.1.1"
+    "rn-splash-screen": "~4.0.0",
+    "sha-1": "~0.1.1",
+    "suncalc": "^1.8.0"
   },
   "devDependencies": {
-    "babel-eslint": "~6.0.4",
-    "babel-jest": "16.0.0",
+    "@types/react": "^15.0.13",
+    "babel-jest": "^19.0.0",
     "babel-preset-react-native": "1.9.0",
     "babel-register": "~6.14.0",
-    "deep-freeze": "0.0.1",
-    "eslint": "~2.8.0",
-    "eslint-plugin-react": "~4.2.3",
-    "flow-bin": "~0.33.0",
-    "jest": "16.0.2",
-    "jest-react-native": "16.0.0",
+    "jest": "^19.0.2",
+    "jest-cli": "^19.0.2",
     "node-fetch": "latest",
     "promise": "latest",
+    "react-addons-test-utils": "^15.4.2",
+    "react-native-cli": "^2.0.1",
     "react-test-renderer": "15.3.2",
     "tape": "~4.5.1",
+    "typescript": "^2.2.1",
     "whatwg-fetch": "^2.0.1"
   },
-  "babel": {
-    "presets": [
-      "jest-react-native"
-    ]
+  "jest": {
+    "preset": "react-native"
   }
 }

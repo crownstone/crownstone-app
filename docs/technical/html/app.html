@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+  <title>App Outlines</title>
+
+  <script type="text/javascript" src="./js/vis.min.js"></script>
+  <link href="./js/vis-network.min.css" rel="stylesheet" type="text/css" />
+
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+
+    #mynetwork {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="mynetwork"></div>
+  <script type="text/javascript">
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+      {id: 'bhc', label: 'BatchCommand\nHandler'},
+      {id: 'singleCommand', label: 'Single\nCommand'},
+      {id: 'promiseManager', label: 'BLE Promise\nManager'},
+      {id: 'views', label: 'Views'},
+      {id: 'setupHandler', label: 'Setup\nHandler'},
+      {id: 'setupHelper', label: 'Setup\nHelper'},
+      {id: 'redux', label: 'Redux Store', shape:'database', font:{vadjust:37}},
+      {id: 'eventbus', label: 'EventBus'},
+      {id: 'nativeBus', label: 'NativeBus'},
+      {id: 'cloud', label: 'Cloud Server', shape:'database', font:{vadjust:37}},
+      {id: 'scheduler', label: 'Scheduler'},
+      {id: 'keepAlive', label: 'KeepAlive\nHandler'},
+      {id: 'advertisement', label: 'Advertisement\nHandler', shape:'box'},
+      {id: 'bridge', label: 'ReactNative Bridge', shape:'box'},
+      {id: 'bluenet', label: 'BLUENET', shape:'box'},
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+      {from: 'bridge', to: 'bluenet', label:''},
+      {from: 'keepAlive', to: 'bhc', label:''},
+      {from: 'bhc', to: 'promiseManager', label:''},
+      {from: 'singleCommand', to: 'promiseManager', label:''},
+      {from: 'promiseManager', to: 'bridge', label:''},
+      {from: 'bridge', to: 'nativeBus', label:''},
+      {from: 'nativeBus', to: 'advertisement', label:''},
+      {from: 'nativeBus', to: 'eventbus', label:''},
+      {from: 'nativeBus', to: 'setupHandler', label:''},
+      {from: 'setupHandler', to: 'eventbus', label:''},
+      {from: 'bluenet', to: 'bridge', label:''},
+      {from: 'eventbus', to: 'views', label:''},
+      {from: 'redux', to: 'eventbus', label:''},
+      {from: 'scheduler', to: 'cloud', label:'sync'},
+      {from: 'scheduler', to: 'keepAlive', label:'periodic'},
+      {from: 'views', to: 'bhc', label:'switch'},
+      {from: 'views', to: 'singleCommand', label:'setup\nt2t cal.\nrecover'},
+      {from: 'redux', to: 'cloud', label:'enhancer'},
+      {from: 'views', to: 'redux', label:''},
+      {from: 'views', to: 'setupHandler', label:''},
+      {from: 'setupHandler', to: 'setupHelper', label:''},
+      {from: 'setupHelper', to: 'eventbus', label:''},
+      {from: 'cloud', to: 'redux', label:''},
+      {from: 'advertisement', to: 'singleCommand', label:'t2t'},
+      {from: 'advertisement', to: 'redux', label:'state'},
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+    var options = {
+      layout: {randomSeed: 112541},
+      nodes: {shape: 'circle'},
+      edges: {arrows: 'to', font: {align:'middle'}},
+      physics: { barnesHut: { gravitationalConstant: -15000}}};
+    var network = new vis.Network(container, data, options);
+  </script>
+</body>
+</html>

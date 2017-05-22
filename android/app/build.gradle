@@ -84,7 +84,8 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+//    buildToolsVersion '25.0.0'
+    buildToolsVersion '23.0.1'
 
     signingConfigs {
         release {
@@ -92,15 +93,16 @@ android {
             storePassword "$System.env.CS_ANDROID_STORE_PASSWORD"
             keyAlias "$System.env.CS_ANDROID_KEY_ALIAS"
             keyPassword "$System.env.CS_ANDROID_KEY_PASSWORD"
+            v2SigningEnabled false // See https://developer.android.com/about/versions/nougat/android-7.0.html#apk_signature_v2
         }
     }
 
     defaultConfig {
         applicationId "rocks.crownstone.consumerapp"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 23
-        versionCode 8
-        versionName "0.7.7"
+        versionCode 16
+        versionName "0.8.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -147,10 +149,15 @@ dependencies {
     compile project(':react-native-fs')
     compile project(':react-native-device-info')
     compile project(':react-native-camera')
-    compile project(':react-native-error-reporter')
+    compile project(':react-native-push-notification')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
+//    compile 'no.nordicsemi.android:dfu:1.3.0'
+    compile project(':dfu')
+    compile ('com.google.android.gms:play-services-gcm:8.1.0') {
+        force = true;
+    }
 }
 
 // Run this once to be able to run the application with BUCK
@@ -161,3 +168,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+// For push notifications
+//apply plugin: 'com.google.gms.google-services'

@@ -1,38 +1,44 @@
-# Crownstone iOS & Android app 
+iOS & Android App for the Crownstone.
 
-The Crownstone iOS and Android apps are work in progress. 
-The roadmap of the software development can be found at [Trello](https://trello.com/b/6rUcIt62/crownstone-transparent-product-roadmap).
-
-The Android development is always a few weeks behind the iOS development, especially with respect to the graphical user interface. 
-
-The application makes use of separate libraries (so called bluenet libraries) that are native to the platform. 
-This is on purpose so that people can be make use of the Crownstone libraries without the need to use React Native.
-See below for getting the libraries.
-
-## Download
-
-The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/app/). 
-
-![Login screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-login.jpeg)
-![Overview screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-overview.jpeg)
-![Room screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-room.jpeg)
+The native libs are not in this project directly.
 
 ## Setup
 
-Dependencies:
+### React Native
 
-* nodejs
-* Carthage (for iOS)
-* Yarn, can be obtained at [yarnpkg.com](https://yarnpkg.com/en/docs/install).
+Assuming you've already installed npm, nodejs and yarn. You can get Yarn here: https://yarnpkg.com/en/docs/install
 
-Setup instructions:
+Make sure typescript 2.2 or higher is installed using:
+
+```
+npm install -g typescript
+```
+
+To download all dependencies, use Yarn:
 
 ```
 yarn
-react-native link
-cd ios
+```
+
+To run the compiler, use:
+
+```
+tsc --watch
+```
+
+or
+
+```
+npm start
+```
+
+
+### iOS
+
+In the ios folder, use Carthage to download the dependencies.
+
+```
 carthage bootstrap --platform iOS --no-use-binaries
-cd ..
 ```
 
 ### Android
@@ -49,41 +55,47 @@ cd ..
 
     Choose the android dir.
 
+3. Clone the dfu lib for android:
+
+        cd android
+        git clone https://github.com/NordicSemiconductor/Android-DFU-Library.git
+        cd ..
+
+4. Modify the build tools version of the dfu lib in _Android-DFU-Library/dfu/build.gradle_:
+    - `compileSdkVersion 23`
+    - `buildToolsVersion '23.0.1'`
+    - `targetSdkVersion 23`
+    - `compile 'com.android.support:support-v4:23.0.1'`
+
 ## Commands
 
 Run the tests:
 
-    npm test
+npm test
 
-Run the lint task:
+Run react-native
 
-    npm run lint
+react-native run-ios
 
-Run react-native for iOS:
+or:
+```
+react-native run-android
+```
 
-    react-native run-ios
-
-Alternatively, run reactive for Android:
-
-    react-native run-android
-
+## Troubleshooting
 
 If there are problems with PHC folders during iOS compilation, remove the build folder in the ios map.
-Cameraroll has to be manually added to iosbuild in 0.22
+Cameraroll has to be manually added to iosbuild in 0.42
 
-## Todo
 
-The slider needs to be edited in order to work, includes are wrong.
+If you get a lot of these messages in the XCode console:
+```
+__nw_connection_get_connected_socket_block_invoke
+```
 
-File issues at the [Github Issue Tracker](https://github.com/crownstone/CrownstoneApp/issues).
+Add this global variable to your build config:
 
-## Copyrights
-
-The copyrights (2014-2017) belongs to the team of Crownstone B.V. and are provided under an noncontagious open-source license:
-
-Authors: Alex de Mulder, Bart van Vliet
-Date: 1 Apr. 2016
-Triple-licensed: LGPL v3+, Apache, MIT
-Crownstone B.V., <https://www.crownstone.rocks>
-Rotterdam, The Netherlands
-
+```
+Xcode menu -> Product -> Edit Scheme...
+Environment Variables -> Add -> Name: "OS_ACTIVITY_MODE", Value:"disable"
+```

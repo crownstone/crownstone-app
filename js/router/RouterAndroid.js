@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
   AppRegistry,
@@ -13,7 +13,7 @@ import {
   View
 } from 'react-native';
 import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
-import { eventBus }               from '../util/eventBus'
+import { eventBus }               from '../util/EventBus'
 import { reducerCreate }          from './store/reducers/navigation'
 import { OptionPopup }            from '../views/components/OptionPopup'
 import { Processing }             from '../views/components/Processing'
@@ -29,8 +29,7 @@ export class Router_Android extends Component {
   render() {
     return (
       <View style={{flex:1, backgroundColor: colors.menuBackground.hex}}>
-        <Router
-          createReducer={reducerCreate} store={this.props.store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.black.hex}}} backgrounds={this.props.backgrounds} getBackground={this.props.getBackground.bind(this)} eventBus={eventBus}>
+        <Router createReducer={reducerCreate} store={this.props.store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.black.hex}}} backgrounds={this.props.backgrounds} getBackground={this.props.getBackground.bind(this)} eventBus={eventBus}>
           <Scene key="drawer" component={SideMenu} open={false} store={this.props.store}>
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                panHandlers={null} hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
@@ -41,8 +40,8 @@ export class Router_Android extends Component {
               <Scene key="picturePreview"             component={Views.PicturePreview}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="aiStart"                    component={Views.AiStart}                    panHandlers={null} hideNavBar={false} direction="vertical" title="Hello!" />
-              <Scene key="roomTraining_roomSize"      component={Views.RoomTraining_roomSize}      hideNavBar={true}  panHandlers={null} direction="vertical" />
-              <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true}  panHandlers={null} direction="horizontal" />
+              <Scene key="roomTraining_roomSize"      component={Views.RoomTraining_roomSize}      panHandlers={null} hideNavBar={true}  direction="vertical" />
+              <Scene key="roomTraining"               component={Views.RoomTraining}               panHandlers={null} hideNavBar={true}  direction="horizontal" />
               <Scene key="roomSelection"              component={Views.RoomSelection}              panHandlers={null} hideNavBar={true}  direction="vertical" title="Move to which Room?" />
               <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
               <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
@@ -56,7 +55,6 @@ export class Router_Android extends Component {
               <Scene key="deviceEditLogic"            component={Views.DeviceEditLogic}            panHandlers={null} hideNavBar={false} title="Device Behaviour" />
               <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select a Device" />
               <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        panHandlers={null} hideNavBar={false} title="Edit Behaviour" />
-              <Scene key="deviceStateEdit"            component={Views.DeviceStateEdit}            panHandlers={null} hideNavBar={false} />
               <Scene key="delaySelection"             component={Views.DelaySelection}             panHandlers={null} hideNavBar={false} title="Set Delay" />
               <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         panHandlers={null} hideNavBar={false} title="Schedule"   rightTitle="Add" />
               <Scene key="deviceScheduleAdd"          component={Views.DeviceScheduleAdd}          panHandlers={null} hideNavBar={false} title="New Event"  rightTitle="Save" />
@@ -64,12 +62,13 @@ export class Router_Android extends Component {
               <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
               <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
               <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          panHandlers={null} hideNavBar={false} title="Developer" />
+              <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}       panHandlers={null} hideNavBar={false} title="Mesh Overview" />
+              <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}            panHandlers={null} hideNavBar={false} title="Developer" />
               <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     panHandlers={null} hideNavBar={false} title="Sphere Overview" />
               <Scene key="settingsSphere"             component={Views.SettingsSphere}             panHandlers={null} hideNavBar={false} title="[Sphere name here]" />
               <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       panHandlers={null} hideNavBar={false} title="Invite" />
-              <Scene key="appComplexity"              component={Views.AppComplexity}              panHandlers={null} hideNavBar={false} title="Settings"/>
             </Scene>
           </Scene>
         </Router>
