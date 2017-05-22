@@ -296,8 +296,7 @@ function handleUserLocationEnter(action, state) {
   if (state.user.uploadLocation === true) {
     let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
-      CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => {
-      });
+      CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => { });
     }
   }
 }
@@ -306,8 +305,7 @@ function handleUserLocationExit(action, state) {
   if (state.user.uploadLocation === true) {
     let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
-      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {
-      });
+      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => { });
     }
   }
 }

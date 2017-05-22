@@ -71,7 +71,15 @@ class SchedulerClass {
     }
 
     if (this.triggers[id] === undefined) {
-      this.triggers[id] = {actions: [], callbacks: [], options: {}, overwritableActions: {}, lastTriggerTime: 0};
+      this.triggers[id] = {
+        active:     true,
+        actions:    [],
+        callbacks:  [],
+        overwritableActions:   {},
+        overwritableCallbacks: {},
+        options:    {},
+        lastTriggerTime: 0
+      };
     }
     this.triggers[id].options = options;
   }
@@ -108,6 +116,19 @@ class SchedulerClass {
     this.triggers[triggerId].actions = [];
     this.triggers[triggerId].overwritableActions = {};
     this.triggers[triggerId].callbacks = [];
+    this.triggers[triggerId].overwritableCallbacks = {};
+  }
+
+  pauseTrigger(triggerId) {
+    if (this.triggers[triggerId]) {
+      this.triggers[triggerId].active = false;
+    }
+  }
+
+  resumeTrigger(triggerId) {
+    if (this.triggers[triggerId]) {
+      this.triggers[triggerId].active = true;
+    }
   }
 
 
@@ -150,11 +171,37 @@ class SchedulerClass {
         }
       }
       else {
-        LOG.error("INVALID callback", callback);
+        LOG.error("Scheduler: INVALID callback", callback);
       }
     }
     else {
-      LOG.error("Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+      LOG.error("Scheduler: Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+    }
+  }
+
+  /**
+   * callbacks will be fired when the time expires
+   * @param triggerId
+   * @param callbackId
+   * @param callback
+   * @param fireAfterLoad
+   */
+  loadOverwritableCallback(triggerId, callbackId, callback, fireAfterLoad = false) {
+    if (this.triggers[triggerId] !== undefined) {
+      if (typeof callback === 'function') {
+        this.triggers[triggerId].overwritableCallbacks[callbackId] = callback;
+
+        // we don't want to trigger a callback right away, if we do, make sure fireAfterLoad = true
+        if (fireAfterLoad === false) {
+          this.triggers[triggerId].lastTriggerTime = new Date().valueOf();
+        }
+      }
+      else {
+        LOG.error("Scheduler: INVALID callback", callback);
+      }
+    }
+    else {
+      LOG.error("Scheduler: Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
     }
   }
 
@@ -204,6 +251,12 @@ class SchedulerClass {
       // check if we have to fire the trigger
       triggerIds.forEach((triggerId) => {
         let trigger = this.triggers[triggerId];
+
+        // if the trigger is paused, ignore.
+        if (trigger.active === false) {
+          return;
+        }
+
         if (trigger.options.repeatEveryNSeconds) {
           // LOG.scheduler("Handling Trigger:", triggerId, trigger.options.repeatEveryNSeconds, Math.round(0.001 * (now - trigger.lastTriggerTime)));
           // We use round in the conversion from millis to seconds so 1.5seconds is also accepted when the target is 2 seconds
@@ -284,6 +337,11 @@ class SchedulerClass {
     trigger.callbacks.forEach((callback) => {
       callback();
     });
+
+    let overwritableCallbackIds = Object.keys(trigger.overwritableCallbacks);
+    overwritableCallbackIds.forEach((callbackId) => {
+      trigger.overwritableCallbacks[callbackId]();
+    })
   }
 
   _flushActions(trigger, state) {

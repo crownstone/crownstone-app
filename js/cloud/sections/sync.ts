@@ -2,6 +2,7 @@ import { CLOUD } from '../cloudAPI'
 import { LOG } from '../../logging/Log'
 import { Util } from '../../util/Util'
 import { Platform } from 'react-native'
+import { syncUsersInLocation } from './syncUsersInSphere'
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -214,6 +215,7 @@ const syncCleanupLocal = function(store, actions, cloudData) {
   return deletedSphere;
 };
 
+
 const syncSpheres = function(store, actions, spheres, spheresData) {
   let cloudSphereUserIds = {};
   let cloudSphereIds = {};
@@ -355,24 +357,9 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
       }
 
       // put the present users from the cloud into the location.
-      let peopleInCloudLocations = {};
-      if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
-        location_from_cloud.presentPeople.forEach((person) => {
-          peopleInCloudLocations[person.Id] = true;
-          // check if the person exists in our sphere and if we are not that person.
-          if (person.id !== state.user.userId && cloudSphereUserIds[person.id] === true) {
-            actions.push({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: person.id}});
-          }
-        });
-      }
-
-      // remove the users from this location that are not in the cloud and that are not the current user
-      if (locationInState) {
-        locationInState.presentUsers.forEach((userId) => {
-          if (peopleInCloudLocations[userId] === undefined && userId !== state.user.userId) {
-            actions.push({type: 'USER_EXIT_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: userId}});
-          }
-        })
+      let userActions = syncUsersInLocation(state, location_from_cloud, locationInState, cloudSphereUserIds[sphere.id], sphere.id);
+      for (let i = 0; i < userActions.length; i++) {
+        actions.push(userActions[i]);
       }
 
     });

@@ -114,6 +114,9 @@ const DeviceInfo = require('react-native-device-info');
   // interval for syncing with the cloud.
   export const SYNC_INTERVAL = 60*10; // s
 
+  // interval for syncing sphere users with the cloud so you see their faces in the app.
+  export const SPHERE_USER_SYNC_INTERVAL = 10; // s --> 10 seconds
+
   // The amount of time to wait until the promise manager gives up on a pending promise.
   export const PROMISE_MANAGER_FALLBACK_TIMEOUT = 60000; // ms --> 1 minute
 
