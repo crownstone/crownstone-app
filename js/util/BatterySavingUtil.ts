@@ -30,16 +30,16 @@ class BatterySavingClass {
    * @param sphereId
    */
   scanOnlyIfNeeded(sphereId = null) {
-    let cancelPostponsedScan = () => {
+    let cancelPostponedScan = () => {
       if (typeof this._cancelPostponedScanStop === 'function') {
         this._cancelPostponedScanStop();
         this._cancelPostponedScanStop = null;
-      };
+      }
     };
 
     // do not do anything to the scanning if high frequency scan is on.
     if (BleUtil.highFrequencyScanUsed() === true) {
-      cancelPostponsedScan();
+      cancelPostponedScan();
       return;
     }
 
@@ -64,7 +64,7 @@ class BatterySavingClass {
     }
 
     if (appInForeground && inSphere || inSphere && notAllHandlesAreKnown === true) {
-      cancelPostponsedScan();
+      cancelPostponedScan();
       BluenetPromiseWrapper.isReady().then(() => {
         Bluenet.startScanningForCrownstonesUniqueOnly();
       });

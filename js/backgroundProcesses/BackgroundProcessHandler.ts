@@ -20,13 +20,14 @@ import { AdvertisementHandler }  from "../native/advertisements/AdvertisementHan
 import { Scheduler }             from "../logic/Scheduler";
 import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
-import { SYNC_INTERVAL }         from "../ExternalConfig";
+import {SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL}         from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 
 
-
+const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
+const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
 
 class BackgroundProcessHandlerClass {
   started : boolean = false;
@@ -97,8 +98,18 @@ class BackgroundProcessHandlerClass {
    */
   startCloudService() {
     // sync every 10 minutes
-    Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:SYNC_INTERVAL});
-    Scheduler.loadCallback('backgroundSync', () => {
+    Scheduler.setRepeatingTrigger(BACKGROUND_SYNC_TRIGGER, {repeatEveryNSeconds:SYNC_INTERVAL});
+    Scheduler.setRepeatingTrigger(BACKGROUND_USER_SYNC_TRIGGER, {repeatEveryNSeconds: SPHERE_USER_SYNC_INTERVAL});
+
+    // if the app is open, update the user locations every 10 seconds
+    Scheduler.loadCallback(BACKGROUND_USER_SYNC_TRIGGER, () => {
+      if (SetupStateHandler.isSetupInProgress() === false) {
+        CLOUD.syncUsers(this.store).catch((err) => { LOG.error("Error during background user sync: ", err)});
+      }
+    });
+
+    // sync the full db with the cloud every 10 minutes
+    Scheduler.loadCallback(BACKGROUND_SYNC_TRIGGER, () => {
       let state = this.store.getState();
       // if a crownstone is in setup mode, we do not sync at that time
       if (SetupStateHandler.isSetupInProgress() === false) {
@@ -162,15 +173,6 @@ class BackgroundProcessHandlerClass {
           eventBus.emit("CalibrateTapToToggle");
       }
     });
-  }
-
-  startBluetoothListener() {
-    // Ensure we start scanning when the bluetooth module is powered on.
-    NativeBus.on(NativeBus.topics.bleStatus, (status) => {
-      if (this.userLoggedIn && status === 'poweredOn') {
-        BatterySavingUtil.scanOnlyIfNeeded();
-      }
-    });
 
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
@@ -178,10 +180,25 @@ class BackgroundProcessHandlerClass {
       // in the foreground: start scanning!
       if (appState === "active" && this.userLoggedIn) {
         BatterySavingUtil.scanOnlyIfNeeded();
+
+        // if the app is open, update the user locations every 10 seconds
+        Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
       }
-      // in the background: stop scanning to save battery!
-      else if (appState === "background") {
+      else {
+        // in the background: stop scanning to save battery!
         BatterySavingUtil.stopScanningIfPossible();
+
+        // remove the user sync so it won't use battery in the background
+        Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);
+      }
+    });
+  }
+
+  startBluetoothListener() {
+    // Ensure we start scanning when the bluetooth module is powered on.
+    NativeBus.on(NativeBus.topics.bleStatus, (status) => {
+      if (this.userLoggedIn && status === 'poweredOn') {
+        BatterySavingUtil.scanOnlyIfNeeded();
       }
     });
   }

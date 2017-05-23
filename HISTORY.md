@@ -2,6 +2,9 @@
 
 To be Released:
 
+- Update the other users in rooms every 10 seconds but only if the app is on screen.
+- Show version information of devices in their edit screen.
+
 --- iOS release submitted 2017-5-22 as 1.8.2
 
 - Fixed issue that a setup stone is still visible after it has been set up.
