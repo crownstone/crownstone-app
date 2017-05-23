@@ -104,7 +104,7 @@ class BackgroundProcessHandlerClass {
     // if the app is open, update the user locations every 10 seconds
     Scheduler.loadCallback(BACKGROUND_USER_SYNC_TRIGGER, () => {
       if (SetupStateHandler.isSetupInProgress() === false) {
-        CLOUD.syncUsers(this.store).catch((err) => { LOG.error("Error during background user sync: ", err)});
+        CLOUD.syncUsers(this.store);
       }
     });
 

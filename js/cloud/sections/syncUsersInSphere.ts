@@ -1,9 +1,10 @@
+import { LOG } from "../../logging/Log";
+
 export const syncUsersInSphere = {
 
   /**
    * This method will check if there are any users in rooms in the active sphere. If so, actions will be dispatched to the store.
    * @param store
-   * @returns {Promise<TResult2|TResult1>}
    */
   syncUsers: function(store) {
       let state = store.getState();
@@ -20,8 +21,9 @@ export const syncUsersInSphere = {
       if (Object.keys(sphereUsers).length <= 1) {
         return;
       }
+
       let stateLocations = state.spheres[activeSphereId].locations;
-      return this.forSphere(activeSphereId).getLocations({background: true})
+      this.forSphere(activeSphereId).getLocations({background: true})
         .then((locations) => {
           locations.forEach((location) => {
             if (stateLocations[location.id]) {
@@ -36,6 +38,7 @@ export const syncUsersInSphere = {
             store.batchDispatch(actions);
           }
         })
+        .catch((err) => { LOG.error("Error during background user sync: ", err)})
     }
 
 };
