@@ -110,7 +110,7 @@ export class RoomLayer extends Component<any, any> {
         radius={this.roomRadius}
         store={this.props.store}
         pos={pos}
-        seeStonesInSetupMode={this.props.seeStonesInSetupMode}
+        seeStonesInSetupMode={SetupStateHandler.areSetupStonesAvailable()}
         viewingRemotely={this.props.viewingRemotely}
         key={locationId || 'floating'}
         actionParams={actionsParams}

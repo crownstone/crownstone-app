@@ -265,8 +265,10 @@ export class DfuOverlay extends Component<any, any> {
         }
       };
 
-      this.processSubscriptions.push(NativeBus.on(NativeBus.topics.advertisement, (data) => {
-        rssiResolver(data, false, false);
+      this.processSubscriptions.push(NativeBus.on(NativeBus.topics.advertisement, (advertisement) => {
+        if (advertisement.handle === stoneConfig.handle) {
+          rssiResolver(advertisement, false, false);
+        }
       }));
 
       this.processSubscriptions.push(NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {

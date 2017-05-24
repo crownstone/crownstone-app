@@ -320,7 +320,8 @@ export class RoomOverview extends Component<any, any> {
     }
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
-    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true;
+    let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
+    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
