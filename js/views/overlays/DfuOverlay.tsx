@@ -84,7 +84,7 @@ export class DfuOverlay extends Component<any, any> {
   initializeProcess() {
     FirmwareHandler.dfuInProgress = true;
     if (Platform.OS === 'android') {
-      this.backButtonFunction = () => { return false; }
+      this.backButtonFunction = () => { return true; };
       BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
     }
   }
