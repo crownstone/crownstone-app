@@ -14,6 +14,7 @@ import { BehaviourUtil }                      from '../../util/BehaviourUtil';
 import { LOG }                                from '../../logging/Log'
 import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
 import { TYPES }                              from '../../router/store/reducers/stones'
+import {FirmwareHandler} from "../firmware/FirmwareHandler";
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
@@ -123,7 +124,7 @@ export class StoneTracker {
 
     let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
     // not all stones have touch to toggle enabled
-    if (stone.config.touchToToggle === true && tapToToggleCalibration !== null) {
+    if (stone.config.touchToToggle === true && tapToToggleCalibration !== null && FirmwareHandler.isDfuInProgress() === false) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
       // the sign > is because the rssi is negative!
       if (ref.touchTemporarilyDisabled === true) {
