@@ -2,6 +2,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
   ActivityIndicator,
+  BackAndroid,
   Image,
   Platform,
   Text,
@@ -30,6 +31,7 @@ export class DfuOverlay extends Component<any, any> {
   showTimeout : any = null;
   fallbackTimeout : any = null;
   uuid : String = null;
+  backButtonFunction : any = null;
 
   constructor() {
     super();
@@ -73,17 +75,27 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   componentWillUnmount() {
-    this.sessionCleanup();
+    this._searchCleanup();
 
     this.unsubscribe.forEach((callback) => {callback()});
     this.unsubscribe = [];
   }
 
+  initializeProcess() {
+    FirmwareHandler.dfuInProgress = true;
+    if (Platform.OS === 'android') {
+      this.backButtonFunction = () => { return false; }
+      BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
+    }
+  }
+
   startProcess() {
+    this.initializeProcess();
     this.setState({step:1});
     let state = this.props.store.getState();
     let userConfig = state.user;
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
+
     FirmwareHandler.getNewVersions(
       userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
       userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion],
@@ -99,7 +111,8 @@ export class DfuOverlay extends Component<any, any> {
       .catch((err) => {
         BleUtil.stopHighFrequencyScanning(this.uuid);
         this.processReject = null;
-        this.sessionCleanup();
+        this._searchCleanup();
+        this._processCleanup();
         if (this.state.step !== -2) {
           if (this.helper) {
             this.helper.finish();
@@ -169,6 +182,7 @@ export class DfuOverlay extends Component<any, any> {
     })
     .then(() => {
       this.helper.finish();
+      this._processCleanup();
       eventBus.emit("DFU_completed", stoneConfig.handle);
       this.props.store.dispatch({
         type: "UPDATE_STONE_CONFIG",
@@ -256,7 +270,7 @@ export class DfuOverlay extends Component<any, any> {
           BleUtil.stopHighFrequencyScanning(this.uuid);
           let timeSeenView = new Date().valueOf() - timeStart;
           this.processReject = null;
-          this.sessionCleanup();
+          this._searchCleanup();
           if (timeSeenView < minimumTimeVisibleWhenShown && (this.state.step === 3 || this.state.step === 4)) {
             setTimeout(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView)
           }
@@ -286,7 +300,7 @@ export class DfuOverlay extends Component<any, any> {
     });
   }
 
-  sessionCleanup() {
+  _searchCleanup() {
     clearTimeout(this.showTimeout);
     clearTimeout(this.fallbackTimeout);
 
@@ -300,6 +314,14 @@ export class DfuOverlay extends Component<any, any> {
     this.paused = false;
   }
 
+  _processCleanup() {
+    FirmwareHandler.dfuInProgress = false;
+    if (Platform.OS === 'android') {
+      BackAndroid.removeEventListener('hardwareBackPress', this.backButtonFunction);
+      this.backButtonFunction = null;
+    }
+  }
+
 
   getContent() {
     let abort = () => {
@@ -309,7 +331,7 @@ export class DfuOverlay extends Component<any, any> {
         "Are you sure?",
         "You can always update this Crownstone later by tapping on it again.",
         [{text:'Not yet', onPress: defaultAction }, {text:'OK', onPress: () => {
-          this.sessionCleanup();
+          this._searchCleanup();
           eventBus.emit("updateCrownstoneFirmwareEnded");
           this.setState({visible: false});
         }}],
@@ -560,7 +582,7 @@ export class DfuOverlay extends Component<any, any> {
             [
               {text:'No'},
               {text:'Yes', onPress: () => {
-                this.sessionCleanup();
+                this._searchCleanup();
                 eventBus.emit("updateCrownstoneFirmwareEnded");
                 this.setState({visible: false});
               }}
