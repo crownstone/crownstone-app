@@ -169,6 +169,7 @@ export class DfuOverlay extends Component<any, any> {
     })
     .then(() => {
       this.helper.finish();
+      eventBus.emit("DFU_completed", stoneConfig.handle);
       this.props.store.dispatch({
         type: "UPDATE_STONE_CONFIG",
         stoneId: this.state.stoneId,

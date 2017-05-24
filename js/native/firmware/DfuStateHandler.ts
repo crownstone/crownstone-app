@@ -25,6 +25,12 @@ class DfuStateHandlerClass {
     if (this._initialized === false) {
       this._store = store;
       this._init();
+
+      eventBus.on("DFU_completed", (handle) => {
+        this._cleanup(handle);
+        // scan hf just in case for a short time afterwards
+        BleUtil.startHighFrequencyScanning(this._uuid, 2500);
+      })
     }
   }
 
