@@ -164,25 +164,15 @@ class AdvertisementHandlerClass {
       return;
     }
 
-    // --------------------- handle errors --------------------------- //
-    LOG.info("AdvertisementHandler:", advertisement.serviceData)
-    if (advertisement.serviceData.hasError === true && stoneFromServiceData.errors.hasError === false) {
-      BatchCommandHandler.load(
-        stoneFromServiceData,
-        referenceByCrownstoneId.id,
-        advertisement.referenceId,
-        {commandName:'getErrors'},
-        100,
-      )
-        .then((errors) => {
-          this.store.dispatch({type:'UPDATE_STONE_ERRORS', data: errors});
-          eventBus.emit("checkErrors");
-        })
-        .catch((err) => { LOG.error('AdvertisementHandler: Could not get errors from Crownstone.', err); })
-      BatchCommandHandler.execute();
+    // --------------------- Pass errors to error Watcher --------------------------- //
+    if (advertisement.serviceData.hasError === true) {
+      eventBus.emit("errorDetectedInAdvertisement", {
+        advertisement: advertisement,
+        stone: stoneFromServiceData,
+        stoneId: referenceByCrownstoneId.id,
+        sphereId: advertisement.referenceId
+      });
     }
-
-
     // --------------------- /handle errors --------------------------- //
 
 

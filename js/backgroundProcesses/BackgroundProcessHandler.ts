@@ -20,10 +20,11 @@ import { AdvertisementHandler }  from "../native/advertisements/AdvertisementHan
 import { Scheduler }             from "../logic/Scheduler";
 import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
-import {SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL}         from "../ExternalConfig";
+import { SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
+import {ErrorWatcher} from "./ErrorWatcher";
 
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -309,6 +310,7 @@ class BackgroundProcessHandlerClass {
     KeepAliveHandler.loadStore(this.store);
     FirmwareWatcher.loadStore(this.store);
     BatterySavingUtil.loadStore(this.store);
+    ErrorWatcher.loadStore(this.store);
     // NotificationHandler.loadStore(store);
   }
 }

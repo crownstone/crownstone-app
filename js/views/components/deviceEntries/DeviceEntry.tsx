@@ -17,6 +17,9 @@ import { Util } from '../../../util/Util'
 import { styles, colors, screenWidth } from '../../styles'
 import {AlternatingContent} from "../animated/AlternatingContent";
 import {ALWAYS_DFU_UPDATE} from "../../../ExternalConfig";
+import {stoneTypes} from "../../../router/store/reducers/stones";
+import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
+import {INTENTS} from "../../../native/libInterface/Constants";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -38,7 +41,7 @@ export class DeviceEntry extends Component<any, any> {
     this.openHeight = this.baseHeight + this.optionsHeight;
     this.unsubscribe = () => {};
 
-    this.state = {height: new Animated.Value(this.baseHeight), optionsHeight:  new Animated.Value(0), optionsOpen: false};
+    this.state = {height: new Animated.Value(this.baseHeight), optionsHeight:  new Animated.Value(0), optionsOpen: false, pendingCommand: false};
     this.optionsAreOpen = false;
     this.animating = false;
     this.id = Util.getUUID();
@@ -107,17 +110,38 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
-  _pressedDevice() {
-    this.props.onChange((this.props.state === 1 ? 0 : 1));
-  }
-
-  _getControl() {
-    let content;
-    if (this.props.disabled === false) {
-      content = <Switch value={this.props.state === 1} onValueChange={this._pressedDevice.bind(this)} />
+  _pressedDevice(stone) {
+    let newState = (stone.state.state === 1 ? 0 : 1);
+    this.setState({pendingCommand:true});
+    let data = {state: newState};
+    if (newState === 0) {
+      data["currentUsage"] = 0;
     }
 
-    if (this.props.pending === true) {
+    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:'multiSwitch', state: newState, intent: INTENTS.manual, timeout: 0})
+      .then(() => {
+        this.props.store.dispatch({
+          type: 'UPDATE_STONE_SWITCH_STATE',
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          data: data
+        });
+        this.setState({pendingCommand:false});
+      })
+      .catch((err) => {
+        this.setState({pendingCommand:false});
+      });
+
+    BatchCommandHandler.executePriority();
+  }
+
+  _getControl(stone) {
+    let content;
+    if (stone.config.disabled === false) {
+      content = <Switch value={stone.state.state === 1} onValueChange={() => { this._pressedDevice(stone); }} />
+    }
+
+    if (this.state.pendingCommand === true) {
       content = <ActivityIndicator animating={true} size="large" />
     }
 
@@ -204,6 +228,11 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   render() {
+    let state = this.props.store.getState();
+    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;
+    let useControl = stone.config.type !== stoneTypes.guidestone;
+
     return (
       <Animated.View style={{flexDirection: 'column', height: this.state.height,  flex: 1, overflow:'hidden'}}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
@@ -215,12 +244,11 @@ export class DeviceEntry extends Component<any, any> {
             this._toggleOptions();
           }}>
             <View style={{flexDirection: 'column'}}>
-              <Text style={{fontSize: 17, fontWeight: '100'}}>{this.props.name}</Text>
+              <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
               {this._getSubText()}
             </View>
           </TouchableOpacity>
-          {this.props.navigation === true ? <Icon name="ios-arrow-forward" size={23} color={'#bababa'}/> : undefined}
-          {this.props.control === true ? this._getControl() : undefined}
+          {useControl === true ? this._getControl(stone) : undefined}
           {this.state.optionsOpen === true ? undefined :
             <View style={{position:'absolute', top: this.baseHeight-8, left: 0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray2.hex}} />
           }
@@ -285,3 +313,34 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 }
+//
+//
+// onChange={(switchState) => {
+//   this.showPending(stoneId);
+//   let data = {state: switchState};
+//   if (switchState === 0) {
+//     data["currentUsage"] = 0;
+//   }
+//
+//   BatchCommandHandler.loadPriority(item.stone, stoneId, this.props.sphereId, {commandName:'multiSwitch', state: switchState, intent:INTENTS.manual, timeout: 0})
+//     .then(() => {
+//       this.props.store.dispatch({
+//         type: 'UPDATE_STONE_SWITCH_STATE',
+//         sphereId: this.props.sphereId,
+//         stoneId: stoneId,
+//         data: data
+//       });
+//       this.clearPending(stoneId);
+//     })
+//     .catch((err) => {
+//       this.clearPending(stoneId);
+//     });
+//
+//   BatchCommandHandler.executePriority();
+// }}
+// onMove={() => {
+//   Actions.pop();
+//   (Actions as any).roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.viewingRemotely});
+// }}
+// onChangeType={() => { (Actions as any).deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
+// onChangeSettings={() => { (Actions as any).deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}

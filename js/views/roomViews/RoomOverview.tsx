@@ -40,13 +40,11 @@ import {RoomExplanation} from "../components/RoomExplanation";
 
 
 export class RoomOverview extends Component<any, any> {
-  tapToToggleCalibration : any;
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
   justFinishedSetup : any;
   nearestStoneId : any;
-  firmwareVersionsAvailable : any = {};
 
   constructor() {
     super();
@@ -150,69 +148,16 @@ export class RoomOverview extends Component<any, any> {
             <DeviceEntry
               initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
               eventBus={this.props.eventBus}
-              name={item.device.config.name}
+              store={this.props.store}
               stoneId={stoneId}
               sphereId={this.props.sphereId}
-              icon={item.device.config.icon}
-              state={item.stone.state.state}
-              canUpdate={Util.versions.isLower(item.stone.config.firmwareVersion, this.firmwareVersionsAvailable[item.stone.config.hardwareVersion])}
-              currentUsage={item.stone.config.type !== stoneTypes.guidestone ? item.stone.state.currentUsage : undefined}
-              navigation={false}
-              tapToToggleCalibration={this.tapToToggleCalibration}
-              control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
-              pending={this.state.pendingRequests[stoneId] !== undefined}
-              disabled={item.stone.config.disabled || this.viewingRemotely || SetupStateHandler.isSetupInProgress() }
-              disabledDescription={SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' }
-              dimmable={item.device.config.dimmable}
-              showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
-              rssi={item.stone.config.rssi}
+              viewingRemotely={this.viewingRemotely}
               nearest={stoneId === this.nearestStoneId}
-              onChange={(switchState) => {
-                this.showPending(stoneId);
-                let data = {state: switchState};
-                if (switchState === 0) {
-                  data["currentUsage"] = 0;
-                }
-
-                BatchCommandHandler.loadPriority(item.stone, stoneId, this.props.sphereId, {commandName:'multiSwitch', state: switchState, intent:INTENTS.manual, timeout: 0})
-                  .then(() => {
-                    this.props.store.dispatch({
-                      type: 'UPDATE_STONE_SWITCH_STATE',
-                      sphereId: this.props.sphereId,
-                      stoneId: stoneId,
-                      data: data
-                    });
-                    this.clearPending(stoneId);
-                  })
-                  .catch((err) => {
-                    this.clearPending(stoneId);
-                  });
-
-                BatchCommandHandler.executePriority();
-              }}
-              onMove={() => {
-                Actions.pop();
-                (Actions as any).roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.viewingRemotely});
-              }}
-              onChangeType={() => { (Actions as any).deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
-              onChangeSettings={() => { (Actions as any).deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
             />
           </View>
         </View>
       );
     }
-  }
-
-  showPending(id) {
-    let pendingRequests = this.state.pendingRequests;
-    pendingRequests[id] = true;
-    this.setState({pendingRequests:pendingRequests})
-  }
-
-  clearPending(id) {
-    let pendingRequests = this.state.pendingRequests;
-    delete pendingRequests[id];
-    this.setState({pendingRequests:pendingRequests})
   }
 
   _getStoneList(stones) {
@@ -308,8 +253,6 @@ export class RoomOverview extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    this.firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
-    this.tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
 
     let title = undefined;
     if (this.props.locationId !== null) {

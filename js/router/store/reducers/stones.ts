@@ -65,6 +65,7 @@ let defaultSettings = {
     temperatureChip: false,
     temperatureDimmer: false,
     hasError: false,
+    advertisementError: false,
   }
 };
 
@@ -268,6 +269,7 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
     case 'UPDATE_STONE_ERRORS':
       if (action.data) {
         let newState = {...state};
+        newState.advertisementError = update(action.data.advertisementError, newState.advertisementError);
         newState.overCurrent       = update(action.data.overCurrent,       newState.overCurrent);
         newState.overCurrentDimmer = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
         newState.temperatureChip   = update(action.data.temperatureChip,   newState.temperatureChip);
