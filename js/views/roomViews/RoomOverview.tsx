@@ -150,6 +150,7 @@ export class RoomOverview extends Component<any, any> {
               eventBus={this.props.eventBus}
               store={this.props.store}
               stoneId={stoneId}
+              locationId={this.props.locationId}
               sphereId={this.props.sphereId}
               viewingRemotely={this.viewingRemotely}
               nearest={stoneId === this.nearestStoneId}
