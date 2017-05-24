@@ -30,6 +30,7 @@ interface BluenetPromiseWrapperProtocol {
   performDFU(handle : string, uri: string ): Promise<void>,
   setupFactoryReset(): Promise<void>,
   bootloaderToNormalMode( handle : string ): Promise<void>,
+  getErrors(): Promise<any>,
 }
 
 interface crownstoneServiceData {
@@ -41,6 +42,7 @@ interface crownstoneServiceData {
   powerUsage        : number,
   accumulatedEnergy : number,
   newDataAvailable  : boolean,
+  hasError          : boolean,
   stateOfExternalCrownstone: boolean,
   setupMode         : boolean,
   random            : string

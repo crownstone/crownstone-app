@@ -6,6 +6,7 @@ import { LOG_BLE } from '../../ExternalConfig'
 import { eventBus }  from '../../util/EventBus'
 import { Util }  from '../../util/Util'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
 let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
@@ -159,9 +160,30 @@ class AdvertisementHandlerClass {
     // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
     // reset is complete.
     if (stoneFromAdvertisement.config.dfuResetRequired === true) {
-      LOG.debug("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
+      LOG.debug('AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.');
       return;
     }
+
+    // --------------------- handle errors --------------------------- //
+    LOG.info("AdvertisementHandler:", advertisement.serviceData)
+    if (advertisement.serviceData.hasError === true && stoneFromServiceData.errors.hasError === false) {
+      BatchCommandHandler.load(
+        stoneFromServiceData,
+        referenceByCrownstoneId.id,
+        advertisement.referenceId,
+        {commandName:'getErrors'},
+        100,
+      )
+        .then((errors) => {
+          this.store.dispatch({type:'UPDATE_STONE_ERRORS', data: errors});
+          eventBus.emit("checkErrors");
+        })
+        .catch((err) => { LOG.error('AdvertisementHandler: Could not get errors from Crownstone.', err); })
+      BatchCommandHandler.execute();
+    }
+
+
+    // --------------------- /handle errors --------------------------- //
 
 
     // --------------------- Update the Mesh Network --------------------------- //

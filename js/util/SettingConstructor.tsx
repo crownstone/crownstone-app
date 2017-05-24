@@ -17,7 +17,7 @@ import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
-import {MESH_ENABLED} from "../ExternalConfig";
+import { MESH_ENABLED } from "../ExternalConfig";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {

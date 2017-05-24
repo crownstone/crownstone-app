@@ -58,6 +58,13 @@ let defaultSettings = {
     onRoomExit:  { /* toggleState */ },
     onNear:      { /* toggleState */ },
     onAway:      { /* toggleState */ },
+  },
+  errors: {
+    overCurrent: false,
+    overCurrentDimmer: false,
+    temperatureChip: false,
+    temperatureDimmer: false,
+    hasError: false,
   }
 };
 
@@ -255,6 +262,35 @@ let scheduleReducer = (state = {}, action : any = {}) => {
   }
 };
 
+
+let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
+  switch (action.type) {
+    case 'UPDATE_STONE_ERRORS':
+      if (action.data) {
+        let newState = {...state};
+        newState.overCurrent       = update(action.data.overCurrent,       newState.overCurrent);
+        newState.overCurrentDimmer = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
+        newState.temperatureChip   = update(action.data.temperatureChip,   newState.temperatureChip);
+        newState.temperatureDimmer = update(action.data.temperatureDimmer, newState.temperatureDimmer);
+
+        let hasError = false;
+        let errorKeys = Object.keys(action.data);
+        for (let i = 0; i < errorKeys.length; i++) {
+          if (action.data[errorKeys[i]] === true) {
+            hasError = true; break;
+          }
+        }
+
+        newState.hasError = hasError;
+        return newState;
+      }
+      return state;
+    default:
+      return state;
+  }
+};
+
+
 let stoneBehavioursReducer = combineReducers({
   onHomeEnter: behaviourReducerOnHomeEnter,
   onHomeExit:  behaviourReducerOnHomeExit,
@@ -270,7 +306,8 @@ let combinedStoneReducer = combineReducers({
   state: stoneStateReducer,
   behaviour: stoneBehavioursReducer,
   schedule: scheduleReducer,
-  statistics: stoneStatisticsReducer
+  statistics: stoneStatisticsReducer,
+  errors: stoneErrorsReducer
 });
 
 // stonesReducer

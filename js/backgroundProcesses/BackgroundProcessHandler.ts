@@ -82,6 +82,8 @@ class BackgroundProcessHandlerClass {
 
         LocationHandler.applySphereStateFromStore();
 
+        this.checkErrors(null);
+
         let state = this.store.getState();
         Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
       });
@@ -90,6 +92,27 @@ class BackgroundProcessHandlerClass {
       this.startStore();
     }
     this.started = true;
+  }
+
+
+  checkErrors(sphereId = null) {
+    let state = this.store.getState();
+    let presentSphere = sphereId || Util.data.getPresentSphere(state);
+    if (presentSphere && state.spheres[presentSphere]) {
+      let errorsFound = false;
+      let stonesContainingError = [];
+
+      Util.data.callOnStonesInSphere(state, presentSphere, (stoneId, stone) => {
+        if (stone.errors.hasError === true) {
+          errorsFound = true;
+          stonesContainingError.push({sphereId: presentSphere, stoneId: stoneId, stone:stone});
+        }
+      });
+
+      if (errorsFound) {
+        eventBus.emit("showErrorOverlay", stonesContainingError)
+      }
+    }
   }
 
 
@@ -161,6 +184,9 @@ class BackgroundProcessHandlerClass {
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
+      // check the state of the crownstone errors and show overlay if needed.
+      this.checkErrors(sphereId);
+
       // do not show popup during setup.
       if (SetupStateHandler.isSetupInProgress() === true) {
         return;
@@ -172,6 +198,11 @@ class BackgroundProcessHandlerClass {
         if (Util.data.userHasPlugsInSphere(state,sphereId))
           eventBus.emit("CalibrateTapToToggle");
       }
+    });
+
+    // check errors if we obtained something from the advertisements.
+    eventBus.on("checkErrors", () => {
+      this.checkErrors();
     });
 
     // listen to the state of the app: if it is in the foreground or background

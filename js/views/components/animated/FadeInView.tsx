@@ -7,6 +7,7 @@ import { LOG } from '../../../logging/Log'
 
 export class FadeInView extends Component<any, any> {
   visible : boolean;
+  maxOpacity : number;
   pendingTimeout : any;
 
   constructor(props) {
@@ -14,17 +15,18 @@ export class FadeInView extends Component<any, any> {
 
     this.state = {show: props.visible || false, viewOpacity: new Animated.Value(props.visible ? 1 : 0)};
     this.visible = props.visible || false;
+    this.maxOpacity = props.maxOpacity || 1;
     this.pendingTimeout = null;
   }
 
   componentWillUpdate(nextProps) {
     let defaultDuration = 200;
-    if (this.visible !== nextProps.visible) {
+    if (this.visible !== nextProps.visible || this.maxOpacity !== nextProps.maxOpacity) {
       if (nextProps.visible === true) {
         this.setState({show: true});
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;
-          Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || defaultDuration}).start();
+          Animated.timing(this.state.viewOpacity, {toValue: nextProps.maxOpacity, duration:this.props.duration || defaultDuration}).start();
         },0);
       }
       else {
@@ -35,6 +37,7 @@ export class FadeInView extends Component<any, any> {
         },this.props.duration || defaultDuration);
       }
       this.visible = nextProps.visible;
+      this.maxOpacity = nextProps.maxOpacity;
     }
   }
 

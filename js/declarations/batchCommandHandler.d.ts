@@ -82,7 +82,8 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'setSwitchState', state : number } |
   { commandName : 'multiSwitch', state : number, timeout : number, intent: number } |
   { commandName : 'getFirmwareVersion' } |
-  { commandName : 'getHardwareVersion' }
+  { commandName : 'getHardwareVersion' } |
+  { commandName : 'getErrors' }
 
 
 interface batchCommands  {

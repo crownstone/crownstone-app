@@ -19,6 +19,7 @@ import { OptionPopup }               from '../views/components/OptionPopup'
 import { Processing }                from '../views/components/Processing'
 import { SideMenu }                  from '../views/components/SideMenu/SideMenu'
 import { DfuOverlay }                from '../views/overlays/DfuOverlay'
+import { ErrorOverlay }              from '../views/overlays/ErrorOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
 import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
 import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
@@ -80,6 +81,7 @@ export class Router_Android extends Component {
         <TapToToggleCalibration store={this.props.store} />
         <BleStateOverlay />
         <LocationPermissionOverlay />
+        <ErrorOverlay />
         <OptionPopup />
         <Processing />
       </View>

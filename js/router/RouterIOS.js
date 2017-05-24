@@ -19,6 +19,7 @@ import { reducerCreate }             from './store/reducers/navigation'
 import { OptionPopup }               from '../views/components/OptionPopup'
 import { Processing }                from '../views/components/Processing'
 import { DfuOverlay }                from '../views/overlays/DfuOverlay'
+import { ErrorOverlay }              from '../views/overlays/ErrorOverlay'
 import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
 import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
@@ -86,6 +87,7 @@ export class Router_IOS extends Component {
         <TapToToggleCalibration store={this.props.store} />
         <LocationPermissionOverlay />
         <BleStateOverlay />
+        <ErrorOverlay />
         <OptionPopup />
         <Processing />
       </View>

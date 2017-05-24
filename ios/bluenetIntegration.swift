@@ -635,6 +635,21 @@ open class BluenetJS: NSObject {
       }
   }
   
+  
+  @objc func getErrors(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.state.getErrors()
+      .then{(errors : CrownstoneErrors) -> Void in callback([["error" : false, "data": errors.getDictionary()]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getErrors"]])
+        }
+    }
+  }
+  
+  
   @objc func recover(_ crownstoneHandle: String, callback: @escaping RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenet.control.recoverByFactoryReset(crownstoneHandle)
       .then{_ in callback([["error" : false]])}

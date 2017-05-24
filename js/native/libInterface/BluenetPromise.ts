@@ -94,5 +94,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },
   toggleSwitchState:          () => { return BluenetPromise('toggleSwitchState'); },
   bootloaderToNormalMode:     ( handle ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
+  getErrors:                  () => { return BluenetPromise('getErrors'); }, // returns { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
+
 };
 

@@ -185,8 +185,8 @@ class BatchCommandHandlerClass {
       if (directCommands[todo.sphereId] === undefined) { directCommands[todo.sphereId] = []; }
       if (meshNetworks[todo.sphereId]   === undefined) { meshNetworks[todo.sphereId]   = {}; }
 
-      // mesh not supported / no mesh detected for this stone
-      if (MESH_ENABLED === false || stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
+      // mesh not supported, no mesh detected for this stone
+      if (!MESH_ENABLED || stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
         // handle this 1:1
         directCommands[todo.sphereId].push(todo);
       }
@@ -353,6 +353,9 @@ class BatchCommandHandlerClass {
                 break;
               case 'getHardwareVersion':
                 actionPromise = BluenetPromiseWrapper.getHardwareVersion();
+                break;
+              case 'getErrors':
+                actionPromise = BluenetPromiseWrapper.getErrors();
                 break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive();
