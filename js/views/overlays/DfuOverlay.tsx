@@ -32,6 +32,7 @@ export class DfuOverlay extends Component<any, any> {
   fallbackTimeout : any = null;
   uuid : String = null;
   backButtonFunction : any = null;
+  killProcess : boolean = false;
 
   constructor() {
     super();
@@ -76,6 +77,9 @@ export class DfuOverlay extends Component<any, any> {
 
   componentWillUnmount() {
     this._searchCleanup();
+    this._processCleanup();
+
+    this.killProcess = true;
 
     this.unsubscribe.forEach((callback) => {callback()});
     this.unsubscribe = [];
@@ -83,6 +87,7 @@ export class DfuOverlay extends Component<any, any> {
 
   initializeProcess() {
     FirmwareHandler.dfuInProgress = true;
+    this.killProcess = false;
     if (Platform.OS === 'android') {
       this.backButtonFunction = () => { return true; };
       BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
@@ -109,13 +114,17 @@ export class DfuOverlay extends Component<any, any> {
         return this.startDFU(userConfig, stoneConfig);
       })
       .catch((err) => {
-        BleUtil.stopHighFrequencyScanning(this.uuid);
-        this.processReject = null;
+        let killCurrentProcess = this.killProcess;
         this._searchCleanup();
         this._processCleanup();
+
+        if (killCurrentProcess === true) {
+          LOG.error("DfuOverlay: killProcess is true. Aborting DFU");
+          return;
+        }
+
         if (this.state.step !== -2) {
           if (this.helper) {
-            this.helper.finish();
             // this means that DFU was successful but we failed at performing setup.
             if (this.helper.dfuSuccessful === true) {
               this.props.store.dispatch({
@@ -181,7 +190,6 @@ export class DfuOverlay extends Component<any, any> {
       }
     })
     .then(() => {
-      this.helper.finish();
       this._processCleanup();
       eventBus.emit("DFU_completed", stoneConfig.handle);
       this.props.store.dispatch({
@@ -232,6 +240,10 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   _searchForCrownstone(minimumTimeVisibleWhenShown = 2000) : Promise<any> {
+    if (this.killProcess === true) {
+      throw "DFU Aborted.";
+    }
+
     let timeStart = new Date().valueOf();
     let searchTimeBeforeView = 2000;
     let state = this.props.store.getState();
@@ -315,11 +327,19 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   _processCleanup() {
+    BleUtil.stopHighFrequencyScanning(this.uuid);
+    this.processReject = null;
+
     FirmwareHandler.dfuInProgress = false;
     if (Platform.OS === 'android') {
       BackAndroid.removeEventListener('hardwareBackPress', this.backButtonFunction);
       this.backButtonFunction = null;
     }
+
+    this.killProcess = false;
+
+    if (this.helper)
+      this.helper.finish();
   }
 
 
