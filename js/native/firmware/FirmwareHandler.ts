@@ -43,7 +43,12 @@ class FirmwareHandlerClass {
 
 
   download(sourceDetails, type) {
+    // set path depending on ios or android
     let toPath = RNFS.DocumentDirectoryPath + '/' + type + '.zip';
+    if (Platform.OS === 'android') {
+      toPath = RNFS.ExternalDirectoryPath + '/' + type + '.zip';
+    }
+
     this.paths[type] = toPath;
     // remove the file we will write to if it exists
     return safeDeleteFile(toPath)
