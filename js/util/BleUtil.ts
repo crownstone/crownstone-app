@@ -127,7 +127,7 @@ export const BleUtil = {
    * @param noTimeout   | Bool or timeout in millis
    * @returns {function()}
    */
-  startHighFrequencyScanning: function(id, noTimeout = false) {
+  startHighFrequencyScanning: function(id, noTimeout : boolean | number = false) {
     let enableTimeout = noTimeout === false;
     let timeoutDuration = HIGH_FREQUENCY_SCAN_MAX_DURATION;
     if (typeof noTimeout === 'number' && noTimeout > 0) {

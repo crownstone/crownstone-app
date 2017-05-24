@@ -6,6 +6,7 @@ import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
 import { LOG }                from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
+import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 
 
 /**
@@ -81,6 +82,11 @@ class SetupStateHandlerClass {
 
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
+
+        // DFU takes preference over Setup. DFU can reserve a setup Crownstone for the setup process.
+        if (DfuStateHandler.handleReservedForDfu(handle)) {
+          return;
+        }
 
         // if we just completed the setup of this stone, we ignore it for a while to avoid duplicates.
         if (this._ignoreStoneAfterSetup[handle]) {

@@ -171,6 +171,7 @@ export const DataUtil = {
     }
     return undefined;
   },
+
 };
 
 export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {
@@ -335,7 +336,9 @@ export const getUserLevelInSphere = function(state, sphereId) {
       sphereId: sphere id that contains stone
       stoneConfig: config of stone
       applianceName: name of appliance
+      applianceId: applianceId in redux
       locationName: name of location
+      locationId: locationId in redux
     }
  */
 export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
@@ -356,7 +359,9 @@ export const getMapOfCrownstonesInAllSpheresByHandle = function(state) {
       sphereId: sphere id that contains stone
       stoneConfig: config of stone
       applianceName: name of appliance
+      applianceId: applianceId in redux
       locationName: name of location
+      locationId: locationId in redux
     }
  */
 export const getMapOfCrownstonesBySphereByHandle = function(state) {
@@ -377,7 +382,9 @@ export const getMapOfCrownstonesBySphereByHandle = function(state) {
       sphereId: sphere id that contains stone
       stoneConfig: config of stone
       applianceName: name of appliance
+      applianceId: applianceId in redux
       locationName: name of location
+      locationId: locationId in redux
     }
  */
 export const getMapOfCrownstonesInAllSpheresByCID = function(state) {
@@ -406,8 +413,10 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
         name: stoneConfig.name,
         sphereId: sphereId,
         stoneConfig: stoneConfig,
-        applianceName: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? appliances[stoneConfig.applianceId].config.name : undefined,
-        locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : undefined
+        applianceName: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? appliances[stoneConfig.applianceId].config.name : null,
+        applianceId: stoneConfig.applianceId && appliances && appliances[stoneConfig.applianceId] ? stoneConfig.applianceId : null,
+        locationName: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? locations[stoneConfig.locationId].config.name : null,
+        locationId: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? stoneConfig.locationId : null
       };
 
       if (sphereMap) {

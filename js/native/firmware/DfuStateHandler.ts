@@ -25,6 +25,12 @@ class DfuStateHandlerClass {
     if (this._initialized === false) {
       this._store = store;
       this._init();
+
+      eventBus.on("DFU_completed", (handle) => {
+        this._cleanup(handle);
+        // scan hf just in case for a short time afterwards
+        BleUtil.startHighFrequencyScanning(this._uuid, 2500);
+      })
     }
   }
 
@@ -36,7 +42,7 @@ class DfuStateHandlerClass {
         let handle = data.handle;
         let emitDiscovery = false;
 
-        if (MapProvider.stoneHandleMap[handle] === undefined) {
+        if (MapProvider.stoneHandleMap[handle] === null) {
           LOG.info("DfuStateHandler: DFU Crownstone found but could not match it with our database.");
           return;
         }
@@ -119,6 +125,14 @@ class DfuStateHandlerClass {
 
   getDfuStones() {
     return { ...this._stonesInDfuMode };
+  }
+
+  getDfuHandles() {
+    return Object.keys(this._stonesInDfuMode);
+  }
+
+  handleReservedForDfu(handle) {
+    return (this._stonesInDfuMode[handle] !== undefined)
   }
 
 }

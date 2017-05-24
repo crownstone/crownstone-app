@@ -161,10 +161,15 @@ export class DfuOverlay extends Component<any, any> {
       }
       else if (this.state.alreadyInDfuMode === true) {
         return this.helper.restartInAppMode()
+          .then(() => {
+            this.helper.loadSetupPhase();
+            return this.handlePhase(0, 1);
+          })
       }
     })
     .then(() => {
       this.helper.finish();
+      eventBus.emit("DFU_completed", stoneConfig.handle);
       this.props.store.dispatch({
         type: "UPDATE_STONE_CONFIG",
         stoneId: this.state.stoneId,
@@ -176,6 +181,39 @@ export class DfuOverlay extends Component<any, any> {
         }
       });
       this.setState({ step: 7 });
+    })
+  }
+
+  handlePhase(phase, phasesRequired) {
+    // the +1 in the log is to match the UI.
+    LOG.info("DfuOverlay: Handling phase:", phase + 1, " out of ", phasesRequired);
+    return new Promise((resolve, reject) => {
+      this._searchForCrownstone(0)
+        .then((data) => {
+          this.setState({
+            step:6,
+            currentPhase: phase,
+            phaseDescription: (phase + 1) + ' / '+ phasesRequired,
+            phasesRequired: phasesRequired,
+            progress: 0,
+            dfuSuccess: phase > 1 // phase 0 would be bootloader, phase 1 would be firmware
+          });
+          this.helper.performPhase(phase, data)
+            .then(() => {
+              let nextPhase = phase + 1;
+              // if there are 4 required, the last one we need to do is 3 since we start at 0. (this means nextPhase = 4 @ phase = 3)
+              if (nextPhase < phasesRequired) {
+                return this.handlePhase(nextPhase, phasesRequired);
+              }
+            })
+            .then(() => {
+              resolve();
+            })
+            .catch((err) => { reject(err) })
+        })
+        .catch((err) => {
+          reject(err)
+        })
     })
   }
 
@@ -228,8 +266,10 @@ export class DfuOverlay extends Component<any, any> {
         }
       };
 
-      this.processSubscriptions.push(NativeBus.on(NativeBus.topics.advertisement, (data) => {
-        rssiResolver(data, false, false);
+      this.processSubscriptions.push(NativeBus.on(NativeBus.topics.advertisement, (advertisement) => {
+        if (advertisement.handle === stoneConfig.handle) {
+          rssiResolver(advertisement, false, false);
+        }
       }));
 
       this.processSubscriptions.push(NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
@@ -244,39 +284,6 @@ export class DfuOverlay extends Component<any, any> {
         }
       }))
     });
-  }
-
-  handlePhase(phase, phasesRequired) {
-    // the +1 in the log is to match the UI.
-    LOG.info("DfuOverlay: Handling phase:", phase + 1, " out of ", phasesRequired);
-    return new Promise((resolve, reject) => {
-      this._searchForCrownstone(0)
-        .then((data) => {
-          this.setState({
-            step:6,
-            currentPhase: phase,
-            phaseDescription: (phase + 1) + ' / '+ phasesRequired,
-            phasesRequired: phasesRequired,
-            progress: 0,
-            dfuSuccess: phase > 1 // phase 0 would be bootloader, phase 1 would be firmware
-          });
-          this.helper.performPhase(phase, data.setupMode)
-            .then(() => {
-              let nextPhase = phase + 1;
-              // if there are 4 required, the last one we need to do is 3 since we start at 0. (this means nextPhase = 4 @ phase = 3)
-              if (nextPhase < phasesRequired) {
-                return this.handlePhase(nextPhase, phasesRequired);
-              }
-            })
-            .then(() => {
-              resolve();
-            })
-            .catch((err) => { reject(err) })
-        })
-        .catch((err) => {
-          reject(err)
-        })
-    })
   }
 
   sessionCleanup() {

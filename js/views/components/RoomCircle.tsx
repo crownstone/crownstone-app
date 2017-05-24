@@ -19,6 +19,9 @@ import { LOG } from '../../logging/Log';
 const Actions = require('react-native-router-flux').Actions;
 
 import { Svg, Circle } from 'react-native-svg';
+import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {stones} from "../../cloud/sections/stones";
 
 export class RoomCircle extends Component<any, any> {
   initializedPosition : any;
@@ -49,7 +52,6 @@ export class RoomCircle extends Component<any, any> {
   unsubscribe : any;
   unsubscribeStoreEvents : any;
   renderState : any;
-
 
   constructor(props) {
     super();
@@ -141,6 +143,10 @@ export class RoomCircle extends Component<any, any> {
         this.setState({setupProgress: 20});
       }));
     }
+
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", () => {
+      this.forceUpdate()
+    }));
 
     // TODO: move this logic into the databaseChange event.
     this.unsubscribe = store.subscribe(() => {
@@ -234,9 +240,24 @@ export class RoomCircle extends Component<any, any> {
     return this.energyLevels.length-1;
   }
 
+  _areDfuStonesInLocation() {
+    let stonesInSetup = DfuStateHandler.getDfuHandles();
+    for (let i = 0; i < stonesInSetup.length; i++) {
+      if (MapProvider.stoneHandleMap[stonesInSetup[i]] && MapProvider.stoneHandleMap[stonesInSetup[i]].locationId === this.props.locationId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   _getColor(usage, prev = false) {
     if (this.props.viewingRemotely === true) {
       return colors.notConnected.hex;
+    }
+
+    if (this._areDfuStonesInLocation() === true) {
+      return colors.purple.hex;
     }
 
     if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
@@ -273,6 +294,10 @@ export class RoomCircle extends Component<any, any> {
   }
 
   getIcon() {
+    if (this._areDfuStonesInLocation() === true) {
+      return <Icon name="ios-settings" size={this.iconSize*1.3} color='#ffffff'/>;
+    }
+
     if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
       let smallSize = this.iconSize*1.1*0.6;
       return (

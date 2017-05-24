@@ -29,6 +29,11 @@ const resetAfterUpdate = "PERFORM_FACTORY_RESET";
 const setupAfterUpdate = "PERFORM_SETUP";
 
 
+interface crownstoneModes {
+  setupMode: boolean,
+  dfuMode: boolean,
+}
+
 export class FirmwareHelper {
   handle : any;
 
@@ -41,12 +46,8 @@ export class FirmwareHelper {
   stoneBootloaderVersion : string;
   newFirmwareDetails : any;
   newBootloaderDetails : any;
-  dfuSuccessful : boolean = false;
   resetRequired : boolean = false;
-
   eventSubscriptions : any = [];
-
-  stoneIsInDFU : boolean = false;
 
   phases : string[];
 
@@ -93,11 +94,18 @@ export class FirmwareHelper {
     return this.phases.length;
   }
 
+
+  /**
+   * This is used to force a setup run after the crownstone has been restored from DFU mode.
+   */
+  loadSetupPhase() {
+    this.phases.push(setupAfterUpdate);
+  }
+
   putInDFU(isInDfu : boolean = false) {
     if (isInDfu) {
       return new Promise((resolve, reject) => { resolve(); });
     }
-
 
     let setupPromise = () => {
       return this._putInDFU(false)
@@ -121,7 +129,6 @@ export class FirmwareHelper {
         })
         .then(() => {
           LOG.info("FirmwareHelper: DFU progress: Placed in DFU mode.");
-          this.stoneIsInDFU = true;
           if (stoneIsInSetupMode) {
             return BluenetPromiseWrapper.phoneDisconnect();
           }
@@ -168,7 +175,7 @@ export class FirmwareHelper {
     return BlePromiseManager.registerPriority(setupPromise, {from: 'Setup: determining bootloader version: ' + this.handle});
   }
 
-  performPhase(phaseNumber, stoneIsInSetupMode = false) {
+  performPhase(phaseNumber, crownstoneMode: crownstoneModes) {
     if (this.phases.length < phaseNumber - 1) {
       return new Promise((resolve, reject) => {
         reject("This phase does not exist in the queue" + JSON.stringify(this.phases));
@@ -186,13 +193,13 @@ export class FirmwareHelper {
 
     switch (this.phases[phaseNumber]) {
       case bootloaderUpdate:
-        return this._updateBootloader(stoneIsInSetupMode);
+        return this._updateBootloader(crownstoneMode);
       case firmwareUpdate:
-        return this._updateFirmware(stoneIsInSetupMode);
+        return this._updateFirmware(crownstoneMode);
       case resetAfterUpdate:
-        return this._reset(stoneIsInSetupMode);
+        return this._reset(crownstoneMode);
       case setupAfterUpdate:
-        return this._setup(stoneIsInSetupMode);
+        return this._setup(crownstoneMode);
       default:
         break;
     }
@@ -203,21 +210,20 @@ export class FirmwareHelper {
   }
 
   restartInAppMode() {
-    return BluenetPromiseWrapper.bootloaderToNormalMode( this.handle );
+    return BluenetPromiseWrapper.bootloaderToNormalMode( this.handle ).then(() => { return delay(1000); });
   }
 
-  _updateBootloader(stoneIsInSetupMode: boolean) {
+  _updateBootloader(crownstoneMode: crownstoneModes) {
     let action = () => {
       let updateProcess = () => {
         LOG.info("FirmwareHelper: performing bootloader update.");
         return BluenetPromiseWrapper.performDFU(this.handle, this.bootloaderURI)
-          .then(() => { this.stoneIsInDFU = false; })
           .then(() => { return delay(1500); })
           .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
       };
 
-      if (this.stoneIsInDFU === false) {
-        return this._putInDFU(stoneIsInSetupMode)
+      if (crownstoneMode.dfuMode === false) {
+        return this._putInDFU(crownstoneMode.setupMode)
           .then(() => { return updateProcess(); })
       }
       else {
@@ -229,17 +235,16 @@ export class FirmwareHelper {
     return BlePromiseManager.registerPriority(action, {from: 'DFU: updating Bootloader ' + this.handle}, 300000); // 5 min timeout
   }
 
-  _updateFirmware(stoneIsInSetupMode: boolean) {
+  _updateFirmware(crownstoneMode: crownstoneModes) {
     let action = () => {
       let updateProcess = () => {
         return BluenetPromiseWrapper.performDFU(this.handle, this.firmwareURI)
-          .then(() => { this.stoneIsInDFU = false; })
           .then(() => { return delay(1500); })
           .catch((err) => { BluenetPromiseWrapper.phoneDisconnect(); throw err; })
       };
 
-      if (this.stoneIsInDFU === false) {
-        return this._putInDFU(stoneIsInSetupMode)
+      if (crownstoneMode.dfuMode === false) {
+        return this._putInDFU(crownstoneMode.setupMode)
           .then(() => { return updateProcess(); })
       }
       else {
@@ -250,13 +255,13 @@ export class FirmwareHelper {
     return BlePromiseManager.registerPriority(action, {from: 'DFU: updating firmware ' + this.handle}, 300000); // 5 min timeout
   }
 
-  _reset(stoneIsInSetupMode : boolean) {
+  _reset(crownstoneMode: crownstoneModes) {
     let action = () => {
       return BluenetPromiseWrapper.connect(this.handle)
         .then(() => {
           eventBus.emit("updateDfuProgress", 0.25);
           LOG.info("FirmwareHelper: DFU progress: Reconnected.");
-          if (stoneIsInSetupMode) {
+          if (crownstoneMode.setupMode === true) {
             return BluenetPromiseWrapper.setupFactoryReset();
           }
           else {
@@ -270,7 +275,6 @@ export class FirmwareHelper {
           }
         })
         .then(() => {
-          this.dfuSuccessful = true;
           eventBus.emit("updateDfuProgress", 0.50);
         })
         .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.6); }); })
@@ -286,7 +290,11 @@ export class FirmwareHelper {
     return BlePromiseManager.registerPriority(action, {from: 'DFU: performing reset ' + this.handle}, 60000); // 1 min timeout
   }
 
-  _setup(stoneIsInSetupMode : boolean) {
+  _setup(crownstoneMode: crownstoneModes) {
+    if (!crownstoneMode.setupMode) {
+      return new Promise((resolve, reject) => { resolve(); });
+    }
+
     // the setupStateHandler already uses the PromiseManager so we cant do it here. It would lead to dfu waiting on setup waiting on dfu.
     return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
       .catch(() => {

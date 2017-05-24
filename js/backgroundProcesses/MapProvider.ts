@@ -18,7 +18,9 @@ import {
  *  name: string,
  *  sphereId: string,
  *  applianceName: string / undefined
+ *  applianceId: string / undefined
  *  locationName: string / undefined
+ *  locationId: string / undefined
  * }
  *
  */
