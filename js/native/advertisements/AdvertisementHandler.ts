@@ -40,7 +40,7 @@ class AdvertisementHandlerClass {
       eventBus.on("connect", (handle) => {
         Scheduler.clearOverwritableTriggerAction(TRIGGER_ID, ADVERTISEMENT_PREFIX + handle);
         // this is a fallback mechanism in case no disconnect event is fired.
-        this.stonesInConnectionProcess[handle] = {timeout: setTimeout(() => {
+        this.stonesInConnectionProcess[handle] = {timeout: Scheduler.scheduleCallback(() => {
           LOG.warn("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");
           this._restoreConnectionTimeout();
         }, 15000)};
@@ -55,13 +55,19 @@ class AdvertisementHandlerClass {
       // sometimes we need to ignore any trigger for switching because we're doing something else.
       eventBus.on("ignoreTriggers", () => {
         this.temporaryIgnore = true;
-        this.temporaryIgnoreTimeout = setTimeout(() => {
+        this.temporaryIgnoreTimeout = Scheduler.scheduleCallback(() => {
           if (this.temporaryIgnore === true) {
             LOG.error("Temporary ignore of triggers has been on for more than 20 seconds!!");
           }
         }, 20000 );
       });
-      eventBus.on("useTriggers", () => { this.temporaryIgnore = false; clearTimeout(this.temporaryIgnoreTimeout); });
+      eventBus.on("useTriggers", () => {
+        this.temporaryIgnore = false;
+        if (typeof this.temporaryIgnoreTimeout === 'function') {
+          this.temporaryIgnoreTimeout();
+          this.temporaryIgnoreTimeout = null;
+        }
+      });
 
       // create a trigger to throttle the updates.
       Scheduler.setRepeatingTrigger(TRIGGER_ID,{repeatEveryNSeconds:2});
@@ -92,7 +98,10 @@ class AdvertisementHandlerClass {
 
   _restoreConnectionTimeout() {
     Object.keys(this.stonesInConnectionProcess).forEach((handle) => {
-      clearTimeout(this.stonesInConnectionProcess[handle].timeout)
+      if (typeof this.stonesInConnectionProcess[handle].timeout === 'function') {
+        this.stonesInConnectionProcess[handle].timeout();
+        this.stonesInConnectionProcess[handle].timeout = null;
+      }
     });
     this.stonesInConnectionProcess = {};
   }

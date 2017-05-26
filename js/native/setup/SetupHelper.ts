@@ -10,6 +10,7 @@ import { Util }                  from '../../util/Util'
 import { CLOUD }                 from '../../cloud/cloudAPI'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
 import {SetupStateHandler} from "./SetupStateHandler";
+import {Scheduler} from "../../logic/Scheduler";
 
 
 const networkError = 'network_error';
@@ -95,8 +96,10 @@ export class SetupHelper {
           .then(() => {
             LOG.info("setup progress: setupCrownstone done");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
-            setTimeout(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300);
-            setTimeout(() => {
+
+            // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
+            Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300);
+            Scheduler.scheduleCallback(() => {
               let actions = [];
               let isPlug = this.type === stoneTypes.plug;
               let isGuidestone = this.type === stoneTypes.guidestone;
@@ -168,7 +171,7 @@ export class SetupHelper {
               // start the tap-to-toggle tutorial, only if there is no other popup shown
               if (this.type === stoneTypes.plug && silent === false && popupShown === false) { // find the ID
                 if (Util.data.getTapToToggleCalibration(state) === null) {
-                  setTimeout(() => {
+                  Scheduler.scheduleCallback(() => {
                     if (SetupStateHandler.isSetupInProgress() === false) {
                       eventBus.emit("CalibrateTapToToggle")
                     }

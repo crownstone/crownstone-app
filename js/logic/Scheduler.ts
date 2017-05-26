@@ -225,8 +225,13 @@ class SchedulerClass {
     let uuid = label + Util.getUUID();
     LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
     this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
+
+    // fallback to try to fire this callback after exactly the amount of ms
+    let timeoutId = setTimeout(() => { this.tick(); }, afterMilliseconds + 10);
+
     return () => {
       if (this.singleFireTriggers[uuid]) {
+        clearTimeout(timeoutId);
         this.singleFireTriggers[uuid] = undefined;
         delete this.singleFireTriggers[uuid];
       }
@@ -276,7 +281,6 @@ class SchedulerClass {
 
     this.schedule();
   }
-
 
   fireTrigger(triggerId) {
     let state = this.store.getState();

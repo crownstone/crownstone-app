@@ -6,6 +6,7 @@ import { LOG } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { defaultHeaders } from './sections/base'
 import { safeMoveFile, safeDeleteFile } from '../util/Util'
+import {Scheduler} from "../logic/Scheduler";
 
 /**
  *
@@ -70,10 +71,12 @@ export function request(
     }
     else {
       let stopRequest = false;
+      let finishedRequest = false;
       // add a timeout for the fetching of data.
-      setTimeout(() => {
+      Scheduler.scheduleCallback(() => {
           stopRequest = true;
-          reject(new Error('Network request failed'))
+          if (finishedRequest !== true)
+            reject(new Error('Network request failed'))
         },
       NETWORK_REQUEST_TIMEOUT);
 
@@ -96,11 +99,13 @@ export function request(
         .then((parsedResponse) => {
           if (stopRequest === false) {
             LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: STATUS, data: parsedResponse});
+            finishedRequest = true;
             resolve({status: STATUS, data: parsedResponse});
           }
         })
         .catch((err) => {
           if (stopRequest === false) {
+            finishedRequest = true;
             reject(err);
           }
         })
