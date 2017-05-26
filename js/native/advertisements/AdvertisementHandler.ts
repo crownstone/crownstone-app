@@ -182,6 +182,14 @@ class AdvertisementHandlerClass {
         sphereId: advertisement.referenceId
       });
     }
+    else if (stoneFromServiceData.errors.hasError === true) {
+      eventBus.emit("errorResolvedInAdvertisement", {
+        advertisement: advertisement,
+        stone: stoneFromServiceData,
+        stoneId: referenceByCrownstoneId.id,
+        sphereId: advertisement.referenceId
+      });
+    }
     // --------------------- /handle errors --------------------------- //
 
 

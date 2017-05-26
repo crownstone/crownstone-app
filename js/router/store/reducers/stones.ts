@@ -287,6 +287,15 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
         return newState;
       }
       return state;
+    case 'CLEAR_STONE_ERRORS':
+      let newState = {...state};
+      newState.advertisementError = false;
+      newState.overCurrent        = false;
+      newState.overCurrentDimmer  = false;
+      newState.temperatureChip    = false;
+      newState.temperatureDimmer  = false;
+      newState.hasError           = false;
+      return newState;
     default:
       return state;
   }

@@ -16,15 +16,30 @@ class ErrorWatcherClass {
       this.store = store;
       eventBus.on("errorDetectedInAdvertisement", (data) => {
         this.processError(data.advertisement, data.stone, data.stoneId, data.sphereId);
+      });
+
+      eventBus.on("errorResolvedInAdvertisement", (data) => {
+        this.clearError(data.advertisement, data.stone, data.stoneId, data.sphereId);
       })
     }
     this._initialized = true;
   }
 
+
+
+  clearError(advertisement: crownstoneAdvertisement, stone, stoneId, sphereId) {
+    if (this.processedErrors[advertisement.handle] !== undefined) {
+      this.processedErrors[advertisement.handle] = undefined;
+      delete this.processedErrors[advertisement.handle]
+    }
+
+    this.store.dispatch({type:'CLEAR_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId});
+  }
+
   processError(advertisement: crownstoneAdvertisement, stone, stoneId, sphereId) {
     if (this.processedErrors[advertisement.handle] === undefined) {
       this.processedErrors[advertisement.handle] = true;
-      this.store.dispatch({type:'UPDATE_STONE_ERRORS', data: { advertisementError: true }});
+      this.store.dispatch({type:'UPDATE_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: { advertisementError: true }});
       BatchCommandHandler.loadPriority(
         stone,
         stoneId,
@@ -33,7 +48,7 @@ class ErrorWatcherClass {
         1e5,
       )
         .then((errors) => {
-          this.store.dispatch({type:'UPDATE_STONE_ERRORS', data: errors});
+          this.store.dispatch({type:'UPDATE_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: errors});
           eventBus.emit("checkErrors");
         })
         .catch((err) => { LOG.error('AdvertisementHandler: Could not get errors from Crownstone.', err); });

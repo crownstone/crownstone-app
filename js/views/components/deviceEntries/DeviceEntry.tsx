@@ -183,7 +183,7 @@ export class DeviceEntry extends Component<any, any> {
     let color = (
       stone.config.disabled === true ?
           colors.gray.hex :
-          (this.props.state > 0 ? colors.green.hex : colors.menuBackground.hex)
+          (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
 
     if (stone.errors.hasError === true) {
