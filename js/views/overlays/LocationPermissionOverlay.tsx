@@ -26,7 +26,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
   }
 
   componentDidMount() {
-    NativeBus.on(NativeBus.topics.locationStatus, (status) => {
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.locationStatus, (status) => {
       switch (status) {
         case "off":
           this.setState({visible: true, notificationType: status});
@@ -41,7 +41,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
           this.setState({visible: this.state.visible, notificationType: status});
           break;
       }
-    });
+    }));
   }
 
   componentWillUnmount() {

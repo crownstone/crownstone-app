@@ -34,9 +34,9 @@ import {
   getFloatingStones
 } from '../../util/DataUtil'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
-import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
-import {DfuDeviceEntry} from "../components/deviceEntries/DfuDeviceEntry";
-import {RoomExplanation} from "../components/RoomExplanation";
+import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
+import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
+import {RoomExplanation} from '../components/RoomExplanation';
 
 
 export class RoomOverview extends Component<any, any> {
