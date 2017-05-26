@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import { IconButton }         from '../components/IconButton'
@@ -11,6 +12,9 @@ import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
 import {eventBus} from "../../util/EventBus";
 const Actions = require('react-native-router-flux').Actions;
+
+
+let SEE_THROUGH_OPACITY = 0.33;
 
 export class ErrorOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -21,6 +25,7 @@ export class ErrorOverlay extends Component<any, any> {
     this.state = {
       visible: false,
       maxOpacity: 1,
+      showClearButton: false,
       stonesContainingError: [] // { stoneId : stoneId, stone: stoneObject }
     };
     this.unsubscribe = [];
@@ -29,7 +34,7 @@ export class ErrorOverlay extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe = eventBus.on("showErrorOverlay", (stonesContainingError) => {
       if (stonesContainingError.length > 0) {
-        this.setState({visible: true, maxOpacity:1, stonesContainingError: stonesContainingError});
+        this.setState({visible: true, maxOpacity: 1, stonesContainingError: stonesContainingError});
       }
     })
   }
@@ -66,47 +71,83 @@ export class ErrorOverlay extends Component<any, any> {
   }
 
   _getButton() {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          let currentCrownstone = this.state.stonesContainingError[0];
-          let locationId = currentCrownstone.stone.config.locationId;
-          (Actions as any).roomOverview({sphereId: currentCrownstone.sphereId, locationId: locationId, errorCrownstone: currentCrownstone.stoneId });
-          this.setState({maxOpacity: 0.5})
-        }}
-        style={[styles.centered, {
-          width: 0.4 * screenWidth,
-          height: 36,
-          borderRadius: 18,
-          borderWidth: 2,
-          borderColor: colors.red.hex,
-        }]}>
-        <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{"Find Crownstone"}</Text>
-      </TouchableOpacity>
-    );
+    if (this.state.showClearButton) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            let currentCrownstone = this.state.stonesContainingError[0];
+            let locationId = currentCrownstone.stone.config.locationId;
+            (Actions as any).roomOverview({
+              sphereId: currentCrownstone.sphereId,
+              locationId: locationId,
+              errorCrownstone: currentCrownstone.stoneId
+            });
+            this.setState({maxOpacity: SEE_THROUGH_OPACITY, showClearButton: true})
+          }}
+          style={[styles.centered, {
+            width: 0.4 * screenWidth,
+            height: 36,
+            borderRadius: 18,
+            borderWidth: 2,
+            borderColor: colors.red.hex,
+          }]}>
+          <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{"Clear Error"}</Text>
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            let currentCrownstone = this.state.stonesContainingError[0];
+            let locationId = currentCrownstone.stone.config.locationId;
+            (Actions as any).roomOverview({
+              sphereId: currentCrownstone.sphereId,
+              locationId: locationId,
+              errorCrownstone: currentCrownstone.stoneId
+            });
+            this.setState({maxOpacity: SEE_THROUGH_OPACITY, showClearButton: true})
+          }}
+          style={[styles.centered, {
+            width: 0.4 * screenWidth,
+            height: 36,
+            borderRadius: 18,
+            borderWidth: 2,
+            borderColor: colors.red.hex,
+          }]}>
+          <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{"Find Crownstone"}</Text>
+        </TouchableOpacity>
+      );
+    }
   }
 
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible} height={0.7*screenHeight} maxOpacity={this.state.maxOpacity}>
-        <View style={{flex:1}} />
-        <IconButton
-          name="ios-warning"
-          size={0.15*screenHeight}
-          color="#fff"
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.red.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative',}}
-        />
-        <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, padding:15, textAlign:'center'}}>{this._getTitle()}</Text>
-        <Text style={{fontSize: 12, fontWeight: '500',  color: colors.red.hex, padding:15, textAlign:'center'}}>
-          {this._getText()}
-        </Text>
-        <View style={{flex:1}} />
-        {this._getButton()}
-        <View style={{flex:1}} />
-      </OverlayBox>
+      <TouchableWithoutFeedback onPress={() => {
+        if (this.state.showClearButton) {
+          this.setState({maxOpacity: this.state.maxOpacity == SEE_THROUGH_OPACITY ? 1 : SEE_THROUGH_OPACITY});
+        }
+      }}>
+        <OverlayBox visible={this.state.visible} height={0.7*screenHeight} maxOpacity={this.state.maxOpacity}>
+          <View style={{flex:1}} />
+          <IconButton
+            name="ios-warning"
+            size={0.15*screenHeight}
+            color="#fff"
+            buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.red.hex, borderRadius: 0.03*screenHeight}}
+            style={{position:'relative',}}
+          />
+          <View style={{flex:1}} />
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, padding:15, textAlign:'center'}}>{this._getTitle()}</Text>
+          <Text style={{fontSize: 12, fontWeight: '500',  color: colors.red.hex, padding:15, textAlign:'center'}}>
+            {this._getText()}
+          </Text>
+          <View style={{flex:1}} />
+          {this._getButton()}
+          <View style={{flex:1}} />
+        </OverlayBox>
+      </TouchableWithoutFeedback>
     );
   }
 }

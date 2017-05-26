@@ -175,6 +175,7 @@ class AdvertisementHandlerClass {
 
     // --------------------- Pass errors to error Watcher --------------------------- //
     if (advertisement.serviceData.hasError === true) {
+      LOG.info("GOT ERROR", advertisement.serviceData);
       eventBus.emit("errorDetectedInAdvertisement", {
         advertisement: advertisement,
         stone: stoneFromServiceData,
@@ -183,6 +184,7 @@ class AdvertisementHandlerClass {
       });
     }
     else if (stoneFromServiceData.errors.hasError === true) {
+      LOG.info("GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
       eventBus.emit("errorResolvedInAdvertisement", {
         advertisement: advertisement,
         stone: stoneFromServiceData,

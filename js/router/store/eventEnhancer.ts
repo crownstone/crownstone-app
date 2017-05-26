@@ -143,6 +143,8 @@ function checkAction(action, affectedIds) {
       eventStatus['addStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
     case 'UPDATE_STONE_CONFIG':
+    case 'UPDATE_STONE_ERRORS':
+    case 'CLEAR_STONE_ERRORS':
       eventStatus['updateStoneConfig'] = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':
       eventStatus['stoneLocationUpdated'] = affectedIds; break;
@@ -193,7 +195,6 @@ function checkAction(action, affectedIds) {
     case 'USER_SEEN_ROOM_FINGERPRINT_ALERT':
     case 'SET_NEW_FIRMWARE_VERSIONS':
     case 'REFRESH_DEFAULTS':
-    case 'UPDATE_STONE_ERRORS':
     case 'UPDATE_STONE_DFU_RESET':
       break;
     case 'UPDATE_MESH_NETWORK_ID':
