@@ -74,7 +74,7 @@ export class DfuDeviceEntry extends Component<any, any> {
         borderRadius:30,
         backgroundColor: colors.purple.hex,
         }, styles.centered]}>
-        <Icon name={'ios-settings'} size={50} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+        <Icon name={'ios-settings'} size={50} color={'#ffffff'} style={{backgroundColor:'transparent'}} />
       </View>
     );
   }

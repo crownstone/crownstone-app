@@ -234,7 +234,7 @@ const c2CorrectionsIOS = {
 };
 
 const ioniconCorrectionsIOS = {
-  
+  'ios-settings':       {change: true,  top:0.04, left:0},
 };
 
 
