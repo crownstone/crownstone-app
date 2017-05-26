@@ -206,6 +206,12 @@ export class FirmwareHelper {
     }
   }
 
+  dfuSegmentFinishedAtPhase(phaseNumber) {
+    if (phaseNumber < this.phases.length && (this.phases[phaseNumber] === resetAfterUpdate || this.phases[phaseNumber] === setupAfterUpdate)) {
+      return true;
+    }
+  }
+
   finish() {
     this.eventSubscriptions.forEach((unsubscribe) => { unsubscribe(); });
   }

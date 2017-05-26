@@ -48,6 +48,7 @@ export class DfuOverlay extends Component<any, any> {
       currentPhase: 0,
       phasesRequired: null,
       detail: '',
+      firmwareUpdatedInStore: false,
       alreadyInDfuMode: false
     };
   }
@@ -65,7 +66,10 @@ export class DfuOverlay extends Component<any, any> {
         currentPhase: 0,
         phasesRequired: 0,
         detail: '',
-        alreadyInDfuMode: data.alreadyInDfuMode || false
+        firmwareUpdatedInStore: false,
+        alreadyInDfuMode: data.alreadyInDfuMode || false,
+        firmwareToUpload: null,
+        bootloaderToUpdate: null,
       });
     }));
     this.unsubscribe.push(eventBus.on("updateDfuProgress", (progress : number) => {
@@ -97,10 +101,15 @@ export class DfuOverlay extends Component<any, any> {
 
   startProcess() {
     this.initializeProcess();
-    this.setState({step:1});
     let state = this.props.store.getState();
     let userConfig = state.user;
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
+
+    this.setState({
+      step:1,
+      firmwareToUpload: userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
+      bootloaderToUpdate: userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion]
+    });
 
     FirmwareHandler.getNewVersions(
       userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
@@ -167,7 +176,17 @@ export class DfuOverlay extends Component<any, any> {
       this.setState({phaseDescription:'determining...',});
       return this.helper.getBootloaderVersion();
     })
-    .then(() => {
+    .then((bootloaderVersion) => {
+      // add Bootloader version to store
+      this.props.store.dispatch({
+        type: "UPDATE_STONE_CONFIG",
+        stoneId: this.state.stoneId,
+        sphereId: this.state.sphereId,
+        data: {
+          bootloaderVersion: bootloaderVersion,
+        }
+      });
+
       let phasesRequired = this.helper.getAmountOfPhases(stoneConfig.dfuResetRequired);
       if (this.helper.resetRequired === true) {
         this.props.store.dispatch({
@@ -207,20 +226,35 @@ export class DfuOverlay extends Component<any, any> {
     })
   }
 
+
+
   handlePhase(phase, phasesRequired) {
     // the +1 in the log is to match the UI.
     LOG.info("DfuOverlay: Handling phase:", phase + 1, " out of ", phasesRequired);
     return new Promise((resolve, reject) => {
       this._searchForCrownstone(0)
         .then((data) => {
+          // store the firmware version
+          if (this.helper.dfuSegmentFinishedAtPhase(phase)) {
+            this.props.store.dispatch({
+              type: "UPDATE_STONE_CONFIG",
+              stoneId: this.state.stoneId,
+              sphereId: this.state.sphereId,
+              data: {
+                firmwareVersion: this.state.firmwareToUpload,
+              }
+            });
+          }
+
           this.setState({
             step:6,
             currentPhase: phase,
             phaseDescription: (phase + 1) + ' / '+ phasesRequired,
             phasesRequired: phasesRequired,
             progress: 0,
-            dfuSuccess: phase > 1 // phase 0 would be bootloader, phase 1 would be firmware
+            firmwareUpdatedInStore: this.helper.dfuSegmentFinishedAtPhase(phase)
           });
+
           this.helper.performPhase(phase, data)
             .then(() => {
               let nextPhase = phase + 1;
@@ -277,7 +311,7 @@ export class DfuOverlay extends Component<any, any> {
         data.setupMode = setupMode || false;
         data.dfuMode = dfuMode || false;
 
-        if (data.rssi < -75) {
+        if ((data.setupMode && data.rssi < -93) || (data.rssi < -80)) {
           eventBus.emit("updateDfuStep", 4);
         }
         else if (this.paused === false) {

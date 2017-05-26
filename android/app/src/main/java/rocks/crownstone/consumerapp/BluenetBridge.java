@@ -13,6 +13,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -101,14 +102,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Triplet[] LOG_LEVELS = new Triplet[]{
 			                                             // log lvl   file log lvl
-			new Triplet<>(BleScanService.class,          Log.DEBUG,   Log.DEBUG),
+			new Triplet<>(BleScanService.class,          Log.WARN,    Log.DEBUG),
 			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,    Log.WARN),
-			new Triplet<>(BluenetBridge.class,           Log.DEBUG,   Log.DEBUG),
+			new Triplet<>(BluenetBridge.class,           Log.WARN,    Log.DEBUG),
 			new Triplet<>(BleBaseEncryption.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
 			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
-			new Triplet<>(BleCore.class,                 Log.DEBUG,    Log.WARN),
-			new Triplet<>(BleBase.class,                 Log.DEBUG,   Log.DEBUG),
+			new Triplet<>(BleCore.class,                 Log.WARN,    Log.WARN),
+			new Triplet<>(BleBase.class,                 Log.WARN,    Log.DEBUG),
 			new Triplet<>(BleExt.class,                  Log.WARN,    Log.WARN),
 			new Triplet<>(CrownstoneSetup.class,         Log.WARN,    Log.DEBUG),
 	};
@@ -992,7 +993,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void getFirmwareVersion(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "getFirmwareVersion");
-		// Returns firmware string as data
+		// Returns firmware version string as data
 		_bleExt.readFirmwareRevision(new IByteArrayCallback() {
 			@Override
 			public void onSuccess(byte[] result) {
@@ -1016,7 +1017,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void getHardwareVersion(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "getHardwareVersion");
-		// Returns firmware string as data
+		// Returns hardware version string as data
 		_bleExt.readHardwareRevision(new IByteArrayCallback() {
 			@Override
 			public void onSuccess(byte[] result) {
@@ -1024,6 +1025,30 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				retVal.putBoolean("error", false);
 				String hardwareString = new String(result);
 				retVal.putString("data", hardwareString);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void getBootloaderVersion(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getBootloaderVersion");
+		// Returns bootloader version string as data
+		_bleExt.readBootloaderRevision(new IByteArrayCallback() {
+			@Override
+			public void onSuccess(byte[] result) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				String bootloaderString = new String(result);
+				retVal.putString("data", bootloaderString);
 				callback.invoke(retVal);
 			}
 
@@ -1134,8 +1159,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void performDfu(String address, String fileUri, final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "performDfu: " + address + " file: " + fileUri);
+	public void performDFU(String address, String fileString, final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "performDfu: " + address + " file: " + fileString);
 		if (_dfuCallback != null) {
 			BleLog.getInstance().LOGw(TAG, "previous callback was not called");
 		}
@@ -1146,12 +1171,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (dev != null) {
 			name = dev.getName();
 		}
-//		startDfu(address, name, fileUri);
-		WritableMap retVal = Arguments.createMap();
-		retVal.putBoolean("error", true);
-		retVal.putString("data", "error: test");
-		_dfuCallback.invoke(retVal);
-		_dfuCallback = null;
+		startDfu(address, name, fileString);
+//		WritableMap retVal = Arguments.createMap();
+//		retVal.putBoolean("error", true);
+//		retVal.putString("data", "error: test");
+//		_dfuCallback.invoke(retVal);
+//		_dfuCallback = null;
 	}
 
 	@ReactMethod
@@ -1564,6 +1589,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	private void sendEvent(String eventName, @Nullable WritableMap params) {
+//		BleLog.getInstance().LOGd(TAG, "sendEvent " + eventName + ": " + params);
 		_reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
 	}
 
@@ -2114,7 +2140,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 
 
-	private boolean startDfu(String address, String name, String filePath) {
+	private boolean startDfu(String address, String name, String fileString) {
 		_dfuServiceInitiator = new DfuServiceInitiator(address);
 		_dfuServiceInitiator.setDeviceName(name);
 		_dfuServiceInitiator.setKeepBond(false);
@@ -2123,7 +2149,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		// But be aware of this: https://devzone.nordicsemi.com/question/100609/sdk-12-bootloader-erased-after-programming/
 		// and other issues related to this experimental service.
 		_dfuServiceInitiator.setUnsafeExperimentalButtonlessServiceInSecureDfuEnabled(false);
-		_dfuServiceInitiator.setZip(null, filePath);
+//		Uri fileUri = Uri.parse(fileUriString);
+//		_dfuServiceInitiator.setZip(fileUri, null);
+		_dfuServiceInitiator.setZip(null, fileString);
+		_dfuServiceInitiator.setDisableNotification(true);
 
 		// Can be used to pause/resume, or abort the dfu process.
 		_dfuServiceController = _dfuServiceInitiator.start(_reactContext, DfuService.class);
@@ -2193,6 +2222,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				_dfuCallback.invoke(retVal);
 				_dfuCallback = null;
 			}
+
 		}
 
 		@Override

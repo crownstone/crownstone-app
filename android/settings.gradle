@@ -2,7 +2,7 @@ rootProject.name = 'Crownstone'
 
 include ':app'
 include ':bluenet'
-include ':localization'
+include ':localization-lib-android'
 include ':dfu'
 project(':dfu').projectDir = new File(rootProject.projectDir, 'Android-DFU-Library/dfu')
 include ':rn-splash-screen'
