@@ -160,7 +160,7 @@ export class DeviceEntry extends Component<any, any> {
             fadeDuration={500}
             switchDuration={2000}
             contentArray={[
-              <Icon name={'c1-update-arrow'} size={44} color={color} style={{position:'relative', top:-1, left:0, backgroundColor:'transparent'}} />,
+              <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
               <Icon name={this.props.icon} size={35} color={color} style={{position:'relative', backgroundColor:'transparent'}} />,
             ]} />
         </View>
