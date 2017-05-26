@@ -277,7 +277,7 @@ export class DfuOverlay extends Component<any, any> {
         data.setupMode = setupMode || false;
         data.dfuMode = dfuMode || false;
 
-        if (data.rssi < -75) {
+        if ((data.setupMode && data.rssi < -93) || (data.rssi < -80)) {
           eventBus.emit("updateDfuStep", 4);
         }
         else if (this.paused === false) {
