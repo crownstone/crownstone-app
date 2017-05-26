@@ -21,6 +21,7 @@ import { styles, colors , screenHeight, screenWidth } from '../styles'
 import {Icon} from "../components/Icon";
 import {NativeBus} from "../../native/libInterface/NativeBus";
 import {BleUtil} from "../../util/BleUtil";
+import {Scheduler} from "../../logic/Scheduler";
 
 export class DfuOverlay extends Component<any, any> {
   unsubscribe : any = [];
@@ -28,8 +29,8 @@ export class DfuOverlay extends Component<any, any> {
   processReject : any = null;
   paused : boolean = false;
   helper : any = null;
-  showTimeout : any = null;
-  fallbackTimeout : any = null;
+  cancelShowTimeout : any = null;
+  cancelFallbackTimeout : any = null;
   uuid : String = null;
   backButtonFunction : any = null;
   killProcess : boolean = false;
@@ -152,7 +153,7 @@ export class DfuOverlay extends Component<any, any> {
   startDFU(userConfig, stoneConfig) {
     return new Promise((resolve, reject) => {
       this.setState({step:2});
-      setTimeout(() => { resolve(); }, 2500);
+      Scheduler.scheduleCallback(() => { resolve(); }, 2500);
     })
     .then(() => {
       return this._searchForCrownstone(2000);
@@ -256,18 +257,21 @@ export class DfuOverlay extends Component<any, any> {
       this.processReject = reject;
 
       // this allows us to initially hide this view and to only show it when the user requires it.
-      this.showTimeout = setTimeout(() => {
+      // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
+      this.cancelShowTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== 3) {
           eventBus.emit("updateDfuStep", 3);
         }
       }, searchTimeBeforeView);
 
       // the timeout will show the "get closer" even if nothing is found up to that point.
-      this.fallbackTimeout = setTimeout(() => {
+      // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
+      this.cancelFallbackTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== 4) {
           eventBus.emit("updateDfuStep", 4);
         }
       }, 3000);
+
       // this will show the user that he has to move closer to the crownstone or resolve if the user is close enough.
       let rssiResolver = (data, setupMode, dfuMode) => {
         data.setupMode = setupMode || false;
@@ -284,7 +288,8 @@ export class DfuOverlay extends Component<any, any> {
           this.processReject = null;
           this._searchCleanup();
           if (timeSeenView < minimumTimeVisibleWhenShown && (this.state.step === 3 || this.state.step === 4)) {
-            setTimeout(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView)
+            // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
+            Scheduler.scheduleCallback(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView);
           }
           else {
             resolve(data);
@@ -313,8 +318,8 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   _searchCleanup() {
-    clearTimeout(this.showTimeout);
-    clearTimeout(this.fallbackTimeout);
+    if (typeof this.cancelShowTimeout === 'function')     { this.cancelShowTimeout();     this.cancelShowTimeout = null;     }
+    if (typeof this.cancelFallbackTimeout === 'function') { this.cancelFallbackTimeout(); this.cancelFallbackTimeout = null; }
 
     if (typeof this.processReject === 'function') {
       this.processReject("User cancelled");

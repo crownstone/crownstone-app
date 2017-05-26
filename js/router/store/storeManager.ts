@@ -6,6 +6,7 @@ import { CloudEnhancer }                from './cloudEnhancer'
 import { EventEnhancer }                from './eventEnhancer'
 import { eventBus }                     from '../../util/EventBus'
 import { LOG }                          from '../../logging/Log'
+import {Scheduler} from "../../logic/Scheduler";
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
@@ -127,11 +128,12 @@ class StoreManagerClass {
 
     this.unsubscribe = this.store.subscribe(() => {
       // protect against a LOT of writes at the same time, we only write to disk twice a second max.
-      if (this.writeToDiskTimeout !== null) {
-        clearTimeout(this.writeToDiskTimeout);
+      if (this.writeToDiskTimeout !== null && typeof this.writeToDiskTimeout === 'function') {
+        this.writeToDiskTimeout();
         this.writeToDiskTimeout = null;
       }
-      this.writeToDiskTimeout = setTimeout(() => {
+
+      this.writeToDiskTimeout = Scheduler.scheduleCallback(() => {
         this.writeToDiskTimeout = null;
         // only write to disk if we are LOGGED IN.
         AsyncStorage.getItem(this.userIdentificationStorageKey)
@@ -205,8 +207,8 @@ class StoreManagerClass {
             this.storageKey = null;
 
             // stop writing to disk
-            if (this.writeToDiskTimeout !== null) {
-              clearTimeout(this.writeToDiskTimeout);
+            if (this.writeToDiskTimeout !== null && typeof this.writeToDiskTimeout === 'function') {
+              this.writeToDiskTimeout();
               this.writeToDiskTimeout = null;
             }
 

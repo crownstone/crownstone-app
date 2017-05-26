@@ -7,6 +7,7 @@ import { Util }               from '../../util/Util';
 import { LOG }                from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
 import { DfuStateHandler }    from "../firmware/DfuStateHandler";
+import {Scheduler} from "../../logic/Scheduler";
 
 
 /**
@@ -60,7 +61,7 @@ class SetupStateHandlerClass {
         this._ignoreStoneAfterSetup[handle] = true;
 
         // we ignore the stone that just completed setup for 5 seconds after completion to avoid duplicates in the view.
-        setTimeout(() => {
+        Scheduler.scheduleCallback(() => {
           this._ignoreStoneAfterSetup[handle] = undefined;
           delete this._ignoreStoneAfterSetup[handle];
         }, 5000);
@@ -126,11 +127,12 @@ class SetupStateHandlerClass {
     }
 
     // clear existing timeouts.
-    if (this._setupModeTimeouts[handle] !== undefined) {
-      clearTimeout(this._setupModeTimeouts[handle]);
+    if (typeof this._setupModeTimeouts[handle] === 'function' ) {
+      this._setupModeTimeouts[handle]();
+      this._setupModeTimeouts[handle] = null;
     }
     // set a new timeout that cleans up after this entry
-    this._setupModeTimeouts[handle] = setTimeout(() => {
+    this._setupModeTimeouts[handle] = Scheduler.scheduleCallback(() => {
       this._cleanup(handle);
     }, SETUP_MODE_TIMEOUT);
   }
@@ -196,8 +198,9 @@ class SetupStateHandlerClass {
     };
 
     // stop the timeout that removed this stone from the list.
-    if (this._setupModeTimeouts[handle] !== undefined) {
-      clearTimeout(this._setupModeTimeouts[handle]);
+    if (typeof this._setupModeTimeouts[handle] === 'function' ) {
+      this._setupModeTimeouts[handle]();
+      this._setupModeTimeouts[handle] = null;
     }
 
     return helper.claim(this._store, sphereId, silent);

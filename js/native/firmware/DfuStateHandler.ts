@@ -5,6 +5,7 @@ import { Util }               from '../../util/Util';
 import { LOG }                from '../../logging/Log';
 import { DFU_MODE_TIMEOUT }   from '../../ExternalConfig';
 import { MapProvider }        from "../../backgroundProcesses/MapProvider";
+import {Scheduler} from "../../logic/Scheduler";
 
 /**
  * This class keeps track of the Crownstones in DFU state.
@@ -99,11 +100,13 @@ class DfuStateHandlerClass {
 
   _setDfuTimeout(handle) {
     // clear existing timeouts.
-    if (this._dfuTimeouts[handle] !== undefined) {
-      clearTimeout(this._dfuTimeouts[handle]);
+    if (typeof this._dfuTimeouts[handle] === 'function' ) {
+      this._dfuTimeouts[handle]();
+      this._dfuTimeouts[handle] = null;
     }
+
     // set a new timeout that cleans up after this entry
-    this._dfuTimeouts[handle] = setTimeout(() => {
+    this._dfuTimeouts[handle] = Scheduler.scheduleCallback(() => {
       this._cleanup(handle);
     }, DFU_MODE_TIMEOUT);
   }

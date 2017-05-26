@@ -8,6 +8,7 @@ import { Util }                  from '../../util/Util'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
 import { eventBus } from "../../util/EventBus";
 import { ALWAYS_DFU_UPDATE } from "../../ExternalConfig";
+import {Scheduler} from "../../logic/Scheduler";
 
 
 interface dfuData {
@@ -310,7 +311,8 @@ export class FirmwareHelper {
 
 const delay = function(ms, performAfterDelay = null) {
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
+    // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
+    Scheduler.scheduleCallback(() => {
       if (performAfterDelay !== null && typeof performAfterDelay === 'function') {
         performAfterDelay()
       }
