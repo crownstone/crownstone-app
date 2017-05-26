@@ -24,7 +24,7 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   componentDidMount() {
-    NativeBus.on(NativeBus.topics.bleStatus, (status) => {
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.bleStatus, (status) => {
       switch (status) {
         case "poweredOff":
           this.setState({visible: true, notificationType: status});
@@ -39,7 +39,7 @@ export class BleStateOverlay extends Component<any, any> {
           this.setState({visible: true, notificationType: status});
           break;
       }
-    });
+    }));
   }
 
   componentWillUnmount() {

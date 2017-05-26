@@ -53,7 +53,7 @@ export class DfuOverlay extends Component<any, any> {
 
   componentDidMount() {
     // data = { stoneId : string , sphereId: string };
-    eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
+    this.unsubscribe.push(eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
       this.setState({
         visible: true,
         step: 0,
@@ -66,13 +66,13 @@ export class DfuOverlay extends Component<any, any> {
         detail: '',
         alreadyInDfuMode: data.alreadyInDfuMode || false
       });
-    });
-    eventBus.on("updateDfuProgress", (progress : number) => {
+    }));
+    this.unsubscribe.push(eventBus.on("updateDfuProgress", (progress : number) => {
       this.setState({progress:progress});
-    });
-    eventBus.on("updateDfuStep", (step : number) => {
+    }));
+    this.unsubscribe.push(eventBus.on("updateDfuStep", (step : number) => {
       this.setState({step:step});
-    });
+    }));
   }
 
   componentWillUnmount() {

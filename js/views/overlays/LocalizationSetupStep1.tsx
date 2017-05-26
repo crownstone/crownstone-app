@@ -106,7 +106,7 @@ export class LocalizationSetupStep1 extends Component<any, any> {
   }
 
   componentDidMount() {
-    eventBus.on("showLocalizationSetupStep1", () => {
+    this.unsubscribe.push(eventBus.on("showLocalizationSetupStep1", () => {
       // we reset the entire state because we might show this video twice.
       this.setState({
         innerCirclesAmount: 0.0,
@@ -132,7 +132,7 @@ export class LocalizationSetupStep1 extends Component<any, any> {
       setTimeout(() => {
         this._startAnimation();
       }, this.fadeInDuration + 50)
-    });
+    }));
 
     if (this.state.visible === true) {
       this._startAnimation();
