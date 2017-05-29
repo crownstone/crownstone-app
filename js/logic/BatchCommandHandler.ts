@@ -357,6 +357,11 @@ class BatchCommandHandlerClass {
               case 'getErrors':
                 actionPromise = BluenetPromiseWrapper.getErrors();
                 break;
+              case 'clearErrors':
+                // TODO: wait for fix on firmware to just disable a single error.
+                // actionPromise = BluenetPromiseWrapper.clearErrors(command.clearErrorJSON);
+                actionPromise = BluenetPromiseWrapper.restartCrownstone();
+                break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive();
                 break;

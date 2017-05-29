@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import { Icon } from "../Icon";
-import { styles, colors , screenHeight, screenWidth } from '../../styles'
+import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../../styles'
 
 export class OverlayContent extends Component<any, any> {
   getEyeCatcher() {
@@ -92,7 +92,7 @@ export class OverlayContent extends Component<any, any> {
 
   render() {
     return (
-      <View style={{flex:1, alignItems:'center'}}>
+      <View style={{flex:1, height: 0.9*availableScreenHeight, alignItems:'center'}}>
         <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
         { this.getEyeCatcher() }
         { this.getHeader() }

@@ -85,7 +85,7 @@ class BatterySavingClass {
     // do not do anything to the scanning if high frequency scan is on.
     if (BleUtil.highFrequencyScanUsed() === true) {
       // try again later tho.
-      this._cancelPostponedScanStop = Scheduler.scheduleCallback( () => { this.stopScanningIfPossible(forceNotInSphere); }, 60000, 'stopScanningIfPossible')
+      this._cancelPostponedScanStop = Scheduler.scheduleCallback( () => { this.stopScanningIfPossible(forceNotInSphere); }, 60000, 'stopScanningIfPossible');
       return;
     }
 
@@ -118,7 +118,7 @@ class BatterySavingClass {
     }
     else if (!allHandlesKnown && appNotInForeground === true) {
       // user is continuing scanning to get all handles. Stop when we know them.
-      this._cancelPostponedScanStop = Scheduler.scheduleCallback( () => { this.stopScanningIfPossible(forceNotInSphere); }, 60000, 'stopScanningIfPossible')
+      this._cancelPostponedScanStop = Scheduler.scheduleCallback( () => { this.stopScanningIfPossible(forceNotInSphere); }, 60000, 'stopScanningIfPossible');
     }
   }
 }

@@ -83,7 +83,7 @@ class BackgroundProcessHandlerClass {
 
         LocationHandler.applySphereStateFromStore();
 
-        this.checkErrors(null);
+        Scheduler.scheduleCallback(() => { this.checkErrors(null); }, 15000, 'checkErrors');
 
         let state = this.store.getState();
         Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));

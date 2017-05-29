@@ -9,7 +9,7 @@ import {
 import { NativeBus }    from '../../native/libInterface/NativeBus'
 import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/overlays/OverlayBox'
-import { styles, colors , screenHeight, screenWidth } from '../styles'
+import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
 
 export class LocationPermissionOverlay extends Component<any, any> {
@@ -97,7 +97,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible} height={0.7*screenHeight}>
+      <OverlayBox visible={this.state.visible} height={0.85*availableScreenHeight}>
         <View style={{flex:1}} />
         <Icon
           name="ios-navigate"

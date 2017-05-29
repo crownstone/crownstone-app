@@ -582,9 +582,8 @@ open class BluenetJS: NSObject {
   @objc func getHardwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenet.device.getHardwareRevision()
       .then{(harwareVersion : String) -> Void in
-        print("harwareVersion \(harwareVersion)")
         callback([["error" : false, "data": harwareVersion]]
-        )}
+      )}
       .catch{err in
         if let bleErr = err as? BleError {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
@@ -639,6 +638,32 @@ open class BluenetJS: NSObject {
   @objc func getErrors(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenet.state.getErrors()
       .then{(errors : CrownstoneErrors) -> Void in callback([["error" : false, "data": errors.getDictionary()]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getErrors"]])
+        }
+    }
+  }
+  
+  @objc func clearErrors(_ errors: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.control.clearError(errorDict: errors)
+      .then{_ -> Void in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getErrors"]])
+        }
+    }
+  }
+  
+  @objc func restartCrownstone(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.control.reset()
+      .then{_ -> Void in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])

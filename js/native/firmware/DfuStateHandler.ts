@@ -108,7 +108,7 @@ class DfuStateHandlerClass {
     // set a new timeout that cleans up after this entry
     this._dfuTimeouts[handle] = Scheduler.scheduleCallback(() => {
       this._cleanup(handle);
-    }, DFU_MODE_TIMEOUT);
+    }, DFU_MODE_TIMEOUT, 'DFU_MODE_TIMEOUT');
   }
 
   _cleanup(handle) {

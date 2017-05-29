@@ -40,6 +40,8 @@ RCT_EXTERN_METHOD(getFirmwareVersion:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getBootloaderVersion:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getHardwareVersion:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getErrors:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(clearErrors:(NSDictionary *)errors callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(restartCrownstone:(RCTResponseSenderBlock)callback)
 
 // Bluenet localization
 RCT_EXTERN_METHOD(requestLocation:(RCTResponseSenderBlock)callback)
@@ -80,5 +82,6 @@ RCT_EXTERN_METHOD(setupPutInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(bootloaderToNormalMode:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
+
 
 @end

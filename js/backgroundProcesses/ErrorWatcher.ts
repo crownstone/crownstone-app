@@ -48,10 +48,11 @@ class ErrorWatcherClass {
         1e5,
       )
         .then((errors) => {
+          LOG.info('ErrorWatcher: Got errors from Crownstone:', errors);
           this.store.dispatch({type:'UPDATE_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: errors});
           eventBus.emit("checkErrors");
         })
-        .catch((err) => { LOG.error('AdvertisementHandler: Could not get errors from Crownstone.', err); });
+        .catch((err) => { LOG.error('ErrorWatcher: Could not get errors from Crownstone.', err); });
       BatchCommandHandler.executePriority();
     }
   }

@@ -44,7 +44,7 @@ export class DeviceEntry extends Component<any, any> {
     this.openHeight = this.baseHeight + this.optionsHeight;
     this.unsubscribe = () => {};
 
-    this.state = {height: new Animated.Value(this.baseHeight), optionsHeight:  new Animated.Value(0), optionsOpen: false, pendingCommand: false};
+    this.state = {height: new Animated.Value(this.baseHeight), optionsHeight:  new Animated.Value(0), optionsOpen: false, pendingCommand: false, backgroundColor: new Animated.Value(0)};
     this.optionsAreOpen = false;
     this.animating = false;
     this.id = Util.getUUID();
@@ -58,10 +58,18 @@ export class DeviceEntry extends Component<any, any> {
     }
 
     this.unsubscribe = this.props.eventBus.on('focusDeviceEntry', (id) => {
-      if (id != this.id) {
+      if (id !== this.id) {
         this._closeOptions();
       }
-    })
+    });
+    this.unsubscribe = this.props.eventBus.on('showErrorInOverview', (stoneId) => {
+      if (stoneId === this.props.stoneId) {
+        Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90 }).start();
+        setTimeout(() => {
+          Animated.timing(this.state.backgroundColor, { toValue: 0, duration: 2500 }).start();
+        }, 5000);
+      }
+    });
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -146,11 +154,15 @@ export class DeviceEntry extends Component<any, any> {
   _getControl(stone) {
     let content;
     if (stone.config.disabled === false) {
-      content = <Switch value={stone.state.state === 1} onValueChange={() => { this._pressedDevice(stone); }} />
-    }
-
-    if (this.state.pendingCommand === true) {
-      content = <ActivityIndicator animating={true} size='large' />
+      if (stone.errors.advertisementError) {
+        content = <Switch value={stone.state.state === 1} disabled={true} />
+      }
+      else if (this.state.pendingCommand === true) {
+        content = <ActivityIndicator animating={true} size='large' />
+      }
+      else {
+        content = <Switch value={stone.state.state === 1} onValueChange={() => { this._pressedDevice(stone); }}/>
+      }
     }
 
     return (
@@ -166,13 +178,26 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _iconPressed(stone, state) {
-    if (stone.errors.hasError === true) {
-      Alert.alert('An error has been detected', 'I\'m currently trying to ask this Crownstone what it is. An overlay should appear shortly', [{text:'OK'}]);
+    if (stone.errors.advertisementError === true && stone.errors.hasError === false) {
+      Alert.alert('An error has been detected', 'I\'m currently trying to ask this Crownstone what it is. An overlay should appear shortly.', [{text:'OK'}]);
       return;
+    }
+    else if (stone.errors.hasError === true) {
+      this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
+      return
     }
 
     if ((this._canUpdate(stone, state) === true || ALWAYS_DFU_UPDATE) && stone.config.disabled === false) {
       this.props.eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
+    }
+    else {
+      this._toggleOptions();
+    }
+  }
+
+  _basePressed(stone) {
+    if (stone.errors.hasError === true) {
+      this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
     }
     else {
       this._toggleOptions();
@@ -186,7 +211,7 @@ export class DeviceEntry extends Component<any, any> {
           (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
 
-    if (stone.errors.hasError === true) {
+    if (stone.errors.advertisementError === true) {
       return (
         <View style={[{
           width:60,
@@ -201,7 +226,7 @@ export class DeviceEntry extends Component<any, any> {
             switchDuration={2000}
             contentArray={[
               <Icon name={'ios-warning'} size={40} color={'#fff'} style={{position:'relative', top:-1, backgroundColor:'transparent'}} />,
-              <Icon name={element.config.icon} size={35} color={'#fff'} style={{position:'relative', backgroundColor:'transparent'}} />,
+              <Icon name={element.config.icon} size={35} color={'#fff'} />,
             ]}
           />
       </View>
@@ -223,7 +248,7 @@ export class DeviceEntry extends Component<any, any> {
             switchDuration={2000}
             contentArray={[
               <Icon name={'c1-update-arrow'} size={44} color={color} style={{position:'relative', top:-1, left:0, backgroundColor:'transparent'}} />,
-              <Icon name={element.config.icon} size={35} color={color} style={{position:'relative', backgroundColor:'transparent'}} />,
+              <Icon name={element.config.icon} size={35} color={color} />,
             ]} />
         </View>
       );
@@ -236,7 +261,7 @@ export class DeviceEntry extends Component<any, any> {
           borderRadius:30,
           backgroundColor: color,
         }, styles.centered]}>
-          <Icon name={element.config.icon} size={35} color={'#ffffff'} style={{position:'relative', backgroundColor:'transparent'}} />
+          <Icon name={element.config.icon} size={35} color={'#ffffff'} />
         </View>
       );
     }
@@ -282,20 +307,31 @@ export class DeviceEntry extends Component<any, any> {
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;
     let useControl = stone.config.type !== stoneTypes.guidestone;
+    let backgroundColor = this.state.backgroundColor.interpolate({
+      inputRange: [0,10],
+      outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
+    });
+
 
     return (
-      <Animated.View style={{flexDirection: 'column', height: this.state.height,  flex: 1, overflow:'hidden'}}>
+      <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
           <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
                             onPress={() => { this._iconPressed(stone, state); }}>
             {this._getIcon(element, stone, state)}
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
-            this._toggleOptions();
+            this._basePressed(stone);
           }}>
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
-              {this._getSubText(stone, state)}
+              <DeviceEntrySubText
+                rssi={stone.config.rssi}
+                disabled={stone.config.disabled}
+                currentUsage={stone.state.currentUsage}
+                nearest={this.props.nearest}
+                tap2toggleThreshold={Util.data.getTapToToggleCalibration(state)}
+              />
             </View>
           </TouchableOpacity>
           {useControl === true ? this._getControl(stone) : undefined}
@@ -307,18 +343,23 @@ export class DeviceEntry extends Component<any, any> {
       </Animated.View>
     );
   }
+}
 
-  _getSubText(stone, state) {
-    if (stone.config.disabled === false && stone.state.currentUsage !== undefined) {
+
+class DeviceEntrySubText extends Component<any, any> {
+  render() {
+    let currentUsage = this.props.currentUsage;
+    let rssi = this.props.rssi;
+    let disabled = this.props.disabled;
+
+    if (disabled === false && currentUsage !== undefined) {
       // show it in orange if it's in tap to toggle range
       let color = colors.iosBlue.hex;
-      let tap2toggleThreshold = Util.data.getTapToToggleCalibration(state);
-      let currentUsage = stone.state.currentUsage;
-      if (tap2toggleThreshold && stone.config.rssi >= tap2toggleThreshold) {
+      if (this.props.tap2toggleThreshold && rssi >= this.props.tap2toggleThreshold) {
         color = colors.orange.hex;
       }
 
-      if (this.props.nearest === true && stone.config.rssi > -70) {
+      if (this.props.nearest === true && rssi > -70) {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
@@ -326,7 +367,7 @@ export class DeviceEntry extends Component<any, any> {
           </View>
         )
       }
-      else if (stone.config.rssi > -60) {
+      else if (rssi > -60) {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
@@ -334,7 +375,7 @@ export class DeviceEntry extends Component<any, any> {
           </View>
         )
       }
-      else if (stone.config.rssi > -70) {
+      else if (rssi > -70) {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
@@ -346,18 +387,18 @@ export class DeviceEntry extends Component<any, any> {
         return <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
       }
     }
-    else if (stone.config.disabled === false) {
+    else if (disabled === false) {
       if (this.props.nearest === true) {
         return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Nearest)'}</Text>
       }
-      else if (stone.config.rssi > -60) {
+      else if (rssi > -60) {
         return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Very near)'}</Text>
       }
-      else if (stone.config.rssi > -70) {
+      else if (rssi > -70) {
         return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Near)'}</Text>
       }
     }
-    else if (stone.config.disabled === true) {
+    else if (disabled === true) {
       return <Text style={{fontSize: 12}}>{
         SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...'
       }</Text>

@@ -16,10 +16,11 @@ import { IconButton } from '../components/IconButton'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getUserLevelInSphere, getStonesAndAppliancesInSphere, getAiData } from '../../util/DataUtil';
+import { getUserLevelInSphere, getStonesAndAppliancesInSphere } from '../../util/DataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
+import { Util } from "../../util/Util";
 
 export class SettingsSphere extends Component<any, any> {
   deleting : boolean;
@@ -152,7 +153,7 @@ export class SettingsSphere extends Component<any, any> {
       });
     }
 
-    let ai = getAiData(state, this.props.sphereId);
+    let ai = Util.data.getAiData(state, this.props.sphereId);
 
     items.push({label:'PERSONAL ARTIFICIAL INTELLIGENCE',  type:'explanation', below:false});
     items.push({

@@ -144,7 +144,6 @@ export class RoomOverview extends Component<any, any> {
     else {
       return (
         <View key={stoneId + '_entry'}>
-          <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
             <DeviceEntry
               initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
               eventBus={this.props.eventBus}
@@ -155,7 +154,6 @@ export class RoomOverview extends Component<any, any> {
               viewingRemotely={this.viewingRemotely}
               nearest={stoneId === this.nearestStoneId}
             />
-          </View>
         </View>
       );
     }
@@ -263,7 +261,7 @@ export class RoomOverview extends Component<any, any> {
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
-    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
+    this.viewingRemotely = false && state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);

@@ -9,7 +9,7 @@ import {
 import { OverlayBox }                                from '../components/overlays/OverlayBox'
 import { styles, colors, screenHeight, screenWidth } from '../styles'
 import { eventBus }                                  from '../../util/EventBus'
-import { getAiData }                                 from '../../util/DataUtil'
+import { Util }                                      from "../../util/Util";
 
 export class LocalizationSetupStep2 extends Component<any, any> {
   unsubscribe : any;
@@ -34,7 +34,7 @@ export class LocalizationSetupStep2 extends Component<any, any> {
 
   render() {
     let state = this.props.store.getState();
-    let ai = getAiData(state, this.state.sphereId);
+    let ai = Util.data.getAiData(state, this.state.sphereId);
 
     return (
       <OverlayBox visible={this.state.visible}>

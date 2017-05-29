@@ -98,7 +98,7 @@ export class SetupHelper {
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
 
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-            Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300);
+            Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300, 'setup19');
             Scheduler.scheduleCallback(() => {
               let actions = [];
               let isPlug = this.type === stoneTypes.plug;
@@ -175,10 +175,10 @@ export class SetupHelper {
                     if (SetupStateHandler.isSetupInProgress() === false) {
                       eventBus.emit("CalibrateTapToToggle")
                     }
-                  }, 1500);
+                  }, 1500, 'setup t2t timeout');
                 }
               }
-            }, 2500);
+            }, 2500, 'setup20 resolver timeout');
           })
           .catch((err) => {
             // Restore trigger state

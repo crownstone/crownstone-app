@@ -2,7 +2,7 @@ import { NativeBus } from '../native/libInterface/NativeBus';
 import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
 import {eventBus} from "../util/EventBus";
-import {SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
+import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 
 
 class SchedulerClass {
@@ -221,7 +221,14 @@ class SchedulerClass {
     this.scheduledTick = setTimeout(() => { this.tick() }, SCHEDULER_FALLBACK_TICK);
   }
 
-  scheduleCallback(callback, afterMilliseconds, label = "unlabeled") {
+  scheduleCallback(callback : () => void, afterMilliseconds, label = "unlabeled") {
+    if (typeof callback !== 'function') {
+      LOG.error("Scheduler: Failed to schedule callback. Not a function", label, afterMilliseconds);
+      if (DEBUG) {
+        throw "Scheduler: Failed to schedule callback. Not a function: " + label;
+      }
+    }
+
     let uuid = label + Util.getUUID();
     LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
     this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
@@ -307,6 +314,7 @@ class SchedulerClass {
       if (trigger && trigger.triggerTime < now) {
         LOG.scheduler("Firing single fire trigger:", triggerId);
         trigger.callback();
+        this.singleFireTriggers[triggerId] = undefined;
         delete this.singleFireTriggers[triggerId];
       }
     })
@@ -407,6 +415,13 @@ class SchedulerClass {
     if (action.updatedAt > currentState.updatedAt || action.type === 'UPDATE_STONE_RSSI') {
       actionsToDispatch.push(action);
     }
+  }
+
+
+  delay(ms, label = '') {
+    return new Promise((resolve, reject) => {
+      Scheduler.scheduleCallback(() => { resolve(); }, ms, 'schedulerDelay_' + label);
+    })
   }
 }
 

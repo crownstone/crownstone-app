@@ -31,6 +31,8 @@ interface BluenetPromiseWrapperProtocol {
   setupFactoryReset(): Promise<void>,
   bootloaderToNormalMode( handle : string ): Promise<void>,
   getErrors(): Promise<any>,
+  clearErrors(clearErrorJSON): Promise<any>,
+  restartCrownstone(): Promise<any>,
 }
 
 interface crownstoneServiceData {

@@ -136,7 +136,7 @@ class LocationHandlerClass {
       // start the keep alive run. This gives the app some time for syncing and pointing out which stones are NOT disabled.
       Scheduler.scheduleCallback(() => {
         KeepAliveHandler.fireTrigger();
-      }, 1000);
+      }, 1000, 'sphere enter keepAlive trigger');
 
       // get the time last seen of the crownstones in this sphere
       let stones = state.spheres[sphereId].stones;

@@ -287,6 +287,18 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
         return newState;
       }
       return state;
+    case 'RESET_STONE_ERRORS':
+      if (action.data) {
+        let newState = {...state};
+        newState.overCurrent       = update(action.data.overCurrent,       newState.overCurrent);
+        newState.overCurrentDimmer = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
+        newState.temperatureChip   = update(action.data.temperatureChip,   newState.temperatureChip);
+        newState.temperatureDimmer = update(action.data.temperatureDimmer, newState.temperatureDimmer);
+
+        newState.hasError = newState.overCurrent || newState.overCurrentDimmer || newState.temperatureChip || newState.temperatureDimmer;
+        return newState;
+      }
+      return state;
     case 'CLEAR_STONE_ERRORS':
       let newState = {...state};
       newState.advertisementError = false;

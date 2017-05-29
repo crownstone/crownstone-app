@@ -95,6 +95,8 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   toggleSwitchState:          () => { return BluenetPromise('toggleSwitchState'); },
   bootloaderToNormalMode:     ( handle ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
   getErrors:                  () => { return BluenetPromise('getErrors'); }, // returns { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
+  clearErrors:                (clearErrorJSON) => { return BluenetPromise('clearErrors', clearErrorJSON); },
+  restartCrownstone:          () => { return BluenetPromise('restartCrownstone'); },
 
 };
 

@@ -77,7 +77,7 @@ export const BleUtil = {
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         this._cancelSearch(stateContainer);
         reject("_getNearestCrownstoneFromEvent: Nothing Near");
-      }, timeoutMilliseconds);
+      }, timeoutMilliseconds, '_getNearestCrownstoneFromEvent stateContainer.timeout');
     })
   },
 
@@ -118,7 +118,7 @@ export const BleUtil = {
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         cleanup.unsubscribe();
         reject(false);
-      }, 10000);
+      }, 10000, 'detectCrownstone timeout');
     })
   },
 
@@ -155,7 +155,7 @@ export const BleUtil = {
       }
       this.highFrequencyScanUsers[id].timeout = Scheduler.scheduleCallback(() => {
         this.stopHighFrequencyScanning(id);
-      }, timeoutDuration);
+      }, timeoutDuration, 'this.highFrequencyScanUsers[id].timeout');
     }
 
     return () => { this.stopHighFrequencyScanning(id) };

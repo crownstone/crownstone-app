@@ -87,7 +87,7 @@ export class Router_IOS extends Component {
         <TapToToggleCalibration store={this.props.store} />
         <LocationPermissionOverlay />
         <BleStateOverlay />
-        <ErrorOverlay />
+        <ErrorOverlay store={this.props.store} />
         <OptionPopup />
         <Processing />
       </View>

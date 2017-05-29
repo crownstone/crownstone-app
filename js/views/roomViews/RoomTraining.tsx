@@ -18,12 +18,12 @@ import { FingerprintManager } from '../../native/localization/FingerprintManager
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import { Background } from '../components/Background'
-import { getAiData } from '../../util/DataUtil';
 import { LOG } from '../../logging/Log'
 
 import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'
 import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
 import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
+import { Util } from "../../util/Util";
 
 
 export class RoomTraining extends Component<any, any> {
@@ -157,7 +157,7 @@ export class RoomTraining extends Component<any, any> {
 
   render() {
     let state  = this.props.store.getState();
-    let ai = getAiData(state, this.props.sphereId);
+    let ai = Util.data.getAiData(state, this.props.sphereId);
 
     let content = undefined;
     if (this.state.phase === 0) {

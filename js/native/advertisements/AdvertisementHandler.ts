@@ -44,13 +44,13 @@ class AdvertisementHandlerClass {
         this.stonesInConnectionProcess[handle] = {timeout: Scheduler.scheduleCallback(() => {
           LOG.warn("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");
           this._restoreConnectionTimeout();
-        }, 15000)};
+        }, 15000, 'ignoreProcessAdvertisementsTimeout')};
       });
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
       eventBus.on("disconnect", () => {
         // wait before listening to the stones again.
-        Scheduler.scheduleCallback(() => {this._restoreConnectionTimeout();}, 1000);
+        Scheduler.scheduleCallback(() => {this._restoreConnectionTimeout();}, 1000,'_restoreConnectionTimeout');
       });
 
       // sometimes we need to ignore any trigger for switching because we're doing something else.
@@ -60,7 +60,7 @@ class AdvertisementHandlerClass {
           if (this.temporaryIgnore === true) {
             LOG.error("Temporary ignore of triggers has been on for more than 20 seconds!!");
           }
-        }, 20000 );
+        }, 20000, 'temporaryIgnoreTimeout');
       });
       eventBus.on("useTriggers", () => {
         this.temporaryIgnore = false;
@@ -183,7 +183,7 @@ class AdvertisementHandlerClass {
         sphereId: advertisement.referenceId
       });
     }
-    else if (stoneFromServiceData.errors.hasError === true) {
+    else if (stoneFromServiceData.errors.advertisementError === true) {
       LOG.info("GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
       eventBus.emit("errorResolvedInAdvertisement", {
         advertisement: advertisement,

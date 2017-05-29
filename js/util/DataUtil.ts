@@ -172,6 +172,30 @@ export const DataUtil = {
     return undefined;
   },
 
+  getAiData: function(state, sphereId) {
+    let sexes = {
+      his: { male:'his', female:'her' },
+      him: { male:'him', female:'her' },
+      he:  { male:'he',  female:'she' },
+    };
+
+    if (sphereId) {
+      return {
+        name: state.spheres[sphereId].config.aiName,
+        his: sexes.his[state.spheres[sphereId].config.aiSex],
+        him: sexes.him[state.spheres[sphereId].config.aiSex],
+        he:  sexes.he[state.spheres[sphereId].config.aiSex],
+      }
+    }
+    else {
+      return {
+        name: 'AI',
+        his: 'her',
+        him: 'her',
+        he:  'she',
+      }
+    }
+  },
 };
 
 export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {
@@ -430,32 +454,7 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
   return map;
 }
 
-export const getAiData = function(state, sphereId) {
-  let sexes = {
-    his: { male:'his', female:'her' },
-    him: { male:'him', female:'her' },
-    he:  { male:'he',  female:'she' },
-  };
 
-  if (sphereId) {
-    return {
-      name: state.spheres[sphereId].config.aiName,
-      his: sexes.his[state.spheres[sphereId].config.aiSex],
-      him: sexes.him[state.spheres[sphereId].config.aiSex],
-      he:  sexes.he[state.spheres[sphereId].config.aiSex],
-    }
-  }
-  else {
-    return {
-      name: 'AI',
-      his: 'her',
-      him: 'her',
-      he:  'she',
-    }
-  }
-
-
-};
 
 export const prepareStoreForUser = function(store) {
   const state = store.getState();

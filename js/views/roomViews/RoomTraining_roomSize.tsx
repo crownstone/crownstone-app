@@ -14,12 +14,12 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 
-import { TopBar } from '../components/Topbar'
-import { Background } from '../components/Background'
+import { TopBar }       from '../components/Topbar'
+import { Background }   from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-import { Icon } from '../components/Icon';
-import { getAiData } from '../../util/DataUtil';
-import { LOG } from '../../logging/Log'
+import { Icon }         from '../components/Icon';
+import { LOG }          from '../../logging/Log'
+import { Util }         from "../../util/Util";
 
 
 let buttonTextStyle = {
@@ -74,7 +74,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
   render() {
     let state = this.props.store.getState();
-    let ai = getAiData(state, this.props.sphereId);
+    let ai = Util.data.getAiData(state, this.props.sphereId);
 
     return (
       <Background hideInterface={true} image={this.props.backgrounds.main}>

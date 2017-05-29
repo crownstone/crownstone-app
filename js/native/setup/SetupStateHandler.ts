@@ -64,7 +64,7 @@ class SetupStateHandlerClass {
         Scheduler.scheduleCallback(() => {
           this._ignoreStoneAfterSetup[handle] = undefined;
           delete this._ignoreStoneAfterSetup[handle];
-        }, 5000);
+        }, 5000, 'setupCompleteTimeout');
 
         this._resetSetupState();
         // cleaning up the entry of the setup stone
@@ -134,7 +134,7 @@ class SetupStateHandlerClass {
     // set a new timeout that cleans up after this entry
     this._setupModeTimeouts[handle] = Scheduler.scheduleCallback(() => {
       this._cleanup(handle);
-    }, SETUP_MODE_TIMEOUT);
+    }, SETUP_MODE_TIMEOUT, 'SETUP_MODE_TIMEOUT');
   }
 
   _cleanup(handle) {

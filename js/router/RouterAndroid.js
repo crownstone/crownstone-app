@@ -81,7 +81,7 @@ export class Router_Android extends Component {
         <TapToToggleCalibration store={this.props.store} />
         <BleStateOverlay />
         <LocationPermissionOverlay />
-        <ErrorOverlay />
+        <ErrorOverlay store={this.props.store} />
         <OptionPopup />
         <Processing />
       </View>

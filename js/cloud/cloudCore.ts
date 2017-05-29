@@ -78,7 +78,7 @@ export function request(
           if (finishedRequest !== true)
             reject(new Error('Network request failed'))
         },
-      NETWORK_REQUEST_TIMEOUT);
+      NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
       fetch(CLOUD_ADDRESS + endPoint, requestConfig)
         .catch((connectionError) => {

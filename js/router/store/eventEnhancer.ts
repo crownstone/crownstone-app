@@ -144,6 +144,7 @@ function checkAction(action, affectedIds) {
       eventStatus['changeStones'] = affectedIds;
     case 'UPDATE_STONE_CONFIG':
     case 'UPDATE_STONE_ERRORS':
+    case 'RESET_STONE_ERRORS':
     case 'CLEAR_STONE_ERRORS':
       eventStatus['updateStoneConfig'] = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':
