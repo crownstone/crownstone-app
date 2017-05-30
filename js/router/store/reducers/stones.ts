@@ -65,6 +65,7 @@ let defaultSettings = {
     temperatureChip: false,
     temperatureDimmer: false,
     hasError: false,
+    obtainedErrors: false,
     advertisementError: false,
   }
 };
@@ -207,6 +208,8 @@ let behaviourReducerOnHomeEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleState);
     default:
       return state;
   }
@@ -215,6 +218,8 @@ let behaviourReducerOnHomeExit = (state = toggleStateAway, action : any = {}) =>
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleStateAway);
     default:
       return state;
   }
@@ -223,6 +228,8 @@ let behaviourReducerOnRoomEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleState);
     default:
       return state;
   }
@@ -231,6 +238,8 @@ let behaviourReducerOnRoomExit = (state = toggleStateAway, action : any = {}) =>
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleStateAway);
     default:
       return state;
   }
@@ -239,6 +248,8 @@ let behaviourReducerOnNear = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleState);
     default:
       return state;
   }
@@ -247,6 +258,8 @@ let behaviourReducerOnAway = (state = toggleStateAway, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleStateAway);
     default:
       return state;
   }
@@ -270,20 +283,12 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
       if (action.data) {
         let newState = {...state};
         newState.advertisementError = update(action.data.advertisementError, newState.advertisementError);
-        newState.overCurrent       = update(action.data.overCurrent,       newState.overCurrent);
-        newState.overCurrentDimmer = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
-        newState.temperatureChip   = update(action.data.temperatureChip,   newState.temperatureChip);
-        newState.temperatureDimmer = update(action.data.temperatureDimmer, newState.temperatureDimmer);
-
-        let hasError = false;
-        let errorKeys = Object.keys(action.data);
-        for (let i = 0; i < errorKeys.length; i++) {
-          if (action.data[errorKeys[i]] === true) {
-            hasError = true; break;
-          }
-        }
-
-        newState.hasError = hasError;
+        newState.obtainedErrors     = update(action.data.obtainedErrors, newState.obtainedErrors);
+        newState.overCurrent        = update(action.data.overCurrent,       newState.overCurrent);
+        newState.overCurrentDimmer  = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
+        newState.temperatureChip    = update(action.data.temperatureChip,   newState.temperatureChip);
+        newState.temperatureDimmer  = update(action.data.temperatureDimmer, newState.temperatureDimmer);
+        newState.hasError = newState.overCurrent || newState.overCurrentDimmer || newState.temperatureChip || newState.temperatureDimmer;
         return newState;
       }
       return state;
@@ -294,6 +299,7 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
         newState.overCurrentDimmer = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
         newState.temperatureChip   = update(action.data.temperatureChip,   newState.temperatureChip);
         newState.temperatureDimmer = update(action.data.temperatureDimmer, newState.temperatureDimmer);
+        newState.obtainedErrors    = false;
 
         newState.hasError = newState.overCurrent || newState.overCurrentDimmer || newState.temperatureChip || newState.temperatureDimmer;
         return newState;
@@ -307,7 +313,10 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
       newState.temperatureChip    = false;
       newState.temperatureDimmer  = false;
       newState.hasError           = false;
+      newState.obtainedErrors     = false;
       return newState;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.errors);
     default:
       return state;
   }

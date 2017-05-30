@@ -85,10 +85,13 @@ export class ErrorOverlay extends Component<any, any> {
         return "Oh no! The Crownstone got way too warm! I had to switch it off to protect you and your devices.\n\nFind and tap on the Crownstone to resolve this error.";
       }
       else if (this.state.stonesContainingError[0].stone.errors.overCurrentDimmer) {
-        return "Gotcha! I detected that the device that you tried to dim uses more current than is safe (100 W). I had to disable it.\n\nFind and tap on the Crownstone to resolve this error.";
+        return "Just in time! I detected that the device that you tried to dim uses more current than is safe (100 W). I had to disable it.\n\nFind and tap on the Crownstone to resolve this error.";
       }
       else if (this.state.stonesContainingError[0].stone.errors.overCurrent) {
-        return "Gotcha! I detected that the connected device uses more current than is safe (16 A). I had to disable it.\n\nFind and tap on the Crownstone to resolve this error.";
+        return "Just in time! I detected that the connected device uses more current than is safe (16 A). I had to disable it.\n\nFind and tap on the Crownstone to resolve this error.";
+      }
+      else {
+        return "This Crownstone needs to be restarted.\n\nFind and tap on the Crownstone to continue.";
       }
     }
     else {
@@ -104,6 +107,9 @@ export class ErrorOverlay extends Component<any, any> {
       }
       else if (this.state.stonesContainingError[0].stone.errors.overCurrent) {
         return "I detected that the connected device uses more current than is safe (16 A). I had to disable it.\n\nIf you reset the error, you will be able to use it again.";
+      }
+      else {
+        return "This Crownstone needs to be restarted. You can reset the state again to remove this notification.";
       }
     }
   }

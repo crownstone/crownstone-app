@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
 import { stoneTypes } from '../router/store/reducers/stones'
@@ -64,6 +65,14 @@ export const DataUtil = {
           return calibration;
         }
       }
+    }
+    return null;
+  },
+
+  getDevice: function(state) {
+    let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
+    if (state.devices && deviceId && state.devices[deviceId]) {
+      return state.devices[deviceId];
     }
     return null;
   },
@@ -155,9 +164,14 @@ export const DataUtil = {
   getDeviceSpecs: function(state) {
     let address = state.user.appIdentifier;
     let name = DeviceInfo.getDeviceName();
-    let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
+    let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + ',' + DeviceInfo.getDeviceId();
+    let os = DeviceInfo.getSystemName() + ' ' + DeviceInfo.getSystemVersion();
+    let deviceType = DeviceInfo.getDeviceId();
+    let model = DeviceInfo.getModel();
+    let userAgent = DeviceInfo.getUserAgent();
+    let locale = DeviceInfo.getDeviceLocale();
 
-    return { name, address, description };
+    return { name, address, description, os, userAgent, locale, deviceType, model };
   },
 
   getCurrentDeviceId: function(state) {
@@ -169,7 +183,7 @@ export const DataUtil = {
         return deviceIds[i];
       }
     }
-    return undefined;
+    return null;
   },
 
   getAiData: function(state, sphereId) {

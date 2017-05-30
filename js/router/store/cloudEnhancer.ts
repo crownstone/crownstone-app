@@ -102,6 +102,10 @@ function handleAction(action, returnValue, newState, oldState) {
       handleStoneState(action, newState, true);
       break;
 
+    case "ADD_INSTALLATION":
+    case "UPDATE_INSTALLATION_CONFIG":
+      handleInstallation(action, newState);
+      break;
   }
 }
 
@@ -129,6 +133,7 @@ function handleUserInCloud(action, state) {
       uploadLocation:    state.user.uploadLocation,
       uploadSwitchState: state.user.uploadSwitchState,
       uploadPowerUsage:  state.user.uploadPowerUsage,
+      uploadDeviceDetails:  state.user.uploadDeviceDetails,
       updatedAt: state.user.updatedAt
     };
     CLOUD.updateUserData(data).catch(() => {});
@@ -311,27 +316,6 @@ function handleUserLocationExit(action, state) {
 }
 
 
-function handleDeviceInCloud(action, state) {
-  let deviceId = action.deviceId;
-  if (!deviceId) {
-    LOG.error("handleDeviceInCloud: invalid device id: ", deviceId);
-    return;
-  }
-  let deviceConfig = state.devices[deviceId];
-  let data = {
-    name: deviceConfig.name,
-    address: deviceConfig.address,
-    description: deviceConfig.description,
-    hubFunction: deviceConfig.hubFunction,
-    location: state.user.uploadLocation === true ? deviceConfig.location : undefined,
-    tapToToggleCalibration: deviceConfig.tapToToggleCalibration,
-    updatedAt: deviceConfig.updatedAt
-  };
-
-  CLOUD.updateDevice(deviceId, data).catch(() => {});
-}
-
-
 function handleStoneState(action, state, pureSwitch = false) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
@@ -354,4 +338,50 @@ function handleStoneState(action, state, pureSwitch = false) {
 
     CLOUD.forStone(stoneId).updateUsage(data).catch(() => {});
   }
+}
+
+function handleDeviceInCloud(action, state) {
+  let deviceId = action.deviceId;
+  if (!deviceId) {
+    LOG.error("handleDeviceInCloud: invalid device id: ", deviceId);
+    return;
+  }
+  let deviceConfig = state.devices[deviceId];
+  let data = {
+    name: deviceConfig.name,
+    address: deviceConfig.address,
+    description: deviceConfig.description,
+    hubFunction: deviceConfig.hubFunction,
+    installationId: deviceConfig.installationId,
+    location: state.user.uploadLocation === true ? deviceConfig.location : undefined,
+    tapToToggleCalibration: deviceConfig.tapToToggleCalibration,
+    updatedAt: deviceConfig.updatedAt
+  };
+
+  if (state.user.uploadDeviceDetails) {
+    data["os"] = deviceConfig.os;
+    data["deviceType"] = deviceConfig.deviceType;
+    data["model"] = deviceConfig.model;
+    data["userAgent"] = deviceConfig.userAgent;
+    data["locale"] = deviceConfig.locale;
+  }
+
+  CLOUD.updateDevice(deviceId, data).catch(() => {});
+}
+
+
+
+function handleInstallation(action, state) {
+  let installationId = action.installationId;
+  if (!installationId) {
+    LOG.error("handleDeviceInCloud: invalid installationId: ", installationId);
+    return;
+  }
+  let installationConfig = state.installations[installationId];
+  let data = {
+    deviceToken: installationConfig.deviceToken,
+    updatedAt: installationConfig.updatedAt
+  };
+
+  CLOUD.updateInstallation(installationId, data).catch(() => {});
 }

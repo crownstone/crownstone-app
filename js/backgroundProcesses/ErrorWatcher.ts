@@ -6,6 +6,7 @@ import { Util } from "../util/Util";
 class ErrorWatcherClass {
   _initialized: boolean = false;
   processedErrors: any = {};
+  pendingErrorObtaining: any = {};
   store: any;
 
   constructor() { }
@@ -28,18 +29,13 @@ class ErrorWatcherClass {
 
 
   clearError(advertisement: crownstoneAdvertisement, stone, stoneId, sphereId) {
-    if (this.processedErrors[advertisement.handle] !== undefined) {
-      this.processedErrors[advertisement.handle] = undefined;
-      delete this.processedErrors[advertisement.handle]
-    }
-
     this.store.dispatch({type:'CLEAR_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId});
   }
 
   processError(advertisement: crownstoneAdvertisement, stone, stoneId, sphereId) {
-    if (this.processedErrors[advertisement.handle] === undefined) {
-      this.processedErrors[advertisement.handle] = true;
-      this.store.dispatch({type:'UPDATE_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: { advertisementError: true }});
+    if (this.pendingErrorObtaining[advertisement.handle] === undefined && stone.errors.obtainedErrors === false) {
+      this.pendingErrorObtaining[advertisement.handle] = true;
+      this.store.dispatch({type:'UPDATE_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: { advertisementError: true, obtainedErrors: false }});
       BatchCommandHandler.loadPriority(
         stone,
         stoneId,
@@ -48,11 +44,21 @@ class ErrorWatcherClass {
         1e5,
       )
         .then((errors) => {
+          if (this.pendingErrorObtaining[advertisement.handle] !== undefined) {
+            this.pendingErrorObtaining[advertisement.handle] = undefined;
+            delete this.pendingErrorObtaining[advertisement.handle]
+          }
           LOG.info('ErrorWatcher: Got errors from Crownstone:', errors);
-          this.store.dispatch({type:'UPDATE_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: errors});
+          this.store.dispatch({type:'UPDATE_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: {...errors, obtainedErrors: true}});
           eventBus.emit("checkErrors");
         })
-        .catch((err) => { LOG.error('ErrorWatcher: Could not get errors from Crownstone.', err); });
+        .catch((err) => {
+          if (this.pendingErrorObtaining[advertisement.handle] !== undefined) {
+            this.pendingErrorObtaining[advertisement.handle] = undefined;
+            delete this.pendingErrorObtaining[advertisement.handle]
+          }
+          LOG.error('ErrorWatcher: Could not get errors from Crownstone.', err);
+        });
       BatchCommandHandler.executePriority();
     }
   }

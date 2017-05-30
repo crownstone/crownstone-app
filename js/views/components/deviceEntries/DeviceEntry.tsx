@@ -23,6 +23,7 @@ import {BatchCommandHandler} from '../../../logic/BatchCommandHandler';
 import {INTENTS} from '../../../native/libInterface/Constants';
 import {Actions} from 'react-native-router-flux';
 import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
+import {LOG} from "../../../logging/Log";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -178,13 +179,18 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _iconPressed(stone, state) {
-    if (stone.errors.advertisementError === true && stone.errors.hasError === false) {
+    LOG.warn(stone.errors);
+    if (stone.errors.advertisementError === true && stone.errors.hasError === false && stone.errors.obtainedErrors === false) {
       Alert.alert('An error has been detected', 'I\'m currently trying to ask this Crownstone what it is. An overlay should appear shortly.', [{text:'OK'}]);
+      return;
+    }
+    else if (stone.errors.hasError === false && stone.errors.obtainedErrors === true) {
+      this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
       return;
     }
     else if (stone.errors.hasError === true) {
       this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
-      return
+      return;
     }
 
     if ((this._canUpdate(stone, state) === true || ALWAYS_DFU_UPDATE) && stone.config.disabled === false) {

@@ -3,6 +3,7 @@ import { LOG } from '../../logging/Log'
 import { Util } from '../../util/Util'
 import { Platform } from 'react-native'
 import { syncUsersInLocation } from './syncUsersInSphere'
+import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -593,7 +594,7 @@ const syncDevices = function(store, actions, cloudDevices) {
   return new Promise((resolve, reject) => {
     const state = store.getState();
 
-    let {name, address, description} = Util.data.getDeviceSpecs(state);
+    let { name, address, description, os, userAgent, locale, deviceType, model } = Util.data.getDeviceSpecs(state);
 
     let deviceId = undefined;
     let deviceAddress = address;
@@ -644,7 +645,19 @@ const syncDevices = function(store, actions, cloudDevices) {
     if (deviceId === undefined) {
       let newDevice = null;
       LOG.info("Sync: Create new device in cloud", name, address, description);
-      CLOUD.createDevice({name:name, address:address, description: description})
+      let deviceInfo = {
+        name:name,
+        address:address,
+        description: description,
+      };
+      if (state.user.uploadDeviceDetails) {
+        deviceInfo["os"] = os;
+        deviceInfo["deviceType"] = deviceType;
+        deviceInfo["userAgent"] = userAgent;
+        deviceInfo["model"] = model;
+        deviceInfo["locale"] = locale;
+      }
+      CLOUD.createDevice(deviceInfo)
         .then((device) => {
           newDevice = device;
           return CLOUD.forDevice(device.id).createInstallation({
@@ -661,7 +674,17 @@ const syncDevices = function(store, actions, cloudDevices) {
           actions.push({
             type: 'ADD_DEVICE',
             deviceId: newDevice.id,
-            data: {name: name, address: address, description: description, installationId: installation.id}
+            data: {
+              name: name,
+              address: address,
+              description: description,
+              os: os,
+              model: model,
+              deviceType: deviceType,
+              userAgent: userAgent,
+              locale: locale,
+              installationId: installation.id
+            }
           });
 
           // We now push the location of ourselves to the cloud.
@@ -672,12 +695,30 @@ const syncDevices = function(store, actions, cloudDevices) {
     }
     else if (state.devices[deviceId] === undefined) {
       LOG.info("Sync: User device found in cloud, updating local.");
+
       // add the device from the cloud to the redux database
       actions.push({
         type: 'ADD_DEVICE',
         deviceId: deviceId,
-        data: {name: name, address: deviceAddress, description: description}
+        data: {
+          name: name,
+          address: deviceAddress,
+          description: description,
+          os: os,
+          model: model,
+          deviceType: deviceType,
+          userAgent: userAgent,
+          locale: locale,
+          installationId: matchingDevice.installationId,
+          tapToToggleCalibration: matchingDevice.tapToToggleCalibration,
+          hubFunction: matchingDevice.hubFunction,
+        }
       });
+
+      // if we use this device as a hub, make sure we request permission for notifications.
+      if (matchingDevice.hubFunction === true) {
+        NotificationHandler.request();
+      }
 
       // update our unique identifier to match the new device.
       store.dispatch({
@@ -685,7 +726,9 @@ const syncDevices = function(store, actions, cloudDevices) {
         data: {appIdentifier: deviceAddress}
       });
 
-      resolveAndCleanup();
+      verifyInstallation(state, deviceId, matchingDevice.installationId, actions)
+        .then(resolveAndCleanup)
+        .catch(reject);
     }
     else {
       // if the device is known under a different number in the cloud, we update our local identifier
@@ -697,30 +740,82 @@ const syncDevices = function(store, actions, cloudDevices) {
       }
       // Old bug caused the local db to have a device address of null. This should fix that.
       if (state.devices[deviceId].address !== deviceAddress) {
-        LOG.info("update address to", deviceAddress);
+        LOG.info("Sync: update address to", deviceAddress);
         actions.push({
           type:"UPDATE_DEVICE_CONFIG",
           deviceId: deviceId,
-          data:{address:deviceAddress}
+          data:{
+            name: name,
+            address: deviceAddress,
+            description: description,
+            os: os,
+            model: model,
+            deviceType: deviceType,
+            userAgent: userAgent,
+            installationId: matchingDevice.installationId,
+            hubFunction: matchingDevice.hubFunction,
+            locale: locale,
+          }
         });
+
+        // if we use this device as a hub, make sure we request permission for notifications.
+        if (state.devices[deviceId].hubFunction === false && matchingDevice.hubFunction === true) {
+          NotificationHandler.request();
+        }
       }
+
       // if the tap to toggle calibration is available and different from what we have stored, update it.
       if (matchingDevice.tapToToggleCalibration && state.devices[deviceId].tapToToggleCalibration === null) {
         store.dispatch({
           type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
           deviceId: deviceId,
-          data: {tapToToggleCalibration: matchingDevice.tapToToggleCalibration}
+          data: {
+            tapToToggleCalibration: matchingDevice.tapToToggleCalibration
+          }
         })
       }
 
-      LOG.info("Sync: User device found in cloud, updating location.");
-      updateUserLocationInCloud(state, deviceId)
+      LOG.info("Sync: User device found in cloud, updating installation.");
+      verifyInstallation(state, deviceId, matchingDevice.installationId, actions)
+        .then(() => {
+          LOG.info("Sync: User device found in cloud, updating location.");
+          return updateUserLocationInCloud(state, deviceId)
+        })
         .then(resolveAndCleanup)
         .catch(reject);
     }
   });
 };
 
+const verifyInstallation = function(state, deviceId, installationId, actions) {
+  if (installationId) {
+    return CLOUD.getInstallation(installationId)
+      .then((installation) => {
+        actions.push({
+          type: 'ADD_INSTALLATION',
+          installationId: installation.id,
+          data: {deviceToken: installation.deviceToken}
+        });
+      })
+  }
+  else if (deviceId && state && state.devices && state.devices[deviceId] && state.devices[deviceId].installationId === null) {
+    return CLOUD.forDevice(deviceId).createInstallation({
+      deviceType: Platform.OS,
+    })
+      .then((installation) => {
+        actions.push({
+          type: 'ADD_INSTALLATION',
+          installationId: installation.id,
+          data: {deviceToken: null}
+        });
+        actions.push({
+          type: 'UPDATE_DEVICE_CONFIG',
+          deviceId: deviceId,
+          data: {installationId: installation.id}
+        });
+      })
+  }
+};
 
 const updateUserLocationInCloud = function(state, deviceId) {
   return new Promise((resolve, reject) => {

@@ -44,18 +44,10 @@ export class RoomExplanation extends Component<any, any> {
     let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { (Actions as any).roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
 
     // In case we see a crownstone in setup mode:
-    if (explanation === undefined && seeStoneInSetupMode === true) {
-      // in floating Crownstones
-      if (locationId === null) {
-        explanation = "Crownstones in setup mode have a blue icon."
-      }
-      // Go to the crownstone in setup mode.
-      else {
-        // do nothing at the moment
-        // explanation = "Crownstone in setup mode found. Tap here to see it!";
-        // buttonCallback = goToFloatingCrownstonesCallback;
-      }
+    if (explanation === undefined && seeStoneInSetupMode === true && locationId === null) {
+      explanation = "Crownstones in setup mode have a blue icon."
     }
+
     // in case there are no crownstones in the room.
     else if (explanation === undefined && amountOfStonesInRoom === 0) {
       // in floating Crownstones

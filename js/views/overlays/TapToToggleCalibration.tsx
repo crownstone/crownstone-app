@@ -93,7 +93,7 @@ export class TapToToggleCalibration extends Component<any, any> {
           let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
           let deviceId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
           this.props.store.dispatch({
-            type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
+            type: 'UPDATE_DEVICE_CONFIG',
             deviceId: deviceId,
             data: { tapToToggleCalibration: rssiAddedDistance }
           });

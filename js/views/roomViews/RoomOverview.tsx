@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
+  Animated,
   Image,
   TouchableHighlight,
   ScrollView,
@@ -37,6 +38,7 @@ import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight }
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
 import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
+import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -48,7 +50,7 @@ export class RoomOverview extends Component<any, any> {
 
   constructor() {
     super();
-    this.state = {pendingRequests:{}};
+    this.state = {pendingRequests:{}, scrollViewHeight: new Animated.Value(screenHeight-tabBarHeight-topBarHeight-100)};
     this.unsubscribeSetupEvents = [];
 
     this.viewingRemotely = true;
@@ -57,10 +59,22 @@ export class RoomOverview extends Component<any, any> {
     this.nearestStoneId = undefined;
   }
 
+  componentWillMount() {
+    if (SetupStateHandler.areSetupStonesAvailable()) {
+      this.state.scrollViewHeight = new Animated.Value(screenHeight-tabBarHeight-topBarHeight-160)
+    }
+  }
+
   componentDidMount() {
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected", () => {
+      Animated.spring(this.state.scrollViewHeight, { toValue: screenHeight-tabBarHeight-topBarHeight-160, friction: 7, tension: 70 }).start();
+    }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => {
+      Animated.timing(this.state.scrollViewHeight, { toValue: screenHeight-tabBarHeight-topBarHeight-100, duration: 250 }).start();
+    }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => {
       this.justFinishedSetup = handle;
@@ -261,7 +275,7 @@ export class RoomOverview extends Component<any, any> {
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
-    this.viewingRemotely = false && state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
+    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
@@ -283,7 +297,7 @@ export class RoomOverview extends Component<any, any> {
       let {stoneArray, ids} = this._getStoneList(stones);
       this._getNearestStoneInRoom(stoneArray, ids);
       content = (
-        <View>
+        <Animated.View style={{height: this.state.scrollViewHeight}}>
           <ScrollView style={{position:'relative', top:-1}}>
             <View style={{height: Math.max(Object.keys(stoneArray).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
               <SeparatedItemList
@@ -294,7 +308,7 @@ export class RoomOverview extends Component<any, any> {
               />
             </View>
           </ScrollView>
-        </View>
+        </Animated.View>
       );
     }
 
@@ -326,6 +340,10 @@ export class RoomOverview extends Component<any, any> {
           locationId={ this.props.locationId }
         />
         {content}
+        <RoomBottomExplanation
+          sphereId={ this.props.sphereId }
+          locationId={ this.props.locationId }
+        />
       </Background>
     );
   }

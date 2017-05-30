@@ -16,6 +16,8 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from '../styles'
+import {Util} from "../../util/Util";
+import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 const RNFS = require('react-native-fs');
 
 
@@ -31,7 +33,8 @@ export class SettingsDeveloper extends Component<any, any> {
     const { store } = this.props;
     this.unsubscribe = store.subscribe(() => {
       const state = store.getState();
-      if (this.renderState && this.renderState.user != state.user) {
+      if (this.renderState && this.renderState.user !== state.user ||
+          this.renderState && this.renderState.devices !== state.devices) {
         this.forceUpdate();
       }
     })
@@ -44,6 +47,7 @@ export class SettingsDeveloper extends Component<any, any> {
   
   _getItems(user) {
     const store = this.props.store;
+    let state = store.getState();
     let items = [];
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
@@ -65,29 +69,59 @@ export class SettingsDeveloper extends Component<any, any> {
     }});
     items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
 
-    items.push({
-      label:"Clear Logs",
-      type: 'button',
-      style: {color: colors.blue.hex},
-      icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-      callback:(newValue) => {
-        clearAllLogs();
-        Alert.alert("Logs Cleared", undefined, [{text:'OK'}])
-      }});
-    items.push({label: "Clear all logs that have been stored so far.", type: 'explanation', below: true});
+    if (user.logging) {
+      items.push({
+        label: "Clear Logs",
+        type: 'button',
+        style: {color: colors.blue.hex},
+        icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
+        callback: (newValue) => {
+          clearAllLogs();
+          Alert.alert("Logs Cleared", undefined, [{text: 'OK'}])
+        }
+      });
+      items.push({label: "Clear all logs that have been stored so far.", type: 'explanation', below: true});
+    }
 
+    items.push({label: "CLOUD", type: 'explanation', below: false, alreadyPadded: true});
     items.push({
       label:"Sync Now!",
       type: 'button',
       style: {color: colors.blue.hex},
       icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback:(newValue) => {
-        Alert.alert("Syncing Starting...", undefined, [{text:'OK'}]);
+        this.props.eventBus.emit("showLoading","Syncing...");
         CLOUD.sync(store, true)
-          .then(() => { Alert.alert("Syncing Done!", undefined, [{text:'OK'}]) })
-          .catch((err) => { Alert.alert("Error during sync.", undefined, [{text:'OK'}]) })
+          .then(() => { this.props.eventBus.emit("showLoading","Done!"); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
+          .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert("Error during sync.", err && err.message || JSON.stringify(err), [{text:'OK'}]) })
       }});
     items.push({label: "Trigger a sync with the Cloud.", type: 'explanation', below: true});
+
+
+    let deviceId = Util.data.getCurrentDeviceId(state);
+    let device = deviceId && state.devices[deviceId] || null;
+    if (device) {
+      items.push({
+        label:"Use as Hub",
+        value: device.hubFunction,
+        type: 'switch',
+        icon: <IconButton name="md-cube" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'UPDATE_DEVICE_CONFIG',
+            deviceId: deviceId,
+            data: {hubFunction: newValue}
+          });
+          if (newValue === true) {
+            NotificationHandler.request();
+          }
+        }});
+      items.push({label: "A Hub will use push notifications from the cloud to toggle your devices remotely.", type: 'explanation', below: true});
+    }
+    else {
+      items.push({label: "No device available... Try triggering a sync?", type: 'explanation', below: true});
+    }
+
 
 
     items.push({

@@ -25,6 +25,7 @@ import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 import {ErrorWatcher} from "./ErrorWatcher";
+import {NotificationHandler} from "./NotificationHandler";
 
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -79,7 +80,7 @@ class BackgroundProcessHandlerClass {
 
         this.startBluetoothListener();
 
-        this.updateDeviceName();
+        this.updateDeviceDetails();
 
         LocationHandler.applySphereStateFromStore();
 
@@ -104,7 +105,7 @@ class BackgroundProcessHandlerClass {
       let stonesContainingError = [];
 
       Util.data.callOnStonesInSphere(state, presentSphere, (stoneId, stone) => {
-        if (stone.errors.hasError === true) {
+        if (stone.errors.hasError === true || (stone.errors.advertisementError && stone.errors.obtainedErrors === true)) {
           errorsFound = true;
           stonesContainingError.push({sphereId: presentSphere, stoneId: stoneId, stone:stone});
         }
@@ -163,15 +164,31 @@ class BackgroundProcessHandlerClass {
   /**
    * Update device specs: Since name is user editable, it can change over time. We use this to update the model.
    */
-  updateDeviceName() {
+  updateDeviceDetails() {
     let state = this.store.getState();
     let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
     let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
     if (currentDeviceSpecs.address && deviceInDatabaseId) {
       let deviceInDatabase = state.devices[deviceInDatabaseId];
       // if the address matches but the name does not, update the device name in the cloud.
-      if (deviceInDatabase.address === currentDeviceSpecs.address && currentDeviceSpecs.name != deviceInDatabase.name) {
-        this.store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {name: currentDeviceSpecs.name}})
+      if (deviceInDatabase.address === currentDeviceSpecs.address && 
+        (currentDeviceSpecs.name != deviceInDatabase.name) || 
+        (currentDeviceSpecs.os != deviceInDatabase.os) || 
+        (currentDeviceSpecs.userAgent != deviceInDatabase.userAgent) || 
+        (currentDeviceSpecs.deviceType != deviceInDatabase.deviceType) || 
+        (currentDeviceSpecs.model != deviceInDatabase.model) || 
+        (currentDeviceSpecs.locale != deviceInDatabase.locale) || 
+        (currentDeviceSpecs.description != deviceInDatabase.description))
+        {
+        this.store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {
+          name: currentDeviceSpecs.name,
+          os: currentDeviceSpecs.os,
+          userAgent: currentDeviceSpecs.userAgent,
+          deviceType: currentDeviceSpecs.deviceType,
+          model: currentDeviceSpecs.model,
+          locale: currentDeviceSpecs.locale,
+          description: currentDeviceSpecs.description
+        }})
       }
     }
   }
@@ -311,7 +328,7 @@ class BackgroundProcessHandlerClass {
     FirmwareWatcher.loadStore(this.store);
     BatterySavingUtil.loadStore(this.store);
     ErrorWatcher.loadStore(this.store);
-    // NotificationHandler.loadStore(store);
+    NotificationHandler.loadStore(this.store);
   }
 }
 

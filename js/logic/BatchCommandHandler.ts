@@ -473,12 +473,12 @@ class BatchCommandHandlerClass {
             this._scheduleNextStone();
           }
 
-          LOG.error("ERROR DURING EXECUTE", err, this.activePromiseId);
+          LOG.error("BatchCommandHandler: ERROR DURING EXECUTE", err, this.activePromiseId);
           reject(err);
         })
         .catch((err) => {
           // this fallback catches errors in the attemptHandler.
-          LOG.error("FATAL ERROR DURING EXECUTE", err, this.activePromiseId);
+          LOG.error("BatchCommandHandler: FATAL ERROR DURING EXECUTE", err, this.activePromiseId);
           reject(err);
         })
     })

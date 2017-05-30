@@ -15,6 +15,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from '../styles'
 import { Util } from "../../util/Util";
+import {CLOUD} from "../../cloud/cloudAPI";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
@@ -46,9 +47,6 @@ export class SettingsPrivacy extends Component<any, any> {
     const store = this.props.store;
     let state = store.getState();
     let items = [];
-    let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
-    let deviceId = Util.data.getCurrentDeviceId(state);
-    let device = state.devices[deviceId];
 
     items.push({type: 'spacer'});
     items.push({
@@ -59,24 +57,71 @@ export class SettingsPrivacy extends Component<any, any> {
       callback:(newValue) => {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadLocation: newValue} });
     }});
+    items.push({
+      label: 'Show the other people in your sphere in which room you are!',
+      type: 'explanation',
+      below: true
+    });
 
     items.push({
       label:"Share switch state",
       value: user.uploadSwitchState,
       type: 'switch',
-      icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />,
+      icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
       callback:(newValue) => {
-        if (newValue === false) {
-          clearAllLogs();
-        }
         store.dispatch({ type: 'USER_UPDATE', data: {uploadSwitchState: newValue} });
       }});
+    items.push({
+      label: 'Show the other people in your sphere if the Crownstone is on or off!',
+      type: 'explanation',
+      below: true
+    });
+
+    items.push({
+      label:"Share phone type details",
+      value: user.uploadDeviceDetails,
+      type: 'switch',
+      icon: <IconButton name="ios-phone-portrait" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
+      callback:(newValue) => {
+        if (newValue === false) {
+          let deviceId = Util.data.getCurrentDeviceId(state);
+          this.props.eventBus.emit("showLoading", "Removing phone details from the Cloud...");
+          CLOUD.updateDevice(deviceId, {
+            os: null,
+            userAgent: null,
+            deviceType: null,
+            model: null,
+            locale: null
+          })
+            .then(() => {
+              this.props.eventBus.emit("showLoading", "Done!");
+              setTimeout(() => {
+                this.props.eventBus.emit("hideLoading");
+                store.dispatch({ type: 'USER_UPDATE', data: {uploadDeviceDetails: newValue} });
+                Alert.alert("Phone Details Removed", "We have removed your phone details from the Cloud.", [{text:'OK'}]);
+              }, 500);
+            })
+            .catch((err) => {
+              this.props.eventBus.emit("hideLoading");
+              Alert.alert("Whoops!", "We could not remove your phone details from the Cloud. Please try again later.", [{text:'Fine...'}]);
+            })
+        }
+        else {
+          store.dispatch({ type: 'USER_UPDATE', data: {uploadDeviceDetails: newValue} });
+        }
+      }});
+    items.push({
+      label: 'Help us improve your experience by sharing what type of phone you have!',
+      type: 'explanation',
+      below: true
+    });
 
     if (user.developer === true) {
       items.push({
         label: "WARNING HIGH BATTERY USAGE IF ENABLED:",
         type: 'explanation',
-        below: false
+        below: false,
+        alreadyPadded: true
       });
       items.push({
         label: "Share power usage",
@@ -91,34 +136,6 @@ export class SettingsPrivacy extends Component<any, any> {
         type: 'explanation',
         below: true
       });
-
-
-      // items.push({
-      //   label: "ENABLE THIS DEVICE AS HUB",
-      //   type: 'explanation',
-      //   below: false
-      // });
-      // items.push({
-      //   label: "Hub",
-      //   value: device.hubFunction,
-      //   type: 'switch',
-      //   icon: <IconButton name="md-cloudy" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
-      //   callback: (newValue) => {
-      //     if (newValue === true) {
-      //       NotificationHandler.request();
-      //     }
-      //     else {
-      //
-      //     }
-      //     store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceId, data: { hubFunction: newValue }});
-      //   }
-      // });
-      // items.push({
-      //   label: "If this device can be used as a hub, it can respond to switchRemotely commands from the Crownstone Cloud API.",
-      //   type: 'explanation',
-      //   below: true
-      // });
-
     }
 
     return items;
