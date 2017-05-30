@@ -352,7 +352,6 @@ function handleDeviceInCloud(action, state) {
     address: deviceConfig.address,
     description: deviceConfig.description,
     hubFunction: deviceConfig.hubFunction,
-    installationId: deviceConfig.installationId,
     location: state.user.uploadLocation === true ? deviceConfig.location : undefined,
     tapToToggleCalibration: deviceConfig.tapToToggleCalibration,
     updatedAt: deviceConfig.updatedAt

@@ -26,6 +26,7 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
       }
       return state;
     case 'ADD_DEVICE':
+    case 'CLEAR_DEVICE_DETAILS':
     case 'UPDATE_DEVICE_CONFIG':
       if (action.data) {
         let newState = {...state};

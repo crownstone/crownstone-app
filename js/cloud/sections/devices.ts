@@ -1,6 +1,6 @@
 export const devices = {
   getDevices: function (options : any = {}) {
-    return this._setupRequest('GET', '/users/{id}/devices', options);
+    return this._setupRequest('GET', '/users/{id}/devices', {...options, data:{filter:{"include":"installations"}}});
   },
 
   createDevice: function (data, background = true) {

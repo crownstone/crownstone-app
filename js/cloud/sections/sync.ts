@@ -4,6 +4,7 @@ import { Util } from '../../util/Util'
 import { Platform } from 'react-native'
 import { syncUsersInLocation } from './syncUsersInSphere'
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
+import {APP_NAME} from "../../ExternalConfig";
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -696,6 +697,8 @@ const syncDevices = function(store, actions, cloudDevices) {
     else if (state.devices[deviceId] === undefined) {
       LOG.info("Sync: User device found in cloud, updating local.");
 
+      let installationId = getInstallationIdFromDevice(matchingDevice.installations);
+
       // add the device from the cloud to the redux database
       actions.push({
         type: 'ADD_DEVICE',
@@ -709,7 +712,7 @@ const syncDevices = function(store, actions, cloudDevices) {
           deviceType: deviceType,
           userAgent: userAgent,
           locale: locale,
-          installationId: matchingDevice.installationId,
+          installationId: installationId,
           tapToToggleCalibration: matchingDevice.tapToToggleCalibration,
           hubFunction: matchingDevice.hubFunction,
         }
@@ -726,11 +729,13 @@ const syncDevices = function(store, actions, cloudDevices) {
         data: {appIdentifier: deviceAddress}
       });
 
-      verifyInstallation(state, deviceId, matchingDevice.installationId, actions)
+      verifyInstallation(state, deviceId, installationId, actions)
         .then(resolveAndCleanup)
         .catch(reject);
     }
     else {
+      let installationId = getInstallationIdFromDevice(matchingDevice.installations);
+
       // if the device is known under a different number in the cloud, we update our local identifier
       if (deviceAddress !== address) {
         store.dispatch({
@@ -752,7 +757,7 @@ const syncDevices = function(store, actions, cloudDevices) {
             model: model,
             deviceType: deviceType,
             userAgent: userAgent,
-            installationId: matchingDevice.installationId,
+            installationId: installationId,
             hubFunction: matchingDevice.hubFunction,
             locale: locale,
           }
@@ -775,8 +780,8 @@ const syncDevices = function(store, actions, cloudDevices) {
         })
       }
 
-      LOG.info("Sync: User device found in cloud, updating installation.");
-      verifyInstallation(state, deviceId, matchingDevice.installationId, actions)
+      LOG.info("Sync: User device found in cloud, updating installation: ", installationId);
+      verifyInstallation(state, deviceId, installationId, actions)
         .then(() => {
           LOG.info("Sync: User device found in cloud, updating location.");
           return updateUserLocationInCloud(state, deviceId)
@@ -786,6 +791,19 @@ const syncDevices = function(store, actions, cloudDevices) {
     }
   });
 };
+
+const getInstallationIdFromDevice = function(installations) {
+  if (installations && Array.isArray(installations) && installations.length > 0) {
+    let installationId;
+    installations.forEach((installation) => {
+      if (installation.appName === APP_NAME) {
+        installationId = installation.id;
+      }
+    })
+  }
+  return null;
+};
+
 
 const verifyInstallation = function(state, deviceId, installationId, actions) {
   if (installationId) {
@@ -814,6 +832,9 @@ const verifyInstallation = function(state, deviceId, installationId, actions) {
           data: {installationId: installation.id}
         });
       })
+  }
+  else {
+    return new Promise((resolve, reject) => { resolve(); });
   }
 };
 

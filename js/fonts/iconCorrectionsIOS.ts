@@ -101,7 +101,7 @@ const c1CorrectionsIOS = {
   'c1-dvd':                 {change: false, top: +0.000, left: +0.000},
   'c1-scanner2':            {change: false, top: +0.000, left: +0.000},
   'c1-laptop':              {change: false, top: +0.000, left: +0.000},
-  'c1-socket2':             {change: false, top: +0.000, left: +0.000},
+  'c1-socket2':             {change: true,  top: +0.050, left: +0.010},
   'c1-monitor':             {change: false, top: +0.000, left: +0.000},
   'c1-speaker':             {change: false, top: +0.000, left: +0.000},
   'c1-fan2':                {change: false, top: +0.000, left: +0.000},

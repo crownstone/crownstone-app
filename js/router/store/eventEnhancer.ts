@@ -182,6 +182,7 @@ function checkAction(action, affectedIds) {
       eventStatus['changeUserDeveloperStatus'] = true; break;
     case "ADD_DEVICE":
     case "UPDATE_DEVICE_CONFIG":
+    case "CLEAR_DEVICE_DETAILS":
     case "REMOVE_DEVICE":
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":

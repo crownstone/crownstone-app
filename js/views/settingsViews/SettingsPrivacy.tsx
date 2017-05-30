@@ -98,6 +98,13 @@ export class SettingsPrivacy extends Component<any, any> {
               setTimeout(() => {
                 this.props.eventBus.emit("hideLoading");
                 store.dispatch({ type: 'USER_UPDATE', data: {uploadDeviceDetails: newValue} });
+                store.dispatch({ type: 'CLEAR_DEVICE_DETAILS', deviceId: deviceId, data: {
+                  os: null,
+                  userAgent: null,
+                  deviceType: null,
+                  model: null,
+                  locale: null
+                }});
                 Alert.alert("Phone Details Removed", "We have removed your phone details from the Cloud.", [{text:'OK'}]);
               }, 500);
             })
@@ -107,7 +114,7 @@ export class SettingsPrivacy extends Component<any, any> {
             })
         }
         else {
-          store.dispatch({ type: 'USER_UPDATE', data: {uploadDeviceDetails: newValue} });
+          store.dispatch({ type: 'USER_UPDATE', data: { uploadDeviceDetails: newValue }});
         }
       }});
     items.push({
