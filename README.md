@@ -1,11 +1,32 @@
-iOS & Android App for the Crownstone.
+# iOS & Android App for the Crownstone.
 
-The Crownstone iOS and Android apps are work in progress. 
+The Crownstone iOS and Android apps have the following functionality:
+
+| Functionality                                   | State Firmware           | State Smartphone Apps     | 
+| ---                                             | ---                      | ---                       |
+| Switching                                       | Done                     | Done                      |
+| Instantaneous power consumption                 | Done                     | Done                      |
+| Reacting on close proximity (tap-to-toggle)     | Done                     | Done                      |
+| Reacting on moderate proximity (presence)       | Done                     | Done                      |
+| Reacting on room-level indoor positioning       | Done                     | Done                      |
+| User-controlled upload of data to the cloud     | Done                     | Done                      |
+| Sending commands through the internet           | Done                     | Done                      |
+| Visualizing other users in the app              | Done                     | Done                      |
+| Scheduling                                      | To be done               | To be done                |
+| Wake-up light                                   | To be done               | To be done                |
+| Dimming (PWM at 50Hz)                           | To be done               | To be done                |
+| Power consumption history                       | To be done               | To be done                |
+| Integration with Toon                           | To be done               | To be done                |
+| Device identification                           | To be done               | To be done                |
+| Control by non-registered guest users           | To be done               | To be done                |
+| Integration with thermostat radiator valves     | To be done               | To be done                |
+| Multi-user setup (don't leave user in the dark) | To be done               | To be done                |
+
 The roadmap of the software development can be found at [Trello](https://trello.com/b/6rUcIt62/crownstone-transparent-product-roadmap).
 
 The Android development is always a few weeks behind the iOS development, especially with respect to the graphical user interface. 
 
-The application makes use of separate libraries (so called bluenet libraries) that are native to the platform. 
+The application makes use of separate libraries (so-called bluenet libraries) that are native to the platform. 
 This is on purpose so that people can be make use of the Crownstone libraries without the need to use React Native.
 See below for getting the libraries.
 
@@ -93,11 +114,15 @@ carthage bootstrap --platform iOS --no-use-binaries
 
 Run the tests:
 
+```
 npm test
+```
 
 Run react-native
 
+```
 react-native run-ios
+```
 
 or:
 ```
