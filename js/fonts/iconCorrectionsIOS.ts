@@ -234,7 +234,7 @@ const c2CorrectionsIOS = {
 
 const ioniconCorrectionsIOS = {
   'ios-settings':       {change: true,  top: +0.040, left: +0.000},
-  'md-cloud-download':  {change: true,  top: +0.000, left: +0.018},
+  'md-cloud-download':  {change: true,  top: +0.010, left: +0.018},
   'md-close-circle':    {change: true,  top: +0.025, left: +0.015},
   'md-cube':            {change: true,  top: +0.020, left: +0.000},
   'md-power':           {change: true,  top: +0.025, left: +0.015},

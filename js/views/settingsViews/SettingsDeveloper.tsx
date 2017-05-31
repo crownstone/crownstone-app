@@ -67,21 +67,20 @@ export class SettingsDeveloper extends Component<any, any> {
       });
       Bluenet.enableLoggingToFile(newValue);
     }});
-    items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
 
     if (user.logging) {
       items.push({
-        label: "Clear Logs",
+        label: "Clear Logs!",
         type: 'button',
-        style: {color: colors.csOrange.hex},
-        icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
+        style: {color: colors.darkGreen.hex},
+        icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkGreen.hex}}/>,
         callback: (newValue) => {
-          clearAllLogs();
-          Alert.alert("Logs Cleared", undefined, [{text: 'OK'}])
+          Alert.alert("Clear all Logs?", "Press OK to clear logs.", [{text:'Cancel'},{text: 'OK', onPress: () => {clearAllLogs();}}])
         }
       });
-      items.push({label: "Clear all logs that have been stored so far.", type: 'explanation', below: true});
     }
+    items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
+
 
     items.push({label: "CLOUD", type: 'explanation', below: false, alreadyPadded: true});
     items.push({
@@ -94,8 +93,7 @@ export class SettingsDeveloper extends Component<any, any> {
         CLOUD.sync(store, true)
           .then(() => { this.props.eventBus.emit("showLoading","Done!"); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
           .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert("Error during sync.", err && err.message || JSON.stringify(err), [{text:'OK'}]) })
-      }});
-    items.push({label: "Trigger a sync with the Cloud.", type: 'explanation', below: true});
+    }});
 
 
     let deviceId = Util.data.getCurrentDeviceId(state);
@@ -121,7 +119,6 @@ export class SettingsDeveloper extends Component<any, any> {
     else {
       items.push({label: "No device available... Try triggering a sync?", type: 'explanation', below: true});
     }
-
 
 
     items.push({

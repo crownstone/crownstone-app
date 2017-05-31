@@ -763,7 +763,7 @@ const syncDevices = function(store, actions, cloudDevices) {
         });
 
         // if we use this device as a hub, make sure we request permission for notifications.
-        if (state.devices[deviceId].hubFunction === false && matchingDevice.hubFunction === true) {
+        if (state.devices[deviceId].hubFunction === true || matchingDevice.hubFunction === true) {
           NotificationHandler.request();
         }
       }

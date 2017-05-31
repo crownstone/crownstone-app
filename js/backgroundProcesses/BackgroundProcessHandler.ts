@@ -25,7 +25,7 @@ import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 import {ErrorWatcher} from "./ErrorWatcher";
-import {NotificationHandler} from "./NotificationHandler";
+import {NotificationHandler, NotificationParser} from "./NotificationHandler";
 
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -329,6 +329,7 @@ class BackgroundProcessHandlerClass {
     BatterySavingUtil.loadStore(this.store);
     ErrorWatcher.loadStore(this.store);
     NotificationHandler.loadStore(this.store);
+    NotificationParser.loadStore(this.store);
   }
 }
 

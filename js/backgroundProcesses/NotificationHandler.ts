@@ -1,12 +1,15 @@
+import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 const PushNotification = require('react-native-push-notification');
 import { Platform } from 'react-native';
 import { LOG } from "../logging/Log";
 import { eventBus } from '../util/EventBus'
 import { Util } from "../util/Util";
 import {CLOUD} from "../cloud/cloudAPI";
+import {INTENTS} from "../native/libInterface/Constants";
 
 class PushNotificationHandlerClass {
   store: any = {};
+  requesting = false;
 
   constructor() {}
 
@@ -28,6 +31,7 @@ class PushNotificationHandlerClass {
 
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: (tokenData) => {
+        this.requesting = false;
         this.store.dispatch({
           type: "SET_NOTIFICATION_TOKEN",
           data: {
@@ -70,7 +74,7 @@ class PushNotificationHandlerClass {
               type:'UPDATE_INSTALLATION_CONFIG',
               installationId: installationId,
               data: {
-                notificationToken: tokenData.token
+                deviceToken: tokenData.token
               }
             });
           }
@@ -80,7 +84,8 @@ class PushNotificationHandlerClass {
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
-        console.log( 'NOTIFICATION:', notification );
+        console.log('NotificationHandler: NOTIFICATION:', notification );
+        NotificationParser.handle(notification.data)
       },
 
       // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
@@ -111,9 +116,49 @@ class PushNotificationHandlerClass {
   }
 
   request() {
-    LOG.info("NotificationHandler: Requesting push permissions");
-    PushNotification.requestPermissions();
+    if (this.requesting === false) {
+      LOG.info("NotificationHandler: Requesting push permissions");
+      this.requesting = true;
+      PushNotification.requestPermissions();
+    }
+    else {
+      LOG.info("NotificationHandler: Push permissions request already pending.");
+    }
   }
 }
 
+
+class NotificationParserClass {
+  store: any = {};
+
+  constructor() {}
+
+  loadStore(store) {
+    this.store = store;
+  }
+
+  handle(messageData) {
+    if (messageData.command && messageData.sphereId && messageData.stoneId) {
+      let state = this.store.getState();
+      if (state && state.spheres[messageData.sphereId] && state.spheres[messageData.sphereId].stones[messageData.stoneId]) {
+        switch(messageData.command) {
+          case 'setSwitchStateRemotely':
+            BatchCommandHandler.loadPriority(
+              state.spheres[messageData.sphereId].stones[messageData.stoneId],
+              messageData.stoneId,
+              messageData.sphereId,
+              {commandName:'multiSwitch', state: Math.min(1,Math.max(0,messageData.switchState || 0)), intent: INTENTS.remotely, timeout: 0},
+              25
+            );
+            BatchCommandHandler.executePriority();
+            break;
+        }
+      }
+
+    }
+  }
+
+}
+
 export const NotificationHandler = new PushNotificationHandlerClass();
+export const NotificationParser = new NotificationParserClass();
