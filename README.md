@@ -11,7 +11,7 @@ The Crownstone iOS and Android apps have the following functionality:
 | Reacting on room-level indoor positioning       | Done                     | Done                      |
 | User-controlled upload of data to the cloud     | Done                     | Done                      |
 | Sending commands through the internet           | Done                     | Done                      |
-| Visualizing other users in the app              | Done                     | Done                      |
+| Visualizing other users in the app              | Done                     | To be done on Android     |
 | Scheduling                                      | To be done               | To be done                |
 | Wake-up light                                   | To be done               | To be done                |
 | Dimming (PWM at 50Hz)                           | To be done               | To be done                |
