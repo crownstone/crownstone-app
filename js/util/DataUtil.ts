@@ -164,7 +164,7 @@ export const DataUtil = {
   getDeviceSpecs: function(state) {
     let address = state.user.appIdentifier;
     let name = DeviceInfo.getDeviceName();
-    let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + ',' + DeviceInfo.getDeviceId();
+    let description = DeviceInfo.getManufacturer() + " : " + DeviceInfo.getBrand() + ' : ' + DeviceInfo.getDeviceId();
     let os = DeviceInfo.getSystemName() + ' ' + DeviceInfo.getSystemVersion();
     let deviceType = DeviceInfo.getDeviceId();
     let model = DeviceInfo.getModel();

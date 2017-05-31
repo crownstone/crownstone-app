@@ -73,7 +73,7 @@ export class SettingsDeveloper extends Component<any, any> {
       items.push({
         label: "Clear Logs",
         type: 'button',
-        style: {color: colors.blue.hex},
+        style: {color: colors.csOrange.hex},
         icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
         callback: (newValue) => {
           clearAllLogs();

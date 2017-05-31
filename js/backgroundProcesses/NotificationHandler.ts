@@ -27,14 +27,14 @@ class PushNotificationHandlerClass {
     PushNotification.configure({
 
       // (optional) Called when Token is generated (iOS and Android)
-      onRegister: (token) => {
+      onRegister: (tokenData) => {
         this.store.dispatch({
           type: "SET_NOTIFICATION_TOKEN",
           data: {
-            notificationToken: token
+            notificationToken: tokenData.token
           }
         });
-        LOG.info("NotificationHandler: Got notification token!", token);
+        LOG.info("NotificationHandler: Got notification token!", tokenData.token);
 
         let state = this.store.getState();
         let deviceId = Util.data.getCurrentDeviceId(state);
@@ -51,7 +51,7 @@ class PushNotificationHandlerClass {
               actions.push({
                 type: 'ADD_INSTALLATION',
                 installationId: installation.id,
-                data: { deviceToken: token }
+                data: { deviceToken: tokenData.token }
               });
               actions.push({
                 type: 'UPDATE_DEVICE_CONFIG',
@@ -65,12 +65,12 @@ class PushNotificationHandlerClass {
             });
         }
         else {
-          if (state.installations[installationId].deviceToken !== token) {
+          if (state.installations[installationId].deviceToken !== tokenData.token) {
             this.store.dispatch({
               type:'UPDATE_INSTALLATION_CONFIG',
               installationId: installationId,
               data: {
-                notificationToken: token
+                notificationToken: tokenData.token
               }
             });
           }

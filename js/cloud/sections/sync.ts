@@ -696,7 +696,6 @@ const syncDevices = function(store, actions, cloudDevices) {
     }
     else if (state.devices[deviceId] === undefined) {
       LOG.info("Sync: User device found in cloud, updating local.");
-
       let installationId = getInstallationIdFromDevice(matchingDevice.installations);
 
       // add the device from the cloud to the redux database
@@ -794,12 +793,11 @@ const syncDevices = function(store, actions, cloudDevices) {
 
 const getInstallationIdFromDevice = function(installations) {
   if (installations && Array.isArray(installations) && installations.length > 0) {
-    let installationId;
-    installations.forEach((installation) => {
-      if (installation.appName === APP_NAME) {
-        installationId = installation.id;
+    for (let i = 0; i < installations.length; i++) {
+      if (installations[i].appName === APP_NAME) {
+        return installations[i].id;
       }
-    })
+    }
   }
   return null;
 };
