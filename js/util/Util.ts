@@ -157,6 +157,35 @@ export const Util = {
     }
   },
 
+  spreadString: function(string) {
+    let result = '';
+    for (let i = 0; i < string.length; i++) {
+      result += string[i];
+      if (i !== (string.length-1) && string[i] !== ' ') {
+        result += ' '
+      }
+
+      if (string[i] === ' ') {
+        result += '   ';
+      }
+    }
+    return result;
+  },
+
+  getDelayLabel: function(delay, fullLengthText = false) {
+    if (delay < 60) {
+      return Math.floor(delay) + ' seconds';
+    }
+    else {
+      if (fullLengthText === true) {
+        return Math.floor(delay / 60) + ' minutes';
+      }
+      else {
+        return Math.floor(delay / 60) + ' min';
+      }
+    }
+  },
+
 
   versions: {
     isHigher: function(version, compareWithVersion) {

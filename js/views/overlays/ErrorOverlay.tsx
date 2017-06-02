@@ -180,7 +180,7 @@ export class ErrorOverlay extends Component<any, any> {
                 let defaultAction = () => {
                   this.setState({visible:false});
                 };
-                Alert.alert("Error Reset","Normal functionality is re-enabled.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+                Alert.alert("Success!","The Error has been reset. Normal functionality is re-enabled.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
               })
               .catch((err) => {
                 LOG.error("ErrorOverlay: Could not reset error of Crownstone", firstErrorToClear, err);
@@ -228,7 +228,7 @@ export class ErrorOverlay extends Component<any, any> {
             borderWidth: 2,
             borderColor: colors.red.hex,
           }]}>
-          <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{"Find" + (this.state.stonesContainingError.length > 1 ? '1st' : '') + " Crownstone"}</Text>
+          <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{"Find" + (this.state.stonesContainingError.length > 1 ? ' 1st' : '') + " Crownstone"}</Text>
         </TouchableOpacity>
       );
     }

@@ -28,15 +28,15 @@ export class SeparatedItemList extends Component<any, any> {
     let items = this.props.items;
     let renderItems = [];
 
-
-    let indentSeparator = this.props.separatorIndent === true;
-    let isEditableItem = (item) => {return !(item.type === 'spacer' || item.type === 'explanation')};
+    let separatorIndent = this.props.separatorIndent === true;
+    let isEditableItem = (item) => {
+      return !(item.type === 'spacer' || item.type === 'explanation' || item.type === 'lightExplanation')};
 
     // this function parses the input item.
     let iterator = (prevItem, item, nextItem, index, itemId) => {
       let isItemEditable = isEditableItem(item);
       if (prevItem !== undefined) {
-        if (isEditableItem(prevItem) && isItemEditable && indentSeparator) {
+        if (isEditableItem(prevItem) && isItemEditable && separatorIndent) {
           renderItems.push(<Separator key={index + 'top_separator'} fullLength={false} />);
         }
         else if (isItemEditable || isEditableItem(prevItem)) {

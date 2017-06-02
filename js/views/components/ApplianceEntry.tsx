@@ -19,16 +19,18 @@ import { styles, colors } from '../styles'
 export class ApplianceEntry extends Component<any, any> {
   resetTimeout : any;
   id : string;
+  unsubscribe : any;
 
   constructor() {
     super();
     this.state = {deleteActive:false};
     this.resetTimeout = undefined;
     this.id = Util.getUUID();
+
   }
 
   componentDidMount() {
-    this.props.deleteEventBus.on("DELETE_TRIGGERED", (id) => {
+    this.unsubscribe = this.props.deleteEventBus.on("DELETE_TRIGGERED", (id) => {
       if (this.id !== id) {
         if (this.resetTimeout !== undefined) {
           clearTimeout(this.resetTimeout);
@@ -42,6 +44,7 @@ export class ApplianceEntry extends Component<any, any> {
     if (this.resetTimeout !== undefined) {
       clearTimeout(this.resetTimeout);
     }
+    this.unsubscribe();
   }
 
   _getDeleteIcon() {
@@ -49,7 +52,7 @@ export class ApplianceEntry extends Component<any, any> {
       if (this.state.deleteActive) {
         return (
           <TouchableOpacity onPress={() => {this._doDelete();}} style={{width:40, alignItems:'center'}}>
-            <Icon name="ios-close-circle" size={30} color={colors.red.hex}/>
+            <Icon name="md-close-circle" size={30} color={colors.red.hex}/>
           </TouchableOpacity>
         )
       }
@@ -59,7 +62,7 @@ export class ApplianceEntry extends Component<any, any> {
             onPress={() => {this._activateDeleteState();}}
             style={{width:40, alignItems:'center'}}
           >
-            <Icon name="ios-close-circle" size={23} color={colors.gray.hex}/>
+            <Icon name="md-close-circle" size={23} color={this.props.deleteColor || colors.gray.hex}/>
           </TouchableOpacity>
         )
       }
@@ -101,8 +104,9 @@ export class ApplianceEntry extends Component<any, any> {
             <Icon name={this.props.icon} size={this.props.iconSize || size*0.6} color={'#ffffff'} style={{backgroundColor:'transparent'}} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={{flex:1, justifyContent:'center', height:0.8*height}} onPress={() => {this.props.select();}}>
+        <TouchableOpacity style={{flex:1, flexDirection:'row', alignItems:'center', height:0.8*height}} onPress={() => {this.props.select();}}>
           <Text style={{fontSize: 18, fontWeight: '300'}}>{this.props.name}</Text>
+          { this.props.current ? <Text style={{fontSize: 15, fontWeight: '100', color: colors.blue.hex, position:'relative', top:1, paddingLeft:5}}>(current)</Text> : undefined }
         </TouchableOpacity>
         {this._getDeleteIcon()}
       </View>

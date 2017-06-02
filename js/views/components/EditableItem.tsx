@@ -22,7 +22,7 @@ import { SwitchBar }         from './editComponents/SwitchBar'
 import { TextEditBar }       from './editComponents/TextEditBar'
 import { TimePicker }        from './editComponents/TimePicker'
 
-import { styles, screenWidth, barHeight, barHeightLarge } from '../styles'
+import {styles, screenWidth, barHeight, barHeightLarge, colors} from '../styles'
 
 /**
  *
@@ -95,6 +95,8 @@ export class EditableItem extends Component<any, any> {
         return <Dropdown barHeight={barHeight} {...this.props} />;
       case 'explanation':
         return <Explanation text={this.props.label} {...this.props} />;
+      case 'lightExplanation':
+        return <Explanation text={this.props.label} {...this.props} color={colors.white.hex} />;
       case 'icon':
         return <IconEdit barHeightLarge={barHeightLarge} {...this.props} />;
       case 'info':

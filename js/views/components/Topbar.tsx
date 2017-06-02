@@ -56,10 +56,14 @@ class TopBarAndroid extends Component<any, any> {
       );
     }
     else if ( this.props.right ) {
+      let right = this.props.right;
+      if (typeof this.props.right === 'function') {
+        right = this.props.right();
+      }
       return (
         <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
-            <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{this.props.right}</Text>
+            <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{right}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -109,10 +113,14 @@ class TopBarIOS extends Component<any, any> {
       }
     }
     else if (this.props.left) {
+      let left = this.props.left;
+      if (typeof this.props.left === 'function') {
+        left = this.props.left();
+      }
       return (
         <TouchableOpacity onPress={() => {this.props.leftAction();}}  style={topBarStyle.topBarLeftTouch}>
           <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
-            <Text style={[topBarStyle.topBarLeft, topBarStyle.text, this.props.leftStyle]}>{this.props.left}</Text>
+            <Text style={[topBarStyle.topBarLeft, topBarStyle.text, this.props.leftStyle]}>{left}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -129,10 +137,14 @@ class TopBarIOS extends Component<any, any> {
       );
     }
     else if (this.props.right) {
+      let right = this.props.right;
+      if (typeof this.props.right === 'function') {
+        right = this.props.right();
+      }
       return (
         <TouchableOpacity onPress={() => {this.props.rightAction();}}  style={topBarStyle.topBarRightTouch}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
-            <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{this.props.right}</Text>
+            <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{right}</Text>
           </View>
         </TouchableOpacity>
       );

@@ -28,6 +28,7 @@ import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionO
 import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
+import { Util } from '../util/Util'
 
 
 export class Router_IOS extends Component {
@@ -57,9 +58,11 @@ export class Router_IOS extends Component {
                 <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
                 <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
                 <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
+                <Scene key="deviceEditNew"          component={Views.DeviceEditNew}              hideNavBar={true} />
                 <Scene key="deviceEdit"             component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
                 <Scene key="deviceEditLogic"        component={Views.DeviceEditLogic}            hideNavBar={false} title="Device Behaviour" />
-                <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} title="Select a Device" />
+                <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select a Device" />
+                <Scene key="applianceAdd"           component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
                 <Scene key="delaySelection"         component={Views.DelaySelection}             hideNavBar={false} title="Set Delay" />
                 <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={false} title="Schedule"   rightTitle="Add" />

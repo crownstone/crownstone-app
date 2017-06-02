@@ -64,6 +64,7 @@ export class AppRouter extends Component {
     this.backgrounds.menuRemoteConnected     = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteConnected.png')} />;
     this.backgrounds.mainDarkLogo            = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/backgroundWLogo.png')} />;
     this.backgrounds.mainDark                = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
+    this.backgrounds.stoneDetailsBackground  = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/stoneDetails.png')} />;
   }
 
   componentWillUnmount() { // cleanup

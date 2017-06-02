@@ -15,6 +15,8 @@ import { RoomTraining_roomSize }      from '../views/roomViews/RoomTraining_room
 import { RoomSelection }              from '../views/roomViews/RoomSelection'
 import { RoomIconSelection }          from '../views/roomViews/RoomIconSelection'
 import { ApplianceSelection }         from '../views/deviceViews/ApplianceSelection'
+import { ApplianceAdd }               from '../views/deviceViews/ApplianceAdd'
+import { DeviceEditNew }              from '../views/deviceViews/DeviceEditNew'
 import { DeviceEdit }                 from '../views/deviceViews/DeviceEdit'
 import { DeviceEditLogic }            from '../views/deviceViews/DeviceEditLogic'
 import { DeviceBehaviourEdit }        from '../views/deviceViews/DeviceBehaviourEdit'
@@ -53,6 +55,8 @@ export const Views = {
   RoomTraining,
   RoomTraining_roomSize,
   ApplianceSelection,
+  ApplianceAdd,
+  DeviceEditNew,
   DeviceEdit,
   DeviceEditLogic,
   DeviceBehaviourEdit,

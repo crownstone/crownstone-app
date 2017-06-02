@@ -91,20 +91,6 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     clearTimeout(this.pocketTimeout);
   }
 
-  _getDelayLabel(delay, fullLengthText = false) {
-    if (delay < 60) {
-      return Math.floor(delay) + ' seconds';
-    }
-    else {
-      if (fullLengthText === true) {
-        return Math.floor(delay / 60) + ' minutes';
-      }
-      else {
-        return Math.floor(delay / 60) + ' min';
-      }
-    }
-  }
-
   defineThreshold(iBeaconId) {
     // show loading screen
     this.props.eventBus.emit("showLoading", "Determining range...");
@@ -224,7 +210,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
         buttons: delays.length === 1,
         valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
         value: element.behaviour[eventLabel].delay,
-        valueLabel: this._getDelayLabel(element.behaviour[eventLabel].delay, true),
+        valueLabel: Util.getDelayLabel(element.behaviour[eventLabel].delay, true),
         items: delays,
         callback: (newValue) => {
           this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
@@ -268,8 +254,8 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     toggleOptions.push({label: "do nothing", value: -1});
 
     let toggleOptionsExitSphere = [];
-    toggleOptionsExitSphere.push({label: 'turn on after ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)),  value: 1});
-    toggleOptionsExitSphere.push({label: 'turn off after ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)), value: 0});
+    toggleOptionsExitSphere.push({label: 'turn on after ' + Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)),  value: 1});
+    toggleOptionsExitSphere.push({label: 'turn off after ' + Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)), value: 0});
     toggleOptionsExitSphere.push({label: "do nothing", value: -1});
 
     let toggleOptionsExit = [];
@@ -287,7 +273,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
 
     if (element.behaviour[eventLabel].active === true) {
       items.push({
-        label: 'Leaving the sphere will be triggered ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true) + ' after leaving. You can customize this in the Sphere settings.',
+        label: 'Leaving the sphere will be triggered ' + Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true) + ' after leaving. You can customize this in the Sphere settings.',
         style: {paddingBottom: 5},
         type: 'explanation',
         below: true
@@ -406,7 +392,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     return (
       <Background image={backgroundImage} >
         <ScrollView>
-          <ListEditableItems items={options}/>
+          <ListEditableItems items={options} separatorIndent={true} />
         </ScrollView>
       </Background>
     )

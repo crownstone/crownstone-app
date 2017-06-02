@@ -95,7 +95,7 @@ export class IconSelection extends Component<any, any> {
         style={[styles.centered, {height:rowHeight, flex:1}, this.props.selectedIcon === icons[iconIndex] ? {backgroundColor:colors.blue.hex} : undefined]}
         onPress={() => {this.props.callback(icons[iconIndex])}}
       >
-        <CustomIcon name={icons[iconIndex]} size={60} color={ this.props.selectedIcon === icons[iconIndex] ? '#fff' : colors.blue.hex} />
+        <CustomIcon name={icons[iconIndex]} size={60} color={ this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex} />
       </TouchableOpacity>
     }
     else {

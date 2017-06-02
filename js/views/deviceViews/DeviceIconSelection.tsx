@@ -12,6 +12,7 @@ import {
 import { Background }  from '../components/Background'
 import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
+import {colors, screenWidth} from "../styles";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -202,11 +203,12 @@ export class DeviceIconSelection extends Component<any, any> {
     const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].appliances[this.props.applianceId].config.icon;
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.main}>
+      <Background hideInterface={true} image={this.props.backgrounds.stoneDetailsBackground}>
         <TopBar
-          left={"Back"}
+          left={""}
           leftAction={Actions.pop}
           title="Pick an Icon"/>
+        <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
             categories={categories}

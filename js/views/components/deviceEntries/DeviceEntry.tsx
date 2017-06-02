@@ -24,6 +24,7 @@ import {INTENTS} from '../../../native/libInterface/Constants';
 import {Actions} from 'react-native-router-flux';
 import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
 import {LOG} from "../../../logging/Log";
+import {StoneUtil} from "../../../util/StoneUtil";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -43,7 +44,7 @@ export class DeviceEntry extends Component<any, any> {
     this.baseHeight = props.height || 80;
     this.optionsHeight = 40;
     this.openHeight = this.baseHeight + this.optionsHeight;
-    this.unsubscribe = () => {};
+    this.unsubscribe = [];
 
     this.state = {height: new Animated.Value(this.baseHeight), optionsHeight:  new Animated.Value(0), optionsOpen: false, pendingCommand: false, backgroundColor: new Animated.Value(0)};
     this.optionsAreOpen = false;
@@ -55,22 +56,23 @@ export class DeviceEntry extends Component<any, any> {
 
   componentDidMount() {
     if (this.props.initiallyOpen) {
-      this.initiallyOpenTimeout = setTimeout(() => {this._openOptions(600);}, 200);
+      this.initiallyOpenTimeout = setTimeout(() => { this._openOptions(600); }, 200);
     }
 
-    this.unsubscribe = this.props.eventBus.on('focusDeviceEntry', (id) => {
+    this.unsubscribe.push(this.props.eventBus.on('focusDeviceEntry', (id) => {
       if (id !== this.id) {
         this._closeOptions();
       }
-    });
-    this.unsubscribe = this.props.eventBus.on('showErrorInOverview', (stoneId) => {
+    }));
+
+    this.unsubscribe.push(this.props.eventBus.on('showErrorInOverview', (stoneId) => {
       if (stoneId === this.props.stoneId) {
         Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90 }).start();
         setTimeout(() => {
           Animated.timing(this.state.backgroundColor, { toValue: 0, duration: 2500 }).start();
         }, 5000);
       }
-    });
+    }));
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -87,7 +89,7 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   componentWillUnmount() { // cleanup
-    this.unsubscribe();
+    this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
     clearTimeout(this.initiallyOpenTimeout);
     clearTimeout(this.optionMoveTimeout);
   }
@@ -125,31 +127,14 @@ export class DeviceEntry extends Component<any, any> {
   _pressedDevice(stone) {
     let newState = (stone.state.state === 1 ? 0 : 1);
     this.setState({pendingCommand:true});
-    let data = {state: newState};
-    if (newState === 0) {
-      data['currentUsage'] = 0;
-    }
 
-    BatchCommandHandler.loadPriority(
-      stone,
-      this.props.stoneId,
+    StoneUtil.switchBHC(
       this.props.sphereId,
-      {commandName:'multiSwitch', state: newState, intent: INTENTS.manual, timeout: 0}
-    )
-      .then(() => {
-        this.props.store.dispatch({
-          type: 'UPDATE_STONE_SWITCH_STATE',
-          sphereId: this.props.sphereId,
-          stoneId: this.props.stoneId,
-          data: data
-        });
-        this.setState({pendingCommand:false});
-      })
-      .catch((err) => {
-        this.setState({pendingCommand:false});
-      });
-
-    BatchCommandHandler.executePriority();
+      this.props.stoneId,
+      stone, newState,
+      this.props.store,
+      () => { this.setState({pendingCommand:false});}
+    );
   }
 
   _getControl(stone) {
@@ -271,17 +256,18 @@ export class DeviceEntry extends Component<any, any> {
         </View>
       );
     }
-
-
   }
 
   _getOptions(showBehaviour : boolean = true) {
+    let textStyle = {fontSize:14, padding:5, color: colors.darkGray2.hex, paddingBottom:7};
+    let buttonStyle = {flex: 1, paddingLeft:12, paddingRight:12, height: 35, alignItems: 'center', justifyContent:'center', flexDirection:'row'};
+
     if (this.state.optionsOpen || this.animating) {
       return (
         <Animated.View style={{height: this.state.optionsHeight, width: screenWidth, alignItems: 'center', overflow: 'hidden'}}>
           <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
           <View style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
-            <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => {
+            <TouchableOpacity style={buttonStyle} onPress={() => {
               Actions.pop();
               (Actions as any).roomSelection({
                 sphereId: this.props.sphereId,
@@ -291,17 +277,14 @@ export class DeviceEntry extends Component<any, any> {
               });
             }}>
               <Icon name='md-log-in' size={24} color='#aaa' style={{backgroundColor: 'transparent', position: 'relative'}}/>
+              <Text style={textStyle}>move</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => {
-              (Actions as any).deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely});
+            <TouchableOpacity style={[buttonStyle, {justifyContent:'center'}]} onPress={() => {
+              (Actions as any).deviceEditNew({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
             }}>
-              <Icon name='ios-outlet' size={26} color='#aaa' style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
-            </TouchableOpacity>
-              {showBehaviour === true ? <TouchableOpacity style={{flex: 1, alignItems: 'center'}} onPress={() => {
-                (Actions as any).deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
-              }}>
               <Icon name='ios-cog' size={29} color='#aaa' style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
-            </TouchableOpacity> : undefined}
+              <Text style={textStyle}>settings</Text>
+            </TouchableOpacity>
           </View>
         </Animated.View>
       )
