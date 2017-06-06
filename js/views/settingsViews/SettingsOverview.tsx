@@ -23,17 +23,19 @@ export class SettingsOverview extends Component<any, any> {
 
   constructor() {
     super();
-    this.unsubscribe = [];
   }
 
-
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe.push(store.subscribe(() => { this.forceUpdate(); }));
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeUserData || change.changeSpheres || change.changeStones) {
+        this.forceUpdate();
+      }
+    });
   }
 
   componentWillUnmount() {
-    this.unsubscribe.forEach((unsubscribe) => { unsubscribe(); });
+    this.unsubscribe();
   }
 
   _getItems() {

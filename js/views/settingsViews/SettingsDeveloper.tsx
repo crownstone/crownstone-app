@@ -30,14 +30,12 @@ export class SettingsDeveloper extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      const state = store.getState();
-      if (this.renderState && this.renderState.user !== state.user ||
-          this.renderState && this.renderState.devices !== state.devices) {
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData) {
         this.forceUpdate();
       }
-    })
+    });
   }
 
   componentWillUnmount() {

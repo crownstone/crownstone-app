@@ -30,22 +30,8 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
     this.deleting = false;
   }
 
-  componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      if (this.deleting !== true) {
-        this.forceUpdate();
-      }
-    })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
 
   _getItems(user) {
-    const store = this.props.store;
     let items = [];
     // room Name:
     items.push({type:'spacer'});
@@ -113,7 +99,6 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
 
     return items;
   }
-
 
 
   render() {

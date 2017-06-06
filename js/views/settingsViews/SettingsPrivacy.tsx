@@ -28,14 +28,12 @@ export class SettingsPrivacy extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      const state = store.getState();
-      if (this.renderState && (this.renderState.user != state.user || this.renderState.devices != state.devices)) {
-        // LOG.info("Force Update Profile", this.renderState.user, state.user)
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeUserData) {
         this.forceUpdate();
       }
-    })
+    });
   }
 
   componentWillUnmount() {
@@ -152,7 +150,6 @@ export class SettingsPrivacy extends Component<any, any> {
     const store = this.props.store;
     const state = store.getState();
     let user = state.user;
-    this.renderState = state; // important for performance check
 
     return (
       <Background image={this.props.backgrounds.menu} >

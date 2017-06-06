@@ -184,12 +184,14 @@ function checkAction(action, affectedIds) {
     case "UPDATE_DEVICE_CONFIG":
     case "CLEAR_DEVICE_DETAILS":
     case "REMOVE_DEVICE":
+      eventStatus['changeDeviceData'] = affectedIds; break;
+    case 'SET_DEVELOPER_MODE':
+    case 'SET_LOGGING':
+      eventStatus['changeDeveloperData'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":
     case 'SET_TAP_TO_TOGGLE_CALIBRATION':
-    case 'SET_DEVELOPER_MODE':
-    case 'SET_LOGGING':
     case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_STATE':
     case 'SET_APP_IDENTIFIER':

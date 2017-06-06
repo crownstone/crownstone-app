@@ -148,11 +148,9 @@ export class RoomCircle extends Component<any, any> {
       this.forceUpdate()
     }));
 
-    // TODO: move this logic into the databaseChange event.
-    this.unsubscribe = store.subscribe(() => {
-      if (this.renderState === undefined)
-        return;
 
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       const state = store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
         return;
@@ -175,10 +173,7 @@ export class RoomCircle extends Component<any, any> {
         this.usage = usage;
         this.forceUpdate();
       }
-    });
 
-    // tell the component exactly when it should redraw
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
         (change.userPositionUpdate && change.userPositionUpdate.locationIds[this.props.locationId])

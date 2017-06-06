@@ -30,18 +30,17 @@ export class SettingsSphereUser extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      if (this.deleting !== true) {
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.updateSphereUser) {
         this.forceUpdate();
       }
-    })
+    });
   }
 
   componentWillUnmount() {
     this.unsubscribe();
   }
-
 
   _getItems(user) {
     const store = this.props.store;
