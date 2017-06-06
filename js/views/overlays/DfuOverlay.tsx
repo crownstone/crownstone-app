@@ -170,7 +170,7 @@ export class DfuOverlay extends Component<any, any> {
     .then((data : any) => {
       this.setState({ step: 5, phaseDescription:'setting up...', detail:'putting Crownstone in update mode...' });
       this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
-      return this.helper.putInDFU(data.dfuMode);
+      return this.helper.putInDFU(data);
     })
     .then(() => {
       this.setState({phaseDescription:'determining...',});
@@ -310,7 +310,7 @@ export class DfuOverlay extends Component<any, any> {
       let rssiResolver = (data, setupMode, dfuMode) => {
         data.setupMode = setupMode || false;
         data.dfuMode = dfuMode || false;
-
+        LOG.debug("DfuOverlay: Found match:", data);
         if ((data.setupMode && data.rssi < -93) || (data.rssi < -80)) {
           eventBus.emit("updateDfuStep", 4);
         }

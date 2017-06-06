@@ -54,9 +54,9 @@ class DfuStateHandlerClass {
         // we scan high frequency when we see a setup node
         BleUtil.startHighFrequencyScanning(this._uuid, true);
 
-        // store the data of this setup Crownstone
+        // store the data of this DFU Crownstone
         if (this._stonesInDfuMode[handle] === undefined) {
-          // check if it is the first setup stone we see and if so, emit the setupStonesDetected event
+          // check if it is the first DFU stone we see and if so, emit the dfuStonesDetected event
           if (Object.keys(this._stonesInDfuMode).length === 0) {
             emitDiscovery = true;
           }
@@ -91,7 +91,7 @@ class DfuStateHandlerClass {
         }
       });
 
-      // these events are emitted from the setupUtil
+      // handle DFU events
       NativeBus.on(NativeBus.topics.dfuAdvertisement, (data) => {
         handleDfuAdvertisement(data);
       });
@@ -112,8 +112,12 @@ class DfuStateHandlerClass {
   }
 
   _cleanup(handle) {
+    this._stonesInDfuMode[handle] = undefined;
+    this._dfuTimeouts[handle] = undefined;
+
     delete this._stonesInDfuMode[handle];
     delete this._dfuTimeouts[handle];
+
     eventBus.emit("dfuStoneChange", this.areDfuStonesAvailable());
     if (Object.keys(this._stonesInDfuMode).length === 0) {
       LOG.info("DfuStateHandler: No DFU stones visible. Disabling HF scanning.");
@@ -135,7 +139,7 @@ class DfuStateHandlerClass {
   }
 
   handleReservedForDfu(handle) {
-    return (this._stonesInDfuMode[handle] !== undefined)
+    return (this._stonesInDfuMode[handle] !== undefined);
   }
 
 }
