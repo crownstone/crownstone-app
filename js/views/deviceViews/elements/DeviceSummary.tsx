@@ -26,14 +26,6 @@ export class DeviceSummary extends Component<any, any> {
     this.state = {pending: false}
   }
 
-  componentDidMount() {
-
-  }
-
-  componentWillUnmount() {
-
-  }
-
   _getIcon(stone, element) {
     let currentState = stone.state.state;
     let color = colors.menuBackground.hex;
@@ -136,7 +128,8 @@ export class DeviceSummary extends Component<any, any> {
         <Text style={deviceStyles.explanation}>{stone.config.applianceId ? Util.spreadString('tap icon to change device') : Util.spreadString('tap icon to select device')}</Text>
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems:'center'}}>{this._getButton(stone)}</View>
-        <View style={{flex:1.5}} />
+        <View style={{flex:0.5}} />
+        <View style={{height:30, width: screenWidth, backgroundColor:'transparent'}} />
       </View>
     )
   }

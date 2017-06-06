@@ -18,12 +18,10 @@ import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from '../styles'
 import {Util} from "../../util/Util";
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
-const RNFS = require('react-native-fs');
 
 
 export class SettingsDeveloper extends Component<any, any> {
   unsubscribe : any;
-  renderState : any;
 
   constructor() {
     super();
@@ -32,7 +30,7 @@ export class SettingsDeveloper extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData) {
+      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus) {
         this.forceUpdate();
       }
     });
@@ -43,9 +41,12 @@ export class SettingsDeveloper extends Component<any, any> {
   }
 
   
-  _getItems(user) {
+  _getItems() {
     const store = this.props.store;
     let state = store.getState();
+    let user = state.user;
+    let dev = state.development;
+
     let items = [];
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
@@ -54,7 +55,7 @@ export class SettingsDeveloper extends Component<any, any> {
       label:"Enable Logging",
       value: user.logging,
       type: 'switch',
-      icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+      icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
       callback:(newValue) => {
       if (newValue === false) {
         clearAllLogs();
@@ -68,10 +69,66 @@ export class SettingsDeveloper extends Component<any, any> {
 
     if (user.logging) {
       items.push({
+        label:"Debug Logging",
+        value: dev.log_debug && dev.log_verbose,
+        type: 'switch',
+        icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'DEFINE_LOGGING_DETAILS',
+            data: {log_debug: newValue, log_verbose: newValue}
+          });
+        }});
+      items.push({
+        label:"Store & Cloud Logging",
+        value: dev.log_store && dev.log_cloud,
+        type: 'switch',
+        icon: <IconButton name="ios-cloud" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'DEFINE_LOGGING_DETAILS',
+            data: {log_store: newValue, log_cloud: newValue}
+          });
+        }});
+      items.push({
+        label:"BLE Logging",
+        value: dev.log_ble,
+        type: 'switch',
+        icon: <IconButton name="ios-bluetooth" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'DEFINE_LOGGING_DETAILS',
+            data: {log_ble: newValue}
+          });
+        }});
+      items.push({
+        label:"Full Logging",
+        value: dev.log_info && dev.log_warnings && dev.log_errors && dev.log_mesh && dev.log_scheduler && dev.log_verbose && dev.log_ble && dev.log_events && dev.log_store && dev.log_cloud && dev.log_debug,
+        type: 'switch',
+        icon: <IconButton name="md-clipboard" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'DEFINE_LOGGING_DETAILS',
+            data: {
+              // log_info: newValue,
+              // log_warnings: newValue,
+              // log_errors: newValue,
+              // log_mesh: newValue,
+              log_scheduler: newValue,
+              log_verbose: newValue,
+              log_ble: newValue,
+              log_events: newValue,
+              log_store: newValue,
+              log_cloud: newValue,
+              log_debug: newValue
+            }
+          });
+        }});
+      items.push({
         label: "Clear Logs!",
         type: 'button',
-        style: {color: colors.darkGreen.hex},
-        icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkGreen.hex}}/>,
+        style: {color: colors.menuBackground.hex},
+        icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
         callback: (newValue) => {
           Alert.alert("Clear all Logs?", "Press OK to clear logs.", [{text:'Cancel'},{text: 'OK', onPress: () => {clearAllLogs();}}])
         }
@@ -140,15 +197,10 @@ export class SettingsDeveloper extends Component<any, any> {
   }
 
   render() {
-    const store = this.props.store;
-    const state = store.getState();
-    let user = state.user;
-    this.renderState = state; // important for performance check
-
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
-          <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
+          <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>
     );

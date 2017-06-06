@@ -45,7 +45,7 @@ export class SettingsProfile extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeUserData) {
+      if  (change.changeUserData || change.changeUserDeveloperStatus) {
         this.forceUpdate();
       }
     });

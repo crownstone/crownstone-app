@@ -34,7 +34,7 @@ export class DeviceBehaviour extends Component<any, any> {
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
     let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId) && stone.config.locationId !== null;
-    let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null;
+    let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behavior.onNear.active === true;
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center'}}>
         <View style={{flex: 1.5}} />
@@ -51,14 +51,15 @@ export class DeviceBehaviour extends Component<any, any> {
         <View style={{flex: 2}} />
         {nearFarDisabled ? <Text style={textStyle.warning}>Near/away is disabled until you define where near is. Press change at the top to do this now.</Text> : undefined}
         <View style={{flex: 2}} />
-        {stone.config.onlyOnWhenDark ?
+        { stone.config.onlyOnWhenDark ?
         <View style={{flexDirection: 'row',}} >
           <Text style={textStyle.value}>I will </Text>
           <Text style={[textStyle.value,{fontStyle: 'italic'}]}>only </Text>
           <Text style={[textStyle.value,{color: colors.green.hex}]}> TURN ON</Text>
           <Text style={textStyle.value}> if it is dark outside.</Text>
-        </View> : undefined}
-        <View style={{flex:3}} />
+        </View> : undefined }
+        <View style={{flex:2}} />
+        <View style={{height:30, width: screenWidth, backgroundColor:'transparent'}} />
       </View>
     )
   }

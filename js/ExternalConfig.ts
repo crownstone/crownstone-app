@@ -4,7 +4,7 @@ const DeviceInfo = require('react-native-device-info');
 
 
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
-    const RELEASE_MODE = false;
+    const RELEASE_MODE = true;
     export const FALLBACKS_ENABLED = true;
 
     // DO NOT CHANGE THIS LINE.
@@ -71,7 +71,8 @@ const DeviceInfo = require('react-native-device-info');
 /******************** LOGGING ********************/
 
     /**
-     * Main logging settings
+     * Main logging settings.
+     * These will override developer settings only if true but they are currently on by default in developer settings.
      */
     export let LOG_INFO       = true;    // enabling LOG.info       commands to be shown.
     export let LOG_WARNINGS   = true;    // enabling LOG.warn       commands to be shown.
@@ -79,7 +80,7 @@ const DeviceInfo = require('react-native-device-info');
     export let LOG_MESH       = true;    // enabling LOG.mesh       commands to be shown.
 
     /**
-     * Specific logging settings used for debugging mostly.
+     * Specific logging settings used for debugging mostly. These will override developer settings only if true.
      */
     export let LOG_VERBOSE    = false;   // enabling LOG.verbose    commands to be shown.
     export let LOG_SCHEDULER  = false;   // enabling LOG.scheduler  commands to be shown.

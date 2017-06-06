@@ -178,16 +178,18 @@ function checkAction(action, affectedIds) {
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus['changeUserData'] = affectedIds; break;
     case "SET_DEVELOPER_MODE":
-    case "SET_LOGGING":
       eventStatus['changeUserDeveloperStatus'] = true; break;
+    case "SET_LOGGING":
+    case 'SET_DEVELOPER_MODE':
+    case 'SET_LOGGING':
+    case 'REVERT_LOGGING_DETAILS':
+    case 'DEFINE_LOGGING_DETAILS':
+      eventStatus['changeDeveloperData'] = affectedIds; break;
     case "ADD_DEVICE":
     case "UPDATE_DEVICE_CONFIG":
     case "CLEAR_DEVICE_DETAILS":
     case "REMOVE_DEVICE":
       eventStatus['changeDeviceData'] = affectedIds; break;
-    case 'SET_DEVELOPER_MODE':
-    case 'SET_LOGGING':
-      eventStatus['changeDeveloperData'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":

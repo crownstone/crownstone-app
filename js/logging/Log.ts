@@ -23,47 +23,47 @@ const RNFS = require('react-native-fs');
 
 export const LOG : any = {
   info: function() {
-    this._log('------------', LOG_INFO, arguments);
+    this._log('------------', LOG_INFO || LogProcessor.log_info, arguments);
   },
 
   verbose: function() {
-    this._log('VERBOSE ----', LOG_VERBOSE, arguments);
+    this._log('VERBOSE ----', LOG_VERBOSE || LogProcessor.log_verbose, arguments);
   },
 
   warn: function() {
-    this._log('WARNING ! --', LOG_WARNINGS, arguments);
+    this._log('WARNING ! --', LOG_WARNINGS || LogProcessor.log_warnings, arguments);
   },
 
   event: function() {
-    this._log('EVENT ------', LOG_EVENTS, arguments);
+    this._log('EVENT ------', LOG_EVENTS || LogProcessor.log_events, arguments);
   },
 
   error: function() {
-    this._log('ERROR !!! --', LOG_ERRORS, arguments);
+    this._log('ERROR !!! --', LOG_ERRORS || LogProcessor.log_errors, arguments);
   },
 
   debug: function() {
-    this._log('Debug ------', LOG_DEBUG, arguments);
+    this._log('Debug ------', LOG_DEBUG || LogProcessor.log_debug, arguments);
   },
 
   cloud: function() {
-    this._log('Cloud ------', LOG_CLOUD, arguments);
+    this._log('Cloud ------', LOG_CLOUD || LogProcessor.log_cloud, arguments);
   },
 
   ble: function() {
-    this._log('BLE --------', LOG_BLE, arguments);
+    this._log('BLE --------', LOG_BLE || LogProcessor.log_ble, arguments);
   },
 
   store: function() {
-    this._log('Store ------', LOG_STORE, arguments);
+    this._log('Store ------', LOG_STORE || LogProcessor.log_store, arguments);
   },
 
   scheduler: function() {
-    this._log('Scheduler --', LOG_SCHEDULER, arguments);
+    this._log('Scheduler --', LOG_SCHEDULER || LogProcessor.log_scheduler, arguments);
   },
 
   mesh: function() {
-    this._log('Mesh -------', LOG_MESH, arguments);
+    this._log('Mesh -------', LOG_MESH || LogProcessor.log_mesh, arguments);
   },
 
   _log: function(type, check, allArguments) {
@@ -166,6 +166,17 @@ function logToFile() {
 class LogProcessorClass {
   store : any;
   writeToFile : boolean;
+  log_info:     boolean;
+  log_warnings: boolean;
+  log_errors:   boolean;
+  log_mesh:     boolean;
+  log_scheduler:boolean;
+  log_verbose:  boolean;
+  log_ble:      boolean;
+  log_events:   boolean;
+  log_store:    boolean;
+  log_cloud:    boolean;
+  log_debug:    boolean;
 
   constructor() {
     this.store = undefined;
@@ -182,7 +193,7 @@ class LogProcessorClass {
     Scheduler.loadCallback(triggerId,() => { cleanLogs() }, true);
 
     eventBus.on("databaseChange", (data) => {
-      if (data.change.changeUserDeveloperStatus === true) {
+      if (data.change.changeUserDeveloperStatus || data.change.changeDeveloperData) {
         this.refreshData();
       }
     });
@@ -209,6 +220,18 @@ class LogProcessorClass {
     if (this.store) {
       let state = this.store.getState();
       this.writeToFile = state.user.developer === true && state.user.logging === true;
+
+      this.log_info      = state.user.developer === true && state.development.log_info      === true;
+      this.log_warnings  = state.user.developer === true && state.development.log_warnings  === true;
+      this.log_errors    = state.user.developer === true && state.development.log_errors    === true;
+      this.log_mesh      = state.user.developer === true && state.development.log_mesh      === true;
+      this.log_scheduler = state.user.developer === true && state.development.log_scheduler === true;
+      this.log_verbose   = state.user.developer === true && state.development.log_verbose   === true;
+      this.log_ble       = state.user.developer === true && state.development.log_ble       === true;
+      this.log_events    = state.user.developer === true && state.development.log_events    === true;
+      this.log_store     = state.user.developer === true && state.development.log_store     === true;
+      this.log_cloud     = state.user.developer === true && state.development.log_cloud     === true;
+      this.log_debug     = state.user.developer === true && state.development.log_debug     === true;
     }
   }
 }

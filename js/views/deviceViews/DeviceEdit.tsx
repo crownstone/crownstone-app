@@ -31,7 +31,6 @@ export class DeviceEdit extends Component<any, any> {
   constructor() {
     super();
     this.state = {showStone:false};
-    this.deleting = false;
   }
 
   componentDidMount() {
