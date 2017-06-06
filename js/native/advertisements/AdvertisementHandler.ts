@@ -2,7 +2,7 @@ import { Scheduler } from '../../logic/Scheduler';
 import { NativeBus } from '../libInterface/NativeBus';
 import { StoneStateHandler } from './StoneStateHandler'
 import { LOG } from '../../logging/Log'
-import { LOG_BLE } from '../../ExternalConfig'
+import {HARDWARE_ERROR_REPORTING, LOG_BLE} from '../../ExternalConfig'
 import { eventBus }  from '../../util/EventBus'
 import { Util }  from '../../util/Util'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -174,23 +174,25 @@ class AdvertisementHandlerClass {
     }
 
     // --------------------- Pass errors to error Watcher --------------------------- //
-    if (advertisement.serviceData.hasError === true) {
-      LOG.info("GOT ERROR", advertisement.serviceData);
-      eventBus.emit("errorDetectedInAdvertisement", {
-        advertisement: advertisement,
-        stone: stoneFromServiceData,
-        stoneId: referenceByCrownstoneId.id,
-        sphereId: advertisement.referenceId
-      });
-    }
-    else if (stoneFromServiceData.errors.advertisementError === true) {
-      LOG.info("GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
-      eventBus.emit("errorResolvedInAdvertisement", {
-        advertisement: advertisement,
-        stone: stoneFromServiceData,
-        stoneId: referenceByCrownstoneId.id,
-        sphereId: advertisement.referenceId
-      });
+    if (HARDWARE_ERROR_REPORTING) {
+      if (advertisement.serviceData.hasError === true) {
+        LOG.info("GOT ERROR", advertisement.serviceData);
+        eventBus.emit("errorDetectedInAdvertisement", {
+          advertisement: advertisement,
+          stone: stoneFromServiceData,
+          stoneId: referenceByCrownstoneId.id,
+          sphereId: advertisement.referenceId
+        });
+      }
+      else if (stoneFromServiceData.errors.advertisementError === true) {
+        LOG.info("GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
+        eventBus.emit("errorResolvedInAdvertisement", {
+          advertisement: advertisement,
+          stone: stoneFromServiceData,
+          stoneId: referenceByCrownstoneId.id,
+          sphereId: advertisement.referenceId
+        });
+      }
     }
     // --------------------- /handle errors --------------------------- //
 

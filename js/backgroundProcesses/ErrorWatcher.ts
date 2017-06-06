@@ -1,11 +1,9 @@
 import { BatchCommandHandler } from '../logic/BatchCommandHandler'
 import { LOG }                 from "../logging/Log";
 import { eventBus }            from "../util/EventBus";
-import { Util } from "../util/Util";
 
 class ErrorWatcherClass {
   _initialized: boolean = false;
-  processedErrors: any = {};
   pendingErrorObtaining: any = {};
   store: any;
 
@@ -25,8 +23,6 @@ class ErrorWatcherClass {
     }
     this._initialized = true;
   }
-
-
 
   clearError(advertisement: crownstoneAdvertisement, stone, stoneId, sphereId) {
     this.store.dispatch({type:'CLEAR_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId});

@@ -41,6 +41,11 @@ const DeviceInfo = require('react-native-device-info');
   export const MESH_ENABLED = false;
 
   /**
+   * Switch to disable the usage of the mesh in the app
+   */
+  export const HARDWARE_ERROR_REPORTING = false;
+
+  /**
    * Point to the production cloud.
    */
   // export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';            // point to the production cloud.
