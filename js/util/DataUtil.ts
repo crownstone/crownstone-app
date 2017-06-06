@@ -210,6 +210,42 @@ export const DataUtil = {
       }
     }
   },
+
+
+  getSpheresWhereUserHasAccessLevel: function(state, accessLevel) {
+    let items = [];
+    for (let sphereId in state.spheres) {
+      if (state.spheres.hasOwnProperty(sphereId)) {
+        let sphere = state.spheres[sphereId];
+        // there can be a race condition where the current user is yet to be added to spheres but a redraw during the creation process triggers this method
+        if (sphere.users[state.user.userId] && sphere.users[state.user.userId].accessLevel === accessLevel) {
+          items.push({id: sphereId, name: sphere.config.name});
+        }
+      }
+    }
+    return items;
+  },
+
+
+  getUserLevelInSphere: function(state, sphereId) {
+    let userId = state.user.userId;
+    if (state.spheres[sphereId].users[userId])
+      return state.spheres[sphereId].users[userId].accessLevel;
+    else {
+      if (state.spheres[sphereId].config.adminKey !== null) {
+        LOG.error("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
+        return 'admin';
+      }
+      else if (state.spheres[sphereId].config.memberKey !== null) {
+        LOG.error("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
+        return 'member';
+      }
+      else if (state.spheres[sphereId].config.guestKey !== null) {
+        LOG.error("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
+        return 'guest';
+      }
+    }
+  },
 };
 
 export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {
@@ -321,42 +357,6 @@ export const getLocationNamesInSphere = function(state, sphereId) {
     }
   }
   return roomNames;
-};
-
-
-export const getSpheresWhereUserHasAccessLevel = function(state, accessLevel) {
-  let items = [];
-  for (let sphereId in state.spheres) {
-    if (state.spheres.hasOwnProperty(sphereId)) {
-      let sphere = state.spheres[sphereId];
-      // there can be a race condition where the current user is yet to be added to spheres but a redraw during the creation process triggers this method
-      if (sphere.users[state.user.userId] && sphere.users[state.user.userId].accessLevel === accessLevel) {
-        items.push({id: sphereId, name: sphere.config.name});
-      }
-    }
-  }
-  return items;
-};
-
-
-export const getUserLevelInSphere = function(state, sphereId) {
-  let userId = state.user.userId;
-  if (state.spheres[sphereId].users[userId])
-    return state.spheres[sphereId].users[userId].accessLevel;
-  else {
-    if (state.spheres[sphereId].config.adminKey !== null) {
-      LOG.error("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
-      return 'admin';
-    }
-    else if (state.spheres[sphereId].config.memberKey !== null) {
-      LOG.error("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
-      return 'member';
-    }
-    else if (state.spheres[sphereId].config.guestKey !== null) {
-      LOG.error("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
-      return 'guest';
-    }
-  }
 };
 
 

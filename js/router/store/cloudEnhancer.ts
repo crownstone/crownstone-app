@@ -1,5 +1,4 @@
 import { CLOUD } from '../../cloud/cloudAPI'
-import { getUserLevelInSphere } from '../../util/DataUtil'
 import { Util } from '../../util/Util'
 import { BATCH } from './storeManager'
 import { LOG } from '../../logging/Log'
@@ -144,7 +143,7 @@ function handleStoneBehaviourInCloud(action, state) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
 
-  if (getUserLevelInSphere(state, sphereId) === 'admin') {
+  if (Util.data.getUserLevelInSphere(state, sphereId) === 'admin') {
     let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
     let data = {
@@ -240,7 +239,7 @@ function handleApplianceBehaviourInCloud(action, state) {
   let sphereId = action.sphereId;
   let applianceId = action.applianceId;
 
-  if (getUserLevelInSphere(state, sphereId) === 'admin') {
+  if (Util.data.getUserLevelInSphere(state, sphereId) === 'admin') {
     let applianceConfig = state.spheres[sphereId].appliances[applianceId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].appliances[applianceId].behaviour);
     let data = {

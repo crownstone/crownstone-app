@@ -19,10 +19,11 @@ import { FinalizeLocalizationIcon }                       from '../components/Fi
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
-import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import { requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
+import {Util} from "../../util/Util";
 
 
 export class SphereOverview extends Component<any, any> {
@@ -208,7 +209,7 @@ export class SphereOverview extends Component<any, any> {
 
       noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
-      isAdminInCurrentSphere = getUserLevelInSphere(state, activeSphere) === 'admin';
+      isAdminInCurrentSphere = Util.data.getUserLevelInSphere(state, activeSphere) === 'admin';
 
       if (sphereIsPresent || seeStonesInSetupMode || seeStonesInDFUMode || (noStones === true && noRooms === true)) {
         viewingRemotely = false;

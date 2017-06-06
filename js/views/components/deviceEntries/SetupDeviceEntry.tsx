@@ -16,7 +16,6 @@ import {
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from '../../styles'
-import { getUserLevelInSphere } from '../../../util/DataUtil'
 import {Util} from "../../../util/Util";
 
 
@@ -178,7 +177,7 @@ export class SetupDeviceEntry extends Component<any, any> {
   }
 
   setupStone() {
-    if (getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) !== 'admin') {
+    if (Util.data.getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) !== 'admin') {
       Alert.alert("You don't have permission","You can ask an admin in your Sphere to setup this Crownstone",[{text:'OK'}])
     }
     else {

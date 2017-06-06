@@ -159,8 +159,12 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _canUpdate(stone,state) {
-    let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
-    return Util.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
+    // only admins are allowed to update
+    if (Util.data.getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) === 'admin') {
+      let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
+      return Util.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
+    }
+    return false;
   }
 
   _iconPressed(stone, state) {

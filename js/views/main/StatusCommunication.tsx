@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 
 import { Icon }               from '../components/Icon'
-import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import { requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }      from '../../logging/Log'
 import { overviewStyles }     from './SphereOverview'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
+import {Util} from "../../util/Util";
 
 
 export class StatusCommunication extends Component<any, any> {
@@ -54,7 +55,7 @@ export class StatusCommunication extends Component<any, any> {
     let bottomDistance = Object.keys(state.spheres).length > 1 ? 20 : 5;
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
-    let isAdminInCurrentSphere = getUserLevelInSphere(state, currentSphere) === 'admin';
+    let isAdminInCurrentSphere = Util.data.getUserLevelInSphere(state, currentSphere) === 'admin';
 
     let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
     let requiresFingerprints = requireMoreFingerprints(state, currentSphere);

@@ -16,7 +16,7 @@ import { IconButton } from '../components/IconButton'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getUserLevelInSphere, getStonesAndAppliancesInSphere } from '../../util/DataUtil';
+import { getStonesAndAppliancesInSphere } from '../../util/DataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
@@ -117,7 +117,7 @@ export class SettingsSphere extends Component<any, any> {
     const store = this.props.store;
     const state = store.getState();
     let adminInSphere = false;
-    let userLevelInSphere = getUserLevelInSphere(state, this.props.sphereId);
+    let userLevelInSphere = Util.data.getUserLevelInSphere(state, this.props.sphereId);
 
     if (userLevelInSphere == 'admin') {
       adminInSphere = true;
@@ -166,7 +166,7 @@ export class SettingsSphere extends Component<any, any> {
     });
     items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
 
-    if (getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
+    if (Util.data.getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
       let options = [];
       options.push({label: '5 Minutes', type: 'checkbar', value: 300});
       options.push({label: '10 Minutes', type: 'checkbar', value: 600});
@@ -230,7 +230,7 @@ export class SettingsSphere extends Component<any, any> {
     }
 
 
-    if (getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
+    if (Util.data.getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
       items.push({type:'spacer'});
       items.push({
         label: 'Delete this Sphere',

@@ -22,7 +22,6 @@ import { INTENTS }              from '../../native/libInterface/Constants'
 import { TopBar }               from '../components/Topbar'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
-import { getUserLevelInSphere } from '../../util/DataUtil'
 import { Util }                 from '../../util/Util'
 import { Icon }                 from '../components/Icon'
 const Actions = require('react-native-router-flux').Actions;
@@ -280,7 +279,7 @@ export class RoomOverview extends Component<any, any> {
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
     let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
-    let userAdmin = getUserLevelInSphere(state, this.props.sphereId) === 'admin';
+    let userAdmin = Util.data.getUserLevelInSphere(state, this.props.sphereId) === 'admin';
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.

@@ -6,7 +6,7 @@ import { NativeBus }                              from '../native/libInterface/N
 import { BatchCommandHandler }                    from '../logic/BatchCommandHandler';
 import { Util }                                   from '../util/Util'
 import { stoneTypes, TYPES }                      from '../router/store/reducers/stones'
-import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
+import { canUseIndoorLocalizationInSphere } from '../util/DataUtil'
 
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 
@@ -73,7 +73,7 @@ class KeepAliveHandlerClass {
 
       // check every sphere where we are present. Usually this is only one of them!!
       let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
-      let userLevelInSphere = getUserLevelInSphere(state, sphereId);
+      let userLevelInSphere = Util.data.getUserLevelInSphere(state, sphereId);
 
       let stoneIds = Object.keys(sphere.stones);
       stoneIds.forEach((stoneId) => {
