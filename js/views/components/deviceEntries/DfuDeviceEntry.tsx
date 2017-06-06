@@ -100,7 +100,7 @@ export class DfuDeviceEntry extends Component<any, any> {
 
   performDFU() {
     if (getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) !== 'admin') {
-      Alert.alert("You don't have permission","You can ask an admin in your Sphere to setup this Crownstone",[{text:'OK'}])
+      Alert.alert("You don't have permission.","You can ask an admin in your Sphere to update this Crownstone",[{text:'OK'}])
     }
     else {
       this.props.eventBus.emit("updateCrownstoneFirmware", {stoneId: this.props.stoneId, sphereId: this.props.sphereId, alreadyInDfuMode: true});

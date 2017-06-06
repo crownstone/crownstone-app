@@ -30,7 +30,6 @@ export class Icon extends Component<any, any> {
       if (correction && correction.change === true) {
         offsetStyle = {position:'relative', top: this.props.size*correction.top, left: this.props.size*correction.left}
       }
-      console.log(this.props.name, offsetStyle)
       return <CustomIcon2 {...this.props} style={[{backgroundColor:'transparent'}, offsetStyle, this.props.style]} />
     }
     else {

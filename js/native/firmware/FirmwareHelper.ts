@@ -103,13 +103,13 @@ export class FirmwareHelper {
     this.phases.push(setupAfterUpdate);
   }
 
-  putInDFU(isInDfu : boolean = false) {
-    if (isInDfu) {
+  putInDFU(crownstoneMode: crownstoneModes) {
+    if (crownstoneMode.dfuMode === true) {
       return new Promise((resolve, reject) => { resolve(); });
     }
 
     let setupPromise = () => {
-      return this._putInDFU(false)
+      return this._putInDFU(crownstoneMode.setupMode)
     };
 
     // we load the DFU into the promise manager with priority so we are not interrupted

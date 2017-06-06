@@ -247,8 +247,6 @@ export class RoomOverview extends Component<any, any> {
       });
     }
 
-
-
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
       let handle = stones[stoneId].stone.config.handle;

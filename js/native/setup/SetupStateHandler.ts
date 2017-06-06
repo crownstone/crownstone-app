@@ -8,6 +8,7 @@ import { LOG }                from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
 import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 
 /**
@@ -78,9 +79,6 @@ class SetupStateHandlerClass {
       });
 
       NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
-        // emit advertisements for other views
-        eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
-
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
 
@@ -88,6 +86,15 @@ class SetupStateHandlerClass {
         if (DfuStateHandler.handleReservedForDfu(handle)) {
           return;
         }
+
+        let stoneData = MapProvider.stoneHandleMap[handle];
+        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
+          LOG.debug("SetupStateHandler: Fallback for DFU stones is called. Stopping setup event propagation.");
+          return;
+        }
+
+        // emit advertisements for other views
+        eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
 
         // if we just completed the setup of this stone, we ignore it for a while to avoid duplicates.
         if (this._ignoreStoneAfterSetup[handle]) {
@@ -171,7 +178,7 @@ class SetupStateHandlerClass {
     }
     else {
       return new Promise((resolve, reject) => {
-        reject({code: 1, message:"Stone not available"})
+        reject({code: 1, message:"Stone not available"});
       })
     }
   }
