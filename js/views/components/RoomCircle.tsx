@@ -199,7 +199,6 @@ export class RoomCircle extends Component<any, any> {
     this.unsubscribeSetupEvents.forEach((unsubscribe) => {
       unsubscribe();
     });
-    this.unsubscribe();
     this.unsubscribeStoreEvents();
   }
 
