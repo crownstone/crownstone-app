@@ -20,7 +20,7 @@ import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
 
 
-export class DeviceOverview extends Component<any, any> {
+export class DeviceSummary extends Component<any, any> {
   constructor() {
     super();
     this.state = {pending: false}
@@ -45,7 +45,7 @@ export class DeviceOverview extends Component<any, any> {
     let innerSize = size - 6;
     return (
       <TouchableOpacity onPress={() => {
-        (Actions as any).applianceSelection({
+        Actions.applianceSelection({
           sphereId: this.props.sphereId,
           applianceId: stone.config.applianceId,
           stoneId: this.props.stoneId,

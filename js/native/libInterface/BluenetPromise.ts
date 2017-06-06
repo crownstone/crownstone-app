@@ -97,6 +97,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getErrors:                  () => { return BluenetPromise('getErrors'); }, // returns { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
   clearErrors:                (clearErrorJSON) => { return BluenetPromise('clearErrors', clearErrorJSON); },
   restartCrownstone:          () => { return BluenetPromise('restartCrownstone'); },
+  clearFingerprintsPromise:   () => { return BluenetPromise('clearFingerprintsPromise'); },
 
 };
 

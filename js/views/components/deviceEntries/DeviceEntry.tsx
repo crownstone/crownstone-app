@@ -273,7 +273,7 @@ export class DeviceEntry extends Component<any, any> {
           <View style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
             <TouchableOpacity style={buttonStyle} onPress={() => {
               Actions.pop();
-              (Actions as any).roomSelection({
+              Actions.roomSelection({
                 sphereId: this.props.sphereId,
                 stoneId: this.props.stoneId,
                 locationId: this.props.locationId,
@@ -284,7 +284,7 @@ export class DeviceEntry extends Component<any, any> {
               <Text style={textStyle}>move</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[buttonStyle, {justifyContent:'center'}]} onPress={() => {
-              (Actions as any).deviceEditNew({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+              Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
             }}>
               <Icon name='ios-cog' size={29} color='#aaa' style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
               <Text style={textStyle}>settings</Text>

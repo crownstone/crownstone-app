@@ -64,6 +64,8 @@ RCT_EXTERN_METHOD(pauseTracking)
 RCT_EXTERN_METHOD(clearTrackedBeacons:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(finalizeFingerprint:(NSString *)sphereId locationId:(NSString *)locationId callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)locationId fingerprint:(NSString *)fingerprint)
+RCT_EXTERN_METHOD(clearFingerprints)
+RCT_EXTERN_METHOD(clearFingerprintsPromise:(RCTResponseSenderBlock)callback)
 
 RCT_EXTERN_METHOD(enableLoggingToFile:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)

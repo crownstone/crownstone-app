@@ -31,17 +31,18 @@ export class ApplianceSelection extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      // guard against deletion of the stone
-      let state = this.props.store.getState();
-      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-      if (stone)
-        this.forceUpdate();
-      else {
-        Actions.pop()
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      // if the stone has been deleted, close everything.
+      if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
+        return Actions.pop();
       }
-    })
+
+      if (change.changeAppliances && change.changeAppliances.sphereIds[this.props.sphereId]) {
+        return this.forceUpdate();
+      }
+    });
   }
 
 
@@ -97,7 +98,7 @@ export class ApplianceSelection extends Component<any, any> {
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-        (Actions as any).applianceAdd({
+        Actions.applianceAdd({
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
           callback: (applianceId) => {

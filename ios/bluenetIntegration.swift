@@ -559,6 +559,18 @@ open class BluenetJS: NSObject {
   }
   
   
+  @objc func clearFingerprints() {
+    print("BluenetBridge: clearFingerprints")
+    GLOBAL_BLUENET!.classifier.resetAllTrainingData()
+  }
+  
+  @objc func clearFingerprintsPromise(_ callback: RCTResponseSenderBlock) {
+    print("BluenetBridge: clearFingerprintsPromise")
+    GLOBAL_BLUENET!.classifier.resetAllTrainingData()
+    
+    callback([["error" : false]])
+  }
+  
   @objc func loadFingerprint(_ sphereId: String, locationId: String, fingerprint: String) -> Void {
     print("BluenetBridge: loadFingerprint \(sphereId) \(locationId)")
     

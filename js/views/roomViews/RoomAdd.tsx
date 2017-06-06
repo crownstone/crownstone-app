@@ -67,7 +67,7 @@ export class RoomAdd extends Component<any, any> {
     }});
     items.push({label:'Icon', type: 'icon', value: this.state.icon,
       callback: () => {
-        (Actions as any).roomIconSelection({
+        Actions.roomIconSelection({
           icon: this.state.icon,
           sphereId: this.props.sphereId,
           selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}
@@ -173,7 +173,7 @@ export class RoomAdd extends Component<any, any> {
             store.batchDispatch(actions);
 
             setTimeout(() => {
-              (Actions as any).roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
+              Actions.roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
             }, 0);
           }).catch((err) => {
             LOG.error("Something went wrong with creation of rooms", err);

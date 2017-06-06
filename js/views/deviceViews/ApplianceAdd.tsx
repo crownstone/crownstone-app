@@ -39,7 +39,7 @@ export class ApplianceAdd extends Component<any, any> {
     }});
     items.push({label:'Icon', type: 'icon', value: this.state.icon,
       callback: () => {
-        (Actions as any).deviceIconSelection({
+        Actions.deviceIconSelection({
           icon: this.state.icon,
           sphereId: this.props.sphereId,
           selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}

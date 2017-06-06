@@ -69,7 +69,7 @@ export class SettingsSphere extends Component<any, any> {
               type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
               icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
-                (Actions as any).settingsSphereInvitedUser({
+                Actions.settingsSphereInvitedUser({
                   title: users[userId].email,
                   userId: userId,
                   invitePending: true,
@@ -84,7 +84,7 @@ export class SettingsSphere extends Component<any, any> {
               type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
               icon: <ProfilePicture picture={users[userId].picture}/>,
               callback: () => {
-                (Actions as any).settingsSphereUser({
+                Actions.settingsSphereUser({
                   title: users[userId].firstName,
                   userId: userId,
                   sphereId: this.props.sphereId
@@ -161,7 +161,7 @@ export class SettingsSphere extends Component<any, any> {
       type: adminInSphere ? 'navigation' : 'info',
       icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex, marginLeft:3, marginRight:7}}/>,
       callback: () => {
-        (Actions as any).aiStart({sphereId: this.props.sphereId, canGoBack: true});
+        Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
       }
     });
     items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
@@ -224,7 +224,7 @@ export class SettingsSphere extends Component<any, any> {
         labelStyle: {color:colors.blue.hex},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor:colors.green.hex, marginLeft:3, marginRight:7}} />,
         callback: () => {
-          (Actions as any).settingsSphereInvite({sphereId: this.props.sphereId});
+          Actions.settingsSphereInvite({sphereId: this.props.sphereId});
         }
       });
     }

@@ -72,7 +72,7 @@ export class SideBar extends Component<any, any> {
       label: 'Overview',
       icon: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
       callback: () => {
-        (Actions as any).sphereOverview({type:'reset'});
+        Actions.sphereOverview({type:'reset'});
         setTimeout(() => {this.props.closeCallback();},0)
       }
     });

@@ -45,7 +45,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     icon: getIcon('ios-body', 23, colors.white.hex, colors.purple.hex),
     type: 'navigation',
     callback: () => {
-      (Actions as any).settingsProfile()
+      Actions.settingsProfile()
     }
   });
 
@@ -56,7 +56,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       label: 'Spheres',
       icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
-      callback: () => { (Actions as any).settingsSphereOverview() }
+      callback: () => { Actions.settingsSphereOverview() }
     });
   }
   else {
@@ -78,7 +78,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       type: 'navigation',
       style: {color: '#000'},
       icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { (Actions as any).settingsMeshOverview(); }
+      callback: () => { Actions.settingsMeshOverview(); }
     });
   }
 
@@ -111,7 +111,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     label: 'Recover a Crownstone',
     icon: getIcon('c1-socket2', 23, colors.white.hex, colors.menuTextSelected.hex),
     type: 'navigation',
-    callback: () => { (Actions as any).settingsPluginRecoverStep1(); }
+    callback: () => { Actions.settingsPluginRecoverStep1(); }
   });
   insertExplanation(items, 'If you want to reset a Crownstone because it is not responding correctly, recover it!', true);
 

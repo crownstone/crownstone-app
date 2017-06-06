@@ -317,7 +317,7 @@ export class SphereOverview extends Component<any, any> {
       this.props.eventBus.emit("showLocalizationSetupStep2", activeSphere);
     }
     else {
-      (Actions as any).roomOverview({
+      Actions.roomOverview({
         sphereId: activeSphere,
         locationId: null,
         title: 'First things first :)',

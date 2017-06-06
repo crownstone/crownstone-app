@@ -28,7 +28,7 @@ export class AiStart extends Component<any, any> {
     let state = props.store.getState();
     if (Object.keys(state.spheres).length === 0) {
       LOG.error("User does not have a sphere on startup.");
-      (Actions as any).tabBar();
+      Actions.tabBar();
     }
 
     let sphereId = props.sphereId || Object.keys(state.spheres)[0];
@@ -124,10 +124,10 @@ export class AiStart extends Component<any, any> {
         }
         else {
           if (Platform.OS === 'android') {
-            (Actions as any).sphereOverview();
+            Actions.sphereOverview();
           }
           else {
-            (Actions as any).tabBar();
+            Actions.tabBar();
           }
         }
       };

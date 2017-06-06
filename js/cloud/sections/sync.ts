@@ -31,7 +31,7 @@ export const sync = {
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
     let cloudData;
-    let deletedSphere;
+    let changedLocations;
 
     return syncDown( userId, options )
       .catch((err) => {
@@ -58,7 +58,7 @@ export const sync = {
       .then((data: any) => {
         syncUser(store, actions, data.user);
         cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
-        deletedSphere = syncCleanupLocal(store, actions, cloudData);
+        changedLocations = syncCleanupLocal(store, actions, cloudData);
         syncKeys(actions, data.keys);
         return syncDevices(store, actions, data.devices)
       })
@@ -74,7 +74,7 @@ export const sync = {
 
         this.events.emit("CloudSyncComplete");
 
-        if (cloudData.addedSphere === true || deletedSphere === true) {
+        if (cloudData.addedSphere === true || changedLocations === true) {
           this.events.emit("CloudSyncComplete_spheresChanged");
         }
       })
@@ -164,7 +164,7 @@ const getTimeDifference = function(localVersion, cloudVersion) {
 const syncCleanupLocal = function(store, actions, cloudData) {
   const state = store.getState();
   let sphereIds = Object.keys(state.spheres);
-  let deletedSphere = false;
+  let changedLocations = false;
 
   sphereIds.forEach((sphereId) => {
     if (cloudData.cloudSphereIds[sphereId] === undefined) {
@@ -173,7 +173,7 @@ const syncCleanupLocal = function(store, actions, cloudData) {
         store.dispatch({type: 'CLEAR_ACTIVE_SPHERE'});
       }
       actions.push({type: 'REMOVE_SPHERE', sphereId: sphereId});
-      deletedSphere = true;
+      changedLocations = true;
     }
     else {
       // if the sphere also exists in the cloud, check if its member need deletion
@@ -187,6 +187,7 @@ const syncCleanupLocal = function(store, actions, cloudData) {
       locationIds.forEach((locationId) => {
         if (cloudData.cloudLocationIds[locationId] === undefined) {
           actions.push({type: 'REMOVE_LOCATION', sphereId: sphereId, locationId: locationId});
+          changedLocations = true;
         }
       });
 
@@ -214,7 +215,7 @@ const syncCleanupLocal = function(store, actions, cloudData) {
     }
   });
 
-  return deletedSphere;
+  return changedLocations;
 };
 
 

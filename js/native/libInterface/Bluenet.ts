@@ -60,6 +60,9 @@ if (DISABLE_NATIVE === true) {
     getFirmwareVersion: () => {},
     bootloaderToNormalMode: () => {},
     getErrors: () => {},
+
+    clearFingerprintsPromise: () => {},
+    clearFingerprints: () => {},
   }
 }
 else {

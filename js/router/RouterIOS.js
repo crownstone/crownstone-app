@@ -58,16 +58,11 @@ export class Router_IOS extends Component {
                 <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
                 <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
                 <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
-                <Scene key="deviceEditNew"          component={Views.DeviceEditNew}              hideNavBar={true} />
+                <Scene key="deviceOverview"         component={Views.DeviceOverview}              hideNavBar={true} />
                 <Scene key="deviceEdit"             component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
-                <Scene key="deviceEditLogic"        component={Views.DeviceEditLogic}            hideNavBar={false} title="Device Behaviour" />
                 <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select a Device" />
                 <Scene key="applianceAdd"           component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
-                <Scene key="delaySelection"         component={Views.DelaySelection}             hideNavBar={false} title="Set Delay" />
-                <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={false} title="Schedule"   rightTitle="Add" />
-                <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}          hideNavBar={false} title="New Event"  rightTitle="Save" />
-                <Scene key="daySelection"           component={Views.DaySelection}               hideNavBar={false} title="Set Active Days" />
               </Scene>
               <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>

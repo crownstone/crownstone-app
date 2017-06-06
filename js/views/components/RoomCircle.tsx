@@ -466,7 +466,7 @@ export class RoomCircle extends Component<any, any> {
         borderWidth:3,
         borderColor:'#fff',
         position:'absolute',
-        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} onPress={() => { (Actions as any).roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}} >
+        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} onPress={() => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}} >
         <Icon name="c1-locationPin1" color="#fff" size={17} style={{backgroundColor:'transparent'}} />
       </TouchableOpacity>
     )
@@ -528,7 +528,7 @@ export class RoomCircle extends Component<any, any> {
 
     return (
       <Animated.View style={{position:'absolute',  top: this.state.top, left: this.state.left, opacity: this.state.componentOpacity}}>
-        <TouchableOpacity onPress={() => (Actions as any).roomOverview(this.props.actionParams)}>
+        <TouchableOpacity onPress={() => Actions.roomOverview(this.props.actionParams)}>
           <View>
             {this.getCircle()}
             {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}

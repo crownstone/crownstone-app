@@ -19,6 +19,7 @@ import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/Da
 import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors } from './../styles'
 import { LOG } from './../../logging/Log'
+import {LocationHandler} from "../../native/localization/LocationHandler";
 
 
 
@@ -73,9 +74,13 @@ export class RoomEdit extends Component<any, any> {
           removeActions.push({sphereId: this.props.sphereId, stoneId: stoneIds[i], type: "UPDATE_STONE_CONFIG", data: {locationId: null}});
         }
         store.batchDispatch(removeActions);
+
         // jump back to root
         this.props.eventBus.emit('hideLoading');
-        (Actions as any).sphereOverview({type:'reset'});
+        Actions.sphereOverview({type:'reset'});
+
+        // reload fingerprints.
+        LocationHandler.loadFingerprints();
       })
       .catch((err) => {
         this.deleting = false;
@@ -107,7 +112,7 @@ export class RoomEdit extends Component<any, any> {
       store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
     }});
     items.push({label:'Icon', type: 'icon', value: room.config.icon, callback: () => {
-      (Actions as any).roomIconSelection({locationId: this.props.locationId, icon: room.config.icon, sphereId: this.props.sphereId})
+      Actions.roomIconSelection({locationId: this.props.locationId, icon: room.config.icon, sphereId: this.props.sphereId})
     }});
 
 
@@ -119,7 +124,7 @@ export class RoomEdit extends Component<any, any> {
         items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
           Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
             {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: () => { (Actions as any).roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
+            {text: 'OK', onPress: () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
           ])
         }});
         items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
@@ -127,7 +132,7 @@ export class RoomEdit extends Component<any, any> {
       }
       else {
         items.push({label:'Teach ' + ai + ' to find you!', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
-          (Actions as any).roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
+          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
         }});
         items.push({label:'Teach ' + ai + ' to identify when you\'re in this room by walking around in it.', type: 'explanation',  below:true});
       }

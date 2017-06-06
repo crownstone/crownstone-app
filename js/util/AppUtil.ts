@@ -21,7 +21,6 @@ export const AppUtil = {
 
   logOut: function(store) {
     eventBus.emit("showLoading", "Logging out and closing app...");
-
     // sign out of all spheres.
     let state = store.getState();
     let sphereIds = Object.keys(state.spheres);
@@ -29,8 +28,8 @@ export const AppUtil = {
       store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
     });
 
-    // clear all usage and presence:
-    prepareStoreForUser(store);
+    // clear all events listeners, should fix a lot of redraw issues which will crash at logout
+    eventBus.clearAllEvents();
 
     let gracefulExit = () => {
       LOG.info("Quit app due to logout");
@@ -43,7 +42,7 @@ export const AppUtil = {
     Bluenet.stopScanning();
     StoreManager.userLogOut()
       .then(() => {
-        LOG.info("Quit app due to logout");
+        LOG.info("Quit app due to logout.");
         gracefulExit();
       })
       .catch((err) => {

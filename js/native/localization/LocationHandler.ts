@@ -32,10 +32,10 @@ class LocationHandlerClass {
 
 
     // subscribe to iBeacons when the spheres in the cloud change.
-    CLOUD.events.on('CloudSyncComplete_spheresChanged', () => { LocationHandler.trackSpheres(); });
+    CLOUD.events.on('CloudSyncComplete_spheresChanged', () => { LocationHandler.initializeTracking(); });
 
     // when a sphere is created, we track all spheres anew.
-    eventBus.on('sphereCreated', () => { LocationHandler.trackSpheres(); });
+    eventBus.on('sphereCreated', () => { LocationHandler.initializeTracking(); });
   }
 
   loadStore(store) {
@@ -322,14 +322,11 @@ class LocationHandlerClass {
   }
 
 
-  /**
-   * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
-   */
-  trackSpheres() {
-    LOG.info("LocalizationUtil: Track Spheres called.");
+  loadFingerprints() {
+    LOG.info("LocationHandler: loadFingerprints.");
     BluenetPromiseWrapper.isReady()
       .then(() => {
-        return BluenetPromiseWrapper.clearTrackedBeacons();
+        return BluenetPromiseWrapper.clearFingerprintsPromise();
       })
       .then(() => {
         // register the iBeacons UUIDs with the localization system.
@@ -340,9 +337,6 @@ class LocationHandlerClass {
 
         sphereIds.forEach((sphereId) => {
           let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
-
-          // track the sphere beacon UUID
-          Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
 
           LOG.info("LocalizationUtil: Setup tracking for iBeacon UUID: ", sphereIBeaconUUID);
 
@@ -377,6 +371,37 @@ class LocationHandlerClass {
         }
       })
       .catch((err) => {})
+  }
+
+  /**
+   * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
+   */
+  trackSpheres() {
+    LOG.info("LocationHandler: Track Spheres called.");
+    BluenetPromiseWrapper.isReady()
+      .then(() => {
+        return BluenetPromiseWrapper.clearTrackedBeacons();
+      })
+      .then(() => {
+        // register the iBeacons UUIDs with the localization system.
+        const state = this.store.getState();
+        let sphereIds = Object.keys(state.spheres);
+
+        sphereIds.forEach((sphereId) => {
+          let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
+
+          // track the sphere beacon UUID
+          Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
+          LOG.info("LocationHandler: Setup tracking for iBeacon UUID: ", sphereIBeaconUUID);
+
+        });
+      })
+      .catch((err) => {})
+  }
+
+  initializeTracking() {
+    this.trackSpheres();
+    this.loadFingerprints();
   }
 }
 

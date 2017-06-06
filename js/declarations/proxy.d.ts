@@ -18,6 +18,7 @@ interface BluenetPromiseWrapperProtocol {
   setSettings(dataObject): Promise<void>,
   requestLocation(): Promise<any>,
   recover(handle: string): Promise<void>,
+  clearFingerprintsPromise(): Promise<any>,
 
   // Mesh
   meshKeepAlive(): Promise<void>,
@@ -33,6 +34,8 @@ interface BluenetPromiseWrapperProtocol {
   getErrors(): Promise<any>,
   clearErrors(clearErrorJSON): Promise<any>,
   restartCrownstone(): Promise<any>,
+
+
 }
 
 interface crownstoneServiceData {

@@ -60,7 +60,7 @@ class BackgroundProcessHandlerClass {
             Bluenet.startScanningForCrownstonesUniqueOnly()
           });
 
-        LocationHandler.trackSpheres();
+        LocationHandler.initializeTracking();
 
         this.userLoggedIn = true;
       });

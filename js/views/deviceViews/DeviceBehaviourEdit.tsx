@@ -60,17 +60,24 @@ export class DeviceBehaviourEdit extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      // guard against deletion of the stone
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      // if the stone has been deleted, close everything.
+      if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
+        return Actions.pop();
+      }
+
       let state = this.props.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-      if (stone)
+
+      if  (
+        (stone && stone.config.applianceId && change.updateApplianceConfig && change.updateApplianceConfig.stoneIds[this.props.applianceId]) ||
+        (change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId])
+          ) {
         this.forceUpdate();
-      else {
-        Actions.pop()
       }
-    })
+    });
   }
 
   componentWillUnmount() {

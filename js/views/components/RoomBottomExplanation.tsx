@@ -74,7 +74,7 @@ export class RoomBottomExplanation extends Component<any, any> {
       let buttonCallback = () => {
         Actions.pop();
         setTimeout(() => {
-          (Actions as any).roomOverview({sphereId: this.props.sphereId, locationId: null})
+          Actions.roomOverview({sphereId: this.props.sphereId, locationId: null})
         }, 150);
       };
       this.setState({explanation: explanation, buttonCallback: buttonCallback});

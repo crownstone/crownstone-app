@@ -55,15 +55,10 @@ export class Router_Android extends Component {
               <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={false} title="Room Settings" />
               <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true}  title="Create Room" />
               <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={false} title="Edit Device" />
-              <Scene key="deviceEditNew"              component={Views.DeviceEditNew}              hideNavBar={true} />
-              <Scene key="deviceEditLogic"            component={Views.DeviceEditLogic}            panHandlers={null} hideNavBar={false} title="Device Behaviour" />
+              <Scene key="deviceOverview"             component={Views.DeviceOverview}             hideNavBar={true} />
               <Scene key="applianceAdd"               component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
               <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select a Device" />
               <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        panHandlers={null} hideNavBar={false} title="Edit Behaviour" />
-              <Scene key="delaySelection"             component={Views.DelaySelection}             panHandlers={null} hideNavBar={false} title="Set Delay" />
-              <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         panHandlers={null} hideNavBar={false} title="Schedule"   rightTitle="Add" />
-              <Scene key="deviceScheduleAdd"          component={Views.DeviceScheduleAdd}          panHandlers={null} hideNavBar={false} title="New Event"  rightTitle="Save" />
-              <Scene key="daySelection"               component={Views.DaySelection}               panHandlers={null} hideNavBar={false} title="Set Active Days" />
               <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
               <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
               <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          panHandlers={null} hideNavBar={false} title="Developer" />

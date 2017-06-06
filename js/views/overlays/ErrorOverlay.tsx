@@ -210,7 +210,7 @@ export class ErrorOverlay extends Component<any, any> {
           onPress={() => {
             let currentCrownstone = this.state.stonesContainingError[0];
             let locationId = currentCrownstone.stone.config.locationId;
-            (Actions as any).roomOverview({
+            Actions.roomOverview({
               sphereId: currentCrownstone.sphereId,
               locationId: locationId,
               errorCrownstone: currentCrownstone.stoneId

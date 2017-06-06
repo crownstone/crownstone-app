@@ -110,7 +110,7 @@ export class DeviceEdit extends Component<any, any> {
       items.push({label: 'PLUGGED IN DEVICE', type: 'explanation', below: false});
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
-          (Actions as any).applianceSelection({
+          Actions.applianceSelection({
             ...requiredData,
             callback: (applianceId) => {
               this.setState({showStone:false});
@@ -153,7 +153,7 @@ export class DeviceEdit extends Component<any, any> {
 
     // icon picker
     items.push({label:'Icon', type: 'icon', value: appliance.config.icon, callback: () => {
-      (Actions as any).deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, sphereId: this.props.sphereId})
+      Actions.deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, sphereId: this.props.sphereId})
     }});
 
     // unplug device

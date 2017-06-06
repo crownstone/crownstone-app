@@ -15,13 +15,13 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
 import { Background } from '../components/Background'
 import * as Swiper from 'react-native-swiper';
-import { DeviceOverview } from "./elements/DeviceOverview";
 import {Util} from "../../util/Util";
 import {TopBar} from "../components/Topbar";
 import {DeviceBehaviour} from "./elements/DeviceBehaviour";
+import {DeviceSummary} from "./elements/DeviceSummary";
 
 
-export class DeviceEditNew extends Component<any, any> {
+export class DeviceOverview extends Component<any, any> {
   deleting : boolean = false;
   unsubscribeStoreEvents : any;
   swiper: any = 0;
@@ -94,7 +94,7 @@ export class DeviceEditNew extends Component<any, any> {
           ref={(swiper) => { this.swiper = swiper; }}
           onMomentumScrollEnd={() => {  this.forceUpdate(); /* this updates the index */ }}
         >
-          <DeviceOverview  store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
+          <DeviceSummary  store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
           <DeviceBehaviour store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
         </Swiper>
       </Background>

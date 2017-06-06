@@ -59,7 +59,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
   _getButton(sampleSize, iconSize, text, roomSize) {
     return (
-      <TouchableOpacity style={buttonStyle} onPress={() => { (Actions as any).roomTraining({sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
+      <TouchableOpacity style={buttonStyle} onPress={() => { Actions.roomTraining({sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
         <View style={iconContainerStyle}>
           <Icon name="md-cube" size={iconSize} color={colors.blue.hex} style={{backgroundColor:"transparent"}} />
         </View>
