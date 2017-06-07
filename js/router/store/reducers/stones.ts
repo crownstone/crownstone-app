@@ -42,6 +42,7 @@ let defaultSettings = {
     type: stoneTypes.plug,
     lastSeen: 1,
     updatedAt: 1,
+    lastUpdatedStoneTime: 1,
   },
   state: {
     state: 0.0,
@@ -164,6 +165,10 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
+    case 'UPDATED_STONE_TIME':
+      let newState = {...state};
+      newState.lastUpdatedStoneTime = getTime();
+      return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.config);
     default:

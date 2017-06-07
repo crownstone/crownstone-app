@@ -98,6 +98,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   clearErrors:                (clearErrorJSON) => { return BluenetPromise('clearErrors', clearErrorJSON); },
   restartCrownstone:          () => { return BluenetPromise('restartCrownstone'); },
   clearFingerprintsPromise:   () => { return BluenetPromise('clearFingerprintsPromise'); },
+  setTime:                    (time) => { return BluenetPromise('setTime',time); }
 
 };
 

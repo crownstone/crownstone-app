@@ -27,6 +27,7 @@ import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 import {ErrorWatcher} from "./ErrorWatcher";
 import {NotificationHandler, NotificationParser} from "./NotificationHandler";
 import {Permissions} from "./Permissions";
+import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -320,6 +321,7 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
+    BatchCommandHandler._loadStore(this.store);
     MapProvider._loadStore(this.store);
     LogProcessor._loadStore(this.store);
     LocationHandler._loadStore(this.store);

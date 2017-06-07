@@ -205,6 +205,7 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_STONE_DFU_RESET':
     case 'ADD_INSTALLATION':
     case 'UPDATE_INSTALLATION_CONFIG':
+    case 'UPDATED_STONE_TIME':
     case 'SET_NOTIFICATION_TOKEN':
       break;
     case 'UPDATE_MESH_NETWORK_ID':

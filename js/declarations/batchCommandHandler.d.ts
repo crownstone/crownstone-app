@@ -1,6 +1,7 @@
 interface keepAlivePayload {
-  cleanup(): void,
+  stone: any,
   attempts: number,
+  cleanup(): void,
   promise:{
     resolve(any?) : void,
     reject(any?)  : void,
@@ -10,6 +11,7 @@ interface keepAlivePayload {
 
 interface keepAliveStatePayload {
   handle: string,
+  stone: any,
   crownstoneId: string,
   changeState: boolean,
   state: number,
@@ -23,23 +25,9 @@ interface keepAliveStatePayload {
   }
 }
 
-
-interface setSwitchStatePayload {
-  handle: string,
-  crownstoneId: string,
-  state: number,
-  attempts: number,
-  cleanup(): void,
-  promise:{
-    resolve(any?) : void,
-    reject(any?)  : void,
-    pending: boolean
-  }
-}
-
-
 interface multiSwitchPayload {
   handle: string,
+  stone: any,
   crownstoneId: string,
   state: number,
   intent: number,
@@ -66,6 +54,7 @@ interface meshNetworks  {
 interface connectionInfo  {
   sphereId : string,
   stoneId: string,
+  stone: any,
   meshNetworkId?: string,
   handle : string,
 }

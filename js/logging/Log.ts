@@ -90,7 +90,7 @@ function getFilename(timestamp) {
   let day = dayNumber < 10 ? '0' + dayNumber : '' + dayNumber;
 
   let dateStamp = new Date(timestamp).getFullYear() + "-" + month + "-" +day;
-  return 'ConsumerAppLog' + dateStamp + '.log';;
+  return 'ConsumerAppLog' + dateStamp + '.log';
 }
 
 export function cleanLogs() {

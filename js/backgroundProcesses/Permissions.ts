@@ -6,6 +6,7 @@ class PermissionClass {
   _initialized : boolean = false;
 
   useKeepAliveState      = true; // g
+  setStoneTime           = true; // a or m
   setBehaviourInCloud    = true; // a
   seeUpdateCrownstone    = true; // a?
   updateCrownstone       = true; // a
@@ -29,6 +30,8 @@ class PermissionClass {
   inviteAdminToSphere    = true; // a
   inviteMemberToSphere   = true; // a or m
   inviteGuestToSphere    = true; // a or m
+
+
 
 
   _loadStore(store) {
@@ -78,6 +81,7 @@ class PermissionClass {
         this.inviteAdminToSphere    = true; // admin
       case 'member':
         this.useKeepAliveState      = true; // admin and member
+        this.setStoneTime           = true; // admin and member
         this.manageUsers            = true; // admin and member
 
         this.inviteMemberToSphere   = true; // admin and member
@@ -89,6 +93,7 @@ class PermissionClass {
 
   _revokeAll() {
     this.useKeepAliveState      = false; // g
+    this.setStoneTime           = false; // g
     this.setBehaviourInCloud    = false; // a
     this.seeUpdateCrownstone    = false; // a?
     this.updateCrownstone       = false; // a
@@ -112,6 +117,7 @@ class PermissionClass {
     this.inviteAdminToSphere    = false; // a
     this.inviteMemberToSphere   = false; // a or m
     this.inviteGuestToSphere    = false; // a or m
+
   }
 }
 
