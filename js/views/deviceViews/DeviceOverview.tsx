@@ -19,6 +19,7 @@ import {Util} from "../../util/Util";
 import {TopBar} from "../components/Topbar";
 import {DeviceBehaviour} from "./elements/DeviceBehaviour";
 import {DeviceSummary} from "./elements/DeviceSummary";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 export class DeviceOverview extends Component<any, any> {
@@ -66,8 +67,12 @@ export class DeviceOverview extends Component<any, any> {
     const state = this.props.store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
-
+    let hasAppliance = stone.config.applianceId !== null;
     let index = this.swiper && this.swiper.state.index || 0;
+
+
+    let summaryIndex = 0;
+    let behaviourIndex = 1;
 
     return (
       <Background image={this.props.backgrounds.stoneDetailsBackground} hideTopBar={true}>
@@ -75,17 +80,17 @@ export class DeviceOverview extends Component<any, any> {
           leftAction={() => { Actions.pop(); }}
           right={() => {
             switch (index) {
-              case 0:
-                return 'Edit';
-              case 1:
-                return 'Change';
+              case summaryIndex:
+                return (hasAppliance ? Permissions.editAppliance : Permissions.editCrownstone) ? 'Edit' : undefined;
+              case behaviourIndex:
+                return Permissions.changeBehaviour ? 'Change' : undefined;
             }
           }}
           rightAction={() => {
             switch (index) {
-              case 0:
+              case summaryIndex:
                 Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); break;
-              case 1:
+              case behaviourIndex:
                 Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); break;
             }
           }}

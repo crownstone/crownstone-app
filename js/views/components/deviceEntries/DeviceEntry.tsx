@@ -25,6 +25,7 @@ import {Actions} from 'react-native-router-flux';
 import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
 import {LOG} from "../../../logging/Log";
 import {StoneUtil} from "../../../util/StoneUtil";
+import {Permissions} from "../../../backgroundProcesses/Permissions";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -160,7 +161,7 @@ export class DeviceEntry extends Component<any, any> {
 
   _canUpdate(stone,state) {
     // only admins are allowed to update
-    if (Util.data.getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) === 'admin') {
+    if (Permissions.seeUpdateCrownstone) {
       let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
       return Util.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
     }

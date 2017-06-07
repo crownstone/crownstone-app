@@ -47,13 +47,13 @@ if (DISABLE_NATIVE === true) {
 
     quitApp: () => { NativeModules.BluenetJS.quitApp() },                   // Used to quit the app during logout
     enableLoggingToFile: () => {},
+    enableExtendedLogging: () => {},
     clearLogs: () => {},
 
     // mesh
     meshKeepAlive: () => {},
     meshKeepAliveState: () => {},
     multiSwitch: () => {},
-
 
     getHardwareVersion: () => {},
     getBootloaderVersion: () => {},

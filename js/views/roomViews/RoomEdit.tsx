@@ -20,6 +20,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors } from './../styles'
 import { LOG } from './../../logging/Log'
 import {LocationHandler} from "../../native/localization/LocationHandler";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 
@@ -146,16 +147,28 @@ export class RoomEdit extends Component<any, any> {
       items.push({type: 'spacer', height:30});
     }
 
-    items.push({
-      label: 'Remove Room',
-      type: 'button',
-      icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
-      callback: () => {
-        Alert.alert("Are you sure?","Removing this Room will make all contained Crownstones floating.",
-          [{text: "Cancel", style: 'cancel'}, {text:'Remove', style: 'destructive', onPress: this._removeRoom.bind(this)}])
-      }
-    });
-    items.push({label:'Removing this Room will make all contained Crownstones floating.',  type:'explanation', below:true});
+
+    if (Permissions.removeRoom) {
+      items.push({
+        label: 'Remove Room',
+        type: 'button',
+        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff"
+                          buttonStyle={{backgroundColor: colors.red.hex}}/>,
+        callback: () => {
+          Alert.alert("Are you sure?", "Removing this Room will make all contained Crownstones floating.",
+            [{text: "Cancel", style: 'cancel'}, {
+              text: 'Remove',
+              style: 'destructive',
+              onPress: this._removeRoom.bind(this)
+            }])
+        }
+      });
+      items.push({
+        label: 'Removing this Room will make all contained Crownstones floating.',
+        type: 'explanation',
+        below: true
+      });
+    }
 
     return items;
   }

@@ -25,7 +25,7 @@ class SchedulerClass {
   }
 
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE SchedulerClass', this._initialized);
     if (this._initialized === false) {
       this.store = store;

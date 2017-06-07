@@ -17,6 +17,7 @@ import { overviewStyles }     from './SphereOverview'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {Util} from "../../util/Util";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 export class StatusCommunication extends Component<any, any> {
@@ -55,7 +56,6 @@ export class StatusCommunication extends Component<any, any> {
     let bottomDistance = Object.keys(state.spheres).length > 1 ? 20 : 5;
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
-    let isAdminInCurrentSphere = Util.data.getUserLevelInSphere(state, currentSphere) === 'admin';
 
     let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
     let requiresFingerprints = requireMoreFingerprints(state, currentSphere);
@@ -69,7 +69,7 @@ export class StatusCommunication extends Component<any, any> {
       }
     });
 
-    if (SetupStateHandler.areSetupStonesAvailable() === true && isAdminInCurrentSphere === true) {
+    if (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.seeSetupCrownstone) {
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected! Tap on it!'}</Text>

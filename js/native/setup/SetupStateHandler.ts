@@ -43,7 +43,7 @@ class SetupStateHandlerClass {
     this._currentSetupState = {busy: false, handle: undefined, name: undefined, type: undefined, icon: undefined};
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE SetupStateHandler', this._initialized);
     if (this._initialized === false) {
       this._store = store;

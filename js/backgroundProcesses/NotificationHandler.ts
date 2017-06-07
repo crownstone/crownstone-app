@@ -13,7 +13,7 @@ class PushNotificationHandlerClass {
 
   constructor() {}
 
-  loadStore(store) {
+  _loadStore(store) {
     this.store = store;
     this.configure();
 
@@ -133,7 +133,7 @@ class NotificationParserClass {
 
   constructor() {}
 
-  loadStore(store) {
+  _loadStore(store) {
     this.store = store;
   }
 

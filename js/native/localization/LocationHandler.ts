@@ -38,7 +38,7 @@ class LocationHandlerClass {
     eventBus.on('sphereCreated', () => { LocationHandler.initializeTracking(); });
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LocationHandler: LOADED STORE LocationHandler', this._initialized);
     if (this._initialized === false) {
       this._initialized = true;

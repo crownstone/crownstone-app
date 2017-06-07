@@ -26,6 +26,7 @@ import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 import {ErrorWatcher} from "./ErrorWatcher";
 import {NotificationHandler, NotificationParser} from "./NotificationHandler";
+import {Permissions} from "./Permissions";
 
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -88,6 +89,9 @@ class BackgroundProcessHandlerClass {
 
         let state = this.store.getState();
         Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
+        if (state.user.logging === true && state.user.developer === true && state.development.log_ble === true) {
+          Bluenet.enableExtendedLogging(true);
+        }
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
@@ -316,20 +320,21 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
-    MapProvider.loadStore(this.store);
-    LogProcessor.loadStore(this.store);
-    LocationHandler.loadStore(this.store);
-    AdvertisementHandler.loadStore(this.store);
-    Scheduler.loadStore(this.store);
-    StoneStateHandler.loadStore(this.store);
-    DfuStateHandler.loadStore(this.store);
-    SetupStateHandler.loadStore(this.store);
-    KeepAliveHandler.loadStore(this.store);
-    FirmwareWatcher.loadStore(this.store);
-    BatterySavingUtil.loadStore(this.store);
-    ErrorWatcher.loadStore(this.store);
-    NotificationHandler.loadStore(this.store);
-    NotificationParser.loadStore(this.store);
+    MapProvider._loadStore(this.store);
+    LogProcessor._loadStore(this.store);
+    LocationHandler._loadStore(this.store);
+    AdvertisementHandler._loadStore(this.store);
+    Scheduler._loadStore(this.store);
+    StoneStateHandler._loadStore(this.store);
+    DfuStateHandler._loadStore(this.store);
+    SetupStateHandler._loadStore(this.store);
+    KeepAliveHandler._loadStore(this.store);
+    FirmwareWatcher._loadStore(this.store);
+    BatterySavingUtil._loadStore(this.store);
+    ErrorWatcher._loadStore(this.store);
+    NotificationHandler._loadStore(this.store);
+    NotificationParser._loadStore(this.store);
+    Permissions._loadStore(this.store);
   }
 }
 

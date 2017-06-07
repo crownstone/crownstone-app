@@ -83,7 +83,13 @@ export const LOG : any = {
 
 
 function getFilename(timestamp) {
-  let dateStamp = new Date(timestamp).getFullYear() + "-" + (new Date(timestamp).getMonth()+1) + "-" + (new Date(timestamp).getDate());
+  let monthNumber = new Date(timestamp).getMonth()+1;
+  let dayNumber = new Date(timestamp).getDate();
+
+  let month = monthNumber < 10 ? '0' + monthNumber : '' + monthNumber;
+  let day = dayNumber < 10 ? '0' + dayNumber : '' + dayNumber;
+
+  let dateStamp = new Date(timestamp).getFullYear() + "-" + month + "-" +day;
   return 'ConsumerAppLog' + dateStamp + '.log';;
 }
 
@@ -184,7 +190,7 @@ class LogProcessorClass {
 
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     this.store = store;
 
     // use periodic events to clean the logs.
@@ -219,19 +225,22 @@ class LogProcessorClass {
   refreshData() {
     if (this.store) {
       let state = this.store.getState();
-      this.writeToFile = state.user.developer === true && state.user.logging === true;
+      let dev = state.user.developer;
+      let log = state.user.logging;
 
-      this.log_info      = state.user.developer === true && state.development.log_info      === true;
-      this.log_warnings  = state.user.developer === true && state.development.log_warnings  === true;
-      this.log_errors    = state.user.developer === true && state.development.log_errors    === true;
-      this.log_mesh      = state.user.developer === true && state.development.log_mesh      === true;
-      this.log_scheduler = state.user.developer === true && state.development.log_scheduler === true;
-      this.log_verbose   = state.user.developer === true && state.development.log_verbose   === true;
-      this.log_ble       = state.user.developer === true && state.development.log_ble       === true;
-      this.log_events    = state.user.developer === true && state.development.log_events    === true;
-      this.log_store     = state.user.developer === true && state.development.log_store     === true;
-      this.log_cloud     = state.user.developer === true && state.development.log_cloud     === true;
-      this.log_debug     = state.user.developer === true && state.development.log_debug     === true;
+      this.writeToFile = dev === true && log === true;
+
+      this.log_info      = dev === true && log === true && state.development.log_info      === true;
+      this.log_warnings  = dev === true && log === true && state.development.log_warnings  === true;
+      this.log_errors    = dev === true && log === true && state.development.log_errors    === true;
+      this.log_mesh      = dev === true && log === true && state.development.log_mesh      === true;
+      this.log_scheduler = dev === true && log === true && state.development.log_scheduler === true;
+      this.log_verbose   = dev === true && log === true && state.development.log_verbose   === true;
+      this.log_ble       = dev === true && log === true && state.development.log_ble       === true;
+      this.log_events    = dev === true && log === true && state.development.log_events    === true;
+      this.log_store     = dev === true && log === true && state.development.log_store     === true;
+      this.log_cloud     = dev === true && log === true && state.development.log_cloud     === true;
+      this.log_debug     = dev === true && log === true && state.development.log_debug     === true;
     }
   }
 }

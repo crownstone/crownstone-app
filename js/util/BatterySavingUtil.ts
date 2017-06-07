@@ -13,7 +13,7 @@ class BatterySavingClass {
 
   constructor() { }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE BatterySavingUtil', this._initialized);
     if (this._initialized === false) {
       this.store = store;
@@ -112,9 +112,9 @@ class BatterySavingClass {
     }
 
     if (appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown))) {
-      BluenetPromiseWrapper.isReady().then(() => {
-        Bluenet.stopScanning();
-      });
+      // BluenetPromiseWrapper.isReady().then(() => {
+      //   Bluenet.stopScanning();
+      // });
     }
     else if (!allHandlesKnown && appNotInForeground === true) {
       // user is continuing scanning to get all handles. Stop when we know them.

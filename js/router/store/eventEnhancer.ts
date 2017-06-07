@@ -111,7 +111,8 @@ function checkAction(action, affectedIds) {
       eventStatus['updateLocationConfig'] = affectedIds; break;
     case 'SET_SPHERE_STATE':
       eventStatus['changeSphereState'] = affectedIds; break;
-    case 'SET_SPHERE_KEYS': break;
+    case 'SET_SPHERE_KEYS':
+      eventStatus['setKeys'] = affectedIds; break;
     case 'ADD_SPHERE':
       eventStatus['addSphere'] = affectedIds;
       eventStatus['changeSpheres'] = affectedIds;

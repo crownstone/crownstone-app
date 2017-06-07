@@ -21,7 +21,7 @@ class DfuStateHandlerClass {
     this._uuid = Util.getUUID();
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE DfuStateHandler', this._initialized);
     if (this._initialized === false) {
       this._store = store;

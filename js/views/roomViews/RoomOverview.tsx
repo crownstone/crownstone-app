@@ -38,6 +38,7 @@ import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
 import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
 import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -222,8 +223,8 @@ export class RoomOverview extends Component<any, any> {
    * @param userAdmin
    * @returns {XML}
    */
-  getRightItem(state, userAdmin) {
-    if (userAdmin === true && this.props.locationId !== null && this.viewingRemotely !== true) {
+  getRightItem(state) {
+    if (Permissions.editRoom === true && this.props.locationId !== null && this.viewingRemotely !== true) {
       let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
       let showFingerprintNeeded = false;
       if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
@@ -279,7 +280,6 @@ export class RoomOverview extends Component<any, any> {
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
     let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
-    let userAdmin = Util.data.getUserLevelInSphere(state, this.props.sphereId) === 'admin';
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
@@ -315,8 +315,8 @@ export class RoomOverview extends Component<any, any> {
       <Background hideTopBar={true} image={backgroundImage}>
         <TopBar
           title={title}
-          right={userAdmin === true && this.props.locationId !== null ? 'Edit' : undefined}
-          rightItem={this.getRightItem(state, userAdmin)}
+          right={Permissions.editRoom === true && this.props.locationId !== null ? 'Edit' : undefined}
+          rightItem={this.getRightItem(state)}
           rightAction={() => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}
           leftAction={ () => { Actions.pop({refresh: {test:true }}); }}
           showHamburgerMenu={true}

@@ -16,6 +16,7 @@ import { styles, colors } from '../styles';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import {Util} from "../../util/Util";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 export class SettingsSphereInvite extends Component<any, any> {
   inputStates : any;
@@ -49,8 +50,7 @@ export class SettingsSphereInvite extends Component<any, any> {
     });
 
 
-    let level = Util.data.getUserLevelInSphere(state, this.props.sphereId);
-    if (level == "admin") {
+    if (Permissions.inviteMemberToSphere && Permissions.inviteGuestToSphere) {
       items.push({
         type:'dropdown',
         label:'Access Level',
@@ -63,7 +63,7 @@ export class SettingsSphereInvite extends Component<any, any> {
         }
       });
     }
-    else {
+    else if (Permissions.inviteGuestToSphere) {
       items.push({type:'info', label:'Access level', value:'Guest'});
     }
 

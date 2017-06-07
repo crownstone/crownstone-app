@@ -9,7 +9,7 @@ class ErrorWatcherClass {
 
   constructor() { }
 
-  loadStore(store: any) {
+  _loadStore(store: any) {
     LOG.info('LOADED STORE ErrorWatcher', this._initialized);
     if (this._initialized === false) {
       this.store = store;

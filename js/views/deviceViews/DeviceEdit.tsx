@@ -21,6 +21,7 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/animated/FadeInView'
 import { LOG } from '../../logging/Log'
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 
@@ -128,7 +129,9 @@ export class DeviceEdit extends Component<any, any> {
       items.push({type:'spacer'});
     }
 
-    items = this.addDeleteOptions(items, stone);
+    if (Permissions.removeCrownstone) {
+      items = this.addDeleteOptions(items, stone);
+    }
 
     return items;
   }
@@ -169,7 +172,9 @@ export class DeviceEdit extends Component<any, any> {
     //     store.dispatch({...requiredData, type:'UPDATE_STONE_CONFIG', data:{dimmable:newValue}});
     // }});
 
-    items = this.addDeleteOptions(items, stone);
+    if (Permissions.removeCrownstone) {
+      items = this.addDeleteOptions(items, stone);
+    }
 
     return items;
 

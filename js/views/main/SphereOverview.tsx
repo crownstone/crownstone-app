@@ -24,6 +24,7 @@ import { LOG }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {Util} from "../../util/Util";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 export class SphereOverview extends Component<any, any> {
@@ -188,7 +189,6 @@ export class SphereOverview extends Component<any, any> {
     let blockAddButton = false;
     let noStones = true;
     let noRooms = true;
-    let isAdminInCurrentSphere = false;
     let activeSphere = state.app.activeSphere;
     let background = this.props.backgrounds.main;
 
@@ -209,7 +209,6 @@ export class SphereOverview extends Component<any, any> {
 
       noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
-      isAdminInCurrentSphere = Util.data.getUserLevelInSphere(state, activeSphere) === 'admin';
 
       if (sphereIsPresent || seeStonesInSetupMode || seeStonesInDFUMode || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
@@ -220,7 +219,7 @@ export class SphereOverview extends Component<any, any> {
       }
 
       let showFinalizeIndoorNavigationButton = (
-        isAdminInCurrentSphere                     && // only admins can set this up so only show it if you're an admin.
+        Permissions.doLocalizationTutorial         &&
         viewingRemotely                  === false && // only show this if you're there.
         enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
         (noRooms === true || requiresFingerprints === true)     // Need more fingerprints.
@@ -237,7 +236,7 @@ export class SphereOverview extends Component<any, any> {
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
               altenateLeftItem={true}
               leftAction={showFinalizeIndoorNavigationCallback}
-              rightItem={!noStones && isAdminInCurrentSphere && !blockAddButton ? this._getAddRoomIcon() : null}
+              rightItem={!noStones && Permissions.addRoom && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
               showHamburgerMenu={true}
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}

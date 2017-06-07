@@ -21,6 +21,7 @@ import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { Util } from "../../util/Util";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 export class SettingsSphere extends Component<any, any> {
   deleting : boolean;
@@ -57,7 +58,7 @@ export class SettingsSphere extends Component<any, any> {
     this.unsubscribeStoreEvents();
   }
 
-  _getUsersWithAccess(state, accessLevel, adminInSphere) {
+  _getUsersWithAccess(state, accessLevel) {
     let result = [];
     let users = state.spheres[this.props.sphereId].users;
     for (let userId in users) {
@@ -66,7 +67,7 @@ export class SettingsSphere extends Component<any, any> {
           if (users[userId].invitationPending === true) {
             result.push({
               label: users[userId].email,
-              type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
+              type: (userId === state.user.userId || Permissions.manageUsers === false) ? 'info' : 'navigation',
               icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
                 Actions.settingsSphereInvitedUser({
@@ -81,7 +82,7 @@ export class SettingsSphere extends Component<any, any> {
           else {
             result.push({
               label: users[userId].firstName + " " + users[userId].lastName,
-              type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
+              type: (userId === state.user.userId ||  Permissions.manageUsers === false) ? 'info' : 'navigation',
               icon: <ProfilePicture picture={users[userId].picture}/>,
               callback: () => {
                 Actions.settingsSphereUser({
@@ -116,11 +117,8 @@ export class SettingsSphere extends Component<any, any> {
 
     const store = this.props.store;
     const state = store.getState();
-    let adminInSphere = false;
-    let userLevelInSphere = Util.data.getUserLevelInSphere(state, this.props.sphereId);
 
-    if (userLevelInSphere == 'admin') {
-      adminInSphere = true;
+    if (Permissions.editSphere) {
       let sphereSettings = state.spheres[this.props.sphereId].config;
       items.push({label:'SPHERE SETTINGS',  type:'explanation', below:false});
       items.push({
@@ -158,7 +156,7 @@ export class SettingsSphere extends Component<any, any> {
     items.push({label:'PERSONAL ARTIFICIAL INTELLIGENCE',  type:'explanation', below:false});
     items.push({
       label: ai.name,
-      type: adminInSphere ? 'navigation' : 'info',
+      type: Permissions.editSphere ? 'navigation' : 'info',
       icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex, marginLeft:3, marginRight:7}}/>,
       callback: () => {
         Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
@@ -166,7 +164,7 @@ export class SettingsSphere extends Component<any, any> {
     });
     items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
 
-    if (Util.data.getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
+    if (Permissions.editSphere) {
       let options = [];
       options.push({label: '5 Minutes', type: 'checkbar', value: 300});
       options.push({label: '10 Minutes', type: 'checkbar', value: 600});
@@ -199,24 +197,24 @@ export class SettingsSphere extends Component<any, any> {
     }
 
     items.push({label:'ADMINS',  type:'explanation', below:false});
-    items = items.concat(this._getUsersWithAccess(state,'admin', adminInSphere));
+    items = items.concat(this._getUsersWithAccess(state,'admin'));
     items.push({label:'Admins can add, configure and remove Crownstones and Rooms.', style:{paddingBottom:0}, type:'explanation', below:true});
 
-    let members = this._getUsersWithAccess(state,'member', adminInSphere);
+    let members = this._getUsersWithAccess(state,'member');
     if (members.length > 0) {
       items.push({label:'MEMBERS',  type: 'explanation', below: false});
       items = items.concat(members);
       items.push({label:'Members can configure Crownstones.', style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
-    let guest = this._getUsersWithAccess(state, 'guest', adminInSphere);
+    let guest = this._getUsersWithAccess(state, 'guest');
     if (guest.length > 0) {
       items.push({label:'GUESTS',  type:'explanation', below: false});
       items = items.concat(guest);
       items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
-    if (userLevelInSphere == "admin" || userLevelInSphere == 'member') {
+    if (Permissions.inviteAdminToSphere || Permissions.inviteMemberToSphere || Permissions.inviteGuestToSphere) {
       items.push({label:'ADD PEOPLE TO YOUR SPHERE', type:'explanation'});
       items.push({
         label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
@@ -230,7 +228,7 @@ export class SettingsSphere extends Component<any, any> {
     }
 
 
-    if (Util.data.getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
+    if (Permissions.deleteSphere) {
       items.push({type:'spacer'});
       items.push({
         label: 'Delete this Sphere',

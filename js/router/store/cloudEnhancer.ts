@@ -2,6 +2,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { Util } from '../../util/Util'
 import { BATCH } from './storeManager'
 import { LOG } from '../../logging/Log'
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -143,7 +144,7 @@ function handleStoneBehaviourInCloud(action, state) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
 
-  if (Util.data.getUserLevelInSphere(state, sphereId) === 'admin') {
+  if (Permissions.setBehaviourInCloud) {
     let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
     let data = {
@@ -239,7 +240,7 @@ function handleApplianceBehaviourInCloud(action, state) {
   let sphereId = action.sphereId;
   let applianceId = action.applianceId;
 
-  if (Util.data.getUserLevelInSphere(state, sphereId) === 'admin') {
+  if (Permissions.setBehaviourInCloud) {
     let applianceConfig = state.spheres[sphereId].appliances[applianceId].config;
     let behaviourJSON = JSON.stringify(state.spheres[sphereId].appliances[applianceId].behaviour);
     let data = {
