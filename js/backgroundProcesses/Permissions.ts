@@ -4,6 +4,7 @@ import {Util} from "../util/Util";
 class PermissionClass {
   _store : any;
   _initialized : boolean = false;
+  _enableUpdates : boolean = false;
 
   useKeepAliveState      = true; // g
   setStoneTime           = true; // a or m
@@ -38,14 +39,21 @@ class PermissionClass {
     if (this._initialized === false) {
       this._store = store;
 
-      this._update();
-
       // sometimes the first event since state change can be wrong, we use this to ignore it.
       eventBus.on("databaseChange", (data) => {
+        if (this._enableUpdates === false) {
+          return;
+        }
+
         let change = data.change;
         if  (change.setKeys || change.updateActiveSphere) {
           this._update();
         }
+      });
+
+      eventBus.on('userLoggedIn', () => {
+        this._enableUpdates = true;
+        this._update()
       });
     }
   }
@@ -54,6 +62,10 @@ class PermissionClass {
     let state = this._store.getState();
     let activeSphere = state.app.activeSphere;
     let level = Util.data.getUserLevelInSphere(state, activeSphere);
+
+    if (level === null) {
+      return;
+    }
 
     this._revokeAll();
 

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import { stoneTypes } from '../../router/store/reducers/stones'
+import { STONE_TYPES } from '../../router/store/reducers/stones'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import { BleUtil } from '../../util/BleUtil'
@@ -106,7 +106,7 @@ export class DeviceEdit extends Component<any, any> {
       }
     });
 
-    if (stone.config.type !== stoneTypes.guidestone) {
+    if (stone.config.type !== STONE_TYPES.guidestone) {
       items.push({label: 'PLUGGED IN DEVICE', type: 'explanation', below: false});
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {

@@ -16,6 +16,7 @@ import { Util } from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {LOG} from "../../logging/Log";
 import {Scheduler} from "../../logic/Scheduler";
+import {ErrorContent} from "../content/ErrorContent";
 const Actions = require('react-native-router-flux').Actions;
 
 let SEE_THROUGH_OPACITY = 0.33;
@@ -75,43 +76,8 @@ export class ErrorOverlay extends Component<any, any> {
       return;
     }
 
-    // there are 2 phases. First the user sees the Crownstone error [1], then he finds it, taps on it and resolves it [2].
-    if (!this.state.clearingEnabled) {
-      // PHASE 1
-      if (this.state.stonesContainingError[0].stone.errors.temperatureDimmer) {
-        return "Oh no! The Crownstone tried to dim your device for you, but there was so much power required that the Crownstone overheated! I had to switch it off to protect you and your devices.\n\nFind and tap on the Crownstone to resolve this error.";
-      }
-      else if (this.state.stonesContainingError[0].stone.errors.temperatureChip) {
-        return "Oh no! The Crownstone got way too warm! I had to switch it off to protect you and your devices.\n\nFind and tap on the Crownstone to resolve this error.";
-      }
-      else if (this.state.stonesContainingError[0].stone.errors.overCurrentDimmer) {
-        return "Just in time! I detected that the device that you tried to dim uses more current than is safe (100 W). I had to disable it.\n\nFind and tap on the Crownstone to resolve this error.";
-      }
-      else if (this.state.stonesContainingError[0].stone.errors.overCurrent) {
-        return "Just in time! I detected that the connected device uses more current than is safe (16 A). I had to disable it.\n\nFind and tap on the Crownstone to resolve this error.";
-      }
-      else {
-        return "This Crownstone needs to be restarted.\n\nFind and tap on the Crownstone to continue.";
-      }
-    }
-    else {
-      // PHASE 2
-      if (this.state.stonesContainingError[0].stone.errors.temperatureDimmer) {
-        return "This Crownstone became too warm because it used so much power during dimming!\n\nIf you reset the error, you will be able to try to dim again, but be sure that the power demand is not too much for the Crownstone (>100 watts).";
-      }
-      else if (this.state.stonesContainingError[0].stone.errors.temperatureChip) {
-        return "The Crownstone got way too warm! I had to switch it off to protect you and your devices.\n\nIf you reset the error, you will be able to use it again, but check if your devices do not use too much power.";
-      }
-      else if (this.state.stonesContainingError[0].stone.errors.overCurrentDimmer) {
-        return "I detected that the device that you tried to dim uses more current than is safe (100 W). I had to disable it.\n\nIf you reset the error, you will be able to use it again.";
-      }
-      else if (this.state.stonesContainingError[0].stone.errors.overCurrent) {
-        return "I detected that the connected device uses more current than is safe (16 A). I had to disable it.\n\nIf you reset the error, you will be able to use it again.";
-      }
-      else {
-        return "This Crownstone needs to be restarted. You can reset the state again to remove this notification.";
-      }
-    }
+    let phase = this.state.clearingEnabled ? 2 : 1;
+    return ErrorContent.getTextDescription(phase, this.state.stonesContainingError[0].stone.errors);
   }
 
 
@@ -185,7 +151,7 @@ export class ErrorOverlay extends Component<any, any> {
               .catch((err) => {
                 LOG.error("ErrorOverlay: Could not reset error of Crownstone", firstErrorToClear, err);
                 let defaultAction = () => { eventBus.emit("hideLoading"); };
-                Alert.alert("Failed to reset error :(","You can try again or ignore the error for now.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+                Alert.alert("Failed to reset error :(","You can move closer and try again or ignore the error for now.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
               });
 
               BatchCommandHandler.executePriority()

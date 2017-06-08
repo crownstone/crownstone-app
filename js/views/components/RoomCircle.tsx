@@ -305,6 +305,14 @@ export class RoomCircle extends Component<any, any> {
       return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;
     }
     else {
+      // // in case of logout the location can be gone while we are looking for the
+      // let state = this.props.store.getState();
+      // let sphere = state.spheres[this.props.sphereId];
+      // let icon = "ios-document";
+      // if (sphere && sphere.locations[this.props.locationId]) {
+      //   icon = sphere.locations[this.props.locationId].config.icon;
+      // }
+      // return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
       let icon = this.props.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
       return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
     }

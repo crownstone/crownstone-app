@@ -1,5 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Animated,
   ActivityIndicator,
   Alert,
   TouchableOpacity,
@@ -23,7 +24,7 @@ import {StoneUtil} from "../../../util/StoneUtil";
 export class DeviceSummary extends Component<any, any> {
   constructor() {
     super();
-    this.state = {pending: false}
+    this.state = {pendingCommand: false}
   }
 
   _getIcon(stone, element) {
@@ -52,9 +53,9 @@ export class DeviceSummary extends Component<any, any> {
       }} >
         <Circle size={size*1.05} color={colors.black.rgba(0.08)}>
           <Circle size={size} color={color}>
-            <Ring size={innerSize} color={color} borderWidth={3}>
+            <Circle size={innerSize} color={color} borderWidth={3} borderColor={colors.white.hex}>
               <Icon name={element.config.icon} size={0.575*innerSize} color={'#fff'} />
-            </Ring>
+            </Circle>
           </Circle>
         </Circle>
       </TouchableOpacity>
@@ -70,14 +71,15 @@ export class DeviceSummary extends Component<any, any> {
       color = colors.menuBackground.hex;
     }
     let size = 0.4*screenWidth;
-    let innerSize = size - 10;
-    if (this.state.pending === true) {
+    let innerSize = size - 8;
+    let borderWidth = 3;
+    if (this.state.pendingCommand === true) {
       return (
         <Circle size={size*1.05} color={colors.black.rgba(0.08)}>
           <Circle size={size} color={colors.white.hex}>
-            <Ring size={innerSize} color={colors.white.hex} borderWidth={6} borderColor={color}>
+            <Circle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={color}>
               <ActivityIndicator animating={true} size='large' color={colors.menuBackground.hex} />
-            </Ring>
+            </Circle>
           </Circle>
         </Circle>
       );
@@ -100,9 +102,9 @@ export class DeviceSummary extends Component<any, any> {
         }}>
           <Circle size={size*1.05} color={colors.black.rgba(0.08)}>
             <Circle size={size} color={colors.white.hex}>
-              <Ring size={innerSize} color={colors.white.hex} borderWidth={6} borderColor={color}>
-                <Text style={{color: color, fontSize:22, fontWeight:'500'}}>{label}</Text>
-              </Ring>
+              <Circle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={color}>
+                <Text style={{color: color, fontSize:23, fontWeight:'600'}}>{label}</Text>
+              </Circle>
             </Circle>
           </Circle>
         </TouchableOpacity>
@@ -111,13 +113,14 @@ export class DeviceSummary extends Component<any, any> {
   }
 
   render() {
+    console.log("REDRAW")
     const store = this.props.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
 
     return (
-      <View style={{flex:1}}>
+      <View style={{flex:1, paddingBottom:35}}>
         <DeviceInformation left={"Energy Consumption:"} leftValue={"1000 W"} right={"Located in:"} rightValue={"Living Room"} />
         <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
                            leftValue={stone.config.applianceId ? stone.config.name : 'None'}
@@ -129,7 +132,6 @@ export class DeviceSummary extends Component<any, any> {
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems:'center'}}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />
-        <View style={{height:30, width: screenWidth, backgroundColor:'transparent'}} />
       </View>
     )
   }
@@ -157,39 +159,57 @@ export class DeviceInformation extends Component<any, any> {
 
 
 export class Circle extends Component<any, any> {
+  color1 : string;
+  color2 : string;
+  currentColor : string;
+  value : number;
+
+  constructor(props) {
+    super();
+    this.color1 = props.color;
+    this.color2 = props.color;
+    this.currentColor = this.color1;
+    this.state = {colorPhase: new Animated.Value(0)};
+    this.value = 0;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.value === 0) {
+      if (nextProps.color !== this.color1) {
+        this.color2 = nextProps.color;
+      }
+    }
+    else {
+      if (nextProps.color !== this.color2) {
+        this.color1 = nextProps.color;
+      }
+    }
+    let newValue = this.value === 0 ? 1 : 0;
+    Animated.timing(this.state.colorPhase, {toValue: newValue, duration: 500}).start();
+    this.value = newValue;
+  }
+
   render() {
+    let backgroundColor = this.state.colorPhase.interpolate({
+      inputRange: [0,1],
+      outputRange: [this.color1,  this.color2]
+    });
+
     let size = this.props.size;
     return (
-      <View style={[{
+      <Animated.View style={[{
         width:size,
         height:size,
         borderRadius:0.5*size,
-        backgroundColor: this.props.color,
+        backgroundColor: backgroundColor,
+        borderWidth: this.props.borderWidth,
+        borderColor: this.props.borderColor
       }, styles.centered]}>
         {this.props.children}
-      </View>
+      </Animated.View>
     )
   }
 }
-
-export class Ring extends Component<any, any> {
-  render() {
-    let size = this.props.size;
-    return (
-      <View style={[{
-        width:size,
-        height:size,
-        borderRadius:0.5*size,
-        backgroundColor: this.props.color,
-        borderWidth: this.props.borderWidth || 6,
-        borderColor: this.props.borderColor || colors.white.hex
-      }, styles.centered]}>
-        {this.props.children}
-      </View>
-    )
-  }
-}
-
 
 let textColor = colors.white;
 

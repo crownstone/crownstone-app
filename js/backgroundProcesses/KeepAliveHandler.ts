@@ -5,7 +5,7 @@ import { KEEPALIVE_INTERVAL, KEEPALIVE_ATTEMPTS } from '../ExternalConfig';
 import { NativeBus }                              from '../native/libInterface/NativeBus';
 import { BatchCommandHandler }                    from '../logic/BatchCommandHandler';
 import { Util }                                   from '../util/Util'
-import { stoneTypes, TYPES }                      from '../router/store/reducers/stones'
+import { STONE_TYPES, TYPES }                      from '../router/store/reducers/stones'
 import { canUseIndoorLocalizationInSphere } from '../util/DataUtil'
 import {Permissions} from "./Permissions";
 
@@ -82,7 +82,7 @@ class KeepAliveHandlerClass {
 
         let keepAliveId = (Math.floor(Math.random()*1e6)).toString(36);
 
-        if (stone.config.type !== stoneTypes.guidestone) {
+        if (stone.config.type !== STONE_TYPES.guidestone) {
           let element = Util.data.getElement(sphere, stone);
           let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
           let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];

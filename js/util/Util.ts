@@ -7,6 +7,8 @@ import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/st
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
+import {Permissions} from "../backgroundProcesses/Permissions";
+import {ALWAYS_DFU_UPDATE} from "../ExternalConfig";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -242,8 +244,19 @@ export const Util = {
 
       // if version is NOT semver, is higher will be false so is lower is true.
       return !Util.versions.isHigherOrEqual(version, compareWithVersion);
-    }
+    },
 
+    canUpdate: function(stone, state) {
+      // only admins are allowed to update
+      if (Permissions.seeUpdateCrownstone) {
+        if (ALWAYS_DFU_UPDATE)
+          return true;
+
+        let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
+        return Util.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
+      }
+      return false;
+    }
 
   }
 };

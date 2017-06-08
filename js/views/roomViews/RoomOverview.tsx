@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
-import { stoneTypes }           from '../../router/store/reducers/stones'
+import { STONE_TYPES }           from '../../router/store/reducers/stones'
 import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }           from '../components/Background'
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'

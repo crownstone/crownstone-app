@@ -20,10 +20,13 @@ import {TopBar} from "../components/Topbar";
 import {DeviceBehaviour} from "./elements/DeviceBehaviour";
 import {DeviceSummary} from "./elements/DeviceSummary";
 import {Permissions} from "../../backgroundProcesses/Permissions";
+import {ALWAYS_DFU_UPDATE} from "../../ExternalConfig";
+import {STONE_TYPES} from "../../router/store/reducers/stones";
+import {DeviceError} from "./elements/DeviceError";
+import {DeviceUpdate} from "./elements/DeviceUpdate";
 
 
 export class DeviceOverview extends Component<any, any> {
-  deleting : boolean = false;
   unsubscribeStoreEvents : any;
   swiper: any = 0;
 
@@ -41,19 +44,21 @@ export class DeviceOverview extends Component<any, any> {
       if (
         (state.spheres[this.props.sphereId] === undefined) ||
         (change.removeStone && change.removeStone.stoneIds[this.props.stoneId])
-        ) {
+         ) {
         Actions.pop();
         return;
       }
 
+      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      let applianceId = stone.config.applianceId;
       if (
-        change.updateStoneConfig &&
-        change.updateStoneConfig.stoneIds[this.props.stoneId] ||
-        change.updateApplianceConfig
+        change.powerUsageUpdated && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
+        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+        change.updateStoneBehaviour && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
+        applianceId && change.updateApplianceConfig && change.updateApplianceConfig.applianceIds[applianceId] ||
+        applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
         ) {
-        if (this.deleting === false) {
           this.forceUpdate();
-        }
       }
     });
   }
@@ -70,9 +75,15 @@ export class DeviceOverview extends Component<any, any> {
     let hasAppliance = stone.config.applianceId !== null;
     let index = this.swiper && this.swiper.state.index || 0;
 
-
     let summaryIndex = 0;
     let behaviourIndex = 1;
+
+    let hasError = stone.errors.hasError || stone.errors.advertisementError;
+    let canUpdate = Util.versions.canUpdate(stone, state);
+    let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
+
+    if (hasError)  { summaryIndex++; behaviourIndex++; }
+    if (canUpdate) { summaryIndex++; behaviourIndex++; }
 
     return (
       <Background image={this.props.backgrounds.stoneDetailsBackground} hideTopBar={true}>
@@ -102,11 +113,28 @@ export class DeviceOverview extends Component<any, any> {
           ref={(swiper) => { this.swiper = swiper; }}
           onMomentumScrollEnd={() => {  this.forceUpdate(); /* this updates the index */ }}
         >
-          <DeviceSummary  store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
-          <DeviceBehaviour store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
+          { this._getContent(hasError, canUpdate, hasBehaviour) }
+
+
         </Swiper>
       </Background>
     )
+  }
+
+  _getContent(hasError, canUpdate, hasBehaviour) {
+    let content = [];
+    if (hasError) {
+      content.push(<DeviceError key={'errorSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+    }
+    if (canUpdate) {
+      content.push(<DeviceUpdate key={'updateSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
+    }
+    content.push(<DeviceSummary key={'summarySlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+
+    if (hasBehaviour) {
+      content.push(<DeviceBehaviour key={'behaviourSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+    }
+    return content;
   }
 }
 

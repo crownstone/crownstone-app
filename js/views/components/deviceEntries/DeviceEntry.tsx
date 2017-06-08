@@ -18,7 +18,7 @@ import { Util } from '../../../util/Util'
 import { styles, colors, screenWidth } from '../../styles'
 import {AlternatingContent} from '../animated/AlternatingContent';
 import {ALWAYS_DFU_UPDATE} from '../../../ExternalConfig';
-import {stoneTypes} from '../../../router/store/reducers/stones';
+import {STONE_TYPES} from '../../../router/store/reducers/stones';
 import {BatchCommandHandler} from '../../../logic/BatchCommandHandler';
 import {INTENTS} from '../../../native/libInterface/Constants';
 import {Actions} from 'react-native-router-flux';
@@ -159,15 +159,6 @@ export class DeviceEntry extends Component<any, any> {
     );
   }
 
-  _canUpdate(stone,state) {
-    // only admins are allowed to update
-    if (Permissions.seeUpdateCrownstone) {
-      let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
-      return Util.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
-    }
-    return false;
-  }
-
   _iconPressed(stone, state) {
     LOG.warn(stone.errors);
     if (stone.errors.advertisementError === true && stone.errors.hasError === false && stone.errors.obtainedErrors === false) {
@@ -183,7 +174,7 @@ export class DeviceEntry extends Component<any, any> {
       return;
     }
 
-    if ((this._canUpdate(stone, state) === true || ALWAYS_DFU_UPDATE) && stone.config.disabled === false) {
+    if ((Util.versions.canUpdate(stone, state) === true) && stone.config.disabled === false) {
       this.props.eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
     }
     else {
@@ -228,7 +219,7 @@ export class DeviceEntry extends Component<any, any> {
       </View>
       );
     }
-    else if ((this._canUpdate(stone, state) === true || ALWAYS_DFU_UPDATE) && stone.config.disabled === false) {
+    else if ((Util.versions.canUpdate(stone, state) === true) && stone.config.disabled === false) {
       return (
         <View style={[{
           width:60,
@@ -263,7 +254,7 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
-  _getOptions(showBehaviour : boolean = true) {
+  _getOptions() {
     let textStyle = {fontSize:14, padding:5, color: colors.darkGray2.hex, paddingBottom:7};
     let buttonStyle = {flex: 1, paddingLeft:12, paddingRight:12, height: 35, alignItems: 'center', justifyContent:'center', flexDirection:'row'};
 
@@ -300,7 +291,7 @@ export class DeviceEntry extends Component<any, any> {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;
-    let useControl = stone.config.type !== stoneTypes.guidestone;
+    let useControl = stone.config.type !== STONE_TYPES.guidestone;
     let backgroundColor = this.state.backgroundColor.interpolate({
       inputRange: [0,10],
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
@@ -333,7 +324,7 @@ export class DeviceEntry extends Component<any, any> {
             <View style={{position:'absolute', top: this.baseHeight-8, left: 0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray2.hex}} />
           }
         </View>
-        {this._getOptions(useControl)}
+        {this._getOptions()}
       </Animated.View>
     );
   }

@@ -70,11 +70,21 @@ export class DeviceBehaviourEdit extends Component<any, any> {
 
       let state = this.props.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      let applianceId = stone.config.applianceId;
 
       if  (
         (stone && stone.config.applianceId && change.updateApplianceConfig && change.updateApplianceConfig.stoneIds[this.props.applianceId]) ||
         (change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId])
           ) {
+        this.forceUpdate();
+      }
+
+      if (
+        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+        change.updateStoneBehaviour && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
+        applianceId && change.updateApplianceConfig && change.updateApplianceConfig.applianceIds[applianceId] ||
+        applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
+      ) {
         this.forceUpdate();
       }
     });

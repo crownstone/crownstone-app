@@ -12,7 +12,7 @@ export let TYPES = {
   ROOM_EXIT: 'onRoomExit',
 };
 
-export let stoneTypes = {
+export let STONE_TYPES = {
   plug: "PLUG",
   builtin: "BUILTIN",
   guidestone: "GUIDESTONE"
@@ -39,7 +39,7 @@ let defaultSettings = {
     rssi: -1000,
     onlyOnWhenDark: false,
     touchToToggle: true,
-    type: stoneTypes.plug,
+    type: STONE_TYPES.plug,
     lastSeen: 1,
     updatedAt: 1,
     lastUpdatedStoneTime: 1,

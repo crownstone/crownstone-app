@@ -4,7 +4,7 @@ import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper } from '../libInterface/BluenetPromise';
 import { NativeBus }             from '../libInterface/NativeBus';
 import { LOG }                   from '../../logging/Log'
-import { stoneTypes }            from '../../router/store/reducers/stones'
+import { STONE_TYPES }            from '../../router/store/reducers/stones'
 import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
 import { CLOUD }                 from '../../cloud/cloudAPI'
@@ -101,8 +101,8 @@ export class SetupHelper {
             Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300, 'setup19');
             Scheduler.scheduleCallback(() => {
               let actions = [];
-              let isPlug = this.type === stoneTypes.plug;
-              let isGuidestone = this.type === stoneTypes.guidestone;
+              let isPlug = this.type === STONE_TYPES.plug;
+              let isGuidestone = this.type === STONE_TYPES.guidestone;
               let state = store.getState();
               let showRestoreAlert = false;
               let addStoneAction = {
@@ -169,7 +169,7 @@ export class SetupHelper {
               }
 
               // start the tap-to-toggle tutorial, only if there is no other popup shown
-              if (this.type === stoneTypes.plug && silent === false && popupShown === false) { // find the ID
+              if (this.type === STONE_TYPES.plug && silent === false && popupShown === false) { // find the ID
                 if (Util.data.getTapToToggleCalibration(state) === null) {
                   Scheduler.scheduleCallback(() => {
                     if (SetupStateHandler.isSetupInProgress() === false) {

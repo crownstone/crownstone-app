@@ -19,8 +19,8 @@ export const StoneUtil = {
       .then(() => {
         store.dispatch({
           type: 'UPDATE_STONE_SWITCH_STATE',
-          sphereId: this.props.sphereId,
-          stoneId: this.props.stoneId,
+          sphereId: sphereId,
+          stoneId: stoneId,
           data: data
         });
         finalize(null);

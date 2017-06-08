@@ -531,7 +531,7 @@ class BatchCommandHandlerClass {
               reject(err);
             })
         })
-    })
+    });
   }
 
   /**

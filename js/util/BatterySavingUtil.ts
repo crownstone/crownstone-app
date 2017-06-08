@@ -112,9 +112,9 @@ class BatterySavingClass {
     }
 
     if (appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown))) {
-      // BluenetPromiseWrapper.isReady().then(() => {
-      //   Bluenet.stopScanning();
-      // });
+      BluenetPromiseWrapper.isReady().then(() => {
+        Bluenet.stopScanning();
+      });
     }
     else if (!allHandlesKnown && appNotInForeground === true) {
       // user is continuing scanning to get all handles. Stop when we know them.

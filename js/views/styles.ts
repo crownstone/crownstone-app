@@ -18,6 +18,7 @@ export let barHeight = 42;
 export let barHeightLarge = 80;
 
 export let colors : any = {
+  darkBackground: {hex:'#4f6b84'},
   csBlue: {hex:'#003E52'},
   csOrange: {hex:'#ff8400'},
   menuBackground: {hex:'#00263e'},
