@@ -84,7 +84,6 @@ class PushNotificationHandlerClass {
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
-        console.log('NotificationHandler: NOTIFICATION:', notification );
         NotificationParser.handle(notification.data)
       },
 

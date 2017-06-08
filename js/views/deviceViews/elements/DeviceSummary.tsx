@@ -19,6 +19,7 @@ import { LOG } from '../../../logging/Log'
 import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
+import {AnimatedCircle} from "../../components/animated/AnimatedCircle";
 
 
 export class DeviceSummary extends Component<any, any> {
@@ -51,13 +52,13 @@ export class DeviceSummary extends Component<any, any> {
           });
         }});
       }} >
-        <Circle size={size*1.05} color={colors.black.rgba(0.08)}>
-          <Circle size={size} color={color}>
-            <Circle size={innerSize} color={color} borderWidth={3} borderColor={colors.white.hex}>
+        <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
+          <AnimatedCircle size={size} color={color}>
+            <AnimatedCircle size={innerSize} color={color} borderWidth={3} borderColor={colors.white.hex}>
               <Icon name={element.config.icon} size={0.575*innerSize} color={'#fff'} />
-            </Circle>
-          </Circle>
-        </Circle>
+            </AnimatedCircle>
+          </AnimatedCircle>
+        </AnimatedCircle>
       </TouchableOpacity>
     );
   }
@@ -75,13 +76,13 @@ export class DeviceSummary extends Component<any, any> {
     let borderWidth = 3;
     if (this.state.pendingCommand === true) {
       return (
-        <Circle size={size*1.05} color={colors.black.rgba(0.08)}>
-          <Circle size={size} color={colors.white.hex}>
-            <Circle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={color}>
+        <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
+          <AnimatedCircle size={size} color={colors.white.hex}>
+            <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={color}>
               <ActivityIndicator animating={true} size='large' color={colors.menuBackground.hex} />
-            </Circle>
-          </Circle>
-        </Circle>
+            </AnimatedCircle>
+          </AnimatedCircle>
+        </AnimatedCircle>
       );
     }
     else {
@@ -100,20 +101,19 @@ export class DeviceSummary extends Component<any, any> {
           );
 
         }}>
-          <Circle size={size*1.05} color={colors.black.rgba(0.08)}>
-            <Circle size={size} color={colors.white.hex}>
-              <Circle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={color}>
+          <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
+            <AnimatedCircle size={size} color={colors.white.hex}>
+              <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={color}>
                 <Text style={{color: color, fontSize:23, fontWeight:'600'}}>{label}</Text>
-              </Circle>
-            </Circle>
-          </Circle>
+              </AnimatedCircle>
+            </AnimatedCircle>
+          </AnimatedCircle>
         </TouchableOpacity>
       );
     }
   }
 
   render() {
-    console.log("REDRAW")
     const store = this.props.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
@@ -158,62 +158,7 @@ export class DeviceInformation extends Component<any, any> {
 }
 
 
-export class Circle extends Component<any, any> {
-  color1 : string;
-  color2 : string;
-  currentColor : string;
-  value : number;
-
-  constructor(props) {
-    super();
-    this.color1 = props.color;
-    this.color2 = props.color;
-    this.currentColor = this.color1;
-    this.state = {colorPhase: new Animated.Value(0)};
-    this.value = 0;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.value === 0) {
-      if (nextProps.color !== this.color1) {
-        this.color2 = nextProps.color;
-      }
-    }
-    else {
-      if (nextProps.color !== this.color2) {
-        this.color1 = nextProps.color;
-      }
-    }
-    let newValue = this.value === 0 ? 1 : 0;
-    Animated.timing(this.state.colorPhase, {toValue: newValue, duration: 500}).start();
-    this.value = newValue;
-  }
-
-  render() {
-    let backgroundColor = this.state.colorPhase.interpolate({
-      inputRange: [0,1],
-      outputRange: [this.color1,  this.color2]
-    });
-
-    let size = this.props.size;
-    return (
-      <Animated.View style={[{
-        width:size,
-        height:size,
-        borderRadius:0.5*size,
-        backgroundColor: backgroundColor,
-        borderWidth: this.props.borderWidth,
-        borderColor: this.props.borderColor
-      }, styles.centered]}>
-        {this.props.children}
-      </Animated.View>
-    )
-  }
-}
-
 let textColor = colors.white;
-
-
 let deviceStyles = StyleSheet.create({
   text: {
     color: textColor.hex,

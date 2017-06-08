@@ -22,6 +22,7 @@ import { Svg, Circle } from 'react-native-svg';
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {stones} from "../../cloud/sections/stones";
+import {AnimatedCircle} from "./animated/AnimatedCircle";
 
 export class RoomCircle extends Component<any, any> {
   initializedPosition : any;
@@ -40,7 +41,6 @@ export class RoomCircle extends Component<any, any> {
   previousCircle : any;
   wiggleInterval : any;
   wiggleTimeout : any;
-  fadeAnimationTimeout : any;
   moveAnimationTimeout : any;
   color : any;
 
@@ -114,7 +114,6 @@ export class RoomCircle extends Component<any, any> {
     this.previousCircle = undefined;
     this.wiggleInterval = undefined;
     this.wiggleTimeout = undefined;
-    this.fadeAnimationTimeout = undefined;
     this.moveAnimationTimeout = undefined;
 
     this.movementDuration = 400;
@@ -193,7 +192,6 @@ export class RoomCircle extends Component<any, any> {
 
   componentWillUnmount() {
     clearTimeout(this.wiggleInterval);
-    clearTimeout(this.fadeAnimationTimeout);
     clearTimeout(this.moveAnimationTimeout);
     clearTimeout(this.wiggleTimeout);
     this.unsubscribeSetupEvents.forEach((unsubscribe) => {
@@ -273,20 +271,6 @@ export class RoomCircle extends Component<any, any> {
     return this.energyLevels[level].color;
   }
 
-  _animateFadeOnColorChange() {
-    let duration = this.animatedMoving === true ? this.movementDuration : this.fadeDuration;
-
-    if (this.animationStarted === false) {
-      this.animationStarted = true;
-      Animated.timing(this.state.colorFadeOpacity, {toValue: 1, duration: duration}).start();
-      this.fadeAnimationTimeout = setTimeout(() => {
-        this.animationStarted = false;
-        this.animating = false;
-        this.setState({colorFadeOpacity: new Animated.Value(0)});
-      }, duration)
-    }
-  }
-
   getIcon() {
     if (this._areDfuStonesInLocation() === true) {
       return <Icon name="ios-settings" size={this.iconSize*1.3} color='#ffffff'/>;
@@ -305,14 +289,6 @@ export class RoomCircle extends Component<any, any> {
       return <Icon name="c2-pluginFilled" size={this.iconSize} color='#ffffff'/>;
     }
     else {
-      // // in case of logout the location can be gone while we are looking for the
-      // let state = this.props.store.getState();
-      // let sphere = state.spheres[this.props.sphereId];
-      // let icon = "ios-document";
-      // if (sphere && sphere.locations[this.props.locationId]) {
-      //   icon = sphere.locations[this.props.locationId].config.icon;
-      // }
-      // return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
       let icon = this.props.store.getState().spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
       return <Icon name={icon} size={this.iconSize} color='#ffffff' />;
     }
@@ -321,15 +297,8 @@ export class RoomCircle extends Component<any, any> {
 
   getCircle() {
     let newColor = this._getColor(this.usage);
-    if (newColor !== this.color && this.previousCircle !== undefined) {
-      this.animating = true;
-      this.fadeAnimationTimeout = setTimeout(() => {
-        this.color = newColor;
-        this.previousCircle = circle;
-        this._animateFadeOnColorChange();
-      },10);
-    }
-    let circle = (
+    let innerOffset = 0.5*(this.outerDiameter - this.innerDiameter);
+    return (
       <View>
         <View style={{
           borderRadius: this.outerDiameter,
@@ -340,45 +309,25 @@ export class RoomCircle extends Component<any, any> {
           margin:0
         }}>
           {this._getUsageCircle(this.usage, newColor)}
-          <View style={{
-            position:'relative',
-            top:-this.outerDiameter + 2.25*this.borderWidth,
-            left: 2.25*this.borderWidth,
-            borderRadius:this.innerDiameter,
-            width: this.innerDiameter,
-            height: this.innerDiameter,
-            backgroundColor: newColor,
-            padding:0,
-            margin:0,
-            justifyContent:'center',
-            alignItems:'center'
-          }}><View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
+          <AnimatedCircle
+            key={this.props.locationId + "_circle"}
+            size={this.innerDiameter}
+            color={newColor}
+            style={{
+              position:'relative',
+              top: innerOffset,
+              left: innerOffset,
+              padding:0,
+              margin:0,
+            }}>
+            <View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
             {this.getIcon()}
             </View>
             {this.props.viewingRemotely ? undefined : <Text style={{color:'#ffffff', fontWeight:'bold',fontSize:this.textSize}}>{this.usage + " W"}</Text>}
-          </View>
+          </AnimatedCircle>
         </View>
       </View>
     );
-
-    if (this.animating === true) {
-      return (
-        <View>
-          <View style={{position:'absolute', top:0, left:0}}>
-            {this.previousCircle}
-          </View>
-          <Animated.View style={{position:'absolute', top:0, left:0, opacity: this.state.colorFadeOpacity}}>
-            {circle}
-          </Animated.View>
-        </View>
-      )
-    }
-    else {
-      this.color = newColor;
-      this.previousCircle = circle;
-      return circle;
-    }
-
   }
 
 
@@ -390,6 +339,8 @@ export class RoomCircle extends Component<any, any> {
         <Svg style={{
           width: this.outerDiameter,
           height: this.outerDiameter,
+          position:'absolute',
+          top:0,left:0
         }}>
           <Circle
             r={this.props.radius - this.borderWidth}
@@ -415,6 +366,8 @@ export class RoomCircle extends Component<any, any> {
       <Svg style={{
         width: this.outerDiameter,
         height: this.outerDiameter,
+        position:'absolute',
+        top:0,left:0
       }}>
         <Circle
           r={this.props.radius - this.borderWidth}
