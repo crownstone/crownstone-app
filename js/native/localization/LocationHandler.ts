@@ -94,7 +94,10 @@ class LocationHandlerClass {
 
 
     LOG.info("Set Settings.", bluenetSettings);
-    BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {});
+    BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
+      LOG.error("LocationHandler: Could not set Settings!", err);
+      Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
+    });
 
 
     // make sure we only do the following once per sphere
@@ -103,7 +106,7 @@ class LocationHandlerClass {
       return;
     }
 
-    // update location of the sphere, start the keepalives and check if we have to perform an enter sphere behaviour trigger.
+    // update location of the sphere, start the keepAlive and check if we have to perform an enter sphere behaviour trigger.
     if (sphere !== undefined) {
       LOG.info("LocationHandler: ENTER SPHERE", sphereId);
 

@@ -23,27 +23,23 @@ export class RoomLayer extends Component<any, any> {
   _panResponder: any = {};
   _multiTouch = false;
   _initialDistance : number;
-  _scale : number;
+  _currentScale : number;
+  _panOffset : any = {x:0, y:0};
+  _minScale : number = 0.3;
+  _maxScale : number = 1.4;
 
-  constructor(props) {
+  constructor() {
     super();
 
     let initialScale = 1;
-    console.log("initialScale",initialScale)
+    this._currentScale = initialScale;
     this.state = {
       presentUsers: {},
       scale: new Animated.Value(initialScale),
       pan: new Animated.ValueXY()
     };
-
-    const store = props.store;
-    const state = store.getState();
-    let rooms = state.spheres[props.sphereId].locations;
-    let roomIdArray = Object.keys(rooms).sort();
-
-    let amountOfRooms = roomIdArray.length;
-
   }
+
 
   componentWillMount() {
     // configure the pan responder
@@ -59,7 +55,7 @@ export class RoomLayer extends Component<any, any> {
         // what is happening!
 
         // gestureState.d{x,y} will be set to zero now
-        console.log("1", gestureState)
+        console.log("Tap!", gestureState)
       },
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
@@ -68,9 +64,7 @@ export class RoomLayer extends Component<any, any> {
         // gestureState.d{x,y}
         if (gestureState.numberActiveTouches === 1 && this._multiTouch === false) {
           this._multiTouch = false;
-          return Animated.event([
-            null, { dx: this.state.pan.x, dy: this.state.pan.y }
-          ])(evt, gestureState);
+          return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
         }
         else {
           let distance = getDistance(evt.nativeEvent.touches);
@@ -79,9 +73,10 @@ export class RoomLayer extends Component<any, any> {
             this._multiTouch = true;
           }
           else {
-            this._scale = Math.max(0.3,this._scale * (distance/this._initialDistance));
+            this._currentScale = this._currentScale * (distance/this._initialDistance);
             this._initialDistance = distance;
-            this.state.scale.setValue(this._scale);
+            this.state.scale.setValue(this._currentScale);
+            return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
           }
         }
       },
@@ -90,12 +85,22 @@ export class RoomLayer extends Component<any, any> {
         this._multiTouch = false;
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
-        console.log("END")
+        console.log("END", gestureState.dx, gestureState.dy);
+        this._panOffset.x += gestureState.dx;
+        this._panOffset.y += gestureState.dy;
+        this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
+        this.state.pan.setValue({ x: 0, y: 0 });
+
+        if (this._currentScale > this._maxScale) {
+          Animated.spring(this.state.scale, { toValue: this._maxScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._maxScale; });
+        }
+        else if (this._currentScale < this._minScale) {
+          Animated.spring(this.state.scale, { toValue: this._minScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._minScale; });
+        }
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
         // should be cancelled
-        console.log("TERMINIATE")
       },
       onShouldBlockNativeResponder: (evt, gestureState) => {
         // Returns whether this component should block native components from becoming the JS
@@ -103,6 +108,18 @@ export class RoomLayer extends Component<any, any> {
         return true;
       },
     });
+
+  }
+
+  loadInSolver() {
+    const store = this.props.store;
+    const state = store.getState();
+    let rooms = state.spheres[this.props.sphereId].locations;
+
+    let nodes = [];
+    let edges = [];
+
+
   }
 
   componentDidMount() {}
@@ -168,7 +185,7 @@ export class RoomLayer extends Component<any, any> {
         <View style={{height: availableScreenHeight}}>
           {roomNodes}
         </View>
-      )
+      );
     }
     else {
       for (let i = 0; i < roomIdArray.length; i++) {
@@ -189,17 +206,17 @@ export class RoomLayer extends Component<any, any> {
     }
     else {
       const layout = this.state.pan.getLayout();
-      console.log('layout',layout);
+      let scale = this.state.scale;
       const animatedStyle = {
         transform: [
           { translateX: layout.left },
           { translateY: layout.top },
-          // { scale: this.state.scale },
+          { scale: scale },
         ]
       };
 
       return (
-        <View {...this._panResponder.panHandlers} style={{position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight}}>
+        <View {...this._panResponder.panHandlers} style={{position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight, overflow:"hidden"}}>
           <Animated.View style={animatedStyle}>
             {this.getRooms()}
           </Animated.View>
@@ -214,7 +231,7 @@ function getDistance(touches) {
   let firstTouch = touches[0];
   let secondTouch = touches[1];
 
-  let dx = firstTouch.locationX - secondTouch.locationX;
-  let dy = firstTouch.locationY - secondTouch.locationY;
-  return Math.max(30,Math.sqrt(dx*dx + dy*dy));
+  let dx = firstTouch.pageX - secondTouch.pageX;
+  let dy = firstTouch.pageY - secondTouch.pageY;
+  return Math.max(10,Math.sqrt(dx*dx + dy*dy));
 }

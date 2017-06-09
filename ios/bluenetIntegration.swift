@@ -317,8 +317,8 @@ open class BluenetJS: NSObject {
     let guestKey  = settings["guestKey"]  as? String
     let referenceId = settings["referenceId"]  as? String
     
-    if (adminKey == nil || memberKey == nil || guestKey == nil || referenceId == nil) {
-      callback([["error" : true, "data": "Missing one of the Keys required for Bluenet Settings."]])
+    if ((adminKey == nil && memberKey == nil && guestKey == nil) || referenceId == nil) {
+      callback([["error" : true, "data": "Missing the Keys required for Bluenet Settings."]])
       return
     }
     

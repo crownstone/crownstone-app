@@ -148,7 +148,7 @@ class NotificationParserClass {
               messageData.sphereId,
               {commandName:'multiSwitch', state: Math.min(1,Math.max(0,messageData.switchState || 0)), intent: INTENTS.remotely, timeout: 0},
               25
-            );
+            ).catch((err) => {LOG.error("NotificationParser: Could not switch on device", err)});
             BatchCommandHandler.executePriority();
             break;
         }
