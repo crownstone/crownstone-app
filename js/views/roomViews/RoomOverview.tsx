@@ -61,7 +61,7 @@ export class RoomOverview extends Component<any, any> {
 
   componentWillMount() {
     if (SetupStateHandler.areSetupStonesAvailable()) {
-      this.state.scrollViewHeight = new Animated.Value(screenHeight-tabBarHeight-topBarHeight-160)
+      this.state.scrollViewHeight.setValue(screenHeight-tabBarHeight-topBarHeight-160);
     }
   }
 

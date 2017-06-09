@@ -38,7 +38,7 @@ export class SphereOverview extends Component<any, any> {
 
   constructor() {
     super();
-    this.state = { presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0) };
+    this.state = { presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0), pan: new Animated.ValueXY(), scale: new Animated.Value(1) };
     this.leftValue = 0;
     this.animating = false;
 
@@ -105,7 +105,7 @@ export class SphereOverview extends Component<any, any> {
 
     // set the view position to match the active sphere.
     if (this.leftValue !== -screenWidth*this._activeSphereIndex) {
-      this.setState({left: new Animated.Value(-screenWidth * this._activeSphereIndex)});
+      this.state.left.setValue(-screenWidth * this._activeSphereIndex);
       this.leftValue = -screenWidth * this._activeSphereIndex;
     }
   }

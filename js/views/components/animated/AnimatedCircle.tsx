@@ -19,14 +19,12 @@ import {styles} from '../../styles'
 export class AnimatedCircle extends Component<any, any> {
   color1 : string;
   color2 : string;
-  currentColor : string;
   value : number;
 
   constructor(props) {
     super();
     this.color1 = props.color;
     this.color2 = props.color;
-    this.currentColor = this.color1;
     this.state = {colorPhase: new Animated.Value(0)};
     this.value = 0;
   }
