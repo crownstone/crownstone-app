@@ -5,7 +5,6 @@ import {
   Dimensions,
   Image,
   Platform,
-  PanResponder,
   StyleSheet,
   TouchableHighlight,
   Text,
@@ -44,7 +43,6 @@ export class SphereOverview extends Component<any, any> {
 
     this.sphereIds = [];
     this._activeSphereIndex = 0;
-    this._panResponder = {};
   }
 
   componentDidMount() {
@@ -112,65 +110,7 @@ export class SphereOverview extends Component<any, any> {
 
   componentWillMount() {
     this._setActiveSphere();
-
-    // configure the pan responder
-    this._panResponder = PanResponder.create({
-      onPanResponderTerminate:              (evt, gestureState) => {},
-      onShouldBlockNativeResponder:         (evt, gestureState) => false,
-      onStartShouldSetPanResponder:         (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture:  (evt, gestureState) => false,
-      onMoveShouldSetPanResponder:          (evt, gestureState) => false,
-      onMoveShouldSetPanResponderCapture:   (evt, gestureState) => false,
-      onPanResponderTerminationRequest:     (evt, gestureState) => true,
-      onPanResponderGrant:                  (evt, gestureState) => {},
-      onPanResponderMove:                   (evt, gestureState) => {
-        if (this.sphereIds.length > 0) {
-          this.leftValue = -screenWidth * this._activeSphereIndex + gestureState.dx;
-          Animated.timing(this.state.left, {
-            toValue: this.leftValue,
-            duration: 0
-          }).start();
-      }},
-      onPanResponderRelease:                (evt, gestureState) => { this._snapToSphere(gestureState.dx); },
-    });
   }
-
-  /**
-   * this piece of code makes sure the movement is finalized neatly.
-   * @param dx
-   * @private
-   */
-  _snapToSphere(dx) {
-    let initialIndex = this._activeSphereIndex;
-    if (Math.abs(dx) > 0.25*screenWidth) {
-      if (dx > 0) {
-        if (this._activeSphereIndex != 0) {
-          this._activeSphereIndex -= 1;
-        }
-      }
-      else {
-        if (this._activeSphereIndex != this.sphereIds.length-1) {
-          this._activeSphereIndex += 1;
-        }
-      }
-    }
-
-    // move view
-    this.leftValue = -screenWidth*this._activeSphereIndex;
-    Animated.timing(this.state.left, {toValue: this.leftValue, duration: 200}).start();
-
-    // only change the database if we change the active sphere
-    if (initialIndex != this._activeSphereIndex) {
-      this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: this.sphereIds[this._activeSphereIndex]}});
-    }
-  }
-
-
-  // experiment
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   // LOG.info("Should component update?",nextProps, nextState)
-  //   return false
-  // }
 
 
   render() {
@@ -228,7 +168,7 @@ export class SphereOverview extends Component<any, any> {
       let showFinalizeIndoorNavigationCallback = () => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms);};
 
       return (
-        <View {...this._panResponder.panHandlers}>
+        <View>
           <AnimatedBackground hideTopBar={true} image={background}>
             <TopBar
               title={state.spheres[activeSphere].config.name + '\'s Sphere'}

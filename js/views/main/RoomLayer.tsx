@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   NativeModules,
+  PanResponder,
   ScrollView,
   TouchableHighlight,
   Text,
@@ -14,58 +15,94 @@ let Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
 import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/DataUtil'
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
+import {styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../styles'
 import { LOG }               from '../../logging/Log'
 
 
 export class RoomLayer extends Component<any, any> {
-  roomRadius : number;
-  availableSpace : number;
-  roomPositions : any;
-  maxY : number;
+  _panResponder: any = {};
+  _multiTouch = false;
+  _initialDistance : number;
+  _scale : number;
 
-  constructor() {
+  constructor(props) {
     super();
-    this.state = {presentUsers: {}};
 
-    this.roomRadius = 0.35 * 0.5 * screenWidth;
-    this.availableSpace = (screenHeight - topBarHeight - tabBarHeight - 50) - 2 * this.roomRadius; // for top bar, menu bar and text + orbs
-
-    this.roomPositions = {
-      1: [
-        {x: 0.5 * screenWidth - this.roomRadius, y: 0.5 * this.availableSpace},
-      ],
-      2: [
-        {x: 0.15 * screenWidth, y: 0.20 * this.availableSpace},
-        {x: 0.50 * screenWidth, y: 0.80 * this.availableSpace}
-      ],
-      3: [
-        {x: 0.12 * screenWidth, y: 0.12 * this.availableSpace},
-        {x: 0.55 * screenWidth, y: 0.48 * this.availableSpace},
-        {x: 0.08 * screenWidth, y: 0.88 * this.availableSpace},
-      ],
-      4: [
-        {x: 0.10 * screenWidth, y: 0.12 * this.availableSpace},
-        {x: 0.55 * screenWidth, y: 0.25 * this.availableSpace},
-        {x: 0.08 * screenWidth, y: 0.90 * this.availableSpace},
-        {x: 0.60 * screenWidth, y: 0.75 * this.availableSpace}
-      ],
-      5: [
-        {x: 0.12 * screenWidth, y: 0.08 * this.availableSpace},
-        {x: 0.06 * screenWidth, y: 0.50 * this.availableSpace},
-        {x: 0.55 * screenWidth, y: 0.25 * this.availableSpace},
-        {x: 0.14 * screenWidth, y: 0.94 * this.availableSpace},
-        {x: 0.60 * screenWidth, y: 0.75 * this.availableSpace}
-      ],
-      6: [
-        {x: 0.08 * screenWidth, y: 0.06 * this.availableSpace},
-        {x: 0.08 * screenWidth, y: 0.16 * this.availableSpace + 2.0 * this.roomRadius},
-        {x: 0.08 * screenWidth, y: 0.26 * this.availableSpace + 4.0 * this.roomRadius},
-        {x: 0.57 * screenWidth, y: 0.14 * this.availableSpace},
-        {x: 0.57 * screenWidth, y: 0.24 * this.availableSpace + 2.0 * this.roomRadius},
-        {x: 0.57 * screenWidth, y: 0.34 * this.availableSpace + 4.0 * this.roomRadius}
-      ],
+    let initialScale = 1;
+    console.log("initialScale",initialScale)
+    this.state = {
+      presentUsers: {},
+      scale: new Animated.Value(initialScale),
+      pan: new Animated.ValueXY()
     };
+
+    const store = props.store;
+    const state = store.getState();
+    let rooms = state.spheres[props.sphereId].locations;
+    let roomIdArray = Object.keys(rooms).sort();
+
+    let amountOfRooms = roomIdArray.length;
+
+  }
+
+  componentWillMount() {
+    // configure the pan responder
+    this._panResponder = PanResponder.create({
+      // Ask to be the responder:
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        // The gesture has started. Show visual feedback so the user knows
+        // what is happening!
+
+        // gestureState.d{x,y} will be set to zero now
+        console.log("1", gestureState)
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        // The most recent move distance is gestureState.move{X,Y}
+
+        // The accumulated gesture distance since becoming responder is
+        // gestureState.d{x,y}
+        if (gestureState.numberActiveTouches === 1 && this._multiTouch === false) {
+          this._multiTouch = false;
+          return Animated.event([
+            null, { dx: this.state.pan.x, dy: this.state.pan.y }
+          ])(evt, gestureState);
+        }
+        else {
+          let distance = getDistance(evt.nativeEvent.touches);
+          if (this._multiTouch === false) {
+            this._initialDistance = distance;
+            this._multiTouch = true;
+          }
+          else {
+            this._scale = Math.max(0.3,this._scale * (distance/this._initialDistance));
+            this._initialDistance = distance;
+            this.state.scale.setValue(this._scale);
+          }
+        }
+      },
+
+      onPanResponderRelease: (evt, gestureState) => {
+        this._multiTouch = false;
+        // The user has released all touches while this view is the
+        // responder. This typically means a gesture has succeeded
+        console.log("END")
+      },
+      onPanResponderTerminate: (evt, gestureState) => {
+        // Another component has become the responder, so this gesture
+        // should be cancelled
+        console.log("TERMINIATE")
+      },
+      onShouldBlockNativeResponder: (evt, gestureState) => {
+        // Returns whether this component should block native components from becoming the JS
+        // responder. Returns true by default. Is currently only supported on android.
+        return true;
+      },
+    });
   }
 
   componentDidMount() {}
@@ -73,26 +110,6 @@ export class RoomLayer extends Component<any, any> {
   componentWillUnmount() {}
 
   _renderRoom(locationId, count, index, activeSphere) {
-    // get the position for the room
-    let pos : any = {};
-    if (count > 6) {
-      if (index % 2 == 0) {
-        pos = {
-          x: 0.08 * screenWidth,
-          y: 0.06 * this.availableSpace + Math.floor(index / 2) * 0.1 * this.availableSpace + Math.floor(index / 2) * 2 * this.roomRadius
-        }
-      }
-      else {
-        pos = {
-          x: 0.57 * screenWidth,
-          y: 0.14 * this.availableSpace + Math.floor(index / 2) * 0.1 * this.availableSpace + Math.floor(index / 2) * 2 * this.roomRadius
-        }
-      }
-    }
-    else {
-      pos = this.roomPositions[count][index];
-    }
-    this.maxY = Math.max(this.maxY, pos.y);
 
     // variables to pass to the room overview
     let actionsParams = {
@@ -107,11 +124,11 @@ export class RoomLayer extends Component<any, any> {
         active={this.props.sphereId == activeSphere}
         totalAmountOfRoomCircles={count}
         sphereId={this.props.sphereId}
-        radius={this.roomRadius}
+        radius={0.15*screenWidth}
         store={this.props.store}
-        pos={pos}
+        pos={{x:0+ 100*index, y:0}}
         seeStonesInSetupMode={SetupStateHandler.areSetupStonesAvailable()}
-        viewingRemotely={this.props.viewingRemotely}
+        viewingRemotely={this.props.viewingRemotely && false}
         key={locationId || 'floating'}
         actionParams={actionsParams}
       />
@@ -119,7 +136,6 @@ export class RoomLayer extends Component<any, any> {
   }
 
   getRooms() {
-    this.maxY = 0;
     const store = this.props.store;
     const state = store.getState();
     let rooms = state.spheres[this.props.sphereId].locations;
@@ -149,11 +165,9 @@ export class RoomLayer extends Component<any, any> {
       }
 
       return (
-        <ScrollView style={{height: screenHeight, width: screenWidth}}>
-          <View style={{height: this.maxY + 2 * this.roomRadius + 200}}>
-            {roomNodes}
-          </View>
-        </ScrollView>
+        <View style={{height: availableScreenHeight}}>
+          {roomNodes}
+        </View>
       )
     }
     else {
@@ -174,11 +188,33 @@ export class RoomLayer extends Component<any, any> {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
     else {
+      const layout = this.state.pan.getLayout();
+      console.log('layout',layout);
+      const animatedStyle = {
+        transform: [
+          { translateX: layout.left },
+          { translateY: layout.top },
+          // { scale: this.state.scale },
+        ]
+      };
+
       return (
-        <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}}>
-          {this.getRooms()}
+        <View {...this._panResponder.panHandlers} style={{position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight}}>
+          <Animated.View style={animatedStyle}>
+            {this.getRooms()}
+          </Animated.View>
         </View>
       )
     }
   }
+}
+
+
+function getDistance(touches) {
+  let firstTouch = touches[0];
+  let secondTouch = touches[1];
+
+  let dx = firstTouch.locationX - secondTouch.locationX;
+  let dy = firstTouch.locationY - secondTouch.locationY;
+  return Math.max(30,Math.sqrt(dx*dx + dy*dy));
 }
