@@ -134,7 +134,6 @@ export class RoomLayer extends Component<any, any> {
 
             }
             else {
-              this.clearTap();
               return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
             }
           }
