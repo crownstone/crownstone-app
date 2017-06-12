@@ -223,6 +223,8 @@ const glyphMap = {
   'c1-tap-block':0xf0dc,
   'c1-tap-block-outline':0xf0dd,
   'c1-tap-fat':0xf0de,
+  'c1-add-dude':0xf0df,
+  'c1-sphere':0xf0e0,
 };
 
 

@@ -50,7 +50,7 @@ class BarnesHutSolver {
       // place the nodes one by one recursively
       for (let i = 0; i < nodeCount; i++) {
         node = this.physicsBody.nodes[nodeIndices[i]];
-        if (node.options.mass > 0) {
+        if (node.mass > 0) {
           // starting with root is irrelevant, it never passes the BarnesHutSolver condition
           this._getForceContribution(barnesHutTree.root.children['NW'], node);
           this._getForceContribution(barnesHutTree.root.children['NE'], node);
@@ -126,7 +126,7 @@ class BarnesHutSolver {
 
     // the dividing by the distance cubed instead of squared allows us to get the fx and fy components without sines and cosines
     // it is shorthand for gravityforce with distance squared and fx = dx/distance * gravityForce
-    let gravityForce = this.options.gravitationalConstant * parentBranch.mass * node.options.mass / Math.pow(distance,3);
+    let gravityForce = this.options.gravitationalConstant * parentBranch.mass * node.mass / Math.pow(distance,3);
     let fx = dx * gravityForce;
     let fy = dy * gravityForce;
 
@@ -155,7 +155,7 @@ class BarnesHutSolver {
     for (let i = 1; i < nodeCount; i++) {
       let x = nodes[nodeIndices[i]].x;
       let y = nodes[nodeIndices[i]].y;
-      if (nodes[nodeIndices[i]].options.mass > 0) {
+      if (nodes[nodeIndices[i]].mass > 0) {
         if (x < minX) {
           minX = x;
         }
@@ -209,7 +209,7 @@ class BarnesHutSolver {
     // place the nodes one by one recursively
     for (let i = 0; i < nodeCount; i++) {
       node = nodes[nodeIndices[i]];
-      if (node.options.mass > 0) {
+      if (node.mass > 0) {
         this._placeInTree(barnesHutTree.root, node);
       }
     }
@@ -227,13 +227,13 @@ class BarnesHutSolver {
    * @private
    */
   _updateBranchMass(parentBranch, node) {
-    let totalMass = parentBranch.mass + node.options.mass;
+    let totalMass = parentBranch.mass + node.mass;
     let totalMassInv = 1 / totalMass;
 
-    parentBranch.centerOfMass.x = parentBranch.centerOfMass.x * parentBranch.mass + node.x * node.options.mass;
+    parentBranch.centerOfMass.x = parentBranch.centerOfMass.x * parentBranch.mass + node.x * node.mass;
     parentBranch.centerOfMass.x *= totalMassInv;
 
-    parentBranch.centerOfMass.y = parentBranch.centerOfMass.y * parentBranch.mass + node.y * node.options.mass;
+    parentBranch.centerOfMass.y = parentBranch.centerOfMass.y * parentBranch.mass + node.y * node.mass;
     parentBranch.centerOfMass.y *= totalMassInv;
 
     parentBranch.mass = totalMass;

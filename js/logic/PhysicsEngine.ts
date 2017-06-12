@@ -34,8 +34,16 @@ class PhysicsEngine {
 
   targetIterations: any;
 
-  constructor() {
-    this.physicsBody = {physicsNodeIndices:[], physicsEdgeIndices:[], forces: {}, velocities: {}};
+  onChange: any;
+  onStable: any;
+  radius: any;
+
+  constructor(center, radius, onChange = () => {}, onStable = () => {}) {
+    this.onChange = onChange;
+    this.onStable = onStable;
+    this.radius = radius;
+
+    this.physicsBody = {nodes: [], edges: [], physicsNodeIndices:[], physicsEdgeIndices:[], forces: {}, velocities: {}, randomSeed:6};
 
     this.physicsEnabled = true;
     this.simulationInterval = 1000 / 60;
@@ -70,7 +78,7 @@ class PhysicsEngine {
       },
       forceAtlas2Based: {
         theta: 0.5,
-        gravitationalConstant: -50,
+        gravitationalConstant: -90,
         centralGravity: 0.01,
         springConstant: 0.08,
         springLength: 100,
@@ -79,7 +87,7 @@ class PhysicsEngine {
       },
       maxVelocity: 50,
       minVelocity: 0.75,    // px/s
-      solver: 'barnesHut',
+      solver: 'forceAtlas2Based',
       stabilization: {
         enabled: true,
         iterations: 1000,   // maximum number of iteration to stabilize
@@ -88,12 +96,38 @@ class PhysicsEngine {
         fit: true
       },
       timestep: 0.5,
-      adaptiveTimestep: true
+      adaptiveTimestep: true,
+      center: center
     };
     this.timestep = 0.5;
     this.layoutFailed = false;
+
+    this.init();
   }
 
+
+  load(nodes, edges) {
+    this.positionInitially(nodes);
+    this.onChange();
+
+    this.physicsBody.nodes = nodes;
+    let edgeIds = Object.keys(edges);
+    let nodeIds = Object.keys(nodes);
+
+    // load edges into nodeModel
+    nodeIds.forEach((nodeId) => {
+      nodes[nodeId].edges = [];
+      edgeIds.forEach((edgeId) => {
+        if (edges[edgeId].from === nodeId || edges[edgeId].to === nodeId && edges[edgeId].from !== edges[edgeId].to) {
+          nodes[nodeId].edges.push(edges[edgeId]);
+        }
+      })
+    });
+
+    this.physicsBody.edges = edges;
+
+    this.updatePhysicsData();
+  }
 
   /**
    * configure the engine.
@@ -102,12 +136,14 @@ class PhysicsEngine {
     let options;
     if (this.options.solver === 'forceAtlas2Based') {
       options = this.options.forceAtlas2Based;
+      options['center'] = this.options.center;
       this.nodesSolver = new ForceAtlas2BasedRepulsionSolver(this.physicsBody, options);
       this.edgesSolver = new SpringSolver(this.physicsBody, options);
       this.gravitySolver = new ForceAtlas2BasedCentralGravitySolver(this.physicsBody, options);
     }
     else { // barnesHut
       options = this.options.barnesHut;
+      options['center'] = this.options.center;
       this.nodesSolver = new BarnesHutSolver(this.physicsBody, options);
       this.edgesSolver = new SpringSolver(this.physicsBody, options);
       this.gravitySolver = new CentralGravitySolver(this.physicsBody, options);
@@ -116,57 +152,6 @@ class PhysicsEngine {
     this.modelOptions = options;
   }
 
-
-  /**
-   * initialize the engine
-   */
-  initPhysics() {
-    if (this.physicsEnabled === true && this.options.enabled === true) {
-      if (this.options.stabilization.enabled === true) {
-        this.stabilize();
-      }
-      else {
-        this.stabilized = false;
-        this.ready = true;
-        this.startSimulation();
-      }
-    }
-    else {
-      this.ready = true;
-    }
-  }
-
-  /**
-   * Start the simulation
-   */
-  startSimulation() {
-    
-  }
-
-
-  /**
-   * Stop the simulation, force stabilization.
-   */
-  stopSimulation(emit = true) {
-    
-  }
-
-
-  /**
-   * The viewFunction inserts this step into each render loop. It calls the physics tick and handles the cleanup at stabilized.
-   *
-   */
-  simulationStep() {
-    // check if the physics have settled
-    let startTime = Date.now();
-    this.physicsTick();
-    let physicsTime = Date.now() - startTime;
-
-
-    if (this.stabilized === true) {
-      this.stopSimulation();
-    }
-  }
 
 
   /**
@@ -262,7 +247,7 @@ class PhysicsEngine {
     // get node indices for physics
     for (let nodeId in nodes) {
       if (nodes.hasOwnProperty(nodeId)) {
-        if (nodes[nodeId].options.physics === true) {
+        if (nodes[nodeId].physics !== false) {
           this.physicsBody.physicsNodeIndices.push(nodes[nodeId].id);
         }
       }
@@ -271,7 +256,7 @@ class PhysicsEngine {
     // get edge indices for physics
     for (let edgeId in edges) {
       if (edges.hasOwnProperty(edgeId)) {
-        if (edges[edgeId].options.physics === true) {
+        if (edges[edgeId].physics !== false) {
           this.physicsBody.physicsEdgeIndices.push(edges[edgeId].id);
         }
       }
@@ -294,6 +279,7 @@ class PhysicsEngine {
         delete this.physicsBody.velocities[nodeId];
       }
     }
+
   }
 
 
@@ -309,7 +295,7 @@ class PhysicsEngine {
     for (let i = 0; i < nodeIds.length; i++) {
       let nodeId = nodeIds[i];
       if (nodes[nodeId] !== undefined) {
-        if (nodes[nodeId].options.physics === true) {
+        if (nodes[nodeId].physics !== false) {
           this.referenceState[nodeId] = {
             positions: {x:nodes[nodeId].x, y:nodes[nodeId].y}
           };
@@ -324,6 +310,24 @@ class PhysicsEngine {
       }
     }
   }
+
+  seededRandom() {
+    let x = Math.sin(this.physicsBody.randomSeed++) * 10000;
+    return x - Math.floor(x);
+  }
+
+  positionInitially(nodesObject) {
+    let nodeIds = Object.keys(nodesObject);
+    for (let i = 0; i < nodeIds.length; i++) {
+      let node = nodesObject[nodeIds[i]];
+      let radius = this.radius * 0.5 * nodeIds.length + 10;
+      let angle = 2 * Math.PI * this.seededRandom();
+
+      node.x = this.options.center.x + radius * Math.cos(angle);
+      node.y = this.options.center.y + radius * Math.sin(angle);
+    }
+  }
+
 
   /**
    * This compares the reference state to the current state
@@ -393,29 +397,29 @@ class PhysicsEngine {
     // store the state so we can revert
     this.previousStates[nodeId] = {x:node.x, y:node.y, vx:velocities[nodeId].x, vy:velocities[nodeId].y};
 
-    if (node.options.fixed.x === false) {
+    // if (node.options.fixed.x === false) {
       let dx   = this.modelOptions.damping * velocities[nodeId].x;   // damping force
-      let ax   = (forces[nodeId].x - dx) / node.options.mass;        // acceleration
+      let ax   = (forces[nodeId].x - dx) / node.mass;        // acceleration
       velocities[nodeId].x += ax * timestep;                         // velocity
       velocities[nodeId].x = (Math.abs(velocities[nodeId].x) > maxVelocity) ? ((velocities[nodeId].x > 0) ? maxVelocity : -maxVelocity) : velocities[nodeId].x;
       node.x   += velocities[nodeId].x * timestep;                    // position
-    }
-    else {
-      forces[nodeId].x = 0;
-      velocities[nodeId].x = 0;
-    }
+    // }
+    // else {
+    //   forces[nodeId].x = 0;
+    //   velocities[nodeId].x = 0;
+    // }
 
-    if (node.options.fixed.y === false) {
+    // if (node.options.fixed.y === false) {
       let dy   = this.modelOptions.damping * velocities[nodeId].y;    // damping force
-      let ay   = (forces[nodeId].y - dy) / node.options.mass;         // acceleration
+      let ay   = (forces[nodeId].y - dy) / node.mass;         // acceleration
       velocities[nodeId].y += ay * timestep;                          // velocity
       velocities[nodeId].y = (Math.abs(velocities[nodeId].y) > maxVelocity) ? ((velocities[nodeId].y > 0) ? maxVelocity : -maxVelocity) : velocities[nodeId].y;
       node.y   += velocities[nodeId].y * timestep;                     // position
-    }
-    else {
-      forces[nodeId].y = 0;
-      velocities[nodeId].y = 0;
-    }
+    // }
+    // else {
+    //   forces[nodeId].y = 0;
+    //   velocities[nodeId].y = 0;
+    // }
 
     let totalVelocity = Math.sqrt(Math.pow(velocities[nodeId].x,2) + Math.pow(velocities[nodeId].y,2));
     return totalVelocity;
@@ -435,7 +439,7 @@ class PhysicsEngine {
   /**
    * Find a stable position for all nodes
    */
-  stabilize(iterations = this.options.stabilization.iterations) {
+  stabilize(iterations = this.options.stabilization.iterations, hidden = false) {
     if (typeof iterations !== 'number') {
       console.log('The stabilize method needs a numeric amount of iterations. Switching to default: ', this.options.stabilization.iterations);
       iterations = this.options.stabilization.iterations;
@@ -447,14 +451,9 @@ class PhysicsEngine {
     }
 
     // enable adaptive timesteps
-    this.adaptiveTimestep = true && this.options.adaptiveTimestep;
+    this.adaptiveTimestep = this.options.adaptiveTimestep;
 
-    // this sets the width of all nodes initially which could be required for the avoidOverlap
-
-    // stop the render loop
-    this.stopSimulation();
-
-    // set stabilze to false
+    // set stabilize to false
     this.stabilized = false;
 
     // block redraw requests
@@ -462,7 +461,7 @@ class PhysicsEngine {
 
     this.stabilizationIterations = 0;
 
-    this._stabilizationBatch();
+    this._stabilizationBatch(hidden);
   }
 
 
@@ -470,7 +469,7 @@ class PhysicsEngine {
    * One batch of stabilization
    * @private
    */
-  _stabilizationBatch() {
+  _stabilizationBatch(hidden = false) {
     // this is here to ensure that there is at least one start event.
     if (this.startedStabilization === false) {
       this.startedStabilization = true;
@@ -479,6 +478,9 @@ class PhysicsEngine {
     let count = 0;
     while (this.stabilized === false && count < this.options.stabilization.updateInterval && this.stabilizationIterations < this.targetIterations) {
       this.physicsTick();
+      if (hidden === false) {
+        this.onChange();
+      }
       count++;
     }
 
@@ -486,7 +488,7 @@ class PhysicsEngine {
       this._stabilizationBatch();
     }
     else {
-      this._finalizeStabilization();
+      this.onStable()
     }
   }
 

@@ -53,7 +53,7 @@ export class StatusCommunication extends Component<any, any> {
     let currentSphere = this.props.sphereId;
 
     // the bottom distance pops the bottom text up if the orbs are shown. Orbs are shown when there are multiple spheres.
-    let bottomDistance = Object.keys(state.spheres).length > 1 ? 20 : 5;
+    let bottomDistance = Object.keys(state.spheres).length > 1 ? 5 : 5;
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
 

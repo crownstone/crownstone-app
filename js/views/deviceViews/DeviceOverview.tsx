@@ -20,7 +20,6 @@ import {TopBar} from "../components/Topbar";
 import {DeviceBehaviour} from "./elements/DeviceBehaviour";
 import {DeviceSummary} from "./elements/DeviceSummary";
 import {Permissions} from "../../backgroundProcesses/Permissions";
-import {ALWAYS_DFU_UPDATE} from "../../ExternalConfig";
 import {STONE_TYPES} from "../../router/store/reducers/stones";
 import {DeviceError} from "./elements/DeviceError";
 import {DeviceUpdate} from "./elements/DeviceUpdate";

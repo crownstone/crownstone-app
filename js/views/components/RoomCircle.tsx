@@ -24,7 +24,7 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {stones} from "../../cloud/sections/stones";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 
-export class RoomCircle extends Component<any, any> {
+class RoomCircleClass extends Component<any, any> {
   initializedPosition : any;
   energyLevels : any;
   usage : any;
@@ -58,30 +58,8 @@ export class RoomCircle extends Component<any, any> {
 
     this.initializedPosition = true;
     let initialOpacity = 1;
-    let initialX = props.pos.x;
-    let initialY = props.pos.y;
-
-    let screenCenterX = 0.5*screenWidth;
-    let screenCenterY = 0.5*screenHeight;
-
-    // we only want to animate the movement if this sphere is in focus
-    if (props.active == true) {
-      initialOpacity = 0;
-      this.initializedPosition = false;
-
-      // if we only have one icon, we just fade it in, not have it move from the side.
-      if (props.totalAmountOfRoomCircles > 1) {
-        if (initialX > screenCenterX)
-          initialX += screenWidth;
-        else if (initialX < screenCenterX)
-          initialX -= screenWidth;
-
-        if (initialY > screenCenterY)
-          initialY -= 0.25 * screenHeight;
-        else if (initialY < screenCenterY)
-          initialY += 0.25 * screenHeight;
-      }
-    }
+    let initialX = props.pos.x._value;
+    let initialY = props.pos.y._value;
 
     this.state = {
       top: new Animated.Value(initialY),
@@ -186,6 +164,12 @@ export class RoomCircle extends Component<any, any> {
   }
 
   componentWillUpdate(nextProps) {
+    if (this.props.hover === false && nextProps.hover === true) {
+      Animated.timing(this.state.componentOpacity, {toValue: 0.2, duration:50}).start();
+    }
+    else if (this.props.hover === true && nextProps.hover === false) {
+      Animated.timing(this.state.componentOpacity, {toValue: 1, duration:50}).start();
+    }
     this.checkAlertStatus(nextProps);
   }
 
@@ -214,7 +198,7 @@ export class RoomCircle extends Component<any, any> {
   setWiggleInterval() {
     if (this.wiggleInterval === undefined) {
       if (this.state.setupProgress === 20) {
-        this.wiggle();
+        // this.wiggle();
       }
       this.wiggleInterval = setTimeout(() => {
         this.wiggleInterval = undefined;
@@ -427,48 +411,28 @@ export class RoomCircle extends Component<any, any> {
     )
   }
 
-  _animatePosition() {
-    let animations = [];
-    if (this.animatedMoving === false) {
-      this.animatedMoving = true;
-      animations.push(Animated.timing(this.state.top, {toValue: this.props.pos.y, duration: this.movementDuration}));
-      animations.push(Animated.timing(this.state.left, {toValue: this.props.pos.x, duration: this.movementDuration}));
-      if (this.initializedPosition === false) {
-        animations.push(Animated.timing(this.state.componentOpacity, {toValue: 1, duration: this.movementDuration}));
-      }
-      this.moveAnimationTimeout = setTimeout(() => {
-        this.animatedMoving = false;
-      }, this.movementDuration);
-      Animated.parallel(animations).start();
-    }
-  }
-
-  wiggle() {
-    let animations = [];
-    let tension = 120;
-    let friction = 3;
-    let offset = 0.08*screenWidth;
-    let randX = offset*(Math.random()-0.5);
-    let randY = offset*(Math.random()-0.5);
-    if (this.animatedMoving === false) {
-      this.animatedMoving = true;
-      animations.push(Animated.spring(this.state.top, {toValue: this.props.pos.y - randY, friction: friction, tension: tension}));
-      animations.push(Animated.spring(this.state.left, {toValue: this.props.pos.x - randX, friction: friction, tension: tension}));
-      this.moveAnimationTimeout = setTimeout(() => {
-        this.animatedMoving = false;
-        animations.push(Animated.spring(this.state.top, {toValue: this.props.pos.y, friction: friction, tension: tension}));
-        animations.push(Animated.spring(this.state.left, {toValue: this.props.pos.x, friction: friction, tension: tension}));
-        Animated.parallel(animations).start();
-      }, this.jumpDuration);
-      Animated.parallel(animations).start();
-    }
-  }
+  // wiggle() {
+  //   let animations = [];
+  //   let tension = 120;
+  //   let friction = 3;
+  //   let offset = 0.08*screenWidth;
+  //   let randX = offset*(Math.random()-0.5);
+  //   let randY = offset*(Math.random()-0.5);
+  //   if (this.animatedMoving === false) {
+  //     this.animatedMoving = true;
+  //     animations.push(Animated.spring(this.state.top, {toValue: this.props.pos.y - randY, friction: friction, tension: tension}));
+  //     animations.push(Animated.spring(this.state.left, {toValue: this.props.pos.x - randX, friction: friction, tension: tension}));
+  //     this.moveAnimationTimeout = setTimeout(() => {
+  //       this.animatedMoving = false;
+  //       animations.push(Animated.spring(this.state.top, {toValue: this.props.pos.y, friction: friction, tension: tension}));
+  //       animations.push(Animated.spring(this.state.left, {toValue: this.props.pos.x, friction: friction, tension: tension}));
+  //       Animated.parallel(animations).start();
+  //     }, this.jumpDuration);
+  //     Animated.parallel(animations).start();
+  //   }
+  // }
 
   render() {
-    if (this.props.active && (this.state.top !== this.props.pos.y || this.state.left !== this.props.pos.x)) {
-      this.moveAnimationTimeout = setTimeout(() => this._animatePosition(),0)
-    }
-
     const store = this.props.store;
     const state = store.getState();
 
@@ -482,18 +446,19 @@ export class RoomCircle extends Component<any, any> {
     this.renderState = store.getState();
 
     return (
-      <Animated.View style={{position:'absolute',  top: this.state.top, left: this.state.left, opacity: this.state.componentOpacity}}>
-        <TouchableOpacity onPress={() => Actions.roomOverview(this.props.actionParams)}>
-          <View>
-            {this.getCircle()}
-            {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
-            {showFingerprintNeeded === true ? this._getAlertIcon() : undefined}
-          </View>
-        </TouchableOpacity>
+      <Animated.View style={{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.componentOpacity}}>
+        <View>
+          {this.getCircle()}
+          {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
+          {showFingerprintNeeded === true ? this._getAlertIcon() : undefined}
+        </View>
       </Animated.View>
     )
   }
 }
+
+export const RoomCircle = Animated.createAnimatedComponent(RoomCircleClass);
+
 // ------------------------------------------------------------ //
 // code for when there was an image behind the icon
 // ------------------------------------------------------------ //
