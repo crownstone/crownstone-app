@@ -130,7 +130,8 @@ export class ErrorOverlay extends Component<any, any> {
                 currentCrownstone.stoneId,
                 currentCrownstone.sphereId,
                 {commandName:'clearErrors', clearErrorJSON: clearData},
-                1000
+                1000,
+                'from _getButton in ErrorOverlay'
               )
               .then(() => {
                 eventBus.emit("showLoading", "Success!");

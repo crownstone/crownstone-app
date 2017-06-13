@@ -97,7 +97,8 @@ export class DeviceSummary extends Component<any, any> {
             stone,
             newState,
             this.props.store,
-            () => { this.setState({pendingCommand:false});}
+            () => { this.setState({pendingCommand:false});},
+            'from _getButton in DeviceSummary'
           );
 
         }}>

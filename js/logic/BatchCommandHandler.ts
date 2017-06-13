@@ -31,9 +31,10 @@ class BatchCommandHandlerClass {
    * @param { String } sphereId           // sphereId,
    * @param { commandInterface } command  // Object containing a command that is in the BluenetPromise set
    * @param { Number } attempts           // sphereId,
+   * @param { string } label              // explain where the command comes from,
    */
-  load(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1) {
-    LOG.verbose("BatchCommandHandler: Loading Command,", stoneId, stone.config.name, command);
+  load(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1, label = '') {
+    LOG.verbose("BatchCommandHandler: Loading Command, sphereId:",sphereId," stoneId:", stoneId, stone.config.name, command, label);
     return this._load(stone, stoneId, sphereId, command, false, attempts );
   }
 
@@ -43,9 +44,10 @@ class BatchCommandHandlerClass {
    * @param { String } sphereId           // sphereId,
    * @param { commandInterface } command  // Object containing a command that is in the BluenetPromise set
    * @param { Number } attempts           // sphereId,
+   * @param { string } label              // explain where the command comes from,
    */
-  loadPriority(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1) {
-    LOG.verbose("BatchCommandHandler: Loading High Priority Command,", stoneId, stone.config.name, command);
+  loadPriority(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1, label = '') {
+    LOG.verbose("BatchCommandHandler: Loading High Priority Command, sphereId:",sphereId," stoneId", stoneId, stone.config.name, command, label);
     return this._load(stone, stoneId, sphereId, command, true, attempts );
   }
 
@@ -62,6 +64,7 @@ class BatchCommandHandlerClass {
         stone:    stone,
         command:  command,
         attempts: attempts,
+        initialized: false,
         cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
         promise:  { resolve: resolve, reject: reject, pending: false}
       };
@@ -158,10 +161,11 @@ class BatchCommandHandlerClass {
    *
    * @param targetStoneId     // database id of stone. If provided, we only put todos for this stone in the list.
    * @param targetNetworkId   // Mesh network id of the Crownstone. If provided, we only put todos for this mesh network in the list.
+   * @param markAsInitialized   // When true, the commands that are returned will be marked as initialized by the extraction process.
    * @returns {{directCommands: {}, meshNetworks: sphereMeshNetworks}}
    * @private
    */
-  _extractTodo(targetStoneId : string = null, targetNetworkId : string = null) {
+  _extractTodo(targetStoneId : string = null, targetNetworkId : string = null, markAsInitialized = false) {
     let commandsToHandle = this._getCommandsToHandle();
 
     let directCommands : directCommands = {};
@@ -170,6 +174,13 @@ class BatchCommandHandlerClass {
     let uuids = Object.keys(commandsToHandle);
     for (let i = 0; i < uuids.length; i++) {
       let todo = commandsToHandle[uuids[i]];
+
+      // If we mark this command as initialized it will be handled by the attemptHandler.
+      // This is required to avoid the cases where commands that are loaded while there is a pending process
+      // If that pending process fails, anything that was loaded during that time would be cancelled as well.
+      if (markAsInitialized === true) {
+        todo.initialized = true;
+      }
 
       let command = todo.command;
       let stoneConfig = todo.stone.config;
@@ -242,15 +253,21 @@ class BatchCommandHandlerClass {
     let stoneConfig = batchCommand.stone.config;
 
     if (command.commandName === 'keepAlive') {
-      payload = {cleanup: batchCommand.cleanup, promise: batchCommand.promise};
+      payload = {
+        attempts: batchCommand.attempts,
+        initialized: batchCommand.initialized,
+        cleanup: batchCommand.cleanup,
+        promise: batchCommand.promise
+      };
     }
     else if (command.commandName === 'keepAliveState') {
       payload = {
-        crownstoneId: stoneConfig.crownstoneId,
+        attempts: batchCommand.attempts,
+        initialized: batchCommand.initialized,
         handle: stoneConfig.handle,
+        crownstoneId: stoneConfig.crownstoneId,
         changeState: command.changeState,
         state: command.state,
-        attempts: batchCommand.attempts,
         timeout: command.timeout,
         cleanup: batchCommand.cleanup,
         promise: batchCommand.promise
@@ -258,22 +275,24 @@ class BatchCommandHandlerClass {
     }
     else if (command.commandName === 'setSwitchState') {
       payload = {
+        attempts: batchCommand.attempts,
+        initialized: batchCommand.initialized,
         crownstoneId: stoneConfig.crownstoneId,
         handle: stoneConfig.handle,
         state: command.state,
-        attempts: batchCommand.attempts,
         cleanup: batchCommand.cleanup,
         promise: batchCommand.promise
       };
     }
     else if (command.commandName === 'multiSwitch') {
       payload = {
+        attempts: batchCommand.attempts,
+        initialized: batchCommand.initialized,
         crownstoneId: stoneConfig.crownstoneId,
         handle: stoneConfig.handle,
         state: command.state,
         intent: command.intent,
         timeout: command.timeout,
-        attempts: batchCommand.attempts,
         cleanup: batchCommand.cleanup,
         promise: batchCommand.promise
       };
@@ -290,7 +309,7 @@ class BatchCommandHandlerClass {
    * @private
    */
   _getObjectsToScan() {
-    let { directCommands, meshNetworks } = this._extractTodo();
+    let { directCommands, meshNetworks } = this._extractTodo(null, null, true);
 
     // get sphereIds of the spheres we need to do things in.
     let meshSphereIds = Object.keys(meshNetworks);
@@ -543,10 +562,15 @@ class BatchCommandHandlerClass {
    */
   attemptHandler(connectedCrownstone, err) {
     let handleAttempt = (command) => {
-      command.attempts -= 1;
-      if (command.attempts <= 0) {
-        command.promise.reject(err);
-        command.cleanup();
+      // The command has to be initialized first.
+      // This is required to avoid the cases where commands that are loaded while there is a pending process
+      // If that pending process fails, anything that was loaded during that time would be cancelled as well.
+      if (command.initialized === true) {
+        command.attempts -= 1;
+        if (command.attempts <= 0) {
+          command.promise.reject(err);
+          command.cleanup();
+        }
       }
     };
 

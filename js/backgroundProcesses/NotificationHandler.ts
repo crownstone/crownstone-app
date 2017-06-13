@@ -84,6 +84,7 @@ class PushNotificationHandlerClass {
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
+        LOG.info("NotificationHandler: got a notification", notification);
         NotificationParser.handle(notification.data)
       },
 
@@ -142,12 +143,14 @@ class NotificationParserClass {
       if (state && state.spheres[messageData.sphereId] && state.spheres[messageData.sphereId].stones[messageData.stoneId]) {
         switch(messageData.command) {
           case 'setSwitchStateRemotely':
-            BatchCommandHandler.loadPriority(
+            LOG.info("NotificationParser: switching based on notification", messageData);
+            BatchCommandHandler.load(
               state.spheres[messageData.sphereId].stones[messageData.stoneId],
               messageData.stoneId,
               messageData.sphereId,
               {commandName:'multiSwitch', state: Math.min(1,Math.max(0,messageData.switchState || 0)), intent: INTENTS.remotely, timeout: 0},
-              25
+              25,
+              'from handle in NotificationParser'
             );
             BatchCommandHandler.executePriority();
             break;

@@ -1,6 +1,6 @@
 interface keepAlivePayload {
-  stone: any,
   attempts: number,
+  initialized: boolean,
   cleanup(): void,
   promise:{
     resolve(any?) : void,
@@ -11,10 +11,10 @@ interface keepAlivePayload {
 
 interface keepAliveStatePayload {
   handle: string,
-  stone: any,
   crownstoneId: string,
   changeState: boolean,
   state: number,
+  initialized: boolean,
   timeout: number,
   attempts: number,
   cleanup(): void,
@@ -27,10 +27,10 @@ interface keepAliveStatePayload {
 
 interface multiSwitchPayload {
   handle: string,
-  stone: any,
   crownstoneId: string,
   state: number,
   intent: number,
+  initialized: boolean,
   timeout: number,
   attempts: number,
   cleanup(): void,
@@ -91,6 +91,7 @@ interface batchCommandEntry {
   sphereId: string,
   stoneId:  string,
   stone:    any,
+  initialized: boolean,
   attempts: number,
   command:  commandInterface,
   cleanup(): void,

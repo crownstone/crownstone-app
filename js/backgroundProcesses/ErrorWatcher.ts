@@ -38,6 +38,7 @@ class ErrorWatcherClass {
         sphereId,
         {commandName:'getErrors'},
         1e5,
+        'from processError in ErrorWatcher'
       )
         .then((errors) => {
           if (this.pendingErrorObtaining[advertisement.handle] !== undefined) {
