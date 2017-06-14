@@ -227,6 +227,7 @@ export class DeviceEdit extends Component<any, any> {
       })
   }
 
+
   _removeCloudReset(stone) {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
@@ -274,6 +275,7 @@ export class DeviceEdit extends Component<any, any> {
       })
   }
 
+
   _removeCrownstoneFromRedux(factoryReset = false) {
     // deleting makes sure we will not draw this page again if we delete it's source from the database.
     this.deleting = true;
@@ -291,6 +293,7 @@ export class DeviceEdit extends Component<any, any> {
       }}]
     )
   }
+
 
   _getVersionInformation(stone) {
     let unknownString = "Not checked.";

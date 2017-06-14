@@ -1,0 +1,75 @@
+import * as React from 'react'; import { Component } from 'react';
+import {
+  Animated,
+  ActivityIndicator,
+  Alert,
+  TouchableOpacity,
+  PixelRatio,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  TextInput,
+  Text,
+  View
+} from 'react-native';
+const Actions = require('react-native-router-flux').Actions;
+
+import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
+
+export class GuidestoneSummary extends Component<any, any> {
+  constructor() {
+    super();
+    this.state = {pendingCommand: false}
+  }
+
+  render() {
+    const store = this.props.store;
+    const state = store.getState();
+    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    return (
+      <View style={{flex:1, paddingBottom:35}}>
+        <View style={{flex:1}} />
+        <View style={{alignItems:'center'}}>
+          <Text style={deviceStyles.subText}>{"Device Type:"}</Text>
+          <Text style={deviceStyles.text}>{'Guidestone'}</Text>
+        </View>
+        <View style={{flex: 0.2}} />
+        <View style={{alignItems:'center'}}>
+          <Text style={deviceStyles.subText}>{"Connected to Mesh:"}</Text>
+          <Text style={deviceStyles.text}>{stone.config.meshId ? 'Yes' : 'Not Yet'}</Text>
+        </View>
+        <View style={{flex: 0.2}} />
+        <View style={{alignItems:'center', height: 0.2*availableScreenHeight}}>
+          <Text style={deviceStyles.subText}>{"Reachable:"}</Text>
+          <Text style={deviceStyles.text}>{stone.config.disabled === false ? 'Yes' : 'Searching...'}</Text>
+          {
+            stone.config.disabled  ?
+              <ActivityIndicator animating={true} size='small' color={colors.white.hex} style={{paddingTop:20}} />
+            : undefined
+          }
+        </View>
+
+        <View style={{flex:1}} />
+      </View>
+    )
+  }
+}
+
+let textColor = colors.white;
+let deviceStyles = StyleSheet.create({
+  text: {
+    color: textColor.hex,
+    fontSize: 18,
+    fontWeight:'600'
+  },
+  subText: {
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+  },
+  explanation: {
+    width: screenWidth,
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+    textAlign:'center'
+  }
+});
