@@ -9,7 +9,7 @@ export const defaultHeaders = {
   'Content-Type': 'application/json'
 };
 
-export const  uploadHeaders = {
+export const uploadHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'multipart/form-data; boundary=6ff46e0b6b5148d984f148b6542e5a5d',
 };

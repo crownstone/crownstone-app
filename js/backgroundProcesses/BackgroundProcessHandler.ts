@@ -233,14 +233,14 @@ class BackgroundProcessHandlerClass {
       LOG.info("App State Change", appState);
       // in the foreground: start scanning!
       if (appState === "active" && this.userLoggedIn) {
-        BatterySavingUtil.scanOnlyIfNeeded();
+        BatterySavingUtil.startNormalUsage();
 
         // if the app is open, update the user locations every 10 seconds
         Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
       }
       else {
         // in the background: stop scanning to save battery!
-        BatterySavingUtil.stopScanningIfPossible();
+        BatterySavingUtil.startBatterySaving();
 
         // remove the user sync so it won't use battery in the background
         Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);
@@ -252,7 +252,7 @@ class BackgroundProcessHandlerClass {
     // Ensure we start scanning when the bluetooth module is powered on.
     NativeBus.on(NativeBus.topics.bleStatus, (status) => {
       if (this.userLoggedIn && status === 'poweredOn') {
-        BatterySavingUtil.scanOnlyIfNeeded();
+        BatterySavingUtil.startNormalUsage();
       }
     });
   }

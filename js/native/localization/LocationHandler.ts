@@ -90,7 +90,7 @@ class LocationHandlerClass {
     }
 
     // scan for crownstones on entering a sphere.
-    BatterySavingUtil.scanOnlyIfNeeded(sphereId);
+    BatterySavingUtil.startNormalUsage(sphereId);
 
 
     LOG.info("Set Settings.", bluenetSettings);
@@ -195,7 +195,7 @@ class LocationHandlerClass {
 
       // if we're not in any sphere, stop scanning to save battery
       if (presentSomewhere === false) {
-        BatterySavingUtil.stopScanningIfPossible(true);
+        BatterySavingUtil.startBatterySaving(true);
       }
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});

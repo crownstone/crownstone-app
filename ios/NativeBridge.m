@@ -67,11 +67,16 @@ RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)lo
 RCT_EXTERN_METHOD(clearFingerprints)
 RCT_EXTERN_METHOD(clearFingerprintsPromise:(RCTResponseSenderBlock)callback)
 
+
+// MISC
+
 RCT_EXTERN_METHOD(enableLoggingToFile:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(enableExtendedLogging:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)
 RCT_EXTERN_METHOD(quitApp)
 RCT_EXTERN_METHOD(setTime:(nonnull NSNumber *)time callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(batterySaving:(nonnull NSNumber *)state)
+
 
 
 // MESH
@@ -82,6 +87,7 @@ RCT_EXTERN_METHOD(meshCommandSetSwitchState:(NSArray<NSNumber *> *)crownstoneIds
 RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
 
 // DFU
+
 RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupPutInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTResponseSenderBlock)callback)

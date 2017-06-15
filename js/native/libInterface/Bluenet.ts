@@ -64,6 +64,7 @@ if (DISABLE_NATIVE === true) {
     clearFingerprintsPromise: () => {},
     clearFingerprints: () => {},
     setTime: () => {},
+    batterySaving: () => {},
   }
 }
 else {
