@@ -50,7 +50,7 @@ const DeviceInfo = require('react-native-device-info');
     /**
      * Switch to disable the usage of the mesh in the app
      */
-    export const MESH_ENABLED = false;
+    export const MESH_ENABLED = true;
 
     /**
      * Switch to disable the usage of the mesh in the app

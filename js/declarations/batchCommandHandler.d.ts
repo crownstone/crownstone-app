@@ -73,6 +73,8 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'getFirmwareVersion' } |
   { commandName : 'getHardwareVersion' } |
   { commandName : 'getErrors' } |
+  { commandName : 'getTime' } |
+  { commandName : 'setTime', time: number } |
   { commandName : 'clearErrors', clearErrorJSON: any }
 
 

@@ -35,6 +35,7 @@ interface BluenetPromiseWrapperProtocol {
   clearErrors(clearErrorJSON): Promise<any>,
   restartCrownstone(): Promise<any>,
   setTime(time: number): Promise<any>,
+  getTime():Promise<any>,
 
 
 }

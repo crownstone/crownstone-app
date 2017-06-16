@@ -155,7 +155,7 @@ export class DeviceSummary extends Component<any, any> {
         <DeviceInformation left={"Energy Consumption:"} leftValue={stone.state.currentUsage + ' W'} right={locationLabel} rightValue={locationName} />
         <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
                            leftValue={stone.config.applianceId ? stone.config.name : 'None'}
-                           right={"Connected to Mesh:"} rightValue={stone.config.meshId ? 'Yes' : 'Not Yet'} />
+                           right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'} />
         <View style={{flex:0.5}} />
         <View style={{width:screenWidth, alignItems:'center'}}>{this._getIcon(stone, element)}</View>
         <View style={{flex:1}} />

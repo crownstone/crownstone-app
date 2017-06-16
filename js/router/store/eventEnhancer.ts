@@ -155,6 +155,8 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_STONE_SWITCH_STATE':
       eventStatus['powerUsageUpdated'] = affectedIds;
       eventStatus['stoneUsageUpdated'] = affectedIds; break;
+    case 'UPDATE_STONE_REMOTE_TIME':
+      eventStatus['stoneTimeUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':

@@ -386,6 +386,12 @@ class BatchCommandHandlerClass {
                 // actionPromise = BluenetPromiseWrapper.clearErrors(command.clearErrorJSON);
                 actionPromise = BluenetPromiseWrapper.restartCrownstone();
                 break;
+              case 'setTime':
+                actionPromise = BluenetPromiseWrapper.setTime(command.time);
+                break;
+              case 'getTime':
+                actionPromise = BluenetPromiseWrapper.getTime();
+                break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive();
                 break;

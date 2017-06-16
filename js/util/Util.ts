@@ -137,6 +137,29 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
+  getTimeFormat: function(timestamp)  {
+    if (timestamp === 0) {
+      return 'unknown';
+    }
+
+    let date = new Date(timestamp);
+
+    let pad = (base) => {
+      if (Number(base) < 10) {
+        return '0' + base;
+      }
+      return base;
+    };
+
+    let month = pad(date.getMonth() + 1);
+    let day = pad(date.getDate());
+    let hours = pad(date.getHours());
+    let minutes = pad(date.getMinutes());
+    let seconds = pad(date.getSeconds());
+
+    return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds
+  },
+
   getUUID : () : string => {
     const S4 = function () {
       return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);

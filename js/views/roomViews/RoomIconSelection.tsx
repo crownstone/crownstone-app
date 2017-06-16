@@ -101,7 +101,7 @@ export class RoomIconSelection extends Component<any, any> {
     const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.main}>
+      <Background hideInterface={true} image={this.props.backgrounds.stoneDetailsBackground}>
         <TopBar
           left={"Back"}
           leftAction={Actions.pop}

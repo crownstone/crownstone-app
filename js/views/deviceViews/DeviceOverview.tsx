@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
+  ActivityIndicator,
   TouchableOpacity,
   PixelRatio,
   ScrollView,
@@ -15,16 +16,16 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
 import { Background } from '../components/Background'
 import * as Swiper from 'react-native-swiper';
-import {Util} from "../../util/Util";
-import {TopBar} from "../components/Topbar";
-import {DeviceBehaviour} from "./elements/DeviceBehaviour";
-import {DeviceSummary} from "./elements/DeviceSummary";
-import {Permissions} from "../../backgroundProcesses/Permissions";
-import {ALWAYS_DFU_UPDATE} from "../../ExternalConfig";
-import {STONE_TYPES} from "../../router/store/reducers/stones";
-import {DeviceError} from "./elements/DeviceError";
-import {DeviceUpdate} from "./elements/DeviceUpdate";
-import {GuidestoneSummary} from "./elements/GuidestoneSummary";
+import { Util } from "../../util/Util";
+import { TopBar } from "../components/Topbar";
+import { DeviceBehaviour } from "./elements/DeviceBehaviour";
+import { DeviceSummary } from "./elements/DeviceSummary";
+import { Permissions } from "../../backgroundProcesses/Permissions";
+import { STONE_TYPES } from "../../router/store/reducers/stones";
+import { DeviceError } from "./elements/DeviceError";
+import { DeviceUpdate } from "./elements/DeviceUpdate";
+import { GuidestoneSummary } from "./elements/GuidestoneSummary";
+import { DeviceTime } from "./elements/DeviceTime";
 
 
 export class DeviceOverview extends Component<any, any> {
@@ -33,6 +34,8 @@ export class DeviceOverview extends Component<any, any> {
 
   constructor() {
     super();
+
+    this.state = {scrolling:false}
   }
 
   componentDidMount() {
@@ -79,19 +82,23 @@ export class DeviceOverview extends Component<any, any> {
 
     let summaryIndex = 0;
     let behaviourIndex = 1;
+    let timeIndex = 2;
 
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state);
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let deviceType = stone.config.type;
+    let hasTime = true;
 
-    if (hasError)  { summaryIndex++; behaviourIndex++; }
-    if (canUpdate) { summaryIndex++; behaviourIndex++; }
+    if (hasError)  { summaryIndex++; behaviourIndex++; timeIndex++; }
+    if (canUpdate) { summaryIndex++; behaviourIndex++; timeIndex++; }
 
     return (
       <Background image={this.props.backgrounds.stoneDetailsBackground} hideTopBar={true}>
         <TopBar
           leftAction={() => { Actions.pop(); }}
+          rightItem={this.state.scrolling ?
+            this._getScrollingElement() : undefined}
           right={() => {
             switch (index) {
               case summaryIndex:
@@ -114,9 +121,11 @@ export class DeviceOverview extends Component<any, any> {
           dot={<View style={{backgroundColor:'rgba(255,255,255,0.2)', width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
           activeDot={<View style={{backgroundColor: 'rgba(255,255,255,0.8)', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
           ref={(swiper) => { this.swiper = swiper; }}
-          onMomentumScrollEnd={() => {  this.forceUpdate(); /* this updates the index */ }}
+          loop={false}
+          onTouchStart={() => {  this.setState({scrolling: true}); /* this updates the index */ }}
+          onMomentumScrollEnd={() => { this.setState({scrolling: false}); /* this updates the index */ }}
         >
-          { this._getContent(hasError, canUpdate, hasBehaviour, deviceType) }
+          { this._getContent(hasError, canUpdate, hasBehaviour, hasTime, deviceType) }
 
 
         </Swiper>
@@ -124,8 +133,18 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getContent(hasError, canUpdate, hasBehaviour, deviceType) {
+  _getScrollingElement() {
+    // ios props
+    return (
+      <View style={{ flex:1, alignItems:'flex-end', justifyContent:'center', paddingTop: 0 }}>
+        <ActivityIndicator animating={true} size='small' color={colors.iosBlue.hex} />
+      </View>
+    )
+  }
+
+  _getContent(hasError, canUpdate, hasBehaviour, hasTime, deviceType) {
     let content = [];
+
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
     }
@@ -142,6 +161,10 @@ export class DeviceOverview extends Component<any, any> {
 
     if (hasBehaviour) {
       content.push(<DeviceBehaviour key={'behaviourSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+    }
+
+    if (hasTime) {
+      content.push(<DeviceTime key={'timeSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
     }
     return content;
   }
