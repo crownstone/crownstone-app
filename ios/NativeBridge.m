@@ -75,6 +75,7 @@ RCT_EXTERN_METHOD(enableExtendedLogging:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)
 RCT_EXTERN_METHOD(quitApp)
 RCT_EXTERN_METHOD(setTime:(nonnull NSNumber *)time callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getTime:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(batterySaving:(nonnull NSNumber *)state)
 
 

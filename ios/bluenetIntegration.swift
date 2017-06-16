@@ -181,6 +181,10 @@ func getBleErrorString(_ err: BleError) -> String {
     return "NOT_IN_DFU_MODE"
   case .REPLACED_WITH_OTHER_PROMISE:
     return "REPLACED_WITH_OTHER_PROMISE"
+  case .INCORRECT_RESPONSE_LENGTH:
+    return "INCORRECT_RESPONSE_LENGTH"
+  case .UNKNOWN_TYPE:
+    return "UNKNOWN_TYPE"
   }
 }
 
@@ -953,6 +957,20 @@ open class BluenetJS: NSObject {
     LOGGER.info("BluenetBridge: Called setTime")
     GLOBAL_BLUENET!.bluenet.control.setTime(time)
       .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setTime"]])
+        }
+    }
+  }
+  
+  @objc func getTime(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called getTime")
+    GLOBAL_BLUENET!.bluenet.state.getTime()
+      .then{time in callback([["error" : false, "data": time]])}
       .catch{err in
         if let bleErr = err as? BleError {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])

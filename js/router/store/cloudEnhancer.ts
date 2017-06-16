@@ -325,7 +325,6 @@ function handleStoneState(action, state, pureSwitch = false) {
     let data  = {
       id:          stoneId,
       switchState: stone.state.state,
-      switchStateUpdatedAt: stone.state.updatedAt,
       updatedAt:   stone.updatedAt,
     };
 
