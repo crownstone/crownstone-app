@@ -138,12 +138,21 @@ export class DeviceSummary extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-    const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
+    const sphere = state.spheres[this.props.sphereId];
+    const stone = sphere.stones[this.props.stoneId];
+    const element = Util.data.getElement(sphere, stone);
+    const location = Util.data.getLocationFromStone(sphere, stone);
+
+    let locationLabel = "Currently in Room:";
+    let locationName = "No";
+    if (location) {
+      locationLabel = "Located in:";
+      locationName = location.config.name;
+    }
 
     return (
       <View style={{flex:1, paddingBottom:35}}>
-        <DeviceInformation left={"Energy Consumption:"} leftValue={stone.state.currentUsage + ' W'} right={"Located in:"} rightValue={"Living Room"} />
+        <DeviceInformation left={"Energy Consumption:"} leftValue={stone.state.currentUsage + ' W'} right={locationLabel} rightValue={locationName} />
         <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
                            leftValue={stone.config.applianceId ? stone.config.name : 'None'}
                            right={"Connected to Mesh:"} rightValue={stone.config.meshId ? 'Yes' : 'Not Yet'} />

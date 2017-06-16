@@ -132,6 +132,22 @@ export const DataUtil = {
     }
   },
 
+  /**
+   * If the stone has an appliance, return that appliance, otherwise return the stone. This gets you the item that
+   * contains the active behaviour
+   * @param sphere
+   * @param stone
+   * @returns {*}
+   */
+  getLocationFromStone: function(sphere, stone) {
+    if (stone.config.locationId) {
+      return sphere.locations[stone.config.locationId];
+    }
+    else {
+      return null;
+    }
+  },
+
 
   userHasPlugsInSphere: function(state, sphereId) {
     let stones = state.spheres[sphereId].stones;

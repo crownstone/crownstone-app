@@ -15,6 +15,7 @@ import {
 const Actions = require('react-native-router-flux').Actions;
 
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
+import {Util} from "../../../util/Util";
 
 export class GuidestoneSummary extends Component<any, any> {
   constructor() {
@@ -25,7 +26,17 @@ export class GuidestoneSummary extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    const sphere = state.spheres[this.props.sphereId];
+    const stone = sphere.stones[this.props.stoneId];
+    const location = Util.data.getLocationFromStone(sphere, stone);
+
+    let locationLabel = "Currently in Room:";
+    let locationName = "No";
+    if (location) {
+      locationLabel = "Located in:";
+      locationName = location.config.name;
+    }
+
     return (
       <View style={{flex:1, paddingBottom:35}}>
         <View style={{flex:1}} />
@@ -37,6 +48,11 @@ export class GuidestoneSummary extends Component<any, any> {
         <View style={{alignItems:'center'}}>
           <Text style={deviceStyles.subText}>{"Connected to Mesh:"}</Text>
           <Text style={deviceStyles.text}>{stone.config.meshId ? 'Yes' : 'Not Yet'}</Text>
+        </View>
+        <View style={{flex: 0.2}} />
+        <View style={{alignItems:'center'}}>
+          <Text style={deviceStyles.subText}>{locationLabel}</Text>
+          <Text style={deviceStyles.text}>{locationName}</Text>
         </View>
         <View style={{flex: 0.2}} />
         <View style={{alignItems:'center', height: 0.2*availableScreenHeight}}>
