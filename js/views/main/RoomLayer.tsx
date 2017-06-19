@@ -27,7 +27,7 @@ export class RoomLayer extends Component<any, any> {
   _initialDistance : number;
   _currentScale : number;
   _panOffset : any = {x:0, y:0};
-  _minScale : number = 0.3;
+  _minScale : number = 0.1;
   _maxScale : number = 1.25;
   _baseRadius : number;
   _pressedRoom : any = false;
@@ -52,7 +52,7 @@ export class RoomLayer extends Component<any, any> {
     this.state = {
       presentUsers: {},
       scale: new Animated.Value(initialScale),
-      opacity: new Animated.Value(0),
+      opacity: new Animated.Value(1),
       pan: new Animated.ValueXY(),
       rooms: {},
       hoverRoom : false,
@@ -178,6 +178,8 @@ export class RoomLayer extends Component<any, any> {
           this.state.pan.setValue({ x: 0, y: 0 });
         }
 
+        console.log("this._panOffset",this._panOffset);
+
         this._multiTouch = false;
 
         if (this._validTap === true) {
@@ -222,6 +224,7 @@ export class RoomLayer extends Component<any, any> {
   }
 
   _recenter(fadeIn = false) {
+    // get bounding box
     let minX = 1e10;
     let maxX = -1e10;
     let minY = 1e10;
@@ -234,24 +237,43 @@ export class RoomLayer extends Component<any, any> {
       minY = Math.min(minY, node.y);
       maxY = Math.max(maxY, node.y);
     }
-
+    // correct bounding box
     maxX += 2*this._baseRadius;
     maxY += 2*this._baseRadius;
 
-    let requiredWidth  = 1.1*(maxX - minX);
-    let requiredHeight = 1.1*(maxY - minY);
+    // add padding
+    minX -= 0.3*this._baseRadius;
+    minY -= 0.3*this._baseRadius;
+    maxX += 0.3*this._baseRadius;
+    maxY += 0.3*this._baseRadius;
 
+    // bounding Box
+    let requiredWidth  = maxX - minX;
+    let requiredHeight = maxY - minY;
+
+    // set scale
     let newScale = Math.min(this._maxScale, Math.max(this._minScale, Math.min(screenWidth/requiredWidth, availableScreenHeight/requiredHeight)));
 
+    // center of bounding box projected on world coordinates
+    let massCenter = {x: minX + 0.5*requiredWidth, y: minY + 0.5*requiredHeight};
+
+    // actual center of the view.
+    let viewCenter = {x: 0.5*screenWidth, y: 0.5*availableScreenHeight};
+
+    // determine offset to center everything.
+    let offsetRequired = {x: newScale*(viewCenter.x - massCenter.x) - this._panOffset.x, y: newScale*(viewCenter.y - massCenter.y) - this._panOffset.y};
+
+    // batch animations together.
     let animations = [];
     animations.push(Animated.timing(this.state.opacity, { toValue: 1, duration:600}));
     animations.push(Animated.timing(this.state.scale, { toValue: newScale, duration:600}));
-    animations.push(Animated.timing(this.state.pan, { toValue: {x: -this._panOffset.x, y:-this._panOffset.y}, duration:600}))
+    animations.push(Animated.timing(this.state.pan, { toValue: {x: offsetRequired.x, y: offsetRequired.y}, duration:600}));
     Animated.parallel(animations).start(() => {
-      this.state.pan.setOffset({x: 0, y: 0 });
+      this._panOffset.x += offsetRequired.x;
+      this._panOffset.y += offsetRequired.y;
+      this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
       this.state.pan.setValue({ x: 0, y: 0 });
       this._currentPan = {x:0, y:0};
-      this._panOffset = {x:0, y:0};
       this._currentScale = newScale;
     });
 
@@ -279,34 +301,42 @@ export class RoomLayer extends Component<any, any> {
       let id = roomIds[i];
       this.nodes[id] = {id: id, mass: 1, fixed: false};
       this.state.rooms[id] = {x: new Animated.Value(0), y: new Animated.Value(0)};
-      for (let j = 0; j < roomIds.length; j++) {
-        if (j !== i) {
-          let edgeId =  roomIds[i] + '_to_' + roomIds[j];
-          // edges[edgeId] = {id: edgeId, from: 'room_' + roomIds[i], to: 'room_' + roomIds[j]};
-        }
-      }
     }
+
+    // edges[roomIds[0] + '_to_' + roomIds[1]] = {id: roomIds[0] + '_to_' + roomIds[1], from: roomIds[0], to: roomIds[1]};
+    // edges[roomIds[1] + '_to_' + roomIds[2]] = {id: roomIds[1] + '_to_' + roomIds[2], from: roomIds[1], to: roomIds[2]};
+    // edges[roomIds[2] + '_to_' + roomIds[3]] = {id: roomIds[2] + '_to_' + roomIds[3], from: roomIds[2], to: roomIds[3]};
+
 
     let engine;
 
+
     let nodeIds = Object.keys(this.nodes);
     let initialized = false;
+    let i = 0;
     let onChange = () => {
-      if (initialized === false) {
-        this._recenter(true);
-        initialized = true;
-      }
-      for (let i = 0; i < nodeIds.length; i++) {
-        this.state.rooms[nodeIds[i]].x.setValue(this.nodes[nodeIds[i]].x);
-        this.state.rooms[nodeIds[i]].y.setValue(this.nodes[nodeIds[i]].y);
-      }
+      // if (initialized === false) {
+      //   this._recenter(true);
+      //   initialized = true;
+      // }
+      requestAnimationFrame(() => {
+        for (let i = 0; i < nodeIds.length; i++) {
+          this.state.rooms[nodeIds[i]].x.setValue(this.nodes[nodeIds[i]].x);
+          this.state.rooms[nodeIds[i]].y.setValue(this.nodes[nodeIds[i]].y);
+        }
+
+        if (i < 40) {
+          engine.stabilize(1)
+          i++;
+        }
+      })
     };
 
 
 
-    engine = new PhysicsEngine(center, this._baseRadius, () => {}, onChange);
+    engine = new PhysicsEngine(center, this._baseRadius, onChange);
     engine.load(this.nodes, edges);
-    engine.stabilize(30, true);
+    engine.stabilize(1, true);
 
   }
 

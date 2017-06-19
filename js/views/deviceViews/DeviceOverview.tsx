@@ -25,8 +25,6 @@ import { STONE_TYPES } from "../../router/store/reducers/stones";
 import { DeviceError } from "./elements/DeviceError";
 import { DeviceUpdate } from "./elements/DeviceUpdate";
 import { GuidestoneSummary } from "./elements/GuidestoneSummary";
-import { DeviceTime } from "./elements/unused/DeviceTime";
-import { DeviceDebug } from "./elements/unused/DeviceDebug";
 import { eventBus } from "../../util/EventBus";
 
 

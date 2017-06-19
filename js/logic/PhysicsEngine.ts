@@ -69,7 +69,7 @@ class PhysicsEngine {
       enabled: true,
       barnesHut: {
         theta: 0.5,
-        gravitationalConstant: -2000,
+        gravitationalConstant: -3000,
         centralGravity: 0.3,
         springLength: 95,
         springConstant: 0.04,

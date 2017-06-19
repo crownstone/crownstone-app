@@ -20,29 +20,17 @@ class SpringSolver {
     let edgeLength, edge;
     let edgeIndices = this.physicsBody.physicsEdgeIndices;
     let edges = this.physicsBody.edges;
-    let node1, node2, node3;
 
     // forces caused by the edges, modelled as springs
     for (let i = 0; i < edgeIndices.length; i++) {
       edge = edges[edgeIndices[i]];
-      if (edge.connected === true && edge.toId !== edge.fromId) {
+      if (edge.to !== edge.from) {
         // only calculate forces if nodes are in the same sector
-        if (this.physicsBody.nodes[edge.toId] !== undefined && this.physicsBody.nodes[edge.fromId] !== undefined) {
-          if (edge.edgeType.via !== undefined) {
-            edgeLength = edge.options.length === undefined ? this.options.springLength : edge.options.length;
-            node1 = edge.to;
-            node2 = edge.edgeType.via;
-            node3 = edge.from;
-
-            this._calculateSpringForce(node1, node2, 0.5 * edgeLength);
-            this._calculateSpringForce(node2, node3, 0.5 * edgeLength);
-          }
-          else {
-            // the * 1.5 is here so the edge looks as large as a smooth edge. It does not initially because the smooth edges use
-            // the support nodes which exert a repulsive force on the to and from nodes, making the edge appear larger.
-            edgeLength = edge.options.length === undefined ? this.options.springLength * 1.5: edge.options.length;
-            this._calculateSpringForce(edge.from, edge.to, edgeLength);
-          }
+        if (this.physicsBody.nodes[edge.to] !== undefined && this.physicsBody.nodes[edge.from] !== undefined) {
+          // the * 1.5 is here so the edge looks as large as a smooth edge. It does not initially because the smooth edges use
+          // the support nodes which exert a repulsive force on the to and from nodes, making the edge appear larger.
+          edgeLength = edge.length === undefined ? this.options.springLength * 1.5: edge.length;
+          this._calculateSpringForce(this.physicsBody.nodes[edge.from], this.physicsBody.nodes[edge.to], edgeLength);
         }
       }
     }
