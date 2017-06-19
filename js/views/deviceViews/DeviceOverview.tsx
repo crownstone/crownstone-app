@@ -27,10 +27,8 @@ import { DeviceUpdate } from "./elements/DeviceUpdate";
 import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { eventBus } from "../../util/EventBus";
 
-
-
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
-  eventBus.emit("setNewIndex", nextState.index);
+  eventBus.emit("setNewSwiperIndex", nextState.index);
 };
 
 export class DeviceOverview extends Component<any, any> {
@@ -41,7 +39,7 @@ export class DeviceOverview extends Component<any, any> {
     super();
 
     this.state = {swiperIndex: 0, scrolling:false};
-    this.unsubscribeSwipeEvent = eventBus.on("setNewIndex", (nextIndex) => {
+    this.unsubscribeSwipeEvent = eventBus.on("setNewSwiperIndex", (nextIndex) => {
       if (this.state.swiperIndex !== nextIndex) {
         this.setState({swiperIndex: nextIndex, scrolling: false});
       }
@@ -63,7 +61,15 @@ export class DeviceOverview extends Component<any, any> {
         return;
       }
 
+
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+
+      // investigate why this check is required:
+      if (!stone || !stone.config) {
+        Actions.pop();
+        return;
+      }
+
       let applianceId = stone.config.applianceId;
       if (
         change.changeStoneState && change.changeStoneState.stoneIds[this.props.stoneId] ||

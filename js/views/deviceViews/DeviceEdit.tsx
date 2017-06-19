@@ -26,7 +26,7 @@ import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 export class DeviceEdit extends Component<any, any> {
-  deleting : boolean;
+  deleting : boolean = false;
   unsubscribeStoreEvents : any;
 
   constructor() {
@@ -36,10 +36,10 @@ export class DeviceEdit extends Component<any, any> {
 
   componentDidMount() {
     const { store } = this.props;
+
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-
       let state = store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
         Actions.pop();
@@ -147,6 +147,7 @@ export class DeviceEdit extends Component<any, any> {
 
 
     items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
+    console.log(appliance.config.name)
     items.push({
       label: 'Device Name', type: 'textEdit', placeholder:'Choose a nice name', value: appliance.config.name, callback: (newText) => {
         store.dispatch({...requiredData, type: 'UPDATE_APPLIANCE_CONFIG', data: {name: newText}});
@@ -307,6 +308,7 @@ export class DeviceEdit extends Component<any, any> {
   }
 
   render() {
+    console.log("HERE")
     const store = this.props.store;
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
