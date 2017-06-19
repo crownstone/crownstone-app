@@ -111,6 +111,7 @@ export class RoomLayer extends Component<any, any> {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {
+        this.state.pan.stopAnimation();
         // gestureState.d{x,y} will be set to zero now
         this._multiTouchUsed = false;
         this._totalMovedX = 0;
@@ -161,11 +162,23 @@ export class RoomLayer extends Component<any, any> {
       },
 
       onPanResponderRelease: (evt, gestureState) => {
+        // console.log(gestureState.vx, gestureState.vy);
+        if (gestureState.vx !== 0 || gestureState.vy !== 0) {
+          Animated.decay(this.state.pan, { velocity: {x: gestureState.vx, y: gestureState.vy}, deceleration:0.99}).start(() => {
+            this._panOffset.x = this._currentPan.x;
+            this._panOffset.y = this._currentPan.y;
+            this.state.pan.setOffset({x: this._currentPan.x, y: this._currentPan.y });
+            this.state.pan.setValue({ x: 0, y: 0 });
+          });
+        }
+        else {
+          this._panOffset.x += gestureState.dx;
+          this._panOffset.y += gestureState.dy;
+          this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
+          this.state.pan.setValue({ x: 0, y: 0 });
+        }
+
         this._multiTouch = false;
-        this._panOffset.x += gestureState.dx;
-        this._panOffset.y += gestureState.dy;
-        this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
-        this.state.pan.setValue({ x: 0, y: 0 });
 
         if (this._validTap === true) {
           if (this._lastTapLocation === this._pressedRoom && new Date().valueOf() - this._lastTap < 300) {
@@ -208,7 +221,7 @@ export class RoomLayer extends Component<any, any> {
     this.state.pan.removeListener(this.panListener);
   }
 
-  _recenter() {
+  _recenter(fadeIn = false) {
     let minX = 1e10;
     let maxX = -1e10;
     let minY = 1e10;
@@ -230,12 +243,16 @@ export class RoomLayer extends Component<any, any> {
 
     let newScale = Math.min(this._maxScale, Math.max(this._minScale, Math.min(screenWidth/requiredWidth, availableScreenHeight/requiredHeight)));
 
-    Animated.timing(this.state.scale, { toValue: newScale, duration:600}).start(() => { this._currentScale = newScale; });
-    Animated.timing(this.state.pan, { toValue: {x: -this._panOffset.x, y:-this._panOffset.y}, duration:600}).start(() => {
+    let animations = [];
+    animations.push(Animated.timing(this.state.opacity, { toValue: 1, duration:600}));
+    animations.push(Animated.timing(this.state.scale, { toValue: newScale, duration:600}));
+    animations.push(Animated.timing(this.state.pan, { toValue: {x: -this._panOffset.x, y:-this._panOffset.y}, duration:600}))
+    Animated.parallel(animations).start(() => {
       this.state.pan.setOffset({x: 0, y: 0 });
       this.state.pan.setValue({ x: 0, y: 0 });
       this._currentPan = {x:0, y:0};
       this._panOffset = {x:0, y:0};
+      this._currentScale = newScale;
     });
 
   }
@@ -272,25 +289,22 @@ export class RoomLayer extends Component<any, any> {
 
     let engine;
 
-    let showIterations = 0;
-    let showThreshold = 15;
     let nodeIds = Object.keys(this.nodes);
+    let initialized = false;
     let onChange = () => {
+      if (initialized === false) {
+        this._recenter(true);
+        initialized = true;
+      }
       for (let i = 0; i < nodeIds.length; i++) {
         this.state.rooms[nodeIds[i]].x.setValue(this.nodes[nodeIds[i]].x);
         this.state.rooms[nodeIds[i]].y.setValue(this.nodes[nodeIds[i]].y);
       }
-      this.state.opacity.setValue(showIterations/showThreshold);
-
-      if (showIterations < showThreshold) {
-        showIterations++;
-        requestAnimationFrame(() => {
-          engine.stabilize(3);
-        })
-      }
     };
 
-    engine = new PhysicsEngine(center, this._baseRadius, onChange);
+
+
+    engine = new PhysicsEngine(center, this._baseRadius, () => {}, onChange);
     engine.load(this.nodes, edges);
     engine.stabilize(30, true);
 

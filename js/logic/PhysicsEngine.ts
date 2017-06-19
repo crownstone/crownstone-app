@@ -488,7 +488,7 @@ class PhysicsEngine {
       this._stabilizationBatch();
     }
     else {
-      this.onStable()
+      this.onStable();
     }
   }
 
