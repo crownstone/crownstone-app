@@ -40,9 +40,11 @@ let defaultSettings = {
     onlyOnWhenDark: false,
     touchToToggle: true,
     type: STONE_TYPES.plug,
+    stoneTime: 0,
+    stoneTimeChecked: 0,
     lastSeen: 1,
     updatedAt: 1,
-    lastUpdatedStoneTime: 1,
+    lastUpdatedStoneTime: 0,
   },
   state: {
     state: 0.0,
@@ -119,6 +121,14 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         let newState = {...state};
         newState.disabled        = update(action.data.disabled, newState.disabled);
         newState.rssi            = update(action.data.rssi, newState.rssi);
+        return newState;
+      }
+      return state;
+    case 'UPDATE_STONE_REMOTE_TIME':
+      if (action.data) {
+        let newState = {...state};
+        newState.stoneTime        = update(action.data.stoneTime, newState.stoneTime);
+        newState.stoneTimeChecked = getTime(action.data.stoneTimeChecked);
         return newState;
       }
       return state;

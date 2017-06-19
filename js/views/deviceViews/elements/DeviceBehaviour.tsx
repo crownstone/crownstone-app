@@ -31,10 +31,13 @@ export class DeviceBehaviour extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-    const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
+    const sphere = state.spheres[this.props.sphereId];
+    const stone = sphere.stones[this.props.stoneId];
+    const element = Util.data.getElement(sphere, stone);
+
     let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId) && stone.config.locationId !== null;
-    let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behavior.onNear.active === true;
+    let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behaviour.onNear.active === true;
+
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center'}}>
         <View style={{flex: 1.5}} />
@@ -43,7 +46,7 @@ export class DeviceBehaviour extends Component<any, any> {
         <View style={{flex: 1.5}} />
         <BehaviourResponse data={element.behaviour} type="onHomeEnter" stone={stone} />
         <View style={{flex:0.8}} />
-        <BehaviourResponse data={element.behaviour} type="onHomeExit" stone={stone} />
+        <BehaviourResponse data={element.behaviour} type="onHomeExit" stone={stone} sphere={sphere} />
         <View style={{flex:0.8}} />
         {canDoIndoorLocalization ? <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomEnter" /> : <BehaviourResponse data={element.behaviour} stone={stone}  type="onNear" />}
         <View style={{flex:0.8}} />
@@ -68,6 +71,9 @@ export class DeviceBehaviour extends Component<any, any> {
 class BehaviourResponse extends Component<any, any> {
   _getDelay() {
     let delay = this.props.data[this.props.type].delay;
+    if (this.props.type === 'onHomeExit' && this.props.sphere) {
+      delay = this.props.sphere.config.exitDelay;
+    }
     if (delay === 0) { return; }
     return ' after ' + Util.getDelayLabel(delay, true);
   }

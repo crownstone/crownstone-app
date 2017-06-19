@@ -131,11 +131,12 @@ class KeepAliveHandlerClass {
         stoneId,
         sphereId,
         {commandName: 'keepAliveState', changeState: changeState, state: newState, timeout: delay},
-        KEEPALIVE_ATTEMPTS
+        KEEPALIVE_ATTEMPTS,
+        'from _performKeepAliveForStone in KeepAliveHandler'
       ).catch((err) => {});
     }
     else {
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'keepAlive'}, KEEPALIVE_ATTEMPTS).catch((err) => {});
+      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'keepAlive'}, KEEPALIVE_ATTEMPTS, 'from _performKeepAliveForStone in KeepAliveHandler').catch((err) => {});
     }
   }
 }

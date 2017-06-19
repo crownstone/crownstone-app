@@ -31,9 +31,10 @@ class BatchCommandHandlerClass {
    * @param { String } sphereId           // sphereId,
    * @param { commandInterface } command  // Object containing a command that is in the BluenetPromise set
    * @param { Number } attempts           // sphereId,
+   * @param { string } label              // explain where the command comes from,
    */
-  load(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1) {
-    LOG.verbose("BatchCommandHandler: Loading Command,", stoneId, stone.config.name, command);
+  load(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1, label = '') {
+    LOG.verbose("BatchCommandHandler: Loading Command, sphereId:",sphereId," stoneId:", stoneId, stone.config.name, command, label);
     return this._load(stone, stoneId, sphereId, command, false, attempts );
   }
 
@@ -43,9 +44,10 @@ class BatchCommandHandlerClass {
    * @param { String } sphereId           // sphereId,
    * @param { commandInterface } command  // Object containing a command that is in the BluenetPromise set
    * @param { Number } attempts           // sphereId,
+   * @param { string } label              // explain where the command comes from,
    */
-  loadPriority(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1) {
-    LOG.verbose("BatchCommandHandler: Loading High Priority Command,", stoneId, stone.config.name, command);
+  loadPriority(stone, stoneId, sphereId, command : commandInterface, attempts : number = 1, label = '') {
+    LOG.verbose("BatchCommandHandler: Loading High Priority Command, sphereId:",sphereId," stoneId", stoneId, stone.config.name, command, label);
     return this._load(stone, stoneId, sphereId, command, true, attempts );
   }
 
@@ -62,6 +64,7 @@ class BatchCommandHandlerClass {
         stone:    stone,
         command:  command,
         attempts: attempts,
+        initialized: false,
         cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
         promise:  { resolve: resolve, reject: reject, pending: false}
       };
@@ -158,10 +161,12 @@ class BatchCommandHandlerClass {
    *
    * @param targetStoneId     // database id of stone. If provided, we only put todos for this stone in the list.
    * @param targetNetworkId   // Mesh network id of the Crownstone. If provided, we only put todos for this mesh network in the list.
+   * @param markAsInitialized   // When true, the commands that are returned will be marked as initialized by the extraction process.
    * @returns {{directCommands: {}, meshNetworks: sphereMeshNetworks}}
    * @private
    */
-  _extractTodo(targetStoneId : string = null, targetNetworkId : string = null) {
+  _extractTodo(targetStoneId : string = null, targetNetworkId : string = null, markAsInitialized = false) {
+    // This will determine if there are high priority commands to filter for, and if so return only those. If not, returns all.
     let commandsToHandle = this._getCommandsToHandle();
 
     let directCommands : directCommands = {};
@@ -170,6 +175,13 @@ class BatchCommandHandlerClass {
     let uuids = Object.keys(commandsToHandle);
     for (let i = 0; i < uuids.length; i++) {
       let todo = commandsToHandle[uuids[i]];
+
+      // If we mark this command as initialized it will be handled by the attemptHandler.
+      // This is required to avoid the cases where commands that are loaded while there is a pending process
+      // If that pending process fails, anything that was loaded during that time would be cancelled as well.
+      if (markAsInitialized === true) {
+        todo.initialized = true;
+      }
 
       let command = todo.command;
       let stoneConfig = todo.stone.config;
@@ -191,32 +203,45 @@ class BatchCommandHandlerClass {
       if (meshNetworks[todo.sphereId]   === undefined) { meshNetworks[todo.sphereId]   = {}; }
 
       // mesh not supported, no mesh detected for this stone
-      if (!MESH_ENABLED || stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
+      if (
+        !MESH_ENABLED ||
+        stoneConfig.meshNetworkId === null ||
+        stoneConfig.meshNetworkId === undefined
+      ) {
         // handle this 1:1
         directCommands[todo.sphereId].push(todo);
       }
       else {
-        if (meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] === undefined) {
-          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] = {
-            keepAlive:      [],
-            keepAliveState: [],
-            multiSwitch:    [],
-            other:          []
-          };
-        }
+        // this is a function to ensure that we do not create a field in the meshNetwork
+        let verifyMeshPayloadPrefix = () => {
+          if (meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] === undefined) {
+            meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] = {
+              keepAlive:      [],
+              keepAliveState: [],
+              multiSwitch:    [],
+              other:          []
+            };
+          }
+        };
 
-        let payload = this._getPayloadFromCommand(todo);
+        let payload = _getPayloadFromCommand(todo);
 
         if (command.commandName === 'keepAlive') {
+          verifyMeshPayloadPrefix();
           meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAlive.push(payload);
         }
         else if (command.commandName === 'keepAliveState') {
+          verifyMeshPayloadPrefix();
           meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAliveState.push(payload);
         }
         else if (command.commandName === 'multiSwitch') {
+          verifyMeshPayloadPrefix();
           meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
         }
         else {
+          // THIS WILL NOT BE USED
+          LOG.error("BatchCommandHandler: Parsing command via mesh instead of directly", todo);
+
           // handle the command via the mesh or 1:1
           // meshNetworks[stoneConfig.meshNetworkId].other.push({ ...todo });
 
@@ -231,66 +256,13 @@ class BatchCommandHandlerClass {
 
 
   /**
-   * Extract the payload from the commands for the 4 supported states.
-   * @param batchCommand
-   * @returns {any}
-   * @private
-   */
-  _getPayloadFromCommand(batchCommand : batchCommandEntry) {
-    let payload;
-    let command = batchCommand.command;
-    let stoneConfig = batchCommand.stone.config;
-
-    if (command.commandName === 'keepAlive') {
-      payload = {cleanup: batchCommand.cleanup, promise: batchCommand.promise};
-    }
-    else if (command.commandName === 'keepAliveState') {
-      payload = {
-        crownstoneId: stoneConfig.crownstoneId,
-        handle: stoneConfig.handle,
-        changeState: command.changeState,
-        state: command.state,
-        attempts: batchCommand.attempts,
-        timeout: command.timeout,
-        cleanup: batchCommand.cleanup,
-        promise: batchCommand.promise
-      };
-    }
-    else if (command.commandName === 'setSwitchState') {
-      payload = {
-        crownstoneId: stoneConfig.crownstoneId,
-        handle: stoneConfig.handle,
-        state: command.state,
-        attempts: batchCommand.attempts,
-        cleanup: batchCommand.cleanup,
-        promise: batchCommand.promise
-      };
-    }
-    else if (command.commandName === 'multiSwitch') {
-      payload = {
-        crownstoneId: stoneConfig.crownstoneId,
-        handle: stoneConfig.handle,
-        state: command.state,
-        intent: command.intent,
-        timeout: command.timeout,
-        attempts: batchCommand.attempts,
-        cleanup: batchCommand.cleanup,
-        promise: batchCommand.promise
-      };
-    }
-
-    return payload;
-  }
-
-
-  /**
    * Convert all the todos to an array of event topics we can listen to.
    * These events are triggered by advertisements or ibeacon messages.
    * @returns {Array}
    * @private
    */
   _getObjectsToScan() {
-    let { directCommands, meshNetworks } = this._extractTodo();
+    let { directCommands, meshNetworks } = this._extractTodo(null, null, true);
 
     // get sphereIds of the spheres we need to do things in.
     let meshSphereIds = Object.keys(meshNetworks);
@@ -366,6 +338,12 @@ class BatchCommandHandlerClass {
                 // TODO: wait for fix on firmware to just disable a single error.
                 // actionPromise = BluenetPromiseWrapper.clearErrors(command.clearErrorJSON);
                 actionPromise = BluenetPromiseWrapper.restartCrownstone();
+                break;
+              case 'setTime':
+                actionPromise = BluenetPromiseWrapper.setTime(command.time);
+                break;
+              case 'getTime':
+                actionPromise = BluenetPromiseWrapper.getTime();
                 break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive();
@@ -497,22 +475,22 @@ class BatchCommandHandlerClass {
           LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle, this.activePromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle);
         })
-        .then(() => {
-          if (Permissions.setStoneTime) {
-            // check if we have to tell this crownstone what time it is.
-            let state = this.store.getState();
-            let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;
-            // if it is more than 5 hours ago, tell this crownstone the time.
-            if (new Date().valueOf() - lastTime > 5 * 3600 * 1000) {
-              // this will never halt the chain since it's optional.
-              return BluenetPromiseWrapper.setTime(new Date().valueOf() * 1000)
-                .then(() => {
-                  this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
-                })
-                .catch((err) => { LOG.warning("BatchCommandHandler: Could not set the time of Crownstone", err); })
-            }
-          }
-        })
+        // .then(() => {
+        //   if (Permissions.setStoneTime) {
+        //     // check if we have to tell this crownstone what time it is.
+        //     let state = this.store.getState();
+        //     let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;
+        //     // if it is more than 5 hours ago, tell this crownstone the time.
+        //     if (new Date().valueOf() - lastTime > 5 * 3600 * 1000) {
+        //       // this will never halt the chain since it's optional.
+        //       return BluenetPromiseWrapper.setTime(new Date().valueOf() / 1000)
+        //         .then(() => {
+        //           this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
+        //         })
+        //         .catch((err) => { LOG.warning("BatchCommandHandler: Could not set the time of Crownstone", err); })
+        //     }
+        //   }
+        // })
         .then(() => {
           return BluenetPromiseWrapper.disconnectCommand()
         })
@@ -543,10 +521,15 @@ class BatchCommandHandlerClass {
    */
   attemptHandler(connectedCrownstone, err) {
     let handleAttempt = (command) => {
-      command.attempts -= 1;
-      if (command.attempts <= 0) {
-        command.promise.reject(err);
-        command.cleanup();
+      // The command has to be initialized first.
+      // This is required to avoid the cases where commands that are loaded while there is a pending process
+      // If that pending process fails, anything that was loaded during that time would be cancelled as well.
+      if (command.initialized === true) {
+        command.attempts -= 1;
+        if (command.attempts <= 0) {
+          command.promise.reject(err);
+          command.cleanup();
+        }
       }
     };
 
@@ -692,3 +675,64 @@ class BatchCommandHandlerClass {
 }
 
 export const BatchCommandHandler = new BatchCommandHandlerClass();
+
+
+/**
+ * Extract the payload from the commands for the 4 supported states.
+ * @param batchCommand
+ * @returns {any}
+ * @private
+ */
+const _getPayloadFromCommand = (batchCommand : batchCommandEntry) => {
+  let payload;
+  let command = batchCommand.command;
+  let stoneConfig = batchCommand.stone.config;
+
+  if (command.commandName === 'keepAlive') {
+    payload = {
+      attempts: batchCommand.attempts,
+      initialized: batchCommand.initialized,
+      cleanup: batchCommand.cleanup,
+      promise: batchCommand.promise
+    };
+  }
+  else if (command.commandName === 'keepAliveState') {
+    payload = {
+      attempts: batchCommand.attempts,
+      initialized: batchCommand.initialized,
+      handle: stoneConfig.handle,
+      crownstoneId: stoneConfig.crownstoneId,
+      changeState: command.changeState,
+      state: command.state,
+      timeout: command.timeout,
+      cleanup: batchCommand.cleanup,
+      promise: batchCommand.promise
+    };
+  }
+  else if (command.commandName === 'setSwitchState') {
+    payload = {
+      attempts: batchCommand.attempts,
+      initialized: batchCommand.initialized,
+      crownstoneId: stoneConfig.crownstoneId,
+      handle: stoneConfig.handle,
+      state: command.state,
+      cleanup: batchCommand.cleanup,
+      promise: batchCommand.promise
+    };
+  }
+  else if (command.commandName === 'multiSwitch') {
+    payload = {
+      attempts: batchCommand.attempts,
+      initialized: batchCommand.initialized,
+      crownstoneId: stoneConfig.crownstoneId,
+      handle: stoneConfig.handle,
+      state: command.state,
+      intent: command.intent,
+      timeout: command.timeout,
+      cleanup: batchCommand.cleanup,
+      promise: batchCommand.promise
+    };
+  }
+
+  return payload;
+}

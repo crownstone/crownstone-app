@@ -7,7 +7,7 @@ import { Util } from "../util/Util";
 import {CLOUD} from "../cloud/cloudAPI";
 import {INTENTS} from "../native/libInterface/Constants";
 
-class PushNotificationHandlerClass {
+class NotificationHandlerClass {
   store: any = {};
   requesting = false;
 
@@ -143,12 +143,14 @@ class NotificationParserClass {
       if (state && state.spheres[messageData.sphereId] && state.spheres[messageData.sphereId].stones[messageData.stoneId]) {
         switch(messageData.command) {
           case 'setSwitchStateRemotely':
-            BatchCommandHandler.loadPriority(
+            LOG.info("NotificationParser: switching based on notification", messageData);
+            BatchCommandHandler.load(
               state.spheres[messageData.sphereId].stones[messageData.stoneId],
               messageData.stoneId,
               messageData.sphereId,
               {commandName:'multiSwitch', state: Math.min(1,Math.max(0,messageData.switchState || 0)), intent: INTENTS.remotely, timeout: 0},
-              25
+              25,
+              'from handle in NotificationParser'
             ).catch((err) => {LOG.error("NotificationParser: Could not switch on device", err)});
             BatchCommandHandler.executePriority();
             break;
@@ -160,5 +162,5 @@ class NotificationParserClass {
 
 }
 
-export const NotificationHandler = new PushNotificationHandlerClass();
-export const NotificationParser = new NotificationParserClass();
+export const NotificationHandler = new NotificationHandlerClass();
+export const NotificationParser  = new NotificationParserClass();

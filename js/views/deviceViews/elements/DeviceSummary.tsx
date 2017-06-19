@@ -35,6 +35,10 @@ export class DeviceSummary extends Component<any, any> {
       color = colors.green.hex;
     }
 
+    if (stone.config.disabled) {
+      color = colors.gray.hex;
+    }
+
     let size = 0.35*screenWidth;
     let innerSize = size - 6;
     return (
@@ -74,6 +78,23 @@ export class DeviceSummary extends Component<any, any> {
     let size = 0.4*screenWidth;
     let innerSize = size - 8;
     let borderWidth = 3;
+
+    if (stone.config.disabled) {
+      color = colors.gray.hex;
+      return (
+        <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
+          <View style={{flex:2}} />
+          <Text style={deviceStyles.text}>{'Searching...'}</Text>
+          <View style={{flex:1}} />
+          <Text style={deviceStyles.subText}>{'Once I hear from this Crownstone, the button will reappear.'}</Text>
+          <View style={{flex:1}} />
+          <ActivityIndicator animating={true} size='small' color={colors.white.hex} />
+          <View style={{flex:2}} />
+        </View>
+      );
+    }
+
+
     if (this.state.pendingCommand === true) {
       return (
         <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
@@ -97,7 +118,8 @@ export class DeviceSummary extends Component<any, any> {
             stone,
             newState,
             this.props.store,
-            () => { this.setState({pendingCommand:false});}
+            () => { this.setState({pendingCommand:false});},
+            'from _getButton in DeviceSummary'
           );
 
         }}>
@@ -116,15 +138,24 @@ export class DeviceSummary extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-    const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
+    const sphere = state.spheres[this.props.sphereId];
+    const stone = sphere.stones[this.props.stoneId];
+    const element = Util.data.getElement(sphere, stone);
+    const location = Util.data.getLocationFromStone(sphere, stone);
+
+    let locationLabel = "Currently in Room:";
+    let locationName = "No";
+    if (location) {
+      locationLabel = "Located in:";
+      locationName = location.config.name;
+    }
 
     return (
       <View style={{flex:1, paddingBottom:35}}>
-        <DeviceInformation left={"Energy Consumption:"} leftValue={"1000 W"} right={"Located in:"} rightValue={"Living Room"} />
+        <DeviceInformation left={"Energy Consumption:"} leftValue={stone.state.currentUsage + ' W'} right={locationLabel} rightValue={locationName} />
         <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
                            leftValue={stone.config.applianceId ? stone.config.name : 'None'}
-                           right={"Connected to Mesh:"} rightValue={stone.config.meshId ? 'Yes' : 'Not Yet'} />
+                           right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'} />
         <View style={{flex:0.5}} />
         <View style={{width:screenWidth, alignItems:'center'}}>{this._getIcon(stone, element)}</View>
         <View style={{flex:1}} />
@@ -168,6 +199,7 @@ let deviceStyles = StyleSheet.create({
   subText: {
     color: textColor.rgba(0.5),
     fontSize: 13,
+    textAlign:'center'
   },
   explanation: {
     width: screenWidth,

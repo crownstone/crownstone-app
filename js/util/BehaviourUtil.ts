@@ -150,7 +150,18 @@ export const BehaviourUtil = {
         data['currentUsage'] = 0;
       }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'multiSwitch', state: behaviour.state, intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]], timeout:behaviour.delay}, 15)
+      BatchCommandHandler.load(
+        stone,
+        stoneId,
+        sphereId,
+        {
+          commandName:'multiSwitch',
+          state: behaviour.state,
+          intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]],
+          timeout:behaviour.delay},
+        15,
+        'from _enactBehaviourCore in BehaviourUtil'
+      )
         .then(() => {
           store.dispatch({
             type: 'UPDATE_STONE_SWITCH_STATE',

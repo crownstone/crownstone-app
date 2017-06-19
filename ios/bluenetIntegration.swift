@@ -181,6 +181,10 @@ func getBleErrorString(_ err: BleError) -> String {
     return "NOT_IN_DFU_MODE"
   case .REPLACED_WITH_OTHER_PROMISE:
     return "REPLACED_WITH_OTHER_PROMISE"
+  case .INCORRECT_RESPONSE_LENGTH:
+    return "INCORRECT_RESPONSE_LENGTH"
+  case .UNKNOWN_TYPE:
+    return "UNKNOWN_TYPE"
   }
 }
 
@@ -317,8 +321,8 @@ open class BluenetJS: NSObject {
     let guestKey  = settings["guestKey"]  as? String
     let referenceId = settings["referenceId"]  as? String
     
-    if ((adminKey == nil && memberKey == nil && guestKey == nil) || referenceId == nil) {
-      callback([["error" : true, "data": "Missing the Keys required for Bluenet Settings."]])
+    if (adminKey == nil || memberKey == nil || guestKey == nil || referenceId == nil) {
+      callback([["error" : true, "data": "Missing one of the Keys required for Bluenet Settings."]])
       return
     }
     
@@ -963,4 +967,25 @@ open class BluenetJS: NSObject {
     }
   }
   
+  @objc func getTime(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called getTime")
+    GLOBAL_BLUENET!.bluenet.state.getTime()
+      .then{time in callback([["error" : false, "data": time]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setTime"]])
+        }
+    }
+  }
+
+
+  @objc func batterySaving(_ state: NSNumber) -> Void {
+    let batterySavingState : Bool = state.boolValue
+
+    LOGGER.info("BluenetBridge: batterySaving set to \(batterySavingState)")
+  }
+
 }

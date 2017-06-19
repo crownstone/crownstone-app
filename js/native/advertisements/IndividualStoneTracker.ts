@@ -53,11 +53,11 @@ export class IndividualStoneTracker {
     if (this.meshNetworkId !== null) {
       this.unsubscribeMeshListener = eventBus.on(Util.events.getViaMeshTopic(this.sphereId, this.meshNetworkId), (data) => {
         if (data.id === this.stoneId) {
-          LOG.info("PROGRESSING RESET ", this.stoneUID, " from ", this.meshNetworkId, "to ", 0);
+          // LOG.info("PROGRESSING RESET ", this.stoneUID, " from ", this.meshNetworkId, "to ", 0);
           this.notThisStoneCounter = 0;
         }
         else {
-          LOG.info("PROGRESSING ", this.stoneUID, " from ", this.meshNetworkId, "to ", this.notThisStoneCounter);
+          // LOG.info("PROGRESSING ", this.stoneUID, " from ", this.meshNetworkId, "to ", this.notThisStoneCounter);
           this.notThisStoneCounter += 1;
         }
 
