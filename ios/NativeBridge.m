@@ -86,8 +86,6 @@ RCT_EXTERN_METHOD(meshKeepAlive:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:(NSArray *)stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(meshCommandSetSwitchState:(NSArray<NSNumber *> *)crownstoneIds state:(nonnull NSNumber *)state intent:(nonnull NSNumber *)intent callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
-// TESTING
-RCT_EXTERN_METHOD(meshKeepAliveBatchCommand:(RCTResponseSenderBlock)callback)
 
 // DFU
 

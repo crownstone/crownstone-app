@@ -862,22 +862,6 @@ open class BluenetJS: NSObject {
     }
   }
   
-  @objc func meshKeepAliveBatchCommand(_ callback: @escaping RCTResponseSenderBlock) -> Void {
-    LOGGER.info("BluenetBridge: Called meshKeepAliveBatchCommand")
-    //    print("-- Firing meshCommandSetSwitchState crownstoneIds: \(crownstoneIds), state: \(state), intent: \(intent)")
-    GLOBAL_BLUENET!.bluenet.mesh.keepAliveBatchCommand(crownstoneIds: [UInt16]())
-      .then{_ in callback([["error" : false]])}
-      .catch{err in
-        if let bleErr = err as? BleError {
-          callback([["error" : true, "data": getBleErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN meshKeepAliveState \(err)"]])
-        }
-    }
-  }
-  
-  
   @objc func multiSwitch(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called multiSwitch")
 //    print("-- Firing multiSwitch arrayOfStoneSwitchPackets: \(arrayOfStoneSwitchPackets)")

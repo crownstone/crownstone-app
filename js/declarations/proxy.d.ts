@@ -38,7 +38,6 @@ interface BluenetPromiseWrapperProtocol {
   restartCrownstone(): Promise<any>,
   setTime(time: number): Promise<any>,
   getTime():Promise<any>,
-  meshKeepAliveBatchCommand():Promise<any>,
 
 
 }

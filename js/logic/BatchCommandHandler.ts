@@ -345,9 +345,6 @@ class BatchCommandHandlerClass {
               case 'getTime':
                 actionPromise = BluenetPromiseWrapper.getTime();
                 break;
-              case 'keepAliveBatchCommand':
-                actionPromise = BluenetPromiseWrapper.meshKeepAliveBatchCommand();
-                break;
               case 'keepAlive':
                 actionPromise = BluenetPromiseWrapper.keepAlive();
                 break;

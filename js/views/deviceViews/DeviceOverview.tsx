@@ -25,8 +25,8 @@ import { STONE_TYPES } from "../../router/store/reducers/stones";
 import { DeviceError } from "./elements/DeviceError";
 import { DeviceUpdate } from "./elements/DeviceUpdate";
 import { GuidestoneSummary } from "./elements/GuidestoneSummary";
-import { DeviceTime } from "./elements/DeviceTime";
-import {DeviceDebug} from "./elements/DeviceDebug";
+import { DeviceTime } from "./elements/unused/DeviceTime";
+import {DeviceDebug} from "./elements/unused/DeviceDebug";
 import {eventBus} from "../../util/EventBus";
 
 
@@ -96,16 +96,14 @@ export class DeviceOverview extends Component<any, any> {
 
     let summaryIndex = 0;
     let behaviourIndex = 1;
-    let timeIndex = 2;
 
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state);
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let deviceType = stone.config.type;
-    let hasTime = true;
 
-    if (hasError)  { summaryIndex++; behaviourIndex++; timeIndex++; }
-    if (canUpdate) { summaryIndex++; behaviourIndex++; timeIndex++; }
+    if (hasError)  { summaryIndex++; behaviourIndex++; }
+    if (canUpdate) { summaryIndex++; behaviourIndex++; }
 
     let checkScrolling = (newState) => {
       if (this.state.scrolling !== newState) {
@@ -143,7 +141,7 @@ export class DeviceOverview extends Component<any, any> {
           bounces={true}
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
         >
-          { this._getContent(hasError, canUpdate, hasBehaviour, hasTime, deviceType) }
+          { this._getContent(hasError, canUpdate, hasBehaviour, deviceType) }
         </Swiper>
       </Background>
     )
@@ -158,7 +156,7 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getContent(hasError, canUpdate, hasBehaviour, hasTime, deviceType) {
+  _getContent(hasError, canUpdate, hasBehaviour, deviceType) {
     let content = [];
 
     if (hasError) {
@@ -179,10 +177,6 @@ export class DeviceOverview extends Component<any, any> {
       content.push(<DeviceBehaviour key={'behaviourSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
     }
 
-    if (hasTime) {
-      content.push(<DeviceTime key={'timeSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
-      content.push(<DeviceDebug key={'debugSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
-    }
     return content;
   }
 }
