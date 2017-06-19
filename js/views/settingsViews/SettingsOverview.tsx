@@ -28,7 +28,7 @@ export class SettingsOverview extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeUserData || change.changeSpheres || change.changeStones) {
+      if  (change.changeUserData || change.changeSpheres || change.changeStones || change.changeAppSettings) {
         this.forceUpdate();
       }
     });

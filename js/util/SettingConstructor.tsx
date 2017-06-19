@@ -83,7 +83,7 @@ export const SettingConstructor = function(store, state, eventBus) {
   }
 
   let presentSphere = Util.data.getPresentSphere(state);
-  if (presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere)) {
+  if (presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere) && state.app.tapToToggleEnabled !== false) {
     let tapToToggleSettings = { tutorial: false };
     if (Util.data.getTapToToggleCalibration(state)) {
       tapToToggleSettings.tutorial = true;
