@@ -3,7 +3,7 @@ import { update, getTime, refreshDefaults } from './reducerUtil'
 let defaultState = {
   activeSphere: null,
   notificationToken: null,
-  enableLocalization: true,
+  tapToToggleEnabled: true,
   updatedAt: 1
 };
 
@@ -36,7 +36,14 @@ export default (state = defaultState, action : any = {}) => {
       if (action.data) {
         newState = {...state};
         newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
-        newState.enableLocalization  = update(action.data.enableLocalization,  newState.enableLocalization);
+        newState.updatedAt           = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'UPDATE_APP_SETTINGS':
+      if (action.data) {
+        newState = {...state};
+        newState.tapToToggleEnabled   = update(action.data.tapToToggleEnabled,  newState.tapToToggleEnabled);
         newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;
       }

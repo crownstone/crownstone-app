@@ -45,7 +45,6 @@ export class DeviceOverview extends Component<any, any> {
 
     this.state = {swiperIndex: 0, scrolling:false};
     this.unsubscribeSwipeEvent = eventBus.on("setNewIndex", (nextIndex) => {
-      console.log("in new method", this.state.index, this.state);
       if (this.state.swiperIndex !== nextIndex) {
         this.setState({swiperIndex: nextIndex, scrolling: false});
       }

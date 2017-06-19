@@ -307,7 +307,7 @@ class AdvertisementHandlerClass {
     }
 
     // we always update the disability (and rssi) of the Crownstone that is broadcasting.
-    StoneStateHandler.receivedAdvertisementUpdate(sphereId, stoneFromAdvertisement, referenceByCrownstoneId.id, advertisement.rssi);
+    StoneStateHandler.receivedAdvertisementUpdate(sphereId, stoneFromAdvertisement, referenceByHandle.id, advertisement.rssi);
   }
 }
 

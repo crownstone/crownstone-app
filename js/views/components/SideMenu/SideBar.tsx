@@ -36,6 +36,12 @@ export class SideBar extends Component<any, any> {
   }
 
   componentDidMount() {
+    this.unsubscribe.push(eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeUserData || change.changeSpheres || change.changeStones || change.changeAppSettings) {
+        this.forceUpdate();
+      }
+    }));
     // trigger a redraw then the sphere is entered/left
     this.unsubscribe.push(NativeBus.on(NativeBus.topics.enterSphere, () => { this.forceUpdate() }));
     this.unsubscribe.push(NativeBus.on(NativeBus.topics.exitSphere,  () => { this.forceUpdate() }));

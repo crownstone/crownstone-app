@@ -28,12 +28,15 @@ export class TapToToggleCalibration extends Component<any, any> {
 
   componentDidMount() {
     this.unsubscribe.push(eventBus.on("CalibrateTapToToggle", (data : any = {}) => {
-      eventBus.emit("ignoreTriggers");
-      this.setState({
-        visible: true,
-        step: data.tutorial === false ? 1 : 0,
-        tutorial: data.tutorial === undefined ? true  : data.tutorial
-      });
+      let state = this.props.store.getState();
+      if (state.app.tapToToggleEnabled !== false) {
+        eventBus.emit("ignoreTriggers");
+        this.setState({
+          visible: true,
+          step: data.tutorial === false ? 1 : 0,
+          tutorial: data.tutorial === undefined ? true  : data.tutorial
+        });
+      }
     }));
   }
 
