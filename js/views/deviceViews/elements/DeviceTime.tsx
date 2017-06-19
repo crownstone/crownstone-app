@@ -25,6 +25,7 @@ import {LOG} from "../../../logging/Log";
 export class DeviceTime extends Component<any, any> {
   tickInterval : any;
   unsubscribeStoreEvents : any;
+  timeSet : number;
 
   constructor() {
     super();
@@ -49,21 +50,24 @@ export class DeviceTime extends Component<any, any> {
 
   _initClock() {
     clearInterval(this.tickInterval);
-    const store = this.props.store;
-    const state = store.getState();
-    const sphere = state.spheres[this.props.sphereId];
-    const stone = sphere.stones[this.props.stoneId];
+    let tick = () => {
+      const store = this.props.store;
+      const state = store.getState();
+      const sphere = state.spheres[this.props.sphereId];
+      const stone = sphere.stones[this.props.stoneId];
 
-    let offset = 0;
-    if (stone.config.stoneTimeChecked) {
-      offset = new Date().valueOf() - stone.config.stoneTimeChecked;
-    }
-    this.setState({time: stone.config.stoneTime + offset/1000, pendingCommand: false});
-    this.tickInterval = setInterval(() => {
-      if (this.state.time !== 0) {
-        this.setState({time: this.state.time+1})
+      let now = new Date().valueOf();
+
+      let offset = 0;
+      if (stone.config.stoneTimeChecked) {
+        offset = now - stone.config.stoneTimeChecked;
       }
-    }, 1000);
+
+      this.setState({time: stone.config.stoneTime + offset/1000});
+    };
+
+    tick();
+    this.tickInterval = setInterval(tick, 1000);
   }
 
   componentWillUnmount() {
@@ -73,7 +77,7 @@ export class DeviceTime extends Component<any, any> {
 
   _getButton(stone) {
     let buttonStyle = [styles.centered, {
-      width: 0.5 * screenWidth,
+      width: 0.50 * screenWidth,
       height: 50,
       borderRadius: 25,
       borderWidth: 3,
@@ -90,13 +94,15 @@ export class DeviceTime extends Component<any, any> {
       )
     }
     else {
+
       return (
         <View style={{flexDirection:'row'}}>
           <View style={{flex:1}} />
           <TouchableOpacity
             onPress={() => {
               this.setState({pendingCommand:true, actionLabel:'Setting'});
-              let newTime = new Date().valueOf()/1000;
+              let now = new Date().valueOf();
+              let newTime = now/1000;
               BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:'setTime', time: newTime}, 5, 'from getButton in DeviceTime')
                 .then(() => {
                   this.setState({pendingCommand: false});
@@ -104,7 +110,7 @@ export class DeviceTime extends Component<any, any> {
                     type:'UPDATE_STONE_REMOTE_TIME',
                     sphereId: this.props.sphereId,
                     stoneId: this.props.stoneId,
-                    data: {stoneTime: newTime}
+                    data: {stoneTime: newTime, stoneTimeChecked: now}
                   });
                 })
                 .catch((err) => {
@@ -121,6 +127,7 @@ export class DeviceTime extends Component<any, any> {
           <TouchableOpacity
           onPress={() => {
             this.setState({pendingCommand:true, actionLabel:'Retrieving'});
+            let now = new Date().valueOf();
             BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:'getTime'}, 5, 'from getButton in DeviceTime')
               .then((time) => {
                 this.setState({pendingCommand: false});
@@ -128,7 +135,7 @@ export class DeviceTime extends Component<any, any> {
                   type:'UPDATE_STONE_REMOTE_TIME',
                   sphereId: this.props.sphereId,
                   stoneId: this.props.stoneId,
-                  data: {stoneTime: time}
+                  data: {stoneTime: time, stoneTimeChecked: now}
                 });
               })
               .catch((err) => {
@@ -145,15 +152,16 @@ export class DeviceTime extends Component<any, any> {
           <TouchableOpacity
             onPress={() => {
               this.setState({pendingCommand:true, actionLabel:'Setting'});
-              let newTime = new Date().valueOf()/1000+3600*1.54;
+              let now = new Date().valueOf();
+              let newTime = now/1000+3600*1.54;
               BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:'setTime', time: newTime}, 5, 'from getButton in DeviceTime')
                 .then(() => {
-                  this.setState({pendingCommand: false});
+                  this.setState({pendingCommand: false, lastStoneTime: newTime});
                   this.props.store.dispatch({
                     type:'UPDATE_STONE_REMOTE_TIME',
                     sphereId: this.props.sphereId,
                     stoneId: this.props.stoneId,
-                    data: {stoneTime: newTime}
+                    data: {stoneTime: newTime, stoneTimeChecked: now}
                   });
                 })
                 .catch((err) => {
@@ -179,22 +187,26 @@ export class DeviceTime extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
 
+
+    let buttonSize = 0.19*screenHeight;
     return (
-      <View style={{flex:1, alignItems:'center', padding: 30, paddingBottom:50}}>
+      <View style={{flex:1, alignItems:'center', padding:20, paddingTop: 30, paddingBottom:50}}>
         <Text style={deviceStyles.header}>Time on Crownstone</Text>
         <View style={{flex:1}} />
         <IconButton
           name="md-time"
-          size={0.2*screenHeight}
+          size={buttonSize}
           color={colors.darkBackground.hex}
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.white.hex, borderRadius: 0.03*screenHeight}}
+          buttonStyle={{width: buttonSize, height: buttonSize, backgroundColor:colors.white.hex, borderRadius: 0.15*buttonSize}}
         />
         <View style={{flex:1}} />
-        <Text style={deviceStyles.text}>{'This Crownstone thinks the time is:'}</Text>
+        <Text style={deviceStyles.text}>{'This one thinks the time is:'}</Text>
         <View style={{flex:0.2}} />
         <Text style={deviceStyles.header}>{Util.getTimeFormat(this.state.time * 1000)}</Text>
         <View style={{flex:0.5}} />
         <Text style={deviceStyles.subText}>{'Last checked: ' + Util.getTimeFormat(stone.config.stoneTimeChecked)}</Text>
+        <Text style={deviceStyles.subText}>{'Stone: ' + Util.getTimeFormat(stone.config.stoneTime*1000)}</Text>
+        <Text style={deviceStyles.subText}>{'Now: ' + Util.getTimeFormat(new Date().valueOf())}</Text>
         <View style={{flex:1}} />
         { this._getButton(stone) }
       </View>

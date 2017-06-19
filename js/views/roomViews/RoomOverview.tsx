@@ -298,7 +298,7 @@ export class RoomOverview extends Component<any, any> {
       content = (
         <Animated.View style={{height: this.state.scrollViewHeight}}>
           <ScrollView style={{position:'relative', top:-1}}>
-            <View style={{height: Math.max(Object.keys(stoneArray).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
+            <View style={{height: Math.max(Object.keys(stoneArray).length*85+ 200, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
               <SeparatedItemList
                 items={stoneArray}
                 ids={ids}
