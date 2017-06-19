@@ -29,7 +29,7 @@ export class DeviceTime extends Component<any, any> {
   constructor() {
     super();
 
-    this.state = { time:0, pending: false, actionLabel: "Retrieving" };
+    this.state = { time:0, pendingCommand: false, actionLabel: "Retrieving" };
   }
 
   componentWillMount() {
@@ -58,7 +58,7 @@ export class DeviceTime extends Component<any, any> {
     if (stone.config.stoneTimeChecked) {
       offset = new Date().valueOf() - stone.config.stoneTimeChecked;
     }
-    this.setState({time: stone.config.stoneTime + offset/1000, pending: false});
+    this.setState({time: stone.config.stoneTime + offset/1000, pendingCommand: false});
     this.tickInterval = setInterval(() => {
       if (this.state.time !== 0) {
         this.setState({time: this.state.time+1})
@@ -81,7 +81,7 @@ export class DeviceTime extends Component<any, any> {
       backgroundColor: colors.csBlue.rgba(0.5),
       flexDirection: 'row'
     }];
-    if (this.state.pending) {
+    if (this.state.pendingCommand) {
       return (
         <View style={buttonStyle}>
           <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{this.state.actionLabel + "... "}</Text>
@@ -95,11 +95,11 @@ export class DeviceTime extends Component<any, any> {
           <View style={{flex:1}} />
           <TouchableOpacity
             onPress={() => {
-              this.setState({pending:true, actionLabel:'Setting'});
+              this.setState({pendingCommand:true, actionLabel:'Setting'});
               let newTime = new Date().valueOf()/1000;
               BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:'setTime', time: newTime}, 5, 'from getButton in DeviceTime')
                 .then(() => {
-                  this.setState({pending: false});
+                  this.setState({pendingCommand: false});
                   this.props.store.dispatch({
                     type:'UPDATE_STONE_REMOTE_TIME',
                     sphereId: this.props.sphereId,
@@ -108,7 +108,7 @@ export class DeviceTime extends Component<any, any> {
                   });
                 })
                 .catch((err) => {
-                  this.setState({pending: false});
+                  this.setState({pendingCommand: false});
                   Alert.alert("Failed to set new time...", "Maybe try it again?", [{text:'OK'}]);
                   LOG.error("DeviceTime: Could not set Time:", err);
                 });
@@ -120,10 +120,10 @@ export class DeviceTime extends Component<any, any> {
           <View style={{flex:1}} />
           <TouchableOpacity
           onPress={() => {
-            this.setState({pending:true, actionLabel:'Retrieving'});
+            this.setState({pendingCommand:true, actionLabel:'Retrieving'});
             BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:'getTime'}, 5, 'from getButton in DeviceTime')
               .then((time) => {
-                this.setState({pending: false});
+                this.setState({pendingCommand: false});
                 this.props.store.dispatch({
                   type:'UPDATE_STONE_REMOTE_TIME',
                   sphereId: this.props.sphereId,
@@ -132,7 +132,7 @@ export class DeviceTime extends Component<any, any> {
                 });
               })
               .catch((err) => {
-                this.setState({pending: false});
+                this.setState({pendingCommand: false});
                 Alert.alert("Failed to get time...", "Maybe try it again?", [{text:'OK'}]);
                 LOG.error("DeviceTime: Could not get Time:", err);
               });
@@ -144,11 +144,11 @@ export class DeviceTime extends Component<any, any> {
           <View style={{flex:1}} />
           <TouchableOpacity
             onPress={() => {
-              this.setState({pending:true, actionLabel:'Setting'});
+              this.setState({pendingCommand:true, actionLabel:'Setting'});
               let newTime = new Date().valueOf()/1000+3600*1.54;
               BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName:'setTime', time: newTime}, 5, 'from getButton in DeviceTime')
                 .then(() => {
-                  this.setState({pending: false});
+                  this.setState({pendingCommand: false});
                   this.props.store.dispatch({
                     type:'UPDATE_STONE_REMOTE_TIME',
                     sphereId: this.props.sphereId,
@@ -157,7 +157,7 @@ export class DeviceTime extends Component<any, any> {
                   });
                 })
                 .catch((err) => {
-                  this.setState({pending: false});
+                  this.setState({pendingCommand: false});
                   Alert.alert("Failed to set new time...", "Maybe try it again?", [{text:'OK'}]);
                   LOG.error("DeviceTime: Could not set Time:", err);
                 });
@@ -207,7 +207,7 @@ let textColor = colors.white;
 let deviceStyles = StyleSheet.create({
   header: {
     color: textColor.hex,
-    fontSize: 25,
+    fontSize: 23,
     fontWeight:'800'
   },
   text: {

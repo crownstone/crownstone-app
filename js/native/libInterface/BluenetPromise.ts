@@ -100,6 +100,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   clearFingerprintsPromise:   () => { return BluenetPromise('clearFingerprintsPromise'); },
   setTime:                    (time) => { return BluenetPromise('setTime',time); },
   getTime:                    () => { return BluenetPromise('getTime'); },
+  meshKeepAliveBatchCommand:      () => { return BluenetPromise('meshKeepAliveBatchCommand'); },
 
 };
 

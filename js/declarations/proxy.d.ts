@@ -31,11 +31,14 @@ interface BluenetPromiseWrapperProtocol {
   performDFU(handle : string, uri: string ): Promise<void>,
   setupFactoryReset(): Promise<void>,
   bootloaderToNormalMode( handle : string ): Promise<void>,
+
+  // new
   getErrors(): Promise<any>,
   clearErrors(clearErrorJSON): Promise<any>,
   restartCrownstone(): Promise<any>,
   setTime(time: number): Promise<any>,
   getTime():Promise<any>,
+  meshKeepAliveBatchCommand():Promise<any>,
 
 
 }

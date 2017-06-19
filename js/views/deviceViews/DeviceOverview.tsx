@@ -26,16 +26,30 @@ import { DeviceError } from "./elements/DeviceError";
 import { DeviceUpdate } from "./elements/DeviceUpdate";
 import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { DeviceTime } from "./elements/DeviceTime";
+import {DeviceDebug} from "./elements/DeviceDebug";
+import {eventBus} from "../../util/EventBus";
 
+
+
+Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
+  eventBus.emit("setNewIndex", nextState.index);
+};
 
 export class DeviceOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
   swiper: any = 0;
+  unsubscribeSwipeEvent : any;
 
   constructor() {
     super();
 
-    this.state = {scrolling:false}
+    this.state = {swiperIndex: 0, scrolling:false};
+    this.unsubscribeSwipeEvent = eventBus.on("setNewIndex", (nextIndex) => {
+      console.log("in new method", this.state.index, this.state);
+      if (this.state.swiperIndex !== nextIndex) {
+        this.setState({swiperIndex: nextIndex, scrolling: false});
+      }
+    });
   }
 
   componentDidMount() {
@@ -70,6 +84,7 @@ export class DeviceOverview extends Component<any, any> {
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
+    this.unsubscribeSwipeEvent();
   }
 
 
@@ -78,7 +93,6 @@ export class DeviceOverview extends Component<any, any> {
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
     let hasAppliance = stone.config.applianceId !== null;
-    let index = this.swiper && this.swiper.state.index || 0;
 
     let summaryIndex = 0;
     let behaviourIndex = 1;
@@ -93,14 +107,19 @@ export class DeviceOverview extends Component<any, any> {
     if (hasError)  { summaryIndex++; behaviourIndex++; timeIndex++; }
     if (canUpdate) { summaryIndex++; behaviourIndex++; timeIndex++; }
 
+    let checkScrolling = (newState) => {
+      if (this.state.scrolling !== newState) {
+        this.setState({scrolling: newState});
+      }
+    };
+
     return (
       <Background image={this.props.backgrounds.stoneDetailsBackground} hideTopBar={true}>
         <TopBar
           leftAction={() => { Actions.pop(); }}
-          rightItem={this.state.scrolling ?
-            this._getScrollingElement() : undefined}
+          rightItem={this.state.scrolling ? this._getScrollingElement() : undefined}
           right={() => {
-            switch (index) {
+            switch (this.state.swiperIndex) {
               case summaryIndex:
                 return (hasAppliance ? Permissions.editAppliance : Permissions.editCrownstone) ? 'Edit' : undefined;
               case behaviourIndex:
@@ -108,7 +127,7 @@ export class DeviceOverview extends Component<any, any> {
             }
           }}
           rightAction={() => {
-            switch (index) {
+            switch (this.state.swiperIndex) {
               case summaryIndex:
                 Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); break;
               case behaviourIndex:
@@ -120,14 +139,11 @@ export class DeviceOverview extends Component<any, any> {
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={availableScreenHeight}
           dot={<View style={{backgroundColor:'rgba(255,255,255,0.2)', width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
           activeDot={<View style={{backgroundColor: 'rgba(255,255,255,0.8)', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
-          ref={(swiper) => { this.swiper = swiper; }}
           loop={false}
-          onTouchStart={() => {  this.setState({scrolling: true}); /* this updates the index */ }}
-          onMomentumScrollEnd={() => { this.setState({scrolling: false}); /* this updates the index */ }}
+          bounces={true}
+          onScrollBeginDrag={  () => { checkScrolling(true);  }}
         >
           { this._getContent(hasError, canUpdate, hasBehaviour, hasTime, deviceType) }
-
-
         </Swiper>
       </Background>
     )
@@ -165,6 +181,7 @@ export class DeviceOverview extends Component<any, any> {
 
     if (hasTime) {
       content.push(<DeviceTime key={'timeSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
+      content.push(<DeviceDebug key={'debugSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
     }
     return content;
   }
