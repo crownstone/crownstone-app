@@ -174,7 +174,7 @@ export class SphereOverview extends Component<any, any> {
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
               <Sphere sphereId={activeSphere} store={this.props.store} eventBus={this.props.eventBus} />
-            {this._getSphereIcon(viewingRemotely)}
+              <SphereIcon viewingRemotely={viewingRemotely} />
           </AnimatedBackground>
         </View>
       );
@@ -198,34 +198,6 @@ export class SphereOverview extends Component<any, any> {
     }
   }
 
-  _getSphereIcon(viewingRemotely) {
-    let outerRadius = 0.11*screenWidth;
-    let size = 0.084*screenWidth;
-    let color = viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
-    let textColor = viewingRemotely === false ? colors.menuBackground.rgba(0.3) : colors.notConnected.hex;
-    return <View style={{
-      position:'absolute',
-      top: topBarHeight + 5,
-      left: 5,
-      flexDirection:'row',
-      alignItems:'center',
-      justifyContent:'center',
-    }}>
-      <View style={{
-        width: outerRadius,
-        height:outerRadius,
-        borderRadius:0.5*outerRadius,
-        backgroundColor: colors.white.rgba(0.5),
-        alignItems:'center',
-        justifyContent:'center',
-      }}>
-        <Icon name="c1-sphere" size={size} color={ color } />
-      </View>
-      <Text style={{backgroundColor:"transparent", color: textColor, fontWeight:'300', fontSize:13, paddingLeft:15}}>
-        {Util.spreadString('tap to change sphere')}
-      </Text>
-    </View>
-  }
 
   _getAddRoomIcon() {
     // ios props
@@ -271,6 +243,37 @@ export class SphereOverview extends Component<any, any> {
         explanation: 'Tap a Crownstone to see the options, then tap the left icon to select a room!'
       });
     }
+  }
+}
+
+class SphereIcon extends Component<any, any> {
+  render() {
+    let outerRadius = 0.11*screenWidth;
+    let size = 0.084*screenWidth;
+    let color = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
+    let textColor = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.3) : colors.notConnected.hex;
+    return <View style={{
+      position:'absolute',
+      top: topBarHeight + 5,
+      left: 5,
+      flexDirection:'row',
+      alignItems:'center',
+      justifyContent:'center',
+    }}>
+      <View style={{
+        width: outerRadius,
+        height:outerRadius,
+        borderRadius:0.5*outerRadius,
+        backgroundColor: colors.white.rgba(0.5),
+        alignItems:'center',
+        justifyContent:'center',
+      }}>
+        <Icon name="c1-sphere" size={size} color={ color } />
+      </View>
+      <Text style={{backgroundColor:"transparent", color: textColor, fontWeight:'300', fontSize:13, paddingLeft:15}}>
+        {Util.spreadString('tap to change sphere')}
+      </Text>
+    </View>
   }
 }
 
