@@ -1,5 +1,7 @@
 # iOS & Android App for the Crownstone.
 
+## State
+
 The Crownstone iOS and Android apps have the following functionality:
 
 | Functionality                                   | State Firmware           | State Smartphone Apps     | 
@@ -29,6 +31,10 @@ The Android development is always a few weeks behind the iOS development, especi
 The application makes use of separate libraries (so-called bluenet libraries) that are native to the platform. 
 This is on purpose so that people can be make use of the Crownstone libraries without the need to use React Native.
 See below for getting the libraries.
+
+## Issues and feature requests
+
+Do you encounter some issues or would you like to see a particular feature, file them directly at our [Github issues tracker](https://github.com/crownstone/CrownstoneApp/issues).
 
 ## Download
 
