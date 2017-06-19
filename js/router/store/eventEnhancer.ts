@@ -210,6 +210,8 @@ function checkAction(action, affectedIds) {
     case 'UPDATED_STONE_TIME':
     case 'SET_NOTIFICATION_TOKEN':
       break;
+    case 'UPDATE_APP_SETTINGS':
+      eventStatus['changeAppSettings'] = affectedIds; break;
     case 'UPDATE_MESH_NETWORK_ID':
       eventStatus['meshIdUpdated'] = affectedIds; break;
     default:

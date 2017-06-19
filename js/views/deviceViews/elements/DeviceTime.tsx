@@ -63,7 +63,12 @@ export class DeviceTime extends Component<any, any> {
         offset = now - stone.config.stoneTimeChecked;
       }
 
-      this.setState({time: stone.config.stoneTime + offset/1000});
+      if (stone.config.stoneTime === 0) {
+        this.setState({time: 0});
+      }
+      else {
+        this.setState({time: stone.config.stoneTime + offset/1000});
+      }
     };
 
     tick();

@@ -30,7 +30,7 @@ export class SettingsDeveloper extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus) {
+      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings) {
         this.forceUpdate();
       }
     });
@@ -143,6 +143,20 @@ export class SettingsDeveloper extends Component<any, any> {
           .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert("Error during sync.", err && err.message || JSON.stringify(err), [{text:'OK'}]) })
     }});
 
+    items.push({
+      label:"Enable Tap To Toggle",
+      value: state.app.tapToToggleEnabled,
+      type: 'switch',
+      icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+      callback:(newValue) => {
+        if (newValue === false) {
+          clearAllLogs();
+        }
+        store.dispatch({
+          type: 'UPDATE_APP_SETTINGS',
+          data: {tapToToggleEnabled: newValue}
+        });
+      }});
 
     let deviceId = Util.data.getCurrentDeviceId(state);
     let device = deviceId && state.devices[deviceId] || null;

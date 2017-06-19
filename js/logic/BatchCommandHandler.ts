@@ -239,9 +239,6 @@ class BatchCommandHandlerClass {
           meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
         }
         else {
-          // THIS WILL NOT BE USED
-          LOG.error("BatchCommandHandler: Parsing command via mesh instead of directly", todo);
-
           // handle the command via the mesh or 1:1
           // meshNetworks[stoneConfig.meshNetworkId].other.push({ ...todo });
 
