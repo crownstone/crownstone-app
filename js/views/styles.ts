@@ -9,6 +9,8 @@ export const screenHeight = Platform.OS === 'android' ?
 export const tabBarHeight    = Platform.OS === 'android' ? 0  :  50;
 export const statusBarHeight = Platform.OS === 'android' ? 0  :  20; // Status bar in iOS is 20 high
 export const topBarHeight    = Platform.OS === 'android' ? 52 :  42 + statusBarHeight; // Status bar in iOS is 20 high
+export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+
 export const pxRatio = PixelRatio.get();
 
 export let barHeight = 42;

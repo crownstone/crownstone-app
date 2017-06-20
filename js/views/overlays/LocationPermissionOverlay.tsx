@@ -97,7 +97,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible} height={0.7*screenHeight}>
+      <OverlayBox visible={this.state.visible}>
         <View style={{flex:1}} />
         <Icon
           name="ios-navigate"
