@@ -147,7 +147,7 @@ export class SettingsDeveloper extends Component<any, any> {
       label:"Enable Tap To Toggle",
       value: state.app.tapToToggleEnabled,
       type: 'switch',
-      icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+      icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
       callback:(newValue) => {
         if (newValue === false) {
           clearAllLogs();

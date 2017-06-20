@@ -35,6 +35,7 @@ export class DeviceOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
   swiper: any = 0;
   unsubscribeSwipeEvent : any;
+  touchEndTimeout: any;
 
   constructor() {
     super();
@@ -88,6 +89,7 @@ export class DeviceOverview extends Component<any, any> {
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
     this.unsubscribeSwipeEvent();
+    clearTimeout(this.touchEndTimeout);
   }
 
 
@@ -143,6 +145,7 @@ export class DeviceOverview extends Component<any, any> {
           loop={false}
           bounces={true}
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
+          onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
           { this._getContent(hasError, canUpdate, hasBehaviour, deviceType) }
         </Swiper>
