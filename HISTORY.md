@@ -2,6 +2,7 @@
 
 To be Released:
 
+- Fix validation on registration.
 - Fix forced logout after 6 days bug.
 - Update the other users in rooms every 10 seconds but only if the app is on screen.
 - Show version information of devices in their edit screen.
