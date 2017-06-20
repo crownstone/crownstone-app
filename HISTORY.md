@@ -5,6 +5,8 @@ To be Released:
 - Ensured that DFU and Setup work nicely in the background.
 - Fix bugs related to animated fade in and out views.
 - Show and handle errors of the hardware in the app.
+- Fix validation on registration.
+- Fix forced logout after 6 days bug.
 - Update the other users in rooms every 10 seconds but only if the app is on screen.
 - Show version information of devices in their edit screen.
 

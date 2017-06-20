@@ -5,6 +5,7 @@ import { Platform } from 'react-native'
 import { syncUsersInLocation } from './syncUsersInSphere'
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 import {APP_NAME} from "../../ExternalConfig";
+import {AppUtil} from "../../util/AppUtil";
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -40,16 +41,21 @@ export const sync = {
           LOG.warn("Could not verify user, attempting to login again and retry sync.");
           return CLOUD.login({
             email: state.user.email,
-            password: state.user.password,
+            password: state.user.passwordHash,
             background: true,
-            onUnverified: () => {},
-            onInvalidCredentials: () => {}
           })
-          .then((response) => {
-            CLOUD.setAccess(response.id);
-            CLOUD.setUserId(response.userId);
-            return syncDown(userId, options);
-          })
+            .then((response) => {
+              CLOUD.setAccess(response.id);
+              CLOUD.setUserId(response.userId);
+              this.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
+              return syncDown(userId, options);
+            })
+            .catch((err) => {
+              LOG.info("SYNC: COULD NOT VERIFY USER -- ERROR", err);
+              if (err.status === 401) {
+                AppUtil.logOut(store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
+              }
+            })
         }
         else {
           throw err;

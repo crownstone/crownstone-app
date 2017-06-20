@@ -31,7 +31,7 @@ export class TextEditBar extends Component<any, any> {
       // we set the timeout to ensure it has been drawn once. It needs to be rendered for the refs to work.
       this.validationTimeout = setTimeout(() => {
         if (newProps.validation !== undefined) {
-          this.validate((this.refs[this.refName] as any).state.value)
+          this.validate(this.props.value)
         }
       }, 10);
     }
