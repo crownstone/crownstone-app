@@ -8,16 +8,17 @@ import { eventBus } from '../../../util/EventBus'
 import {colors} from "../../styles";
 
 export class TextEditInput extends Component<any, any> {
-  blurred : boolean;
   isInFocus : boolean;
+  initialized : boolean;
   refName : string;
   blurListener : any;
   unsubscribe : any;
-
+  blurValue : string;
 
   constructor() {
     super();
-    this.blurred = false;
+    this.initialized = false;
+    this.blurValue = null;
     this.isInFocus = false;
     this.refName = (Math.random() * 1e9).toString(36);
 
@@ -38,23 +39,26 @@ export class TextEditInput extends Component<any, any> {
 
   focus() {
     this.isInFocus = true;
-    this.blurred = false;
+    this.initialized = true;
+    this.blurValue = null;
     (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
       eventBus.emit("focus", py);
     })
   }
 
   blur() {
-    if (this.blurred === false) {
-      this.blurred = true;
-      this.isInFocus = false;
-      if (this.props.__validate) {
-        this.props.__validate(this.props.value);
+    if (this.initialized) {
+      if (this.blurValue !== this.props.value) {
+        this.blurValue = this.props.value;
+        this.isInFocus = false;
+        if (this.props.__validate) {
+          this.props.__validate(this.props.value);
+        }
+        if (this.props.endCallback) {
+          this.props.endCallback(this.props.value);
+        }
+        eventBus.emit('blur');
       }
-      if (this.props.endCallback) {
-        this.props.endCallback(this.props.value);
-      }
-      eventBus.emit('blur');
     }
   }
 

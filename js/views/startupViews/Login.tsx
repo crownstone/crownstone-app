@@ -110,18 +110,36 @@ export class Login extends Component<any, any> {
       onInvalidCredentials: invalidLoginCallback,
     })
       .catch((err) => {
-        // do not show a popup if it is a failed request: this has its own pop up
-        if (err.message && err.message === 'Network request failed') {
-          this.props.eventBus.emit('hideLoading');
+        let handledError = false;
+        if (err.data && err.data.error && err.data.error.code) {
+          switch (err.data.error.code) {
+            case 'LOGIN_FAILED_EMAIL_NOT_VERIFIED':
+              handledError = true;
+              unverifiedEmailCallback();
+              break;
+            case 'LOGIN_FAILED':
+              handledError = true;
+              invalidLoginCallback();
+              break;
+          }
         }
-        else {
-          let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
-          Alert.alert(
-            "Connection Problem",
-            "Could not connect to the Cloud. Please check your internet connection.",
-            [{text:'OK', onPress: defaultAction}],
-            { onDismiss: defaultAction }
-          );
+
+        if (handledError === false) {
+          // do not show a popup if it is a failed request: this has its own pop up
+          if (err.message && err.message === 'Network request failed') {
+            this.props.eventBus.emit('hideLoading');
+          }
+          else {
+            let defaultAction = () => {
+              this.props.eventBus.emit('hideLoading')
+            };
+            Alert.alert(
+              "Connection Problem",
+              "Could not connect to the Cloud. Please check your internet connection.",
+              [{text: 'OK', onPress: defaultAction}],
+              {onDismiss: defaultAction}
+            );
+          }
         }
         throw err;
       })

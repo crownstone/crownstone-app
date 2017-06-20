@@ -4,8 +4,7 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise'
 import { Bluenet }               from '../native/libInterface/Bluenet';
 import { eventBus }              from './EventBus';
 import { LOG }                   from "../logging/Log";
-import { prepareStoreForUser }   from "./DataUtil";
-import {Actions} from "react-native-router-flux";
+import { Actions } from "react-native-router-flux";
 
 export const AppUtil = {
   quit: function() {
@@ -20,7 +19,25 @@ export const AppUtil = {
     }
   },
 
-  logOut: function(store) {
+  logOut: function(store, message = null) {
+    if (message) {
+      Alert.alert(message.title, message.body, [{text:'OK', onPress:() => {
+        AppUtil._logOut(store, () => {Bluenet.quitApp();});
+      }}], { cancelable: false });
+    }
+    else {
+      let gracefulExit = () => {
+        LOG.info("Quit app due to logout");
+        setTimeout(() => {
+          Bluenet.quitApp();
+        }, 3500);
+      };
+
+      AppUtil._logOut(store, gracefulExit);
+    }
+  },
+
+  _logOut: function(store, gracefulExit) {
     eventBus.emit("showLoading", "Logging out and closing app...");
 
     Actions.loginSplash();
@@ -34,13 +51,6 @@ export const AppUtil = {
     sphereIds.forEach((sphereId) => {
       store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
     });
-
-    let gracefulExit = () => {
-      LOG.info("Quit app due to logout");
-      setTimeout(() => {
-        Bluenet.quitApp();
-      }, 3500);
-    };
 
     BluenetPromiseWrapper.clearTrackedBeacons().catch(() => {});
     Bluenet.stopScanning();

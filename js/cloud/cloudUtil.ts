@@ -9,8 +9,9 @@ export function prepareEndpointAndBody(options : any, id : any, accessToken : an
     endPoint = endPoint.substr(1,endPoint.length)
   }
 
+  let skipAccessToken = options && options.options && options.options.noAccessToken || false;
   // append the access token to the url if we have it.
-  if (accessToken) {
+  if (accessToken && !skipAccessToken) {
     endPoint = _appendToURL(endPoint, {access_token: accessToken});
   }
 

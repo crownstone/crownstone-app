@@ -90,7 +90,7 @@ export const base = {
    * @private
    */
   _setupRequest: function(reqType, endpoint, options : any = {}, type = 'query') {
-    let promiseBody = {endPoint: endpoint, data: options.data, type:type};
+    let promiseBody = {endPoint: endpoint, data: options.data, type:type, options: options};
     let promise;
     switch (reqType) {
       case 'POST':
