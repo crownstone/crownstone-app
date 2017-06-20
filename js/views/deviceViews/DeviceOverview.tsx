@@ -115,7 +115,7 @@ export class DeviceOverview extends Component<any, any> {
     };
 
     return (
-      <Background image={this.props.backgrounds.stoneDetailsBackground} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
           leftAction={() => { Actions.pop(); }}
           rightItem={this.state.scrolling ? this._getScrollingElement() : undefined}

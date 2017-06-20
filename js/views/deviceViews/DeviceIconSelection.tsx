@@ -203,7 +203,7 @@ export class DeviceIconSelection extends Component<any, any> {
     const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].appliances[this.props.applianceId].config.icon;
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.stoneDetailsBackground}>
+      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
           left={""}
           leftAction={Actions.pop}
