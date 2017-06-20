@@ -27,6 +27,7 @@ import { DeviceUpdate } from "./elements/DeviceUpdate";
 import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { eventBus } from "../../util/EventBus";
 
+
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
 };

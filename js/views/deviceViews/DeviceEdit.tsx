@@ -41,6 +41,8 @@ export class DeviceEdit extends Component<any, any> {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
       let state = store.getState();
+
+      // in case the sphere is deleted
       if (state.spheres[this.props.sphereId] === undefined) {
         Actions.pop();
         return;
