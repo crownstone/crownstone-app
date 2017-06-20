@@ -19,7 +19,25 @@ export const AppUtil = {
     }
   },
 
-  logOut: function(store) {
+  logOut: function(store, message = null) {
+    if (message) {
+      Alert.alert(message.title, message.body, [{text:'OK', onPress:() => {
+        AppUtil._logOut(store, () => {Bluenet.quitApp();});
+      }}], { cancelable: false });
+    }
+    else {
+      let gracefulExit = () => {
+        LOG.info("Quit app due to logout");
+        setTimeout(() => {
+          Bluenet.quitApp();
+        }, 3500);
+      };
+
+      AppUtil._logOut(store, gracefulExit);
+    }
+  },
+
+  _logOut: function(store, gracefulExit) {
     eventBus.emit("showLoading", "Logging out and closing app...");
 
     // sign out of all spheres.
@@ -32,13 +50,6 @@ export const AppUtil = {
     // clear all usage and presence:
     prepareStoreForUser(store);
 
-    let gracefulExit = () => {
-      LOG.info("Quit app due to logout");
-      setTimeout(() => {
-        Bluenet.quitApp();
-      }, 3500);
-    };
-
     BluenetPromiseWrapper.clearTrackedBeacons().catch(() => {});
     Bluenet.stopScanning();
     StoreManager.userLogOut()
@@ -50,6 +61,5 @@ export const AppUtil = {
         LOG.error("Could not log user out!", err);
         gracefulExit();
       });
-
-  },
+  }
 };

@@ -232,15 +232,14 @@ class BackgroundProcessHandlerClass {
             LOG.warn("BackgroundProcessHandler: Could not verify user, attempting to login again.");
             return CLOUD.login({
               email: state.user.email,
-              password: state.user.password,
-              background: true,
-              onUnverified: () => {},
-              onInvalidCredentials: () => {}
+              password: state.user.passwordHash,
+              background: true
             })
-              .then((response) => {
-                CLOUD.setAccess(response.id);
-                CLOUD.setUserId(response.userId);
-              })
+            .then((response) => {
+              CLOUD.setAccess(response.id);
+              CLOUD.setUserId(response.userId);
+              this.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
+            })
           }
           else {
             throw err;
@@ -253,8 +252,7 @@ class BackgroundProcessHandlerClass {
         .catch((err) => {
           LOG.info("BackgroundProcessHandler: COULD NOT VERIFY USER -- ERROR", err);
           if (err.status === 401) {
-            AppUtil.logOut(this.store);
-            Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
+            AppUtil.logOut(this.store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }
         });
       eventBus.emit("userLoggedIn");
