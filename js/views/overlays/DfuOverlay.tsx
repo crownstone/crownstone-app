@@ -100,15 +100,6 @@ export class DfuOverlay extends Component<any, any> {
     }
   }
 
-  checkErrorForBackground() {
-    if (AppState.currentState !== "active") {
-      this.setState({step:-4});
-    }
-    else {
-      this.setState({step:-1});
-    }
-  }
-
   startProcess() {
     this.initializeProcess();
     let state = this.props.store.getState();
@@ -158,11 +149,11 @@ export class DfuOverlay extends Component<any, any> {
               this.setState({step: -3});
             }
             else {
-              this.checkErrorForBackground();
+              this.setState({step:-1});
             }
           }
           else {
-            this.checkErrorForBackground();
+            this.setState({step:-1});
           }
         }
         LOG.error("DfuOverlay: ERROR DURING DFU: ", err);
@@ -559,7 +550,7 @@ export class DfuOverlay extends Component<any, any> {
                   <Icon name="ios-sad" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </View>
               </View>}
-            header={'We\'re sorry... Maybe try it again?'}
+            header={'We\'re sorry... Maybe try again while keeping an eye at the update process?'}
             buttonCallback={closeOverlay}
             buttonLabel={"Fine..."}
           />
@@ -607,28 +598,6 @@ export class DfuOverlay extends Component<any, any> {
             buttonCallback={closeOverlay}
             buttonLabel={"OK!"}
           />
-        );
-      case -4:
-        return (
-            <OverlayContent
-                title={'Update failed...'}
-                eyeCatcher={
-                  <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
-                    <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
-                      <ProgressCircle
-                          radius={radius}
-                          borderWidth={0.25*radius}
-                          progress={1}
-                          color={colors.csBlue.hex}
-                          absolute={true}
-                      />
-                      <Icon name="ios-sad" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
-                    </View>
-                  </View>}
-                header={'It might have failed because the app was running in the background or the screen was off. Try again while looking at the update process.'}
-                buttonCallback={closeOverlay}
-                buttonLabel={"Fine..."}
-            />
         );
     }
   }
