@@ -1,7 +1,7 @@
 
 import {eventBus} from "../util/EventBus";
 import {Util} from "../util/Util";
-class PermissionClass {
+export class PermissionClass {
   _store : any;
   _initialized : boolean = false;
   _enableUpdates : boolean = false;
@@ -47,27 +47,26 @@ class PermissionClass {
         }
 
         let change = data.change;
-        if  (change.setKeys || change.updateActiveSphere) {
-          this._update();
+        if (change.setKeys || change.updateActiveSphere) {
+          this._update(this._store.getState());
         }
       });
 
       eventBus.on('userLoggedIn', () => {
         this._enableUpdates = true;
-        this._update();
+        this._update(this._store.getState());
       });
 
       // in case the login event has already fired before we init the permission module.
       if (userAlreadyLoggedIn === true) {
         this._enableUpdates = true;
-        this._update();
+        this._update(this._store.getState());
       }
     }
   }
 
-  _update() {
-    let state = this._store.getState();
-    let activeSphere = state.app.activeSphere;
+  _update(state = null, customSphereId = null) {
+    let activeSphere = customSphereId || state.app.activeSphere;
     let level = Util.data.getUserLevelInSphere(state, activeSphere);
 
     if (level === null) {

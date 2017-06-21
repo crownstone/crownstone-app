@@ -97,7 +97,7 @@ export class SettingsSphereOverview extends Component<any, any> {
       });
     }
     else {
-      items.push({label:'Max 1 Sphere is currently supported.',  type:'explanation', below:false});
+      items.push({label:'Maximum of 1 Sphere where you are admin for now..',  type:'explanation', below:false});
     }
 
     // if you do not have, or are part of, any spheres yet.
