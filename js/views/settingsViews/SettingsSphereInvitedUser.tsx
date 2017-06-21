@@ -37,7 +37,7 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
     // room Name:
     items.push({type:'spacer'});
     items.push({type:'explanation', label:'INVITE WAS SENT TO'});
-    items.push({label:user.email, type: 'info'});
+    items.push({label:user.email, type: 'info', labelStyle:{width:screenWidth}});
 
     items.push({type:'explanation', label:'MANAGE INVITE'});
     items.push({

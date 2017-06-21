@@ -380,7 +380,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     }
 
     items.push({label: 'EXCEPTIONS', type: 'explanation', style: styles.topExplanation, below:false});
-    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark, callback: (newValue) => {
+    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark === true, callback: (newValue) => {
       this.props.store.dispatch({type: 'UPDATE_'+dataTypeString+'_CONFIG', ...requiredData, data: { onlyOnWhenDark : newValue } })
     }});
     items.push({type:  'spacer'});
