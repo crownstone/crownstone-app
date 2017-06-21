@@ -84,7 +84,7 @@ export class SettingsSphereOverview extends Component<any, any> {
       items = items.concat(guestSpheres);
     }
 
-    if (totalSpheres < 1) {
+    if (totalSpheres < 1 || adminSpheres.length === 0) {
       items.push({type: 'spacer'});
       items.push({
         label: 'Create a new Sphere',

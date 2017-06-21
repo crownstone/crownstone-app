@@ -334,7 +334,7 @@ class BackgroundProcessHandlerClass {
     ErrorWatcher._loadStore(this.store);
     NotificationHandler._loadStore(this.store);
     NotificationParser._loadStore(this.store);
-    Permissions._loadStore(this.store);
+    Permissions._loadStore(this.store, this.userLoggedIn);
   }
 }
 

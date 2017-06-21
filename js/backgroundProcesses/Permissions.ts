@@ -6,38 +6,39 @@ class PermissionClass {
   _initialized : boolean = false;
   _enableUpdates : boolean = false;
 
-  useKeepAliveState      = true; // g
-  setStoneTime           = true; // a or m
-  setBehaviourInCloud    = true; // a
-  seeUpdateCrownstone    = true; // a?
-  updateCrownstone       = true; // a
-  setupCrownstone        = true; // a
-  seeSetupCrownstone     = true; // a
+  useKeepAliveState      = false; // g
+  setStoneTime           = false; // a or m
+  setBehaviourInCloud    = false; // a
+  seeUpdateCrownstone    = false; // a?
+  updateCrownstone       = false; // a
+  setupCrownstone        = false; // a
+  seeSetupCrownstone     = false; // a
 
-  doLocalizationTutorial = true; // a?
-  addRoom                = true; // a?
-  editRoom               = true; // a
-  removeRoom             = true; // a
+  doLocalizationTutorial = false; // a?
+  addRoom                = false; // a?
+  editRoom               = false; // a
+  removeRoom             = false; // a
 
-  editCrownstone         = true; // a
-  changeBehaviour        = true; // a
-  removeCrownstone       = true; // a
-  editAppliance          = true; // a
-  removeAppliance        = true; // a
+  editCrownstone         = false; // a
+  changeBehaviour        = false; // a or m
+  removeCrownstone       = false; // a
+  editAppliance          = false; // a
+  removeAppliance        = false; // a
 
-  editSphere             = true; // a
-  manageUsers            = true; // a or m
-  deleteSphere           = true; // a
-  inviteAdminToSphere    = true; // a
-  inviteMemberToSphere   = true; // a or m
-  inviteGuestToSphere    = true; // a or m
-
-
+  editSphere             = false; // a
+  manageUsers            = false; // a or m
+  deleteSphere           = false; // a
+  inviteAdminToSphere    = false; // a
+  inviteMemberToSphere   = false; // a or m
+  inviteGuestToSphere    = false; // a or m
 
 
-  _loadStore(store) {
+
+
+  _loadStore(store, userAlreadyLoggedIn) {
     if (this._initialized === false) {
       this._store = store;
+      this._initialized = true;
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
       eventBus.on("databaseChange", (data) => {
@@ -53,8 +54,14 @@ class PermissionClass {
 
       eventBus.on('userLoggedIn', () => {
         this._enableUpdates = true;
-        this._update()
+        this._update();
       });
+
+      // in case the login event has already fired before we init the permission module.
+      if (userAlreadyLoggedIn === true) {
+        this._enableUpdates = true;
+        this._update();
+      }
     }
   }
 
@@ -83,7 +90,6 @@ class PermissionClass {
         this.removeRoom             = true; // admin
 
         this.editCrownstone         = true; // admin
-        this.changeBehaviour        = true; // admin
         this.removeCrownstone       = true; // admin
         this.editAppliance          = true; // admin
         this.removeAppliance        = true; // admin
@@ -92,6 +98,7 @@ class PermissionClass {
         this.deleteSphere           = true; // admin
         this.inviteAdminToSphere    = true; // admin
       case 'member':
+        this.changeBehaviour        = true; // admin and member
         this.useKeepAliveState      = true; // admin and member
         this.setStoneTime           = true; // admin and member
         this.manageUsers            = true; // admin and member

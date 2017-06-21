@@ -132,9 +132,15 @@ export class DeviceOverview extends Component<any, any> {
           rightAction={() => {
             switch (this.state.swiperIndex) {
               case summaryIndex:
-                Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); break;
+                if (hasAppliance && Permissions.editAppliance || !hasAppliance && Permissions.editCrownstone) {
+                  Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId})
+                }
+                break;
               case behaviourIndex:
-                Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); break;
+                if (Permissions.changeBehaviour) {
+                  Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+                }
+                break;
             }
           }}
           title={element.config.name} />

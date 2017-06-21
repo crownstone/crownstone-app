@@ -256,7 +256,7 @@ export class SettingsSphere extends Component<any, any> {
           if (stoneIds.length > 0) {
             Alert.alert(
               "Still Crownstones detected in Sphere",
-              "You can remove then by going to them in the overview, tap them, click on the socket icon and press remove.",
+              "You can remove then by going to them in their rooms, tap them, click on the settings -> edit and press remove.",
               [{text:'OK'}]
             );
           }
