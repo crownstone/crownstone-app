@@ -2,6 +2,11 @@
 
 To be Released:
 
+- Added a few new Icons for rooms and appliances.
+
+--- iOS release submitted 2017-6-21 as 1.9.1
+
+- Fixed the app logging out every week at random.
 - [iOS] Fix bug that caused members and guests not to be able to switch Crownstones.
 - Fix bug that caused the profile pictures of other users not the be shown in overview (user might have to change their picture once in order for it to show up).
 - Redesign of device overview to accommodate future features.
