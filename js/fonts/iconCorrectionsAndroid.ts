@@ -214,7 +214,7 @@ const c1CorrectionsAndroid = {
   'c1-court':           {change: false, top:0, left:0},
   'c1-garage':          {change: false, top:0, left:0},
   'c1-cinema':          {change: false, top:0, left:0},
-  'c1-update-arrow':    {change: false, top:0, left:0},
+  'c1-update-arrow':    {change: true, top:-0.05, left:0},
   'c1-tap':             {change: false, top:0, left:0},
   'c1-tap-buttons':     {change: false, top:0, left:0},
   'c1-tap-lines':       {change: false, top:0, left:0},
@@ -229,7 +229,7 @@ const c1CorrectionsAndroid = {
 const c2CorrectionsAndroid = {
   'c2-crownstone':      {change: false, top:0, left:0},
   'c2-plugin':          {change: false, top:0, left:0},
-  'c2-pluginFilled':    {change: false, top:0, left:0},
+  'c2-pluginFilled':    {change: true, top:-0.06, left:0},
   'c2-pluginFront':     {change: false, top:0, left:0},
 };
 
