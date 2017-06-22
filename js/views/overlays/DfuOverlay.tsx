@@ -24,6 +24,27 @@ import {NativeBus} from "../../native/libInterface/NativeBus";
 import {BleUtil} from "../../util/BleUtil";
 import {Scheduler} from "../../logic/Scheduler";
 
+let STEP_TYPES = {
+  UPDATE_AVAILABLE:           'UPDATE_AVAILABLE',
+  DOWNLOAD_PROGRESS:          'DOWNLOAD_PROGRESS',
+  DOWNLOAD_SUCCES:            'DOWNLOAD_SUCCES',
+  SEARCHING:                  'SEARCHING',
+  SEARCHING_MOVE_CLOSER:      'SEARCHING_MOVE_CLOSER',
+  SEARCHING_MOVE_EVEN_CLOSER: 'SEARCHING_MOVE_EVEN_CLOSER',
+  SEARCHING_RESET_BLE:        'SEARCHING_RESET_BLE',
+  GET_BOOTLOADER_VERSION:     'GET_BOOTLOADER_VERSION',
+  UPDATE_PROGRESS:            'UPDATE_PROGRESS',
+  UPDATE_SUCCES:              'UPDATE_SUCCES',
+  UPDATE_FAILED:              'UPDATE_FAILED',
+  DOWNLOAD_FAILED:            'DOWNLOAD_FAILED',
+  SETUP_FAILED:               'SETUP_FAILED',
+};
+
+let stepSearchingTypes = {};
+stepSearchingTypes[STEP_TYPES.SEARCHING] = true;
+stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_CLOSER] = true;
+stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER] = true;
+
 export class DfuOverlay extends Component<any, any> {
   unsubscribe : any = [];
   processSubscriptions = [];
@@ -31,7 +52,9 @@ export class DfuOverlay extends Component<any, any> {
   paused : boolean = false;
   helper : any = null;
   cancelShowTimeout : any = null;
-  cancelFallbackTimeout : any = null;
+  cancelMoveCloserTimeout : any = null;
+  cancelMoveEvenCloserTimeout : any = null;
+  cancelResetBleTimeout : any = null;
   uuid : String = null;
   backButtonFunction : any = null;
   killProcess : boolean = false;
@@ -41,7 +64,7 @@ export class DfuOverlay extends Component<any, any> {
     this.uuid = Util.getUUID();
     this.state = {
       visible: false,
-      step: 0,
+      step: STEP_TYPES.UPDATE_AVAILABLE,
       stoneId: null,
       sphereId: null,
       progress: 0,
@@ -59,7 +82,7 @@ export class DfuOverlay extends Component<any, any> {
     this.unsubscribe.push(eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
       this.setState({
         visible: true,
-        step: 0,
+        step: STEP_TYPES.UPDATE_AVAILABLE,
         stoneId: data.stoneId,
         sphereId: data.sphereId,
         progress: 0,
@@ -76,7 +99,7 @@ export class DfuOverlay extends Component<any, any> {
     this.unsubscribe.push(eventBus.on("updateDfuProgress", (progress : number) => {
       this.setState({progress:progress});
     }));
-    this.unsubscribe.push(eventBus.on("updateDfuStep", (step : number) => {
+    this.unsubscribe.push(eventBus.on("updateDfuStep", (step : string) => {
       this.setState({step:step});
     }));
   }
@@ -107,7 +130,7 @@ export class DfuOverlay extends Component<any, any> {
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
 
     this.setState({
-      step:1,
+      step: STEP_TYPES.DOWNLOAD_PROGRESS,
       firmwareToUpload: userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
       bootloaderToUpdate: userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion]
     });
@@ -118,7 +141,7 @@ export class DfuOverlay extends Component<any, any> {
       stoneConfig.hardwareVersion
     )
       .catch((err) => {
-        this.setState({step: -2});
+        this.setState({step: STEP_TYPES.DOWNLOAD_FAILED});
         throw err;
       })
       .then(() => {
@@ -134,7 +157,7 @@ export class DfuOverlay extends Component<any, any> {
           return;
         }
 
-        if (this.state.step !== -2) {
+        if (this.state.step !== STEP_TYPES.DOWNLOAD_FAILED) {
           if (this.helper) {
             // this means that DFU was successful but we failed at performing setup.
             if (this.helper.dfuSuccessful === true) {
@@ -146,14 +169,14 @@ export class DfuOverlay extends Component<any, any> {
                   dfuResetRequired: false,
                 }
               });
-              this.setState({step: -3});
+              this.setState({step: STEP_TYPES.SETUP_FAILED});
             }
             else {
-              this.setState({step:-1});
+              this.setState({step: STEP_TYPES.UPDATE_FAILED});
             }
           }
           else {
-            this.setState({step:-1});
+            this.setState({step: STEP_TYPES.UPDATE_FAILED});
           }
         }
         LOG.error("DfuOverlay: ERROR DURING DFU: ", err);
@@ -162,14 +185,14 @@ export class DfuOverlay extends Component<any, any> {
 
   startDFU(userConfig, stoneConfig) {
     return new Promise((resolve, reject) => {
-      this.setState({step:2});
+      this.setState({step: STEP_TYPES.DOWNLOAD_SUCCES});
       Scheduler.scheduleCallback(() => { resolve(); }, 2500, 'startDFU timeout');
     })
     .then(() => {
       return this._searchForCrownstone(2000);
     })
     .then((data : any) => {
-      this.setState({ step: 5, phaseDescription:'setting up...', detail:'putting Crownstone in update mode...' });
+      this.setState({ step: STEP_TYPES.GET_BOOTLOADER_VERSION, phaseDescription:'setting up...', detail:'putting Crownstone in update mode...' });
       this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
       return this.helper.putInDFU(data);
     })
@@ -200,7 +223,16 @@ export class DfuOverlay extends Component<any, any> {
         });
       }
       if (phasesRequired > 0) {
-        return this.handlePhase(0, phasesRequired);
+        // if the first phase expects the Crownstone to be in normal mode, switch back from DFU first.
+        if (this.helper.dfuSegmentFinishedAtPhase(0) === true) {
+          return this.helper.restartInAppMode()
+            .then(() => {
+              return this.handlePhase(0, phasesRequired);
+            })
+        }
+        else {
+          return this.handlePhase(0, phasesRequired);
+        }
       }
       else if (this.state.alreadyInDfuMode === true) {
         return this.helper.restartInAppMode()
@@ -223,7 +255,7 @@ export class DfuOverlay extends Component<any, any> {
           dfuResetRequired: false,
         }
       });
-      this.setState({ step: 7 });
+      this.setState({ step: STEP_TYPES.UPDATE_SUCCES });
     })
   }
 
@@ -248,7 +280,7 @@ export class DfuOverlay extends Component<any, any> {
           }
 
           this.setState({
-            step:6,
+            step: STEP_TYPES.UPDATE_PROGRESS,
             currentPhase: phase,
             phaseDescription: (phase + 1) + ' / '+ phasesRequired,
             phasesRequired: phasesRequired,
@@ -294,18 +326,31 @@ export class DfuOverlay extends Component<any, any> {
       // this allows us to initially hide this view and to only show it when the user requires it.
       // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
       this.cancelShowTimeout = Scheduler.scheduleCallback(() => {
-        if (this.state.step !== 3) {
-          eventBus.emit("updateDfuStep", 3);
+        if (this.state.step !== STEP_TYPES.SEARCHING) {
+          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING);
         }
       }, searchTimeBeforeView, 'dfu this.cancelShowTimeout');
 
       // the timeout will show the "get closer" even if nothing is found up to that point.
       // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-      this.cancelFallbackTimeout = Scheduler.scheduleCallback(() => {
-        if (this.state.step !== 4) {
-          eventBus.emit("updateDfuStep", 4);
+      this.cancelMoveCloserTimeout = Scheduler.scheduleCallback(() => {
+        if (this.state.step !== STEP_TYPES.SEARCHING_MOVE_CLOSER) {
+          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
-      }, 3000, 'dfu this.cancelFallbackTimeout');
+      }, 3000, 'dfu this.cancelMoveCloserTimeout');
+
+      this.cancelMoveEvenCloserTimeout = Scheduler.scheduleCallback(() => {
+        if (this.state.step !== STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER) {
+          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER);
+        }
+      }, 6000, 'dfu this.cancelMoveEvenCloserTimeout');
+
+      this.cancelResetBleTimeout = Scheduler.scheduleCallback(() => {
+        if (this.state.step !== STEP_TYPES.SEARCHING_RESET_BLE) {
+          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_RESET_BLE);
+        }
+      }, 10000, 'dfu this.cancelResetBleTimeout');
+
 
       // this will show the user that he has to move closer to the crownstone or resolve if the user is close enough.
       let rssiResolver = (data, setupMode, dfuMode) => {
@@ -313,7 +358,7 @@ export class DfuOverlay extends Component<any, any> {
         data.dfuMode = dfuMode || false;
         LOG.debug("DfuOverlay: Found match:", data);
         if ((data.setupMode && data.rssi < -93) || (data.rssi < -80)) {
-          eventBus.emit("updateDfuStep", 4);
+          eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
         else if (this.paused === false) {
           // no need to HF scan any more
@@ -322,7 +367,7 @@ export class DfuOverlay extends Component<any, any> {
           let timeSeenView = new Date().valueOf() - timeStart;
           this.processReject = null;
           this._searchCleanup();
-          if (timeSeenView < minimumTimeVisibleWhenShown && (this.state.step === 3 || this.state.step === 4)) {
+          if (timeSeenView < minimumTimeVisibleWhenShown && stepSearchingTypes[this.state.step]) {
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
             Scheduler.scheduleCallback(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView, 'rssiResolver timeout');
           }
@@ -354,7 +399,9 @@ export class DfuOverlay extends Component<any, any> {
 
   _searchCleanup() {
     if (typeof this.cancelShowTimeout === 'function')     { this.cancelShowTimeout();     this.cancelShowTimeout = null;     }
-    if (typeof this.cancelFallbackTimeout === 'function') { this.cancelFallbackTimeout(); this.cancelFallbackTimeout = null; }
+    if (typeof this.cancelMoveCloserTimeout === 'function') { this.cancelMoveCloserTimeout(); this.cancelMoveCloserTimeout = null; }
+    if (typeof this.cancelMoveEvenCloserTimeout === 'function') { this.cancelMoveEvenCloserTimeout(); this.cancelMoveEvenCloserTimeout = null; }
+    if (typeof this.cancelResetBleTimeout === 'function') { this.cancelResetBleTimeout(); this.cancelResetBleTimeout = null; }
 
     if (typeof this.processReject === 'function') {
       this.processReject("User cancelled");
@@ -404,7 +451,7 @@ export class DfuOverlay extends Component<any, any> {
     };
     let radius = 0.28*screenWidth;
     switch (this.state.step) {
-      case 0:
+      case STEP_TYPES.UPDATE_AVAILABLE:
         return <OverlayContent
           title={'Update Available'}
           icon={'c1-update-arrow'}
@@ -414,7 +461,7 @@ export class DfuOverlay extends Component<any, any> {
           buttonCallback={() => { this.startProcess();} }
           buttonLabel={'Next'}
         />;
-      case 1:
+      case STEP_TYPES.DOWNLOAD_PROGRESS:
         return (
           <OverlayContent
             title={'Downloading Updates'}
@@ -425,7 +472,7 @@ export class DfuOverlay extends Component<any, any> {
             <View style={{flexGrow:1}} />
           </OverlayContent>
         );
-      case 2:
+      case STEP_TYPES.DOWNLOAD_SUCCES:
         return (
           <OverlayContent
             title={'Download Complete'}
@@ -434,7 +481,7 @@ export class DfuOverlay extends Component<any, any> {
             text={'Moving on!'}
           />
         );
-      case 3:
+      case STEP_TYPES.SEARCHING:
         return (
           <OverlayContent
             title={'Searching'}
@@ -447,7 +494,7 @@ export class DfuOverlay extends Component<any, any> {
             <View style={{flexGrow:1}} />
           </OverlayContent>
         );
-      case 4:
+      case STEP_TYPES.SEARCHING_MOVE_CLOSER:
         return (
           <OverlayContent
             title={'Searching'}
@@ -460,7 +507,33 @@ export class DfuOverlay extends Component<any, any> {
             <View style={{flexGrow:1}} />
           </OverlayContent>
         );
-      case 5:
+      case STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER:
+        return (
+            <OverlayContent
+                title={'Searching'}
+                icon={'c2-crownstone'}
+                header={'Please hold your phone as close to it as possible!'}
+                buttonCallback={abort}
+                buttonLabel={'Abort'}
+            >
+              <ActivityIndicator animating={true} size="large" />
+              <View style={{flexGrow:1}} />
+            </OverlayContent>
+        );
+      case STEP_TYPES.SEARCHING_RESET_BLE:
+        return (
+            <OverlayContent
+                title={'Searching'}
+                icon={'c2-crownstone'}
+                header={'Please hold your phone as close to it as possible!\nIf that doesn\'t work, try turning your Bluetooth off and on.'}
+                buttonCallback={abort}
+                buttonLabel={'Abort'}
+            >
+              <ActivityIndicator animating={true} size="large" />
+              <View style={{flexGrow:1}} />
+            </OverlayContent>
+        );
+      case STEP_TYPES.GET_BOOTLOADER_VERSION:
         return (
           <OverlayContent
             title={'Preparing Crownstone'}
@@ -480,7 +553,7 @@ export class DfuOverlay extends Component<any, any> {
             header={'Putting the Crownstone in update mode now...'}
           />
         );
-      case 6:
+      case STEP_TYPES.UPDATE_PROGRESS:
         return (
           <OverlayContent
             title={'Updating Crownstone'}
@@ -511,7 +584,7 @@ export class DfuOverlay extends Component<any, any> {
             header={'Update is in progress. Please stay close to the Crownstone.'}
           />
         );
-      case 7:
+      case STEP_TYPES.UPDATE_SUCCES:
         return (
           <OverlayContent
             title={'Updating Done!'}
@@ -533,7 +606,7 @@ export class DfuOverlay extends Component<any, any> {
             buttonLabel={"Thanks!"}
           />
         );
-      case -1:
+      case STEP_TYPES.UPDATE_FAILED:
         return (
           <OverlayContent
             title={'Update failed...'}
@@ -555,7 +628,7 @@ export class DfuOverlay extends Component<any, any> {
             buttonLabel={"Fine..."}
           />
         );
-      case -2:
+      case STEP_TYPES.DOWNLOAD_FAILED:
         return (
           <OverlayContent
             title={'Update failed...'}
@@ -577,7 +650,7 @@ export class DfuOverlay extends Component<any, any> {
             buttonLabel={"Fine..."}
           />
         );
-      case -3:
+      case STEP_TYPES.SETUP_FAILED:
         return (
           <OverlayContent
             title={'Success, But...'}
@@ -634,7 +707,7 @@ export class DfuOverlay extends Component<any, any> {
     return (
       <OverlayBox
         visible={this.state.visible}
-        canClose={this.state.step === 0}
+        canClose={this.state.step === STEP_TYPES.UPDATE_AVAILABLE}
         closeCallback={() => {
           Alert.alert(
             "Are you sure?",
