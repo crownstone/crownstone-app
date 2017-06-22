@@ -7,7 +7,7 @@ let defaultSettings = {
     name: undefined,
     icon: undefined,
     dimmable: false,
-    onlyOnWhenDark: null,
+    onlyOnWhenDark: false,
     updatedAt: 1
   },
   linkedAppliances: { 

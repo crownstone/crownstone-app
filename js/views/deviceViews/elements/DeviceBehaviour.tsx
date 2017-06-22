@@ -54,7 +54,7 @@ export class DeviceBehaviour extends Component<any, any> {
         <View style={{flex: 2}} />
         {nearFarDisabled ? <Text style={textStyle.warning}>Near/away is disabled until you define where near is. Press change at the top to do this now.</Text> : undefined}
         <View style={{flex: 2}} />
-        { stone.config.onlyOnWhenDark ?
+        { element.config.onlyOnWhenDark === true ?
         <View style={{flexDirection: 'row',}} >
           <Text style={textStyle.value}>I will </Text>
           <Text style={[textStyle.value,{fontStyle: 'italic'}]}>only </Text>

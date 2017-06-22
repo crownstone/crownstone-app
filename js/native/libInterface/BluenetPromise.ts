@@ -13,7 +13,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
       let bluenetArguments = [];
       let promiseResolver = (result) => {
         if (result.error === true) {
-          LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
+          LOG.info("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data);
           reject(result.data);
         }
         else {

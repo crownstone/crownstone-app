@@ -35,6 +35,7 @@ Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
 export class DeviceOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
   unsubscribeSwipeEvent : any;
+  touchEndTimeout: any;
 
   constructor() {
     super();
@@ -88,6 +89,7 @@ export class DeviceOverview extends Component<any, any> {
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
     this.unsubscribeSwipeEvent();
+    clearTimeout(this.touchEndTimeout);
   }
 
 
@@ -115,7 +117,7 @@ export class DeviceOverview extends Component<any, any> {
     };
 
     return (
-      <Background image={this.props.backgrounds.stoneDetailsBackground} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
           leftAction={() => { Actions.pop(); }}
           rightItem={this.state.scrolling ? this._getScrollingElement() : undefined}
@@ -130,9 +132,15 @@ export class DeviceOverview extends Component<any, any> {
           rightAction={() => {
             switch (this.state.swiperIndex) {
               case summaryIndex:
-                Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); break;
+                if (hasAppliance && Permissions.editAppliance || !hasAppliance && Permissions.editCrownstone) {
+                  Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId})
+                }
+                break;
               case behaviourIndex:
-                Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); break;
+                if (Permissions.changeBehaviour) {
+                  Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+                }
+                break;
             }
           }}
           title={element.config.name} />
@@ -143,6 +151,7 @@ export class DeviceOverview extends Component<any, any> {
           loop={false}
           bounces={true}
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
+          onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
           { this._getContent(hasError, canUpdate, hasBehaviour, deviceType) }
         </Swiper>

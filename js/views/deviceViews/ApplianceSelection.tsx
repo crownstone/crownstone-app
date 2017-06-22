@@ -148,7 +148,7 @@ export class ApplianceSelection extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.stoneDetailsBackground} >
+      <Background image={this.props.backgrounds.detailsDark} >
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

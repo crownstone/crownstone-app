@@ -20,19 +20,20 @@ export class SettingsPluginRecoverStep1 extends Component<any, any> {
   render() {
     let imageSize = 0.40;
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.main}>
+      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark}>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
-          <Text style={[setupStyle.text, {color:colors.menuBackground.hex}]}>{"If you're physically next to the Crownstone, you can restore it to factory defaults."}</Text>
+          <Text style={[setupStyle.text, {color:colors.white.hex}]}>{"If you're physically next to the Crownstone, you can restore it to factory defaults."}</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={[setupStyle.information, {color:colors.menuBackground.hex}]}>{"Please take the Crownstone out of the outlet, wait 5 seconds, and plug it back in. Hold your phone close to it and press Next to continue."}</Text>
+          <Text style={[setupStyle.information, {color:colors.white.hex}]}>{"Please take the Crownstone out of the outlet, wait 5 seconds, and plug it back in. Hold your phone close to it and press Next to continue."}</Text>
           <View style={{flex:1}} />
           <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <Image source={require('../../images/lineDrawings/pluggingInPlugRetryDark.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+            <Image source={require('../../images/lineDrawings/pluggingInPlugRetry.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
           </View>
           <View style={{flex:1}} />
           <View style={setupStyle.buttonContainer}>
             <View style={{flex:1}} />
-            <NextButton dark={true} onPress={Actions.settingsPluginRecoverStep2} />
+            <NextButton onPress={Actions.settingsPluginRecoverStep2} />
           </View>
         </View>
       </Background>

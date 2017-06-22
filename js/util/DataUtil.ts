@@ -33,10 +33,15 @@ export const DataUtil = {
    * @param callback
    */
   callOnStonesInSphere: function(state: any, sphereId: string, callback: (stoneId: string, stone: any) => void) {
-    let stones = state.spheres[sphereId].stones;
-    let stoneIds = Object.keys(stones);
-    for (let j = 0; j < stoneIds.length; j++) {
-      callback(stoneIds[j], stones[stoneIds[j]])
+    if (state && state.spheres && state.spheres[sphereId]) {
+      let stones = state.spheres[sphereId].stones;
+      let stoneIds = Object.keys(stones);
+      for (let j = 0; j < stoneIds.length; j++) {
+        callback(stoneIds[j], stones[stoneIds[j]])
+      }
+    }
+    else {
+      LOG.error("DataUtil: Trying to call method on all stones in sphere but I cannot find stones in this sphere (or the sphere itself)");
     }
   },
 

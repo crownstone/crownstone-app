@@ -2,23 +2,21 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
   Dimensions,
-  TouchableHighlight,
+  Image,
   PixelRatio,
   ScrollView,
   Switch,
   Text,
+  TouchableHighlight,
   View
 } from 'react-native';
 
 import { TopBar } from '../components/Topbar'
 import { Background } from '../components/Background'
-import { IconCircle } from '../components/IconCircle'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG } from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from '../styles'
+import {styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth} from '../styles'
 
 
 
@@ -46,6 +44,7 @@ export class ApplianceAdd extends Component<any, any> {
         }
       )}
     });
+    items.push({label:'The properties of devices are shared among all Crownstones that have this device plugged in. Device behaviour overrules the Crownstone behaviour.', type:'largeExplanation', centered: true});
 
     return items;
   }
@@ -95,7 +94,7 @@ export class ApplianceAdd extends Component<any, any> {
     }
 
     let items = this._getItems();
-
+    let imageSize = 1;
     return (
       <Background hideInterface={true} image={backgroundImage} >
         <TopBar
@@ -107,8 +106,11 @@ export class ApplianceAdd extends Component<any, any> {
           rightStyle={{fontWeight: 'bold'}}
           rightAction={ () => { this.createDevice(); }}
           title="Create Device"/>
-        <View>
+        <View style={{flex:1}}>
             <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} separatorIndent={true} />
+            <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingBottom: tabBarHeight + 20}}>
+              <Image source={require('../../images/sharedProperties.png')} style={{width:imageSize*0.535*screenWidth, height: imageSize*0.512*screenWidth}} />
+            </View>
         </View>
       </Background>
     );

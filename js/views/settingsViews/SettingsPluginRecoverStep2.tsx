@@ -239,23 +239,24 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.main}>
+      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark}>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
-          <Text style={[setupStyle.text, {color:colors.menuBackground.hex}]}>Hold your phone next to the Crownstone.</Text>
+          <Text style={[setupStyle.text, {color:colors.white.hex}]}>Hold your phone next to the Crownstone.</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={[setupStyle.information, {color:colors.menuBackground.hex}]}>{this.state.text}</Text>
+          <Text style={[setupStyle.information, {color:colors.white.hex}]}>{this.state.text}</Text>
           <View style={{flex:1}} />
           <View style={{width: screenWidth, height:imageSize*screenHeight}}>
             <Animated.View style={{opacity:this.state.fade1, position:'absolute', left:leftPos, top: 0}}>
-              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugDark.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlug.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
             </Animated.View>
             <Animated.View style={{opacity:this.state.fade2, position:'absolute', left:leftPos, top: 0}}>
-              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugDarkPairing.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugPairing.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
             </Animated.View>
           </View>
           <View style={{flex:1}} />
           <View style={{marginBottom:20}}>
-            <ActivityIndicator animating={true} size="large"/>
+            <ActivityIndicator animating={true} color={colors.white.hex} size="large"/>
           </View>
         </View>
       </Background>

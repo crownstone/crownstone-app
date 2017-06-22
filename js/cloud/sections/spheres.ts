@@ -225,8 +225,8 @@ export const spheres = {
                 .catch((err) => {LOG.error("failed getting user picture",sphereId, user.email, user.id, options, err)})
             );
           }
-          return Promise.all(profilePicturePromises);
-        })
+        });
+        return Promise.all(profilePicturePromises);
       })
   },
 
