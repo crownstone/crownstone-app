@@ -78,7 +78,7 @@ class DfuStateHandlerClass {
       // add setup events in case they are from crownstones that did not finish their DFU process.
       NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
         let stoneData = MapProvider.stoneHandleMap[data.handle];
-        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
+        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true && stoneData.stoneConfig.handle) {
           handleDfuAdvertisement(data);
         }
       });
@@ -86,7 +86,7 @@ class DfuStateHandlerClass {
       // add advertisement events in case they are from crownstones that did not finish their DFU process.
       NativeBus.on(NativeBus.topics.advertisement, (data) => {
         let stoneData = MapProvider.stoneHandleMap[data.handle];
-        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
+        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true && stoneData.stoneConfig.handle) {
           handleDfuAdvertisement(data);
         }
       });

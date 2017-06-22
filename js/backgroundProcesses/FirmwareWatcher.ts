@@ -23,6 +23,11 @@ class FirmwareWatcherClass {
     LOG.info("FirmwareWatcher: Starting Firmware Check");
 
     let state = this.store.getState();
+    if (!state.spheres[sphereId]) {
+      LOG.error("FirmwareWatcher: Can not find this Sphere in the state.", sphereId);
+      return;
+    }
+
     let loadedCommands = false;
     let randomCheck = Math.random() < 0.025;
     if (randomCheck) {

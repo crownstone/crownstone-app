@@ -210,6 +210,7 @@ export class FirmwareHelper {
     if (phaseNumber < this.phases.length && (this.phases[phaseNumber] === resetAfterUpdate || this.phases[phaseNumber] === setupAfterUpdate)) {
       return true;
     }
+    return false;
   }
 
   finish() {
@@ -264,54 +265,72 @@ export class FirmwareHelper {
 
   _reset(crownstoneMode: crownstoneModes) {
     let action = () => {
-      return BluenetPromiseWrapper.connect(this.handle)
-        .then(() => {
-          eventBus.emit("updateDfuProgress", 0.25);
-          LOG.info("FirmwareHelper: DFU progress: Reconnected.");
-          if (crownstoneMode.setupMode === true) {
-            return BluenetPromiseWrapper.setupFactoryReset();
-          }
-          else {
-            return BluenetPromiseWrapper.commandFactoryReset()
-              .then(() => {
-                return BluenetPromiseWrapper.disconnectCommand();
-              })
-              .catch((err) => {
-                BluenetPromiseWrapper.phoneDisconnect(); throw err;
-              })
-          }
-        })
-        .then(() => {
-          eventBus.emit("updateDfuProgress", 0.50);
-        })
-        .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.6); }); })
-        .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.7); }); })
-        .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.8); }); })
-        .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.9); }); })
-        .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 1.0); }); })
-        .then(() => {
-          LOG.info("FirmwareHelper: DFU progress: Reset complete.");
-        })
+
+      if (crownstoneMode.dfuMode === true) {
+        return new Promise((resolve, reject) => {
+          LOG.error("FirmwareHelper: Cannot perform factory reset in DFU mode!");
+          reject("Cannot perform factory reset in DFU mode!");
+        });
+      }
+      else {
+        return BluenetPromiseWrapper.connect(this.handle)
+          .then(() => {
+            eventBus.emit("updateDfuProgress", 0.25);
+            LOG.info("FirmwareHelper: DFU progress: Reconnected.");
+            if (crownstoneMode.setupMode === true) {
+              return BluenetPromiseWrapper.setupFactoryReset();
+            }
+            else {
+              return BluenetPromiseWrapper.commandFactoryReset()
+                .then(() => {
+                  return BluenetPromiseWrapper.disconnectCommand();
+                })
+                .catch((err) => {
+                  BluenetPromiseWrapper.phoneDisconnect(); throw err;
+                })
+            }
+          })
+          .then(() => {
+            eventBus.emit("updateDfuProgress", 0.50);
+          })
+          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.6); }); })
+          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.7); }); })
+          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.8); }); })
+          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.9); }); })
+          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 1.0); }); })
+          .then(() => {
+            LOG.info("FirmwareHelper: DFU progress: Reset complete.");
+          });
+      }
+
+
     };
     // we load the DFU into the promise manager with priority so we are not interrupted
     return BlePromiseManager.registerPriority(action, {from: 'DFU: performing reset ' + this.handle}, 60000); // 1 min timeout
   }
 
   _setup(crownstoneMode: crownstoneModes) {
-    if (!crownstoneMode.setupMode) {
-      return new Promise((resolve, reject) => { resolve(); });
+    if (crownstoneMode.dfuMode === true) {
+      return new Promise((resolve, reject) => {
+        LOG.error("FirmwareHelper: Cannot perform setup in DFU mode!");
+        reject("Cannot perform setup in DFU mode!");
+      });
     }
-
-    // the setupStateHandler already uses the PromiseManager so we cant do it here. It would lead to dfu waiting on setup waiting on dfu.
-    return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
-      .catch(() => {
-        // try again
-        eventBus.emit("updateDfuProgress", 0.0);
-        return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
-      })
-      .then(() => {
-        LOG.info("FirmwareHelper: DFU progress: Setup complete.");
-      })
+    else {
+      if (!crownstoneMode.setupMode) {
+        return new Promise((resolve, reject) => { resolve(); });
+      }
+      // the setupStateHandler already uses the PromiseManager so we cant do it here. It would lead to dfu waiting on setup waiting on dfu.
+      return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
+        .catch(() => {
+          // try again
+          eventBus.emit("updateDfuProgress", 0.0);
+          return SetupStateHandler.setupExistingStone(this.handle, this.sphereId, this.stoneId, true)
+        })
+        .then(() => {
+          LOG.info("FirmwareHelper: DFU progress: Setup complete.");
+        })
+    }
   }
 }
 

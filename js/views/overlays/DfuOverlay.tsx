@@ -223,7 +223,16 @@ export class DfuOverlay extends Component<any, any> {
         });
       }
       if (phasesRequired > 0) {
-        return this.handlePhase(0, phasesRequired);
+        // if the first phase expects the Crownstone to be in normal mode, switch back from DFU first.
+        if (this.helper.dfuSegmentFinishedAtPhase(0) === true) {
+          return this.helper.restartInAppMode()
+            .then(() => {
+              return this.handlePhase(0, phasesRequired);
+            })
+        }
+        else {
+          return this.handlePhase(0, phasesRequired);
+        }
       }
       else if (this.state.alreadyInDfuMode === true) {
         return this.helper.restartInAppMode()

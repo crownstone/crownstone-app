@@ -2,6 +2,7 @@
 
 To be Released:
 
+- Fixed bug in dfu process that did not put the Crownstone back in normal mode after a failed factory reset.
 - Fix validation on registration.
 - Fix forced logout after 6 days bug.
 - Update the other users in rooms every 10 seconds but only if the app is on screen.
