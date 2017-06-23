@@ -38,7 +38,9 @@ class PhysicsEngine {
   onStable: any;
   radius: any;
 
-  constructor(center, radius, onChange = () => {}, onStable = () => {}) {
+  constructor() {}
+
+  initEngine(center, radius, onChange = () => {}, onStable = () => {}) {
     this.onChange = onChange;
     this.onStable = onStable;
     this.radius = radius;
@@ -103,6 +105,11 @@ class PhysicsEngine {
     this.layoutFailed = false;
 
     this.init();
+  }
+
+  clear() {
+    this.onChange = () => {};
+    this.onStable = () => {};
   }
 
 

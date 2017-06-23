@@ -24,6 +24,7 @@ import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionO
 import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
 import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
+import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
@@ -76,6 +77,7 @@ export class Router_Android extends Component {
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
+        <SphereSelectionOverlay store={this.props.store} />
         <BleStateOverlay />
         <LocationPermissionOverlay />
         <ErrorOverlay store={this.props.store} />

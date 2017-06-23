@@ -7,6 +7,7 @@ import {
   Platform,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   Text,
   View
 } from 'react-native';
@@ -25,25 +26,14 @@ import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/Permissions";
 import * as Swiper from 'react-native-swiper';
+import {eventBus} from "../../util/EventBus";
 
 export class SphereOverview extends Component<any, any> {
-  leftValue : number;
-  animating : boolean;
-  sphereIds : any;
-  _activeSphereIndex : number;
-  _panResponder : any;
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
-  swiper: any;
 
   constructor() {
     super();
-    this.state = { presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0), pan: new Animated.ValueXY(), scale: new Animated.Value(1) };
-    this.leftValue = 0;
-    this.animating = false;
-
-    this.sphereIds = [];
-    this._activeSphereIndex = 0;
   }
 
   componentDidMount() {
@@ -86,19 +76,15 @@ export class SphereOverview extends Component<any, any> {
     // set the active sphere if needed and setup the object variables.
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
-    this._activeSphereIndex = 0;
 
-    this.sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
+    let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
 
     // handle the case where we deleted a sphere that was active.
     if (state.spheres[activeSphere] === undefined) {
       activeSphere = null;
     }
-    if (activeSphere === null && this.sphereIds.length > 0) {
-      this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: this.sphereIds[0]}});
-    }
-    else if (activeSphere) {
-      this._activeSphereIndex = this.sphereIds.indexOf(activeSphere);
+    if (activeSphere === null && sphereIds.length > 0) {
+      this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
     }
 
   }
@@ -113,7 +99,7 @@ export class SphereOverview extends Component<any, any> {
     const store = this.props.store;
     const state = store.getState();
 
-    let noSpheres = this.sphereIds.length == 0;
+    let noSpheres = Object.keys(state.spheres).length === 0;
     let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStonesInDFUMode = DfuStateHandler.areDfuStonesAvailable();
     let viewingRemotely = true;
@@ -139,8 +125,8 @@ export class SphereOverview extends Component<any, any> {
       // do we need more fingerprints?
       let requiresFingerprints = requireMoreFingerprints(state, activeSphere);
 
-      noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
-      noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
+      noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length    : 0) == 0;
+      noRooms  = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
 
       if (sphereIsPresent || seeStonesInSetupMode || seeStonesInDFUMode || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
@@ -174,26 +160,24 @@ export class SphereOverview extends Component<any, any> {
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
               <Sphere sphereId={activeSphere} store={this.props.store} eventBus={this.props.eventBus} />
-              <SphereIcon viewingRemotely={viewingRemotely} />
+              <SphereIcon viewingRemotely={viewingRemotely} sphereId={activeSphere} />
           </AnimatedBackground>
         </View>
       );
     }
     else {
       return (
-        <View {...this._panResponder.panHandlers}>
-          <AnimatedBackground hideTopBar={true} image={background}>
-            <TopBar
-              title={"Hello There!"}
-              showHamburgerMenu={true}
-            />
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              <Icon name="c1-house" size={150} color={colors.blue.hex}/>
-              <Text style={overviewStyles.mainText}>No Spheres available.</Text>
-              <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
-            </View>
-          </AnimatedBackground>
-        </View>
+        <AnimatedBackground hideTopBar={true} image={background}>
+          <TopBar
+            title={"Hello There!"}
+            showHamburgerMenu={true}
+          />
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Icon name="c1-house" size={150} color={colors.blue.hex}/>
+            <Text style={overviewStyles.mainText}>No Spheres available.</Text>
+            <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
+          </View>
+        </AnimatedBackground>
       );
     }
   }
@@ -260,16 +244,19 @@ class SphereIcon extends Component<any, any> {
       alignItems:'center',
       justifyContent:'center',
     }}>
-      <View style={{
-        width: outerRadius,
-        height:outerRadius,
-        borderRadius:0.5*outerRadius,
-        backgroundColor: colors.white.rgba(0.5),
-        alignItems:'center',
-        justifyContent:'center',
-      }}>
+      <TouchableOpacity
+        style={{
+          width: outerRadius,
+          height:outerRadius,
+          borderRadius:0.5*outerRadius,
+          backgroundColor: colors.white.rgba(0.5),
+          alignItems:'center',
+          justifyContent:'center',
+        }}
+        onPress={() => { eventBus.emit('showSphereSelectionOverlay'); }}
+      >
         <Icon name="c1-sphere" size={size} color={ color } />
-      </View>
+      </TouchableOpacity>
       <Text style={{backgroundColor:"transparent", color: textColor, fontWeight:'300', fontSize:13, paddingLeft:15}}>
         {Util.spreadString('tap to change sphere')}
       </Text>

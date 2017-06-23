@@ -9,12 +9,16 @@ import { styles, colors, screenWidth } from '../styles'
 
 export class Separator extends Component<any, any> {
   render() {
+    let opacity = 1;
+    if (this.props.opacity !== undefined && this.props.opacity !== null) {
+      opacity = this.props.opacity;
+    }
     if (this.props.fullLength === true)
-      return <View style={styles.separator} />;
+      return <View style={[styles.separator,{ backgroundColor: colors.black.rgba(opacity*0.25) }]} />;
     else {
       return (
-        <View style={{backgroundColor:'#ffffff'}}>
-          <View style={[styles.separator, {width:screenWidth-15, alignSelf:'flex-end'}]}/>
+        <View style={{backgroundColor:'#fff'}}>
+          <View style={[styles.separator, {width:screenWidth-15, alignSelf:'flex-end', backgroundColor: colors.black.rgba(opacity*0.25)}]}/>
         </View>
       );
     }

@@ -23,10 +23,10 @@ import PhysicsEngine from "../../logic/PhysicsEngine";
 export class RoomLayer extends Component<any, any> {
   _panResponder: any = {};
   _multiTouch = false;
+  _currentSphere = null;
   _multiTouchUsed = false;
   _initialDistance : number;
   _currentScale : number;
-  _panOffset : any = {x:0, y:0};
   _minScale : number = 0.1;
   _maxScale : number = 1.25;
   _baseRadius : number;
@@ -37,13 +37,17 @@ export class RoomLayer extends Component<any, any> {
   _lastTap = 0;
   _totalMovedX = 0;
   _totalMovedY = 0;
-
+  _panOffset : any = {x:0, y:0};
   _currentPan : any = {x:0, y:0};
+
+  physicsEngine : any;
   panListener : any;
+
+  animationFrame : any;
 
   nodes: any;
 
-  constructor() {
+  constructor(props) {
     super();
 
     this._baseRadius = 0.15 * screenWidth;
@@ -57,6 +61,10 @@ export class RoomLayer extends Component<any, any> {
       rooms: {},
       hoverRoom : false,
     };
+
+
+    this.physicsEngine = new PhysicsEngine();
+    this._currentSphere = props.sphereId;
   }
 
   _findPress(x,y) {
@@ -96,6 +104,20 @@ export class RoomLayer extends Component<any, any> {
       }
     }
     return false;
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.sphereId !== this._currentSphere) {
+      this._currentSphere = nextProps.sphereId;
+      this._panOffset.x = 0;
+      this._panOffset.y = 0;
+      this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
+      this.state.pan.setValue({ x: 0, y: 0 });
+      this._currentPan = {x:0, y:0};
+      this._currentScale = 1;
+
+      this.loadInSolver();
+    }
   }
 
   componentWillMount() {
@@ -178,8 +200,6 @@ export class RoomLayer extends Component<any, any> {
           this.state.pan.setValue({ x: 0, y: 0 });
         }
 
-        console.log("this._panOffset",this._panOffset);
-
         this._multiTouch = false;
 
         if (this._validTap === true) {
@@ -221,6 +241,7 @@ export class RoomLayer extends Component<any, any> {
 
   componentWillUnmount() {
     this.state.pan.removeListener(this.panListener);
+    this.physicsEngine.clear();
   }
 
   _recenter(fadeIn = false) {
@@ -230,6 +251,12 @@ export class RoomLayer extends Component<any, any> {
     let minY = 1e10;
     let maxY = -1e10;
     let nodeIds = Object.keys(this.nodes);
+
+
+    if (nodeIds.length === 0) {
+      return;
+    }
+
     for(let i = 0; i < nodeIds.length; i++) {
       let node = this.nodes[nodeIds[i]];
       minX = Math.min(minX, node.x);
@@ -276,7 +303,6 @@ export class RoomLayer extends Component<any, any> {
       this._currentPan = {x:0, y:0};
       this._currentScale = newScale;
     });
-
   }
 
   clearTap() {
@@ -288,12 +314,13 @@ export class RoomLayer extends Component<any, any> {
   }
 
   loadInSolver() {
+    this.physicsEngine.clear();
     const store = this.props.store;
     const state = store.getState();
-    let roomIds = Object.keys(state.spheres[this.props.sphereId].locations);
-
+    let roomIds = Object.keys(state.spheres[this._currentSphere].locations);
     let center = {x: 0.5*screenWidth - this._baseRadius, y: 0.5*availableScreenHeight - this._baseRadius};
 
+    this.state.rooms = {};
     this.nodes = {};
     let edges = {};
 
@@ -303,48 +330,42 @@ export class RoomLayer extends Component<any, any> {
       this.state.rooms[id] = {x: new Animated.Value(0), y: new Animated.Value(0)};
     }
 
-    // edges[roomIds[0] + '_to_' + roomIds[1]] = {id: roomIds[0] + '_to_' + roomIds[1], from: roomIds[0], to: roomIds[1]};
-    // edges[roomIds[1] + '_to_' + roomIds[2]] = {id: roomIds[1] + '_to_' + roomIds[2], from: roomIds[1], to: roomIds[2]};
-    // edges[roomIds[2] + '_to_' + roomIds[3]] = {id: roomIds[2] + '_to_' + roomIds[3], from: roomIds[2], to: roomIds[3]};
+    let floatingStones = getFloatingStones(state, this._currentSphere);
+    let showFloatingCrownstones = floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
 
-
-    let engine;
-
+    if (showFloatingCrownstones) {
+      let id = null;
+      this.nodes[id] = {id: id, mass: 1, fixed: false};
+      this.state.rooms[id] = {x: new Animated.Value(0), y: new Animated.Value(0)};
+    }
 
     let nodeIds = Object.keys(this.nodes);
     let initialized = false;
-    let i = 0;
-    let onChange = () => {
-      // if (initialized === false) {
-      //   this._recenter(true);
-      //   initialized = true;
-      // }
-      requestAnimationFrame(() => {
+    cancelAnimationFrame(this.animationFrame);
+
+    let onStable = () => {
+      this.animationFrame = requestAnimationFrame(() => {
         for (let i = 0; i < nodeIds.length; i++) {
           this.state.rooms[nodeIds[i]].x.setValue(this.nodes[nodeIds[i]].x);
           this.state.rooms[nodeIds[i]].y.setValue(this.nodes[nodeIds[i]].y);
         }
 
-        if (i < 40) {
-          engine.stabilize(1)
-          i++;
+        if (initialized === false) {
+          this._recenter(true);
+          initialized = true;
         }
       })
     };
 
-
-
-    engine = new PhysicsEngine(center, this._baseRadius, onChange);
-    engine.load(this.nodes, edges);
-    engine.stabilize(1, true);
+    this.physicsEngine.initEngine(center, this._baseRadius, () => {}, onStable);
+    this.physicsEngine.load(this.nodes, edges);
+    this.physicsEngine.stabilize(40, true);
 
   }
 
 
   _renderRoom(locationId, count, index, activeSphere) {
-
     // variables to pass to the room overview
-
     return (
       <RoomCircle
         eventBus={this.props.eventBus}
@@ -381,34 +402,14 @@ export class RoomLayer extends Component<any, any> {
       amountOfRooms += 1;
     }
 
-    if (amountOfRooms > 6) {
-      let floatingStoneOffset = 0;
-      if (showFloatingCrownstones) {
-        roomNodes.push(this._renderRoom(null, amountOfRooms, 0, state.app.activeSphere));
-        floatingStoneOffset = 1;
-      }
-
-      for (let i = 0; i < roomIdArray.length; i++) {
-        roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i + floatingStoneOffset, state.app.activeSphere))
-      }
-
-      return (
-        <View style={{height: availableScreenHeight}}>
-          {roomNodes}
-        </View>
-      );
+    for (let i = 0; i < roomIdArray.length; i++) {
+      roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i, state.app.activeSphere))
     }
-    else {
-      for (let i = 0; i < roomIdArray.length; i++) {
-        roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i, state.app.activeSphere))
-      }
-
-      if (showFloatingCrownstones) {
-        roomNodes.push(this._renderRoom(null, amountOfRooms, roomIdArray.length, state.app.activeSphere))
-      }
-
-      return roomNodes;
+    if (showFloatingCrownstones) {
+      roomNodes.push(this._renderRoom(null, amountOfRooms, roomIdArray.length, state.app.activeSphere))
     }
+
+    return roomNodes;
   }
 
   render() {

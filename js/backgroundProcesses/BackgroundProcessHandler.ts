@@ -64,6 +64,8 @@ class BackgroundProcessHandlerClass {
 
         LocationHandler.initializeTracking();
 
+        this.setupLogging();
+
         this.userLoggedIn = true;
       });
 
@@ -88,17 +90,22 @@ class BackgroundProcessHandlerClass {
 
         Scheduler.scheduleCallback(() => { this.checkErrors(null); }, 15000, 'checkErrors');
 
-        let state = this.store.getState();
-        Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
-        if (state.user.logging === true && state.user.developer === true && state.development.log_ble === true) {
-          Bluenet.enableExtendedLogging(true);
-        }
+        this.setupLogging();
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
       this.startStore();
     }
     this.started = true;
+  }
+
+
+  setupLogging() {
+    let state = this.store.getState();
+    Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
+    if (state.user.logging === true && state.user.developer === true && state.development.log_ble === true) {
+      Bluenet.enableExtendedLogging(true);
+    }
   }
 
 
