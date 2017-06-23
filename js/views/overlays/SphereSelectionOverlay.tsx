@@ -25,7 +25,7 @@ export class SphereSelectionOverlay extends Component<any, any> {
 
   constructor() {
     super();
-    this.state = { visible: true };
+    this.state = { visible: false };
     this.unsubscribe = [];
   }
 

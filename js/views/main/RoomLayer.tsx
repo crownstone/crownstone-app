@@ -62,7 +62,6 @@ export class RoomLayer extends Component<any, any> {
       hoverRoom : false,
     };
 
-
     this.physicsEngine = new PhysicsEngine();
     this._currentSphere = props.sphereId;
   }
