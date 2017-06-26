@@ -39,8 +39,6 @@ class RoomCircleClass extends Component<any, any> {
   animatedMoving : boolean;
 
   previousCircle : any;
-  wiggleInterval : any;
-  wiggleTimeout : any;
   moveAnimationTimeout : any;
   color : any;
 
@@ -90,8 +88,6 @@ class RoomCircleClass extends Component<any, any> {
     this.animatedMoving = false;
 
     this.previousCircle = undefined;
-    this.wiggleInterval = undefined;
-    this.wiggleTimeout = undefined;
     this.moveAnimationTimeout = undefined;
 
     this.movementDuration = 400;
@@ -158,9 +154,6 @@ class RoomCircleClass extends Component<any, any> {
         this.forceUpdate();
       }
     });
-
-    // wait to wiggle until after the initial movement.
-    this.wiggleTimeout = setTimeout(() => {this.checkAlertStatus(this.props)},this.moveAnimationTimeout);
   }
 
   componentWillUpdate(nextProps) {
@@ -170,41 +163,15 @@ class RoomCircleClass extends Component<any, any> {
     else if (this.props.hover === true && nextProps.hover === false) {
       Animated.timing(this.state.componentOpacity, {toValue: 1, duration:50}).start();
     }
-    this.checkAlertStatus(nextProps);
   }
 
 
   componentWillUnmount() {
-    clearTimeout(this.wiggleInterval);
     clearTimeout(this.moveAnimationTimeout);
-    clearTimeout(this.wiggleTimeout);
     this.unsubscribeSetupEvents.forEach((unsubscribe) => {
       unsubscribe();
     });
     this.unsubscribeStoreEvents();
-  }
-
-
-  checkAlertStatus(props) {
-    if (props.locationId === null && props.seeStonesInSetupMode) {
-      this.setWiggleInterval()
-    }
-    else if (this.wiggleInterval !== undefined) {
-      clearTimeout(this.wiggleInterval);
-      this.wiggleInterval = undefined;
-    }
-  }
-
-  setWiggleInterval() {
-    if (this.wiggleInterval === undefined) {
-      if (this.state.setupProgress === 20) {
-        // this.wiggle();
-      }
-      this.wiggleInterval = setTimeout(() => {
-        this.wiggleInterval = undefined;
-        this.setWiggleInterval();
-      }, this.jumpDuration + 700)
-    }
   }
 
 
@@ -298,11 +265,11 @@ class RoomCircleClass extends Component<any, any> {
             size={this.innerDiameter}
             color={newColor}
             style={{
-              position:'relative',
-              top: innerOffset,
-              left: innerOffset,
-              padding:0,
-              margin:0,
+              position: 'relative',
+              top:      innerOffset,
+              left:     innerOffset,
+              padding:  0,
+              margin:   0,
             }}>
             <View style={[styles.centered,{height:0.5*this.innerDiameter}]}>
             {this.getIcon()}
@@ -411,27 +378,6 @@ class RoomCircleClass extends Component<any, any> {
     )
   }
 
-  // wiggle() {
-  //   let animations = [];
-  //   let tension = 120;
-  //   let friction = 3;
-  //   let offset = 0.08*screenWidth;
-  //   let randX = offset*(Math.random()-0.5);
-  //   let randY = offset*(Math.random()-0.5);
-  //   if (this.animatedMoving === false) {
-  //     this.animatedMoving = true;
-  //     animations.push(Animated.spring(this.state.top, {toValue: this.props.pos.y - randY, friction: friction, tension: tension}));
-  //     animations.push(Animated.spring(this.state.left, {toValue: this.props.pos.x - randX, friction: friction, tension: tension}));
-  //     this.moveAnimationTimeout = setTimeout(() => {
-  //       this.animatedMoving = false;
-  //       animations.push(Animated.spring(this.state.top, {toValue: this.props.pos.y, friction: friction, tension: tension}));
-  //       animations.push(Animated.spring(this.state.left, {toValue: this.props.pos.x, friction: friction, tension: tension}));
-  //       Animated.parallel(animations).start();
-  //     }, this.jumpDuration);
-  //     Animated.parallel(animations).start();
-  //   }
-  // }
-
   render() {
     const store = this.props.store;
     const state = store.getState();
@@ -445,8 +391,14 @@ class RoomCircleClass extends Component<any, any> {
     }
     this.renderState = store.getState();
 
+    const animatedStyle = {
+      transform: [
+        { scale: this.props.scale },
+      ]
+    };
+
     return (
-      <Animated.View style={{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.componentOpacity}}>
+      <Animated.View style={[animatedStyle,{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.componentOpacity}]}>
         <View>
           {this.getCircle()}
           {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}

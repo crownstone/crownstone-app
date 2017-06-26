@@ -28,9 +28,7 @@ import {Permissions} from "../../backgroundProcesses/Permissions";
 import * as Swiper from 'react-native-swiper';
 import {eventBus} from "../../util/EventBus";
 
-let addRooms = true;
-let testInterval;
-
+let addRooms = true
 export class SphereOverview extends Component<any, any> {
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
@@ -68,37 +66,39 @@ export class SphereOverview extends Component<any, any> {
       }
     });
 
-    testInterval = setInterval(() => {
-      console.log("ON INTERVAL")
-      LOG.info("HE")
-      let state = this.props.store.getState();
-      if (!state.app.activeSphere)
-        return;
-
-      let rooms = state.spheres[state.app.activeSphere].locations;
-      let amountOfRoomIds = Object.keys(rooms).length;
-      if (amountOfRoomIds >= 50) {
-        addRooms = false;
-      }
-      if (amountOfRoomIds <= 1) {
-        addRooms = true;
-      }
-
-      if (addRooms) {
-        console.log("HERE ADD_LOCATION", amountOfRoomIds)
-        this.props.store.dispatch({type:'ADD_LOCATION', sphereId: state.app.activeSphere, __test: true, locationId: amountOfRoomIds+1+(Math.random()*1000).toString(25), data:{name:'room' + amountOfRoomIds+1}})
-      }
-      else {
-        console.log("HERE REMOVE_LOCATION")
-        this.props.store.dispatch({type:'REMOVE_LOCATION', sphereId: state.app.activeSphere, __test: true, locationId: Object.keys(rooms)[amountOfRoomIds-1]});
-      }
-    }, 300)
+    // setInterval(() => {
+    //   let state = this.props.store.getState();
+    //   if (!state.app.activeSphere)
+    //     return;
+    //
+    //   let rooms = state.spheres[state.app.activeSphere].locations;
+    //   let amountOfRoomIds = Object.keys(rooms).length;
+    //   if (amountOfRoomIds >= 10) {
+    //     addRooms = false;
+    //   }
+    //   if (amountOfRoomIds <= 0) {
+    //     addRooms = true;
+    //   }
+    //
+    //   let target = 70;
+    //   if (amountOfRoomIds === target) {
+    //     return;
+    //   }
+    //
+    //   if (addRooms) {
+    //     console.log("HERE ADD_LOCATION", amountOfRoomIds)
+    //     this.props.store.dispatch({type:'ADD_LOCATION', sphereId: state.app.activeSphere, __test: true, locationId: amountOfRoomIds+1+(Math.random()*1000).toString(25), data:{name:'room' + amountOfRoomIds+1}})
+    //   }
+    //   else {
+    //     console.log("HERE REMOVE_LOCATION")
+    //     this.props.store.dispatch({type:'REMOVE_LOCATION', sphereId: state.app.activeSphere, __test: true, locationId: Object.keys(rooms)[amountOfRoomIds-1]});
+    //   }
+    // }, 1000);
   }
 
   componentWillUnmount() {
     this.unsubscribeSetupEvents.forEach((unsubscribe) => {unsubscribe();});
     this.unsubscribeStoreEvents();
-    clearInterval(testInterval);
   }
 
 

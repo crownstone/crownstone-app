@@ -45,7 +45,7 @@ export class SphereSelectionOverlay extends Component<any, any> {
     if (this.activeSphere === itemId) {
       color = colors.iosBlue.rgba(0.5);
       if (item.config.present === false) {
-        color = colors.notConnected.rgba(0.4);
+        color = colors.iosBlue.rgba(0.3);
       }
     }
     return (

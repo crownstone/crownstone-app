@@ -80,6 +80,11 @@ class BarnesHutSolver {
       dy = parentBranch.centerOfMass.y - node.y;
       distance = Math.sqrt(dx * dx + dy * dy);
 
+      if (this.options.useOverlapAvoidance) {
+        // bound between 0 and higher to avoid the repulsor becoming an attractor.
+        distance = Math.max(0, distance - 2 * this.physicsBody.radius);
+      }
+
       // BarnesHutSolver condition
       // original condition : s/d < theta = passed  ===  d/s > 1/theta = passed
       // calcSize = 1/s --> d * 1/s > 1/theta = passed

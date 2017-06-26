@@ -37,15 +37,19 @@ class PhysicsEngine {
   onChange: any;
   onStable: any;
   radius: any;
+  height: number;
+  width: number;
 
   constructor() {}
 
-  initEngine(center, radius, onChange = () => {}, onStable = () => {}) {
+  initEngine(center, width, height, radius, onChange = () => {}, onStable = () => {}) {
     this.onChange = onChange;
     this.onStable = onStable;
     this.radius = radius;
+    this.width = width;
+    this.height = height;
 
-    this.physicsBody = {nodes: [], edges: [], physicsNodeIndices:[], physicsEdgeIndices:[], forces: {}, velocities: {}, randomSeed:6};
+    this.physicsBody = {nodes: [], edges: [], physicsNodeIndices:[], physicsEdgeIndices:[], forces: {}, velocities: {}, randomSeed:6, radius: this.radius, height: height, width: width};
 
     this.physicsEnabled = true;
     this.simulationInterval = 1000 / 60;
@@ -80,12 +84,12 @@ class PhysicsEngine {
       },
       forceAtlas2Based: {
         theta: 0.5,
-        gravitationalConstant: -90,
-        centralGravity: 0.01,
-        springConstant: 0.08,
+        gravitationalConstant: -100,
+        centralGravity: 0.1,
+        springConstant: 0.02,
         springLength: 100,
         damping: 0.4,
-        avoidOverlap: 0
+        avoidOverlap: 1
       },
       maxVelocity: 50,
       minVelocity: 0.75,    // px/s
@@ -99,6 +103,8 @@ class PhysicsEngine {
       },
       timestep: 0.5,
       adaptiveTimestep: true,
+      useLinearAttractors: true,
+      useOverlapAvoidance: true,
       center: center
     };
     this.timestep = 0.5;
@@ -144,6 +150,8 @@ class PhysicsEngine {
     if (this.options.solver === 'forceAtlas2Based') {
       options = this.options.forceAtlas2Based;
       options['center'] = this.options.center;
+      options['useOverlapAvoidance'] = this.options.useOverlapAvoidance;
+      options['useLinearAttractors'] = this.options.useLinearAttractors;
       this.nodesSolver = new ForceAtlas2BasedRepulsionSolver(this.physicsBody, options);
       this.edgesSolver = new SpringSolver(this.physicsBody, options);
       this.gravitySolver = new ForceAtlas2BasedCentralGravitySolver(this.physicsBody, options);
@@ -151,6 +159,8 @@ class PhysicsEngine {
     else { // barnesHut
       options = this.options.barnesHut;
       options['center'] = this.options.center;
+      options['useOverlapAvoidance'] = this.options.useOverlapAvoidance;
+      options['useLinearAttractors'] = this.options.useLinearAttractors;
       this.nodesSolver = new BarnesHutSolver(this.physicsBody, options);
       this.edgesSolver = new SpringSolver(this.physicsBody, options);
       this.gravitySolver = new CentralGravitySolver(this.physicsBody, options);
@@ -327,11 +337,17 @@ class PhysicsEngine {
     let nodeIds = Object.keys(nodesObject);
     for (let i = 0; i < nodeIds.length; i++) {
       let node = nodesObject[nodeIds[i]];
-      let radius = this.radius * 0.5 * nodeIds.length + 10;
-      let angle = 2 * Math.PI * this.seededRandom();
+      if (node.fixed !== true) {
+        // let radius = this.radius * 0.5 * nodeIds.length + 10;
+        // let angle = 2 * Math.PI * this.seededRandom();
 
-      node.x = this.options.center.x + radius * Math.cos(angle);
-      node.y = this.options.center.y + radius * Math.sin(angle);
+        let radius = (2*this.radius + 10*i);
+        let angle = i * (2 * Math.PI) / (radius / (1.5*this.radius));
+
+
+        node.x = this.options.center.x + radius * Math.cos(angle);
+        node.y = this.options.center.y + radius * Math.sin(angle);
+      }
     }
   }
 
@@ -404,29 +420,29 @@ class PhysicsEngine {
     // store the state so we can revert
     this.previousStates[nodeId] = {x:node.x, y:node.y, vx:velocities[nodeId].x, vy:velocities[nodeId].y};
 
-    // if (node.options.fixed.x === false) {
+    if (node.fixed === false) {
       let dx   = this.modelOptions.damping * velocities[nodeId].x;   // damping force
       let ax   = (forces[nodeId].x - dx) / node.mass;        // acceleration
       velocities[nodeId].x += ax * timestep;                         // velocity
       velocities[nodeId].x = (Math.abs(velocities[nodeId].x) > maxVelocity) ? ((velocities[nodeId].x > 0) ? maxVelocity : -maxVelocity) : velocities[nodeId].x;
       node.x   += velocities[nodeId].x * timestep;                    // position
-    // }
-    // else {
-    //   forces[nodeId].x = 0;
-    //   velocities[nodeId].x = 0;
-    // }
+    }
+    else {
+      forces[nodeId].x = 0;
+      velocities[nodeId].x = 0;
+    }
 
-    // if (node.options.fixed.y === false) {
+    if (node.fixed === false) {
       let dy   = this.modelOptions.damping * velocities[nodeId].y;    // damping force
       let ay   = (forces[nodeId].y - dy) / node.mass;         // acceleration
       velocities[nodeId].y += ay * timestep;                          // velocity
       velocities[nodeId].y = (Math.abs(velocities[nodeId].y) > maxVelocity) ? ((velocities[nodeId].y > 0) ? maxVelocity : -maxVelocity) : velocities[nodeId].y;
       node.y   += velocities[nodeId].y * timestep;                     // position
-    // }
-    // else {
-    //   forces[nodeId].y = 0;
-    //   velocities[nodeId].y = 0;
-    // }
+    }
+    else {
+      forces[nodeId].y = 0;
+      velocities[nodeId].y = 0;
+    }
 
     let totalVelocity = Math.sqrt(Math.pow(velocities[nodeId].x,2) + Math.pow(velocities[nodeId].y,2));
     return totalVelocity;
@@ -495,19 +511,10 @@ class PhysicsEngine {
       this._stabilizationBatch();
     }
     else {
-      console.log("STABLE AFTER" , this.stabilizationIterations)
       this.onStable();
     }
   }
 
-
-  /**
-   * Wrap up the stabilization, fit and emit the events.
-   * @private
-   */
-  _finalizeStabilization() {
-
-  }
 
 }
 

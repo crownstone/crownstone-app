@@ -158,16 +158,16 @@ export class RoomOverview extends Component<any, any> {
     else {
       return (
         <View key={stoneId + '_entry'}>
-            <DeviceEntry
-              initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
-              eventBus={this.props.eventBus}
-              store={this.props.store}
-              stoneId={stoneId}
-              locationId={this.props.locationId}
-              sphereId={this.props.sphereId}
-              viewingRemotely={this.viewingRemotely}
-              nearest={stoneId === this.nearestStoneId}
-            />
+          <DeviceEntry
+            initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
+            eventBus={this.props.eventBus}
+            store={this.props.store}
+            stoneId={stoneId}
+            locationId={this.props.locationId}
+            sphereId={this.props.sphereId}
+            viewingRemotely={this.viewingRemotely}
+            nearest={stoneId === this.nearestStoneId}
+          />
         </View>
       );
     }
@@ -266,6 +266,8 @@ export class RoomOverview extends Component<any, any> {
     const state = store.getState();
 
     let title = undefined;
+    console.log(this.props)
+
     if (this.props.locationId !== null) {
       title = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name;
     }
