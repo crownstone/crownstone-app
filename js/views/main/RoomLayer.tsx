@@ -46,6 +46,7 @@ export class RoomLayer extends Component<any, any> {
   animationFrame : any;
 
   nodes: any;
+  unsubscribeStoreEvents: any;
 
   constructor(props) {
     super();
@@ -236,9 +237,21 @@ export class RoomLayer extends Component<any, any> {
     });
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (
+        change.changeLocations
+      ) {
+        this.loadInSolver();
+      }
+    });
+
+  }
 
   componentWillUnmount() {
+    this.unsubscribeStoreEvents();
     this.state.pan.removeListener(this.panListener);
     this.physicsEngine.clear();
   }
@@ -358,7 +371,7 @@ export class RoomLayer extends Component<any, any> {
 
     this.physicsEngine.initEngine(center, this._baseRadius, () => {}, onStable);
     this.physicsEngine.load(this.nodes, edges);
-    this.physicsEngine.stabilize(40, true);
+    this.physicsEngine.stabilize(200, true);
 
   }
 

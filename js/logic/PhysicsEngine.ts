@@ -495,6 +495,7 @@ class PhysicsEngine {
       this._stabilizationBatch();
     }
     else {
+      console.log("STABLE AFTER" , this.stabilizationIterations)
       this.onStable();
     }
   }
