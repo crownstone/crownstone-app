@@ -195,7 +195,6 @@ class StoneStateHandlerClass {
 
         // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
         if (FALLBACKS_ENABLED) {
-
           // if we are in DFU, do not leave the sphere by fallback
           if (DfuStateHandler.areDfuStonesAvailable() !== true) {
             if (allDisabled === true) {
@@ -205,7 +204,7 @@ class StoneStateHandlerClass {
           }
           else {
             // reschedule the fallback if we are in dfu.
-            this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_")
+            this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_")
           }
         }
 
@@ -230,7 +229,7 @@ class StoneStateHandlerClass {
       delete this.timeoutActions[sphereId][stoneId].clearRSSITimeout;
     };
 
-    this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_");
+    this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_");
     this.timeoutActions[sphereId][stoneId].clearRSSITimeout = Scheduler.scheduleCallback(clearRSSICallback, RSSI_TIMEOUT, "updateRSSI_" + stoneId + "_");
   }
 }
