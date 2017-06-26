@@ -1,3 +1,4 @@
+import { AppState } from 'react-native'
 import { NativeBus } from '../native/libInterface/NativeBus';
 import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
@@ -5,11 +6,30 @@ import {eventBus} from "../util/EventBus";
 import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 
 
+interface scheduledCallback {
+  uuid?: {
+    callback() : void
+    triggerTime: number,
+    timeoutId: number
+  },
+}
+interface scheduleTrigger {
+  id?: {
+    active:     true,
+    actions:    any[],
+    callbacks:  any[],
+    overwritableActions:   {},
+    overwritableCallbacks: {},
+    options:    {},
+    lastTriggerTime: 0
+  }
+}
+
 class SchedulerClass {
   _initialized : any;
   store : any;
-  triggers : any;
-  singleFireTriggers : any;
+  triggers : scheduleTrigger;
+  singleFireTriggers : scheduledCallback;
   allowTicksAfterTime : any;
   activeSphere : any;
   scheduledTick : any;
@@ -221,7 +241,45 @@ class SchedulerClass {
     this.scheduledTick = setTimeout(() => { this.tick() }, SCHEDULER_FALLBACK_TICK);
   }
 
-  scheduleCallback(callback : () => void, afterMilliseconds, label = "unlabeled") {
+  /**
+   * Smart callback scheduler.
+   *
+   * This method will also set a setTimeout to make sure the triggers fire when expected instead of checking if it should fire every 1 or 4 seconds.
+   * If it detects the app is NOT on the foreground (which is when the setTimeout would still do something) it will fall back to being a backgroundCallback.
+   * @param callback
+   * @param afterMilliseconds
+   * @param label
+   */
+  scheduleCallback(callback, afterMilliseconds, label = "unlabeled") {
+    if (AppState.currentState === 'active') {
+      this.scheduleActiveCallback(callback, afterMilliseconds, label);
+    }
+    else {
+      this.scheduleBackgroundCallback(callback, afterMilliseconds, label);
+    }
+  }
+
+  /**
+   * This method will also set a setTimeout to make sure the triggers fire when expected instead of checking if it should fire every 1 or 4 seconds.
+   * @param callback
+   * @param afterMilliseconds
+   * @param label
+   */
+  scheduleActiveCallback(callback, afterMilliseconds, label = "unlabeled") {
+    this._scheduleCallback(callback, afterMilliseconds, false, label);
+  }
+
+  /**
+   * This method will does not set an additional setTimeout.
+   * @param callback
+   * @param afterMilliseconds
+   * @param label
+   */
+  scheduleBackgroundCallback(callback, afterMilliseconds, label = "unlabeled") {
+    this._scheduleCallback(callback, afterMilliseconds, false, label);
+  }
+
+  _scheduleCallback(callback, afterMilliseconds, useTimeout: boolean, label = "unlabeled") {
     if (typeof callback !== 'function') {
       LOG.error("Scheduler: Failed to schedule callback. Not a function", label, afterMilliseconds);
       if (DEBUG) {
@@ -231,14 +289,21 @@ class SchedulerClass {
 
     let uuid = label + Util.getUUID();
     LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
-    this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
 
     // fallback to try to fire this callback after exactly the amount of ms
-    let timeoutId = setTimeout(() => { this.tick(); }, afterMilliseconds + 10);
+    let timeoutId = null;
+
+    if (useTimeout) {
+      timeoutId = setTimeout(() => { this.tick(); }, afterMilliseconds + 10);
+    }
+
+    this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds, timeoutId: timeoutId};
 
     return () => {
       if (this.singleFireTriggers[uuid]) {
-        clearTimeout(timeoutId);
+        if (useTimeout) {
+          clearTimeout(timeoutId);
+        }
         this.singleFireTriggers[uuid] = undefined;
         delete this.singleFireTriggers[uuid];
       }
@@ -314,6 +379,12 @@ class SchedulerClass {
       if (trigger && trigger.triggerTime < now) {
         LOG.scheduler("Firing single fire trigger:", triggerId);
         trigger.callback();
+
+        // clear the pending timeout.
+        if (trigger.timeoutId) {
+          clearTimeout(trigger.timeoutId);
+        }
+
         this.singleFireTriggers[triggerId] = undefined;
         delete this.singleFireTriggers[triggerId];
       }
@@ -359,7 +430,7 @@ class SchedulerClass {
   _flushActions(trigger, state) {
     let actionsToDispatch = [];
 
-    // check if we have to update the state. If the state has changed due to userinput in between triggers
+    // check if we have to update the state. If the state has changed due to user input in between triggers
     // we prefer not to use older data.
     trigger.actions.forEach((action) => {
       this._checkAndAddAction(actionsToDispatch, action, state)
