@@ -250,12 +250,12 @@ class SchedulerClass {
    * @param afterMilliseconds
    * @param label
    */
-  scheduleCallback(callback, afterMilliseconds, label = "unlabeled") {
+  scheduleCallback(callback, afterMilliseconds, label = "unlabeled") : () => void {
     if (AppState.currentState === 'active') {
-      this.scheduleActiveCallback(callback, afterMilliseconds, label);
+      return this.scheduleActiveCallback(callback, afterMilliseconds, label);
     }
     else {
-      this.scheduleBackgroundCallback(callback, afterMilliseconds, label);
+      return this.scheduleBackgroundCallback(callback, afterMilliseconds, label);
     }
   }
 
@@ -265,8 +265,8 @@ class SchedulerClass {
    * @param afterMilliseconds
    * @param label
    */
-  scheduleActiveCallback(callback, afterMilliseconds, label = "unlabeled") {
-    this._scheduleCallback(callback, afterMilliseconds, false, label);
+  scheduleActiveCallback(callback, afterMilliseconds, label = "unlabeled") : () => void {
+    return this._scheduleCallback(callback, afterMilliseconds, false, label);
   }
 
   /**
@@ -275,18 +275,17 @@ class SchedulerClass {
    * @param afterMilliseconds
    * @param label
    */
-  scheduleBackgroundCallback(callback, afterMilliseconds, label = "unlabeled") {
-    this._scheduleCallback(callback, afterMilliseconds, false, label);
+  scheduleBackgroundCallback(callback, afterMilliseconds, label = "unlabeled") : () => void {
+    return this._scheduleCallback(callback, afterMilliseconds, false, label);
   }
 
-  _scheduleCallback(callback, afterMilliseconds, useTimeout: boolean, label = "unlabeled") {
+  _scheduleCallback(callback, afterMilliseconds, useTimeout: boolean, label = "unlabeled") : () => void {
     if (typeof callback !== 'function') {
       LOG.error("Scheduler: Failed to schedule callback. Not a function", label, afterMilliseconds);
       if (DEBUG) {
         throw "Scheduler: Failed to schedule callback. Not a function: " + label;
       }
     }
-
     let uuid = label + Util.getUUID();
     LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
 
