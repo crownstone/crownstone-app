@@ -4,11 +4,10 @@
 let jest = require('jest');
 jest.mock('react-native-fs', () => {return {};});
 jest.mock('react-native-device-info');
-
 jest.mock('../js/ExternalConfig', () => {
   return {
     RELEASE_MODE_USED: false,
-    PROMISE_MANAGER_FALLBACK_TIMEOUT: 200,
+    PROMISE_MANAGER_FALLBACK_TIMEOUT: 60000,
     LOG_INFO       : false,
     LOG_WARNINGS   : false,
     LOG_ERRORS     : false,
@@ -20,6 +19,7 @@ jest.mock('../js/ExternalConfig', () => {
     LOG_MESH       : false,
     LOG_CLOUD      : false,
     LOG_DEBUG      : false,
+    MESH_ENABLED   : true,
     SCHEDULER_FALLBACK_TICK: 1,
     TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY: 1,
   }
@@ -69,8 +69,6 @@ jest.mock('../js/logic/BatchCommandHandler', () => {
     }
   }
 });
-
-
 jest.mock('../js/native/advertisements/StoneStateHandler', () => {
   return {
     StoneStateHandler: {
@@ -79,6 +77,8 @@ jest.mock('../js/native/advertisements/StoneStateHandler', () => {
   }
 });
 
+jest.mock('PushNotificationIOS', () => ({ }));jest.mock('Linking', () => {});
+jest.mock('NetInfo', () => {});
 
 import { StoneTracker } from '../js/native/advertisements/StoneTracker'
 import { addDistanceToRssi } from '../js/util/Util'
@@ -89,6 +89,7 @@ test('stoneTrackerTest', () => {
   let tracker = new StoneTracker({
     getState: () => {
       return {
+        app: {tapToToggleEnabled: false},
         spheres: {
           test_sphereId: {
             stones: {
@@ -204,6 +205,7 @@ test('stoneTracker Alternating', () => {
   let tracker = new StoneTracker({
     getState: () => {
       return {
+        app: {tapToToggleEnabled: false},
         spheres: {
           test_sphereId: {
             stones: {
@@ -298,8 +300,6 @@ test('stoneTracker Alternating', () => {
         throw "Error in mockBatchCommandHandler after test"
       }
     })
-
-
 });
 
 

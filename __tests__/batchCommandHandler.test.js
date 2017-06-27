@@ -23,6 +23,7 @@ jest.mock('../js/ExternalConfig', () => {
     LOG_WARNINGS:   false || FORCE_ENABLE_LOGS,
     LOG_VERBOSE:    false || FORCE_ENABLE_LOGS,
     LOG_TO_FILE: false,
+    MESH_ENABLED: true,
     DISABLE_NATIVE: false,
     SILENCE_CLOUD: true,
     OVERRIDE_DATABASE: false,
@@ -33,9 +34,10 @@ jest.mock('../js/ExternalConfig', () => {
     HIGH_FREQUENCY_SCAN_MAX_DURATION: 15000,
     DISABLE_TIMEOUT: 30000,
     KEEPALIVE_INTERVAL: 60,
+    PROMISE_MANAGER_FALLBACK_TIMEOUT: 60000,
     KEEPALIVE_REPEAT_ATTEMPTS: 1,
     RESET_TIMER_FOR_NEAR_AWAY_EVENTS: 20000,
-    RELEASE_MODE_USED: false || FORCE_ENABLE_LOGS,
+    RELEASE_MODE_USED: false,
     TESTING_IN_PROCESS: true,
     LOCAL_TESTING: false
   }
@@ -97,7 +99,7 @@ jest.mock('../js/native/libInterface/Bluenet', () => {
         this.eventBus.emit('test', {command:'meshKeepAlive', args:[]});
         setTimeout(() => { callback({error: !this.success}); }, 100);
       },
-      disconnect: (callback) => {
+      disconnectCommand: (callback) => {
         this.eventBus.emit('test', {command:'disconnectCommand', args:[]});
         setTimeout(() => { callback({error: !this.success}); }, 100);
       },

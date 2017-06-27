@@ -473,7 +473,7 @@ class BatchCommandHandlerClass {
           return this._handleAllCommandsForStone(crownstoneToHandle);
         })
         // .then(() => {
-        //   if (Permissions.setStoneTime) {
+        //   if (Permissions.setStoneTime && this.store) {
         //     // check if we have to tell this crownstone what time it is.
         //     let state = this.store.getState();
         //     let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;

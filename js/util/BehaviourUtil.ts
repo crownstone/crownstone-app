@@ -194,14 +194,33 @@ export const BehaviourUtil = {
     if (behaviour.state > 0 && element.config.onlyOnWhenDark === true) {
       let now = new Date().valueOf();
       // the time in our rotterdam office
-      let latitude = sphere.config.latitude || 51.923611570463152;
-      let longitude = sphere.config.longitude || 4.4667693378575288;
-      let times = SunCalc.getTimes(new Date(), latitude, longitude);
+      let times = this.getEveningTimes(sphere);
 
       // if it is light outside and the onlyOnWhenDark is on, we have to return false.
       // it is light outside between the end of the sunrise and the start of the sunset.
-      return (now < times.dawn.valueOf() || now > times.dusk.valueOf()); // = is dark outside
+      return (now < times.morning || now > times.evening); // = is dark outside
     }
     return true;
+  },
+
+  getEveningTimes: function(sphere) {
+    if (!(sphere && sphere.config)) {
+      sphere = {config:{}};
+    }
+
+    // the time in our rotterdam office
+    let latitude = sphere.config.latitude || 51.923611570463152;
+    let longitude = sphere.config.longitude || 4.4667693378575288;
+    let allTimes = SunCalc.getTimes(new Date(), latitude, longitude);
+    let times = {
+      morning: 0.5*(allTimes.sunrise.valueOf() + allTimes.dawn.valueOf()),
+      evening: 0.5*(allTimes.dusk.valueOf()    + allTimes.sunsetStart.valueOf()),
+    };
+    return {
+      morning: times.morning,
+      evening: times.evening,
+      morningReadable: new Date(times.morning),
+      eveningReadable: new Date(times.evening),
+    };
   }
 };

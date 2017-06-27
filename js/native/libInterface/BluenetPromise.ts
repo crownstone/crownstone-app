@@ -26,7 +26,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
         bluenetArguments.push(arguments[i])
       }
 
-      LOG.info("called bluenetPromise", functionName, " with params", bluenetArguments);
+      LOG.info("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments);
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);
