@@ -95,12 +95,14 @@ export class RoomLayer extends Component<any, any> {
       // console.log(node.x + radius > correctedX, node.y + radius > correctedY, node.x < correctedX, node.y < correctedY, correctedY);
       if (node.x + radius > x1 && node.y + radius > y1 && node.x < x1 && node.y < y1) {
         found = true;
+        let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
         if (this.state.hoverRoom !== nodeIds[i]) {
-          this.setState({hoverRoom: nodeIds[i]});
+          this.state.locations[nodeId].scale.stopAnimation();
+          this.setState({hoverRoom: nodeId});
+          Animated.spring(this.state.locations[nodeIds[i]].scale, { toValue: 1.25, friction: 4, tension: 70 }).start();
         }
-        if (nodeIds[i] === 'null') { return null; }
 
-        return nodeIds[i];
+        return nodeId;
       }
     }
 
@@ -168,13 +170,13 @@ export class RoomLayer extends Component<any, any> {
             }
           }
           else {
-            this.clearTap();
+            this._clearTap();
             return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
           }
 
         }
         else {
-          this.clearTap();
+          this._clearTap();
           this._multiTouchUsed = true;
           let distance = getDistance(evt.nativeEvent.touches);
           if (this._multiTouch === false) {
@@ -220,7 +222,6 @@ export class RoomLayer extends Component<any, any> {
 
         if (this._pressedRoom !== false) {
           this.setState({hoverRoom: false});
-          console.log("THE ID OF THE THINGY I PRESSED", {room:this._pressedRoom})
           Actions.roomOverview({sphereId: this.props.sphereId, locationId: this._pressedRoom});
         }
 
@@ -230,6 +231,9 @@ export class RoomLayer extends Component<any, any> {
         else if (this._currentScale < this._minScale) {
           Animated.spring(this.state.scale, { toValue: this._minScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._minScale; });
         }
+
+
+        this._clearTap();
 
 
       },
@@ -247,8 +251,20 @@ export class RoomLayer extends Component<any, any> {
 
   componentDidMount() {
     this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => { this.loadInSolver(); }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => { this.loadInSolver(); }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => {
+
+      // only reload the nodes in the solver if we need to add one.
+      let floatingStones = getFloatingStones(this.props.store.getState(), this._currentSphere);
+      if (floatingStones.length === 0) {
+        this.loadInSolver();
+      }
+
+      this.setWiggleInterval();
+    }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => {
+      this.clearWiggleInterval();
+      this.loadInSolver();
+    }));
 
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -259,19 +275,22 @@ export class RoomLayer extends Component<any, any> {
         this.loadInSolver();
       }
     });
+  }
 
+  setWiggleInterval() {
     this.wiggleInterval = setInterval(() => {
-      let wiggles = Object.keys(this.state.locations);
-      let animations = [];
-      wiggles.forEach((locationId) => {
-        animations.push(Animated.spring(this.state.locations[locationId].scale, { toValue: Math.max(0.4, Math.random() * 1.5), friction: 1, tension: 70 }));
-      });
-      Animated.parallel(animations).start(() => {})
+      if (this._pressedRoom !== null && this.state.locations['null'] !== undefined) {
+        Animated.spring(this.state.locations['null'].scale, { toValue: 0.9 + Math.random() * 0.35, friction: 1, tension: 70 }).start();
+      }
     }, 500);
   }
 
-  componentWillUnmount() {
+  clearWiggleInterval() {
     clearInterval(this.wiggleInterval);
+  }
+
+  componentWillUnmount() {
+    this.clearWiggleInterval();
     this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
     this.state.pan.removeListener(this.panListener);
@@ -342,7 +361,11 @@ export class RoomLayer extends Component<any, any> {
     });
   }
 
-  clearTap() {
+  _clearTap() {
+    if (this._pressedRoom !== false) {
+      this.state.locations[this._pressedRoom].scale.stopAnimation();
+      Animated.timing(this.state.locations[this._pressedRoom].scale, {toValue: 1, duration: 100}).start();
+    }
     this._validTap = false;
     this._pressedRoom = false;
     if (this.state.hoverRoom !== false) {
@@ -407,13 +430,12 @@ export class RoomLayer extends Component<any, any> {
   }
 
 
-  _renderRoom(locationId, count, index, activeSphere) {
+  _renderRoom(locationId, count) {
     // variables to pass to the room overview
     return (
       <RoomCircle
         eventBus={this.props.eventBus}
         locationId={locationId}
-        active={this.props.sphereId == activeSphere}
         totalAmountOfRoomCircles={count}
         sphereId={this.props.sphereId}
         hover={this.state.hoverRoom === locationId}
@@ -447,10 +469,10 @@ export class RoomLayer extends Component<any, any> {
     }
 
     for (let i = 0; i < roomIdArray.length; i++) {
-      roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms, i, state.app.activeSphere))
+      roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms))
     }
     if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null, amountOfRooms, roomIdArray.length, state.app.activeSphere))
+      roomNodes.push(this._renderRoom(null, amountOfRooms))
     }
 
     return roomNodes;

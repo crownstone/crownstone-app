@@ -2,6 +2,7 @@
 
 To be Released:
 
+
 - Fixed bug in dfu process that did not put the Crownstone back in normal mode after a failed factory reset.
 - Added a few new Icons for rooms and appliances.
 

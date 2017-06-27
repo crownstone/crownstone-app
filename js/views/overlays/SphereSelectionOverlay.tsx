@@ -42,11 +42,11 @@ export class SphereSelectionOverlay extends Component<any, any> {
 
   _sphereRenderer(item, index, itemId) {
     let color = colors.white.hex;
+    let textStyle = {paddingLeft:10, flex:1};
     if (this.activeSphere === itemId) {
-      color = colors.iosBlue.rgba(0.5);
-      if (item.config.present === false) {
-        color = colors.iosBlue.rgba(0.3);
-      }
+      color = colors.csBlue.hex;
+      textStyle['fontWeight'] = '600';
+      textStyle['color'] = colors.white.hex;
     }
     return (
       <TouchableOpacity
@@ -57,7 +57,7 @@ export class SphereSelectionOverlay extends Component<any, any> {
           this.setState({visible:false});
         }}
       >
-        <Text style={{paddingLeft:10, flex:1}}>{item.config.name + '\'s Sphere'}</Text>
+        <Text style={textStyle}>{item.config.name + '\'s Sphere'}</Text>
         {item.config.present ? <Icon name="c1-locationPin1" size={20} style={{paddingRight:10}} color={colors.black.rgba(0.4)} /> : undefined }
       </TouchableOpacity>
     )
@@ -70,7 +70,7 @@ export class SphereSelectionOverlay extends Component<any, any> {
     this.activeSphere = state.app.activeSphere;
 
     return (
-      <OverlayBox visible={this.state.visible}>
+      <OverlayBox visible={this.state.visible} canClose={true} closeCallback={() => { this.setState({visible:false}); }} backgroundColor={colors.menuBackground.rgba(0.5)}>
         <Text style={{fontSize: 17, fontWeight: 'bold', color: colors.csBlue.hex, padding:15, textAlign:'center'}}>{"Select a Sphere:"}</Text>
         <IconButton
           name="c1-sphere"

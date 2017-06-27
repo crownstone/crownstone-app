@@ -333,9 +333,9 @@ function handleStoneState(action, state, pureSwitch = false) {
 
   if (state.user.uploadPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = { energy:   stone.state.currentUsage, duration: 1 };
+    let data  = { power: stone.state.currentUsage };
 
-    CLOUD.forStone(stoneId).updateUsage(data).catch(() => {});
+    CLOUD.forStone(stoneId).updatePowerUsage(data).catch(() => {});
   }
 }
 

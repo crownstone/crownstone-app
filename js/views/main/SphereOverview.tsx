@@ -129,7 +129,8 @@ export class SphereOverview extends Component<any, any> {
     const store = this.props.store;
     const state = store.getState();
 
-    let noSpheres = Object.keys(state.spheres).length === 0;
+    let amountOfSpheres = Object.keys(state.spheres).length;
+    let noSpheres = amountOfSpheres === 0;
     let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStonesInDFUMode = DfuStateHandler.areDfuStonesAvailable();
     let viewingRemotely = true;
@@ -190,7 +191,7 @@ export class SphereOverview extends Component<any, any> {
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
               <Sphere sphereId={activeSphere} store={this.props.store} eventBus={this.props.eventBus} />
-              <SphereIcon viewingRemotely={viewingRemotely} sphereId={activeSphere} />
+            { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphere} /> : undefined }
           </AnimatedBackground>
         </View>
       );
@@ -260,7 +261,7 @@ export class SphereOverview extends Component<any, any> {
   }
 }
 
-class SphereIcon extends Component<any, any> {
+class SphereChangeButton extends Component<any, any> {
   render() {
     let outerRadius = 0.11*screenWidth;
     let size = 0.084*screenWidth;

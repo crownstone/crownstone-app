@@ -158,7 +158,7 @@ class RoomCircleClass extends Component<any, any> {
 
   componentWillUpdate(nextProps) {
     if (this.props.hover === false && nextProps.hover === true) {
-      Animated.timing(this.state.componentOpacity, {toValue: 0.2, duration:50}).start();
+      Animated.timing(this.state.componentOpacity, {toValue: 0.5, duration:50}).start();
     }
     else if (this.props.hover === true && nextProps.hover === false) {
       Animated.timing(this.state.componentOpacity, {toValue: 1, duration:50}).start();
