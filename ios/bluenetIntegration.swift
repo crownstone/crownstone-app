@@ -984,7 +984,13 @@ open class BluenetJS: NSObject {
 
   @objc func batterySaving(_ state: NSNumber) -> Void {
     let batterySavingState : Bool = state.boolValue
+    if (batterySavingState) {
+      GLOBAL_BLUENET!.bluenet.enableBatterySaving()
+    }
+    else {
+      GLOBAL_BLUENET!.bluenet.disableBatterySaving()
 
+    }
     LOGGER.info("BluenetBridge: batterySaving set to \(batterySavingState)")
   }
 

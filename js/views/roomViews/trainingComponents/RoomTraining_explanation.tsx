@@ -26,19 +26,20 @@ export class RoomTraining_explanation extends Component<any, any> {
         <TopBar
           leftAction={ Actions.pop }
           title={"Teaching " + this.props.ai.name}/>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,
             fontWeight:'600',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center'
-          }}>{"OK, so it's a " + this.props.roomSize + " room. Let's get started!"}</Text>
+          }}>{"OK, so it's a " + this.props.roomSize + " room. Let's start training " + this.props.roomName + '!'}</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
             fontWeight:'300',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
           }}>{"Walk around the room with your phone in your hand. " +
@@ -49,7 +50,7 @@ export class RoomTraining_explanation extends Component<any, any> {
             backgroundColor:'transparent',
             fontSize:16,
             fontWeight:'300',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
             paddingBottom:20,

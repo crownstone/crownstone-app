@@ -158,10 +158,11 @@ export class RoomTraining extends Component<any, any> {
   render() {
     let state  = this.props.store.getState();
     let ai = Util.data.getAiData(state, this.props.sphereId);
+    let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
     let content = undefined;
     if (this.state.phase === 0) {
-      content = <RoomTraining_explanation ai={ai} next={() => {this.setState({phase:1}); this.start(); }} sampleSize={this.props.sampleSize} roomSize={this.props.roomSize} />
+      content = <RoomTraining_explanation ai={ai} next={() => {this.setState({phase:1}); this.start(); }} sampleSize={this.props.sampleSize} roomSize={this.props.roomSize} roomName={roomName} />
     }
     else if (this.state.phase === 1) {
       content = (
@@ -189,7 +190,7 @@ export class RoomTraining extends Component<any, any> {
     }
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.main}>
+      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         {content}
       </Background>
     );
