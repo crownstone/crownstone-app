@@ -190,7 +190,7 @@ export class SphereOverview extends Component<any, any> {
               showHamburgerMenu={true}
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
-              <Sphere sphereId={activeSphere} store={this.props.store} eventBus={this.props.eventBus} />
+              <Sphere sphereId={activeSphere} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
             { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphere} /> : undefined }
           </AnimatedBackground>
         </View>

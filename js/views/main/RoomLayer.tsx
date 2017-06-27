@@ -323,7 +323,14 @@ export class RoomLayer extends Component<any, any> {
 
     // add padding
     minX -= 0.3*this._baseRadius;
-    minY -= 0.7*this._baseRadius;
+
+    // draw it as nice as possible depending on whether or not the multiple sphere button is drawn.
+    if (this.props.multipleSpheres) {
+      minY -= 0.7*this._baseRadius;
+    }
+    else {
+      minY -= 0.3*this._baseRadius;
+    }
     maxX += 0.3*this._baseRadius;
     maxY += 0.7*this._baseRadius;
 
