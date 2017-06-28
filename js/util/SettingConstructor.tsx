@@ -66,7 +66,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => {
-        createNewSphere(eventBus, store, state.user.firstName).catch(() => {});
+        createNewSphere(eventBus, store, state.user.firstName+"'s Sphere").catch(() => {});
       }
     });
   }

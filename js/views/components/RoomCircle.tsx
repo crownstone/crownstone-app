@@ -55,7 +55,6 @@ class RoomCircleClass extends Component<any, any> {
     super();
 
     this.initializedPosition = true;
-    let initialOpacity = 1;
     let initialX = props.pos.x._value;
     let initialY = props.pos.y._value;
 
@@ -63,7 +62,6 @@ class RoomCircleClass extends Component<any, any> {
       top: new Animated.Value(initialY),
       left: new Animated.Value(initialX),
       colorFadeOpacity: new Animated.Value(0),
-      componentOpacity: new Animated.Value(initialOpacity),
       setupProgress: 20,
     };
 
@@ -154,15 +152,6 @@ class RoomCircleClass extends Component<any, any> {
         this.forceUpdate();
       }
     });
-  }
-
-  componentWillUpdate(nextProps) {
-    if (this.props.hover === false && nextProps.hover === true) {
-      Animated.timing(this.state.componentOpacity, {toValue: 0.5, duration:50}).start();
-    }
-    else if (this.props.hover === true && nextProps.hover === false) {
-      Animated.timing(this.state.componentOpacity, {toValue: 1, duration:50}).start();
-    }
   }
 
 
@@ -398,7 +387,7 @@ class RoomCircleClass extends Component<any, any> {
     };
 
     return (
-      <Animated.View style={[animatedStyle,{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.componentOpacity}]}>
+      <Animated.View style={[animatedStyle,{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.props.opacity}]}>
         <View>
           {this.getCircle()}
           {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}

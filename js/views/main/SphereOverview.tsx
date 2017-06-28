@@ -180,7 +180,7 @@ export class SphereOverview extends Component<any, any> {
         <View>
           <AnimatedBackground hideTopBar={true} image={background}>
             <TopBar
-              title={state.spheres[activeSphere].config.name + '\'s Sphere'}
+              title={state.spheres[activeSphere].config.name}
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
               altenateLeftItem={true}

@@ -293,7 +293,7 @@ export class Login extends Component<any, any> {
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Creating first Sphere.'});
           // TODO: place in tutorial
-          return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus);
+          return CLOUD.createNewSphere(store, state.user.firstName + "'s Sphere", this.props.eventBus);
         }
         else {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Sphere available.'});
