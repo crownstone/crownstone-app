@@ -218,7 +218,11 @@ export class FirmwareHelper {
   }
 
   restartInAppMode() {
-    return BluenetPromiseWrapper.bootloaderToNormalMode( this.handle ).then(() => { return delay(1000); });
+    let action = () => {
+      LOG.info("FirmwareHelper: performing bootloaderToNormalMode.");
+      return BluenetPromiseWrapper.bootloaderToNormalMode( this.handle ).then(() => { return delay(1000); });
+    };
+    return BlePromiseManager.registerPriority(action, {from: 'DFU: bootloaderToNormalMode' + this.handle});
   }
 
   _updateBootloader(crownstoneMode: crownstoneModes) {
