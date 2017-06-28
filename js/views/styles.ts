@@ -174,7 +174,6 @@ export const styles = StyleSheet.create({
     backgroundColor:"transparent",
     color: colors.darkGray2.rgba(1),
     textAlign:'center',
-    fontWeight:'300',
     fontSize: 10,
   }
 

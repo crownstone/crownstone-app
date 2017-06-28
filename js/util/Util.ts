@@ -137,19 +137,11 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
-  getTimeFormat: function(timestamp)  {
+  getDateTimeFormat: function(timestamp)  {
     if (timestamp === 0) {
       return 'unknown';
     }
-
     let date = new Date(timestamp);
-
-    let pad = (base) => {
-      if (Number(base) < 10) {
-        return '0' + base;
-      }
-      return base;
-    };
 
     let month = pad(date.getMonth() + 1);
     let day = pad(date.getDate());
@@ -158,6 +150,20 @@ export const Util = {
     let seconds = pad(date.getSeconds());
 
     return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds
+  },
+
+  getTimeFormat: function(timestamp)  {
+    if (timestamp === 0) {
+      return 'unknown';
+    }
+
+    let date = new Date(timestamp);
+
+    let hours = date.getHours();
+    let minutes = pad(date.getMinutes());
+    let seconds = pad(date.getSeconds());
+
+    return hours + ':' + minutes + ':' + seconds
   },
 
   getUUID : () : string => {
@@ -282,4 +288,12 @@ export const Util = {
     }
 
   }
+};
+
+
+let pad = (base) => {
+  if (Number(base) < 10) {
+    return '0' + base;
+  }
+  return base;
 };

@@ -74,6 +74,7 @@ export class DeviceOverview extends Component<any, any> {
 
       let applianceId = stone.config.applianceId;
       if (
+        change.changeAppSettings ||
         change.changeStoneState && change.changeStoneState.stoneIds[this.props.stoneId] ||
         change.powerUsageUpdated && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
         change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
@@ -126,7 +127,7 @@ export class DeviceOverview extends Component<any, any> {
               case summaryIndex:
                 return (hasAppliance ? Permissions.editAppliance : Permissions.editCrownstone) ? 'Edit' : undefined;
               case behaviourIndex:
-                return Permissions.changeBehaviour ? 'Change' : undefined;
+                return (Permissions.changeBehaviour && state.app.indoorLocalizationEnabled) ? 'Change' : undefined;
             }
           }}
           rightAction={() => {
@@ -137,7 +138,7 @@ export class DeviceOverview extends Component<any, any> {
                 }
                 break;
               case behaviourIndex:
-                if (Permissions.changeBehaviour) {
+                if (Permissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
                   Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
                 }
                 break;

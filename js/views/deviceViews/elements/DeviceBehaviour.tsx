@@ -19,13 +19,37 @@ import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../util/DataUtil";
+import {TYPES} from "../../../router/store/reducers/stones";
 
 
-let DISABLED_COLOR = colors.csOrange.hex;
+let DISABLED_COLOR = colors.gray.hex;
+let WARNING_COLOR = colors.csOrange.hex;
 
 export class DeviceBehaviour extends Component<any, any> {
   constructor() {
     super();
+  }
+
+  getWarning(state, nearFarDisabled) {
+    if (state.app.indoorLocalizationEnabled === false) {
+      return <Text style={textStyle.warning}>Behaviour is disabled in the App Settings. Re-enable indoor localization to use the behaviour.</Text>
+    }
+
+    let warningText = '';
+    if (state.app.keepAlivesEnabled === false) {
+      warningText = 'Heartbeat is disabled in the App Settings. Re-enable the Heartbeat to use the exit behaviour.';
+    }
+
+    if (nearFarDisabled) {
+      if (warningText !== '') {
+        warningText += '\n\n'
+      }
+      warningText += 'Near/away is disabled until you define where near is. Press change at the top to do this now.';
+    }
+
+    if (warningText) {
+      return <Text style={textStyle.warning}>{warningText}</Text>
+    }
   }
 
   render() {
@@ -44,15 +68,23 @@ export class DeviceBehaviour extends Component<any, any> {
         <Text style={textStyle.title}>Behaviour</Text>
         <Text style={textStyle.explanation}>This is how I respond to your location:</Text>
         <View style={{flex: 1.5}} />
-        <BehaviourResponse data={element.behaviour} type="onHomeEnter" stone={stone} />
+        <BehaviourResponse data={element.behaviour} type="onHomeEnter" stone={stone} appSettings={state.app} />
         <View style={{flex:0.8}} />
-        <BehaviourResponse data={element.behaviour} type="onHomeExit" stone={stone} sphere={sphere} />
+        <BehaviourResponse data={element.behaviour} type="onHomeExit" stone={stone} sphere={sphere} appSettings={state.app} />
         <View style={{flex:0.8}} />
-        {canDoIndoorLocalization ? <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomEnter" /> : <BehaviourResponse data={element.behaviour} stone={stone}  type="onNear" />}
+        {
+          canDoIndoorLocalization ?
+          <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomEnter" appSettings={state.app} /> :
+          <BehaviourResponse data={element.behaviour} stone={stone}  type="onNear" appSettings={state.app} />
+        }
         <View style={{flex:0.8}} />
-        {canDoIndoorLocalization ? <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomExit" /> : <BehaviourResponse data={element.behaviour}  stone={stone}  type="onAway" />}
+        {
+          canDoIndoorLocalization ?
+          <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomExit" appSettings={state.app} /> :
+          <BehaviourResponse data={element.behaviour}  stone={stone}  type="onAway" appSettings={state.app} />
+        }
         <View style={{flex: 2}} />
-        {nearFarDisabled ? <Text style={textStyle.warning}>Near/away is disabled until you define where near is. Press change at the top to do this now.</Text> : undefined}
+        { this.getWarning(state, nearFarDisabled) }
         <View style={{flex: 2}} />
         { element.config.onlyOnWhenDark === true ?
         <View style={{flexDirection: 'row',}} >
@@ -78,16 +110,16 @@ class BehaviourResponse extends Component<any, any> {
     return ' after ' + Util.getDelayLabel(delay, true);
   }
 
-  _getValue(enabled) {
+  _getValue(responseStyle) {
     if (this.props.data[this.props.type].state > 0) {
-      return <Text style={[textStyle.value,{color: enabled ? colors.green.hex : DISABLED_COLOR}]}>TURN ON</Text>
+      return <Text style={[textStyle.value,responseStyle]}>TURN ON</Text>
     }
     else {
-      return <Text style={[textStyle.value,{color: enabled ? colors.menuBackgroundDarker.hex : DISABLED_COLOR}]}>TURN OFF</Text>
+      return <Text style={[textStyle.value,responseStyle]}>TURN OFF</Text>
     }
   }
 
-  _getTitle(enabled) {
+  _getTitle() {
     switch (this.props.type) {
       case 'onHomeEnter':
         return 'When you enter the Sphere';
@@ -106,23 +138,35 @@ class BehaviourResponse extends Component<any, any> {
     }
   }
 
+  _getResponseStyle() {
+    if (this.props.appSettings.indoorLocalizationEnabled === false) {
+      return {color: DISABLED_COLOR, textDecorationLine:'line-through'};
+    }
+
+    if (this.props.appSettings.keepAlivesEnabled === false && (this.props.type === "onHomeExit" || this.props.type === "onRoomExit")) {
+      return {color: DISABLED_COLOR, textDecorationLine:'line-through'};
+    }
+
+    if ((this.props.type === 'onNear' || this.props.type === 'onAway') && this.props.stone.config.nearThreshold === null) {
+      return {color: WARNING_COLOR};
+    }
+
+    return colors.white.hex;
+  }
+
   render() {
     let type = this.props.type;
     let active = this.props.data[type].active;
-    let enabled = true;
-
-    if ((type === 'onNear' || type === 'onAway') && this.props.stone.config.nearThreshold === null) {
-      enabled = false;
-    }
+    let responseStyle = this._getResponseStyle();
 
     if (active) {
       return (
         <View style={{alignItems:'center'}}>
-          <Text style={[textStyle.case,{color: enabled ? colors.white.hex : DISABLED_COLOR}]}>{this._getTitle(enabled)}</Text>
+          <Text style={[textStyle.case, responseStyle]}>{this._getTitle()}</Text>
           <View style={{flexDirection: 'row', alignItems:'center'}} >
-            {this.props.prefixItem ? this.props.prefixItem : <Text style={[textStyle.value, {color: enabled ? colors.white.hex : DISABLED_COLOR}]}>{this.props.prefix || 'I will '}</Text>}
-            {this._getValue(enabled)}
-            {this.props.postfixItem ? this.props.postfixItem : <Text style={[textStyle.value, {color: enabled ? colors.white.hex : DISABLED_COLOR}]}>{this._getDelay()}</Text>}
+            {this.props.prefixItem ? this.props.prefixItem : <Text style={[textStyle.value, responseStyle]}>{this.props.prefix || 'I will '}</Text>}
+            {this._getValue(responseStyle)}
+            {this.props.postfixItem ? this.props.postfixItem : <Text style={[textStyle.value, responseStyle]}>{this._getDelay()}</Text>}
           </View>
         </View>
       );
@@ -130,7 +174,7 @@ class BehaviourResponse extends Component<any, any> {
     else {
       return (
         <View style={{alignItems:'center'}}>
-          <Text style={textStyle.case}>{this._getTitle(enabled)}</Text>
+          <Text style={textStyle.case}>{this._getTitle()}</Text>
           <Text style={[textStyle.value, {color: colors.white.rgba(0.4), fontWeight:'400', fontStyle:'italic'}]}>{"I won't do anything..."}</Text>
         </View>
       );
@@ -180,7 +224,7 @@ let textStyle = StyleSheet.create({
     fontWeight:'600'
   },
   warning: {
-    color: DISABLED_COLOR,
+    color: WARNING_COLOR,
     width:screenWidth,
     textAlign:'center',
     fontStyle:'italic',

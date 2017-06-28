@@ -20,6 +20,7 @@ import { DeviceOverview }             from '../views/deviceViews/DeviceOverview'
 import { DeviceEdit }                 from '../views/deviceViews/DeviceEdit'
 import { DeviceBehaviourEdit }        from '../views/deviceViews/DeviceBehaviourEdit'
 import { DeviceIconSelection }        from '../views/deviceViews/DeviceIconSelection'
+import { SettingsApp }                from '../views/settingsViews/SettingsApp'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
 import { SettingsPrivacy }            from '../views/settingsViews/SettingsPrivacy'
@@ -55,6 +56,7 @@ export const Views = {
   DeviceEdit,
   DeviceBehaviourEdit,
   DeviceIconSelection,
+  SettingsApp,
   SettingsOverview,
   SettingsProfile,
   SettingsPrivacy,

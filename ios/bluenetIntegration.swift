@@ -41,13 +41,13 @@ typealias voidCallback = () -> Void
     
     self.classifier = CrownstoneBasicClassifier()
     
-    self.bluenet = Bluenet()
+    self.bluenet = Bluenet(backgroundEnabled: true)
 
     // do not use the accelerometer.
     // self.bluenetMotion = BluenetMotion()
     
     self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
-    self.bluenetLocalization = BluenetLocalization()
+    self.bluenetLocalization = BluenetLocalization(backgroundEnabled: true)
     
     // insert the classifier that will be used for room-level localization.
     self.bluenetLocalization.insertClassifier(classifier: self.classifier)
@@ -984,6 +984,8 @@ open class BluenetJS: NSObject {
 
   @objc func batterySaving(_ state: NSNumber) -> Void {
     let batterySavingState : Bool = state.boolValue
+    LOGGER.info("BluenetBridge: batterySaving set to \(batterySavingState)")
+
     if (batterySavingState) {
       GLOBAL_BLUENET!.bluenet.enableBatterySaving()
     }
@@ -991,7 +993,16 @@ open class BluenetJS: NSObject {
       GLOBAL_BLUENET!.bluenet.disableBatterySaving()
 
     }
-    LOGGER.info("BluenetBridge: batterySaving set to \(batterySavingState)")
+  }
+
+  
+  @objc func setBackgroundScanning(_ state: NSNumber) -> Void {
+    let backgroundScanning : Bool = state.boolValue
+
+    LOGGER.info("BluenetBridge: backgroundScanning set to \(backgroundScanning)")
+    
+    GLOBAL_BLUENET!.bluenet.setBackgroundScanning(newBackgroundState: backgroundScanning)
+    GLOBAL_BLUENET!.bluenetLocalization.setBackgroundScanning(newBackgroundState: backgroundScanning)
   }
 
 }

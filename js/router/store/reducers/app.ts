@@ -4,6 +4,8 @@ let defaultState = {
   activeSphere: null,
   notificationToken: null,
   tapToToggleEnabled: true,
+  keepAlivesEnabled: true,
+  indoorLocalizationEnabled: true,
   updatedAt: 1
 };
 
@@ -43,6 +45,8 @@ export default (state = defaultState, action : any = {}) => {
     case 'UPDATE_APP_SETTINGS':
       if (action.data) {
         newState = {...state};
+        newState.keepAlivesEnabled   = update(action.data.keepAlivesEnabled,  newState.keepAlivesEnabled);
+        newState.indoorLocalizationEnabled   = update(action.data.indoorLocalizationEnabled,  newState.indoorLocalizationEnabled);
         newState.tapToToggleEnabled   = update(action.data.tapToToggleEnabled,  newState.tapToToggleEnabled);
         newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;

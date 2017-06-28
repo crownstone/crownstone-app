@@ -16,6 +16,7 @@ import { ListEditableItems }           from '../components/ListEditableItems'
 import { Util, addDistanceToRssi }     from '../../util/Util'
 import { NativeBus }                   from '../../native/libInterface/NativeBus'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import {BehaviourUtil} from "../../util/BehaviourUtil";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -73,10 +74,11 @@ export class DeviceBehaviourEdit extends Component<any, any> {
       let applianceId = stone.config.applianceId;
 
       if  (
+        change.changeAppSettings ||
         (stone && stone.config.applianceId && change.updateApplianceConfig && change.updateApplianceConfig.stoneIds[this.props.applianceId]) ||
         (change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId])
           ) {
-        this.forceUpdate();
+        return this.forceUpdate();
       }
 
       if (
@@ -185,6 +187,8 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     this.element = element;
     this.stone = stone;
 
+    let useExitEvents = state.app.keepAlivesEnabled;
+
     let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId, applianceId: stone.config.applianceId, viewingRemotely: this.props.viewingRemotely};
     let items = [];
 
@@ -285,17 +289,21 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     items.push({label:'WHEN YOU ...', type: 'explanation', style: styles.topExplanation, below:false});
     items.push(generateDropdown(eventLabel, 'Enter Sphere', toggleOptions));
 
-    eventLabel = 'onHomeExit';
-    items.push(generateDropdown(eventLabel, 'Leave Sphere', toggleOptionsExitSphere));
-
-    if (element.behaviour[eventLabel].active === true) {
-      items.push({
-        label: 'Leaving the sphere will be triggered ' + Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true) + ' after leaving. You can customize this in the Sphere settings.',
-        style: {paddingBottom: 5},
-        type: 'explanation',
-        below: true
-      });
+    // hide exit event if there is no keepAlive.
+    if (useExitEvents) {
+      eventLabel = 'onHomeExit';
+      items.push(generateDropdown(eventLabel, 'Leave Sphere', toggleOptionsExitSphere));
+      if (element.behaviour[eventLabel].active === true) {
+        items.push({
+          label: 'Leaving the sphere will be triggered ' + Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true) + ' after leaving. You can customize this in the Sphere settings.',
+          style: {paddingBottom: 5},
+          type: 'explanation',
+          below: true
+        });
+      }
     }
+
+
 
     if (canDoIndoorLocalization === false) {
       eventLabel = 'onNear';
@@ -359,19 +367,23 @@ export class DeviceBehaviourEdit extends Component<any, any> {
         items.push({label:'WHEN YOU ...', type: 'explanation', style: styles.topExplanation, below:false});
         items.push(generateDropdown(eventLabel, 'Enter room', toggleOptions));
 
-        eventLabel = 'onRoomExit';
-        items.push(generateDropdown(eventLabel, 'Leave room', toggleOptionsExit));
-        if (element.behaviour[eventLabel].active === true) {
-          addDelayFieldToItems(items, eventLabel, 'Delay', stone);
+
+        // hide exit event if there is no keepAlive.
+        if (useExitEvents) {
+          eventLabel = 'onRoomExit';
+          items.push(generateDropdown(eventLabel, 'Leave room', toggleOptionsExit));
+          if (element.behaviour[eventLabel].active === true) {
+            addDelayFieldToItems(items, eventLabel, 'Delay', stone);
+          }
         }
 
         if (element.behaviour[eventLabel].active === true) {
-          items.push({
-            label: 'If there are people (from your Sphere) in the room, the enter/leave events will not be triggered.',
-            style: {paddingBottom: 0},
-            type: 'explanation',
-            below: true
-          });
+          // items.push({
+          //   label: 'If there are people (from your Sphere) in the room, the enter/leave events will not be triggered.',
+          //   style: {paddingBottom: 0},
+          //   type: 'explanation',
+          //   below: true
+          // });
         }
       }
       else if (canDoIndoorLocalization === true) {
@@ -383,6 +395,10 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark === true, callback: (newValue) => {
       this.props.store.dispatch({type: 'UPDATE_'+dataTypeString+'_CONFIG', ...requiredData, data: { onlyOnWhenDark : newValue } })
     }});
+
+    let times = BehaviourUtil.getEveningTimes(state.spheres[this.props.sphereId]);
+
+    items.push({label: 'Today, for this Sphere, it is dark outside from ' + times.eveningReadable + ' until ' + times.morningReadable + ' in the morning.', type: 'explanation', below:true});
     items.push({type:  'spacer'});
 
     return items;
@@ -394,7 +410,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
     this.canDoIndoorLocalization = canDoIndoorLocalization;
 
-    let stone   = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     let options = [];
     if (stone.config.applianceId) {

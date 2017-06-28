@@ -88,7 +88,7 @@ const c1CorrectionsIOS = {
   'c1-iron':                {change: false, top: +0.000, left: +0.000},
   'c1-toiletroll2':         {change: false, top: +0.000, left: +0.000},
   'c1-signpost':            {change: false, top: +0.000, left: +0.000},
-  'c1-locationPin1':        {change: false, top: +0.000, left: +0.000},
+  'c1-locationPin1':        {change: true,  top: +0.020, left: +0.000},
   'c1-locationPin2':        {change: false, top: +0.000, left: +0.000},
   'c1-crosshairs':          {change: false, top: +0.000, left: +0.000},
   'c1-crosshairsPin':       {change: false, top: +0.000, left: +0.000},
@@ -241,6 +241,9 @@ const ioniconCorrectionsIOS = {
   'md-cube':            {change: true,  top: +0.020, left: +0.000},
   'md-power':           {change: true,  top: +0.025, left: +0.015},
   'md-time':            {change: true,  top: +0.025, left: +0.000},
+  'ios-battery-full':   {change: true,  top: +0.025, left: +0.020},
+  'ios-cog':            {change: true,  top: +0.025, left: +0.015},
+  'ios-heart':          {change: true,  top: +0.040, left: +0.000},
 };
 
 

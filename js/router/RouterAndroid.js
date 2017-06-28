@@ -60,6 +60,7 @@ export class Router_Android extends Component {
               <Scene key="applianceAdd"               component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
               <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select a Device" />
               <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        panHandlers={null} hideNavBar={false} title="Edit Behaviour" />
+              <Scene key="settingsApp"                component={Views.SettingsApp}                panHandlers={null} hideNavBar={false} title="Preferences"/>
               <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
               <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
               <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          panHandlers={null} hideNavBar={false} title="Developer" />

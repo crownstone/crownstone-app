@@ -56,6 +56,12 @@ class BackgroundProcessHandlerClass {
         // clear the temporary data like state and disability of stones so no old data will be shown
         prepareStoreForUser(this.store);
 
+        let state = this.store.getState();
+        if (state.app.indoorLocalizationEnabled === false) {
+          LOG.info("BackgroundProcessHandler: Set background processes to OFF");
+          Bluenet.setBackgroundScanning(false);
+        }
+
         LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
         BluenetPromiseWrapper.isReady()
           .then(() => {

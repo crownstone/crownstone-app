@@ -65,6 +65,7 @@ if (DISABLE_NATIVE === true) {
     clearFingerprints: () => {},
     setTime: () => {},
     batterySaving: () => {},
+    setBackgroundScanning: () => {},
   }
 }
 else {

@@ -1,6 +1,6 @@
 github "NordicSemiconductor/IOS-Pods-DFU-Library" "3.1.0"
 github "SwiftyJSON/SwiftyJSON" "3.1.4"
-github "crownstone/bluenet-ios-lib" "4.0.0"
+github "crownstone/bluenet-ios-lib" "4.0.2"
 github "crownstone/bluenet-ios-shared" "0.2.4"
 github "krzyzanowskim/CryptoSwift" "0.6.9"
 github "mxcl/PromiseKit" "4.2.2"

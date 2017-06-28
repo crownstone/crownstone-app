@@ -43,27 +43,47 @@ class KeepAliveHandlerClass {
   }
 
 
-  timeUntilNextTrigger() {
-    let now = new Date().valueOf();
-    let nextTriggerTime = this.lastTimeFired + KEEPALIVE_INTERVAL*1000;
-    if (nextTriggerTime < now) {
-      return 0;
-    }
-    else {
-      return nextTriggerTime - now;
-    }
-  }
-
-
   fireTrigger() {
     Scheduler.fireTrigger(TRIGGER_ID);
   }
 
 
+  clearCurrentKeepAlives() {
+    const state = this.store.getState();
+    let sphereIds = Object.keys(state.spheres);
+    sphereIds.forEach((sphereId) => {
+      let sphere = state.spheres[sphereId];
+      LOG.info('KeepAliveHandler: Starting the clearing of all KeepAlives in sphere:', sphere.config.name);
+
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        // for each stone in sphere select the behaviour we want to copy into the keep Alive
+        let stone = sphere.stones[stoneId];
+
+        let keepAliveId = (Math.floor(Math.random()*1e6)).toString(36);
+
+        if (stone.config.type !== STONE_TYPES.guidestone) {
+          if (stone.config.handle && stone.config.disabled === false) {
+            let element = Util.data.getElement(sphere, stone);
+            this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, {active:false, newState:0}, 10, element, keepAliveId);
+          }
+        }
+      });
+
+      BatchCommandHandler.execute()
+    });
+  }
+
   keepAlive() {
     this.lastTimeFired = new Date().valueOf();
 
     const state = this.store.getState();
+
+    // do not use keepAlives if the user does not want to.
+    if (state.app.keepAlivesEnabled === false || state.app.indoorLocalizationEnabled === false) {
+      return;
+    }
+
     let sphereIds = Object.keys(state.spheres);
 
     LOG.info('KeepAliveHandler: Starting KeepAlive call');

@@ -18,6 +18,7 @@ import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
 import { MESH_ENABLED } from "../ExternalConfig";
+import {AlternatingContent} from "../views/components/animated/AlternatingContent";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -26,6 +27,36 @@ const getIcon = function(name : string, size : number, iconColor: string, backgr
   }
   else {
     return <IconButton name={name} size={size} button={true} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
+  }
+};
+
+
+const getAlternatingIcons = function(names : string[], sizes : number[], iconColors: string[], backgroundColors : string[]) {
+  if (Platform.OS === 'android') {
+    return (
+      <AlternatingContent
+        style={{width: 30, height:30}}
+        fadeDuration={500}
+        switchDuration={2000}
+        contentArray={[
+          getIcon(names[0], sizes[0], iconColors[0], backgroundColors[0]),
+          getIcon(names[1], sizes[1], iconColors[1], backgroundColors[1])
+        ]}
+      />
+    );
+  }
+  else {
+    return (
+      <AlternatingContent
+        style={{width: 30, height:30, backgroundColor: backgroundColors[0], borderRadius: 6}}
+        fadeDuration={500}
+        switchDuration={2000}
+        contentArray={[
+          getIcon(names[0], sizes[0], iconColors[0], backgroundColors[0]),
+          getIcon(names[1], sizes[1], iconColors[1], backgroundColors[1])
+        ]}
+      />
+    );
   }
 };
 
@@ -81,6 +112,15 @@ export const SettingConstructor = function(store, state, eventBus) {
       callback: () => { Actions.settingsMeshOverview(); }
     });
   }
+
+  items.push({
+    id: 'App Settings',
+    label: 'App Settings',
+    type: 'navigation',
+    style: {color: '#000'},
+    icon: getAlternatingIcons(['ios-cog','ios-battery-full'],[25,25],[colors.white.hex, colors.white.hex],[colors.darkBackground.hex, colors.darkBackground.hex]) ,
+    callback: () => { Actions.settingsApp(); }
+  });
 
   let presentSphere = Util.data.getPresentSphere(state);
   if (presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere) && state.app.tapToToggleEnabled !== false) {
