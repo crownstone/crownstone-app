@@ -250,8 +250,8 @@ export class DfuOverlay extends Component<any, any> {
         stoneId: this.state.stoneId,
         sphereId: this.state.sphereId,
         data: {
-          firmwareVersion: userConfig.firmwareVersionAvailable,
-          bootloaderVersion: userConfig.bootloaderVersionAvailable,
+          firmwareVersion: userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
+          bootloaderVersion: userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion],
           dfuResetRequired: false,
         }
       });

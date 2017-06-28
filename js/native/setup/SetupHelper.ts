@@ -163,7 +163,7 @@ export class SetupHelper {
               // show the celebration of 4 stones
               state = store.getState();
               let popupShown = false;
-              if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) {
+              if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION && silent === false) {
                 eventBus.emit('showLocalizationSetupStep1', sphereId);
                 popupShown = true;
               }

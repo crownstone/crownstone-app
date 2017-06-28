@@ -564,7 +564,7 @@ class BatchCommandHandlerClass {
   }
 
   executePriority() {
-    eventBus.emit('PriorityExecute');
+    eventBus.emit('PriorityCommandSubmitted');
     this._execute(true);
   }
 
@@ -631,7 +631,7 @@ class BatchCommandHandlerClass {
 
       // if we're busy with a low priority command, we will stop the search if a high priority execute comes in.
       if (highPriorityActive !== true) {
-        unsubscribeListeners.push(eventBus.on('PriorityExecute', () => {
+        unsubscribeListeners.push(eventBus.on('PriorityCommandSubmitted', () => {
           LOG.info("BatchCommandHandler: Stopped listening for Crownstones due to Priority Execute.");
           // remove the listeners
           cleanup();
