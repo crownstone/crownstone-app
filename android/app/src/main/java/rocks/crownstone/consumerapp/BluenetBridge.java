@@ -102,16 +102,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Triplet[] LOG_LEVELS = new Triplet[]{
 			                                             // log lvl   file log lvl
-			new Triplet<>(BleScanService.class,          Log.WARN,    Log.DEBUG),
-			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,    Log.WARN),
-			new Triplet<>(BluenetBridge.class,           Log.WARN,    Log.DEBUG),
-			new Triplet<>(BleBaseEncryption.class,       Log.WARN,    Log.WARN),
-			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,    Log.WARN),
-			new Triplet<>(BleDevice.class,               Log.WARN,    Log.WARN),
-			new Triplet<>(BleCore.class,                 Log.WARN,    Log.WARN),
-			new Triplet<>(BleBase.class,                 Log.WARN,    Log.DEBUG),
-			new Triplet<>(BleExt.class,                  Log.WARN,    Log.WARN),
-			new Triplet<>(CrownstoneSetup.class,         Log.WARN,    Log.DEBUG),
+			new Triplet<>(BleScanService.class,          Log.WARN,     Log.DEBUG),
+			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,     Log.WARN),
+			new Triplet<>(BluenetBridge.class,           Log.DEBUG,    Log.DEBUG),
+			new Triplet<>(BleBaseEncryption.class,       Log.WARN,     Log.WARN),
+			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,     Log.WARN),
+			new Triplet<>(BleDevice.class,               Log.WARN,     Log.WARN),
+			new Triplet<>(BleCore.class,                 Log.DEBUG,    Log.WARN),
+			new Triplet<>(BleBase.class,                 Log.DEBUG,    Log.DEBUG),
+			new Triplet<>(BleExt.class,                  Log.DEBUG,    Log.WARN),
+			new Triplet<>(CrownstoneSetup.class,         Log.WARN,     Log.DEBUG),
 	};
 
 
@@ -797,13 +797,28 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void commandFactoryReset(final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "commandFactoryReset");
-		_bleExt.writeFactoryReset(new IStatusCallback() {
+
+		_bleExt.refreshServices(new IStatusCallback() {
 			@Override
 			public void onSuccess() {
-				BleLog.getInstance().LOGi(TAG, "commandFactoryReset success");
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				callback.invoke(retVal);
+				_bleExt.writeFactoryReset(new IStatusCallback() {
+					@Override
+					public void onSuccess() {
+						BleLog.getInstance().LOGi(TAG, "commandFactoryReset success");
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", false);
+						callback.invoke(retVal);
+					}
+
+					@Override
+					public void onError(int error) {
+						BleLog.getInstance().LOGe(TAG, "commandFactoryReset error: " + error);
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", true);
+						retVal.putString("data", "factory reset failed: " + error);
+						callback.invoke(retVal);
+					}
+				});
 			}
 
 			@Override
@@ -819,6 +834,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void setupFactoryReset(Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "setupFactoryReset");
 		commandFactoryReset(callback);
 	}
 
@@ -1064,72 +1080,29 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void bootloaderToNormalMode(final String address, final Callback callback) {
-		BleLog.getInstance().LOGd(TAG, "bootloaderToNormalMode: " + address);
-		_bleExt.connectAndDiscover(address, new IDiscoveryCallback() {
-			@Override
-			public void onDiscovery(String serviceUuid, String characteristicUuid) {
+		BleLog.getInstance().LOGi(TAG, "bootloaderToNormalMode: " + address);
 
-			}
-
+		_bleExt.resetBootloader(address, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
-				_bleExt.getBleBase().subscribe(address, BluenetConfig.DFU_SERVICE_UUID, BluenetConfig.DFU_CONTROL_UUID,
-						new IIntegerCallback() {
-							@Override
-							public void onSuccess(int result) {
-								BleLog.getInstance().LOGd(TAG, "onSuccess: " + result);
-								byte[] val = new byte[1];
-								val[0] = 0x06;
-								_bleExt.getBleBase().write(address, BluenetConfig.DFU_SERVICE_UUID, BluenetConfig.DFU_CONTROL_UUID, val, BleBaseEncryption.ACCESS_LEVEL_ENCRYPTION_DISABLED, new IStatusCallback() {
-									@Override
-									public void onSuccess() {
-										WritableMap retVal = Arguments.createMap();
-										retVal.putBoolean("error", false);
-										callback.invoke(retVal);
-									}
-
-									@Override
-									public void onError(int error) {
-										BleLog.getInstance().LOGd(TAG, "onError: " + error);
-										WritableMap retVal = Arguments.createMap();
-										retVal.putBoolean("error", true);
-										retVal.putString("data", "error: " + error);
-										callback.invoke(retVal);
-									}
-								});
-							}
-
-							@Override
-							public void onError(int error) {
-								BleLog.getInstance().LOGd(TAG, "onError: " + error);
-								WritableMap retVal = Arguments.createMap();
-								retVal.putBoolean("error", true);
-								retVal.putString("data", "error: " + error);
-								callback.invoke(retVal);
-							}
-						},
-						new IDataCallback() {
-							@Override
-							public void onData(JSONObject json) {
-								BleLog.getInstance().LOGd(TAG, "onData: " + json);
-							}
-
-							@Override
-							public void onError(int error) {
-								BleLog.getInstance().LOGd(TAG, "onError: " + error);
-							}
-						});
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
 			}
 
 			@Override
 			public void onError(int error) {
-				BleLog.getInstance().LOGd(TAG, "onError: " + error);
+				BleLog.getInstance().LOGd(TAG, "Error: " + error);
+				Exception e = new RuntimeException("test");
+				e.printStackTrace();
+
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
 				retVal.putString("data", "error: " + error);
 				callback.invoke(retVal);
 			}
-		}, false); // Don't read session nonce
+		});
 	}
 
 	@ReactMethod

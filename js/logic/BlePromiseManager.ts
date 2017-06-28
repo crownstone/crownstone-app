@@ -1,6 +1,7 @@
 import { LOG }                   from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { PROMISE_MANAGER_FALLBACK_TIMEOUT } from "../ExternalConfig";
+import { eventBus } from "../util/EventBus";
 
 
 class BlePromiseManagerClass {
@@ -19,6 +20,8 @@ class BlePromiseManagerClass {
   }
 
   registerPriority(promise : () => Promise<any>, message, customTimeout: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {
+    // this can interrupt any BatchCommandHandler pending low priority processes.
+    eventBus.emit('PriorityCommandSubmitted');
     return this._register(promise, message, true, customTimeout);
   }
 
