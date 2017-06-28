@@ -334,6 +334,9 @@ function handleStoneState(action, state, pureSwitch = false) {
   if (state.user.uploadPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
     let data  = { power: stone.state.currentUsage };
+    if (stone.config.applianceId) {
+      data['applianceId'] = stone.config.applianceId;
+    }
 
     CLOUD.forStone(stoneId).updatePowerUsage(data).catch(() => {});
   }

@@ -21,6 +21,7 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device && device.hubFunction) {
+      LOG.info("NotificationHandler: Request for notification permission submitted from _loadStore");
       this.request();
     }
   }

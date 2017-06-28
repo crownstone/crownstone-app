@@ -17,6 +17,7 @@ import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '
 import {IconButton} from "../../components/IconButton";
 import {ErrorContent} from "../../content/ErrorContent";
 import {eventBus} from "../../../util/EventBus";
+import {deviceStyles} from "../DeviceOverview";
 
 
 export class DeviceError extends Component<any, any> {
@@ -57,29 +58,3 @@ export class DeviceError extends Component<any, any> {
     )
   }
 }
-
-
-let textColor = colors.white;
-let deviceStyles = StyleSheet.create({
-  header: {
-    color: textColor.hex,
-    fontSize: 25,
-    fontWeight:'800'
-  },
-  errorText: {
-    color: textColor.hex,
-    fontSize: 16,
-    textAlign:'center',
-    fontWeight:'600'
-  },
-  subText: {
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-  },
-  explanation: {
-    width: screenWidth,
-    color: textColor.rgba(0.5),
-    fontSize: 13,
-    textAlign:'center'
-  }
-});

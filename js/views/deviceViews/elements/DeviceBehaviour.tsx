@@ -19,7 +19,7 @@ import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../util/DataUtil";
-import {TYPES} from "../../../router/store/reducers/stones";
+import {BEHAVIOUR_TYPES} from "../../../router/store/reducers/stones";
 
 
 let DISABLED_COLOR = colors.gray.hex;
@@ -68,20 +68,20 @@ export class DeviceBehaviour extends Component<any, any> {
         <Text style={textStyle.title}>Behaviour</Text>
         <Text style={textStyle.explanation}>This is how I respond to your location:</Text>
         <View style={{flex: 1.5}} />
-        <BehaviourResponse data={element.behaviour} type="onHomeEnter" stone={stone} appSettings={state.app} />
+        <BehaviourResponse data={element.behaviour} type={BEHAVIOUR_TYPES.HOME_ENTER} stone={stone} appSettings={state.app} />
         <View style={{flex:0.8}} />
-        <BehaviourResponse data={element.behaviour} type="onHomeExit" stone={stone} sphere={sphere} appSettings={state.app} />
+        <BehaviourResponse data={element.behaviour} type={BEHAVIOUR_TYPES.HOME_EXIT} stone={stone} sphere={sphere} appSettings={state.app} />
         <View style={{flex:0.8}} />
         {
           canDoIndoorLocalization ?
-          <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomEnter" appSettings={state.app} /> :
-          <BehaviourResponse data={element.behaviour} stone={stone}  type="onNear" appSettings={state.app} />
+          <BehaviourResponse data={element.behaviour} stone={stone} type={BEHAVIOUR_TYPES.ROOM_ENTER} appSettings={state.app} /> :
+          <BehaviourResponse data={element.behaviour} stone={stone}  type={BEHAVIOUR_TYPES.NEAR} appSettings={state.app} />
         }
         <View style={{flex:0.8}} />
         {
           canDoIndoorLocalization ?
-          <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomExit" appSettings={state.app} /> :
-          <BehaviourResponse data={element.behaviour}  stone={stone}  type="onAway" appSettings={state.app} />
+          <BehaviourResponse data={element.behaviour} stone={stone} type={BEHAVIOUR_TYPES.ROOM_EXIT} appSettings={state.app} /> :
+          <BehaviourResponse data={element.behaviour}  stone={stone}  type={BEHAVIOUR_TYPES.AWAY} appSettings={state.app} />
         }
         <View style={{flex: 2}} />
         { this.getWarning(state, nearFarDisabled) }
@@ -143,7 +143,7 @@ class BehaviourResponse extends Component<any, any> {
       return {color: DISABLED_COLOR, textDecorationLine:'line-through'};
     }
 
-    if (this.props.appSettings.keepAlivesEnabled === false && (this.props.type === "onHomeExit" || this.props.type === "onRoomExit")) {
+    if (this.props.appSettings.keepAlivesEnabled === false && (this.props.type === BEHAVIOUR_TYPES.HOME_EXIT|| this.props.type === BEHAVIOUR_TYPES.ROOM_EXIT)) {
       return {color: DISABLED_COLOR, textDecorationLine:'line-through'};
     }
 

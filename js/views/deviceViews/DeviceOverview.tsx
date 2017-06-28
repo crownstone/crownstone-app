@@ -26,6 +26,7 @@ import { DeviceError } from "./elements/DeviceError";
 import { DeviceUpdate } from "./elements/DeviceUpdate";
 import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { eventBus } from "../../util/EventBus";
+import {DevicePowerCurve} from "./elements/DevicePowerCurve";
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
@@ -172,6 +173,8 @@ export class DeviceOverview extends Component<any, any> {
   _getContent(hasError, canUpdate, hasBehaviour, deviceType) {
     let content = [];
 
+    content.push(<DevicePowerCurve key={'powerSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
     }
@@ -217,4 +220,30 @@ let swiperStyles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   }
+});
+
+let textColor = colors.white;
+
+export const deviceStyles = StyleSheet.create({
+  header: {
+    color: textColor.hex,
+    fontSize: 25,
+    fontWeight:'800'
+  },
+  errorText: {
+    color: textColor.hex,
+    fontSize: 16,
+    textAlign:'center',
+    fontWeight:'600'
+  },
+  subText: {
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+  },
+  explanation: {
+    width: screenWidth,
+    color: textColor.rgba(0.5),
+    fontSize: 13,
+    textAlign:'center'
+  },
 });

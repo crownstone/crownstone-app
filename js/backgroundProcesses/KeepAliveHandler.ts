@@ -5,7 +5,7 @@ import { KEEPALIVE_INTERVAL, KEEPALIVE_ATTEMPTS } from '../ExternalConfig';
 import { NativeBus }                              from '../native/libInterface/NativeBus';
 import { BatchCommandHandler }                    from '../logic/BatchCommandHandler';
 import { Util }                                   from '../util/Util'
-import { STONE_TYPES, TYPES }                      from '../router/store/reducers/stones'
+import { STONE_TYPES, BEHAVIOUR_TYPES }                      from '../router/store/reducers/stones'
 import { canUseIndoorLocalizationInSphere } from '../util/DataUtil'
 import {Permissions} from "./Permissions";
 
@@ -104,9 +104,9 @@ class KeepAliveHandlerClass {
 
         if (stone.config.type !== STONE_TYPES.guidestone) {
           let element = Util.data.getElement(sphere, stone);
-          let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
-          let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
-          let behaviourAway = element.behaviour[TYPES.AWAY];
+          let behaviourHomeExit = element.behaviour[BEHAVIOUR_TYPES.HOME_EXIT];
+          let behaviourRoomExit = element.behaviour[BEHAVIOUR_TYPES.ROOM_EXIT];
+          let behaviourAway = element.behaviour[BEHAVIOUR_TYPES.AWAY];
 
           let behaviour = undefined;
           let determineDelay = (initial) => { return Math.max(300, initial) + 0.5*KEEPALIVE_INTERVAL };

@@ -3,7 +3,7 @@ import { update, getTime, refreshDefaults } from './reducerUtil'
 import { LOG } from '../../../logging/Log'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 
-export let TYPES = {
+export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
   AWAY: 'onAway',
   HOME_ENTER: 'onHomeEnter',
@@ -39,6 +39,8 @@ let defaultSettings = {
     rssi: -1000,
     onlyOnWhenDark: false,
     touchToToggle: true,
+    hidden: false,
+    locked: false,
     type: STONE_TYPES.plug,
     stoneTime: 0,
     stoneTimeChecked: 0,
@@ -151,10 +153,12 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.hardwareVersion   = update(action.data.hardwareVersion,   newState.hardwareVersion);
         newState.dfuResetRequired  = update(action.data.dfuResetRequired,  newState.dfuResetRequired);
         newState.handle            = update(action.data.handle,            newState.handle);
+        newState.hidden            = update(action.data.hidden,            newState.hidden);
         newState.icon              = update(action.data.icon,              newState.icon);
         newState.iBeaconMajor      = update(action.data.iBeaconMajor,      newState.iBeaconMajor);
         newState.iBeaconMinor      = update(action.data.iBeaconMinor,      newState.iBeaconMinor);
         newState.locationId        = update(action.data.locationId,        newState.locationId);
+        newState.locked            = update(action.data.locked,            newState.locked);
         newState.macAddress        = update(action.data.macAddress,        newState.macAddress);
         newState.meshNetworkId     = update(action.data.meshNetworkId,     newState.meshNetworkId);
         newState.name              = update(action.data.name,              newState.name);

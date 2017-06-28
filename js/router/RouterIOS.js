@@ -56,10 +56,10 @@ export class Router_IOS extends Component {
             <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
             <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.props.loggedIn}>
               <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
+                <Scene key="deviceOverview"         component={Views.DeviceOverview}       sphereId="58de6bda62a2241400f10c67" stoneId="5936d1f08276ad0020eecd0f"      hideNavBar={true} />
                 <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
                 <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
                 <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
-                <Scene key="deviceOverview"         component={Views.DeviceOverview}             hideNavBar={true} />
                 <Scene key="deviceEdit"             component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
                 <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select a Device" />
                 <Scene key="applianceAdd"           component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />

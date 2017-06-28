@@ -2,7 +2,7 @@ import { BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/libInterface/Consta
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import { LOG } from '../logging/Log';
 import { Util } from './Util';
-import {TYPES} from "../router/store/reducers/stones";
+import {BEHAVIOUR_TYPES} from "../router/store/reducers/stones";
 const SunCalc = require('suncalc');
 
 export const BehaviourUtil = {
@@ -12,7 +12,7 @@ export const BehaviourUtil = {
       return false;
     }
 
-    if (behaviourType === TYPES.ROOM_EXIT || behaviourType === TYPES.HOME_EXIT) {
+    if (behaviourType === BEHAVIOUR_TYPES.ROOM_EXIT || behaviourType === BEHAVIOUR_TYPES.HOME_EXIT) {
       return false;
     }
 

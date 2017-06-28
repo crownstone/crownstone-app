@@ -726,6 +726,7 @@ const syncDevices = function(store, actions, cloudDevices) {
 
       // if we use this device as a hub, make sure we request permission for notifications.
       if (matchingDevice.hubFunction === true) {
+        LOG.info("Sync: Requesting notification permissions during adding of the Device.");
         NotificationHandler.request();
       }
 
@@ -771,6 +772,7 @@ const syncDevices = function(store, actions, cloudDevices) {
 
         // if we use this device as a hub, make sure we request permission for notifications.
         if (state.devices[deviceId].hubFunction === true || matchingDevice.hubFunction === true) {
+          LOG.info("Sync: Requesting notification permissions during updating of the device.");
           NotificationHandler.request();
         }
       }
