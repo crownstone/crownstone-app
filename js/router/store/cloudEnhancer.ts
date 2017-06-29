@@ -332,7 +332,7 @@ function handleStoneState(action, state, pureSwitch = false) {
     CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
   }
 
-  if (state.user.uploadPowerUsage === true) {
+  if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
     let data  = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
     if (stone.config.applianceId) {

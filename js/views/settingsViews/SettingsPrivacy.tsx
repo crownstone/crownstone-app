@@ -16,7 +16,7 @@ import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from '../styles'
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
-import {CLOUD_BATCH_UPDATE_INTERVAL} from "../../ExternalConfig";
+import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
@@ -88,11 +88,38 @@ export class SettingsPrivacy extends Component<any, any> {
       icon: <IconButton name="ios-flash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
       callback: (newValue) => { store.dispatch({type: 'USER_UPDATE', data: {uploadPowerUsage: newValue}}); }
     });
-    items.push({
-      label: "If sharing power usage is enabled, all updates in power usage gathered by the app will be sent to the cloud every " + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
-      type: 'explanation',
-      below: true,
-    });
+    if (user.uploadPowerUsage) {
+      items.push({
+        label: "Upload frequently",
+        value: user.uploadHighFrequencyPowerUsage,
+        type: 'switch',
+        icon: <IconButton name="ios-cloud" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex}}/>,
+        callback: (newValue) => { store.dispatch({type: 'USER_UPDATE', data: {uploadHighFrequencyPowerUsage: newValue}}); }
+      });
+      if (user.uploadHighFrequencyPowerUsage) {
+        items.push({
+          label: 'The power usage data collected by the app will be sent to the cloud every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
+          type: 'explanation',
+          below: true,
+        });
+      }
+      else {
+        items.push({
+          label: 'The power usage data collected by the app will be sent to the cloud during sync every ' + Math.round(SYNC_INTERVAL/60) + ' minutes.' +
+          '\n\nIf Upload frequently is enabled, it will upload every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
+          type: 'explanation',
+          below: true,
+        });
+      }
+
+    }
+    else {
+      items.push({
+        label: 'If sharing power usage is enabled, all updates in power usage gathered by the app will be sent to the cloud.',
+        type: 'explanation',
+        below: true,
+      });
+    }
 
 
     items.push({
