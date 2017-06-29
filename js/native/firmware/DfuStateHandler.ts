@@ -21,7 +21,7 @@ class DfuStateHandlerClass {
     this._uuid = Util.getUUID();
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE DfuStateHandler', this._initialized);
     if (this._initialized === false) {
       this._store = store;
@@ -108,7 +108,7 @@ class DfuStateHandlerClass {
     // set a new timeout that cleans up after this entry
     this._dfuTimeouts[handle] = Scheduler.scheduleCallback(() => {
       this._cleanup(handle);
-    }, DFU_MODE_TIMEOUT);
+    }, DFU_MODE_TIMEOUT, 'DFU_MODE_TIMEOUT');
   }
 
   _cleanup(handle) {

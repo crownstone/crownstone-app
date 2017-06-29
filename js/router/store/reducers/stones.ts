@@ -12,7 +12,7 @@ export let TYPES = {
   ROOM_EXIT: 'onRoomExit',
 };
 
-export let stoneTypes = {
+export let STONE_TYPES = {
   plug: "PLUG",
   builtin: "BUILTIN",
   guidestone: "GUIDESTONE"
@@ -39,9 +39,12 @@ let defaultSettings = {
     rssi: -1000,
     onlyOnWhenDark: false,
     touchToToggle: true,
-    type: stoneTypes.plug,
+    type: STONE_TYPES.plug,
+    stoneTime: 0,
+    stoneTimeChecked: 0,
     lastSeen: 1,
     updatedAt: 1,
+    lastUpdatedStoneTime: 0,
   },
   state: {
     state: 0.0,
@@ -58,6 +61,15 @@ let defaultSettings = {
     onRoomExit:  { /* toggleState */ },
     onNear:      { /* toggleState */ },
     onAway:      { /* toggleState */ },
+  },
+  errors: {
+    overCurrent: false,
+    overCurrentDimmer: false,
+    temperatureChip: false,
+    temperatureDimmer: false,
+    hasError: false,
+    obtainedErrors: false,
+    advertisementError: false,
   }
 };
 
@@ -112,6 +124,14 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
+    case 'UPDATE_STONE_REMOTE_TIME':
+      if (action.data) {
+        let newState = {...state};
+        newState.stoneTime        = update(action.data.stoneTime, newState.stoneTime);
+        newState.stoneTimeChecked = getTime(action.data.stoneTimeChecked);
+        return newState;
+      }
+      return state;
     case 'UPDATE_STONE_DFU_RESET':
       if (action.data) {
         let newState = {...state};
@@ -155,6 +175,10 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
+    case 'UPDATED_STONE_TIME':
+      let newState = {...state};
+      newState.lastUpdatedStoneTime = getTime();
+      return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.config);
     default:
@@ -199,6 +223,8 @@ let behaviourReducerOnHomeEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleState);
     default:
       return state;
   }
@@ -207,6 +233,8 @@ let behaviourReducerOnHomeExit = (state = toggleStateAway, action : any = {}) =>
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleStateAway);
     default:
       return state;
   }
@@ -215,6 +243,8 @@ let behaviourReducerOnRoomEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleState);
     default:
       return state;
   }
@@ -223,6 +253,8 @@ let behaviourReducerOnRoomExit = (state = toggleStateAway, action : any = {}) =>
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomExit':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleStateAway);
     default:
       return state;
   }
@@ -231,6 +263,8 @@ let behaviourReducerOnNear = (state = toggleState, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onNear':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleState);
     default:
       return state;
   }
@@ -239,6 +273,8 @@ let behaviourReducerOnAway = (state = toggleStateAway, action : any = {}) => {
   switch (action.type) {
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onAway':
       return updateToggleState(state,action);
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, toggleStateAway);
     default:
       return state;
   }
@@ -255,6 +291,53 @@ let scheduleReducer = (state = {}, action : any = {}) => {
   }
 };
 
+
+let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
+  switch (action.type) {
+    case 'UPDATE_STONE_ERRORS':
+      if (action.data) {
+        let newState = {...state};
+        newState.advertisementError = update(action.data.advertisementError, newState.advertisementError);
+        newState.obtainedErrors     = update(action.data.obtainedErrors, newState.obtainedErrors);
+        newState.overCurrent        = update(action.data.overCurrent,       newState.overCurrent);
+        newState.overCurrentDimmer  = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
+        newState.temperatureChip    = update(action.data.temperatureChip,   newState.temperatureChip);
+        newState.temperatureDimmer  = update(action.data.temperatureDimmer, newState.temperatureDimmer);
+        newState.hasError = newState.overCurrent || newState.overCurrentDimmer || newState.temperatureChip || newState.temperatureDimmer;
+        return newState;
+      }
+      return state;
+    case 'RESET_STONE_ERRORS':
+      if (action.data) {
+        let newState = {...state};
+        newState.overCurrent       = update(action.data.overCurrent,       newState.overCurrent);
+        newState.overCurrentDimmer = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
+        newState.temperatureChip   = update(action.data.temperatureChip,   newState.temperatureChip);
+        newState.temperatureDimmer = update(action.data.temperatureDimmer, newState.temperatureDimmer);
+        newState.obtainedErrors    = false;
+
+        newState.hasError = newState.overCurrent || newState.overCurrentDimmer || newState.temperatureChip || newState.temperatureDimmer;
+        return newState;
+      }
+      return state;
+    case 'CLEAR_STONE_ERRORS':
+      let newState = {...state};
+      newState.advertisementError = false;
+      newState.overCurrent        = false;
+      newState.overCurrentDimmer  = false;
+      newState.temperatureChip    = false;
+      newState.temperatureDimmer  = false;
+      newState.hasError           = false;
+      newState.obtainedErrors     = false;
+      return newState;
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultSettings.errors);
+    default:
+      return state;
+  }
+};
+
+
 let stoneBehavioursReducer = combineReducers({
   onHomeEnter: behaviourReducerOnHomeEnter,
   onHomeExit:  behaviourReducerOnHomeExit,
@@ -270,7 +353,8 @@ let combinedStoneReducer = combineReducers({
   state: stoneStateReducer,
   behaviour: stoneBehavioursReducer,
   schedule: scheduleReducer,
-  statistics: stoneStatisticsReducer
+  statistics: stoneStatisticsReducer,
+  errors: stoneErrorsReducer
 });
 
 // stonesReducer

@@ -1,6 +1,4 @@
-import {
-  Platform
-} from 'react-native';
+import { Platform }       from 'react-native';
 import { CLOUD }          from "../../cloud/cloudAPI";
 import { LOG }            from "../../logging/Log";
 import { safeDeleteFile } from "../../util/Util";

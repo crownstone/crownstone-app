@@ -127,6 +127,7 @@ export class PresentUsers extends Component<any, any> {
       let change = data.change;
       if (
         (change.changeUserData     ) ||
+        (change.updateSphereUser   ) ||
         (change.changeUsers        ) ||
         (change.userPositionUpdate )
       ) {

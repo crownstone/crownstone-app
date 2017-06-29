@@ -39,6 +39,9 @@ RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getFirmwareVersion:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getBootloaderVersion:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getHardwareVersion:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getErrors:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(clearErrors:(NSDictionary *)errors callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(restartCrownstone:(RCTResponseSenderBlock)callback)
 
 // Bluenet localization
 RCT_EXTERN_METHOD(requestLocation:(RCTResponseSenderBlock)callback)
@@ -61,10 +64,21 @@ RCT_EXTERN_METHOD(pauseTracking)
 RCT_EXTERN_METHOD(clearTrackedBeacons:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(finalizeFingerprint:(NSString *)sphereId locationId:(NSString *)locationId callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(loadFingerprint:(NSString *)sphereId locationId:(NSString *)locationId fingerprint:(NSString *)fingerprint)
+RCT_EXTERN_METHOD(clearFingerprints)
+RCT_EXTERN_METHOD(clearFingerprintsPromise:(RCTResponseSenderBlock)callback)
+
+
+// MISC
 
 RCT_EXTERN_METHOD(enableLoggingToFile:(nonnull NSNumber *)enableLogging)
+RCT_EXTERN_METHOD(enableExtendedLogging:(nonnull NSNumber *)enableLogging)
 RCT_EXTERN_METHOD(clearLogs)
 RCT_EXTERN_METHOD(quitApp)
+RCT_EXTERN_METHOD(setTime:(nonnull NSNumber *)time callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getTime:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(batterySaving:(nonnull NSNumber *)state)
+
+
 
 // MESH
 
@@ -74,10 +88,12 @@ RCT_EXTERN_METHOD(meshCommandSetSwitchState:(NSArray<NSNumber *> *)crownstoneIds
 RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
 
 // DFU
+
 RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupPutInDFU:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(bootloaderToNormalMode:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
+
 
 @end

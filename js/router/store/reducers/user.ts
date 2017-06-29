@@ -22,6 +22,7 @@ let defaultSettings = {
   uploadLocation: false,
   uploadSwitchState: false,
   uploadPowerUsage: false,
+  uploadDeviceDetails: true,
   updatedAt: 1,
 };
 
@@ -105,9 +106,10 @@ export default (state = defaultSettings, action : any = {}) => {
         newState.accessToken  = update(action.data.accessToken,  newState.accessToken);
         newState.userId       = update(action.data.userId,       newState.userId);
         newState.picture      = update(action.data.picture,      newState.picture);
-        newState.uploadLocation    = update(action.data.uploadLocation,    newState.uploadLocation);
-        newState.uploadSwitchState = update(action.data.uploadSwitchState, newState.uploadSwitchState);
-        newState.uploadPowerUsage  = update(action.data.uploadPowerUsage,  newState.uploadPowerUsage);
+        newState.uploadLocation       = update(action.data.uploadLocation,      newState.uploadLocation);
+        newState.uploadSwitchState    = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
+        newState.uploadPowerUsage     = update(action.data.uploadPowerUsage,    newState.uploadPowerUsage);
+        newState.uploadDeviceDetails  = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);
         newState.updatedAt    = getTime(action.data.updatedAt);
         return newState;
       }

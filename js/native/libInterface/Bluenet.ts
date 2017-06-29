@@ -47,6 +47,7 @@ if (DISABLE_NATIVE === true) {
 
     quitApp: () => { NativeModules.BluenetJS.quitApp() },                   // Used to quit the app during logout
     enableLoggingToFile: () => {},
+    enableExtendedLogging: () => {},
     clearLogs: () => {},
 
     // mesh
@@ -54,11 +55,16 @@ if (DISABLE_NATIVE === true) {
     meshKeepAliveState: () => {},
     multiSwitch: () => {},
 
-
     getHardwareVersion: () => {},
     getBootloaderVersion: () => {},
     getFirmwareVersion: () => {},
     bootloaderToNormalMode: () => {},
+    getErrors: () => {},
+
+    clearFingerprintsPromise: () => {},
+    clearFingerprints: () => {},
+    setTime: () => {},
+    batterySaving: () => {},
   }
 }
 else {

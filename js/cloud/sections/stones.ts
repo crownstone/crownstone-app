@@ -38,10 +38,10 @@ export const stones = {
    * @param background
    * @returns {*}
    */
-  updateUsage: function(data, background = true) {
+  updatePowerUsage: function(data, background = true) {
     return this._setupRequest(
       'POST',
-      '/Stones/{id}/currentEnergyUsage/',
+      '/Stones/{id}/currentPowerUsage/',
       { background: background, data: data },
       'body'
     );

@@ -146,7 +146,7 @@ class StoreManagerClass {
           .catch((err) => {
             LOG.error("Trouble writing to disk", err)
           });
-      }, 500);
+      }, 500, 'this.writeToDiskTimeout');
     });
   }
 

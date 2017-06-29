@@ -20,13 +20,32 @@ let borderColor = 'rgba(0,0,0,0.1)';
 let rowHeight = 90;
 
 export class IconSelection extends Component<any, any> {
+  icons: any = {};
+  duplicates: any = {};
+
   constructor(props) {
     super();
 
     this.state = {};
     props.categories.forEach((category) => {
       this.state[category.key] = false;
-    })
+    });
+
+    if (this.state.__new !== undefined) {
+      this.state.__new = true;
+    }
+
+    if (props.debug) {
+      let iconKeys = Object.keys(props.icons);
+      iconKeys.forEach((key) => {
+        props.icons[key].forEach((icon) => {
+          if (this.icons[icon]) {
+            this.duplicates[icon] = true;
+          }
+          this.icons[icon] = true;
+        })
+      })
+    }
   }
 
   _getIcons() {
@@ -91,11 +110,17 @@ export class IconSelection extends Component<any, any> {
   }
   _getIcon(icons, iconIndex) {
     if (iconIndex < icons.length) {
+      let backgroundColor = this.props.selectedIcon === icons[iconIndex] ? colors.blue.hex : "transparent";
+      if (this.props.debug === true && this.duplicates[icons[iconIndex]]) {
+        backgroundColor = colors.red.hex;
+      }
+
       return <TouchableOpacity
-        style={[styles.centered, {height:rowHeight, flex:1}, this.props.selectedIcon === icons[iconIndex] ? {backgroundColor:colors.blue.hex} : undefined]}
+        style={[styles.centered, {height:rowHeight, flex:1}, {backgroundColor: backgroundColor} ]}
         onPress={() => {this.props.callback(icons[iconIndex])}}
       >
-        <CustomIcon name={icons[iconIndex]} size={60} color={ this.props.selectedIcon === icons[iconIndex] ? '#fff' : colors.blue.hex} />
+        <CustomIcon name={icons[iconIndex]} size={60} color={ this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex} />
+        {this.props.debug ? <Text style={{fontSize:14, color: this.props.selectedIcon === icons[iconIndex] ? colors.white.hex : colors.white.hex}}>{icons[iconIndex]}</Text> : undefined}
       </TouchableOpacity>
     }
     else {

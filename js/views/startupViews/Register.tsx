@@ -223,7 +223,7 @@ export class Register extends Component<any, any> {
       .then(() => {
         this.props.eventBus.emit("hideLoading");
         SessionMemory.loginEmail = this.state.email.toLowerCase();
-        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
       })
       .catch((reply) => {
         if (reply.data && reply.data.error && reply.data.error.message) {

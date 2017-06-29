@@ -379,6 +379,7 @@
 		FA570ECC1EAE3D73001C625D /* CustomIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = CustomIcons.ttf; path = ../js/fonts/CustomIcons.ttf; sourceTree = "<group>"; };
 		FA570ECD1EAE3D73001C625D /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../js/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
 		FA80B06B1ECDBCE600CE3474 /* BluenetLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetLib.framework; path = Carthage/Build/iOS/BluenetLib.framework; sourceTree = "<group>"; };
+		FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Crownstone.entitlements; path = Crownstone/Crownstone.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -508,6 +509,7 @@
 		13B07FAE1A68108700A75B9A /* Crownstone */ = {
 			isa = PBXGroup;
 			children = (
+				FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */,
 				FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				FA570EB31EAE320F001C625D /* bluenetIntegration.swift */,
@@ -771,7 +773,12 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 6LYJ9PNC3V;
-						LastSwiftMigration = 0830;
+						LastSwiftMigration = 830;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1323,6 +1330,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
@@ -1365,6 +1373,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Crownstone/Crownstone.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6LYJ9PNC3V;
 				FRAMEWORK_SEARCH_PATHS = (

@@ -1,0 +1,73 @@
+import * as React from 'react'; import { Component } from 'react';
+import {
+  Animated,
+  ActivityIndicator,
+  Alert,
+  TouchableOpacity,
+  PixelRatio,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  TextInput,
+  Text,
+  View
+} from 'react-native';
+
+import {styles} from '../../styles'
+
+
+export class AnimatedCircle extends Component<any, any> {
+  color1 : string;
+  color2 : string;
+  value : number;
+
+  constructor(props) {
+    super();
+    this.color1 = props.color;
+    this.color2 = props.color;
+    this.state = {colorPhase: new Animated.Value(0)};
+    this.value = 0;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let change = false;
+    if (this.value === 0) {
+      if (nextProps.color !== this.color1) {
+        change = true;
+        this.color2 = nextProps.color;
+      }
+    }
+    else {
+      if (nextProps.color !== this.color2) {
+        change = true;
+        this.color1 = nextProps.color;
+      }
+    }
+
+    if (change) {
+      let newValue = this.value === 0 ? 1 : 0;
+      Animated.timing(this.state.colorPhase, {toValue: newValue, duration: this.props.duration || 300}).start();
+      this.value = newValue;
+    }
+  }
+
+  render() {
+    let backgroundColor = this.state.colorPhase.interpolate({
+      inputRange: [0,1],
+      outputRange: [this.color1,  this.color2]
+    });
+    let size = this.props.size;
+    return (
+      <Animated.View style={[{
+        width:size,
+        height:size,
+        borderRadius:0.5*size,
+        backgroundColor: backgroundColor,
+        borderWidth: this.props.borderWidth,
+        borderColor: this.props.borderColor
+      }, styles.centered, this.props.style]}>
+    {this.props.children}
+    </Animated.View>
+  )
+  }
+}

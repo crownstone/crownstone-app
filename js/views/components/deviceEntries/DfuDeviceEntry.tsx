@@ -16,9 +16,9 @@ import {
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from '../../styles'
-import { getUserLevelInSphere } from '../../../util/DataUtil'
 import {Util} from "../../../util/Util";
 import {NativeBus} from "../../../native/libInterface/NativeBus";
+import {Permissions} from "../../../backgroundProcesses/Permissions";
 
 
 export class DfuDeviceEntry extends Component<any, any> {
@@ -99,11 +99,15 @@ export class DfuDeviceEntry extends Component<any, any> {
   }
 
   performDFU() {
-    if (getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) !== 'admin') {
-      Alert.alert("You don't have permission.","You can ask an admin in your Sphere to update this Crownstone",[{text:'OK'}])
+    if (Permissions.updateCrownstone) {
+      this.props.eventBus.emit("updateCrownstoneFirmware", {
+        stoneId: this.props.stoneId,
+        sphereId: this.props.sphereId,
+        alreadyInDfuMode: true
+      });
     }
     else {
-      this.props.eventBus.emit("updateCrownstoneFirmware", {stoneId: this.props.stoneId, sphereId: this.props.sphereId, alreadyInDfuMode: true});
+      Alert.alert("You don't have permission.", "You can ask an admin in your Sphere to update this Crownstone", [{text: 'OK'}])
     }
   }
 

@@ -60,7 +60,7 @@ export class SettingsMeshOverview extends Component<any, any> {
     }
 
     if (this.lastOffset === null) {
-      this.state.leftOffset = new Animated.Value(offset);
+      this.state.leftOffset.setValue(offset);
     }
     else {
       Animated.timing(this.state.leftOffset, {toValue: offset, duration: 400}).start();

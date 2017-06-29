@@ -346,6 +346,6 @@ const delay = function(ms, performAfterDelay = null) {
         performAfterDelay()
       }
       resolve();
-    }, ms);
+    }, ms, 'dfuDelay');
   })
 };

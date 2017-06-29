@@ -48,7 +48,7 @@ export class RegisterConclusion extends Component<any, any> {
 
         </View>
         <View style={{alignItems:'center', justifyContent:'center', paddingBottom: 30}}>
-          <TouchableOpacity onPress={ () => { (Actions as any).login() }}>
+          <TouchableOpacity onPress={ () => { Actions.login() }}>
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>OK</Text></View>
           </TouchableOpacity>
         </View>

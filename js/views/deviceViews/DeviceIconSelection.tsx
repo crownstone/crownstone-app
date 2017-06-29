@@ -12,6 +12,7 @@ import {
 import { Background }  from '../components/Background'
 import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
+import {colors, screenWidth} from "../styles";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -53,6 +54,13 @@ let listOfIcons = {
     'c1-skull',
     'c1-xmastree',
     'c1-house',
+    'c1-safety-pin',
+    'c1-wheel-barrow',
+    'c1-squiggly',
+    'c1-stars',
+    'c1-wheel-barrow-lines',
+    'c1-massage',
+    'c1-weights',
   ],
   tools: [
     'c1-drill1',
@@ -92,6 +100,7 @@ let listOfIcons = {
     'c1-tv1',
     'c1-socket',
     'c1-socket2',
+    'c1-vacuum',
   ],
   office: [
     'c1-archive',
@@ -165,6 +174,7 @@ let listOfIcons = {
     'c1-couch',
     'c1-chair',
     'c1-bookshelf',
+    'c1-bed-couch',
   ],
   outside: [
     'c1-cat',
@@ -180,6 +190,8 @@ let listOfIcons = {
     'c1-leaf',
     'c1-plant',
     'c1-droplet',
+    'c1-tree-pot',
+    'c1-arrow-target',
   ],
   bathroom: [
     'c1-sink1',
@@ -192,7 +204,12 @@ let listOfIcons = {
     'c1-showertub',
     'c1-washingmachine2',
     'c1-wcsign',
-  ]
+    'c1-swimming-circle',
+    'c1-medicine',
+    'c1-testtube',
+    'c1-medicine-bottle',
+    'c1-wheel-chair',
+  ],
 };
 
 export class DeviceIconSelection extends Component<any, any> {
@@ -202,11 +219,12 @@ export class DeviceIconSelection extends Component<any, any> {
     const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].appliances[this.props.applianceId].config.icon;
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.main}>
+      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
-          left={"Back"}
+          left={""}
           leftAction={Actions.pop}
           title="Pick an Icon"/>
+        <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
             categories={categories}

@@ -4,7 +4,8 @@ import { eventBus } from '../../util/EventBus';
 import { LOG }      from '../../logging/Log'
 import {Util} from "../../util/Util";
 
-const meshRemovalThreshold : number = 200;
+const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
+const meshRemovalTimeout : number = 200; // seconds
 
 export class IndividualStoneTracker {
   unsubscribeMeshListener : any;
@@ -15,6 +16,7 @@ export class IndividualStoneTracker {
   stoneId       : string;
 
   notThisStoneCounter : number  = 0;
+  timeLastSeen : number  = 0;
 
 
   constructor(store, sphereId, stoneId) {
@@ -22,7 +24,8 @@ export class IndividualStoneTracker {
     this.sphereId  = sphereId;
     this.stoneId = stoneId;
 
-    // this.stoneUID = store.getState().spheres[sphereId].stones[stoneId].config.crownstoneId;
+    this.stoneUID = store.getState().spheres[sphereId].stones[stoneId].config.crownstoneId;
+    this.timeLastSeen = 0;
 
     this.init()
   }
@@ -48,11 +51,13 @@ export class IndividualStoneTracker {
       this.unsubscribeMeshListener = undefined;
     }
 
+    let now = new Date().valueOf();
 
     // if we have a network, listen for its advertisements
     if (this.meshNetworkId !== null) {
       this.unsubscribeMeshListener = eventBus.on(Util.events.getViaMeshTopic(this.sphereId, this.meshNetworkId), (data) => {
         if (data.id === this.stoneId) {
+          this.timeLastSeen = now;
           // LOG.info("PROGRESSING RESET ", this.stoneUID, " from ", this.meshNetworkId, "to ", 0);
           this.notThisStoneCounter = 0;
         }
@@ -61,7 +66,7 @@ export class IndividualStoneTracker {
           this.notThisStoneCounter += 1;
         }
 
-        if (this.notThisStoneCounter >= meshRemovalThreshold) {
+        if (this.notThisStoneCounter >= meshRemovalThreshold && now - this.timeLastSeen > meshRemovalTimeout*1000) {
           this.removeFromMesh();
         }
       });

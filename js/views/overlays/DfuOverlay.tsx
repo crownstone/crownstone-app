@@ -186,7 +186,7 @@ export class DfuOverlay extends Component<any, any> {
   startDFU(userConfig, stoneConfig) {
     return new Promise((resolve, reject) => {
       this.setState({step: STEP_TYPES.DOWNLOAD_SUCCES});
-      Scheduler.scheduleCallback(() => { resolve(); }, 2500);
+      Scheduler.scheduleCallback(() => { resolve(); }, 2500, 'startDFU timeout');
     })
     .then(() => {
       return this._searchForCrownstone(2000);
@@ -329,7 +329,7 @@ export class DfuOverlay extends Component<any, any> {
         if (this.state.step !== STEP_TYPES.SEARCHING) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING);
         }
-      }, searchTimeBeforeView);
+      }, searchTimeBeforeView, 'dfu this.cancelShowTimeout');
 
       // the timeout will show the "get closer" even if nothing is found up to that point.
       // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
@@ -337,19 +337,19 @@ export class DfuOverlay extends Component<any, any> {
         if (this.state.step !== STEP_TYPES.SEARCHING_MOVE_CLOSER) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
-      }, 3000);
+      }, 3000, 'dfu this.cancelMoveCloserTimeout');
 
       this.cancelMoveEvenCloserTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER);
         }
-      }, 6000);
+      }, 6000, 'dfu this.cancelMoveEvenCloserTimeout');
 
       this.cancelResetBleTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== STEP_TYPES.SEARCHING_RESET_BLE) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_RESET_BLE);
         }
-      }, 10000);
+      }, 10000, 'dfu this.cancelResetBleTimeout');
 
 
       // this will show the user that he has to move closer to the crownstone or resolve if the user is close enough.
@@ -369,7 +369,7 @@ export class DfuOverlay extends Component<any, any> {
           this._searchCleanup();
           if (timeSeenView < minimumTimeVisibleWhenShown && stepSearchingTypes[this.state.step]) {
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-            Scheduler.scheduleCallback(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView);
+            Scheduler.scheduleCallback(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView, 'rssiResolver timeout');
           }
           else {
             resolve(data);

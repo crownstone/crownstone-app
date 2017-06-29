@@ -43,15 +43,13 @@ export class SettingsProfile extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      const state = store.getState();
-      if (this.renderState && this.renderState.user != state.user) {
-        this.renderState = state;
-        // LOG.info("Force Update Profile", this.renderState.user, state.user)
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeUserData || change.changeUserDeveloperStatus) {
         this.forceUpdate();
       }
-    })
+    });
+
   }
 
   componentWillUnmount() {
@@ -148,7 +146,7 @@ export class SettingsProfile extends Component<any, any> {
     });
 
     items.push({type: 'spacer'});
-    items.push({label:'Privacy', type: 'navigation', callback:() => { (Actions as any).settingsPrivacy(); }});
+    items.push({label:'Privacy', type: 'navigation', callback:() => { Actions.settingsPrivacy(); }});
     items.push({label: 'You are in control of which data is shared with the cloud.', type: 'explanation', below: true});
 
     // items.push({label:'Enable Beta Access', value: user.betaAccess, type: 'switch', callback:(newValue) => {
@@ -171,7 +169,7 @@ export class SettingsProfile extends Component<any, any> {
       items.push({label: 'This will enable certain features that may be used for development of the Crownstone.', type: 'explanation', below: true});
     }
     else {
-      items.push({label:'Developer Menu', type: 'navigation', callback:() => { (Actions as any).settingsDeveloper(); }});
+      items.push({label:'Developer Menu', type: 'navigation', callback:() => { Actions.settingsDeveloper(); }});
       items.push({type: 'spacer'});
     }
 
@@ -206,7 +204,6 @@ export class SettingsProfile extends Component<any, any> {
     const state = store.getState();
     let sphereIds = Object.keys(state.spheres);
     let user = state.user;
-    this.renderState = state; // important for performance check
 
     return (
       <Background image={this.props.backgrounds.menu} >

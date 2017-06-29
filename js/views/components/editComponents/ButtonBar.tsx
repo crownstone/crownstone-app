@@ -17,9 +17,10 @@ export class ButtonBar extends Component<any, any> {
     else if (this.props.icon)
       barHeight = 50;
 
+
     return (
       <TouchableHighlight onPress={() => {this.props.setActiveElement(); this.props.callback()}}>
-        <View style={[styles.listView, {height: barHeight}]}>
+        <View style={[styles.listView, {height: barHeight, backgroundColor: this.props.buttonBackground || '#ffffff'}]}>
           {this.props.largeIcon !== undefined ?
             <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
           {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}

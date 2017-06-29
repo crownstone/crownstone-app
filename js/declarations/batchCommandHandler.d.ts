@@ -1,6 +1,7 @@
 interface keepAlivePayload {
-  cleanup(): void,
   attempts: number,
+  initialized: boolean,
+  cleanup(): void,
   promise:{
     resolve(any?) : void,
     reject(any?)  : void,
@@ -13,6 +14,7 @@ interface keepAliveStatePayload {
   crownstoneId: string,
   changeState: boolean,
   state: number,
+  initialized: boolean,
   timeout: number,
   attempts: number,
   cleanup(): void,
@@ -23,26 +25,12 @@ interface keepAliveStatePayload {
   }
 }
 
-
-interface setSwitchStatePayload {
-  handle: string,
-  crownstoneId: string,
-  state: number,
-  attempts: number,
-  cleanup(): void,
-  promise:{
-    resolve(any?) : void,
-    reject(any?)  : void,
-    pending: boolean
-  }
-}
-
-
 interface multiSwitchPayload {
   handle: string,
   crownstoneId: string,
   state: number,
   intent: number,
+  initialized: boolean,
   timeout: number,
   attempts: number,
   cleanup(): void,
@@ -66,6 +54,7 @@ interface meshNetworks  {
 interface connectionInfo  {
   sphereId : string,
   stoneId: string,
+  stone: any,
   meshNetworkId?: string,
   handle : string,
 }
@@ -82,7 +71,12 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'setSwitchState', state : number } |
   { commandName : 'multiSwitch', state : number, timeout : number, intent: number } |
   { commandName : 'getFirmwareVersion' } |
-  { commandName : 'getHardwareVersion' }
+  { commandName : 'getHardwareVersion' } |
+  { commandName : 'keepAliveBatchCommand' } |
+  { commandName : 'getErrors' } |
+  { commandName : 'getTime' } |
+  { commandName : 'setTime', time: number } |
+  { commandName : 'clearErrors', clearErrorJSON: any }
 
 
 interface batchCommands  {
@@ -100,6 +94,7 @@ interface batchCommandEntry {
   sphereId: string,
   stoneId:  string,
   stone:    any,
+  initialized: boolean,
   attempts: number,
   command:  commandInterface,
   cleanup(): void,

@@ -9,14 +9,14 @@ import {
   Text,
   View
 } from 'react-native';
-import { Background } from './../components/Background'
-import { ListEditableItems } from './../components/ListEditableItems'
-import { ProfilePicture } from './../components/ProfilePicture'
+import { Background } from '../components/Background'
+import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles';
-import { getUserLevelInSphere } from '../../util/DataUtil';
+import { styles, colors } from '../styles';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
+import {Util} from "../../util/Util";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 export class SettingsSphereInvite extends Component<any, any> {
   inputStates : any;
@@ -50,8 +50,7 @@ export class SettingsSphereInvite extends Component<any, any> {
     });
 
 
-    let level = getUserLevelInSphere(state, this.props.sphereId);
-    if (level == "admin") {
+    if (Permissions.inviteMemberToSphere && Permissions.inviteGuestToSphere) {
       items.push({
         type:'dropdown',
         label:'Access Level',
@@ -64,7 +63,7 @@ export class SettingsSphereInvite extends Component<any, any> {
         }
       });
     }
-    else {
+    else if (Permissions.inviteGuestToSphere) {
       items.push({type:'info', label:'Access level', value:'Guest'});
     }
 

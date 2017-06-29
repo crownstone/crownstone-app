@@ -40,7 +40,7 @@ export class MeshHelper {
 
   _handleMultiSwitchCommands() {
     if (this.meshInstruction.multiSwitch.length > 0) {
-      let multiSwitchInstructions = this.meshInstruction.multiSwitch;
+      let multiSwitchInstructions : multiSwitchPayload[] = this.meshInstruction.multiSwitch;
         // get data from set
         let multiSwitchPackets = [];
         multiSwitchInstructions.forEach((instruction) => {
@@ -68,7 +68,7 @@ export class MeshHelper {
 
   _handleKeepAliveStateCommands() {
     if (this.meshInstruction.keepAliveState.length > 0) {
-      let keepAliveInstructions = this.meshInstruction.keepAliveState;
+      let keepAliveInstructions : keepAliveStatePayload[] = this.meshInstruction.keepAliveState;
       // get data from set
       let stoneKeepAlivePackets = [];
       let maxTimeout = 0;

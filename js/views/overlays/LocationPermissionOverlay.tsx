@@ -9,7 +9,7 @@ import {
 import { NativeBus }    from '../../native/libInterface/NativeBus'
 import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/overlays/OverlayBox'
-import { styles, colors , screenHeight, screenWidth } from '../styles'
+import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
 
 export class LocationPermissionOverlay extends Component<any, any> {
@@ -88,7 +88,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.5),
             }]}>
-            <Text style={{fontSize: 12, color: colors.blue.hex}}>{"Request Permission"}</Text>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue.hex}}>{"Request Permission"}</Text>
           </TouchableOpacity>
         );
     }

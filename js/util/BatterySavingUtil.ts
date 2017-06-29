@@ -9,11 +9,11 @@ import {BleUtil} from "./BleUtil";
 class BatterySavingClass {
   store: any;
   _initialized: boolean = false;
-  _cancelPostponedScanStop : any = null;
+  _cancelPostponedBatterySaving : any = null;
 
   constructor() { }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE BatterySavingUtil', this._initialized);
     if (this._initialized === false) {
       this.store = store;
@@ -29,11 +29,11 @@ class BatterySavingClass {
    * In that case, the provided sphereId will tell the method that we're just about in the sphere.
    * @param sphereId
    */
-  scanOnlyIfNeeded(sphereId = null) {
+  startNormalUsage(sphereId = null) {
     let cancelPostponedScan = () => {
-      if (typeof this._cancelPostponedScanStop === 'function') {
-        this._cancelPostponedScanStop();
-        this._cancelPostponedScanStop = null;
+      if (typeof this._cancelPostponedBatterySaving === 'function') {
+        this._cancelPostponedBatterySaving();
+        this._cancelPostponedBatterySaving = null;
       }
     };
 
@@ -65,6 +65,7 @@ class BatterySavingClass {
 
     if (appInForeground && inSphere || inSphere && notAllHandlesAreKnown === true) {
       cancelPostponedScan();
+      Bluenet.batterySaving(false);
       BluenetPromiseWrapper.isReady().then(() => {
         Bluenet.startScanningForCrownstonesUniqueOnly();
       });
@@ -81,11 +82,11 @@ class BatterySavingClass {
    * We can call this before we leave the last sphere. In that case we can use the forceNotInSphere.
    * @param forceNotInSphere
    */
-  stopScanningIfPossible(forceNotInSphere = false) {
+  startBatterySaving(forceNotInSphere = false) {
     // do not do anything to the scanning if high frequency scan is on.
     if (BleUtil.highFrequencyScanUsed() === true) {
       // try again later tho.
-      this._cancelPostponedScanStop = Scheduler.scheduleCallback( () => { this.stopScanningIfPossible(forceNotInSphere); }, 60000, 'stopScanningIfPossible')
+      this._cancelPostponedBatterySaving = Scheduler.scheduleCallback( () => { this.startBatterySaving(forceNotInSphere); }, 60000, 'startBatterySaving');
       return;
     }
 
@@ -112,13 +113,11 @@ class BatterySavingClass {
     }
 
     if (appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown))) {
-      BluenetPromiseWrapper.isReady().then(() => {
-        Bluenet.stopScanning();
-      });
+      Bluenet.batterySaving(true);
     }
     else if (!allHandlesKnown && appNotInForeground === true) {
       // user is continuing scanning to get all handles. Stop when we know them.
-      this._cancelPostponedScanStop = Scheduler.scheduleCallback( () => { this.stopScanningIfPossible(forceNotInSphere); }, 60000, 'stopScanningIfPossible')
+      this._cancelPostponedBatterySaving = Scheduler.scheduleCallback( () => { this.startBatterySaving(forceNotInSphere); }, 60000, 'startBatterySaving');
     }
   }
 }

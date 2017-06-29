@@ -31,8 +31,8 @@ export class PictureCircle extends Component<any, any> {
 
     // for iOS show the popup menu
     let buttons = [];
-    buttons.push({ text: 'Take Picture', callback: () => { (Actions as any).pictureView({selectCallback: this.props.callback});}});
-    buttons.push({ text: 'Choose Existing', callback: () => { (Actions as any).cameraRollView({selectCallback: this.props.callback});}});
+    buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
+    buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
     eventBus.emit('showPopup', buttons);
   }
 
@@ -117,7 +117,7 @@ export class PictureCircle extends Component<any, any> {
               else {
                 return PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
                   {'title': 'Crownstone', 'message': 'I need access to your storage to take a picture.'});
-                // (Actions as any).pictureView({selectCallback: this.props.callback});
+                // Actions.pictureView({selectCallback: this.props.callback});
               }
             })
             .then((granted) => {
@@ -130,7 +130,7 @@ export class PictureCircle extends Component<any, any> {
             .then((granted) => {
               // console.log("Granted write external storage:", granted);
               if (granted === true) {
-                (Actions as any).pictureView({selectCallback: this.props.callback});
+                Actions.pictureView({selectCallback: this.props.callback});
               }
             })
             .catch((err) => {

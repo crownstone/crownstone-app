@@ -3,6 +3,8 @@ import { LOG } from '../../logging/Log'
 import { Util } from '../../util/Util'
 import { Platform } from 'react-native'
 import { syncUsersInLocation } from './syncUsersInSphere'
+import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
+import {APP_NAME} from "../../ExternalConfig";
 import {AppUtil} from "../../util/AppUtil";
 
 /**
@@ -30,7 +32,7 @@ export const sync = {
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
     let cloudData;
-    let deletedSphere;
+    let changedLocations;
 
     return syncDown( userId, options )
       .catch((err) => {
@@ -42,12 +44,12 @@ export const sync = {
             password: state.user.passwordHash,
             background: true,
           })
-          .then((response) => {
-            CLOUD.setAccess(response.id);
-            CLOUD.setUserId(response.userId);
-            this.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
-            return syncDown(userId, options);
-          })
+            .then((response) => {
+              CLOUD.setAccess(response.id);
+              CLOUD.setUserId(response.userId);
+              this.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
+              return syncDown(userId, options);
+            })
             .catch((err) => {
               LOG.info("SYNC: COULD NOT VERIFY USER -- ERROR", err);
               if (err.status === 401) {
@@ -62,7 +64,7 @@ export const sync = {
       .then((data: any) => {
         syncUser(store, actions, data.user);
         cloudData = syncSpheres(store, actions, data.spheres, data.spheresData);
-        deletedSphere = syncCleanupLocal(store, actions, cloudData);
+        changedLocations = syncCleanupLocal(store, actions, cloudData);
         syncKeys(actions, data.keys);
         return syncDevices(store, actions, data.devices)
       })
@@ -78,7 +80,7 @@ export const sync = {
 
         this.events.emit("CloudSyncComplete");
 
-        if (cloudData.addedSphere === true || deletedSphere === true) {
+        if (cloudData.addedSphere === true || changedLocations === true) {
           this.events.emit("CloudSyncComplete_spheresChanged");
         }
       })
@@ -168,7 +170,7 @@ const getTimeDifference = function(localVersion, cloudVersion) {
 const syncCleanupLocal = function(store, actions, cloudData) {
   const state = store.getState();
   let sphereIds = Object.keys(state.spheres);
-  let deletedSphere = false;
+  let changedLocations = false;
 
   sphereIds.forEach((sphereId) => {
     if (cloudData.cloudSphereIds[sphereId] === undefined) {
@@ -177,7 +179,7 @@ const syncCleanupLocal = function(store, actions, cloudData) {
         store.dispatch({type: 'CLEAR_ACTIVE_SPHERE'});
       }
       actions.push({type: 'REMOVE_SPHERE', sphereId: sphereId});
-      deletedSphere = true;
+      changedLocations = true;
     }
     else {
       // if the sphere also exists in the cloud, check if its member need deletion
@@ -191,6 +193,7 @@ const syncCleanupLocal = function(store, actions, cloudData) {
       locationIds.forEach((locationId) => {
         if (cloudData.cloudLocationIds[locationId] === undefined) {
           actions.push({type: 'REMOVE_LOCATION', sphereId: sphereId, locationId: locationId});
+          changedLocations = true;
         }
       });
 
@@ -218,7 +221,7 @@ const syncCleanupLocal = function(store, actions, cloudData) {
     }
   });
 
-  return deletedSphere;
+  return changedLocations;
 };
 
 
@@ -259,7 +262,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           meshAccessAddress: sphere.meshAccessAddress,
           aiName: sphere.aiName,
           aiSex: sphere.aiSex,
-          exitDelay: sphere.exitDelay || 300,
+          exitDelay: sphere.exitDelay || 600,
           latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
           longitude: sphere.gpsLocation && sphere.gpsLocation.lng
         }
@@ -275,7 +278,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           meshAccessAddress: sphere.meshAccessAddress,
           aiName: sphere.aiName,
           aiSex: sphere.aiSex,
-          exitDelay: sphere.exitDelay || 300,
+          exitDelay: sphere.exitDelay || 600,
           latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
           longitude: sphere.gpsLocation && sphere.gpsLocation.lng
         }});
@@ -599,7 +602,7 @@ const syncDevices = function(store, actions, cloudDevices) {
   return new Promise((resolve, reject) => {
     const state = store.getState();
 
-    let {name, address, description} = Util.data.getDeviceSpecs(state);
+    let { name, address, description, os, userAgent, locale, deviceType, model } = Util.data.getDeviceSpecs(state);
 
     let deviceId = undefined;
     let deviceAddress = address;
@@ -650,7 +653,19 @@ const syncDevices = function(store, actions, cloudDevices) {
     if (deviceId === undefined) {
       let newDevice = null;
       LOG.info("Sync: Create new device in cloud", name, address, description);
-      CLOUD.createDevice({name:name, address:address, description: description})
+      let deviceInfo = {
+        name:name,
+        address:address,
+        description: description,
+      };
+      if (state.user.uploadDeviceDetails) {
+        deviceInfo["os"] = os;
+        deviceInfo["deviceType"] = deviceType;
+        deviceInfo["userAgent"] = userAgent;
+        deviceInfo["model"] = model;
+        deviceInfo["locale"] = locale;
+      }
+      CLOUD.createDevice(deviceInfo)
         .then((device) => {
           newDevice = device;
           return CLOUD.forDevice(device.id).createInstallation({
@@ -667,7 +682,17 @@ const syncDevices = function(store, actions, cloudDevices) {
           actions.push({
             type: 'ADD_DEVICE',
             deviceId: newDevice.id,
-            data: {name: name, address: address, description: description, installationId: installation.id}
+            data: {
+              name: name,
+              address: address,
+              description: description,
+              os: os,
+              model: model,
+              deviceType: deviceType,
+              userAgent: userAgent,
+              locale: locale,
+              installationId: installation.id
+            }
           });
 
           // We now push the location of ourselves to the cloud.
@@ -678,12 +703,31 @@ const syncDevices = function(store, actions, cloudDevices) {
     }
     else if (state.devices[deviceId] === undefined) {
       LOG.info("Sync: User device found in cloud, updating local.");
+      let installationId = getInstallationIdFromDevice(matchingDevice.installations);
+
       // add the device from the cloud to the redux database
       actions.push({
         type: 'ADD_DEVICE',
         deviceId: deviceId,
-        data: {name: name, address: deviceAddress, description: description}
+        data: {
+          name: name,
+          address: deviceAddress,
+          description: description,
+          os: os,
+          model: model,
+          deviceType: deviceType,
+          userAgent: userAgent,
+          locale: locale,
+          installationId: installationId,
+          tapToToggleCalibration: matchingDevice.tapToToggleCalibration,
+          hubFunction: matchingDevice.hubFunction,
+        }
       });
+
+      // if we use this device as a hub, make sure we request permission for notifications.
+      if (matchingDevice.hubFunction === true) {
+        NotificationHandler.request();
+      }
 
       // update our unique identifier to match the new device.
       store.dispatch({
@@ -691,9 +735,13 @@ const syncDevices = function(store, actions, cloudDevices) {
         data: {appIdentifier: deviceAddress}
       });
 
-      resolveAndCleanup();
+      verifyInstallation(state, deviceId, installationId, actions)
+        .then(resolveAndCleanup)
+        .catch(reject);
     }
     else {
+      let installationId = getInstallationIdFromDevice(matchingDevice.installations);
+
       // if the device is known under a different number in the cloud, we update our local identifier
       if (deviceAddress !== address) {
         store.dispatch({
@@ -703,30 +751,97 @@ const syncDevices = function(store, actions, cloudDevices) {
       }
       // Old bug caused the local db to have a device address of null. This should fix that.
       if (state.devices[deviceId].address !== deviceAddress) {
-        LOG.info("update address to", deviceAddress);
+        LOG.info("Sync: update address to", deviceAddress);
         actions.push({
           type:"UPDATE_DEVICE_CONFIG",
           deviceId: deviceId,
-          data:{address:deviceAddress}
+          data:{
+            name: name,
+            address: deviceAddress,
+            description: description,
+            os: os,
+            model: model,
+            deviceType: deviceType,
+            userAgent: userAgent,
+            installationId: installationId,
+            hubFunction: matchingDevice.hubFunction,
+            locale: locale,
+          }
         });
+
+        // if we use this device as a hub, make sure we request permission for notifications.
+        if (state.devices[deviceId].hubFunction === true || matchingDevice.hubFunction === true) {
+          NotificationHandler.request();
+        }
       }
+
       // if the tap to toggle calibration is available and different from what we have stored, update it.
       if (matchingDevice.tapToToggleCalibration && state.devices[deviceId].tapToToggleCalibration === null) {
         store.dispatch({
           type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
           deviceId: deviceId,
-          data: {tapToToggleCalibration: matchingDevice.tapToToggleCalibration}
+          data: {
+            tapToToggleCalibration: matchingDevice.tapToToggleCalibration
+          }
         })
       }
 
-      LOG.info("Sync: User device found in cloud, updating location.");
-      updateUserLocationInCloud(state, deviceId)
+      LOG.info("Sync: User device found in cloud, updating installation: ", installationId);
+      verifyInstallation(state, deviceId, installationId, actions)
+        .then(() => {
+          LOG.info("Sync: User device found in cloud, updating location.");
+          return updateUserLocationInCloud(state, deviceId)
+        })
         .then(resolveAndCleanup)
         .catch(reject);
     }
   });
 };
 
+const getInstallationIdFromDevice = function(installations) {
+  if (installations && Array.isArray(installations) && installations.length > 0) {
+    for (let i = 0; i < installations.length; i++) {
+      if (installations[i].appName === APP_NAME) {
+        return installations[i].id;
+      }
+    }
+  }
+  return null;
+};
+
+
+const verifyInstallation = function(state, deviceId, installationId, actions) {
+  if (installationId) {
+    return CLOUD.getInstallation(installationId)
+      .then((installation) => {
+        actions.push({
+          type: 'ADD_INSTALLATION',
+          installationId: installation.id,
+          data: {deviceToken: installation.deviceToken}
+        });
+      })
+  }
+  else if (deviceId && state && state.devices && state.devices[deviceId] && state.devices[deviceId].installationId === null) {
+    return CLOUD.forDevice(deviceId).createInstallation({
+      deviceType: Platform.OS,
+    })
+      .then((installation) => {
+        actions.push({
+          type: 'ADD_INSTALLATION',
+          installationId: installation.id,
+          data: {deviceToken: null}
+        });
+        actions.push({
+          type: 'UPDATE_DEVICE_CONFIG',
+          deviceId: deviceId,
+          data: {installationId: installation.id}
+        });
+      })
+  }
+  else {
+    return new Promise((resolve, reject) => { resolve(); });
+  }
+};
 
 const updateUserLocationInCloud = function(state, deviceId) {
   return new Promise((resolve, reject) => {

@@ -7,6 +7,8 @@ import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/st
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
+import {Permissions} from "../backgroundProcesses/Permissions";
+import {ALWAYS_DFU_UPDATE} from "../ExternalConfig";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -135,6 +137,29 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
+  getTimeFormat: function(timestamp)  {
+    if (timestamp === 0) {
+      return 'unknown';
+    }
+
+    let date = new Date(timestamp);
+
+    let pad = (base) => {
+      if (Number(base) < 10) {
+        return '0' + base;
+      }
+      return base;
+    };
+
+    let month = pad(date.getMonth() + 1);
+    let day = pad(date.getDate());
+    let hours = pad(date.getHours());
+    let minutes = pad(date.getMinutes());
+    let seconds = pad(date.getSeconds());
+
+    return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds
+  },
+
   getUUID : () : string => {
     const S4 = function () {
       return Math.floor(Math.random() * 0x10000 /* 65536 */).toString(16);
@@ -154,6 +179,35 @@ export const Util = {
     for (let key in section) {
       if (section.hasOwnProperty(key))
         base[key] = section[key]
+    }
+  },
+
+  spreadString: function(string) {
+    let result = '';
+    for (let i = 0; i < string.length; i++) {
+      result += string[i];
+      if (i !== (string.length-1) && string[i] !== ' ') {
+        result += ' '
+      }
+
+      if (string[i] === ' ') {
+        result += '   ';
+      }
+    }
+    return result;
+  },
+
+  getDelayLabel: function(delay, fullLengthText = false) {
+    if (delay < 60) {
+      return Math.floor(delay) + ' seconds';
+    }
+    else {
+      if (fullLengthText === true) {
+        return Math.floor(delay / 60) + ' minutes';
+      }
+      else {
+        return Math.floor(delay / 60) + ' min';
+      }
     }
   },
 
@@ -213,8 +267,19 @@ export const Util = {
 
       // if version is NOT semver, is higher will be false so is lower is true.
       return !Util.versions.isHigherOrEqual(version, compareWithVersion);
-    }
+    },
 
+    canUpdate: function(stone, state) {
+      // only admins are allowed to update
+      if (Permissions.seeUpdateCrownstone) {
+        if (ALWAYS_DFU_UPDATE)
+          return true;
+
+        let firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
+        return Util.versions.isLower(stone.config.firmwareVersion, firmwareVersionsAvailable[stone.config.hardwareVersion]);
+      }
+      return false;
+    }
 
   }
 };

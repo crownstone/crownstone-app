@@ -60,17 +60,34 @@ export class DeviceBehaviourEdit extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      // guard against deletion of the stone
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      // if the stone has been deleted, close everything.
+      if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
+        return Actions.pop();
+      }
+
       let state = this.props.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-      if (stone)
+      let applianceId = stone.config.applianceId;
+
+      if  (
+        (stone && stone.config.applianceId && change.updateApplianceConfig && change.updateApplianceConfig.stoneIds[this.props.applianceId]) ||
+        (change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId])
+          ) {
         this.forceUpdate();
-      else {
-        Actions.pop()
       }
-    })
+
+      if (
+        change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
+        change.updateStoneBehaviour && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
+        applianceId && change.updateApplianceConfig && change.updateApplianceConfig.applianceIds[applianceId] ||
+        applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
+      ) {
+        this.forceUpdate();
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -89,20 +106,6 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     this.unsubscribe();
     clearTimeout(this.detectionTimeout);
     clearTimeout(this.pocketTimeout);
-  }
-
-  _getDelayLabel(delay, fullLengthText = false) {
-    if (delay < 60) {
-      return Math.floor(delay) + ' seconds';
-    }
-    else {
-      if (fullLengthText === true) {
-        return Math.floor(delay / 60) + ' minutes';
-      }
-      else {
-        return Math.floor(delay / 60) + ' min';
-      }
-    }
   }
 
   defineThreshold(iBeaconId) {
@@ -224,7 +227,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
         buttons: delays.length === 1,
         valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
         value: element.behaviour[eventLabel].delay,
-        valueLabel: this._getDelayLabel(element.behaviour[eventLabel].delay, true),
+        valueLabel: Util.getDelayLabel(element.behaviour[eventLabel].delay, true),
         items: delays,
         callback: (newValue) => {
           this.props.store.dispatch({...requiredData, type: "UPDATE_"+dataTypeString+"_BEHAVIOUR_FOR_" + eventLabel, data: {delay: newValue}})
@@ -268,8 +271,8 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     toggleOptions.push({label: "do nothing", value: -1});
 
     let toggleOptionsExitSphere = [];
-    toggleOptionsExitSphere.push({label: 'turn on after ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)),  value: 1});
-    toggleOptionsExitSphere.push({label: 'turn off after ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)), value: 0});
+    toggleOptionsExitSphere.push({label: 'turn on after ' + Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)),  value: 1});
+    toggleOptionsExitSphere.push({label: 'turn off after ' + Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay)), value: 0});
     toggleOptionsExitSphere.push({label: "do nothing", value: -1});
 
     let toggleOptionsExit = [];
@@ -287,7 +290,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
 
     if (element.behaviour[eventLabel].active === true) {
       items.push({
-        label: 'Leaving the sphere will be triggered ' + this._getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true) + ' after leaving. You can customize this in the Sphere settings.',
+        label: 'Leaving the sphere will be triggered ' + Util.getDelayLabel(Math.max(300, state.spheres[this.props.sphereId].config.exitDelay), true) + ' after leaving. You can customize this in the Sphere settings.',
         style: {paddingBottom: 5},
         type: 'explanation',
         below: true
@@ -377,7 +380,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     }
 
     items.push({label: 'EXCEPTIONS', type: 'explanation', style: styles.topExplanation, below:false});
-    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark, callback: (newValue) => {
+    items.push({label: 'Only turn on if it\'s dark outside', style:{fontSize:15}, type: 'switch', value: element.config.onlyOnWhenDark === true, callback: (newValue) => {
       this.props.store.dispatch({type: 'UPDATE_'+dataTypeString+'_CONFIG', ...requiredData, data: { onlyOnWhenDark : newValue } })
     }});
     items.push({type:  'spacer'});
@@ -406,7 +409,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
     return (
       <Background image={backgroundImage} >
         <ScrollView>
-          <ListEditableItems items={options}/>
+          <ListEditableItems items={options} separatorIndent={true} />
         </ScrollView>
       </Background>
     )

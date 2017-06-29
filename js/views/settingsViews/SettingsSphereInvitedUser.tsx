@@ -19,6 +19,7 @@ import { processImage, safeDeleteFile } from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth } from './../styles'
+import {Permissions} from "../../backgroundProcesses/Permissions";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereInvitedUser extends Component<any, any> {
@@ -30,27 +31,13 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
     this.deleting = false;
   }
 
-  componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      if (this.deleting !== true) {
-        this.forceUpdate();
-      }
-    })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
 
   _getItems(user) {
-    const store = this.props.store;
     let items = [];
     // room Name:
     items.push({type:'spacer'});
     items.push({type:'explanation', label:'INVITE WAS SENT TO'});
-    items.push({label:user.email, type: 'info'});
+    items.push({label:user.email, type: 'info', labelStyle:{width:screenWidth}});
 
     items.push({type:'explanation', label:'MANAGE INVITE'});
     items.push({
@@ -76,44 +63,54 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
               })
         }}], { cancelable : false });
     }});
-    items.push({
-      label:'Revoke Invite',
-      type:'button',
-      icon: <IconButton name="md-trash" size={22} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
-      callback: () => {
-      Alert.alert(
-        "Are you sure?",
-        "Shall I revoke the invitation?",
-        [{text:'No'}, {text:'Yes', onPress: () => {
-          this.props.eventBus.emit('showLoading', 'Revoking Invitation...');
-          this.deleting = true;
-          CLOUD.forSphere(this.props.sphereId).revokeInvite(user.email)
-            .then(() => {
-              let defaultAction = () => {
-                this.props.eventBus.emit('hideLoading');
-                this.props.store.dispatch({
-                  type: 'REMOVE_SPHERE_USER',
-                  sphereId: this.props.sphereId,
-                  userId: this.props.userId,
-                });
-                Actions.pop();
-              };
-              Alert.alert("Invitation Revoked!", "", [{text:"OK", onPress: defaultAction}], { onDismiss: defaultAction });
-            })
-            .catch((err) => {
-              this.deleting = false;
-              this.props.eventBus.emit('hideLoading');
-              Alert.alert("Could not revoke invitation..", "Please try again later.", [{text:"OK"}]);
-              LOG.error("Could not revoke invitation", err);
-            })
-          }}
-        ],
-        {cancelable:false});
-    }});
+
+    if (user.accessLevel === 'admin'  && Permissions.inviteAdminToSphere ||
+        user.accessLevel === 'member' && Permissions.inviteMemberToSphere ||
+        user.accessLevel === 'guest'  && Permissions.inviteGuestToSphere) {
+      items.push({
+        label: 'Revoke Invite',
+        type: 'button',
+        icon: <IconButton name="md-trash" size={22} color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
+        callback: () => {
+          Alert.alert(
+            "Are you sure?",
+            "Shall I revoke the invitation?",
+            [{text: 'No'}, {
+              text: 'Yes', onPress: () => {
+                this.props.eventBus.emit('showLoading', 'Revoking Invitation...');
+                this.deleting = true;
+                CLOUD.forSphere(this.props.sphereId).revokeInvite(user.email)
+                  .then(() => {
+                    let defaultAction = () => {
+                      this.props.eventBus.emit('hideLoading');
+                      this.props.store.dispatch({
+                        type: 'REMOVE_SPHERE_USER',
+                        sphereId: this.props.sphereId,
+                        userId: this.props.userId,
+                      });
+                      Actions.pop();
+                    };
+                    Alert.alert("Invitation Revoked!", "", [{
+                      text: "OK",
+                      onPress: defaultAction
+                    }], {onDismiss: defaultAction});
+                  })
+                  .catch((err) => {
+                    this.deleting = false;
+                    this.props.eventBus.emit('hideLoading');
+                    Alert.alert("Could not revoke invitation..", "Please try again later.", [{text: "OK"}]);
+                    LOG.error("Could not revoke invitation", err);
+                  })
+              }
+            }
+            ],
+            {cancelable: false});
+        }
+      });
+    }
 
     return items;
   }
-
 
 
   render() {

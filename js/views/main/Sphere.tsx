@@ -14,7 +14,7 @@ let Actions = require('react-native-router-flux').Actions;
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
 import { LOG }       from '../../logging/Log'
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
+import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight } from '../styles'
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 
@@ -33,7 +33,7 @@ export class Sphere extends Component<any, any> {
     }
 
     return (
-      <View style={{width:screenWidth, height: screenHeight - topBarHeight - tabBarHeight, position:'absolute', top: 0, left: this.props.leftPosition}}>
+      <View style={{width: screenWidth, height: availableScreenHeight}}>
         <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
         <RoomLayer store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
       </View>

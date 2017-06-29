@@ -28,38 +28,41 @@ export class SeparatedItemList extends Component<any, any> {
     let items = this.props.items;
     let renderItems = [];
 
-
-    let indentSeparator = this.props.separatorIndent === true;
-    let isEditableItem = (item) => {return !(item.type === 'spacer' || item.type === 'explanation')};
+    let separatorIndent = this.props.separatorIndent === true;
+    let isEditableItem = (item) => {
+      return !(item.type === 'spacer' || item.type === 'explanation' || item.type === 'lightExplanation' || item.type === 'largeExplanation')};
 
     // this function parses the input item.
     let iterator = (prevItem, item, nextItem, index, itemId) => {
       let isItemEditable = isEditableItem(item);
       if (prevItem !== undefined) {
-        if (isEditableItem(prevItem) && isItemEditable && indentSeparator) {
+        if (isEditableItem(prevItem) && isItemEditable && separatorIndent) {
           renderItems.push(<Separator key={index + 'top_separator'} fullLength={false} />);
         }
         else if (isItemEditable || isEditableItem(prevItem)) {
           renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} />);
         }
       }
-      else if (isItemEditable == true) {
-        renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} />);
+      else if (isItemEditable == true && this.props.topSeparator !== false && this.props.boundingSeparators !== false) {
+        renderItems.push(<Separator key={index + 'top_separator'} fullLength={true} opacity={this.props.boundingOpacity || this.props.topOpacity} />);
       }
 
       renderItems.push(this.props.renderer(item, index, itemId));
 
       if (nextItem === undefined) {
         if (isItemEditable) {
-          renderItems.push(<Separator key={index + 'bottom_separator'} fullLength={true} />);
+          if (this.props.bottomSeparator !== false && this.props.boundingSeparators !== false) {
+            renderItems.push(<Separator key={index + 'bottom_separator'} fullLength={true}  opacity={this.props.boundingOpacity || this.props.bottomOpacity} />);
+          }
         }
       }
     };
 
 
     if (Array.isArray(items)) {
-      if (items.length == 0)
-        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} />);
+      if (items.length == 0 && this.props.topSeparator !== false && this.props.boundingSeparators !== false) {
+        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} opacity={this.props.boundingOpacity || this.props.topOpacity}/>);
+      }
 
       items.forEach((item, index) => {
         iterator(
@@ -73,8 +76,8 @@ export class SeparatedItemList extends Component<any, any> {
     }
     else if (typeof items === 'object') {
       let keys = Object.keys(items).sort();
-      if (keys.length == 0) {
-        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} />);
+      if (keys.length == 0 && this.props.topSeparator !== false && this.props.boundingSeparators !== false) {
+        renderItems.push(<Separator key={0 + 'top_separator'} fullLength={true} opacity={this.props.boundingOpacity || this.props.topOpacity} />);
       }
       keys.forEach((itemId, index) => {
         iterator(

@@ -54,7 +54,7 @@ export class Login extends Component<any, any> {
       .then(() => {
         SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
-        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
       })
       .catch((reply) => {
         let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
@@ -68,7 +68,7 @@ export class Login extends Component<any, any> {
       .then(() => {
         SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
-        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
       })
       .catch((reply) => {
         let content = "Please try again.";
@@ -325,13 +325,13 @@ export class Login extends Component<any, any> {
 
 
           if (state.user.isNew !== false) {
-            (Actions as any).aiStart({type: 'reset'});
+            Actions.aiStart({type: 'reset'});
           }
           else if (Platform.OS === 'android') {
-            (Actions as any).sphereOverview({type: 'reset'});
+            Actions.sphereOverview({type: 'reset'});
           }
           else {
-            (Actions as any).tabBar({type: 'reset'});
+            Actions.tabBar({type: 'reset'});
           }
         }, 100);
       })

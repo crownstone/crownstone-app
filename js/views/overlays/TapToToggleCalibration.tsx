@@ -11,7 +11,7 @@ import {
 import { LOG }                                        from '../../logging/Log'
 import { BlePromiseManager }                          from '../../logic/BlePromiseManager'
 import { addDistanceToRssi, Util }                    from '../../util/Util'
-import { stoneTypes }                                 from '../../router/store/reducers/stones'
+import { STONE_TYPES }                                 from '../../router/store/reducers/stones'
 import { OverlayBox }                                 from '../components/overlays/OverlayBox'
 import { eventBus }                                   from '../../util/EventBus'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
@@ -28,12 +28,15 @@ export class TapToToggleCalibration extends Component<any, any> {
 
   componentDidMount() {
     this.unsubscribe.push(eventBus.on("CalibrateTapToToggle", (data : any = {}) => {
-      eventBus.emit("ignoreTriggers");
-      this.setState({
-        visible: true,
-        step: data.tutorial === false ? 1 : 0,
-        tutorial: data.tutorial === undefined ? true  : data.tutorial
-      });
+      let state = this.props.store.getState();
+      if (state.app.tapToToggleEnabled !== false) {
+        eventBus.emit("ignoreTriggers");
+        this.setState({
+          visible: true,
+          step: data.tutorial === false ? 1 : 0,
+          tutorial: data.tutorial === undefined ? true  : data.tutorial
+        });
+      }
     }));
   }
 
@@ -70,7 +73,7 @@ export class TapToToggleCalibration extends Component<any, any> {
                 let stoneIds = Object.keys(sphere.stones);
                 stoneIds.forEach((stoneId) => {
                   let stone = sphere.stones[stoneId];
-                  if (stone.config.type === stoneTypes.plug && stone.config.disabled === false) {
+                  if (stone.config.type === STONE_TYPES.plug && stone.config.disabled === false) {
                     minRSSI = Math.max(stone.config.rssi, minRSSI);
                   }
                 });
@@ -93,7 +96,7 @@ export class TapToToggleCalibration extends Component<any, any> {
           let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
           let deviceId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
           this.props.store.dispatch({
-            type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
+            type: 'UPDATE_DEVICE_CONFIG',
             deviceId: deviceId,
             data: { tapToToggleCalibration: rssiAddedDistance }
           });

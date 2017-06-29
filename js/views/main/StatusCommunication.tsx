@@ -11,11 +11,13 @@ import {
 } from 'react-native';
 
 import { Icon }               from '../components/Icon'
-import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import { requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }      from '../../logging/Log'
 import { overviewStyles }     from './SphereOverview'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
+import {Util} from "../../util/Util";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 export class StatusCommunication extends Component<any, any> {
@@ -51,10 +53,9 @@ export class StatusCommunication extends Component<any, any> {
     let currentSphere = this.props.sphereId;
 
     // the bottom distance pops the bottom text up if the orbs are shown. Orbs are shown when there are multiple spheres.
-    let bottomDistance = Object.keys(state.spheres).length > 1 ? 20 : 5;
+    let bottomDistance = Object.keys(state.spheres).length > 1 ? 5 : 5;
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
-    let isAdminInCurrentSphere = getUserLevelInSphere(state, currentSphere) === 'admin';
 
     let enoughForLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, currentSphere);
     let requiresFingerprints = requireMoreFingerprints(state, currentSphere);
@@ -68,7 +69,7 @@ export class StatusCommunication extends Component<any, any> {
       }
     });
 
-    if (SetupStateHandler.areSetupStonesAvailable() === true && isAdminInCurrentSphere === true) {
+    if (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.seeSetupCrownstone) {
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected! Tap on it!'}</Text>

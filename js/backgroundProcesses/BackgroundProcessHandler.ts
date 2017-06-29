@@ -24,6 +24,10 @@ import { SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
+import {ErrorWatcher} from "./ErrorWatcher";
+import {NotificationHandler, NotificationParser} from "./NotificationHandler";
+import {Permissions} from "./Permissions";
+import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -58,7 +62,9 @@ class BackgroundProcessHandlerClass {
             Bluenet.startScanningForCrownstonesUniqueOnly()
           });
 
-        LocationHandler.trackSpheres();
+        LocationHandler.initializeTracking();
+
+        this.setupLogging();
 
         this.userLoggedIn = true;
       });
@@ -78,18 +84,49 @@ class BackgroundProcessHandlerClass {
 
         this.startBluetoothListener();
 
-        this.updateDeviceName();
+        this.updateDeviceDetails();
 
         LocationHandler.applySphereStateFromStore();
 
-        let state = this.store.getState();
-        Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
+        Scheduler.scheduleCallback(() => { this.checkErrors(null); }, 15000, 'checkErrors');
+
+        this.setupLogging();
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
       this.startStore();
     }
     this.started = true;
+  }
+
+
+  setupLogging() {
+    let state = this.store.getState();
+    Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
+    if (state.user.logging === true && state.user.developer === true && state.development.log_ble === true) {
+      Bluenet.enableExtendedLogging(true);
+    }
+  }
+
+
+  checkErrors(sphereId = null) {
+    let state = this.store.getState();
+    let presentSphere = sphereId || Util.data.getPresentSphere(state);
+    if (presentSphere && state.spheres[presentSphere]) {
+      let errorsFound = false;
+      let stonesContainingError = [];
+
+      Util.data.callOnStonesInSphere(state, presentSphere, (stoneId, stone) => {
+        if (stone.errors.hasError === true || (stone.errors.advertisementError && stone.errors.obtainedErrors === true)) {
+          errorsFound = true;
+          stonesContainingError.push({sphereId: presentSphere, stoneId: stoneId, stone:stone});
+        }
+      });
+
+      if (errorsFound) {
+        eventBus.emit("showErrorOverlay", stonesContainingError)
+      }
+    }
   }
 
 
@@ -139,15 +176,31 @@ class BackgroundProcessHandlerClass {
   /**
    * Update device specs: Since name is user editable, it can change over time. We use this to update the model.
    */
-  updateDeviceName() {
+  updateDeviceDetails() {
     let state = this.store.getState();
     let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
     let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
     if (currentDeviceSpecs.address && deviceInDatabaseId) {
       let deviceInDatabase = state.devices[deviceInDatabaseId];
       // if the address matches but the name does not, update the device name in the cloud.
-      if (deviceInDatabase.address === currentDeviceSpecs.address && currentDeviceSpecs.name != deviceInDatabase.name) {
-        this.store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {name: currentDeviceSpecs.name}})
+      if (deviceInDatabase.address === currentDeviceSpecs.address && 
+        (currentDeviceSpecs.name != deviceInDatabase.name) || 
+        (currentDeviceSpecs.os != deviceInDatabase.os) || 
+        (currentDeviceSpecs.userAgent != deviceInDatabase.userAgent) || 
+        (currentDeviceSpecs.deviceType != deviceInDatabase.deviceType) || 
+        (currentDeviceSpecs.model != deviceInDatabase.model) || 
+        (currentDeviceSpecs.locale != deviceInDatabase.locale) || 
+        (currentDeviceSpecs.description != deviceInDatabase.description))
+        {
+        this.store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {
+          name: currentDeviceSpecs.name,
+          os: currentDeviceSpecs.os,
+          userAgent: currentDeviceSpecs.userAgent,
+          deviceType: currentDeviceSpecs.deviceType,
+          model: currentDeviceSpecs.model,
+          locale: currentDeviceSpecs.locale,
+          description: currentDeviceSpecs.description
+        }})
       }
     }
   }
@@ -161,6 +214,9 @@ class BackgroundProcessHandlerClass {
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
+      // check the state of the crownstone errors and show overlay if needed.
+      this.checkErrors(sphereId);
+
       // do not show popup during setup.
       if (SetupStateHandler.isSetupInProgress() === true) {
         return;
@@ -174,19 +230,24 @@ class BackgroundProcessHandlerClass {
       }
     });
 
+    // check errors if we obtained something from the advertisements.
+    eventBus.on("checkErrors", () => {
+      this.checkErrors();
+    });
+
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);
       // in the foreground: start scanning!
       if (appState === "active" && this.userLoggedIn) {
-        BatterySavingUtil.scanOnlyIfNeeded();
+        BatterySavingUtil.startNormalUsage();
 
         // if the app is open, update the user locations every 10 seconds
         Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
       }
       else {
         // in the background: stop scanning to save battery!
-        BatterySavingUtil.stopScanningIfPossible();
+        BatterySavingUtil.startBatterySaving();
 
         // remove the user sync so it won't use battery in the background
         Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);
@@ -198,7 +259,7 @@ class BackgroundProcessHandlerClass {
     // Ensure we start scanning when the bluetooth module is powered on.
     NativeBus.on(NativeBus.topics.bleStatus, (status) => {
       if (this.userLoggedIn && status === 'poweredOn') {
-        BatterySavingUtil.scanOnlyIfNeeded();
+        BatterySavingUtil.startNormalUsage();
       }
     });
   }
@@ -265,18 +326,22 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
-    MapProvider.loadStore(this.store);
-    LogProcessor.loadStore(this.store);
-    LocationHandler.loadStore(this.store);
-    AdvertisementHandler.loadStore(this.store);
-    Scheduler.loadStore(this.store);
-    StoneStateHandler.loadStore(this.store);
-    DfuStateHandler.loadStore(this.store);
-    SetupStateHandler.loadStore(this.store);
-    KeepAliveHandler.loadStore(this.store);
-    FirmwareWatcher.loadStore(this.store);
-    BatterySavingUtil.loadStore(this.store);
-    // NotificationHandler.loadStore(store);
+    BatchCommandHandler._loadStore(this.store);
+    MapProvider._loadStore(this.store);
+    LogProcessor._loadStore(this.store);
+    LocationHandler._loadStore(this.store);
+    AdvertisementHandler._loadStore(this.store);
+    Scheduler._loadStore(this.store);
+    StoneStateHandler._loadStore(this.store);
+    DfuStateHandler._loadStore(this.store);
+    SetupStateHandler._loadStore(this.store);
+    KeepAliveHandler._loadStore(this.store);
+    FirmwareWatcher._loadStore(this.store);
+    BatterySavingUtil._loadStore(this.store);
+    ErrorWatcher._loadStore(this.store);
+    NotificationHandler._loadStore(this.store);
+    NotificationParser._loadStore(this.store);
+    Permissions._loadStore(this.store, this.userLoggedIn);
   }
 }
 

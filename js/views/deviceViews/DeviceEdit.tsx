@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import { stoneTypes } from '../../router/store/reducers/stones'
+import { STONE_TYPES } from '../../router/store/reducers/stones'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import { BleUtil } from '../../util/BleUtil'
@@ -21,26 +21,28 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/animated/FadeInView'
 import { LOG } from '../../logging/Log'
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 
 
 export class DeviceEdit extends Component<any, any> {
-  deleting : boolean;
+  deleting : boolean = false;
   unsubscribeStoreEvents : any;
 
   constructor() {
     super();
     this.state = {showStone:false};
-    this.deleting = false;
   }
 
   componentDidMount() {
     const { store } = this.props;
+
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-
       let state = store.getState();
+
+      // in case the sphere is deleted
       if (state.spheres[this.props.sphereId] === undefined) {
         Actions.pop();
         return;
@@ -106,11 +108,11 @@ export class DeviceEdit extends Component<any, any> {
       }
     });
 
-    if (stone.config.type !== stoneTypes.guidestone) {
+    if (stone.config.type !== STONE_TYPES.guidestone) {
       items.push({label: 'PLUGGED IN DEVICE', type: 'explanation', below: false});
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
-          (Actions as any).applianceSelection({
+          Actions.applianceSelection({
             ...requiredData,
             callback: (applianceId) => {
               this.setState({showStone:false});
@@ -129,7 +131,9 @@ export class DeviceEdit extends Component<any, any> {
       items.push({type:'spacer'});
     }
 
-    items = this.addDeleteOptions(items, stone);
+    if (Permissions.removeCrownstone) {
+      items = this.addDeleteOptions(items, stone);
+    }
 
     return items;
   }
@@ -153,7 +157,7 @@ export class DeviceEdit extends Component<any, any> {
 
     // icon picker
     items.push({label:'Icon', type: 'icon', value: appliance.config.icon, callback: () => {
-      (Actions as any).deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, sphereId: this.props.sphereId})
+      Actions.deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, sphereId: this.props.sphereId})
     }});
 
     // unplug device
@@ -170,7 +174,9 @@ export class DeviceEdit extends Component<any, any> {
     //     store.dispatch({...requiredData, type:'UPDATE_STONE_CONFIG', data:{dimmable:newValue}});
     // }});
 
-    items = this.addDeleteOptions(items, stone);
+    if (Permissions.removeCrownstone) {
+      items = this.addDeleteOptions(items, stone);
+    }
 
     return items;
 
@@ -223,6 +229,7 @@ export class DeviceEdit extends Component<any, any> {
       })
   }
 
+
   _removeCloudReset(stone) {
     this.props.eventBus.emit('showLoading', 'Removing the Crownstone from the Cloud...');
     CLOUD.forSphere(this.props.sphereId).deleteStone(this.props.stoneId)
@@ -270,6 +277,7 @@ export class DeviceEdit extends Component<any, any> {
       })
   }
 
+
   _removeCrownstoneFromRedux(factoryReset = false) {
     // deleting makes sure we will not draw this page again if we delete it's source from the database.
     this.deleting = true;
@@ -287,6 +295,7 @@ export class DeviceEdit extends Component<any, any> {
       }}]
     )
   }
+
 
   _getVersionInformation(stone) {
     let unknownString = "Not checked.";

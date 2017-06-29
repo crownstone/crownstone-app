@@ -5,8 +5,9 @@ import { KEEPALIVE_INTERVAL, KEEPALIVE_ATTEMPTS } from '../ExternalConfig';
 import { NativeBus }                              from '../native/libInterface/NativeBus';
 import { BatchCommandHandler }                    from '../logic/BatchCommandHandler';
 import { Util }                                   from '../util/Util'
-import { stoneTypes, TYPES }                      from '../router/store/reducers/stones'
-import { canUseIndoorLocalizationInSphere, getUserLevelInSphere } from '../util/DataUtil'
+import { STONE_TYPES, TYPES }                      from '../router/store/reducers/stones'
+import { canUseIndoorLocalizationInSphere } from '../util/DataUtil'
+import {Permissions} from "./Permissions";
 
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 
@@ -22,7 +23,7 @@ class KeepAliveHandlerClass {
     this.state = {};
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE KeepAliveHandler', this._initialized);
     if (this._initialized === false) {
       this.store = store;
@@ -73,7 +74,6 @@ class KeepAliveHandlerClass {
 
       // check every sphere where we are present. Usually this is only one of them!!
       let useRoomLevel = canUseIndoorLocalizationInSphere(state, sphereId);
-      let userLevelInSphere = getUserLevelInSphere(state, sphereId);
 
       let stoneIds = Object.keys(sphere.stones);
       stoneIds.forEach((stoneId) => {
@@ -82,7 +82,7 @@ class KeepAliveHandlerClass {
 
         let keepAliveId = (Math.floor(Math.random()*1e6)).toString(36);
 
-        if (stone.config.type !== stoneTypes.guidestone) {
+        if (stone.config.type !== STONE_TYPES.guidestone) {
           let element = Util.data.getElement(sphere, stone);
           let behaviourHomeExit = element.behaviour[TYPES.HOME_EXIT];
           let behaviourRoomExit = element.behaviour[TYPES.ROOM_EXIT];
@@ -98,7 +98,7 @@ class KeepAliveHandlerClass {
           else if (behaviourAway.active     === true && !useRoomLevel)  { behaviour = behaviourAway;     delay = determineDelay(behaviour.delay); }
 
           if (stone.config.handle && stone.config.disabled === false) {
-            this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId);
+            this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, element, keepAliveId);
           }
           else if (stone.config.disabled === true) {
             LOG.info('KeepAliveHandler: (' + keepAliveId + ') skip KeepAlive stone is disabled', stoneId);
@@ -110,14 +110,11 @@ class KeepAliveHandlerClass {
     });
   }
 
-  _performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, userLevelInSphere, element, keepAliveId) {
+  _performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, element, keepAliveId) {
     LOG.info('KeepAliveHandler: (' + keepAliveId + ') setting up keep Alive to stone handle', stone.config.handle);
 
     // guests do not send a state, they just prolong the existing keepAlive.
-    if (userLevelInSphere === 'guest') {
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'keepAlive'}, KEEPALIVE_ATTEMPTS).catch((err) => {});
-    }
-    else {
+    if (Permissions.useKeepAliveState) {
       // determine what to send
       let changeState = false;
       let newState = 0;
@@ -133,10 +130,13 @@ class KeepAliveHandlerClass {
         stone,
         stoneId,
         sphereId,
-        {commandName:'keepAliveState', changeState:changeState, state: newState, timeout: delay},
-        KEEPALIVE_ATTEMPTS
-      )
-        .catch((err) => {});
+        {commandName: 'keepAliveState', changeState: changeState, state: newState, timeout: delay},
+        KEEPALIVE_ATTEMPTS,
+        'from _performKeepAliveForStone in KeepAliveHandler'
+      ).catch((err) => {});
+    }
+    else {
+      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'keepAlive'}, KEEPALIVE_ATTEMPTS, 'from _performKeepAliveForStone in KeepAliveHandler').catch((err) => {});
     }
   }
 }

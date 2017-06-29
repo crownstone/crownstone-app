@@ -3,7 +3,7 @@ import { NativeBus } from '../native/libInterface/NativeBus';
 import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
 import {eventBus} from "../util/EventBus";
-import {SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
+import {DEBUG, SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 
 
 interface scheduledCallback {
@@ -45,7 +45,7 @@ class SchedulerClass {
   }
 
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE SchedulerClass', this._initialized);
     if (this._initialized === false) {
       this.store = store;
@@ -242,7 +242,7 @@ class SchedulerClass {
   }
 
   /**
-   * Smart callback scheduler. 
+   * Smart callback scheduler.
    *
    * This method will also set a setTimeout to make sure the triggers fire when expected instead of checking if it should fire every 1 or 4 seconds.
    * If it detects the app is NOT on the foreground (which is when the setTimeout would still do something) it will fall back to being a backgroundCallback.
@@ -280,16 +280,22 @@ class SchedulerClass {
   }
 
   _scheduleCallback(callback, afterMilliseconds, useTimeout: boolean, label = "unlabeled") : () => void {
+    if (typeof callback !== 'function') {
+      LOG.error("Scheduler: Failed to schedule callback. Not a function", label, afterMilliseconds);
+      if (DEBUG) {
+        throw "Scheduler: Failed to schedule callback. Not a function: " + label;
+      }
+    }
     let uuid = label + Util.getUUID();
     LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
-    
+
     // fallback to try to fire this callback after exactly the amount of ms
     let timeoutId = null;
 
     if (useTimeout) {
       timeoutId = setTimeout(() => { this.tick(); }, afterMilliseconds + 10);
     }
-    
+
     this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds, timeoutId: timeoutId};
 
     return () => {
@@ -377,6 +383,8 @@ class SchedulerClass {
         if (trigger.timeoutId) {
           clearTimeout(trigger.timeoutId);
         }
+
+        this.singleFireTriggers[triggerId] = undefined;
         delete this.singleFireTriggers[triggerId];
       }
     })
@@ -421,7 +429,7 @@ class SchedulerClass {
   _flushActions(trigger, state) {
     let actionsToDispatch = [];
 
-    // check if we have to update the state. If the state has changed due to userinput in between triggers
+    // check if we have to update the state. If the state has changed due to user input in between triggers
     // we prefer not to use older data.
     trigger.actions.forEach((action) => {
       this._checkAndAddAction(actionsToDispatch, action, state)
@@ -477,6 +485,13 @@ class SchedulerClass {
     if (action.updatedAt > currentState.updatedAt || action.type === 'UPDATE_STONE_RSSI') {
       actionsToDispatch.push(action);
     }
+  }
+
+
+  delay(ms, label = '') {
+    return new Promise((resolve, reject) => {
+      Scheduler.scheduleCallback(() => { resolve(); }, ms, 'schedulerDelay_' + label);
+    })
   }
 }
 

@@ -33,7 +33,7 @@ class MapProviderClass {
   stoneCIDMap : any = {};
   state : any = {};
 
-  loadStore(store) {
+  _loadStore(store) {
     if (this._initialized === false) {
       this._store = store;
 

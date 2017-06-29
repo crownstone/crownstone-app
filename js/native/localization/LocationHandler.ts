@@ -12,9 +12,9 @@ import { Util }                     from '../../util/Util';
 import { TYPES }                    from '../../router/store/reducers/stones';
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
-import {eventBus} from '../../util/EventBus';
-import {CLOUD} from '../../cloud/cloudAPI';
-import {BatterySavingUtil} from '../../util/BatterySavingUtil';
+import { eventBus }                 from '../../util/EventBus';
+import { CLOUD }                    from '../../cloud/cloudAPI';
+import { BatterySavingUtil }        from '../../util/BatterySavingUtil';
 
 
 class LocationHandlerClass {
@@ -32,13 +32,13 @@ class LocationHandlerClass {
 
 
     // subscribe to iBeacons when the spheres in the cloud change.
-    CLOUD.events.on('CloudSyncComplete_spheresChanged', () => { LocationHandler.trackSpheres(); });
+    CLOUD.events.on('CloudSyncComplete_spheresChanged', () => { LocationHandler.initializeTracking(); });
 
     // when a sphere is created, we track all spheres anew.
-    eventBus.on('sphereCreated', () => { LocationHandler.trackSpheres(); });
+    eventBus.on('sphereCreated', () => { LocationHandler.initializeTracking(); });
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LocationHandler: LOADED STORE LocationHandler', this._initialized);
     if (this._initialized === false) {
       this._initialized = true;
@@ -95,11 +95,14 @@ class LocationHandlerClass {
     }
 
     // scan for crownstones on entering a sphere.
-    BatterySavingUtil.scanOnlyIfNeeded(sphereId);
+    BatterySavingUtil.startNormalUsage(sphereId);
 
 
-    LOG.info('Set Settings.', bluenetSettings);
-    BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {});
+    LOG.info("Set Settings.", bluenetSettings);
+    BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {
+      LOG.error("LocationHandler: Could not set Settings!", err);
+      Alert.alert("Could not set Keys!","This should not happen. Make sure you're an admin to avoid this. This will be fixed soon!", [{text:"OK..."}]);
+    });
 
 
     // make sure we only do the following once per sphere
@@ -108,7 +111,7 @@ class LocationHandlerClass {
       return;
     }
 
-    // update location of the sphere, start the keepalives and check if we have to perform an enter sphere behaviour trigger.
+    // update location of the sphere, start the keepAlive and check if we have to perform an enter sphere behaviour trigger.
     if (sphere !== undefined) {
       LOG.info('LocationHandler: ENTER SPHERE', sphereId);
 
@@ -141,7 +144,7 @@ class LocationHandlerClass {
       // start the keep alive run. This gives the app some time for syncing and pointing out which stones are NOT disabled.
       Scheduler.scheduleCallback(() => {
         KeepAliveHandler.fireTrigger();
-      }, 1000);
+      }, 1000, 'sphere enter keepAlive trigger');
 
       // get the time last seen of the crownstones in this sphere
       let stones = state.spheres[sphereId].stones;
@@ -200,7 +203,7 @@ class LocationHandlerClass {
 
       // if we're not in any sphere, stop scanning to save battery
       if (presentSomewhere === false) {
-        BatterySavingUtil.stopScanningIfPossible(true);
+        BatterySavingUtil.startBatterySaving(true);
       }
 
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
@@ -327,14 +330,11 @@ class LocationHandlerClass {
   }
 
 
-  /**
-   * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
-   */
-  trackSpheres() {
-    LOG.info('LocalizationUtil: Track Spheres called.');
+  loadFingerprints() {
+    LOG.info("LocationHandler: loadFingerprints.");
     BluenetPromiseWrapper.isReady()
       .then(() => {
-        return BluenetPromiseWrapper.clearTrackedBeacons();
+        return BluenetPromiseWrapper.clearFingerprintsPromise();
       })
       .then(() => {
         // register the iBeacons UUIDs with the localization system.
@@ -345,9 +345,6 @@ class LocationHandlerClass {
 
         sphereIds.forEach((sphereId) => {
           let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
-
-          // track the sphere beacon UUID
-          Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
 
           LOG.info('LocalizationUtil: Setup tracking for iBeacon UUID: ', sphereIBeaconUUID, ' with sphereId:', sphereId);
 
@@ -382,6 +379,37 @@ class LocationHandlerClass {
         }
       })
       .catch((err) => {})
+  }
+
+  /**
+   * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
+   */
+  trackSpheres() {
+    LOG.info("LocationHandler: Track Spheres called.");
+    BluenetPromiseWrapper.isReady()
+      .then(() => {
+        return BluenetPromiseWrapper.clearTrackedBeacons();
+      })
+      .then(() => {
+        // register the iBeacons UUIDs with the localization system.
+        const state = this.store.getState();
+        let sphereIds = Object.keys(state.spheres);
+
+        sphereIds.forEach((sphereId) => {
+          let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
+
+          // track the sphere beacon UUID
+          Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
+          LOG.info("LocationHandler: Setup tracking for iBeacon UUID: ", sphereIBeaconUUID);
+
+        });
+      })
+      .catch((err) => {})
+  }
+
+  initializeTracking() {
+    this.trackSpheres();
+    this.loadFingerprints();
   }
 }
 

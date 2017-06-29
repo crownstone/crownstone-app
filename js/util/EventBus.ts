@@ -74,6 +74,13 @@ export class EventBusClass {
       })
     }
   }
+
+
+  clearAllEvents() {
+    LOG.event("Clearing all event listeners.");
+    this._topics = {};
+    this._topicIds = {};
+  }
 }
 
 export let eventBus : any = new EventBusClass();

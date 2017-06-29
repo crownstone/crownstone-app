@@ -2,7 +2,25 @@
 
 To be Released:
 
+
 - Fixed bug in dfu process that did not put the Crownstone back in normal mode after a failed factory reset.
+- Added a few new Icons for rooms and appliances.
+
+--- iOS release submitted 2017-6-21 as 1.9.1
+
+- Fixed the app logging out every week at random.
+- [iOS] Fix bug that caused members and guests not to be able to switch Crownstones.
+- Fix bug that caused the profile pictures of other users not the be shown in overview (user might have to change their picture once in order for it to show up).
+- Redesign of device overview to accommodate future features.
+- Fixed bug in background process so near/away and room enter/exit won't occasionally stop working
+- Fixed bug that crashed the app on logout.
+- Ensured that DFU and Setup work nicely in the background.
+- Fixed user permissions.
+- Fixed bug in DFU causing the Crownstone to be stuck in DFU mode.
+- Implemented push notification handlers for future improvements.
+- Added hub mode so a Crownstone can be switched from the cloud REST api (developer option).
+- Fix bugs related to animated fade in and out views.
+- Show and handle errors of the hardware in the app.
 - Fix validation on registration.
 - Fix forced logout after 6 days bug.
 - Update the other users in rooms every 10 seconds but only if the app is on screen.

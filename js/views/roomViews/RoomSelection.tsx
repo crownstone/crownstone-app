@@ -23,13 +23,17 @@ export class RoomSelection extends Component<any, any> {
   unsubscribe : any;
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      let state = store.getState();
-      if (state.spheres[this.props.sphereId] === undefined) {
-        Actions.pop();
+    // tell the component exactly when it should redraw
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      if (change.removeSphere && change["removeSphere"].sphereIds[this.props.sphereId]) {
+        return Actions.pop();
       }
-      this.forceUpdate();
+
+      if (change.changeLocations && change["changeLocations"].sphereIds[this.props.sphereId]) {
+        this.forceUpdate();
+      }
     });
   }
 
@@ -76,7 +80,7 @@ export class RoomSelection extends Component<any, any> {
       style: {color:colors.blue.hex},
       type: 'navigation',
       callback: () => {
-        (Actions as any).roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true})
+        Actions.roomAdd({sphereId: this.props.sphereId, movingCrownstone: this.props.stoneId, fromMovingView: true})
       }
     });
 

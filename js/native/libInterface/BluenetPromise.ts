@@ -13,7 +13,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
       let bluenetArguments = [];
       let promiseResolver = (result) => {
         if (result.error === true) {
-          LOG.info("PROMISE REJECTED WHEN CALLING ", functionName, " error:", result.data);
+          LOG.info("BluenetPromise: promise rejected in bridge: ", functionName, " error:", result.data);
           reject(result.data);
         }
         else {
@@ -26,7 +26,7 @@ export const BluenetPromise : any = function(functionName, param, param2, param3
         bluenetArguments.push(arguments[i])
       }
 
-      LOG.info("called bluenetPromise", functionName, " with params", bluenetArguments);
+      LOG.info("BluenetPromise: called bluenetPromise", functionName, " with params", bluenetArguments);
 
       // add the promise resolver to this list
       bluenetArguments.push(promiseResolver);
@@ -94,5 +94,12 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },
   toggleSwitchState:          () => { return BluenetPromise('toggleSwitchState'); },
   bootloaderToNormalMode:     ( handle ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
+  getErrors:                  () => { return BluenetPromise('getErrors'); }, // returns { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
+  clearErrors:                (clearErrorJSON) => { return BluenetPromise('clearErrors', clearErrorJSON); },
+  restartCrownstone:          () => { return BluenetPromise('restartCrownstone'); },
+  clearFingerprintsPromise:   () => { return BluenetPromise('clearFingerprintsPromise'); },
+  setTime:                    (time) => { return BluenetPromise('setTime',time); },
+  getTime:                    () => { return BluenetPromise('getTime'); },
+
 };
 

@@ -16,6 +16,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 
 let categories = [
+  {key: 'hallway', label: 'Hallway'},
   {key: 'livingRoom', label: 'Living Room'},
   {key: 'kitchen', label: 'Kitchen'},
   {key: 'bathroom', label: 'Bathroom'},
@@ -36,6 +37,9 @@ let listOfIcons = {
     'c1-toiletPaper',
     'c1-washingMachine',
     'c1-washingmachine2',
+    'c1-medicine',
+    'c1-testtube',
+    'c1-medicine-bottle',
   ],
   kitchen:[
     'c1-foodWine',
@@ -66,11 +70,18 @@ let listOfIcons = {
     'c1-musicPlayer',
     'c1-couch',
     'c1-chair',
+    'c1-bookshelf2',
+    'c1-bookshelf2-lines',
+    'c1-clock',
+    'c1-tree-pot',
   ],
   bedRoom:[
     'c1-bunkBeds',
     'c1-bed',
     'c1-babyCarriage',
+    'c1-bed-couch',
+    'c1-bedpost',
+    'c1-massage',
   ],
   office: [
     'c1-officeChair',
@@ -84,14 +95,31 @@ let listOfIcons = {
     'c1-powerSaw',
     'c1-grinder',
     'c1-drill2',
+    'c1-garage',
+    'c1-weights',
   ],
   miscellaneous: [
     'c1-dude',
     'c1-dudette',
+    'c1-wheel-chair',
     'c1-people',
     'c1-pool',
     'c1-leaf',
-  ]
+    'c1-stars',
+    'c1-swimming',
+    'c1-chess-horse',
+    'c1-arrow-target',
+    'c1-meditation',
+    'c1-swimming-circle',
+    'c1-court',
+    'c1-cinema',
+  ],
+  hallway: [
+    'c1-door-plant',
+    'c1-tree-thing',
+    'c1-stairs',
+    'c1-door-plant-lines',
+  ],
 };
 
 export class RoomIconSelection extends Component<any, any> {
@@ -101,7 +129,7 @@ export class RoomIconSelection extends Component<any, any> {
     const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.main}>
+      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
           left={"Back"}
           leftAction={Actions.pop}

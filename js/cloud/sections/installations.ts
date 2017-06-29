@@ -6,16 +6,6 @@ export const installations = {
   },
 
   createInstallation: function (data, background = true) {
-    // return this.getInstallations({background: background})
-    //   .then((installations) => {
-    //     let installationId = null;
-    //     for (let i = 0; i < installations.length; i++) {
-    //       if (installations[i].appName === data.appName) {
-    //         installationId = installations[i].id;
-    //         break;
-    //       }
-    //     }
-    //   })
     return this._setupRequest(
       'POST',
       '/Devices/{id}/installations?appName=' + APP_NAME,
@@ -27,10 +17,14 @@ export const installations = {
   updateInstallation: function (installationId, data, background = true) {
     return this._setupRequest(
       'PUT',
-      '/AppInstallation/' + installationId,
+      '/AppInstallations/' + installationId,
       { data: data, background: background },
       'body'
     );
+  },
+
+  getInstallation: function (installationId, background = true) {
+    return this._setupRequest('GET','/AppInstallations/' + installationId, {background: background});
   },
 
   deleteInstallation: function(installationId) {

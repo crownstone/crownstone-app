@@ -6,9 +6,10 @@ export const screenWidth = Dimensions.get('window').width;
 export const screenHeight = Platform.OS === 'android' ?
   Dimensions.get('window').height - 25 :  // android includes the top bar in the window height but we cant draw there.
   Dimensions.get('window').height;
+
 export const tabBarHeight    = Platform.OS === 'android' ? 0  :  50;
 export const statusBarHeight = Platform.OS === 'android' ? 0  :  20; // Status bar in iOS is 20 high
-export const topBarHeight    = Platform.OS === 'android' ? 52 :  42 + statusBarHeight; // Status bar in iOS is 20 high
+export const topBarHeight    = Platform.OS === 'android' ? 52 :  44 + statusBarHeight; // Status bar in iOS is 20 high
 export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 
 export const pxRatio = PixelRatio.get();
@@ -17,6 +18,7 @@ export let barHeight = 42;
 export let barHeightLarge = 80;
 
 export let colors : any = {
+  darkBackground: {hex:'#4f6b84'},
   csBlue: {hex:'#003E52'},
   csOrange: {hex:'#ff8400'},
   menuBackground: {hex:'#00263e'},
@@ -118,7 +120,7 @@ export const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: colors.gray.hex,
+    backgroundColor: colors.black.rgba(0.25),
   },
   topExplanation: {
     paddingTop:20

@@ -1,7 +1,7 @@
 import { NativeBus }          from '../libInterface/NativeBus';
 import { SetupHelper }        from './SetupHelper';
 import { BleUtil }            from '../../util/BleUtil';
-import { stoneTypes }         from '../../router/store/reducers/stones'
+import { STONE_TYPES }         from '../../router/store/reducers/stones'
 import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
 import { LOG }                from '../../logging/Log';
@@ -43,7 +43,7 @@ class SetupStateHandlerClass {
     this._currentSetupState = {busy: false, handle: undefined, name: undefined, type: undefined, icon: undefined};
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE SetupStateHandler', this._initialized);
     if (this._initialized === false) {
       this._store = store;
@@ -65,7 +65,7 @@ class SetupStateHandlerClass {
         Scheduler.scheduleCallback(() => {
           this._ignoreStoneAfterSetup[handle] = undefined;
           delete this._ignoreStoneAfterSetup[handle];
-        }, 5000);
+        }, 5000, 'setupCompleteTimeout');
 
         this._resetSetupState();
         // cleaning up the entry of the setup stone
@@ -141,7 +141,7 @@ class SetupStateHandlerClass {
     // set a new timeout that cleans up after this entry
     this._setupModeTimeouts[handle] = Scheduler.scheduleCallback(() => {
       this._cleanup(handle);
-    }, SETUP_MODE_TIMEOUT);
+    }, SETUP_MODE_TIMEOUT, 'SETUP_MODE_TIMEOUT');
   }
 
   _cleanup(handle) {
@@ -156,11 +156,11 @@ class SetupStateHandlerClass {
 
   static _getTypeData(advertisement) {
     if (advertisement.isCrownstonePlug)
-      return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:stoneTypes.plug,       handle: advertisement.handle};
+      return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:STONE_TYPES.plug,       handle: advertisement.handle};
     else if (advertisement.isCrownstoneBuiltin)
-      return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:stoneTypes.builtin,    handle: advertisement.handle};
+      return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:STONE_TYPES.builtin,    handle: advertisement.handle};
     else if (advertisement.isGuidestone)
-      return {name: 'Guidestone',         icon: 'c2-crownstone',    type:stoneTypes.guidestone, handle: advertisement.handle};
+      return {name: 'Guidestone',         icon: 'c2-crownstone',    type:STONE_TYPES.guidestone, handle: advertisement.handle};
     else {
       LOG.error("UNKNOWN DEVICE in setup procedure", advertisement);
     }

@@ -16,25 +16,24 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from '../styles'
-const RNFS = require('react-native-fs');
+import {Util} from "../../util/Util";
+import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 
 
 export class SettingsDeveloper extends Component<any, any> {
   unsubscribe : any;
-  renderState : any;
 
   constructor() {
     super();
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      const state = store.getState();
-      if (this.renderState && this.renderState.user != state.user) {
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings) {
         this.forceUpdate();
       }
-    })
+    });
   }
 
   componentWillUnmount() {
@@ -42,8 +41,12 @@ export class SettingsDeveloper extends Component<any, any> {
   }
 
   
-  _getItems(user) {
+  _getItems() {
     const store = this.props.store;
+    let state = store.getState();
+    let user = state.user;
+    let dev = state.development;
+
     let items = [];
     let clearAllLogs = () => { clearLogs(); Bluenet.clearLogs(); };
 
@@ -52,7 +55,7 @@ export class SettingsDeveloper extends Component<any, any> {
       label:"Enable Logging",
       value: user.logging,
       type: 'switch',
-      icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+      icon: <IconButton name="ios-create" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
       callback:(newValue) => {
       if (newValue === false) {
         clearAllLogs();
@@ -63,31 +66,121 @@ export class SettingsDeveloper extends Component<any, any> {
       });
       Bluenet.enableLoggingToFile(newValue);
     }});
+
+    if (user.logging) {
+      items.push({label: "ADDITIONAL LOGGING", type: 'explanation', below: false});
+      items.push({
+        label:"Debug",
+        value: dev.log_debug && dev.log_verbose,
+        type: 'switch',
+        icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'DEFINE_LOGGING_DETAILS',
+            data: {log_debug: newValue, log_verbose: newValue}
+          });
+        }});
+      items.push({
+        label:"Store & Cloud",
+        value: dev.log_store && dev.log_cloud,
+        type: 'switch',
+        icon: <IconButton name="ios-cloud" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'DEFINE_LOGGING_DETAILS',
+            data: {log_store: newValue, log_cloud: newValue}
+          });
+        }});
+      items.push({
+        label:"BLE Advertisements",
+        value: dev.log_ble,
+        type: 'switch',
+        icon: <IconButton name="ios-bluetooth" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          Bluenet.enableExtendedLogging(newValue);
+          store.dispatch({
+            type: 'DEFINE_LOGGING_DETAILS',
+            data: {log_ble: newValue}
+          });
+        }});
+      items.push({
+        label:"Scheduler & Events",
+        value: dev.log_scheduler &&  dev.log_events,
+        type: 'switch',
+        icon: <IconButton name="md-clipboard" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'DEFINE_LOGGING_DETAILS',
+            data: {
+              log_scheduler: newValue,
+              log_events: newValue,
+            }
+          });
+        }});
+      items.push({
+        label: "Clear Logs!",
+        type: 'button',
+        style: {color: colors.menuBackground.hex},
+        icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuBackground.hex}}/>,
+        callback: () => {
+          Alert.alert("Clear all Logs?", "Press OK to clear logs.", [{text:'Cancel'},{text: 'OK', onPress: () => {clearAllLogs();}}])
+        }
+      });
+    }
     items.push({label: "Logging will keep a history of what the app is doing for the last 3 days.", type: 'explanation', below: true});
 
-    items.push({
-      label:"Clear Logs",
-      type: 'button',
-      style: {color: colors.blue.hex},
-      icon: <IconButton name="ios-cut" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
-      callback:(newValue) => {
-        clearAllLogs();
-        Alert.alert("Logs Cleared", undefined, [{text:'OK'}])
-      }});
-    items.push({label: "Clear all logs that have been stored so far.", type: 'explanation', below: true});
 
+    items.push({label: "CLOUD", type: 'explanation', below: false, alreadyPadded: true});
     items.push({
       label:"Sync Now!",
       type: 'button',
       style: {color: colors.blue.hex},
       icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback:(newValue) => {
-        Alert.alert("Syncing Starting...", undefined, [{text:'OK'}]);
+        this.props.eventBus.emit("showLoading","Syncing...");
         CLOUD.sync(store, true)
-          .then(() => { Alert.alert("Syncing Done!", undefined, [{text:'OK'}]) })
-          .catch((err) => { Alert.alert("Error during sync.", undefined, [{text:'OK'}]) })
+          .then(() => { this.props.eventBus.emit("showLoading","Done!"); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
+          .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert("Error during sync.", err && err.message || JSON.stringify(err), [{text:'OK'}]) })
+    }});
+
+    items.push({
+      label:"Enable Tap To Toggle",
+      value: state.app.tapToToggleEnabled,
+      type: 'switch',
+      icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+      callback:(newValue) => {
+        if (newValue === false) {
+          clearAllLogs();
+        }
+        store.dispatch({
+          type: 'UPDATE_APP_SETTINGS',
+          data: {tapToToggleEnabled: newValue}
+        });
       }});
-    items.push({label: "Trigger a sync with the Cloud.", type: 'explanation', below: true});
+
+    let deviceId = Util.data.getCurrentDeviceId(state);
+    let device = deviceId && state.devices[deviceId] || null;
+    if (device) {
+      items.push({
+        label:"Use as Hub",
+        value: device.hubFunction,
+        type: 'switch',
+        icon: <IconButton name="md-cube" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
+        callback:(newValue) => {
+          store.dispatch({
+            type: 'UPDATE_DEVICE_CONFIG',
+            deviceId: deviceId,
+            data: {hubFunction: newValue}
+          });
+          if (newValue === true) {
+            NotificationHandler.request();
+          }
+        }});
+      items.push({label: "A Hub will use push notifications from the cloud to toggle your devices remotely.", type: 'explanation', below: true});
+    }
+    else {
+      items.push({label: "No device available... Try triggering a sync?", type: 'explanation', below: true});
+    }
 
 
     items.push({
@@ -111,15 +204,10 @@ export class SettingsDeveloper extends Component<any, any> {
   }
 
   render() {
-    const store = this.props.store;
-    const state = store.getState();
-    let user = state.user;
-    this.renderState = state; // important for performance check
-
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView keyboardShouldPersistTaps="always">
-          <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
+          <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>
       </Background>
     );

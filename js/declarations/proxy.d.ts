@@ -18,6 +18,7 @@ interface BluenetPromiseWrapperProtocol {
   setSettings(dataObject): Promise<void>,
   requestLocation(): Promise<any>,
   recover(handle: string): Promise<void>,
+  clearFingerprintsPromise(): Promise<any>,
 
   // Mesh
   meshKeepAlive(): Promise<void>,
@@ -30,6 +31,15 @@ interface BluenetPromiseWrapperProtocol {
   performDFU(handle : string, uri: string ): Promise<void>,
   setupFactoryReset(): Promise<void>,
   bootloaderToNormalMode( handle : string ): Promise<void>,
+
+  // new
+  getErrors(): Promise<any>,
+  clearErrors(clearErrorJSON): Promise<any>,
+  restartCrownstone(): Promise<any>,
+  setTime(time: number): Promise<any>,
+  getTime():Promise<any>,
+
+
 }
 
 interface crownstoneServiceData {
@@ -41,6 +51,7 @@ interface crownstoneServiceData {
   powerUsage        : number,
   accumulatedEnergy : number,
   newDataAvailable  : boolean,
+  hasError          : boolean,
   stateOfExternalCrownstone: boolean,
   setupMode         : boolean,
   random            : string

@@ -111,7 +111,8 @@ function checkAction(action, affectedIds) {
       eventStatus['updateLocationConfig'] = affectedIds; break;
     case 'SET_SPHERE_STATE':
       eventStatus['changeSphereState'] = affectedIds; break;
-    case 'SET_SPHERE_KEYS': break;
+    case 'SET_SPHERE_KEYS':
+      eventStatus['setKeys'] = affectedIds; break;
     case 'ADD_SPHERE':
       eventStatus['addSphere'] = affectedIds;
       eventStatus['changeSpheres'] = affectedIds;
@@ -143,6 +144,9 @@ function checkAction(action, affectedIds) {
       eventStatus['addStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
     case 'UPDATE_STONE_CONFIG':
+    case 'UPDATE_STONE_ERRORS':
+    case 'RESET_STONE_ERRORS':
+    case 'CLEAR_STONE_ERRORS':
       eventStatus['updateStoneConfig'] = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':
       eventStatus['stoneLocationUpdated'] = affectedIds; break;
@@ -151,6 +155,8 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_STONE_SWITCH_STATE':
       eventStatus['powerUsageUpdated'] = affectedIds;
       eventStatus['stoneUsageUpdated'] = affectedIds; break;
+    case 'UPDATE_STONE_REMOTE_TIME':
+      eventStatus['stoneTimeUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
@@ -175,17 +181,22 @@ function checkAction(action, affectedIds) {
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus['changeUserData'] = affectedIds; break;
     case "SET_DEVELOPER_MODE":
-    case "SET_LOGGING":
       eventStatus['changeUserDeveloperStatus'] = true; break;
+    case "SET_LOGGING":
+    case 'SET_DEVELOPER_MODE':
+    case 'SET_LOGGING':
+    case 'REVERT_LOGGING_DETAILS':
+    case 'DEFINE_LOGGING_DETAILS':
+      eventStatus['changeDeveloperData'] = affectedIds; break;
     case "ADD_DEVICE":
     case "UPDATE_DEVICE_CONFIG":
+    case "CLEAR_DEVICE_DETAILS":
     case "REMOVE_DEVICE":
+      eventStatus['changeDeviceData'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":
     case 'SET_TAP_TO_TOGGLE_CALIBRATION':
-    case 'SET_DEVELOPER_MODE':
-    case 'SET_LOGGING':
     case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_STATE':
     case 'SET_APP_IDENTIFIER':
@@ -194,7 +205,13 @@ function checkAction(action, affectedIds) {
     case 'SET_NEW_FIRMWARE_VERSIONS':
     case 'REFRESH_DEFAULTS':
     case 'UPDATE_STONE_DFU_RESET':
+    case 'ADD_INSTALLATION':
+    case 'UPDATE_INSTALLATION_CONFIG':
+    case 'UPDATED_STONE_TIME':
+    case 'SET_NOTIFICATION_TOKEN':
       break;
+    case 'UPDATE_APP_SETTINGS':
+      eventStatus['changeAppSettings'] = affectedIds; break;
     case 'UPDATE_MESH_NETWORK_ID':
       eventStatus['meshIdUpdated'] = affectedIds; break;
     default:

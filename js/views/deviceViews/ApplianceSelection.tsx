@@ -18,8 +18,9 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { EventBusClass } from '../../util/EventBus'
 
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles'
+import {styles, colors, screenWidth} from './../styles'
 import { Icon } from '../components/Icon';
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 export class ApplianceSelection extends Component<any, any> {
   deleteEventBus : EventBusClass;
@@ -31,18 +32,20 @@ export class ApplianceSelection extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      // guard against deletion of the stone
-      let state = this.props.store.getState();
-      let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-      if (stone)
-        this.forceUpdate();
-      else {
-        Actions.pop()
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+
+      // if the stone has been deleted, close everything.
+      if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
+        return Actions.pop();
       }
-    })
+
+      if (change.changeAppliances && change.changeAppliances.sphereIds[this.props.sphereId]) {
+        return this.forceUpdate();
+      }
+    });
   }
+
 
   componentWillUnmount() {
     this.unsubscribe();
@@ -57,7 +60,7 @@ export class ApplianceSelection extends Component<any, any> {
     let appliances = state.spheres[this.props.sphereId].appliances;
     let applianceIds = Object.keys(appliances);
     if (applianceIds.length > 0) {
-      items.push({label:'ALL DEVICES', type: 'explanation',  below:false});
+      items.push({label:'ALL DEVICES', type: 'lightExplanation',  below:false});
 
       applianceIds.forEach((applianceId) => {
         let appliance = appliances[applianceId];
@@ -70,10 +73,12 @@ export class ApplianceSelection extends Component<any, any> {
 
         items.push({__item:
           <View >
-              <View style={[styles.listView]}>
+              <View style={[styles.listView,{backgroundColor: this.props.applianceId === applianceId ? colors.white.hex : colors.white.rgba(0.65)}]}>
                 <ApplianceEntry
                   select={selectCallback}
-                  delete={deleteCallback}
+                  delete={Permissions.removeAppliance? deleteCallback : undefined}
+                  deleteColor={this.props.applianceId === applianceId ? colors.black.rgba(0.3) : colors.white.hex }
+                  current={this.props.applianceId === applianceId }
                   icon={appliance.config.icon}
                   name={appliance.config.name}
                   navigation={false}
@@ -84,33 +89,33 @@ export class ApplianceSelection extends Component<any, any> {
           </View>
         })
       });
-      items.push({label:'You can delete a device by swiping it to the left and pressing Delete.', style:{paddingBottom:0}, type: 'explanation',  below:true});
     }
 
 
-    items.push({label:'ADD DEVICE', type: 'explanation', below:false});
+    items.push({label:'ADD DEVICE', type: 'lightExplanation', below:false});
     items.push({
       label: 'Add a Device',
       largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-        this.props.eventBus.emit('showLoading', 'Creating new Device...');
-        CLOUD.forSphere(this.props.sphereId).createAppliance("", this.props.sphereId)
-          .then((reply) => {
-            this.props.eventBus.emit('hideLoading');
-            store.dispatch({sphereId: this.props.sphereId, applianceId: reply.id, type: 'ADD_APPLIANCE'});
-            this.props.callback(reply.id);
-            Actions.pop();
-          })
-          .catch((err) => {
-            let defaultAction = () => { this.props.eventBus.emit('hideLoading');}
-            Alert.alert("Encountered Cloud Issue.",
-              "We cannot create an Appliance in the Cloud. Please try again later.",
-              [{ text:'OK', onPress: defaultAction }],
-              { onDismiss: defaultAction }
-            )
-          });
+        Actions.applianceAdd({
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          callback: (applianceId) => {
+            this.props.callback(applianceId);
+          }
+        });
+      }
+    });
+
+    items.push({
+      label: 'No device plugged in',
+      largeIcon: <Icon name="md-cube" size={45} color={colors.menuBackground.hex} />,
+      style: {color:colors.blue.hex},
+      type: 'button',
+      callback: () => {
+        this.props.callback(null); Actions.pop();
       }
     });
     return items;
@@ -143,7 +148,8 @@ export class ApplianceSelection extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={this.props.backgrounds.detailsDark} >
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

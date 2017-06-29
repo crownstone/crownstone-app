@@ -2,7 +2,6 @@ import { Alert, Vibration } from 'react-native';
 
 import { BleUtil }                            from '../../util/BleUtil'
 import { BluenetPromiseWrapper }              from '../libInterface/BluenetPromise'
-import { INTENTS }                            from '../libInterface/Constants'
 import { StoneStateHandler }                  from './StoneStateHandler'
 import { eventBus }                           from '../../util/EventBus';
 import {
@@ -14,7 +13,7 @@ import { BehaviourUtil }                      from '../../util/BehaviourUtil';
 import { LOG }                                from '../../logging/Log'
 import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
 import { TYPES }                              from '../../router/store/reducers/stones'
-import {FirmwareHandler} from "../firmware/FirmwareHandler";
+import { FirmwareHandler }                    from "../firmware/FirmwareHandler";
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
@@ -25,14 +24,14 @@ export class StoneTracker {
  store : any;
  temporaryIgnore : boolean;
  temporaryIgnoreTimeout : any;
- tapToToggleDisabled : boolean;
+ tapToToggleDisabledTemporarily : boolean;
 
   constructor(store) {
     this.elements = {};
     this.store = store;
     this.temporaryIgnore = false;
     this.temporaryIgnoreTimeout = undefined;
-    this.tapToToggleDisabled = false;
+    this.tapToToggleDisabledTemporarily = false;
 
     eventBus.on("ignoreTriggers", () => {
       this.temporaryIgnore = true;
@@ -46,7 +45,7 @@ export class StoneTracker {
 
     // if we detect a setup stone, we disable tap to toggle temporarily
     eventBus.on("setupStoneChange", (setupCrownstonesAvailable) => {
-      this.tapToToggleDisabled = setupCrownstonesAvailable;
+      this.tapToToggleDisabledTemporarily = setupCrownstonesAvailable;
     });
   }
 
@@ -121,63 +120,65 @@ export class StoneTracker {
 
     // --------------------- Process the Tap-to-Toggle --------------------------- //
 
-
-    let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
-    // not all stones have touch to toggle enabled
-    if (stone.config.touchToToggle === true && tapToToggleCalibration !== null && FirmwareHandler.isDfuInProgress() === false) {
-      // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
-      // the sign > is because the rssi is negative!
-      if (ref.touchTemporarilyDisabled === true) {
-        // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to re-enable it.
-        // rssi measured must be smaller (-80) < (-49 + -4)
-        let enableDistance = addDistanceToRssi(tapToToggleCalibration, 0.35); // the + 0.35 meter makes sure a stationary phone will not continuously tap-to-toggle
-        if (rssi < enableDistance) {
-          ref.touchTemporarilyDisabled = false;
-        }
-      }
-      else {
-        // LOG.info("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TIME_BETWEEN_TAP_TO_TOGGLES);
-        if (rssi > tapToToggleCalibration && (now - ref.touchTime) > TIME_BETWEEN_TAP_TO_TOGGLES) {
-          if (this.tapToToggleDisabled === false) {
-            LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', tapToToggleCalibration);
-            // notify the user by vibration that the crownstone will be switched.
-            Vibration.vibrate(400, false);
-
-            if (state.user.seenTapToToggle !== true) {
-              this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_ALERT', data: {seenTapToToggle: true}});
-              Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
-            }
-
-            let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
-            proxy.performPriority(BluenetPromiseWrapper.toggleSwitchState)
-              .then((newState) => {
-                let data = {state: newState};
-                if (newState === 0) {
-                  data["currentUsage"] = 0;
-                }
-                this.store.dispatch({
-                  type: 'UPDATE_STONE_SWITCH_STATE',
-                  sphereId: sphereId,
-                  stoneId: stoneId,
-                  data: data
-                });
-              })
-              .catch((err) => {});
-
-            ref.touchTime = now;
-            ref.touchTemporarilyDisabled = true;
-            return;
+    if (state.app.tapToToggleEnabled !== false) {
+      let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
+      // not all stones have touch to toggle enabled
+      if (stone.config.touchToToggle === true && tapToToggleCalibration !== null && FirmwareHandler.isDfuInProgress() === false) {
+        // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
+        // the sign > is because the rssi is negative!
+        if (ref.touchTemporarilyDisabled === true) {
+          // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to re-enable it.
+          // rssi measured must be smaller (-80) < (-49 + -4)
+          let enableDistance = addDistanceToRssi(tapToToggleCalibration, 0.35); // the + 0.35 meter makes sure a stationary phone will not continuously tap-to-toggle
+          if (rssi < enableDistance) {
+            ref.touchTemporarilyDisabled = false;
           }
-          else {
-            LOG.info("StoneTracker: Tap to Toggle is disabled.");
-            if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
-              this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
-              Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);
+        }
+        else {
+          // LOG.info("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TIME_BETWEEN_TAP_TO_TOGGLES);
+          if (rssi > tapToToggleCalibration && (now - ref.touchTime) > TIME_BETWEEN_TAP_TO_TOGGLES) {
+            if (this.tapToToggleDisabledTemporarily === false) {
+              LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', tapToToggleCalibration);
+              // notify the user by vibration that the crownstone will be switched.
+              Vibration.vibrate(400, false);
+
+              if (state.user.seenTapToToggle !== true) {
+                this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_ALERT', data: {seenTapToToggle: true}});
+                Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
+              }
+
+              let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
+              proxy.performPriority(BluenetPromiseWrapper.toggleSwitchState)
+                .then((newState) => {
+                  let data = {state: newState};
+                  if (newState === 0) {
+                    data["currentUsage"] = 0;
+                  }
+                  this.store.dispatch({
+                    type: 'UPDATE_STONE_SWITCH_STATE',
+                    sphereId: sphereId,
+                    stoneId: stoneId,
+                    data: data
+                  });
+                })
+                .catch((err) => {});
+
+              ref.touchTime = now;
+              ref.touchTemporarilyDisabled = true;
+              return;
+            }
+            else {
+              LOG.info("StoneTracker: Tap to Toggle is disabled.");
+              if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
+                this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
+                Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);
+              }
             }
           }
         }
       }
     }
+
 
 
     // --------------------- Finished Tap-to-Toggle --------------------------- //

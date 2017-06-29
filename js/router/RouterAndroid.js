@@ -19,10 +19,12 @@ import { OptionPopup }               from '../views/components/OptionPopup'
 import { Processing }                from '../views/components/Processing'
 import { SideMenu }                  from '../views/components/SideMenu/SideMenu'
 import { DfuOverlay }                from '../views/overlays/DfuOverlay'
+import { ErrorOverlay }              from '../views/overlays/ErrorOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
 import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
 import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
+import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
@@ -54,13 +56,10 @@ export class Router_Android extends Component {
               <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={false} title="Room Settings" />
               <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true}  title="Create Room" />
               <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={false} title="Edit Device" />
-              <Scene key="deviceEditLogic"            component={Views.DeviceEditLogic}            panHandlers={null} hideNavBar={false} title="Device Behaviour" />
+              <Scene key="deviceOverview"             component={Views.DeviceOverview}             hideNavBar={true} />
+              <Scene key="applianceAdd"               component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
               <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select a Device" />
               <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        panHandlers={null} hideNavBar={false} title="Edit Behaviour" />
-              <Scene key="delaySelection"             component={Views.DelaySelection}             panHandlers={null} hideNavBar={false} title="Set Delay" />
-              <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         panHandlers={null} hideNavBar={false} title="Schedule"   rightTitle="Add" />
-              <Scene key="deviceScheduleAdd"          component={Views.DeviceScheduleAdd}          panHandlers={null} hideNavBar={false} title="New Event"  rightTitle="Save" />
-              <Scene key="daySelection"               component={Views.DaySelection}               panHandlers={null} hideNavBar={false} title="Set Active Days" />
               <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
               <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
               <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          panHandlers={null} hideNavBar={false} title="Developer" />
@@ -78,8 +77,10 @@ export class Router_Android extends Component {
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
+        <SphereSelectionOverlay store={this.props.store} />
         <BleStateOverlay />
         <LocationPermissionOverlay />
+        <ErrorOverlay store={this.props.store} />
         <OptionPopup />
         <Processing />
       </View>

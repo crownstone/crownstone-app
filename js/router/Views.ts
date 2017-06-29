@@ -15,14 +15,11 @@ import { RoomTraining_roomSize }      from '../views/roomViews/RoomTraining_room
 import { RoomSelection }              from '../views/roomViews/RoomSelection'
 import { RoomIconSelection }          from '../views/roomViews/RoomIconSelection'
 import { ApplianceSelection }         from '../views/deviceViews/ApplianceSelection'
+import { ApplianceAdd }               from '../views/deviceViews/ApplianceAdd'
+import { DeviceOverview }             from '../views/deviceViews/DeviceOverview'
 import { DeviceEdit }                 from '../views/deviceViews/DeviceEdit'
-import { DeviceEditLogic }            from '../views/deviceViews/DeviceEditLogic'
 import { DeviceBehaviourEdit }        from '../views/deviceViews/DeviceBehaviourEdit'
 import { DeviceIconSelection }        from '../views/deviceViews/DeviceIconSelection'
-import { DelaySelection }             from '../views/deviceViews/DelaySelection'
-import { DeviceScheduleEdit }         from '../views/deviceViews/DeviceScheduleEdit'
-import { DeviceScheduleAdd }          from '../views/deviceViews/DeviceScheduleAdd'
-import { DaySelection }               from '../views/deviceViews/DaySelection'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
 import { SettingsPrivacy }            from '../views/settingsViews/SettingsPrivacy'
@@ -53,14 +50,11 @@ export const Views = {
   RoomTraining,
   RoomTraining_roomSize,
   ApplianceSelection,
+  ApplianceAdd,
+  DeviceOverview,
   DeviceEdit,
-  DeviceEditLogic,
   DeviceBehaviourEdit,
   DeviceIconSelection,
-  DelaySelection,
-  DeviceScheduleEdit,
-  DeviceScheduleAdd,
-  DaySelection,
   SettingsOverview,
   SettingsProfile,
   SettingsPrivacy,

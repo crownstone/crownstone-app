@@ -19,14 +19,17 @@ import { reducerCreate }             from './store/reducers/navigation'
 import { OptionPopup }               from '../views/components/OptionPopup'
 import { Processing }                from '../views/components/Processing'
 import { DfuOverlay }                from '../views/overlays/DfuOverlay'
+import { ErrorOverlay }              from '../views/overlays/ErrorOverlay'
 import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
 import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
+import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
+import { Util } from '../util/Util'
 
 
 export class Router_IOS extends Component {
@@ -56,14 +59,11 @@ export class Router_IOS extends Component {
                 <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
                 <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
                 <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
+                <Scene key="deviceOverview"         component={Views.DeviceOverview}             hideNavBar={true} />
                 <Scene key="deviceEdit"             component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
-                <Scene key="deviceEditLogic"        component={Views.DeviceEditLogic}            hideNavBar={false} title="Device Behaviour" />
-                <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} title="Select a Device" />
+                <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select a Device" />
+                <Scene key="applianceAdd"           component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
-                <Scene key="delaySelection"         component={Views.DelaySelection}             hideNavBar={false} title="Set Delay" />
-                <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={false} title="Schedule"   rightTitle="Add" />
-                <Scene key="deviceScheduleAdd"      component={Views.DeviceScheduleAdd}          hideNavBar={false} title="New Event"  rightTitle="Save" />
-                <Scene key="daySelection"           component={Views.DaySelection}               hideNavBar={false} title="Set Active Days" />
               </Scene>
               <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>
@@ -84,8 +84,10 @@ export class Router_IOS extends Component {
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
+        <SphereSelectionOverlay store={this.props.store} />
         <LocationPermissionOverlay />
         <BleStateOverlay />
+        <ErrorOverlay store={this.props.store} />
         <OptionPopup />
         <Processing />
       </View>

@@ -24,9 +24,11 @@ export class SettingsSphereOverview extends Component<any, any> {
   unsubscribe : any;
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeSpheres) {
         this.forceUpdate();
+      }
     });
   }
 
@@ -45,7 +47,7 @@ export class SettingsSphereOverview extends Component<any, any> {
             label: sphere.config.name,
             type:'navigation',
             callback: () => {
-              (Actions as any).settingsSphere({sphereId:sphereId, title: sphere.config.name})
+              Actions.settingsSphere({sphereId:sphereId, title: sphere.config.name})
             }
           });
         }
@@ -82,7 +84,7 @@ export class SettingsSphereOverview extends Component<any, any> {
       items = items.concat(guestSpheres);
     }
 
-    if (totalSpheres < 1) {
+    if (totalSpheres < 1 || adminSpheres.length === 0) {
       items.push({type: 'spacer'});
       items.push({
         label: 'Create a new Sphere',
@@ -95,7 +97,7 @@ export class SettingsSphereOverview extends Component<any, any> {
       });
     }
     else {
-      items.push({label:'Max 1 Sphere is currently supported.',  type:'explanation', below:false});
+      items.push({label:'Maximum of 1 Sphere where you are admin for now..',  type:'explanation', below:false});
     }
 
     // if you do not have, or are part of, any spheres yet.

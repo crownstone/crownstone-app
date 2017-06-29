@@ -16,18 +16,23 @@ import { IconButton } from '../components/IconButton'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from './../styles';
-import { getUserLevelInSphere, getStonesAndAppliancesInSphere, getAiData } from '../../util/DataUtil';
+import { getStonesAndAppliancesInSphere } from '../../util/DataUtil';
 import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
+import { Util } from "../../util/Util";
+import {PermissionClass} from "../../backgroundProcesses/Permissions";
 
 export class SettingsSphere extends Component<any, any> {
   deleting : boolean;
   validationState : any;
   unsubscribeStoreEvents : any;
+  spherePermissions: any;
 
   constructor(props) {
     super();
+
+    this.spherePermissions = new PermissionClass();
 
     const state = props.store.getState();
     let sphereSettings = state.spheres[props.sphereId].config;
@@ -56,7 +61,7 @@ export class SettingsSphere extends Component<any, any> {
     this.unsubscribeStoreEvents();
   }
 
-  _getUsersWithAccess(state, accessLevel, adminInSphere) {
+  _getUsersWithAccess(state, accessLevel) {
     let result = [];
     let users = state.spheres[this.props.sphereId].users;
     for (let userId in users) {
@@ -65,10 +70,10 @@ export class SettingsSphere extends Component<any, any> {
           if (users[userId].invitationPending === true) {
             result.push({
               label: users[userId].email,
-              type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
+              type: (userId === state.user.userId || this.spherePermissions.manageUsers === false) ? 'info' : 'navigation',
               icon: <IconButton name='ios-mail' size={27} radius={17} button={true} color={colors.white.hex} style={{position:'relative', top:1}} buttonStyle={{backgroundColor: colors.darkGray.hex, width:34, height:34, marginLeft:3}}/>,
               callback: () => {
-                (Actions as any).settingsSphereInvitedUser({
+                Actions.settingsSphereInvitedUser({
                   title: users[userId].email,
                   userId: userId,
                   invitePending: true,
@@ -80,10 +85,10 @@ export class SettingsSphere extends Component<any, any> {
           else {
             result.push({
               label: users[userId].firstName + " " + users[userId].lastName,
-              type: userId === state.user.userId || !adminInSphere ? 'info' : 'navigation',
+              type: (userId === state.user.userId ||  this.spherePermissions.manageUsers === false) ? 'info' : 'navigation',
               icon: <ProfilePicture picture={users[userId].picture}/>,
               callback: () => {
-                (Actions as any).settingsSphereUser({
+                Actions.settingsSphereUser({
                   title: users[userId].firstName,
                   userId: userId,
                   sphereId: this.props.sphereId
@@ -115,11 +120,8 @@ export class SettingsSphere extends Component<any, any> {
 
     const store = this.props.store;
     const state = store.getState();
-    let adminInSphere = false;
-    let userLevelInSphere = getUserLevelInSphere(state, this.props.sphereId);
 
-    if (userLevelInSphere == 'admin') {
-      adminInSphere = true;
+    if (this.spherePermissions.editSphere) {
       let sphereSettings = state.spheres[this.props.sphereId].config;
       items.push({label:'SPHERE SETTINGS',  type:'explanation', below:false});
       items.push({
@@ -152,20 +154,20 @@ export class SettingsSphere extends Component<any, any> {
       });
     }
 
-    let ai = getAiData(state, this.props.sphereId);
+    let ai = Util.data.getAiData(state, this.props.sphereId);
 
     items.push({label:'PERSONAL ARTIFICIAL INTELLIGENCE',  type:'explanation', below:false});
     items.push({
       label: ai.name,
-      type: adminInSphere ? 'navigation' : 'info',
+      type: this.spherePermissions.editSphere ? 'navigation' : 'info',
       icon: <IconButton name='c1-brain' size={21} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.iosBlue.hex, marginLeft:3, marginRight:7}}/>,
       callback: () => {
-        (Actions as any).aiStart({sphereId: this.props.sphereId, canGoBack: true});
+        Actions.aiStart({sphereId: this.props.sphereId, canGoBack: true});
       }
     });
     items.push({label: ai.name + ' will do ' + ai.his + ' very best help you!',  type:'explanation', style:{paddingBottom:0}, below:true});
 
-    if (getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
+    if (this.spherePermissions.editSphere) {
       let options = [];
       options.push({label: '5 Minutes', type: 'checkbar', value: 300});
       options.push({label: '10 Minutes', type: 'checkbar', value: 600});
@@ -198,24 +200,24 @@ export class SettingsSphere extends Component<any, any> {
     }
 
     items.push({label:'ADMINS',  type:'explanation', below:false});
-    items = items.concat(this._getUsersWithAccess(state,'admin', adminInSphere));
+    items = items.concat(this._getUsersWithAccess(state,'admin'));
     items.push({label:'Admins can add, configure and remove Crownstones and Rooms.', style:{paddingBottom:0}, type:'explanation', below:true});
 
-    let members = this._getUsersWithAccess(state,'member', adminInSphere);
+    let members = this._getUsersWithAccess(state,'member');
     if (members.length > 0) {
       items.push({label:'MEMBERS',  type: 'explanation', below: false});
       items = items.concat(members);
       items.push({label:'Members can configure Crownstones.', style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
-    let guest = this._getUsersWithAccess(state, 'guest', adminInSphere);
+    let guest = this._getUsersWithAccess(state, 'guest');
     if (guest.length > 0) {
       items.push({label:'GUESTS',  type:'explanation', below: false});
       items = items.concat(guest);
       items.push({label:'Guests can control Crownstones and devices will remain on if they are the last one in the room.', style:{paddingBottom:0}, type:'explanation', below:true});
     }
 
-    if (userLevelInSphere == "admin" || userLevelInSphere == 'member') {
+    if (this.spherePermissions.inviteAdminToSphere || this.spherePermissions.inviteMemberToSphere || this.spherePermissions.inviteGuestToSphere) {
       items.push({label:'ADD PEOPLE TO YOUR SPHERE', type:'explanation'});
       items.push({
         label: 'Invite someone new', // accessLevel[0].toUpperCase() + accessLevel.substring(1),  this capitalizes the first letter of the access level
@@ -223,13 +225,13 @@ export class SettingsSphere extends Component<any, any> {
         labelStyle: {color:colors.blue.hex},
         icon: <IconButton name="md-add" size={22} color="#fff" buttonStyle={{backgroundColor:colors.green.hex, marginLeft:3, marginRight:7}} />,
         callback: () => {
-          (Actions as any).settingsSphereInvite({sphereId: this.props.sphereId});
+          Actions.settingsSphereInvite({sphereId: this.props.sphereId});
         }
       });
     }
 
 
-    if (getUserLevelInSphere(state, this.props.sphereId) == 'admin') {
+    if (this.spherePermissions.deleteSphere) {
       items.push({type:'spacer'});
       items.push({
         label: 'Delete this Sphere',
@@ -257,7 +259,7 @@ export class SettingsSphere extends Component<any, any> {
           if (stoneIds.length > 0) {
             Alert.alert(
               "Still Crownstones detected in Sphere",
-              "You can remove then by going to them in the overview, tap them, click on the socket icon and press remove.",
+              "You can remove then by going to them in their rooms, tap them, click on the settings -> edit and press remove.",
               [{text:'OK'}]
             );
           }
@@ -280,6 +282,10 @@ export class SettingsSphere extends Component<any, any> {
                 Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
                 this.props.store.batchDispatch(actions);
               })
+              .catch((err) => {
+                this.props.eventBus.emit('hideLoading');
+                Alert.alert("Could not delete Sphere!", "Please try again later.", [{text:"OK"}]);
+              })
           }
         }}
       ]
@@ -287,6 +293,7 @@ export class SettingsSphere extends Component<any, any> {
   }
 
   render() {
+    this.spherePermissions._update(this.props.store.getState(), this.props.sphereId);
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView>

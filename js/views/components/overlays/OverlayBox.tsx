@@ -17,8 +17,9 @@ export class OverlayBox extends Component<any, any> {
         style={[styles.fullscreen, {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center'}]}
         height={screenHeight}
         duration={200}
+        maxOpacity={this.props.maxOpacity}
         visible={this.props.visible}>
-        <View style={{backgroundColor:colors.white.rgba(0.5), width:0.85*screenWidth, height: this.props.height || Math.min(500,0.95*availableScreenHeight), borderRadius: 25, padding: 0.03*screenWidth}}>
+        <View style={{backgroundColor:colors.white.rgba(0.5), width:0.85*screenWidth, height: this.props.height || Math.min(500,0.9*availableScreenHeight), borderRadius: 25, padding: 0.03*screenWidth}}>
           <View style={[styles.centered, {backgroundColor:'#fff', flex:1, borderRadius: 25-0.02*screenWidth, padding: 0.03*screenWidth}]}>
             {this.props.children}
           </View>

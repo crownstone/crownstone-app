@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux'
 
-import userReducer    from './reducers/user'
-import devicesReducer from './reducers/devices'
-import spheresReducer from './reducers/spheres'
-import settingReducer from './reducers/settings'
+import userReducer         from './reducers/user'
+import devicesReducer      from './reducers/devices'
+import spheresReducer      from './reducers/spheres'
+import settingReducer      from './reducers/settings'
 import installationReducer from './reducers/installation'
-import appReducer     from './reducers/app'
+import appReducer          from './reducers/app'
+import developmentReducer  from './reducers/development'
 
 // crownstoneReducer
 export default (state : any = {}, action : any = {}) => {
@@ -24,6 +25,7 @@ export default (state : any = {}, action : any = {}) => {
     spheres: spheresReducer(state.spheres, action),
     settings: settingReducer(state.settings, action),
     installations: installationReducer(state.installations, action),
-    app: appReducer(state.app, action)
+    app: appReducer(state.app, action),
+    development: developmentReducer(state.development, action)
   }
 };
