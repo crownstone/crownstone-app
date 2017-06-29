@@ -14,6 +14,7 @@ import { LOG }                                from '../../logging/Log'
 import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
 import { BEHAVIOUR_TYPES }                    from '../../router/store/reducers/stones'
 import { FirmwareHandler }                    from "../firmware/FirmwareHandler";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive

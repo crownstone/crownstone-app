@@ -347,7 +347,7 @@ function handleDeviceInCloud(action, state) {
   if (!deviceId) {
     LOG.error("handleDeviceInCloud: invalid device id: ", deviceId);
     return;
-  }
+  }  
   let deviceConfig = state.devices[deviceId];
   let data = {
     name: deviceConfig.name,

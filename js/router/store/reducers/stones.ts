@@ -2,6 +2,7 @@ import { createStore, combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { LOG } from '../../../logging/Log'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
+import powerUsageReducer from './powerUsage'
 
 export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
@@ -72,6 +73,9 @@ let defaultSettings = {
     hasError: false,
     obtainedErrors: false,
     advertisementError: false,
+  },
+  powerUsage: {
+    //day as string: 2017-05-01 : []
   }
 };
 
@@ -358,7 +362,8 @@ let combinedStoneReducer = combineReducers({
   behaviour: stoneBehavioursReducer,
   schedule: scheduleReducer,
   statistics: stoneStatisticsReducer,
-  errors: stoneErrorsReducer
+  errors: stoneErrorsReducer,
+  powerUsage: powerUsageReducer
 });
 
 // stonesReducer

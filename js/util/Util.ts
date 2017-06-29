@@ -137,6 +137,17 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
+  getDateFormat: function(timestamp)  {
+    if (timestamp === 0) {
+      return 'unknown';
+    }
+    let date = new Date(timestamp);
+    let month = pad(date.getMonth() + 1);
+    let day = pad(date.getDate());
+
+    return date.getFullYear() + '/' + month + '/' + day
+  },
+
   getDateTimeFormat: function(timestamp)  {
     if (timestamp === 0) {
       return 'unknown';

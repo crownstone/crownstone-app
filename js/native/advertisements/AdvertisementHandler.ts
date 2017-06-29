@@ -295,7 +295,7 @@ class AdvertisementHandlerClass {
           type: 'UPDATE_STONE_STATE',
           sphereId: advertisement.referenceId,
           stoneId: referenceByCrownstoneId.id,
-          data: { state: switchState, currentUsage: measuredUsage },
+          data: { state: switchState, currentUsage: measuredUsage, applianceId: referenceByCrownstoneId.applianceId },
           updatedAt: currentTime
         });
       }

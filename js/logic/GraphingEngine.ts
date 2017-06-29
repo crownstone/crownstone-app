@@ -27,10 +27,41 @@ export let defaultOptions = {
 
 export const GraphingEngine = {
 
-  calcPath(dataset, options : any = defaultOptions) {
+  transformYToFit(dataset, height, offset = 0) {
+    let minY = dataset[0].y;
+    let maxY = dataset[0].y;
+    for (let i = 0; i < dataset.length; i++) {
+      minY = Math.min(dataset[i].y, minY);
+      maxY = Math.max(dataset[i].y, maxY);
+    }
+
+    let mappingFactor = height/(maxY - minY);
+
+    for (let i = 0; i < dataset.length; i++) {
+      dataset[i].y = (dataset[i].y - minY)*mappingFactor + offset;
+    }
+  },
+
+  transformXToFit(dataset, width, offset = 0) {
+    let minX = dataset[0].x;
+    let maxX = dataset[0].x;
+    for (let i = 0; i < dataset.length; i++) {
+      minX = Math.min(dataset[i].x, minX);
+      maxX = Math.max(dataset[i].x, maxX);
+    }
+
+    let mappingFactor = width/(maxX - minX);
+
+    for (let i = 0; i < dataset.length; i++) {
+      dataset[i].x = (dataset[i].x - minX)*mappingFactor + offset;
+    }
+  },
+
+  calcPath(dataset, options : any) {
     if (dataset != null) {
       if (dataset.length > 0) {
-        var d = [];
+
+        let d = [];
 
         // construct path from dataset
         if (options.interpolation.enabled == true) {
@@ -49,14 +80,14 @@ export const GraphingEngine = {
       //Too little data to create a path.
       return "";
     }
-    var d = type;
+    let d = type;
     if (inverse) {
-      for (var i = pathArray.length - 2; i > 0; i--) {
+      for (let i = pathArray.length - 2; i > 0; i--) {
         d += pathArray[i][0] + "," + pathArray[i][1] + " ";
       }
     }
     else {
-      for (var i = 1; i < pathArray.length; i++) {
+      for (let i = 1; i < pathArray.length; i++) {
         d += pathArray[i][0] + "," + pathArray[i][1] + " ";
       }
     }
@@ -72,12 +103,12 @@ export const GraphingEngine = {
    */
   _catmullRomUniform(data) {
     // catmull rom
-    var p0, p1, p2, p3, bp1, bp2;
-    var d = [];
+    let p0, p1, p2, p3, bp1, bp2;
+    let d = [];
     d.push([Math.round(data[0].x), Math.round(data[0].y)]);
-    var normalization = 1 / 6;
-    var length = data.length;
-    for (var i = 0; i < length - 1; i++) {
+    let normalization = 1 / 6;
+    let length = data.length;
+    for (let i = 0; i < length - 1; i++) {
 
       p0 = (i == 0) ? data[0] : data[i - 1];
       p1 = data[i];
@@ -122,17 +153,17 @@ export const GraphingEngine = {
    * @private
    */
   _catmullRom(data, options) {
-    var alpha = options.interpolation.alpha;
+    let alpha = options.interpolation.alpha;
     if (alpha == 0 || alpha === undefined) {
       return this._catmullRomUniform(data);
     }
     else {
-      var p0, p1, p2, p3, bp1, bp2, d1, d2, d3, A, B, N, M;
-      var d3powA, d2powA, d3pow2A, d2pow2A, d1pow2A, d1powA;
-      var d = [];
+      let p0, p1, p2, p3, bp1, bp2, d1, d2, d3, A, B, N, M;
+      let d3powA, d2powA, d3pow2A, d2pow2A, d1pow2A, d1powA;
+      let d = [];
       d.push([Math.round(data[0].x), Math.round(data[0].y)]);
-      var length = data.length;
-      for (var i = 0; i < length - 1; i++) {
+      let length = data.length;
+      for (let i = 0; i < length - 1; i++) {
 
         p0 = (i == 0) ? data[0] : data[i - 1];
         p1 = data[i];
@@ -204,8 +235,8 @@ export const GraphingEngine = {
    */
   _r(data) {
     // r
-    var d = [];
-    for (var i = 0; i < data.length; i++) {
+    let d = [];
+    for (let i = 0; i < data.length; i++) {
       d.push([data[i].x, data[i].y]);
     }
     return d;

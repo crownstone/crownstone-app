@@ -80,7 +80,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   commandFactoryReset:  ()           => { return BluenetPromise('commandFactoryReset');         },
 
   meshKeepAlive:              ()                               => { return BluenetPromise('meshKeepAlive'); },
-  meshKeepAliveState:         (timeout, stoneKeepAlivePackets) => { return BluenetPromise('meshKeepAliveState',   timeout, stoneKeepAlivePackets); }, // stoneKeepAlivePackets = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
+  meshKeepAliveState:         (timeout, stoneKeepAlivePackets) => { return BluenetPromise('meshKeepAliveState',        timeout, stoneKeepAlivePackets); }, // stoneKeepAlivePackets = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
   multiSwitch:                (arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch',               arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
 
   getFirmwareVersion:         () => { return BluenetPromise('getFirmwareVersion'); },

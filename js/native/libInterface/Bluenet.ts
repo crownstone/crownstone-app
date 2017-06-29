@@ -46,8 +46,8 @@ if (DISABLE_NATIVE === true) {
     setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
 
     quitApp: () => { NativeModules.BluenetJS.quitApp() },                   // Used to quit the app during logout
-    enableLoggingToFile: () => {},
-    enableExtendedLogging: () => {},
+    enableLoggingToFile: (enabledBool) => {},
+    enableExtendedLogging: (enabledBool) => {},
     clearLogs: () => {},
 
     // mesh
