@@ -17,6 +17,7 @@ import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
+import {MESH_ENABLED} from "../ExternalConfig";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -44,7 +45,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     icon: getIcon('ios-body', 23, colors.white.hex, colors.purple.hex),
     type: 'navigation',
     callback: () => {
-    (Actions as any).settingsProfile()
+      (Actions as any).settingsProfile()
     }
   });
 
@@ -70,16 +71,16 @@ export const SettingConstructor = function(store, state, eventBus) {
     });
   }
 
-  // if (Object.keys(state.spheres).length > 0) {
-  //   items.push({
-  //     id: 'Mesh Overview',
-  //     label: 'Mesh Overview',
-  //     type: 'navigation',
-  //     style: {color: '#000'},
-  //     icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
-  //     callback: () => { (Actions as any).settingsMeshOverview(); }
-  //   });
-  // }
+  if (Object.keys(state.spheres).length > 0 && MESH_ENABLED) {
+    items.push({
+      id: 'Mesh Overview',
+      label: 'Mesh Overview',
+      type: 'navigation',
+      style: {color: '#000'},
+      icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
+      callback: () => { (Actions as any).settingsMeshOverview(); }
+    });
+  }
 
   let presentSphere = Util.data.getPresentSphere(state);
   if (presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere)) {
@@ -122,7 +123,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     callback: () => {
       Alert.alert('Log out','Are you sure? I will tidy up and close the app. Next time you open it you can log in again!',[
         {text: 'Cancel', style: 'cancel'},
-        {text: 'OK', onPress: () => { AppUtil.logOut() }}
+        {text: 'OK', onPress: () => { AppUtil.logOut(store); }}
       ])
     }});
 

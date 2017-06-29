@@ -12,9 +12,9 @@ import { Util }                     from '../../util/Util';
 import { TYPES }                    from '../../router/store/reducers/stones';
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
-import {eventBus} from "../../util/EventBus";
-import {CLOUD} from "../../cloud/cloudAPI";
-import {BatterySavingUtil} from "../../util/BatterySavingUtil";
+import {eventBus} from '../../util/EventBus';
+import {CLOUD} from '../../cloud/cloudAPI';
+import {BatterySavingUtil} from '../../util/BatterySavingUtil';
 
 
 class LocationHandlerClass {
@@ -64,8 +64,13 @@ class LocationHandlerClass {
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
 
+    if (!sphere) {
+      LOG.error('LocationHandler: Received enter sphere for a sphere that we shouldn\'t be tracking...');
+      return;
+    }
+
     // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
-    eventBus.emit("enterSphere", sphereId);
+    eventBus.emit('enterSphere', sphereId);
 
     // We load the settings and start the localization regardless if we are already in the sphere. The calls themselves
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
@@ -81,11 +86,11 @@ class LocationHandlerClass {
     };
 
     if (canUseIndoorLocalizationInSphere(state, sphereId) === true) {
-      LOG.info("LocationHandler: Starting indoor localization for sphere", sphereId);
+      LOG.info('LocationHandler: Starting indoor localization for sphere', sphereId);
       Bluenet.startIndoorLocalization();
     }
     else {
-      LOG.info("LocationHandler: Stopping indoor localization for sphere", sphereId, "due to missing fingerprints or not enough Crownstones.");
+      LOG.info('LocationHandler: Stopping indoor localization for sphere', sphereId, 'due to missing fingerprints or not enough Crownstones.');
       Bluenet.stopIndoorLocalization();
     }
 
@@ -93,23 +98,23 @@ class LocationHandlerClass {
     BatterySavingUtil.scanOnlyIfNeeded(sphereId);
 
 
-    LOG.info("Set Settings.", bluenetSettings);
+    LOG.info('Set Settings.', bluenetSettings);
     BluenetPromiseWrapper.setSettings(bluenetSettings).catch((err) => {});
 
 
     // make sure we only do the following once per sphere
     if (sphere && sphere.config && sphere.config.present === true) {
-      LOG.info("LocationHandler: IGNORE ENTER SPHERE because I'm already in the sphere.");
+      LOG.info('LocationHandler: IGNORE ENTER SPHERE because I\'m already in the Sphere.');
       return;
     }
 
     // update location of the sphere, start the keepalives and check if we have to perform an enter sphere behaviour trigger.
     if (sphere !== undefined) {
-      LOG.info("LocationHandler: ENTER SPHERE", sphereId);
+      LOG.info('LocationHandler: ENTER SPHERE', sphereId);
 
       BluenetPromiseWrapper.requestLocation()
         .catch((err) => {
-          LOG.error("Could not get Location when entering a sphere: ", err);
+          LOG.error('Could not get Location when entering a sphere: ', err);
         })
         .then((location) => {
           if (location && location.latitude && location.longitude) {
@@ -133,11 +138,10 @@ class LocationHandlerClass {
       // set the presence
       this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: true, present: true}});
 
-      // after 10 seconds, start the keep alive run. This gives the app some time for syncing etc.
+      // start the keep alive run. This gives the app some time for syncing and pointing out which stones are NOT disabled.
       Scheduler.scheduleCallback(() => {
         KeepAliveHandler.fireTrigger();
-      }, 10000, 'keepAlive');
-
+      }, 1000);
 
       // get the time last seen of the crownstones in this sphere
       let stones = state.spheres[sphereId].stones;
@@ -150,14 +154,16 @@ class LocationHandlerClass {
         }
       });
 
+      // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
+      let sphereTimeout = state.spheres[sphereId].config.exitDelay - KEEPALIVE_INTERVAL;
       let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
-      if (timeSinceLastCrownstoneWasSeen > KEEPALIVE_INTERVAL*1000*1.5) {
+      if (timeSinceLastCrownstoneWasSeen > sphereTimeout) {
         // trigger crownstones on enter sphere
-        LOG.info("LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE", sphere.config.name);
+        LOG.info('LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE', sphere.config.name);
         BehaviourUtil.enactBehaviourInSphere(this.store, sphereId, TYPES.HOME_ENTER);
       }
       else {
-        LOG.info("LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ", timeSinceLastCrownstoneWasSeen, " WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ", KEEPALIVE_INTERVAL*1000*1.5, " ms");
+        LOG.info('LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ', timeSinceLastCrownstoneWasSeen, ' WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ', KEEPALIVE_INTERVAL*1000*1.5, ' ms');
       }
     }
   }
@@ -169,12 +175,12 @@ class LocationHandlerClass {
    * @param reset
    */
   exitSphere(sphereId) {
-    LOG.info("LocationHandler: LEAVING SPHERE", sphereId);
+    LOG.info('LocationHandler: LEAVING SPHERE', sphereId);
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
 
     if (state.spheres[sphereId].config.present === true) {
-
+      LOG.info('Applying EXIT SPHERE');
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
 
@@ -202,7 +208,7 @@ class LocationHandlerClass {
   }
 
   _enterRoom(data) {
-    LOG.info("LocationHandler: USER_ENTER_LOCATION.", data);
+    LOG.info('LocationHandler: USER_ENTER_LOCATION.', data);
     let sphereId = data.region;
     let locationId = data.location;
     let state = this.store.getState();
@@ -218,13 +224,13 @@ class LocationHandlerClass {
       this.store.dispatch({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
       // used for clearing the timeouts for this room and toggling stones in this room
-      LOG.info("RoomTracker: Enter room: ", locationId, ' in sphere: ', sphereId);
+      LOG.info('RoomTracker: Enter room: ', locationId, ' in sphere: ', sphereId);
       this._triggerRoomEvent(this.store, sphereId, locationId, TYPES.ROOM_ENTER);
     }
   }
 
   _exitRoom(data) {
-    LOG.info("LocationHandler: USER_EXIT_LOCATION.", data);
+    LOG.info('LocationHandler: USER_EXIT_LOCATION.', data);
     let sphereId = data.region;
     let locationId = data.location;
     let state = this.store.getState();
@@ -232,7 +238,7 @@ class LocationHandlerClass {
       this.store.dispatch({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: locationId, data: {userId: state.user.userId}});
 
       // used for clearing the timeouts for this room
-      LOG.info("RoomTracker: Exit room: ", locationId, ' in sphere: ', sphereId);
+      LOG.info('RoomTracker: Exit room: ', locationId, ' in sphere: ', sphereId);
       this._triggerRoomEvent(this.store, sphereId, locationId, TYPES.ROOM_EXIT);
     }
   }
@@ -284,11 +290,48 @@ class LocationHandlerClass {
     BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, bleController);
   }
 
+
+  applySphereStateFromStore() {
+    let state = this.store.getState();
+
+    let lastSeenPerSphere = {};
+    Util.data.callOnAllStones(state, (sphereId, stoneId, stone) => {
+      lastSeenPerSphere[sphereId] = Math.max(stone.config.lastSeen || 0, lastSeenPerSphere[sphereId] || 0);
+    });
+
+    let sphereIds = Object.keys(lastSeenPerSphere);
+    let currentSphere = null;
+    let mostRecentSeenTime = 0;
+    for (let i = 0; i < sphereIds.length; i++) {
+      if (lastSeenPerSphere[sphereIds[i]] > mostRecentSeenTime) {
+        currentSphere = sphereIds[i];
+        mostRecentSeenTime = lastSeenPerSphere[sphereIds[i]];
+      }
+    }
+
+    if (currentSphere === null) {
+      return;
+    }
+
+    // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
+    let sphereTimeout = state.spheres[currentSphere].config.exitDelay - KEEPALIVE_INTERVAL;
+    if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout)) {
+      this.enterSphere(currentSphere);
+    }
+    else {
+      // exit all spheres
+      Object.keys(state.spheres).forEach((sphereId) => {
+        this.exitSphere(sphereId);
+      });
+    }
+  }
+
+
   /**
    * clear all beacons and re-register them. This will not re-emit roomEnter/exit if we are in the same room.
    */
   trackSpheres() {
-    LOG.info("LocalizationUtil: Track Spheres called.");
+    LOG.info('LocalizationUtil: Track Spheres called.');
     BluenetPromiseWrapper.isReady()
       .then(() => {
         return BluenetPromiseWrapper.clearTrackedBeacons();
@@ -306,16 +349,16 @@ class LocationHandlerClass {
           // track the sphere beacon UUID
           Bluenet.trackIBeacon(sphereIBeaconUUID, sphereId);
 
-          LOG.info("LocalizationUtil: Setup tracking for iBeacon UUID: ", sphereIBeaconUUID);
+          LOG.info('LocalizationUtil: Setup tracking for iBeacon UUID: ', sphereIBeaconUUID, ' with sphereId:', sphereId);
 
           let locations = state.spheres[sphereId].locations;
           let locationIds = Object.keys(locations);
           locationIds.forEach((locationId) => {
             if (locations[locationId].config.fingerprintRaw) {
               // check format of the fingerprint:
-              LOG.info("LocalizationUtil: Checking fingerprint format for: ", locationId, " in sphere: ", sphereId);
+              LOG.info('LocalizationUtil: Checking fingerprint format for: ', locationId, ' in sphere: ', sphereId);
               if (validateFingerprint(locations[locationId].config.fingerprintRaw)) {
-                LOG.info("LocalizationUtil: Loading fingerprint for: ", locationId, " in sphere: ", sphereId);
+                LOG.info('LocalizationUtil: Loading fingerprint for: ', locationId, ' in sphere: ', sphereId);
                 Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw);
               }
               else {
@@ -332,9 +375,9 @@ class LocationHandlerClass {
           }
 
           Alert.alert(
-            "Please forgive me :(",
-            "Due to many improvements in the localization you will have to train your rooms again...",
-            [{text:"OK"}]
+            'Please forgive me :(',
+            'Due to many improvements in the localization you will have to train your rooms again...',
+            [{text:'OK'}]
           );
         }
       })
@@ -357,7 +400,7 @@ function validateFingerprint(fingerprintRaw) {
     for (let i = 0; i < fingerprint.length; i++) {
       let deviceIds = Object.keys(fingerprint[i].devices);
       for (let j = 0; j < deviceIds.length; j++) {
-        if (deviceIds[j].length < 1 || deviceIds[j].indexOf(":-") > 0) {
+        if (deviceIds[j].length < 1 || deviceIds[j].indexOf(':-') > 0) {
           return false;
         }
       }

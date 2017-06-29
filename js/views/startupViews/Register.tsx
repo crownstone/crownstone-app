@@ -229,7 +229,8 @@ export class Register extends Component<any, any> {
         if (reply.data && reply.data.error && reply.data.error.message) {
           let message = reply.data.error.message.split("` ");
           message = message[message.length - 1];
-          Alert.alert("Registration Error", message, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+          let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
+          Alert.alert("Registration Error", message, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction});
         }
         return false;
       })

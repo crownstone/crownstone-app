@@ -24,9 +24,10 @@ RCT_EXTERN_METHOD(stopScanning)
 
 // Bluenet
 RCT_EXTERN_METHOD(connect:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(disconnect:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(disconnectCommand:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
+RCT_EXTERN_METHOD(toggleSwitchState:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAliveState:(nonnull NSNumber *)changeState state:(nonnull NSNumber *)state timeout:(nonnull NSNumber *)timeout callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAlive:(RCTResponseSenderBlock)callback)
@@ -36,6 +37,8 @@ RCT_EXTERN_METHOD(recover:(NSString *)crownstoneUUID callback:(RCTResponseSender
 RCT_EXTERN_METHOD(setupCrownstone:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getMACAddress:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getFirmwareVersion:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getBootloaderVersion:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getHardwareVersion:(RCTResponseSenderBlock)callback)
 
 // Bluenet localization
 RCT_EXTERN_METHOD(requestLocation:(RCTResponseSenderBlock)callback)
@@ -72,7 +75,9 @@ RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCT
 
 // DFU
 RCT_EXTERN_METHOD(putInDFU:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *) callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setupPutInDFU:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(bootloaderToNormalMode:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
 
 @end

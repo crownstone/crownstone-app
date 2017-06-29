@@ -6,7 +6,9 @@ import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
 import { LOG }                from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
-import { getMapOfCrownstonesInAllSpheresByHandle } from '../../util/DataUtil';
+import { DfuStateHandler }    from "../firmware/DfuStateHandler";
+import {Scheduler} from "../../logic/Scheduler";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 
 /**
@@ -19,7 +21,6 @@ class SetupStateHandlerClass {
   _stonesInSetupStateAdvertisements : any;
   _stonesInSetupStateTypes : any;
   _currentSetupState : any;
-  referenceHandleMap : object;
   _initialized : boolean;
   _ignoreStoneAfterSetup : any;
 
@@ -47,14 +48,6 @@ class SetupStateHandlerClass {
     if (this._initialized === false) {
       this._store = store;
       this._init();
-
-      // TODO: Make into map entity so this is only done once.
-      // refresh maps when the database changes
-      this._store.subscribe(() => {
-        const state = this._store.getState();
-        this.referenceHandleMap = getMapOfCrownstonesInAllSpheresByHandle(state);
-      });
-
     }
   }
 
@@ -69,7 +62,7 @@ class SetupStateHandlerClass {
         this._ignoreStoneAfterSetup[handle] = true;
 
         // we ignore the stone that just completed setup for 5 seconds after completion to avoid duplicates in the view.
-        setTimeout(() => {
+        Scheduler.scheduleCallback(() => {
           this._ignoreStoneAfterSetup[handle] = undefined;
           delete this._ignoreStoneAfterSetup[handle];
         }, 5000);
@@ -88,6 +81,20 @@ class SetupStateHandlerClass {
       NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
         let handle = setupAdvertisement.handle;
         let emitDiscovery = false;
+
+        // DFU takes preference over Setup. DFU can reserve a setup Crownstone for the setup process.
+        if (DfuStateHandler.handleReservedForDfu(handle)) {
+          return;
+        }
+
+        let stoneData = MapProvider.stoneHandleMap[handle];
+        if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
+          LOG.debug("SetupStateHandler: Fallback for DFU stones is called. Stopping setup event propagation.");
+          return;
+        }
+
+        // emit advertisements for other views
+        eventBus.emit(Util.events.getSetupTopic(setupAdvertisement.handle), setupAdvertisement);
 
         // if we just completed the setup of this stone, we ignore it for a while to avoid duplicates.
         if (this._ignoreStoneAfterSetup[handle]) {
@@ -127,11 +134,12 @@ class SetupStateHandlerClass {
     }
 
     // clear existing timeouts.
-    if (this._setupModeTimeouts[handle] !== undefined) {
-      clearTimeout(this._setupModeTimeouts[handle]);
+    if (typeof this._setupModeTimeouts[handle] === 'function' ) {
+      this._setupModeTimeouts[handle]();
+      this._setupModeTimeouts[handle] = null;
     }
     // set a new timeout that cleans up after this entry
-    this._setupModeTimeouts[handle] = setTimeout(() => {
+    this._setupModeTimeouts[handle] = Scheduler.scheduleCallback(() => {
       this._cleanup(handle);
     }, SETUP_MODE_TIMEOUT);
   }
@@ -160,33 +168,49 @@ class SetupStateHandlerClass {
   
   setupStone(handle, sphereId) {
     if (this._stonesInSetupStateAdvertisements[handle] !== undefined) {
-      let helper = new SetupHelper(
-        this._stonesInSetupStateAdvertisements[handle],
+      return this._setupStone(
+        handle,
+        sphereId,
         this._stonesInSetupStateTypes[handle].name,
         this._stonesInSetupStateTypes[handle].type,
         this._stonesInSetupStateTypes[handle].icon
       );
-
-      this._currentSetupState = {
-        busy: true,
-        handle: handle,
-        name: this._stonesInSetupStateTypes[handle].name,
-        type: this._stonesInSetupStateTypes[handle].type,
-        icon: this._stonesInSetupStateTypes[handle].icon,
-      };
-
-      // stop the timeout that removed this stone from the list.
-      if (this._setupModeTimeouts[handle] !== undefined) {
-        clearTimeout(this._setupModeTimeouts[handle]);
-      }
-
-      return helper.claim(this._store, sphereId);
     }
     else {
       return new Promise((resolve, reject) => {
-        reject({code: 1, message:"Stone not available"})
+        reject({code: 1, message:"Stone not available"});
       })
     }
+  }
+
+  setupExistingStone(handle, sphereId, stoneId, silent : boolean = false) {
+    let stoneConfig = this._store.getState().spheres[sphereId].stones[stoneId].config;
+    return this._setupStone(handle, sphereId, stoneConfig.name, stoneConfig.type, stoneConfig.icon, silent);
+  }
+
+  _setupStone(handle, sphereId, name, type, icon, silent : boolean = false) {
+    let helper = new SetupHelper(
+      handle,
+      name,
+      type,
+      icon
+    );
+
+    this._currentSetupState = {
+      busy: true,
+      handle: handle,
+      name: name,
+      type: type,
+      icon: icon,
+    };
+
+    // stop the timeout that removed this stone from the list.
+    if (typeof this._setupModeTimeouts[handle] === 'function' ) {
+      this._setupModeTimeouts[handle]();
+      this._setupModeTimeouts[handle] = null;
+    }
+
+    return helper.claim(this._store, sphereId, silent);
   }
 
   getSetupStones() {
@@ -197,7 +221,7 @@ class SetupStateHandlerClass {
   areSetupStonesAvailable() {
     return (Object.keys(this._stonesInSetupStateAdvertisements).length > 0 || this._currentSetupState.busy);
   }
-  
+
   isSetupInProgress() {
     return this._currentSetupState.busy;
   }
@@ -205,7 +229,6 @@ class SetupStateHandlerClass {
   getStoneInSetupProcess() {
     return {...this._currentSetupState}; 
   }
-
 
 }
 

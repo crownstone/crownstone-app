@@ -1,5 +1,17 @@
 export function update(newValue, original) {
-  return (newValue === undefined ? original : newValue);
+  if (newValue === undefined) {
+    return original;
+  }
+  else if (newValue === null) {
+    return null;
+  }
+  else if (Array.isArray(newValue)) {
+    return newValue.concat([]);
+  }
+  else if (typeof newValue === 'object' && newValue !== null) {
+    return {...newValue};
+  }
+  return newValue;
 }
 
 export let getTime = function (remoteTime?) {

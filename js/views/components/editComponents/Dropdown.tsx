@@ -25,6 +25,10 @@ export class Dropdown extends Component<any, any> {
   }
 
   getLabelIfPossible() {
+    if (this.props.valueLabel) {
+      return this.props.valueLabel;
+    }
+
     for (let i = 0; i < this.props.items.length; i++) {
       let item = this.props.items[i];
       if (item.value !== undefined && item.value === this.state.value) {

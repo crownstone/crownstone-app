@@ -15,6 +15,7 @@ import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesInLocat
 import { LOG }      from '../../logging/Log'
 import { overviewStyles }     from './SphereOverview'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
+import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 
 
 export class StatusCommunication extends Component<any, any> {
@@ -67,7 +68,7 @@ export class StatusCommunication extends Component<any, any> {
       }
     });
 
-    if (this.props.seeStonesInSetupMode === true && isAdminInCurrentSphere === true) {
+    if (SetupStateHandler.areSetupStonesAvailable() === true && isAdminInCurrentSphere === true) {
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected! Tap on it!'}</Text>
@@ -126,7 +127,7 @@ export class StatusCommunication extends Component<any, any> {
     else { //if (amountOfVisible === 0) {
       return (
         <View style={[inRangeStyle, {bottom: bottomDistance}]}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{"I can't see any Crownstones!"}</Text>
+          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{"Looking for Crownstones..."}</Text>
         </View>
       )
     }

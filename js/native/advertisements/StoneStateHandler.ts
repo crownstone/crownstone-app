@@ -5,6 +5,7 @@ import { LOG } from '../../logging/Log'
 import { Util } from '../../util/Util'
 import { eventBus } from '../../util/EventBus'
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig'
+import {DfuStateHandler} from "../firmware/DfuStateHandler";
 
 
 let TRIGGER_ID = "RSSI_TRIGGER_FUNCTION";
@@ -64,6 +65,9 @@ class StoneStateHandlerClass {
           rssi: rssi,
         });
       }
+    }
+    else {
+      LOG.debug("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
     }
 
     let state = this.store.getState();
@@ -172,6 +176,10 @@ class StoneStateHandlerClass {
     }
 
     let disableCallback = () => {
+      // cleanup
+      this.timeoutActions[sphereId][stoneId].clearTimeout = undefined;
+      delete this.timeoutActions[sphereId][stoneId].clearTimeout;
+
       let state = this.store.getState();
       if (state.spheres[sphereId] && state.spheres[sphereId].stones[stoneId]) {
         // check if there are any stones left that are not disabled.
@@ -187,9 +195,16 @@ class StoneStateHandlerClass {
 
         // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
         if (FALLBACKS_ENABLED) {
-          if (allDisabled === true) {
-            LOG.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
-            LocationHandler.exitSphere(sphereId);
+          // if we are in DFU, do not leave the sphere by fallback
+          if (DfuStateHandler.areDfuStonesAvailable() !== true) {
+            if (allDisabled === true) {
+              LOG.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
+              LocationHandler.exitSphere(sphereId);
+            }
+          }
+          else {
+            // reschedule the fallback if we are in dfu.
+            this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_")
           }
         }
 
@@ -201,8 +216,6 @@ class StoneStateHandlerClass {
           data: {disabled: true, rssi: -1000}
         });
       }
-      this.timeoutActions[sphereId][stoneId].clearTimeout = undefined;
-      delete this.timeoutActions[sphereId][stoneId].clearTimeout;
     };
 
     let clearRSSICallback = () => {
@@ -216,7 +229,7 @@ class StoneStateHandlerClass {
       delete this.timeoutActions[sphereId][stoneId].clearRSSITimeout;
     };
 
-    this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_");
+    this.timeoutActions[sphereId][stoneId].clearTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_");
     this.timeoutActions[sphereId][stoneId].clearRSSITimeout = Scheduler.scheduleCallback(clearRSSICallback, RSSI_TIMEOUT, "updateRSSI_" + stoneId + "_");
   }
 }

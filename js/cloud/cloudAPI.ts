@@ -12,6 +12,7 @@ import { appliances } from './sections/appliances'
 import { installations } from './sections/installations'
 import { dfu } from './sections/dfu'
 import { sync } from './sections/sync'
+import { syncUsersInSphere } from './sections/syncUsersInSphere'
 
 
 function combineSections() {
@@ -25,6 +26,7 @@ function combineSections() {
   Util.mixin(result, appliances);
   Util.mixin(result, installations);
   Util.mixin(result, sync);
+  Util.mixin(result, syncUsersInSphere);
   Util.mixin(result, dfu);
   return result;
 }

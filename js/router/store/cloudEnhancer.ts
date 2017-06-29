@@ -102,8 +102,6 @@ function handleAction(action, returnValue, newState, oldState) {
       handleStoneState(action, newState, true);
       break;
 
-
-
   }
 }
 
@@ -149,8 +147,9 @@ function handleStoneBehaviourInCloud(action, state) {
       address:           stoneConfig.macAddress,
       icon:              stoneConfig.icon,
       id:                stoneId,
-      bootloaderVersion: stoneConfig.bootloaderVersion,
       firmwareVersion:   stoneConfig.firmwareVersion,
+      bootloaderVersion: stoneConfig.bootloaderVersion,
+      hardwareVersion:   stoneConfig.hardwareVersion,
       meshNetworkId:     stoneConfig.meshNetworkId,
       major:             stoneConfig.iBeaconMajor,
       minor:             stoneConfig.iBeaconMinor,
@@ -176,8 +175,9 @@ function handleStoneInCloud(action, state) {
     address:           stoneConfig.macAddress,
     icon:              stoneConfig.icon,
     id:                stoneId,
-    bootloaderVersion: stoneConfig.bootloaderVersion,
     firmwareVersion:   stoneConfig.firmwareVersion,
+    bootloaderVersion: stoneConfig.bootloaderVersion,
+    hardwareVersion:   stoneConfig.hardwareVersion,
     meshNetworkId:     stoneConfig.meshNetworkId,
     major:             stoneConfig.iBeaconMajor,
     minor:             stoneConfig.iBeaconMinor,
@@ -296,8 +296,7 @@ function handleUserLocationEnter(action, state) {
   if (state.user.uploadLocation === true) {
     let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
-      CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => {
-      });
+      CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => { });
     }
   }
 }
@@ -306,8 +305,7 @@ function handleUserLocationExit(action, state) {
   if (state.user.uploadLocation === true) {
     let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
-      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {
-      });
+      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => { });
     }
   }
 }

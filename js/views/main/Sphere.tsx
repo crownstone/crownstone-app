@@ -15,6 +15,8 @@ import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
 import { LOG }       from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
+import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
+import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 
 
 export class Sphere extends Component<any, any> {
@@ -26,14 +28,14 @@ export class Sphere extends Component<any, any> {
     let currentSphere = this.props.sphereId;
 
     let sphereIsPresent = state.spheres[currentSphere].config.present;
-    if (sphereIsPresent || this.props.seeStonesInSetupMode) {
+    if (sphereIsPresent || SetupStateHandler.areSetupStonesAvailable() || DfuStateHandler.areDfuStonesAvailable()) {
       viewingRemotely = false;
     }
 
     return (
       <View style={{width:screenWidth, height: screenHeight - topBarHeight - tabBarHeight, position:'absolute', top: 0, left: this.props.leftPosition}}>
-        <StatusCommunication store={store} sphereId={currentSphere} seeStonesInSetupMode={this.props.seeStonesInSetupMode} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
-        <RoomLayer store={store} sphereId={currentSphere} seeStonesInSetupMode={this.props.seeStonesInSetupMode} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
+        <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
+        <RoomLayer store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
       </View>
     );
   }

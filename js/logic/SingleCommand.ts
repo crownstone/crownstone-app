@@ -41,7 +41,7 @@ export class SingleCommand {
                 .then(() => { LOG.info("SingleCommand: second attempt, performing: ", action, props); return action.apply(this, props); })
             }
           })
-          .then(() => { LOG.info("SingleCommand: completed", action, 'disconnecting'); return BluenetPromiseWrapper.disconnect(); })
+          .then(() => { LOG.info("SingleCommand: completed", action, 'disconnecting'); return BluenetPromiseWrapper.disconnectCommand(); })
           .catch((err) => {
             LOG.error("SingleCommand: BLE Single command Error:", err);
             return new Promise((resolve,reject) => {

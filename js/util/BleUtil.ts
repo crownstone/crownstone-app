@@ -5,6 +5,7 @@ import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 import { Util } from './Util'
 
 import { SingleCommand } from '../logic/SingleCommand'
+import {Scheduler} from "../logic/Scheduler";
 
 
 export const BleUtil = {
@@ -13,8 +14,9 @@ export const BleUtil = {
   highFrequencyScanUsers: {},
 
   _cancelSearch: function(stateContainer) {
-    if (stateContainer.timeout) {
-      clearTimeout(stateContainer.timeout);
+    if (typeof stateContainer.timeout === 'function') {
+      stateContainer.timeout();
+      stateContainer.timeout = null;
     }
     if (stateContainer.unsubscribe) {
       stateContainer.unsubscribe();
@@ -71,7 +73,7 @@ export const BleUtil = {
       stateContainer.unsubscribe = NativeBus.on(event, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
-      stateContainer.timeout = setTimeout(() => {
+      stateContainer.timeout = Scheduler.scheduleCallback(() => {
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         this._cancelSearch(stateContainer);
         reject("_getNearestCrownstoneFromEvent: Nothing Near");
@@ -99,7 +101,10 @@ export const BleUtil = {
       };
 
       let finish = (advertisement) => {
-        clearTimeout(cleanup.timeout);
+        if (typeof cleanup.timeout === 'function') {
+          cleanup.timeout();
+          cleanup.timeout = null;
+        }
         cleanup.unsubscribe();
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         resolve(advertisement.setupPackage);
@@ -109,7 +114,7 @@ export const BleUtil = {
       cleanup.unsubscribe = NativeBus.on(NativeBus.topics.advertisement, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
-      cleanup.timeout = setTimeout(() => {
+      cleanup.timeout = Scheduler.scheduleCallback(() => {
         this.stopHighFrequencyScanning(highFrequencyRequestUUID);
         cleanup.unsubscribe();
         reject(false);
@@ -121,17 +126,13 @@ export const BleUtil = {
     return new SingleCommand(bleHandle, sphereId, stoneId);
   },
 
-  // getMeshProxy: function (bleHandle) {
-  //   return new MeshCommand(bleHandle)
-  // },
-
   /**
    *
    * @param id
    * @param noTimeout   | Bool or timeout in millis
    * @returns {function()}
    */
-  startHighFrequencyScanning: function(id, noTimeout = false) {
+  startHighFrequencyScanning: function(id, noTimeout : boolean | number = false) {
     let enableTimeout = noTimeout === false;
     let timeoutDuration = HIGH_FREQUENCY_SCAN_MAX_DURATION;
     if (typeof noTimeout === 'number' && noTimeout > 0) {
@@ -148,8 +149,11 @@ export const BleUtil = {
     }
 
     if (enableTimeout === true) {
-      clearTimeout(this.highFrequencyScanUsers[id].timeout);
-      this.highFrequencyScanUsers[id].timeout = setTimeout(() => {
+      if (typeof this.highFrequencyScanUsers[id].timeout === 'function') {
+        this.highFrequencyScanUsers[id].timeout();
+        this.highFrequencyScanUsers[id].timeout = null;
+      }
+      this.highFrequencyScanUsers[id].timeout = Scheduler.scheduleCallback(() => {
         this.stopHighFrequencyScanning(id);
       }, timeoutDuration);
     }
@@ -159,13 +163,20 @@ export const BleUtil = {
 
   stopHighFrequencyScanning: function(id) {
     if (this.highFrequencyScanUsers[id] !== undefined) {
-      clearTimeout(this.highFrequencyScanUsers[id].timeout);
+      if (typeof this.highFrequencyScanUsers[id].timeout === 'function') {
+        this.highFrequencyScanUsers[id].timeout();
+        this.highFrequencyScanUsers[id].timeout = null;
+      }
       delete this.highFrequencyScanUsers[id];
       if (Object.keys(this.highFrequencyScanUsers).length === 0) {
         LOG.debug("Stopping HF Scanning!");
         Bluenet.startScanningForCrownstonesUniqueOnly();
       }
     }
+  },
+
+  highFrequencyScanUsed: function() {
+    return Object.keys(this.highFrequencyScanUsers).length > 0;
   }
 
 };

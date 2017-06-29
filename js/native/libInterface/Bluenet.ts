@@ -53,6 +53,12 @@ if (DISABLE_NATIVE === true) {
     meshKeepAlive: () => {},
     meshKeepAliveState: () => {},
     multiSwitch: () => {},
+
+
+    getHardwareVersion: () => {},
+    getBootloaderVersion: () => {},
+    getFirmwareVersion: () => {},
+    bootloaderToNormalMode: () => {},
   }
 }
 else {

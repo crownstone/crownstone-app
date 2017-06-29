@@ -5,10 +5,10 @@ import {
   View,
 } from 'react-native';
 
-import { NativeBus }          from '../../../native/libInterface/NativeBus'
-import { IconButton }         from '../IconButton'
-import { OverlayBox }         from './OverlayBox'
-import { styles, colors , screenHeight, screenWidth } from '../../styles'
+import { NativeBus }          from '../../native/libInterface/NativeBus'
+import { IconButton }         from '../components/IconButton'
+import { OverlayBox }         from '../components/overlays/OverlayBox'
+import { styles, colors , screenHeight, screenWidth } from '../styles'
 
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -24,7 +24,7 @@ export class BleStateOverlay extends Component<any, any> {
   }
 
   componentDidMount() {
-    NativeBus.on(NativeBus.topics.bleStatus, (status) => {
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.bleStatus, (status) => {
       switch (status) {
         case "poweredOff":
           this.setState({visible: true, notificationType: status});
@@ -39,7 +39,7 @@ export class BleStateOverlay extends Component<any, any> {
           this.setState({visible: true, notificationType: status});
           break;
       }
-    });
+    }));
   }
 
   componentWillUnmount() {
@@ -75,7 +75,7 @@ export class BleStateOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible} height={0.7*screenHeight}>
+      <OverlayBox visible={this.state.visible}>
         <View style={{flex:1}} />
         <IconButton
           name="ios-bluetooth"

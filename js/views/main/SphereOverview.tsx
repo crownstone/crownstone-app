@@ -22,6 +22,7 @@ import { Sphere }                                         from './Sphere'
 import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }                        from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
+import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 
 
 export class SphereOverview extends Component<any, any> {
@@ -181,6 +182,7 @@ export class SphereOverview extends Component<any, any> {
 
     let noSpheres = this.sphereIds.length == 0;
     let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();
+    let seeStonesInDFUMode = DfuStateHandler.areDfuStonesAvailable();
     let viewingRemotely = true;
     let blockAddButton = false;
     let noStones = true;
@@ -208,7 +210,7 @@ export class SphereOverview extends Component<any, any> {
       noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
       isAdminInCurrentSphere = getUserLevelInSphere(state, activeSphere) === 'admin';
 
-      if (sphereIsPresent || seeStonesInSetupMode || (noStones === true && noRooms === true)) {
+      if (sphereIsPresent || seeStonesInSetupMode || seeStonesInDFUMode || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
       }
 
@@ -240,7 +242,7 @@ export class SphereOverview extends Component<any, any> {
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
             <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute', top: topBarHeight, left: this.state.left}}>
-              {this._getSpheres(seeStonesInSetupMode)}
+              {this._getSpheres()}
             </Animated.View>
             <Orbs amount={this.sphereIds.length} active={this._activeSphereIndex} />
           </AnimatedBackground>
@@ -255,7 +257,7 @@ export class SphereOverview extends Component<any, any> {
               title={"Hello There!"}
               showHamburgerMenu={true}
             />
-            {this._getSpheres(false)}
+            {this._getSpheres()}
           </AnimatedBackground>
         </View>
       );
@@ -276,11 +278,11 @@ export class SphereOverview extends Component<any, any> {
     )
   }
 
-  _getSpheres(seeStonesInSetupMode) {
+  _getSpheres() {
     if (this.sphereIds.length > 0) {
       let spheres = [];
       this.sphereIds.forEach((sphereId) => {
-        spheres.push(<Sphere key={sphereId} sphereId={sphereId} store={this.props.store} seeStonesInSetupMode={seeStonesInSetupMode} leftPosition={screenWidth*spheres.length} eventBus={this.props.eventBus} />)
+        spheres.push(<Sphere key={sphereId} sphereId={sphereId} store={this.props.store} leftPosition={screenWidth*spheres.length} eventBus={this.props.eventBus} />)
       });
       return spheres;
     }

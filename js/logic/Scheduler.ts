@@ -1,3 +1,4 @@
+import { AppState } from 'react-native'
 import { NativeBus } from '../native/libInterface/NativeBus';
 import { LOG } from '../logging/Log'
 import { Util } from '../util/Util'
@@ -5,11 +6,30 @@ import {eventBus} from "../util/EventBus";
 import {SCHEDULER_FALLBACK_TICK} from "../ExternalConfig";
 
 
+interface scheduledCallback {
+  uuid?: {
+    callback() : void
+    triggerTime: number,
+    timeoutId: number
+  },
+}
+interface scheduleTrigger {
+  id?: {
+    active:     true,
+    actions:    any[],
+    callbacks:  any[],
+    overwritableActions:   {},
+    overwritableCallbacks: {},
+    options:    {},
+    lastTriggerTime: 0
+  }
+}
+
 class SchedulerClass {
   _initialized : any;
   store : any;
-  triggers : any;
-  singleFireTriggers : any;
+  triggers : scheduleTrigger;
+  singleFireTriggers : scheduledCallback;
   allowTicksAfterTime : any;
   activeSphere : any;
   scheduledTick : any;
@@ -71,7 +91,15 @@ class SchedulerClass {
     }
 
     if (this.triggers[id] === undefined) {
-      this.triggers[id] = {actions: [], callbacks: [], options: {}, overwritableActions: {}, lastTriggerTime: 0};
+      this.triggers[id] = {
+        active:     true,
+        actions:    [],
+        callbacks:  [],
+        overwritableActions:   {},
+        overwritableCallbacks: {},
+        options:    {},
+        lastTriggerTime: 0
+      };
     }
     this.triggers[id].options = options;
   }
@@ -108,6 +136,19 @@ class SchedulerClass {
     this.triggers[triggerId].actions = [];
     this.triggers[triggerId].overwritableActions = {};
     this.triggers[triggerId].callbacks = [];
+    this.triggers[triggerId].overwritableCallbacks = {};
+  }
+
+  pauseTrigger(triggerId) {
+    if (this.triggers[triggerId]) {
+      this.triggers[triggerId].active = false;
+    }
+  }
+
+  resumeTrigger(triggerId) {
+    if (this.triggers[triggerId]) {
+      this.triggers[triggerId].active = true;
+    }
   }
 
 
@@ -150,11 +191,37 @@ class SchedulerClass {
         }
       }
       else {
-        LOG.error("INVALID callback", callback);
+        LOG.error("Scheduler: INVALID callback", callback);
       }
     }
     else {
-      LOG.error("Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+      LOG.error("Scheduler: Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
+    }
+  }
+
+  /**
+   * callbacks will be fired when the time expires
+   * @param triggerId
+   * @param callbackId
+   * @param callback
+   * @param fireAfterLoad
+   */
+  loadOverwritableCallback(triggerId, callbackId, callback, fireAfterLoad = false) {
+    if (this.triggers[triggerId] !== undefined) {
+      if (typeof callback === 'function') {
+        this.triggers[triggerId].overwritableCallbacks[callbackId] = callback;
+
+        // we don't want to trigger a callback right away, if we do, make sure fireAfterLoad = true
+        if (fireAfterLoad === false) {
+          this.triggers[triggerId].lastTriggerTime = new Date().valueOf();
+        }
+      }
+      else {
+        LOG.error("Scheduler: INVALID callback", callback);
+      }
+    }
+    else {
+      LOG.error("Scheduler: Invalid trigger ID. You need to create a trigger first using 'setRepeatingTrigger'.", triggerId, this.triggers)
     }
   }
 
@@ -174,12 +241,62 @@ class SchedulerClass {
     this.scheduledTick = setTimeout(() => { this.tick() }, SCHEDULER_FALLBACK_TICK);
   }
 
-  scheduleCallback(callback, afterMilliseconds, label = "unlabeled") {
+  /**
+   * Smart callback scheduler. 
+   *
+   * This method will also set a setTimeout to make sure the triggers fire when expected instead of checking if it should fire every 1 or 4 seconds.
+   * If it detects the app is NOT on the foreground (which is when the setTimeout would still do something) it will fall back to being a backgroundCallback.
+   * @param callback
+   * @param afterMilliseconds
+   * @param label
+   */
+  scheduleCallback(callback, afterMilliseconds, label = "unlabeled") : () => void {
+    if (AppState.currentState === 'active') {
+      return this.scheduleActiveCallback(callback, afterMilliseconds, label);
+    }
+    else {
+      return this.scheduleBackgroundCallback(callback, afterMilliseconds, label);
+    }
+  }
+
+  /**
+   * This method will also set a setTimeout to make sure the triggers fire when expected instead of checking if it should fire every 1 or 4 seconds.
+   * @param callback
+   * @param afterMilliseconds
+   * @param label
+   */
+  scheduleActiveCallback(callback, afterMilliseconds, label = "unlabeled") : () => void {
+    return this._scheduleCallback(callback, afterMilliseconds, false, label);
+  }
+
+  /**
+   * This method will does not set an additional setTimeout.
+   * @param callback
+   * @param afterMilliseconds
+   * @param label
+   */
+  scheduleBackgroundCallback(callback, afterMilliseconds, label = "unlabeled") : () => void {
+    return this._scheduleCallback(callback, afterMilliseconds, false, label);
+  }
+
+  _scheduleCallback(callback, afterMilliseconds, useTimeout: boolean, label = "unlabeled") : () => void {
     let uuid = label + Util.getUUID();
     LOG.scheduler("Scheduling callback", uuid, 'to fire after ', afterMilliseconds, 'ms.');
-    this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds};
+    
+    // fallback to try to fire this callback after exactly the amount of ms
+    let timeoutId = null;
+
+    if (useTimeout) {
+      timeoutId = setTimeout(() => { this.tick(); }, afterMilliseconds + 10);
+    }
+    
+    this.singleFireTriggers[uuid] = {callback: callback, triggerTime: new Date().valueOf() + afterMilliseconds, timeoutId: timeoutId};
+
     return () => {
       if (this.singleFireTriggers[uuid]) {
+        if (useTimeout) {
+          clearTimeout(timeoutId);
+        }
         this.singleFireTriggers[uuid] = undefined;
         delete this.singleFireTriggers[uuid];
       }
@@ -204,6 +321,12 @@ class SchedulerClass {
       // check if we have to fire the trigger
       triggerIds.forEach((triggerId) => {
         let trigger = this.triggers[triggerId];
+
+        // if the trigger is paused, ignore.
+        if (trigger.active === false) {
+          return;
+        }
+
         if (trigger.options.repeatEveryNSeconds) {
           // LOG.scheduler("Handling Trigger:", triggerId, trigger.options.repeatEveryNSeconds, Math.round(0.001 * (now - trigger.lastTriggerTime)));
           // We use round in the conversion from millis to seconds so 1.5seconds is also accepted when the target is 2 seconds
@@ -223,7 +346,6 @@ class SchedulerClass {
 
     this.schedule();
   }
-
 
   fireTrigger(triggerId) {
     let state = this.store.getState();
@@ -247,9 +369,14 @@ class SchedulerClass {
     triggerIds.forEach((triggerId) => {
       // LOG.scheduler("Handling single fire trigger:", triggerId);
       let trigger = this.singleFireTriggers[triggerId];
-      if (trigger.triggerTime < now) {
+      if (trigger && trigger.triggerTime < now) {
         LOG.scheduler("Firing single fire trigger:", triggerId);
         trigger.callback();
+
+        // clear the pending timeout.
+        if (trigger.timeoutId) {
+          clearTimeout(trigger.timeoutId);
+        }
         delete this.singleFireTriggers[triggerId];
       }
     })
@@ -259,6 +386,7 @@ class SchedulerClass {
    * fire all triggers.
    */
   flushAll() {
+    LOG.scheduler("Flush All!");
     let triggerIds = Object.keys(this.triggers);
     let state = this.store.getState();
 
@@ -283,6 +411,11 @@ class SchedulerClass {
     trigger.callbacks.forEach((callback) => {
       callback();
     });
+
+    let overwritableCallbackIds = Object.keys(trigger.overwritableCallbacks);
+    overwritableCallbackIds.forEach((callbackId) => {
+      trigger.overwritableCallbacks[callbackId]();
+    })
   }
 
   _flushActions(trigger, state) {

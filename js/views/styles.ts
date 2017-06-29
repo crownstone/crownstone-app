@@ -9,6 +9,8 @@ export const screenHeight = Platform.OS === 'android' ?
 export const tabBarHeight    = Platform.OS === 'android' ? 0  :  50;
 export const statusBarHeight = Platform.OS === 'android' ? 0  :  20; // Status bar in iOS is 20 high
 export const topBarHeight    = Platform.OS === 'android' ? 52 :  42 + statusBarHeight; // Status bar in iOS is 20 high
+export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
+
 export const pxRatio = PixelRatio.get();
 
 export let barHeight = 42;
@@ -32,6 +34,7 @@ export let colors : any = {
   purple: {hex:'#8a01ff'},
   darkPurple: {hex:'#5801a9'},
   blue: {hex:'#0075c9'},
+  blue2: {hex:'#2698e9'},
   green: {hex:'#a0eb58'},
   darkGreen: {hex:'#1f4c43'},
   green2: {hex:'#4cd864'},
@@ -41,6 +44,7 @@ export let colors : any = {
   menuRed: {hex:'#e00'},
   iosBlue: {hex:'#007aff'},
   lightBlue: {hex:'#a9d0f1'},
+  lightBlue2: {hex:'#77c2f7'},
   blinkColor1: {hex:'#2daeff'},
   blinkColor2: {hex:'#a5dcff'},
 };
@@ -163,6 +167,14 @@ export const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     color: colors.menuText.hex,
+  },
+  version: {
+    backgroundColor:"transparent",
+    color: colors.darkGray2.rgba(1),
+    textAlign:'center',
+    fontWeight:'300',
+    fontSize: 10,
   }
+
 });
 

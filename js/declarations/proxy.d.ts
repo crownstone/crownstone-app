@@ -1,15 +1,18 @@
-interface BluenetPromiseWrapper {
+interface BluenetPromiseWrapperProtocol {
   clearTrackedBeacons(): Promise<void>,
   commandFactoryReset(): Promise<void>,
   connect(handle: string): Promise<void>,
-  disconnect(): Promise<void>,
+  disconnectCommand(): Promise<void>,
   getMACAddress(): Promise<string>,
   getFirmwareVersion(): Promise<string>,
+  getBootloaderVersion(): Promise<string>,
+  getHardwareVersion(): Promise<string>,
   finalizeFingerprint(sphereId: string, locationId: string): Promise<void>,
   isReady(): Promise<void>,
   keepAlive(): Promise<void>,
   keepAliveState(changeState : boolean, state : number, timeout: number): Promise<void>,
   phoneDisconnect(): Promise<void>,
+  toggleSwitchState(): Promise<void>,
   setSwitchState(state: number): Promise<void>,
   setupCrownstone(dataObject): Promise<void>,
   setSettings(dataObject): Promise<void>,
@@ -23,8 +26,10 @@ interface BluenetPromiseWrapper {
 
   // DFU
   putInDFU(): Promise<void>,
-  performDFU(handle : string, uri: string): Promise<void>,
+  setupPutInDFU(): Promise<void>,
+  performDFU(handle : string, uri: string ): Promise<void>,
   setupFactoryReset(): Promise<void>,
+  bootloaderToNormalMode( handle : string ): Promise<void>,
 }
 
 interface crownstoneServiceData {
@@ -38,7 +43,6 @@ interface crownstoneServiceData {
   newDataAvailable  : boolean,
   stateOfExternalCrownstone: boolean,
   setupMode         : boolean,
-  dfuMode           : boolean,
   random            : string
 }
 
@@ -51,6 +55,7 @@ interface crownstoneAdvertisement {
   isCrownstonePlug    : boolean,
   isCrownstoneBuiltin : boolean,
   isGuidestone        : boolean,
+  isInDFUMode         : boolean,
   serviceUUID       : string,
   serviceData       : crownstoneServiceData
 }

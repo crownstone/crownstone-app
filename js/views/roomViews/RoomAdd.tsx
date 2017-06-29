@@ -176,8 +176,10 @@ export class RoomAdd extends Component<any, any> {
               (Actions as any).roomOverview({sphereId: this.props.sphereId, locationId: reply.id, title:this.state.name, store: store, seeStoneInSetupMode: false});
             }, 0);
           }).catch((err) => {
-          LOG.error("Something went wrong with creation of rooms", err);
-          Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: () => {this.props.eventBus.emit('hideLoading');}}])})
+            LOG.error("Something went wrong with creation of rooms", err);
+            let defaultActions = () => {this.props.eventBus.emit('hideLoading');};
+            Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: defaultActions}], { onDismiss: defaultActions })
+          })
       }
       else {
         Alert.alert(

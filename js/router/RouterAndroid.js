@@ -13,16 +13,18 @@ import {
   View
 } from 'react-native';
 import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
-import { eventBus }               from '../util/EventBus'
-import { reducerCreate }          from './store/reducers/navigation'
-import { OptionPopup }            from '../views/components/OptionPopup'
-import { Processing }             from '../views/components/Processing'
-import { SideMenu }               from '../views/components/SideMenu/SideMenu'
-import { LocalizationSetupStep1 } from '../views/components/overlays/LocalizationSetupStep1'
-import { LocalizationSetupStep2 } from '../views/components/overlays/LocalizationSetupStep2'
-import { TapToToggleCalibration } from '../views/components/overlays/TapToToggleCalibration'
-import { BleStateOverlay }        from '../views/components/overlays/BleStateOverlay'
-import { Views }                  from './Views'
+import { eventBus }                  from '../util/EventBus'
+import { reducerCreate }             from './store/reducers/navigation'
+import { OptionPopup }               from '../views/components/OptionPopup'
+import { Processing }                from '../views/components/Processing'
+import { SideMenu }                  from '../views/components/SideMenu/SideMenu'
+import { DfuOverlay }                from '../views/overlays/DfuOverlay'
+import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
+import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
+import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
+import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
+import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
+import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 
 export class Router_Android extends Component {
@@ -35,11 +37,11 @@ export class Router_Android extends Component {
               <Scene key="loginSplash"                component={Views.LoginSplash}                panHandlers={null} hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      panHandlers={null} hideNavBar={true}  />
               <Scene key="register"                   component={Views.Register}                   panHandlers={null} hideNavBar={false} title="Register" {...navBarStyle} />
-              <Scene key="registerConclusion"         component={Views.RegisterConclusion}         panHandlers={null} hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} />
+              <Scene key="registerConclusion"         component={Views.RegisterConclusion}         panHandlers={null} hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} renderLeftButton={()=>{}} />
               <Scene key="pictureView"                component={Views.PictureView}                panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="picturePreview"             component={Views.PicturePreview}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             panHandlers={null} hideNavBar={true}  direction="vertical" />
-              <Scene key="aiStart"                    component={Views.AiStart}                    panHandlers={null} hideNavBar={false} direction="vertical" title="Hello!" />
+              <Scene key="aiStart"                    component={Views.AiStart}                    panHandlers={null} hideNavBar={false} direction="vertical" title="Hello!" renderLeftButton={()=>{}} />
               <Scene key="roomTraining_roomSize"      component={Views.RoomTraining_roomSize}      panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="roomTraining"               component={Views.RoomTraining}               panHandlers={null} hideNavBar={true}  direction="horizontal" />
               <Scene key="roomSelection"              component={Views.RoomSelection}              panHandlers={null} hideNavBar={true}  direction="vertical" title="Move to which Room?" />
@@ -72,10 +74,12 @@ export class Router_Android extends Component {
             </Scene>
           </Scene>
         </Router>
+        <DfuOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />
         <BleStateOverlay />
+        <LocationPermissionOverlay />
         <OptionPopup />
         <Processing />
       </View>

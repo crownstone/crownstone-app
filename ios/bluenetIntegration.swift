@@ -76,7 +76,7 @@ typealias voidCallback = () -> Void
 }
 
 func getBleErrorString(_ err: BleError) -> String {
-  switch(err) {
+  switch err {
   case .DISCONNECTED:
     return "DISCONNECTED"
   case .CONNECTION_CANCELLED:
@@ -123,6 +123,8 @@ func getBleErrorString(_ err: BleError) -> String {
     return "CANNOT_WRITE_AND_VERIFY"
   case .CAN_NOT_CONNECT_TO_UUID:
     return "CAN_NOT_CONNECT_TO_UUID"
+  case .COULD_NOT_FACTORY_RESET:
+    return "COULD_NOT_FACTORY_RESET"
   case .INVALID_SESSION_DATA:
     return "INVALID_SESSION_DATA"
   case .NO_SESSION_NONCE_SET:
@@ -159,8 +161,26 @@ func getBleErrorString(_ err: BleError) -> String {
     return "CANNOT_READ_FACTORY_RESET_CHARACTERISTIC"
   case .RECOVER_MODE_DISABLED:
     return "RECOVER_MODE_DISABLED"
-  default:
-    return "UNKNOWN_BLE_ERROR \(err)"
+  case .INVALID_TX_POWER_VALUE:
+    return "INVALID_TX_POWER_VALUE"
+  case .NO_KEEPALIVE_STATE_ITEMS:
+    return "NO_KEEPALIVE_STATE_ITEMS"
+  case .NO_SWITCH_STATE_ITEMS:
+    return "NO_SWITCH_STATE_ITEMS"
+  case .DFU_OVERRULED:
+    return "DFU_OVERRULED"
+  case .DFU_ABORTED:
+    return "DFU_ABORTED"
+  case .DFU_ERROR:
+    return "DFU_ERROR"
+  case .COULD_NOT_FIND_PERIPHERAL:
+    return "COULD_NOT_FIND_PERIPHERAL"
+  case .PACKETS_DO_NOT_MATCH:
+    return "PACKETS_DO_NOT_MATCH"
+  case .NOT_IN_DFU_MODE:
+    return "NOT_IN_DFU_MODE"
+  case .REPLACED_WITH_OTHER_PROMISE:
+    return "REPLACED_WITH_OTHER_PROMISE"
   }
 }
 
@@ -174,7 +194,6 @@ open class BluenetJS: NSObject {
       // forward the event streams to react native
       globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
-//          print("VERIFIED \(castData.getDictionary())")
           if (castData.isSetupPackage()) {
             self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
           }
@@ -195,11 +214,17 @@ open class BluenetJS: NSObject {
         }
       })
       
+      globalBluenet.bluenetLocalizationOn("locationStatus", {data -> Void in
+        if let castData = data as? String {
+          self.bridge.eventDispatcher().sendAppEvent(withName: "locationStatus", body: castData)
+        }
+      })
+      
 //      we will not forward the unverified events
 //      globalBluenet.bluenetOn("advertisementData", {data -> Void in
 //        if let castData = data as? Advertisement {
 //          print("BluenetBridge: advertisementData", castData.getDictionary())
-//          self.bridge.eventDispatcher().sendAppEvent(withName: "advertisementData", body: castData.getDictionary())
+//         // self.bridge.eventDispatcher().sendAppEvent(withName: "advertisementData", body: castData.getDictionary())
 //        }
 //      })
 
@@ -296,8 +321,7 @@ open class BluenetJS: NSObject {
     }
     
     if let encryptionEnabled = settings["encryptionEnabled"] as? Bool {
-      //let settings = BluenetSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
-      print("BluenetBridge: SETTING SETTINGS \(settings)")
+      print("BluenetBridge: SETTING SETTINGS adminKey: \(String(describing: adminKey)) memberKey: \(String(describing: memberKey)) guestKey: \(String(describing: guestKey)) referenceId: \(String(describing: referenceId))")
       GLOBAL_BLUENET!.bluenet.setSettings(encryptionEnabled: encryptionEnabled, adminKey: adminKey, memberKey: memberKey, guestKey: guestKey, referenceId: referenceId!)
       callback([["error" : false]])
     }
@@ -346,7 +370,7 @@ open class BluenetJS: NSObject {
       }
   }
   
-  @objc func disconnect(_ callback: @escaping RCTResponseSenderBlock) {
+  @objc func disconnectCommand(_ callback: @escaping RCTResponseSenderBlock) {
     GLOBAL_BLUENET!.bluenet.control.disconnect()
       .then{_ in callback([["error" : false]])}
       .catch{err in
@@ -355,6 +379,19 @@ open class BluenetJS: NSObject {
         }
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN disconnect \(err)"]])
+        }
+      }
+  }
+  
+  @objc func toggleSwitchState(_ callback: @escaping RCTResponseSenderBlock) {
+    GLOBAL_BLUENET!.bluenet.control.toggleSwitchState()
+      .then{newState in callback([["error" : false, "data": newState]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN toggleSwitchState \(err)"]])
         }
       }
   }
@@ -369,7 +406,7 @@ open class BluenetJS: NSObject {
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN setSwitchState \(err)"]])
         }
-      }
+    }
   }
   
   @objc func keepAliveState(_ changeState: NSNumber, state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
@@ -542,7 +579,21 @@ open class BluenetJS: NSObject {
       }
   }
   
-  
+  @objc func getHardwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.device.getHardwareRevision()
+      .then{(harwareVersion : String) -> Void in
+        print("harwareVersion \(harwareVersion)")
+        callback([["error" : false, "data": harwareVersion]]
+        )}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getHardwareVersion"]])
+        }
+    }
+  }
   
   @objc func getFirmwareVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenet.device.getFirmwareRevision()
@@ -553,6 +604,19 @@ open class BluenetJS: NSObject {
         }
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN getFirmwareVersion"]])
+        }
+    }
+  }
+  
+  @objc func getBootloaderVersion(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.device.getBootloaderRevision()
+      .then{(bootloaderVersion : String) -> Void in callback([["error" : false, "data": bootloaderVersion]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getBootloaderRevision"]])
         }
     }
   }
@@ -586,21 +650,19 @@ open class BluenetJS: NSObject {
   
   @objc func enableLoggingToFile(_ enableLogging: NSNumber) -> Void {
     if (enableLogging.boolValue == true) {
-      BluenetLib.LOG.cleanLogs()
       BluenetLib.LOG.setFileLevel(.INFO)
       BluenetLib.LOG.setPrintLevel(.INFO)
       
-      LOGGER.cleanLogs()
       LOGGER.setFileLevel(.INFO)
       LOGGER.setPrintLevel(.INFO)
     }
     else {
-      BluenetLib.LOG.setFileLevel(.NONE)
       BluenetLib.LOG.clearLogs()
+      BluenetLib.LOG.setFileLevel(.NONE)
       BluenetLib.LOG.setPrintLevel(.INFO)
       
-      LOGGER.setFileLevel(.NONE)
       LOGGER.clearLogs()
+      LOGGER.setFileLevel(.NONE)
       LOGGER.setPrintLevel(.INFO)
     }
   }
@@ -712,6 +774,19 @@ open class BluenetJS: NSObject {
   
   // DFU
   
+  @objc func setupPutInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.setup.putInDFU()
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN putInDFU \(err)"]])
+        }
+    }
+  }
+  
   
   @objc func putInDFU(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     GLOBAL_BLUENET!.bluenet.control.putInDFU()
@@ -749,6 +824,19 @@ open class BluenetJS: NSObject {
         }
         else {
           callback([["error" : true, "data": "UNKNOWN ERROR IN putInDFU \(err)"]])
+        }
+    }
+  }
+  
+  @objc func bootloaderToNormalMode(_ uuid: String, callback: @escaping RCTResponseSenderBlock) -> Void {
+    GLOBAL_BLUENET!.bluenet.dfu.bootloaderToNormalMode(uuid: uuid)
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN bootloaderToNormalMode \(err)"]])
         }
     }
   }

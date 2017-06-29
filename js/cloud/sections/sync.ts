@@ -2,6 +2,8 @@ import { CLOUD } from '../cloudAPI'
 import { LOG } from '../../logging/Log'
 import { Util } from '../../util/Util'
 import { Platform } from 'react-native'
+import { syncUsersInLocation } from './syncUsersInSphere'
+import {AppUtil} from "../../util/AppUtil";
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -37,16 +39,21 @@ export const sync = {
           LOG.warn("Could not verify user, attempting to login again and retry sync.");
           return CLOUD.login({
             email: state.user.email,
-            password: state.user.password,
+            password: state.user.passwordHash,
             background: true,
-            onUnverified: () => {},
-            onInvalidCredentials: () => {}
           })
           .then((response) => {
             CLOUD.setAccess(response.id);
             CLOUD.setUserId(response.userId);
+            this.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
             return syncDown(userId, options);
           })
+            .catch((err) => {
+              LOG.info("SYNC: COULD NOT VERIFY USER -- ERROR", err);
+              if (err.status === 401) {
+                AppUtil.logOut(store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
+              }
+            })
         }
         else {
           throw err;
@@ -139,16 +146,17 @@ const syncDown = function (userId, options) {
 const syncUser = function(store, actions, userData) {
   let state = store.getState();
 
-  let cloudFirmwareVersion = userData.firmwareVersionAvailable || null;
-  let cloudBootloaderVersion = userData.bootloaderVersionAvailable || null;
+  let cloudFirmwareVersions = userData.firmwareVersionsAvailable || null;
+  let cloudBootloaderVersions = userData.bootloaderVersionsAvailable || null;
 
   if (
-      state.user &&
-      state.user.config && (
-      state.user.config.firmwareVersion   !== cloudFirmwareVersion  && cloudFirmwareVersion ||
-      state.user.config.bootloaderVersion !== cloudBootloaderVersion && cloudBootloaderVersion
-     )) {
-    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersion: cloudFirmwareVersion, bootloaderVersion: cloudBootloaderVersion}})
+      state.user && cloudFirmwareVersions && cloudBootloaderVersions &&
+      (
+        state.user.firmwareVersionsAvailable !== cloudFirmwareVersions ||
+        state.user.bootloaderVersionsAvailable !== cloudBootloaderVersions
+      )
+    ) {
+    actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionsAvailable: cloudFirmwareVersions, bootloaderVersionsAvailable: cloudBootloaderVersions}})
   }
 };
 
@@ -213,6 +221,7 @@ const syncCleanupLocal = function(store, actions, cloudData) {
   return deletedSphere;
 };
 
+
 const syncSpheres = function(store, actions, spheres, spheresData) {
   let cloudSphereUserIds = {};
   let cloudSphereIds = {};
@@ -250,7 +259,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           meshAccessAddress: sphere.meshAccessAddress,
           aiName: sphere.aiName,
           aiSex: sphere.aiSex,
-          exitDelay: sphere.exitDelay || 120,
+          exitDelay: sphere.exitDelay || 300,
           latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
           longitude: sphere.gpsLocation && sphere.gpsLocation.lng
         }
@@ -266,7 +275,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           meshAccessAddress: sphere.meshAccessAddress,
           aiName: sphere.aiName,
           aiSex: sphere.aiSex,
-          exitDelay: sphere.exitDelay || 120,
+          exitDelay: sphere.exitDelay || 300,
           latitude: sphere.gpsLocation && sphere.gpsLocation.lat,
           longitude: sphere.gpsLocation && sphere.gpsLocation.lng
         }});
@@ -354,24 +363,9 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
       }
 
       // put the present users from the cloud into the location.
-      let peopleInCloudLocations = {};
-      if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
-        location_from_cloud.presentPeople.forEach((person) => {
-          peopleInCloudLocations[person.Id] = true;
-          // check if the person exists in our sphere and if we are not that person.
-          if (person.id !== state.user.userId && cloudSphereUserIds[person.id] === true) {
-            actions.push({type: 'USER_ENTER_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: person.id}});
-          }
-        });
-      }
-
-      // remove the users from this location that are not in the cloud and that are not the current user
-      if (locationInState) {
-        locationInState.presentUsers.forEach((userId) => {
-          if (peopleInCloudLocations[userId] === undefined && userId !== state.user.userId) {
-            actions.push({type: 'USER_EXIT_LOCATION', sphereId: state.app.activeSphere, locationId: location_from_cloud.id, data: {userId: userId}});
-          }
-        })
+      let userActions = syncUsersInLocation(state, location_from_cloud, locationInState, cloudSphereUserIds[sphere.id], sphere.id);
+      for (let i = 0; i < userActions.length; i++) {
+        actions.push(userActions[i]);
       }
 
     });
@@ -401,6 +395,8 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
               crownstoneId:    stone_from_cloud.uid,
               icon:            stone_from_cloud.icon,
               firmwareVersion: stone_from_cloud.firmwareVersion,
+              bootloaderVersion: stone_from_cloud.bootloaderVersion,
+              hardwareVersion: stone_from_cloud.hardwareVersion,
               iBeaconMajor:    stone_from_cloud.major,
               iBeaconMinor:    stone_from_cloud.minor,
               locationId:      locationLinkId,
@@ -423,6 +419,8 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             icon:            stoneInState.config.icon,
             id:              stone_from_cloud.id,
             firmwareVersion: stoneInState.firmwareVersion,
+            bootloaderVersion: stoneInState.bootloaderVersion,
+            hardwareVersion: stoneInState.hardwareVersion,
             meshNetworkId:   stoneInState.meshNetworkId,
             major:           stoneInState.config.iBeaconMajor,
             minor:           stoneInState.config.iBeaconMinor,
@@ -469,6 +467,8 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             crownstoneId:    stone_from_cloud.uid,
             icon:            stone_from_cloud.icon,
             firmwareVersion: stone_from_cloud.firmwareVersion,
+            bootloaderVersion: stone_from_cloud.bootloaderVersion,
+            hardwareVersion: stone_from_cloud.hardwareVersion,
             iBeaconMajor:    stone_from_cloud.major,
             iBeaconMinor:    stone_from_cloud.minor,
             locationId:      locationLinkId,
@@ -733,6 +733,7 @@ const updateUserLocationInCloud = function(state, deviceId) {
     if (state.user.uploadLocation === true) {
       if (state.user.userId) {
         let userLocation = findUserLocation(state, state.user.userId);
+
         CLOUD.forDevice(deviceId).updateDeviceLocation(userLocation.locationId)
           .then(resolve)
           .catch(reject)

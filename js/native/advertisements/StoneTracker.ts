@@ -14,6 +14,7 @@ import { BehaviourUtil }                      from '../../util/BehaviourUtil';
 import { LOG }                                from '../../logging/Log'
 import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
 import { TYPES }                              from '../../router/store/reducers/stones'
+import {FirmwareHandler} from "../firmware/FirmwareHandler";
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
@@ -55,10 +56,12 @@ export class StoneTracker {
 
     // only use valid rssi measurements, 0 or 128 are not valid measurements
     if (rssi === undefined || rssi > -1) {
+      LOG.debug("StoneTracker: IGNORE: no rssi.");
       return;
     }
 
     if (sphereId === undefined || major  === undefined || minor === undefined) {
+      LOG.debug("StoneTracker: IGNORE: no sphereId or no major or no minor.");
       return;
     }
 
@@ -66,16 +69,25 @@ export class StoneTracker {
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
     if (!(sphere)) {
+      LOG.debug("StoneTracker: IGNORE: unknown sphere.");
       return;
     }
 
     // check if we have a stone with this major / minor
     let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
     if (!(stoneId)) {
+      LOG.debug("StoneTracker: IGNORE: unknown stone.");
       return;
     }
 
     let stone = sphere.stones[stoneId];
+
+    // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
+    // reset is complete.
+    if (stone.config.dfuResetRequired === true) {
+      LOG.debug("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
+      return;
+    }
 
     // tell the handler that this stone/beacon is still in range.
     StoneStateHandler.receivedIBeaconUpdate(sphereId, stone, stoneId, rssi);
@@ -102,6 +114,7 @@ export class StoneTracker {
 
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore === true) {
+      LOG.debug("StoneTracker: IGNORE: temporary ignore enabled.");
       return;
     }
 
@@ -111,7 +124,7 @@ export class StoneTracker {
 
     let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
     // not all stones have touch to toggle enabled
-    if (stone.config.touchToToggle === true && tapToToggleCalibration !== null) {
+    if (stone.config.touchToToggle === true && tapToToggleCalibration !== null && FirmwareHandler.isDfuInProgress() === false) {
       // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
       // the sign > is because the rssi is negative!
       if (ref.touchTemporarilyDisabled === true) {
@@ -135,15 +148,13 @@ export class StoneTracker {
               Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
             }
 
-            let newState = stone.state.state > 0 ? 0 : 1;
-
-            let data = {state: newState};
-            if (newState === 0) {
-              data["currentUsage"] = 0;
-            }
             let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
-            proxy.performPriority(BluenetPromiseWrapper.setSwitchState, [newState, 0, INTENTS.manual])
-              .then(() => {
+            proxy.performPriority(BluenetPromiseWrapper.toggleSwitchState)
+              .then((newState) => {
+                let data = {state: newState};
+                if (newState === 0) {
+                  data["currentUsage"] = 0;
+                }
                 this.store.dispatch({
                   type: 'UPDATE_STONE_SWITCH_STATE',
                   sphereId: sphereId,
@@ -172,8 +183,9 @@ export class StoneTracker {
     // --------------------- Finished Tap-to-Toggle --------------------------- //
 
     // to avoid flickering we do not trigger these events in less than 5 seconds.
-    if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY)
+    if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY) {
       return;
+    }
 
 
     // update local tracking of data
@@ -185,8 +197,9 @@ export class StoneTracker {
       return;
 
     // if the threshold is not defined yet, don't switch on near or far
-    if (stone.config.nearThreshold === null)
+    if (stone.config.nearThreshold === null) {
       return;
+    }
 
 
 

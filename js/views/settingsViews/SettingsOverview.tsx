@@ -76,20 +76,12 @@ export class SettingsOverview extends Component<any, any> {
         />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
-          <Text style={versionStyle}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
+          <Text style={styles.version}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
         </ScrollView>
       </Background>
     );
   }
 }
-
-let versionStyle = {
-  backgroundColor:"transparent",
-  color: colors.darkGray2.rgba(1),
-  textAlign:'center',
-  fontWeight:'300',
-  fontSize: 10,
-};
 
 // TODO: restore once we have a better description for this. Also Location must be working.
 // if (totalAmountOfCrownstones > 0) {

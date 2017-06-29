@@ -4,7 +4,7 @@ const DeviceInfo = require('react-native-device-info');
 
 
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
-    const RELEASE_MODE = true;
+    const RELEASE_MODE = false;
     export const FALLBACKS_ENABLED = true;
 
     // DO NOT CHANGE THIS LINE.
@@ -48,11 +48,15 @@ const DeviceInfo = require('react-native-device-info');
     export const AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION = 4;
 
     /**
+     * Switch to disable the usage of the mesh in the app
+     */
+    export const MESH_ENABLED = false;
+
+    /**
      * Point to the production cloud.
      */
     export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
 
-    export let MESH_ENABLED = false;
 
 /******************** /APP ********************/
 
@@ -67,6 +71,7 @@ const DeviceInfo = require('react-native-device-info');
     export let LOG_INFO       = true;    // enabling LOG.info       commands to be shown.
     export let LOG_WARNINGS   = true;    // enabling LOG.warn       commands to be shown.
     export let LOG_ERRORS     = true;    // enabling LOG.error      commands to be shown.
+    export let LOG_MESH       = true;    // enabling LOG.mesh       commands to be shown.
 
     /**
      * Specific logging settings used for debugging mostly.
@@ -76,7 +81,6 @@ const DeviceInfo = require('react-native-device-info');
     export let LOG_BLE        = false;   // enabling LOG.ble        commands to be shown.
     export let LOG_EVENTS     = false;   // enabling LOG.event      commands to be shown.
     export let LOG_STORE      = false;   // enabling LOG.store      commands to be shown.
-    export let LOG_MESH       = false;   // enabling LOG.mesh       commands to be shown.
     export let LOG_CLOUD      = false;   // enabling LOG.cloud      commands to be shown.
     export let LOG_DEBUG      = false;   // enabling LOG.debug      commands to be shown.
 
@@ -109,8 +113,14 @@ const DeviceInfo = require('react-native-device-info');
     // Time until a scanned crownstone in setup mode is regarded to be gone.
     export const SETUP_MODE_TIMEOUT = 15000; // ms
 
+    // Time until a scanned crownstone in DFU mode is regarded to be gone
+    export const DFU_MODE_TIMEOUT = 15000; // ms
+
     // interval for syncing with the cloud.
     export const SYNC_INTERVAL = 60*10; // s --> 10 minutes
+
+    // interval for syncing sphere users with the cloud so you see their faces in the app.
+    export const SPHERE_USER_SYNC_INTERVAL = 10; // s --> 10 seconds
 
     // The amount of time to wait until the promise manager gives up on a pending promise.
     export const PROMISE_MANAGER_FALLBACK_TIMEOUT = 60000; // ms --> 1 minute
@@ -121,10 +131,21 @@ const DeviceInfo = require('react-native-device-info');
     // the amount of time between the near/far switching. If you go from near->far, it will ignore the messages for the next TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY ms
     export const TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY = 2000; // ms
 
-    // the amout of time we wait before accepting another tap to toggle to the same crownstone.
+    // the amount of time we wait before accepting another tap to toggle to the same crownstone.
     export const TIME_BETWEEN_TAP_TO_TOGGLES = 5000; // ms
 
 /******************** /TIMINGS ********************/
+
+
+
+
+/********************  DEV EXCEPTIONS ********************/
+
+  // if this is enabled, you will always have the option to update the firmware and bootloader,
+  // and all of them will be installed and a hard reset follows. This is to test the DFU.
+  export const ALWAYS_DFU_UPDATE = false;
+
+/******************** /DEV EXCEPTIONS ********************/
 
 
 

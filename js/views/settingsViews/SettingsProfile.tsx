@@ -70,7 +70,7 @@ export class SettingsProfile extends Component<any, any> {
       label:'First Name',
       type: 'textEdit',
       value: this.state.firstName,
-      validation:{minLength:2, numbers:{allowed:false}},
+      validation:{minLength:1, numbers:{allowed:false}},
       validationCallback: (result) => {this.validationState.firstName = result;},
       callback: (newText) => {
         this.setState({firstName: newText});
@@ -82,7 +82,7 @@ export class SettingsProfile extends Component<any, any> {
           sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{firstName: newText}}); });
         }
         else {
-          Alert.alert('First name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
+          Alert.alert('First name must be at least 1 letter long', 'No numbers allowed either.', [{text: 'OK'}]);
         }
       }
     });
@@ -90,7 +90,7 @@ export class SettingsProfile extends Component<any, any> {
       label:'Last Name', 
       type: 'textEdit',
       value: this.state.lastName,
-      validation:{minLength:2, numbers:{allowed:false}},
+      validation:{minLength:1, numbers:{allowed:false}},
       validationCallback: (result) => {this.validationState.lastName = result;},
       callback: (newText) => {
         this.setState({lastName: newText});
@@ -103,7 +103,7 @@ export class SettingsProfile extends Component<any, any> {
 
         }
         else {
-          Alert.alert('Last name must be at least 2 letters long', 'No numbers allowed either.', [{text: 'OK'}]);
+          Alert.alert('Last name must be at least 1 letter long', 'No numbers allowed either.', [{text: 'OK'}]);
         }
       }
     });
@@ -184,16 +184,19 @@ export class SettingsProfile extends Component<any, any> {
     CLOUD.requestPasswordResetEmail({email: email.toLowerCase()})
       .then(() => {
         this.props.eventBus.emit('showLoading', 'Email sent!');
+        let defaultAction = () => {
+          AppUtil.logOut(this.props.store);
+        };
         Alert.alert(
           'Reset email has been sent',
           'You will now be logged out. Follow the instructions in the email and log in with your new password.',
-          [{text: 'OK', onPress: () => {
-            AppUtil.logOut();
-          }}]
+          [{text: 'OK', onPress: defaultAction}],
+          { onDismiss: defaultAction }
         )
       })
       .catch((reply) => {
-        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: () => {this.props.eventBus.emit('hideLoading')}}]);
+        let defaultAction = () => {this.props.eventBus.emit('hideLoading'); };
+        Alert.alert("Cannot Send Email", reply.data, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction });
       });
   }
 

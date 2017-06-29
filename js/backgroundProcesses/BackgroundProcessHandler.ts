@@ -20,12 +20,14 @@ import { AdvertisementHandler }  from "../native/advertisements/AdvertisementHan
 import { Scheduler }             from "../logic/Scheduler";
 import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
-import { SYNC_INTERVAL }         from "../ExternalConfig";
-import {BatterySavingUtil} from "../util/BatterySavingUtil";
-import {FirmwareHandler} from "../native/firmware/FirmwareHandler";
+import { SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
+import { BatterySavingUtil }     from "../util/BatterySavingUtil";
+import { MapProvider }           from "./MapProvider";
+import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 
 
-
+const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
+const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
 
 class BackgroundProcessHandlerClass {
   started : boolean = false;
@@ -57,6 +59,7 @@ class BackgroundProcessHandlerClass {
           });
 
         LocationHandler.trackSpheres();
+
         this.userLoggedIn = true;
       });
 
@@ -77,6 +80,8 @@ class BackgroundProcessHandlerClass {
 
         this.updateDeviceName();
 
+        LocationHandler.applySphereStateFromStore();
+
         let state = this.store.getState();
         Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
       });
@@ -93,26 +98,39 @@ class BackgroundProcessHandlerClass {
    */
   startCloudService() {
     // sync every 10 minutes
-    Scheduler.setRepeatingTrigger('backgroundSync', {repeatEveryNSeconds:SYNC_INTERVAL});
-    Scheduler.loadCallback('backgroundSync', () => {
+    Scheduler.setRepeatingTrigger(BACKGROUND_SYNC_TRIGGER, {repeatEveryNSeconds:SYNC_INTERVAL});
+    Scheduler.setRepeatingTrigger(BACKGROUND_USER_SYNC_TRIGGER, {repeatEveryNSeconds: SPHERE_USER_SYNC_INTERVAL});
+
+    // if the app is open, update the user locations every 10 seconds
+    Scheduler.loadCallback(BACKGROUND_USER_SYNC_TRIGGER, () => {
+      if (SetupStateHandler.isSetupInProgress() === false) {
+        CLOUD.syncUsers(this.store);
+      }
+    });
+
+    // sync the full db with the cloud every 10 minutes
+    Scheduler.loadCallback(BACKGROUND_SYNC_TRIGGER, () => {
       let state = this.store.getState();
+      // if a crownstone is in setup mode, we do not sync at that time
       if (SetupStateHandler.isSetupInProgress() === false) {
         if (state.user.userId) {
-          LOG.info("STARTING ROUTINE SYNCING IN BACKGROUND");
+          LOG.info("BackgroundProcessHandler: STARTING ROUTINE SYNCING IN BACKGROUND");
           CLOUD.sync(this.store, true).catch((err) => { LOG.error("Error during background sync: ", err)});
         }
       }
       else {
-        LOG.info("SKIPPING STARTING ROUTINE SYNCING IN BACKGROUND");
+        LOG.info("BackgroundProcessHandler: Skipping routine sync due to active setup phase.");
       }
     });
 
     // set the global network error handler.
     CLOUD.setNetworkErrorHandler((error) => {
+      let defaultAction = () => { eventBus.emit('hideLoading');};
       Alert.alert(
         "Connection Problem",
         "Could not connect to the Cloud. Please check your internet connection.",
-        [{text: 'OK', onPress: () => {eventBus.emit('hideLoading');}}]
+        [{text: 'OK', onPress: defaultAction }],
+        { onDismiss: defaultAction }
       );
     });
   }
@@ -143,24 +161,16 @@ class BackgroundProcessHandlerClass {
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
+      // do not show popup during setup.
       if (SetupStateHandler.isSetupInProgress() === true) {
         return;
       }
 
       let state = this.store.getState();
-      if (state && state.devices && deviceInDatabaseId &&
+      if (state && state.devices && deviceInDatabaseId && state.devices[deviceInDatabaseId] &&
         (state.devices[deviceInDatabaseId].tapToToggleCalibration === null || state.devices[deviceInDatabaseId].tapToToggleCalibration === undefined)) {
         if (Util.data.userHasPlugsInSphere(state,sphereId))
           eventBus.emit("CalibrateTapToToggle");
-      }
-    });
-  }
-
-  startBluetoothListener() {
-    // Ensure we start scanning when the bluetooth module is powered on.
-    NativeBus.on(NativeBus.topics.bleStatus, (status) => {
-      if (this.userLoggedIn && status === 'poweredOn') {
-        BatterySavingUtil.scanOnlyIfNeeded();
       }
     });
 
@@ -170,10 +180,25 @@ class BackgroundProcessHandlerClass {
       // in the foreground: start scanning!
       if (appState === "active" && this.userLoggedIn) {
         BatterySavingUtil.scanOnlyIfNeeded();
+
+        // if the app is open, update the user locations every 10 seconds
+        Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
       }
-      // in the background: stop scanning to save battery!
-      else if (appState === "background") {
+      else {
+        // in the background: stop scanning to save battery!
         BatterySavingUtil.stopScanningIfPossible();
+
+        // remove the user sync so it won't use battery in the background
+        Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);
+      }
+    });
+  }
+
+  startBluetoothListener() {
+    // Ensure we start scanning when the bluetooth module is powered on.
+    NativeBus.on(NativeBus.topics.bleStatus, (status) => {
+      if (this.userLoggedIn && status === 'poweredOn') {
+        BatterySavingUtil.scanOnlyIfNeeded();
       }
     });
   }
@@ -193,6 +218,7 @@ class BackgroundProcessHandlerClass {
     this.store = StoreManager.getStore();
 
     // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
+    // also add the app identifier if we don't already have one.
     refreshDatabase(this.store);
 
     // if we have an accessToken, we proceed with logging in automatically
@@ -203,32 +229,30 @@ class BackgroundProcessHandlerClass {
       CLOUD.forUser(state.user.userId).getUserData({background:true})
         .catch((err) => {
           if (err.status === 401) {
-            LOG.warn("Could not verify user, attempting to login again.");
+            LOG.warn("BackgroundProcessHandler: Could not verify user, attempting to login again.");
             return CLOUD.login({
               email: state.user.email,
-              password: state.user.password,
-              background: true,
-              onUnverified: () => {},
-              onInvalidCredentials: () => {}
+              password: state.user.passwordHash,
+              background: true
             })
-              .then((response) => {
-                CLOUD.setAccess(response.id);
-                CLOUD.setUserId(response.userId);
-              })
+            .then((response) => {
+              CLOUD.setAccess(response.id);
+              CLOUD.setUserId(response.userId);
+              this.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
+            })
           }
           else {
             throw err;
           }
         })
         .then((reply) => {
-          LOG.info("Verified User.", reply);
+          LOG.info("BackgroundProcessHandler: Verified User.", reply);
           CLOUD.sync(this.store, true).catch(() => {})
         })
         .catch((err) => {
-          LOG.info("COULD NOT VERIFY USER -- ERROR", err);
+          LOG.info("BackgroundProcessHandler: COULD NOT VERIFY USER -- ERROR", err);
           if (err.status === 401) {
-            AppUtil.logOut();
-            Alert.alert("Please log in again.", undefined, [{text:'OK'}]);
+            AppUtil.logOut(this.store, {title: "Access token expired.", body:"I could not renew this automatically. The app will clean up and exit now. Please log in again."});
           }
         });
       eventBus.emit("userLoggedIn");
@@ -241,11 +265,13 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
+    MapProvider.loadStore(this.store);
     LogProcessor.loadStore(this.store);
     LocationHandler.loadStore(this.store);
     AdvertisementHandler.loadStore(this.store);
     Scheduler.loadStore(this.store);
     StoneStateHandler.loadStore(this.store);
+    DfuStateHandler.loadStore(this.store);
     SetupStateHandler.loadStore(this.store);
     KeepAliveHandler.loadStore(this.store);
     FirmwareWatcher.loadStore(this.store);
@@ -258,6 +284,8 @@ class BackgroundProcessHandlerClass {
 /**
  * If we change the reducer default values, this adds any new fields to the redux database
  * so we don't have to error catch everywhere.
+ *
+ * Finally we create the app identifier
  * @param store
  */
 function refreshDatabase(store) {
@@ -283,11 +311,11 @@ function refreshDatabase(store) {
     let presetIds = Object.keys(state.spheres[sphereId].presets);
 
     refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
-    stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId: stoneId});});
-    locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId: locationId});});
+    stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId:     stoneId});});
+    locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId:  locationId});});
     applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
-    userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId: userId});});
-    presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId: presetId});});
+    userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId:      userId});});
+    presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId:    presetId});});
   }
 
   // create an app identifier if we do not already have one.

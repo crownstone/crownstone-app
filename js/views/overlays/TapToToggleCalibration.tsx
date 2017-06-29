@@ -8,13 +8,13 @@ import {
   View,
 } from 'react-native';
 
-import { LOG }                from '../../../logging/Log'
-import { BlePromiseManager }  from '../../../logic/BlePromiseManager'
-import { addDistanceToRssi, Util }  from '../../../util/Util'
-import { stoneTypes }  from '../../../router/store/reducers/stones'
-import { OverlayBox }         from './OverlayBox'
-import { eventBus }                                   from '../../../util/EventBus'
-import { styles, colors , screenHeight, screenWidth } from '../../styles'
+import { LOG }                                        from '../../logging/Log'
+import { BlePromiseManager }                          from '../../logic/BlePromiseManager'
+import { addDistanceToRssi, Util }                    from '../../util/Util'
+import { stoneTypes }                                 from '../../router/store/reducers/stones'
+import { OverlayBox }                                 from '../components/overlays/OverlayBox'
+import { eventBus }                                   from '../../util/EventBus'
+import { styles, colors , screenHeight, screenWidth } from '../styles'
 
 export class TapToToggleCalibration extends Component<any, any> {
   unsubscribe : any;
@@ -27,14 +27,14 @@ export class TapToToggleCalibration extends Component<any, any> {
   }
 
   componentDidMount() {
-    eventBus.on("CalibrateTapToToggle", (data : any = {}) => {
+    this.unsubscribe.push(eventBus.on("CalibrateTapToToggle", (data : any = {}) => {
       eventBus.emit("ignoreTriggers");
       this.setState({
         visible: true,
         step: data.tutorial === false ? 1 : 0,
         tutorial: data.tutorial === undefined ? true  : data.tutorial
       });
-    })
+    }));
   }
 
   componentWillUnmount() {
@@ -110,7 +110,8 @@ export class TapToToggleCalibration extends Component<any, any> {
             Alert.alert("That's a bit far away.", "Maybe try again later.")
           }
           else {
-            Alert.alert("That's a bit far away.", "Try to hold your phone really close to the Plug and press OK to retry!", [{text:'OK', onPress:() => {this.learnDistance(attempt + 1)}}])
+            let defaultAction = () => {this.learnDistance(attempt + 1)};
+            Alert.alert("That's a bit far away.", "Try to hold your phone really close to the Plug and press OK to retry!", [{text:'OK', onPress: defaultAction }], { onDismiss: defaultAction })
           }
 
         }
@@ -118,7 +119,7 @@ export class TapToToggleCalibration extends Component<any, any> {
       .catch((err) => {
         LOG.error("TapToToggleCalibration error:", err);
         eventBus.emit("hideLoading");
-        Alert.alert("Something went wrong", "Maybe try again later.")
+        Alert.alert("Something went wrong", "Maybe try again later.", [{text:'OK'}])
       })
   }
 
@@ -128,7 +129,7 @@ export class TapToToggleCalibration extends Component<any, any> {
       case 0:
         props = {
           title: 'Using Tap-to-Toggle',
-          image: require('../../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
+          image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
           header: "Now that you've added a Crownstone Plug, you can use tap-to-toggle!",
           explanation: "Tap-to-toggle means you can switch a Plug just by holding your phone really close to it!",
           back: false,
@@ -139,7 +140,7 @@ export class TapToToggleCalibration extends Component<any, any> {
       case 1:
         props = {
           title: 'Setting it up',
-          image: require('../../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
+          image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
           header: "In order to use tap-to-toggle, you need to help me a little.",
           explanation: "This will only take a minute and will only have to be done once. Hold your phone really close to a Plug and press 'Next'.",
           back: true,
@@ -158,7 +159,7 @@ export class TapToToggleCalibration extends Component<any, any> {
       case 2:
         props = {
           title: "Great!",
-          image: require('../../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
+          image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
           header: "Now that I can recognise it with your phone, let's try tap-to-toggle!",
           explanation: "After you click 'Next' I'll enable tap-to-toggle and you can try it out! You can recalibrate your tap-to-toggle in the settings.",
           back: true,
@@ -178,7 +179,7 @@ export class TapToToggleCalibration extends Component<any, any> {
       case 3:
         props = {
           title: "Let's give it a try!",
-          image: require('../../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
+          image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
           header: "Touch your phone to the Plug to trigger tap-to-toggle!",
           explanation: "Once the phone vibrates, it will start to toggle the Plug.",
           back: true,

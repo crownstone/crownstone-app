@@ -4,6 +4,7 @@ import { Bluenet } from "../native/libInterface/Bluenet";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { Util } from "./Util";
 import { Scheduler } from "../logic/Scheduler";
+import {BleUtil} from "./BleUtil";
 
 class BatterySavingClass {
   store: any;
@@ -29,6 +30,20 @@ class BatterySavingClass {
    * @param sphereId
    */
   scanOnlyIfNeeded(sphereId = null) {
+    let cancelPostponedScan = () => {
+      if (typeof this._cancelPostponedScanStop === 'function') {
+        this._cancelPostponedScanStop();
+        this._cancelPostponedScanStop = null;
+      }
+    };
+
+    // do not do anything to the scanning if high frequency scan is on.
+    if (BleUtil.highFrequencyScanUsed() === true) {
+      cancelPostponedScan();
+      return;
+    }
+
+
     let state = this.store.getState();
 
     // if needed requirements:
@@ -49,11 +64,7 @@ class BatterySavingClass {
     }
 
     if (appInForeground && inSphere || inSphere && notAllHandlesAreKnown === true) {
-      if (typeof this._cancelPostponedScanStop === 'function') {
-        this._cancelPostponedScanStop();
-        this._cancelPostponedScanStop = null;
-      }
-
+      cancelPostponedScan();
       BluenetPromiseWrapper.isReady().then(() => {
         Bluenet.startScanningForCrownstonesUniqueOnly();
       });
@@ -71,6 +82,13 @@ class BatterySavingClass {
    * @param forceNotInSphere
    */
   stopScanningIfPossible(forceNotInSphere = false) {
+    // do not do anything to the scanning if high frequency scan is on.
+    if (BleUtil.highFrequencyScanUsed() === true) {
+      // try again later tho.
+      this._cancelPostponedScanStop = Scheduler.scheduleCallback( () => { this.stopScanningIfPossible(forceNotInSphere); }, 60000, 'stopScanningIfPossible')
+      return;
+    }
+
     let state = this.store.getState();
 
     // if possible requirements:

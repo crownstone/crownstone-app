@@ -145,7 +145,7 @@ export class SettingsSphere extends Component<any, any> {
                 })
             }
             else {
-              Alert.alert('Sphere name must be at least 3 letters long', 'Please try again.', [{text: 'OK'}]);
+              Alert.alert('Sphere name must be at least 2 letters long', 'Please try again.', [{text: 'OK'}]);
             }
           }
         }
