@@ -47,11 +47,12 @@ export class SettingsPrivacy extends Component<any, any> {
     let state = store.getState();
     let items = [];
 
-    items.push({type: 'spacer'});
+
     items.push({
       label: "You can choose what you want to share with the cloud and what you prefer to keep on your phone.\n\n" +
       "If you have multiple users in a Sphere, sharing location is required to see them in the overview.",
       type: 'largeExplanation',
+      style:{paddingTop:15, paddingBottom:15}
     });
     items.push({
       label:"Share location",
