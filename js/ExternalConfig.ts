@@ -140,6 +140,9 @@ const DeviceInfo = require('react-native-device-info');
     // the amount of time we wait before accepting another tap to toggle to the same crownstone.
     export const TIME_BETWEEN_TAP_TO_TOGGLES = 5000; // ms
 
+    // The time between batch uploads to the cloud.
+    export const CLOUD_BATCH_UPDATE_INTERVAL = 10; // s
+
 /******************** /TIMINGS ********************/
 
 

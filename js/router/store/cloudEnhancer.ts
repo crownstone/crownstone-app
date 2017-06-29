@@ -1,8 +1,9 @@
-import { CLOUD } from '../../cloud/cloudAPI'
-import { Util } from '../../util/Util'
-import { BATCH } from './storeManager'
-import { LOG } from '../../logging/Log'
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import { CLOUD }         from '../../cloud/cloudAPI'
+import { Util }          from '../../util/Util'
+import { BATCH }         from './storeManager'
+import { LOG }           from '../../logging/Log'
+import { Permissions }   from "../../backgroundProcesses/Permissions";
+import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -333,12 +334,11 @@ function handleStoneState(action, state, pureSwitch = false) {
 
   if (state.user.uploadPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = { power: stone.state.currentUsage };
+    let data  = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
     if (stone.config.applianceId) {
       data['applianceId'] = stone.config.applianceId;
     }
-
-    CLOUD.forStone(stoneId).updatePowerUsage(data).catch(() => {});
+    BatchUploader.addPowerData(stoneId, data);
   }
 }
 

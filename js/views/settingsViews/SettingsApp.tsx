@@ -20,6 +20,7 @@ import {Util} from "../../util/Util";
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 import {KEEPALIVE_INTERVAL} from "../../ExternalConfig";
 import {KeepAliveHandler} from "../../backgroundProcesses/KeepAliveHandler";
+import {LocationHandler} from "../../native/localization/LocationHandler";
 
 
 export class SettingsApp extends Component<any, any> {
@@ -49,7 +50,9 @@ export class SettingsApp extends Component<any, any> {
         KeepAliveHandler.fireTrigger();
       }
       else {
+        let state = this.props.store.getState();
         KeepAliveHandler.clearCurrentKeepAlives();
+        LocationHandler._removeUserFromAllRooms(state, state.user.userId);
       }
     }
 

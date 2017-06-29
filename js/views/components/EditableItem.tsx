@@ -38,6 +38,12 @@ import {LargeExplanation} from "./editComponents/LargeExplanation";
  * explanation - Text above or below an editable item with padding.
      --> {label: text, below: boolean, style: style object to overrule explanation style}
 
+ * lightExplanation - Text above or below an editable item with padding.
+     --> {label: text, below: boolean, style: style object to overrule explanation style}
+
+ * largeExplanation - Text above or below an editable item with padding.
+     --> {label: text, below: boolean, style: style object to overrule explanation style}
+
  * icon - Trigger to change the icon
      --> {label: field label, value: iconName, callback: (newValue) => {}}
 

@@ -247,8 +247,14 @@ class LocationHandlerClass {
   }
 
 
+  _removeUserFromAllRooms(state, userId, exceptionRoomId = null) {
+    let sphereIds = Object.keys(state.spheres);
+    sphereIds.forEach((sphereId) => {
+      this._removeUserFromRooms(state,sphereId,userId,exceptionRoomId);
+    })
+  }
+
   /**
-   *
    * @param state
    * @param sphereId
    * @param userId

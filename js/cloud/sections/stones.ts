@@ -47,6 +47,21 @@ export const stones = {
     );
   },
 
+  /**
+   * Update a current energy usage
+   * @param data
+   * @param background
+   * @returns {*}
+   */
+  updateBatchPowerUsage: function(data : any[], background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Stones/{id}/batchPowerUsage/',
+      { background: background, data: data },
+      'body'
+    );
+  },
+
 
   /**
    * Update the link from a crownstone to a room.
