@@ -16,6 +16,7 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
 import { LOG } from '../../../logging/Log'
 import {deviceStyles} from "../DeviceOverview";
+import {Graph} from "../../components/Graph";
 
 export class DevicePowerCurve extends Component<any, any> {
   constructor() {
@@ -30,6 +31,7 @@ export class DevicePowerCurve extends Component<any, any> {
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center', paddingTop:30}}>
         <Text style={deviceStyles.header}>Dynamic Power Usage</Text>
+        <Graph width={screenWidth} height={availableScreenHeight/2} />
       </View>
     )
   }

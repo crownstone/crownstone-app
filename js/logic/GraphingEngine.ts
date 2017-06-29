@@ -1,15 +1,40 @@
 
+export let defaultOptions = {
+  yAxisOrientation: 'left',
+  defaultGroup: 'default',
+  sort: true,
+  sampling: true,
+  stack: false,
+  graphHeight: '400px',
+  shaded: {
+    enabled: false,
+    orientation: 'bottom' // top, bottom, zero
+  },
+  style: 'line', // line, bar
+  barChart: {
+    width: 50,
+    sideBySide: false,
+    align: 'center' // left, center, right
+  },
+  interpolation: {
+    enabled: true,
+    parametrization: 'centripetal', // uniform (alpha = 0.0), chordal (alpha = 1.0), centripetal (alpha = 0.5)
+    alpha: 0.5
+  }
+}
 
-class GraphingEngine {
 
-  calcPath(dataset, group) {
+
+export const GraphingEngine = {
+
+  calcPath(dataset, options : any = defaultOptions) {
     if (dataset != null) {
       if (dataset.length > 0) {
         var d = [];
 
         // construct path from dataset
-        if (group.options.interpolation.enabled == true) {
-          d = this._catmullRom(dataset, group);
+        if (options.interpolation.enabled == true) {
+          d = this._catmullRom(dataset, options);
         }
         else {
           d = this._r(dataset);
@@ -17,9 +42,9 @@ class GraphingEngine {
         return d;
       }
     }
-  }
+  },
 
-  serializePath = function (pathArray, type, inverse) {
+  serializePath(pathArray, type, inverse) {
     if (pathArray.length < 2) {
       //Too little data to create a path.
       return "";
@@ -36,7 +61,7 @@ class GraphingEngine {
       }
     }
     return d;
-  }
+  },
 
   /**
    * This uses an uniform parametrization of the interpolation algorithm:
@@ -49,7 +74,7 @@ class GraphingEngine {
     // catmull rom
     var p0, p1, p2, p3, bp1, bp2;
     var d = [];
-    d.push([Math.round(data[0].screen_x), Math.round(data[0].screen_y)]);
+    d.push([Math.round(data[0].x), Math.round(data[0].y)]);
     var normalization = 1 / 6;
     var length = data.length;
     for (var i = 0; i < length - 1; i++) {
@@ -68,22 +93,22 @@ class GraphingEngine {
 
       //    bp0 = { x: p1.x,                               y: p1.y };
       bp1 = {
-        screen_x: ((-p0.screen_x + 6 * p1.screen_x + p2.screen_x) * normalization),
-        screen_y: ((-p0.screen_y + 6 * p1.screen_y + p2.screen_y) * normalization)
+        x: ((-p0.x + 6 * p1.x + p2.x) * normalization),
+        y: ((-p0.y + 6 * p1.y + p2.y) * normalization)
       };
       bp2 = {
-        screen_x: (( p1.screen_x + 6 * p2.screen_x - p3.screen_x) * normalization),
-        screen_y: (( p1.screen_y + 6 * p2.screen_y - p3.screen_y) * normalization)
+        x: (( p1.x + 6 * p2.x - p3.x) * normalization),
+        y: (( p1.y + 6 * p2.y - p3.y) * normalization)
       };
       //    bp0 = { x: p2.x,                               y: p2.y };
 
-      d.push([bp1.screen_x, bp1.screen_y]);
-      d.push([bp2.screen_x, bp2.screen_y]);
-      d.push([p2.screen_x, p2.screen_y]);
+      d.push([bp1.x, bp1.y]);
+      d.push([bp2.x, bp2.y]);
+      d.push([p2.x, p2.y]);
     }
 
     return d;
-  };
+  },
 
   /**
    * This uses either the chordal or centripetal parameterization of the catmull-rom algorithm.
@@ -96,8 +121,8 @@ class GraphingEngine {
    * @returns {string}
    * @private
    */
-  _catmullRom(data, group) {
-    var alpha = group.options.interpolation.alpha;
+  _catmullRom(data, options) {
+    var alpha = options.interpolation.alpha;
     if (alpha == 0 || alpha === undefined) {
       return this._catmullRomUniform(data);
     }
@@ -105,7 +130,7 @@ class GraphingEngine {
       var p0, p1, p2, p3, bp1, bp2, d1, d2, d3, A, B, N, M;
       var d3powA, d2powA, d3pow2A, d2pow2A, d1pow2A, d1powA;
       var d = [];
-      d.push([Math.round(data[0].screen_x), Math.round(data[0].screen_y)]);
+      d.push([Math.round(data[0].x), Math.round(data[0].y)]);
       var length = data.length;
       for (var i = 0; i < length - 1; i++) {
 
@@ -114,9 +139,9 @@ class GraphingEngine {
         p2 = data[i + 1];
         p3 = (i + 2 < length) ? data[i + 2] : p2;
 
-        d1 = Math.sqrt(Math.pow(p0.screen_x - p1.screen_x, 2) + Math.pow(p0.screen_y - p1.screen_y, 2));
-        d2 = Math.sqrt(Math.pow(p1.screen_x - p2.screen_x, 2) + Math.pow(p1.screen_y - p2.screen_y, 2));
-        d3 = Math.sqrt(Math.pow(p2.screen_x - p3.screen_x, 2) + Math.pow(p2.screen_y - p3.screen_y, 2));
+        d1 = Math.sqrt(Math.pow(p0.x - p1.x, 2) + Math.pow(p0.y - p1.y, 2));
+        d2 = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        d3 = Math.sqrt(Math.pow(p2.x - p3.x, 2) + Math.pow(p2.y - p3.y, 2));
 
         // Catmull-Rom to Cubic Bezier conversion matrix
 
@@ -147,29 +172,29 @@ class GraphingEngine {
         }
 
         bp1 = {
-          screen_x: ((-d2pow2A * p0.screen_x + A * p1.screen_x + d1pow2A * p2.screen_x) * N),
-          screen_y: ((-d2pow2A * p0.screen_y + A * p1.screen_y + d1pow2A * p2.screen_y) * N)
+          x: ((-d2pow2A * p0.x + A * p1.x + d1pow2A * p2.x) * N),
+          y: ((-d2pow2A * p0.y + A * p1.y + d1pow2A * p2.y) * N)
         };
 
         bp2 = {
-          screen_x: (( d3pow2A * p1.screen_x + B * p2.screen_x - d2pow2A * p3.screen_x) * M),
-          screen_y: (( d3pow2A * p1.screen_y + B * p2.screen_y - d2pow2A * p3.screen_y) * M)
+          x: (( d3pow2A * p1.x + B * p2.x - d2pow2A * p3.x) * M),
+          y: (( d3pow2A * p1.y + B * p2.y - d2pow2A * p3.y) * M)
         };
 
-        if (bp1.screen_x == 0 && bp1.screen_y == 0) {
+        if (bp1.x == 0 && bp1.y == 0) {
           bp1 = p1;
         }
-        if (bp2.screen_x == 0 && bp2.screen_y == 0) {
+        if (bp2.x == 0 && bp2.y == 0) {
           bp2 = p2;
         }
-        d.push([bp1.screen_x, bp1.screen_y]);
-        d.push([bp2.screen_x, bp2.screen_y]);
-        d.push([p2.screen_x, p2.screen_y]);
+        d.push([bp1.x, bp1.y]);
+        d.push([bp2.x, bp2.y]);
+        d.push([p2.x, p2.y]);
       }
 
       return d;
     }
-  };
+  },
 
   /**
    * this generates the SVG path for a r drawing between datapoints.
@@ -181,7 +206,7 @@ class GraphingEngine {
     // r
     var d = [];
     for (var i = 0; i < data.length; i++) {
-      d.push([data[i].screen_x, data[i].screen_y]);
+      d.push([data[i].x, data[i].y]);
     }
     return d;
   }
