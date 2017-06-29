@@ -460,7 +460,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void isReady(Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "isReady: " + callback);
-		// TODO: what if isReady gets called twice before ready?
+		// TODO: what if isReady gets called twice before ready? --> use a timed call to checkReady with callback as arg
 		_readyCallback = callback;
 		checkReady();
 	}
@@ -1993,7 +1993,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_lastLocationId = locationId;
 	}
 
-	private void checkReady() {
+	private synchronized void checkReady() {
 		BleLog.getInstance().LOGd(TAG, "checkReady");
 		if (_readyCallback == null) {
 			BleLog.getInstance().LOGd(TAG, "no ready callback");
