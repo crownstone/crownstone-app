@@ -66,6 +66,7 @@ import nl.dobots.bluenet.ble.core.callbacks.IDataCallback;
 import nl.dobots.bluenet.ble.core.callbacks.IStatusCallback;
 import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
+import nl.dobots.bluenet.ble.extended.BleExtState;
 import nl.dobots.bluenet.ble.extended.callbacks.EventListener;
 import nl.dobots.bluenet.ble.extended.CrownstoneSetup;
 import nl.dobots.bluenet.ble.extended.structs.BleDevice;
@@ -376,6 +377,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
+	public void enableExtendedLogging(boolean enable) {
+		BleLog.getInstance().LOGi(TAG, "enableExtendedLogging " + enable);
+		bla;
+	}
+
+	@ReactMethod
 	public void clearLogs() {
 		BleLog.getInstance().LOGi(TAG, "clearLogs");
 		_fileLogger.enable(false);
@@ -460,7 +467,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void isReady(Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "isReady: " + callback);
-		// TODO: what if isReady gets called twice before ready?
+		// TODO: what if isReady gets called twice before ready? --> use a timed call to checkReady with callback as arg
 		_readyCallback = callback;
 		checkReady();
 	}
@@ -1094,9 +1101,30 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			@Override
 			public void onError(int error) {
 				BleLog.getInstance().LOGd(TAG, "Error: " + error);
-				Exception e = new RuntimeException("test");
-				e.printStackTrace();
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
 
+	@ReactMethod
+	public void restartCrownstone(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "restartCrownstone");
+		// Reboots the crownstone, already connected
+		_bleExt.resetDevice(new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "Error: " + error);
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
 				retVal.putString("data", "error: " + error);
@@ -1107,6 +1135,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void putInDFU(final Callback callback) {
+		// Puts the crownstone in DFU mode
 		BleLog.getInstance().LOGi(TAG, "putInDFU");
 		_bleExt.resetToBootloader(new IStatusCallback() {
 			@Override
@@ -1128,6 +1157,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void setupPutInDFU(Callback callback) {
+		// Puts the crownstone in DFU mode, while it's in setup mode.
 		putInDFU(callback);
 	}
 
@@ -1198,6 +1228,64 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 					callback.invoke(retVal);
 				}
 		});
+	}
+
+	@ReactMethod
+	public void getErrors(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getErrors");
+		// Gets the state errors of the crownstone, already connected
+		// returns as data field, a map: { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
+		_bleExt.getBleExtState().getErrorState(new IIntegerCallback() {
+			@Override
+			public void onSuccess(int result) {
+				BleLog.getInstance().LOGd(TAG, "Success: " + Integer.toBinaryString(result));
+				WritableMap stateErrorMap = Arguments.createMap();
+				stateErrorMap.putBoolean("overCurrent",       BleExtState.isErrorOvercurrent(result));
+                stateErrorMap.putBoolean("overCurrentDimmer", BleExtState.isErrorOvercurrentDimmer(result));
+                stateErrorMap.putBoolean("temperatureChip",   BleExtState.isErrorChipTemperature(result));
+                stateErrorMap.putBoolean("temperatureDimmer", BleExtState.isErrorDimmberTemperature(result));
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				retVal.putMap("data", stateErrorMap);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void clearErrors(ReadableMap clearErrorsMap, Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "clearErrors: " + clearErrorsMap.toString());
+		// Clears given state errors
+		// errors:
+        
+		// temperatureDimmer
+		// temperatureChip
+		// overCurrentDimmer
+		// overCurrent
+		bla;
+	}
+
+	@ReactMethod
+	public void setTime(long timestamp, Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "setTime: " + timestamp);
+		// Sets the unix time on the crownstone
+		bla;
+	}
+
+	@ReactMethod
+	public void getTime(Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getTime");
+		// Gets the current unix time from the crownstone
+		bla;
 	}
 
 	@ReactMethod
@@ -1463,6 +1551,18 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		callback.invoke(retVal);
 	}
 
+	@ReactMethod
+	public void batterySaving(boolean enable) {
+		BleLog.getInstance().LOGi(TAG, "batterySaving: " + enable);
+		// TODO
+	}
+
+	@ReactMethod
+	public void setBackgroundScanning(boolean enable) {
+		BleLog.getInstance().LOGi(TAG, "setBackgroundScanning: " + enable);
+		// TODO
+	}
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//                       Localization
@@ -1554,6 +1654,18 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			BleLog.getInstance().LOGe(TAG, "Failed to load fingerprint samples: " + samplesStr);
 			e.printStackTrace();
 		}
+	}
+
+	@ReactMethod
+	public void clearFingerprints() {
+		BleLog.getInstance().LOGi(TAG, "clearFingerprints");
+		bla;
+	}
+
+	@ReactMethod
+	public void clearFingerprintsPromise(Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "clearFingerprintsPromise");
+		_localization.
 	}
 
 
@@ -1993,7 +2105,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_lastLocationId = locationId;
 	}
 
-	private void checkReady() {
+	private synchronized void checkReady() {
 		BleLog.getInstance().LOGd(TAG, "checkReady");
 		if (_readyCallback == null) {
 			BleLog.getInstance().LOGd(TAG, "no ready callback");

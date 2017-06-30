@@ -89,11 +89,12 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   putInDFU:                   () => { return BluenetPromise('putInDFU'); },
   performDFU:                 (handle, uri) => { return BluenetPromise('performDFU', handle, uri); },
 
-  //new
   getHardwareVersion:         () => { return BluenetPromise('getHardwareVersion'); },
   setupPutInDFU:              () => { return BluenetPromise('setupPutInDFU'); },
   toggleSwitchState:          () => { return BluenetPromise('toggleSwitchState'); },
   bootloaderToNormalMode:     ( handle ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
+
+  //new
   getErrors:                  () => { return BluenetPromise('getErrors'); }, // returns { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
   clearErrors:                (clearErrorJSON) => { return BluenetPromise('clearErrors', clearErrorJSON); },
   restartCrownstone:          () => { return BluenetPromise('restartCrownstone'); },
