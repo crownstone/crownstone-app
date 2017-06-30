@@ -623,9 +623,9 @@ export class DfuOverlay extends Component<any, any> {
                   <Icon name="ios-sad" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </View>
               </View>}
-            header={'We\'re sorry... Maybe try again while keeping an eye at the update process?'}
+            header={'We\'re sorry. The update failed.\nThis might happen because the smartphone was not close enough. Please keep an eye at the update process.'}
             buttonCallback={closeOverlay}
-            buttonLabel={"Fine..."}
+            buttonLabel={"OK"}
           />
         );
       case STEP_TYPES.DOWNLOAD_FAILED:
@@ -645,9 +645,9 @@ export class DfuOverlay extends Component<any, any> {
                   <Icon name="ios-cloudy-night" size={radius} color={colors.csBlue.hex} style={{position:'relative', left:0, top:0.05*radius}} />
                 </View>
               </View>}
-            header={'We could not download the requested firmware version from the Cloud. Maybe try again later?'}
+            header={'We could not download the requested firmware version from the Cloud. Please try again later.'}
             buttonCallback={closeOverlay}
-            buttonLabel={"Fine..."}
+            buttonLabel={"OK"}
           />
         );
       case STEP_TYPES.SETUP_FAILED:
