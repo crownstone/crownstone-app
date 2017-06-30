@@ -494,7 +494,7 @@ export class RoomLayer extends Component<any, any> {
       };
 
       return (
-        <View {...this._panResponder.panHandlers} style={{position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight, overflow:"hidden"}}>
+        <View {...this._panResponder.panHandlers} style={{backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight, overflow:"hidden"}}>
           <Animated.View style={[animatedStyle, {width: screenWidth, height: availableScreenHeight, opacity:this.state.opacity}]}>
             {this.getRooms()}
           </Animated.View>
