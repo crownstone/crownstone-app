@@ -108,7 +108,7 @@ export class SettingsPrivacy extends Component<any, any> {
             })
             .catch((err) => {
               this.props.eventBus.emit("hideLoading");
-              Alert.alert("Whoops!", "We could not remove your phone details from the Cloud. Please try again later.", [{text:'Fine...'}]);
+              Alert.alert("Whoops!", "We could not remove your phone details from the Cloud. Please try again later.", [{text:'OK'}]);
             })
         }
         else {
