@@ -51,6 +51,7 @@ import java.util.UUID;
 
 import nl.dobots.bluenet.ble.base.BleBase;
 import nl.dobots.bluenet.ble.base.BleBaseEncryption;
+import nl.dobots.bluenet.ble.base.BleConfiguration;
 import nl.dobots.bluenet.ble.base.callbacks.IBooleanCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IByteArrayCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IDiscoveryCallback;
@@ -113,6 +114,20 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			new Triplet<>(BleBase.class,                 Log.DEBUG,    Log.DEBUG),
 			new Triplet<>(BleExt.class,                  Log.DEBUG,    Log.WARN),
 			new Triplet<>(CrownstoneSetup.class,         Log.WARN,     Log.DEBUG),
+	};
+
+	private static final Triplet[] LOG_LEVELS_EXTENDED = new Triplet[]{
+			// log lvl   file log lvl
+			new Triplet<>(BleScanService.class,          Log.DEBUG,    Log.DEBUG),
+			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,     Log.WARN),
+			new Triplet<>(BluenetBridge.class,           Log.DEBUG,    Log.DEBUG),
+			new Triplet<>(BleBaseEncryption.class,       Log.WARN,     Log.WARN),
+			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,     Log.WARN),
+			new Triplet<>(BleDevice.class,               Log.WARN,     Log.WARN),
+			new Triplet<>(BleCore.class,                 Log.DEBUG,    Log.WARN),
+			new Triplet<>(BleBase.class,                 Log.DEBUG,    Log.DEBUG),
+			new Triplet<>(BleExt.class,                  Log.DEBUG,    Log.WARN),
+			new Triplet<>(CrownstoneSetup.class,         Log.DEBUG,    Log.DEBUG),
 	};
 
 
@@ -283,14 +298,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		checkReady();
 	}
 
-	private void setLogLevels() {
+	private void setLogLevels(Triplet[] logLevels) {
 		if (BuildConfig.DEBUG) {
 			BleLog.getInstance().setLogLevel(LOG_LEVEL_DEFAULT);
 		}
 		else {
 			BleLog.getInstance().setLogLevel(Log.ERROR);
 		}
-		for (Triplet triplet: LOG_LEVELS) {
+		for (Triplet triplet: logLevels) {
 			Class<?> cls = (Class<?>)triplet.first;
 			int logLevel = (int)triplet.second;
 			int fileLogLevel = (int)triplet.third;
@@ -301,6 +316,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				BleLog.getInstance().setLogLevelPerTag(cls.getCanonicalName(), Log.ERROR, fileLogLevel);
 			}
 		}
+	}
+
+	private void setLogLevels() {
+		setLogLevels(LOG_LEVELS);
 	}
 
 	private boolean _bleTurnedOff = false;
@@ -379,7 +398,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void enableExtendedLogging(boolean enable) {
 		BleLog.getInstance().LOGi(TAG, "enableExtendedLogging " + enable);
-		bla;
+		if (enable) {
+			setLogLevels(LOG_LEVELS_EXTENDED);
+		}
+		else {
+			setLogLevels(LOG_LEVELS);
+		}
 	}
 
 	@ReactMethod
@@ -1232,9 +1256,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void getErrors(final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "getErrors");
-		// Gets the state errors of the crownstone, already connected
+		// Gets the state errors of the crownstone
+		// Assume already connected
 		// returns as data field, a map: { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
+		BleLog.getInstance().LOGi(TAG, "getErrors");
 		_bleExt.getBleExtState().getErrorState(new IIntegerCallback() {
 			@Override
 			public void onSuccess(int result) {
@@ -1262,30 +1287,86 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void clearErrors(ReadableMap clearErrorsMap, Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "clearErrors: " + clearErrorsMap.toString());
+	public void clearErrors(ReadableMap clearErrorsMap, final Callback callback) {
 		// Clears given state errors
-		// errors:
-        
-		// temperatureDimmer
-		// temperatureChip
-		// overCurrentDimmer
-		// overCurrent
-		bla;
+		// Assume already connected
+		BleLog.getInstance().LOGi(TAG, "clearErrors: " + clearErrorsMap.toString());
+        int stateErrorBitmask = 0;
+		if (clearErrorsMap.getBoolean("overCurrent"))       { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_OVERCURRENT, stateErrorBitmask); }
+		if (clearErrorsMap.getBoolean("overCurrentDimmer")) { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_OVERCURRENT_DIMMER, stateErrorBitmask); }
+		if (clearErrorsMap.getBoolean("temperatureChip"))   { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_TEMP_CHIP, stateErrorBitmask); }
+		if (clearErrorsMap.getBoolean("temperatureDimmer")) { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_TEMP_DIMMER, stateErrorBitmask); }
+		_bleExt.writeResetStateErrors(stateErrorBitmask, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
-	public void setTime(long timestamp, Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "setTime: " + timestamp);
+	public void setTime(double timestampDouble, final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "setTime: " + timestampDouble);
 		// Sets the unix time on the crownstone
-		bla;
+		// Assume already connected
+		long timestamp = (long)timestampDouble;
+		_bleExt.writeSetTime(timestamp, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
-	public void getTime(Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "getTime");
+	public void getTime(final Callback callback) {
 		// Gets the current unix time from the crownstone
-		bla;
+		// Assume already connected
+		BleLog.getInstance().LOGi(TAG, "getTime");
+		_bleExt.getBleExtState().getTime(new IIntegerCallback() {
+			@Override
+			public void onSuccess(int result) {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				long unixTime = BleUtils.toUint32(result);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				retVal.putDouble("data", unixTime); // TODO: is double our best option here?
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
 	}
 
 	@ReactMethod
@@ -1659,13 +1740,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	@ReactMethod
 	public void clearFingerprints() {
 		BleLog.getInstance().LOGi(TAG, "clearFingerprints");
-		bla;
+		_localization.clear();
 	}
 
 	@ReactMethod
 	public void clearFingerprintsPromise(Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "clearFingerprintsPromise");
-		_localization.
+		_localization.clear();
+		WritableMap retVal = Arguments.createMap();
+		retVal.putBoolean("error", false);
+		callback.invoke(retVal);
 	}
 
 
