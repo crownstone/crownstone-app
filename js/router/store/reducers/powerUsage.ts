@@ -16,16 +16,17 @@ let dayState  ={
 
 let powerUsageDayReducer = (state = defaultState, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_STONE_STATE_DUPLICATE': // this does not sort since the incoming data is brand new.
     case 'UPDATE_STONE_STATE': // this does not sort since the incoming data is brand new.
       if (action.data && action.data.currentUsage !== null && action.data.currentUsage !== undefined && action.data.applianceId !== undefined) {
         let newState = [...state];
-        let data = {...action.data};
 
-        data.timestamp = getTime(action.data.timestamp);
+        let data : any = {};
+        data.timestamp = getTime(action.data.timestamp || action.updatedAt);
         data.applianceId = action.data.applianceId || null;
         data.power = action.data.currentUsage;
 
-        newState.push(action.data);
+        newState.push(data);
         return newState;
       }
       return state;
@@ -49,17 +50,20 @@ let powerUsageDayReducer = (state = defaultState, action : any = {}) => {
 // powerUsageReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'REMOVE_ALL_POWER_USAGE':
+      return {};
     case 'REMOVE_POWER_USAGE_DAY':
       let stateCopy = {...state};
       delete stateCopy[action.dateId];
       return stateCopy;
-    case 'UPDATE_STONE_STATE': // this action is only used for measurement from advertisements
+    case 'UPDATE_STONE_STATE':           // this action is only used for measurement from advertisements
+    case 'UPDATE_STONE_STATE_DUPLICATE': // this action is only used for measurement from advertisements if the data does not change.
       if (action.data && action.data.currentUsage !== undefined && action.updatedAt) {
-        let dateId = Util.getDateFormat(action.data.updatedAt);
+        let dateId = Util.getDateFormat(action.updatedAt);
         if (dateId !== 'unknown') {
           return {
             ...state,
-            ...{[dateId]: powerUsageDayReducer(state[action.dateId], action)}
+            ...{[dateId]: powerUsageDayReducer(state[dateId], action)}
           };
         }
       }

@@ -60,16 +60,16 @@ const getAlternatingIcons = function(names : string[], sizes : number[], iconCol
   }
 };
 
-const insertExplanation = function(items: any[], label : string, below : boolean = false, style? : any) {
+const insertExplanation = function(items: any[], label : string, below : boolean = false, alreadyPadded : boolean = false) {
   if (Platform.OS === 'ios') {
-    items.push({type: 'explanation', label: label, below: below});
+    items.push({type: 'explanation', label: label, below: below, alreadyPadded: alreadyPadded});
   }
 };
 
 export const SettingConstructor = function(store, state, eventBus) {
   let items = [];
 
-  insertExplanation(items, 'UPDATE YOUR PROFILE', false);
+  insertExplanation(items, 'MY PROFILE', false);
   items.push({
     id: 'My Account',
     label: 'My Account',
@@ -79,8 +79,16 @@ export const SettingConstructor = function(store, state, eventBus) {
       Actions.settingsProfile()
     }
   });
+  items.push({
+    id:'Privacy',
+    label:'Privacy',
+    icon: getIcon('ios-eye', 27, colors.white.hex, colors.darkPurple.hex),
+    type: 'navigation',
+    callback:() => { Actions.settingsPrivacy(); }
+  });
+  insertExplanation(items, 'You are in control of which data is shared with the cloud.', true);
 
-  insertExplanation(items, 'CONFIGURATION', false);
+  insertExplanation(items, 'CONFIGURATION', false, true);
   if (Object.keys(state.spheres).length > 0) {
     items.push({
       id: 'Spheres',

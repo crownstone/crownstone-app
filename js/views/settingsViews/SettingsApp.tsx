@@ -78,8 +78,15 @@ export class SettingsApp extends Component<any, any> {
           data: {tapToToggleEnabled: newValue}
         });
     }});
+    if (state.app.indoorLocalizationEnabled) {
+      items.push({label: "Tap to toggle allows you to hold your phone against a Crownstone to toggle it automatically!", type: 'explanation', below: true});
+    }
+    else {
+      items.push({label: "If indoor localization is disabled, tap to toggle does only work when the app is on the screen.", type: 'explanation', below: true});
+    }
 
-    items.push({label: "BATTERY USAGE", type: 'explanation', below: false});
+
+    items.push({label: "BATTERY USAGE", type: 'explanation', alreadyPadded: true, below: false});
     items.push({
       label:"Use Heartbeat",
       value: state.app.keepAlivesEnabled && state.app.indoorLocalizationEnabled,

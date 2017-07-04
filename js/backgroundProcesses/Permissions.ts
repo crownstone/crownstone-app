@@ -13,6 +13,7 @@ export class PermissionClass {
   updateCrownstone       = false; // a
   setupCrownstone        = false; // a
   seeSetupCrownstone     = false; // a
+  moveCrownstone         = false; // a or m
 
   doLocalizationTutorial = false; // a?
   addRoom                = false; // a?
@@ -101,6 +102,7 @@ export class PermissionClass {
         this.useKeepAliveState      = true; // admin and member
         this.setStoneTime           = true; // admin and member
         this.manageUsers            = true; // admin and member
+        this.moveCrownstone         = true; // admin and member
 
         this.inviteMemberToSphere   = true; // admin and member
         this.inviteGuestToSphere    = true; // admin and member

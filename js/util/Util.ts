@@ -297,7 +297,43 @@ export const Util = {
       }
       return false;
     }
+  },
 
+
+  deepExtend: function (a, b, protoExtend = false, allowDeletion = false) {
+    for (let prop in b) {
+      if (b.hasOwnProperty(prop) || protoExtend === true) {
+        if (b[prop] && b[prop].constructor === Object) {
+          if (a[prop] === undefined) {
+            a[prop] = {};
+          }
+          if (a[prop].constructor === Object) {
+            Util.deepExtend(a[prop], b[prop], protoExtend);
+          }
+          else {
+            if ((b[prop] === null) && a[prop] !== undefined && allowDeletion === true) {
+              delete a[prop];
+            }
+            else {
+              a[prop] = b[prop];
+            }
+          }
+        } else if (Array.isArray(b[prop])) {
+          a[prop] = [];
+          for (let i = 0; i < b[prop].length; i++) {
+            a[prop].push(b[prop][i]);
+          }
+        } else {
+          if ((b[prop] === null) && a[prop] !== undefined && allowDeletion === true) {
+            delete a[prop];
+          }
+          else {
+            a[prop] = b[prop];
+          }
+        }
+      }
+    }
+    return a;
   }
 };
 

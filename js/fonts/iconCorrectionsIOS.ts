@@ -224,8 +224,6 @@ const c1CorrectionsIOS = {
 };
 
 
-
-
 const c2CorrectionsIOS = {
   'c2-crownstone':      {change: false, top: +0.000, left: +0.000},
   'c2-plugin':          {change: false, top: +0.000, left: +0.000},
@@ -244,6 +242,7 @@ const ioniconCorrectionsIOS = {
   'ios-battery-full':   {change: true,  top: +0.025, left: +0.020},
   'ios-cog':            {change: true,  top: +0.025, left: +0.015},
   'ios-heart':          {change: true,  top: +0.040, left: +0.000},
+  'ios-eye':            {change: true,  top: +0.040, left: +0.000},
 };
 
 

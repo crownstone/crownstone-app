@@ -27,34 +27,25 @@ export let defaultOptions = {
 
 export const GraphingEngine = {
 
-  transformYToFit(dataset, height, offset = 0) {
-    let minY = dataset[0].y;
-    let maxY = dataset[0].y;
+  transformYToFit(dataset, options) {
+    let minYval = 0;
+    let maxYval = dataset[0].y;
     for (let i = 0; i < dataset.length; i++) {
-      minY = Math.min(dataset[i].y, minY);
-      maxY = Math.max(dataset[i].y, maxY);
+      // minYval = Math.min(dataset[i].y, minYval);
+      maxYval = Math.max(dataset[i].y, maxYval);
     }
 
-    let mappingFactor = height/(maxY - minY);
-
-    for (let i = 0; i < dataset.length; i++) {
-      dataset[i].y = (dataset[i].y - minY)*mappingFactor + offset;
+    let mappingFactor = 0;
+    if (maxYval !== minYval) {
+      mappingFactor = (options.height - options.padding - options.paddingBottom)/(maxYval - minYval);
     }
-  },
-
-  transformXToFit(dataset, width, offset = 0) {
-    let minX = dataset[0].x;
-    let maxX = dataset[0].x;
+    let lowerLimit = options.height - options.paddingBottom;
     for (let i = 0; i < dataset.length; i++) {
-      minX = Math.min(dataset[i].x, minX);
-      maxX = Math.max(dataset[i].x, maxX);
+      // large Y means 0, small y is max so this inverts the values.
+      dataset[i].y = lowerLimit - dataset[i].y*mappingFactor;
     }
 
-    let mappingFactor = width/(maxX - minX);
-
-    for (let i = 0; i < dataset.length; i++) {
-      dataset[i].x = (dataset[i].x - minX)*mappingFactor + offset;
-    }
+    return maxYval;
   },
 
   calcPath(dataset, options : any) {
@@ -74,6 +65,31 @@ export const GraphingEngine = {
       }
     }
   },
+
+
+  getShadingPath(pathArray, options) {
+
+    let type = "L";
+    if (options.interpolation.enabled == true){
+      type = "C";
+    }
+
+    // append shading to the path
+    let dFill;
+    let zero = 0;
+    if (options.shaded.orientation == 'top') {
+      zero = options.padding;
+    }
+    else {
+      zero = options.height - options.paddingBottom;
+    }
+
+
+    dFill = 'M' + pathArray[0][0] + "," + pathArray[0][1] + " " + this.serializePath(pathArray, type, false) + 'V' + zero + ' H'+ pathArray[0][0] + " Z";
+
+    return dFill;
+},
+
 
   serializePath(pathArray, type, inverse) {
     if (pathArray.length < 2) {

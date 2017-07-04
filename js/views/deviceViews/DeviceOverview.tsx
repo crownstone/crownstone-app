@@ -107,6 +107,7 @@ export class DeviceOverview extends Component<any, any> {
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state);
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
+    let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
     let deviceType = stone.config.type;
 
     if (hasError)  { summaryIndex++; behaviourIndex++; }
@@ -155,7 +156,7 @@ export class DeviceOverview extends Component<any, any> {
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
-          { this._getContent(hasError, canUpdate, hasBehaviour, deviceType) }
+          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, deviceType) }
         </Swiper>
       </Background>
     )
@@ -170,10 +171,8 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getContent(hasError, canUpdate, hasBehaviour, deviceType) {
+  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, deviceType) {
     let content = [];
-
-    content.push(<DevicePowerCurve key={'powerSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
 
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
@@ -191,6 +190,10 @@ export class DeviceOverview extends Component<any, any> {
 
     if (hasBehaviour) {
       content.push(<DeviceBehaviour key={'behaviourSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+    }
+
+    if (hasPowerMonitor) {
+      content.push(<DevicePowerCurve key={'powerSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
     }
 
     return content;

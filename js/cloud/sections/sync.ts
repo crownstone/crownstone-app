@@ -3,9 +3,9 @@ import { LOG } from '../../logging/Log'
 import { Util } from '../../util/Util'
 import { Platform } from 'react-native'
 import { syncUsersInLocation } from './syncUsersInSphere'
-import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
-import {APP_NAME} from "../../ExternalConfig";
-import {AppUtil} from "../../util/AppUtil";
+import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
+import { APP_NAME } from "../../ExternalConfig";
+import { AppUtil } from "../../util/AppUtil";
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -725,7 +725,7 @@ const syncDevices = function(store, actions, cloudDevices) {
       });
 
       // if we use this device as a hub, make sure we request permission for notifications.
-      if (matchingDevice.hubFunction === true) {
+      if (matchingDevice.hubFunction === true && state.user.developer) {
         LOG.info("Sync: Requesting notification permissions during adding of the Device.");
         NotificationHandler.request();
       }
@@ -771,7 +771,7 @@ const syncDevices = function(store, actions, cloudDevices) {
         });
 
         // if we use this device as a hub, make sure we request permission for notifications.
-        if (state.devices[deviceId].hubFunction === true || matchingDevice.hubFunction === true) {
+        if (state.devices[deviceId].hubFunction === true || matchingDevice.hubFunction === true && state.user.developer) {
           LOG.info("Sync: Requesting notification permissions during updating of the device.");
           NotificationHandler.request();
         }
