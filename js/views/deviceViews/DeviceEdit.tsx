@@ -79,9 +79,9 @@ export class DeviceEdit extends Component<any, any> {
     let items = [];
 
     if (appliance) {
-      items.push({label:'PLUGGED IN DEVICE', type: 'explanation',  below:false});
+      items.push({label:'PLUGGED IN DEVICE TYPE', type: 'explanation',  below:false});
       items.push({
-        label: 'Device Name', type: 'textEdit', placeholder:'Choose a nice name', value: appliance.config.name, callback: (newText) => {
+        label: 'Device Type', type: 'textEdit', placeholder:'Pick a name', value: appliance.config.name, callback: (newText) => {
           store.dispatch({...requiredData, applianceId: applianceId, type: 'UPDATE_APPLIANCE_CONFIG', data: {name: newText}});
         }
       });
@@ -93,7 +93,7 @@ export class DeviceEdit extends Component<any, any> {
 
       // unplug device
       items.push({
-        label: 'Unplug Device',
+        label: 'Decouple Device Type',
         type: 'button',
         icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
         style: {color: colors.blue.hex},
@@ -102,12 +102,16 @@ export class DeviceEdit extends Component<any, any> {
           setTimeout(() => {store.dispatch({...requiredData, applianceId: applianceId, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});}, 300);
         }
       });
-      items.push({label:'This Crownstone is currently using the behaviour, name and icon of this device. Unplugging will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
+      items.push({label:'This Crownstone is currently using the behaviour, name and icon of this device type. Decoupling it will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
     }
 
 
-
-    items.push({label:'CROWNSTONE THE DEVICE IS PLUGGED INTO', type: 'explanation',  below:false});
+    if (appliance) {
+      items.push({label: 'CURRENT CROWNSTONE OF THIS DEVICE TYPE', type: 'explanation', below: false});
+    }
+    else {
+      items.push({label: 'CROWNSTONE', type: 'explanation', below: false});
+    }
     items.push({
       label: 'Name', type: 'textEdit', placeholder:'Choose a nice name', value: stone.config.name, callback: (newText) => {
         store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
@@ -115,7 +119,7 @@ export class DeviceEdit extends Component<any, any> {
     });
 
     if (stone.config.type !== STONE_TYPES.guidestone && !applianceId) {
-      items.push({label: 'PLUGGED IN DEVICE', type: 'explanation', below: false});
+      items.push({label: 'SELECT WHICH DEVICE TYPE IS PLUGGED IN', type: 'explanation', below: false});
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
           Actions.applianceSelection({

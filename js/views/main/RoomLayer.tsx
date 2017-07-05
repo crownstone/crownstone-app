@@ -269,7 +269,7 @@ export class RoomLayer extends Component<any, any> {
       let change = data.change;
 
       if (
-        change.changeLocations
+        change.changeLocations || change.stoneLocationUpdated
       ) {
         this.loadInSolver();
       }

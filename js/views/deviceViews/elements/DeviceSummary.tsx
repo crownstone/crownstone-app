@@ -154,6 +154,8 @@ export class DeviceSummary extends Component<any, any> {
       locationName = location.config.name;
     }
 
+    console.log('canMoveCrownstone,',canMoveCrownstone)
+
     return (
       <View style={{flex:1, paddingBottom:35}}>
         <DeviceInformation left={"Energy Consumption:"}
@@ -161,6 +163,7 @@ export class DeviceSummary extends Component<any, any> {
                            right={locationLabel}
                            rightValue={locationName}
                            rightTapAction={canMoveCrownstone ? () => {
+                             console.log("HERE")
                            Actions.roomSelection({
                              sphereId: this.props.sphereId,
                              stoneId: this.props.stoneId,
@@ -170,12 +173,12 @@ export class DeviceSummary extends Component<any, any> {
         <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
                            leftValue={stone.config.applianceId ? stone.config.name : 'None'}
                            right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'}
-                           leftTapAction={canChangeSettings ? () => { Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); } : null}
+                           leftTapAction={canChangeSettings ? () => { Actions.applianceSelection({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); } : null}
         />
         <View style={{flex:0.5}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>{this._getIcon(stone, element)}</View>
         <View style={{flex:1}} />
-        <Text style={deviceStyles.explanation}>{stone.config.applianceId ? Util.spreadString('tap icon to change device') : Util.spreadString('tap icon to select device')}</Text>
+        <Text style={deviceStyles.explanation}>{Util.spreadString('tap icon to set device type')}</Text>
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />
@@ -192,12 +195,12 @@ export class DeviceInformation extends Component<any, any> {
         <View style={{width:screenWidth, flexDirection:'row', padding:10, paddingBottom:0}}>
           {this.props.leftTapAction ?  <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.subText}>{this.props.left}</Text></TouchableOpacity> : <Text style={deviceStyles.subText}>{this.props.left}</Text>}
           <View style={{flex:1}} />
-          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.subText}>{this.props.right}</Text></TouchableOpacity> : <Text style={deviceStyles.subText}>{this.props.right}</Text>}
+          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction}><Text style={deviceStyles.subText}>{this.props.right}</Text></TouchableOpacity> : <Text style={deviceStyles.subText}>{this.props.right}</Text>}
         </View>
         <View style={{width:screenWidth, flexDirection:'row', paddingLeft:10, paddingRight:10}}>
           {this.props.leftTapAction ?  <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.text}>{this.props.leftValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.leftValue}</Text>}
           <View style={{flex:1}} />
-          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.text}>{this.props.rightValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
+          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction}><Text style={deviceStyles.text}>{this.props.rightValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
         </View>
       </View>
     )

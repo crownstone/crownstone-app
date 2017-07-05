@@ -92,9 +92,9 @@ export class ApplianceSelection extends Component<any, any> {
     }
 
 
-    items.push({label:'ADD DEVICE', type: 'lightExplanation', below:false});
+    items.push({label:'ADD DEVICE TYPES', type: 'lightExplanation', below:false});
     items.push({
-      label: 'Add a Device',
+      label: 'Add a device type',
       largeIcon: <Icon name="ios-add-circle" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
       style: {color:colors.blue.hex},
       type: 'button',
@@ -110,7 +110,7 @@ export class ApplianceSelection extends Component<any, any> {
     });
 
     items.push({
-      label: 'No device plugged in',
+      label: 'No device type assigned',
       largeIcon: <Icon name="md-cube" size={45} color={colors.menuBackground.hex} />,
       style: {color:colors.blue.hex},
       type: 'button',

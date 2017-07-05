@@ -76,6 +76,7 @@ export class DeviceOverview extends Component<any, any> {
       let applianceId = stone.config.applianceId;
       if (
         change.changeAppSettings ||
+        change.stoneLocationUpdated && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
         change.changeStoneState && change.changeStoneState.stoneIds[this.props.stoneId] ||
         change.powerUsageUpdated && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
         change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||

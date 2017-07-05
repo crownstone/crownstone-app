@@ -32,7 +32,7 @@ export class ApplianceAdd extends Component<any, any> {
   _getItems() {
     let items = [];
     items.push({label:'NEW DEVICE', type:'explanation', below:false});
-    items.push({label:'Device Name', type: 'textEdit', placeholder:'My device name', value: this.state.name, callback: (newText) => {
+    items.push({label:'Type Name', type: 'textEdit', placeholder:'My device name', value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
     items.push({label:'Icon', type: 'icon', value: this.state.icon,
@@ -44,7 +44,7 @@ export class ApplianceAdd extends Component<any, any> {
         }
       )}
     });
-    items.push({label:'The properties of devices are shared among all Crownstones that have this device plugged in. Device behaviour overrules the Crownstone behaviour.', type:'largeExplanation', centered: true});
+    items.push({label:'The properties of device types are shared among all Crownstones that have this device plugged in. Device type behaviour overrules the Crownstone behaviour.', type:'largeExplanation', centered: true});
 
     return items;
   }
@@ -65,7 +65,7 @@ export class ApplianceAdd extends Component<any, any> {
       )
     }
     else {
-      this.props.eventBus.emit('showLoading', 'Creating new Device...');
+      this.props.eventBus.emit('showLoading', 'Creating new Device Type...');
       CLOUD.forSphere(this.props.sphereId).createAppliance(this.state.name, this.props.sphereId, this.state.icon)
         .then((reply) => {
           this.props.eventBus.emit('hideLoading');
@@ -105,7 +105,7 @@ export class ApplianceAdd extends Component<any, any> {
           right={'Create'}
           rightStyle={{fontWeight: 'bold'}}
           rightAction={ () => { this.createDevice(); }}
-          title="Create Device"/>
+          title="Add Device Type"/>
         <View style={{flex:1}}>
             <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} separatorIndent={true} />
             <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingBottom: tabBarHeight + 20}}>
