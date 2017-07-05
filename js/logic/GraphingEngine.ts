@@ -27,9 +27,16 @@ export let defaultOptions = {
 
 export const GraphingEngine = {
 
-  transformYToFit(dataset, options) {
-    let minYval = 0;
-    let maxYval = dataset[0].y;
+  /**
+   * @param dataset
+   * @param options
+   * @param minValue
+   * @param maxValue
+   * @returns {number}
+   */
+  transformYToFit(dataset, options, minValue = 0, maxValue = 40) {
+    let minYval = minValue;
+    let maxYval = maxValue || dataset[0].y;
     for (let i = 0; i < dataset.length; i++) {
       // minYval = Math.min(dataset[i].y, minYval);
       maxYval = Math.max(dataset[i].y, maxYval);

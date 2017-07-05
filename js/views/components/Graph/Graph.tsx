@@ -155,7 +155,7 @@ export class Graph extends Component<any, any> {
 
     }
     else {
-      let dataStep = new DataStep(0, 50, this.options.height - this.options.padding - this.options.paddingBottom, 25);
+      let dataStep = new DataStep(0, 40, this.options.height - this.options.padding - this.options.paddingBottom, 25);
       this.dataStepLines = dataStep.getLines();
     }
     // console.timeEnd("loadData")
