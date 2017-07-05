@@ -70,7 +70,12 @@ export class SphereSelectionOverlay extends Component<any, any> {
     this.activeSphere = state.app.activeSphere;
 
     return (
-      <OverlayBox visible={this.state.visible} canClose={true} closeCallback={() => { this.setState({visible:false}); }} backgroundColor={colors.menuBackground.rgba(0.5)}>
+      <OverlayBox
+        visible={this.state.visible}
+        canClose={true} closeCallback={() => { this.setState({visible:false}); }}
+        overrideBackButton={() => { this.setState({visible:false}); }}
+        backgroundColor={colors.menuBackground.rgba(0.5)}
+      >
         <Text style={{fontSize: 17, fontWeight: 'bold', color: colors.csBlue.hex, padding:15, textAlign:'center'}}>{"Select a Sphere:"}</Text>
         <IconButton
           name="c1-sphere"

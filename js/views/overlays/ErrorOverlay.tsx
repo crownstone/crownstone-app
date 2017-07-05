@@ -209,7 +209,7 @@ export class ErrorOverlay extends Component<any, any> {
     }
 
     return (
-      <OverlayBox visible={this.state.visible} height={0.95*availableScreenHeight} maxOpacity={this.state.maxOpacity}>
+      <OverlayBox visible={this.state.visible} height={0.95*availableScreenHeight} maxOpacity={this.state.maxOpacity} overrideBackButton={true}>
         <View style={{flex:1}} />
         <IconButton
           name="ios-warning"

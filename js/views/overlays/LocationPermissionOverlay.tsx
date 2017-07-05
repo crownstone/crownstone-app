@@ -97,7 +97,10 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible}>
+      <OverlayBox
+        visible={this.state.visible}
+        overrideBackButton={false}
+      >
         <View style={{flex:1}} />
         <Icon
           name="ios-navigate"
