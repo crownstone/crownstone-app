@@ -1,6 +1,8 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  BackAndroid,
   Image,
+  Platform,
   Text,
   TouchableOpacity,
   View,
@@ -10,7 +12,61 @@ import { FadeInView }   from '../animated/FadeInView'
 import { Icon }         from '../Icon'
 import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../../styles'
 
-export class OverlayBox extends Component<any, any> {
+interface overlayBoxProps {
+  overrideBackButton?: any,
+  visible:             boolean,
+  backgroundColor?:    any,
+  maxOpacity?:         number,
+  height?:             number,
+  canClose?:           boolean,
+  closeCallback?:      any,
+}
+
+// Set prop "overrideBackButton" to override the (android) back button when the overlay box is visible.
+//    true: disable the back button
+//    function: execute that function when the back button is pressed
+export class OverlayBox extends Component<overlayBoxProps, any> {
+  backButtonFunction : any = null;
+
+  componentDidMount() {
+    if (Platform.OS === 'android' && this.props.overrideBackButton && this.props.visible === true) {
+      this.overRideBackButton();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (Platform.OS === 'android' && this.props.overrideBackButton && nextProps.visible !== this.props.visible) {
+      if (nextProps.visible === true && this.backButtonFunction === null) {
+        this.overRideBackButton();
+      }
+      else if (this.backButtonFunction !== null) {
+        this.cleanupBackButton();
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    if (Platform.OS === 'android' && this.backButtonFunction !== null) {
+      this.cleanupBackButton();
+    }
+  }
+
+  overRideBackButton() {
+    // Execute callback function and return true to override.
+    this.backButtonFunction = () => {
+      if (typeof this.props.overrideBackButton === 'function') {
+        this.props.overrideBackButton();
+      }
+      return true;
+    };
+    BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
+  }
+
+  cleanupBackButton() {
+    BackAndroid.removeEventListener('hardwareBackPress', this.backButtonFunction);
+    this.backButtonFunction = null;
+  }
+
   render() {
     return (
       <FadeInView

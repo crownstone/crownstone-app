@@ -319,7 +319,6 @@ export class RoomOverview extends Component<any, any> {
           rightItem={this.getRightItem(state)}
           rightAction={() => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}
           leftAction={ () => { Actions.pop(); }}
-          showHamburgerMenu={true}
         />
         <RoomBanner
           presentUsers={users}

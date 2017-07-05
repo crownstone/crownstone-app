@@ -33,7 +33,7 @@ let barHeight = topBarHeight - statusBarHeight;
  */
 class TopBarAndroid extends Component<any, any> {
   _getLeftContent() {
-    if (this.props.left || this.props.leftItem || this.props.showHamburgerMenu === true) {
+    if (this.props.showHamburgerMenu === true) {
       if (this.props.leftItem && this.props.alternateLeftItem === true) {
         return (
           <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true, viewProps: this.props})}} style={[topBarStyle.topBarLeftTouch]}>
@@ -60,9 +60,31 @@ class TopBarAndroid extends Component<any, any> {
         </TouchableOpacity>
       )
     }
-
-
-    return <View style={topBarStyle.topBarLeftTouch} />;
+    else if (this.props.notBack === true && this.props.left) {
+      // draw custom element
+      let left = this.props.left;
+      if (typeof this.props.left === 'function') {
+        left = this.props.left();
+      }    return (
+        <TouchableOpacity onPress={() => { this.props.leftAction(); }}  style={topBarStyle.topBarLeftTouch}><View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
+            <Text style={[topBarStyle.topBarLeft, topBarStyle.text, this.props.leftStyle]}>{left}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+    else {
+      // back
+      let backAction = () => { Actions.pop(); };
+      if (typeof this.props.leftAction === 'function') {
+        backAction = this.props.leftAction;
+      }
+      return (
+        <TouchableOpacity onPress={() => { backAction(); }}style={[topBarStyle.topBarLeftTouch]} ><View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
+            <Icon name="md-arrow-back" size={22} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
+          </View>
+        </TouchableOpacity>
+      );
+    }
   }
 
   _getRightContent() {

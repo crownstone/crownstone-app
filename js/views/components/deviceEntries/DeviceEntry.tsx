@@ -263,7 +263,7 @@ export class DeviceEntry extends Component<any, any> {
       return (
         <Animated.View style={{height: this.state.optionsHeight, width: screenWidth, alignItems: 'center', overflow: 'hidden'}}>
           <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
-          <View style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
+          <View style={{height: this.optionsHeight-1, backgroundColor: 'transparent', flexDirection: 'row', flex: 1, alignItems: 'center'}}>
             <TouchableOpacity style={buttonStyle} onPress={() => {
               Actions.pop();
               Actions.roomSelection({

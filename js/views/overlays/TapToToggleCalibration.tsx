@@ -240,21 +240,27 @@ export class TapToToggleCalibration extends Component<any, any> {
     )
   }
 
+  abortCloseCallback() {
+    // when closed without training, tell the user where to find the calibration button.
+    if (this.state.tutorial === true) {
+      let explanationLabel = "You can calibrate tap to toggle through the settings menu any time.";
+      if (Platform.OS === 'android') {
+        explanationLabel = "You can calibrate tap to toggle through the side menu any time.";
+      }
+      Alert.alert("Training Tap-to-Toggle Later", explanationLabel, [{text:'OK'}])
+    }
+    eventBus.emit("useTriggers");
+    this.setState({visible: false});
+  }
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible} canClose={true} closeCallback={() => {
-        // when closed without training, tell the user where to find the calibration button.
-        if (this.state.tutorial === true) {
-          let explanationLabel = "You can calibrate tap to toggle through the settings menu any time.";
-          if (Platform.OS === 'android') {
-            explanationLabel = "You can calibrate tap to toggle through the side menu any time.";
-          }
-          Alert.alert("Training Tap-to-Toggle Later", explanationLabel, [{text:'OK'}])
-        }
-        eventBus.emit("useTriggers");
-        this.setState({visible: false});
-      }} backgroundColor={colors.csBlue.rgba(0.3)} >
+      <OverlayBox
+        visible={this.state.visible} canClose={true}
+        closeCallback={() => {this.abortCloseCallback();}}
+        overrideBackButton={() => { if (this.state.step === 0) { this.abortCloseCallback(); }}}
+        backgroundColor={colors.csBlue.rgba(0.3)}
+      >
         {this.getContent()}
       </OverlayBox>
     );

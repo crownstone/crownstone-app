@@ -75,7 +75,7 @@ export class BleStateOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible}>
+      <OverlayBox visible={this.state.visible} overrideBackButton={false}>
         <View style={{flex:1}} />
         <IconButton
           name="ios-bluetooth"

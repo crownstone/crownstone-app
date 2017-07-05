@@ -93,5 +93,8 @@ export class Router_Android extends Component {
 let navBarStyle = {
   navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
   titleStyle:{color:'white'},
+  backButtonImage: require('../images/androidBackIcon.png'),
+  leftButtonIconStyle: {width:15, height:15},
+  leftButtonStyle: {alignItems:'center', justifyContent:'flex-start'},
 };
 
