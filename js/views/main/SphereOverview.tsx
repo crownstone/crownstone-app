@@ -183,7 +183,7 @@ export class SphereOverview extends Component<any, any> {
               title={state.spheres[activeSphere].config.name}
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
-              altenateLeftItem={true}
+              alternateLeftItem={true}
               leftAction={showFinalizeIndoorNavigationCallback}
               rightItem={!noStones && Permissions.addRoom && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}

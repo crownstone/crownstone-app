@@ -15,10 +15,26 @@ import { AlternatingContent }   from './animated/AlternatingContent'
 
 let barHeight = topBarHeight - statusBarHeight;
 
+
+/**
+ * Props:
+ *
+ * left
+ *
+ * alternateLeftItem
+ *
+ * leftItem
+ *
+ * right
+ *
+ * rightItem
+ *
+ * showHamburgerMenu
+ */
 class TopBarAndroid extends Component<any, any> {
   _getLeftContent() {
-    if (this.props.left || this.props.leftItem || this.props.right || this.props.rightItem || this.props.showHamburgerMenu === true) {
-      if (this.props.leftItem && this.props.altenateLeftItem === true) {
+    if (this.props.left || this.props.leftItem || this.props.showHamburgerMenu === true) {
+      if (this.props.leftItem && this.props.alternateLeftItem === true) {
         return (
           <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true, viewProps: this.props})}} style={[topBarStyle.topBarLeftTouch]}>
             <AlternatingContent
@@ -44,6 +60,8 @@ class TopBarAndroid extends Component<any, any> {
         </TouchableOpacity>
       )
     }
+
+
     return <View style={topBarStyle.topBarLeftTouch} />;
   }
 

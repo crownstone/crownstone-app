@@ -221,7 +221,6 @@ export class DeviceIconSelection extends Component<any, any> {
     return (
       <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
-          left={""}
           leftAction={Actions.pop}
           title="Pick an Icon"/>
         <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />

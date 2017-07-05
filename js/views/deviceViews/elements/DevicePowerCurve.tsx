@@ -53,7 +53,6 @@ export class DevicePowerCurve extends Component<any, any> {
     //   this.forceUpdate();
     // }, 2000);
 
-
     this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
