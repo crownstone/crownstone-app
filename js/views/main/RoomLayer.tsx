@@ -233,8 +233,6 @@ export class RoomLayer extends Component<any, any> {
 
 
         this._clearTap();
-
-
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
@@ -414,7 +412,7 @@ export class RoomLayer extends Component<any, any> {
     let initialized = false;
     cancelAnimationFrame(this.animationFrame);
 
-    let onStable = () => {
+    let onStable = (data) => {
       this.animationFrame = requestAnimationFrame(() => {
         let node = null;
         for (let i = 0; i < nodeIds.length; i++) {

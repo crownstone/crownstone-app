@@ -17,7 +17,7 @@ class ForceAtlas2BasedRepulsionSolver extends BarnesHutSolver {
    */
   _calculateForces(distance, dx, dy, node, parentBranch) {
     if (distance === 0) {
-      distance = 0.1 * Math.random();
+      distance = 0.1 * this.seededRandom();
       dx = distance;
     }
 

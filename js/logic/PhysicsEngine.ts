@@ -4,7 +4,6 @@ import CentralGravitySolver                 from './physicsComponents/CentralGra
 import ForceAtlas2BasedRepulsionSolver      from './physicsComponents/FA2BasedRepulsionSolver';
 import ForceAtlas2BasedCentralGravitySolver from './physicsComponents/FA2BasedCentralGravitySolver';
 
-
 class PhysicsEngine {
 
   physicsBody : any;
@@ -120,12 +119,12 @@ class PhysicsEngine {
 
 
   load(nodes, edges) {
-    this.positionInitially(nodes);
-    this.onChange();
-
     this.physicsBody.nodes = nodes;
     let edgeIds = Object.keys(edges);
-    let nodeIds = Object.keys(nodes);
+    let nodeIds = Object.keys(nodes).sort();
+
+    this.positionInitially(nodes, nodeIds);
+    this.onChange();
 
     // load edges into nodeModel
     nodeIds.forEach((nodeId) => {
@@ -139,7 +138,7 @@ class PhysicsEngine {
 
     this.physicsBody.edges = edges;
 
-    this.updatePhysicsData();
+    this.updatePhysicsData(nodeIds);
   }
 
   /**
@@ -254,7 +253,7 @@ class PhysicsEngine {
    *
    * @private
    */
-  updatePhysicsData() {
+  updatePhysicsData(nodeIds) {
     this.physicsBody.forces = {};
     this.physicsBody.physicsNodeIndices = [];
     this.physicsBody.physicsEdgeIndices = [];
@@ -262,11 +261,9 @@ class PhysicsEngine {
     let edges = this.physicsBody.edges;
 
     // get node indices for physics
-    for (let nodeId in nodes) {
-      if (nodes.hasOwnProperty(nodeId)) {
-        if (nodes[nodeId].physics !== false) {
-          this.physicsBody.physicsNodeIndices.push(nodes[nodeId].id);
-        }
+    for (let i = 0; i < nodeIds.length; i++)  {
+      if (nodes[nodeIds[i]].physics !== false) {
+        this.physicsBody.physicsNodeIndices.push(nodes[nodeIds[i]].id);
       }
     }
 
@@ -333,8 +330,7 @@ class PhysicsEngine {
     return x - Math.floor(x);
   }
 
-  positionInitially(nodesObject) {
-    let nodeIds = Object.keys(nodesObject);
+  positionInitially(nodesObject, nodeIds) {
     for (let i = 0; i < nodeIds.length; i++) {
       let node = nodesObject[nodeIds[i]];
       if (node.fixed !== true) {
@@ -511,7 +507,7 @@ class PhysicsEngine {
       this._stabilizationBatch();
     }
     else {
-      this.onStable();
+      this.onStable(this.stabilizationIterations);
     }
   }
 
