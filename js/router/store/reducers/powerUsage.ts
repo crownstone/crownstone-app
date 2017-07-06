@@ -83,6 +83,8 @@ let powerUsageDataReducer = (state = defaultState.data, action : any = {}) => {
         return newState;
       }
     }
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, dataState);
     default:
       return state;
   }
@@ -102,6 +104,8 @@ let powerUsageCloudReducer = (state = defaultState.cloud, action : any = {}) => 
         return newState;
       }
     }
+    case 'REFRESH_DEFAULTS':
+      return refreshDefaults(state, defaultState.cloud);
     default:
       return state;
   }
