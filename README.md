@@ -16,7 +16,7 @@ The Crownstone iOS and Android apps have the following functionality:
 | Visualizing other users in the app              | Done                     | To be done on Android     |
 | Scheduling                                      | To be done               | To be done                |
 | Wake-up light                                   | To be done               | To be done                |
-| Dimming (PWM at 50Hz)                           | To be done               | To be done                |
+| Dimming (PWM at 100Hz)                          | To be done               | To be done                |
 | Power consumption history                       | To be done               | To be done                |
 | Integration with Toon                           | To be done               | To be done                |
 | Device identification                           | To be done               | To be done                |
