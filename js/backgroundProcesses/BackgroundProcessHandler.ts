@@ -145,8 +145,6 @@ class BackgroundProcessHandlerClass {
     Scheduler.setRepeatingTrigger(BACKGROUND_SYNC_TRIGGER, {repeatEveryNSeconds:SYNC_INTERVAL});
     Scheduler.setRepeatingTrigger(BACKGROUND_USER_SYNC_TRIGGER, {repeatEveryNSeconds: SPHERE_USER_SYNC_INTERVAL});
 
-    BatchUploader.init();
-
     // if the app is open, update the user locations every 10 seconds
     Scheduler.loadCallback(BACKGROUND_USER_SYNC_TRIGGER, () => {
       if (SetupStateHandler.isSetupInProgress() === false) {
@@ -350,6 +348,7 @@ class BackgroundProcessHandlerClass {
     ErrorWatcher._loadStore(this.store);
     NotificationHandler._loadStore(this.store);
     NotificationParser._loadStore(this.store);
+    BatchUploader._loadStore(this.store);
     Permissions._loadStore(this.store, this.userLoggedIn);
   }
 }

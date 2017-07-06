@@ -4,8 +4,9 @@ import { Util } from '../../util/Util'
 import { Platform } from 'react-native'
 import { syncUsersInLocation } from './syncUsersInSphere'
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
-import { APP_NAME } from "../../ExternalConfig";
+import {APP_NAME, HISTORY_PERSISTENCE} from "../../ExternalConfig";
 import { AppUtil } from "../../util/AppUtil";
+import {getStonesAndAppliancesInSphere} from "../../util/DataUtil";
 
 /**
  * We claim the cloud is leading for the availability of items.
@@ -69,6 +70,9 @@ export const sync = {
         return syncDevices(store, actions, data.devices)
       })
       .then(() => {
+        return syncPowerUsage(state, actions);
+      })
+      .then(() => {
         LOG.info("SYNC Dispatching ", actions.length, " actions!");
         actions.forEach((action) => {
           action.triggeredBySync = true;
@@ -85,6 +89,79 @@ export const sync = {
         }
       })
   }
+};
+
+const syncPowerUsage = function(state, actions) {
+  if (state.user.uploadPowerUsage === false || state.user.uploadHighFrequencyPowerUsage === true) {
+    return
+  }
+
+  let deleteHistoryThreshold = new Date().valueOf() - HISTORY_PERSISTENCE;
+
+  let sphereIds = Object.keys(state.spheres);
+  let uploadBatches = [];
+
+  for (let i = 0; i < sphereIds.length; i++) {
+    let sphere = state.spheres[sphereIds[i]];
+    let stoneIds = Object.keys(sphere.stones);
+    for (let j = 0; j < stoneIds.length; j++) {
+      let stone = sphere.stones[stoneIds[j]];
+      let dateIds = Object.keys(stone.powerUsage);
+      for (let k = 0; k < dateIds.length; k++) {
+        let powerUsageBlock = stone.powerUsage[dateIds[k]];
+
+        // check if we have to delete this block if it is too old.
+        if (new Date(dateIds[k]).valueOf() <  deleteHistoryThreshold) {
+          actions.push({
+            type:'REMOVE_POWER_USAGE_DATE',
+            sphereId: sphereIds[i],
+            stoneId: stoneIds[j],
+            dateId: dateIds[k]
+          });
+        }
+        else {
+          if (powerUsageBlock.cloud.synced === false) {
+            let indices = [];
+            let uploadData = [];
+            let data = powerUsageBlock.data;
+            for (let x = 0; x < data.length; x++) {
+              // if synced is null, it will not be synced.
+              if (data[x].synced === false) {
+                uploadData.push({ power: data[x].power, timestamp: data[x].timestamp, applianceId: data[x].applianceId});;
+                indices.push(x);
+              }
+            }
+
+            uploadBatches.push({
+              data: uploadData,
+              indices: indices,
+              sphereId: sphereIds[i],
+              stoneId: stoneIds[j],
+              dateId: dateIds[k]
+            });
+          }
+        }
+      }
+    }
+  }
+
+  return Util.promiseBatchPerformer(uploadBatches, (uploadBatch) => {
+    let stoneId = uploadBatch.stoneId;
+    let sphereId = uploadBatch.sphereId;
+    let dateId = uploadBatch.dateId;
+    return CLOUD.forStone(stoneId).updateBatchPowerUsage(uploadBatch.data, true)
+      .then(() => {
+        actions.push({
+          type: "BATCH_SET_SYNC_POWER_USAGE",
+          sphereId: sphereId,
+          stoneId: stoneId,
+          dateId: dateId,
+          data: { indices: uploadBatch.indices }});
+      })
+      .catch((err) => {
+        LOG.error("BatchUploader: Could not upload samples", err);
+      })
+  }).catch((err) => {});
 };
 
 const syncDown = function (userId, options) {

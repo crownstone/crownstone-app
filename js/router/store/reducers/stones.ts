@@ -75,7 +75,7 @@ let defaultSettings = {
     advertisementError: false,
   },
   powerUsage: {
-    //day as string: 2017-05-01 : []
+    //day as string: 2017-05-01 : { cloud: {...}, data: [] }
   }
 };
 

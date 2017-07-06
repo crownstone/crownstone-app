@@ -97,10 +97,10 @@ function handleAction(action, returnValue, newState, oldState) {
 
 
     case "UPDATE_STONE_STATE":
-      handleStoneState(action, newState);
+      handleStoneState(action, newState, oldState);
       break;
     case "UPDATE_STONE_SWITCH_STATE":
-      handleStoneState(action, newState, true);
+      handleStoneState(action, newState, oldState, true);
       break;
 
     case "ADD_INSTALLATION":
@@ -317,7 +317,7 @@ function handleUserLocationExit(action, state) {
 }
 
 
-function handleStoneState(action, state, pureSwitch = false) {
+function handleStoneState(action, state, oldState, pureSwitch = false) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
 
@@ -334,11 +334,15 @@ function handleStoneState(action, state, pureSwitch = false) {
 
   if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
+    let oldStone = oldState.spheres[sphereId].stones[stoneId];
     let data  = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
+
+    let dayIndex = Util.getDateFormat(action.updatedAt);
+    let index = oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].length || 0;
     if (stone.config.applianceId) {
       data['applianceId'] = stone.config.applianceId;
     }
-    BatchUploader.addPowerData(stoneId, data);
+    BatchUploader.addPowerData(dayIndex, sphereId, stoneId, index, data);
   }
 }
 
