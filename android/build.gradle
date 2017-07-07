@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         //classpath 'com.android.tools.build:gradle:2.3.0' // Requires buildToolsVersion 25, which react doesn't have yet.
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.3'
 
         // For push notifications
         //classpath 'com.google.gms:google-services:3.0.0'

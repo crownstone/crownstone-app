@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler }                              from '../../native/setup/SetupStateHandler'
-import { Orbs }                                           from '../components/Orbs'
 import { TopBar }                                         from '../components/Topbar'
 import { FinalizeLocalizationIcon }                       from '../components/FinalizeLocalizationIcon'
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
@@ -25,10 +24,9 @@ import {styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, a
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/Permissions";
-import * as Swiper from 'react-native-swiper';
 import {eventBus} from "../../util/EventBus";
 
-let addRooms = true
+
 export class SphereOverview extends Component<any, any> {
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
@@ -88,7 +86,6 @@ export class SphereOverview extends Component<any, any> {
     if (activeSphere === null && sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
     }
-
   }
 
   componentWillMount() {

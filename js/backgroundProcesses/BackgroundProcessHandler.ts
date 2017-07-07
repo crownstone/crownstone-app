@@ -30,6 +30,7 @@ import {Permissions} from "./Permissions";
 import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 import {BatchUploader} from "./BatchUploader";
 
+const DeviceInfo = require('react-native-device-info');
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -98,6 +99,8 @@ class BackgroundProcessHandlerClass {
         Scheduler.scheduleCallback(() => { this.checkErrors(null); }, 15000, 'checkErrors');
 
         this.setupLogging();
+
+        this.showWhatsNew();
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
@@ -106,6 +109,13 @@ class BackgroundProcessHandlerClass {
     this.started = true;
   }
 
+
+  showWhatsNew() {
+    let state = this.store.getState();
+    if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
+      eventBus.emit("showWhatsNew");
+    }
+  }
 
   setupLogging() {
     let state = this.store.getState();

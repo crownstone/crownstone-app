@@ -93,7 +93,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     items.push({
       id: 'Spheres',
       label: 'Spheres',
-      icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
+      icon: getIcon('c1-sphere', 21.5, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => { Actions.settingsSphereOverview() }
     });
@@ -128,6 +128,15 @@ export const SettingConstructor = function(store, state, eventBus) {
     style: {color: '#000'},
     icon: getAlternatingIcons(['ios-cog','ios-battery-full'],[25,25],[colors.white.hex, colors.white.hex],[colors.darkBackground.hex, colors.darkBackground.hex]) ,
     callback: () => { Actions.settingsApp(); }
+  });
+
+  items.push({
+    id: 'whats new',
+    label: "Whats new in this version?",
+    type: 'button',
+    style: {color: '#000'},
+    icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),
+    callback: () => { eventBus.emit("showWhatsNew"); }
   });
 
   let presentSphere = Util.data.getPresentSphere(state);

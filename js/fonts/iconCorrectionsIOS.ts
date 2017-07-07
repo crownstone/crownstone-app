@@ -220,7 +220,7 @@ const c1CorrectionsIOS = {
   'c1-tap-block':           {change: false, top: +0.000, left: +0.000},
   'c1-tap-block-outline':   {change: false, top: +0.000, left: +0.000},
   'c1-tap-fat':             {change: false, top: +0.000, left: +0.000},
-  'c1-sphere':              {change: true,  top: +0.035, left: +0.000},
+  'c1-sphere':              {change: true,  top: +0.034, left: +0.010},
 };
 
 
