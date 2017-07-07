@@ -40,8 +40,11 @@ Do you encounter some issues or would you like to see a particular feature, file
 
 The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/app/). 
 
-![Overview screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-overview.jpeg)
-![Room screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone-app-room.jpeg)
+![Register screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone_screenshot_login.jpeg)
+![Overview screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone_screenshot_sphere.jpeg)
+![Room screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone_screenshot_plug.jpeg)
+![Behavior screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone_screenshot_behavior.jpeg)
+![Pick icon screen](https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/documentation/crownstone_screenshot_pick_icon.jpeg)
 
 ## Setup
 
