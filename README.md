@@ -40,22 +40,7 @@ Do you encounter some issues or would you like to see a particular feature, file
 
 The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/app/). 
 
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_welcome.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_login.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_preferences.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_power_use.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_power_use2.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_plug_on.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_pick_icon.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_overview_start.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_overview4.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_floating.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_fingerprinting.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_error.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_dfu.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_behaviour3.jpg" width="196px" height="348px"/>
-<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_behaviour2.jpg" width="196px" height="348px"/>
-
+<img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_welcome.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_login.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_preferences.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_power_use.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_power_use2.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_plug_on.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_pick_icon.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_overview_start.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_overview4.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_floating.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_fingerprinting.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_error.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_dfu.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_behaviour3.jpg" width="196px" height="348px"/> <img src="https://raw.githubusercontent.com/crownstone/CrownstoneApp/master/screenshots/screenshot_behaviour2.jpg" width="196px" height="348px"/> 
 ## Setup
 
 ### React Native
