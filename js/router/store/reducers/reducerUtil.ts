@@ -39,7 +39,15 @@ export function refreshDefaults(state, defaultObject) {
     let fields = Object.keys(defaultObject);
     fields.forEach((field) => {
       if (newState[field] === undefined) {
-        newState[field] = defaultObject[field];
+        if (Array.isArray(defaultObject[field])) {
+          newState[field] = [...defaultObject[field]];
+        }
+        else if (typeof defaultObject[field] === 'object') {
+          newState[field] = {...defaultObject[field]};
+        }
+        else {
+          newState[field] = defaultObject[field];
+        }
       }
     });
     return newState;

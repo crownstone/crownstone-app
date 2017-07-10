@@ -19,6 +19,7 @@ import { ApplianceAdd }               from '../views/deviceViews/ApplianceAdd'
 import { DeviceOverview }             from '../views/deviceViews/DeviceOverview'
 import { DeviceEdit }                 from '../views/deviceViews/DeviceEdit'
 import { DeviceBehaviourEdit }        from '../views/deviceViews/DeviceBehaviourEdit'
+import { DeviceScheduleEdit }         from '../views/deviceViews/DeviceScheduleEdit'
 import { DeviceIconSelection }        from '../views/deviceViews/DeviceIconSelection'
 import { SettingsApp }                from '../views/settingsViews/SettingsApp'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
@@ -56,6 +57,7 @@ export const Views = {
   DeviceEdit,
   DeviceBehaviourEdit,
   DeviceIconSelection,
+  DeviceScheduleEdit,
   SettingsApp,
   SettingsOverview,
   SettingsProfile,

@@ -335,7 +335,7 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
   if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
     let oldStone = oldState.spheres[sphereId].stones[stoneId];
-    let data  = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
+    let data     = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
 
     let dayIndex = Util.getDateFormat(action.updatedAt);
     let index = oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].length || 0;

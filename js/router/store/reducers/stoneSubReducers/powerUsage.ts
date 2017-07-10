@@ -1,8 +1,7 @@
 import { createStore, combineReducers } from 'redux'
-import { update, getTime, refreshDefaults } from './reducerUtil'
-import { LOG } from '../../../logging/Log'
-import { updateToggleState, toggleState, toggleStateAway } from './shared'
-import {Util} from "../../../util/Util";
+import { update, getTime, refreshDefaults } from '../reducerUtil'
+import { LOG } from '../../../../logging/Log'
+import {Util} from "../../../../util/Util";
 
 
 let defaultState = {

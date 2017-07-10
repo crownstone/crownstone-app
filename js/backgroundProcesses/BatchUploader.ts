@@ -32,7 +32,7 @@ class BatchUploadClass {
     this._batchPowerData();
   }
 
-  addPowerData(dateId, sphereId, stoneId, index,  data) {
+  addPowerData(dateId, sphereId, stoneId, index, data) {
     Scheduler.resumeTrigger(TRIGGER_ID);
     let key = dateId+'_'+sphereId+'_'+stoneId;
     if (this.queue.power[key] === undefined) {

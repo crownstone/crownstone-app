@@ -49,7 +49,7 @@ export class DeviceError extends Component<any, any> {
             borderRadius: 25,
             borderWidth: 3,
             borderColor: colors.red.hex,
-            backgroundColor: colors.white.rgba(0.75)
+            backgroundColor: colors.white.hex
           }]}>
           <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{"Resolve"}</Text>
         </TouchableOpacity>

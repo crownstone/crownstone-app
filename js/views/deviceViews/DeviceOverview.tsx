@@ -27,6 +27,7 @@ import { DeviceUpdate } from "./elements/DeviceUpdate";
 import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { eventBus } from "../../util/EventBus";
 import {DevicePowerCurve} from "./elements/DevicePowerCurve";
+import {DeviceSchedule} from "./elements/DeviceSchedule";
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
@@ -102,13 +103,16 @@ export class DeviceOverview extends Component<any, any> {
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
     let hasAppliance = stone.config.applianceId !== null;
 
-    let summaryIndex = 0;
-    let behaviourIndex = 1;
+    let index = 0;
+    let scheduleIndex = index++;
+    let summaryIndex = index++;
+    let behaviourIndex = index++;
 
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state);
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
+    let hasScheduler = stone.config.type !== STONE_TYPES.guidestone;
     let deviceType = stone.config.type;
 
     if (hasError)  { summaryIndex++; behaviourIndex++; }
@@ -127,6 +131,8 @@ export class DeviceOverview extends Component<any, any> {
           rightItem={this.state.scrolling ? this._getScrollingElement() : undefined}
           right={() => {
             switch (this.state.swiperIndex) {
+              case scheduleIndex:
+                return Permissions.setSchedule ? 'Add' : undefined;
               case summaryIndex:
                 return (hasAppliance ? Permissions.editAppliance : Permissions.editCrownstone) ? 'Edit' : undefined;
               case behaviourIndex:
@@ -135,6 +141,11 @@ export class DeviceOverview extends Component<any, any> {
           }}
           rightAction={() => {
             switch (this.state.swiperIndex) {
+              case scheduleIndex:
+                if (Permissions.setSchedule) {
+                  Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null})
+                }
+                break;
               case summaryIndex:
                 if (hasAppliance && Permissions.editAppliance || !hasAppliance && Permissions.editCrownstone) {
                   Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId})
@@ -157,7 +168,7 @@ export class DeviceOverview extends Component<any, any> {
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
-          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, deviceType) }
+          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType) }
         </Swiper>
       </Background>
     )
@@ -172,21 +183,27 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, deviceType) {
+  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType) {
     let content = [];
 
+    let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId};
+
+    if (hasScheduler) {
+      content.push(<DeviceSchedule key={'scheduleSlide'} {...props} />);
+    }
+
     if (hasError) {
-      content.push(<DeviceError key={'errorSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+      content.push(<DeviceError key={'errorSlide'} {...props} />);
     }
     if (canUpdate) {
-      content.push(<DeviceUpdate key={'updateSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
+      content.push(<DeviceUpdate key={'updateSlide'}  {...props} />);
     }
 
     if (deviceType === STONE_TYPES.guidestone) {
-      content.push(<GuidestoneSummary key={'summarySlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
+      content.push(<GuidestoneSummary key={'summarySlide'}  {...props} />);
     }
     else {
-      content.push(<DeviceSummary key={'summarySlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
+      content.push(<DeviceSummary key={'summarySlide'}  {...props} />);
     }
 
     if (hasBehaviour) {

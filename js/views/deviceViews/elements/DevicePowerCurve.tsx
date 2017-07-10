@@ -24,35 +24,35 @@ import {textStyle} from "./DeviceBehaviour";
 
 export class DevicePowerCurve extends Component<any, any> {
   unsubscribeStoreEvents;
-  debugInterval;
+  // debugInterval;
 
   constructor() {
     super();
   }
 
   componentDidMount() {
-    this.props.store.dispatch({
-      type:"REMOVE_ALL_POWER_USAGE",
-      sphereId: this.props.sphereId,
-      stoneId: this.props.stoneId
-    });
-    this.debugInterval = setInterval(() => {
-      const state = this.props.store.getState();
-      const sphere = state.spheres[this.props.sphereId];
-      const stone = sphere.stones[this.props.stoneId];
-      this.props.store.dispatch({
-        type:"UPDATE_STONE_STATE_DUPLICATE",
-        sphereId: this.props.sphereId,
-        stoneId: this.props.stoneId,
-        data: {
-          state: 1,
-          currentUsage: Math.round(Math.random()*200),
-          applianceId: stone.config.applianceId
-        },
-        updatedAt: new Date().valueOf()
-      });
-      this.forceUpdate();
-    }, 2000);
+    // this.props.store.dispatch({
+    //   type:"REMOVE_ALL_POWER_USAGE",
+    //   sphereId: this.props.sphereId,
+    //   stoneId: this.props.stoneId
+    // });
+    // this.debugInterval = setInterval(() => {
+    //   const state = this.props.store.getState();
+    //   const sphere = state.spheres[this.props.sphereId];
+    //   const stone = sphere.stones[this.props.stoneId];
+    //   this.props.store.dispatch({
+    //     type:"UPDATE_STONE_STATE_DUPLICATE",
+    //     sphereId: this.props.sphereId,
+    //     stoneId: this.props.stoneId,
+    //     data: {
+    //       state: 1,
+    //       currentUsage: Math.round(Math.random()*200),
+    //       applianceId: stone.config.applianceId
+    //     },
+    //     updatedAt: new Date().valueOf()
+    //   });
+    //   this.forceUpdate();
+    // }, 2000);
 
     this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -66,7 +66,7 @@ export class DevicePowerCurve extends Component<any, any> {
 
 
   componentWillUnmount() {
-    clearInterval(this.debugInterval);
+    // clearInterval(this.debugInterval);
     this.unsubscribeStoreEvents();
   }
 

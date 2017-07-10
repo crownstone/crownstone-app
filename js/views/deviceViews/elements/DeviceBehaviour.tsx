@@ -32,25 +32,45 @@ export class DeviceBehaviour extends Component<any, any> {
   }
 
   getWarning(state, nearFarDisabled) {
+    let warnings = [];
     if (state.app.indoorLocalizationEnabled === false) {
-      return <Text style={textStyle.warning}>Behaviour is disabled in the App Settings. Re-enable indoor localization to use the behaviour.</Text>
+      return (
+        <TouchableOpacity
+          key="heartbeatWarning"
+          style={{flexDirection: 'row'}}
+          onPress={() => { Actions.settingsApp(); }}
+        >
+          <Text style={textStyle.warning}>{'Behaviour is disabled in the App Settings. Re-enable indoor localization to use the behaviour.'}</Text>
+        </TouchableOpacity>
+      );
     }
 
-    let warningText = '';
     if (state.app.keepAlivesEnabled === false) {
-      warningText = 'Heartbeat is disabled in the App Settings. Re-enable the Heartbeat to use the exit behaviour.';
+      warnings.push(
+        <TouchableOpacity
+          key="heartbeatWarning"
+          style={{flexDirection: 'row'}}
+          onPress={() => { Actions.settingsApp(); }}
+        >
+          <Text style={textStyle.warning}>{'Heartbeat is disabled in the App Settings. Re-enable the Heartbeat to use the exit behaviour.'}</Text>
+        </TouchableOpacity>
+      );
     }
+
 
     if (nearFarDisabled) {
-      if (warningText !== '') {
-        warningText += '\n\n'
-      }
-      warningText += 'Near/away is disabled until you define where near is. Press change at the top to do this now.';
+      warnings.push(
+        <TouchableOpacity
+          key="nearFarWarning"
+          style={{flexDirection: 'row'}}
+          onPress={() => {Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});}}
+        >
+          <Text style={textStyle.warning}>{'Near/away is disabled until you define where near is. Press change at the top to do this now.'}</Text>
+        </TouchableOpacity>
+      );
     }
 
-    if (warningText) {
-      return <Text style={textStyle.warning}>{warningText}</Text>
-    }
+    return warnings;
   }
 
   render() {
@@ -173,14 +193,13 @@ class BehaviourResponse extends Component<any, any> {
     let isDisabled = this._isDisabled();
     let responseStyle = this._getResponseStyle(isDisabled, active);
 
-
     let content;
     if (active) {
       content = (
         <View>
           <Text style={[textStyle.case, responseStyle]}>{this._getTitle()}</Text>
-          <View style={{flexDirection: 'row', alignItems:'center'}}>
-            {this.props.prefixItem ? this.props.prefixItem : <Text style={[textStyle.value, responseStyle]}>{this.props.prefix || 'I will '}</Text>}
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'center'}}>
+            {this.props.prefixItem ? this.props.prefixItem :   <Text style={[textStyle.value, responseStyle]}>{this.props.prefix || 'I will '}</Text>}
             {this._getValue(responseStyle)}
             {this.props.postfixItem ? this.props.postfixItem : <Text style={[textStyle.value, responseStyle]}>{this._getDelay()}</Text>}
           </View>
@@ -238,7 +257,7 @@ export const textStyle = StyleSheet.create({
     textAlign:'center',
     fontSize:13,
     padding:5,
-    fontWeight:'400'
+    fontWeight:'400',
   },
   value: {
     color:colors.white.hex,

@@ -2,7 +2,8 @@ import { createStore, combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { LOG } from '../../../logging/Log'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
-import powerUsageReducer from './powerUsage'
+import powerUsageReducer from './stoneSubReducers/powerUsage'
+import scheduleReducer from './stoneSubReducers/schedule'
 
 export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
@@ -284,17 +285,6 @@ let behaviourReducerOnAway = (state = toggleStateAway, action : any = {}) => {
       return updateToggleState(state,action);
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, toggleStateAway);
-    default:
-      return state;
-  }
-};
-
-let scheduleReducer = (state = {}, action : any = {}) => {
-  switch (action.type) {
-    case 'ADD_STONE_SCHEDULE':
-    case 'UPDATE_STONE_SCHEDULE':
-    case 'REMOVE_STONE_SCHEDULE':
-      return {...state, ...action.data};
     default:
       return state;
   }

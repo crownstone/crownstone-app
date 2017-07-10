@@ -163,7 +163,7 @@ export const Util = {
     return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds
   },
 
-  getTimeFormat: function(timestamp)  {
+  getTimeFormat: function(timestamp, showSeconds = true)  {
     if (timestamp === 0) {
       return 'unknown';
     }
@@ -172,6 +172,11 @@ export const Util = {
 
     let hours = date.getHours();
     let minutes = pad(date.getMinutes());
+
+    if (showSeconds === false) {
+      return hours + ':' + minutes;
+    }
+
     let seconds = pad(date.getSeconds());
 
     return hours + ':' + minutes + ':' + seconds
