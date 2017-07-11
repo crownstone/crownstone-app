@@ -58,7 +58,6 @@ export class Router_IOS extends Component {
             <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.props.loggedIn}>
               <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                 <Scene key="deviceOverview"         component={Views.DeviceOverview}        sphereId="58de6bda62a2241400f10c67" stoneId="594bc3c5be979f0014e48bda"     hideNavBar={true} />
-                <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}      sphereId="58de6bda62a2241400f10c67" stoneId="594bc3c5be979f0014e48bda"     hideNavBar={true} direction="vertical" />
                 <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
                 <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
                 <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
@@ -66,6 +65,7 @@ export class Router_IOS extends Component {
                 <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select Device Type" />
                 <Scene key="applianceAdd"           component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
+                <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={true} />
               </Scene>
               <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>

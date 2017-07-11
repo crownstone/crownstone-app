@@ -102,5 +102,8 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setTime:                    (time) => { return BluenetPromise('setTime',time); },
   getTime:                    () => { return BluenetPromise('getTime'); },
 
+  setSchedule:                (data: bridgeScheduleEntry) => { return BluenetPromise('setSchedule', data); },
+  clearSchedule:              (scheduleEntryIndex: number) => { return BluenetPromise('clearSchedule', scheduleEntryIndex); },
+  getAvailableScheduleEntryIndex: () => { return BluenetPromise('getAvailableScheduleEntryIndex'); }
 };
 

@@ -185,6 +185,12 @@ func getBleErrorString(_ err: BleError) -> String {
     return "INCORRECT_RESPONSE_LENGTH"
   case .UNKNOWN_TYPE:
     return "UNKNOWN_TYPE"
+  case .INCORRECT_TIMER_INDEX:
+    return "INCORRECT_TIMER_INDEX"
+  case .INCORRECT_DATA_COUNT_FOR_ALL_TIMERS:
+    return "INCORRECT_DATA_COUNT_FOR_ALL_TIMERS"
+  case .NO_TIMERS_AVAILABLE:
+    return "NO_TIMERS_AVAILABLE"
   }
 }
 
@@ -1005,4 +1011,120 @@ open class BluenetJS: NSObject {
     GLOBAL_BLUENET!.bluenetLocalization.setBackgroundScanning(newBackgroundState: backgroundScanning)
   }
 
+  @objc func setSchedule(_ data: NSDictionary, callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called setSchedule")
+    let scheduleEntryIndex     = data["scheduleEntryIndex"] as? NSNumber
+    let nextTime               = data["nextTime"]           as? NSNumber
+    let switchState            = data["switchState"]        as? NSNumber
+    let fadeDuration           = data["fadeDuration"]       as? NSNumber
+    let intervalInMinutes      = data["intervalInMinutes"]  as? NSNumber
+    let ignoreLocationTriggers = data["ignoreLocationTriggers"] as? NSNumber
+    let active                 = data["active"]             as? NSNumber
+    let repeatMode             = data["repeatMode"]         as? String
+    let activeMonday           = data["activeMonday"]       as? NSNumber
+    let activeTuesday          = data["activeTuesday"]      as? NSNumber
+    let activeWednesday        = data["activeWednesday"]    as? NSNumber
+    let activeThursday         = data["activeThursday"]     as? NSNumber
+    let activeFriday           = data["activeFriday"]       as? NSNumber
+    let activeSaturday         = data["activeSaturday"]     as? NSNumber
+    let activeSunday           = data["activeSunday"]       as? NSNumber
+    
+    
+    if (
+        scheduleEntryIndex     == nil ||
+        nextTime               == nil ||
+        switchState            == nil ||
+        fadeDuration           == nil ||
+        intervalInMinutes      == nil ||
+        ignoreLocationTriggers == nil ||
+        active                 == nil ||
+        repeatMode             == nil ||
+        activeMonday           == nil ||
+        activeTuesday          == nil ||
+        activeWednesday        == nil ||
+        activeThursday         == nil ||
+        activeFriday           == nil ||
+        activeSaturday         == nil ||
+        activeSunday           == nil
+      ) {
+      var failureString = "Not all required fields have been defined. Require additional fields: { "
+      failureString += scheduleEntryIndex == nil ?     "scheduleEntryIndex: number (index of timer, [0 .. 9]), " : ""
+      failureString += nextTime == nil ?               "nextTime: number (timestamp since epoch in seconds), " : ""
+      failureString += switchState == nil ?            "switchState: number (switch, float, [ 0 .. 1 ] ), " : ""
+      failureString += fadeDuration == nil ?           "fadeDuration: number (UInt16)" : ""
+      failureString += intervalInMinutes == nil ?      "intervalInMinutes: number (UInt16)" : ""
+      failureString += ignoreLocationTriggers == nil ? "ignoreLocationTriggers: Boolean" : ""
+      failureString += active == nil ?                 "active: Boolean, " : ""
+      failureString += repeatMode == nil ?             "repeatMode: string ('24h' / 'minute' / 'none'), " : ""
+      failureString += activeMonday == nil ?           "activeMonday: Boolean, " : ""
+      failureString += activeTuesday == nil ?          "activeTuesday: Boolean, " : ""
+      failureString += activeWednesday == nil ?        "activeWednesday: Boolean, " : ""
+      failureString += activeThursday == nil ?         "activeThursday: Boolean, " : ""
+      failureString += activeFriday == nil ?           "activeFriday: Boolean, " : ""
+      failureString += activeSaturday == nil ?         "activeSaturday: Boolean, " : ""
+      failureString += activeSunday == nil ?           "activeSunday: Boolean" : ""
+      failureString += " }"
+      callback([["error" : true, "data": failureString]])
+      return
+    }
+    
+    if (active!.boolValue == false) {
+      callback([["error" : true, "data": "If you want to deactivate the scheduler, use the clearSchedule command"]])
+      return
+    }
+    
+
+    let config = ScheduleConfigurator(scheduleEntryIndex: scheduleEntryIndex!.uint8Value, startTime: nextTime!.doubleValue, switchState: switchState!.floatValue)
+    config.fadeDuration = fadeDuration!.uint16Value
+    config.intervalInMinutes = intervalInMinutes!.uint16Value
+    config.override.location = ignoreLocationTriggers!.boolValue
+    config.repeatDay.Monday = activeMonday!.boolValue
+    config.repeatDay.Tuesday = activeTuesday!.boolValue
+    config.repeatDay.Wednesday = activeWednesday!.boolValue
+    config.repeatDay.Thursday = activeThursday!.boolValue
+    config.repeatDay.Friday = activeFriday!.boolValue
+    config.repeatDay.Saturday = activeSaturday!.boolValue
+    config.repeatDay.Sunday = activeSunday!.boolValue
+    
+    GLOBAL_BLUENET!.bluenet.control.setSchedule(scheduleConfig: config)
+      .then{time in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN setSchedule"]])
+        }
+    }
+  }
+  
+  @objc func clearSchedule(_ scheduleEntryIndex: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called clearSchedule")
+    GLOBAL_BLUENET!.bluenet.control.clearSchedule(scheduleEntryIndex: scheduleEntryIndex.uint8Value)
+      .then{time in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN clearSchedule"]])
+        }
+    }
+  }
+  
+  
+  @objc func getAvailableScheduleEntryIndex(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called getAvailableScheduleEntryIndex")
+    GLOBAL_BLUENET!.bluenet.state.getAvailableScheduleEntryIndex()
+      .then{index in callback([["error" : false, "data": index]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getAvailableSchedulerIndex"]])
+        }
+    }
+  }
+  
 }

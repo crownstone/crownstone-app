@@ -174,9 +174,10 @@ function checkAction(action, affectedIds) {
     case "UPDATE_STONE_RSSI":
       eventStatus['stoneRssiUpdated'] = affectedIds; break;
     case 'ADD_STONE_SCHEDULE':
-    case 'UPDATE_STONE_SCHEDULE':
     case 'REMOVE_STONE_SCHEDULE':
-      break;
+      eventStatus['changeStoneSchedule'] = affectedIds;
+    case 'UPDATE_STONE_SCHEDULE':
+      eventStatus['updateStoneSchedule'] = affectedIds; break;
     case 'REMOVE_STONE':
       eventStatus['removeStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;

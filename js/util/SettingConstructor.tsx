@@ -26,7 +26,7 @@ const getIcon = function(name : string, size : number, iconColor: string, backgr
     return <Icon name={name} size={size} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />
   }
   else {
-    return <IconButton name={name} size={size} button={true} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
+    return <IconButton name={name} size={size} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
   }
 };
 

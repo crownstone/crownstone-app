@@ -55,7 +55,7 @@ let defaultSettings = {
     currentUsage: 0,
     updatedAt: 1
   },
-  schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
+  schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
     updatedAt: 1
   },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
@@ -351,7 +351,7 @@ let combinedStoneReducer = combineReducers({
   config: stoneConfigReducer,
   state: stoneStateReducer,
   behaviour: stoneBehavioursReducer,
-  schedule: scheduleReducer,
+  schedules: scheduleReducer,
   statistics: stoneStatisticsReducer,
   errors: stoneErrorsReducer,
   powerUsage: powerUsageReducer

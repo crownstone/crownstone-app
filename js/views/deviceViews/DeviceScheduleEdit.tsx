@@ -32,23 +32,33 @@ export class DeviceScheduleEdit extends Component<any, any> {
   constructor(props) {
     super();
 
-    this.state = {
-      label: '',
-      time: new Date().valueOf(),
-      switchState: 1,
-      fadeDuration: 0,
-      ignoreLocationTriggers: false,
-      active: true,
-      repeatMode: '24h', // 24h / minute
-      activeDays: {
-        Mon: true,
-        Tue: true,
-        Wed: true,
-        Thu: true,
-        Fri: true,
-        Sat: false,
-        Sun: false,
-      },
+
+    if (props.scheduleId !== null && props.scheduleId !== undefined) {
+      const store = props.store;
+      const state = store.getState();
+      const schedule = state.spheres[props.sphereId].stones[props.stoneId].schedules[props.scheduleId];
+      this.state = {...schedule};
+      this.state.activeDays = {...schedule.activeDays};
+    }
+    else {
+      this.state = {
+        label: '',
+        time: new Date().valueOf(),
+        switchState: 1,
+        fadeDuration: 0,
+        ignoreLocationTriggers: false,
+        active: true,
+        repeatMode: '24h', // 24h / minute
+        activeDays: {
+          Mon: true,
+          Tue: true,
+          Wed: true,
+          Thu: true,
+          Fri: true,
+          Sat: new Date().getDay() === 6, // only on by default if it actually IS Saturday
+          Sun: new Date().getDay() === 0, // only on by default if it actually IS Sunday
+        },
+      }
     }
   }
 
@@ -91,21 +101,67 @@ export class DeviceScheduleEdit extends Component<any, any> {
       <RepeatWeekday data={this.state.activeDays} onChange={(newData) => { this.setState({activeDays: newData}); }} />
     });
 
+    if (this.props.scheduleId !== null && this.props.scheduleId !== undefined) {
+      items.push({label:'SCHEDULING OPTIONS', type: 'lightExplanation',  below:false});
+      items.push({label:'Schedule active', type: 'switch', value: this.state.active, callback: (newValue) => {
+        this.setState({active: newValue});
+      }});
+      items.push({
+        label: 'Remove',
+        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
+        type: 'button',
+        callback: () => {
+        Alert.alert(
+          "Are you sure?",
+          "Removing a scheduled action will also remove it from the Crownstone. You can disable the action to temporarily stop it.",
+          [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
+            this._deleteSchedule();
+          }}]
+        )
+      }});
+    }
+    items.push({type: 'spacer'});
 
     return <ListEditableItems items={items} style={{width:screenWidth}} />
   }
 
-  render() {
-    const store = this.props.store;
-    const state = store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+  _createSchedule() {
+    let newScheduleId = Util.getUUID();
+    let newSchedulerData = {...this.state};
+    newSchedulerData.scheduleEntryIndex = 1;
+    this.props.store.dispatch({type:"ADD_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: newScheduleId, data: newSchedulerData});
+    Actions.pop();
+  }
 
+  _updateSchedule() {
+    if (this.props.scheduleId) {
+      this.props.store.dispatch({
+        type: "UPDATE_STONE_SCHEDULE",
+        sphereId: this.props.sphereId,
+        stoneId: this.props.stoneId,
+        scheduleId: this.props.scheduleId,
+        data: {...this.state}
+      });
+      Actions.pop();
+    }
+    else {
+      Actions.pop();
+    }
+  }
+
+  _deleteSchedule() {
+    this.props.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
+    Actions.pop();
+  }
+
+  render() {
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
-          leftAction={() => { Actions.pop(); }}
-          right={() => {}}
-          rightAction={() => {}}
+          leftAction={() => { this._updateSchedule(); }}
+          right={this.props.scheduleId ? undefined : 'Create'}
+          rightStyle={{fontWeight: 'bold'}}
+          rightAction={this.props.scheduleId ? undefined : () => { this._createSchedule(); } }
           title={this.props.scheduleId ? "Edit Schedule" : "Add Schedule"} />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>

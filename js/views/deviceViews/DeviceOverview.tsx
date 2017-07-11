@@ -79,6 +79,7 @@ export class DeviceOverview extends Component<any, any> {
         change.changeAppSettings ||
         change.stoneLocationUpdated && change.stoneLocationUpdated.stoneIds[this.props.stoneId] ||
         change.changeStoneState && change.changeStoneState.stoneIds[this.props.stoneId] ||
+        change.updateStoneSchedule && change.updateStoneSchedule.stoneIds[this.props.stoneId] ||
         change.powerUsageUpdated && change.powerUsageUpdated.stoneIds[this.props.stoneId] ||
         change.updateStoneConfig && change.updateStoneConfig.stoneIds[this.props.stoneId] ||
         change.updateStoneBehaviour && change.updateStoneBehaviour.stoneIds[this.props.stoneId] ||
@@ -143,7 +144,7 @@ export class DeviceOverview extends Component<any, any> {
             switch (this.state.swiperIndex) {
               case scheduleIndex:
                 if (Permissions.setSchedule) {
-                  Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null})
+                  Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
                 }
                 break;
               case summaryIndex:

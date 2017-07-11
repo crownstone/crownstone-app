@@ -66,6 +66,11 @@ if (DISABLE_NATIVE === true) {
     setTime: () => {},
     batterySaving: () => {},
     setBackgroundScanning: () => {},
+
+    setSchedule: () => {},
+    clearSchedule: () => {},
+    getAvailableScheduleEntryIndex: () => {},
+
   }
 }
 else {
