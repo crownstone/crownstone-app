@@ -113,7 +113,7 @@ class BackgroundProcessHandlerClass {
   showWhatsNew() {
     let state = this.store.getState();
     if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
-      eventBus.emit("showWhatsNew");
+      Scheduler.scheduleCallback(() => { eventBus.emit("showWhatsNew"); }, 100);
     }
   }
 

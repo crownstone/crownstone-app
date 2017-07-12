@@ -348,6 +348,18 @@ class BatchCommandHandlerClass {
               case 'keepAliveState':
                 actionPromise = BluenetPromiseWrapper.keepAliveState(command.changeState, command.state, command.timeout);
                 break;
+              case 'clearSchedule':
+                actionPromise = BluenetPromiseWrapper.clearSchedule(command.scheduleEntryIndex);
+                break;
+              case 'getAvailableScheduleEntryIndex':
+                actionPromise = BluenetPromiseWrapper.getAvailableScheduleEntryIndex();
+                break;
+              case 'setSchedule':
+                actionPromise = BluenetPromiseWrapper.setSchedule(command.scheduleConfig);
+                break;
+              case 'addSchedule':
+                actionPromise = BluenetPromiseWrapper.addSchedule(command.scheduleConfig);
+                break;
               case 'setSwitchState':
               case 'multiSwitch': // if it's a direct call, we just use the setSwitchState.
                 actionPromise = BluenetPromiseWrapper.setSwitchState(command.state);
@@ -453,7 +465,6 @@ class BatchCommandHandlerClass {
             this._scheduleNextStone();
           }
 
-          LOG.error("BatchCommandHandler: ERROR DURING EXECUTE", err, this.activePromiseId);
           reject(err);
         })
         .catch((err) => {
@@ -500,7 +511,6 @@ class BatchCommandHandlerClass {
           resolve();
         })
         .catch((err) => {
-          LOG.error("BatchCommandHandler: ERROR DURING EXECUTE", err, this.activePromiseId);
           BluenetPromiseWrapper.phoneDisconnect()
             .then(() => {
               reject(err);
@@ -594,7 +604,7 @@ class BatchCommandHandlerClass {
 
     promiseRegistration(actionPromise, {from: 'BatchCommandHandler: executing.'})
       .catch((err) => {
-        // disable execution and forward the error
+        // disable execution stop the error propagation since this is not returned anywhere.
         LOG.error("BatchCommandHandler: Error completing promise.", err, this.activePromiseId);
       });
   }

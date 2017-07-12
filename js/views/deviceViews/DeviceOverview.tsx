@@ -105,15 +105,17 @@ export class DeviceOverview extends Component<any, any> {
     let hasAppliance = stone.config.applianceId !== null;
 
     let index = 0;
-    let scheduleIndex = index++;
     let summaryIndex = index++;
     let behaviourIndex = index++;
+    let scheduleIndex = index++;
+    let powerMonitorIndex = index++;
 
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state);
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
     let hasScheduler = stone.config.type !== STONE_TYPES.guidestone;
+    // let hasScheduler = stone.config.type !== STONE_TYPES.guidestone && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0');
     let deviceType = stone.config.type;
 
     if (hasError)  { summaryIndex++; behaviourIndex++; }
@@ -189,10 +191,6 @@ export class DeviceOverview extends Component<any, any> {
 
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId};
 
-    if (hasScheduler) {
-      content.push(<DeviceSchedule key={'scheduleSlide'} {...props} />);
-    }
-
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
     }
@@ -209,6 +207,10 @@ export class DeviceOverview extends Component<any, any> {
 
     if (hasBehaviour) {
       content.push(<DeviceBehaviour key={'behaviourSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+    }
+
+    if (hasScheduler) {
+      content.push(<DeviceSchedule key={'scheduleSlide'} {...props} />);
     }
 
     if (hasPowerMonitor) {

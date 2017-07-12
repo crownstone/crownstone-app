@@ -94,6 +94,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
       }
+    case 'UPDATE_STONE_STATE_DUPLICATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
     case 'UPDATE_STONE_STATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
       if (action.data) {
         let newState = {...state};

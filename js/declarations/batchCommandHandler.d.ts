@@ -76,7 +76,11 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'getErrors' } |
   { commandName : 'getTime' } |
   { commandName : 'setTime', time: number } |
-  { commandName : 'clearErrors', clearErrorJSON: any }
+  { commandName : 'clearErrors', clearErrorJSON: any } |
+  { commandName : 'clearSchedule', scheduleEntryIndex: number } |
+  { commandName : 'getAvailableScheduleEntryIndex' } |
+  { commandName : 'setSchedule', scheduleConfig: bridgeScheduleEntry } |
+  { commandName : 'addSchedule', scheduleConfig: bridgeScheduleEntry }
 
 
 interface batchCommands  {

@@ -1,5 +1,5 @@
 interface bridgeScheduleEntry {
-  scheduleEntryIndex     : number, // 0 .. 9
+  scheduleEntryIndex?    : number, // 0 .. 9
   nextTime               : number, // timestamp since epoch in seconds
   switchState            : number, // 0 .. 1
   fadeDuration           : number, // # seconds

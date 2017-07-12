@@ -39,6 +39,7 @@ interface BluenetPromiseWrapperProtocol {
   setTime(time: number): Promise<any>,
   getTime():Promise<any>,
 
+  addSchedule(data: bridgeScheduleEntry):Promise<void>,
   setSchedule(data: bridgeScheduleEntry):Promise<void>,
   clearSchedule(scheduleEntryIndex: number):Promise<void>,
   getAvailableScheduleEntryIndex():Promise<number>,

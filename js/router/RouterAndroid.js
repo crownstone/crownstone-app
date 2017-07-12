@@ -57,6 +57,7 @@ export class Router_Android extends Component {
               <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true}  title="Create Room" />
               <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={false} title="Edit Device" />
               <Scene key="deviceOverview"             component={Views.DeviceOverview}             hideNavBar={true} />
+              <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         hideNavBar={true} />
               <Scene key="applianceAdd"               component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
               <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select Device Type" />
               <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        panHandlers={null} hideNavBar={false} title="Edit Behaviour" />

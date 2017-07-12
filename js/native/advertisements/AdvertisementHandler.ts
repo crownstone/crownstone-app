@@ -283,12 +283,10 @@ class AdvertisementHandlerClass {
       measuredUsage = 0;
     }
 
-
     let updateType = "UPDATE_STONE_STATE";
     // update the state is there is new data, or if the crownstone is disabled.
-    if (stoneFromServiceData.state.state != switchState          ||
-        stoneFromServiceData.state.currentUsage != measuredUsage ||
-        stoneFromServiceData.config.disabled === true) {
+    if ((stoneFromServiceData.state.state != switchState || stoneFromServiceData.state.currentUsage != measuredUsage) &&
+        stoneFromServiceData.config.disabled === false) {
       updateType = "UPDATE_STONE_STATE_DUPLICATE";
     }
 
