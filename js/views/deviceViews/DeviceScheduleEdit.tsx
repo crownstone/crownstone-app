@@ -155,7 +155,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
         stone,
         this._getBridgeFormat(null),
         {
-          loadingLabel: 'Telling this Crownstone to set the Schedule!',
+          loadingLabel: 'Setting the Schedule on the Crownstone!',
           alertLabel: 'I could not set the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, you will have to add it again later.',
           actionType: 'ADD_STONE_SCHEDULE',
           scheduleId: Util.getUUID(),
@@ -309,7 +309,8 @@ export class DeviceScheduleEdit extends Component<any, any> {
           [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
           {cancelable: false}
         )
-      })
+      });
+    BatchCommandHandler.executePriority();
   }
 
   _updateScheduleEntry(stone, scheduleConfig) {
@@ -337,6 +338,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           {cancelable: false}
         )
       })
+    BatchCommandHandler.executePriority();
   }
 
   _disableSchedule(stone, schedule) {
@@ -364,6 +366,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           {cancelable: false}
         )
       })
+    BatchCommandHandler.executePriority();
   }
 
   _deleteSchedule(stone, schedule) {
@@ -385,6 +388,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           {cancelable: false}
         )
       });
+    BatchCommandHandler.executePriority();
   }
 
   render() {

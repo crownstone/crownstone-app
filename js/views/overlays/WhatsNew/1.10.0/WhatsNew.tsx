@@ -40,7 +40,7 @@ export const WNStyles = StyleSheet.create({
     textAlign:'center'
   },
   innerScrollView: {
-    height: availableScreenHeight,
+    minHeight: availableScreenHeight,
     alignItems:'center',
     paddingBottom:20
   }

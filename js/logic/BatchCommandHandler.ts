@@ -5,7 +5,7 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
-import { MESH_ENABLED }          from '../ExternalConfig'
+import {DISABLE_NATIVE, MESH_ENABLED}          from '../ExternalConfig'
 import {Permissions} from "../backgroundProcesses/Permissions";
 
 
@@ -590,6 +590,18 @@ class BatchCommandHandlerClass {
   }
 
   _scheduleExecute(priority) {
+    // HACK TO SUCCESSFULLY DO ALL THINGS WITH BHC WITHOUT NATIVE
+    if (DISABLE_NATIVE === true) {
+      Scheduler.scheduleCallback(() => {
+        let uuids = Object.keys(this.commands);
+        for (let i = 0; i < uuids.length; i++) {
+          this.commands[uuids[i]].promise.resolve();
+          this.commands[uuids[i]].cleanup();
+        }
+      }, 1500, "Fake native handling of BHC");
+      return;
+    }
+
     LOG.info("BatchCommandHandler: Scheduling command in promiseManager");
     let actionPromise = () => {
       this.activePromiseId = Util.getUUID();
@@ -618,6 +630,7 @@ class BatchCommandHandlerClass {
    */
   _searchScan(objectsToScan : any[], rssiThreshold = null, highPriorityActive = false, timeout = 5000) {
     return new Promise((resolve, reject) => {
+
       let unsubscribeListeners = [];
 
       let cleanup = () => {

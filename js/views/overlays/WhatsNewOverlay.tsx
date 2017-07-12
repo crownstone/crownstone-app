@@ -16,6 +16,7 @@ import { NewDeviceUI } from "./WhatsNew/1.10.0/NewDeviceUI";
 import { NewDeviceUIGraph } from "./WhatsNew/1.10.0/NewDeviceUIGraph";
 import { NewLocalizationSettings } from "./WhatsNew/1.10.0/NewLocalizationSettings";
 import {Awesome} from "./WhatsNew/1.10.0/Awesome";
+import {NewScheduler} from "./WhatsNew/1.10.0/NewScheduler";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -25,13 +26,13 @@ export class WhatsNewOverlay extends Component<any, any> {
   constructor() {
     super();
 
-    this.state = { visible: false };
+    this.state = { visible: true };
     this.unsubscribe = [];
   }
 
   componentDidMount() {
     this.unsubscribe.push(eventBus.on("showWhatsNew", () => {
-      this.setState({visible:true});
+      this.setState({visible:false});
     }));
   }
 
@@ -46,6 +47,7 @@ export class WhatsNewOverlay extends Component<any, any> {
     content.push(<WhatsNew key="whatsNewOverview" />);
     content.push(<PhysicsBasedSphereUI key="PhysicsBasedSphereUI" />);
     content.push(<NewDeviceUI key="NewDeviceUI" />);
+    content.push(<NewScheduler key="NewScheduler" />);
     content.push(<NewDeviceUIGraph key="NewDeviceUIGraph" />);
     content.push(<NewLocalizationSettings key="NewLocalizationSettings" />);
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }}/>);
