@@ -75,6 +75,8 @@ class BackgroundProcessHandlerClass {
         this.setupLogging();
 
         this.userLoggedIn = true;
+
+        this.showWhatsNew();
       });
 
       // wait for store to be prepared in order to continue.
@@ -99,8 +101,6 @@ class BackgroundProcessHandlerClass {
         Scheduler.scheduleCallback(() => { this.checkErrors(null); }, 15000, 'checkErrors');
 
         this.setupLogging();
-
-        this.showWhatsNew();
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
