@@ -15,8 +15,8 @@ import { WhatsNew } from "./WhatsNew/1.10.0/WhatsNew";
 import { NewDeviceUI } from "./WhatsNew/1.10.0/NewDeviceUI";
 import { NewDeviceUIGraph } from "./WhatsNew/1.10.0/NewDeviceUIGraph";
 import { NewLocalizationSettings } from "./WhatsNew/1.10.0/NewLocalizationSettings";
-import {Awesome} from "./WhatsNew/1.10.0/Awesome";
-import {NewScheduler} from "./WhatsNew/1.10.0/NewScheduler";
+import { NewScheduler } from "./WhatsNew/1.10.0/NewScheduler";
+import { Awesome } from "./WhatsNew/1.10.0/Awesome";
 
 const DeviceInfo = require('react-native-device-info');
 

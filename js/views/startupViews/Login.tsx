@@ -10,9 +10,12 @@ import {
   Text,
   View
 } from 'react-native';
+
 const Actions = require('react-native-router-flux').Actions;
 const sha1    = require('sha-1');
 const RNFS    = require('react-native-fs');
+const DeviceInfo = require('react-native-device-info');
+
 import { LOG }                                from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
 import { emailChecker, getImageFileFromUser } from '../../util/Util'
@@ -325,6 +328,8 @@ export class Login extends Component<any, any> {
 
 
           if (state.user.isNew !== false) {
+            // new users do not need to see the "THIS IS WHATS NEW" popup.
+            this.props.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} });
             Actions.aiStart({type: 'reset'});
           }
           else if (Platform.OS === 'android') {
