@@ -146,7 +146,16 @@ export class DeviceOverview extends Component<any, any> {
             switch (this.state.swiperIndex) {
               case scheduleIndex:
                 if (Permissions.setSchedule) {
-                  Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
+                  if (stone.config.disabled === true) {
+                    Alert.alert(
+                      "Can't see Crownstone",
+                      "You cannot add a schedule without being near to the Crownstone.",
+                      [{text:"OK"}]
+                    );
+                  }
+                  else {
+                    Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
+                  }
                 }
                 break;
               case summaryIndex:

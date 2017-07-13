@@ -63,13 +63,18 @@ export class DeviceSchedule extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    const schedules = state.spheres[this.props.sphereId].stones[this.props.stoneId].schedules;
+    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    const schedules = stone.schedules;
 
     let iconSize = 0.15*screenHeight;
     let AI = Util.data.getAiData(state, this.props.sphereId);
 
     let items = this._getItems(schedules);
 
+
+    /**
+     * there is duplicate code here because the flex does not work if just the changed content is passed as array
+     */
     if (items.length > 0) {
       return (
         <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
@@ -77,9 +82,20 @@ export class DeviceSchedule extends Component<any, any> {
             <View style={{height: 30}} />
             <Text style={[deviceStyles.header]}>Schedule</Text>
             <View style={{height: 0.2*iconSize}} />
-            <Text style={textStyle.specification}>{'You can tell the ' + AI.name + ' to switch this Crownstone on or off at a certain time.'}</Text>
+            <Text style={textStyle.specification}>{'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.'}</Text>
             <View style={{height: 0.2*iconSize}} />
-            <TouchableOpacity onPress={() => { Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null}); }}>
+            <TouchableOpacity onPress={() => {
+              if (stone.config.disabled === true) {
+                Alert.alert(
+                  "Can't see Crownstone!",
+                  "You cannot add schedules without being near to the Crownstone.",
+                  [{text:"OK"}]
+                );
+              }
+              else {
+                Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
+              }
+            }}>
               <IconButton
                 name="ios-clock"
                 size={0.13*screenHeight}
@@ -87,8 +103,8 @@ export class DeviceSchedule extends Component<any, any> {
                 buttonStyle={{width: iconSize, height: iconSize, backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
               />
             </TouchableOpacity>
-            <View style={{height: 0.2*iconSize}} />
-            <ListEditableItems items={items} style={{width:screenWidth}} />
+            <View key="subScheduleSpacer" style={{height: 0.2*iconSize}} />
+            <ListEditableItems key="empty"  items={items} style={{width:screenWidth}} />
           </View>
         </ScrollView>
       )
@@ -100,9 +116,21 @@ export class DeviceSchedule extends Component<any, any> {
             <View style={{height: 30}} />
             <Text style={[deviceStyles.header]}>Schedule</Text>
             <View style={{height: 0.2*iconSize}} />
-            <Text style={textStyle.specification}>{'You can tell the ' + AI.name + ' to switch this Crownstone on or off at a certain time.'}</Text>
+            <Text style={textStyle.specification}>{'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.'}</Text>
             <View style={{flex:0.6}} />
-            <TouchableOpacity onPress={() => { Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null}); }}>
+            <TouchableOpacity onPress={() => {
+              if (stone.config.disabled === true) {
+                Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
+                Alert.alert(
+                  "Can't see Crownstone!",
+                  "You cannot add schedules without being near to the Crownstone.",
+                  [{text:"OK"}]
+                );
+              }
+              else {
+                Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
+              }
+             }}>
               <IconButton
                 name="ios-clock"
                 size={0.13*screenHeight}

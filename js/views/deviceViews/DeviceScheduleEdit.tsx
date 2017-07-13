@@ -29,6 +29,7 @@ import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {LOG} from "../../logging/Log";
+import {Icon} from "../components/Icon";
 
 let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -51,6 +52,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
         switchState: 1,
         fadeDuration: 0,
         ignoreLocationTriggers: false,
+        intervalInMinutes: 0,
         active: true,
         repeatMode: '24h', // 24h / minute
         activeDays: {
@@ -67,20 +69,48 @@ export class DeviceScheduleEdit extends Component<any, any> {
   }
 
   _getAndroidUI() {
-    return <TouchableOpacity onPress={() => {
-      TimePickerAndroid.open({
-        hour: 14,
-        minute: 0,
-        is24Hour: false, // Will display '2 PM'
-      })
-        .then((date) => { console.log("data", date)})
-        .catch((err) => { console.log("err", err)})
-    }} >
-    </TouchableOpacity>
+    let items = [];
+    let state = this.props.store.getState();
+    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+
+    items.push({type:'lightExplanation', label:'TAP THE TIME TO CHANGE IT', below: false});
+    items.push({__item:
+      <TouchableOpacity style={{
+        flexDirection:'row',
+        width:screenWidth,
+        height:100,
+        backgroundColor: colors.white.rgba(0.75),
+        padding:15,
+        alignItems:'center'
+      }} onPress={() => {
+        TimePickerAndroid.open({
+          hour: new Date(this.state.time).getHours(),
+          minute: new Date(this.state.time).getMinutes(),
+          is24Hour: true,
+        })
+          .then((data) => {
+            if (data.action === 'timeSetAction') {
+              let timeToday = new Date(new Date().setHours(data.hour)).setMinutes(data.minute);
+              this.setState({time: timeToday.valueOf() });
+            }
+          })
+          .catch((err) => { console.log("err", err) })
+      }}>
+        <Text style={{flex:1, fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6) }}>
+          {Util.getTimeFormat(this.state.time, false)}
+        </Text>
+      </TouchableOpacity>
+    });
+
+    this._addSharedUIToItems(items, stone);
+
+    return <ListEditableItems items={items} style={{width:screenWidth}} />
   }
 
   _getIosUI() {
     let items = [];
+    let state = this.props.store.getState();
+    let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
     items.push({type:'spacer'});
     items.push({__item:
@@ -92,7 +122,13 @@ export class DeviceScheduleEdit extends Component<any, any> {
       />
     });
 
-    items.push({label:'Label', type: 'textEdit', placeholder:'name for this action', value: this.state.label, callback: (newText) => {
+    this._addSharedUIToItems(items, stone);
+
+    return <ListEditableItems items={items} style={{width:screenWidth}} />
+  }
+
+  _addSharedUIToItems(items, stone) {
+    items.push({label:'Label', type: 'textEdit', placeholder:'(optional)', value: this.state.label, callback: (newText) => {
       this.setState({label:newText});
     }});
     items.push({label:'ACTION', type: 'lightExplanation',  below:false});
@@ -115,21 +151,31 @@ export class DeviceScheduleEdit extends Component<any, any> {
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
-        Alert.alert(
-          "Are you sure?",
-          "Removing a scheduled action will also remove it from the Crownstone. You can disable the action to temporarily stop it.",
-          [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
-            let state = this.props.store.getState();
-            let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-            let schedule = stone.schedules[this.props.scheduleId];
-            this._deleteSchedule(stone, schedule);
-          }}]
-        )
+          if (stone.config.disabled === true) {
+            Alert.alert(
+              "Can't see Crownstone",
+              "You cannot remove the schedule without being near to the Crownstone",
+              [{text:"OK"}]
+            );
+            return;
+          }
+          else {
+            Alert.alert(
+              "Are you sure?",
+              "Removing a scheduled action will also remove it from the Crownstone. You can disable the action to temporarily stop it.",
+              [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
+                let state = this.props.store.getState();
+                let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+                let schedule = stone.schedules[this.props.scheduleId];
+                this._deleteSchedule(stone, schedule);
+              }}]
+            )
+          }
       }});
     }
     items.push({type: 'spacer'});
 
-    return <ListEditableItems items={items} style={{width:screenWidth}} />
+    return items;
   }
 
   _validate() {
@@ -157,6 +203,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
         {
           loadingLabel: 'Setting the Schedule on the Crownstone!',
           alertLabel: 'I could not set the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, you will have to add it again later.',
+          fullLabel: 'You can\'t have any more scheduled actions. Please remove or deactivate an existing one to add this one.',
           actionType: 'ADD_STONE_SCHEDULE',
           scheduleId: Util.getUUID(),
         }
@@ -189,7 +236,16 @@ export class DeviceScheduleEdit extends Component<any, any> {
         changed = true;
       }
 
-      if (changed){
+      if (changed) {
+        if (stone.config.disabled === true) {
+          Alert.alert(
+            "Can't see Crownstone",
+            "You cannot change the schedule without being near to the Crownstone.",
+            [{text:"OK", onPress: () => { Actions.pop();}}],
+            {cancelable: false}
+          );
+          return;
+        }
         if (schedule.active === true && this.state.active === false) {
           // disable schedule entry
           this._disableSchedule(stone, schedule);
@@ -200,8 +256,9 @@ export class DeviceScheduleEdit extends Component<any, any> {
             stone,
             this._getBridgeFormat(null),
             {
-              loadingLabel: '',
-              alertLabel: '',
+              loadingLabel: 'Activating the Schedule on the Crownstone!',
+              alertLabel: 'I could not activate the Schedule on the Crownstone... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press no, your changes will be reverted.',
+              fullLabel: 'You can\'t have any more active scheduled actions. Please remove or deactivate one to activate this action.',
               actionType: 'UPDATE_STONE_SCHEDULE',
               scheduleId: this.props.scheduleId,
             }
@@ -222,6 +279,16 @@ export class DeviceScheduleEdit extends Component<any, any> {
           // schedule is active, tell the Crownstone to update it.
           this._updateScheduleEntry(stone, this._getBridgeFormat(schedule.scheduleEntryIndex));
         }
+      }
+      else {
+        this.props.store.dispatch({
+          type: "UPDATE_STONE_SCHEDULE",
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          scheduleId: this.props.scheduleId,
+          data: {...this.state}
+        });
+        Actions.pop();
       }
     }
     else {
@@ -265,7 +332,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
       if (this.state.activeDays[daysSorted[i%daysSorted.length]] === true) {
         let timeAtDay = timeToday + (i - currentDayOfWeek) * 24*3600*1000;
         if (timeAtDay > now) {
-          return timeAtDay;
+          return timeAtDay / 1000;
         }
       }
     }
@@ -303,12 +370,22 @@ export class DeviceScheduleEdit extends Component<any, any> {
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch((err) => {
-        Alert.alert(
-          "Whoops!",
-          config.alertLabel,
-          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
-          {cancelable: false}
-        )
+        if (err === "NO_SCHEDULE_ENTRIES_AVAILABLE")  {
+          Alert.alert(
+            "Schedules are full!",
+            config.fullLabel,
+            [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
+            {cancelable: false}
+          )
+        }
+        else {
+          Alert.alert(
+            "Whoops!",
+            config.alertLabel,
+            [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
+            {cancelable: false}
+          )
+        }
       });
     BatchCommandHandler.executePriority();
   }
@@ -365,7 +442,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._disableSchedule(stone, schedule); } }],
           {cancelable: false}
         )
-      })
+      });
     BatchCommandHandler.executePriority();
   }
 

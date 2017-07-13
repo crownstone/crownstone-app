@@ -191,6 +191,8 @@ func getBleErrorString(_ err: BleError) -> String {
     return "INCORRECT_DATA_COUNT_FOR_ALL_TIMERS"
   case .NO_SCHEDULE_ENTRIES_AVAILABLE:
     return "NO_SCHEDULE_ENTRIES_AVAILABLE"
+  case .NO_TIMER_FOUND:
+    return "NO_TIMER_FOUND"
   }
 }
 
@@ -1187,6 +1189,21 @@ open class BluenetJS: NSObject {
     config.repeatDay.Friday = activeFriday!.boolValue
     config.repeatDay.Saturday = activeSaturday!.boolValue
     config.repeatDay.Sunday = activeSunday!.boolValue
+    
+//    print("scheduleEntryIndex \(scheduleEntryIndex!.uint8Value)")
+//    print("nextTime \(nextTime!.doubleValue)")
+//    print("switchState \(switchState!.floatValue)")
+//    print("fadeDuration \(fadeDuration!.uint16Value)")
+//    print("intervalInMinutes \(intervalInMinutes!.uint16Value)")
+//    print("ignoreLocationTriggers \(ignoreLocationTriggers!.boolValue)")
+//    print("activeMonday \(activeMonday!.boolValue)")
+//    print("activeTuesday \(activeTuesday!.boolValue)")
+//    print("activeWednesday \(activeWednesday!.boolValue)")
+//    print("activeThursday \(activeThursday!.boolValue)")
+//    print("activeFriday \(activeFriday!.boolValue)")
+//    print("activeSaturday \(activeSaturday!.boolValue)")
+//    print("activeSunday \(activeSunday!.boolValue)")
+
     
     GLOBAL_BLUENET!.bluenet.control.setSchedule(scheduleConfig: config)
       .then{time in callback([["error" : false]])}

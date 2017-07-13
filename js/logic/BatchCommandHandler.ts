@@ -5,7 +5,7 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
-import {DISABLE_NATIVE, MESH_ENABLED}          from '../ExternalConfig'
+import {DISABLE_NATIVE, MESH_ENABLED, STONE_TIME_REFRESH_INTERVAL}          from '../ExternalConfig'
 import {Permissions} from "../backgroundProcesses/Permissions";
 
 
@@ -483,22 +483,24 @@ class BatchCommandHandlerClass {
           LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle, this.activePromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle);
         })
-        // .then(() => {
-        //   if (Permissions.setStoneTime && this.store) {
-        //     // check if we have to tell this crownstone what time it is.
-        //     let state = this.store.getState();
-        //     let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;
-        //     // if it is more than 5 hours ago, tell this crownstone the time.
-        //     if (new Date().valueOf() - lastTime > 5 * 3600 * 1000) {
-        //       // this will never halt the chain since it's optional.
-        //       return BluenetPromiseWrapper.setTime(new Date().valueOf() / 1000)
-        //         .then(() => {
-        //           this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
-        //         })
-        //         .catch((err) => { LOG.warning("BatchCommandHandler: Could not set the time of Crownstone", err); })
-        //     }
-        //   }
-        // })
+        .then(() => {
+          if (Permissions.setStoneTime && this.store) {
+            // check if we have to tell this crownstone what time it is.
+            let state = this.store.getState();
+            let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;
+            // if it is more than 5 hours ago, tell this crownstone the time.
+            if (new Date().valueOf() - lastTime > STONE_TIME_REFRESH_INTERVAL) {
+              // this will never halt the chain since it's optional.
+              return BluenetPromiseWrapper.setTime(new Date().valueOf() / 1000)
+                .then(() => {
+                  this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
+                })
+                .catch((err) => {
+                  LOG.warning("BatchCommandHandler: Could not set the time of Crownstone", err);
+                });
+            }
+          }
+        })
         .then(() => {
           return BluenetPromiseWrapper.disconnectCommand()
         })

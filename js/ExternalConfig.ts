@@ -146,6 +146,9 @@ const DeviceInfo = require('react-native-device-info');
     // The amount of time to store the history of the power usage of stones.
     export const HISTORY_PERSISTENCE = 24*3600*1000; // ms
 
+    // Interval in which the phone tells the Crownstone what time it is!
+    export const STONE_TIME_REFRESH_INTERVAL = 5 * 3600 * 1000; // 5 hours in ms
+
 /******************** /TIMINGS ********************/
 
 
