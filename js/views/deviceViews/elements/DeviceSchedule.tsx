@@ -18,13 +18,9 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
 import {IconButton} from "../../components/IconButton";
-import {ErrorContent} from "../../content/ErrorContent";
-import {eventBus} from "../../../util/EventBus";
 import {deviceStyles} from "../DeviceOverview";
 import {textStyle} from "./DeviceBehaviour";
 import {ListEditableItems} from "../../components/ListEditableItems";
-import {Icon} from "../../components/Icon";
-import {Permissions} from "../../../backgroundProcesses/Permissions";
 import {Util} from "../../../util/Util";
 
 
@@ -120,7 +116,6 @@ export class DeviceSchedule extends Component<any, any> {
             <View style={{flex:0.6}} />
             <TouchableOpacity onPress={() => {
               if (stone.config.disabled === true) {
-                Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
                 Alert.alert(
                   "Can't see Crownstone!",
                   "You cannot add schedules without being near to the Crownstone.",
