@@ -2,6 +2,9 @@ const DeviceInfo = require('react-native-device-info');
 
 /******************** RELEASE FLAGS ********************/
 
+  // USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
+  const IGNORE_LOCAL_CONFIG = true;
+
   // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
   export const FALLBACKS_ENABLED = true;
 

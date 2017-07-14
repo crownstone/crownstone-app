@@ -76,14 +76,29 @@ export class Login extends Component<any, any> {
       .catch((reply) => {
         let content = "Please try again.";
         let title = "Cannot Send Email";
+        let validationLink = false;
         if (reply.data && reply.data.error) {
           if (reply.data.error.code == "EMAIL_NOT_FOUND") {
             content = "This email is not registered in the Cloud. Please register to create an account.";
             title = "Unknown Email";
           }
+          else if (reply.data.error.code == 'RESET_FAILED_EMAIL_NOT_VERIFIED') {
+            validationLink = true;
+          }
         }
         let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
-        Alert.alert(title, content, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+
+        if (validationLink) {
+          Alert.alert(
+            'Your email address has not been verified',
+            'Please click on the link in the email that was sent to you. If you did not receive an email, press Resend Email to try again.', [
+            {text: 'Resend Email', onPress: () => this.requestVerificationEmail()},
+            {text: 'OK', onPress: defaultAction}
+          ], { onDismiss: defaultAction });
+        }
+        else {
+          Alert.alert(title, content, [{text: 'OK', onPress: defaultAction}], {onDismiss: defaultAction});
+        }
       });
   }
 
@@ -318,18 +333,25 @@ export class Login extends Component<any, any> {
         // finalize the login due to successful download of data. Enables persistence.
         StoreManager.finalizeLogIn(userId);
 
+        let state = store.getState();
+        if (state.user.isNew !== false) {
+          // new users do not need to see the "THIS IS WHATS NEW" popup.
+          this.props.store.dispatch({
+            type: "UPDATE_APP_SETTINGS",
+            data: {shownWhatsNewVersion: DeviceInfo.getReadableVersion()}
+          });
+        }
+
         // this starts scanning, tracking spheres and prepping the database for the user
         this.props.eventBus.emit("userLoggedIn");
 
         // set a small delay so the user sees "done"
         setTimeout(() => {
-          let state = store.getState();
+          state = store.getState();
           this.props.eventBus.emit('hideProgress');
 
 
           if (state.user.isNew !== false) {
-            // new users do not need to see the "THIS IS WHATS NEW" popup.
-            this.props.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} });
             Actions.aiStart({type: 'reset'});
           }
           else if (Platform.OS === 'android') {

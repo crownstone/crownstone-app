@@ -69,7 +69,7 @@ export class SettingsMeshOverview extends Component<any, any> {
 
     return (
       <ScrollView horizontal={true} style={{flex:1}}>
-        <Animated.View style={{flex:1, flexDirection:'row', width: networkWidth, position:'relative', left: this.state.leftOffset }}>
+        <Animated.View style={{flex:1, flexDirection:'row', width: networkWidth, position:'relative', left: this.state.leftOffset, paddingBottom: 30 }}>
           {networkElements}
         </Animated.View>
       </ScrollView>

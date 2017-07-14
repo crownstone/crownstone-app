@@ -5,6 +5,7 @@ let defaultSettings = {
   time: 0,
   scheduleEntryIndex: 0,
   cloudId: '',
+  linkedSchedule: null,
   switchState: 1,
   fadeDuration: 0,
   intervalInMinutes: 0,
@@ -36,6 +37,7 @@ let scheduleReducer = (state = defaultSettings, action : any = {}) => {
         newState.scheduleEntryIndex     = update(action.data.scheduleEntryIndex,   newState.scheduleEntryIndex);
         newState.cloudId                = update(action.data.cloudId,      newState.cloudId);
         newState.switchState            = update(action.data.switchState,  newState.switchState);
+        newState.linkedSchedule         = update(action.data.linkedSchedule,  newState.linkedSchedule);
         newState.fadeDuration           = update(action.data.fadeDuration, newState.fadeDuration);
         newState.intervalInMinutes      = update(action.data.intervalInMinutes, newState.intervalInMinutes);
         newState.ignoreLocationTriggers = update(action.data.ignoreLocationTriggers, newState.ignoreLocationTriggers);

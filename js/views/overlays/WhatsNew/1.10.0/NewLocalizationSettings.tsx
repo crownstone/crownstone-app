@@ -7,13 +7,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import {availableScreenHeight, screenWidth} from "../../../styles";
+import {screenWidth} from "../../../styles";
 import {WNStyles} from "./WhatsNew";
 
 
 export class NewLocalizationSettings extends Component<any, any> {
   render() {
-    let size = (0.80*screenWidth-35)/713;
+    let size = (0.85*screenWidth - 35 - 20 - 10)/713;
 
     let text = '';
     if (Platform.OS === 'android') {
