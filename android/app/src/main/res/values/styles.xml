@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:timePickerDialogTheme">@style/Dialog.Theme</item>
+        <item name="android:statusBarColor">#00172D</item>
     </style>
     <style name="Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">#4f6b84</item>

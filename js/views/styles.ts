@@ -22,7 +22,7 @@ export let colors : any = {
   csBlue: {hex:'#003E52'},
   csOrange: {hex:'#ff8400'},
   menuBackground: {hex:'#00263e'},
-  menuBackgroundDarker: {hex:'#00162C'},
+  menuBackgroundDarker: {hex:'#00172d'},
   menuText: {hex:'#fff'},
   menuTextSelected: {hex:'#2daeff'},
   white: {hex:'#fff'},
