@@ -8,6 +8,7 @@
     "cleanTest": "jest --useStderr --no-cache --clearMocks"
   },
   "dependencies": {
+    "moment": "^2.18.1",
     "react": "~15.4.1",
     "react-native": "0.42.0",
     "react-native-camera": "~0.6.0",

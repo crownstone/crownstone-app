@@ -18,6 +18,7 @@ import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
 import { MESH_ENABLED } from "../ExternalConfig";
+import {AlternatingContent} from "../views/components/animated/AlternatingContent";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -25,20 +26,50 @@ const getIcon = function(name : string, size : number, iconColor: string, backgr
     return <Icon name={name} size={size} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />
   }
   else {
-    return <IconButton name={name} size={size} button={true} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
+    return <IconButton name={name} size={size} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
   }
 };
 
-const insertExplanation = function(items: any[], label : string, below : boolean = false, style? : any) {
+
+const getAlternatingIcons = function(names : string[], sizes : number[], iconColors: string[], backgroundColors : string[]) {
+  if (Platform.OS === 'android') {
+    return (
+      <AlternatingContent
+        style={{width: 30, height:30}}
+        fadeDuration={500}
+        switchDuration={2000}
+        contentArray={[
+          getIcon(names[0], sizes[0], iconColors[0], backgroundColors[0]),
+          getIcon(names[1], sizes[1], iconColors[1], backgroundColors[1])
+        ]}
+      />
+    );
+  }
+  else {
+    return (
+      <AlternatingContent
+        style={{width: 30, height:30, backgroundColor: backgroundColors[0], borderRadius: 6}}
+        fadeDuration={500}
+        switchDuration={2000}
+        contentArray={[
+          getIcon(names[0], sizes[0], iconColors[0], backgroundColors[0]),
+          getIcon(names[1], sizes[1], iconColors[1], backgroundColors[1])
+        ]}
+      />
+    );
+  }
+};
+
+const insertExplanation = function(items: any[], label : string, below : boolean = false, alreadyPadded : boolean = false) {
   if (Platform.OS === 'ios') {
-    items.push({type: 'explanation', label: label, below: below});
+    items.push({type: 'explanation', label: label, below: below, alreadyPadded: alreadyPadded});
   }
 };
 
 export const SettingConstructor = function(store, state, eventBus) {
   let items = [];
 
-  insertExplanation(items, 'UPDATE YOUR PROFILE', false);
+  insertExplanation(items, 'MY PROFILE', false);
   items.push({
     id: 'My Account',
     label: 'My Account',
@@ -48,13 +79,21 @@ export const SettingConstructor = function(store, state, eventBus) {
       Actions.settingsProfile()
     }
   });
+  items.push({
+    id:'Privacy',
+    label:'Privacy',
+    icon: getIcon('ios-eye', 27, colors.white.hex, colors.darkPurple.hex),
+    type: 'navigation',
+    callback:() => { Actions.settingsPrivacy(); }
+  });
+  insertExplanation(items, 'You are in control of which data is shared with the cloud.', true);
 
-  insertExplanation(items, 'CONFIGURATION', false);
+  insertExplanation(items, 'CONFIGURATION', false, true);
   if (Object.keys(state.spheres).length > 0) {
     items.push({
       id: 'Spheres',
       label: 'Spheres',
-      icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
+      icon: getIcon('c1-sphere', 21.5, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => { Actions.settingsSphereOverview() }
     });
@@ -66,7 +105,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => {
-        createNewSphere(eventBus, store, state.user.firstName).catch(() => {});
+        createNewSphere(eventBus, store, state.user.firstName+"'s Sphere").catch(() => {});
       }
     });
   }
@@ -81,6 +120,24 @@ export const SettingConstructor = function(store, state, eventBus) {
       callback: () => { Actions.settingsMeshOverview(); }
     });
   }
+
+  items.push({
+    id: 'App Settings',
+    label: 'App Settings',
+    type: 'navigation',
+    style: {color: '#000'},
+    icon: getAlternatingIcons(['ios-cog','ios-battery-full'],[25,25],[colors.white.hex, colors.white.hex],[colors.darkBackground.hex, colors.darkBackground.hex]) ,
+    callback: () => { Actions.settingsApp(); }
+  });
+
+  items.push({
+    id: 'whats new',
+    label: "Whats new in this version?",
+    type: 'button',
+    style: {color: '#000'},
+    icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),
+    callback: () => { eventBus.emit("showWhatsNew"); }
+  });
 
   let presentSphere = Util.data.getPresentSphere(state);
   if (presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere) && state.app.tapToToggleEnabled !== false) {

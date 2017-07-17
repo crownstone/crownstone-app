@@ -1,12 +1,11 @@
 import { Scheduler } from '../../logic/Scheduler';
 import { NativeBus } from '../libInterface/NativeBus';
 import { StoneStateHandler } from './StoneStateHandler'
-import {LOG, LogProcessor} from '../../logging/Log'
-import {HARDWARE_ERROR_REPORTING, LOG_BLE} from '../../ExternalConfig'
+import { LOG, LogProcessor } from '../../logging/Log'
+import { HARDWARE_ERROR_REPORTING, LOG_BLE } from '../../ExternalConfig'
 import { eventBus }  from '../../util/EventBus'
 import { Util }  from '../../util/Util'
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
 let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
@@ -284,22 +283,24 @@ class AdvertisementHandlerClass {
       measuredUsage = 0;
     }
 
+    let updateType = "UPDATE_STONE_STATE";
     // update the state is there is new data, or if the crownstone is disabled.
-    if (stoneFromServiceData.state.state != switchState          ||
-        stoneFromServiceData.state.currentUsage != measuredUsage ||
-        stoneFromServiceData.config.disabled === true ) {
-
-      // sometimes we need to ignore any distance based toggling.
-      if (this.temporaryIgnore !== true) {
-        Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {
-          type: 'UPDATE_STONE_STATE',
-          sphereId: advertisement.referenceId,
-          stoneId: referenceByCrownstoneId.id,
-          data: { state: switchState, currentUsage: measuredUsage },
-          updatedAt: currentTime
-        });
-      }
+    if ((stoneFromServiceData.state.state != switchState || stoneFromServiceData.state.currentUsage != measuredUsage) &&
+        stoneFromServiceData.config.disabled === false) {
+      updateType = "UPDATE_STONE_STATE_DUPLICATE";
     }
+
+    // sometimes we need to ignore any distance based toggling.
+    if (this.temporaryIgnore !== true) {
+      Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {
+        type: updateType,
+        sphereId: advertisement.referenceId,
+        stoneId: referenceByCrownstoneId.id,
+        data: { state: switchState, currentUsage: measuredUsage, applianceId: referenceByCrownstoneId.applianceId },
+        updatedAt: currentTime
+      });
+    }
+
 
     // if the advertisement contains the state of a different Crownstone, we update its disability state
     if (serviceData.stateOfExternalCrownstone === true) {

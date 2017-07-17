@@ -66,7 +66,7 @@ export class AiStart extends Component<any, any> {
 
     let sphereId = props.sphereId || Object.keys(state.spheres)[0];
     let name = state.spheres[sphereId].config.aiName || possibleNames[defaultIndex].name;
-    let sex = state.spheres[sphereId].config.aiSex ||possibleNames[defaultIndex].gender;
+    let sex = state.spheres[sphereId].config.aiSex || possibleNames[defaultIndex].gender;
     this.state = {aiName: name, aiSex: sex};
   }
 

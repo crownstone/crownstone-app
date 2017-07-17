@@ -2,9 +2,22 @@ import { BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/libInterface/Consta
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import { LOG } from '../logging/Log';
 import { Util } from './Util';
+import {BEHAVIOUR_TYPES} from "../router/store/reducers/stones";
 const SunCalc = require('suncalc');
 
 export const BehaviourUtil = {
+
+  performCommandCheck: function(state, behaviourType) {
+    if (state.app.indoorLocalizationEnabled === false) {
+      return false;
+    }
+
+    if (behaviourType === BEHAVIOUR_TYPES.ROOM_EXIT || behaviourType === BEHAVIOUR_TYPES.HOME_EXIT) {
+      return false;
+    }
+
+    return true;
+  },
 
   /**
    * Trigger the behaviour for all crownstones in a certain location
@@ -22,6 +35,12 @@ export const BehaviourUtil = {
   enactBehaviourInLocation: function(store, sphereId, locationId, behaviourType, callbacks = {}) {
     // turn on crownstones in room
     let state = store.getState();
+
+    // do not perform this behaviour if the indoor localization is disabled
+    if (this.performCommandCheck(state, behaviourType) === false) {
+      return;
+    }
+
     let sphere = state.spheres[sphereId];
     let stoneIds = Object.keys(sphere.stones);
 
@@ -53,6 +72,12 @@ export const BehaviourUtil = {
    */
   enactBehaviourInSphere: function(store : any, sphereId : string, behaviourType : string, callbacks : any = {}) {
     let state = store.getState();
+
+    // do not perform this behaviour if the indoor localization is disabled
+    if (this.performCommandCheck(state, behaviourType) === false) {
+      return;
+    }
+
     let sphere = state.spheres[sphereId];
     let stoneIds = Object.keys(sphere.stones);
 
@@ -78,6 +103,11 @@ export const BehaviourUtil = {
    *                                        }
    */
   enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
+    // do not perform this behaviour if the indoor localization is disabled
+    if (this.performCommandCheck(store.getState(), behaviourType) === false) {
+      return;
+    }
+
     this._enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks);
     BatchCommandHandler.execute();
   },
@@ -97,6 +127,12 @@ export const BehaviourUtil = {
    */
   _enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
     let state = store.getState();
+
+    // do not perform this behaviour if the indoor localization is disabled
+    if (this.performCommandCheck(state, behaviourType) === false) {
+      return;
+    }
+
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
     let element = Util.data.getElement(sphere, stone);
@@ -126,6 +162,11 @@ export const BehaviourUtil = {
    *                                        }
    */
   _enactBehaviourCore: function(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, callbacks : any = {}) {
+    // do not perform this behaviour if the indoor localization is disabled
+    if (this.performCommandCheck(store.getState(), behaviourType) === false) {
+      return;
+    }
+
     // we set the state regardless of the current state since it may not be correct in the background.
     if (behaviour.active && stone.config.handle) {
       // setup the trigger method.
@@ -219,8 +260,8 @@ export const BehaviourUtil = {
     return {
       morning: times.morning,
       evening: times.evening,
-      morningReadable: new Date(times.morning),
-      eveningReadable: new Date(times.evening),
+      morningReadable: Util.getTimeFormat(times.morning),
+      eveningReadable: Util.getTimeFormat(times.evening),
     };
   }
 };

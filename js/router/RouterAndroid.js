@@ -56,10 +56,12 @@ export class Router_Android extends Component {
               <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={false} title="Room Settings" />
               <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true}  title="Create Room" />
               <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={false} title="Edit Device" />
-              <Scene key="deviceOverview"             component={Views.DeviceOverview}             hideNavBar={true} />
-              <Scene key="applianceAdd"               component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
-              <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select a Device" />
+              <Scene key="deviceOverview"             component={Views.DeviceOverview}             panHandlers={null} hideNavBar={true} />
+              <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         panHandlers={null} hideNavBar={true} />
+              <Scene key="applianceAdd"               component={Views.ApplianceAdd}               panHandlers={null} hideNavBar={true} direction="vertical" />
+              <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select Device Type" />
               <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        panHandlers={null} hideNavBar={false} title="Edit Behaviour" />
+              <Scene key="settingsApp"                component={Views.SettingsApp}                panHandlers={null} hideNavBar={false} title="Preferences"/>
               <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
               <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
               <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          panHandlers={null} hideNavBar={false} title="Developer" />

@@ -9,7 +9,7 @@ import { StoneTracker }             from '../advertisements/StoneTracker';
 import { Scheduler }                from '../../logic/Scheduler';
 import { LOG }                      from '../../logging/Log';
 import { Util }                     from '../../util/Util';
-import { TYPES }                    from '../../router/store/reducers/stones';
+import { BEHAVIOUR_TYPES }          from '../../router/store/reducers/stones';
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
 import { eventBus }                 from '../../util/EventBus';
@@ -163,7 +163,7 @@ class LocationHandlerClass {
       if (timeSinceLastCrownstoneWasSeen > sphereTimeout) {
         // trigger crownstones on enter sphere
         LOG.info('LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE', sphere.config.name);
-        BehaviourUtil.enactBehaviourInSphere(this.store, sphereId, TYPES.HOME_ENTER);
+        BehaviourUtil.enactBehaviourInSphere(this.store, sphereId, BEHAVIOUR_TYPES.HOME_ENTER);
       }
       else {
         LOG.info('LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ', timeSinceLastCrownstoneWasSeen, ' WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ', KEEPALIVE_INTERVAL*1000*1.5, ' ms');
@@ -228,7 +228,7 @@ class LocationHandlerClass {
 
       // used for clearing the timeouts for this room and toggling stones in this room
       LOG.info('RoomTracker: Enter room: ', locationId, ' in sphere: ', sphereId);
-      this._triggerRoomEvent(this.store, sphereId, locationId, TYPES.ROOM_ENTER);
+      this._triggerRoomEvent(this.store, sphereId, locationId, BEHAVIOUR_TYPES.ROOM_ENTER);
     }
   }
 
@@ -242,13 +242,19 @@ class LocationHandlerClass {
 
       // used for clearing the timeouts for this room
       LOG.info('RoomTracker: Exit room: ', locationId, ' in sphere: ', sphereId);
-      this._triggerRoomEvent(this.store, sphereId, locationId, TYPES.ROOM_EXIT);
+      this._triggerRoomEvent(this.store, sphereId, locationId, BEHAVIOUR_TYPES.ROOM_EXIT);
     }
   }
 
 
+  _removeUserFromAllRooms(state, userId, exceptionRoomId = null) {
+    let sphereIds = Object.keys(state.spheres);
+    sphereIds.forEach((sphereId) => {
+      this._removeUserFromRooms(state,sphereId,userId,exceptionRoomId);
+    })
+  }
+
   /**
-   *
    * @param state
    * @param sphereId
    * @param userId
@@ -289,7 +295,7 @@ class LocationHandlerClass {
    * @private
    */
   _triggerRoomEvent( store, sphereId, locationId, behaviourType, bleController?) {
-    // fire TYPES.ROOM_ENTER on crownstones in room
+    // fire BEHAVIOUR_TYPES.ROOM_ENTER on crownstones in room
     BehaviourUtil.enactBehaviourInLocation(store, sphereId, locationId, behaviourType, bleController);
   }
 

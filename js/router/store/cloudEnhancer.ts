@@ -1,8 +1,9 @@
-import { CLOUD } from '../../cloud/cloudAPI'
-import { Util } from '../../util/Util'
-import { BATCH } from './storeManager'
-import { LOG } from '../../logging/Log'
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import { CLOUD }         from '../../cloud/cloudAPI'
+import { Util }          from '../../util/Util'
+import { BATCH }         from './storeManager'
+import { LOG }           from '../../logging/Log'
+import { Permissions }   from "../../backgroundProcesses/Permissions";
+import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -96,10 +97,10 @@ function handleAction(action, returnValue, newState, oldState) {
 
 
     case "UPDATE_STONE_STATE":
-      handleStoneState(action, newState);
+      handleStoneState(action, newState, oldState);
       break;
     case "UPDATE_STONE_SWITCH_STATE":
-      handleStoneState(action, newState, true);
+      handleStoneState(action, newState, oldState, true);
       break;
 
     case "ADD_INSTALLATION":
@@ -316,7 +317,7 @@ function handleUserLocationExit(action, state) {
 }
 
 
-function handleStoneState(action, state, pureSwitch = false) {
+function handleStoneState(action, state, oldState, pureSwitch = false) {
   let sphereId = action.sphereId;
   let stoneId = action.stoneId;
 
@@ -331,11 +332,17 @@ function handleStoneState(action, state, pureSwitch = false) {
     CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
   }
 
-  if (state.user.uploadPowerUsage === true) {
+  if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = { power: stone.state.currentUsage };
+    let oldStone = oldState.spheres[sphereId].stones[stoneId];
+    let data     = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
 
-    CLOUD.forStone(stoneId).updatePowerUsage(data).catch(() => {});
+    let dayIndex = Util.getDateFormat(action.updatedAt);
+    let index = oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].length || 0;
+    if (stone.config.applianceId) {
+      data['applianceId'] = stone.config.applianceId;
+    }
+    BatchUploader.addPowerData(dayIndex, sphereId, stoneId, index, data);
   }
 }
 
@@ -344,7 +351,7 @@ function handleDeviceInCloud(action, state) {
   if (!deviceId) {
     LOG.error("handleDeviceInCloud: invalid device id: ", deviceId);
     return;
-  }
+  }  
   let deviceConfig = state.devices[deviceId];
   let data = {
     name: deviceConfig.name,

@@ -266,8 +266,6 @@ export class RoomOverview extends Component<any, any> {
     const state = store.getState();
 
     let title = undefined;
-    console.log(this.props)
-
     if (this.props.locationId !== null) {
       title = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name;
     }
@@ -320,7 +318,7 @@ export class RoomOverview extends Component<any, any> {
           right={Permissions.editRoom === true && this.props.locationId !== null ? 'Edit' : undefined}
           rightItem={this.getRightItem(state)}
           rightAction={() => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}
-          leftAction={ () => { Actions.pop({refresh: {test:true }}); }}
+          leftAction={ () => { Actions.pop(); }}
         />
         <RoomBanner
           presentUsers={users}

@@ -97,6 +97,6 @@ export class SeparatedItemList extends Component<any, any> {
   }
 
   render() {
-    return <View>{this._getItems()}</View>
+    return <View style={this.props.style}>{this._getItems()}</View>
   }
 }

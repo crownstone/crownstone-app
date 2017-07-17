@@ -19,9 +19,10 @@ let defaultSettings = {
   appIdentifier: null,
   developer: false,
   logging: false,
-  uploadLocation: false,
-  uploadSwitchState: false,
+  uploadLocation: true,
+  uploadSwitchState: true,
   uploadPowerUsage: false,
+  uploadHighFrequencyPowerUsage: false,
   uploadDeviceDetails: true,
   updatedAt: 1,
 };
@@ -109,6 +110,7 @@ export default (state = defaultSettings, action : any = {}) => {
         newState.uploadLocation       = update(action.data.uploadLocation,      newState.uploadLocation);
         newState.uploadSwitchState    = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
         newState.uploadPowerUsage     = update(action.data.uploadPowerUsage,    newState.uploadPowerUsage);
+        newState.uploadHighFrequencyPowerUsage     = update(action.data.uploadHighFrequencyPowerUsage,    newState.uploadHighFrequencyPowerUsage);
         newState.uploadDeviceDetails  = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);
         newState.updatedAt    = getTime(action.data.updatedAt);
         return newState;

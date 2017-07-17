@@ -5,6 +5,10 @@ const DeviceInfo = require('react-native-device-info');
 
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
     const RELEASE_MODE = false;
+
+    // USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
+    const IGNORE_LOCAL_CONFIG = true;
+
     export const FALLBACKS_ENABLED = true;
 
     // DO NOT CHANGE THIS LINE.
@@ -140,6 +144,15 @@ const DeviceInfo = require('react-native-device-info');
     // the amount of time we wait before accepting another tap to toggle to the same crownstone.
     export const TIME_BETWEEN_TAP_TO_TOGGLES = 5000; // ms
 
+    // The time between batch uploads to the cloud.
+    export const CLOUD_BATCH_UPDATE_INTERVAL = 10; // s
+
+    // The amount of time to store the history of the power usage of stones.
+    export const HISTORY_PERSISTENCE = 24*3600*1000; // ms
+
+    // Interval in which the phone tells the Crownstone what time it is!
+    export const STONE_TIME_REFRESH_INTERVAL = 5 * 3600 * 1000; // 5 hours in ms
+
 /******************** /TIMINGS ********************/
 
 
@@ -159,7 +172,7 @@ const DeviceInfo = require('react-native-device-info');
 /******************** LOCAL OVERRIDE ********************/
 
 // force flags based on release modes
-if (RELEASE_MODE_USED === false) {
+if (RELEASE_MODE_USED === false && IGNORE_LOCAL_CONFIG !== true) {
   //override settings with local config, if it exists
   try {
     let localConfig = require('./LocalConfig');

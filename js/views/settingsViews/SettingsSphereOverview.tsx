@@ -92,7 +92,7 @@ export class SettingsSphereOverview extends Component<any, any> {
         style: {color: colors.blue.hex},
         type: 'button',
         callback: () => {
-          this._createNewSphere(store, state.user.firstName).catch(() => {})
+          this._createNewSphere(store, state.user.firstName+"'s Sphere").catch(() => {})
         }
       });
     }

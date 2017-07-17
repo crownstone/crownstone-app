@@ -20,7 +20,7 @@ class Root extends Component {
   }
 
   render() {
-    StatusBar.setBackgroundColor(colors.menuBackgroundDarker.hex, true);
+    // StatusBar.setBackgroundColor(colors.menuBackgroundDarker.hex, true);
     return (
       <View style={{flex:1}}>
         <AppRouter />

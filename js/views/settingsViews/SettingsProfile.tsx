@@ -20,6 +20,8 @@ import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth } from './../styles'
+import {IconButton} from "../components/IconButton";
+import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 
 
 export class SettingsProfile extends Component<any, any> {
@@ -49,14 +51,12 @@ export class SettingsProfile extends Component<any, any> {
         this.forceUpdate();
       }
     });
-
   }
 
   componentWillUnmount() {
     this.unsubscribe();
   }
 
-  
   _getItems(user) {
     const store = this.props.store;
     const state = store.getState();
@@ -146,20 +146,16 @@ export class SettingsProfile extends Component<any, any> {
     });
 
     items.push({type: 'spacer'});
-    items.push({label:'Privacy', type: 'navigation', callback:() => { Actions.settingsPrivacy(); }});
-    items.push({label: 'You are in control of which data is shared with the cloud.', type: 'explanation', below: true});
-
-    // items.push({label:'Enable Beta Access', value: user.betaAccess, type: 'switch', callback:(newValue) => {
-    //   store.dispatch({
-    //     type: 'SET_BETA_ACCESS',
-    //     data: {betaAccess: newValue}
-    //   });
-    // }});
-    // items.push({label: 'This will enable certain features in the app that might still be a bit experimental. This is ideal for early adopters or developers!', type: 'explanation', below: true});
 
     if (user.developer !== true) {
-      items.push({label:'Enable Developer Mode', value: false, type: 'switch', callback:(newValue) => {
+      items.push({
+        label:'Enable Developer Mode',
+        value: false,
+        icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+        type: 'switch',
+        callback:(newValue) => {
         setTimeout(() => {
+          NotificationHandler._verifyState();
           store.dispatch({
             type: 'SET_DEVELOPER_MODE',
             data: {developer: newValue}
@@ -169,7 +165,12 @@ export class SettingsProfile extends Component<any, any> {
       items.push({label: 'This will enable certain features that may be used for development of the Crownstone.', type: 'explanation', below: true});
     }
     else {
-      items.push({label:'Developer Menu', type: 'navigation', callback:() => { Actions.settingsDeveloper(); }});
+      items.push({
+        label:'Developer Menu',
+        icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
+        type: 'navigation',
+        callback:() => { Actions.settingsDeveloper(); }
+      });
       items.push({type: 'spacer'});
     }
 

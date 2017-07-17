@@ -86,7 +86,7 @@ export class RoomSelection extends Component<any, any> {
 
     items.push({label:"DECOUPLE THIS CROWNSTONE",  type:'explanation', below: false});
     items.push({
-      label: 'Do not put this Crownstone in a specific room',
+      label: 'Not in a specific room',
       largeIcon: <Icon name="md-cube" size={50} color={colors.green.hex} style={{position:'relative', top:2}} />,
       style: {color:colors.blue.hex},
       type: 'navigation',

@@ -1,6 +1,5 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  
   Switch,
   Text,
   View
@@ -17,6 +16,7 @@ export class SwitchBar extends Component<any, any> {
         <Text style={[styles.listTextLarge, this.props.style]}>{this.props.label}</Text>
         <View style={{flex:1}} />
         <Switch
+          disabled={this.props.disabled || false}
           value={this.props.value}
           onValueChange={(newValue) => {this.props.setActiveElement(); this.props.callback(newValue)}}
         />

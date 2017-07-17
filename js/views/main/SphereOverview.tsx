@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler }                              from '../../native/setup/SetupStateHandler'
-import { Orbs }                                           from '../components/Orbs'
 import { TopBar }                                         from '../components/Topbar'
 import { FinalizeLocalizationIcon }                       from '../components/FinalizeLocalizationIcon'
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
@@ -25,10 +24,9 @@ import {styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, a
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/Permissions";
-import * as Swiper from 'react-native-swiper';
 import {eventBus} from "../../util/EventBus";
 
-let addRooms = true
+
 export class SphereOverview extends Component<any, any> {
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
@@ -53,6 +51,7 @@ export class SphereOverview extends Component<any, any> {
 
       if (
         change.changeSphereState    ||
+        change.changeSphereConfig   ||
         change.stoneLocationUpdated ||
         change.updateStoneConfig    ||
         change.updateActiveSphere   ||
@@ -65,35 +64,6 @@ export class SphereOverview extends Component<any, any> {
         this.forceUpdate();
       }
     });
-
-    // setInterval(() => {
-    //   let state = this.props.store.getState();
-    //   if (!state.app.activeSphere)
-    //     return;
-    //
-    //   let rooms = state.spheres[state.app.activeSphere].locations;
-    //   let amountOfRoomIds = Object.keys(rooms).length;
-    //   if (amountOfRoomIds >= 10) {
-    //     addRooms = false;
-    //   }
-    //   if (amountOfRoomIds <= 0) {
-    //     addRooms = true;
-    //   }
-    //
-    //   let target = 70;
-    //   if (amountOfRoomIds === target) {
-    //     return;
-    //   }
-    //
-    //   if (addRooms) {
-    //     console.log("HERE ADD_LOCATION", amountOfRoomIds)
-    //     this.props.store.dispatch({type:'ADD_LOCATION', sphereId: state.app.activeSphere, __test: true, locationId: amountOfRoomIds+1+(Math.random()*1000).toString(25), data:{name:'room' + amountOfRoomIds+1}})
-    //   }
-    //   else {
-    //     console.log("HERE REMOVE_LOCATION")
-    //     this.props.store.dispatch({type:'REMOVE_LOCATION', sphereId: state.app.activeSphere, __test: true, locationId: Object.keys(rooms)[amountOfRoomIds-1]});
-    //   }
-    // }, 1000);
   }
 
   componentWillUnmount() {
@@ -116,13 +86,11 @@ export class SphereOverview extends Component<any, any> {
     if (activeSphere === null && sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
     }
-
   }
 
   componentWillMount() {
     this._setActiveSphere();
   }
-
 
   render() {
     LOG.info("RENDERING_OVERVIEW");
@@ -180,17 +148,17 @@ export class SphereOverview extends Component<any, any> {
         <View>
           <AnimatedBackground hideTopBar={true} image={background}>
             <TopBar
-              title={state.spheres[activeSphere].config.name + '\'s Sphere'}
+              title={state.spheres[activeSphere].config.name}
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
-              altenateLeftItem={true}
+              alternateLeftItem={true}
               leftAction={showFinalizeIndoorNavigationCallback}
               rightItem={!noStones && Permissions.addRoom && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
               showHamburgerMenu={true}
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
-              <Sphere sphereId={activeSphere} store={this.props.store} eventBus={this.props.eventBus} />
+              <Sphere sphereId={activeSphere} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
             { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphere} /> : undefined }
           </AnimatedBackground>
         </View>

@@ -23,6 +23,8 @@ import {Icon} from "../components/Icon";
 import {NativeBus} from "../../native/libInterface/NativeBus";
 import {BleUtil} from "../../util/BleUtil";
 import {Scheduler} from "../../logic/Scheduler";
+import {Bluenet} from "../../native/libInterface/Bluenet";
+import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 
 let STEP_TYPES = {
   UPDATE_AVAILABLE:           'UPDATE_AVAILABLE',
@@ -184,6 +186,9 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   startDFU(userConfig, stoneConfig) {
+    // stop indoor localization during DFU
+    Bluenet.stopIndoorLocalization();
+
     return new Promise((resolve, reject) => {
       this.setState({step: STEP_TYPES.DOWNLOAD_SUCCES});
       Scheduler.scheduleCallback(() => { resolve(); }, 2500, 'startDFU timeout');
@@ -427,6 +432,12 @@ export class DfuOverlay extends Component<any, any> {
 
     if (this.helper)
       this.helper.finish();
+
+    let state = this.props.store.getState();
+    if (canUseIndoorLocalizationInSphere(state, this.state.sphereId) === true) {
+      LOG.debug("(Re)Starting indoor localization after training");
+      Bluenet.startIndoorLocalization();
+    }
   }
 
 

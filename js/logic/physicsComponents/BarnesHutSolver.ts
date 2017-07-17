@@ -24,7 +24,7 @@ class BarnesHutSolver {
   }
 
   seededRandom() {
-    var x = Math.sin(this.randomSeed++) * 10000;
+    let x = Math.sin(this.randomSeed++) * 10000;
     return x - Math.floor(x);
   }
 

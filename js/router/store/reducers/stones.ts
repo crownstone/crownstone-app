@@ -2,8 +2,10 @@ import { createStore, combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { LOG } from '../../../logging/Log'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
+import powerUsageReducer from './stoneSubReducers/powerUsage'
+import scheduleReducer from './stoneSubReducers/schedule'
 
-export let TYPES = {
+export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
   AWAY: 'onAway',
   HOME_ENTER: 'onHomeEnter',
@@ -39,6 +41,8 @@ let defaultSettings = {
     rssi: -1000,
     onlyOnWhenDark: false,
     touchToToggle: true,
+    hidden: false,
+    locked: false,
     type: STONE_TYPES.plug,
     stoneTime: 0,
     stoneTimeChecked: 0,
@@ -51,7 +55,7 @@ let defaultSettings = {
     currentUsage: 0,
     updatedAt: 1
   },
-  schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
+  schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
     updatedAt: 1
   },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
@@ -70,6 +74,9 @@ let defaultSettings = {
     hasError: false,
     obtainedErrors: false,
     advertisementError: false,
+  },
+  powerUsage: {
+    //day as string: 2017-05-01 : { cloud: {...}, data: [] }
   }
 };
 
@@ -87,6 +94,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
       }
+    case 'UPDATE_STONE_STATE_DUPLICATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
     case 'UPDATE_STONE_STATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
       if (action.data) {
         let newState = {...state};
@@ -151,10 +159,12 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.hardwareVersion   = update(action.data.hardwareVersion,   newState.hardwareVersion);
         newState.dfuResetRequired  = update(action.data.dfuResetRequired,  newState.dfuResetRequired);
         newState.handle            = update(action.data.handle,            newState.handle);
+        newState.hidden            = update(action.data.hidden,            newState.hidden);
         newState.icon              = update(action.data.icon,              newState.icon);
         newState.iBeaconMajor      = update(action.data.iBeaconMajor,      newState.iBeaconMajor);
         newState.iBeaconMinor      = update(action.data.iBeaconMinor,      newState.iBeaconMinor);
         newState.locationId        = update(action.data.locationId,        newState.locationId);
+        newState.locked            = update(action.data.locked,            newState.locked);
         newState.macAddress        = update(action.data.macAddress,        newState.macAddress);
         newState.meshNetworkId     = update(action.data.meshNetworkId,     newState.meshNetworkId);
         newState.name              = update(action.data.name,              newState.name);
@@ -193,8 +203,9 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
       newState.currentUsage = 0;
       newState.updatedAt    = getTime();
       return newState;
-    case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
     case 'UPDATE_STONE_STATE':
+    case 'UPDATE_STONE_STATE_DUPLICATE':
+    case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
       if (action.data) {
         let newState          = {...state};
         newState.state        = update(action.data.state,        newState.state);
@@ -280,17 +291,6 @@ let behaviourReducerOnAway = (state = toggleStateAway, action : any = {}) => {
   }
 };
 
-let scheduleReducer = (state = {}, action : any = {}) => {
-  switch (action.type) {
-    case 'ADD_STONE_SCHEDULE':
-    case 'UPDATE_STONE_SCHEDULE':
-    case 'REMOVE_STONE_SCHEDULE':
-      return {...state, ...action.data};
-    default:
-      return state;
-  }
-};
-
 
 let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
   switch (action.type) {
@@ -352,9 +352,10 @@ let combinedStoneReducer = combineReducers({
   config: stoneConfigReducer,
   state: stoneStateReducer,
   behaviour: stoneBehavioursReducer,
-  schedule: scheduleReducer,
+  schedules: scheduleReducer,
   statistics: stoneStatisticsReducer,
-  errors: stoneErrorsReducer
+  errors: stoneErrorsReducer,
+  powerUsage: powerUsageReducer
 });
 
 // stonesReducer

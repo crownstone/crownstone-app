@@ -22,7 +22,7 @@ export let colors : any = {
   csBlue: {hex:'#003E52'},
   csOrange: {hex:'#ff8400'},
   menuBackground: {hex:'#00263e'},
-  menuBackgroundDarker: {hex:'#00162C'},
+  menuBackgroundDarker: {hex:'#00172d'},
   menuText: {hex:'#fff'},
   menuTextSelected: {hex:'#2daeff'},
   white: {hex:'#fff'},
@@ -54,7 +54,7 @@ export let colors : any = {
 for (let color in colors) {
   if (colors.hasOwnProperty(color)) {
     colors[color].rgb = hex2rgb(colors[color].hex);
-    colors[color].rgba = (opacity) => {return 'rgba(' + colors[color].rgb.r + ',' + colors[color].rgb.g + ',' + colors[color].rgb.b + ',' + opacity + ')'};
+    colors[color].rgba = (opacity) => { opacity = Math.min(1,opacity); return 'rgba(' + colors[color].rgb.r + ',' + colors[color].rgb.g + ',' + colors[color].rgb.b + ',' + opacity + ')'};
     // colors[color].hsv = rgb2hsv(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
     // colors[color].hsl = rgb2hsl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
     // colors[color].hcl = rgb2hcl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
@@ -174,7 +174,6 @@ export const styles = StyleSheet.create({
     backgroundColor:"transparent",
     color: colors.darkGray2.rgba(1),
     textAlign:'center',
-    fontWeight:'300',
     fontSize: 10,
   }
 

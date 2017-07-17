@@ -22,6 +22,7 @@ export class ListEditableItems extends Component<any, any> {
         separatorIndent={ this.props.separatorIndent }
         renderer={ this._renderer.bind(this) }
         focusOnLoad={ this.props.focusOnLoad }
+        style={ this.props.style }
       />
     );
   }

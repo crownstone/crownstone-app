@@ -80,7 +80,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   commandFactoryReset:  ()           => { return BluenetPromise('commandFactoryReset');         },
 
   meshKeepAlive:              ()                               => { return BluenetPromise('meshKeepAlive'); },
-  meshKeepAliveState:         (timeout, stoneKeepAlivePackets) => { return BluenetPromise('meshKeepAliveState',   timeout, stoneKeepAlivePackets); }, // stoneKeepAlivePackets = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
+  meshKeepAliveState:         (timeout, stoneKeepAlivePackets) => { return BluenetPromise('meshKeepAliveState',        timeout, stoneKeepAlivePackets); }, // stoneKeepAlivePackets = [{crownstoneId: number(uint16), action: Boolean, state: number(float) [ 0 .. 1 ]}]
   multiSwitch:                (arrayOfStoneSwitchPackets)      => { return BluenetPromise('multiSwitch',               arrayOfStoneSwitchPackets); }, // stoneSwitchPacket = {crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }
 
   getFirmwareVersion:         () => { return BluenetPromise('getFirmwareVersion'); },
@@ -102,5 +102,9 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   setTime:                    (time) => { return BluenetPromise('setTime',time); },
   getTime:                    () => { return BluenetPromise('getTime'); },
 
+  addSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('addSchedule', data); }, // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
+  setSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('setSchedule', data); },
+  clearSchedule:                  (scheduleEntryIndex: number) => { return BluenetPromise('clearSchedule', scheduleEntryIndex); },
+  getAvailableScheduleEntryIndex: () => { return BluenetPromise('getAvailableScheduleEntryIndex'); }              // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
 };
 

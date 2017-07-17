@@ -5,7 +5,7 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
-import { MESH_ENABLED }          from '../ExternalConfig'
+import {DISABLE_NATIVE, MESH_ENABLED, STONE_TIME_REFRESH_INTERVAL}          from '../ExternalConfig'
 import {Permissions} from "../backgroundProcesses/Permissions";
 
 
@@ -348,6 +348,18 @@ class BatchCommandHandlerClass {
               case 'keepAliveState':
                 actionPromise = BluenetPromiseWrapper.keepAliveState(command.changeState, command.state, command.timeout);
                 break;
+              case 'clearSchedule':
+                actionPromise = BluenetPromiseWrapper.clearSchedule(command.scheduleEntryIndex);
+                break;
+              case 'getAvailableScheduleEntryIndex':
+                actionPromise = BluenetPromiseWrapper.getAvailableScheduleEntryIndex();
+                break;
+              case 'setSchedule':
+                actionPromise = BluenetPromiseWrapper.setSchedule(command.scheduleConfig);
+                break;
+              case 'addSchedule':
+                actionPromise = BluenetPromiseWrapper.addSchedule(command.scheduleConfig);
+                break;
               case 'setSwitchState':
               case 'multiSwitch': // if it's a direct call, we just use the setSwitchState.
                 actionPromise = BluenetPromiseWrapper.setSwitchState(command.state);
@@ -453,7 +465,6 @@ class BatchCommandHandlerClass {
             this._scheduleNextStone();
           }
 
-          LOG.error("BatchCommandHandler: ERROR DURING EXECUTE", err, this.activePromiseId);
           reject(err);
         })
         .catch((err) => {
@@ -472,22 +483,24 @@ class BatchCommandHandlerClass {
           LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle, this.activePromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle);
         })
-        // .then(() => {
-        //   if (Permissions.setStoneTime && this.store) {
-        //     // check if we have to tell this crownstone what time it is.
-        //     let state = this.store.getState();
-        //     let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;
-        //     // if it is more than 5 hours ago, tell this crownstone the time.
-        //     if (new Date().valueOf() - lastTime > 5 * 3600 * 1000) {
-        //       // this will never halt the chain since it's optional.
-        //       return BluenetPromiseWrapper.setTime(new Date().valueOf() / 1000)
-        //         .then(() => {
-        //           this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
-        //         })
-        //         .catch((err) => { LOG.warning("BatchCommandHandler: Could not set the time of Crownstone", err); })
-        //     }
-        //   }
-        // })
+        .then(() => {
+          if (Permissions.setStoneTime && this.store) {
+            // check if we have to tell this crownstone what time it is.
+            let state = this.store.getState();
+            let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;
+            // if it is more than 5 hours ago, tell this crownstone the time.
+            if (new Date().valueOf() - lastTime > STONE_TIME_REFRESH_INTERVAL) {
+              // this will never halt the chain since it's optional.
+              return BluenetPromiseWrapper.setTime(new Date().valueOf() / 1000)
+                .then(() => {
+                  this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
+                })
+                .catch((err) => {
+                  LOG.warning("BatchCommandHandler: Could not set the time of Crownstone", err);
+                });
+            }
+          }
+        })
         .then(() => {
           return BluenetPromiseWrapper.disconnectCommand()
         })
@@ -500,7 +513,6 @@ class BatchCommandHandlerClass {
           resolve();
         })
         .catch((err) => {
-          LOG.error("BatchCommandHandler: ERROR DURING EXECUTE", err, this.activePromiseId);
           BluenetPromiseWrapper.phoneDisconnect()
             .then(() => {
               reject(err);
@@ -580,6 +592,18 @@ class BatchCommandHandlerClass {
   }
 
   _scheduleExecute(priority) {
+    // HACK TO SUCCESSFULLY DO ALL THINGS WITH BHC WITHOUT NATIVE
+    if (DISABLE_NATIVE === true) {
+      Scheduler.scheduleCallback(() => {
+        let uuids = Object.keys(this.commands);
+        for (let i = 0; i < uuids.length; i++) {
+          this.commands[uuids[i]].promise.resolve();
+          this.commands[uuids[i]].cleanup();
+        }
+      }, 1500, "Fake native handling of BHC");
+      return;
+    }
+
     LOG.info("BatchCommandHandler: Scheduling command in promiseManager");
     let actionPromise = () => {
       this.activePromiseId = Util.getUUID();
@@ -594,7 +618,7 @@ class BatchCommandHandlerClass {
 
     promiseRegistration(actionPromise, {from: 'BatchCommandHandler: executing.'})
       .catch((err) => {
-        // disable execution and forward the error
+        // disable execution stop the error propagation since this is not returned anywhere.
         LOG.error("BatchCommandHandler: Error completing promise.", err, this.activePromiseId);
       });
   }
@@ -608,6 +632,7 @@ class BatchCommandHandlerClass {
    */
   _searchScan(objectsToScan : any[], rssiThreshold = null, highPriorityActive = false, timeout = 5000) {
     return new Promise((resolve, reject) => {
+
       let unsubscribeListeners = [];
 
       let cleanup = () => {

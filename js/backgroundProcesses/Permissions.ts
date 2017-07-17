@@ -13,6 +13,7 @@ export class PermissionClass {
   updateCrownstone       = false; // a
   setupCrownstone        = false; // a
   seeSetupCrownstone     = false; // a
+  moveCrownstone         = false; // a or m
 
   doLocalizationTutorial = false; // a?
   addRoom                = false; // a?
@@ -21,6 +22,7 @@ export class PermissionClass {
 
   editCrownstone         = false; // a
   changeBehaviour        = false; // a or m
+  setSchedule            = false; // a or m
   removeCrownstone       = false; // a
   editAppliance          = false; // a
   removeAppliance        = false; // a
@@ -31,9 +33,6 @@ export class PermissionClass {
   inviteAdminToSphere    = false; // a
   inviteMemberToSphere   = false; // a or m
   inviteGuestToSphere    = false; // a or m
-
-
-
 
   _loadStore(store, userAlreadyLoggedIn) {
     if (this._initialized === false) {
@@ -101,6 +100,8 @@ export class PermissionClass {
         this.useKeepAliveState      = true; // admin and member
         this.setStoneTime           = true; // admin and member
         this.manageUsers            = true; // admin and member
+        this.moveCrownstone         = true; // admin and member
+        this.setSchedule            = true; // admin and member
 
         this.inviteMemberToSphere   = true; // admin and member
         this.inviteGuestToSphere    = true; // admin and member
@@ -111,12 +112,13 @@ export class PermissionClass {
 
   _revokeAll() {
     this.useKeepAliveState      = false; // g
-    this.setStoneTime           = false; // g
+    this.setStoneTime           = false; // a or m
     this.setBehaviourInCloud    = false; // a
     this.seeUpdateCrownstone    = false; // a?
     this.updateCrownstone       = false; // a
     this.setupCrownstone        = false; // a
     this.seeSetupCrownstone     = false; // a
+    this.moveCrownstone         = false; // a or m
 
     this.doLocalizationTutorial = false; // a?
     this.addRoom                = false; // a?
@@ -124,7 +126,8 @@ export class PermissionClass {
     this.removeRoom             = false; // a
 
     this.editCrownstone         = false; // a
-    this.changeBehaviour        = false; // a
+    this.changeBehaviour        = false; // a or m
+    this.setSchedule            = false; // a or m
     this.removeCrownstone       = false; // a
     this.editAppliance          = false; // a
     this.removeAppliance        = false; // a
@@ -135,7 +138,6 @@ export class PermissionClass {
     this.inviteAdminToSphere    = false; // a
     this.inviteMemberToSphere   = false; // a or m
     this.inviteGuestToSphere    = false; // a or m
-
   }
 }
 

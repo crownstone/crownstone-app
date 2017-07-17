@@ -28,7 +28,9 @@ import {ErrorWatcher} from "./ErrorWatcher";
 import {NotificationHandler, NotificationParser} from "./NotificationHandler";
 import {Permissions} from "./Permissions";
 import {BatchCommandHandler} from "../logic/BatchCommandHandler";
+import {BatchUploader} from "./BatchUploader";
 
+const DeviceInfo = require('react-native-device-info');
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -56,6 +58,12 @@ class BackgroundProcessHandlerClass {
         // clear the temporary data like state and disability of stones so no old data will be shown
         prepareStoreForUser(this.store);
 
+        let state = this.store.getState();
+        if (state.app.indoorLocalizationEnabled === false) {
+          LOG.info("BackgroundProcessHandler: Set background processes to OFF");
+          Bluenet.setBackgroundScanning(false);
+        }
+
         LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
         BluenetPromiseWrapper.isReady()
           .then(() => {
@@ -67,6 +75,8 @@ class BackgroundProcessHandlerClass {
         this.setupLogging();
 
         this.userLoggedIn = true;
+
+        this.showWhatsNew();
       });
 
       // wait for store to be prepared in order to continue.
@@ -99,6 +109,13 @@ class BackgroundProcessHandlerClass {
     this.started = true;
   }
 
+
+  showWhatsNew() {
+    let state = this.store.getState();
+    if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
+      Scheduler.scheduleCallback(() => { eventBus.emit("showWhatsNew"); }, 100);
+    }
+  }
 
   setupLogging() {
     let state = this.store.getState();
@@ -341,6 +358,7 @@ class BackgroundProcessHandlerClass {
     ErrorWatcher._loadStore(this.store);
     NotificationHandler._loadStore(this.store);
     NotificationParser._loadStore(this.store);
+    BatchUploader._loadStore(this.store);
     Permissions._loadStore(this.store, this.userLoggedIn);
   }
 }

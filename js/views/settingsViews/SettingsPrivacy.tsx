@@ -16,6 +16,7 @@ import { LOG, clearLogs } from '../../logging/Log'
 import { styles, colors } from '../styles'
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
+import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 // import { NotificationHandler } from "../../notifications/NotificationHandler";
 
 
@@ -46,7 +47,13 @@ export class SettingsPrivacy extends Component<any, any> {
     let state = store.getState();
     let items = [];
 
-    items.push({type: 'spacer'});
+
+    items.push({
+      label: "You can choose what you want to share with the cloud and what you prefer to keep on your phone.\n\n" +
+      "If you have multiple users in a Sphere, sharing location is required to see them in the overview.",
+      type: 'largeExplanation',
+      style:{paddingTop:15, paddingBottom:15}
+    });
     items.push({
       label:"Share location",
       value: user.uploadLocation,
@@ -56,7 +63,7 @@ export class SettingsPrivacy extends Component<any, any> {
         store.dispatch({ type: 'USER_UPDATE', data: {uploadLocation: newValue} });
     }});
     items.push({
-      label: 'Show the other people in your sphere in which room you are!',
+      label: 'Show the other people in your Sphere in which room you are!',
       type: 'explanation',
       below: true
     });
@@ -74,6 +81,46 @@ export class SettingsPrivacy extends Component<any, any> {
       type: 'explanation',
       below: true
     });
+    items.push({
+      label: "Share power usage",
+      value: user.uploadPowerUsage,
+      type: 'switch',
+      icon: <IconButton name="ios-flash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
+      callback: (newValue) => { store.dispatch({type: 'USER_UPDATE', data: {uploadPowerUsage: newValue}}); }
+    });
+    if (user.uploadPowerUsage) {
+      items.push({
+        label: "Upload frequently",
+        value: user.uploadHighFrequencyPowerUsage,
+        type: 'switch',
+        icon: <IconButton name="ios-cloud" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.darkPurple.hex}}/>,
+        callback: (newValue) => { store.dispatch({type: 'USER_UPDATE', data: {uploadHighFrequencyPowerUsage: newValue}}); }
+      });
+      if (user.uploadHighFrequencyPowerUsage) {
+        items.push({
+          label: 'The power usage data collected by the app will be sent to the cloud every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
+          type: 'explanation',
+          below: true,
+        });
+      }
+      else {
+        items.push({
+          label: 'The power usage data collected by the app will be sent to the cloud during sync every ' + Math.round(SYNC_INTERVAL/60) + ' minutes.' +
+          '\n\nIf Upload frequently is enabled, it will upload every ' + CLOUD_BATCH_UPDATE_INTERVAL + ' seconds. This might drain your battery faster and is generally used for hubs.',
+          type: 'explanation',
+          below: true,
+        });
+      }
+
+    }
+    else {
+      items.push({
+        label: 'If sharing power usage is enabled, all updates in power usage gathered by the app will be sent to the cloud.',
+        type: 'explanation',
+        below: true,
+      });
+    }
+
 
     items.push({
       label:"Share phone type details",
@@ -120,28 +167,6 @@ export class SettingsPrivacy extends Component<any, any> {
       type: 'explanation',
       below: true
     });
-
-    if (user.developer === true) {
-      items.push({
-        label: "WARNING HIGH BATTERY USAGE IF ENABLED:",
-        type: 'explanation',
-        below: false,
-        alreadyPadded: true
-      });
-      items.push({
-        label: "Share power usage",
-        value: user.uploadPowerUsage,
-        type: 'switch',
-        icon: <IconButton name="ios-flash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.purple.hex}}/>,
-        callback: (newValue) => { store.dispatch({type: 'USER_UPDATE', data: {uploadPowerUsage: newValue}}); }
-      });
-      items.push({
-        label: "You can choose what you want to share with the cloud and what you prefer to keep on your phone.\n\n" +
-        "If you have multiple users in a Sphere, sharing location is required to see them in the overview.",
-        type: 'explanation',
-        below: true
-      });
-    }
 
     return items;
   }

@@ -35,7 +35,7 @@ export class Sphere extends Component<any, any> {
     return (
       <View style={{width: screenWidth, height: availableScreenHeight}}>
         <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
-        <RoomLayer store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
+        <RoomLayer store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} multipleSpheres={this.props.multipleSpheres} />
       </View>
     );
   }

@@ -17,3 +17,5 @@ declare const global: {
 };
 
 declare const module: any;
+
+type PromiseCallback = (any) => Promise<any>

@@ -63,8 +63,7 @@ export class RoomLayer extends Component<any, any> {
       scale: new Animated.Value(initialScale),
       opacity: new Animated.Value(1),
       pan: new Animated.ValueXY(),
-      locations: {},
-      hoverRoom : false,
+      locations: {}
     };
 
     this.physicsEngine = new PhysicsEngine();
@@ -96,21 +95,22 @@ export class RoomLayer extends Component<any, any> {
       if (node.x + radius > x1 && node.y + radius > y1 && node.x < x1 && node.y < y1) {
         found = true;
         let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
-        if (this.state.hoverRoom !== nodeIds[i]) {
+        if (this._pressedRoom !== nodeIds[i]) {
           this.state.locations[nodeId].scale.stopAnimation();
-          this.setState({hoverRoom: nodeId});
-          Animated.spring(this.state.locations[nodeIds[i]].scale, { toValue: 1.25, friction: 4, tension: 70 }).start();
+          this.state.locations[nodeId].opacity.stopAnimation();
+          this._pressedRoom = nodeId;
+
+          let tapAnimations = [];
+          tapAnimations.push(Animated.spring(this.state.locations[nodeIds[i]].scale, { toValue: 1.25, friction: 4, tension: 70 }));
+          tapAnimations.push(Animated.timing(this.state.locations[this._pressedRoom].opacity, {toValue: 0.2, duration: 100}));
+          Animated.parallel(tapAnimations).start();
+
         }
 
         return nodeId;
       }
     }
 
-    if (!found) {
-      if (this.state.hoverRoom !== false) {
-        this.setState({hoverRoom: false});
-      }
-    }
     return false;
   }
 
@@ -221,7 +221,6 @@ export class RoomLayer extends Component<any, any> {
         }
 
         if (this._pressedRoom !== false) {
-          this.setState({hoverRoom: false});
           Actions.roomOverview({sphereId: this.props.sphereId, locationId: this._pressedRoom});
         }
 
@@ -234,8 +233,6 @@ export class RoomLayer extends Component<any, any> {
 
 
         this._clearTap();
-
-
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
@@ -270,7 +267,7 @@ export class RoomLayer extends Component<any, any> {
       let change = data.change;
 
       if (
-        change.changeLocations
+        change.changeLocations || change.stoneLocationUpdated
       ) {
         this.loadInSolver();
       }
@@ -323,7 +320,14 @@ export class RoomLayer extends Component<any, any> {
 
     // add padding
     minX -= 0.3*this._baseRadius;
-    minY -= 0.7*this._baseRadius;
+
+    // draw it as nice as possible depending on whether or not the multiple sphere button is drawn.
+    if (this.props.multipleSpheres) {
+      minY -= 0.7*this._baseRadius;
+    }
+    else {
+      minY -= 0.3*this._baseRadius;
+    }
     maxX += 0.3*this._baseRadius;
     maxY += 0.7*this._baseRadius;
 
@@ -364,13 +368,15 @@ export class RoomLayer extends Component<any, any> {
   _clearTap() {
     if (this._pressedRoom !== false) {
       this.state.locations[this._pressedRoom].scale.stopAnimation();
-      Animated.timing(this.state.locations[this._pressedRoom].scale, {toValue: 1, duration: 100}).start();
+      this.state.locations[this._pressedRoom].opacity.stopAnimation();
+      let revertAnimations = [];
+      revertAnimations.push(Animated.timing(this.state.locations[this._pressedRoom].scale, {toValue: 1, duration: 100}));
+      revertAnimations.push(Animated.timing(this.state.locations[this._pressedRoom].opacity, {toValue: 1, duration: 100}));
+      Animated.parallel(revertAnimations).start();
     }
+
     this._validTap = false;
     this._pressedRoom = false;
-    if (this.state.hoverRoom !== false) {
-      this.setState({hoverRoom: false});
-    }
   }
 
   loadInSolver() {
@@ -392,13 +398,13 @@ export class RoomLayer extends Component<any, any> {
     for (let i = 0; i < roomIds.length; i++) {
       let id = roomIds[i];
       this.nodes[id] = {id: id, mass: 1, fixed: false, support:false};
-      this.state.locations[id] = {x: new Animated.Value(0), y: new Animated.Value(0), scale: new Animated.Value(1)};
+      this.state.locations[id] = {x: new Animated.Value(0), y: new Animated.Value(0), scale: new Animated.Value(1), opacity: new Animated.Value(1)};
     }
 
     if (showFloatingCrownstones) {
       let id = null;
       this.nodes[id] = {id: id, mass: 1, fixed: false, support:false};
-      this.state.locations[id] = {x: new Animated.Value(0), y: new Animated.Value(0), scale: new Animated.Value(1)};
+      this.state.locations[id] = {x: new Animated.Value(0), y: new Animated.Value(0), scale: new Animated.Value(1), opacity: new Animated.Value(1)};
     }
 
 
@@ -406,7 +412,7 @@ export class RoomLayer extends Component<any, any> {
     let initialized = false;
     cancelAnimationFrame(this.animationFrame);
 
-    let onStable = () => {
+    let onStable = (data) => {
       this.animationFrame = requestAnimationFrame(() => {
         let node = null;
         for (let i = 0; i < nodeIds.length; i++) {
@@ -438,7 +444,7 @@ export class RoomLayer extends Component<any, any> {
         locationId={locationId}
         totalAmountOfRoomCircles={count}
         sphereId={this.props.sphereId}
-        hover={this.state.hoverRoom === locationId}
+        opacity={this.state.locations[locationId].opacity}
         radius={0.15*screenWidth}
         store={this.props.store}
         scale={this.state.locations[locationId].scale}

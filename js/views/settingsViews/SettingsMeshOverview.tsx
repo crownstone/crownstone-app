@@ -69,7 +69,7 @@ export class SettingsMeshOverview extends Component<any, any> {
 
     return (
       <ScrollView horizontal={true} style={{flex:1}}>
-        <Animated.View style={{flex:1, flexDirection:'row', width: networkWidth, position:'relative', left: this.state.leftOffset }}>
+        <Animated.View style={{flex:1, flexDirection:'row', width: networkWidth, position:'relative', left: this.state.leftOffset, paddingBottom: 30 }}>
           {networkElements}
         </Animated.View>
       </ScrollView>
@@ -115,13 +115,14 @@ export class SettingsMeshOverview extends Component<any, any> {
     networkKeys = Object.keys(networks);
 
     return (
-      <Background image={this.props.backgrounds.main}>
+      <Background image={this.props.backgrounds.detailsDark}>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
             fontWeight:'500',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center',
             padding:20,
           }}>
@@ -131,7 +132,7 @@ export class SettingsMeshOverview extends Component<any, any> {
             backgroundColor:'transparent',
             fontSize:14,
             fontWeight:'300',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center',
             padding:20,
             paddingTop:0,
@@ -144,7 +145,7 @@ export class SettingsMeshOverview extends Component<any, any> {
               backgroundColor:'transparent',
               fontSize:16,
               fontWeight:'500',
-              color: colors.menuBackground.hex,
+              color: colors.white.hex,
               textAlign:'center',
               paddingTop:0,
               paddingBottom:5,
@@ -190,7 +191,7 @@ export class Network extends Component<any, any> {
     if (props.connected !== false) {
       interNodeDistance = this.connectedDistance;
     }
-    return dataPointsCount * this.nodeHeight + (dataPointsCount-1) * interNodeDistance + 50;
+    return dataPointsCount * this.nodeHeight + (dataPointsCount-1) * interNodeDistance + 50 + 10;
   }
 
   componentWillUpdate( nextProps, nextState ) {
@@ -218,7 +219,7 @@ export class Network extends Component<any, any> {
         <View key={'items'+i} style={{width: width, flexDirection:'row', alignItems:'center', justifyContent:'flex-start', position:'relative', left:-5}}>
           <IconCircle icon={dataPoint.location ? dataPoint.location.config.icon : 'c2-pluginFilled'} size={this.nodeHeight} backgroundColor={colors.green.hex} color={colors.csBlue.hex} borderColor={colors.csBlue.hex} style={{position:'relative', top:0, left:10}} />
           <IconCircle icon={dataPoint.element.config.icon}  size={40} backgroundColor={colors.csBlue.hex} color="#fff" borderColor={colors.csBlue.hex} />
-          <Text style={{paddingLeft:5, backgroundColor:'transparent'}}>{dataPoint.element.config.name}</Text>
+          <Text style={{paddingLeft:10, color:colors.white.hex, backgroundColor:'transparent'}}>{dataPoint.element.config.name}</Text>
         </View>
       );
       if (this.props.connected !== false) {
@@ -263,15 +264,15 @@ export class Network extends Component<any, any> {
         padding: this.padding,
         flexDirection:'column',
         alignItems:'center',
-        borderColor:  colors.white.rgba(0.8),
+        borderColor:  colors.white.hex,
         borderWidth:  3,
         borderRadius: 8,
-        backgroundColor: colors.white.rgba(0.35),
+        backgroundColor: colors.white.rgba(0.25),
         height: this.state.height,
         opacity: this.state.opacity
       }}>
         {this.getConnector()}
-        <Text style={{backgroundColor:'transparent', paddingBottom:10}}>{this.props.label}</Text>
+        <Text style={{backgroundColor:'transparent', color:colors.white.hex, fontWeight:'500', paddingBottom:10}}>{this.props.label}</Text>
         <View style={{paddingBottom: 5}}>
           { this.getStones() }
         </View>

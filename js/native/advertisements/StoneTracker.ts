@@ -12,8 +12,9 @@ import { addDistanceToRssi, Util }            from '../../util/Util';
 import { BehaviourUtil }                      from '../../util/BehaviourUtil';
 import { LOG }                                from '../../logging/Log'
 import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
-import { TYPES }                              from '../../router/store/reducers/stones'
+import { BEHAVIOUR_TYPES }                    from '../../router/store/reducers/stones'
 import { FirmwareHandler }                    from "../firmware/FirmwareHandler";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
@@ -212,43 +213,43 @@ export class StoneTracker {
     if (!canUseIndoorLocalizationInSphere(state, sphereId)) {
       if (ref.rssiAverage >= stone.config.nearThreshold) {
         // only trigger if the last type of event this module triggered was NOT a near event.
-        if (ref.lastTriggerType !== TYPES.NEAR) {
+        if (ref.lastTriggerType !== BEHAVIOUR_TYPES.NEAR) {
           // these callbacks will store the cancelable action when there is a delay and store the type of trigger that was fires last.
           let callbacks = {
             // identify that we triggered the event.
             onTrigger: (sphereId, stoneId) => {
-              ref.lastTriggerType = TYPES.NEAR;
+              ref.lastTriggerType = BEHAVIOUR_TYPES.NEAR;
               ref.lastTriggerTime = new Date().valueOf();
             },
             onCancelled: (sphereId, stoneId) => {
               // in the event that only an away event is configured, reset the trigger after being in the near for RESET_TIMER_FOR_NEAR_AWAY_EVENTS seconds
               // by placing this in the cancelScheduledAwayAction, it will be cleared upon the next time the user enters AWAY.
-              ref.lastTriggerType = TYPES.NEAR;
+              ref.lastTriggerType = BEHAVIOUR_TYPES.NEAR;
               ref.lastTriggerTime = new Date().valueOf();
             }
           };
-          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.NEAR, callbacks);
+          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, BEHAVIOUR_TYPES.NEAR, callbacks);
         }
       }
       // far threshold is 0.5m more than the near one so there is not a single line
       else if (ref.rssiAverage < farThreshold) {
         // only trigger if the last type of event this module triggered was NOT an AWAY event.
-        if (ref.lastTriggerType !== TYPES.AWAY) {
+        if (ref.lastTriggerType !== BEHAVIOUR_TYPES.AWAY) {
           let callbacks = {
             // store the cancellation if we need to use it.
             onTrigger: (sphereId, stoneId) => {
               // identify that we triggered the event
-              ref.lastTriggerType = TYPES.AWAY;
+              ref.lastTriggerType = BEHAVIOUR_TYPES.AWAY;
               ref.lastTriggerTime = new Date().valueOf();
             },
             onCancelled: (sphereId, stoneId) => {
               // in the event that only an away event is configured, reset the trigger after being in the near for RESET_TIMER_FOR_NEAR_AWAY_EVENTS seconds
               // by placing this in the cancelScheduledAwayAction, it will be cleared upon the next time the user enters NEAR.
-              ref.lastTriggerType = TYPES.AWAY;
+              ref.lastTriggerType = BEHAVIOUR_TYPES.AWAY;
               ref.lastTriggerTime = new Date().valueOf();
             }
           };
-          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.AWAY, callbacks);
+          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, BEHAVIOUR_TYPES.AWAY, callbacks);
         }
       }
       // in case we are between near and far, only clear pending timeouts. They will be placed back on the next event.

@@ -31,13 +31,14 @@ export class RoomTraining_training extends Component<any, any> {
           notBack={true}
           leftAction={() => {this.props.cancel()}}
           title="Train Room"/>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flexDirection:'column', flex:1}}>
           <View style={{padding:30, alignItems:'center'}}>
             <Text style={{
               backgroundColor:'transparent',
               fontSize:20,
               fontWeight:'600',
-              color: colors.menuBackground.hex,
+              color: colors.white.hex,
               textAlign:'center'
             }}>{"Walk around the room so " + this.props.ai.name + " can learn to locate you within it. Each beat " + this.props.ai.he + " learns a bit more about the room!"}</Text>
           </View>

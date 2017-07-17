@@ -30,6 +30,7 @@ import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
 import { Util } from '../util/Util'
+import {WhatsNewOverlay} from "../views/overlays/WhatsNewOverlay";
 
 
 export class Router_IOS extends Component {
@@ -61,14 +62,16 @@ export class Router_IOS extends Component {
                 <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
                 <Scene key="deviceOverview"         component={Views.DeviceOverview}             hideNavBar={true} />
                 <Scene key="deviceEdit"             component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
-                <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select a Device" />
+                <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select Device Type" />
                 <Scene key="applianceAdd"           component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
+                <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={true} />
               </Scene>
               <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>
                 <Scene key="settingsProfile"            component={Views.SettingsProfile}           hideNavBar={false} title="Your Profile" />
                 <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           hideNavBar={false} title="Privacy" />
+                <Scene key="settingsApp"                component={Views.SettingsApp}               hideNavBar={false} title="Preferences" />
                 <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      hideNavBar={false} title="Mesh Overview" />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         hideNavBar={false} title="Developer" />
                 <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    hideNavBar={false} title="Sphere Overview" />
@@ -88,6 +91,7 @@ export class Router_IOS extends Component {
         <LocationPermissionOverlay />
         <BleStateOverlay />
         <ErrorOverlay store={this.props.store} />
+        <WhatsNewOverlay store={this.props.store} />
         <OptionPopup />
         <Processing />
       </View>

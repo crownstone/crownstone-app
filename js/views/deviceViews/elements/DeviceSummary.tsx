@@ -20,6 +20,7 @@ import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {AnimatedCircle} from "../../components/animated/AnimatedCircle";
+import {Permissions} from "../../../backgroundProcesses/Permissions";
 
 
 export class DeviceSummary extends Component<any, any> {
@@ -143,6 +144,9 @@ export class DeviceSummary extends Component<any, any> {
     const element = Util.data.getElement(sphere, stone);
     const location = Util.data.getLocationFromStone(sphere, stone);
 
+    let canChangeSettings = stone.config.applianceId ? Permissions.editAppliance : Permissions.editCrownstone;
+    let canMoveCrownstone = Permissions.moveCrownstone;
+
     let locationLabel = "Currently in Room:";
     let locationName = "No";
     if (location) {
@@ -150,18 +154,33 @@ export class DeviceSummary extends Component<any, any> {
       locationName = location.config.name;
     }
 
+    console.log('canMoveCrownstone,',canMoveCrownstone)
+
     return (
       <View style={{flex:1, paddingBottom:35}}>
-        <DeviceInformation left={"Energy Consumption:"} leftValue={stone.state.currentUsage + ' W'} right={locationLabel} rightValue={locationName} />
+        <DeviceInformation left={"Energy Consumption:"}
+                           leftValue={stone.state.currentUsage + ' W'}
+                           right={locationLabel}
+                           rightValue={locationName}
+                           rightTapAction={canMoveCrownstone ? () => {
+                             console.log("HERE")
+                           Actions.roomSelection({
+                             sphereId: this.props.sphereId,
+                             stoneId: this.props.stoneId,
+                             locationId: this.props.locationId,
+                           }); } : null}
+        />
         <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
                            leftValue={stone.config.applianceId ? stone.config.name : 'None'}
-                           right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'} />
+                           right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'}
+                           leftTapAction={canChangeSettings ? () => { Actions.applianceSelection({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); } : null}
+        />
         <View style={{flex:0.5}} />
-        <View style={{width:screenWidth, alignItems:'center'}}>{this._getIcon(stone, element)}</View>
+        <View style={{width:screenWidth, alignItems: 'center' }}>{this._getIcon(stone, element)}</View>
         <View style={{flex:1}} />
-        <Text style={deviceStyles.explanation}>{stone.config.applianceId ? Util.spreadString('tap icon to change device') : Util.spreadString('tap icon to select device')}</Text>
+        <Text style={deviceStyles.explanation}>{Util.spreadString('tap icon to set device type')}</Text>
         <View style={{flex:1}} />
-        <View style={{width:screenWidth, alignItems:'center'}}>{this._getButton(stone)}</View>
+        <View style={{width:screenWidth, alignItems: 'center' }}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />
       </View>
     )
@@ -174,14 +193,14 @@ export class DeviceInformation extends Component<any, any> {
     return (
       <View>
         <View style={{width:screenWidth, flexDirection:'row', padding:10, paddingBottom:0}}>
-          <Text style={deviceStyles.subText}>{this.props.left}</Text>
+          {this.props.leftTapAction ?  <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.subText}>{this.props.left}</Text></TouchableOpacity> : <Text style={deviceStyles.subText}>{this.props.left}</Text>}
           <View style={{flex:1}} />
-          <Text style={[deviceStyles.subText]}>{this.props.right}</Text>
+          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction}><Text style={deviceStyles.subText}>{this.props.right}</Text></TouchableOpacity> : <Text style={deviceStyles.subText}>{this.props.right}</Text>}
         </View>
         <View style={{width:screenWidth, flexDirection:'row', paddingLeft:10, paddingRight:10}}>
-          <Text style={deviceStyles.text}>{this.props.leftValue}</Text>
+          {this.props.leftTapAction ?  <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.text}>{this.props.leftValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.leftValue}</Text>}
           <View style={{flex:1}} />
-          <Text style={[deviceStyles.text]}>{this.props.rightValue}</Text>
+          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction}><Text style={deviceStyles.text}>{this.props.rightValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
         </View>
       </View>
     )

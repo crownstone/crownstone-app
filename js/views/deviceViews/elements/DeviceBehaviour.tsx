@@ -19,13 +19,58 @@ import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../util/DataUtil";
+import {BEHAVIOUR_TYPES} from "../../../router/store/reducers/stones";
+import {Permissions} from "../../../backgroundProcesses/Permissions";
 
 
-let DISABLED_COLOR = colors.csOrange.hex;
+let DISABLED_COLOR = colors.gray.hex;
+let WARNING_COLOR = colors.csOrange.hex;
 
 export class DeviceBehaviour extends Component<any, any> {
   constructor() {
     super();
+  }
+
+  getWarning(state, nearFarDisabled) {
+    let warnings = [];
+    if (state.app.indoorLocalizationEnabled === false) {
+      return (
+        <TouchableOpacity
+          key="heartbeatWarning"
+          style={{flexDirection: 'row'}}
+          onPress={() => { Actions.settingsApp(); }}
+        >
+          <Text style={textStyle.warning}>{'Behaviour is disabled in the App Settings. Re-enable indoor localization to use the behaviour.'}</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    if (state.app.keepAlivesEnabled === false) {
+      warnings.push(
+        <TouchableOpacity
+          key="heartbeatWarning"
+          style={{flexDirection: 'row'}}
+          onPress={() => { Actions.settingsApp(); }}
+        >
+          <Text style={textStyle.warning}>{'Heartbeat is disabled in the App Settings. Re-enable the Heartbeat to use the exit behaviour.'}</Text>
+        </TouchableOpacity>
+      );
+    }
+
+
+    if (nearFarDisabled) {
+      warnings.push(
+        <TouchableOpacity
+          key="nearFarWarning"
+          style={{flexDirection: 'row'}}
+          onPress={() => {Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});}}
+        >
+          <Text style={textStyle.warning}>{'Near/away is disabled until you define where near is. Press change at the top to do this now.'}</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    return warnings;
   }
 
   render() {
@@ -34,6 +79,8 @@ export class DeviceBehaviour extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
     const element = Util.data.getElement(sphere, stone);
+
+    let canChangeBehaviour = Permissions.changeBehaviour && state.app.indoorLocalizationEnabled;
 
     let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId) && stone.config.locationId !== null;
     let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behaviour.onNear.active === true;
@@ -44,23 +91,33 @@ export class DeviceBehaviour extends Component<any, any> {
         <Text style={textStyle.title}>Behaviour</Text>
         <Text style={textStyle.explanation}>This is how I respond to your location:</Text>
         <View style={{flex: 1.5}} />
-        <BehaviourResponse data={element.behaviour} type="onHomeEnter" stone={stone} />
+        <BehaviourResponse data={element.behaviour} type={BEHAVIOUR_TYPES.HOME_ENTER} stone={stone} appSettings={state.app} canChangeBehaviour={canChangeBehaviour} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />
         <View style={{flex:0.8}} />
-        <BehaviourResponse data={element.behaviour} type="onHomeExit" stone={stone} sphere={sphere} />
+        <BehaviourResponse data={element.behaviour} type={BEHAVIOUR_TYPES.HOME_EXIT}  stone={stone} sphere={sphere} appSettings={state.app} canChangeBehaviour={canChangeBehaviour} sphereId={this.props.sphereId} stoneId={this.props.stoneId}  />
         <View style={{flex:0.8}} />
-        {canDoIndoorLocalization ? <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomEnter" /> : <BehaviourResponse data={element.behaviour} stone={stone}  type="onNear" />}
+        {
+          canDoIndoorLocalization ?
+          <BehaviourResponse data={element.behaviour} stone={stone} type={BEHAVIOUR_TYPES.ROOM_ENTER} appSettings={state.app} canChangeBehaviour={canChangeBehaviour} sphereId={this.props.sphereId} stoneId={this.props.stoneId}  /> :
+          <BehaviourResponse data={element.behaviour} stone={stone} type={BEHAVIOUR_TYPES.NEAR}       appSettings={state.app} canChangeBehaviour={canChangeBehaviour} sphereId={this.props.sphereId} stoneId={this.props.stoneId}  />
+        }
         <View style={{flex:0.8}} />
-        {canDoIndoorLocalization ? <BehaviourResponse data={element.behaviour} stone={stone} type="onRoomExit" /> : <BehaviourResponse data={element.behaviour}  stone={stone}  type="onAway" />}
+        {
+          canDoIndoorLocalization ?
+          <BehaviourResponse data={element.behaviour} stone={stone} type={BEHAVIOUR_TYPES.ROOM_EXIT} appSettings={state.app} canChangeBehaviour={canChangeBehaviour} sphereId={this.props.sphereId} stoneId={this.props.stoneId}  /> :
+          <BehaviourResponse data={element.behaviour} stone={stone} type={BEHAVIOUR_TYPES.AWAY}      appSettings={state.app} canChangeBehaviour={canChangeBehaviour} sphereId={this.props.sphereId} stoneId={this.props.stoneId}  />
+        }
         <View style={{flex: 2}} />
-        {nearFarDisabled ? <Text style={textStyle.warning}>Near/away is disabled until you define where near is. Press change at the top to do this now.</Text> : undefined}
+        { this.getWarning(state, nearFarDisabled) }
         <View style={{flex: 2}} />
-        { element.config.onlyOnWhenDark === true ?
-        <View style={{flexDirection: 'row',}} >
+        { element.config.onlyOnWhenDark === true && state.app.indoorLocalizationEnabled ?
+        <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {
+          Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+        }}>
           <Text style={textStyle.value}>I will </Text>
           <Text style={[textStyle.value,{fontStyle: 'italic'}]}>only </Text>
           <Text style={[textStyle.value,{color: colors.green.hex}]}> TURN ON</Text>
           <Text style={textStyle.value}> if it is dark outside.</Text>
-        </View> : undefined }
+        </TouchableOpacity> : undefined }
         <View style={{flex:2}} />
         <View style={{height:30, width: screenWidth, backgroundColor:'transparent'}} />
       </View>
@@ -78,16 +135,16 @@ class BehaviourResponse extends Component<any, any> {
     return ' after ' + Util.getDelayLabel(delay, true);
   }
 
-  _getValue(enabled) {
+  _getValue(responseStyle) {
     if (this.props.data[this.props.type].state > 0) {
-      return <Text style={[textStyle.value,{color: enabled ? colors.green.hex : DISABLED_COLOR}]}>TURN ON</Text>
+      return <Text style={[textStyle.value,responseStyle]}>TURN ON</Text>
     }
     else {
-      return <Text style={[textStyle.value,{color: enabled ? colors.menuBackgroundDarker.hex : DISABLED_COLOR}]}>TURN OFF</Text>
+      return <Text style={[textStyle.value,responseStyle]}>TURN OFF</Text>
     }
   }
 
-  _getTitle(enabled) {
+  _getTitle() {
     switch (this.props.type) {
       case 'onHomeEnter':
         return 'When you enter the Sphere';
@@ -106,41 +163,78 @@ class BehaviourResponse extends Component<any, any> {
     }
   }
 
+  _getResponseStyle(isDisabled: boolean, active : boolean) {
+    if (isDisabled) {
+      return {color: DISABLED_COLOR, textDecorationLine:'line-through'};
+    }
+
+    if ((this.props.type === 'onNear' || this.props.type === 'onAway') && this.props.stone.config.nearThreshold === null && active) {
+      return {color: WARNING_COLOR};
+    }
+
+    return {color: colors.white.hex};
+  }
+
+  _isDisabled() {
+    if (this.props.appSettings.indoorLocalizationEnabled === false) {
+      return true;
+    }
+
+    if (this.props.appSettings.keepAlivesEnabled === false && (this.props.type === BEHAVIOUR_TYPES.HOME_EXIT || this.props.type === BEHAVIOUR_TYPES.ROOM_EXIT)) {
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
     let type = this.props.type;
     let active = this.props.data[type].active;
-    let enabled = true;
+    let isDisabled = this._isDisabled();
+    let responseStyle = this._getResponseStyle(isDisabled, active);
 
-    if ((type === 'onNear' || type === 'onAway') && this.props.stone.config.nearThreshold === null) {
-      enabled = false;
-    }
-
+    let content;
     if (active) {
-      return (
-        <View style={{alignItems:'center'}}>
-          <Text style={[textStyle.case,{color: enabled ? colors.white.hex : DISABLED_COLOR}]}>{this._getTitle(enabled)}</Text>
-          <View style={{flexDirection: 'row', alignItems:'center'}} >
-            {this.props.prefixItem ? this.props.prefixItem : <Text style={[textStyle.value, {color: enabled ? colors.white.hex : DISABLED_COLOR}]}>{this.props.prefix || 'I will '}</Text>}
-            {this._getValue(enabled)}
-            {this.props.postfixItem ? this.props.postfixItem : <Text style={[textStyle.value, {color: enabled ? colors.white.hex : DISABLED_COLOR}]}>{this._getDelay()}</Text>}
+      content = (
+        <View>
+          <Text style={[textStyle.case, responseStyle]}>{this._getTitle()}</Text>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'center'}}>
+            {this.props.prefixItem ? this.props.prefixItem :   <Text style={[textStyle.value, responseStyle]}>{this.props.prefix || 'I will '}</Text>}
+            {this._getValue(responseStyle)}
+            {this.props.postfixItem ? this.props.postfixItem : <Text style={[textStyle.value, responseStyle]}>{this._getDelay()}</Text>}
           </View>
         </View>
       );
     }
     else {
-      return (
-        <View style={{alignItems:'center'}}>
-          <Text style={textStyle.case}>{this._getTitle(enabled)}</Text>
-          <Text style={[textStyle.value, {color: colors.white.rgba(0.4), fontWeight:'400', fontStyle:'italic'}]}>{"I won't do anything..."}</Text>
+      content = (
+        <View>
+          <Text style={[textStyle.case, responseStyle]}>{this._getTitle()}</Text>
+          <Text style={[textStyle.value, {color: colors.white.rgba(0.4), fontWeight:'400', fontStyle:'italic'}, responseStyle]}>{"I won't do anything..."}</Text>
         </View>
       );
     }
 
-
+    if (isDisabled) {
+      return (
+        <View style={{alignItems:'center'}}>
+          {content}
+        </View>
+      );
+    }
+    else {
+      return (
+        <TouchableOpacity style={{alignItems:'center'}} onPress={() => {
+          Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
+        }}>
+          {content}
+        </TouchableOpacity>
+      );
+    }
   }
 }
 
-let textStyle = StyleSheet.create({
+export const textStyle = StyleSheet.create({
   title: {
     color:colors.white.hex,
     fontSize:30,
@@ -163,7 +257,7 @@ let textStyle = StyleSheet.create({
     textAlign:'center',
     fontSize:13,
     padding:5,
-    fontWeight:'400'
+    fontWeight:'400',
   },
   value: {
     color:colors.white.hex,
@@ -180,13 +274,13 @@ let textStyle = StyleSheet.create({
     fontWeight:'600'
   },
   warning: {
-    color: DISABLED_COLOR,
+    color: WARNING_COLOR,
     width:screenWidth,
     textAlign:'center',
     fontStyle:'italic',
     fontSize:13,
     padding:15,
-    fontWeight:'400'
+    fontWeight:'600'
   }
 
 });

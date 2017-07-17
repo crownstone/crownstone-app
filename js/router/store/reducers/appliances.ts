@@ -8,6 +8,8 @@ let defaultSettings = {
     icon: undefined,
     dimmable: false,
     onlyOnWhenDark: false,
+    hidden: false,
+    locked: false,
     updatedAt: 1
   },
   linkedAppliances: { 
@@ -37,6 +39,8 @@ let applianceConfigReducer = (state = defaultSettings.config, action : any = {})
         newState.name      = update(action.data.name,     newState.name);
         newState.icon      = update(action.data.icon,     newState.icon);
         newState.dimmable  = update(action.data.dimmable, newState.dimmable);
+        newState.hidden    = update(action.data.hidden, newState.hidden);
+        newState.locked    = update(action.data.locked, newState.locked);
         newState.onlyOnWhenDark  = update(action.data.onlyOnWhenDark, newState.onlyOnWhenDark);
         newState.updatedAt = getTime(action.data.updatedAt);
         return newState;

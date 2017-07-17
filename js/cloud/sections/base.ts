@@ -135,7 +135,7 @@ export const base = {
   // END USER API
   // These methods have all the endpoints embedded in them.
 
-  setNetworkErrorHandler: function(handler)         {this._networkErrorHandler = handler},
+  setNetworkErrorHandler: function(handler)         { this._networkErrorHandler = handler },
   setAccess:              function(accessToken)     { this._accessToken = accessToken;        return this; },
   setUserId:              function(userId)          { this._userId = userId;                  return this; },
   forUser:                function(userId)          { this._userId = userId;                  return this; },

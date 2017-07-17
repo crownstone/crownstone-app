@@ -2,6 +2,9 @@ const DeviceInfo = require('react-native-device-info');
 
 /******************** RELEASE FLAGS ********************/
 
+  // USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
+  const IGNORE_LOCAL_CONFIG = true;
+
   // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
   export const FALLBACKS_ENABLED = true;
 
@@ -134,6 +137,15 @@ const DeviceInfo = require('react-native-device-info');
 
   // the amount of time we wait before accepting another tap to toggle to the same crownstone.
   export const TIME_BETWEEN_TAP_TO_TOGGLES = 5000; // ms
+
+  // The time between batch uploads to the cloud.
+  export const CLOUD_BATCH_UPDATE_INTERVAL = 10; // s
+
+  // The amount of time to store the history of the power usage of stones.
+  export const HISTORY_PERSISTENCE = 24*3600*1000; // ms
+
+  // Interval in which the phone tells the Crownstone what time it is!
+  export const STONE_TIME_REFRESH_INTERVAL = 5 * 3600 * 1000; // 5 hours in ms
 
 /******************** /TIMINGS ********************/
 

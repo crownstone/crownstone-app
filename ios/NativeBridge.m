@@ -77,7 +77,7 @@ RCT_EXTERN_METHOD(quitApp)
 RCT_EXTERN_METHOD(setTime:(nonnull NSNumber *)time callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getTime:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(batterySaving:(nonnull NSNumber *)state)
-
+RCT_EXTERN_METHOD(setBackgroundScanning:(nonnull NSNumber *)state)
 
 
 // MESH
@@ -95,5 +95,10 @@ RCT_EXTERN_METHOD(performDFU:(NSString *)uuid uri:(NSString *)uri callback:(RCTR
 RCT_EXTERN_METHOD(setupFactoryReset:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(bootloaderToNormalMode:(NSString *)uuid callback:(RCTResponseSenderBlock)callback)
 
+// scheduler
+RCT_EXTERN_METHOD(addSchedule:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(setSchedule:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(clearSchedule:(nonnull NSNumber *)scheduleEntryIndex callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getAvailableScheduleEntryIndex:(RCTResponseSenderBlock)callback)
 
 @end

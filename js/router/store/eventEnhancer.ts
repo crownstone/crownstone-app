@@ -154,7 +154,14 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_STONE_STATE':
     case 'UPDATE_STONE_SWITCH_STATE':
       eventStatus['powerUsageUpdated'] = affectedIds;
-      eventStatus['stoneUsageUpdated'] = affectedIds; break;
+      eventStatus['stoneUsageUpdated'] = affectedIds;
+      eventStatus['powerUsageUpdatedDuplicatesIncluded'] = affectedIds;
+      eventStatus['stoneUsageUpdatedDuplicatesIncluded'] = affectedIds; break;
+    case 'UPDATE_STONE_STATE_DUPLICATE':
+    case 'REMOVE_ALL_POWER_USAGE':
+    case 'REMOVE_POWER_USAGE_DATE':
+      eventStatus['powerUsageUpdatedDuplicatesIncluded'] = affectedIds;
+      eventStatus['stoneUsageUpdatedDuplicatesIncluded'] = affectedIds; break;
     case 'UPDATE_STONE_REMOTE_TIME':
       eventStatus['stoneTimeUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
@@ -167,9 +174,10 @@ function checkAction(action, affectedIds) {
     case "UPDATE_STONE_RSSI":
       eventStatus['stoneRssiUpdated'] = affectedIds; break;
     case 'ADD_STONE_SCHEDULE':
-    case 'UPDATE_STONE_SCHEDULE':
     case 'REMOVE_STONE_SCHEDULE':
-      break;
+      eventStatus['changeStoneSchedule'] = affectedIds;
+    case 'UPDATE_STONE_SCHEDULE':
+      eventStatus['updateStoneSchedule'] = affectedIds; break;
     case 'REMOVE_STONE':
       eventStatus['removeStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
@@ -209,6 +217,10 @@ function checkAction(action, affectedIds) {
     case 'UPDATE_INSTALLATION_CONFIG':
     case 'UPDATED_STONE_TIME':
     case 'SET_NOTIFICATION_TOKEN':
+    case 'SET_BATCH_SYNC_POWER_USAGE':
+    case 'SET_DAY_SYNC_POWER_USAGE':
+    case 'ADD_POWER_USAGE':
+    case 'ADD_BATCH_POWER_USAGE':
       break;
     case 'UPDATE_APP_SETTINGS':
       eventStatus['changeAppSettings'] = affectedIds; break;
