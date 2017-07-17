@@ -45,7 +45,7 @@ export const sync = {
           .then((response) => {
             CLOUD.setAccess(response.id);
             CLOUD.setUserId(response.userId);
-            this.store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
+            store.dispatch({type:'USER_APPEND', data:{accessToken: response.id}});
             return syncDown(userId, options);
           })
             .catch((err) => {
