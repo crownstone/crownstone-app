@@ -204,7 +204,7 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   let locationId = action.data.locationId;
   let updatedAt = state.spheres[sphereId].stones[stoneId].config.updatedAt;
 
-  let prevLocationId = oldState.spheres[sphereId].stones[stoneId].config.locationId;
+  let prevLocationId = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] && oldState.spheres[sphereId].stones[stoneId].config.locationId || null;
 
   if (prevLocationId === null && locationId !== null) {
     CLOUD.forStone(stoneId).updateStoneLocationLink(locationId, sphereId, updatedAt, true).catch(() => {});
@@ -334,15 +334,17 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 
   if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let oldStone = oldState.spheres[sphereId].stones[stoneId];
-    let data     = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
+    let data  = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
 
     let dayIndex = Util.getDateFormat(action.updatedAt);
-    let index = oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].length || 0;
+
+    // get the index the new item will have. This is used to mark them as synced. If there is no previous item, it is 0.
+    let oldStone = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] || null;
+    let indexOfNewItem = oldStone && oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].length || 0;
     if (stone.config.applianceId) {
       data['applianceId'] = stone.config.applianceId;
     }
-    BatchUploader.addPowerData(dayIndex, sphereId, stoneId, index, data);
+    BatchUploader.addPowerData(dayIndex, sphereId, stoneId, indexOfNewItem, data);
   }
 }
 
