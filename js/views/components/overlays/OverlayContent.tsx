@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   Image,
   Platform,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -15,17 +16,18 @@ import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '
 export class OverlayContent extends Component<any, any> {
   getEyeCatcher() {
     if (this.props.icon) {
+      let iconSize = this.props.iconSize || 0.40 * screenWidth;
       return (
         <View style={{
-          width: 0.45 * screenWidth,
-          height: 0.5 * screenWidth,
-          margin: 0.025 * screenHeight,
+          width: 1.1*iconSize,
+          height: 1.1*iconSize,
+          margin: 0.2*iconSize,
           alignItems: 'center',
           justifyContent: 'center'
         }}>
         <Icon
           name={this.props.icon}
-          size={this.props.iconSize || 0.40 * screenWidth}
+          size={iconSize}
           color={colors.csBlue.hex}
           style={{position: 'relative', top: 0, left: 0, backgroundColor: 'transparent'}}
         />
@@ -72,7 +74,15 @@ export class OverlayContent extends Component<any, any> {
 
   getHeader() {
     if (this.props.header) {
-      return <Text style={{fontSize: 14, fontWeight: 'bold', color: colors.csBlue.hex, textAlign:'center', padding:15, paddingBottom:0}}>{this.props.header}</Text>
+      return <Text style={{
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: colors.csBlue.hex,
+        textAlign:'center',
+        padding:15,
+        paddingTop:0,
+        paddingBottom: this.props.scrollable ? 15 : 0
+      }}>{this.props.header}</Text>
     }
   }
 
@@ -91,16 +101,35 @@ export class OverlayContent extends Component<any, any> {
   }
 
   render() {
-    return (
-      <View style={{flex:1, height: 0.9*availableScreenHeight, alignItems:'center'}}>
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
-        { this.getEyeCatcher() }
-        { this.getHeader() }
-        { this.getContentSpacer() }
-        { this.getContent() }
-        { this.getButtonSpacer() }
-        { this.getButton() }
-      </View>
-    )
+    if (this.props.scrollable) {
+      return (
+        <View style={{flex:1, height: 0.9*availableScreenHeight, alignItems:'center'}}>
+          <ScrollView>
+            <View style={{alignItems:'center'}}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', textAlign:'center', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
+              { this.getEyeCatcher() }
+              { this.getHeader() }
+              { this.getContentSpacer() }
+              { this.getContent() }
+              { this.getButtonSpacer() }
+              { this.getButton() }
+            </View>
+          </ScrollView>
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={{flex:1, height: 0.9*availableScreenHeight, alignItems:'center'}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', textAlign:'center', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
+          { this.getEyeCatcher() }
+          { this.getHeader() }
+          { this.getContentSpacer() }
+          { this.getContent() }
+          { this.getButtonSpacer() }
+          { this.getButton() }
+        </View>
+      );
+    }
   }
 }

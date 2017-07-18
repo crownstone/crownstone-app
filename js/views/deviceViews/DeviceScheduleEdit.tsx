@@ -387,6 +387,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           )
         }
       });
+    BatchCommandHandler.load(stone, this.props.stoneId, this.props.sphereId, { commandName : 'setTime', time: new Date().valueOf()/1000 }).catch(() => {});
     BatchCommandHandler.executePriority();
   }
 
@@ -414,7 +415,8 @@ export class DeviceScheduleEdit extends Component<any, any> {
           [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
           {cancelable: false}
         )
-      })
+      });
+    BatchCommandHandler.load(stone, this.props.stoneId, this.props.sphereId, { commandName : 'setTime', time: new Date().valueOf()/1000 }).catch(() => {});
     BatchCommandHandler.executePriority();
   }
 

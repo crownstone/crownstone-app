@@ -17,7 +17,7 @@ import { FirmwareHandler }                    from "../firmware/FirmwareHandler"
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
-let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
+let SLIDING_WINDOW_FACTOR = 0.2; // [0.1 .. 1] higher is more responsive
 
 
 export class StoneTracker {
@@ -180,19 +180,21 @@ export class StoneTracker {
       }
     }
 
-
-
     // --------------------- Finished Tap-to-Toggle --------------------------- //
+
+
+
+    // --------------------- Process the NEAR / AWAY events --------------------------- //
+
+    // update local tracking of data
+    ref.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * ref.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
+    ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER ? 1 : 0;
+    let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
 
     // to avoid flickering we do not trigger these events in less than 5 seconds.
     if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY) {
       return;
     }
-
-
-    // update local tracking of data
-    ref.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * ref.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
-    ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER ? 1 : 0;
 
     // we need a decent sample set.
     if (ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER)
@@ -203,11 +205,6 @@ export class StoneTracker {
       return;
     }
 
-
-
-    // --------------------- Process the NEAR / AWAY events --------------------------- //
-
-    let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
 
     // these event are only used for when there are no room-level options possible
     if (!canUseIndoorLocalizationInSphere(state, sphereId)) {

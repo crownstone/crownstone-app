@@ -41,7 +41,21 @@ jest.mock('../js/logic/BatchCommandHandler', () => {
             throw err;
           })
       },
+      loadPriority: (stone, stoneId, sphereId, command, attempts) => {
+        this.__totalLoads++;
+        return new Promise((resolve, reject) => {
+          expect(command.state).toBe(this.__expectation.state);
+          expect(this.__counter <= this.__expectation.times).toBe(true);
+          this.__counter++;
+          resolve();
+        })
+          .catch((err) => {
+            this.__errorState = true;
+            throw err;
+          })
+      },
       execute: () => { this.__totalExecutes++ },
+      executePriority: () => { this.__totalExecutes++ },
       __counter: 0,
       __totalLoads: 0,
       __totalExecutes: 0,
@@ -77,7 +91,8 @@ jest.mock('../js/native/advertisements/StoneStateHandler', () => {
   }
 });
 
-jest.mock('PushNotificationIOS', () => ({ }));jest.mock('Linking', () => {});
+jest.mock('PushNotificationIOS', () => ({ }));
+jest.mock('Linking', () => {});
 jest.mock('NetInfo', () => {});
 
 import { StoneTracker } from '../js/native/advertisements/StoneTracker'
@@ -142,9 +157,7 @@ test('stoneTrackerTest', () => {
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-      tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-      tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-      resolve();
+      setTimeout(() => {resolve();},100);
     })
     .then(() => {
       return new Promise((resolve, reject) => {
@@ -157,7 +170,7 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-          resolve();
+          setTimeout(() => {resolve();},100);
         },2);
       })
     })
@@ -172,7 +185,7 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-          resolve();
+          setTimeout(() => {resolve();},100);
         },2);
       })
     })
@@ -187,7 +200,7 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-          resolve();
+          setTimeout(() => {resolve();},100);
         },2);
       })
     })
@@ -252,7 +265,7 @@ test('stoneTracker Alternating', () => {
     // test Near Event
     mockBatchCommandHandler.BatchCommandHandler.__mockSetExpectation({times: 1, state: 1});
     tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-    resolve();
+    setTimeout(() => {resolve();},100);
   })
     .then(() => {
       return new Promise((resolve, reject) => {
@@ -264,7 +277,7 @@ test('stoneTracker Alternating', () => {
         tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
         tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
         tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        resolve();
+        setTimeout(() => {resolve();},100);
       })
     })
     .then(() => {
@@ -277,7 +290,7 @@ test('stoneTracker Alternating', () => {
         tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
         tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
         tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        resolve();
+        setTimeout(() => {resolve();},100);
       })
     })
     .then(() => {
@@ -290,7 +303,7 @@ test('stoneTracker Alternating', () => {
         tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
         tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
         tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        resolve();
+        setTimeout(() => {resolve();},100);
       })
     })
     .then(() => {

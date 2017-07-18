@@ -112,7 +112,7 @@ export class SetupDeviceEntry extends Component<any, any> {
         borderRadius:30,
         backgroundColor: color,
         }, styles.centered]}>
-        <Icon name={this.props.item.icon} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+        <Icon name={this.props.item.icon} size={35} color={'#ffffff'} style={{ backgroundColor:'transparent' }} />
       </View>
     );
   }

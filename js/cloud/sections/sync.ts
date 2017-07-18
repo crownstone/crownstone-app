@@ -773,7 +773,7 @@ const syncDevices = function(store, actions, cloudDevices) {
           });
 
           // We now push the location of ourselves to the cloud.
-          return updateUserLocationInCloud(state, deviceId);
+          return updateUserLocationInCloud(state, newDevice.id);
         })
         .then(resolveAndCleanup)
         .catch(reject)

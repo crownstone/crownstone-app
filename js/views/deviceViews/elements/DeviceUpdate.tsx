@@ -37,7 +37,7 @@ export class DeviceUpdate extends Component<any, any> {
         <View style={{flex:1}} />
         <TouchableOpacity
           onPress={() => {
-            eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
+            eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId, skipIntroduction: true});
           }}
           style={[styles.centered, {
             width: 0.6 * screenWidth,

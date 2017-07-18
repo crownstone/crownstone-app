@@ -7,7 +7,7 @@ const DeviceInfo = require('react-native-device-info');
     const RELEASE_MODE = false;
 
     // USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
-    const IGNORE_LOCAL_CONFIG = true;
+    const IGNORE_LOCAL_CONFIG = false;
 
     export const FALLBACKS_ENABLED = true;
 
@@ -172,7 +172,7 @@ const DeviceInfo = require('react-native-device-info');
 /******************** LOCAL OVERRIDE ********************/
 
 // force flags based on release modes
-if (RELEASE_MODE_USED === false && IGNORE_LOCAL_CONFIG !== true) {
+if (RELEASE_MODE_USED === false && !IGNORE_LOCAL_CONFIG) {
   //override settings with local config, if it exists
   try {
     let localConfig = require('./LocalConfig');

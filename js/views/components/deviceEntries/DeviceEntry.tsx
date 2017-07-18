@@ -161,7 +161,6 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _iconPressed(stone, state) {
-    LOG.warn(stone.errors);
     if (stone.errors.advertisementError === true && stone.errors.hasError === false && stone.errors.obtainedErrors === false) {
       Alert.alert('An error has been detected', 'I\'m currently trying to ask this Crownstone what it is. An overlay should appear shortly.', [{text:'OK'}]);
       return;
@@ -213,7 +212,7 @@ export class DeviceEntry extends Component<any, any> {
             fadeDuration={500}
             switchDuration={2000}
             contentArray={[
-              <Icon name={'ios-warning'} size={40} color={'#fff'} style={{position:'relative', top:-1, backgroundColor:'transparent'}} />,
+              <Icon name={'ios-warning'} size={40} color={'#fff'} style={{backgroundColor:'transparent'}} />,
               <Icon name={element.config.icon} size={35} color={'#fff'} />,
             ]}
           />
@@ -235,7 +234,7 @@ export class DeviceEntry extends Component<any, any> {
             fadeDuration={500}
             switchDuration={2000}
             contentArray={[
-              <Icon name={'c1-update-arrow'} size={44} color={color} style={{position:'relative', top:-1, left:0, backgroundColor:'transparent'}} />,
+              <Icon name={'c1-update-arrow'} size={44} color={color} style={{backgroundColor:'transparent'}} />,
               <Icon name={element.config.icon} size={35} color={color} />,
             ]} />
         </View>

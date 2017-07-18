@@ -93,7 +93,7 @@ class FirmwareHandlerClass {
       })
   }
 
-  getNewVersions(firmwareVersion, bootloaderVersion, hardwareVersion) {
+  downloadNewVersions(firmwareVersion, bootloaderVersion, hardwareVersion) {
     return this.getVersions(firmwareVersion, bootloaderVersion, hardwareVersion)
       .then(() => {
         return this.download(this.newFirmwareDetails,'firmware');
