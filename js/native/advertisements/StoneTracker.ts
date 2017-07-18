@@ -189,7 +189,7 @@ export class StoneTracker {
     // update local tracking of data
     ref.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * ref.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
     ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER ? 1 : 0;
-    let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
+    let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 1.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
 
     // to avoid flickering we do not trigger these events in less than 5 seconds.
     if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY) {
