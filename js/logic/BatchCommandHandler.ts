@@ -337,7 +337,8 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.restartCrownstone();
                 break;
               case 'setTime':
-                actionPromise = BluenetPromiseWrapper.setTime(command.time);
+                let timeToSet = command.time === undefined ? new Date().valueOf() / 1000 : command.time;
+                actionPromise = BluenetPromiseWrapper.setTime(timeToSet);
                 break;
               case 'getTime':
                 actionPromise = BluenetPromiseWrapper.getTime();
@@ -499,6 +500,12 @@ class BatchCommandHandlerClass {
                   LOG.warning("BatchCommandHandler: Could not set the time of Crownstone", err);
                 });
             }
+            else {
+              LOG.debug("BatchCommandHandler: Decided not to set the time because delta time:", new Date().valueOf() - lastTime);
+            }
+          }
+          else {
+            LOG.debug("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.setStoneTime, Permissions.setStoneTime && this.store);
           }
         })
         .then(() => {

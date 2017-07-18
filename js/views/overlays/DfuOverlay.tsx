@@ -28,6 +28,7 @@ import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 
 let STEP_TYPES = {
   UPDATE_AVAILABLE:           'UPDATE_AVAILABLE',
+  RELEASE_NOTES:              'RELEASE_NOTES',
   DOWNLOAD_PROGRESS:          'DOWNLOAD_PROGRESS',
   DOWNLOAD_SUCCES:            'DOWNLOAD_SUCCES',
   SEARCHING:                  'SEARCHING',
@@ -46,6 +47,9 @@ let stepSearchingTypes = {};
 stepSearchingTypes[STEP_TYPES.SEARCHING] = true;
 stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_CLOSER] = true;
 stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER] = true;
+
+let RELEASE_NOTES_ERROR = "Could not download release notes.";
+let RELEASE_NOTES_NA = "Release notes not available.";
 
 export class DfuOverlay extends Component<any, any> {
   unsubscribe : any = [];
@@ -74,6 +78,7 @@ export class DfuOverlay extends Component<any, any> {
       currentPhase: 0,
       phasesRequired: null,
       detail: '',
+      releaseNotes: null,
       firmwareUpdatedInStore: false,
       alreadyInDfuMode: false
     };
@@ -84,7 +89,7 @@ export class DfuOverlay extends Component<any, any> {
     this.unsubscribe.push(eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
       this.setState({
         visible: true,
-        step: STEP_TYPES.UPDATE_AVAILABLE,
+        step: data.skipIntroduction ? STEP_TYPES.RELEASE_NOTES : STEP_TYPES.UPDATE_AVAILABLE,
         stoneId: data.stoneId,
         sphereId: data.sphereId,
         progress: 0,
@@ -92,6 +97,7 @@ export class DfuOverlay extends Component<any, any> {
         currentPhase: 0,
         phasesRequired: 0,
         detail: '',
+        releaseNotes: null,
         firmwareUpdatedInStore: false,
         alreadyInDfuMode: data.alreadyInDfuMode || false,
         firmwareToUpload: null,
@@ -104,6 +110,34 @@ export class DfuOverlay extends Component<any, any> {
     this.unsubscribe.push(eventBus.on("updateDfuStep", (step : string) => {
       this.setState({step:step});
     }));
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.step !== nextState.step && nextState.step === STEP_TYPES.RELEASE_NOTES) {
+      let state = this.props.store.getState();
+      let userConfig = state.user;
+      let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
+
+      FirmwareHandler.getVersions(
+        userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
+        userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion],
+        stoneConfig.hardwareVersion
+      )
+        .then(() => {
+          let releaseNotes = FirmwareHandler.newFirmwareDetails.releaseNotes;
+          if (typeof releaseNotes === 'object') {
+            // the first hit should be the locale of the user, then fallback on english, then fallback on the first key (if no keys exist)
+            releaseNotes = releaseNotes['en'] || releaseNotes['en'] || releaseNotes[Object.keys(releaseNotes)[0]];
+          }
+          // final fallback, release notes not available.
+          releaseNotes = releaseNotes || RELEASE_NOTES_NA;
+          this.setState({releaseNotes: releaseNotes});
+        })
+        .catch((err) => {
+          LOG.error("DfuOverlay: Could not download release notes...", err);
+          this.setState({releaseNotes: RELEASE_NOTES_ERROR});
+        })
+    }
   }
 
   componentWillUnmount() {
@@ -137,7 +171,7 @@ export class DfuOverlay extends Component<any, any> {
       bootloaderToUpdate: userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion]
     });
 
-    FirmwareHandler.getNewVersions(
+    FirmwareHandler.downloadNewVersions(
       userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
       userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion],
       stoneConfig.hardwareVersion
@@ -442,6 +476,14 @@ export class DfuOverlay extends Component<any, any> {
 
 
   getContent() {
+    let updateToVersion = '1.0.0';
+    if (this.state.sphereId && this.state.stoneId) {
+      let state = this.props.store.getState();
+      let userConfig = state.user;
+      let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
+      updateToVersion = userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion];
+    }
+
     let abort = () => {
       this.paused = true;
       let defaultAction = () => { this.paused = false; };
@@ -461,6 +503,7 @@ export class DfuOverlay extends Component<any, any> {
         this.setState({visible: false});
     };
     let radius = 0.28*screenWidth;
+
     switch (this.state.step) {
       case STEP_TYPES.UPDATE_AVAILABLE:
         return <OverlayContent
@@ -468,10 +511,24 @@ export class DfuOverlay extends Component<any, any> {
           icon={'c1-update-arrow'}
           iconSize={0.35*screenWidth}
           header={'There is an update available for your Crownstone!'}
-          text={'This process may take a few minutes. Please stay close to the Crownstone until it is finished. Tap next to get started!'}
-          buttonCallback={() => { this.startProcess();} }
+          text={'This process may take a few minutes. Please stay close to the Crownstone until it is finished. Tap next to see whats new!'}
+          buttonCallback={() => { this.setState({step: STEP_TYPES.RELEASE_NOTES}) } }
           buttonLabel={'Next'}
         />;
+      case STEP_TYPES.RELEASE_NOTES:
+        return <OverlayContent
+          title={'What\'s New:'}
+          icon={'md-book'}
+          iconSize={0.25*screenWidth}
+          header={'Firmware version: ' + updateToVersion}
+          text={this.state.releaseNotes || null}
+          buttonCallback={() => { this.startProcess();} }
+          scrollable={this.state.releaseNotes === null}
+          buttonLabel={'Next'}
+        >
+          <ActivityIndicator animating={true} size="large" />
+          <View style={{flexGrow:1}} />
+        </OverlayContent>;
       case STEP_TYPES.DOWNLOAD_PROGRESS:
         return (
           <OverlayContent
@@ -718,7 +775,7 @@ export class DfuOverlay extends Component<any, any> {
     return (
       <OverlayBox
         visible={this.state.visible}
-        canClose={this.state.step === STEP_TYPES.UPDATE_AVAILABLE}
+        canClose={this.state.step === STEP_TYPES.UPDATE_AVAILABLE || this.state.step === STEP_TYPES.RELEASE_NOTES }
         closeCallback={() => {
           Alert.alert(
             "Are you sure?",
