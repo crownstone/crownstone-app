@@ -2,7 +2,16 @@
 
 To be Released:
 
-
+- Added user option to use the app in foreground mode ONLY by disabling the localization background process.
+- Added toggle for tap to toggle.
+- Added scheduler (Timer) functionality for Crownstones.
+- Added dynamic power usage graph to device overview.
+- Added new UI solver for Sphere overview.
+- Added option to sync power usage to the cloud.
+- Added Whats new overview.
+- Improved near/further away behaviour.
+- Fixed Syncing bug.
+- Fixed timer issue that was building up in the background.
 - Fixed bug in dfu process that did not put the Crownstone back in normal mode after a failed factory reset.
 - Added a few new Icons for rooms and appliances.
 

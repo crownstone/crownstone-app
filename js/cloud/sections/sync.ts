@@ -93,7 +93,7 @@ export const sync = {
 
 const syncPowerUsage = function(state, actions) {
   if (state.user.uploadPowerUsage === false || state.user.uploadHighFrequencyPowerUsage === true) {
-    return
+    return;
   }
 
   let deleteHistoryThreshold = new Date().valueOf() - HISTORY_PERSISTENCE;
@@ -152,7 +152,7 @@ const syncPowerUsage = function(state, actions) {
     return CLOUD.forStone(stoneId).updateBatchPowerUsage(uploadBatch.data, true)
       .then(() => {
         actions.push({
-          type: "BATCH_SET_SYNC_POWER_USAGE",
+          type: "SET_BATCH_SYNC_POWER_USAGE",
           sphereId: sphereId,
           stoneId: stoneId,
           dateId: dateId,
