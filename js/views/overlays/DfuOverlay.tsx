@@ -113,10 +113,10 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.step !== nextState.step && nextState.step === STEP_TYPES.RELEASE_NOTES) {
+    if ((this.state.visible !== nextState.visible || this.state.step !== nextState.step) && nextState.step === STEP_TYPES.RELEASE_NOTES) {
       let state = this.props.store.getState();
       let userConfig = state.user;
-      let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
+      let stoneConfig = state.spheres[nextState.sphereId].stones[nextState.stoneId].config;
 
       FirmwareHandler.getVersions(
         userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
