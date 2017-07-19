@@ -41,6 +41,7 @@ export class Router_IOS extends Component {
           <Scene key="Root" hideNavBar={false}>
             <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
             <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
+            <Scene key="tutorial"                   component={Views.Tutorial}                   hideNavBar={true}  />
             <Scene key="register"                   component={Views.Register}                   hideNavBar={false} title="Register" {...navBarStyle} />
             <Scene key="registerConclusion"         component={Views.RegisterConclusion}         hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} />
             <Scene key="pictureView"                component={Views.PictureView}                hideNavBar={true}  panHandlers={null} direction="vertical" />

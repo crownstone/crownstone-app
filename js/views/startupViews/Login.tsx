@@ -352,12 +352,14 @@ export class Login extends Component<any, any> {
 
 
           if (state.user.isNew !== false) {
-            Actions.aiStart({type: 'reset'});
+            Actions.tutorial({type: 'reset'});
           }
           else if (Platform.OS === 'android') {
+            this.props.eventBus.emit("userLoggedInFinished");
             Actions.sphereOverview({type: 'reset'});
           }
           else {
+            this.props.eventBus.emit("userLoggedInFinished");
             Actions.tabBar({type: 'reset'});
           }
         }, 100);

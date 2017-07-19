@@ -4,10 +4,10 @@ const DeviceInfo = require('react-native-device-info');
 
 
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
-    const RELEASE_MODE = true;
+    const RELEASE_MODE = false;
 
-    // USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
-    const IGNORE_LOCAL_CONFIG = true;
+    // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
+    const IGNORE_LOCAL_CONFIG = false;
 
     export const FALLBACKS_ENABLED = true;
 
@@ -90,7 +90,7 @@ const DeviceInfo = require('react-native-device-info');
     export let LOG_SCHEDULER  = false;   // enabling LOG.scheduler  commands to be shown.
     export let LOG_BLE        = false;   // enabling LOG.ble        commands to be shown.
     export let LOG_EVENTS     = false;   // enabling LOG.event      commands to be shown.
-    export let LOG_STORE      = true;   // enabling LOG.store      commands to be shown.
+    export let LOG_STORE      = false;   // enabling LOG.store      commands to be shown.
     export let LOG_CLOUD      = false;   // enabling LOG.cloud      commands to be shown.
     export let LOG_DEBUG      = false;   // enabling LOG.debug      commands to be shown.
 

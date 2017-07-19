@@ -22,6 +22,7 @@ class LocationHandlerClass {
   store : any;
   tracker : any;
   _uuid : string;
+  _readyForLocalization = false;
 
   constructor() {
     this._initialized = false;
@@ -32,10 +33,19 @@ class LocationHandlerClass {
 
 
     // subscribe to iBeacons when the spheres in the cloud change.
-    CLOUD.events.on('CloudSyncComplete_spheresChanged', () => { LocationHandler.initializeTracking(); });
+    CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {
+      if (this._readyForLocalization) {
+        LocationHandler.initializeTracking();
+      }
+    });
 
     // when a sphere is created, we track all spheres anew.
-    eventBus.on('sphereCreated', () => { LocationHandler.initializeTracking(); });
+    eventBus.on('userLoggedInFinished', () => { this._readyForLocalization = true; });
+    eventBus.on('sphereCreated', () => {
+      if (this._readyForLocalization) {
+        LocationHandler.initializeTracking();
+      }
+    });
   }
 
   _loadStore(store) {
