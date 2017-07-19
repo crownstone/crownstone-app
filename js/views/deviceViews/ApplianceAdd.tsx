@@ -94,7 +94,7 @@ export class ApplianceAdd extends Component<any, any> {
     }
 
     let items = this._getItems();
-    let imageSize = 1;
+    let imageSize = 0.9;
     return (
       <Background hideInterface={true} image={backgroundImage} >
         <TopBar
@@ -108,7 +108,7 @@ export class ApplianceAdd extends Component<any, any> {
           title="Add Device Type"/>
         <View style={{flex:1}}>
             <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} separatorIndent={true} />
-            <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingBottom: tabBarHeight + 20}}>
+            <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingTop:10, paddingBottom: tabBarHeight + 20}}>
               <Image source={require('../../images/sharedProperties.png')} style={{width:imageSize*0.535*screenWidth, height: imageSize*0.512*screenWidth}} />
             </View>
         </View>
