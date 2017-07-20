@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   PixelRatio,
+  Platform,
   Switch,
   TouchableOpacity,
   TouchableHighlight,
@@ -26,6 +27,7 @@ import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
 import {LOG} from "../../../logging/Log";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {Permissions} from "../../../backgroundProcesses/Permissions";
+import {IconButton} from "../IconButton";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -146,10 +148,10 @@ export class DeviceEntry extends Component<any, any> {
         content = <Switch value={stone.state.state === 1} disabled={true} />
       }
       else if (this.state.pendingCommand === true) {
-        content = <ActivityIndicator animating={true} size='large' />
+        content = <ActivityIndicator animating={true} size='large' />;
       }
       else {
-        content = <Switch value={stone.state.state === 1} onValueChange={() => { this._pressedDevice(stone); }}/>
+        content = <Switch value={stone.state.state === 1} onValueChange={() => { this._pressedDevice(stone); }}/>;
       }
     }
 
@@ -161,25 +163,27 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _iconPressed(stone, state) {
-    if (stone.errors.advertisementError === true && stone.errors.hasError === false && stone.errors.obtainedErrors === false) {
-      Alert.alert('An error has been detected', 'I\'m currently trying to ask this Crownstone what it is. An overlay should appear shortly.', [{text:'OK'}]);
-      return;
-    }
-    else if (stone.errors.hasError === false && stone.errors.obtainedErrors === true) {
-      this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
-      return;
-    }
-    else if (stone.errors.hasError === true) {
-      this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
-      return;
-    }
-
-    if ((Util.versions.canUpdate(stone, state) === true) && stone.config.disabled === false) {
-      this.props.eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
-    }
-    else {
-      this._toggleOptions();
-    }
+    Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+    //
+    // if (stone.errors.advertisementError === true && stone.errors.hasError === false && stone.errors.obtainedErrors === false) {
+    //   Alert.alert('An error has been detected', 'I\'m currently trying to ask this Crownstone what it is. An overlay should appear shortly.', [{text:'OK'}]);
+    //   return;
+    // }
+    // else if (stone.errors.hasError === false && stone.errors.obtainedErrors === true) {
+    //   this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
+    //   return;
+    // }
+    // else if (stone.errors.hasError === true) {
+    //   this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
+    //   return;
+    // }
+    //
+    // if ((Util.versions.canUpdate(stone, state) === true) && stone.config.disabled === false) {
+    //   this.props.eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
+    // }
+    // else {
+    //   this._toggleOptions();
+    // }
   }
 
   _basePressed(stone) {

@@ -31,8 +31,8 @@ export class TutorialDevices extends Component<any, any> {
             color={colors.white.hex}
           />
           <View style={{flex:1}} />
-          <Text style={tutorialStyle.text}>{'You can add a Device Type to a Crownstone. These Device Types have behaviour, icons and names.' +
-          '\n\nYou can add a single Device Type to multiple Crownstones. Behaviour of device types will overrule behaviour of Crownstones.'}</Text>
+          <Text style={tutorialStyle.text}>{'You can add a device type to a Crownstone. These device types have behaviour, icons and names.' +
+          '\n\nYou can add a single device type to multiple Crownstones. Behaviour of device types will overrule behaviour of Crownstones.'}</Text>
           <View style={{flex:1}} />
           <TouchableOpacity
             onPress={() => {

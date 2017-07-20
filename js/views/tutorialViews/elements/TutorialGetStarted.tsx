@@ -31,8 +31,8 @@ export class TutorialGetStarted extends Component<any, any> {
           color={colors.white.hex}
         />
         <View style={{flex:1}} />
-        <Text style={deviceStyles.text}>{'In this small introduction we will explain the basics like spheres, behaviour and permissions.' +
-        '\n\nSwipe this screen to the left to get a brief introduction of the features!'}</Text>
+        <Text style={deviceStyles.text}>{'In this introduction we will explain the basics like spheres, behaviour and permissions.' +
+        '\n\nSwipe this screen to the left for a brief introduction of the app!'}</Text>
         <View style={{flex:2}} />
       </View>
     )

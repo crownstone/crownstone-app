@@ -273,7 +273,7 @@ class RoomCircleClass extends Component<any, any> {
 
   _getUsageCircle(usage, newColor) {
     let colorOfLowerLayer = this._getColor(usage, true);
-    let pathLength = Math.PI * 2 * this.props.radius;
+    let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
     if (usage == 0 && !(this.props.locationId === null && this.props.seeStonesInSetupMode === true)) {
       return (
         <Svg style={{
@@ -286,8 +286,6 @@ class RoomCircleClass extends Component<any, any> {
             r={this.props.radius - this.borderWidth}
             stroke={colorOfLowerLayer}
             strokeWidth={this.borderWidth}
-            strokeDasharray={[pathLength,pathLength]}
-            rotate="-89.9"
             x={this.props.radius}
             y={this.props.radius}
             strokeLinecap="round"
@@ -313,8 +311,6 @@ class RoomCircleClass extends Component<any, any> {
           r={this.props.radius - this.borderWidth}
           stroke={colorOfLowerLayer}
           strokeWidth={this.borderWidth}
-          strokeDasharray={[pathLength,pathLength]}
-          rotate="-89.9"
           x={this.props.radius}
           y={this.props.radius}
           strokeLinecap="round"
@@ -340,15 +336,7 @@ class RoomCircleClass extends Component<any, any> {
     let level = this._getLevel(usage);
     let minW = this.energyLevels[level].min;
     let maxW = this.energyLevels[level].max;
-    let val = (usage-minW) / (maxW-minW);
-
-    if (val < 0.5) {
-      return val - (0.2*val*val);
-    }
-    else if (val < 0.84) {
-      return 0.61 + (0.9*val-0.6)
-    }
-    return 0.8*val*val + 0.2;
+    return (usage-minW) / (maxW-minW);
   }
 
 

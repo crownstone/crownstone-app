@@ -406,7 +406,6 @@ class GraphTimeline extends Component<any, any> {
 
 
       if (timeRange / newTimeRange !== (1 + 2*this.timePaddingFactor)) {
-        console.log("Redrawing for scale effect");
         return true;
       }
 

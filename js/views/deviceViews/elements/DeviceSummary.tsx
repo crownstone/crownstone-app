@@ -21,7 +21,8 @@ import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {AnimatedCircle} from "../../components/animated/AnimatedCircle";
 import {Permissions} from "../../../backgroundProcesses/Permissions";
-
+import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
+import {DimmerButton} from "../../components/DimmerButton";
 
 export class DeviceSummary extends Component<any, any> {
   constructor() {
@@ -40,7 +41,7 @@ export class DeviceSummary extends Component<any, any> {
       color = colors.gray.hex;
     }
 
-    let size = 0.35*screenWidth;
+    let size = 0.2*screenHeight;
     let innerSize = size - 6;
     return (
       <TouchableOpacity onPress={() => {
@@ -76,9 +77,10 @@ export class DeviceSummary extends Component<any, any> {
       label = 'Turn Off';
       color = colors.menuBackground.hex;
     }
-    let size = 0.4*screenWidth;
-    let innerSize = size - 8;
-    let borderWidth = 3;
+    let size = 0.22*screenHeight;
+    let innerSize = size - 10;
+    let borderWidth = 5;
+
 
     if (stone.config.disabled) {
       color = colors.gray.hex;
@@ -95,6 +97,10 @@ export class DeviceSummary extends Component<any, any> {
       );
     }
 
+
+    if (stone.config.dimmingEnabled) {
+      return <DimmerButton size={0.3*screenHeight} state={currentState}/>;
+    }
 
     if (this.state.pendingCommand === true) {
       return (
@@ -154,8 +160,6 @@ export class DeviceSummary extends Component<any, any> {
       locationName = location.config.name;
     }
 
-    console.log('canMoveCrownstone,',canMoveCrownstone)
-
     return (
       <View style={{flex:1, paddingBottom:35}}>
         <DeviceInformation left={"Energy Consumption:"}
@@ -163,7 +167,6 @@ export class DeviceSummary extends Component<any, any> {
                            right={locationLabel}
                            rightValue={locationName}
                            rightTapAction={canMoveCrownstone ? () => {
-                             console.log("HERE")
                            Actions.roomSelection({
                              sphereId: this.props.sphereId,
                              stoneId: this.props.stoneId,
@@ -175,12 +178,12 @@ export class DeviceSummary extends Component<any, any> {
                            right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'}
                            leftTapAction={canChangeSettings ? () => { Actions.applianceSelection({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); } : null}
         />
-        <View style={{flex:0.5}} />
+        <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>{this._getIcon(stone, element)}</View>
         <View style={{flex:1}} />
         <Text style={deviceStyles.explanation}>{Util.spreadString('tap icon to set device type')}</Text>
         <View style={{flex:1}} />
-        <View style={{width:screenWidth, alignItems: 'center' }}>{this._getButton(stone)}</View>
+        <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />
       </View>
     )

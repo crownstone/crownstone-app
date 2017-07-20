@@ -56,7 +56,6 @@ export class OptionPopup extends Component<any, any> {
         buttons.push(<View style={styles.joinedButtonSeparator} key={'option_button_separator' + index} />)
     });
 
-
     return (
       <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
         {buttons}

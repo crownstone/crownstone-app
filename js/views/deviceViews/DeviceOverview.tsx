@@ -36,18 +36,26 @@ Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
 
 export class DeviceOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
-  unsubscribeSwipeEvent : any;
+  unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
 
   constructor() {
     super();
 
-    this.state = {swiperIndex: 0, scrolling:false};
-    this.unsubscribeSwipeEvent = eventBus.on("setNewSwiperIndex", (nextIndex) => {
+    this.state = {swiperIndex: 0, scrolling:false, swipeEnabled: true};
+    this.unsubscribeSwiperEvents.push(eventBus.on("setNewSwiperIndex", (nextIndex) => {
       if (this.state.swiperIndex !== nextIndex) {
         this.setState({swiperIndex: nextIndex, scrolling: false});
       }
-    });
+    }));
+    this.unsubscribeSwiperEvents.push(eventBus.on("UIGestureControl", (panAvailable) => {
+      if (panAvailable === true && this.state.swipeEnabled === false) {
+        this.setState({swipeEnabled: true});
+      }
+      else  if (panAvailable === false && this.state.swipeEnabled === true) {
+        this.setState({swipeEnabled: false});
+      }
+    }));
   }
 
   componentDidMount() {
@@ -93,7 +101,7 @@ export class DeviceOverview extends Component<any, any> {
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
-    this.unsubscribeSwipeEvent();
+    this.unsubscribeSwiperEvents.forEach((unsubscribe) => { unsubscribe(); });
     clearTimeout(this.touchEndTimeout);
   }
 
@@ -173,9 +181,10 @@ export class DeviceOverview extends Component<any, any> {
           title={element.config.name} />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={availableScreenHeight}
-          dot={<View style={{backgroundColor:'rgba(255,255,255,0.2)', width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
-          activeDot={<View style={{backgroundColor: 'rgba(255,255,255,0.8)', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
+          dot={<View style={{backgroundColor: colors.white.rgba(0.35), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.black.rgba(0.1)}} />}
+          activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 9, height: 9, borderRadius: 4.5, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
           loop={false}
+          scrollEnabled={this.state.swipeEnabled}
           bounces={true}
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}

@@ -94,7 +94,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
               this.setState({time: timeToday.valueOf() });
             }
           })
-          .catch((err) => { console.log("err", err) })
+          .catch((err) => { LOG.error("DeviceScheduleEdit: Error while picking time", err); })
       }}>
         <Text style={{flex:1, fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6) }}>
           {Util.getTimeFormat(this.state.time, false)}

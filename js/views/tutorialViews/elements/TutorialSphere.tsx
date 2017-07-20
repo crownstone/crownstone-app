@@ -31,9 +31,9 @@ export class TutorialSphere extends Component<any, any> {
             color={colors.white.hex}
           />
             <View style={{width: screenWidth, height: 0.06*screenHeight}} />
-          <Text style={tutorialStyle.text}>{'Your Sphere is your collection of Crownstones. This is usually your house, office or personal space.' +
-          '\n\nOnly one Sphere can be active at the time. It contains rooms, Crownstones, Devices and possibly other users.' +
-          '\n\nYou can invite other people (as admins, members or guests) to your Sphere so they can use your Crownstones.'}</Text>
+          <Text style={tutorialStyle.text}>{'Your sphere is your collection of Crownstones. This is usually your house, office or personal space.' +
+          '\n\nOnly one sphere can be active at the time. It contains rooms, Crownstones, device types and possibly other users.' +
+          '\n\nYou can invite other people (as admins, members or guests) to your sphere so they can use your Crownstones.'}</Text>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />
         </View>
       </ScrollView>

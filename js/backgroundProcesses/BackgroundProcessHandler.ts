@@ -74,7 +74,6 @@ class BackgroundProcessHandlerClass {
 
         this.userLoggedIn = true;
 
-        this.showWhatsNew();
       });
 
       // when the user is logged in we track spheres and scan for Crownstones
@@ -82,6 +81,8 @@ class BackgroundProcessHandlerClass {
       eventBus.on('userLoggedInFinished', () => {
         LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
         LocationHandler.initializeTracking();
+
+        this.showWhatsNew();
       });
 
       // wait for store to be prepared in order to continue.

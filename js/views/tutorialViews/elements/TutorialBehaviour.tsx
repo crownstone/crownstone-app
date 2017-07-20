@@ -33,7 +33,7 @@ export class TutorialBehaviour extends Component<any, any> {
           <View style={{width: screenWidth, height: 0.06*screenHeight}} />
           <Text style={tutorialStyle.text}>{'Behaviour of Crownstones indicates how it responds to your location.' +
           '\n\nYou can tell the Crownstone to turn on or off when you... ' +
-          '\n\n- Enter or exit the Sphere.' +
+          '\n\n- Enter or exit the sphere.' +
           '\n- Get near or move away from it.' +
           '\n- Enter or exit a room (with 4 or more).'}</Text>
           <View style={{width: screenWidth, height: 0.12*screenHeight}} />
