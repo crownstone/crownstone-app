@@ -4,7 +4,7 @@ import {INTENTS} from "../native/libInterface/Constants";
 
 
 export const StoneUtil = {
-  switchBHC: function (sphereId, stoneId, stone, newState, store, finalize = (err) => {}, label = 'from StoneUtil') {
+  switchBHC: function (sphereId, stoneId, stone, newState, store, options = {}, finalize = (err) => {}, label = 'from StoneUtil') {
     let data = {state: newState};
     if (newState === 0) {
       data['currentUsage'] = 0;
@@ -15,6 +15,7 @@ export const StoneUtil = {
       stoneId,
       sphereId,
       {commandName:'multiSwitch', state: newState, intent: INTENTS.manual, timeout: 0},
+      options,
       1,
       label
     )

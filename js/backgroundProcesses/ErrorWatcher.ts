@@ -37,6 +37,7 @@ class ErrorWatcherClass {
         stoneId,
         sphereId,
         {commandName:'getErrors'},
+        {},
         1e5,
         'from processError in ErrorWatcher'
       )

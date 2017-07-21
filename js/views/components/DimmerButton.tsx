@@ -19,6 +19,9 @@ import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import {eventBus} from "../../util/EventBus";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
+import {StoneUtil} from "../../util/StoneUtil";
+import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
+import {INTENTS} from "../../native/libInterface/Constants";
 
 export class DimmerButton extends Component<any, any> {
   _panResponder;
@@ -59,7 +62,7 @@ export class DimmerButton extends Component<any, any> {
     this.yCenter = 0.55*props.size;
 
     this.refName = (Math.random() * 1e9).toString(36);
-    this.state = {state: props.state || 0}
+    this.state = {state: props.state || 0, pendingCommand: false, pendingId: ''}
   }
 
   componentWillMount() {
@@ -106,14 +109,15 @@ export class DimmerButton extends Component<any, any> {
           let data = getStateFromGesture(gestureState);
 
           if (data.radius > this.lowerDragThreshold * this.radius) {
-            if (data.state < 0 && data.state > -0.1) {
-              this.setState({state: 0});
+            if (data.state < 0 && data.state > -0.1 && this.state.state !== 0) {
+              this._updateStone(0);
             }
-            else if (data.state > 1 && data.state < 1.1) {
-              this.setState({state: 1});
+            else if (data.state > 1 && data.state < 1.1 && this.state.state !== 1) {
+              this._updateStone(1);
             }
-            else if (data.state >= 0 && data.state <= 1) {
-              this.setState({state: data.state})
+            else if (data.state >= 0 && data.state <= 1 && this.state.state !== data.state) {
+              this._updateStone(data.state);
+
             }
           }
         }
@@ -135,6 +139,31 @@ export class DimmerButton extends Component<any, any> {
     });
   }
 
+  _updateStone(state, keepConnectionOpenTimeout = 6000) {
+    let switchId = (Math.random()*1e9).toString(26);
+    BatchCommandHandler.loadPriority(
+      this.props.stone,
+      this.props.stoneId,
+      this.props.sphereId,
+      {commandName:'multiSwitch', state: state, intent: INTENTS.manual, timeout: 0},
+      {keepConnectionOpen: true, keepConnectionOpenTimeout: keepConnectionOpenTimeout},
+      1
+    )
+      .then(() => {
+      if (this.state.pendingId === switchId) {
+        this.setState({pendingCommand: false});
+      }
+    }).catch((err) => {
+      if (this.state.pendingId === switchId) {
+        this.setState({pendingCommand: false});
+      }
+    });
+    if (this.state.pendingCommand === false) {
+      BatchCommandHandler.executePriority();
+    }
+    this.setState({pendingCommand: true, pendingId: switchId, state: state});
+  }
+
   componentWillUnmount() {
     cancelAnimationFrame(this._animationFrame);
   }
@@ -142,10 +171,10 @@ export class DimmerButton extends Component<any, any> {
   render() {
     let state = this.state.state;
     let label = 'Turn On';
-    let color = colors.green.hex;
+    let stateColor = colors.green.hex;
     if (state > 0) {
       label = 'Turn Off';
-      color = colors.menuBackground.hex;
+      stateColor = colors.menuBackground.hex;
     }
 
     let innerSize = 0.50*this.props.size;
@@ -222,19 +251,20 @@ export class DimmerButton extends Component<any, any> {
         justifyContent:'center'
       }}
       onPress={() => {
-        if (state > 0) {
-          this._animate(0);
-        }
-        else {
-          this._animate(1);
-        }
+        let newState = (this.state.state > 0 ? 0 : 1);
+        this._updateStone(newState, 5000);
+        this._animate(newState);
       }} >
         <AnimatedCircle size={innerSize*1.05} color={colors.black.rgba(0.08)}>
-          <AnimatedCircle size={innerSize} color={color}>
-            <AnimatedCircle size={innerSize*0.95} color={color} borderWidth={innerSize*0.03} borderColor={colors.white.hex}>
+          <AnimatedCircle size={innerSize} color={colors.white.hex}>
+            <AnimatedCircle size={innerSize*0.95} color={colors.white.hex} borderWidth={innerSize*0.03} borderColor={stateColor}>
               <View style={{flex:1}} />
-              <Text style={{color: colors.white.hex, fontSize:0.2*innerSize, fontWeight:'600'}}>{label}</Text>
-              <Text style={{color: colors.white.hex, fontSize:0.15*innerSize, fontWeight:'500'}}>{'(' + Math.round(100*state) + ' %)'}</Text>
+              {
+                this.state.pendingCommand === true ?
+                  <ActivityIndicator animating={true} size='small' color={stateColor} /> :
+                  <Text style={{color: stateColor, fontSize: 0.2 * innerSize, fontWeight: '600'}}>{label}</Text>
+              }
+              <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'500'}}>{'(' + Math.round(100*state) + ' %)'}</Text>
               <View style={{flex:0.75}} />
             </AnimatedCircle>
           </AnimatedCircle>

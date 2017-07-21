@@ -8,6 +8,7 @@ export class MeshHelper {
   meshInstruction : meshTodo;
   targets : any;
   _containedInstructions : any[] = [];
+  activeOptions : batchCommandEntryOptions;
 
   constructor(sphereId, meshNetworkId, meshInstruction : meshTodo) {
     this.sphereId = sphereId;
@@ -43,11 +44,12 @@ export class MeshHelper {
       let multiSwitchInstructions : multiSwitchPayload[] = this.meshInstruction.multiSwitch;
         // get data from set
         let multiSwitchPackets = [];
-        multiSwitchInstructions.forEach((instruction) => {
+        multiSwitchInstructions.forEach((instruction : multiSwitchPayload) => {
           if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
             // get the longest timeout and use that
             multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
             instruction.promise.pending = true;
+            MeshHelper._mergeOptions(instruction.options, this.activeOptions);
             this._containedInstructions.push(instruction);
           }
           else {
@@ -72,12 +74,13 @@ export class MeshHelper {
       // get data from set
       let stoneKeepAlivePackets = [];
       let maxTimeout = 0;
-      keepAliveInstructions.forEach((instruction) => {
+      keepAliveInstructions.forEach((instruction : keepAliveStatePayload) => {
         if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.changeState !== undefined) {
           // get the longest timeout and use that
           maxTimeout = Math.max(maxTimeout, instruction.timeout);
           stoneKeepAlivePackets.push({crownstoneId: instruction.crownstoneId, action: instruction.changeState, state: instruction.state});
           instruction.promise.pending = true;
+          MeshHelper._mergeOptions(instruction.options, this.activeOptions);
           this._containedInstructions.push(instruction);
         }
         else {
@@ -103,8 +106,9 @@ export class MeshHelper {
 
       // add the promise of this part of the payload to the list that we will need to resolve or reject when the mesh message is delivered.
       // these promises are loaded into the handler when load called.
-      this.meshInstruction.keepAlive.forEach((instruction) => {
+      this.meshInstruction.keepAlive.forEach((instruction : keepAlivePayload) => {
         instruction.promise.pending = true;
+        MeshHelper._mergeOptions(instruction.options, this.activeOptions);
         this._containedInstructions.push( instruction.promise );
       });
 
@@ -117,5 +121,15 @@ export class MeshHelper {
   _handleOtherCommands() {
     LOG.warn("Other commands are not implemented in the mesh yet.");
     return null
+  }
+
+  static _mergeOptions(newOptions, existingOptions) {
+    existingOptions.keepConnectionOpen = newOptions.keepConnectionOpen || existingOptions.keepConnectionOpen;
+    if (existingOptions.keepConnectionOpenTimeout === undefined) {
+      existingOptions.keepConnectionOpenTimeout = newOptions.keepConnectionOpenTimeout
+    }
+    else if (newOptions.keepConnectionOpenTimeout !== undefined && existingOptions.keepConnectionOpenTimeout !== undefined) {
+      existingOptions.keepConnectionOpenTimeout = Math.max(newOptions.keepConnectionOpenTimeout, existingOptions.keepConnectionOpenTimeout);
+    }
   }
 }

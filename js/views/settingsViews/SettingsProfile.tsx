@@ -214,29 +214,29 @@ export class SettingsProfile extends Component<any, any> {
               <PictureCircle
                 value={this.state.picture}
                 callback={(pictureUrl) => {
-                let newFilename = user.userId + '.jpg';
-                processImage(pictureUrl, newFilename)
-                  .then((newPicturePath) => {
-                    this.setState({picture:newPicturePath});
-                    store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
-                    // update your settings in every sphere that you belong to.
-                    sphereIds.forEach((sphereId) => {
-                      store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath}});
-                    });
-                  })
-                  .catch((err) => {
-                    LOG.info("PICTURE ERROR ",err)
-                  })
-              }}
+                  let newFilename = user.userId + '.jpg';
+                  processImage(pictureUrl, newFilename)
+                    .then((newPicturePath) => {
+                      this.setState({picture:newPicturePath});
+                      store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
+                      // update your settings in every sphere that you belong to.
+                      sphereIds.forEach((sphereId) => {
+                        store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath}});
+                      });
+                    })
+                    .catch((err) => {
+                      LOG.info("PICTURE ERROR ",err)
+                    })
+                }}
                 removePicture={() => {
-              safeDeleteFile(this.state.picture);
-              store.dispatch({type:'USER_UPDATE', data:{picture:null}});
-              // update your settings in every sphere that you belong to.
-              sphereIds.forEach((sphereId) => {
-                store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null}});
-              });
-              this.setState({picture:null});
-            }}
+                  safeDeleteFile(this.state.picture).catch(() => {});
+                  store.dispatch({type:'USER_UPDATE', data:{picture:null}});
+                  // update your settings in every sphere that you belong to.
+                  sphereIds.forEach((sphereId) => {
+                    store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null}});
+                  });
+                  this.setState({picture:null});
+                }}
                 size={120} />
             </View>
           </View>

@@ -32,13 +32,13 @@ export class DeviceSummary extends Component<any, any> {
 
   _getIcon(stone, element) {
     let currentState = stone.state.state;
-    let color = colors.menuBackground.hex;
+    let stateColor = colors.menuBackground.hex;
     if (currentState > 0) {
-      color = colors.green.hex;
+      stateColor = colors.green.hex;
     }
 
     if (stone.config.disabled) {
-      color = colors.gray.hex;
+      stateColor = colors.gray.hex;
     }
 
     let size = 0.2*screenHeight;
@@ -59,8 +59,8 @@ export class DeviceSummary extends Component<any, any> {
         }});
       }} >
         <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
-          <AnimatedCircle size={size} color={color}>
-            <AnimatedCircle size={innerSize} color={color} borderWidth={3} borderColor={colors.white.hex}>
+          <AnimatedCircle size={size} color={stateColor}>
+            <AnimatedCircle size={innerSize} color={stateColor} borderWidth={3} borderColor={colors.white.hex}>
               <Icon name={element.config.icon} size={0.575*innerSize} color={'#fff'} />
             </AnimatedCircle>
           </AnimatedCircle>
@@ -72,10 +72,10 @@ export class DeviceSummary extends Component<any, any> {
   _getButton(stone) {
     let currentState = stone.state.state;
     let label = 'Turn On';
-    let color = colors.green.hex;
+    let stateColor = colors.green.hex;
     if (currentState > 0) {
       label = 'Turn Off';
-      color = colors.menuBackground.hex;
+      stateColor = colors.menuBackground.hex;
     }
     let size = 0.22*screenHeight;
     let innerSize = size - 10;
@@ -83,7 +83,6 @@ export class DeviceSummary extends Component<any, any> {
 
 
     if (stone.config.disabled) {
-      color = colors.gray.hex;
       return (
         <View style={{width:0.75*screenWidth, height:size*1.05, alignItems:'center'}}>
           <View style={{flex:2}} />
@@ -99,14 +98,14 @@ export class DeviceSummary extends Component<any, any> {
 
 
     if (stone.config.dimmingEnabled) {
-      return <DimmerButton size={0.3*screenHeight} state={currentState}/>;
+      return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
     }
 
     if (this.state.pendingCommand === true) {
       return (
         <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
           <AnimatedCircle size={size} color={colors.white.hex}>
-            <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={color}>
+            <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={stateColor}>
               <ActivityIndicator animating={true} size='large' color={colors.menuBackground.hex} />
             </AnimatedCircle>
           </AnimatedCircle>
@@ -125,6 +124,7 @@ export class DeviceSummary extends Component<any, any> {
             stone,
             newState,
             this.props.store,
+            {},
             () => { this.setState({pendingCommand:false});},
             'from _getButton in DeviceSummary'
           );
@@ -132,8 +132,8 @@ export class DeviceSummary extends Component<any, any> {
         }}>
           <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
             <AnimatedCircle size={size} color={colors.white.hex}>
-              <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={color}>
-                <Text style={{color: color, fontSize:23, fontWeight:'600'}}>{label}</Text>
+              <AnimatedCircle size={innerSize} color={colors.white.hex} borderWidth={borderWidth} borderColor={stateColor}>
+                <Text style={{color: stateColor, fontSize:23, fontWeight:'600'}}>{label}</Text>
               </AnimatedCircle>
             </AnimatedCircle>
           </AnimatedCircle>

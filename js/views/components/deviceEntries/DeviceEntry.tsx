@@ -136,6 +136,7 @@ export class DeviceEntry extends Component<any, any> {
       this.props.stoneId,
       stone, newState,
       this.props.store,
+      {},
       () => { this.setState({pendingCommand:false});},
       'from _pressedDevice in DeviceEntry'
     );

@@ -200,6 +200,7 @@ export const BehaviourUtil = {
           state: behaviour.state,
           intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]],
           timeout:behaviour.delay},
+        {},
         15,
         'from _enactBehaviourCore in BehaviourUtil'
       )
