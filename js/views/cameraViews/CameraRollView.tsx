@@ -37,7 +37,6 @@ export class CameraRollView extends Component<any, any> {
     if (this.active === true) {
       let query = {
         first: 10,
-        groupTypes: 'SavedPhotos',
         assetType: 'Photos',
       };
       if (this.pictureIndex !== undefined) {

@@ -10,7 +10,6 @@ import {
   View
 } from 'react-native';
 
-
 import { Actions } from 'react-native-router-flux';
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
@@ -20,9 +19,8 @@ import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth } from './../styles'
-import {IconButton} from "../components/IconButton";
-import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
-
+import { IconButton } from "../components/IconButton";
+import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 
 export class SettingsProfile extends Component<any, any> {
   unsubscribe : any;
@@ -229,14 +227,14 @@ export class SettingsProfile extends Component<any, any> {
                   })
               }}
                 removePicture={() => {
-              safeDeleteFile(this.state.picture);
-              store.dispatch({type:'USER_UPDATE', data:{picture:null}});
-              // update your settings in every sphere that you belong to.
-              sphereIds.forEach((sphereId) => {
-                store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null}});
-              });
-              this.setState({picture:null});
-            }}
+                  safeDeleteFile(this.state.picture);
+                  store.dispatch({type:'USER_UPDATE', data:{picture:null}});
+                  // update your settings in every sphere that you belong to.
+                  sphereIds.forEach((sphereId) => {
+                    store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null}});
+                  });
+                  this.setState({picture:null});
+                }}
                 size={120} />
             </View>
           </View>
