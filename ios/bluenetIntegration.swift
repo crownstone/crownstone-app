@@ -429,6 +429,8 @@ open class BluenetJS: NSObject {
     }
   }
   
+  
+  
   @objc func keepAliveState(_ changeState: NSNumber, state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called keepAliveState")
     var changeStateBool = false

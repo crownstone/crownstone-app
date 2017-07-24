@@ -36,14 +36,11 @@ export class CameraRollView extends Component<any, any> {
 
   fetchPictures() {
     if (this.active === true) {
-      let query = {};
-      if (Platform.OS === 'android') {
-        query = {
-          first: 10,
-          assetType: 'Photos',
-        };
-      }
-      else {
+      let query = {
+        first: 10,
+        assetType: 'Photos',
+      };
+      if (Platform.OS === 'ios') {
         query['groupTypes'] = 'SavedPhotos';
       }
 
