@@ -93,20 +93,18 @@ export class PictureCircle extends Component<any, any> {
     if (Platform.OS === 'android') {
       PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
         .then((grantedPreviously) => {
-          //console.log('Has camera permission granted previously:', grantedPreviously);
           if (grantedPreviously === false) {
             return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-          } else {
+          }
+          else {
             return PermissionsAndroid.RESULTS.GRANTED;
           }
         })
         .then((granted) => {
-          //console.log('Granted camera permission:', granted);
           if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-            //console.log('Can\'t take a picture without permission!');
             return new Promise(
               (resolve,reject) => { 
-                let reason = "Can\'t take a picture without permission!";
+                let reason = "Can't take a picture without permission!";
                 Alert.alert(
                   "Sorry",
                   reason,
@@ -115,14 +113,13 @@ export class PictureCircle extends Component<any, any> {
                 );
               }
             );
-          } else {
+          }
+          else {
             return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
           }
         })
         .then((granted) => {
-          //console.log('Granted read access to external storage:', granted);
           if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-            //console.log('Access needed to external storage to store a captured picture!');
             return new Promise(
               (resolve,reject) => { 
                 let reason = "Can\'t read a stored picture without permission!";
@@ -134,14 +131,13 @@ export class PictureCircle extends Component<any, any> {
                 );
               }
             );
-          } else {
+          }
+          else {
             return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
           }
         })
         .then((granted) => {
-          //console.log("Granted write access to external storage:", granted);
           if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-            //console.log('Access needed to external storage to store a captured picture!');
             return new Promise(
               (resolve,reject) => { 
                 let reason = "Can\'t store a captured picture without permission!";
@@ -153,13 +149,13 @@ export class PictureCircle extends Component<any, any> {
                 );
               }
             );
-          } else { 
-            //console.log("Show options");
+          }
+          else {
             this.showOptions();
           }
         })
         .catch((err) => {
-          LOG.error("[PictureCircle.js] Error in checking camera permission:", err);
+          LOG.error("PictureCircle: Error in checking camera permission:", err);
         })
     }
     else {

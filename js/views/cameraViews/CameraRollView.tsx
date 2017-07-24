@@ -4,6 +4,7 @@ import {
   CameraRoll,
   Image,
   Dimensions,
+  Platform,
   ScrollView,
   TouchableHighlight,
   Text,
@@ -35,10 +36,17 @@ export class CameraRollView extends Component<any, any> {
 
   fetchPictures() {
     if (this.active === true) {
-      let query = {
-        first: 10,
-        assetType: 'Photos',
-      };
+      let query = {};
+      if (Platform.OS === 'android') {
+        query = {
+          first: 10,
+          assetType: 'Photos',
+        };
+      }
+      else {
+        query['groupTypes'] = 'SavedPhotos';
+      }
+
       if (this.pictureIndex !== undefined) {
         query["after"] = this.pictureIndex;
       }

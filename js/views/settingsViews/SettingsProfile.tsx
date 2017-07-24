@@ -104,28 +104,10 @@ export class SettingsProfile extends Component<any, any> {
       }
     });
 
-    // TODO: make email address editable.
     items.push({
       label:'Email',
       type: 'info',
       value: user.email,
-      // validation:'email',
-      // validationCallback: (result) => {this.validationState.email = result;},
-      // callback: (newEmail) => {
-      //   if (this.validationState.email === 'valid') {
-      //     if (user.email !== newEmail) {
-      //       // CLOUD.updateUserData({background:true, data:{email:newEmail}});
-      //       // TODO: add email system.
-      //       Alert.alert(
-      //         'An email has been sent to \'' + newEmail + '\'.',
-      //         'After you click on the validation link, you can use your new address to log in and it will be synced.',
-      //         [{text: 'OK'}]);
-      //     }
-      //   }
-      //   else {
-      //     Alert.alert('Not a valid email address','Please try again.',[{text:'OK'}]);
-      //   }
-      // }
     });
     items.push({
       label:'Change Password',
@@ -212,20 +194,20 @@ export class SettingsProfile extends Component<any, any> {
               <PictureCircle
                 value={this.state.picture}
                 callback={(pictureUrl) => {
-                let newFilename = user.userId + '.jpg';
-                processImage(pictureUrl, newFilename)
-                  .then((newPicturePath) => {
-                    this.setState({picture:newPicturePath});
-                    store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
-                    // update your settings in every sphere that you belong to.
-                    sphereIds.forEach((sphereId) => {
-                      store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath}});
-                    });
-                  })
-                  .catch((err) => {
-                    LOG.info("PICTURE ERROR ",err)
-                  })
-              }}
+                  let newFilename = user.userId + '.jpg';
+                  processImage(pictureUrl, newFilename)
+                    .then((newPicturePath) => {
+                      this.setState({picture:newPicturePath});
+                      store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
+                      // update your settings in every sphere that you belong to.
+                      sphereIds.forEach((sphereId) => {
+                        store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath}});
+                      });
+                    })
+                    .catch((err) => {
+                      LOG.info("PICTURE ERROR ",err)
+                    })
+                }}
                 removePicture={() => {
                   safeDeleteFile(this.state.picture);
                   store.dispatch({type:'USER_UPDATE', data:{picture:null}});
