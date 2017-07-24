@@ -106,7 +106,8 @@ export class Dropdown extends Component<any, any> {
           onValueChange={(newValue) => { this.props.callback(newValue); }}
         >
         {this.getItems()}
-      </Picker>)
+      </Picker>
+    );
 
     }
     else {  // iOS

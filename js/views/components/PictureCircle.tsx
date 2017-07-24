@@ -31,9 +31,15 @@ export class PictureCircle extends Component<any, any> {
 
   showOptions() {
     let buttons = [];
-    buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
-    buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
-    eventBus.emit('showPopup', buttons);
+    if (Platform.OS === 'android') {
+      buttons.push({ text: 'Take Photo', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
+      buttons.push({ text: 'Choose from Gallery', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+    }
+    else {
+      buttons.push({ text: 'Take Picture', callback: () => { Actions.pictureView({selectCallback: this.props.callback});}});
+      buttons.push({ text: 'Choose Existing', callback: () => { Actions.cameraRollView({selectCallback: this.props.callback});}});
+    }
+    eventBus.emit('showPopup', {title:'Profile Picture', buttons: buttons} );
   }
 
   render() {
@@ -93,15 +99,31 @@ export class PictureCircle extends Component<any, any> {
     if (Platform.OS === 'android') {
       PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)
         .then((grantedPreviously) => {
-          if (grantedPreviously === false) {
+          if (grantedPreviously === true || grantedPreviously === PermissionsAndroid.RESULTS.GRANTED) {
+            return PermissionsAndroid.RESULTS.GRANTED;
+          }
+          else if (grantedPreviously === false || grantedPreviously === PermissionsAndroid.RESULTS.DENIED) {
             return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+          }
+          else if (grantedPreviously === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+            return new Promise(
+              (resolve,reject) => {
+                let reason = "Can\'t make a picture without camera permission. You'll need to enable this in the Android settings menu (of your phone, not in the app)!";
+                Alert.alert(
+                  "Sorry",
+                  reason,
+                  [{text: 'OK', onPress: () => { reject(reason) }}],
+                  { onDismiss: () => { reject(reason) } }
+                );
+              }
+            );
           }
           else {
             return PermissionsAndroid.RESULTS.GRANTED;
           }
         })
         .then((granted) => {
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
                 let reason = "Can't take a picture without permission!";
@@ -119,7 +141,7 @@ export class PictureCircle extends Component<any, any> {
           }
         })
         .then((granted) => {
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
                 let reason = "Can\'t read a stored picture without permission!";
@@ -137,7 +159,7 @@ export class PictureCircle extends Component<any, any> {
           }
         })
         .then((granted) => {
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED && granted !== true) {
             return new Promise(
               (resolve,reject) => { 
                 let reason = "Can\'t store a captured picture without permission!";
@@ -157,9 +179,6 @@ export class PictureCircle extends Component<any, any> {
         .catch((err) => {
           LOG.error("PictureCircle: Error in checking camera permission:", err);
         })
-    }
-    else {
-      // iOS doesn't care
     }
   }
 }

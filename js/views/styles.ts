@@ -144,6 +144,14 @@ export const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
   },
+  buttonAndroid: {
+    width:0.7*screenWidth,
+    height:50,
+    backgroundColor: colors.white.hex,
+    justifyContent:'center',
+    alignItems:'flex-start',
+    paddingLeft: 15
+  },
   joinedButton: {
     width:0.9*screenWidth,
     height:101,
@@ -157,6 +165,16 @@ export const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
   },
+  buttonSeparatorAndroid:{
+    width:0.7*screenWidth,
+    height:1,
+    backgroundColor: colors.menuBackground.rgba(0.05)
+  },
+  buttonSeparatorAndroidHighlight:{
+    width:0.7*screenWidth,
+    height:2,
+    backgroundColor: colors.csOrange.hex
+  },
   joinedButtonSeparator:{
     width:0.9*screenWidth,
     height:1,
@@ -165,6 +183,23 @@ export const styles = StyleSheet.create({
   buttonText : {
     fontSize:16,
     color: colors.blue.hex
+  },
+  buttonTextAndroid : {
+    fontSize:15,
+    color: colors.menuBackground.hex
+  },
+  buttonTextTitleAndroid : {
+    fontSize:18,
+    color: colors.white.hex,
+    fontWeight:'bold'
+  },
+  buttonTitleAndroid : {
+    width:0.7*screenWidth,
+    height:55,
+    backgroundColor: colors.menuBackground.hex,
+    justifyContent:'center',
+    alignItems:'flex-start',
+    paddingLeft: 15
   },
   menuText: {
     fontSize: 16,
