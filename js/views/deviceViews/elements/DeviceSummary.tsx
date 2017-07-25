@@ -22,7 +22,8 @@ import {StoneUtil} from "../../../util/StoneUtil";
 import {AnimatedCircle} from "../../components/animated/AnimatedCircle";
 import {Permissions} from "../../../backgroundProcesses/Permissions";
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
-import {DimmerButton} from "../../components/DimmerButton";
+import { DimmerButton } from "../../components/DimmerButton";
+import { INTENTS } from "../../../native/libInterface/Constants";
 
 export class DeviceSummary extends Component<any, any> {
   constructor() {
@@ -126,6 +127,8 @@ export class DeviceSummary extends Component<any, any> {
             this.props.store,
             {},
             () => { this.setState({pendingCommand:false});},
+            INTENTS.manual,
+            1,
             'from _getButton in DeviceSummary'
           );
 

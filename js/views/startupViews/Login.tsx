@@ -18,7 +18,7 @@ const DeviceInfo = require('react-native-device-info');
 
 import { LOG }                                from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
-import { emailChecker, getImageFileFromUser } from '../../util/Util'
+import {emailChecker, getImageFileFromUser, Util} from '../../util/Util'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'
@@ -220,7 +220,7 @@ export class Login extends Component<any, any> {
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;
-            let newPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
+            let newPath = Util.getPath(userId + '.jpg');
             CLOUD.forUser(userId).uploadProfileImage(file)
               .then(() => {return RNFS.moveFile(file.path, newPath);})
               .then(() => {resolve(newPath);})
@@ -232,14 +232,14 @@ export class Login extends Component<any, any> {
       };
 
       // read the document dir for files that have been created during the registration process
-      RNFS.readDir(RNFS.DocumentDirectoryPath)
+      RNFS.readDir(Util.getPath())
         .then(handleFiles)
     });
   }
 
 
   downloadImage(userId) {
-    let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
+    let toPath = Util.getPath(userId + '.jpg');
     return CLOUD.forUser(userId).downloadProfileImage(toPath);
   }
 

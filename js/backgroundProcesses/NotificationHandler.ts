@@ -4,8 +4,9 @@ import { Platform } from 'react-native';
 import { LOG } from "../logging/Log";
 import { eventBus } from '../util/EventBus'
 import { Util } from "../util/Util";
-import {CLOUD} from "../cloud/cloudAPI";
-import {INTENTS} from "../native/libInterface/Constants";
+import { CLOUD } from "../cloud/cloudAPI";
+import { INTENTS } from "../native/libInterface/Constants";
+import {StoneUtil} from "../util/StoneUtil";
 
 class NotificationHandlerClass {
   store: any = {};
@@ -49,7 +50,7 @@ class NotificationHandlerClass {
             notificationToken: tokenData.token
           }
         });
-        LOG.info("NotificationHandler: Got notification token!", tokenData.token);
+        LOG.info("NotificationHandler: Got notification token!", tokenData, tokenData.token);
 
         let state = this.store.getState();
         let deviceId = Util.data.getCurrentDeviceId(state);
@@ -96,11 +97,16 @@ class NotificationHandlerClass {
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
         LOG.info("NotificationHandler: Received notification",notification)
-        NotificationParser.handle(notification.data)
+        if (Platform.OS === 'android') {
+          NotificationParser.handle(notification)
+        }
+        else {
+          NotificationParser.handle(notification.data)
+        }
       },
 
       // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
-      senderID: "YOUR GCM SENDER ID",
+      senderID: "922370214953",
 
       onRemoteFetch: (x) => {
         LOG.info("NotificationHandler: onRemoteFetch",x)
@@ -149,21 +155,23 @@ class NotificationParserClass {
   }
 
   handle(messageData) {
-    if (messageData.command && messageData.sphereId && messageData.stoneId) {
+    if (messageData && messageData.command && messageData.sphereId && messageData.stoneId) {
       let state = this.store.getState();
       if (state && state.spheres[messageData.sphereId] && state.spheres[messageData.sphereId].stones[messageData.stoneId]) {
         switch(messageData.command) {
           case 'setSwitchStateRemotely':
             LOG.info("NotificationParser: switching based on notification", messageData);
-            BatchCommandHandler.load(
-              state.spheres[messageData.sphereId].stones[messageData.stoneId],
-              messageData.stoneId,
+            StoneUtil.switchBHC(
               messageData.sphereId,
-              {commandName:'multiSwitch', state: Math.min(1,Math.max(0,messageData.switchState || 0)), intent: INTENTS.remotely, timeout: 0},
-              {},
+              messageData.stoneId,
+              state.spheres[messageData.sphereId].stones[messageData.stoneId],
+              Math.min(1,Math.max(0,messageData.switchState || 0)),
+              this.store,
+              (err) => {},
+              INTENTS.remotely,
               25,
               'from handle in NotificationParser'
-            ).catch((err) => {LOG.error("NotificationParser: Could not switch on device", err)});
+            );
             BatchCommandHandler.executePriority();
             break;
         }

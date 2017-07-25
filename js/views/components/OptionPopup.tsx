@@ -80,17 +80,17 @@ export class OptionPopup extends Component<any, any> {
 
     this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableOpacity style={styles.buttonAndroid} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
+        <TouchableHighlight style={styles.buttonAndroid} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
           <Text style={styles.buttonTextAndroid}>{button.text}</Text>
-        </TouchableOpacity>
+        </TouchableHighlight>
       );
       buttons.push(<View style={styles.buttonSeparatorAndroid} key={'option_button_separator' + index} />)
     });
 
     buttons.push(
-      <TouchableOpacity style={styles.buttonAndroid} onPress={() => { eventBus.emit("hidePopup");}} key={'option_button_cancel'}>
+      <TouchableHighlight style={styles.buttonAndroid} onPress={() => { eventBus.emit("hidePopup");}} key={'option_button_cancel'}>
         <Text style={styles.buttonTextAndroid}>Cancel</Text>
-      </TouchableOpacity>
+      </TouchableHighlight>
     );
 
 

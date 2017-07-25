@@ -16,7 +16,7 @@ import {
 } from '../ExternalConfig'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/EventBus'
-import { safeDeleteFile } from '../util/Util'
+import {safeDeleteFile, Util} from '../util/Util'
 
 const DeviceInfo = require('react-native-device-info');
 const RNFS = require('react-native-fs');
@@ -95,10 +95,7 @@ function getFilename(timestamp) {
 
 export function cleanLogs() {
   // create a path you want to write to
-  let logPath = RNFS.DocumentDirectoryPath;
-  if (Platform.OS === 'android') {
-    logPath = RNFS.ExternalDirectoryPath;
-  }
+  let logPath = Util.getPath();
 
   _cleanLogs(logPath);
 }
@@ -128,10 +125,7 @@ function _cleanLogs(logPath, amountOfDaysStored = 3) {
 
 export function clearLogs() {
   // create a path you want to write to
-  let logPath = RNFS.DocumentDirectoryPath;
-  if (Platform.OS === 'android') {
-    logPath = RNFS.ExternalDirectoryPath;
-  }
+  let logPath = Util.getPath();
 
   _cleanLogs(logPath,0);
 }
@@ -141,10 +135,7 @@ export function clearLogs() {
 function logToFile() {
   if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
     // create a path you want to write to
-    let logPath = RNFS.DocumentDirectoryPath;
-    if (Platform.OS === 'android') {
-      logPath = RNFS.ExternalDirectoryPath;
-    }
+    let logPath = Util.getPath();
 
     // generate filename based on current date.
     let filename = getFilename(new Date().valueOf());

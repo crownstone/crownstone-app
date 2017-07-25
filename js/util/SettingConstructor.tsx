@@ -132,7 +132,7 @@ export const SettingConstructor = function(store, state, eventBus) {
 
   items.push({
     id: 'whats new',
-    label: "Whats new in this version?",
+    label: Platform.OS === 'android' ? "What's new?" : "What's new in this version?",
     type: 'button',
     style: {color: '#000'},
     icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),

@@ -1,3 +1,5 @@
+import {Util} from "../../util/Util";
+
 const RNFS = require('react-native-fs');
 import { LOG} from '../../logging/Log'
 
@@ -130,7 +132,7 @@ export const spheres = {
   },
 
   getUserPicture(sphereId, email, userId, options : any = {}) {
-    let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
+    let toPath = Util.getPath(userId + '.jpg');
     return this.forSphere(sphereId)._download({
       endPoint:'/Spheres/{id}/profilePic',
       data: {email: email},
@@ -222,7 +224,7 @@ export const spheres = {
                 .then((filename) => {
                   userData[user.id].picture = filename;
                 })
-                .catch((err) => {LOG.error("failed getting user picture",sphereId, user.email, user.id, options, err)})
+                .catch((err) => {LOG.error("failed getting user picture", sphereId, user.email, user.id, options, err)})
             );
           }
         });

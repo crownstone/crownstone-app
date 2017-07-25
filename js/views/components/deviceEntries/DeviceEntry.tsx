@@ -138,6 +138,8 @@ export class DeviceEntry extends Component<any, any> {
       this.props.store,
       {},
       () => { this.setState({pendingCommand:false});},
+      INTENTS.manual,
+      1,
       'from _pressedDevice in DeviceEntry'
     );
   }

@@ -32,10 +32,7 @@ export const getImageFileFromUser = function(email) {
 export const processImage = function(picture, targetFilename) {
   return new Promise((resolve, reject) => {
     if (picture !== undefined) {
-      let targetPath = RNFS.DocumentDirectoryPath + '/' + targetFilename;
-      if (Platform.OS === 'android') {
-        targetPath = RNFS.ExternalDirectoryPath + '/' + targetFilename;
-      }
+      let targetPath = Util.getPath(targetFilename);
       let resizedUri = undefined;
       let resizedPath = undefined;
       if (Platform.OS === 'android') {
@@ -361,6 +358,15 @@ export const Util = {
         resolve();
       }
     })
+  },
+
+  getPath(filename? : string) {
+    let targetPath = Platform.OS === 'android' ? RNFS.ExternalDirectoryPath : RNFS.DocumentDirectoryPath;
+
+    if (filename) {
+      targetPath += '/' + filename;
+    }
+    return targetPath;
   }
 
 

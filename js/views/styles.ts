@@ -168,7 +168,7 @@ export const styles = StyleSheet.create({
   buttonSeparatorAndroid:{
     width:0.7*screenWidth,
     height:1,
-    backgroundColor: colors.menuBackground.rgba(0.05)
+    backgroundColor: colors.lightGray.hex,
   },
   buttonSeparatorAndroidHighlight:{
     width:0.7*screenWidth,

@@ -116,11 +116,14 @@ function handleUserInCloud(action, state) {
   let userId = state.user.userId;
   CLOUD.forUser(userId);
   if (action.data.picture) {
+    console.log("action.data.picture", action.data.picture)
     CLOUD.uploadProfileImage(action.data.picture)
       .then((data) => {
-        LOG.info(data)
+        LOG.info(data);
       })
-      .catch(() => {});
+      .catch((err) => {
+        LOG.error("CloudEnhancer: Could not upload image to cloud", err);
+      });
   }
   else if (action.data.picture === null) {
     CLOUD.removeProfileImage({background: true}).catch(() => {});
