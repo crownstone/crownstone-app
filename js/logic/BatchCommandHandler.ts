@@ -28,7 +28,7 @@ class BatchCommandHandlerClass {
     this.store = store;
   }
 
-  closeConnection() {
+  closeKeptOpenConnection() {
     eventBus.emit("BatchCommandHandlerCloseConnection");
   }
 
@@ -61,7 +61,6 @@ class BatchCommandHandlerClass {
   }
 
   _load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) {
-    eventBus.emit("BatchCommandHandlerLoadAction");
     return new Promise((resolve, reject) => {
       // remove duplicates from list.
       this._clearDuplicates(stoneId, sphereId, command);
@@ -79,6 +78,7 @@ class BatchCommandHandlerClass {
         cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
         promise:  { resolve: resolve, reject: reject, pending: false}
       };
+      eventBus.emit("BatchCommandHandlerLoadAction");
     });
   }
 

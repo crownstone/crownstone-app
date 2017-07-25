@@ -28,6 +28,8 @@ import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { eventBus } from "../../util/EventBus";
 import {DevicePowerCurve} from "./elements/DevicePowerCurve";
 import {DeviceSchedule} from "./elements/DeviceSchedule";
+import {BATCH} from "../../router/store/storeManager";
+import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
@@ -38,6 +40,7 @@ export class DeviceOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
   unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
+  summaryIndex : number = 0;
 
   constructor() {
     super();
@@ -53,6 +56,8 @@ export class DeviceOverview extends Component<any, any> {
         this.setState({swipeEnabled: true});
       }
       else  if (panAvailable === false && this.state.swipeEnabled === true) {
+        // this is used to move the view back if the user swiped it accidentally
+        (this.refs['deviceSwiper'] as any).scrollBy(this.summaryIndex);
         this.setState({swipeEnabled: false});
       }
     }));
@@ -99,10 +104,21 @@ export class DeviceOverview extends Component<any, any> {
     });
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.swiperIndex !== this.summaryIndex) {
+      // This will close the connection that is kept open by a dimming command. Dimming is the only command that keeps the connection open.
+      // If there is no connection being kept open, this command will not do anything.
+      BatchCommandHandler.closeKeptOpenConnection();
+    }
+  }
+
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
     this.unsubscribeSwiperEvents.forEach((unsubscribe) => { unsubscribe(); });
     clearTimeout(this.touchEndTimeout);
+    // This will close the connection that is kept open by a dimming command. Dimming is the only command that keeps the connection open.
+    // If there is no connection being kept open, this command will not do anything.
+    BatchCommandHandler.closeKeptOpenConnection();
   }
 
 
@@ -117,6 +133,8 @@ export class DeviceOverview extends Component<any, any> {
     let behaviourIndex = index++;
     let scheduleIndex = index++;
     let powerMonitorIndex = index++;
+
+    this.summaryIndex = summaryIndex;
 
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state);
@@ -180,7 +198,11 @@ export class DeviceOverview extends Component<any, any> {
           }}
           title={element.config.name} />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
-        <Swiper style={swiperStyles.wrapper} showsPagination={true} height={availableScreenHeight}
+        <Swiper
+          style={swiperStyles.wrapper}
+          showsPagination={true}
+          height={availableScreenHeight}
+          ref="deviceSwiper"
           dot={<View style={{backgroundColor: colors.white.rgba(0.35), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.black.rgba(0.1)}} />}
           activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 9, height: 9, borderRadius: 4.5, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
           loop={false}

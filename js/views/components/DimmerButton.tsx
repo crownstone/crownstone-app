@@ -38,9 +38,7 @@ export class DimmerButton extends Component<any, any> {
   angleMax;
   angleMin;
   angleRange;
-  upperTouchThreshold = 1.35;
-  lowerTouchThreshold = 0.45;
-  lowerDragThreshold = 0.3;
+  lowerDragThreshold = 0.25;
   xCenter;
   yCenter;
 
@@ -94,15 +92,12 @@ export class DimmerButton extends Component<any, any> {
         }
         let data = getStateFromGesture(gestureState);
         if (
-          data.radius > this.lowerTouchThreshold * this.radius &&
-          data.radius < this.upperTouchThreshold * this.radius &&
-          data.state > this.state.state - 0.1 &&
-          data.state < this.state.state + 0.1
+          data.state > this.state.state - 0.2 &&
+          data.state < this.state.state + 0.2
         ) {
           this.controlling = true;
           eventBus.emit("UIGestureControl", false);
         }
-
       },
       onPanResponderMove: (evt, gestureState) => {
         if (this.controlling) {
@@ -252,7 +247,7 @@ export class DimmerButton extends Component<any, any> {
       }}
       onPress={() => {
         let newState = (this.state.state > 0 ? 0 : 1);
-        this._updateStone(newState, 5000);
+        this._updateStone(newState, 2500);
         this._animate(newState);
       }} >
         <AnimatedCircle size={innerSize*1.05} color={colors.black.rgba(0.08)}>
