@@ -81,7 +81,6 @@ export function request(
 
       fetch(CLOUD_ADDRESS + endPoint, requestConfig)
         .catch((connectionError) => {
-          console.log("connectionError", connectionError)
           if (stopRequest === false) {
             reject(new Error('Network request failed'));
           }
