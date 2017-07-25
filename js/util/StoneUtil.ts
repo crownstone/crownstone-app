@@ -26,6 +26,7 @@ export const StoneUtil = {
       stoneId,
       sphereId,
       {commandName:'multiSwitch', state: newState, intent: intent, timeout: 0},
+      {},
       attempts,
       label
     )

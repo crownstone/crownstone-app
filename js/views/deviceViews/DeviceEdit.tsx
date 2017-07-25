@@ -1,12 +1,14 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  TouchableOpacity,
+  Linking,
   PixelRatio,
   ScrollView,
   Switch,
   TextInput,
   Text,
+  TouchableHighlight,
+  TouchableOpacity,
   View
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
@@ -118,9 +120,13 @@ export class DeviceEdit extends Component<any, any> {
       }
     });
     items.push({
-      label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled, callback: (newValue) => {
+      label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled === true, callback: (newValue) => {
         store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {dimmingEnabled: newValue}});
       }
+    });
+    items.push({
+      label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
+        Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(err => {})}
     });
     items.push({
       label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',

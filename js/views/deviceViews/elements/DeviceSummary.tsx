@@ -98,7 +98,7 @@ export class DeviceSummary extends Component<any, any> {
     }
 
 
-    if (stone.config.dimmingEnabled) {
+    if (stone.config.dimmingEnabled === true) {
       return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
     }
 
