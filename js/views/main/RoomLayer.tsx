@@ -221,6 +221,8 @@ export class RoomLayer extends Component<any, any> {
         }
 
         if (this._pressedRoom !== false) {
+          this.state.locations[this._pressedRoom].scale.stopAnimation();
+          this.state.locations[this._pressedRoom].opacity.stopAnimation();
           Actions.roomOverview({sphereId: this.props.sphereId, locationId: this._pressedRoom});
         }
 
@@ -436,13 +438,12 @@ export class RoomLayer extends Component<any, any> {
   }
 
 
-  _renderRoom(locationId, count) {
+  _renderRoom(locationId) {
     // variables to pass to the room overview
     return (
       <RoomCircle
         eventBus={this.props.eventBus}
         locationId={locationId}
-        totalAmountOfRoomCircles={count}
         sphereId={this.props.sphereId}
         opacity={this.state.locations[locationId].opacity}
         radius={0.15*screenWidth}
@@ -467,18 +468,11 @@ export class RoomLayer extends Component<any, any> {
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
 
-    let amountOfRooms = roomIdArray.length;
-
-    // the orphaned stones room.
-    if (showFloatingCrownstones) {
-      amountOfRooms += 1;
-    }
-
     for (let i = 0; i < roomIdArray.length; i++) {
-      roomNodes.push(this._renderRoom(roomIdArray[i], amountOfRooms))
+      roomNodes.push(this._renderRoom(roomIdArray[i]))
     }
     if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null, amountOfRooms))
+      roomNodes.push(this._renderRoom(null))
     }
 
     return roomNodes;

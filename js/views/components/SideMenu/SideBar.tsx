@@ -176,6 +176,7 @@ class MenuItem extends Component<any, any> {
         flexDirection:'row',
         padding:10,
         paddingLeft: 25,
+        height: 50,
         width: screenWidth*FACTOR - BLUE_PADDING,
         borderBottomWidth:1,
         borderColor: colors.darkGray.rgba(0.1),
