@@ -5,7 +5,7 @@ let emptyFunction = function() {};
 import { LOG } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { defaultHeaders } from './sections/base'
-import { safeMoveFile, safeDeleteFile } from '../util/Util'
+import {safeMoveFile, safeDeleteFile, Util} from '../util/Util'
 import {Scheduler} from "../logic/Scheduler";
 
 /**
@@ -81,6 +81,7 @@ export function request(
 
       fetch(CLOUD_ADDRESS + endPoint, requestConfig)
         .catch((connectionError) => {
+          console.log("connectionError", connectionError)
           if (stopRequest === false) {
             reject(new Error('Network request failed'));
           }
@@ -132,11 +133,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
 
 export function downloadFile(url, targetPath, callbacks) {
   return new Promise((resolve, reject) => {
-    // TODO: move to util
-    let path = RNFS.DocumentDirectoryPath;
-    if (Platform.OS === 'android') {
-      path = RNFS.ExternalDirectoryPath;
-    }
+    let path = Util.getPath();
 
     // get a temp path
     let tempPath = path + '/' + (10000 + Math.random() * 1e5).toString(36).replace(".", "") + '.tmp';

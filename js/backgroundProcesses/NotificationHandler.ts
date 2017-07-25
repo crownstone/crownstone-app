@@ -4,8 +4,8 @@ import { Platform } from 'react-native';
 import { LOG } from "../logging/Log";
 import { eventBus } from '../util/EventBus'
 import { Util } from "../util/Util";
-import {CLOUD} from "../cloud/cloudAPI";
-import {INTENTS} from "../native/libInterface/Constants";
+import { CLOUD } from "../cloud/cloudAPI";
+import { INTENTS } from "../native/libInterface/Constants";
 
 class NotificationHandlerClass {
   store: any = {};

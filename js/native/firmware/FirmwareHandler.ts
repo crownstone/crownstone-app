@@ -1,7 +1,7 @@
 import { Platform }       from 'react-native';
 import { CLOUD }          from "../../cloud/cloudAPI";
 import { LOG }            from "../../logging/Log";
-import { safeDeleteFile } from "../../util/Util";
+import {safeDeleteFile, Util} from "../../util/Util";
 import { FirmwareHelper } from "./FirmwareHelper";
 
 const RNFS = require('react-native-fs');
@@ -45,10 +45,7 @@ class FirmwareHandlerClass {
 
   download(sourceDetails, type) {
     // set path depending on ios or android
-    let toPath = RNFS.DocumentDirectoryPath + '/' + type + '.zip';
-    if (Platform.OS === 'android') {
-      toPath = RNFS.ExternalDirectoryPath + '/' + type + '.zip';
-    }
+    let toPath = Util.getPath(type + '.zip');
 
     this.paths[type] = toPath;
     // remove the file we will write to if it exists
