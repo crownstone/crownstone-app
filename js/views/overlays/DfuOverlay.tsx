@@ -30,14 +30,14 @@ let STEP_TYPES = {
   UPDATE_AVAILABLE:           'UPDATE_AVAILABLE',
   RELEASE_NOTES:              'RELEASE_NOTES',
   DOWNLOAD_PROGRESS:          'DOWNLOAD_PROGRESS',
-  DOWNLOAD_SUCCES:            'DOWNLOAD_SUCCES',
+  DOWNLOAD_SUCCESS:           'DOWNLOAD_SUCCESS',
   SEARCHING:                  'SEARCHING',
   SEARCHING_MOVE_CLOSER:      'SEARCHING_MOVE_CLOSER',
   SEARCHING_MOVE_EVEN_CLOSER: 'SEARCHING_MOVE_EVEN_CLOSER',
   SEARCHING_RESET_BLE:        'SEARCHING_RESET_BLE',
   GET_BOOTLOADER_VERSION:     'GET_BOOTLOADER_VERSION',
   UPDATE_PROGRESS:            'UPDATE_PROGRESS',
-  UPDATE_SUCCES:              'UPDATE_SUCCES',
+  UPDATE_SUCCESS:             'UPDATE_SUCCESS',
   UPDATE_FAILED:              'UPDATE_FAILED',
   DOWNLOAD_FAILED:            'DOWNLOAD_FAILED',
   SETUP_FAILED:               'SETUP_FAILED',
@@ -224,7 +224,7 @@ export class DfuOverlay extends Component<any, any> {
     Bluenet.stopIndoorLocalization();
 
     return new Promise((resolve, reject) => {
-      this.setState({step: STEP_TYPES.DOWNLOAD_SUCCES});
+      this.setState({step: STEP_TYPES.DOWNLOAD_SUCCESS});
       Scheduler.scheduleCallback(() => { resolve(); }, 2500, 'startDFU timeout');
     })
     .then(() => {
@@ -294,7 +294,7 @@ export class DfuOverlay extends Component<any, any> {
           dfuResetRequired: false,
         }
       });
-      this.setState({ step: STEP_TYPES.UPDATE_SUCCES });
+      this.setState({ step: STEP_TYPES.UPDATE_SUCCESS });
     })
   }
 
@@ -540,7 +540,7 @@ export class DfuOverlay extends Component<any, any> {
             <View style={{flexGrow:1}} />
           </OverlayContent>
         );
-      case STEP_TYPES.DOWNLOAD_SUCCES:
+      case STEP_TYPES.DOWNLOAD_SUCCESS:
         return (
           <OverlayContent
             title={'Download Complete'}
@@ -652,7 +652,7 @@ export class DfuOverlay extends Component<any, any> {
             header={'Update is in progress. Please stay close to the Crownstone.'}
           />
         );
-      case STEP_TYPES.UPDATE_SUCCES:
+      case STEP_TYPES.UPDATE_SUCCESS:
         return (
           <OverlayContent
             title={'Updating Done!'}
