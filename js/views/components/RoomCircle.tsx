@@ -47,8 +47,8 @@ class RoomCircleClass extends Component<any, any> {
   fadeDuration : number;
 
   unsubscribeSetupEvents : any;
-  unsubscribe : any;
   unsubscribeStoreEvents : any;
+  unsubscribeControlEvents : any;
   renderState : any;
 
   constructor(props) {
@@ -152,6 +152,10 @@ class RoomCircleClass extends Component<any, any> {
         this.forceUpdate();
       }
     });
+
+    this.unsubscribeControlEvents = this.props.eventBus.on('roomCircleTap'+this.props.locationId, (data) => {
+      this.handleTap(data);
+    })
   }
 
 
@@ -161,6 +165,7 @@ class RoomCircleClass extends Component<any, any> {
       unsubscribe();
     });
     this.unsubscribeStoreEvents();
+    this.unsubscribeControlEvents();
   }
 
 
@@ -383,6 +388,11 @@ class RoomCircleClass extends Component<any, any> {
         </View>
       </Animated.View>
     )
+  }
+
+  handleTap(data) {
+    // console.log("here");
+    Actions.roomOverview({sphereId: this.props.sphereId, locationId: this.props.locationId});
   }
 }
 
