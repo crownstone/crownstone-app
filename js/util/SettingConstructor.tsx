@@ -35,7 +35,7 @@ const getAlternatingIcons = function(names : string[], sizes : number[], iconCol
   if (Platform.OS === 'android') {
     return (
       <AlternatingContent
-        style={{width: 30, height:30}}
+        style={{width: 25, height:25, marginLeft:2}}
         fadeDuration={500}
         switchDuration={2000}
         contentArray={[

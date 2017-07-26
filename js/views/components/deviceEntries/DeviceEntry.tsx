@@ -215,7 +215,7 @@ export class DeviceEntry extends Component<any, any> {
           borderWidth: 0,
         }, styles.centered]}>
           <AlternatingContent
-            style={{flex:1, width:60, height:60, justifyContent:'center', alignItems:'center'}}
+            style={{width:60, height:60, justifyContent:'center', alignItems:'center'}}
             fadeDuration={500}
             switchDuration={2000}
             contentArray={[
