@@ -13,7 +13,6 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +20,6 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Pair;
@@ -45,13 +43,11 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import nl.dobots.bluenet.ble.base.BleBase;
 import nl.dobots.bluenet.ble.base.BleBaseEncryption;
-import nl.dobots.bluenet.ble.base.BleConfiguration;
 import nl.dobots.bluenet.ble.base.callbacks.IBooleanCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IByteArrayCallback;
 import nl.dobots.bluenet.ble.base.callbacks.IDiscoveryCallback;
@@ -60,10 +56,12 @@ import nl.dobots.bluenet.ble.base.callbacks.IProgressCallback;
 import nl.dobots.bluenet.ble.base.structs.ControlMsg;
 import nl.dobots.bluenet.ble.base.structs.CrownstoneServiceData;
 import nl.dobots.bluenet.ble.base.structs.EncryptionKeys;
+import nl.dobots.bluenet.ble.base.structs.ScheduleCommandPacket;
+import nl.dobots.bluenet.ble.base.structs.ScheduleEntryPacket;
+import nl.dobots.bluenet.ble.base.structs.ScheduleListPacket;
 import nl.dobots.bluenet.ble.cfg.BleErrors;
 import nl.dobots.bluenet.ble.cfg.BluenetConfig;
 import nl.dobots.bluenet.ble.core.BleCore;
-import nl.dobots.bluenet.ble.core.callbacks.IDataCallback;
 import nl.dobots.bluenet.ble.core.callbacks.IStatusCallback;
 import nl.dobots.bluenet.ble.extended.BleDeviceFilter;
 import nl.dobots.bluenet.ble.extended.BleExt;
@@ -75,7 +73,6 @@ import nl.dobots.bluenet.ble.extended.structs.BleDeviceList;
 import nl.dobots.bluenet.ble.mesh.structs.MeshControlMsg;
 import nl.dobots.bluenet.ble.mesh.structs.MeshKeepAlivePacket;
 import nl.dobots.bluenet.ble.mesh.structs.MeshMultiSwitchPacket;
-import nl.dobots.bluenet.ble.mesh.structs.cmd.MeshControlPacket;
 import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
 import nl.dobots.bluenet.ibeacon.BleIbeaconFilter;
 import nl.dobots.bluenet.ibeacon.BleIbeaconRanging;
@@ -362,60 +359,40 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
-	@ReactMethod
-	public void quitApp() {
-		BleLog.getInstance().LOGw(TAG, "quit");
-		if (_scanServiceIsBound) {
-			_reactContext.unbindService(_connection);
-			_scanServiceIsBound = false;
-		}
-		// Stop the service just to be sure?
-//		_reactContext.stopService(new Intent(_reactContext, BleScanService.class));
-		_bleExt.destroy();
-		if (_reactContext.getCurrentActivity() != null) {
-			_reactContext.getCurrentActivity().finish();
-		}
-		_handler.removeCallbacksAndMessages(null);
-		_isInitialized = false;
-		_reactContext.runOnUiQueueThread(new Runnable() {
-			@Override
-			public void run() {
-				_reactContext.destroy();
-			}
-		});
+    @Override
+    public String getName() {
+        return "BluenetJS";
+    }
 
-		// See: http://stackoverflow.com/questions/2033914/is-quitting-an-application-frowned-upon
-//		System.exit(0); // Not recommended, seems to restart app
-		Process.killProcess(Process.myPid()); // Not recommended either
+
+
+
+	//########################################################################################
+	//                       INIT FUNCTIONS
+	//########################################################################################
+
+	@ReactMethod
+	public void isReady(Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "isReady: " + callback);
+		// TODO: what if isReady gets called twice before ready? --> use a timed call to checkReady with callback as arg
+		_readyCallback = callback;
+		checkReady();
 	}
 
 	@ReactMethod
-	public void enableLoggingToFile(boolean enable) {
-		BleLog.getInstance().LOGi(TAG, "enableLoggingToFile " + enable);
-		_fileLogger.enable(enable);
-	}
-
-	@ReactMethod
-	public void enableExtendedLogging(boolean enable) {
-		BleLog.getInstance().LOGi(TAG, "enableExtendedLogging " + enable);
-		if (enable) {
-			setLogLevels(LOG_LEVELS_EXTENDED);
-		}
-		else {
-			setLogLevels(LOG_LEVELS);
-		}
-	}
-
-	@ReactMethod
-	public void clearLogs() {
-		BleLog.getInstance().LOGi(TAG, "clearLogs");
-		_fileLogger.enable(false);
-		_fileLogger.clearLogFiles();
-	}
-
-	@Override
-	public String getName() {
-		return "BluenetJS";
+	public void rerouteEvents() {
+//		WritableMap map = Arguments.createMap();
+//		sendEvent("advertisementData", map);
+//		sendEvent("iBeaconAdvertisement", map);
+//		sendEvent("verifiedAdvertisementData", map);
+//		sendEvent("nearestCrownstone", map);
+//		sendEvent("nearestSetupCrownstone", map);
+//		sendEvent("enterGroup", map);
+//		sendEvent("exitGroup", map);
+//		sendEvent("enterLocation", map);
+//		sendEvent("exitLocation", map);
+//		sendEvent("currentLocation", map);
+		BleLog.getInstance().LOGi(TAG, "rerouteEvents");
 	}
 
 	@ReactMethod
@@ -472,6 +449,38 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		callback.invoke(retVal);
 	}
 
+
+    //########################################################################################
+    //                       MISC REACT FUNCTIONS
+    //########################################################################################
+
+	@ReactMethod
+	public void quitApp() {
+		BleLog.getInstance().LOGw(TAG, "quit");
+		if (_scanServiceIsBound) {
+			_reactContext.unbindService(_connection);
+			_scanServiceIsBound = false;
+		}
+		// Stop the service just to be sure?
+//		_reactContext.stopService(new Intent(_reactContext, BleScanService.class));
+		_bleExt.destroy();
+		if (_reactContext.getCurrentActivity() != null) {
+			_reactContext.getCurrentActivity().finish();
+		}
+		_handler.removeCallbacksAndMessages(null);
+		_isInitialized = false;
+		_reactContext.runOnUiQueueThread(new Runnable() {
+			@Override
+			public void run() {
+				_reactContext.destroy();
+			}
+		});
+
+		// See: http://stackoverflow.com/questions/2033914/is-quitting-an-application-frowned-upon
+//		System.exit(0); // Not recommended, seems to restart app
+		Process.killProcess(Process.myPid()); // Not recommended either
+	}
+
 	@ReactMethod
 	public void resetBle() {
 		BleLog.getInstance().LOGw(TAG, "resetBle");
@@ -487,31 +496,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //		_isResettingBluetooth = true;
 //		_bleExt.getBleBase().resetBle();
 	}
-
-	@ReactMethod
-	public void isReady(Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "isReady: " + callback);
-		// TODO: what if isReady gets called twice before ready? --> use a timed call to checkReady with callback as arg
-		_readyCallback = callback;
-		checkReady();
-	}
-
-	@ReactMethod
-	public void rerouteEvents() {
-//		WritableMap map = Arguments.createMap();
-//		sendEvent("advertisementData", map);
-//		sendEvent("iBeaconAdvertisement", map);
-//		sendEvent("verifiedAdvertisementData", map);
-//		sendEvent("nearestCrownstone", map);
-//		sendEvent("nearestSetupCrownstone", map);
-//		sendEvent("enterGroup", map);
-//		sendEvent("exitGroup", map);
-//		sendEvent("enterLocation", map);
-//		sendEvent("exitLocation", map);
-//		sendEvent("currentLocation", map);
-		BleLog.getInstance().LOGi(TAG, "rerouteEvents");
-	}
-
 
 	@ReactMethod
 	public void requestLocationPermission() {
@@ -569,10 +553,44 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		callback.invoke(retVal);
 	}
 
+	@ReactMethod
+	public void forceClearActiveRegion() {
+		// Forces not being in an ibeacon region (not needed for android as far as I know)
+	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//                       Start / stop scanning
-	//////////////////////////////////////////////////////////////////////////////////////////
+
+    //########################################################################################
+    //                       LOGGING FUNCTIONS
+    //########################################################################################
+
+	@ReactMethod
+	public void enableLoggingToFile(boolean enable) {
+		BleLog.getInstance().LOGi(TAG, "enableLoggingToFile " + enable);
+		_fileLogger.enable(enable);
+	}
+
+	@ReactMethod
+	public void enableExtendedLogging(boolean enable) {
+		BleLog.getInstance().LOGi(TAG, "enableExtendedLogging " + enable);
+		if (enable) {
+			setLogLevels(LOG_LEVELS_EXTENDED);
+		}
+		else {
+			setLogLevels(LOG_LEVELS);
+		}
+	}
+
+	@ReactMethod
+	public void clearLogs() {
+		BleLog.getInstance().LOGi(TAG, "clearLogs");
+		_fileLogger.enable(false);
+		_fileLogger.clearLogFiles();
+	}
+
+
+	//########################################################################################
+	//                       START / STOP SCANNING
+	//########################################################################################
 
 	@ReactMethod
 	public void startScanning() {
@@ -608,15 +626,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		updateScanner();
 	}
 
-	@ReactMethod
-	public void forceClearActiveRegion() {
-		// Forces not being in an ibeacon region (not needed for android as far as I know)
-	}
 
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//                       Connect / disconnect
-	//////////////////////////////////////////////////////////////////////////////////////////
+	//########################################################################################
+	//                       CONNECT / DISCONNECT
+	//########################################################################################
 
 	@ReactMethod
 	public void connect(final String uuid, final Callback callback) {
@@ -768,62 +781,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//                       Commands
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	@ReactMethod
-	public void setSwitchState(Float switchStateFloat, final Callback callback) {
-		BleLog.getInstance().LOGd(TAG, "set switch to: " + switchStateFloat);
-		// For now: no dimming
-		int switchState = 0;
-		if (switchStateFloat > 0) {
-			switchState = BluenetConfig.SWITCH_ON;
-		}
-		_bleExt.writeSwitch(switchState, new IStatusCallback() {
-			@Override
-			public void onSuccess() {
-				BleLog.getInstance().LOGi(TAG, "set switch success");
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				callback.invoke(retVal);
-			}
-
-			@Override
-			public void onError(int error) {
-				BleLog.getInstance().LOGi(TAG, "set switch failed: " + error);
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "set switch failed: " + error);
-				callback.invoke(retVal);
-			}
-		});
-	}
-
-	@ReactMethod
-	public void toggleSwitchState(final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "toggleSwitchState");
-		// For now: just toggle relay
-		_bleExt.toggleRelay(new IBooleanCallback() {
-			@Override
-			public void onSuccess(boolean value) {
-				String switchRes = value ? "on" : "off";
-				BleLog.getInstance().LOGi(TAG, "toggled switch " + switchRes);
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				callback.invoke(retVal);
-			}
-
-			@Override
-			public void onError(int error) {
-				BleLog.getInstance().LOGi(TAG, "toggle switch failed: " + error);
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "toggle switch failed: " + error);
-				callback.invoke(retVal);
-			}
-		});
-	}
+	//########################################################################################
+	//                       SETUP / RESET / RECOVER
+	//########################################################################################
 
 	@ReactMethod
 	public void commandFactoryReset(final Callback callback) {
@@ -1034,79 +994,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				callback.invoke(retVal);
 			}
 		});
-
-	}
-
-	@ReactMethod
-	public void getFirmwareVersion(final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "getFirmwareVersion");
-		// Returns firmware version string as data
-		_bleExt.readFirmwareRevision(new IByteArrayCallback() {
-			@Override
-			public void onSuccess(byte[] result) {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				String firmwareString = new String(result);
-				retVal.putString("data", firmwareString);
-				callback.invoke(retVal);
-			}
-
-			@Override
-			public void onError(int error) {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "error: " + error);
-				callback.invoke(retVal);
-			}
-		});
-	}
-
-	@ReactMethod
-	public void getHardwareVersion(final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "getHardwareVersion");
-		// Returns hardware version string as data
-		_bleExt.readHardwareRevision(new IByteArrayCallback() {
-			@Override
-			public void onSuccess(byte[] result) {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				String hardwareString = new String(result);
-				retVal.putString("data", hardwareString);
-				callback.invoke(retVal);
-			}
-
-			@Override
-			public void onError(int error) {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "error: " + error);
-				callback.invoke(retVal);
-			}
-		});
-	}
-
-	@ReactMethod
-	public void getBootloaderVersion(final Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "getBootloaderVersion");
-		// Returns bootloader version string as data
-		_bleExt.readBootloaderRevision(new IByteArrayCallback() {
-			@Override
-			public void onSuccess(byte[] result) {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				String bootloaderString = new String(result);
-				retVal.putString("data", bootloaderString);
-				callback.invoke(retVal);
-			}
-
-			@Override
-			public void onError(int error) {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "error: " + error);
-				callback.invoke(retVal);
-			}
-		});
 	}
 
 	@ReactMethod
@@ -1185,6 +1072,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		putInDFU(callback);
 	}
 
+	//########################################################################################
+	//                       DFU
+	//########################################################################################
+
 	@ReactMethod
 	public void performDFU(String address, String fileString, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "performDfu: " + address + " file: " + fileString);
@@ -1206,6 +1097,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //		_dfuCallback = null;
 	}
 
+
+	//########################################################################################
+	//                       MISC COMMANDS
+	//########################################################################################
+
 	@ReactMethod
 	public void getMACAddress(Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "getMacAddress");
@@ -1221,38 +1117,220 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		callback.invoke(retVal);
 	}
 
-	@ReactMethod
-	public void keepAliveState(boolean action, float state, int timeout, final Callback callback) {
-		BleLog.getInstance().LOGd(TAG, "keepAliveState: action=" + action + " state=" + state + " timeout=" + timeout);
-		int actionInt = 0;
-		if (action) {
-			actionInt = 1;
-		}
-		// For now: no dimming
-		int switchState = 0;
-		if (state > 0) {
-			switchState = BluenetConfig.SWITCH_ON;
-		}
-		_bleExt.writeKeepAliveState(actionInt, switchState, timeout, new IStatusCallback() {
-				@Override
-				public void onSuccess() {
-					BleLog.getInstance().LOGd(TAG, "keepAliveState success");
-					WritableMap retVal = Arguments.createMap();
-					retVal.putBoolean("error", false);
-					callback.invoke(retVal);
-				}
+	//########################################################################################
+	//                       SWITCH COMMANDS
+	//########################################################################################
 
-				@Override
-				public void onError(int error) {
-					BleLog.getInstance().LOGi(TAG, "keepAliveState error "+ error);
-//					BleLog.getInstance().LOGi(TAG, Log.getStackTraceString(new Exception()));
-					WritableMap retVal = Arguments.createMap();
-					retVal.putBoolean("error", true);
-					retVal.putString("data", "keepAliveState failed: " + error);
-					callback.invoke(retVal);
-				}
+	@ReactMethod
+	public void setSwitchState(Float switchStateFloat, final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "set switch to: " + switchStateFloat);
+		int switchState = convertSwitchVal(switchStateFloat);
+		_bleExt.writeSwitch(switchState, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGi(TAG, "set switch success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGi(TAG, "set switch failed: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "set switch failed: " + error);
+				callback.invoke(retVal);
+			}
 		});
 	}
+
+	@ReactMethod
+	public void toggleSwitchState(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "toggleSwitchState");
+		// For now: just toggle relay
+		_bleExt.toggleRelay(new IBooleanCallback() {
+			@Override
+			public void onSuccess(boolean value) {
+				String switchRes = value ? "on" : "off";
+				BleLog.getInstance().LOGi(TAG, "toggled switch " + switchRes);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGi(TAG, "toggle switch failed: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "toggle switch failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void multiSwitch(ReadableArray switchItems, final Callback callback) {
+		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
+		BleLog.getInstance().LOGd(TAG, "multiSwitch " + switchItems.toString());
+
+		// Create the multi switch packet
+		MeshMultiSwitchPacket packet = new MeshMultiSwitchPacket();
+		boolean success = true;
+		for (int i=0; i<switchItems.size(); i++) {
+			ReadableMap itemMap = switchItems.getMap(i);
+			int crownstoneId =         itemMap.getInt("crownstoneId");
+			int timeout =              itemMap.getInt("timeout");
+			int intent =               itemMap.getInt("intent");
+			double switchStateDouble = itemMap.getDouble("state");
+			int switchState = convertSwitchVal(switchStateDouble);
+			if (!packet.addMultiSwitch(crownstoneId, switchState, timeout, intent)) {
+				success = false;
+				BleLog.getInstance().LOGe(TAG, "Unable to add multiSwitch item: " + itemMap);
+				break;
+			}
+		}
+		if (!success) {
+			BleLog.getInstance().LOGe(TAG, "Failed to send multiSwitch: " + switchItems);
+			WritableMap retVal = Arguments.createMap();
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "Invalid multiSwitch data");
+			callback.invoke(retVal);
+			return;
+		}
+
+		byte[] payload = packet.toArray();
+		_bleExt.writeControl(new ControlMsg(BluenetConfig.CMD_MULTI_SWITCH, payload.length, payload), new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "multiSwitch failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+
+//		// Write a mesh control msg with the packet as payload
+////		byte[] payload = packet.toArray();
+////		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, payload.length, payload);
+//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, packet);
+//		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+//			@Override
+//			public void onSuccess() {
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", false);
+//				callback.invoke(retVal);
+//			}
+//
+//			@Override
+//			public void onError(int error) {
+//				WritableMap retVal = Arguments.createMap();
+//				retVal.putBoolean("error", true);
+//				retVal.putString("data", "multiSwitch failed: " + error);
+//				callback.invoke(retVal);
+//			}
+//		});
+	}
+
+	private int convertSwitchVal(double switchVal) {
+		// For now: no dimming
+//		int switchState = (int) Math.round(BluenetConfig.SWITCH_ON * switchVal);
+		int switchState = 0;
+		if (switchVal > 0) {
+			switchState = BluenetConfig.SWITCH_ON;
+		}
+		return switchState;
+	}
+
+
+	//########################################################################################
+	//                       VERSION COMMANDS
+	//########################################################################################
+
+	@ReactMethod
+	public void getFirmwareVersion(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getFirmwareVersion");
+		// Returns firmware version string as data
+		_bleExt.readFirmwareRevision(new IByteArrayCallback() {
+			@Override
+			public void onSuccess(byte[] result) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				String firmwareString = new String(result);
+				retVal.putString("data", firmwareString);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void getHardwareVersion(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getHardwareVersion");
+		// Returns hardware version string as data
+		_bleExt.readHardwareRevision(new IByteArrayCallback() {
+			@Override
+			public void onSuccess(byte[] result) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				String hardwareString = new String(result);
+				retVal.putString("data", hardwareString);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void getBootloaderVersion(final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "getBootloaderVersion");
+		// Returns bootloader version string as data
+		_bleExt.readBootloaderRevision(new IByteArrayCallback() {
+			@Override
+			public void onSuccess(byte[] result) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				String bootloaderString = new String(result);
+				retVal.putString("data", bootloaderString);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+
+	//########################################################################################
+	//                       ERROR COMMANDS
+	//########################################################################################
 
 	@ReactMethod
 	public void getErrors(final Callback callback) {
@@ -1316,6 +1394,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
+
+	//########################################################################################
+	//                       TIME COMMANDS
+	//########################################################################################
+
 	@ReactMethod
 	public void setTime(double timestampDouble, final Callback callback) {
 		BleLog.getInstance().LOGi(TAG, "setTime: " + timestampDouble);
@@ -1369,6 +1452,279 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
+
+	//########################################################################################
+	//                       SCHEDULE COMMANDS
+	//########################################################################################
+
+	@ReactMethod
+	public void addSchedule(final ReadableMap scheduleEntryMap, final Callback callback) {
+		// Adds a new entry to the schedule on an empty spot.
+		// If no empty spots: fails
+
+		final ScheduleEntryPacket entryPacket = parseScheduleEntryMap(scheduleEntryMap);
+		if (entryPacket == null) {
+			WritableMap retVal = Arguments.createMap();
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "failed to parse schedule entry");
+			callback.invoke(retVal);
+			return;
+		}
+
+		getAvailableScheduleEntryIndex(new IIntegerCallback() {
+			@Override
+			public void onSuccess(final int result) {
+				ScheduleCommandPacket packet = new ScheduleCommandPacket();
+				packet._index = result;
+				packet._entry = entryPacket;
+				setScheduleEntry(packet, new IStatusCallback() {
+					@Override
+					public void onSuccess() {
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", false);
+						retVal.putInt("data", result);
+						callback.invoke(retVal);
+					}
+
+					@Override
+					public void onError(int error) {
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", true);
+						retVal.putString("data", "failed to set schedule: " + error);
+						callback.invoke(retVal);
+					}
+				});
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "getAvailableScheduleEntryIndex failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+
+	}
+
+	@ReactMethod
+	public void setSchedule(ReadableMap scheduleEntryMap, final Callback callback) {
+		// Overwrites a schedule entry at given index.
+		ScheduleEntryPacket entryPacket = parseScheduleEntryMap(scheduleEntryMap);
+		if (entryPacket == null || !scheduleEntryMap.hasKey("scheduleEntryIndex")) {
+			WritableMap retVal = Arguments.createMap();
+			retVal.putBoolean("error", true);
+			retVal.putString("data", "failed to parse schedule entry");
+			callback.invoke(retVal);
+			return;
+		}
+		ScheduleCommandPacket packet = new ScheduleCommandPacket();
+		packet._index = scheduleEntryMap.getInt("scheduleEntryIndex");
+		packet._entry = entryPacket;
+		setScheduleEntry(packet, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "failed to set schedule: " + error);
+				callback.invoke(retVal);
+			}
+		});
+
+	}
+
+	@ReactMethod
+	public void clearSchedule(int scheduleEntryIndex, final Callback callback) {
+		// Clears the schedule entry at given index.
+		clearScheduleEntry(scheduleEntryIndex, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "failed to clear schedule: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void getAvailableScheduleEntryIndex(final Callback callback) {
+		// Returns an empty spot in the schedule list.
+		getAvailableScheduleEntryIndex(new IIntegerCallback() {
+			@Override
+			public void onSuccess(int result) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				retVal.putInt("data", result);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "getAvailableScheduleEntryIndex failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	private void getAvailableScheduleEntryIndex(final IIntegerCallback callback) {
+		_bleExt.getBleExtState().getSchedule(new IByteArrayCallback() {
+			@Override
+			public void onSuccess(byte[] result) {
+				ScheduleListPacket schedule = new ScheduleListPacket();
+				if (!schedule.fromArray(result)) {
+					BleLog.getInstance().LOGi(TAG, "getAvailableScheduleEntryIndex parse error");
+					callback.onError(BleErrors.ERROR_MSG_PARSING);
+					return;
+				}
+				int size = schedule.getSize();
+				for (int i=0; i<size; ++i) {
+					if (!schedule.getEntry(i).isActive()) {
+						BleLog.getInstance().LOGi(TAG, "getAvailableScheduleEntryIndex success");
+						BleLog.getInstance().LOGd(TAG, "found: " + schedule.getEntry(i).toString());
+						callback.onSuccess(i);
+						return;
+					}
+				}
+				BleLog.getInstance().LOGi(TAG, "getAvailableScheduleEntryIndex no empty spot found");
+				callback.onError(BleErrors.ERROR_FULL);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGi(TAG, "getAvailableScheduleEntryIndex error "+ error);
+				callback.onError(error);
+			}
+		});
+	}
+
+	/**
+	 * Parses a map and returns it as packet.
+	 * @param scheduleEntryMap the map.
+	 * @return the parsed map, or null when parsing failed.
+	 */
+	private ScheduleEntryPacket parseScheduleEntryMap(ReadableMap scheduleEntryMap) {
+		// scheduleEntryMap:
+		//		scheduleEntryIndex     : number, // 0 .. 9
+		//		nextTime               : number, // timestamp since epoch in seconds
+		//		switchState            : number, // 0 .. 1
+		//		fadeDuration           : number, // # seconds
+		//		intervalInMinutes      : number, // # minutes
+		//		ignoreLocationTriggers : boolean,
+		//		repeatMode             : "24h" | "minute" | "none",
+		//		activeMonday           : boolean,
+		//		activeTuesday          : boolean,
+		//		activeWednesday        : boolean,
+		//		activeThursday         : boolean,
+		//		activeFriday           : boolean,
+		//		activeSaturday         : boolean,
+		//		activeSunday           : boolean,
+		ScheduleEntryPacket packet = new ScheduleEntryPacket();
+		try {
+			packet._overrideMask = 0;
+			boolean ignoreLocationTriggers     = scheduleEntryMap.getBoolean("ignoreLocationTriggers");
+			if (ignoreLocationTriggers) {
+				packet._overrideMask |= (1 << ScheduleEntryPacket.OVERRIDE_BIT_POS_LOCATION);
+			}
+
+			packet._timestamp    = (long)scheduleEntryMap.getDouble("nextTime");
+
+			packet._dayOfWeekMask = 0;
+			packet._minutes = 0;
+			String repeatType                   = scheduleEntryMap.getString("repeatMode");
+			switch (repeatType) {
+			case "24h": {
+				packet._repeatType = ScheduleEntryPacket.REPEAT_DAY;
+				if (scheduleEntryMap.getBoolean("activeSunday")) {
+					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_SUNDAY);
+				}
+				if (scheduleEntryMap.getBoolean("activeMonday")) {
+					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_MONDAY);
+				}
+				if (scheduleEntryMap.getBoolean("activeTuesday")) {
+					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_TUESDAY);
+				}
+				if (scheduleEntryMap.getBoolean("activeWednesday")) {
+					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_WEDNESDAY);
+				}
+				if (scheduleEntryMap.getBoolean("activeThursday")) {
+					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_THURSDAY);
+				}
+				if (scheduleEntryMap.getBoolean("activeFriday")) {
+					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_FRIDAY);
+				}
+				if (scheduleEntryMap.getBoolean("activeSaturday")) {
+					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_SATURDAY);
+				}
+				break;
+			}
+			case "minute": {
+				packet._repeatType = ScheduleEntryPacket.REPEAT_MINUTES;
+				packet._minutes    = scheduleEntryMap.getInt("intervalInMinutes");
+				break;
+			}
+			case "none": {
+				packet._repeatType = ScheduleEntryPacket.REPEAT_ONCE;
+				break;
+			}
+			default:
+				BleLog.getInstance().LOGw(TAG, "Unknown repeat type");
+				return null;
+			}
+
+			double switchStateFloat = scheduleEntryMap.getDouble("switchState");
+			int switchState = convertSwitchVal(switchStateFloat);
+			packet._switchVal    = switchState;
+			packet._fadeDuration = scheduleEntryMap.getInt("fadeDuration");
+			if (packet._fadeDuration > 0) {
+				packet._actionType = ScheduleEntryPacket.ACTION_FADE;
+			}
+			else {
+				packet._actionType = ScheduleEntryPacket.ACTION_SWITCH;
+			}
+		}
+		catch (NoSuchKeyException | UnexpectedNativeTypeException e) {
+			BleLog.getInstance().LOGw(TAG, "Wrong schedule entry: " + scheduleEntryMap.toString());
+			return null;
+		}
+		if (!packet.isValidPacketToSet()) {
+			return null;
+		}
+		return packet;
+	}
+
+	private void setScheduleEntry(ScheduleCommandPacket entry, final IStatusCallback callback) {
+		byte[] bytes = entry.toArray();
+		ControlMsg msg = new ControlMsg(BluenetConfig.CMD_SCHEDULE_ENTRY_SET, bytes.length, bytes);
+		_bleExt.writeControl(msg, callback);
+	}
+
+	private void clearScheduleEntry(int index, final IStatusCallback callback) {
+		byte[] bytes = new byte[] {(byte)index};
+		ControlMsg msg = new ControlMsg(BluenetConfig.CMD_SCHEDULE_ENTRY_CLEAR, bytes.length, bytes);
+		_bleExt.writeControl(msg, callback);
+	}
+
+	//########################################################################################
+	//                       KEEPALIVE COMMANDS
+	//########################################################################################
+
 	@ReactMethod
 	public void keepAlive(final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "keepAlive");
@@ -1388,6 +1744,39 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				WritableMap retVal = Arguments.createMap();
 				retVal.putBoolean("error", true);
 				retVal.putString("data", "keepAlive failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void keepAliveState(boolean action, float state, int timeout, final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "keepAliveState: action=" + action + " state=" + state + " timeout=" + timeout);
+		int actionInt = 0;
+		if (action) {
+			actionInt = 1;
+		}
+		// For now: no dimming
+		int switchState = 0;
+		if (state > 0) {
+			switchState = BluenetConfig.SWITCH_ON;
+		}
+		_bleExt.writeKeepAliveState(actionInt, switchState, timeout, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "keepAliveState success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGi(TAG, "keepAliveState error "+ error);
+//					BleLog.getInstance().LOGi(TAG, Log.getStackTraceString(new Exception()));
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "keepAliveState failed: " + error);
 				callback.invoke(retVal);
 			}
 		});
@@ -1494,84 +1883,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
-	@ReactMethod
-	public void multiSwitch(ReadableArray switchItems, final Callback callback) {
-		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
-		BleLog.getInstance().LOGd(TAG, "multiSwitch " + switchItems.toString());
 
-		// Create the multi switch packet
-		MeshMultiSwitchPacket packet = new MeshMultiSwitchPacket();
-		boolean success = true;
-		for (int i=0; i<switchItems.size(); i++) {
-			ReadableMap itemMap = switchItems.getMap(i);
-			int crownstoneId =         itemMap.getInt("crownstoneId");
-			int timeout =              itemMap.getInt("timeout");
-			int intent =               itemMap.getInt("intent");
-			double switchStateDouble = itemMap.getDouble("state");
-//			int switchState = (int) Math.round(BluenetConfig.SWITCH_ON * switchStateDouble);
-			int switchState = 0;
-			if (switchStateDouble > 0) {
-				switchState = BluenetConfig.SWITCH_ON;
-			}
-			if (!packet.addMultiSwitch(crownstoneId, switchState, timeout, intent)) {
-				success = false;
-				BleLog.getInstance().LOGe(TAG, "Unable to add multiSwitch item: " + itemMap);
-				break;
-			}
-		}
-		if (!success) {
-			BleLog.getInstance().LOGe(TAG, "Failed to send multiSwitch: " + switchItems);
-			WritableMap retVal = Arguments.createMap();
-			retVal.putBoolean("error", true);
-			retVal.putString("data", "Invalid multiSwitch data");
-			callback.invoke(retVal);
-			return;
-		}
-
-		byte[] payload = packet.toArray();
-		_bleExt.writeControl(new ControlMsg(BluenetConfig.CMD_MULTI_SWITCH, payload.length, payload), new IStatusCallback() {
-			@Override
-			public void onSuccess() {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				callback.invoke(retVal);
-			}
-
-			@Override
-			public void onError(int error) {
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				retVal.putString("data", "multiSwitch failed: " + error);
-				callback.invoke(retVal);
-			}
-		});
-
-//		// Write a mesh control msg with the packet as payload
-////		byte[] payload = packet.toArray();
-////		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, payload.length, payload);
-//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, packet);
-//		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
-//			@Override
-//			public void onSuccess() {
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", false);
-//				callback.invoke(retVal);
-//			}
-//
-//			@Override
-//			public void onError(int error) {
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", true);
-//				retVal.putString("data", "multiSwitch failed: " + error);
-//				callback.invoke(retVal);
-//			}
-//		});
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//                       iBeacon tracking
-	//////////////////////////////////////////////////////////////////////////////////////////
+	//########################################################################################
+	//                       IBEACON TRACKING
+	//########################################################################################
 
 	@ReactMethod
 	public void trackIBeacon(String ibeaconUUID, String sphereId) {
@@ -1645,9 +1960,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//                       Localization
-	//////////////////////////////////////////////////////////////////////////////////////////
+	//########################################################################################
+	//                       LOCALIZATION
+	//########################################################################################
 
 	@ReactMethod
 	public void startIndoorLocalization() {
@@ -1753,9 +2068,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 
-	//////////////////////////////////////////////////////////////////////////////////////////
+	//########################################################################################
 	//                       private
-	//////////////////////////////////////////////////////////////////////////////////////////
+	//########################################################################################
 
 	private void sendEvent(String eventName, @Nullable WritableMap params) {
 //		BleLog.getInstance().LOGd(TAG, "sendEvent " + eventName + ": " + params);
