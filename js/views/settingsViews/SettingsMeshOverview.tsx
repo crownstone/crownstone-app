@@ -44,7 +44,7 @@ export class SettingsMeshOverview extends Component<any, any> {
   getNetworks(networks) {
     let networksAvailable = Object.keys(networks);
     let networkElements = [];
-    networksAvailable.forEach((networkKey, i) => {
+    networksAvailable.forEach((networkKey) => {
       networkElements.push(<Network
         key={networkKey}
         label={networkKey === floatingNetworkKey? 'Not in Mesh:' : 'Network #' + networkKey + ':'}
@@ -54,8 +54,8 @@ export class SettingsMeshOverview extends Component<any, any> {
     });
 
     let offset = 0;
-    let networkWidth = 270 * networksAvailable.length;
-    if (networksAvailable.length < 2) {
+    let networkWidth = 300 * networkElements.length;
+    if (networkElements.length < 2) {
       offset = screenWidth * 0.5 - networkWidth * 0.5;
     }
 
@@ -116,7 +116,7 @@ export class SettingsMeshOverview extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <Text style={{
             backgroundColor:'transparent',
