@@ -24,6 +24,11 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {stones} from "../../cloud/sections/stones";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 
+
+let ALERT_TYPES = {
+  fingerprintNeeded : 'fingerPrintNeeded'
+};
+
 class RoomCircleClass extends Component<any, any> {
   initializedPosition : any;
   energyLevels : any;
@@ -33,6 +38,8 @@ class RoomCircleClass extends Component<any, any> {
   outerDiameter : number;
   iconSize : number;
   textSize : number;
+
+  showAlert : string = null;
 
   animationStarted : boolean;
   animating : boolean;
@@ -346,17 +353,17 @@ class RoomCircleClass extends Component<any, any> {
 
 
   _getAlertIcon() {
-    let alertSize = 34;
+    let alertSize = this.outerDiameter*0.30;
     return (
-      <TouchableOpacity style={[styles.centered, {
+      <View style={[styles.centered, {
         width:alertSize,
         height:alertSize, borderRadius:alertSize*0.5,
         borderWidth:3,
         borderColor:'#fff',
         position:'absolute',
-        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} onPress={() => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}} >
+        top: 0, left: this.outerDiameter - alertSize, backgroundColor:colors.iosBlue.hex}]}>
         <Icon name="c1-locationPin1" color="#fff" size={17} style={{backgroundColor:'transparent'}} />
-      </TouchableOpacity>
+      </View>
     )
   }
 
@@ -365,14 +372,13 @@ class RoomCircleClass extends Component<any, any> {
     const state = store.getState();
 
     let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-    let showFingerprintNeeded = false;
+    this.showAlert = null;
     if (this.props.locationId !== null && this.props.viewingRemotely !== true) {
       if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
-        showFingerprintNeeded = true;
+        this.showAlert = ALERT_TYPES.fingerprintNeeded;
       }
     }
     this.renderState = store.getState();
-
     const animatedStyle = {
       transform: [
         { scale: this.props.scale },
@@ -384,15 +390,26 @@ class RoomCircleClass extends Component<any, any> {
         <View>
           {this.getCircle()}
           {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
-          {showFingerprintNeeded === true ? this._getAlertIcon() : undefined}
+          {this.showAlert !== null ? this._getAlertIcon() : undefined}
         </View>
       </Animated.View>
     )
   }
 
   handleTap(data) {
-    // console.log("here");
-    Actions.roomOverview({sphereId: this.props.sphereId, locationId: this.props.locationId});
+    let handled = false;
+    if (this.showAlert !== null) {
+      if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
+        if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
+          handled = true;
+          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
+        }
+      }
+    }
+
+    if (handled === false) {
+      Actions.roomOverview({sphereId: this.props.sphereId, locationId: this.props.locationId});
+    }
   }
 }
 
