@@ -235,7 +235,7 @@ export class RoomLayer extends Component<any, any> {
         if (this._pressedRoom !== false) {
           this.state.locations[this._pressedRoom].scale.stopAnimation();
           this.state.locations[this._pressedRoom].opacity.stopAnimation();
-          // Actions.roomOverview({sphereId: this.props.sphereId, locationId: this._pressedRoom});
+          Actions.roomOverview({sphereId: this.props.sphereId, locationId: this._pressedRoom});
         }
 
         if (this._currentScale > this._maxScale) {
