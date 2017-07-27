@@ -30,7 +30,7 @@ import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import { Icon } from '../views/components/Icon';
 import { Util } from '../util/Util'
-import {WhatsNewOverlay} from "../views/overlays/WhatsNewOverlay";
+import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 
 
 export class Router_IOS extends Component {
