@@ -67,7 +67,7 @@ class BatterySavingClass {
       cancelPostponedScan();
       Bluenet.batterySaving(false);
       BluenetPromiseWrapper.isReady().then(() => {
-        LOG.info("BatterySavingUtil: Start Scanning");
+        LOG.info("BatterySavingUtil: Start Scanning.");
         Bluenet.startScanningForCrownstonesUniqueOnly();
       });
     }

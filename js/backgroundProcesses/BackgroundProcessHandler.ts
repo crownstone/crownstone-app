@@ -65,7 +65,11 @@ class BackgroundProcessHandlerClass {
         }
 
         LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
-        BatterySavingUtil.startNormalUsage();
+        Bluenet.batterySaving(false);
+        BluenetPromiseWrapper.isReady().then(() => {
+          LOG.info("BatterySavingUtil: Start Scanning.");
+          Bluenet.startScanningForCrownstonesUniqueOnly();
+        });
 
         LocationHandler.initializeTracking();
 
