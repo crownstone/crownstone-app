@@ -22,6 +22,8 @@ import {deviceStyles} from "../DeviceOverview";
 import {textStyle} from "./DeviceBehaviour";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {Util} from "../../../util/Util";
+import {Permissions} from "../../../backgroundProcesses/Permissions";
+import {Icon} from "../../components/Icon";
 
 
 export class DeviceSchedule extends Component<any, any> {
@@ -54,6 +56,31 @@ export class DeviceSchedule extends Component<any, any> {
     }
 
     return items;
+  }
+
+  _getClearAllOption(stone) {
+    if (Permissions.canClearAllSchedules) {
+      return (
+        <TouchableOpacity
+          style={{marginBottom:45, height:30, backgroundColor:colors.white.rgba(0.2), borderRadius: 0.5*30, padding:5, paddingLeft:15, paddingRight:15, justifyContent:'center', alignItems:'center', flexDirection:'row'}}
+          onPress={() => {
+          if (stone.config.disabled === true) {
+            Alert.alert(
+              "Can't see Crownstone!",
+              "You cannot sync schedules from Crownstone if I can't see it...",
+              [{text:"OK"}]
+            );
+          }
+          else {
+            // TODO: sync down
+            Alert.alert("TODO", '',[{text:"OK"}]);
+          }
+        }}>
+          <Icon name="md-sync" size={20} color={colors.darkBackground.rgba(0.9)} style={{padding:5, paddingLeft:0}} />
+          <Text style={{color: colors.darkBackground.rgba(0.9)}}>Sync schedules from Crownstone</Text>
+        </TouchableOpacity>
+      )
+    }
   }
 
   render() {
@@ -101,6 +128,7 @@ export class DeviceSchedule extends Component<any, any> {
             <View key="subScheduleSpacer" style={{height: 0.2*iconSize}} />
             <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
             <View style={{height:40, width:screenWidth, backgroundColor: 'transparent'}} />
+            { this._getClearAllOption(stone) }
           </View>
         </ScrollView>
       )
@@ -145,6 +173,7 @@ export class DeviceSchedule extends Component<any, any> {
               Add your first scheduled action by tapping on "Add" in the top right corner!
             </Text>
             <View style={{flex: 2}} />
+            { this._getClearAllOption(stone) }
           </View>
         </ScrollView>
       )

@@ -34,6 +34,12 @@ export class PermissionClass {
   inviteMemberToSphere   = false; // a or m
   inviteGuestToSphere    = false; // a or m
 
+  canClearAllSchedules   = false; // a
+  canAddSchedule         = false; // a or m
+  canEditSchedule        = false; // a or m
+  canSeeSchedules        = false; // a or m
+  canDeleteSchedule      = false; // a or m
+
   _loadStore(store, userAlreadyLoggedIn) {
     if (this._initialized === false) {
       this._store = store;
@@ -95,6 +101,8 @@ export class PermissionClass {
         this.editSphere             = true; // admin
         this.deleteSphere           = true; // admin
         this.inviteAdminToSphere    = true; // admin
+
+        this.canClearAllSchedules   = true; // a
       case 'member':
         this.changeBehaviour        = true; // admin and member
         this.useKeepAliveState      = true; // admin and member
@@ -105,6 +113,11 @@ export class PermissionClass {
 
         this.inviteMemberToSphere   = true; // admin and member
         this.inviteGuestToSphere    = true; // admin and member
+
+        this.canAddSchedule         = true; // a or m  --------- implement
+        this.canEditSchedule        = true; // a or m  --------- implement
+        this.canSeeSchedules        = true; // a or m  --------- implement
+        this.canDeleteSchedule      = true; // a or m  --------- implement
       case 'guest':
         // nothing will be added.
     }
@@ -138,6 +151,12 @@ export class PermissionClass {
     this.inviteAdminToSphere    = false; // a
     this.inviteMemberToSphere   = false; // a or m
     this.inviteGuestToSphere    = false; // a or m
+
+    this.canClearAllSchedules   = false; // a
+    this.canAddSchedule         = false; // a or m
+    this.canEditSchedule        = false; // a or m
+    this.canSeeSchedules        = false; // a or m
+    this.canDeleteSchedule      = false; // a or m
   }
 }
 
