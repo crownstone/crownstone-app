@@ -120,8 +120,12 @@ android {
         }
         release {
             minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources false // Only works with minifyEnabled?
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
+            // debuggable false
+            // jniDebuggable false
+            // zipAlignEnabled true
         }
     }
     // applicationVariants are e.g. debug, release
