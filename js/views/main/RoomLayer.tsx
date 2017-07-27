@@ -5,6 +5,7 @@ import {
   Image,
   NativeModules,
   PanResponder,
+  Platform,
   ScrollView,
   TouchableHighlight,
   Text,
@@ -52,6 +53,9 @@ export class RoomLayer extends Component<any, any> {
 
   wiggleInterval : any;
 
+  viewWidth : number = screenWidth;
+  viewHeight : number = availableScreenHeight;
+
   constructor(props) {
     super();
 
@@ -68,11 +72,20 @@ export class RoomLayer extends Component<any, any> {
 
     this.physicsEngine = new PhysicsEngine();
     this._currentSphere = props.sphereId;
+
+    if (Platform.OS === 'android') {
+      this.viewWidth =  3 * screenWidth;
+      this.viewHeight = 3 * availableScreenHeight;
+    }
+
   }
 
   _findPress(x,y) {
     let cx = 0.5*screenWidth;
     let cy = 0.5*availableScreenHeight;
+
+    let offsetX = (this.viewWidth - screenWidth)*0.5;
+    let offsetY = (this.viewHeight - availableScreenHeight)*0.5;
 
     let x2 = x - this._currentPan.x;
     let y2 = y - this._currentPan.y;
@@ -83,16 +96,15 @@ export class RoomLayer extends Component<any, any> {
     let dx1 = dx2 / this._currentScale;
     let dy1 = dy2 / this._currentScale;
 
-    let x1 = cx + dx1;
-    let y1 = cy + dy1;
+    let x1 = cx + dx1 + offsetX;
+    let y1 = cy + dy1 + offsetY;
 
     let nodeIds = Object.keys(this.nodes);
-    let radius = 2*this._baseRadius;
+    let diameter = 2*this._baseRadius;
     let found = false;
     for(let i = 0; i < nodeIds.length; i++) {
       let node = this.nodes[nodeIds[i]];
-      // console.log(node.x + radius > correctedX, node.y + radius > correctedY, node.x < correctedX, node.y < correctedY, correctedY);
-      if (node.x + radius > x1 && node.y + radius > y1 && node.x < x1 && node.y < y1) {
+      if (node.x + diameter > x1 && node.y + diameter > y1 && node.x < x1 && node.y < y1) {
         found = true;
         let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
         if (this._pressedRoom !== nodeIds[i]) {
@@ -223,7 +235,7 @@ export class RoomLayer extends Component<any, any> {
         if (this._pressedRoom !== false) {
           this.state.locations[this._pressedRoom].scale.stopAnimation();
           this.state.locations[this._pressedRoom].opacity.stopAnimation();
-          Actions.roomOverview({sphereId: this.props.sphereId, locationId: this._pressedRoom});
+          // Actions.roomOverview({sphereId: this.props.sphereId, locationId: this._pressedRoom});
         }
 
         if (this._currentScale > this._maxScale) {
@@ -304,7 +316,6 @@ export class RoomLayer extends Component<any, any> {
     let maxY = -1e10;
     let nodeIds = Object.keys(this.nodes);
 
-
     if (nodeIds.length === 0) {
       return;
     }
@@ -344,7 +355,7 @@ export class RoomLayer extends Component<any, any> {
     let massCenter = {x: minX + 0.5*requiredWidth, y: minY + 0.5*requiredHeight};
 
     // actual center of the view.
-    let viewCenter = {x: 0.5*screenWidth, y: 0.5*availableScreenHeight+10};
+    let viewCenter = {x: 0.5*this.viewWidth, y: 0.5*this.viewHeight+10};
 
     // determine offset to center everything.
     let offsetRequired = {x: newScale*(viewCenter.x - massCenter.x) - this._panOffset.x, y: newScale*(viewCenter.y - massCenter.y) - this._panOffset.y};
@@ -390,7 +401,7 @@ export class RoomLayer extends Component<any, any> {
     let showFloatingCrownstones = floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
 
     let roomIds = Object.keys(state.spheres[this._currentSphere].locations);
-    let center = {x: 0.5*screenWidth - this._baseRadius, y: 0.5*availableScreenHeight - this._baseRadius};
+    let center = {x: 0.5*this.viewWidth - this._baseRadius, y: 0.5*this.viewHeight - this._baseRadius};
 
     this.state.locations = {};
     this.nodes = {};
@@ -432,6 +443,7 @@ export class RoomLayer extends Component<any, any> {
       })
     };
 
+    // here we do not use this.viewWidth because it is meant to give the exact screen proportions
     this.physicsEngine.initEngine(center, screenWidth, availableScreenHeight - 50, this._baseRadius, () => {}, onStable);
     this.physicsEngine.load(this.nodes, edges);
     this.physicsEngine.stabilize(300, false);
@@ -495,11 +507,21 @@ export class RoomLayer extends Component<any, any> {
 
       return (
         <View {...this._panResponder.panHandlers} style={{backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight, overflow:"hidden"}}>
-          <Animated.View style={[animatedStyle, {width: screenWidth, height: availableScreenHeight, opacity:this.state.opacity}]}>
+          <Animated.View style={
+            [animatedStyle,
+              {
+                width: this.viewWidth,
+                height: this.viewHeight,
+                opacity:this.state.opacity,
+                position: 'relative',
+                top: -(this.viewHeight - availableScreenHeight)*0.5,
+                left: -(this.viewWidth - screenWidth)*0.5,
+              }
+            ]}>
             {this.getRooms()}
           </Animated.View>
         </View>
-      )
+      );
     }
   }
 }

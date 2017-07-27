@@ -31,10 +31,9 @@ export class AnimatedLoadingBar extends Component<any, any> {
     if (nextProps.progress) {
       let innerWidth = this.width - 2 * this.borderWidth;
       if (nextProps.progress !== this.progressTarget) {
-        Animated.spring(this.state.progress, {
+        Animated.timing(this.state.progress, {
           toValue: innerWidth * nextProps.progress,
-          friction: 4,
-          tension: 40
+          duration: 200
         }).start();
         this.progressTarget = nextProps.progress;
       }
