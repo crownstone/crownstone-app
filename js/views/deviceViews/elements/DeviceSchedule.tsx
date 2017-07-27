@@ -67,7 +67,6 @@ export class DeviceSchedule extends Component<any, any> {
 
     let items = this._getItems(schedules);
 
-
     /**
      * there is duplicate code here because the flex does not work if just the changed content is passed as array
      */
@@ -100,7 +99,8 @@ export class DeviceSchedule extends Component<any, any> {
               />
             </TouchableOpacity>
             <View key="subScheduleSpacer" style={{height: 0.2*iconSize}} />
-            <ListEditableItems key="empty"  items={items} style={{width:screenWidth}} />
+            <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
+            <View style={{height:40, width:screenWidth, backgroundColor: 'transparent'}} />
           </View>
         </ScrollView>
       )

@@ -347,7 +347,10 @@ open class BluenetJS: NSObject {
   @objc func isReady(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called isReady")
     GLOBAL_BLUENET!.bluenet.isReady()
-      .then{_ in callback([["error" : false]])}
+      .then{_ -> Void in
+        LOGGER.info("BluenetBridge: returned isReady")
+        callback([["error" : false]]
+      )}
       .catch{err in
         if let bleErr = err as? BleError {
           callback([["error" : true, "data": getBleErrorString(bleErr)]])
@@ -1074,9 +1077,9 @@ open class BluenetJS: NSObject {
       return
     }
     GLOBAL_BLUENET!.bluenet.state.getAvailableScheduleEntryIndex()
-      .then{index -> Void in
+      .then{scheduleEntryIndex -> Void in
         let config = ScheduleConfigurator(
-          scheduleEntryIndex: index,
+          scheduleEntryIndex: scheduleEntryIndex,
           startTime: nextTime!.doubleValue,
           switchState: switchState!.floatValue
         )
@@ -1092,7 +1095,7 @@ open class BluenetJS: NSObject {
         config.repeatDay.Sunday = activeSunday!.boolValue
         
         GLOBAL_BLUENET!.bluenet.control.setSchedule(scheduleConfig: config)
-          .then{time in callback([["error" : false]])}
+          .then{time in callback([["error" : false, "data": scheduleEntryIndex]])}
           .catch{err in
             if let bleErr = err as? BleError {
               callback([["error" : true, "data": getBleErrorString(bleErr)]])
