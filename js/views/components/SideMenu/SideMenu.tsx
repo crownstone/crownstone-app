@@ -54,5 +54,5 @@ export class SideMenu extends Component<any, any> {
 
 const drawerStyles = {
   // drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3},
-  drawer: {elevation: 3},
+  drawer: {},
 };

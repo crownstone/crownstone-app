@@ -20,7 +20,6 @@ const Actions = require('react-native-router-flux').Actions;
 
 export class PictureCircle extends Component<any, any> {
   triggerOptions() {
-
     if (Platform.OS === 'android') {
       this.askForPermissions();
     } else {

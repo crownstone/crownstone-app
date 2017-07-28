@@ -53,6 +53,7 @@ export const StoneUtil = {
   },
 
   timestampToCrownstoneTime: function(utcTimestamp) : number {
+    // for holland in summer, timezoneOffsetMinutes is -120, winter will be -60
     let timezoneOffsetMinutes = new Date(utcTimestamp).getTimezoneOffset();
 
     return (utcTimestamp - timezoneOffsetMinutes*60000)/1000;

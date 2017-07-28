@@ -364,7 +364,10 @@ export const Util = {
     let targetPath = Platform.OS === 'android' ? RNFS.ExternalDirectoryPath : RNFS.DocumentDirectoryPath;
 
     if (filename) {
-      targetPath += '/' + filename;
+      if (targetPath[targetPath.length-1] !== '/') {
+        targetPath += '/';
+      }
+      targetPath += filename;
     }
     return targetPath;
   }
