@@ -7,6 +7,7 @@ import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
 import {DISABLE_NATIVE, MESH_ENABLED, STONE_TIME_REFRESH_INTERVAL}          from '../ExternalConfig'
 import {Permissions} from "../backgroundProcesses/Permissions";
+import {StoneUtil} from "../util/StoneUtil";
 
 
 /**
@@ -349,6 +350,9 @@ class BatchCommandHandlerClass {
               case 'keepAliveState':
                 actionPromise = BluenetPromiseWrapper.keepAliveState(command.changeState, command.state, command.timeout);
                 break;
+              case 'getSchedules':
+                actionPromise = BluenetPromiseWrapper.getSchedules();
+                break;
               case 'clearSchedule':
                 actionPromise = BluenetPromiseWrapper.clearSchedule(command.scheduleEntryIndex);
                 break;
@@ -492,7 +496,7 @@ class BatchCommandHandlerClass {
             // if it is more than 5 hours ago, tell this crownstone the time.
             if (new Date().valueOf() - lastTime > STONE_TIME_REFRESH_INTERVAL) {
               // this will never halt the chain since it's optional.
-              return BluenetPromiseWrapper.setTime(new Date().valueOf() / 1000)
+              return BluenetPromiseWrapper.setTime(StoneUtil.nowToCrownstoneTime())
                 .then(() => {
                   this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
                 })

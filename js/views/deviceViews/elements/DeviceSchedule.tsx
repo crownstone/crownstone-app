@@ -24,6 +24,10 @@ import {ListEditableItems} from "../../components/ListEditableItems";
 import {Util} from "../../../util/Util";
 import {Permissions} from "../../../backgroundProcesses/Permissions";
 import {Icon} from "../../components/Icon";
+import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
+import {LOG} from "../../../logging/Log";
+import {eventBus} from "../../../util/EventBus";
+import {StoneUtil} from "../../../util/StoneUtil";
 
 
 export class DeviceSchedule extends Component<any, any> {
@@ -58,11 +62,21 @@ export class DeviceSchedule extends Component<any, any> {
     return items;
   }
 
-  _getClearAllOption(stone) {
+  _getSyncOption(stone) {
     if (Permissions.canClearAllSchedules) {
       return (
         <TouchableOpacity
-          style={{marginBottom:45, height:30, backgroundColor:colors.white.rgba(0.2), borderRadius: 0.5*30, padding:5, paddingLeft:15, paddingRight:15, justifyContent:'center', alignItems:'center', flexDirection:'row'}}
+          style={{
+            marginBottom:45,
+            height:30,
+            backgroundColor:colors.white.rgba(0.3),
+            borderRadius: 0.5*30,
+            padding:5,
+            paddingLeft:15,
+            paddingRight:15,
+            justifyContent:'center',
+            alignItems:'center',
+            flexDirection:'row'}}
           onPress={() => {
           if (stone.config.disabled === true) {
             Alert.alert(
@@ -72,15 +86,116 @@ export class DeviceSchedule extends Component<any, any> {
             );
           }
           else {
-            // TODO: sync down
-            Alert.alert("TODO", '',[{text:"OK"}]);
+            this._syncSchedules(stone);
           }
         }}>
-          <Icon name="md-sync" size={20} color={colors.darkBackground.rgba(0.9)} style={{padding:5, paddingLeft:0}} />
-          <Text style={{color: colors.darkBackground.rgba(0.9)}}>Sync schedules from Crownstone</Text>
+          <Icon name="md-sync" size={20} color={colors.darkBackground.hex} style={{padding:5, paddingLeft:0}} />
+          <Text style={{color: colors.darkBackground.hex}}>Sync schedules from Crownstone</Text>
         </TouchableOpacity>
       )
     }
+  }
+
+  _syncSchedules(stone) {
+    let generateReduxData = (scheduleBridgeFormat : bridgeScheduleEntry) => {
+      return {
+        time: StoneUtil.crownstoneTimeToTimestamp(scheduleBridgeFormat.nextTime),
+        scheduleEntryIndex: scheduleBridgeFormat.scheduleEntryIndex,
+        switchState: scheduleBridgeFormat.switchState,
+        fadeDuration: scheduleBridgeFormat.fadeDuration,
+        intervalInMinutes: scheduleBridgeFormat.intervalInMinutes,
+        ignoreLocationTriggers: scheduleBridgeFormat.ignoreLocationTriggers,
+        active: scheduleBridgeFormat.active,
+        repeatMode: scheduleBridgeFormat.repeatMode,
+        activeDays: {
+          Mon: scheduleBridgeFormat.activeMonday,
+          Tue: scheduleBridgeFormat.activeTuesday,
+          Wed: scheduleBridgeFormat.activeWednesday,
+          Thu: scheduleBridgeFormat.activeThursday,
+          Fri: scheduleBridgeFormat.activeFriday,
+          Sat: scheduleBridgeFormat.activeSaturday,
+          Sun: scheduleBridgeFormat.activeSunday,
+        },
+      }
+    };
+    eventBus.emit("showLoading", "Downloading schedules from Crownstone...");
+    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSchedules'}, 1, 'sync schedules from DeviceSchedule')
+      .then((stoneSchedules : [bridgeScheduleEntry]) => {
+        let dbSchedules = stone.schedules;
+        let syncActions = [];
+        let activeIds = {};
+        stoneSchedules.forEach((schedule) => {
+          let matchingId = this._findMatchingScheduleId(schedule, dbSchedules);
+          if (matchingId === null) {
+            syncActions.push({
+              type: 'ADD_STONE_SCHEDULE', stoneId: this.props.stoneId, sphereId: this.props.sphereId, scheduleId: Util.getUUID(),
+              data: generateReduxData(schedule)
+            })
+          }
+          else {
+            activeIds[matchingId] = true;
+            syncActions.push({
+              type: 'UPDATE_STONE_SCHEDULE', stoneId: this.props.stoneId, sphereId: this.props.sphereId, scheduleId: matchingId,
+              data: generateReduxData(schedule)
+            })
+          }
+        });
+
+        let dbScheduleIds = Object.keys(dbSchedules);
+        for (let i = 0; i < dbScheduleIds.length; i++) {
+          if (activeIds[dbScheduleIds[i]] !== true) {
+            syncActions.push({
+              type: 'UPDATE_STONE_SCHEDULE', stoneId: this.props.stoneId, sphereId: this.props.sphereId, scheduleId: dbScheduleIds[i],
+              data: {active: false}
+            })
+          }
+        }
+
+        this.props.store.batchDispatch(syncActions);
+        eventBus.emit("hideLoading");
+      })
+      .catch((err) => {
+        eventBus.emit("hideLoading");
+        LOG.error("DeviceSchedule: Could not get the schedules from the Crownstone.", err);
+        Alert.alert(
+          "Could not Sync",
+          "Move closer to the Crownstone and try again!",
+          [{text:"OK"}]
+        );
+      });
+
+    BatchCommandHandler.executePriority();
+  }
+
+  _findMatchingScheduleId(schedule, dbSchedules) {
+    let dbScheduleIds = Object.keys(dbSchedules);
+    
+    // matching will be done on days, time and state
+    for (let i = 0; i < dbScheduleIds.length; i++) {
+      let dbSchedule = dbSchedules[dbScheduleIds[i]];
+      if (
+        schedule.activeMonday === dbSchedule.activeMonday &&
+        schedule.activeTuesday === dbSchedule.activeTuesday &&
+        schedule.activeWednesday === dbSchedule.activeWednesday &&
+        schedule.activeThursday === dbSchedule.activeThursday &&
+        schedule.activeFriday === dbSchedule.activeFriday &&
+        schedule.activeSaturday === dbSchedule.activeSaturday &&
+        schedule.activeSunday === dbSchedule.activeSunday &&
+        schedule.switchState === dbSchedule.switchState
+      ) {
+        let dbHours = new Date(dbSchedule.time).getHours();
+        let dbMinutes = new Date(dbSchedule.time).getMinutes();
+
+        let hours = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getHours();
+        let minutes = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getMinutes();
+        
+        if (dbHours === hours && dbMinutes === minutes) {
+          return dbScheduleIds[i];
+        }
+      }
+    }
+
+    return null;
   }
 
   render() {
@@ -128,7 +243,7 @@ export class DeviceSchedule extends Component<any, any> {
             <View key="subScheduleSpacer" style={{height: 0.2*iconSize}} />
             <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
             <View style={{height:40, width:screenWidth, backgroundColor: 'transparent'}} />
-            { this._getClearAllOption(stone) }
+            { this._getSyncOption(stone) }
           </View>
         </ScrollView>
       )
@@ -173,7 +288,7 @@ export class DeviceSchedule extends Component<any, any> {
               Add your first scheduled action by tapping on "Add" in the top right corner!
             </Text>
             <View style={{flex: 2}} />
-            { this._getClearAllOption(stone) }
+            { this._getSyncOption(stone) }
           </View>
         </ScrollView>
       )

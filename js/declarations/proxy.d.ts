@@ -43,6 +43,7 @@ interface BluenetPromiseWrapperProtocol {
   setSchedule(data: bridgeScheduleEntry):Promise<void>,
   clearSchedule(scheduleEntryIndex: number):Promise<void>,
   getAvailableScheduleEntryIndex():Promise<number>,
+  getSchedules():Promise<[bridgeScheduleEntry]>,
 }
 
 interface crownstoneServiceData {

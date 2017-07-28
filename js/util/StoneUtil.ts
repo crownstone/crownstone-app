@@ -42,5 +42,24 @@ export const StoneUtil = {
       });
 
     BatchCommandHandler.executePriority();
-  }
-}
+  },
+
+
+  crownstoneTimeToTimestamp: function(csTimestamp) : number {
+    let jsTimestamp = 1000*csTimestamp;
+    let timezoneOffsetMinutes = new Date(jsTimestamp).getTimezoneOffset();
+
+    return jsTimestamp + timezoneOffsetMinutes*60000;
+  },
+
+  timestampToCrownstoneTime: function(utcTimestamp) : number {
+    let timezoneOffsetMinutes = new Date(utcTimestamp).getTimezoneOffset();
+
+    return (utcTimestamp - timezoneOffsetMinutes*60000)/1000;
+  },
+
+  nowToCrownstoneTime: function() : number {
+    return StoneUtil.timestampToCrownstoneTime(new Date().valueOf())
+  },
+
+};

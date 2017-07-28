@@ -30,6 +30,7 @@ import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {LOG} from "../../logging/Log";
 import {Icon} from "../components/Icon";
+import {StoneUtil} from "../../util/StoneUtil";
 
 let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -94,7 +95,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
               this.setState({time: timeToday.valueOf() });
             }
           })
-          .catch((err) => { console.log("err", err) })
+          .catch((err) => { LOG.error("DeviceScheduleEdit: Could not pick time for android.", err) })
       }}>
         <Text style={{flex:1, fontSize:55, fontWeight: '500', color:colors.black.rgba(0.6) }}>
           {Util.getTimeFormat(this.state.time, false)}
@@ -324,7 +325,11 @@ export class DeviceScheduleEdit extends Component<any, any> {
     let hoursSet = new Date(this.state.time).getHours();
     let minutesSet = new Date(this.state.time).getMinutes();
 
-    let timeToday = new Date(new Date().setHours(hoursSet)).setMinutes(minutesSet);
+    let timeToday = new Date(
+                          new Date(
+                            new Date().setHours(hoursSet)
+                          ).setMinutes(minutesSet)
+                        ).setSeconds(0);
 
     let daysSorted = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
@@ -332,7 +337,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
       if (this.state.activeDays[daysSorted[i%daysSorted.length]] === true) {
         let timeAtDay = timeToday + (i - currentDayOfWeek) * 24*3600*1000;
         if (timeAtDay > now) {
-          return timeAtDay / 1000;
+          return StoneUtil.timestampToCrownstoneTime(timeAtDay);
         }
       }
     }
@@ -387,7 +392,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           )
         }
       });
-    BatchCommandHandler.load(stone, this.props.stoneId, this.props.sphereId, { commandName : 'setTime', time: new Date().valueOf()/1000 }).catch(() => {});
+    BatchCommandHandler.load(stone, this.props.stoneId, this.props.sphereId, { commandName : 'setTime', time: StoneUtil.nowToCrownstoneTime() }).catch(() => {});
     BatchCommandHandler.executePriority();
   }
 
@@ -416,7 +421,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           {cancelable: false}
         )
       });
-    BatchCommandHandler.load(stone, this.props.stoneId, this.props.sphereId, { commandName : 'setTime', time: new Date().valueOf()/1000 }).catch(() => {});
+    BatchCommandHandler.load(stone, this.props.stoneId, this.props.sphereId, { commandName : 'setTime', time: StoneUtil.nowToCrownstoneTime() }).catch(() => {});
     BatchCommandHandler.executePriority();
   }
 

@@ -1194,20 +1194,6 @@ open class BluenetJS: NSObject {
     config.repeatDay.Friday = activeFriday!.boolValue
     config.repeatDay.Saturday = activeSaturday!.boolValue
     config.repeatDay.Sunday = activeSunday!.boolValue
-    
-//    print("scheduleEntryIndex \(scheduleEntryIndex!.uint8Value)")
-//    print("nextTime \(nextTime!.doubleValue)")
-//    print("switchState \(switchState!.floatValue)")
-//    print("fadeDuration \(fadeDuration!.uint16Value)")
-//    print("intervalInMinutes \(intervalInMinutes!.uint16Value)")
-//    print("ignoreLocationTriggers \(ignoreLocationTriggers!.boolValue)")
-//    print("activeMonday \(activeMonday!.boolValue)")
-//    print("activeTuesday \(activeTuesday!.boolValue)")
-//    print("activeWednesday \(activeWednesday!.boolValue)")
-//    print("activeThursday \(activeThursday!.boolValue)")
-//    print("activeFriday \(activeFriday!.boolValue)")
-//    print("activeSaturday \(activeSaturday!.boolValue)")
-//    print("activeSunday \(activeSunday!.boolValue)")
 
     
     GLOBAL_BLUENET!.bluenet.control.setSchedule(scheduleConfig: config)
@@ -1250,5 +1236,29 @@ open class BluenetJS: NSObject {
         }
     }
   }
+  
+  @objc func getSchedules(_ callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called getSchedules")
+    GLOBAL_BLUENET!.bluenet.state.getAllSchedules()
+      .then{data -> Void in
+        var returnData = [NSDictionary]()
+        for schedule in data {
+          if (schedule.isActive()) {
+            returnData.append(schedule.getScheduleDataFormat())
+          }
+        }
+        callback([["error" : false, "data": returnData]])
+      }
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getAvailableSchedulerIndex"]])
+        }
+    }
+    
+  }
+
   
 }

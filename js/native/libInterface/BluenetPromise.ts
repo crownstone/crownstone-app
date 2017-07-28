@@ -105,6 +105,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   addSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('addSchedule', data); }, // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
   setSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('setSchedule', data); },
   clearSchedule:                  (scheduleEntryIndex: number) => { return BluenetPromise('clearSchedule', scheduleEntryIndex); },
-  getAvailableScheduleEntryIndex: () => { return BluenetPromise('getAvailableScheduleEntryIndex'); }              // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
+  getAvailableScheduleEntryIndex: () => { return BluenetPromise('getAvailableScheduleEntryIndex'); },             // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
+  getSchedules:                   () => { return BluenetPromise('getSchedules'); },                               // must return array of bridgeScheduleEntry
 };
 

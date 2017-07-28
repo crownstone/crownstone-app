@@ -100,5 +100,7 @@ RCT_EXTERN_METHOD(addSchedule:(NSDictionary *)data callback:(RCTResponseSenderBl
 RCT_EXTERN_METHOD(setSchedule:(NSDictionary *)data callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(clearSchedule:(nonnull NSNumber *)scheduleEntryIndex callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getAvailableScheduleEntryIndex:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getSchedules:(RCTResponseSenderBlock)callback)
+
 
 @end

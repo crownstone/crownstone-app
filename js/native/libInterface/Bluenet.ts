@@ -69,6 +69,8 @@ if (DISABLE_NATIVE === true) {
 
     setSchedule: () => {},
     clearSchedule: () => {},
+    addSchedule: () => {},
+    getSchedules: () => {},
     getAvailableScheduleEntryIndex: () => {},
 
   }

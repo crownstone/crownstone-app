@@ -157,8 +157,6 @@ export class DeviceSummary extends Component<any, any> {
       locationName = location.config.name;
     }
 
-    console.log('canMoveCrownstone,',canMoveCrownstone)
-
     return (
       <View style={{flex:1, paddingBottom:35}}>
         <DeviceInformation left={"Energy Consumption:"}
@@ -166,7 +164,6 @@ export class DeviceSummary extends Component<any, any> {
                            right={locationLabel}
                            rightValue={locationName}
                            rightTapAction={canMoveCrownstone ? () => {
-                             console.log("HERE")
                            Actions.roomSelection({
                              sphereId: this.props.sphereId,
                              stoneId: this.props.stoneId,

@@ -116,7 +116,6 @@ function handleUserInCloud(action, state) {
   let userId = state.user.userId;
   CLOUD.forUser(userId);
   if (action.data.picture) {
-    console.log("action.data.picture", action.data.picture)
     CLOUD.uploadProfileImage(action.data.picture)
       .then((data) => {
         LOG.info(data);

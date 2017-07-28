@@ -2,7 +2,7 @@ import { update, getTime, refreshDefaults } from '../reducerUtil'
 
 let defaultSettings = {
   label: '',
-  time: 0,
+  time: 0,                // this is a UTC timestamp.
   scheduleEntryIndex: 0,
   cloudId: '',
   linkedSchedule: null,

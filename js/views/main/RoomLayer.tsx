@@ -205,7 +205,6 @@ export class RoomLayer extends Component<any, any> {
       },
 
       onPanResponderRelease: (evt, gestureState) => {
-        // console.log(gestureState.vx, gestureState.vy);
         if (gestureState.vx !== 0 || gestureState.vy !== 0) {
           Animated.decay(this.state.pan, { velocity: {x: gestureState.vx, y: gestureState.vy}, deceleration:0.99}).start(() => {
             this._panOffset.x = this._currentPan.x;

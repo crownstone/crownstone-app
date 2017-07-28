@@ -80,7 +80,8 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'clearSchedule', scheduleEntryIndex: number } |
   { commandName : 'getAvailableScheduleEntryIndex' } |
   { commandName : 'setSchedule', scheduleConfig: bridgeScheduleEntry } |
-  { commandName : 'addSchedule', scheduleConfig: bridgeScheduleEntry }
+  { commandName : 'addSchedule', scheduleConfig: bridgeScheduleEntry } |
+  { commandName : 'getSchedules' }
 
 
 interface batchCommands  {
