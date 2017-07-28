@@ -1243,11 +1243,16 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private int convertSwitchVal(double switchVal) {
 		// For now: no dimming
 //		int switchState = (int) Math.round(BluenetConfig.SWITCH_ON * switchVal);
-		int switchState = 0;
+		int switchValInt = 0;
 		if (switchVal > 0) {
-			switchState = BluenetConfig.SWITCH_ON;
+			switchValInt = BluenetConfig.SWITCH_ON;
 		}
-		return switchState;
+		return switchValInt;
+	}
+
+	private double convertSwitchVal(int switchVal) {
+		// For now: no dimming
+		return (double)switchVal / BluenetConfig.SWITCH_ON;
 	}
 
 
@@ -1583,13 +1588,57 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
+	@ReactMethod
+	public void getSchedules(final Callback callback) {
+		_bleExt.getBleExtState().getSchedule(new IByteArrayCallback() {
+			@Override
+			public void onSuccess(byte[] result) {
+				ScheduleListPacket schedule = new ScheduleListPacket();
+				if (!schedule.fromArray(result)) {
+					BleLog.getInstance().LOGw(TAG, "getSchedules parse error");
+					WritableMap retVal = Arguments.createMap();
+					retVal.putBoolean("error", true);
+					retVal.putString("data", "getSchedules parse error");
+					callback.invoke(retVal);
+					return;
+				}
+				WritableArray scheduleArray = Arguments.createArray();
+				int size = schedule.getSize();
+				for (int i=0; i<size; ++i) {
+					if (!schedule.getEntry(i).isActive()) {
+						continue;
+					}
+					WritableMap entryMap = exportScheduleEntryMap(schedule.getEntry(i));
+					if (entryMap == null) {
+						continue;
+					}
+					entryMap.putInt("scheduleEntryIndex", i);
+					scheduleArray.pushMap(entryMap);
+				}
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				retVal.putArray("data", scheduleArray);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGi(TAG, "getSchedules error "+ error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "getSchedules failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
 	private void getAvailableScheduleEntryIndex(final IIntegerCallback callback) {
 		_bleExt.getBleExtState().getSchedule(new IByteArrayCallback() {
 			@Override
 			public void onSuccess(byte[] result) {
 				ScheduleListPacket schedule = new ScheduleListPacket();
 				if (!schedule.fromArray(result)) {
-					BleLog.getInstance().LOGi(TAG, "getAvailableScheduleEntryIndex parse error");
+					BleLog.getInstance().LOGw(TAG, "getAvailableScheduleEntryIndex parse error");
 					callback.onError(BleErrors.ERROR_MSG_PARSING);
 					return;
 				}
@@ -1614,69 +1663,70 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		});
 	}
 
+	// scheduleEntryMap:
+	//		scheduleEntryIndex     : number, // 0 .. 9
+	//		nextTime               : number, // timestamp since epoch in seconds
+	//		switchState            : number, // 0 .. 1
+	//		fadeDuration           : number, // # seconds
+	//		intervalInMinutes      : number, // # minutes
+	//		ignoreLocationTriggers : boolean,
+	//		repeatMode             : "24h" | "minute" | "none",
+	//		activeMonday           : boolean,
+	//		activeTuesday          : boolean,
+	//		activeWednesday        : boolean,
+	//		activeThursday         : boolean,
+	//		activeFriday           : boolean,
+	//		activeSaturday         : boolean,
+	//		activeSunday           : boolean,
+
 	/**
-	 * Parses a map and returns it as packet.
-	 * @param scheduleEntryMap the map.
-	 * @return the parsed map, or null when parsing failed.
+	 * Parses a schedule entry map and returns it as schedule entry packet.
+	 * @param map the map.
+	 * @return the packet, or null when parsing failed.
 	 */
-	private ScheduleEntryPacket parseScheduleEntryMap(ReadableMap scheduleEntryMap) {
-		// scheduleEntryMap:
-		//		scheduleEntryIndex     : number, // 0 .. 9
-		//		nextTime               : number, // timestamp since epoch in seconds
-		//		switchState            : number, // 0 .. 1
-		//		fadeDuration           : number, // # seconds
-		//		intervalInMinutes      : number, // # minutes
-		//		ignoreLocationTriggers : boolean,
-		//		repeatMode             : "24h" | "minute" | "none",
-		//		activeMonday           : boolean,
-		//		activeTuesday          : boolean,
-		//		activeWednesday        : boolean,
-		//		activeThursday         : boolean,
-		//		activeFriday           : boolean,
-		//		activeSaturday         : boolean,
-		//		activeSunday           : boolean,
+	private ScheduleEntryPacket parseScheduleEntryMap(ReadableMap map) {
 		ScheduleEntryPacket packet = new ScheduleEntryPacket();
 		try {
 			packet._overrideMask = 0;
-			boolean ignoreLocationTriggers     = scheduleEntryMap.getBoolean("ignoreLocationTriggers");
+			boolean ignoreLocationTriggers     = map.getBoolean("ignoreLocationTriggers");
 			if (ignoreLocationTriggers) {
 				packet._overrideMask |= (1 << ScheduleEntryPacket.OVERRIDE_BIT_POS_LOCATION);
 			}
 
-			packet._timestamp    = (long)scheduleEntryMap.getDouble("nextTime");
+			packet._timestamp    = (long)map.getDouble("nextTime");
 
 			packet._dayOfWeekMask = 0;
 			packet._minutes = 0;
-			String repeatType                   = scheduleEntryMap.getString("repeatMode");
+			String repeatType                   = map.getString("repeatMode");
 			switch (repeatType) {
 			case "24h": {
 				packet._repeatType = ScheduleEntryPacket.REPEAT_DAY;
-				if (scheduleEntryMap.getBoolean("activeSunday")) {
+				if (map.getBoolean("activeSunday")) {
 					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_SUNDAY);
 				}
-				if (scheduleEntryMap.getBoolean("activeMonday")) {
+				if (map.getBoolean("activeMonday")) {
 					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_MONDAY);
 				}
-				if (scheduleEntryMap.getBoolean("activeTuesday")) {
+				if (map.getBoolean("activeTuesday")) {
 					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_TUESDAY);
 				}
-				if (scheduleEntryMap.getBoolean("activeWednesday")) {
+				if (map.getBoolean("activeWednesday")) {
 					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_WEDNESDAY);
 				}
-				if (scheduleEntryMap.getBoolean("activeThursday")) {
+				if (map.getBoolean("activeThursday")) {
 					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_THURSDAY);
 				}
-				if (scheduleEntryMap.getBoolean("activeFriday")) {
+				if (map.getBoolean("activeFriday")) {
 					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_FRIDAY);
 				}
-				if (scheduleEntryMap.getBoolean("activeSaturday")) {
+				if (map.getBoolean("activeSaturday")) {
 					packet.setWeekdayBit(ScheduleEntryPacket.WEEKDAY_BIT_POS_SATURDAY);
 				}
 				break;
 			}
 			case "minute": {
 				packet._repeatType = ScheduleEntryPacket.REPEAT_MINUTES;
-				packet._minutes    = scheduleEntryMap.getInt("intervalInMinutes");
+				packet._minutes    = map.getInt("intervalInMinutes");
 				break;
 			}
 			case "none": {
@@ -1688,10 +1738,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				return null;
 			}
 
-			double switchStateFloat = scheduleEntryMap.getDouble("switchState");
+			double switchStateFloat = map.getDouble("switchState");
 			int switchState = convertSwitchVal(switchStateFloat);
 			packet._switchVal    = switchState;
-			packet._fadeDuration = scheduleEntryMap.getInt("fadeDuration");
+			packet._fadeDuration = map.getInt("fadeDuration");
 			if (packet._fadeDuration > 0) {
 				packet._actionType = ScheduleEntryPacket.ACTION_FADE;
 			}
@@ -1700,13 +1750,88 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			}
 		}
 		catch (NoSuchKeyException | UnexpectedNativeTypeException e) {
-			BleLog.getInstance().LOGw(TAG, "Wrong schedule entry: " + scheduleEntryMap.toString());
+			BleLog.getInstance().LOGw(TAG, "Wrong schedule entry: " + map.toString());
 			return null;
 		}
 		if (!packet.isValidPacketToSet()) {
 			return null;
 		}
 		return packet;
+	}
+
+	/**
+	 * Exports a ScheduleEntryPacket to a schedule entry map.
+	 * @param packet the packet.
+	 * @return the map, or null when inactive or when parsing failed.
+	 */
+	private WritableMap exportScheduleEntryMap(ScheduleEntryPacket packet) {
+		if (!packet.isActive()) {
+			return null;
+		}
+		WritableMap map = Arguments.createMap();
+		map.putBoolean("active", true);
+		map.putDouble("nextTime", packet._timestamp);
+		map.putBoolean("ignoreLocationTriggers",  packet.isIgnoreBitSet(ScheduleEntryPacket.OVERRIDE_BIT_POS_LOCATION));
+
+		// Repeat type
+		// Always fill all values with something.
+		map.putInt("intervalInMinutes", 0);
+		map.putBoolean("activeSunday",    false);
+		map.putBoolean("activeMonday",    false);
+		map.putBoolean("activeTuesday",   false);
+		map.putBoolean("activeWednesday", false);
+		map.putBoolean("activeThursday",  false);
+		map.putBoolean("activeFriday",    false);
+		map.putBoolean("activeSaturday",  false);
+		switch (packet._repeatType) {
+			case ScheduleEntryPacket.REPEAT_MINUTES: {
+				map.putString("repeatMode", "minute");
+				map.putInt("intervalInMinutes", packet._minutes);
+				break;
+			}
+			case ScheduleEntryPacket.REPEAT_DAY: {
+				map.putString("repeatMode", "24h");
+				map.putBoolean("activeSunday",    packet.isWeekdayActive(ScheduleEntryPacket.WEEKDAY_BIT_POS_SUNDAY));
+				map.putBoolean("activeMonday",    packet.isWeekdayActive(ScheduleEntryPacket.WEEKDAY_BIT_POS_MONDAY));
+				map.putBoolean("activeTuesday",   packet.isWeekdayActive(ScheduleEntryPacket.WEEKDAY_BIT_POS_TUESDAY));
+				map.putBoolean("activeWednesday", packet.isWeekdayActive(ScheduleEntryPacket.WEEKDAY_BIT_POS_WEDNESDAY));
+				map.putBoolean("activeThursday",  packet.isWeekdayActive(ScheduleEntryPacket.WEEKDAY_BIT_POS_THURSDAY));
+				map.putBoolean("activeFriday",    packet.isWeekdayActive(ScheduleEntryPacket.WEEKDAY_BIT_POS_FRIDAY));
+				map.putBoolean("activeSaturday",  packet.isWeekdayActive(ScheduleEntryPacket.WEEKDAY_BIT_POS_SATURDAY));
+				break;
+			}
+			case ScheduleEntryPacket.REPEAT_ONCE: {
+				map.putString("repeatMode", "none");
+				break;
+			}
+			default: {
+				BleLog.getInstance().LOGe(TAG, "wrong schedule entry: " + packet.toString());
+				return null;
+			}
+		}
+
+		// Action type
+		// Always fill all values with something invalid.
+		map.putDouble("switchState", 0.0);
+		map.putInt("fadeDuration", 0);
+		switch (packet._actionType) {
+			case ScheduleEntryPacket.ACTION_SWITCH: {
+				map.putDouble("switchState", convertSwitchVal(packet._switchVal));
+				break;
+			}
+			case ScheduleEntryPacket.ACTION_FADE: {
+				map.putDouble("switchState", convertSwitchVal(packet._switchVal));
+				map.putInt("fadeDuration", packet._fadeDuration);
+				break;
+			}
+			case ScheduleEntryPacket.ACTION_TOGGLE: {
+				break;
+			}
+			default: {
+				return null;
+			}
+		}
+		return map;
 	}
 
 	private void setScheduleEntry(ScheduleCommandPacket entry, final IStatusCallback callback) {
