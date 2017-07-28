@@ -174,14 +174,14 @@ export class DeviceSchedule extends Component<any, any> {
     for (let i = 0; i < dbScheduleIds.length; i++) {
       let dbSchedule = dbSchedules[dbScheduleIds[i]];
       if (
-        schedule.activeMonday === dbSchedule.activeMonday &&
-        schedule.activeTuesday === dbSchedule.activeTuesday &&
-        schedule.activeWednesday === dbSchedule.activeWednesday &&
-        schedule.activeThursday === dbSchedule.activeThursday &&
-        schedule.activeFriday === dbSchedule.activeFriday &&
-        schedule.activeSaturday === dbSchedule.activeSaturday &&
-        schedule.activeSunday === dbSchedule.activeSunday &&
-        schedule.switchState === dbSchedule.switchState
+        schedule.activeMonday    === dbSchedule.activeDays.Mon &&
+        schedule.activeTuesday   === dbSchedule.activeDays.Tue &&
+        schedule.activeWednesday === dbSchedule.activeDays.Wed &&
+        schedule.activeThursday  === dbSchedule.activeDays.Thu &&
+        schedule.activeFriday    === dbSchedule.activeDays.Fri &&
+        schedule.activeSaturday  === dbSchedule.activeDays.Sat &&
+        schedule.activeSunday    === dbSchedule.activeDays.Sun &&
+        schedule.switchState     === dbSchedule.switchState
       ) {
         let dbHours = new Date(dbSchedule.time).getHours();
         let dbMinutes = new Date(dbSchedule.time).getMinutes();
@@ -194,7 +194,6 @@ export class DeviceSchedule extends Component<any, any> {
         }
       }
     }
-
     return null;
   }
 

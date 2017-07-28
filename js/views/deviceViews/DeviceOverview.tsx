@@ -114,8 +114,8 @@ export class DeviceOverview extends Component<any, any> {
     let canUpdate = Util.versions.canUpdate(stone, state);
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
-    // let hasScheduler = stone.config.type !== STONE_TYPES.guidestone;
     let hasScheduler = Permissions.canSeeSchedules && stone.config.type !== STONE_TYPES.guidestone && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0');
+    hasScheduler = true
     let deviceType = stone.config.type;
 
     if (hasError)  { summaryIndex++; behaviourIndex++; }

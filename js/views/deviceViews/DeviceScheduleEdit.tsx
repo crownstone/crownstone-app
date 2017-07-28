@@ -160,6 +160,16 @@ export class DeviceScheduleEdit extends Component<any, any> {
             );
             return;
           }
+          else if (stone.schedules[this.props.scheduleId].active === false) {
+            Alert.alert(
+              "Are you sure?",
+              "Remove scheduled action?",
+              [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
+                Actions.pop();
+                this.props.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
+              }}]
+            )
+          }
           else {
             Alert.alert(
               "Are you sure?",
@@ -478,12 +488,24 @@ export class DeviceScheduleEdit extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
-        <TopBar
-          leftAction={() => { this._updateSchedule(); }}
-          right={this.props.scheduleId ? undefined : 'Create'}
-          rightStyle={{fontWeight: 'bold'}}
-          rightAction={this.props.scheduleId ? undefined : () => { this._createSchedule(); } }
-          title={this.props.scheduleId ? "Edit Schedule" : "Add Schedule"} />
+        { this.props.scheduleId ?
+          <TopBar
+            left={'Cancel'}
+            leftAction={() => {  Actions.pop();  }}
+            right={'Save'}
+            rightStyle={{fontWeight: 'bold'}}
+            rightAction={() => { this._updateSchedule(); }}
+            title={"Edit Schedule"} /> :
+          <TopBar
+            left={'Cancel'}
+            leftAction={() => { Actions.pop(); }}
+            right={'Create'}
+            rightStyle={{fontWeight: 'bold'}}
+            rightAction={() => { this._createSchedule(); }}
+            title={"Add Schedule"} />
+
+        }
+
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
           <View style={{alignItems:'center', width: screenWidth}}>
