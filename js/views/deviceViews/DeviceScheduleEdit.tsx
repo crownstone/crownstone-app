@@ -490,14 +490,12 @@ export class DeviceScheduleEdit extends Component<any, any> {
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         { this.props.scheduleId ?
           <TopBar
-            left={'Cancel'}
             leftAction={() => {  Actions.pop();  }}
             right={'Save'}
             rightStyle={{fontWeight: 'bold'}}
             rightAction={() => { this._updateSchedule(); }}
             title={"Edit Schedule"} /> :
           <TopBar
-            left={'Cancel'}
             leftAction={() => { Actions.pop(); }}
             right={'Create'}
             rightStyle={{fontWeight: 'bold'}}
