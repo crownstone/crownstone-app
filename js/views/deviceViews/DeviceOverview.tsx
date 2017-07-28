@@ -176,6 +176,7 @@ export class DeviceOverview extends Component<any, any> {
           activeDot={<View style={{backgroundColor: 'rgba(255,255,255,0.8)', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
           loop={false}
           bounces={true}
+          loadMinimal={false}
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
