@@ -28,6 +28,7 @@ import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { eventBus } from "../../util/EventBus";
 import {DevicePowerCurve} from "./elements/DevicePowerCurve";
 import {DeviceSchedule} from "./elements/DeviceSchedule";
+import { LOG } from '../../logging/Log';
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
@@ -61,16 +62,25 @@ export class DeviceOverview extends Component<any, any> {
         (state.spheres[this.props.sphereId] === undefined) ||
         (change.removeStone && change.removeStone.stoneIds[this.props.stoneId])
          ) {
-        Actions.pop();
+        try {
+          Actions.pop();
+        } catch (popErr) {
+          LOG.error("DeviceOverview pop error 1:", popErr);
+        }
         return;
       }
 
 
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
+      // TODO: this piece of code leads to too many .pop(), causing an error to be thrown on android.
       // investigate why this check is required:
       if (!stone || !stone.config) {
-        Actions.pop();
+        try {
+          Actions.pop();
+        } catch (popErr) {
+          LOG.error("DeviceOverview pop error 2:", popErr);
+        }
         return;
       }
 
