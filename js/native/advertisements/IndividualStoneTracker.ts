@@ -1,7 +1,7 @@
 import { Alert, Vibration } from 'react-native';
 
 import { eventBus } from '../../util/EventBus';
-import { LOG }      from '../../logging/Log'
+import { LOG }      from '../../logging/Log';
 import {Util} from "../../util/Util";
 
 const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
@@ -43,6 +43,15 @@ export class IndividualStoneTracker {
 
 
   updateListener() {
+    // TODO: this is a quick fix to make it not crash, fix this better.
+    if (this.store.getState().spheres[this.sphereId] === undefined) {
+      LOG.warn("Missing sphere:", this.sphereId);
+      return;
+    }
+    if (this.store.getState().spheres[this.sphereId].stones[this.stoneId] === undefined) {
+      LOG.warn("Missing stone:", this.stoneId);
+      return;
+    }
     this.meshNetworkId = this.store.getState().spheres[this.sphereId].stones[this.stoneId].config.meshNetworkId;
 
     // cleanup previous listener
