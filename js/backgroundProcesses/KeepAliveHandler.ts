@@ -65,7 +65,7 @@ class KeepAliveHandlerClass {
         if (stone.config.type !== STONE_TYPES.guidestone) {
           if (stone.config.handle && stone.config.disabled === false) {
             let element = Util.data.getElement(sphere, stone);
-            this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, {active:false, newState:0}, 10, element, keepAliveId);
+            this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, {active:false, state:0}, 10, element, keepAliveId);
           }
         }
       });
