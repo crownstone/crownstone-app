@@ -12,7 +12,7 @@ export const BehaviourUtil = {
       return false;
     }
 
-    if (behaviourType === BEHAVIOUR_TYPES.ROOM_EXIT || behaviourType === BEHAVIOUR_TYPES.HOME_EXIT) {
+    if (state.app.keepAlivesEnabled === false && (behaviourType === BEHAVIOUR_TYPES.ROOM_EXIT || behaviourType === BEHAVIOUR_TYPES.HOME_EXIT)) {
       return false;
     }
 
@@ -36,7 +36,7 @@ export const BehaviourUtil = {
     // turn on crownstones in room
     let state = store.getState();
 
-    // do not perform this behaviour if the indoor localization is disabled
+    // Check if the behaviour should be performed, given the app settings
     if (this.performCommandCheck(state, behaviourType) === false) {
       return;
     }
@@ -73,7 +73,7 @@ export const BehaviourUtil = {
   enactBehaviourInSphere: function(store : any, sphereId : string, behaviourType : string, callbacks : any = {}) {
     let state = store.getState();
 
-    // do not perform this behaviour if the indoor localization is disabled
+    // Check if the behaviour should be performed, given the app settings
     if (this.performCommandCheck(state, behaviourType) === false) {
       return;
     }
@@ -103,7 +103,7 @@ export const BehaviourUtil = {
    *                                        }
    */
   enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
-    // do not perform this behaviour if the indoor localization is disabled
+    // Check if the behaviour should be performed, given the app settings
     if (this.performCommandCheck(store.getState(), behaviourType) === false) {
       return;
     }
@@ -128,7 +128,7 @@ export const BehaviourUtil = {
   _enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
     let state = store.getState();
 
-    // do not perform this behaviour if the indoor localization is disabled
+    // Check if the behaviour should be performed, given the app settings
     if (this.performCommandCheck(state, behaviourType) === false) {
       return;
     }
@@ -162,7 +162,7 @@ export const BehaviourUtil = {
    *                                        }
    */
   _enactBehaviourCore: function(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, callbacks : any = {}) {
-    // do not perform this behaviour if the indoor localization is disabled
+    // Check if the behaviour should be performed, given the app settings
     if (this.performCommandCheck(store.getState(), behaviourType) === false) {
       return;
     }
