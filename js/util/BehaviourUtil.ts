@@ -12,7 +12,8 @@ export const BehaviourUtil = {
       return false;
     }
 
-    if (state.app.keepAlivesEnabled === false && (behaviourType === BEHAVIOUR_TYPES.ROOM_EXIT || behaviourType === BEHAVIOUR_TYPES.HOME_EXIT)) {
+    // keepAlives are required for roomExit. Home Exit is only done by keepAlives and should never go through this code.
+    if ((state.app.keepAlivesEnabled === false && behaviourType === BEHAVIOUR_TYPES.ROOM_EXIT) || behaviourType === BEHAVIOUR_TYPES.HOME_EXIT) {
       return false;
     }
 
