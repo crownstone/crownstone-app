@@ -110,7 +110,8 @@ export class DeviceOverview extends Component<any, any> {
 
   render() {
     const state = this.props.store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    const sphere = state.spheres[this.props.sphereId];
+    const stone = sphere.stones[this.props.stoneId];
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
     let hasAppliance = stone.config.applianceId !== null;
 
@@ -121,7 +122,7 @@ export class DeviceOverview extends Component<any, any> {
     let powerMonitorIndex = index++;
 
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
-    let canUpdate = Util.versions.canUpdate(stone, state);
+    let canUpdate = Util.versions.canUpdate(stone, state) && sphere.config.present === true;
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
     let hasScheduler = Permissions.canSeeSchedules && stone.config.type !== STONE_TYPES.guidestone && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0');

@@ -199,7 +199,7 @@ export class SetupHelper {
               Alert.alert("I'm Sorry!", "Something went wrong during the setup. Please try it again and stay really close to it!", [{text:"OK"}]);
             }
 
-            LOG.error("error during setup phase:", err);
+            LOG.error("SetupHelper: Error during setup phase:", err);
 
             BluenetPromiseWrapper.phoneDisconnect().then(() => { reject(err) }).catch(() => { reject(err) });
           })

@@ -60,7 +60,7 @@ export function request(
     return response.text(); // this is a promise
   };
 
-  LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, " body:", body, "config:",requestConfig);
+  LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, "config:", requestConfig);
 
   // the actual request
   return new Promise((resolve, reject) => {

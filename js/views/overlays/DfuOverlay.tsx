@@ -113,32 +113,38 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    // if the overlay went to visible or the step entered the release notes, start the process.
     if ((this.state.visible !== nextState.visible || this.state.step !== nextState.step) && nextState.step === STEP_TYPES.RELEASE_NOTES) {
-      let state = this.props.store.getState();
-      let userConfig = state.user;
-      let stoneConfig = state.spheres[nextState.sphereId].stones[nextState.stoneId].config;
-
-      FirmwareHandler.getVersions(
-        userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
-        userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion],
-        stoneConfig.hardwareVersion
-      )
-        .then(() => {
-          let releaseNotes = FirmwareHandler.newFirmwareDetails.releaseNotes;
-          if (typeof releaseNotes === 'object') {
-            // the first hit should be the locale of the user, then fallback on english, then fallback on the first key (if no keys exist)
-            releaseNotes = releaseNotes['en'] || releaseNotes['en'] || releaseNotes[Object.keys(releaseNotes)[0]];
-          }
-          // final fallback, release notes not available.
-          releaseNotes = releaseNotes || RELEASE_NOTES_NA;
-          this.setState({releaseNotes: releaseNotes});
-        })
-        .catch((err) => {
-          LOG.error("DfuOverlay: Could not download release notes...", err);
-          this.setState({releaseNotes: RELEASE_NOTES_ERROR});
-        })
+      this.getReleaseNotes(nextState);
     }
   }
+
+  getReleaseNotes(releaseNoteState) {
+    let state = this.props.store.getState();
+    let userConfig = state.user;
+    let stoneConfig = state.spheres[releaseNoteState.sphereId].stones[releaseNoteState.stoneId].config;
+
+    FirmwareHandler.getVersions(
+      userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
+      userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion],
+      stoneConfig.hardwareVersion
+    )
+      .then(() => {
+        let releaseNotes = FirmwareHandler.newFirmwareDetails.releaseNotes;
+        if (typeof releaseNotes === 'object') {
+          // the first hit should be the locale of the user, then fallback on english, then fallback on the first key (if no keys exist)
+          releaseNotes = releaseNotes['en'] || releaseNotes['en'] || releaseNotes[Object.keys(releaseNotes)[0]];
+        }
+        // final fallback, release notes not available.
+        releaseNotes = releaseNotes || RELEASE_NOTES_NA;
+        this.setState({releaseNotes: releaseNotes});
+      })
+      .catch((err) => {
+        LOG.error("DfuOverlay: Could not download release notes...", err);
+        this.setState({releaseNotes: RELEASE_NOTES_ERROR});
+      })
+  }
+
 
   componentWillUnmount() {
     this._searchCleanup();
@@ -283,7 +289,6 @@ export class DfuOverlay extends Component<any, any> {
     })
     .then(() => {
       this._processCleanup();
-      eventBus.emit("DFU_completed", stoneConfig.handle);
       this.props.store.dispatch({
         type: "UPDATE_STONE_CONFIG",
         stoneId: this.state.stoneId,
