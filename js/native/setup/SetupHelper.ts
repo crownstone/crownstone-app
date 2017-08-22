@@ -124,6 +124,12 @@ export class SetupHelper {
                 }
               };
 
+              // Restore trigger state
+              eventBus.emit("useTriggers");
+
+              // first emit, then add to database. The adding to database will cause a redraw and having this event after it can lead to race conditions / ghost stones / missing room nodes.
+              eventBus.emit("setupComplete", this.handle);
+
               if (state.spheres[sphereId].stones[this.stoneIdInCloud] !== undefined) {
                 showRestoreAlert = true;
               }
@@ -152,9 +158,7 @@ export class SetupHelper {
                 );
               }
 
-              // Restore trigger state
-              eventBus.emit("useTriggers");
-              eventBus.emit("setupComplete", this.handle);
+
               LOG.info("setup complete");
 
               // Resolve the setup promise.

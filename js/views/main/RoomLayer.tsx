@@ -476,14 +476,23 @@ export class RoomLayer extends Component<any, any> {
     let floatingStones = getFloatingStones(state, this.props.sphereId);
     let showFloatingCrownstones = floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
 
+    // If there is a need for an floatingCrownstone location node and there is none in the solver, reload solver.
+    // If the room is there but there is no need for it, reload solver.
+    if (showFloatingCrownstones === true &&  this.state.locations['null'] === undefined ||
+        showFloatingCrownstones === false && this.state.locations['null'] !== undefined) {
+      if      ( showFloatingCrownstones) { LOG.info("RoomLayer: Reloading solver due to required but missing floatingCrownstone location.") }
+      else if (!showFloatingCrownstones) { LOG.info("RoomLayer: Reloading solver due to superfluous floatingCrownstone location.") }
+      this.loadInSolver();
+    }
+
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
 
     for (let i = 0; i < roomIdArray.length; i++) {
-      roomNodes.push(this._renderRoom(roomIdArray[i]))
+      roomNodes.push(this._renderRoom(roomIdArray[i]));
     }
     if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null))
+      roomNodes.push(this._renderRoom(null));
     }
 
     return roomNodes;
