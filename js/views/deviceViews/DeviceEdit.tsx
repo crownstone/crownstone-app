@@ -1,12 +1,14 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  TouchableOpacity,
+  Linking,
   PixelRatio,
   ScrollView,
   Switch,
   TextInput,
   Text,
+  TouchableHighlight,
+  TouchableOpacity,
   View
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
@@ -107,7 +109,7 @@ export class DeviceEdit extends Component<any, any> {
 
 
     if (appliance) {
-      items.push({label: 'CURRENT CROWNSTONE OF THIS DEVICE TYPE', type: 'explanation', below: false});
+      items.push({label: 'CURRENT CROWNSTONE USING THIS TYPE', type: 'explanation', below: false});
     }
     else {
       items.push({label: 'CROWNSTONE', type: 'explanation', below: false});
@@ -116,6 +118,20 @@ export class DeviceEdit extends Component<any, any> {
       label: 'Name', type: 'textEdit', placeholder:'Choose a nice name', value: stone.config.name, callback: (newText) => {
         store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
       }
+    });
+    items.push({
+      label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled === true, callback: (newValue) => {
+        store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {dimmingEnabled: newValue}});
+      }
+    });
+    items.push({
+      label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
+        Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(err => {})}
+    });
+    items.push({
+      label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',
+      type: 'explanation',
+      below: true
     });
 
     if (stone.config.type !== STONE_TYPES.guidestone && !applianceId) {
@@ -132,7 +148,7 @@ export class DeviceEdit extends Component<any, any> {
         }
       });
       items.push({
-        label: 'A Device has it\'s own configuration and behaviour so you can set up once and quickly apply it to one or multiple Crownstones.',
+        label: 'A Device Type has it\'s own configuration and behaviour so you can set up once and quickly apply it to one or multiple Crownstones.',
         type: 'explanation',
         below: true
       });

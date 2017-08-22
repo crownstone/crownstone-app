@@ -130,6 +130,7 @@ export class ErrorOverlay extends Component<any, any> {
                 currentCrownstone.stoneId,
                 currentCrownstone.sphereId,
                 {commandName:'clearErrors', clearErrorJSON: clearData},
+                {},
                 1000,
                 'from _getButton in ErrorOverlay'
               )
@@ -146,7 +147,7 @@ export class ErrorOverlay extends Component<any, any> {
                 eventBus.emit("hideLoading");
                 let defaultAction = () => {
                   this.setState({visible:false});
-                };
+                }; 
                 Alert.alert("Success!","The Error has been reset. Normal functionality is re-enabled.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
               })
               .catch((err) => {

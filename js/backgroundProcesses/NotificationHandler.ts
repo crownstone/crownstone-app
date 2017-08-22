@@ -167,6 +167,7 @@ class NotificationParserClass {
               state.spheres[messageData.sphereId].stones[messageData.stoneId],
               Math.min(1,Math.max(0,messageData.switchState || 0)),
               this.store,
+              {},
               (err) => {},
               INTENTS.remotely,
               25,

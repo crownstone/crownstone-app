@@ -24,6 +24,11 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {stones} from "../../cloud/sections/stones";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
 
+
+let ALERT_TYPES = {
+  fingerprintNeeded : 'fingerPrintNeeded'
+};
+
 class RoomCircleClass extends Component<any, any> {
   initializedPosition : any;
   energyLevels : any;
@@ -33,6 +38,8 @@ class RoomCircleClass extends Component<any, any> {
   outerDiameter : number;
   iconSize : number;
   textSize : number;
+
+  showAlert : string = null;
 
   animationStarted : boolean;
   animating : boolean;
@@ -47,8 +54,8 @@ class RoomCircleClass extends Component<any, any> {
   fadeDuration : number;
 
   unsubscribeSetupEvents : any;
-  unsubscribe : any;
   unsubscribeStoreEvents : any;
+  unsubscribeControlEvents : any;
   renderState : any;
 
   constructor(props) {
@@ -152,6 +159,10 @@ class RoomCircleClass extends Component<any, any> {
         this.forceUpdate();
       }
     });
+
+    this.unsubscribeControlEvents = this.props.eventBus.on('roomCircleTap'+this.props.locationId, (data) => {
+      this.handleTap(data);
+    })
   }
 
 
@@ -161,6 +172,7 @@ class RoomCircleClass extends Component<any, any> {
       unsubscribe();
     });
     this.unsubscribeStoreEvents();
+    this.unsubscribeControlEvents();
   }
 
 
@@ -273,7 +285,7 @@ class RoomCircleClass extends Component<any, any> {
 
   _getUsageCircle(usage, newColor) {
     let colorOfLowerLayer = this._getColor(usage, true);
-    let pathLength = Math.PI * 2 * this.props.radius;
+    let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
     if (usage == 0 && !(this.props.locationId === null && this.props.seeStonesInSetupMode === true)) {
       return (
         <Svg style={{
@@ -286,8 +298,6 @@ class RoomCircleClass extends Component<any, any> {
             r={this.props.radius - this.borderWidth}
             stroke={colorOfLowerLayer}
             strokeWidth={this.borderWidth}
-            strokeDasharray={[pathLength,pathLength]}
-            rotate="-89.9"
             x={this.props.radius}
             y={this.props.radius}
             strokeLinecap="round"
@@ -313,8 +323,6 @@ class RoomCircleClass extends Component<any, any> {
           r={this.props.radius - this.borderWidth}
           stroke={colorOfLowerLayer}
           strokeWidth={this.borderWidth}
-          strokeDasharray={[pathLength,pathLength]}
-          rotate="-89.9"
           x={this.props.radius}
           y={this.props.radius}
           strokeLinecap="round"
@@ -340,30 +348,22 @@ class RoomCircleClass extends Component<any, any> {
     let level = this._getLevel(usage);
     let minW = this.energyLevels[level].min;
     let maxW = this.energyLevels[level].max;
-    let val = (usage-minW) / (maxW-minW);
-
-    if (val < 0.5) {
-      return val - (0.2*val*val);
-    }
-    else if (val < 0.84) {
-      return 0.61 + (0.9*val-0.6)
-    }
-    return 0.8*val*val + 0.2;
+    return (usage-minW) / (maxW-minW);
   }
 
 
   _getAlertIcon() {
-    let alertSize = 34;
+    let alertSize = this.outerDiameter*0.30;
     return (
-      <TouchableOpacity style={[styles.centered, {
+      <View style={[styles.centered, {
         width:alertSize,
         height:alertSize, borderRadius:alertSize*0.5,
         borderWidth:3,
         borderColor:'#fff',
         position:'absolute',
-        top:this.outerDiameter*0.06, left: this.outerDiameter*0.75, backgroundColor:colors.iosBlue.hex}]} onPress={() => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId})}} >
+        top: 0, left: this.outerDiameter - alertSize, backgroundColor:colors.iosBlue.hex}]}>
         <Icon name="c1-locationPin1" color="#fff" size={17} style={{backgroundColor:'transparent'}} />
-      </TouchableOpacity>
+      </View>
     )
   }
 
@@ -372,14 +372,13 @@ class RoomCircleClass extends Component<any, any> {
     const state = store.getState();
 
     let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-    let showFingerprintNeeded = false;
+    this.showAlert = null;
     if (this.props.locationId !== null && this.props.viewingRemotely !== true) {
       if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
-        showFingerprintNeeded = true;
+        this.showAlert = ALERT_TYPES.fingerprintNeeded;
       }
     }
     this.renderState = store.getState();
-
     const animatedStyle = {
       transform: [
         { scale: this.props.scale },
@@ -391,10 +390,26 @@ class RoomCircleClass extends Component<any, any> {
         <View>
           {this.getCircle()}
           {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
-          {showFingerprintNeeded === true ? this._getAlertIcon() : undefined}
+          {this.showAlert !== null ? this._getAlertIcon() : undefined}
         </View>
       </Animated.View>
     )
+  }
+
+  handleTap(data) {
+    let handled = false;
+    if (this.showAlert !== null) {
+      if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
+        if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {
+          handled = true;
+          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
+        }
+      }
+    }
+
+    if (handled === false) {
+      Actions.roomOverview({sphereId: this.props.sphereId, locationId: this.props.locationId});
+    }
   }
 }
 

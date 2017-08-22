@@ -94,6 +94,7 @@ export class SphereOverview extends Component<any, any> {
 
   render() {
     LOG.info("RENDERING_OVERVIEW");
+
     const store = this.props.store;
     const state = store.getState();
 

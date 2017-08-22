@@ -127,6 +127,10 @@ export class TapToToggleCalibration extends Component<any, any> {
   }
 
   getContent() {
+    let state = this.props.store.getState();
+    let presentSphere = Util.data.getPresentSphere(state);
+    let canTrainTap2Toggle = presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere);
+
     let props : any = {};
     switch(this.state.step) {
       case 0:
@@ -191,7 +195,18 @@ export class TapToToggleCalibration extends Component<any, any> {
           nextLabel: 'Finish!'
         };
         break;
+    }
 
+    if (!canTrainTap2Toggle) {
+      props = {
+        title: 'Training Tap-to-Toggle',
+        image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
+        header: "Tap-to-toggle can only be trained if you're in a Sphere that contains Crownstone Plugs.",
+        explanation: 'Try it again later when you\'re in your Sphere',
+        back: false,
+        nextCallback: () => { this.setState({visible: false});},
+        nextLabel: 'OK'
+      };
     }
 
     return (

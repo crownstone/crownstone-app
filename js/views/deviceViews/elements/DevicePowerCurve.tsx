@@ -84,7 +84,7 @@ export class DevicePowerCurve extends Component<any, any> {
     }
 
     return (
-      <View style={{flex:1, flexDirection: 'column', alignItems:'center', paddingTop:30, paddingBottom:40}}>
+      <View style={{flex:1, flexDirection: 'column', alignItems:'center', paddingTop:30}}>
         <Text style={deviceStyles.header}>Power Usage</Text>
         <View style={{flex:1}} />
         <Graph width={screenWidth} height={availableScreenHeight/2} data={dataStream} xField="timestamp" yField="power"/>
@@ -96,7 +96,7 @@ export class DevicePowerCurve extends Component<any, any> {
             <Text style={textStyle.explanation}>{
               'Stand near the Crownstone to see the measurements flowing in! It will only measure if the app is in the foreground. ' +
               'Future versions of the app will allow you to freely scroll and zoom in and out. Scroll down on the text for more upcoming features! ' +
-              '\n\nIn the future, the power usage overview will be sorted by the Devices you use, as well as an extra view to summarize the entire usage in your Sphere, categorized by room, devices and much more!\n\n'
+              '\n\nIn the future, the power usage overview will be sorted by the Devices you use, as well as an extra view to summarize the entire usage in your Sphere, categorized by room, devices and much more!\n\n\n\n'
             }</Text>
           </ScrollView>
         </View>

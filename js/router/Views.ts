@@ -34,8 +34,10 @@ import { SettingsSphereUser }         from '../views/settingsViews/SettingsSpher
 import { SettingsSphereInvitedUser }  from '../views/settingsViews/SettingsSphereInvitedUser'
 import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
+import { Tutorial }                   from "../views/tutorialViews/Tutorial";
 
 export const Views = {
+  AiStart,
   LoginSplash,
   Login,
   Register,
@@ -71,5 +73,5 @@ export const Views = {
   SettingsSphereInvitedUser,
   SettingsPluginRecoverStep1,
   SettingsPluginRecoverStep2,
-  AiStart,
+  Tutorial,
 };

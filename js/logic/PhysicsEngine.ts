@@ -460,7 +460,7 @@ class PhysicsEngine {
    */
   stabilize(iterations = this.options.stabilization.iterations, hidden = false) {
     if (typeof iterations !== 'number') {
-      console.log('The stabilize method needs a numeric amount of iterations. Switching to default: ', this.options.stabilization.iterations);
+      console.error('The stabilize method needs a numeric amount of iterations. Switching to default: ', this.options.stabilization.iterations);
       iterations = this.options.stabilization.iterations;
     }
 

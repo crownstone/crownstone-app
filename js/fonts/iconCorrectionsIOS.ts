@@ -245,7 +245,7 @@ const ioniconCorrectionsIOS = {
   'ios-eye':            {change: true,  top: +0.040, left: +0.000},
   'ios-clock':          {change: true,  top: +0.035, left: +0.000},
   'md-sync':            {change: true,  top: +0.025, left: +0.000},
-
+  'ios-options':        {change: true,  top: +0.040, left: +0.000},
 };
 
 

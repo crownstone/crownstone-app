@@ -19,7 +19,17 @@ import {eventBus} from "../../../util/EventBus";
 
 
 export class DeviceUpdate extends Component<any, any> {
+  _getText(disabled) {
+    if (disabled) {
+      return 'New firmware brings new features and improved stability!\n\nThe update phase requires you to stay close to the Crownstone and can take up to 2 minutes. You will have to be near the Crownstone to start though..'
+    }
+    return 'New firmware brings new features and improved stability!\n\nThe update phase requires you to stay close to the Crownstone and can take up to 2 minutes. Press the button below to get started!'
+  }
+
   render() {
+    const state = this.props.store.getState();
+    const disabled = state.spheres[this.props.sphereId].stones[this.props.stoneId].config.disabled;
+
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>
         <Text style={deviceStyles.header}>Update Available!</Text>
@@ -32,10 +42,9 @@ export class DeviceUpdate extends Component<any, any> {
           style={{position:'relative', top: 0.0051*screenHeight}}
         />
         <View style={{flex:1}} />
-        <Text style={deviceStyles.text}>{'New firmware brings new features and improved stability!' +
-        '\n\nThe update phase requires you to stay close to the Crownstone and can take up to 2 minutes. Press the button below to get started!'}</Text>
+        <Text style={deviceStyles.text}>{this._getText(disabled)}</Text>
         <View style={{flex:1}} />
-        <TouchableOpacity
+        {disabled ? undefined : <TouchableOpacity
           onPress={() => {
             eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId, skipIntroduction: true});
           }}
@@ -48,7 +57,7 @@ export class DeviceUpdate extends Component<any, any> {
             backgroundColor: colors.csBlue.rgba(0.5)
           }]}>
           <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.white.hex}}>{"Let's get started!"}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
         <View style={{flex:1}} />
       </View>
     )

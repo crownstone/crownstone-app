@@ -10,6 +10,7 @@ export const StoneUtil = {
       stone : any,
       newState : number,
       store : any,
+      options = {},
       finalize = (err) => {},
       intent = INTENTS.manual,
       attempts : number = 1,
@@ -25,6 +26,7 @@ export const StoneUtil = {
       stoneId,
       sphereId,
       {commandName:'multiSwitch', state: newState, intent: intent, timeout: 0},
+      {},
       attempts,
       label
     )

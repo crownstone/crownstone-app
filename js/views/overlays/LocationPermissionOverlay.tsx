@@ -6,11 +6,11 @@ import {
   View,
 } from 'react-native';
 
-import { NativeBus }    from '../../native/libInterface/NativeBus'
 import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/overlays/OverlayBox'
 import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
+import {eventBus} from "../../util/EventBus";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -20,27 +20,13 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
     this.state = {
       visible: false,
-      notificationType: 'unknown' //"unknown", "off", "foreground", "on"
     };
     this.unsubscribe = [];
   }
 
   componentDidMount() {
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.locationStatus, (status) => {
-      switch (status) {
-        case "off":
-          this.setState({visible: true, notificationType: status});
-          break;
-        case "foreground":
-          this.setState({visible: true, notificationType: status});
-          break;
-        case "on":
-          this.setState({visible: false, notificationType: status});
-          break;
-        default: // "unknown":
-          this.setState({visible: this.state.visible, notificationType: status});
-          break;
-      }
+    this.unsubscribe.push(eventBus.on("OpenControlElement", (sphereId, stoneId) => {
+      this.state({visible: true});
     }));
   }
 

@@ -55,10 +55,10 @@ export class OptionPopup extends Component<any, any> {
         </TouchableOpacity>
       );
       // insert separator
-      if (index !== amountOfOptions - 1)
-        buttons.push(<View style={styles.joinedButtonSeparator} key={'option_button_separator' + index} />)
+      if (index !== amountOfOptions - 1) {
+        buttons.push(<View style={styles.joinedButtonSeparator} key={'option_button_separator' + index}/>)
+      }
     });
-
 
     return (
       <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>

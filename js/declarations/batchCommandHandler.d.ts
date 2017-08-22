@@ -1,6 +1,7 @@
 interface keepAlivePayload {
   attempts: number,
   initialized: boolean,
+  options: batchCommandEntryOptions,
   cleanup(): void,
   promise:{
     resolve(any?) : void,
@@ -15,6 +16,7 @@ interface keepAliveStatePayload {
   changeState: boolean,
   state: number,
   initialized: boolean,
+  options: batchCommandEntryOptions,
   timeout: number,
   attempts: number,
   cleanup(): void,
@@ -31,6 +33,7 @@ interface multiSwitchPayload {
   state: number,
   intent: number,
   initialized: boolean,
+  options: batchCommandEntryOptions,
   timeout: number,
   attempts: number,
   cleanup(): void,
@@ -94,18 +97,24 @@ interface directCommands  {
 }
 
 interface batchCommandEntry {
-  priority: boolean,
-  handle:   string,
-  sphereId: string,
-  stoneId:  string,
-  stone:    any,
-  initialized: boolean,
-  attempts: number,
-  command:  commandInterface,
-  cleanup(): void,
+  priority:     boolean,
+  handle:       string,
+  sphereId:     string,
+  stoneId:      string,
+  stone:        any,
+  initialized:  boolean,
+  attempts:     number,
+  options:      batchCommandEntryOptions,
+  command:      commandInterface,
+  cleanup():    void,
   promise:{
     resolve(any?) : void,
-    reject(any?) : void,
-    pending: boolean,
+    reject(any?) :  void,
+    pending:        boolean,
   }
+}
+
+interface batchCommandEntryOptions {
+  keepConnectionOpen?: boolean,
+  keepConnectionOpenTimeout?: number, // ms
 }

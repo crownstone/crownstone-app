@@ -175,6 +175,23 @@ class BehaviourResponse extends Component<any, any> {
     return {color: colors.white.hex};
   }
 
+  _getValueStyle(isDisabled: boolean, active : boolean, deviceIsOn : boolean) {
+    if (isDisabled) {
+      return {color: DISABLED_COLOR, textDecorationLine:'line-through'};
+    }
+
+    if ((this.props.type === 'onNear' || this.props.type === 'onAway') && this.props.stone.config.nearThreshold === null && active) {
+      return {color: WARNING_COLOR};
+    }
+
+    if (deviceIsOn) {
+      return {color: colors.green.hex};
+    }
+    else {
+      return {color: colors.menuBackground.hex};
+    }
+  }
+
   _isDisabled() {
     if (this.props.appSettings.indoorLocalizationEnabled === false) {
       return true;
@@ -200,7 +217,7 @@ class BehaviourResponse extends Component<any, any> {
           <Text style={[textStyle.case, responseStyle]}>{this._getTitle()}</Text>
           <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'center'}}>
             {this.props.prefixItem ? this.props.prefixItem :   <Text style={[textStyle.value, responseStyle]}>{this.props.prefix || 'I will '}</Text>}
-            {this._getValue(responseStyle)}
+            {this._getValue(this._getValueStyle(isDisabled, active, this.props.data[this.props.type].state > 0))}
             {this.props.postfixItem ? this.props.postfixItem : <Text style={[textStyle.value, responseStyle]}>{this._getDelay()}</Text>}
           </View>
         </View>

@@ -32,7 +32,7 @@ export class RoomLayer extends Component<any, any> {
   _minScale : number = 0.1;
   _maxScale : number = 1.25;
   _baseRadius : number;
-  _pressedRoom : any = false;
+  _pressedLocationData : any = false;
 
   _validTap = false;
   _lastTapLocation = false;
@@ -107,19 +107,18 @@ export class RoomLayer extends Component<any, any> {
       if (node.x + diameter > x1 && node.y + diameter > y1 && node.x < x1 && node.y < y1) {
         found = true;
         let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
-        if (this._pressedRoom !== nodeIds[i]) {
+        if (this._pressedLocationData !== nodeIds[i]) {
           this.state.locations[nodeId].scale.stopAnimation();
           this.state.locations[nodeId].opacity.stopAnimation();
-          this._pressedRoom = nodeId;
+          this._pressedLocationData = nodeId;
 
           let tapAnimations = [];
           tapAnimations.push(Animated.spring(this.state.locations[nodeIds[i]].scale, { toValue: 1.25, friction: 4, tension: 70 }));
-          tapAnimations.push(Animated.timing(this.state.locations[this._pressedRoom].opacity, {toValue: 0.2, duration: 100}));
+          tapAnimations.push(Animated.timing(this.state.locations[this._pressedLocationData].opacity, {toValue: 0.2, duration: 100}));
           Animated.parallel(tapAnimations).start();
-
         }
 
-        return nodeId;
+        return {nodeId: nodeId, dx: (x - node.x), dy: (node.y - y)};
       }
     }
 
@@ -159,7 +158,7 @@ export class RoomLayer extends Component<any, any> {
         this._multiTouchUsed = false;
         this._totalMovedX = 0;
         this._totalMovedY = 0;
-        this._pressedRoom = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
+        this._pressedLocationData = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
         this._validTap = true;
       },
       onPanResponderMove: (evt, gestureState) => {
@@ -173,9 +172,9 @@ export class RoomLayer extends Component<any, any> {
           this._multiTouch = false;
 
           if (this._totalMovedX < 50 && this._totalMovedY < 50 && this._multiTouchUsed === false) {
-            this._pressedRoom = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
-            if (this._pressedRoom !== false) {
-
+            this._pressedLocationData = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
+            if (this._pressedLocationData !== false) {
+              // do nothing
             }
             else {
               return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
@@ -223,18 +222,18 @@ export class RoomLayer extends Component<any, any> {
         this._multiTouch = false;
 
         if (this._validTap === true) {
-          if (this._lastTapLocation === this._pressedRoom && new Date().valueOf() - this._lastTap < 300) {
+          if (this._lastTapLocation === this._pressedLocationData.nodeId && new Date().valueOf() - this._lastTap < 300) {
             this._recenter();
           }
 
-          this._lastTapLocation = this._pressedRoom;
+          this._lastTapLocation = this._pressedLocationData.nodeId;
           this._lastTap = new Date().valueOf();
         }
 
-        if (this._pressedRoom !== false) {
-          this.state.locations[this._pressedRoom].scale.stopAnimation();
-          this.state.locations[this._pressedRoom].opacity.stopAnimation();
-          Actions.roomOverview({sphereId: this.props.sphereId, locationId: this._pressedRoom});
+        if (this._pressedLocationData !== false) {
+          this.state.locations[this._pressedLocationData.nodeId].scale.stopAnimation();
+          this.state.locations[this._pressedLocationData.nodeId].opacity.stopAnimation();
+          this.props.eventBus.emit('roomCircleTap'+this._pressedLocationData.nodeId, this._pressedLocationData);
         }
 
         if (this._currentScale > this._maxScale) {
@@ -289,7 +288,7 @@ export class RoomLayer extends Component<any, any> {
 
   setWiggleInterval() {
     this.wiggleInterval = setInterval(() => {
-      if (this._pressedRoom !== null && this.state.locations['null'] !== undefined) {
+      if (this._pressedLocationData !== null && this.state.locations['null'] !== undefined) {
         Animated.spring(this.state.locations['null'].scale, { toValue: 0.9 + Math.random() * 0.35, friction: 1, tension: 70 }).start();
       }
     }, 500);
@@ -378,17 +377,17 @@ export class RoomLayer extends Component<any, any> {
   }
 
   _clearTap() {
-    if (this._pressedRoom !== false) {
-      this.state.locations[this._pressedRoom].scale.stopAnimation();
-      this.state.locations[this._pressedRoom].opacity.stopAnimation();
+    if (this._pressedLocationData !== false) {
+      this.state.locations[this._pressedLocationData.nodeId].scale.stopAnimation();
+      this.state.locations[this._pressedLocationData.nodeId].opacity.stopAnimation();
       let revertAnimations = [];
-      revertAnimations.push(Animated.timing(this.state.locations[this._pressedRoom].scale, {toValue: 1, duration: 100}));
-      revertAnimations.push(Animated.timing(this.state.locations[this._pressedRoom].opacity, {toValue: 1, duration: 100}));
+      revertAnimations.push(Animated.timing(this.state.locations[this._pressedLocationData.nodeId].scale, {toValue: 1, duration: 100}));
+      revertAnimations.push(Animated.timing(this.state.locations[this._pressedLocationData.nodeId].opacity, {toValue: 1, duration: 100}));
       Animated.parallel(revertAnimations).start();
     }
 
     this._validTap = false;
-    this._pressedRoom = false;
+    this._pressedLocationData = false;
   }
 
   loadInSolver() {

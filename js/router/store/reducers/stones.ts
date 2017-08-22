@@ -26,6 +26,7 @@ let defaultSettings = {
     applianceId: null,
     crownstoneId: undefined,
     disabled: true,
+    dimmingEnabled: false,
     firmwareVersion: null,
     bootloaderVersion: null,
     dfuResetRequired: false,
@@ -153,6 +154,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         let newState = {...state};
         newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
         newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
+        newState.dimmingEnabled    = update(action.data.dimmingEnabled,    newState.dimmingEnabled);
         newState.disabled          = update(action.data.disabled,          newState.disabled);
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
         newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);

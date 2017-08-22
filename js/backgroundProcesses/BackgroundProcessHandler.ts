@@ -77,6 +77,14 @@ class BackgroundProcessHandlerClass {
 
         this.userLoggedIn = true;
 
+      });
+
+      // when the user is logged in we track spheres and scan for Crownstones
+      // This event is triggered on boot by the start store or by the login process.
+      eventBus.on('userLoggedInFinished', () => {
+        LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
+        LocationHandler.initializeTracking();
+
         this.showWhatsNew();
       });
 
@@ -335,6 +343,9 @@ class BackgroundProcessHandlerClass {
           }
         });
       eventBus.emit("userLoggedIn");
+      if (state.user.isNew === false) {
+        eventBus.emit("userLoggedInFinished");
+      }
       eventBus.emit("storePrepared", {userLoggedIn: true});
     }
     else {

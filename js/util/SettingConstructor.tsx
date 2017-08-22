@@ -130,17 +130,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     callback: () => { Actions.settingsApp(); }
   });
 
-  items.push({
-    id: 'whats new',
-    label: Platform.OS === 'android' ? "What's new?" : "What's new in this version?",
-    type: 'button',
-    style: {color: '#000'},
-    icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),
-    callback: () => { eventBus.emit("showWhatsNew"); }
-  });
-
-  let presentSphere = Util.data.getPresentSphere(state);
-  if (presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere) && state.app.tapToToggleEnabled !== false) {
+  if (state.app.tapToToggleEnabled !== false) {
     let tapToToggleSettings = { tutorial: false };
     if (Util.data.getTapToToggleCalibration(state)) {
       tapToToggleSettings.tutorial = true;
@@ -154,6 +144,15 @@ export const SettingConstructor = function(store, state, eventBus) {
       callback: () => { eventBus.emit("CalibrateTapToToggle", tapToToggleSettings); }
     });
   }
+
+  items.push({
+    id: 'whats new',
+    label: Platform.OS === 'android' ? "What's new?" : "What's new in this version?",
+    type: 'button',
+    style: {color: '#000'},
+    icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),
+    callback: () => { eventBus.emit("showWhatsNew"); }
+  });
 
   insertExplanation(items, 'TROUBLESHOOTING', false);
   items.push({
