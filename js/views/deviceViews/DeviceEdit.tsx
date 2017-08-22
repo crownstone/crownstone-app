@@ -24,6 +24,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/animated/FadeInView'
 import { LOG } from '../../logging/Log'
 import {Permissions} from "../../backgroundProcesses/Permissions";
+import {DIMMING_ENABLED} from "../../ExternalConfig";
 
 
 
@@ -119,20 +120,25 @@ export class DeviceEdit extends Component<any, any> {
         store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
       }
     });
-    items.push({
-      label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled === true, callback: (newValue) => {
-        store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {dimmingEnabled: newValue}});
-      }
-    });
-    items.push({
-      label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
-        Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(err => {})}
-    });
-    items.push({
-      label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',
-      type: 'explanation',
-      below: true
-    });
+
+    if (DIMMING_ENABLED) {
+      items.push({
+        label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled === true, callback: (newValue) => {
+          store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {dimmingEnabled: newValue}});
+        }
+      });
+      items.push({
+        label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
+          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(err => {
+          })
+        }
+      });
+      items.push({
+        label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',
+        type: 'explanation',
+        below: true
+      });
+    }
 
     if (stone.config.type !== STONE_TYPES.guidestone && !applianceId) {
       items.push({label: 'SELECT WHICH DEVICE TYPE IS PLUGGED IN', type: 'explanation', below: false});

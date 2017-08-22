@@ -119,7 +119,7 @@ export class DeviceSchedule extends Component<any, any> {
       }
     };
     eventBus.emit("showLoading", "Downloading schedules from Crownstone...");
-    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSchedules'}, 1, 'sync schedules from DeviceSchedule')
+    BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getSchedules'}, {},1, 'sync schedules from DeviceSchedule')
       .then((stoneSchedules : [bridgeScheduleEntry]) => {
         let dbSchedules = stone.schedules;
         let syncActions = [];

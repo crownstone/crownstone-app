@@ -61,6 +61,12 @@ const DeviceInfo = require('react-native-device-info');
      */
     export const HARDWARE_ERROR_REPORTING = false;
 
+
+    /**
+     * Switch to enable/disable the Dimming functionality
+     */
+    export const DIMMING_ENABLED = false;
+
     /**
      * Point to the production cloud.
      */

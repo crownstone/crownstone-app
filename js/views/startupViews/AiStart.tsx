@@ -2,6 +2,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
   Alert,
+  BackAndroid,
   Image,
   ScrollView,
   StyleSheet,
@@ -22,6 +23,8 @@ import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
 
 export class AiStart extends Component<any, any> {
+  backButtonFunction : any;
+
   constructor(props) {
     super();
 
@@ -68,6 +71,29 @@ export class AiStart extends Component<any, any> {
     let name = state.spheres[sphereId].config.aiName || possibleNames[defaultIndex].name;
     let sex = state.spheres[sphereId].config.aiSex || possibleNames[defaultIndex].gender;
     this.state = {aiName: name, aiSex: sex};
+  }
+
+  componentDidMount() {
+    if (this.props.canGoBack !== true) {
+      this.disableBackButton();
+    }
+  }
+
+  componentWillUnmount() {
+    this.restoreBackButton();
+  }
+
+  disableBackButton() {
+    // Execute callback function and return true to override.
+    this.backButtonFunction = () => { return true; };
+    BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
+  }
+
+  restoreBackButton() {
+    if (typeof this.backButtonFunction === 'function') {
+      BackAndroid.removeEventListener('hardwareBackPress', this.backButtonFunction);
+      this.backButtonFunction = null;
+    }
   }
 
   render() {
@@ -157,6 +183,7 @@ export class AiStart extends Component<any, any> {
           Actions.pop();
         }
         else {
+          this.restoreBackButton();
           if (Platform.OS === 'android') {
             Actions.sphereOverview();
           }

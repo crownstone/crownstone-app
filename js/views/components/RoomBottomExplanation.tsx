@@ -93,7 +93,7 @@ export class RoomBottomExplanation extends Component<any, any> {
         <TouchableOpacity
           style={{backgroundColor: colors.white.rgba(0.5), justifyContent: 'center', alignItems:'center', borderTopWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}
           onPress={this.state.buttonCallback}>
-          <View style={{flexDirection: 'column', padding:10, height: 60}}>
+          <View style={{flexDirection: 'column', padding:10, height: 60, justifyContent: 'center', alignItems:'center'}}>
             <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center', color:colors.black.rgba(0.7)}}>{this.state.explanation}</Text>
           </View>
         </TouchableOpacity>

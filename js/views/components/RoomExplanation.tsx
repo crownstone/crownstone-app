@@ -75,7 +75,7 @@ export class RoomExplanation extends Component<any, any> {
     else if (buttonCallback !== undefined) {
       return (
         <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
-        <View style={{flexDirection: 'column', padding:10}}>
+        <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
           <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
         </View>
       </TouchableOpacity>
@@ -84,7 +84,7 @@ export class RoomExplanation extends Component<any, any> {
     else {
       return (
         <View style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}>
-          <View style={{flexDirection: 'column', padding:10}}>
+          <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
             <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
           </View>
         </View>

@@ -24,6 +24,7 @@ import {Permissions} from "../../../backgroundProcesses/Permissions";
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { DimmerButton } from "../../components/DimmerButton";
 import { INTENTS } from "../../../native/libInterface/Constants";
+import {DIMMING_ENABLED} from "../../../ExternalConfig";
 
 export class DeviceSummary extends Component<any, any> {
   constructor() {
@@ -98,7 +99,7 @@ export class DeviceSummary extends Component<any, any> {
     }
 
 
-    if (stone.config.dimmingEnabled === true) {
+    if (stone.config.dimmingEnabled === true && DIMMING_ENABLED) {
       return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
     }
 

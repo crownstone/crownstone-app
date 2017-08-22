@@ -52,7 +52,7 @@ export class SetupHelper {
     this.firmwareVersion = undefined; // ie. 1.1.1
     this.hardwareVersion = undefined; // ie. 1.1.1
     this.stoneIdInCloud = undefined; // shorthand to the cloud id
-    this.stoneWasAlreadyInCloud = undefined; // shorthand to the cloud id
+    this.stoneWasAlreadyInCloud = false; // is the stone is already in the cloud during setup of this stone.
 
     // this will ignore things like tap to toggle and location based triggers so they do not interrupt.
     eventBus.emit("ignoreTriggers");
@@ -188,6 +188,8 @@ export class SetupHelper {
             // Restore trigger state
             eventBus.emit("useTriggers");
             eventBus.emit("setupCancelled", this.handle);
+
+            // clean up in the cloud after failed setup.
             if (this.stoneIdInCloud !== undefined && this.stoneWasAlreadyInCloud === false) {
               CLOUD.forSphere(sphereId).deleteStone(this.stoneIdInCloud).catch((err) => {LOG.error("COULD NOT CLEAN UP AFTER SETUP", err)})
             }

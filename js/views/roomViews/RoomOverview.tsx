@@ -60,8 +60,16 @@ export class RoomOverview extends Component<any, any> {
   }
 
   componentWillMount() {
+    let state = this.props.store.getState();
+    let stonesInRoom = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
+    let {stoneArray, ids} = this._getStoneList(stonesInRoom);
     if (SetupStateHandler.areSetupStonesAvailable()) {
-      this.state.scrollViewHeight.setValue(screenHeight-tabBarHeight-topBarHeight-160);
+      if (stoneArray.length === 0) {
+        this.state.scrollViewHeight.setValue(screenHeight - tabBarHeight - topBarHeight - 100 - 60 - 60);
+      }
+      else {
+        this.state.scrollViewHeight.setValue(screenHeight - tabBarHeight - topBarHeight - 100 - 60);
+      }
     }
   }
 
