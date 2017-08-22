@@ -22,6 +22,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { Util } from "../../util/Util";
 import {PermissionClass} from "../../backgroundProcesses/Permissions";
+import {TopBar} from "../components/Topbar";
 
 export class SettingsSphere extends Component<any, any> {
   deleting : boolean;
@@ -295,7 +296,8 @@ export class SettingsSphere extends Component<any, any> {
   render() {
     this.spherePermissions._update(this.props.store.getState(), this.props.sphereId);
     return (
-      <Background image={this.props.backgrounds.menu} >
+      <Background image={this.props.backgrounds.menu} hideTopBar={true}>
+        <TopBar title={this.state.sphereName} leftAction={() => { Actions.pop(); }} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

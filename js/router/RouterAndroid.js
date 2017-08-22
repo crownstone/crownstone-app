@@ -69,7 +69,7 @@ export class Router_Android extends Component {
               <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}       panHandlers={null} hideNavBar={false} title="Mesh Overview" />
               <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}            panHandlers={null} hideNavBar={false} title="Developer" />
               <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     panHandlers={null} hideNavBar={false} title="Sphere Overview" />
-              <Scene key="settingsSphere"             component={Views.SettingsSphere}             panHandlers={null} hideNavBar={false} title="[Sphere name here]" />
+              <Scene key="settingsSphere"             component={Views.SettingsSphere}             panHandlers={null} hideNavBar={true}  title="[Sphere name here]" />
               <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       panHandlers={null} hideNavBar={false} title="Invite" />

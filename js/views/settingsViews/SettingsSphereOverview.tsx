@@ -26,7 +26,7 @@ export class SettingsSphereOverview extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeSpheres) {
+      if  (change.changeSpheres || change.changeSphereConfig) {
         this.forceUpdate();
       }
     });
