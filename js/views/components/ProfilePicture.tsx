@@ -22,25 +22,18 @@ export class ProfilePicture extends Component<any, any> {
       LOG.info("PICTURE SIZE: ", size, "pictureURI", pictureURI);
       return (
         <View style={this.props.style}>
-        <View style={{
-            paddingRight: 10,
-            width:size,
-            height:size,
-            borderRadius:0.5*size,
-            borderWidth:borderWidth,
-            borderColor:"#fff"}}>
-          <Image style={{
-            width:size-2*borderWidth,
-            height:size-2*borderWidth,
-            padding:0,
-            margin:0,
-            borderRadius:0.5*(size-2*borderWidth),
-            backgroundColor: '#fff',
-            // borderColor: colors.menuBackground.hex,
-            // borderWidth: size/30
-            }} source={{uri:pictureURI}}
-          />
-        </View>
+        <Image style={{
+          width:size,
+          height:size,
+          padding:0,
+          margin:0,
+          borderRadius:0.5*size,
+          backgroundColor: colors.white.hex,
+          borderWidth:borderWidth,
+          borderColor: colors.white.hex,
+          // borderWidth: size/30
+          }} source={{uri:pictureURI}}
+        />
           {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
         </View>
       );

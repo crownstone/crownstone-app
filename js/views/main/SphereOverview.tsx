@@ -282,15 +282,10 @@ export const overviewStyles = StyleSheet.create({
     paddingBottom: 0
   },
   bottomText: {
-    position: 'absolute',
-    bottom: 20,
-    width: screenWidth,
-    backgroundColor: 'transparent',
-    textAlign: 'center',
-    color: colors.blue.hex,
-    fontSize: 12,
-    padding: 15,
-    paddingBottom: 0
+    backgroundColor:'transparent',
+    color: colors.darkGreen.hex,
+    fontSize:12,
+    padding:3
   },
   swipeButtonText: {
     backgroundColor: 'transparent',

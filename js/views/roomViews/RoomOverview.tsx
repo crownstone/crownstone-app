@@ -31,7 +31,7 @@ import {
   getStonesAndAppliancesInLocation,
   enoughCrownstonesInLocationsForIndoorLocalization,
   canUseIndoorLocalizationInSphere,
-  getFloatingStones
+  getFloatingStones, enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
@@ -228,23 +228,24 @@ export class RoomOverview extends Component<any, any> {
   /**
    * The right item is the flickering icon for localization.
    * @param state
-   * @param userAdmin
-   * @returns {XML}
+   * @param enoughCrownstones
+   * @param label
    */
-  getRightItem(state) {
-    if (Permissions.editRoom === true && this.props.locationId !== null && this.viewingRemotely !== true) {
-      let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
+  _getRightItem(state, enoughCrownstones, label) {
+    if (this.props.locationId !== null && this.viewingRemotely !== true) {
       let showFingerprintNeeded = false;
-      if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
+      if (enoughCrownstones === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
         showFingerprintNeeded = true;
       }
       if (showFingerprintNeeded === true) {
         if (state.user.seenRoomFingerprintAlert !== true) {
           let aiName = state.spheres[this.props.sphereId].config.aiName;
           this.props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
-          Alert.alert("Lets teach " + aiName + " how to identify this room!",
+          Alert.alert(
+            "Lets teach " + aiName + " how to identify this room!",
             "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
-            [{text: "OK"}])
+            [{text: "OK"}]
+          );
         }
 
         let iconSize = 25;
@@ -262,24 +263,54 @@ export class RoomOverview extends Component<any, any> {
                 backgroundColor:colors.iosBlue.hex}]} >
                 <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
               </View>,
-              <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>Edit</Text>
+              <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{ label }</Text>
             ]} />
         )
       }
     }
   }
 
-  render() {
-    const store = this.props.store;
-    const state = store.getState();
-
+  _getTopBar(state) {
     let title = undefined;
+    let enoughCrownstones = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
     if (this.props.locationId !== null) {
       title = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name;
     }
     else {
       title = "Floating Crownstones";
     }
+
+    let rightLabel = undefined;
+    let rightAction = () => { };
+
+    if (Permissions.editRoom === true && this.props.locationId !== null) {
+      rightLabel = 'Edit';
+      rightAction = () => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId}); };
+    }
+    else if (Permissions.editRoom === false && this.props.locationId !== null && enoughCrownstones === true) {
+      if (this.viewingRemotely === true) {
+        Alert.alert("You're not in the Sphere", "Training is only possible if you're in the Sphere. Try again when you are.", [{text:"OK"}])
+      }
+      else {
+        rightLabel = 'Train';
+        rightAction = () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); };
+      }
+    }
+
+    return (
+      <TopBar
+        title={ title }
+        right={ rightLabel }
+        rightItem={ this._getRightItem(state, enoughCrownstones, rightLabel) }
+        rightAction={ rightAction }
+        leftAction={ () => { Actions.pop(); }}
+      />
+    );
+  }
+
+  render() {
+    const store = this.props.store;
+    const state = store.getState();
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
@@ -321,13 +352,7 @@ export class RoomOverview extends Component<any, any> {
 
     return (
       <Background hideTopBar={true} image={backgroundImage}>
-        <TopBar
-          title={title}
-          right={Permissions.editRoom === true && this.props.locationId !== null ? 'Edit' : undefined}
-          rightItem={this.getRightItem(state)}
-          rightAction={() => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}
-          leftAction={ () => { Actions.pop(); }}
-        />
+        { this._getTopBar(state) }
         <RoomBanner
           presentUsers={users}
           noCrownstones={amountOfStonesInRoom === 0}

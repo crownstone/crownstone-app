@@ -12,12 +12,10 @@ import {
 
 import { Icon }               from '../components/Icon'
 import { requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-import { LOG }      from '../../logging/Log'
 import { overviewStyles }     from './SphereOverview'
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
-import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
-import {Util} from "../../util/Util";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import { styles, colors, screenWidth, availableScreenHeight} from '../styles'
+import { SetupStateHandler} from "../../native/setup/SetupStateHandler";
+import { Permissions} from "../../backgroundProcesses/Permissions";
 
 
 export class StatusCommunication extends Component<any, any> {
@@ -53,7 +51,6 @@ export class StatusCommunication extends Component<any, any> {
     let currentSphere = this.props.sphereId;
 
     // the bottom distance pops the bottom text up if the orbs are shown. Orbs are shown when there are multiple spheres.
-    let bottomDistance = Object.keys(state.spheres).length > 1 ? 5 : 5;
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;
 
@@ -69,16 +66,27 @@ export class StatusCommunication extends Component<any, any> {
       }
     });
 
+    let generalStyle = {
+      position:'absolute',
+      bottom: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+      opacity: this.props.opacity || 1,
+      width: screenWidth,
+      height: 25,
+      overflow: 'hidden'
+    };
+
     if (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.seeSetupCrownstone) {
       return (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={[overviewStyles.bottomText, {bottom: bottomDistance} ]}>{'New Crownstone Detected! Tap on it!'}</Text>
+        <View style={[generalStyle, {alignItems: 'center', justifyContent: 'center'}]}>
+          <Text style={overviewStyles.bottomText}>{'New Crownstone Detected! Tap on it!'}</Text>
         </View>
       );
     }
     else if (noStones === true && noRoomsCurrentSphere == true) {
       return (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={[generalStyle, {alignItems: 'center', justifyContent: 'center', height: availableScreenHeight}]}>
           <Icon name="c2-pluginFront" size={150} color={colors.blue.hex}/>
           <Text style={overviewStyles.mainText}>No Crownstones Added.</Text>
           <Text style={overviewStyles.subText}>Get close to a Crownstone and wait for it to appear! If it does not appear, try the recovery procedure in the settings.</Text>
@@ -87,14 +95,14 @@ export class StatusCommunication extends Component<any, any> {
     }
     else if (this.props.viewingRemotely === true) {
       return (
-        <View style={{flex:1}}>
-          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex, bottom: bottomDistance} ]}>{'No Crownstones in range.'}</Text>
+        <View style={generalStyle}>
+          <Text style={[overviewStyles.bottomText, {color:colors.darkGreen.hex} ]}>{'No Crownstones in range.'}</Text>
         </View>
       );
     }
     else if (amountOfVisible >= 3 && enoughForLocalization && !requiresFingerprints) {
       return (
-        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+        <View style={[inRangeStyle, generalStyle]}>
           <Text style={descriptionTextStyle}>{'I see ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
           <Text style={descriptionTextStyle}>{' so the indoor localization is running.'}</Text>
@@ -103,7 +111,7 @@ export class StatusCommunication extends Component<any, any> {
     }
     else if (amountOfVisible > 0 && enoughForLocalization && !requiresFingerprints) {
       return (
-        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+        <View style={[inRangeStyle, generalStyle]}>
           <Text style={descriptionTextStyle}>{'I see only ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
           <Text style={descriptionTextStyle}>{' so I paused the indoor localization.'}</Text>
@@ -112,14 +120,14 @@ export class StatusCommunication extends Component<any, any> {
     }
     else if (enoughForLocalization && requiresFingerprints) {
       return (
-        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+        <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I can\'t do indoor localization.'}</Text>
         </View>
       )
     }
     else if (amountOfVisible > 0) {
       return (
-        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
+        <View style={[inRangeStyle, generalStyle]}>
           <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{'I can see ' + amountOfVisible}</Text>
           <Icon name="c2-crownstone" size={20} color={colors.darkGreen.hex} style={{position:'relative', top:3, width:20, height:20}} />
         </View>
@@ -127,8 +135,8 @@ export class StatusCommunication extends Component<any, any> {
     }
     else { //if (amountOfVisible === 0) {
       return (
-        <View style={[inRangeStyle, {bottom: bottomDistance}]}>
-          <Text style={{backgroundColor:'transparent', color: colors.darkGreen.hex, fontSize:12, padding:3}}>{"Looking for Crownstones..."}</Text>
+        <View style={[inRangeStyle, generalStyle]}>
+          <Text style={overviewStyles.bottomText}>{"Looking for Crownstones..."}</Text>
         </View>
       )
     }
@@ -142,8 +150,6 @@ let inRangeStyle = {position: 'absolute',
   backgroundColor: 'transparent',
   justifyContent: 'center',
   alignItems: 'center',
-  padding: 15,
-  paddingBottom: 0
 };
 
 let descriptionTextStyle = {

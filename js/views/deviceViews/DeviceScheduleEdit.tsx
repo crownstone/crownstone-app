@@ -389,7 +389,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           Alert.alert(
             "Schedules are full!",
             config.fullLabel,
-            [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
+            [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
         }
@@ -397,7 +397,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           Alert.alert(
             "Whoops!",
             config.alertLabel,
-            [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
+            [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {text:"OK", onPress: () => { this._addScheduleEntry(stone, scheduleConfig, config); } }],
             {cancelable: false}
           )
         }
@@ -427,7 +427,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
         Alert.alert(
           "Whoops!",
           'I could not tell this Crownstone to update the Schedule... Would you like to try again? Make sure you\'re in range of the Crownstone! If you press No, your changes will be reverted. ',
-          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
+          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); }}, {text:"OK", onPress: () => { this._updateScheduleEntry(stone, scheduleConfig); } }],
           {cancelable: false}
         )
       });
