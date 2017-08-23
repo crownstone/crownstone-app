@@ -16,11 +16,10 @@ let Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
 import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/DataUtil'
-import {styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../styles'
+import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../styles'
 import { LOG }               from '../../logging/Log'
 import PhysicsEngine from "../../logic/PhysicsEngine";
-
-
+import {UserLayer} from "./UserLayer";
 
 export class RoomLayer extends Component<any, any> {
   _panResponder: any = {};
@@ -63,7 +62,6 @@ export class RoomLayer extends Component<any, any> {
     let initialScale = 1;
     this._currentScale = initialScale;
     this.state = {
-      presentUsers: {},
       scale: new Animated.Value(initialScale),
       opacity: new Animated.Value(1),
       pan: new Animated.ValueXY(),
@@ -456,7 +454,7 @@ export class RoomLayer extends Component<any, any> {
         locationId={locationId}
         sphereId={this.props.sphereId}
         opacity={this.state.locations[locationId].opacity}
-        radius={0.15*screenWidth}
+        radius={this._baseRadius}
         store={this.props.store}
         scale={this.state.locations[locationId].scale}
         pos={{x: this.state.locations[locationId].x, y: this.state.locations[locationId].y}}
@@ -467,9 +465,7 @@ export class RoomLayer extends Component<any, any> {
     );
   }
 
-  getRooms() {
-    const store = this.props.store;
-    const state = store.getState();
+  getRooms(state) {
     let rooms = state.spheres[this.props.sphereId].locations;
 
     let floatingStones = getFloatingStones(state, this.props.sphereId);
@@ -512,20 +508,32 @@ export class RoomLayer extends Component<any, any> {
         ]
       };
 
+      const store = this.props.store;
+      const state = store.getState();
+
       return (
         <View {...this._panResponder.panHandlers} style={{backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight, overflow:"hidden"}}>
           <Animated.View style={
             [animatedStyle,
               {
-                width: this.viewWidth,
-                height: this.viewHeight,
-                opacity:this.state.opacity,
+                width:    this.viewWidth,
+                height:   this.viewHeight,
+                opacity:  this.state.opacity,
                 position: 'relative',
-                top: -(this.viewHeight - availableScreenHeight)*0.5,
-                left: -(this.viewWidth - screenWidth)*0.5,
+                top:  -(this.viewHeight - availableScreenHeight)*0.5,
+                left: -(this.viewWidth  - screenWidth)*0.5,
               }
             ]}>
-            {this.getRooms()}
+            { this.getRooms(state) }
+            <UserLayer
+              width={this.viewWidth}
+              height={this.viewHeight}
+              store={this.props.store}
+              eventBus={this.props.eventBus}
+              sphereId={this.props.sphereId}
+              nodes={this.nodes}
+              nodeRadius={this._baseRadius}
+            />
           </Animated.View>
         </View>
       );

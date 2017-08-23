@@ -9,21 +9,16 @@ import {
   View
 } from 'react-native';
 
-import { styles, screenWidth, screenHeight, colors } from '../styles'
-import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
+import { styles, colors } from '../styles'
 import { getCurrentPowerUsageInLocation } from '../../util/DataUtil'
-import { PresentUsers } from './PresentUsers'
 import { Icon } from './Icon';
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
-import { LOG } from '../../logging/Log';
 const Actions = require('react-native-router-flux').Actions;
 
 import { Svg, Circle } from 'react-native-svg';
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {stones} from "../../cloud/sections/stones";
 import {AnimatedCircle} from "./animated/AnimatedCircle";
-
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -389,7 +384,6 @@ class RoomCircleClass extends Component<any, any> {
       <Animated.View style={[animatedStyle,{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.props.opacity}]}>
         <View>
           {this.getCircle()}
-          {this.props.locationId === null ? undefined : <PresentUsers sphereId={this.props.sphereId} locationId={this.props.locationId} store={store} roomRadius={this.props.radius} />}
           {this.showAlert !== null ? this._getAlertIcon() : undefined}
         </View>
       </Animated.View>
