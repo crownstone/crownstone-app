@@ -14,7 +14,7 @@ The Crownstone iOS and Android apps have the following functionality:
 | User-controlled upload of data to the cloud     | Done                     | Done                      |
 | Sending commands through the internet           | Done                     | Done                      |
 | Visualizing other users in the app              | Done                     | To be done on Android     |
-| Scheduling                                      | To be done               | To be done                |
+| Scheduling                                      | Done                     | To be released on Android |
 | Wake-up light                                   | To be done               | To be done                |
 | Dimming (PWM at 50Hz)                           | To be done               | To be done                |
 | Power consumption history                       | To be done               | To be done                |
