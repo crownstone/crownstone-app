@@ -31,9 +31,25 @@ export class RoomBanner extends Component<any, any> {
         return <Text style={styles.roomImageText}>Nobody Present</Text>;
       }
       else {
-        // TODO: support multiple users
-        let user = this.props.presentUsers[0];
-        return <ProfilePicture picture={user.data.picture} size={30} innerSize={33} name={user.data.firstName} style={{position:'relative', top:2}} />;
+        let users = [];
+        let presentUsers = this.props.presentUsers;
+        let maxVisible = 3;
+        for (let i = 0; i < presentUsers.length && i < maxVisible; i++) {
+          let user = presentUsers[i];
+          users.push(<ProfilePicture key={user.id + 'roomFace' + i} picture={user.data.picture} size={30} innerSize={30} name={user.data.firstName} style={{position:'relative', top:2, padding:2}} />);
+        }
+        if (this.props.presentUsers.length > maxVisible) {
+          users.push(<View key={'roomNumberIndicator'} style={[{
+            width: 30,
+            height:30,
+            padding:2,
+            backgroundColor:colors.white.hex,
+            borderRadius:0.5*30,
+          }, styles.centered]}>
+            <Text style={{color:colors.menuBackground.hex, fontSize:15}}>{'+' + (presentUsers.length - maxVisible)}</Text>
+          </View>);
+        }
+        return users;
       }
     }
     else if (this.props.amountOfStonesInRoom === 0) {
@@ -87,7 +103,7 @@ export class RoomBanner extends Component<any, any> {
     return (
       <View style={{height:0.7*ELEMENT_HEIGHT, width: leftRatio*screenWidth, backgroundColor:'transparent'}}>
         <View style={[bannerStyles.whiteLeft, {height: 0.5*ELEMENT_HEIGHT, width:(leftRatio-0.05)*screenWidth+ELEMENT_OFFSET}]} />
-        <View style={[bannerStyles.blueLeft,  {height: 0.5*ELEMENT_HEIGHT, width:(leftRatio-0.05)*screenWidth, top: ELEMENT_OFFSET}]}>
+        <View style={[bannerStyles.blueLeft,  {height: 0.5*ELEMENT_HEIGHT, width:(leftRatio-0.05)*screenWidth, top: ELEMENT_OFFSET, flexDirection:'row'}]}>
           {this.getOverlayContent()}
         </View>
       </View>
