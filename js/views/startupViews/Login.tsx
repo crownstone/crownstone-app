@@ -350,7 +350,6 @@ export class Login extends Component<any, any> {
           state = store.getState();
           this.props.eventBus.emit('hideProgress');
 
-
           if (state.user.isNew !== false) {
             Actions.tutorial({type: 'reset'});
           }

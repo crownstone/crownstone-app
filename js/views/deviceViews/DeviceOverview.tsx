@@ -146,12 +146,23 @@ export class DeviceOverview extends Component<any, any> {
 
     this.summaryIndex = summaryIndex;
 
+
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
     let hasScheduler = Permissions.canSeeSchedules && stone.config.type !== STONE_TYPES.guidestone && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0');
     let deviceType = stone.config.type;
+
+    // if this stone requires to be dfu-ed to continue working, block all other actions.
+    if (stone.config.dfuResetRequired) {
+      canUpdate = true;
+
+      hasError = false;
+      hasBehaviour = false;
+      hasPowerMonitor = false;
+      hasScheduler = false;
+    }
 
     if (hasError)  { summaryIndex++; behaviourIndex++; }
     if (canUpdate) { summaryIndex++; behaviourIndex++; }
@@ -221,7 +232,7 @@ export class DeviceOverview extends Component<any, any> {
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
-          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType) }
+          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType, stone.config) }
         </Swiper>
       </Background>
     )
@@ -236,7 +247,7 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType) {
+  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType, stoneConfig) {
     let content = [];
 
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId};
@@ -246,6 +257,10 @@ export class DeviceOverview extends Component<any, any> {
     }
     if (canUpdate) {
       content.push(<DeviceUpdate key={'updateSlide'}  {...props} />);
+    }
+
+    if (stoneConfig.dfuResetRequired) {
+      return content;
     }
 
     if (deviceType === STONE_TYPES.guidestone) {

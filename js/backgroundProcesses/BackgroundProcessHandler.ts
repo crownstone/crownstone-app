@@ -65,10 +65,14 @@ class BackgroundProcessHandlerClass {
         }
 
         LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
+
+        // disable battery saving (meaning, no BLE scans reach the app)
         Bluenet.batterySaving(false);
+
+        // start scanning when the BLE manager is ready.
         BluenetPromiseWrapper.isReady().then(() => {
-          LOG.info("BatterySavingUtil: Start Scanning.");
-          Bluenet.startScanningForCrownstonesUniqueOnly();
+          LOG.info("BackgroundProcessHandler: Start Scanning. now.");
+          return Bluenet.startScanningForCrownstonesUniqueOnly();
         });
 
         LocationHandler.initializeTracking();

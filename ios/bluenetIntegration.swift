@@ -43,7 +43,7 @@ typealias voidCallback = () -> Void
     
     self.bluenet = Bluenet(backgroundEnabled: true)
 
-    // do not use the accelerometer.
+    // use the accelerometer.
     // self.bluenetMotion = BluenetMotion()
     
     self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
@@ -63,6 +63,18 @@ typealias voidCallback = () -> Void
   
   func bluenetLocalizationOn(_ topic: String, _ callback: @escaping eventCallback) {
     self.subscriptions.append(self.bluenetLocalization.on(topic, callback))
+  }
+  
+  open func applicationDidEnterBackground() {
+    // check if we have to use this to stop the scanning in the background
+    //self.bluenet.applicationDidEnterBackground()
+    //self.bluenetLocalization.applicationDidEnterBackground()
+  }
+  
+  open func applicationWillEnterForeground() {
+    // check if we have to use this to stop the scanning in the background
+    // self.bluenet.applicationWillEnterForeground()
+    // self.bluenetLocalization.applicationWillEnterForeground()
   }
   
   deinit {
@@ -291,13 +303,13 @@ open class BluenetJS: NSObject {
 //      })
       
       globalBluenet.bluenetLocalizationOn("enterRegion", {data -> Void in
-//        print("BluenetBridge: enterRegion")
+        print("BluenetBridge: enterRegion")
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitRegion", {data -> Void in
-//        print("BluenetBridge: exitRegion")
+        print("BluenetBridge: exitRegion")
         if let castData = data as? String {
           self.bridge.eventDispatcher().sendAppEvent(withName: "exitSphere", body: castData)
         }
@@ -1016,7 +1028,7 @@ open class BluenetJS: NSObject {
   
   @objc func setBackgroundScanning(_ state: NSNumber) -> Void {
     let backgroundScanning : Bool = state.boolValue
-
+    print("BluenetBridge: backgroundScanning set to \(backgroundScanning)")
     LOGGER.info("BluenetBridge: backgroundScanning set to \(backgroundScanning)")
     
     GLOBAL_BLUENET!.bluenet.setBackgroundScanning(newBackgroundState: backgroundScanning)

@@ -65,11 +65,13 @@ Portal *portal;
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
   appendLogToFile(@" applicationDidEnterBackground");
+  [portal applicationDidEnterBackground];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
   appendLogToFile(@" applicationWillEnterForeground");
+  [portal applicationWillEnterForeground];
 }
 
 

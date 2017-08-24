@@ -28,11 +28,12 @@ export class DeviceUpdate extends Component<any, any> {
 
   render() {
     const state = this.props.store.getState();
+    const dfuResetRequired = state.spheres[this.props.sphereId].stones[this.props.stoneId].config.dfuResetRequired;
     const disabled = state.spheres[this.props.sphereId].stones[this.props.stoneId].config.disabled;
 
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>
-        <Text style={deviceStyles.header}>Update Available!</Text>
+        <Text style={deviceStyles.header}>{dfuResetRequired ? 'Finish Update' : 'Update Available!'}</Text>
         <View style={{flex:1}} />
         <IconButton
           name="c1-update-arrow"

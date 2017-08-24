@@ -4,6 +4,7 @@ import {
   Alert,
   TouchableOpacity,
   PixelRatio,
+  Platform,
   ScrollView,
   StyleSheet,
   Switch,
@@ -17,6 +18,7 @@ import {styles, colors, screenWidth, screenHeight, availableScreenHeight, topBar
 import {Icon} from "../../components/Icon";
 import {eventBus} from "../../../util/EventBus";
 import {tutorialStyle} from "../Tutorial";
+import {Util} from "../../../util/Util";
 
 
 export class TutorialDevices extends Component<any, any> {
@@ -37,7 +39,34 @@ export class TutorialDevices extends Component<any, any> {
           <TouchableOpacity
             onPress={() => {
               eventBus.emit("userLoggedInFinished");
-              Actions.aiStart();
+              let spheres = this.props.state.spheres;
+              let sphereIds = Object.keys(spheres);
+
+              let goToSphereOverview = () => {
+                if (Platform.OS === 'android') {
+                  this.props.eventBus.emit("userLoggedInFinished");
+                  Actions.sphereOverview({type: 'reset'});
+                }
+                else {
+                  this.props.eventBus.emit("userLoggedInFinished");
+                  Actions.tabBar({type: 'reset'});
+                }
+              };
+
+              // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin.
+              // We can't do better at this moment.
+              if (sphereIds.length === 1) {
+                if (Util.data.getUserLevelInSphere(this.props.state, sphereIds[0]) === 'admin') {
+                  Actions.aiStart();
+                }
+                else {
+                  goToSphereOverview()
+                }
+                return;
+              }
+              else {
+                goToSphereOverview()
+              }
             }}
             style={[styles.centered, {
               width: 0.6 * screenWidth,
