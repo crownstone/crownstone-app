@@ -107,8 +107,14 @@ export const preparePictureURI = function(picture, cacheBuster = true) {
   }
 
   let pictureUri = picture;
+
   // check if the image is an location on the disk or if it is from the assets.
-  if (picture.substr(0, 4) !== 'file' && picture.substr(0, 6) !== 'assets' && picture.substr(0, 4) !== 'http') {
+  if (
+    picture.substr(0, 4) !== 'file' &&
+    picture.substr(0, 6) !== 'assets' &&
+    picture.substr(0, 4) !== 'http' &&
+    picture.substr(0, 7) !== 'content'
+     ) {
     pictureUri = 'file://' + picture;
   }
 

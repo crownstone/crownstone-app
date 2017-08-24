@@ -93,7 +93,7 @@ export class CameraRollView extends Component<any, any> {
             this.props.selectCallback(edge.node.image.uri);
             Actions.pop();
             }}>
-            <Image source={{uri:edge.node.image.uri}} style={{width:size,height:size}}/>
+            <Image source={{uri: edge.node.image.uri}} style={{width:size,height:size}}/>
           </TouchableHighlight>
         ));
         if (images.length == amountX) {
