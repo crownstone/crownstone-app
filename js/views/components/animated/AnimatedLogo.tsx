@@ -34,7 +34,7 @@ export class AnimatedLogo extends Component<any, any> {
 
     Animated.spring(this.state.size, {toValue: newSize, friction:3}).start();
 
-    this.animationTimeout = setTimeout(() => {this.animate();}, 800);
+    this.animationTimeout = setTimeout(() => {this.animate();}, 1250);
   }
 
   _getNewSize() {

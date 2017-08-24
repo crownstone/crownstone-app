@@ -285,10 +285,15 @@ export class RoomLayer extends Component<any, any> {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (
-        change.changeLocations || change.stoneLocationUpdated
-      ) {
+      if (change.changeLocations) {
         this.loadInSolver();
+      }
+
+      if (
+        change.removeStone ||       // in case a stone that was floating was removed (and it was the last one floating)
+        change.stoneLocationUpdated // in case a stone was moved from floating to room and it was the last one floating.)
+        ) {
+        reloadSolverOnDemand();
       }
     });
   }
