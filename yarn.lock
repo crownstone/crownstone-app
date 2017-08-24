@@ -3321,6 +3321,10 @@ react-native-image-resizer@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/react-native-image-resizer/-/react-native-image-resizer-0.1.0.tgz#5bf95130ec5390fc78d84614f75773a1d52b097a"
 
+react-native-keep-awake@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/react-native-keep-awake/-/react-native-keep-awake-2.0.5.tgz#b1ff5667611c018c44b285b855f32e93b1c16fd9"
+
 react-native-push-notification@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-2.2.1.tgz#9b392cee8f5223a1e1772c9a88c95742549fcfc3"

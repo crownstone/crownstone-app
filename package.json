@@ -17,6 +17,7 @@
     "react-native-drawer": "~2.3.0",
     "react-native-fs": "~2.1.0-rc.1",
     "react-native-image-resizer": "~0.1.0",
+    "react-native-keep-awake": "^2.0.5",
     "react-native-push-notification": "^2.2.1",
     "react-native-router-flux": "~3.37.0",
     "react-native-svg": "5.1.5",

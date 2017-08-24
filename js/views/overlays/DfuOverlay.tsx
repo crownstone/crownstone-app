@@ -24,6 +24,7 @@ import {NativeBus} from "../../native/libInterface/NativeBus";
 import {BleUtil} from "../../util/BleUtil";
 import {Scheduler} from "../../logic/Scheduler";
 import {Bluenet} from "../../native/libInterface/Bluenet";
+import KeepAwake from 'react-native-keep-awake';
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 
 let STEP_TYPES = {
@@ -87,6 +88,7 @@ export class DfuOverlay extends Component<any, any> {
   componentDidMount() {
     // data = { stoneId : string , sphereId: string };
     this.unsubscribe.push(eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
+      KeepAwake.activate();
       this.setState({
         visible: true,
         step: data.skipIntroduction ? STEP_TYPES.RELEASE_NOTES : STEP_TYPES.UPDATE_AVAILABLE,
@@ -504,8 +506,9 @@ export class DfuOverlay extends Component<any, any> {
     };
 
     let closeOverlay = () => {
-        eventBus.emit("updateCrownstoneFirmwareEnded");
-        this.setState({visible: false});
+      eventBus.emit("updateCrownstoneFirmwareEnded");
+      KeepAwake.deactivate();
+      this.setState({visible: false});
     };
     let radius = 0.28*screenWidth;
 
