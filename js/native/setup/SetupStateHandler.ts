@@ -70,12 +70,14 @@ class SetupStateHandlerClass {
         this._resetSetupState();
         // cleaning up the entry of the setup stone
         this._cleanup(handle);
+        eventBus.emit("setupCleanedUp");
       });
 
       // if we cancel the setup mode because of an error, we reset the timeout for this handle.
       eventBus.on("setupCancelled", (handle) => {
         this._resetSetupState();
         this._setSetupTimeout(handle);
+        eventBus.emit("setupCleanedUp");
       });
 
       NativeBus.on(NativeBus.topics.setupAdvertisement, (setupAdvertisement) => {
@@ -209,6 +211,8 @@ class SetupStateHandlerClass {
       this._setupModeTimeouts[handle]();
       this._setupModeTimeouts[handle] = null;
     }
+
+    eventBus.emit("setupStarting");
 
     return helper.claim(this._store, sphereId, silent);
   }

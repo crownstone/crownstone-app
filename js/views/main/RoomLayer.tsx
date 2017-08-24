@@ -257,20 +257,29 @@ export class RoomLayer extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => {
-
+    // to ensure
+    let reloadSolverOnDemand = () => {
       // only reload the nodes in the solver if we need to add one.
-      let floatingStones = getFloatingStones(this.props.store.getState(), this._currentSphere);
-      if (floatingStones.length === 0) {
+      let floatingRoomRequired = this._isFloatingRoomRequired(this.props.store.getState());
+      if (floatingRoomRequired === false && this.state.locations['null'] !== undefined) {
         this.loadInSolver();
       }
+      else if (floatingRoomRequired && this.state.locations['null'] === undefined) {
+        this.loadInSolver();
+      }
+    };
 
+    this.unsubscribeSetupEvents = [];
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStarting",  reloadSolverOnDemand));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCleanedUp", reloadSolverOnDemand));
+
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => {
+      reloadSolverOnDemand();
       this.setWiggleInterval();
     }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => {
       this.clearWiggleInterval();
-      this.loadInSolver();
+      reloadSolverOnDemand();
     }));
 
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
@@ -465,18 +474,23 @@ export class RoomLayer extends Component<any, any> {
     );
   }
 
+  _isFloatingRoomRequired(state) {
+    let floatingStones = getFloatingStones(state, this.props.sphereId);
+    return floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
+  }
+
   getRooms(state) {
     let rooms = state.spheres[this.props.sphereId].locations;
 
-    let floatingStones = getFloatingStones(state, this.props.sphereId);
-    let showFloatingCrownstones = floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
+    let showFloatingCrownstones = this._isFloatingRoomRequired(state);
 
+    // THIS SHOULD BE COVERED BY THE setupStarting and setupCleanedUp events. This is here as a fallback.
     // If there is a need for an floatingCrownstone location node and there is none in the solver, reload solver.
     // If the room is there but there is no need for it, reload solver.
-    if (showFloatingCrownstones === true &&  this.state.locations['null'] === undefined ||
+    if (showFloatingCrownstones === true  &&  this.state.locations['null'] === undefined ||
         showFloatingCrownstones === false && this.state.locations['null'] !== undefined) {
-      if      ( showFloatingCrownstones) { LOG.info("RoomLayer: Reloading solver due to required but missing floatingCrownstone location.") }
-      else if (!showFloatingCrownstones) { LOG.info("RoomLayer: Reloading solver due to superfluous floatingCrownstone location.") }
+      if (showFloatingCrownstones) { LOG.error("RoomLayer: Reloading solver due to required but missing floatingCrownstone location."); }
+      else                         { LOG.error("RoomLayer: Reloading solver due to superfluous floatingCrownstone location.");          }
       this.loadInSolver();
     }
 

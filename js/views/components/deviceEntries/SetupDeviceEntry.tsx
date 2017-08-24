@@ -180,7 +180,7 @@ export class SetupDeviceEntry extends Component<any, any> {
   setupStone() {
     if (Permissions.setupCrownstone) {
       if (this.state.disabled === false && this.state.setupInProgress !== true) {
-        SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {})
+        SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {  })
       }
     }
     else {
