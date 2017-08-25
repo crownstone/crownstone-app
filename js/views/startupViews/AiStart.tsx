@@ -192,7 +192,7 @@ export class AiStart extends Component<any, any> {
           }
         }
       };
-      Alert.alert(title, detail, [{text: button, onPress: defaultAction}], { onDismiss: defaultAction })
+      Alert.alert(title, detail, [{text: button, onPress: defaultAction}], { cancelable: false })
     }
   }
 }
