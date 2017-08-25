@@ -237,6 +237,19 @@ const syncUser = function(store, actions, userData) {
     ) {
     actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionsAvailable: cloudFirmwareVersions, bootloaderVersionsAvailable: cloudBootloaderVersions}})
   }
+
+  if (getTimeDifference(userData, state.user) > 0) {
+    actions.push({
+      type: 'USER_UPDATE',
+      data: {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+      }
+    });
+  }
+
+
 };
 
 const getTimeDifference = function(localVersion, cloudVersion) {
