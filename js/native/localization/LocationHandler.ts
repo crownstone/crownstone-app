@@ -311,6 +311,7 @@ class LocationHandlerClass {
 
 
   applySphereStateFromStore() {
+    LOG.info("LocationHandler: Apply the sphere state from the store.");
     let state = this.store.getState();
 
     let lastSeenPerSphere = {};
@@ -335,11 +336,13 @@ class LocationHandlerClass {
     // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
     let sphereTimeout = state.spheres[currentSphere].config.exitDelay - KEEPALIVE_INTERVAL;
     if (mostRecentSeenTime > (new Date().valueOf() - sphereTimeout)) {
+      LOG.info("LocationHandler: Apply enter sphere.", currentSphere);
       this.enterSphere(currentSphere);
     }
     else {
       // exit all spheres
       Object.keys(state.spheres).forEach((sphereId) => {
+        LOG.info("LocationHandler: Apply exit sphere.", sphereId);
         this.exitSphere(sphereId);
       });
     }

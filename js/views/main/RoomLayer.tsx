@@ -18,8 +18,10 @@ import { RoomCircle }        from '../components/RoomCircle'
 import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/DataUtil'
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../styles'
 import { LOG }               from '../../logging/Log'
-import PhysicsEngine from "../../logic/PhysicsEngine";
-import {UserLayer} from "./UserLayer";
+import PhysicsEngine from '../../logic/PhysicsEngine';
+import { UserLayer } from './UserLayer';
+import { AnimatedDoubleTap } from "../components/animated/AnimatedDoubleTap";
+import { Scheduler } from "../../logic/Scheduler";
 
 export class RoomLayer extends Component<any, any> {
   _panResponder: any = {};
@@ -49,11 +51,16 @@ export class RoomLayer extends Component<any, any> {
   nodes: any;
   unsubscribeStoreEvents: any;
   unsubscribeSetupEvents: any[];
+  unsubscribeGestureEvents: any[];
 
   wiggleInterval : any;
 
   viewWidth : number = screenWidth;
   viewHeight : number = availableScreenHeight;
+
+  boundingBoxData : any = {};
+  _shownDoubleTap = false;
+  _clearScheduledDoubleTapGesture = () => {};
 
   constructor(props) {
     super();
@@ -62,6 +69,7 @@ export class RoomLayer extends Component<any, any> {
     let initialScale = 1;
     this._currentScale = initialScale;
     this.state = {
+      iconOpacity: new Animated.Value(0),
       scale: new Animated.Value(initialScale),
       opacity: new Animated.Value(1),
       pan: new Animated.ValueXY(),
@@ -75,7 +83,6 @@ export class RoomLayer extends Component<any, any> {
       this.viewWidth =  3 * screenWidth;
       this.viewHeight = 3 * availableScreenHeight;
     }
-
   }
 
   _findPress(x,y) {
@@ -158,6 +165,7 @@ export class RoomLayer extends Component<any, any> {
         this._totalMovedY = 0;
         this._pressedLocationData = this._findPress(gestureState.x0, gestureState.y0 - topBarHeight);
         this._validTap = true;
+        this._clearScheduledDoubleTapGesture()
       },
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
@@ -182,7 +190,6 @@ export class RoomLayer extends Component<any, any> {
             this._clearTap();
             return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
           }
-
         }
         else {
           this._clearTap();
@@ -202,12 +209,24 @@ export class RoomLayer extends Component<any, any> {
       },
 
       onPanResponderRelease: (evt, gestureState) => {
+        let showRecenterGesture = () => {
+          if (this._shownDoubleTap === false && Math.abs(this._panOffset.x) > 0.9*this.boundingBoxData.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.boundingBoxData.effectiveHeight) {
+            this._clearScheduledDoubleTapGesture();
+            this._clearScheduledDoubleTapGesture = Scheduler.scheduleCallback(() => {
+              this.props.eventBus.emit("showDoubleTapGesture");
+              this._shownDoubleTap = true;
+              this._clearScheduledDoubleTapGesture = () => {};
+            }, 500);
+          }
+        };
+
         if (gestureState.vx !== 0 || gestureState.vy !== 0) {
           Animated.decay(this.state.pan, { velocity: {x: gestureState.vx, y: gestureState.vy}, deceleration:0.99}).start(() => {
             this._panOffset.x = this._currentPan.x;
             this._panOffset.y = this._currentPan.y;
             this.state.pan.setOffset({x: this._currentPan.x, y: this._currentPan.y });
             this.state.pan.setValue({ x: 0, y: 0 });
+            showRecenterGesture()
           });
         }
         else {
@@ -215,6 +234,10 @@ export class RoomLayer extends Component<any, any> {
           this._panOffset.y += gestureState.dy;
           this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
           this.state.pan.setValue({ x: 0, y: 0 });
+
+          if (this._validTap === false) {
+            showRecenterGesture();
+          }
         }
 
         this._multiTouch = false;
@@ -222,6 +245,9 @@ export class RoomLayer extends Component<any, any> {
         if (this._validTap === true) {
           if (this._lastTapLocation === this._pressedLocationData.nodeId && new Date().valueOf() - this._lastTap < 300) {
             this._recenter();
+          }
+          else {
+            showRecenterGesture();
           }
 
           this._lastTapLocation = this._pressedLocationData.nodeId;
@@ -240,7 +266,6 @@ export class RoomLayer extends Component<any, any> {
         else if (this._currentScale < this._minScale) {
           Animated.spring(this.state.scale, { toValue: this._minScale, friction: 7, tension: 70 }).start(() => { this._currentScale = this._minScale; });
         }
-
 
         this._clearTap();
       },
@@ -270,19 +295,19 @@ export class RoomLayer extends Component<any, any> {
     };
 
     this.unsubscribeSetupEvents = [];
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStarting",  reloadSolverOnDemand));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCleanedUp", reloadSolverOnDemand));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupStarting',  reloadSolverOnDemand));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupCleanedUp', reloadSolverOnDemand));
 
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected",  () => {
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on('setupStonesDetected',  () => {
       reloadSolverOnDemand();
       this.setWiggleInterval();
     }));
-    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => {
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on('noSetupStonesVisible', () => {
       this.clearWiggleInterval();
       reloadSolverOnDemand();
     }));
 
-    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+    this.unsubscribeStoreEvents = this.props.eventBus.on('databaseChange', (data) => {
       let change = data.change;
 
       if (change.changeLocations) {
@@ -296,6 +321,11 @@ export class RoomLayer extends Component<any, any> {
         reloadSolverOnDemand();
       }
     });
+
+    this.unsubscribeGestureEvents = [];
+    this.unsubscribeGestureEvents.push(this.props.eventBus.on('showDoubleTapGesture', () => {
+      Scheduler.scheduleCallback(() => { this._shownDoubleTap = false;}, 10000)
+    }))
   }
 
   setWiggleInterval() {
@@ -312,13 +342,14 @@ export class RoomLayer extends Component<any, any> {
 
   componentWillUnmount() {
     this.clearWiggleInterval();
+    this.unsubscribeGestureEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
     this.state.pan.removeListener(this.panListener);
     this.physicsEngine.clear();
   }
 
-  _recenter(fadeIn = false) {
+  _getBoundingBox() {
     // get bounding box
     let minX = 1e10;
     let maxX = -1e10;
@@ -354,29 +385,49 @@ export class RoomLayer extends Component<any, any> {
     maxX += 0.3*this._baseRadius;
     maxY += 0.7*this._baseRadius;
 
-    // bounding Box
-    let requiredWidth  = maxX - minX;
-    let requiredHeight = maxY - minY;
+    this.boundingBoxData['minX'] = minX;
+    this.boundingBoxData['maxX'] = maxX;
+    this.boundingBoxData['minY'] = minY;
+    this.boundingBoxData['maxY'] = maxY;
+    this.boundingBoxData['width'] = this.boundingBoxData.maxX - this.boundingBoxData.minX;
+    this.boundingBoxData['height'] = this.boundingBoxData.maxY - this.boundingBoxData.minY;
 
     // set scale
-    let newScale = Math.min(this._maxScale, Math.max(this._minScale, Math.min(screenWidth/requiredWidth, availableScreenHeight/requiredHeight)));
+    this.boundingBoxData['requiredScale'] = Math.min(this._maxScale, Math.max(this._minScale, Math.min(screenWidth/this.boundingBoxData.width, availableScreenHeight/this.boundingBoxData.height)));
+
+    this.boundingBoxData['effectiveWidth']  = this.boundingBoxData.width  * this.boundingBoxData.requiredScale;
+    this.boundingBoxData['effectiveHeight'] = this.boundingBoxData.height * this.boundingBoxData.requiredScale;
 
     // center of bounding box projected on world coordinates
-    let massCenter = {x: minX + 0.5*requiredWidth, y: minY + 0.5*requiredHeight};
+    this.boundingBoxData['massCenter'] = {x: this.boundingBoxData.minX + 0.5*this.boundingBoxData.width, y: this.boundingBoxData.minY + 0.5*this.boundingBoxData.height};
 
     // actual center of the view.
-    let viewCenter = {x: 0.5*this.viewWidth, y: 0.5*this.viewHeight+10};
+    this.boundingBoxData['viewCenter'] = {x: 0.5*this.viewWidth, y: 0.5*this.viewHeight+10};
+
+  }
+
+  _recenter(fadeIn = false) {
+    if (this.boundingBoxData.minX === undefined) {
+      this._getBoundingBox();
+    }
 
     // determine offset to center everything.
-    let offsetRequired = {x: newScale*(viewCenter.x - massCenter.x) - this._panOffset.x, y: newScale*(viewCenter.y - massCenter.y) - this._panOffset.y};
+    let offsetRequired = {
+      x: this.boundingBoxData['requiredScale']*(this.boundingBoxData['viewCenter'].x - this.boundingBoxData['massCenter'].x) - this._panOffset.x,
+      y: this.boundingBoxData['requiredScale']*(this.boundingBoxData['viewCenter'].y - this.boundingBoxData['massCenter'].y) - this._panOffset.y
+    };
 
     // batch animations together.
     let animations = [];
     if (fadeIn) {
       animations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 600}));
     }
+    else {
+      // fallback in case the transparency is not perfectly set due to animation race conditions.
+      animations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 0}));
+    }
 
-    animations.push(Animated.timing(this.state.scale, { toValue: newScale, duration:600}));
+    animations.push(Animated.timing(this.state.scale, { toValue: this.boundingBoxData.requiredScale, duration:600}));
     animations.push(Animated.timing(this.state.pan, { toValue: {x: offsetRequired.x, y: offsetRequired.y}, duration:600}));
     Animated.parallel(animations).start(() => {
       this._panOffset.x += offsetRequired.x;
@@ -384,7 +435,7 @@ export class RoomLayer extends Component<any, any> {
       this.state.pan.setOffset({x: this._panOffset.x, y: this._panOffset.y });
       this.state.pan.setValue({ x: 0, y: 0 });
       this._currentPan = {x:0, y:0};
-      this._currentScale = newScale;
+      this._currentScale = this.boundingBoxData.requiredScale;
     });
   }
 
@@ -446,6 +497,9 @@ export class RoomLayer extends Component<any, any> {
           }
         }
 
+        // calculate all bounding box properties once.
+        this._getBoundingBox();
+
         if (initialized === false) {
           this._recenter(true);
           initialized = true;
@@ -494,8 +548,8 @@ export class RoomLayer extends Component<any, any> {
     // If the room is there but there is no need for it, reload solver.
     if (showFloatingCrownstones === true  &&  this.state.locations['null'] === undefined ||
         showFloatingCrownstones === false && this.state.locations['null'] !== undefined) {
-      if (showFloatingCrownstones) { LOG.error("RoomLayer: Reloading solver due to required but missing floatingCrownstone location."); }
-      else                         { LOG.error("RoomLayer: Reloading solver due to superfluous floatingCrownstone location.");          }
+      if (showFloatingCrownstones) { LOG.error('RoomLayer: Reloading solver due to required but missing floatingCrownstone location.'); }
+      else                         { LOG.error('RoomLayer: Reloading solver due to superfluous floatingCrownstone location.');          }
       this.loadInSolver();
     }
 
@@ -511,6 +565,7 @@ export class RoomLayer extends Component<any, any> {
 
     return roomNodes;
   }
+
 
   render() {
     if (this.props.sphereId === null) {
@@ -531,7 +586,7 @@ export class RoomLayer extends Component<any, any> {
       const state = store.getState();
 
       return (
-        <View {...this._panResponder.panHandlers} style={{backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight, overflow:"hidden"}}>
+        <View {...this._panResponder.panHandlers} style={{backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, width: screenWidth, height: availableScreenHeight, overflow:'hidden'}}>
           <Animated.View style={
             [animatedStyle,
               {
@@ -554,6 +609,7 @@ export class RoomLayer extends Component<any, any> {
               nodeRadius={this._baseRadius}
             />
           </Animated.View>
+          <AnimatedDoubleTap width={screenWidth} height={availableScreenHeight} eventBus={this.props.eventBus} />
         </View>
       );
     }

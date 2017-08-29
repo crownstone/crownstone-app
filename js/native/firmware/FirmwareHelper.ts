@@ -297,11 +297,11 @@ export class FirmwareHelper {
           .then(() => {
             eventBus.emit("updateDfuProgress", 0.50);
           })
-          .then(() => { return delay(500, () => { eventBus.emit("updateDfuProgress", 0.6); }); })
-          .then(() => { return delay(500, () => { eventBus.emit("updateDfuProgress", 0.7); }); })
-          .then(() => { return delay(500, () => { eventBus.emit("updateDfuProgress", 0.8); }); })
-          .then(() => { return delay(500, () => { eventBus.emit("updateDfuProgress", 0.9); }); })
-          .then(() => { return delay(500, () => { eventBus.emit("updateDfuProgress", 1.0); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.6); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.7); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.8); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.9); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 1.0); }); })
           .then(() => {
             LOG.info("FirmwareHelper: DFU progress: Reset complete.");
           });

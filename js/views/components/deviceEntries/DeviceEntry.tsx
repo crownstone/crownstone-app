@@ -165,28 +165,8 @@ export class DeviceEntry extends Component<any, any> {
     );
   }
 
-  _iconPressed(stone, state) {
+  _iconPressed() {
     Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
-    //
-    // if (stone.errors.advertisementError === true && stone.errors.hasError === false && stone.errors.obtainedErrors === false) {
-    //   Alert.alert('An error has been detected', 'I\'m currently trying to ask this Crownstone what it is. An overlay should appear shortly.', [{text:'OK'}]);
-    //   return;
-    // }
-    // else if (stone.errors.hasError === false && stone.errors.obtainedErrors === true) {
-    //   this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
-    //   return;
-    // }
-    // else if (stone.errors.hasError === true) {
-    //   this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
-    //   return;
-    // }
-    //
-    // if ((Util.versions.canUpdate(stone, state) === true) && stone.config.disabled === false) {
-    //   this.props.eventBus.emit('updateCrownstoneFirmware', {stoneId: this.props.stoneId, sphereId: this.props.sphereId});
-    // }
-    // else {
-    //   this._toggleOptions();
-    // }
   }
 
   _basePressed(stone) {
@@ -309,7 +289,7 @@ export class DeviceEntry extends Component<any, any> {
       <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
           <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
-                            onPress={() => { this._iconPressed(stone, state); }}>
+                            onPress={() => { this._iconPressed(); }}>
             {this._getIcon(element, stone, state)}
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
@@ -321,7 +301,8 @@ export class DeviceEntry extends Component<any, any> {
                 rssi={stone.config.rssi}
                 disabled={stone.config.disabled}
                 currentUsage={stone.state.currentUsage}
-                nearest={this.props.nearest}
+                nearestInSphere={this.props.nearestInSphere}
+                nearestInRoom={this.props.nearestInRoom}
                 tap2toggleThreshold={Util.data.getTapToToggleCalibration(state)}
               />
             </View>
@@ -351,11 +332,19 @@ class DeviceEntrySubText extends Component<any, any> {
         color = colors.orange.hex;
       }
 
-      if (this.props.nearest === true && rssi > -70) {
+      if (this.props.nearestInSphere === true) {
         return (
           <View style={{flexDirection:'row'}}>
             <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
             <Text style={{fontSize: 12, color: color}}>{' (Nearest)'}</Text>
+          </View>
+        )
+      }
+      else if (this.props.nearestInRoom === true) {
+        return (
+          <View style={{flexDirection:'row'}}>
+            <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
+            <Text style={{fontSize: 12, color: color}}>{' (Nearest in room)'}</Text>
           </View>
         )
       }

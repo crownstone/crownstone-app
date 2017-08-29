@@ -238,8 +238,16 @@ const ioniconCorrectionsAndroid = {
 };
 
 
+const evilIconsCorrectionsAndroid = {
+
+};
+
+
+
+
 export const iconCorrectionsAndroid = {
   c1: c1CorrectionsAndroid,
   c2: c2CorrectionsAndroid,
-  ionicons: ioniconCorrectionsAndroid
+  ionicons: ioniconCorrectionsAndroid,
+  evilIcons: evilIconsCorrectionsAndroid,
 };

@@ -1,4 +1,3 @@
-
 import { Alert, AppState }       from 'react-native';
 
 import { eventBus }              from "../util/EventBus";
@@ -275,7 +274,7 @@ class BackgroundProcessHandlerClass {
         // if the app is open, update the user locations every 10 seconds
         Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
       }
-      else {
+      else if (appState === 'background') {
         // in the background: stop scanning to save battery!
         BatterySavingUtil.startBatterySaving();
 

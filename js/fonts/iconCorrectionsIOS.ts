@@ -249,8 +249,14 @@ const ioniconCorrectionsIOS = {
 };
 
 
+const evilIconCorrectionsIOS = {
+
+};
+
+
 export const iconCorrectionsIOS = {
   c1: c1CorrectionsIOS,
   c2: c2CorrectionsIOS,
-  ionicons: ioniconCorrectionsIOS
+  ionicons: ioniconCorrectionsIOS,
+  evilIcons: evilIconCorrectionsIOS,
 };

@@ -46,7 +46,8 @@ export class RoomOverview extends Component<any, any> {
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
   justFinishedSetup : any;
-  nearestStoneId : any;
+  nearestStoneIdInSphere : any;
+  nearestStoneIdInRoom : any;
 
   constructor() {
     super();
@@ -56,7 +57,8 @@ export class RoomOverview extends Component<any, any> {
     this.viewingRemotely = true;
     this.justFinishedSetup = "";
 
-    this.nearestStoneId = undefined;
+    this.nearestStoneIdInSphere = undefined;
+    this.nearestStoneIdInRoom = undefined;
   }
 
   componentWillMount() {
@@ -174,7 +176,8 @@ export class RoomOverview extends Component<any, any> {
             locationId={this.props.locationId}
             sphereId={this.props.sphereId}
             viewingRemotely={this.viewingRemotely}
-            nearest={stoneId === this.nearestStoneId}
+            nearestInSphere={stoneId === this.nearestStoneIdInSphere}
+            nearestInRoom={stoneId === this.nearestStoneIdInRoom}
           />
         </View>
       );
@@ -333,7 +336,8 @@ export class RoomOverview extends Component<any, any> {
     }
     else {
       let {stoneArray, ids} = this._getStoneList(stones);
-      this._getNearestStoneInRoom(stoneArray, ids);
+      this._setNearestStoneInRoom(stoneArray, ids);
+      this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
       content = (
         <Animated.View style={{height: this.state.scrollViewHeight}}>
           <ScrollView style={{position:'relative', top:-1}}>
@@ -379,13 +383,25 @@ export class RoomOverview extends Component<any, any> {
     );
   }
 
-  _getNearestStoneInRoom(stoneArray, ids) {
+  _setNearestStoneInRoom(stoneArray, ids) {
     let rssi = -1000;
     for (let i = 0; i < stoneArray.length; i++) {
       let stone = stoneArray[i].stone;
       if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
         rssi = stone.config.rssi;
-        this.nearestStoneId = ids[i];
+        this.nearestStoneIdInRoom = ids[i];
+      }
+    }
+  }
+
+  _setNearestStoneInSphere(allStones) {
+    let rssi = -1000;
+    let stoneIds = Object.keys(allStones);
+    for (let i = 0; i < stoneIds.length; i++) {
+      let stone = allStones[stoneIds[i]];
+      if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
+        rssi = stone.config.rssi;
+        this.nearestStoneIdInSphere = stoneIds[i];
       }
     }
   }

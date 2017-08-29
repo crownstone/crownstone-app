@@ -266,7 +266,7 @@ class SchedulerClass {
    * @param label
    */
   scheduleActiveCallback(callback, afterMilliseconds, label = "unlabeled") : () => void {
-    return this._scheduleCallback(callback, afterMilliseconds, false, label);
+    return this._scheduleCallback(callback, afterMilliseconds, true, label);
   }
 
   /**
