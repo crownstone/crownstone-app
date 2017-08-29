@@ -324,7 +324,7 @@ export class RoomLayer extends Component<any, any> {
 
     this.unsubscribeGestureEvents = [];
     this.unsubscribeGestureEvents.push(this.props.eventBus.on('showDoubleTapGesture', () => {
-      Scheduler.scheduleCallback(() => { this._shownDoubleTap = false;}, 10000)
+      Scheduler.scheduleCallback(() => { this._shownDoubleTap = false;}, 3000)
     }))
   }
 
