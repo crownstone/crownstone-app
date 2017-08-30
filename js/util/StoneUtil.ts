@@ -48,6 +48,10 @@ export const StoneUtil = {
 
 
   crownstoneTimeToTimestamp: function(csTimestamp) : number {
+    let now = new Date().valueOf();
+    if ((now / csTimestamp) < 10) {
+      csTimestamp = csTimestamp / 1000;
+    }
     let jsTimestamp = 1000*csTimestamp;
     let timezoneOffsetMinutes = new Date(jsTimestamp).getTimezoneOffset();
 

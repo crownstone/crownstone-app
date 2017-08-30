@@ -355,7 +355,7 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.restartCrownstone();
                 break;
               case 'setTime':
-                let timeToSet = command.time === undefined ? new Date().valueOf() / 1000 : command.time;
+                let timeToSet = command.time === undefined ? StoneUtil.nowToCrownstoneTime() : command.time;
                 actionPromise = BluenetPromiseWrapper.setTime(timeToSet);
                 break;
               case 'getTime':

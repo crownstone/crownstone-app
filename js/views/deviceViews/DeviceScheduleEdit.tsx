@@ -43,7 +43,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
       const store = props.store;
       const state = store.getState();
       const schedule = state.spheres[props.sphereId].stones[props.stoneId].schedules[props.scheduleId];
-      this.state = {...schedule};
+      this.state = {...schedule, time: StoneUtil.crownstoneTimeToTimestamp(schedule.time)};
       this.state.activeDays = {...schedule.activeDays};
     }
     else {
@@ -113,7 +113,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    items.push({type:'spacer'});
+    items.push({label:'SELECTED TIME IS ' + Util.getTimeFormat(this.state.time, false), type: 'lightExplanation',  below:false});
     items.push({__item:
       <DatePickerIOS
         date={new Date(this.state.time)}
@@ -282,7 +282,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: this.props.scheduleId,
-            data: {...this.state}
+            data: {...this.state, time: this._getNextTime(this.state.time)}
           });
           Actions.pop();
         }
@@ -297,7 +297,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           sphereId: this.props.sphereId,
           stoneId: this.props.stoneId,
           scheduleId: this.props.scheduleId,
-          data: {...this.state}
+          data: {...this.state, time: this._getNextTime(this.state.time)}
         });
         Actions.pop();
       }
@@ -311,7 +311,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
   _getBridgeFormat(scheduleEntryIndex) {
     return {
       scheduleEntryIndex     : scheduleEntryIndex, // 0 .. 9
-      nextTime               : this._getNextTime(),
+      nextTime               : this._getNextTime(this.state.time),
       switchState            : this.state.switchState,
       fadeDuration           : this.state.fadeDuration,
       intervalInMinutes      : this.state.intervalInMinutes,
@@ -328,12 +328,12 @@ export class DeviceScheduleEdit extends Component<any, any> {
     }
   }
 
-  _getNextTime() {
+  _getNextTime(time) {
     let currentDayOfWeek = new Date().getDay(); // 0 .. 6 with sunday = 0
     let now = new Date().valueOf();
 
-    let hoursSet = new Date(this.state.time).getHours();
-    let minutesSet = new Date(this.state.time).getMinutes();
+    let hoursSet = new Date(time).getHours();
+    let minutesSet = new Date(time).getMinutes();
 
     let timeToday = new Date(
                           new Date(
@@ -379,7 +379,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: config.scheduleId,
-            data: {scheduleEntryIndex:scheduleEntryIndex, ...this.state}
+            data: {scheduleEntryIndex:scheduleEntryIndex, ...this.state, time: this._getNextTime(this.state.time)}
           });
           Actions.pop();
         }, 500, 'Deactivate Schedule UI callback');
@@ -418,7 +418,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: this.props.scheduleId,
-            data: {...this.state}
+            data: {...this.state, time: this._getNextTime(this.state.time)}
           });
           Actions.pop();
         }, 500, 'Update Schedule UI callback');
@@ -447,7 +447,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
             sphereId: this.props.sphereId,
             stoneId: this.props.stoneId,
             scheduleId: this.props.scheduleId,
-            data: {...this.state}
+            data: {...this.state, time: this._getNextTime(this.state.time)}
           });
           Actions.pop();
         }, 500, 'Deactivate Schedule UI callback');

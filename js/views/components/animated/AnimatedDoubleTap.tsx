@@ -105,7 +105,7 @@ export class AnimatedDoubleTap extends Component<any, any> {
           <Text style={textStyle}>1 x..</Text>
         </Animated.View>
         <Animated.View style={[base, {opacity: this.state.twoOpacity}]}>
-          <Text style={[textStyle, {top:-35, left:40}]}>2 x!</Text>
+          <Text style={[textStyle, {top:-35, left: 43}]}>2 x!</Text>
         </Animated.View>
         <Animated.View style={[base, {opacity: this.state.firstTapOpacity}]}>
           <Animated.View style={{width:this.state.firstTapSize, height: this.state.firstTapSize,  borderRadius: this.state.firstTapSize, backgroundColor: 'transparent', borderWidth: 5, borderColor: colors.white.rgba(0.75), position:'relative', left:-8, top:-50}} />

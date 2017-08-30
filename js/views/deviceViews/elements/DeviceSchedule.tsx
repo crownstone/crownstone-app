@@ -301,7 +301,7 @@ class SchedulerEntry extends Component<any, any> {
   _getHeader(active) {
     let wrapperStyle = {height: 50, justifyContent:'center'};
     let headerStyle = {fontSize: 16, fontWeight:'500', paddingTop: 15, color: active ? colors.black.hex : colors.darkGray2.hex};
-    let timeText = (this.props.schedule.switchState > 0 ? "Turn on" : "Turn off") + ' at ' + Util.getTimeFormat(this.props.schedule.time, false);
+    let timeText = (this.props.schedule.switchState > 0 ? "Turn on" : "Turn off") + ' at ' + Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(this.props.schedule.time), false);
     let activeText = active ? '' : ' (disabled)';
     if (this.props.schedule.label) {
       return (

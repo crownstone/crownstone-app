@@ -75,7 +75,7 @@ export class SettingsProfile extends Component<any, any> {
         if (this.validationState.firstName === 'valid') {
           store.dispatch({type: 'USER_UPDATE', data: {firstName: newText}});
           // update your settings in every sphere that you belong to.
-          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{firstName: newText}}); });
+          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{firstName: newText}}); });
         }
         else {
           Alert.alert('First name must be at least 1 letter long', 'No numbers allowed either.', [{text: 'OK'}]);
@@ -95,7 +95,7 @@ export class SettingsProfile extends Component<any, any> {
         if (this.validationState.lastName === 'valid') {
           store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
           // update your settings in every sphere that you belong to.
-          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{lastName: newText}}); });
+          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{lastName: newText}}); });
 
         }
         else {
