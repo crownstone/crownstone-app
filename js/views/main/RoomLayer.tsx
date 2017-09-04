@@ -210,13 +210,16 @@ export class RoomLayer extends Component<any, any> {
 
       onPanResponderRelease: (evt, gestureState) => {
         let showRecenterGesture = () => {
-          if (this._shownDoubleTap === false && Math.abs(this._panOffset.x) > 0.9*this.boundingBoxData.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.boundingBoxData.effectiveHeight) {
+          if (Math.abs(this._panOffset.x) > 0.9*this.boundingBoxData.effectiveWidth || Math.abs(this._panOffset.y) > 0.9*this.boundingBoxData.effectiveHeight) {
             this._clearScheduledDoubleTapGesture();
             this._clearScheduledDoubleTapGesture = Scheduler.scheduleCallback(() => {
-              this.props.eventBus.emit("showDoubleTapGesture");
-              this._shownDoubleTap = true;
+              if (this._shownDoubleTap === false) {
+                this.props.eventBus.emit("showDoubleTapGesture");
+                this._shownDoubleTap = true;
+              }
+              this._recenter();
               this._clearScheduledDoubleTapGesture = () => {};
-            }, 500);
+            }, 400);
           }
         };
 
@@ -324,7 +327,7 @@ export class RoomLayer extends Component<any, any> {
 
     this.unsubscribeGestureEvents = [];
     this.unsubscribeGestureEvents.push(this.props.eventBus.on('showDoubleTapGesture', () => {
-      Scheduler.scheduleCallback(() => { this._shownDoubleTap = false;}, 3000)
+      Scheduler.scheduleCallback(() => { this._shownDoubleTap = false;}, 5000)
     }))
   }
 
