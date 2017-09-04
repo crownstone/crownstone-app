@@ -596,6 +596,123 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onAway', sphereId: sphere.id, stoneId: stone_from_cloud.id, data: behaviour.onAway });
         }
       }
+
+      // sync down schedules of this stone
+      if (stone_from_cloud.schedules && stone_from_cloud.schedules.length > 0) {
+        // find the schedule in our local database that matches the one in the cloud
+        let findMatchingSchedule = (scheduleCloudId) => {
+          // if the stone does not exist in the state...
+          if (sphereInState !== undefined && sphereInState.stones[stone_from_cloud.id] !== undefined) {
+            return null;
+          }
+          else {
+            let schedules = sphereInState.stones[stone_from_cloud.id].schedules;
+            let scheduleIds = Object.keys(schedules);
+            for (let i = 0; i < scheduleIds.length; i++) {
+              if (schedules[scheduleIds[i]].cloudId === scheduleCloudId) {
+                return {id: scheduleIds[i], data: schedules[scheduleIds[i]]};
+              }
+            }
+            return null;
+          }
+        };
+
+        stone_from_cloud.schedules.forEach((schedule_in_cloud) => {
+          let matchingLocalSchedule = findMatchingSchedule(schedule_in_cloud.id);
+          if (matchingLocalSchedule !== null) {
+            if (getTimeDifference(matchingLocalSchedule.data, schedule_in_cloud) < 0) {
+              // update local
+              actions.push({
+                type: 'UPDATE_STONE_SCHEDULE',
+                sphereId: sphere.id,
+                stoneId:  stone_from_cloud.id,
+                scheduleId: matchingLocalSchedule.id,
+                data: {
+                  label:                  schedule_in_cloud.label || '',
+                  time:                   schedule_in_cloud.triggerTimeOnCrownstone,
+                  scheduleEntryIndex:     schedule_in_cloud,
+                  cloudId:                schedule_in_cloud.id,
+                  linkedSchedule:         schedule_in_cloud.linkedSchedule || null,
+                  switchState:            schedule_in_cloud.switchState,
+                  fadeDuration:           schedule_in_cloud.fadeDuration || 0,
+                  intervalInMinutes:      schedule_in_cloud.intervalInMinutes || 0,
+                  ignoreLocationTriggers: schedule_in_cloud.ignoreLocationTriggers || false,
+                  active:                 schedule_in_cloud.active,
+                  repeatMode:             schedule_in_cloud.repeatMode || '24h', // 24h / minute / none
+                  activeDays: {
+                    Mon: schedule_in_cloud.activeDays.Mon,
+                    Tue: schedule_in_cloud.activeDays.Tue,
+                    Wed: schedule_in_cloud.activeDays.Wed,
+                    Thu: schedule_in_cloud.activeDays.Thu,
+                    Fri: schedule_in_cloud.activeDays.Fri,
+                    Sat: schedule_in_cloud.activeDays.Sat,
+                    Sun: schedule_in_cloud.activeDays.Sun,
+                  },
+                }
+              });
+            }
+            else if (getTimeDifference(matchingLocalSchedule.data, schedule_in_cloud) > 0) {
+              // update cloud since local data is newer!
+              let scheduleInState = matchingLocalSchedule.data;
+              let data = {
+                label:                  scheduleInState.label || '',
+                time:                   scheduleInState.triggerTimeOnCrownstone,
+                scheduleEntryIndex:     scheduleInState,
+                id:                     schedule_in_cloud.id,
+                linkedSchedule:         scheduleInState.linkedSchedule || null,
+                switchState:            scheduleInState.switchState,
+                fadeDuration:           scheduleInState.fadeDuration || 0,
+                intervalInMinutes:      scheduleInState.intervalInMinutes || 0,
+                ignoreLocationTriggers: scheduleInState.ignoreLocationTriggers || false,
+                active:                 scheduleInState.active,
+                repeatMode:             scheduleInState.repeatMode || '24h', // 24h / minute / none
+                activeDays: {
+                  Mon: scheduleInState.activeDays.Mon,
+                  Tue: scheduleInState.activeDays.Tue,
+                  Wed: scheduleInState.activeDays.Wed,
+                  Thu: scheduleInState.activeDays.Thu,
+                  Fri: scheduleInState.activeDays.Fri,
+                  Sat: scheduleInState.activeDays.Sat,
+                  Sun: scheduleInState.activeDays.Sun,
+                },
+                updatedAt: scheduleInState.updatedAt
+              };
+              CLOUD.forStone(stone_from_cloud.id).updateSchedule(schedule_in_cloud.id, data, true).catch((err) => { LOG.error("Sync: Could not update schedule in cloud.", err); });
+            }
+          }
+          else {
+            // add schedule
+            actions.push({
+              type: 'ADD_STONE_SCHEDULE',
+                sphereId: sphere.id,
+                stoneId:  stone_from_cloud.id,
+                scheduleId: Util.getUUID(),
+                data: {
+                  label:                  schedule_in_cloud.label || '',
+                  time:                   schedule_in_cloud.triggerTimeOnCrownstone,
+                  scheduleEntryIndex:     schedule_in_cloud,
+                  cloudId:                schedule_in_cloud.id,
+                  linkedSchedule:         schedule_in_cloud.linkedSchedule || null,
+                  switchState:            schedule_in_cloud.switchState,
+                  fadeDuration:           schedule_in_cloud.fadeDuration || 0,
+                  intervalInMinutes:      schedule_in_cloud.intervalInMinutes || 0,
+                  ignoreLocationTriggers: schedule_in_cloud.ignoreLocationTriggers || false,
+                  active:                 schedule_in_cloud.active,
+                  repeatMode:             schedule_in_cloud.repeatMode || '24h', // 24h / minute / none
+                  activeDays: {
+                    Mon: schedule_in_cloud.activeDays.Mon,
+                    Tue: schedule_in_cloud.activeDays.Tue,
+                    Wed: schedule_in_cloud.activeDays.Wed,
+                    Thu: schedule_in_cloud.activeDays.Thu,
+                    Fri: schedule_in_cloud.activeDays.Fri,
+                    Sat: schedule_in_cloud.activeDays.Sat,
+                    Sun: schedule_in_cloud.activeDays.Sun,
+                  },
+                }
+            })
+          }
+        });
+      }
     });
 
 

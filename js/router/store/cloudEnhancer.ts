@@ -103,6 +103,11 @@ function handleAction(action, returnValue, newState, oldState) {
       handleStoneState(action, newState, oldState, true);
       break;
 
+    case "ADD_STONE_SCHEDULE":
+    case "UPDATE_STONE_SCHEDULE":
+      // handleStoneState(action, newState, oldState, true);
+      break;
+
     case "ADD_INSTALLATION":
     case "UPDATE_INSTALLATION_CONFIG":
       handleInstallation(action, newState);

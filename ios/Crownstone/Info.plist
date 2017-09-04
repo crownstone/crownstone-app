@@ -40,7 +40,7 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We require to use bluetooth to communicate with the Crownstone.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We'd like to use your camera so you can take a picture for your profile!</string>
+	<string>We&apos;d like to use your camera so you can take a picture for your profile!</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We use your background location to switch your Crownstones when you move around the house.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -66,36 +66,8 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>errorreporter_sourcemaps_android.ttf</string>
 		<string>errorreporter_sourcemaps_ios.ttf</string>
-		<string>Entypo.ttf</string>
-		<string>EvilIcons.ttf</string>
-		<string>FontAwesome.ttf</string>
-		<string>Foundation.ttf</string>
-		<string>Ionicons.ttf</string>
 		<string>MaterialCommunityIcons.ttf</string>
-		<string>MaterialIcons.ttf</string>
-		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
-		<string>Zocial.ttf</string>
-		<string>Entypo.ttf</string>
-		<string>EvilIcons.ttf</string>
-		<string>FontAwesome.ttf</string>
-		<string>Foundation.ttf</string>
-		<string>Ionicons.ttf</string>
-		<string>MaterialCommunityIcons.ttf</string>
-		<string>MaterialIcons.ttf</string>
-		<string>Octicons.ttf</string>
-		<string>SimpleLineIcons.ttf</string>
-		<string>Zocial.ttf</string>
-		<string>Entypo.ttf</string>
-		<string>EvilIcons.ttf</string>
-		<string>FontAwesome.ttf</string>
-		<string>Foundation.ttf</string>
-		<string>Ionicons.ttf</string>
-		<string>MaterialCommunityIcons.ttf</string>
-		<string>MaterialIcons.ttf</string>
-		<string>Octicons.ttf</string>
-		<string>SimpleLineIcons.ttf</string>
-		<string>Zocial.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

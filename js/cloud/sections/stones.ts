@@ -124,7 +124,7 @@ export const stones = {
     return this._setupRequest(
       'GET',
       '/Spheres/{id}/ownedStones',
-      {...options, data: {filter:{"include":{"relation":"locations"}}}}
+      {...options, data: {filter:{"include":{"relation":"locations"}}}} // {...options, data: {filter:{"include":["schedules", "locations"]}}}
     );
   },
 
@@ -169,4 +169,41 @@ export const stones = {
       );
     }
   },
+
+
+  createSchedule: function(data, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Stones/{id}/schedule/',
+      { data: data, background: background },
+      'body'
+    );
+  },
+
+  getSchedule: function(scheduleId, background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Stones/{id}/schedules/'+scheduleId,
+      {background: background}
+    );
+  },
+
+  updateSchedule: function(scheduleId, data, background = true) {
+    return this._setupRequest(
+      'PUT',
+      '/Stones/{id}/schedules/'+scheduleId,
+      { data: data, background: background },
+      'body'
+    );
+  },
+
+  deleteSchedule: function(scheduleId, background = true) {
+    return this._setupRequest(
+      'DELETE',
+      '/Stones/{id}/schedules/'+scheduleId,
+      { background: background }
+    );
+  },
+
+
 };

@@ -99,7 +99,7 @@ export class DeviceSchedule extends Component<any, any> {
   _syncSchedules(stone) {
     let generateReduxData = (scheduleBridgeFormat : bridgeScheduleEntry) => {
       return {
-        time: StoneUtil.crownstoneTimeToTimestamp(scheduleBridgeFormat.nextTime),
+        time: scheduleBridgeFormat.nextTime,
         scheduleEntryIndex: scheduleBridgeFormat.scheduleEntryIndex,
         switchState: scheduleBridgeFormat.switchState,
         fadeDuration: scheduleBridgeFormat.fadeDuration,
@@ -183,8 +183,9 @@ export class DeviceSchedule extends Component<any, any> {
         schedule.activeSunday    === dbSchedule.activeDays.Sun &&
         schedule.switchState     === dbSchedule.switchState
       ) {
-        let dbHours = new Date(dbSchedule.time).getHours();
-        let dbMinutes = new Date(dbSchedule.time).getMinutes();
+        // we dont care about the time particularly, only about the hours:minutes of it. Regardless of the date.
+        let dbHours = new Date(StoneUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getHours();
+        let dbMinutes = new Date(StoneUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getMinutes();
 
         let hours = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getHours();
         let minutes = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getMinutes();
