@@ -32,6 +32,21 @@ export class DeviceSummary extends Component<any, any> {
     this.state = {pendingCommand: false}
   }
 
+  _triggerApplianceSelection(stone) {
+    Actions.applianceSelection({
+      sphereId: this.props.sphereId,
+      applianceId: stone.config.applianceId,
+      stoneId: this.props.stoneId,
+      callback: (applianceId) => {
+        this.props.store.dispatch({
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          type: 'UPDATE_STONE_CONFIG',
+          data: {applianceId: applianceId}
+        });
+      }});
+  }
+
   _getIcon(stone, element) {
     let currentState = stone.state.state;
     let stateColor = colors.menuBackground.hex;
@@ -47,18 +62,7 @@ export class DeviceSummary extends Component<any, any> {
     let innerSize = size - 6;
     return (
       <TouchableOpacity onPress={() => {
-        Actions.applianceSelection({
-          sphereId: this.props.sphereId,
-          applianceId: stone.config.applianceId,
-          stoneId: this.props.stoneId,
-          callback: (applianceId) => {
-            this.props.store.dispatch({
-            sphereId: this.props.sphereId,
-            stoneId: this.props.stoneId,
-            type: 'UPDATE_STONE_CONFIG',
-            data: {applianceId: applianceId}
-          });
-        }});
+        this._triggerApplianceSelection(stone);
       }} >
         <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
           <AnimatedCircle size={size} color={stateColor}>
@@ -180,7 +184,7 @@ export class DeviceSummary extends Component<any, any> {
         <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
                            leftValue={stone.config.applianceId ? stone.config.name : 'None'}
                            right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'}
-                           leftTapAction={canChangeSettings ? () => { Actions.applianceSelection({sphereId: this.props.sphereId, stoneId: this.props.stoneId}); } : null}
+                           leftTapAction={canChangeSettings ? () => { this._triggerApplianceSelection(stone); }  : null}
         />
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>{this._getIcon(stone, element)}</View>

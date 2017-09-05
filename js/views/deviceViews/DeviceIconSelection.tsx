@@ -42,7 +42,6 @@ let listOfIcons = {
     'c1-bulb',
     'c1-studiolight',
     'c1-desklamp',
-    'c1-light1',
     'c1-standingLamp',
     'c1-theaterLight',
   ],
@@ -85,7 +84,6 @@ let listOfIcons = {
     'c1-grinder',
     'c1-drill2',
     'c1-circularSaw',
-    'c1-circular-saw',
     'c1-hammer',
   ],
   tech: [
@@ -266,6 +264,7 @@ export class DeviceIconSelection extends Component<any, any> {
         <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
+            debug={true}
             categories={categories}
             icons={listOfIcons}
             selectedIcon={selectedIcon}
