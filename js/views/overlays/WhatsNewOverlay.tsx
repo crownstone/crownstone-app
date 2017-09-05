@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Image,
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -17,6 +18,11 @@ import { NewDeviceUIGraph } from "./WhatsNew/1.10.0/NewDeviceUIGraph";
 import { NewLocalizationSettings } from "./WhatsNew/1.10.0/NewLocalizationSettings";
 import { NewScheduler } from "./WhatsNew/1.10.0/NewScheduler";
 import { Awesome } from "./WhatsNew/1.10.0/Awesome";
+import {TimezoneScheduler} from "./WhatsNew/1.10.2/TimezoneScheduler";
+import {SyncingSchedules} from "./WhatsNew/1.10.2/SyncingSchedules";
+import {FirmwareUpdateFix} from "./WhatsNew/1.10.2/FirmwareUpdateFix";
+import {AutomaticRecentering} from "./WhatsNew/1.10.2/AutomaticRecentering";
+import {BugsFixediOS} from "./WhatsNew/1.10.2/BugsFixediOS";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -44,12 +50,13 @@ export class WhatsNewOverlay extends Component<any, any> {
   _getContent() {
     let content = [];
 
-    content.push(<WhatsNew key="whatsNewOverview" />);
-    content.push(<PhysicsBasedSphereUI key="PhysicsBasedSphereUI" />);
-    content.push(<NewDeviceUI key="NewDeviceUI" />);
-    content.push(<NewScheduler key="NewScheduler" />);
-    content.push(<NewDeviceUIGraph key="NewDeviceUIGraph" />);
-    content.push(<NewLocalizationSettings key="NewLocalizationSettings" />);
+    if (Platform.OS === 'ios') {
+      content.push(<FirmwareUpdateFix key="FirmwareUpdateFix" />);
+      content.push(<SyncingSchedules key="SyncingSchedules" />);
+      content.push(<TimezoneScheduler key="TimezoneScheduler" />);
+      content.push(<AutomaticRecentering key="AutomaticRecentering" />);
+      content.push(<BugsFixediOS key="BugsFixediOS" />);
+    }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }}/>);
 
     return content;

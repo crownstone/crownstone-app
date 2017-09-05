@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import {availableScreenHeight, screenWidth} from "../../../styles";
-import {WNStyles} from "./WhatsNew";
+import {WNStyles} from "../WhatsNewStyles";
 
 
 export class NewScheduler extends Component<any, any> {
@@ -19,7 +19,7 @@ export class NewScheduler extends Component<any, any> {
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>You can tell the Crownstone to do something at a certain time!</Text>
-            <Image source={require('../../../../images/whatsNew/scheduler.png')} style={{width:556*size, height:820*size}}/>
+            <Image source={require('../../../../images/whatsNew/1.10.0/scheduler.png')} style={{width:556*size, height:820*size}}/>
             <Text style={WNStyles.detail}>{
               "In order to use the scheduler, the Crownstone will need to update its firmware first. " +
               "The new firmware should also be available now!" +

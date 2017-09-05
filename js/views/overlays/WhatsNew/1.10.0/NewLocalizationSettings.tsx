@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import {screenWidth} from "../../../styles";
-import {WNStyles} from "./WhatsNew";
+import {WNStyles} from "../WhatsNewStyles";
 
 
 export class NewLocalizationSettings extends Component<any, any> {
@@ -32,7 +32,7 @@ export class NewLocalizationSettings extends Component<any, any> {
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>There are new settings to allow you to use the Crownstone App without localization.</Text>
-            <Image source={require('../../../../images/whatsNew/newSettings.png')} style={{width:713*size, height:523*size, marginTop:40, marginBottom:40}}/>
+            <Image source={require('../../../../images/whatsNew/1.10.0/newSettings.png')} style={{width:713*size, height:523*size, marginTop:40, marginBottom:40}}/>
             <Text style={WNStyles.detail}>{text }</Text>
           </View>
         </ScrollView>

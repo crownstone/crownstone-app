@@ -9,12 +9,12 @@ import {
 import {colors, screenWidth, styles} from "../../../styles";
 import {Icon} from "../../../components/Icon";
 import {ProgressCircle} from "../../../components/ProgressCircle";
-import {WNStyles} from "./WhatsNew";
+import {WNStyles} from "../WhatsNewStyles";
 
 
 export class Awesome extends Component<any, any> {
   render() {
-    let radius = 0.20*screenWidth
+    let radius = 0.20*screenWidth;
     return (
       <View style={{flex:1, paddingBottom:45, padding:10, alignItems:'center', justifyContent:'center'}}>
         <View style={{flex:0.5}} />

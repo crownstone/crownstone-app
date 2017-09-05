@@ -6,6 +6,7 @@ import {
   View,
 } from 'react-native';
 import {availableScreenHeight, colors, screenWidth} from "../../../styles";
+import {WNStyles} from "../WhatsNewStyles";
 
 
 export class WhatsNew extends Component<any, any> {
@@ -17,7 +18,7 @@ export class WhatsNew extends Component<any, any> {
         <View style={{flex:0.5}} />
         <Text style={WNStyles.text}>One of the new things is the What's New popup!</Text>
         <View style={{flex:1}} />
-        <Image source={require('../../../../images/whatsNew/swipeLeft.png')} style={{width:567*size, height:604*size}}/>
+        <Image source={require('../../../../images/whatsNew/1.10.0/swipeLeft.png')} style={{width:567*size, height:604*size}}/>
         <View style={{flex:1}} />
         <Text style={WNStyles.text}>Swipe left to see more of the new features.</Text>
       </View>
@@ -26,22 +27,3 @@ export class WhatsNew extends Component<any, any> {
 }
 
 
-
-export const WNStyles = StyleSheet.create({
-  text: {
-    fontSize: 14,
-    fontWeight:'bold',
-    color: colors.csBlue.hex,
-    textAlign:'center'
-  },
-  detail: {
-    fontSize: 13,
-    color: colors.csBlue.hex,
-    textAlign:'center'
-  },
-  innerScrollView: {
-    minHeight: availableScreenHeight,
-    alignItems:'center',
-    paddingBottom:20
-  }
-});
