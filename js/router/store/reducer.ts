@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 
 import userReducer         from './reducers/user'
 import eventsReducer       from './reducers/events'
+import messages            from './reducers/messages'
 import devicesReducer      from './reducers/devices'
 import spheresReducer      from './reducers/spheres'
 import installationReducer from './reducers/installation'
@@ -23,6 +24,7 @@ export default (state : any = {}, action : any = {}) => {
     user: userReducer(state.user, action),
     devices: devicesReducer(state.devices, action),
     spheres: spheresReducer(state.spheres, action),
+    messages: messages(state.messages, action),
     // events: eventsReducer(state.events, action),
     installations: installationReducer(state.installations, action),
     app: appReducer(state.app, action),

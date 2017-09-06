@@ -67,7 +67,7 @@ class LocationHandlerClass {
   _iBeaconAdvertisement(data) {
     data.forEach((iBeaconPackage) => {
       this.tracker.iBeaconUpdate(iBeaconPackage.major, iBeaconPackage.minor, iBeaconPackage.rssi, iBeaconPackage.referenceId);
-    })
+    });
   }
 
   enterSphere(sphereId) {
