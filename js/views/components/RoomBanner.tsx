@@ -3,6 +3,7 @@ import {
   Dimensions,
   Image,
   PixelRatio,
+  Platform,
   StyleSheet,
   Text,
   View
@@ -36,7 +37,14 @@ export class RoomBanner extends Component<any, any> {
         let maxVisible = 3;
         for (let i = 0; i < presentUsers.length && i < maxVisible; i++) {
           let user = presentUsers[i];
-          users.push(<ProfilePicture key={user.id + 'roomFace' + i} picture={user.data.picture} size={30} innerSize={30} name={user.data.firstName} style={{position:'relative', top:2, padding:2}} />);
+          users.push(<ProfilePicture
+            key={user.id + 'roomFace' + i}
+            picture={user.data.picture}
+            size={30}
+            innerSize={30}
+            name={user.data.firstName}
+            style={{position:'relative', top: Platform.OS === 'android' ?  0 : 2, padding:2}}
+          />);
         }
         if (this.props.presentUsers.length > maxVisible) {
           users.push(<View key={'roomNumberIndicator'} style={[{

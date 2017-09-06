@@ -20,19 +20,18 @@ export class ProfilePicture extends Component<any, any> {
       let pictureURI = preparePictureURI(this.props.picture);
       let borderWidth = 0.07*size;
       return (
-        <View style={this.props.style}>
-        <Image style={{
-          width:size,
-          height:size,
-          padding:0,
-          margin:0,
-          borderRadius:0.5*size,
-          backgroundColor: colors.white.hex,
-          borderWidth:borderWidth,
-          borderColor: colors.white.hex,
-          // borderWidth: size/30
+        <View style={[this.props.style, {width: size, height: size + (this.props.name ? 15 : 0)}]}>
+          <Image style={{
+            width:size - 0.5*borderWidth,
+            height:size - 0.5*borderWidth,
+            padding:0,
+            margin:0,
+            borderRadius:0.5*(size - 0.5*borderWidth),
+            borderWidth:borderWidth,
+            borderColor: colors.white.hex,
+            backgroundColor: 'transparent',
           }} source={{uri:pictureURI}}
-        />
+          />
           {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
         </View>
       );
