@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 
 import userReducer         from './reducers/user'
 import eventsReducer       from './reducers/events'
-import messages            from './reducers/messages'
+import messages            from './reducers/messages/messages'
 import devicesReducer      from './reducers/devices'
 import spheresReducer      from './reducers/spheres'
 import installationReducer from './reducers/installation'
