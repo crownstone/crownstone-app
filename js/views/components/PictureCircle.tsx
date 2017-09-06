@@ -60,7 +60,7 @@ export class PictureCircle extends Component<any, any> {
                 borderRadius:(size-2*borderWidth) * 0.5,
                 backgroundColor: 'transparent',
                 borderColor: '#ffffff',
-                borderWidth: size/30
+                borderWidth: borderWidth
                 }} source={{uri:imageURI}} />
             <View style={[{
                 position: 'absolute',
