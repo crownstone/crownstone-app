@@ -19,7 +19,6 @@ export class ProfilePicture extends Component<any, any> {
     if (this.props.picture !== undefined && this.props.picture !== null) {
       let pictureURI = preparePictureURI(this.props.picture);
       let borderWidth = 0.07*size;
-      LOG.info("PICTURE SIZE: ", size, "pictureURI", pictureURI);
       return (
         <View style={[this.props.style, {width: size, height: size + (this.props.name ? 15 : 0)}]}>
           <Image style={{
