@@ -22,9 +22,6 @@ import {Icon} from "../components/Icon";
 
 
 export class MessageAdd extends Component<any, any> {
-  unsubscribeStoreEvents : any[] = [];
-  unsubscribeSetupEvents : any[] = [];
-
   constructor() {
     super();
 
@@ -36,21 +33,13 @@ export class MessageAdd extends Component<any, any> {
     };
   }
 
-  componentWillMount() {
+  componentWillMount() {}
 
-  }
+  componentDidMount() {}
 
-  componentDidMount() {
+  componentWillUnmount() {}
 
-  }
-
-  componentWillUnmount() {
-
-  }
-
-  _createMessage() {
-
-  }
+  _createMessage() {}
 
   _getItems() {
     let state = this.props.store.getState();
@@ -60,10 +49,21 @@ export class MessageAdd extends Component<any, any> {
 
     locationIds.forEach((locationId) => {
       let location = sphere.locations[locationId];
-      locationData.push({locationId: locationId, name: location.config.name, location: location});
+      locationData.push({id: locationId, name: location.config.name, icon: location.config.icon});
     });
 
-    let sphereUserData = sphere.users;
+    let sphereUserData = sphere.users; // { userId: { firstName: null, lastName: null, email: null, invitationPending: false, present: false, picture: null, accessLevel: admin/member/guest, updatedAt: 1 }}
+    let userIds = Object.keys(sphereUserData);
+    let users = [];
+    userIds.forEach((userId) => {
+      if (sphereUserData[userId].invitationPending === false) {
+        users.push({
+          id: userId,
+          name: sphereUserData[userId].firstName + " " + sphereUserData[userId].lastName,
+          picture: sphereUserData[userId].picture
+        })
+      }
+    });
 
     let items = [];
 
@@ -89,7 +89,7 @@ export class MessageAdd extends Component<any, any> {
       type: 'navigation',
       icon: <IconButton name='ios-body' size={23} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
       callback: () => {
-        Actions.selectFromList({items: sphereUserData, title: 'Recipients', callback: (selection) => {
+        Actions.selectFromList({items: users, title: 'Recipients', callback: (selection) => {
           this.setState({recipients: selection});
         }});
       }
@@ -101,7 +101,7 @@ export class MessageAdd extends Component<any, any> {
       type: 'navigation',
       icon: <IconButton name='md-pin' size={21} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7}}/>,
       callback: () => {
-        Actions.selectFromList({items: sphereUserData, title: 'Leave where?', callback: (selection) => {
+        Actions.selectFromList({items: locationData, title: 'Leave where?', callback: (selection) => {
           this.setState({recipients: selection});
         }});
       }
