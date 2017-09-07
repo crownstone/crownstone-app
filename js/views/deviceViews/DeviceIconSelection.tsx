@@ -264,7 +264,6 @@ export class DeviceIconSelection extends Component<any, any> {
         <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
-            debug={true}
             categories={categories}
             icons={listOfIcons}
             selectedIcon={selectedIcon}
