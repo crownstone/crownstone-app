@@ -77,6 +77,8 @@ export class TextEditInput extends Component<any, any> {
         onChangeText={(newValue) => {
           this.props.callback(newValue);
         }}
+        maxLength={this.props.maxLength}
+        multiline={ this.props.multiline }
         keyboardType={ this.props.keyboardType || 'default'}
         onEndEditing={() => { this.blur(); }}
         onBlur={() => { this.blur(); }}

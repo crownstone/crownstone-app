@@ -247,6 +247,7 @@ const ioniconCorrectionsIOS = {
   'md-sync':            {change: true,  top: +0.025, left: +0.000},
   'ios-options':        {change: true,  top: +0.040, left: +0.000},
   'ios-mail':           {change: true,  top: +0.040, left: +0.000},
+  'md-pin':             {change: true,  top: +0.020, left: +0.000},
 };
 
 

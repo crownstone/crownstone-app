@@ -11,32 +11,24 @@ import { emailChecker, characterChecker, numberChecker } from '../../../util/Uti
 
 export class TextBlob extends Component<any, any> {
   refName : string;
-  refNameVerification : string;
 
   constructor() {
     super();
     this.state = {validation: undefined};
 
     this.refName = (Math.random() * 1e9).toString(36);
-    this.refNameVerification = (Math.random() * 1e9).toString(36);
-  }
-
-  // the alwaysShowState prop forces the validationState to be checked and updated
-  componentWillReceiveProps(newProps) {
-    if (newProps.alwaysShowState === true && this.state.validation === undefined) {
-      // we set the timeout to ensure it has been drawn once. It needs to be rendered for the refs to work.
-    }
   }
 
   render() {
     return (
-      <View style={[styles.listView, {height:this.props.barHeight}]}>
-        <Text style={styles.listText}>{this.props.label}</Text>
+      <View style={[styles.listView, {height:this.props.barHeight, paddingTop:5}]}>
         <TextEditInput
           ref={this.refName}
           {...this.props}
           autoCorrect={true}
-
+          autoCapitalize={'sentences'}
+          multiline={true}
+          maxLength={this.props.maxLength}
           placeholder={this.props.placeholder || this.props.label}
           value={this.props.value}
         />

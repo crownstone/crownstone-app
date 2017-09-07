@@ -43,36 +43,29 @@ export class SelectFromList extends Component<any, any> {
 
   }
 
-  _createMessage() {
-
+  _getItems() {
+    let items = [];
+    this.props.items.forEach((item) => {
+      // item.push()
+    })
   }
 
   render() {
-    let state = this.props.store.getState();
-    let sphere = state.spheres[this.props.sphereId];
-    let locationIds = Object.keys(sphere.locations);
-
-    let locationData = [];
-    locationIds.forEach((locationId) => {
-      let location = sphere.locations[locationId];
-      locationData.push({locationId: locationId, name: location.config.name, location: location});
-    });
-
-    let sphereUserData = sphere.users;
-
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
           leftAction={() => { Actions.pop(); }}
-          right={'Create'}
+          notBack={true}
+          left={'Cancel'}
+          right={'Select'}
+          leftStyle={{color: colors.white.hex}}
           rightStyle={{fontWeight: 'bold'}}
-          rightAction={() => { this._createMessage(); }}
-          title={"Add Schedule"}
+          rightAction={() => { this.props.callback(); }}
+          title={this.props.title}
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
-          <View style={{alignItems:'center', width: screenWidth}}>
-          </View>
+          { this._getItems() }
         </ScrollView>
       </Background>
       );

@@ -31,7 +31,7 @@ export class MessageAdd extends Component<any, any> {
     this.state = {
       triggerLocationId: null,
       triggerEvent: null,
-      messageContent: null,
+      messageContent: '',
       recipients: {}
     };
   }
@@ -53,13 +53,26 @@ export class MessageAdd extends Component<any, any> {
   }
 
   _getItems() {
+    let state = this.props.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
+    let locationIds = Object.keys(sphere.locations);
+    let locationData = [];
+
+    locationIds.forEach((locationId) => {
+      let location = sphere.locations[locationId];
+      locationData.push({locationId: locationId, name: location.config.name, location: location});
+    });
+
+    let sphereUserData = sphere.users;
+
     let items = [];
 
-    items.push({type:'spacer'});
+    items.push({type:'lightExplanation', below: false, label: 'MESSAGE' });
     items.push({
       type: 'textBlob',
       placeholder: "Your message...",
-      characterLimit: 140,
+      barHeight: 120,
+      maxLength: 140,
       value: this.state.messageContent,
       callback: (newText) => {
         this.setState({messageContent: newText});
@@ -68,23 +81,36 @@ export class MessageAdd extends Component<any, any> {
 
       }
     });
+    items.push({type:'lightExplanation', below: true, align: 'right', style:{paddingTop:2, paddingRight:5}, label: '( ' + this.state.messageContent.length + ' / 140 )' });
+
+    items.push({type:'lightExplanation', below: false, label: 'RECIPIENTS', alreadyPadded: true});
+    items.push({
+      label: 'Add recipient',
+      type: 'navigation',
+      icon: <IconButton name='ios-body' size={23} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
+      callback: () => {
+        Actions.selectFromList({items: sphereUserData, title: 'Recipients', callback: (selection) => {
+          this.setState({recipients: selection});
+        }});
+      }
+    });
+
+    items.push({type:'lightExplanation', below: false, label: 'LEAVE MESSAGE IN'});
+    items.push({
+      label: 'Select room',
+      type: 'navigation',
+      icon: <IconButton name='md-pin' size={21} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7}}/>,
+      callback: () => {
+        Actions.selectFromList({items: sphereUserData, title: 'Leave where?', callback: (selection) => {
+          this.setState({recipients: selection});
+        }});
+      }
+    });
 
     return items;
   }
 
   render() {
-    let state = this.props.store.getState();
-    let sphere = state.spheres[this.props.sphereId];
-    let locationIds = Object.keys(sphere.locations);
-
-    let locationData = [];
-    locationIds.forEach((locationId) => {
-      let location = sphere.locations[locationId];
-      locationData.push({locationId: locationId, name: location.config.name, location: location});
-    });
-
-    let sphereUserData = sphere.users;
-
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
