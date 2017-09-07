@@ -198,6 +198,57 @@ export class DeviceSchedule extends Component<any, any> {
     return null;
   }
 
+  _getHeader(state, iconSize) {
+    let AI = Util.data.getAiData(state, this.props.sphereId);
+    return (
+      <View style={{ width: screenWidth, alignItems:'center' }}>
+        <View style={{height: 30}} />
+        <Text style={[deviceStyles.header]}>Schedule</Text>
+        <View style={{height: 0.2*iconSize}} />
+        <Text style={textStyle.specification}>{'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.'}</Text>
+      </View>
+    );
+  }
+
+  _getButton(stone, iconSize) {
+    let button = (
+      <IconButton
+        name="ios-clock"
+        size={0.8*iconSize}
+        color="#fff"
+        addIcon={Permissions.canAddSchedule}
+        buttonSize={iconSize}
+        buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
+      />
+    );
+
+    if (Permissions.canAddSchedule === true) {
+      return (
+        <TouchableOpacity onPress={() => {
+            if (stone.config.disabled === true) {
+              Alert.alert(
+                "Can't see Crownstone!",
+                "You cannot add schedules without being near to the Crownstone.",
+                [{text:"OK"}]
+              );
+            }
+            else {
+              Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
+            }
+        }}>
+          { button }
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return (
+        <View>
+          { button }
+        </View>
+      );
+    }
+  }
+
   render() {
     const store = this.props.store;
     const state = store.getState();
@@ -205,94 +256,57 @@ export class DeviceSchedule extends Component<any, any> {
     const schedules = stone.schedules;
 
     let iconSize = 0.15*screenHeight;
-    let AI = Util.data.getAiData(state, this.props.sphereId);
-
     let items = this._getItems(schedules);
 
     /**
      * there is duplicate code here because the flex does not work if just the changed content is passed as array
      */
+    let innerView;
     if (items.length > 0) {
-      return (
-        <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
+      innerView = (
           <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
-            <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>Schedule</Text>
+            { this._getHeader(state, iconSize) }
             <View style={{height: 0.2*iconSize}} />
-            <Text style={textStyle.specification}>{'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.'}</Text>
-            <View style={{height: 0.2*iconSize}} />
-            <TouchableOpacity onPress={() => {
-              if (stone.config.disabled === true) {
-                Alert.alert(
-                  "Can't see Crownstone!",
-                  "You cannot add schedules without being near to the Crownstone.",
-                  [{text:"OK"}]
-                );
-              }
-              else {
-                Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
-              }
-            }}>
-              <IconButton
-                name="ios-clock"
-                size={0.13*screenHeight}
-                color="#fff"
-                buttonStyle={{width: iconSize, height: iconSize, backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
-              />
-            </TouchableOpacity>
+            { this._getButton(stone, iconSize) }
             <View key="subScheduleSpacer" style={{height: 0.2*iconSize}} />
             <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
             <View style={{height:40, width:screenWidth, backgroundColor: 'transparent'}} />
             { this._getSyncOption(stone) }
           </View>
-        </ScrollView>
       )
     }
     else {
-      return (
-        <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
-          <View style={{flex:1, minHeight: availableScreenHeight, width: screenWidth, alignItems:'center'}}>
-            <View style={{height: 30}} />
-            <Text style={[deviceStyles.header]}>Schedule</Text>
-            <View style={{height: 0.2*iconSize}} />
-            <Text style={textStyle.specification}>{'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.'}</Text>
-            <View style={{flex:0.6}} />
-            <TouchableOpacity onPress={() => {
-              if (stone.config.disabled === true) {
-                Alert.alert(
-                  "Can't see Crownstone!",
-                  "You cannot add schedules without being near to the Crownstone.",
-                  [{text:"OK"}]
-                );
-              }
-              else {
-                Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
-              }
-             }}>
-              <IconButton
-                name="ios-clock"
-                size={0.13*screenHeight}
-                color="#fff"
-                buttonStyle={{width: iconSize, height: iconSize, backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
-              />
-            </TouchableOpacity>
-            <View style={{flex:0.8}} />
-            <Text style={{
-              color: colors.green.hex,
-              textAlign: 'center',
-              paddingLeft: 30,
-              paddingRight: 30,
-              fontWeight: 'bold',
-              fontStyle:'italic'
-            }}>
-              Add your first scheduled action by tapping on "Add" in the top right corner!
-            </Text>
-            <View style={{flex: 2}} />
-            { this._getSyncOption(stone) }
-          </View>
-        </ScrollView>
+      innerView = (
+        <View style={{flex:1, minHeight: availableScreenHeight, width: screenWidth, alignItems:'center'}}>
+          { this._getHeader(state, iconSize) }
+          <View style={{flex:0.6}} />
+          { this._getButton(stone, iconSize) }
+          <View style={{flex:0.8}} />
+          <Text style={{
+            color: colors.green.hex,
+            textAlign: 'center',
+            paddingLeft: 30,
+            paddingRight: 30,
+            fontWeight: 'bold',
+            fontStyle:'italic'
+          }}>
+            {
+              Permissions.canAddSchedule ?
+                "Add your first scheduled action by tapping on the big icon in the center!" :
+                "You do not have permission to create schedules."
+            }
+          </Text>
+          <View style={{flex: 2}} />
+          { this._getSyncOption(stone) }
+        </View>
       )
     }
+
+    return (
+      <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
+        { innerView }
+      </ScrollView>
+    )
   }
 }
 
@@ -377,17 +391,10 @@ class SchedulerEntry extends Component<any, any> {
     let dayIconSize = 18;
     let rowHeight = 90;
     let active = this.props.schedule.active;
-    return (
-      <TouchableOpacity
-        onPress={() => { Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId}); }}
-        style={{
-          flexDirection: 'row',
-          width: screenWidth - 15,
-          height: rowHeight,
-          justifyContent:'center',
-        }}
-      >
-        <View style={{flex:1}}>
+
+    let content = (
+      <View style={{ flexDirection: 'row', width: screenWidth - 15, height: rowHeight, justifyContent:'center' }}>
+        <View style={{ flex:1 }}>
           {this._getHeader(active)}
           <View style={{flex:1}} />
           <View style={{
@@ -410,7 +417,28 @@ class SchedulerEntry extends Component<any, any> {
             buttonStyle={{backgroundColor: colors.darkBackground.hex, width:20, height:20, borderRadius:10}}
           />
         </View>
-      </TouchableOpacity>
+      </View>
     );
+
+    if (Permissions.canEditSchedule) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
+          }}
+          style={{
+            flexDirection: 'row',
+            width: screenWidth - 15,
+            height: rowHeight,
+            justifyContent:'center',
+          }}
+        >
+          { content }
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return content;
+    }
   }
 }

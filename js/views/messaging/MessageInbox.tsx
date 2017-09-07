@@ -51,8 +51,6 @@ export class MessageInbox extends Component<any, any> {
     if (activeSphere) {
 
       let iconSize = 0.14*screenHeight;
-      let plusSize = 0.3*iconSize;
-      let AI = Util.data.getAiData(state, activeSphere);
 
       let items = [];
 
@@ -60,28 +58,17 @@ export class MessageInbox extends Component<any, any> {
       let threadIds = Object.keys(sphere.messageThreads);
 
       let iconButton = (
-        <TouchableOpacity onPress={() => {}} style={{width:iconSize+plusSize, height:iconSize+0.5*plusSize, overflow:'hidden'}}>
+        <TouchableOpacity
+          onPress={() => { Actions.messageAdd({ sphereId: activeSphere }); }}
+        >
           <IconButton
             name="ios-mail"
             size={iconSize*0.85}
             color="#fff"
-            buttonStyle={{width: iconSize, height: iconSize, backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize, marginLeft:0.5*plusSize, position:'relative', top:0.25*plusSize}}
+            addIcon={true}
+            buttonSize={iconSize}
+            buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
           />
-          <View style={[{
-            width:plusSize,
-            height:plusSize,
-            borderRadius:plusSize*0.5,
-            backgroundColor: colors.green.hex,
-            borderColor: '#ffffff',
-            borderWidth: 3,
-            alignItems:'center',
-            justifyContent:'center',
-            position:'relative',
-            top:-iconSize,
-            left:iconSize-0.25*plusSize,
-          }]}>
-            <Icon name={'md-add'} size={iconSize/5} color={'#ffffff'} />
-          </View>
         </TouchableOpacity>
       );
 
@@ -117,11 +104,11 @@ export class MessageInbox extends Component<any, any> {
         scrollView = (
           <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
             <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
-              <View style={{height: 0.1 * iconSize}} />
+              <View style={{flex:0.6}} />
               { headerText }
-              <View style={{height: 0.4 * iconSize}} />
+              <View style={{flex:0.6}} />
               { iconButton }
-              <View style={{flex:0.8}} />
+              <View style={{flex:0.6}} />
               <Text style={{
                 color: colors.green.hex,
                 textAlign: 'center',

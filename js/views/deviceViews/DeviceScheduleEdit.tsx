@@ -31,6 +31,7 @@ import {Scheduler} from "../../logic/Scheduler";
 import {LOG} from "../../logging/Log";
 import {Icon} from "../components/Icon";
 import {StoneUtil} from "../../util/StoneUtil";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -147,11 +148,18 @@ export class DeviceScheduleEdit extends Component<any, any> {
       items.push({label:'Schedule active', type: 'switch', value: this.state.active, callback: (newValue) => {
         this.setState({active: newValue});
       }});
+
       items.push({
         label: 'Remove',
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
+          if (Permissions.canDeleteSchedule) {
+            Alert.alert("Permission Denied.", "You do not have permission to delete a scheduled action. Only members and admins of this Sphere are allowed to do that.",[{text:'OK'}]);
+            return;
+          }
+
+
           if (stone.config.disabled === true) {
             Alert.alert(
               "Can't see Crownstone",

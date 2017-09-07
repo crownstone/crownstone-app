@@ -22,7 +22,6 @@ export class PermissionClass {
 
   editCrownstone         = false; // a
   changeBehaviour        = false; // a or m
-  setSchedule            = false; // a or m
   removeCrownstone       = false; // a
   editAppliance          = false; // a
   removeAppliance        = false; // a
@@ -109,7 +108,6 @@ export class PermissionClass {
         this.setStoneTime           = true; // admin and member
         this.manageUsers            = true; // admin and member
         this.moveCrownstone         = true; // admin and member
-        this.setSchedule            = true; // admin and member
 
         this.inviteMemberToSphere   = true; // admin and member
         this.inviteGuestToSphere    = true; // admin and member
@@ -140,7 +138,6 @@ export class PermissionClass {
 
     this.editCrownstone         = false; // a
     this.changeBehaviour        = false; // a or m
-    this.setSchedule            = false; // a or m
     this.removeCrownstone       = false; // a
     this.editAppliance          = false; // a
     this.removeAppliance        = false; // a

@@ -21,7 +21,7 @@ import {ListEditableItems} from "../components/ListEditableItems";
 import {Icon} from "../components/Icon";
 
 
-export class MessageInbox extends Component<any, any> {
+export class MessageAdd extends Component<any, any> {
   unsubscribeStoreEvents : any[] = [];
   unsubscribeSetupEvents : any[] = [];
 

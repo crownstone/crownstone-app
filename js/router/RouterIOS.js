@@ -70,6 +70,7 @@ export class Router_IOS extends Component {
               </Scene>
               <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle}  initial={true} >
                 <Scene key="messageInbox"     component={Views.MessageInbox}         hideNavBar={true} />
+                <Scene key="messageAdd"       component={Views.MessageAdd}           hideNavBar={true} />
               </Scene>
               <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
                 <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>

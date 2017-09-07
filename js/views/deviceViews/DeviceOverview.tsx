@@ -157,7 +157,6 @@ export class DeviceOverview extends Component<any, any> {
     // if this stone requires to be dfu-ed to continue working, block all other actions.
     if (stone.config.dfuResetRequired) {
       canUpdate = true;
-
       hasError = false;
       hasBehaviour = false;
       hasPowerMonitor = false;
@@ -180,8 +179,6 @@ export class DeviceOverview extends Component<any, any> {
           rightItem={this.state.scrolling ? this._getScrollingElement() : undefined}
           right={() => {
             switch (this.state.swiperIndex) {
-              case scheduleIndex:
-                return Permissions.setSchedule ? 'Add' : undefined;
               case summaryIndex:
                 return (hasAppliance ? Permissions.editAppliance : Permissions.editCrownstone) ? 'Edit' : undefined;
               case behaviourIndex:
@@ -190,20 +187,6 @@ export class DeviceOverview extends Component<any, any> {
           }}
           rightAction={() => {
             switch (this.state.swiperIndex) {
-              case scheduleIndex:
-                if (Permissions.setSchedule) {
-                  if (stone.config.disabled === true) {
-                    Alert.alert(
-                      "Can't see Crownstone",
-                      "You cannot add a schedule without being near to the Crownstone.",
-                      [{text:"OK"}]
-                    );
-                  }
-                  else {
-                    Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: null});
-                  }
-                }
-                break;
               case summaryIndex:
                 if (hasAppliance && Permissions.editAppliance || !hasAppliance && Permissions.editCrownstone) {
                   Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId})
