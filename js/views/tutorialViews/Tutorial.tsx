@@ -96,7 +96,7 @@ export class Tutorial extends Component<any, any> {
     content.push(<TutorialSphere key="TutorialSphere" />);
     content.push(<TutorialLocalization key="TutorialLocalization" />);
     content.push(<TutorialBehaviour key="TutorialBehaviour" state={this.props.store.getState()} />);
-    content.push(<TutorialDevices key="TutorialDevices" />);
+    content.push(<TutorialDevices key="TutorialDevices" state={this.props.store.getState()} />);
 
     return content;
   }
