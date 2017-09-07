@@ -34,6 +34,7 @@ export const ALL_MEMBER_ENTRY = "__ALL__";
 let defaultState = {
   config: {
     triggerLocationId: null,
+    triggerEvent: null,
     updatedAt: 1
   },
   messages: {
@@ -52,8 +53,6 @@ let defaultState = {
 };
 
 
-
-// messageReducer
 const messageThreadConfigReducer = (state = defaultState.config, action : any = {}) => {
   switch (action.type) {
     case 'ADD_THREAD':
@@ -76,7 +75,7 @@ let combinedMessageThreadReducer = combineReducers({
 });
 
 
-// threadReducer
+// messageThreadsReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_THREAD':

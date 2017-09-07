@@ -75,10 +75,10 @@ export class WhatsNewOverlay extends Component<any, any> {
       }}>
         <Text style={{fontSize: 18, fontWeight:'bold', paddingTop:10, paddingBottom:10, color:colors.csBlue.hex}}>Your app was updated!</Text>
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={height-85} width={0.85*screenWidth-35}
-            dot={<View style={{backgroundColor: colors.csBlue.rgba(0.2), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
-            activeDot={<View style={{backgroundColor: colors.csBlue.rgba(0.8), width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
-            loop={false}
-            bounces={true}
+          dot={<View style={{backgroundColor: colors.csBlue.rgba(0.2), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
+          activeDot={<View style={{backgroundColor: colors.csBlue.rgba(0.8), width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
+          loop={false}
+          bounces={true}
         >
           { this._getContent() }
         </Swiper>

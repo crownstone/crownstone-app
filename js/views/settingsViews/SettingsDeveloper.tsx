@@ -158,9 +158,6 @@ export class SettingsDeveloper extends Component<any, any> {
             deviceId: deviceId,
             data: {hubFunction: newValue}
           });
-          if (newValue === true) {
-            NotificationHandler.request();
-          }
         }});
       items.push({label: "A Hub will use push notifications from the cloud to toggle your devices remotely.", type: 'explanation', below: true});
     }

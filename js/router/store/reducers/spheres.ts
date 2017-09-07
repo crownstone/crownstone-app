@@ -3,6 +3,7 @@ import locationsReducer from './locations'
 import sphereUserReducer from './sphereUser'
 import stonesReducer from './stones'
 import appliancesReducer from './appliances'
+import messageThreadsReducer from './messages/threads'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultSettings = {
@@ -105,6 +106,7 @@ let combinedSphereReducer = combineReducers({
   presets:    presetsReducer,
   locations:  locationsReducer,
   stones:     stonesReducer,
+  messageThreads: messageThreadsReducer,
   appliances: appliancesReducer
 });
 
