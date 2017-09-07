@@ -51,8 +51,8 @@ export const syncUsersInLocation = function(state, location_from_cloud, location
   if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
     location_from_cloud.presentPeople.forEach((person) => {
       peopleInCloudLocations[person.id] = true;
-      // check if the person exists in our sphere and if we are not that person.
-      if (person.id !== state.user.userId && sphereUsers[person.id] === true) {
+      // check if the person exists in our sphere and if we are not that person. Also check if this user is already in the room.
+      if (person.id !== state.user.userId && sphereUsers[person.id] === true && locationInState.presentUsers.indexOf(person.id) === -1) {
         actions.push({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: location_from_cloud.id, data: {userId: person.id}});
       }
     });
@@ -60,8 +60,20 @@ export const syncUsersInLocation = function(state, location_from_cloud, location
 
   // remove the users from this location that are not in the cloud and that are not the current user
   if (locationInState) {
+    let peopleInCurrentLocation = {};
     locationInState.presentUsers.forEach((userId) => {
-      if (peopleInCloudLocations[userId] === undefined && userId !== state.user.userId) {
+      // remove duplicates
+      if (peopleInCurrentLocation[userId] === undefined) {
+        // once is OK
+        peopleInCurrentLocation[userId] = true;
+
+        // if this person is not in the location anymore (according to the cloud) and is not the current user, we remove him from the room.
+        if (peopleInCloudLocations[userId] === undefined && userId !== state.user.userId) {
+          actions.push({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: location_from_cloud.id, data: {userId: userId}});
+        }
+      }
+      else {
+        // if we're here, that means a userId is in this location more than once. We cannot have that.
         actions.push({type: 'USER_EXIT_LOCATION', sphereId: sphereId, locationId: location_from_cloud.id, data: {userId: userId}});
       }
     })

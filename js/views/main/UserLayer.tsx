@@ -44,7 +44,7 @@ export class UserLayer extends Component<any, any> {
 
 
     let basePositions = {
-      appUser: {x: x, y: y},
+      appUser: {x: x - 0.25*userDiameter, y: y - 0.25*userDiameter},
       '1': [
         {x: roomRadius * Math.cos(1.75*Math.PI), y: roomRadius * Math.sin(1.75*Math.PI)},
       ],
