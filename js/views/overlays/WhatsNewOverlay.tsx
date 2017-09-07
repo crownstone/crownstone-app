@@ -59,8 +59,8 @@ export class WhatsNewOverlay extends Component<any, any> {
     }
     if (Platform.OS === 'android') {
       content.push(<WhatsNew key="WhatsNew" />);
-      content.push(<NewDeviceUI key="NewDeviceUI" />);
       content.push(<PhysicsBasedSphereUI key="PhysicsBasedSphereUI" />);
+      content.push(<NewDeviceUI key="NewDeviceUI" />);
       content.push(<NewScheduler key="NewScheduler" />);
       content.push(<NewDeviceUIGraph key="NewDeviceUIGraph" />);
     }
