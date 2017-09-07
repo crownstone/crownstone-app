@@ -386,7 +386,7 @@ class BackgroundProcessHandlerClass {
  * Finally we create the app identifier
  * @param store
  */
-function refreshDatabase(store) {
+export function refreshDatabase(store) {
   let state = store.getState();
   let refreshActions = [];
   let sphereIds = Object.keys(state.spheres);
