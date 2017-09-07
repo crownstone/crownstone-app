@@ -57,6 +57,13 @@ export class WhatsNewOverlay extends Component<any, any> {
       content.push(<AutomaticRecentering key="AutomaticRecentering" />);
       content.push(<BugsFixediOS key="BugsFixediOS" />);
     }
+    if (Platform.OS === 'android') {
+      content.push(<WhatsNew key="WhatsNew" />);
+      content.push(<NewDeviceUI key="NewDeviceUI" />);
+      content.push(<PhysicsBasedSphereUI key="PhysicsBasedSphereUI" />);
+      content.push(<NewScheduler key="NewScheduler" />);
+      content.push(<NewDeviceUIGraph key="NewDeviceUIGraph" />);
+    }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }}/>);
 
     return content;
