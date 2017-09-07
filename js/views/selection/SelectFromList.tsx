@@ -21,18 +21,13 @@ import {ListEditableItems} from "../components/ListEditableItems";
 import {Icon} from "../components/Icon";
 
 
-export class MessageAdd extends Component<any, any> {
-  unsubscribeStoreEvents : any[] = [];
-  unsubscribeSetupEvents : any[] = [];
+export class SelectFromList extends Component<any, any> {
 
   constructor() {
     super();
 
     this.state = {
-      triggerLocationId: null,
-      triggerEvent: null,
-      messageContent: null,
-      recipients: {}
+      selectedItemIds: {}
     };
   }
 
@@ -50,26 +45,6 @@ export class MessageAdd extends Component<any, any> {
 
   _createMessage() {
 
-  }
-
-  _getItems() {
-    let items = [];
-
-    items.push({type:'spacer'});
-    items.push({
-      type: 'textBlob',
-      placeholder: "Your message...",
-      characterLimit: 140,
-      value: this.state.messageContent,
-      callback: (newText) => {
-        this.setState({messageContent: newText});
-      },
-      endCallback: (newText) => {
-
-      }
-    });
-
-    return items;
   }
 
   render() {
@@ -92,11 +67,12 @@ export class MessageAdd extends Component<any, any> {
           right={'Create'}
           rightStyle={{fontWeight: 'bold'}}
           rightAction={() => { this._createMessage(); }}
-          title={"New Message"}
+          title={"Add Schedule"}
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
-          <ListEditableItems items={this._getItems()} separatorIndent={true} />
+          <View style={{alignItems:'center', width: screenWidth}}>
+          </View>
         </ScrollView>
       </Background>
       );

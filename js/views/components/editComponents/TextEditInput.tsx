@@ -81,6 +81,7 @@ export class TextEditInput extends Component<any, any> {
         onEndEditing={() => { this.blur(); }}
         onBlur={() => { this.blur(); }}
         onSubmitEditing={() => { this.blur(); }}
+
       />
     );
   }

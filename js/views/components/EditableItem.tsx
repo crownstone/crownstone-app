@@ -12,6 +12,7 @@ import { CheckBar }          from './editComponents/CheckBar'
 import { Dropdown }          from './editComponents/Dropdown'
 import { EditSpacer }        from './editComponents/EditSpacer'
 import { Explanation }       from './editComponents/Explanation'
+import { LargeExplanation } from "./editComponents/LargeExplanation";
 import { IconEdit }          from './editComponents/IconEdit'
 import { InfoBar }           from './editComponents/InfoBar'
 import { NavigationBar }     from './editComponents/NavigationBar'
@@ -21,9 +22,9 @@ import { OptionalSwitchBar } from './editComponents/OptionalSwitchBar'
 import { SwitchBar }         from './editComponents/SwitchBar'
 import { TextEditBar }       from './editComponents/TextEditBar'
 import { TimePicker }        from './editComponents/TimePicker'
+import { TextBlob }          from "./editComponents/TextBlob";
 
 import {styles, screenWidth, barHeight, barHeightLarge, colors} from '../styles'
-import {LargeExplanation} from "./editComponents/LargeExplanation";
 
 /**
  *
@@ -124,6 +125,8 @@ export class EditableItem extends Component<any, any> {
         return <EditSpacer {...this.props} />;
       case 'textEdit':
         return <TextEditBar barHeight={barHeight} {...this.props} />;
+      case 'textBlob':
+        return <TextBlob barHeight={barHeight} {...this.props} />;
       case 'timePicker':
         return <TimePicker barHeight={barHeight} {...this.props} />;
       default:
