@@ -19,6 +19,7 @@ import {IconButton} from "../components/IconButton";
 import {Util} from "../../util/Util";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {Icon} from "../components/Icon";
+import {SeparatedItemList} from "../components/SeparatedItemList";
 
 
 export class SelectFromList extends Component<any, any> {
@@ -43,11 +44,22 @@ export class SelectFromList extends Component<any, any> {
 
   }
 
-  _getItems() {
-    let items = [];
-    this.props.items.forEach((item) => {
-      // item.push()
-    })
+  _renderItem(item) {
+    return (
+      <View
+        key={'selectFromList_' + item.id}
+        style={{
+          height: 50,
+          backgroundColor: colors.white.rgba(0.75),
+          alignItems:'center',
+          flexDirection:'row',
+          paddingLeft: 15,
+          paddingRight: 15
+        }}>
+        { item.icon ? <IconButton name='ios-body' size={23} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/> : undefined }
+
+      </View>
+    );
   }
 
   render() {
@@ -65,9 +77,15 @@ export class SelectFromList extends Component<any, any> {
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
-          { this._getItems() }
+          <SeparatedItemList
+            items={ this.props.items }
+            separatorIndent={ false }
+            renderer={ this._renderItem.bind(this) }
+            focusOnLoad={ false }
+            style={ {} }
+          />
         </ScrollView>
       </Background>
-      );
+    );
   }
 }

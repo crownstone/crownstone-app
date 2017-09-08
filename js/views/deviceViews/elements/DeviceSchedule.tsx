@@ -355,7 +355,6 @@ class SchedulerEntry extends Component<any, any> {
       disableTextColor = colors.darkGray2.rgba(0.6);
     }
 
-    // items.push(<View key={this.props.scheduleId + 'activeDayFlexStart'} style={{flex:1}} />);
     for (let i = 0; i < days.length; i++) {
       let dayActive = this.props.schedule.activeDays[days[i]] === true;
       items.push(

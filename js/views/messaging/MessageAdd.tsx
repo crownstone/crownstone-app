@@ -52,6 +52,8 @@ export class MessageAdd extends Component<any, any> {
       locationData.push({id: locationId, name: location.config.name, icon: location.config.icon});
     });
 
+    console.log(locationData)
+
     let sphereUserData = sphere.users; // { userId: { firstName: null, lastName: null, email: null, invitationPending: false, present: false, picture: null, accessLevel: admin/member/guest, updatedAt: 1 }}
     let userIds = Object.keys(sphereUserData);
     let users = [];
