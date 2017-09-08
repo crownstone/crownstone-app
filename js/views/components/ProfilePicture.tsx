@@ -40,14 +40,14 @@ export class ProfilePicture extends Component<any, any> {
       return (
         <View style={this.props.style}>
         <View style={[{
-              backgroundColor:'#fff',
-              width:size,
-              height:size,
-              borderRadius:0.5*size,
-              overflow:'hidden',
-              alignItems:'center',
-              justifyContent:'center'
-             }]}>
+          backgroundColor:'#fff',
+          width:size,
+          height:size,
+          borderRadius:0.5*size,
+          overflow:'hidden',
+          alignItems:'center',
+          justifyContent:'center'
+         }]}>
           <Icon
             name={this.props.placeHolderIcon || 'ios-contact'}
             size={innerSize} color={this.props.color || colors.menuBackground.hex}

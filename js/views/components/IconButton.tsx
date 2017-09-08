@@ -46,15 +46,15 @@ export class IconButton extends Component<any, any> {
     else {
       return (
         <View style={[{
-        width: this.props.buttonSize || 30,
-        height: this.props.buttonSize || 30,
-        borderRadius: this.props.radius || (this.props.buttonSize || 30)/5,
-        padding:0,
-        margin:0,
-        backgroundColor:'#f00'
-      }, styles.centered, this.props.buttonStyle]}>
-        <Icon {...this.props} />
-      </View>
+          width: this.props.buttonSize || 30,
+          height: this.props.buttonSize || 30,
+          borderRadius: this.props.radius || (this.props.buttonSize || 30)/5,
+          padding:0,
+          margin:0,
+          }, styles.centered, this.props.buttonStyle
+        ]}>
+          <Icon {...this.props} />
+        </View>
       )
     }
   }

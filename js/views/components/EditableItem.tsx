@@ -10,9 +10,10 @@ import {
 import { ButtonBar }         from './editComponents/ButtonBar'
 import { CheckBar }          from './editComponents/CheckBar'
 import { Dropdown }          from './editComponents/Dropdown'
+import { DeletableEntry }    from "./editComponents/DeletableEntry";
 import { EditSpacer }        from './editComponents/EditSpacer'
 import { Explanation }       from './editComponents/Explanation'
-import { LargeExplanation } from "./editComponents/LargeExplanation";
+import { LargeExplanation }  from "./editComponents/LargeExplanation";
 import { IconEdit }          from './editComponents/IconEdit'
 import { InfoBar }           from './editComponents/InfoBar'
 import { NavigationBar }     from './editComponents/NavigationBar'
@@ -101,6 +102,8 @@ export class EditableItem extends Component<any, any> {
         return <CheckBar barHeight={barHeight} {...this.props} />;
       case 'dropdown':
         return <Dropdown barHeight={barHeight} {...this.props} />;
+      case 'deletableEntry':
+        return <DeletableEntry barHeight={barHeight} {...this.props} />;
       case 'explanation':
         return <Explanation text={this.props.label} {...this.props} />;
       case 'lightExplanation':

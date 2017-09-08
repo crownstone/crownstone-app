@@ -17,9 +17,12 @@ import {Background} from "../components/Background";
 import {TopBar} from "../components/Topbar";
 import {IconButton} from "../components/IconButton";
 import {Util} from "../../util/Util";
-import {ListEditableItems} from "../components/ListEditableItems";
-import {Icon} from "../components/Icon";
+import { ListEditableItems } from "../components/ListEditableItems";
+import { Icon } from "../components/Icon";
+import { ProfilePicture } from "../components/ProfilePicture";
 
+
+const EVERYONE = '__everyone_in_sphere__';
 
 export class MessageAdd extends Component<any, any> {
   constructor() {
@@ -27,9 +30,9 @@ export class MessageAdd extends Component<any, any> {
 
     this.state = {
       triggerLocationId: null,
-      triggerEvent: null,
+      triggerEvent: 'Enter',
       messageContent: '',
-      recipients: {}
+      recipients: {},
     };
   }
 
@@ -41,32 +44,65 @@ export class MessageAdd extends Component<any, any> {
 
   _createMessage() {}
 
-  _getItems() {
-    let state = this.props.store.getState();
-    let sphere = state.spheres[this.props.sphereId];
+  _getLocationItems(sphere) {
     let locationIds = Object.keys(sphere.locations);
     let locationData = [];
 
+    locationData.push({id: 'roomExplanation', type:'lightExplanation', label:'IN A ROOM' });
     locationIds.forEach((locationId) => {
       let location = sphere.locations[locationId];
-      locationData.push({id: locationId, name: location.config.name, icon: location.config.icon});
+      locationData.push({id: locationId, text: location.config.name, icon: location.config.icon, singular: true, selected: this.state.triggerLocationId === locationId});
     });
 
-    console.log(locationData)
+    locationData.push({id: 'sphereExplanation', type:'lightExplanation', label:'ANYWHERE IN THE SPHERE' });
+    locationData.push({id: '__sphere__', text: sphere.config.name, icon: 'c1-sphere', singular: true, selected: this.state.triggerLocationId === '__sphere__'});
 
+    return locationData;
+  }
+
+  _getUserData(state, sphere) {
     let sphereUserData = sphere.users; // { userId: { firstName: null, lastName: null, email: null, invitationPending: false, present: false, picture: null, accessLevel: admin/member/guest, updatedAt: 1 }}
     let userIds = Object.keys(sphereUserData);
-    let users = [];
+    let userData = [];
+
+    userData.push({id: 'everyoneLabel', type:'lightExplanation', label: 'EVERYONE IN YOUR SPHERE' });
+    userData.push({
+      id: EVERYONE,
+      text: 'Everyone in the Sphere',
+      icon: 'ios-people',
+      iconSize: 35,
+      singular: true,
+      selected: this.state.recipients['__everyone_in_sphere__'] === true
+    });
+
+
+    userData.push({id: 'specificUsersLabel', type:'lightExplanation', below: false, label: 'SPECIFIC USERS' });
     userIds.forEach((userId) => {
-      if (sphereUserData[userId].invitationPending === false) {
-        users.push({
+      if (sphereUserData[userId].invitationPending === false && state.user.userId !== userId) {
+        userData.push({
           id: userId,
-          name: sphereUserData[userId].firstName + " " + sphereUserData[userId].lastName,
-          picture: sphereUserData[userId].picture
+          text: sphereUserData[userId].firstName + " " + sphereUserData[userId].lastName,
+          picture: sphereUserData[userId].picture,
+          person: true,
+          selected: this.state.recipients[userId] === true
         })
       }
     });
 
+    userData.push({
+      id: state.user.userId,
+      text: state.user.firstName + " " + state.user.lastName,
+      picture: state.user.picture,
+      person: true,
+      selected: this.state.recipients[state.user.userId] === true
+    });
+
+    return userData;
+  }
+
+  _getItems() {
+    let state = this.props.store.getState();
+    let sphere = state.spheres[this.props.sphereId];
     let items = [];
 
     items.push({type:'lightExplanation', below: false, label: 'MESSAGE' });
@@ -79,35 +115,120 @@ export class MessageAdd extends Component<any, any> {
       callback: (newText) => {
         this.setState({messageContent: newText});
       },
-      endCallback: (newText) => {
-
-      }
     });
     items.push({type:'lightExplanation', below: true, align: 'right', style:{paddingTop:2, paddingRight:5}, label: '( ' + this.state.messageContent.length + ' / 140 )' });
 
+    let userData = this._getUserData(state, sphere);
     items.push({type:'lightExplanation', below: false, label: 'RECIPIENTS', alreadyPadded: true});
-    items.push({
-      label: 'Add recipient',
-      type: 'navigation',
-      icon: <IconButton name='ios-body' size={23} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
-      callback: () => {
-        Actions.selectFromList({items: users, title: 'Recipients', callback: (selection) => {
-          this.setState({recipients: selection});
-        }});
-      }
-    });
+    if (this.state.recipients[EVERYONE] === true) {
+      items.push({
+        label: userData[1].text,
+        type: 'navigation',
+        icon:  <IconButton name={userData[1].icon} size={22} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/>,
+        callback: () => {
+          Actions.selectFromList({items: userData, title: 'Recipients', callback: (selection) => {
+            this.setState({recipients: selection});
+          }});
+        }
+      });
+    }
+    else {
+      items.push({
+        label: 'Add recipient',
+        type: 'navigation',
+        icon: <IconButton name='ios-body' size={23} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7}}/>,
+        callback: () => {
+          Actions.selectFromList({items: userData, title: 'Recipients', callback: (selection) => {
+            this.setState({recipients: selection});
+          }});
+        }
+      });
 
+      userData.forEach((user) => {
+        if (this.state.recipients[user.id] === true) {
+          if (user.type === undefined) {
+            let icon = user.icon ?
+              <IconButton name={user.icon} size={22} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/> :
+              <ProfilePicture picture={user.picture} size={32} />;
+            items.push({
+              label: user.text,
+              type: 'deletableEntry',
+              wrapperStyle: { backgroundColor: colors.white.rgba(0.75) },
+              icon:  <View style={{paddingLeft: 12}}>{icon}</View>,
+              callback: () => {
+                let newRecipients = this.state.recipients;
+                delete newRecipients[user.id];
+                this.setState({recipients: newRecipients});
+              }
+            });
+          }
+        }
+      });
+    }
+
+    let locationItems = this._getLocationItems(sphere);
     items.push({type:'lightExplanation', below: false, label: 'LEAVE MESSAGE IN'});
+
+
+    // show locations
+    let selectLocation = () => {
+      Actions.selectFromList({items: locationItems , title: 'Leave where?', submitOnSelect: true, callback: (selection) => {
+        let selectedIds = Object.keys(selection);
+        if (selectedIds.length > 0) {
+          this.setState({triggerLocationId: Object.keys(selection)[0]});
+        }
+        else {
+          this.setState({triggerLocationId:null});
+        }
+      }});
+    };
+
+    if (this.state.triggerLocationId) {
+      let location;
+      for (let i = 0; i < locationItems.length; i++) {
+        if (this.state.triggerLocationId === locationItems[i].id) {
+          location = locationItems[i];
+          break;
+        }
+      }
+
+      items.push({
+        label: location.text,
+        type: 'navigation',
+        icon:  location.icon ?
+          <IconButton name={location.icon} size={18} buttonSize={34} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/> :
+          <ProfilePicture picture={location.picture} size={30} />,
+        callback: selectLocation
+      });
+    }
+    else {
+      items.push({
+        label: 'Select',
+        type: 'navigation',
+        icon: <IconButton name='md-pin' size={21} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7}}/>,
+        callback: selectLocation
+      });
+    }
+
+    items.push({ type: 'lightExplanation', label:'WHEN SHOULD IT BE DELIVERED' });
+
     items.push({
-      label: 'Select room',
-      type: 'navigation',
-      icon: <IconButton name='md-pin' size={21} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.csBlue.hex, marginLeft:3, marginRight:7}}/>,
-      callback: () => {
-        Actions.selectFromList({items: locationData, title: 'Leave where?', callback: (selection) => {
-          this.setState({recipients: selection});
-        }});
+      type: 'dropdown',
+      label: 'Deliver message on',
+      dropdownHeight: 130,
+      valueRight: true,
+      buttons: 2,
+      valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
+      value: this.state.triggerEvent,
+      valueLabel: 'Entering',
+      items: [{label:'Entering', value:'enter'},{label:'Exiting', value:'exit'}],
+      callback: (newValue) => {
+        this.setState({triggerEvent: newValue})
       }
     });
+    items.push({ type: 'lightExplanation', label:'If the user is already there, the message will also be delivered!', below:true });
+
+    items.push({ type: 'spacer' });
 
     return items;
   }
@@ -124,7 +245,7 @@ export class MessageAdd extends Component<any, any> {
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
-          <ListEditableItems items={this._getItems()} separatorIndent={true} />
+          <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>
       );

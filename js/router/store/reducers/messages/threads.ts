@@ -28,8 +28,6 @@ import memberReducer from './members'
  */
 
 
-export const ALL_MEMBER_ENTRY = "__ALL__";
-
 // total picture of a thread data structure.
 let defaultState = {
   config: {
