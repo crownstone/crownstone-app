@@ -73,6 +73,8 @@ if (DISABLE_NATIVE === true) {
     getSchedules: () => {},
     getAvailableScheduleEntryIndex: () => {},
 
+    viewsInitialized: () => {},
+
   }
 }
 else {
