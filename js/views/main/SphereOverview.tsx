@@ -53,6 +53,7 @@ export class SphereOverview extends Component<any, any> {
         change.changeSphereState    ||
         change.changeSphereConfig   ||
         change.stoneLocationUpdated ||
+        change.updateSphereUser     ||
         change.updateStoneConfig    ||
         change.updateActiveSphere   ||
         change.updateLocationConfig ||

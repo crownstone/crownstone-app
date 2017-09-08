@@ -6,7 +6,8 @@ import { CloudEnhancer }                from './cloudEnhancer'
 import { EventEnhancer }                from './eventEnhancer'
 import { eventBus }                     from '../../util/EventBus'
 import { LOG }                          from '../../logging/Log'
-import {Scheduler} from "../../logic/Scheduler";
+import { Scheduler }                    from "../../logic/Scheduler";
+import { refreshDatabase }              from "../../backgroundProcesses/BackgroundProcessHandler";
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
@@ -161,7 +162,9 @@ class StoreManagerClass {
       .then((data) => {
         if (data) {
           let parsedData = JSON.parse(data);
-          this.store.dispatch({type:"HYDRATE", state: parsedData})
+          this.store.dispatch({type:"HYDRATE", state: parsedData});
+          // validate and update existing store. There has been an issue where you log out, the app gets updated, log in and have an old database which will be initialized
+          refreshDatabase(this.store);
         }
       })
       .catch((err) => {

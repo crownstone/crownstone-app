@@ -33,7 +33,7 @@ export class SettingsSphereUser extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.updateSphereUser) {
+      if  (change.updateSphereUser && this.deleting === false) {
         this.forceUpdate();
       }
     });
