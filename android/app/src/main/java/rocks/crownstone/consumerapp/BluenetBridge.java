@@ -78,6 +78,7 @@ import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
 import nl.dobots.bluenet.ibeacon.BleIbeaconFilter;
 import nl.dobots.bluenet.ibeacon.BleIbeaconRanging;
 import nl.dobots.bluenet.service.BleScanService;
+import nl.dobots.bluenet.service.BluetoothPermissionRequest;
 import nl.dobots.bluenet.service.callbacks.IntervalScanListener;
 import nl.dobots.bluenet.service.callbacks.ScanDeviceListener;
 import nl.dobots.bluenet.utils.BleLog;
@@ -93,6 +94,8 @@ import rocks.crownstone.localization.FingerprintLocalization;
 import rocks.crownstone.localization.FingerprintSamplesMap;
 import rocks.crownstone.localization.Localization;
 import rocks.crownstone.localization.LocalizationCallback;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class BluenetBridge extends ReactContextBaseJavaModule implements IntervalScanListener, EventListener, ScanDeviceListener, BleBeaconRangingListener, LocalizationCallback {
 	private static final String TAG = BluenetBridge.class.getCanonicalName();
@@ -216,6 +219,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	private boolean _bleTurnedOff = false;
 	private boolean _locationServiceTurnedOff = false;
+	private boolean _locationPermissionMissing = false;
 
 	public BluenetBridge(ReactApplicationContext reactContext) {
 		super(reactContext);
@@ -227,19 +231,41 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			@Override
 			public void onHostResume() {
 				BleLog.getInstance().LOGi(TAG, "onHostResume");
-				if (_bleExtInitialized) {
-					// If BleExt was already initialized, but ble or location service was turned off,
-					// then re-init BleExt, so that it will request for permissions again.
-					if (_bleTurnedOff) {
-						BleLog.getInstance().LOGd(TAG, "bluetooth is turned off");
+				BleLog.getInstance().LOGd(TAG, "_bleTurnedOff=" + _bleTurnedOff
+						+ " _locationServiceTurnedOff=" + _locationServiceTurnedOff
+						+ " _locationPermissionMissing=" + _locationPermissionMissing);
+//				if (_bleExtInitialized) {
+//					// If BleExt was already initialized, but ble or location service was turned off,
+//					// then re-init BleExt, so that it will request for permissions again.
+//					// [8-sep-2017] Don't initBluetooth here, but init when stuff is turned on again?
+//					if (_bleTurnedOff) {
+//						BleLog.getInstance().LOGd(TAG, "bluetooth is turned off");
 //						sendEvent("bleStatus", "poweredOff");
-						initBluetooth();
-					}
-					if (_locationServiceTurnedOff) {
-						BleLog.getInstance().LOGd(TAG, "location service is turned off");
+////						initBluetooth();
+//					}
+//					if (_locationServiceTurnedOff) {
+//						BleLog.getInstance().LOGd(TAG, "location service is turned off");
 //						sendEvent("locationStatus", "off");
-						initBluetooth();
-					}
+////						initBluetooth();
+//					}
+//				}
+//				else {
+//					initBluetooth();
+//				}
+				if (_bleTurnedOff) {
+					BleLog.getInstance().LOGd(TAG, "bluetooth is turned off");
+					sendEvent("bleStatus", "poweredOff");
+//					initBluetooth();
+				}
+				if (_locationServiceTurnedOff) {
+					BleLog.getInstance().LOGd(TAG, "location service is turned off");
+					sendEvent("locationStatus", "off");
+//					initBluetooth();
+				}
+				if (_locationPermissionMissing) {
+					BleLog.getInstance().LOGd(TAG, "location permission not granted");
+					sendEvent("locationStatus", "noPermission");
+//					initBluetooth();
 				}
 			}
 
@@ -253,8 +279,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				BleLog.getInstance().LOGi(TAG, "onHostDestroy");
 			}
 		});
-
-		init();
 
 		IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -369,7 +393,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 						break;
 					}
 					case BleErrors.ERROR_LOCATION_SERVICES_TURNED_OFF: {
+						_locationServiceTurnedOff = true;
 						sendEvent("locationStatus", "off");
+						break;
+					}
+					case BleErrors.ERROR_BLE_PERMISSION_MISSING: {
+						_locationPermissionMissing = true;
+						sendEvent("locationStatus", "noPermission");
 						break;
 					}
 				}
@@ -391,15 +421,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	//########################################################################################
 
 	@ReactMethod
-	public void isReady(Callback callback) {
-		BleLog.getInstance().LOGi(TAG, "isReady: " + callback);
-//		_readyCallback = callback;
-		checkReady(callback);
-	}
-
-	@ReactMethod
 	public void rerouteEvents() {
-        BleLog.getInstance().LOGi(TAG, "rerouteEvents");
+		BleLog.getInstance().LOGi(TAG, "rerouteEvents");
+		init();
 //		sendEvent("advertisementData", map);
 //		sendEvent("iBeaconAdvertisement", map);
 //		sendEvent("verifiedAdvertisementData", map);
@@ -410,6 +434,30 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 //		sendEvent("enterLocation", map);
 //		sendEvent("exitLocation", map);
 //		sendEvent("currentLocation", map);
+	}
+
+	@ReactMethod
+	public void isReady(Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "isReady: " + callback);
+		checkReady(callback);
+	}
+
+	@ReactMethod
+	public void viewsInitialized() {
+		// All views have been initialized
+		// This means the missing bluetooth functions can now be shown.
+		if (_bleTurnedOff) {
+			BleLog.getInstance().LOGd(TAG, "bluetooth off");
+			sendEvent("bleStatus", "poweredOff");
+		}
+		if (_locationServiceTurnedOff) {
+			BleLog.getInstance().LOGd(TAG, "location service off");
+			sendEvent("locationStatus", "off");
+		}
+		if (_locationPermissionMissing) {
+			BleLog.getInstance().LOGd(TAG, "location permission missing");
+			sendEvent("locationStatus", "noPermission");
+		}
 	}
 
 	@ReactMethod
@@ -516,11 +564,33 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 
 	@ReactMethod
 	public void requestLocationPermission() {
+		// Request for location permission and for location to be turned on, but only if that's not granted yet.
 		BleLog.getInstance().LOGi(TAG, "requestLocationPermission");
-		Intent intent = new Intent(_reactContext, LocationRequest.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		_reactContext.startActivity(intent);
-//		_bleExt.requestPermissions(_reactContext);
+
+		// This already has all the checks?
+//		initBluetooth();
+
+		// if api newer than 23, need to check for location permission
+		if (Build.VERSION.SDK_INT >= 23) {
+			int permissionCheck = ContextCompat.checkSelfPermission(_reactContext, android.Manifest.permission.ACCESS_COARSE_LOCATION);
+			BleLog.getInstance().LOGd(TAG, "permissionCheck = " + permissionCheck + " _locationServiceTurnedOff=" + _locationServiceTurnedOff);
+//			if (permissionCheck == PackageManager.PERMISSION_GRANTED && _locationServiceTurnedOff == false) {
+//				BleLog.getInstance().LOGd(TAG, "return");
+//				return;
+//			}
+			if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+				Intent intent = new Intent(_reactContext, BluetoothPermissionRequest.class);
+				intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+				_reactContext.startActivity(intent);
+			}
+		}
+
+		// Ask for location to be turned on.
+		if (_locationServiceTurnedOff) {
+			Intent intent = new Intent(_reactContext, LocationRequest.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			_reactContext.startActivity(intent);
+		}
 	}
 
 	@ReactMethod
@@ -1705,7 +1775,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			public void onSuccess(byte[] result) {
 				ScheduleListPacket schedule = new ScheduleListPacket();
 				if (!schedule.fromArray(result)) {
-					BleLog.getInstance().LOGw(TAG, "getAvailableScheduleEntryIndex parse error");
+					BleLog.getInstance().LOGw(TAG, "getAvailableScheduleEntryIndex parse error: " + BleUtils.bytesToString(result));
 					callback.onError(BleErrors.ERROR_MSG_PARSING);
 					return;
 				}
@@ -1718,7 +1788,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 						return;
 					}
 				}
-				BleLog.getInstance().LOGi(TAG, "getAvailableScheduleEntryIndex no empty spot found");
+				BleLog.getInstance().LOGi(TAG, "getAvailableScheduleEntryIndex no empty spot found: ");
+				BleLog.getInstance().LOGi(TAG, "bytes: " + BleUtils.bytesToString(result));
+				BleLog.getInstance().LOGi(TAG, schedule.toString());
 				callback.onError(BleErrors.ERROR_FULL);
 			}
 
@@ -2274,6 +2346,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	private void sendEvent(String eventName, @Nullable String params) {
+		BleLog.getInstance().LOGd(TAG, "sendEvent " + eventName + ": " + params);
 		_reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
 	}
 
@@ -2380,7 +2453,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		BleLog.getInstance().LOGi(TAG, "event: " + event);
 		switch (event) {
 			case BLE_PERMISSIONS_GRANTED: {
+				_locationPermissionMissing = false;
 				initBluetooth();
+				sendEvent("locationStatus", "on"); // Assume it's on?
+				break;
+			}
+			case BLE_PERMISSIONS_MISSING: {
+				_locationPermissionMissing = true;
+				sendEvent("locationStatus", "noPermission");
 				break;
 			}
 			case BLUETOOTH_TURNED_ON:{
@@ -2401,6 +2481,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			}
 			case BLUETOOTH_TURNED_OFF: {
 				_bleTurnedOff = true;
+				initBluetooth();
 				sendEvent("bleStatus", "poweredOff");
 				break;
 			}
@@ -2414,6 +2495,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				break;
 			case LOCATION_SERVICES_TURNED_ON:
 				_locationServiceTurnedOff = false;
+				initBluetooth();
 				sendEvent("locationStatus", "on");
 				break;
 		}
@@ -2722,6 +2804,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			BleLog.getInstance().LOGd(TAG, "location service off");
 			return;
 		}
+		if (_locationPermissionMissing) {
+			BleLog.getInstance().LOGd(TAG, "location permission missing");
+			return;
+		}
 		BleLog.getInstance().LOGi(TAG, "ready!");
 	}
 
@@ -2751,13 +2837,22 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (_bleTurnedOff) {
 			BleLog.getInstance().LOGd(TAG, "bluetooth off");
 			checkReadyLater(callback);
-			initBluetooth();
+//			sendEvent("bleStatus", "poweredOff");
+//			initBluetooth();
 			return;
 		}
 		if (_locationServiceTurnedOff) {
 			BleLog.getInstance().LOGd(TAG, "location service off");
 			checkReadyLater(callback);
-			initBluetooth();
+//			sendEvent("locationStatus", "off");
+//			initBluetooth();
+			return;
+		}
+		if (_locationPermissionMissing) {
+			BleLog.getInstance().LOGd(TAG, "location permission missing");
+			checkReadyLater(callback);
+//			sendEvent("locationStatus", "noPermission");
+//			initBluetooth();
 			return;
 		}
 		BleLog.getInstance().LOGi(TAG, "ready!");
