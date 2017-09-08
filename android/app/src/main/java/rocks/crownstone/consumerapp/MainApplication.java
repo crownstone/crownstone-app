@@ -7,6 +7,7 @@ import com.facebook.react.ReactApplication;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.facebook.react.flat.FlatUIImplementationProvider;
+import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 import com.facebook.react.uimanager.UIImplementationProvider;
 import com.mehcode.reactnative.splashscreen.SplashScreenPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -68,6 +69,8 @@ public class MainApplication extends Application implements ReactApplication {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		long size = 50L * 1024L * 1024L; // 50 MB
+		ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
 		SoLoader.init(this, /* native exopackage */ false);
 	}
 }
