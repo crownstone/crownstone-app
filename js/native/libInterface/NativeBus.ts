@@ -14,7 +14,7 @@ class NativeBusClass {
       setupProgress:        "setupProgress",                    // data type = number ([1 .. 13], 0 for error)
       dfuProgress:          "dfuProgress",                      // data type = {percentage: number, part: number, totalParts: number, progress: number, currentSpeedBytesPerSecond: number, avgSpeedBytesPerSecond: number}
       bleStatus:            "bleStatus",                        // data type = string ("unauthorized", "poweredOff", "poweredOn", "unknown")
-      locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on")
+      locationStatus:       "locationStatus",                   // data type = string ("unknown", "off", "foreground", "on", "noPermission")
 
       nearest:              "nearestCrownstone",                // data type = type_nearest
       nearestSetup:         "nearestSetupCrownstone",           // data type = type_nearest
