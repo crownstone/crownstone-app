@@ -92,34 +92,62 @@ export const sync = {
 };
 
 const syncPowerUsage = function(state, actions) {
-  if (state.user.uploadPowerUsage === false || state.user.uploadHighFrequencyPowerUsage === true) {
-    return;
-  }
-
   let deleteHistoryThreshold = new Date().valueOf() - HISTORY_PERSISTENCE;
 
   let sphereIds = Object.keys(state.spheres);
   let uploadBatches = [];
 
+  // check if we have to delete old data:
   for (let i = 0; i < sphereIds.length; i++) {
+
+    // for all spheres
     let sphere = state.spheres[sphereIds[i]];
     let stoneIds = Object.keys(sphere.stones);
     for (let j = 0; j < stoneIds.length; j++) {
+
+      // for all stones in this sphere
       let stone = sphere.stones[stoneIds[j]];
       let dateIds = Object.keys(stone.powerUsage);
-      for (let k = 0; k < dateIds.length; k++) {
-        let powerUsageBlock = stone.powerUsage[dateIds[k]];
 
+      // for all days of power usage we keep:
+      for (let k = 0; k < dateIds.length; k++) {
         // check if we have to delete this block if it is too old.
-        if (new Date(dateIds[k]).valueOf() <  deleteHistoryThreshold) {
+        if (new Date(dateIds[k]).valueOf() < deleteHistoryThreshold) {
           actions.push({
-            type:'REMOVE_POWER_USAGE_DATE',
+            type: 'REMOVE_POWER_USAGE_DATE',
             sphereId: sphereIds[i],
             stoneId: stoneIds[j],
             dateId: dateIds[k]
           });
         }
-        else {
+      }
+    }
+  }
+
+
+  // if we do not upload the data, skip. If we have High Frequency Data enabled, this method is only a fallback mechanism.
+  if (state.user.uploadPowerUsage === false) {
+    return;
+  }
+
+  // check if we have to upload local data:
+  for (let i = 0; i < sphereIds.length; i++) {
+
+    // for all spheres
+    let sphere = state.spheres[sphereIds[i]];
+    let stoneIds = Object.keys(sphere.stones);
+    for (let j = 0; j < stoneIds.length; j++) {
+
+      // for all stones in this sphere
+      let stone = sphere.stones[stoneIds[j]];
+      let dateIds = Object.keys(stone.powerUsage);
+
+      // for all days of power usage we keep:
+      for (let k = 0; k < dateIds.length; k++) {
+        let powerUsageBlock = stone.powerUsage[dateIds[k]];
+
+        // provided that we do not delete this block, check if we have to upload it.
+        if (new Date(dateIds[k]).valueOf() >= deleteHistoryThreshold) {
           if (powerUsageBlock.cloud.synced === false) {
             let indices = [];
             let uploadData = [];
@@ -127,7 +155,7 @@ const syncPowerUsage = function(state, actions) {
             for (let x = 0; x < data.length; x++) {
               // if synced is null, it will not be synced.
               if (data[x].synced === false) {
-                uploadData.push({ power: data[x].power, timestamp: data[x].timestamp, applianceId: data[x].applianceId});;
+                uploadData.push({ power: data[x].power, timestamp: data[x].timestamp, applianceId: data[x].applianceId});
                 indices.push(x);
               }
             }
@@ -163,6 +191,7 @@ const syncPowerUsage = function(state, actions) {
       })
   }).catch((err) => {});
 };
+
 
 const syncDown = function (userId, options) {
   return new Promise((resolve, reject) => {

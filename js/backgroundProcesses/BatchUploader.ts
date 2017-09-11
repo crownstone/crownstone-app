@@ -53,7 +53,7 @@ class BatchUploadClass {
       let dateId = this.queue.power[key].dateId;
       return CLOUD.forStone(stoneId).updateBatchPowerUsage(this.queue.power[key].data, true)
         .then(() => {
-          actions.push({type: "BATCH_SET_SYNC_POWER_USAGE", sphereId: sphereId, stoneId: stoneId, dateId: dateId, data: { indices: this.queue.power[key].indices }});
+          actions.push({type: "SET_BATCH_SYNC_POWER_USAGE", sphereId: sphereId, stoneId: stoneId, dateId: dateId, data: { indices: this.queue.power[key].indices }});
           this.queue.power[key] = undefined;
           delete this.queue.power[key];
           successfulUploads++;
