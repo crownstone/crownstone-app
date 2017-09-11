@@ -125,7 +125,7 @@ const syncPowerUsage = function(state, actions) {
   }
 
 
-  // if we do not upload the data, skip. If we have High Frequency Data enabled, this method is only a fallback mechanism.
+  // if we do not upload the data, skip. If we have High Frequency Data enabled, this method will not do any uploading as this is handled in the BatchUploader.
   if (state.user.uploadPowerUsage !== true || state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     return;
   }
