@@ -103,7 +103,7 @@ export class AppRouter extends Component {
   }
 
   render() {
-    LOG.debug("RENDERING ROUTER");
+    LOG.info("RENDERING ROUTER");
     if (this.state.storeInitialized === true) {
       let store = StoreManager.getStore();
       if (Platform.OS === 'android') {

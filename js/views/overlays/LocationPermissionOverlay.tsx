@@ -38,6 +38,9 @@ export class LocationPermissionOverlay extends Component<any, any> {
         case "unknown":
           this.setState({visible: true, notificationType: status});
           break;
+        case "noPermission":
+          this.setState({visible: true, notificationType: status});
+          break;
         default: // "unknown":
           this.setState({visible: true, notificationType: status});
           break;
@@ -58,6 +61,8 @@ export class LocationPermissionOverlay extends Component<any, any> {
         return "Location Services are on!";
       case "off":
         return "Location Services are disabled.";
+      case "noPermission":
+        return "Location permission missing.";
       default: // "unknown":
         return "Starting Location Services ...";
     }
@@ -70,6 +75,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
       case "on":
         return "Everything is great!";
       case "off":
+      case "noPermission":
         return "Without location services, Crownstones cannot respond to your location and the app can\'t communicate with Crownstones correctly. This permission is required for the app to function.";
       default: // "unknown":
         return "This should not take long!";
@@ -79,6 +85,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
     switch (this.state.notificationType) {
       case "foreground":
       case "off":
+      case "noPermission":
         return (
           <TouchableOpacity
             onPress={() => { Bluenet.requestLocationPermission() }}

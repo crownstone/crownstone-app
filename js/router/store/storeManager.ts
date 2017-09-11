@@ -71,7 +71,8 @@ class StoreManagerClass {
       AsyncStorage.getItem(this.storageKey)
         .then((data) => {
           this._setupStore(data, true);
-        });
+        })
+        .catch((err)=>{LOG.error("AsyncStorage: failed to get store", err)});
     }
   }
 
@@ -141,7 +142,7 @@ class StoreManagerClass {
           .then((userId) => {
             if (userId) {
               let payload = JSON.stringify(this.store.getState());
-              AsyncStorage.setItem(this.storageKey, payload).done();
+              return AsyncStorage.setItem(this.storageKey, payload).done();
             }
           })
           .catch((err) => {
@@ -189,6 +190,7 @@ class StoreManagerClass {
         // write everything downloaded from the cloud at login to disk.
         return this._persistToDisk();
       })
+      .catch((err)=>{LOG.error("AsyncStorage finalize login", err)})
   }
 
 

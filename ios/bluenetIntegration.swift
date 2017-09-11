@@ -1278,4 +1278,8 @@ open class BluenetJS: NSObject {
   }
 
   
+  @objc func viewsInitialized() {
+    LOGGER.info("BluenetBridge: Called viewsInitialized")
+  }
+  
 }

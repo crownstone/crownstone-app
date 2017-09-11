@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
 import { eventBus }                  from '../util/EventBus'
+import { Bluenet }                   from '../native/libInterface/Bluenet';
 import { reducerCreate }             from './store/reducers/navigation'
 import { OptionPopup }               from '../views/components/OptionPopup'
 import { Processing }                from '../views/components/Processing'
@@ -31,6 +32,9 @@ import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 
 export class Router_Android extends Component {
+  componentDidMount() {
+    Bluenet.viewsInitialized();
+  }
   render() {
     return (
       <View style={{flex:1, backgroundColor: colors.menuBackground.hex}}>
