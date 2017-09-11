@@ -78,6 +78,7 @@ RCT_EXTERN_METHOD(setTime:(nonnull NSNumber *)time callback:(RCTResponseSenderBl
 RCT_EXTERN_METHOD(getTime:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(batterySaving:(nonnull NSNumber *)state)
 RCT_EXTERN_METHOD(setBackgroundScanning:(nonnull NSNumber *)state)
+RCT_EXTERN_METHOD(viewsInitialized)
 
 
 // MESH

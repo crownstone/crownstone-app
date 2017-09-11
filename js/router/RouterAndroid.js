@@ -33,7 +33,6 @@ import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 
 export class Router_Android extends Component {
   componentDidMount() {
-    console.log("router android componentDidMount");
     Bluenet.viewsInitialized();
   }
   render() {
