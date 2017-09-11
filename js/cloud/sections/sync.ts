@@ -92,7 +92,6 @@ export const sync = {
 };
 
 const syncPowerUsage = function(state, actions) {
-
   let deleteHistoryThreshold = new Date().valueOf() - HISTORY_PERSISTENCE;
 
   let sphereIds = Object.keys(state.spheres);
@@ -125,11 +124,13 @@ const syncPowerUsage = function(state, actions) {
     }
   }
 
-  if (state.user.uploadPowerUsage === false || state.user.uploadHighFrequencyPowerUsage === true) {
+
+  // if we do not upload the data, skip. If we have High Frequency Data enabled, this method is only a fallback mechanism.
+  if (state.user.uploadPowerUsage === false) {
     return;
   }
 
-  // check if we have to delete old data:
+  // check if we have to upload local data:
   for (let i = 0; i < sphereIds.length; i++) {
 
     // for all spheres
@@ -190,6 +191,7 @@ const syncPowerUsage = function(state, actions) {
       })
   }).catch((err) => {});
 };
+
 
 const syncDown = function (userId, options) {
   return new Promise((resolve, reject) => {
@@ -962,8 +964,10 @@ const syncDevices = function(store, actions, cloudDevices) {
       });
 
       // if we use this device as a hub, make sure we request permission for notifications.
-      LOG.info("Sync: Requesting notification permissions during adding of the Device.");
-      NotificationHandler.request();
+      if (matchingDevice.hubFunction === true && state.user.developer) {
+        LOG.info("Sync: Requesting notification permissions during adding of the Device.");
+        NotificationHandler.request();
+      }
 
       // update our unique identifier to match the new device.
       store.dispatch({
@@ -1005,8 +1009,11 @@ const syncDevices = function(store, actions, cloudDevices) {
           }
         });
 
-        LOG.info("Sync: Requesting notification permissions during updating of the device.");
-        NotificationHandler.request();
+        // if we use this device as a hub, make sure we request permission for notifications.
+        if (state.devices[deviceId].hubFunction === true || matchingDevice.hubFunction === true && state.user.developer) {
+          LOG.info("Sync: Requesting notification permissions during updating of the device.");
+          NotificationHandler.request();
+        }
       }
 
       // if the tap to toggle calibration is available and different from what we have stored, update it.
