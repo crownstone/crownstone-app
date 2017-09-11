@@ -3,8 +3,6 @@ import { combineReducers } from 'redux'
 import messageReducer from './messages'
 import memberReducer from './members'
 
-
-
 /**
  *  this is a list of all actions regarding the thread system.
  *
@@ -12,7 +10,7 @@ import memberReducer from './members'
  *  ADD_THREAD       { sphereId, threadId, data: { triggerLocationId } }
  *  ADD_THREAD       { sphereId, threadId, data: { triggerLocationId, memberIds: [] }}
  *  ADD_THREAD       { sphereId, threadId, messageId, data: { triggerLocationId, sender, content }}
- *  ADD_THREAD       { sphereId, threadId, messageId, data: { triggerLocationId, sender, content, memberIds: [] }}
+ *  ADD_THREAD       { sphereId, threadId, messageId, data: { triggerLocationId, sender, content, memberIds: [], messageSender }}
  *  UPDATE_THREAD    { sphereId, threadId, data: { triggerLocationId, updatedAt } }
  *  REMOVE_THREAD    { sphereId, threadId }
 
@@ -44,8 +42,8 @@ let defaultState = {
   },
   members: {
     memberId: {
-      received: { at: null },
-      read:     { at: null },
+      received: { state: false, at: null },
+      read:     { state: false, at: null },
     },
   },
 };
@@ -57,6 +55,7 @@ const messageThreadConfigReducer = (state = defaultState.config, action : any = 
     case 'UPDATE_THREAD':
       let newState = {...state};
       newState.triggerLocationId = update(action.data.triggerLocationId, newState.triggerLocationId);
+      newState.triggerEvent = update(action.data.triggerEvent, newState.triggerEvent);
       newState.updatedAt = getTime(action && action.data && action.data.lastSeen);
       return newState;
     case 'REFRESH_DEFAULTS':
@@ -76,6 +75,8 @@ let combinedMessageThreadReducer = combineReducers({
 // messageThreadsReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'REMOVE_ALL_THREADS':
+      return {};
     case 'REMOVE_THREAD':
       let newState = {...state};
       delete newState[action.threadId];

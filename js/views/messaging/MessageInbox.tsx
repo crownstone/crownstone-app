@@ -57,6 +57,7 @@ export class MessageInbox extends Component<any, any> {
       let sphere = state.spheres[activeSphere];
       let threadIds = Object.keys(sphere.messageThreads);
 
+
       let iconButton = (
         <TouchableOpacity
           onPress={() => { Actions.messageAdd({ sphereId: activeSphere }); }}
@@ -79,9 +80,9 @@ export class MessageInbox extends Component<any, any> {
         scrollView = (
           <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
             <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
-              <View style={{height: 0.1 * iconSize}} />
+              <View style={{flex:0.3}} />
               { headerText }
-              <View style={{height: 0.4 * iconSize}} />
+              <View style={{flex:0.6}} />
               { iconButton }
               <View style={{flex:0.8}} />
               <Text style={{
@@ -136,7 +137,7 @@ export class MessageInbox extends Component<any, any> {
     }
     else {
       return (
-        <View style={{backgroundColor:"#f00", width: screenWidth, height:screenHeight}}>
+        <View style={{width: screenWidth, height:screenHeight}}>
           <Text>No Sphere....</Text>
         </View>
       );

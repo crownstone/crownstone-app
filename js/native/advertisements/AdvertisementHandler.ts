@@ -284,11 +284,11 @@ class AdvertisementHandlerClass {
     }
 
     let updateType = "UPDATE_STONE_STATE";
-    // update the state is there is new data, or if the crownstone is disabled.
-    if ((stoneFromServiceData.state.state != switchState || stoneFromServiceData.state.currentUsage != measuredUsage) &&
-        stoneFromServiceData.config.disabled === false) {
+    // if this entry is duplicate data, change the update type to reflect this. Duplicates do not get synced to the cloud.
+    if (stoneFromServiceData.state.state === switchState && stoneFromServiceData.state.currentUsage === measuredUsage) {
       updateType = "UPDATE_STONE_STATE_DUPLICATE";
     }
+
 
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore !== true) {

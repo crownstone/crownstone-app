@@ -9,6 +9,7 @@ export const ALL_MEMBER_ENTRY = "__ALL__";
 // }
 
 let defaultState = {
+  state: false,
   at: 1
 };
 
@@ -21,7 +22,7 @@ const receivedReducer = (state = {}, action : any = {}) => {
       return newState;
     default:
       if (action.messageId !== undefined) {
-        if (state[action.messageId] !== undefined || action.type === 'ADD_MESSAGE' || action.type === 'ADD_THREAD') {
+        if (state[action.messageId] !== undefined || action.type === 'ADD_THREAD' || action.type === 'ADD_MESSAGE') {
           return {
             ...state,
             ...{[action.messageId]: receivedDataReducer(state[action.memberId], action)}
@@ -40,7 +41,7 @@ const readReducer = (state = {}, action : any = {}) => {
       return newState;
     default:
       if (action.messageId !== undefined) {
-        if (state[action.messageId] !== undefined || action.type === 'READ_MESSAGE') {
+        if (state[action.messageId] !== undefined || action.type === 'ADD_THREAD' || action.type === 'ADD_MESSAGE') {
           return {
             ...state,
             ...{[action.messageId]: readDataReducer(state[action.memberId], action)}
@@ -81,7 +82,7 @@ const readDataReducer = (state = defaultState, action : any = {}) => {
 };
 
 
-export const combinedMemberReducer = combineReducers({
+const combinedMemberReducer = combineReducers({
   received: receivedReducer,
   read:     readReducer,
 });
@@ -90,17 +91,18 @@ export const combinedMemberReducer = combineReducers({
 
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
-    case action.type === "REMOVE_MEMBER":
+    case "REMOVE_MEMBER":
       let newState = {...state};
       delete newState[action.memberId];
       return newState;
-    case action.type === "ADD_THREAD":
+    case "ADD_THREAD":
       let memberIds = action.data.memberIds;
       if (memberIds.length > 0) {
         let newState = {...state};
         memberIds.forEach((memberId) => {
           newState[memberId] = combinedMemberReducer({}, action);
         });
+
         return newState;
       }
       else {

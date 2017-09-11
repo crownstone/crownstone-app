@@ -32,6 +32,14 @@ class BatchUploadClass {
     this._batchPowerData();
   }
 
+  /**
+   * Add a data point to the queue to upload. The index is obtained from the calling method and indicates the position of this item in the database.
+   * @param dateId
+   * @param sphereId
+   * @param stoneId
+   * @param index
+   * @param data
+   */
   addPowerData(dateId, sphereId, stoneId, index, data) {
     Scheduler.resumeTrigger(TRIGGER_ID);
     let key = dateId+'_'+sphereId+'_'+stoneId;
@@ -53,7 +61,7 @@ class BatchUploadClass {
       let dateId = this.queue.power[key].dateId;
       return CLOUD.forStone(stoneId).updateBatchPowerUsage(this.queue.power[key].data, true)
         .then(() => {
-          actions.push({type: "BATCH_SET_SYNC_POWER_USAGE", sphereId: sphereId, stoneId: stoneId, dateId: dateId, data: { indices: this.queue.power[key].indices }});
+          actions.push({type: "SET_BATCH_SYNC_POWER_USAGE", sphereId: sphereId, stoneId: stoneId, dateId: dateId, data: { indices: this.queue.power[key].indices }});
           this.queue.power[key] = undefined;
           delete this.queue.power[key];
           successfulUploads++;

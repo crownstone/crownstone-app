@@ -23,17 +23,20 @@ import { ProfilePicture } from "../components/ProfilePicture";
 
 
 const EVERYONE = '__everyone_in_sphere__';
+const ANYWHERE_IN_SPHERE = '__sphere__';
 
 export class MessageAdd extends Component<any, any> {
   constructor() {
     super();
 
     this.state = {
-      triggerLocationId: null,
-      triggerEvent: 'Enter',
+      triggerLocationId: ANYWHERE_IN_SPHERE,
+      triggerEvent: 'enter',
       messageContent: '',
       recipients: {},
     };
+
+    this.state.recipients[EVERYONE] = true
   }
 
   componentWillMount() {}
@@ -42,7 +45,44 @@ export class MessageAdd extends Component<any, any> {
 
   componentWillUnmount() {}
 
-  _createMessage() {}
+  _createMessage() {
+    if (this.state.messageContent.length === 0) {
+      Alert.alert("Message is empty..", "I can't send an empty message.", [{text:'Right'}]);
+      return;
+    }
+
+
+    let state = this.props.store.getState();
+
+    // gather array of recipients
+    let recipients = [];
+    let recipientIds = Object.keys(this.state.recipients);
+    recipientIds.forEach((recipientId) => {
+      if (this.state.recipients[recipientId] === true) {
+        recipients.push(recipientId);
+      }
+    });
+
+    this.props.store.dispatch({
+      type:'ADD_THREAD',
+      sphereId: this.props.sphereId,
+      threadId: Util.getUUID(),
+      messageId: Util.getUUID(),
+      data: {
+        // thread
+        triggerLocationId: this.state.triggerLocationId,
+        triggerEvent: this.state.triggerEvent,
+
+        // message
+        content: this.state.messageContent,
+        sender: state.user.userId,
+
+        // members
+        memberIds: recipients
+      }
+    });
+    Actions.pop();
+  }
 
   _getLocationItems(sphere) {
     let locationIds = Object.keys(sphere.locations);
@@ -55,7 +95,7 @@ export class MessageAdd extends Component<any, any> {
     });
 
     locationData.push({id: 'sphereExplanation', type:'lightExplanation', label:'ANYWHERE IN THE SPHERE' });
-    locationData.push({id: '__sphere__', text: sphere.config.name, icon: 'c1-sphere', singular: true, selected: this.state.triggerLocationId === '__sphere__'});
+    locationData.push({id: ANYWHERE_IN_SPHERE, text: sphere.config.name, icon: 'c1-sphere', singular: true, selected: this.state.triggerLocationId === ANYWHERE_IN_SPHERE});
 
     return locationData;
   }
@@ -72,9 +112,8 @@ export class MessageAdd extends Component<any, any> {
       icon: 'ios-people',
       iconSize: 35,
       singular: true,
-      selected: this.state.recipients['__everyone_in_sphere__'] === true
+      selected: this.state.recipients[EVERYONE] === true
     });
-
 
     userData.push({id: 'specificUsersLabel', type:'lightExplanation', below: false, label: 'SPECIFIC USERS' });
     userIds.forEach((userId) => {
@@ -210,23 +249,21 @@ export class MessageAdd extends Component<any, any> {
       });
     }
 
-    items.push({ type: 'lightExplanation', label:'WHEN SHOULD IT BE DELIVERED' });
-
-    items.push({
-      type: 'dropdown',
-      label: 'Deliver message on',
-      dropdownHeight: 130,
-      valueRight: true,
-      buttons: 2,
-      valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
-      value: this.state.triggerEvent,
-      valueLabel: 'Entering',
-      items: [{label:'Entering', value:'enter'},{label:'Exiting', value:'exit'}],
-      callback: (newValue) => {
-        this.setState({triggerEvent: newValue})
-      }
-    });
-    items.push({ type: 'lightExplanation', label:'If the user is already there, the message will also be delivered!', below:true });
+    // items.push({ type: 'lightExplanation', label:'WHEN SHOULD IT BE DELIVERED' });
+    // items.push({
+    //   type: 'dropdown',
+    //   label: 'Deliver message on',
+    //   dropdownHeight: 130,
+    //   valueRight: true,
+    //   buttons: 2,
+    //   valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
+    //   value: this.state.triggerEvent,
+    //   items: [{label:'Entering', value:'enter'},{label:'Exiting', value:'exit'}],
+    //   callback: (newValue) => {
+    //     this.setState({triggerEvent: newValue})
+    //   }
+    // });
+    // items.push({ type: 'lightExplanation', label:'If the user is already there, the message will also be delivered!', below:true });
 
     items.push({ type: 'spacer' });
 

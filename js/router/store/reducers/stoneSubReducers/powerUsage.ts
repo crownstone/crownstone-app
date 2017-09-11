@@ -75,8 +75,13 @@ let powerUsageDataReducer = (state = defaultState.data, action : any = {}) => {
       if (action.data && action.data.indices) {
         let newState = [...state];
 
+        let syncState = action.data.sync;
+        if (syncState === undefined) {
+          syncState = true;
+        }
+
         for (let i = 0; i < action.data.indices.length; i++) {
-          newState[action.data.indices[i]].synced = action.data.sync;
+          newState[action.data.indices[i]].synced = syncState;
         }
 
         return newState;
