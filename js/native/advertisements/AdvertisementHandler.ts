@@ -283,17 +283,10 @@ class AdvertisementHandlerClass {
       measuredUsage = 0;
     }
 
-    let updateType = "UPDATE_STONE_STATE";
-    // if this entry is duplicate data, change the update type to reflect this. Duplicates do not get synced to the cloud.
-    if (stoneFromServiceData.state.state === switchState && stoneFromServiceData.state.currentUsage === measuredUsage) {
-      updateType = "UPDATE_STONE_STATE_DUPLICATE";
-    }
-
-
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore !== true) {
       Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {
-        type: updateType,
+        type: 'UPDATE_STONE_STATE',
         sphereId: advertisement.referenceId,
         stoneId: referenceByCrownstoneId.id,
         data: { state: switchState, currentUsage: measuredUsage, applianceId: referenceByCrownstoneId.applianceId },

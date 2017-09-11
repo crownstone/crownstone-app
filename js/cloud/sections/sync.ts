@@ -126,7 +126,7 @@ const syncPowerUsage = function(state, actions) {
 
 
   // if we do not upload the data, skip. If we have High Frequency Data enabled, this method is only a fallback mechanism.
-  if (state.user.uploadPowerUsage === false) {
+  if (state.user.uploadPowerUsage !== true || state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     return;
   }
 
