@@ -50,10 +50,12 @@ export const syncUsersInLocation = function(state, location_from_cloud, location
   let peopleInCloudLocations = {};
   if (Array.isArray(location_from_cloud.presentPeople) && location_from_cloud.presentPeople.length > 0) {
     location_from_cloud.presentPeople.forEach((person) => {
-      peopleInCloudLocations[person.id] = true;
-      // check if the person exists in our sphere and if we are not that person. Also check if this user is already in the room.
-      if (person.id !== state.user.userId && sphereUsers[person.id] === true && locationInState.presentUsers.indexOf(person.id) === -1) {
-        actions.push({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: location_from_cloud.id, data: {userId: person.id}});
+      if (peopleInCloudLocations[person.id] === undefined) {
+        peopleInCloudLocations[person.id] = true;
+        // check if the person exists in our sphere and if we are not that person. Also check if this user is already in the room.
+        if (person.id !== state.user.userId && sphereUsers[person.id] === true && locationInState.presentUsers.indexOf(person.id) === -1) {
+          actions.push({type: 'USER_ENTER_LOCATION', sphereId: sphereId, locationId: location_from_cloud.id, data: {userId: person.id}});
+        }
       }
     });
   }

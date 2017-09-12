@@ -137,10 +137,15 @@ export class SettingsDeveloper extends Component<any, any> {
       style: {color: colors.blue.hex},
       icon: <IconButton name="md-cloud-download" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.csBlue.hex}} />,
       callback:(newValue) => {
-        this.props.eventBus.emit("showLoading","Syncing...");
-        CLOUD.sync(store, true)
-          .then(() => { this.props.eventBus.emit("showLoading","Done!"); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
-          .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert("Error during sync.", err && err.message || JSON.stringify(err), [{text:'OK'}]) })
+        if (CLOUD.__currentlySyncing === false) {
+          this.props.eventBus.emit("showLoading","Syncing...");
+          CLOUD.sync(store, true)
+            .then(() => { this.props.eventBus.emit("showLoading","Done!"); setTimeout(() => { this.props.eventBus.emit("hideLoading");}, 500); })
+            .catch((err) => { this.props.eventBus.emit("hideLoading"); Alert.alert("Error during sync.", err && err.message || JSON.stringify(err), [{text:'OK'}]) })
+        }
+        else {
+          Alert.alert("Sync already in progress.","There already is an active syncing process running in the background. Syncing can take a long time if there are a lot op power measurements that require syncing.", [{text:'OK'}]);
+        }
     }});
 
 

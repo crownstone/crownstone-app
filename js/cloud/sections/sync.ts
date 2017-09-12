@@ -521,7 +521,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             sphereId: sphere.id,
             updatedAt: locationInState.config.updatedAt,
           };
-          LOG.info("@SYNC: Updating location", location_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(location_from_cloud.updatedAt).valueOf(), "local:", locationInState.config.updatedAt, 'diff:', locationInState.config.updatedAt - (new Date(location_from_cloud.updatedAt).valueOf()));
+          LOG.info("SYNC: Updating location", location_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(location_from_cloud.updatedAt).valueOf(), "local:", locationInState.config.updatedAt, 'diff:', locationInState.config.updatedAt - (new Date(location_from_cloud.updatedAt).valueOf()));
           CLOUD.updateLocation(location_from_cloud.id, data).catch(() => {});
         }
       }
@@ -818,7 +818,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
         }
         else if (getTimeDifference(sphereInState.appliances[appliance_from_cloud.id].config, appliance_from_cloud) > 0) {
           // update cloud since our data is newer!
-          LOG.info("@SYNC: Updating appliance", appliance_from_cloud.id, "in Cloud since our data is newer!");
+          LOG.info("SYNC: Updating appliance", appliance_from_cloud.id, "in Cloud since our data is newer!");
           let applianceInState = sphereInState.appliances[appliance_from_cloud.id];
           let data = {
             id: appliance_from_cloud.id,
@@ -835,7 +835,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
             data["json"] = JSON.stringify(applianceInState.behaviour);
           }
 
-          LOG.info("@SYNC: Updating Appliance", appliance_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(appliance_from_cloud.updatedAt).valueOf(), "local:", applianceInState.config.updatedAt, 'diff:', applianceInState.config.updatedAt - (new Date(appliance_from_cloud.updatedAt).valueOf()));
+          LOG.info("SYNC: Updating Appliance", appliance_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(appliance_from_cloud.updatedAt).valueOf(), "local:", applianceInState.config.updatedAt, 'diff:', applianceInState.config.updatedAt - (new Date(appliance_from_cloud.updatedAt).valueOf()));
           CLOUD.forSphere(sphere.id).updateAppliance(appliance_from_cloud.id, data).catch(() => {});
         }
       }
