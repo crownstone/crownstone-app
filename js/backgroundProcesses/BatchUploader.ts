@@ -51,25 +51,41 @@ class BatchUploadClass {
       let stoneId = this.queue.power[key].stoneId;
       let sphereId = this.queue.power[key].sphereId;
       let dateId = this.queue.power[key].dateId;
-      return CLOUD.forStone(stoneId).updateBatchPowerUsage(this.queue.power[key].data, true)
+
+      let data = this.queue.power[key].data;
+      let indices = this.queue.power[key].indices;
+
+      this.queue.power[key] = undefined;
+      delete this.queue.power[key];
+
+      return CLOUD.forStone(stoneId).updateBatchPowerUsage(data, true)
         .then(() => {
-          actions.push({type: "SET_BATCH_SYNC_POWER_USAGE", sphereId: sphereId, stoneId: stoneId, dateId: dateId, data: { indices: this.queue.power[key].indices }});
-          this.queue.power[key] = undefined;
-          delete this.queue.power[key];
+          LOG.debug("BatchUploader: Updated Batch Usage for indices", indices);
+          actions.push({type: "SET_BATCH_SYNC_POWER_USAGE", sphereId: sphereId, stoneId: stoneId, dateId: dateId, data: { indices: indices }});
           successfulUploads++;
         })
         .catch((err) => {
-          LOG.error("BatchUploader: Could not upload samples", err);
+          // put the data back in the queue
+          if (this.queue.power[key] === undefined) {
+            this.queue.power[key] = { dateId: dateId, stoneId: stoneId, sphereId: sphereId, indices:[], data:[] };
+          }
+          this.queue.power[key].data = this.queue.power[key].data.concat(data);
+          this.queue.power[key].indices = this.queue.power[key].indices.concat(indices);
+          LOG.error("BatchUploader: Could not upload samples:", indices, " because of: ", err);
         })
     })
-    .catch((err) => {});
+    .then(() => {
+      // if everything was uploaded
+      if (powerKeys.length === successfulUploads) {
+        Scheduler.pauseTrigger(TRIGGER_ID);
+      }
 
-    if (powerKeys.length === successfulUploads) {
-      Scheduler.pauseTrigger(TRIGGER_ID);
-    }
-
-    // set the sync states
-    this._store.batchDispatch(actions);
+      // set the sync states
+      this._store.batchDispatch(actions);
+    })
+    .catch((err) => {
+      LOG.error("BatchUploader: Error during upload session", err);
+    });
   }
 }
 

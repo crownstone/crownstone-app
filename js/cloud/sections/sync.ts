@@ -15,7 +15,16 @@ import {getStonesAndAppliancesInSphere} from "../../util/DataUtil";
  */
 export const sync = {
 
+  __currentlySyncing: false,
+
   sync: function (store, background = true) {
+    if (this.__currentlySyncing) {
+      LOG.info("SYNC: Skip Syncing, sync already in progress.");
+      return new Promise((resolve, reject) => { resolve() });
+    }
+
+    this.__currentlySyncing = true;
+
     let state = store.getState();
     let actions = [];
     let options = { background: background };
@@ -25,7 +34,7 @@ export const sync = {
       return;
     }
 
-    LOG.cloud("Start Syncing");
+    LOG.cloud("SYNC: Start Syncing.");
 
     // set the authentication tokens
     let userId = state.user.userId;
@@ -73,7 +82,10 @@ export const sync = {
         return syncPowerUsage(state, actions);
       })
       .then(() => {
-        LOG.info("SYNC Dispatching ", actions.length, " actions!");
+        return cleanupPowerUsage(state, actions);
+      })
+      .then(() => {
+        LOG.info("SYNC: Finished. Dispatching ", actions.length, " actions!");
         actions.forEach((action) => {
           action.triggeredBySync = true;
         });
@@ -87,16 +99,24 @@ export const sync = {
         if (cloudData.addedSphere === true || changedLocations === true) {
           this.events.emit("CloudSyncComplete_spheresChanged");
         }
+
+      })
+      .then(() => {
+        this.__currentlySyncing = false;
+      })
+      .catch((err) => {
+        this.__currentlySyncing = false;
+        LOG.error("SYNC: error during sync:", err);
+        throw err;
       })
   }
 };
 
-const syncPowerUsage = function(state, actions) {
+const cleanupPowerUsage = function(state, actions) {
+  LOG.info("SYNC: cleanupPowerUsage starting");
   let deleteHistoryThreshold = new Date().valueOf() - HISTORY_PERSISTENCE;
 
   let sphereIds = Object.keys(state.spheres);
-  let uploadBatches = [];
-
   // check if we have to delete old data:
   for (let i = 0; i < sphereIds.length; i++) {
 
@@ -123,12 +143,21 @@ const syncPowerUsage = function(state, actions) {
       }
     }
   }
+};
 
+const syncPowerUsage = function(state, actions) {
+  LOG.info("SYNC: syncPowerUsage starting");
 
-  // if we do not upload the data, skip. If we have High Frequency Data enabled, this method will not do any uploading as this is handled in the BatchUploader.
-  if (state.user.uploadPowerUsage !== true || state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
+  // if we do not upload the data, skip. Even if we have High Frequency Data enabled, this method act as a fallback uploader.
+  if (state.user.uploadPowerUsage !== true) {
     return;
   }
+
+  let sphereIds = Object.keys(state.spheres);
+  let uploadBatches = [];
+
+  // this is split to reduce the load in the cloud. For the current implementation without cassandra, 100 is max. A request takes about 2 seconds.
+  let maxBatchSize = 100;
 
   // check if we have to upload local data:
   for (let i = 0; i < sphereIds.length; i++) {
@@ -146,20 +175,33 @@ const syncPowerUsage = function(state, actions) {
       for (let k = 0; k < dateIds.length; k++) {
         let powerUsageBlock = stone.powerUsage[dateIds[k]];
 
-        // provided that we do not delete this block, check if we have to upload it.
-        if (new Date(dateIds[k]).valueOf() >= deleteHistoryThreshold) {
-          if (powerUsageBlock.cloud.synced === false) {
-            let indices = [];
-            let uploadData = [];
-            let data = powerUsageBlock.data;
-            for (let x = 0; x < data.length; x++) {
-              // if synced is null, it will not be synced.
-              if (data[x].synced === false) {
-                uploadData.push({ power: data[x].power, timestamp: data[x].timestamp, applianceId: data[x].applianceId});
-                indices.push(x);
+        // check if we have to upload this block
+        if (powerUsageBlock.cloud.synced === false) {
+          let indices = [];
+          let uploadData = [];
+          let data = powerUsageBlock.data;
+          for (let x = 0; x < data.length; x++) {
+            // if synced is null, it will not be synced.
+            if (data[x].synced === false) {
+              uploadData.push({ power: data[x].power, timestamp: data[x].timestamp, applianceId: data[x].applianceId});
+              indices.push(x);
+
+              if (uploadData.length >= maxBatchSize) {
+                uploadBatches.push({
+                  data: uploadData,
+                  indices: indices,
+                  sphereId: sphereIds[i],
+                  stoneId: stoneIds[j],
+                  dateId: dateIds[k]
+                });
+
+                uploadData = [];
+                indices = [];
               }
             }
+          }
 
+          if (uploadData.length > 0) {
             uploadBatches.push({
               data: uploadData,
               indices: indices,
@@ -173,23 +215,31 @@ const syncPowerUsage = function(state, actions) {
     }
   }
 
+  let uploadCounter = 0;
   return Util.promiseBatchPerformer(uploadBatches, (uploadBatch) => {
     let stoneId = uploadBatch.stoneId;
     let sphereId = uploadBatch.sphereId;
     let dateId = uploadBatch.dateId;
+    uploadCounter++;
+    let t1 = new Date().valueOf();
+    LOG.info("SYNC: Uploading batch: ", uploadCounter, ' from ', uploadBatches.length,' which has ', uploadBatch.data.length, ' data points');
     return CLOUD.forStone(stoneId).updateBatchPowerUsage(uploadBatch.data, true)
       .then(() => {
+        LOG.info("SYNC: Finished batch in", new Date().valueOf() - t1, 'ms');
         actions.push({
           type: "SET_BATCH_SYNC_POWER_USAGE",
           sphereId: sphereId,
           stoneId: stoneId,
           dateId: dateId,
-          data: { indices: uploadBatch.indices }});
+          data: { indices: uploadBatch.indices }
+        });
       })
       .catch((err) => {
-        LOG.error("BatchUploader: Could not upload samples", err);
+        LOG.error("SYNC: Could not upload samples",uploadBatch.indices, "due to:", err);
       })
-  }).catch((err) => {});
+  }).catch((err) => {
+    LOG.error("SYNC: Error during sample upload", err);
+  });
 };
 
 
@@ -561,7 +611,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
           if (adminInThisSphere === true) {
             data["json"] = JSON.stringify(stoneInState.behaviour);
           }
-          LOG.info("@SYNC: Updating Stone", stone_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(stone_from_cloud.updatedAt).valueOf(), "local:", stoneInState.config.updatedAt, 'diff:', stoneInState.config.updatedAt - (new Date(stone_from_cloud.updatedAt).valueOf()));
+          LOG.info("SYNC: Updating Stone", stone_from_cloud.id, " in Cloud since our data is newer! remote: ", new Date(stone_from_cloud.updatedAt).valueOf(), "local:", stoneInState.config.updatedAt, 'diff:', stoneInState.config.updatedAt - (new Date(stone_from_cloud.updatedAt).valueOf()));
           CLOUD.forSphere(sphere.id).updateStone(stone_from_cloud.id, data).catch(() => {});
 
           // check if we have to sync the locations:
@@ -574,7 +624,7 @@ const syncSpheres = function(store, actions, spheres, spheresData) {
               CLOUD.forStone(stone_from_cloud.id).deleteStoneLocationLink(locationLinkId,  sphere.id, stoneInState.config.updatedAt, true)
                 .then(() => {
                   if (stoneInState.config.locationId !== null) {
-                    CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, sphere.id,  stoneInState.config.updatedAt, true);
+                    return CLOUD.forStone(stone_from_cloud.id).updateStoneLocationLink(stoneInState.config.locationId, sphere.id,  stoneInState.config.updatedAt, true);
                   }
                 }).catch(() => {})
             }

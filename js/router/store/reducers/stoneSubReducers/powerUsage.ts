@@ -143,16 +143,22 @@ export default (state = {}, action : any = {}) => {
         };
 
         // check day sync state:
-        let allSynced = true;
-        // todo: binary search to speed this up?
-        for (let i = 0; i < newState[action.dateId].data.length; i++) {
-          if (newState[action.dateId].data[i].synced === false) {
-            allSynced = false; break;
+        if (action.dateId !== Util.getDateFormat(new Date().valueOf())) {
+          let allSynced = true;
+          // we can't really binary search this since due to crashes or quits, this set can have an un-synced gap.
+          for (let i = 0; i < newState[action.dateId].data.length; i++) {
+            if (newState[action.dateId].data[i].synced === false) {
+              allSynced = false;
+              break;
+            }
           }
-        }
 
-        if (allSynced) {
-          newState[action.dateId] = combinedPowerUsageReducer(newState[action.dateId], {type:"SET_DAY_SYNC_POWER_USAGE", data: {synced:true}})
+          if (allSynced) {
+            newState[action.dateId] = combinedPowerUsageReducer(newState[action.dateId], {
+              type: "SET_DAY_SYNC_POWER_USAGE",
+              data: {synced: true}
+            });
+          }
         }
 
         return newState;

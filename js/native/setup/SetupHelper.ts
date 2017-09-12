@@ -243,12 +243,12 @@ export class SetupHelper {
                 }
               })
               .catch((err) => {
-                LOG.error("CONNECTION ERROR on find:",err);
+                LOG.error("SetupHelper: CONNECTION ERROR on find:",err);
                 processFailure(err);
               })
           }
           else {
-            LOG.error("CONNECTION ERROR on register:",err);
+            LOG.error("SetupHelper: CONNECTION ERROR on register:",err);
             processFailure(err);
           }
         });

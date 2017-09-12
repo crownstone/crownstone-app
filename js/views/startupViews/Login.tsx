@@ -224,6 +224,7 @@ export class Login extends Component<any, any> {
             CLOUD.forUser(userId).uploadProfileImage(file)
               .then(() => {return RNFS.moveFile(file.path, newPath);})
               .then(() => {resolve(newPath);})
+              .catch((err) => { reject(err); })
           }
         });
         if (uploadingImage === false) {
@@ -310,7 +311,6 @@ export class Login extends Component<any, any> {
         let state = store.getState();
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Creating first Sphere.'});
-          // TODO: place in tutorial
           return CLOUD.createNewSphere(store, state.user.firstName + "'s Sphere", this.props.eventBus);
         }
         else {

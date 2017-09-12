@@ -258,9 +258,6 @@ class SphereChangeButton extends Component<any, any> {
       >
         <Icon name="c1-sphere" size={size} color={ color } />
       </TouchableOpacity>
-      <Text style={{backgroundColor:"transparent", color: textColor, fontWeight:'300', fontSize:13, paddingLeft:15}}>
-        {Util.spreadString('tap to change sphere')}
-      </Text>
     </View>
   }
 }
