@@ -31,33 +31,10 @@ export class DevicePowerCurve extends Component<any, any> {
   }
 
   componentDidMount() {
-    // this.props.store.dispatch({
-    //   type:"REMOVE_ALL_POWER_USAGE",
-    //   sphereId: this.props.sphereId,
-    //   stoneId: this.props.stoneId
-    // });
-    // this.debugInterval = setInterval(() => {
-    //   const state = this.props.store.getState();
-    //   const sphere = state.spheres[this.props.sphereId];
-    //   const stone = sphere.stones[this.props.stoneId];
-    //   this.props.store.dispatch({
-    //     type:"UPDATE_STONE_STATE_DUPLICATE",
-    //     sphereId: this.props.sphereId,
-    //     stoneId: this.props.stoneId,
-    //     data: {
-    //       state: 1,
-    //       currentUsage: Math.round(Math.random()*200),
-    //       applianceId: stone.config.applianceId
-    //     },
-    //     updatedAt: new Date().valueOf()
-    //   });
-    //   this.forceUpdate();
-    // }, 2000);
-
     this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if (
-        change.powerUsageUpdatedDuplicatesIncluded && change.powerUsageUpdatedDuplicatesIncluded.stoneIds[this.props.stoneId]
+        change.powerUsageUpdated && change.powerUsageUpdated.stoneIds[this.props.stoneId]
       ) {
         this.forceUpdate();
       }
@@ -66,7 +43,6 @@ export class DevicePowerCurve extends Component<any, any> {
 
 
   componentWillUnmount() {
-    // clearInterval(this.debugInterval);
     this.unsubscribeStoreEvents();
   }
 

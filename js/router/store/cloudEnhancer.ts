@@ -343,13 +343,14 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 
   if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = { power: stone.state.currentUsage, timestamp: new Date().valueOf() };
+    let data  = { power: stone.state.currentUsage, timestamp: action.updatedAt };
 
     let dayIndex = Util.getDateFormat(action.updatedAt);
 
     // get the index the new item will have. This is used to mark them as synced. If there is no previous item, it is 0.
     let oldStone = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] || null;
-    let indexOfNewItem = oldStone && oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].length || 0;
+    let indexOfNewItem = oldStone && oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].data.length || 0;
+
     if (stone.config.applianceId) {
       data['applianceId'] = stone.config.applianceId;
     }

@@ -75,6 +75,12 @@ export const base = {
       this._networkErrorHandler(error);
       reject(error);
     }
+    else {
+      // still reject the promise even if it is a background operation.
+      reject(error);
+    }
+
+
     if (DEBUG === true) {
       LOG.cloud(options.background ? 'BACKGROUND REQUEST:' : '','Network Error:', error, endpoint, promiseBody);
     }

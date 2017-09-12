@@ -153,15 +153,10 @@ function checkAction(action, affectedIds) {
     case 'CLEAR_STONE_USAGE':
     case 'UPDATE_STONE_STATE':
     case 'UPDATE_STONE_SWITCH_STATE':
-      eventStatus['powerUsageUpdated'] = affectedIds;
-      eventStatus['stoneUsageUpdated'] = affectedIds;
-      eventStatus['powerUsageUpdatedDuplicatesIncluded'] = affectedIds;
-      eventStatus['stoneUsageUpdatedDuplicatesIncluded'] = affectedIds; break;
-    case 'UPDATE_STONE_STATE_DUPLICATE':
     case 'REMOVE_ALL_POWER_USAGE':
     case 'REMOVE_POWER_USAGE_DATE':
-      eventStatus['powerUsageUpdatedDuplicatesIncluded'] = affectedIds;
-      eventStatus['stoneUsageUpdatedDuplicatesIncluded'] = affectedIds; break;
+      eventStatus['powerUsageUpdated'] = affectedIds;
+      eventStatus['stoneUsageUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_REMOTE_TIME':
       eventStatus['stoneTimeUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
