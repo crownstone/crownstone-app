@@ -17,7 +17,7 @@ import { NewDeviceUI } from "./WhatsNew/1.10.0/NewDeviceUI";
 import { NewDeviceUIGraph } from "./WhatsNew/1.10.0/NewDeviceUIGraph";
 import { NewLocalizationSettings } from "./WhatsNew/1.10.0/NewLocalizationSettings";
 import { NewScheduler } from "./WhatsNew/1.10.0/NewScheduler";
-import { Awesome } from "./WhatsNew/1.10.0/Awesome";
+import { Awesome } from "./WhatsNew/Awesome";
 import {TimezoneScheduler} from "./WhatsNew/1.10.2/TimezoneScheduler";
 import {SyncingSchedules} from "./WhatsNew/1.10.2/SyncingSchedules";
 import {FirmwareUpdateFix} from "./WhatsNew/1.10.2/FirmwareUpdateFix";
@@ -47,24 +47,25 @@ export class WhatsNewOverlay extends Component<any, any> {
     this.unsubscribe = [];
   }
 
-  _getContent() {
+  _getContent(width, height) {
     let content = [];
+    let size = {height: height-50, width: width};
 
     if (Platform.OS === 'ios') {
-      content.push(<FirmwareUpdateFix key="FirmwareUpdateFix" />);
-      content.push(<SyncingSchedules key="SyncingSchedules" />);
-      content.push(<TimezoneScheduler key="TimezoneScheduler" />);
-      content.push(<AutomaticRecentering key="AutomaticRecentering" />);
-      content.push(<BugsFixediOS key="BugsFixediOS" />);
+      content.push(<FirmwareUpdateFix key="FirmwareUpdateFix"  {...size} />);
+      content.push(<SyncingSchedules key="SyncingSchedules"  {...size}/>);
+      content.push(<TimezoneScheduler key="TimezoneScheduler"  {...size}/>);
+      content.push(<AutomaticRecentering key="AutomaticRecentering"  {...size}/>);
+      content.push(<BugsFixediOS key="BugsFixediOS"  {...size}/>);
     }
     if (Platform.OS === 'android') {
       content.push(<WhatsNew key="WhatsNew" />);
-      content.push(<PhysicsBasedSphereUI key="PhysicsBasedSphereUI" />);
-      content.push(<NewDeviceUI key="NewDeviceUI" />);
-      content.push(<NewScheduler key="NewScheduler" />);
-      content.push(<NewDeviceUIGraph key="NewDeviceUIGraph" />);
+      content.push(<PhysicsBasedSphereUI key="PhysicsBasedSphereUI"  {...size}/>);
+      content.push(<NewDeviceUI key="NewDeviceUI"  {...size}/>);
+      content.push(<NewScheduler key="NewScheduler"  {...size}/>);
+      content.push(<NewDeviceUIGraph key="NewDeviceUIGraph"  {...size}/>);
     }
-    content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }}/>);
+    content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }} {...size} />);
 
     return content;
   }
@@ -76,18 +77,31 @@ export class WhatsNewOverlay extends Component<any, any> {
 
   render() {
     let height = 0.9 * availableScreenHeight;
+    let width = 0.85*screenWidth-35;
     return (
-      <OverlayBox visible={this.state.visible} overrideBackButton={true} height={height} canClose={true} closeCallback={() => {
-        this._closePopup()
-      }}>
-        <Text style={{fontSize: 18, fontWeight:'bold', paddingTop:10, paddingBottom:10, color:colors.csBlue.hex}}>Your app was updated!</Text>
-        <Swiper style={swiperStyles.wrapper} showsPagination={true} height={height-85} width={0.85*screenWidth-35}
-          dot={<View style={{backgroundColor: colors.csBlue.rgba(0.2), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
-          activeDot={<View style={{backgroundColor: colors.csBlue.rgba(0.8), width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
+      <OverlayBox
+        visible={this.state.visible}
+        overrideBackButton={true}
+        height={height}
+        canClose={true}
+        closeCallback={() => {
+          this._closePopup()
+        }}
+      >
+        <Text style={{
+          fontSize: 18,
+          fontWeight:'bold',
+          paddingTop:10,
+          paddingBottom:10,
+          backgroundColor:'transparent',
+          color:colors.csBlue.hex, height:40, marginTop:20}}>Your app was updated!</Text>
+        <Swiper style={swiperStyles.wrapper} showsPagination={true} height={height-85} width={width}
+          dot={<View style={{backgroundColor: colors.menuBackground.rgba(0.15), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.menuBackground.rgba(0.2)}} />}
+          activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 9, height: 9, borderRadius: 4.5, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
           loop={false}
           bounces={true}
         >
-          { this._getContent() }
+          { this._getContent(width, height) }
         </Swiper>
       </OverlayBox>
     );
@@ -97,6 +111,7 @@ export class WhatsNewOverlay extends Component<any, any> {
 
 let swiperStyles = StyleSheet.create({
   wrapper: {
+
   },
   slide1: {
     flex: 1,

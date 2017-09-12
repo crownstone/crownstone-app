@@ -14,7 +14,7 @@ export class WhatsNew extends Component<any, any> {
     let factor = 0.0001*screenWidth;
     let size = 7*factor;
     return (
-      <View style={{flex:1, paddingBottom:45, padding:10, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <View style={{flex:0.5}} />
         <Text style={WNStyles.text}>One of the new things is the What's New popup!</Text>
         <View style={{flex:1}} />

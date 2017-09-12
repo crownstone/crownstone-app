@@ -28,7 +28,7 @@ export class NewLocalizationSettings extends Component<any, any> {
     }
 
     return (
-      <View style={{flex:1, paddingBottom:45, padding:10, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>There are new settings to allow you to use the Crownstone App without localization.</Text>

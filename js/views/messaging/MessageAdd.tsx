@@ -22,8 +22,8 @@ import { Icon } from "../components/Icon";
 import { ProfilePicture } from "../components/ProfilePicture";
 
 
-const EVERYONE = '__everyone_in_sphere__';
-const ANYWHERE_IN_SPHERE = '__sphere__';
+export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
+export const ANYWHERE_IN_SPHERE = '__sphere__';
 
 export class MessageAdd extends Component<any, any> {
   constructor() {
@@ -36,7 +36,7 @@ export class MessageAdd extends Component<any, any> {
       recipients: {},
     };
 
-    this.state.recipients[EVERYONE] = true
+    this.state.recipients[EVERYONE_IN_SPHERE] = true
   }
 
   componentWillMount() {}
@@ -50,7 +50,6 @@ export class MessageAdd extends Component<any, any> {
       Alert.alert("Message is empty..", "I can't send an empty message.", [{text:'Right'}]);
       return;
     }
-
 
     let state = this.props.store.getState();
 
@@ -107,12 +106,12 @@ export class MessageAdd extends Component<any, any> {
 
     userData.push({id: 'everyoneLabel', type:'lightExplanation', label: 'EVERYONE IN YOUR SPHERE' });
     userData.push({
-      id: EVERYONE,
+      id: EVERYONE_IN_SPHERE,
       text: 'Everyone in the Sphere',
       icon: 'ios-people',
       iconSize: 35,
       singular: true,
-      selected: this.state.recipients[EVERYONE] === true
+      selected: this.state.recipients[EVERYONE_IN_SPHERE] === true
     });
 
     userData.push({id: 'specificUsersLabel', type:'lightExplanation', below: false, label: 'SPECIFIC USERS' });
@@ -159,7 +158,7 @@ export class MessageAdd extends Component<any, any> {
 
     let userData = this._getUserData(state, sphere);
     items.push({type:'lightExplanation', below: false, label: 'RECIPIENTS', alreadyPadded: true});
-    if (this.state.recipients[EVERYONE] === true) {
+    if (this.state.recipients[EVERYONE_IN_SPHERE] === true) {
       items.push({
         label: userData[1].text,
         type: 'navigation',

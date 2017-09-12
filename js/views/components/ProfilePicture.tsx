@@ -18,15 +18,15 @@ export class ProfilePicture extends Component<any, any> {
     let innerSize = this.props.innerSize || size;
     if (this.props.picture !== undefined && this.props.picture !== null) {
       let pictureURI = preparePictureURI(this.props.picture);
-      let borderWidth = 0.07*size;
+      let borderWidth = this.props.borderWidth || 0.07*size;
       return (
         <View style={[this.props.style, {width: size, height: size + (this.props.name ? 15 : 0)}]}>
           <Image style={{
-            width:size - 0.5*borderWidth,
-            height:size - 0.5*borderWidth,
-            padding:0,
-            margin:0,
-            borderRadius:0.5*(size - 0.5*borderWidth),
+            width:size,
+            height:size,
+            padding: 0,
+            margin:  0,
+            borderRadius: 0.5*size,
             borderWidth:borderWidth,
             borderColor: colors.white.hex,
             backgroundColor: 'transparent',

@@ -15,7 +15,7 @@ export class NewDeviceUI extends Component<any, any> {
     let factor = 0.0001*screenWidth;
     let size = 10*factor;
     return (
-      <View style={{flex:1, paddingBottom:45, padding:10, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>The Crownstone settings have a new UI. You can swipe left and right on it to see the options. Scroll down for more.</Text>

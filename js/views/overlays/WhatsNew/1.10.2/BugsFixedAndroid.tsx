@@ -15,7 +15,7 @@ export class BugsFixedAndroid extends Component<any, any> {
     let factor = 0.0001*screenWidth;
     let size = 9*factor;
     return (
-      <View style={{flex:1, paddingBottom:45, padding:10, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>Issues that caused the app to crash when the firmware update was finished are now resolved.</Text>

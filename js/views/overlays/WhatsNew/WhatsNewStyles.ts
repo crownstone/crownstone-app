@@ -25,8 +25,7 @@ export const WNStyles = StyleSheet.create({
     textAlign:'center'
   },
   innerScrollView: {
-    minHeight: availableScreenHeight,
-    alignItems:'center',
-    paddingBottom:20
-  }
+    alignItems: 'center',
+    paddingBottom: 50,
+  },
 });

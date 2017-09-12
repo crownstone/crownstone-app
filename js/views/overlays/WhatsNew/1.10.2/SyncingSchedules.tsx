@@ -15,7 +15,7 @@ export class SyncingSchedules extends Component<any, any> {
     let factor = 0.0001*screenWidth;
     let size = 10*factor;
     return (
-      <View style={{flex:1, paddingBottom:45, padding:10, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>You can now download the schedules from the Crownstone.</Text>

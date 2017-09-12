@@ -15,9 +15,9 @@ export class FirmwareUpdateFix extends Component<any, any> {
     let factor = 0.0001*screenWidth;
     let size = 10*factor;
     return (
-      <View style={{flex:1, paddingBottom:45, padding:10, alignItems:'center', justifyContent:'center'}}>
+      <View style={{flex:1, padding:10, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
         <ScrollView style={{}}>
-          <View style={WNStyles.innerScrollView}>
+          <View style={[WNStyles.innerScrollView, {minHeight: 400}]}>
             <Text style={WNStyles.text}>Issues that caused the app to crash when the firmware update was finished are now resolved.</Text>
             <View style={{height:15}} />
             <Image source={require('../../../../images/whatsNew/1.10.2/fixedUpdate.png')} style={{width:511*size, height:666*size}} />

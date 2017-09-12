@@ -42,21 +42,17 @@ export class DeviceSchedule extends Component<any, any> {
         let schedule = schedules[scheduleId];
 
         items.push({__item:
-          <View >
-            <View style={[styles.listView,{backgroundColor: colors.white.rgba(0.75), paddingRight:0}]}>
-              <SchedulerEntry
-                schedule={schedule}
-                scheduleId={scheduleId}
-                stoneId={this.props.stoneId}
-                sphereId={this.props.sphereId}
-                navigation={false}
-                size={45}
-              />
-            </View>
+          <View style={[styles.listView,{backgroundColor: colors.white.rgba(0.75), paddingRight:0}]}>
+            <SchedulerEntry
+              schedule={schedule}
+              scheduleId={scheduleId}
+              stoneId={this.props.stoneId}
+              sphereId={this.props.sphereId}
+              size={45}
+            />
           </View>
         })
       });
-
     }
 
     return items;
@@ -264,15 +260,15 @@ export class DeviceSchedule extends Component<any, any> {
     let innerView;
     if (items.length > 0) {
       innerView = (
-          <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
-            { this._getHeader(state, iconSize) }
-            <View style={{height: 0.2*iconSize}} />
-            { this._getButton(stone, iconSize) }
-            <View key="subScheduleSpacer" style={{height: 0.2*iconSize}} />
-            <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
-            <View style={{height:40, width:screenWidth, backgroundColor: 'transparent'}} />
-            { this._getSyncOption(stone) }
-          </View>
+        <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
+          { this._getHeader(state, iconSize) }
+          <View style={{height: 0.2*iconSize}} />
+          { this._getButton(stone, iconSize) }
+          <View key="subScheduleSpacer" style={{height: 0.2*iconSize}} />
+          <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
+          <View style={{height:40, width:screenWidth, backgroundColor: 'transparent'}} />
+          { this._getSyncOption(stone) }
+        </View>
       )
     }
     else {
