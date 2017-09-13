@@ -30,7 +30,7 @@ export function EventEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
     let eventData = {};
-    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}};
+    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}, threadIds:{} , scheduleIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         let { data, ids } = checkAction(action, affectedIds);
@@ -55,10 +55,12 @@ export function EventEnhancer({ getState }) {
 function checkAction(action, affectedIds) {
   let eventStatus = {};
 
-  if (action.locationId)  { affectedIds.locationIds[action.locationId] = true; }
-  if (action.sphereId)    { affectedIds.sphereIds[action.sphereId] = true; }
-  if (action.stoneId)     { affectedIds.stoneIds[action.stoneId] = true; }
+  if (action.locationId)  { affectedIds.locationIds[action.locationId]   = true; }
+  if (action.sphereId)    { affectedIds.sphereIds[action.sphereId]       = true; }
+  if (action.stoneId)     { affectedIds.stoneIds[action.stoneId]         = true; }
   if (action.applianceId) { affectedIds.applianceIds[action.applianceId] = true; }
+  if (action.threadId)    { affectedIds.threadIds[action.threadId]       = true; }
+  if (action.scheduleId)  { affectedIds.scheduleIds[action.scheduleId]   = true; }
 
   switch (action.type) {
     case 'SET_ACTIVE_SPHERE':
@@ -196,6 +198,17 @@ function checkAction(action, affectedIds) {
     case "CLEAR_DEVICE_DETAILS":
     case "REMOVE_DEVICE":
       eventStatus['changeDeviceData'] = affectedIds; break;
+    case "ADD_THREAD":
+    case "UPDATE_THREAD":
+    case "REMOVE_THREAD":
+    case "ADD_MESSAGE":
+    case "READ_MESSAGE":
+    case "RECEIVED_MESSAGE":
+    case "REMOVE_MESSAGE":
+    case "UPDATE_MESSAGE":
+    case "ADD_MEMBER":
+    case "REMOVE_MEMBER":
+      eventStatus['changeMessageThread'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":

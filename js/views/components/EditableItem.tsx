@@ -110,6 +110,8 @@ export class EditableItem extends Component<any, any> {
         return <Explanation text={this.props.label} {...this.props} color={colors.white.hex} />;
       case 'largeExplanation':
         return <LargeExplanation text={this.props.label} {...this.props} />;
+      case 'largeLightExplanation':
+        return <LargeExplanation text={this.props.label} {...this.props} color={colors.white.hex} />;
       case 'icon':
         return <IconEdit barHeightLarge={barHeightLarge} {...this.props} />;
       case 'info':

@@ -35,9 +35,10 @@ let defaultState = {
   },
   messages: {
     messageId: {
-      messageContent: null,
-      messageSender: null,
+      content: null,
+      sender: null,
       sent: false,
+      sentAt: 1
     }
   },
   members: {

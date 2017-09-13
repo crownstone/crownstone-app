@@ -138,7 +138,7 @@ class TopBarIOS extends Component<any, any> {
         );
       }
       else {
-        let color = colors.iosBlue.hex;
+        let color = colors.menuTextSelected.hex;
         if (this.props.leftStyle && this.props.leftStyle.color) {
           color = this.props.leftStyle.color;
         }
@@ -259,6 +259,7 @@ export const topBarStyle = StyleSheet.create({
   },
   text:{
     fontSize: 17,
-    color: colors.iosBlue.hex
+    fontWeight:'bold',
+    color: colors.menuTextSelected.hex
   }
 });

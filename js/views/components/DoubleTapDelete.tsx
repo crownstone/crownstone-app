@@ -7,6 +7,7 @@ import {
 
 import { colors } from '../styles'
 import {Icon} from "./Icon";
+import {Util} from "../../util/Util";
 
 
 export class DoubleTapDelete extends Component<any, any> {

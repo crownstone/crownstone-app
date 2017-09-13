@@ -13,6 +13,14 @@ import {DoubleTapDelete} from "../DoubleTapDelete";
 
 
 export class DeletableEntry extends Component<any, any> {
+  id: string;
+
+  constructor() {
+    super();
+
+    this.id = Util.getUUID();
+  }
+
   render() {
     let barHeight = this.props.barHeight;
     if (this.props.largeIcon)
@@ -35,7 +43,7 @@ export class DeletableEntry extends Component<any, any> {
           :
           <View style={{flex:1}} />
         }
-        { <DoubleTapDelete callback={this.props.callback} />  }
+        { <DoubleTapDelete key={this.id} callback={this.props.callback} />  }
       </View>
     );
   }

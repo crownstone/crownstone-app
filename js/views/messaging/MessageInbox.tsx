@@ -16,44 +16,34 @@ import {availableScreenHeight, colors, screenHeight, screenWidth, styles, tabBar
 import {Background} from "../components/Background";
 import {TopBar} from "../components/Topbar";
 import {IconButton} from "../components/IconButton";
-import {Util} from "../../util/Util";
 import {ListEditableItems} from "../components/ListEditableItems";
-import {Icon} from "../components/Icon";
-import {Permissions} from "../../backgroundProcesses/Permissions";
-import {EVERYONE_IN_SPHERE} from "./MessageAdd";
-import {ProfilePicture} from "../components/ProfilePicture";
+import {MessageEntry} from "./MessageEntry";
 
 
 export class MessageInbox extends Component<any, any> {
-  unsubscribeStoreEvents : any[] = [];
-  unsubscribeSetupEvents : any[] = [];
-
-  constructor() {
-    super();
-    this.state = {
-
-    };
-  }
-
-  componentWillMount() {
-
-  }
+  unsubscribeStoreEvents : any;
 
   componentDidMount() {
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
 
+      if (change.changeMessageThread) {
+        this.forceUpdate();
+      }
+    });
   }
 
   componentWillUnmount() {
-
+    this.unsubscribeStoreEvents();
   }
 
   _getMessages() {
     let items = [];
 
     let state = this.props.store.getState();
-    let activeSphere = state.app.activeSphere;
+    let activeSphereId = state.app.activeSphere;
 
-    let sphere = state.spheres[activeSphere];
+    let sphere = state.spheres[activeSphereId];
     let threadIds = Object.keys(sphere.messageThreads);
     if (threadIds.length > 0) {
       items.push({label:'MESSAGES', type: 'lightExplanation',  below:false});
@@ -62,14 +52,15 @@ export class MessageInbox extends Component<any, any> {
         let thread = sphere.messageThreads[threadId];
 
         items.push({__item:
-          <View style={[styles.listView,{backgroundColor: colors.white.rgba(0.75), paddingRight:0}]}>
+          <View style={[styles.listView,{backgroundColor: colors.white.rgba(0.75), paddingRight:0, paddingLeft:0}]}>
             <MessageEntry
               thread={thread}
               threadId={threadId}
-              sphereName={sphere.config.name}
-              sphereUsers={sphere.users}
+              sphere={sphere}
+              sphereId={activeSphereId}
               self={state.user}
               size={45}
+              deleteThread={ () => { this.props.store.dispatch({type:'REMOVE_THREAD', sphereId: activeSphereId, threadId: threadId}) }}
             />
           </View>
         })
@@ -84,9 +75,7 @@ export class MessageInbox extends Component<any, any> {
     let activeSphere = state.app.activeSphere;
 
     if (activeSphere) {
-
       let iconSize = 0.14*screenHeight;
-
       let items = this._getMessages();
 
       let iconButton = (
@@ -111,13 +100,13 @@ export class MessageInbox extends Component<any, any> {
         scrollView = (
           <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
             <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
-              <View style={{flex:0.3}} />
+              <View style={{height: 0.3*iconSize}} />
               { headerText }
-              <View style={{flex:0.6}} />
+              <View style={{height: 0.4*iconSize}} />
               { iconButton }
-              <View style={{flex:0.8}} />
+              <View style={{height: 0.1*iconSize}} />
               <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
-              <View style={{flex:2}} />
+              <View style={{height: 0.4*iconSize}} />
             </View>
           </ScrollView>
         );
@@ -126,11 +115,11 @@ export class MessageInbox extends Component<any, any> {
         scrollView = (
           <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
             <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
-              <View style={{flex:0.6}} />
+              <View style={{height: 0.3*iconSize}} />
               { headerText }
-              <View style={{flex:0.6}} />
+              <View style={{height: 0.4*iconSize}} />
               { iconButton }
-              <View style={{flex:0.6}} />
+              <View style={{height: 0.6*iconSize}} />
               <Text style={{
                 color: colors.green.hex,
                 textAlign: 'center',
@@ -166,156 +155,6 @@ export class MessageInbox extends Component<any, any> {
   }
 }
 
-
-
-class MessageEntry extends Component<{size: number, sphereUsers: any, thread: any, threadId: string, self: any, sphereName: string}, any> {
-
-  _getRecipients() {
-    let members = this.props.thread.members;
-    let memberIds = Object.keys(members);
-
-    let recipients = [];
-    memberIds.forEach((memberId) => {
-      if (memberId === EVERYONE_IN_SPHERE) { // its everyone!
-        recipients.push({id: memberId, icon: 'ios-people', label: 'Everyone in ' + this.props.sphereName})
-      }
-      else if (memberId === this.props.self.userId) { // its you!
-        recipients.push({id: memberId, picture: this.props.self.picture, label: 'You', color: colors.menuTextSelected.hex})
-      }
-      else if (this.props.sphereUsers[memberId]) {  // existing member
-        let sphereMember = this.props.sphereUsers[memberId];
-        recipients.push({id: memberId, picture: sphereMember.picture, label: sphereMember.firstName + ' ' + sphereMember.lastName})
-      }
-      else { // unknown member
-        recipients.push({id: memberId, icon:'ios-help-circle', label: 'Unknown User'})
-      }
-    });
-
-    return recipients;
-
-  }
-
-  _getIcons(recipients, iconSize) {
-    let items = [];
-
-    recipients.forEach((recipient) => {
-      let obj;
-      if (recipient.icon) {
-        obj = <IconButton name={recipient.icon} size={iconSize*0.8} buttonSize={iconSize} radius={iconSize*0.5} button={true} color="#fff" buttonStyle={{
-          backgroundColor: colors.green.hex,
-          borderColor: colors.white.hex,
-          borderWidth: 3
-        }}/>
-      }
-      else {
-        obj = <ProfilePicture borderWidth={3} picture={recipient.picture} size={iconSize} color={recipient.color} />
-      }
-
-      items.push(obj);
-    });
-    return <StackedIcons items={items} keyBase={this.props.threadId} size={iconSize} />
-  }
-
-  _getLabel(recipients) {
-    let label = recipients[0].label;
-    for (let i = 1; i < recipients.length - 1; i++) {
-      label += ', ' + recipients[i].label
-    }
-
-    if (recipients.length > 1) {
-      label += " and " + recipients[recipients.length - 1].label;
-    }
-
-    return label;
-  }
-
-  _getLatestMessage() {
-
-  }
-
-  render() {
-    let rowHeight = 90;
-
-    let iconSize = 50;
-    let recipients = this._getRecipients();
-
-    let icons = this._getIcons(recipients, iconSize);
-    let label = this._getLabel(recipients);
-
-    let content = (
-      <View style={{ flexDirection: 'row', width: screenWidth - 15, height: rowHeight, justifyContent:'center' }}>
-        <View style={{
-          height: rowHeight,
-          width: 1.5*iconSize,
-          alignItems: 'flex-start',
-          justifyContent:'center',
-          overflow:"hidden"
-        }}>
-          {icons}
-        </View>
-        <View style={{flexDirection:'column'}}>
-          <Text style={{paddingTop:15, fontWeight:'bold', fontSize:15, color: colors.black.rgba(0.5)}}>{label}</Text>
-        </View>
-        <View style={{ flex:1 }} />
-        <View style={{height: rowHeight, width:60, alignItems: 'center', justifyContent:'center'}}>
-          <IconButton
-            name={"md-create"}
-            size={14}
-            color={colors.white.hex}
-            buttonStyle={{backgroundColor: colors.darkBackground.hex, width:20, height:20, borderRadius:10}}
-          />
-        </View>
-      </View>
-    );
-
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          // Actions.deviceScheduleEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
-        }}
-        style={{
-          flexDirection: 'row',
-          width: screenWidth - 15,
-          height: rowHeight,
-          justifyContent:'center',
-        }}
-      >
-        { content }
-      </TouchableOpacity>
-    );
-  }
-}
-
-
-class StackedIcons extends Component<{items:any[], size: number, keyBase: string}, any> {
-  render() {
-    let items = [];
-    this.props.items.forEach((item, index) => {
-      items.push(
-        <View
-          key={'stackedItems' + this.props.keyBase + '_' + index}
-          style={{
-            marginLeft: index > 0 ? -this.props.size : 0,
-            position:'relative',
-            left: (this.props.items.length - index)*0.25*this.props.size - 0.25*this.props.size
-          }}
-        >
-          {item}
-        </View>
-      );
-    });
-
-    return (
-      <View style={{
-        flexDirection:'row',
-        height: this.props.size,
-        width: (this.props.items.length-1)*0.25*this.props.size + this.props.size,
-      }}>
-        {items}
-      </View>
-    )
-  }
-}
 
 export const textStyle = StyleSheet.create({
   title: {

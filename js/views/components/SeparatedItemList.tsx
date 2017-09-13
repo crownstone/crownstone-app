@@ -30,7 +30,7 @@ export class SeparatedItemList extends Component<any, any> {
 
     let separatorIndent = this.props.separatorIndent === true;
     let isEditableItem = (item) => {
-      return !(item.type === 'spacer' || item.type === 'explanation' || item.type === 'lightExplanation' || item.type === 'largeExplanation')};
+      return !(item.type === 'spacer' || item.type === 'explanation' || item.type === 'lightExplanation' || item.type === 'largeExplanation' || item.type === 'largeLightExplanation')};
 
     // this function parses the input item.
     let iterator = (prevItem, item, nextItem, index, itemId) => {

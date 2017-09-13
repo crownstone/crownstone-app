@@ -24,6 +24,7 @@ import { DeviceScheduleEdit }         from '../views/deviceViews/DeviceScheduleE
 import { DeviceIconSelection }        from '../views/deviceViews/DeviceIconSelection'
 import { MessageInbox }               from '../views/messaging/MessageInbox'
 import { MessageAdd }                 from '../views/messaging/MessageAdd'
+import { MessageThread }              from '../views/messaging/MessageThread'
 import { SettingsApp }                from '../views/settingsViews/SettingsApp'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
@@ -66,6 +67,7 @@ export const Views = {
   DeviceScheduleEdit,
   MessageInbox,
   MessageAdd,
+  MessageThread,
   SettingsApp,
   SettingsOverview,
   SettingsProfile,
