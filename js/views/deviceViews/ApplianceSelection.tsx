@@ -15,7 +15,6 @@ import { Background } from './../components/Background'
 import { ApplianceEntry } from '../components/ApplianceEntry'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { EventBusClass } from '../../util/EventBus'
 
 const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth} from './../styles'
@@ -23,13 +22,7 @@ import { Icon } from '../components/Icon';
 import {Permissions} from "../../backgroundProcesses/Permissions";
 
 export class ApplianceSelection extends Component<any, any> {
-  deleteEventBus : EventBusClass;
   unsubscribe : any;
-
-  constructor() {
-    super();
-    this.deleteEventBus = new EventBusClass();
-  }
 
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
@@ -45,7 +38,6 @@ export class ApplianceSelection extends Component<any, any> {
       }
     });
   }
-
 
   componentWillUnmount() {
     this.unsubscribe();
@@ -82,7 +74,6 @@ export class ApplianceSelection extends Component<any, any> {
                   icon={appliance.config.icon}
                   name={appliance.config.name}
                   navigation={false}
-                  deleteEventBus={this.deleteEventBus}
                   size={45}
                 />
               </View>

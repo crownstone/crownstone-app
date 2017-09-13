@@ -14,77 +14,15 @@ import {
 import { Util } from '../../util/Util';
 import { Icon } from './Icon';
 import { styles, colors } from '../styles'
+import {DoubleTapDelete} from "./DoubleTapDelete";
 
 
 export class ApplianceEntry extends Component<any, any> {
-  resetTimeout : any;
   id : string;
-  unsubscribe : any;
 
   constructor() {
     super();
-    this.state = {deleteActive:false};
-    this.resetTimeout = undefined;
     this.id = Util.getUUID();
-
-  }
-
-  componentDidMount() {
-    this.unsubscribe = this.props.deleteEventBus.on("DELETE_TRIGGERED", (id) => {
-      if (this.id !== id) {
-        if (this.resetTimeout !== undefined) {
-          clearTimeout(this.resetTimeout);
-        }
-        this.setState({deleteActive:false});
-      }
-    })
-  }
-
-  componentWillUnmount() {
-    if (this.resetTimeout !== undefined) {
-      clearTimeout(this.resetTimeout);
-    }
-    this.unsubscribe();
-  }
-
-  _getDeleteIcon() {
-    if (this.props.delete) {
-      if (this.state.deleteActive) {
-        return (
-          <TouchableOpacity onPress={() => {this._doDelete();}} style={{width:40, alignItems:'center'}}>
-            <Icon name="md-close-circle" size={30} color={colors.red.hex}/>
-          </TouchableOpacity>
-        )
-      }
-      else {
-        return (
-          <TouchableOpacity
-            onPress={() => {this._activateDeleteState();}}
-            style={{width:40, alignItems:'center'}}
-          >
-            <Icon name="md-close-circle" size={23} color={this.props.deleteColor || colors.gray.hex}/>
-          </TouchableOpacity>
-        )
-      }
-    }
-  }
-
-  _doDelete() {
-    this.props.deleteEventBus.emit("DELETE_TRIGGERED", this.id);
-    this.props.delete();
-  }
-
-  _activateDeleteState() {
-    this.props.deleteEventBus.emit("DELETE_TRIGGERED", this.id);
-    if (this.resetTimeout !== undefined) {
-      clearTimeout(this.resetTimeout);
-    }
-    this.setState({deleteActive: true});
-
-    this.resetTimeout = setTimeout(() => {
-      this.resetTimeout = undefined;
-      this.setState({deleteActive:false});
-    }, 4000);
   }
 
   render() {
@@ -95,10 +33,10 @@ export class ApplianceEntry extends Component<any, any> {
       <View style={{flexDirection:'row', height:height, paddingLeft:0, alignItems:'center', flex:1}}>
         <TouchableOpacity style={{paddingRight:20}} onPress={() => {this.props.select();}}>
           <View style={[{
-              width: size,
-              height: size,
-              borderRadius: 0.5 * size,
-              backgroundColor:  colors.blue.hex,
+            width: size,
+            height: size,
+            borderRadius: 0.5 * size,
+            backgroundColor:  colors.blue.hex,
             }, styles.centered]}
           >
             <Icon name={this.props.icon} size={this.props.iconSize || size*0.6} color={'#ffffff'} style={{backgroundColor:'transparent'}} />
@@ -108,7 +46,7 @@ export class ApplianceEntry extends Component<any, any> {
           <Text style={{fontSize: 18, fontWeight: '300'}}>{this.props.name}</Text>
           { this.props.current ? <Text style={{fontSize: 15, fontWeight: '100', color: colors.blue.hex, position:'relative', top:1, paddingLeft:5}}>(current)</Text> : undefined }
         </TouchableOpacity>
-        {this._getDeleteIcon()}
+        <DoubleTapDelete key={this.id} callback={this.props.delete} />
       </View>
     );
   }
