@@ -26,17 +26,17 @@ import {DoubleTapDelete} from "../components/DoubleTapDelete";
 import {StackedIcons} from "../components/StackedIcons";
 
 export class MessageEntry extends Component<{
-  deleteThread(): void
+  deleteMessage(): void
   size: number,
   self: any,
   sphere: any,
   sphereId: string,
-  thread: any,
-  threadId: string,
+  message: any,
+  messageId: string,
 }, any> {
 
   _getRecipients() {
-    let members = this.props.thread.members;
+    let members = this.props.message.recipients;
     let memberIds = Object.keys(members);
 
     let recipients = [];
@@ -98,7 +98,7 @@ export class MessageEntry extends Component<{
       }
     }
 
-    return <StackedIcons items={items} keyBase={this.props.threadId} size={iconSize} />
+    return <StackedIcons items={items} keyBase={this.props.messageId} size={iconSize} />
   }
 
   _getLabel(recipients) {
@@ -114,21 +114,6 @@ export class MessageEntry extends Component<{
     return label;
   }
 
-  _getLatestMessage(recipients) : any {
-    let result = {};
-    let messageDate = 1;
-    let messageIds = Object.keys(this.props.thread.messages);
-    messageIds.forEach((messageId) => {
-      let message = this.props.thread.messages[messageId];
-      if (messageDate < message.sentAt) {
-        messageDate = message.sentAt;
-        result = message;
-      }
-    });
-
-    return result;
-  }
-
   render() {
     let padding = 10;
     let rowHeight = 90 - 2*padding;
@@ -138,10 +123,8 @@ export class MessageEntry extends Component<{
 
     let icons = this._getIcons(recipients, iconSize);
     let label = this._getLabel(recipients);
-    let message = this._getLatestMessage(recipients);
 
-
-    let locationId = this.props.thread.config.triggerLocationId;
+    let locationId = this.props.message.config.triggerLocationId;
 
     let locationName = '';
     if (locationId === ANYWHERE_IN_SPHERE) {
@@ -171,13 +154,13 @@ export class MessageEntry extends Component<{
         <View style={{flexDirection:'column', width: screenWidth - 2*iconSize - 50}}>
           <View style={{ flex:1 }} />
           <Text numberOfLines={1} style={{fontWeight:'bold', fontSize:14, color: colors.black.rgba(0.5)}}>{label}</Text>
-          <Text style={{fontWeight:'300', paddingTop: 0.4*padding, paddingBottom: 0.4*padding, fontSize:13, color: colors.black.rgba(0.75)}}>{message.content}</Text>
+          <Text style={{fontWeight:'300', paddingTop: 0.4*padding, paddingBottom: 0.4*padding, fontSize:13, color: colors.black.rgba(0.75)}}>{this.props.message.config.content}</Text>
           <Text numberOfLines={1} style={{fontWeight:'300',  fontSize:11, color: colors.black.rgba(0.25)}}>{locationName}</Text>
           <View style={{ flex:1 }} />
         </View>
         <View style={{ flex:1 }} />
         <View style={{height: rowHeight, width:60, alignItems: 'center', justifyContent:'center'}}>
-          <DoubleTapDelete key={'deleteButton'+this.props.threadId} callback={() => { this.props.deleteThread() }}/>
+          <DoubleTapDelete key={'deleteButton'+this.props.messageId} callback={() => { this.props.deleteMessage() }}/>
         </View>
       </View>
     );
@@ -185,7 +168,7 @@ export class MessageEntry extends Component<{
     return (
       <TouchableOpacity
         onPress={() => {
-          Actions.messageThread({sphereId: this.props.sphereId, threadId: this.props.threadId});
+          Actions.messageThread({sphereId: this.props.sphereId, messageId: this.props.messageId});
         }}
         style={{
           flexDirection: 'row',

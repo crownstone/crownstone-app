@@ -198,16 +198,10 @@ function checkAction(action, affectedIds) {
     case "CLEAR_DEVICE_DETAILS":
     case "REMOVE_DEVICE":
       eventStatus['changeDeviceData'] = affectedIds; break;
-    case "ADD_THREAD":
-    case "UPDATE_THREAD":
-    case "REMOVE_THREAD":
     case "ADD_MESSAGE":
     case "READ_MESSAGE":
     case "RECEIVED_MESSAGE":
     case "REMOVE_MESSAGE":
-    case "UPDATE_MESSAGE":
-    case "ADD_MEMBER":
-    case "REMOVE_MEMBER":
       eventStatus['changeMessageThread'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":

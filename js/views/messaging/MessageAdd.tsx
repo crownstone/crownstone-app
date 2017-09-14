@@ -63,7 +63,7 @@ export class MessageAdd extends Component<any, any> {
     });
 
     this.props.store.dispatch({
-      type:'ADD_THREAD',
+      type:'ADD_MESSAGE',
       sphereId: this.props.sphereId,
       threadId: Util.getUUID(),
       messageId: Util.getUUID(),

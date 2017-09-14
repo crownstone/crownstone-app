@@ -48,14 +48,7 @@ export class MessageThread extends Component<any, any> {
     return label;
   }
 
-  _getMessages(thread, state) {
-    let messageIds = Object.keys(thread.messages);
-    let messages = [];
-    messageIds.forEach((messageId) => {
-      messages.push(thread.messages[messageId]);
-    });
-    messages.sort((a,b) => { return a.sentAt - b.sentAt });
-
+  _getMessages(message, state) {
     let result = [];
     let selfSentStyle = {
       backgroundColor: colors.csBlue.hex,
@@ -76,102 +69,51 @@ export class MessageThread extends Component<any, any> {
     otherSentStyle.backgroundColor= colors.menuTextSelected.hex;
 
 
-    for (let i = 0; i < messages.length; i++) {
-      if (messages[i].sender === state.user.userId) {
-        result.push(
-          <View style={{width:screenWidth}} key={"message_" + i}>
-            <View style={selfSentStyle}>
-              <Text style={{
-                backgroundColor: "transparent",
-                color: colors.white.hex,
-                textAlign: 'left',
-              }}>{messages[i].content}</Text>
-            </View>
+    if (message.config.sender === state.user.userId) {
+      result.push(
+        <View style={{width:screenWidth}} key={"message"}>
+          <View style={selfSentStyle}>
             <Text style={{
               backgroundColor: "transparent",
-              fontSize: 12,
-              fontWeight:'bold',
-              color: colors.white.rgba(0.5),
-              paddingLeft: 25,
-              paddingTop: 5,
-              paddingBottom: 20
-            }}>{Util.getDateTimeFormat(messages[i].sentAt)}</Text>
+              color: colors.white.hex,
+              textAlign: 'left',
+            }}>{message.config.content}</Text>
           </View>
-        );
-      }
-      else {
-        result.push(
-          <View style={{width:screenWidth}} key={"message_" + i}>
-            <View style={otherSentStyle}>
-              <Text style={{
-                backgroundColor: "transparent",
-                color: colors.white.hex,
-                textAlign: 'right',
-              }}>{messages[i].content}</Text>
-            </View>
-            <Text style={{
-              backgroundColor: "transparent",
-              fontSize: 12,
-              fontWeight:'bold',
-              width: screenWidth,
-              color: colors.white.rgba(0.5),
-              paddingRight: 25,
-              textAlign: 'right',
-              paddingTop: 5,
-              paddingBottom: 20
-            }}>{Util.getDateTimeFormat(messages[i].sentAt)}</Text>
-          </View>
-        );
-      }
+          <Text style={{
+            backgroundColor: "transparent",
+            fontSize: 12,
+            fontWeight:'bold',
+            color: colors.white.rgba(0.5),
+            paddingLeft: 25,
+            paddingTop: 5,
+            paddingBottom: 20
+          }}>{Util.getDateTimeFormat(message.config.sentAt)}</Text>
+        </View>
+      );
     }
-
-    for (let i = 0; i < messages.length; i++) {
-      if (messages[i].sender !== state.user.userId) {
-        result.push(
-          <View style={{width:screenWidth}} key={"messages_" + i}>
-            <View style={selfSentStyle}>
-              <Text style={{
-                backgroundColor: "transparent",
-                color: colors.white.hex,
-                textAlign: 'left',
-              }}>{messages[i].content}</Text>
-            </View>
+    else {
+      result.push(
+        <View style={{width:screenWidth}} key={"message"}>
+          <View style={otherSentStyle}>
             <Text style={{
               backgroundColor: "transparent",
-              fontSize: 12,
-              fontWeight:'bold',
-              color: colors.white.rgba(0.5),
-              paddingLeft: 25,
-              paddingTop: 5,
-              paddingBottom: 20
-            }}>{Util.getDateTimeFormat(messages[i].sentAt)}</Text>
-          </View>
-        );
-      }
-      else {
-        result.push(
-          <View style={{width:screenWidth}} key={"messages_" + i}>
-            <View style={otherSentStyle}>
-              <Text style={{
-                backgroundColor: "transparent",
-                color: colors.white.hex,
-                textAlign: 'right',
-              }}>{messages[i].content}</Text>
-            </View>
-            <Text style={{
-              backgroundColor: "transparent",
-              fontSize: 12,
-              fontWeight:'bold',
-              width: screenWidth,
-              color: colors.white.rgba(0.5),
-              paddingRight: 25,
+              color: colors.white.hex,
               textAlign: 'right',
-              paddingTop: 5,
-              paddingBottom: 20
-            }}>{Util.getDateTimeFormat(messages[i].sentAt)}</Text>
+            }}>{message.config.content}</Text>
           </View>
-        );
-      }
+          <Text style={{
+            backgroundColor: "transparent",
+            fontSize: 12,
+            fontWeight:'bold',
+            width: screenWidth,
+            color: colors.white.rgba(0.5),
+            paddingRight: 25,
+            textAlign: 'right',
+            paddingTop: 5,
+            paddingBottom: 20
+          }}>{Util.getDateTimeFormat(message.config.sentAt)}</Text>
+        </View>
+      );
     }
 
     return result;
@@ -180,10 +122,10 @@ export class MessageThread extends Component<any, any> {
   render() {
     let state = this.props.store.getState();
     let sphere = state.spheres[this.props.sphereId];
-    let thread = sphere.messageThreads[this.props.threadId];
-    let members = thread.members;
+    let message = sphere.messages[this.props.messageId];
+    let members = message.recipients;
     let memberIds = Object.keys(members);
-    let locationId = thread.config.triggerLocationId;
+    let locationId = message.config.triggerLocationId;
 
     let locationName = '';
     if (locationId === ANYWHERE_IN_SPHERE) {
@@ -221,7 +163,7 @@ export class MessageThread extends Component<any, any> {
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
           <Text style={{color:colors.white.hex, padding: 15, width: screenWidth, fontStyle:'italic', backgroundColor:"transparent", textAlign:'center'}}>{'for ' + label}</Text>
-          { this._getMessages(thread, state) }
+          { this._getMessages(message, state) }
         </ScrollView>
       </Background>
     );

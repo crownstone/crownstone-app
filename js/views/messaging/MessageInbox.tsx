@@ -44,23 +44,23 @@ export class MessageInbox extends Component<any, any> {
     let activeSphereId = state.app.activeSphere;
 
     let sphere = state.spheres[activeSphereId];
-    let threadIds = Object.keys(sphere.messageThreads);
-    if (threadIds.length > 0) {
+    let messageIds = Object.keys(sphere.messages);
+    if (messageIds.length > 0) {
       items.push({label:'MESSAGES', type: 'lightExplanation',  below:false});
 
-      threadIds.forEach((threadId) => {
-        let thread = sphere.messageThreads[threadId];
+      messageIds.forEach((messageId) => {
+        let message = sphere.messages[messageId];
 
         items.push({__item:
           <View style={[styles.listView,{backgroundColor: colors.white.rgba(0.75), paddingRight:0, paddingLeft:0}]}>
             <MessageEntry
-              thread={thread}
-              threadId={threadId}
+              message={message}
+              messageId={messageId}
               sphere={sphere}
               sphereId={activeSphereId}
               self={state.user}
               size={45}
-              deleteThread={ () => { this.props.store.dispatch({type:'REMOVE_THREAD', sphereId: activeSphereId, threadId: threadId}) }}
+              deleteMessage={ () => { this.props.store.dispatch({type:'REMOVE_MESSAGE', sphereId: activeSphereId, messageId: messageId}) }}
             />
           </View>
         })
