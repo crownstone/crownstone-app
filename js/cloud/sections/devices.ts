@@ -29,6 +29,14 @@ export const devices = {
     );
   },
 
+  updateDeviceSphere: function (sphereId, background = true) {
+    return this._setupRequest(
+      'PUT',
+      '/Devices/{id}/currentSphere/' + sphereId,
+      { background: background }
+    );
+  },
+
   deleteDevice: function(deviceId) {
     return this._setupRequest(
       'DELETE',

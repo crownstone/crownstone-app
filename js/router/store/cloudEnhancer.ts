@@ -112,6 +112,10 @@ function handleAction(action, returnValue, newState, oldState) {
     case "UPDATE_INSTALLATION_CONFIG":
       handleInstallation(action, newState);
       break;
+
+    case "SET_SPHERE_STATE":
+      handleSphereState(action, newState);
+      break;
   }
 }
 
@@ -307,6 +311,19 @@ function handleSphereUserInCloud(action, state) {
 
 }
 
+function handleSphereState(action, state) {
+  if (state.user.uploadLocation === true) {
+    let deviceId = Util.data.getCurrentDeviceId(state);
+    if (deviceId) {
+      if (action.data.present === true) {
+        CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => { });
+      }
+      else {
+        CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });
+      }
+    }
+  }
+}
 function handleUserLocationEnter(action, state) {
   if (state.user.uploadLocation === true) {
     let deviceId = Util.data.getCurrentDeviceId(state);

@@ -18,9 +18,10 @@ let defaultState = {
     triggerLocationId: null,
     triggerEvent: null,
     content: null,
-    sender: null,
+    senderId: null,
     sent: false,
     sentAt: 1,
+    updatedAt: 1,
   },
   recipients: { memberId: true },
   received:   { memberId: true },
@@ -36,7 +37,7 @@ const configReducer = (state = defaultState.config, action : any = {}) => {
       newState.triggerLocationId = update(action.data.triggerLocationId, newState.triggerLocationId);
       newState.triggerEvent      = update(action.data.triggerEvent,      newState.triggerEvent);
       newState.content           = update(action.data.content,           newState.content);
-      newState.sender            = update(action.data.sender,            newState.sender);
+      newState.senderId          = update(action.data.senderId,          newState.senderId);
       newState.sent              = update(action.data.sent,              newState.sent);
       newState.sentAt            = getTime(action.data.sentAt);
       return newState;
@@ -62,8 +63,6 @@ const recipientsReducer = (state = {}, action : any = {}) => {
         }
       }
       return state;
-    case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultState);
     default:
       return state;
   }

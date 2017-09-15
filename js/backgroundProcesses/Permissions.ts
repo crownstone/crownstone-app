@@ -87,7 +87,6 @@ export class PermissionClass {
         this.setupCrownstone        = true; // admin
         this.seeSetupCrownstone     = true; // admin
 
-        this.doLocalizationTutorial = true; // admin
         this.addRoom                = true; // admin
         this.editRoom               = true; // admin
         this.removeRoom             = true; // admin
@@ -103,6 +102,7 @@ export class PermissionClass {
 
         this.canClearAllSchedules   = true; // a
       case 'member':
+        this.doLocalizationTutorial = true; // admin and member
         this.changeBehaviour        = true; // admin and member
         this.useKeepAliveState      = true; // admin and member
         this.setStoneTime           = true; // admin and member

@@ -68,15 +68,10 @@ export class MessageAdd extends Component<any, any> {
       threadId: Util.getUUID(),
       messageId: Util.getUUID(),
       data: {
-        // thread
         triggerLocationId: this.state.triggerLocationId,
         triggerEvent: this.state.triggerEvent,
-
-        // message
         content: this.state.messageContent,
-        sender: state.user.userId,
-
-        // members
+        senderId: state.user.userId,
         memberIds: recipients
       }
     });
