@@ -291,13 +291,15 @@ export class RoomOverview extends Component<any, any> {
       rightAction = () => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId}); };
     }
     else if (Permissions.editRoom === false && this.props.locationId !== null && enoughCrownstones === true) {
-      if (this.viewingRemotely === true) {
-        Alert.alert("You're not in the Sphere", "Training is only possible if you're in the Sphere. Try again when you are.", [{text:"OK"}])
-      }
-      else {
-        rightLabel = 'Train';
-        rightAction = () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); };
-      }
+      rightLabel = 'Train';
+      rightAction = () => {
+        if (this.viewingRemotely === true) {
+          Alert.alert("You're not in the Sphere", "Training is only possible if you're in the Sphere. Try again when you are.", [{text:"OK"}])
+        }
+        else {
+          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
+        }
+      };
     }
 
     return (
