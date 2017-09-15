@@ -40,7 +40,6 @@ export const syncUsersInSphere = {
         })
         .catch((err) => { LOG.error("Error during background user sync: ", err)})
     }
-
 };
 
 export const syncUsersInLocation = function(state, location_from_cloud, locationInState, sphereUsers, sphereId) {

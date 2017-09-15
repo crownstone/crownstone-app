@@ -153,6 +153,17 @@ export const DataUtil = {
     }
   },
 
+  getUserLocationIdInSphere: function(state, sphereId, userId) {
+    let locationIds = Object.keys(state.spheres[sphereId].locations);
+    for (let i = 0; i < locationIds.length; i++) {
+      let location = state.spheres[sphereId].locations[locationIds[i]];
+      if (location.presentUsers.indexOf(userId) !== -1) {
+        return locationIds[i];
+      }
+    }
+    return null;
+  },
+
 
   userHasPlugsInSphere: function(state, sphereId) {
     let stones = state.spheres[sphereId].stones;
@@ -559,6 +570,10 @@ export const disableStones = function(store, sphereId) {
 
 
 export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
+  if (state.app.indoorLocalizationEnabled === false) {
+    return false;
+  }
+
   // if we do not have a sphereId return false
   if (!sphereId || !state)
     return false;

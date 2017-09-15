@@ -23,11 +23,13 @@ import { SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
-import {ErrorWatcher} from "./ErrorWatcher";
-import {NotificationHandler, NotificationParser} from "./NotificationHandler";
-import {Permissions} from "./Permissions";
-import {BatchCommandHandler} from "../logic/BatchCommandHandler";
-import {BatchUploader} from "./BatchUploader";
+import { ErrorWatcher } from "./ErrorWatcher";
+import { NotificationHandler, NotificationParser } from "./NotificationHandler";
+import { Permissions } from "./Permissions";
+import { BatchCommandHandler } from "../logic/BatchCommandHandler";
+import { BatchUploader } from "./BatchUploader";
+import { MessageSearcher } from "./MessageSearcher";
+const PushNotification = require('react-native-push-notification');
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -48,6 +50,9 @@ class BackgroundProcessHandlerClass {
       // start the BLE things.
       // route the events to React Native
       Bluenet.rerouteEvents();
+
+      // if there is a badge number, remove it on opening the app.
+      PushNotification.setApplicationIconBadgeNumber(0);
 
       // we first setup the event listeners since these events can be fired by the this.startStore().
 
@@ -271,6 +276,9 @@ class BackgroundProcessHandlerClass {
       if (appState === "active" && this.userLoggedIn) {
         BatterySavingUtil.startNormalUsage();
 
+        // if there is a badge number, remove it on opening the app.
+        PushNotification.setApplicationIconBadgeNumber(0);
+
         // if the app is open, update the user locations every 10 seconds
         Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
       }
@@ -374,6 +382,7 @@ class BackgroundProcessHandlerClass {
     NotificationHandler._loadStore(this.store);
     NotificationParser._loadStore(this.store);
     BatchUploader._loadStore(this.store);
+    MessageSearcher._loadStore(this.store);
     Permissions._loadStore(this.store, this.userLoggedIn);
   }
 }
