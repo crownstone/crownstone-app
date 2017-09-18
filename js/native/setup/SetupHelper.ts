@@ -164,24 +164,32 @@ export class SetupHelper {
               // Resolve the setup promise.
               resolve();
 
-              // show the celebration of 4 stones
+              if (silent) { return; }
+
               state = store.getState();
               let popupShown = false;
-              if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION && silent === false) {
-                eventBus.emit('showLocalizationSetupStep1', sphereId);
-                popupShown = true;
-              }
-
-              // start the tap-to-toggle tutorial, only if there is no other popup shown
-              if (this.type === STONE_TYPES.plug && silent === false && popupShown === false) { // find the ID
-                if (Util.data.getTapToToggleCalibration(state) === null) {
-                  Scheduler.scheduleCallback(() => {
-                    if (SetupStateHandler.isSetupInProgress() === false) {
-                      eventBus.emit("CalibrateTapToToggle")
-                    }
-                  }, 1500, 'setup t2t timeout');
+              if (state.app.indoorLocalizationEnabled) {
+                // show the celebration of 4 stones
+                if (Object.keys(state.spheres[sphereId].stones).length === AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION) {
+                  eventBus.emit('showLocalizationSetupStep1', sphereId);
+                  popupShown = true;
                 }
               }
+
+              if (state.app.tapToToggleEnabled) {
+                // start the tap-to-toggle tutorial, only if there is no other popup shown
+                if (this.type === STONE_TYPES.plug && popupShown === false) { // find the ID
+                  if (Util.data.getTapToToggleCalibration(state) === null) {
+                    Scheduler.scheduleCallback(() => {
+                      if (SetupStateHandler.isSetupInProgress() === false) {
+                        eventBus.emit("CalibrateTapToToggle")
+                      }
+                    }, 1500, 'setup t2t timeout');
+                  }
+                }
+              }
+
+
             }, 2500, 'setup20 resolver timeout');
           })
           .catch((err) => {

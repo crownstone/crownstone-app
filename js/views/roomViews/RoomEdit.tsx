@@ -118,32 +118,39 @@ export class RoomEdit extends Component<any, any> {
 
 
     // here we do the training if required and possible.
-    let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-    if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
-      items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
-      if (room.config.fingerprintRaw) {
-        items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
-          Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'OK', onPress: () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
-          ])
-        }});
-        items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
-        'you can retrain this room so ' + ai + ' can find you again!', type: 'explanation',  below:true});
+    if (state.app.indoorLocalizationEnabled) {
+      let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
+      if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
+        items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
+        // if a fingerprint is already present:
+        if (room.config.fingerprintRaw) {
+          items.push({label:'Retrain Room', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.iosBlue.hex}} />, callback: () => {
+            Alert.alert('Retrain Room','Only do this if you experience issues with the indoor localization.',[
+              {text: 'Cancel', style: 'cancel'},
+              {text: 'OK', onPress: () => { Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId}); }}
+            ])
+          }});
+          items.push({label:'If the indoor localization seems off or when you have moved Crownstones around, ' +
+          'you can retrain this room so ' + ai + ' can find you again!', type: 'explanation',  below:true});
+        }
+        else {
+          items.push({label:'Teach ' + ai + ' to find you!', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
+            Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
+          }});
+          items.push({label:'Teach ' + ai + ' to identify when you\'re in this room by walking around in it.', type: 'explanation',  below:true});
+        }
+      }
+      else if (canDoIndoorLocalization === true && this.viewingRemotely === true) {
+        items.push({label:'You can only train this room if you are in this Sphere.', type: 'explanation',  below:false});
+        items.push({type: 'spacer', height:30});
       }
       else {
-        items.push({label:'Teach ' + ai + ' to find you!', type: 'navigation', icon: <IconButton name="c1-locationPin1" size={19} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />, callback: () => {
-          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
-        }});
-        items.push({label:'Teach ' + ai + ' to identify when you\'re in this room by walking around in it.', type: 'explanation',  below:true});
+        items.push({label:'Indoor localization on room-level is only possible when you have 4 or more Crownstones registered and placed in rooms.', type: 'explanation',  below:false});
+        items.push({type: 'spacer', height:30});
       }
     }
-    else if (canDoIndoorLocalization === true && this.viewingRemotely === true) {
-      items.push({label:'You can only train this room if you are in this Sphere.', type: 'explanation',  below:false});
-      items.push({type: 'spacer', height:30});
-    }
     else {
-      items.push({label:'Indoor localization on room-level is only possible when you have 4 or more Crownstones registered and placed in rooms.', type: 'explanation',  below:false});
+      items.push({label:'Enable indoor localization in the app settings to be able to train this room.', type: 'explanation',  below:false});
       items.push({type: 'spacer', height:30});
     }
 

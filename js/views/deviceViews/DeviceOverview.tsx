@@ -188,7 +188,7 @@ export class DeviceOverview extends Component<any, any> {
           rightAction={() => {
             switch (this.state.swiperIndex) {
               case summaryIndex:
-                if (hasAppliance && Permissions.editAppliance || !hasAppliance && Permissions.editCrownstone) {
+                if ((hasAppliance && Permissions.editAppliance) || (!hasAppliance && Permissions.editCrownstone)) {
                   Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId})
                 }
                 break;

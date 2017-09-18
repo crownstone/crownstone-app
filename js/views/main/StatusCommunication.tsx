@@ -100,7 +100,7 @@ export class StatusCommunication extends Component<any, any> {
         </View>
       );
     }
-    else if (amountOfVisible >= 3 && enoughForLocalization && !requiresFingerprints) {
+    else if (amountOfVisible >= 3 && enoughForLocalization && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
           <Text style={descriptionTextStyle}>{'I see ' + amountOfVisible}</Text>
@@ -109,7 +109,7 @@ export class StatusCommunication extends Component<any, any> {
         </View>
       )
     }
-    else if (amountOfVisible > 0 && enoughForLocalization && !requiresFingerprints) {
+    else if (amountOfVisible > 0 && enoughForLocalization && !requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle]}>
           <Text style={descriptionTextStyle}>{'I see only ' + amountOfVisible}</Text>
@@ -118,7 +118,7 @@ export class StatusCommunication extends Component<any, any> {
         </View>
       )
     }
-    else if (enoughForLocalization && requiresFingerprints) {
+    else if (enoughForLocalization && requiresFingerprints && state.app.indoorLocalizationEnabled) {
       return (
         <View style={[inRangeStyle, generalStyle, {height: 45, paddingRight: 15, paddingLeft: 15}]}>
           <Text style={[descriptionTextStyle,{textAlign: 'center'}]}>{'Not all rooms have been trained so I can\'t do indoor localization.'}</Text>

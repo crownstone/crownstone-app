@@ -169,7 +169,7 @@ export class RoomOverview extends Component<any, any> {
       return (
         <View key={stoneId + '_entry'}>
           <DeviceEntry
-            initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
+            initiallyOpen={this.justFinishedSetup === item.stone.config.handle || (this.props.usedForIndoorLocalizationSetup == true && index == 0)}
             eventBus={this.props.eventBus}
             store={this.props.store}
             stoneId={stoneId}

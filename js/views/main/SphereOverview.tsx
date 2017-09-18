@@ -138,6 +138,7 @@ export class SphereOverview extends Component<any, any> {
       }
 
       let showFinalizeIndoorNavigationButton = (
+        state.app.indoorLocalizationEnabled        &&
         Permissions.doLocalizationTutorial         &&
         viewingRemotely                  === false && // only show this if you're there.
         enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones

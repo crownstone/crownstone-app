@@ -68,7 +68,7 @@ class BatterySavingClass {
     }
 
     // LOG.debug("BatterySavingUtil: startNormalUsage, checking execute startNormalUsage, appInForeground", appInForeground, "inSphere", inSphere, "notAllHandlesAreKnown", notAllHandlesAreKnown, 'total:',appInForeground && inSphere || inSphere && notAllHandlesAreKnown === true);
-    if (appInForeground || inSphere && notAllHandlesAreKnown === true) {
+    if (appInForeground || (inSphere && notAllHandlesAreKnown === true)) {
       // LOG.debug("BatterySavingUtil: startNormalUsage, executing");
       cancelPostponedScan();
       Bluenet.batterySaving(false);
