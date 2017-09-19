@@ -42,5 +42,12 @@ export const devices = {
       'DELETE',
       '/users/{id}/devices/' + deviceId
     );
+  },
+
+  deleteAllDevices: function() {
+    return this._setupRequest(
+      'DELETE',
+      '/users/{id}/deleteAllDevices'
+    );
   }
 };

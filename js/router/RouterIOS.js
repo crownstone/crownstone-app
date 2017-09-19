@@ -69,7 +69,7 @@ export class Router_IOS extends Component {
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
                 <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={true} />
               </Scene>
-              <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle}  initial={true} >
+              <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle}  initial={false} >
                 <Scene key="messageInbox"     component={Views.MessageInbox}    hideNavBar={true} />
                 <Scene key="messageAdd"       component={Views.MessageAdd}      hideNavBar={true} />
                 <Scene key="messageThread"    component={Views.MessageThread}   hideNavBar={true} />

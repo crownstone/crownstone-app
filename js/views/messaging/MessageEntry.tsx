@@ -1,5 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Animated,
   Image,
@@ -24,10 +25,12 @@ import {ANYWHERE_IN_SPHERE, EVERYONE_IN_SPHERE} from "./MessageAdd";
 import {ProfilePicture} from "../components/ProfilePicture";
 import {DoubleTapDelete} from "../components/DoubleTapDelete";
 import {StackedIcons} from "../components/StackedIcons";
+import {MessageUtil} from "../../util/MessageUtil";
 
 export class MessageEntry extends Component<{
   deleteMessage(): void
   size: number,
+  store: any,
   self: any,
   sphere: any,
   sphereId: string,
@@ -36,28 +39,28 @@ export class MessageEntry extends Component<{
 }, any> {
 
   _getRecipients() {
-    let members = this.props.message.recipients;
-    let memberIds = Object.keys(members);
+    let recipients = this.props.message.recipients;
+    let recipientIds = Object.keys(recipients);
 
-    let recipients = [];
-    memberIds.forEach((memberId) => {
-      if (memberId === EVERYONE_IN_SPHERE) { // its everyone!
-        recipients.push({id: memberId, icon: 'ios-people', label: 'Everyone in ' + this.props.sphere.config.name})
-      }
-      else if (memberId === this.props.self.userId) { // its you!
-        recipients.push({id: memberId, picture: this.props.self.picture, label: 'You', color: colors.menuTextSelected.hex})
+    let recipientArray = [];
+    recipientIds.forEach((memberId) => {
+      if (memberId === this.props.self.userId) { // its you!
+        recipientArray.push({id: memberId, picture: this.props.self.picture, label: 'You', color: colors.menuTextSelected.hex})
       }
       else if (this.props.sphere.users[memberId]) {  // existing member
         let sphereMember = this.props.sphere.users[memberId];
-        recipients.push({id: memberId, picture: sphereMember.picture, label: sphereMember.firstName})
+        recipientArray.push({id: memberId, picture: sphereMember.picture, label: sphereMember.firstName})
       }
       else { // unknown member
-        recipients.push({id: memberId, icon:'ios-help-circle', label: 'Unknown User'})
+        recipientArray.push({id: memberId, icon:'ios-help-circle', label: 'Unknown User'})
       }
     });
 
-    return recipients;
+    if (this.props.message.config.everyoneInSphere) {
+      recipientArray.push({icon: 'ios-people', label: 'Everyone in ' + this.props.sphere.config.name})
+    }
 
+    return recipientArray;
   }
 
   _getIcons(recipients, iconSize) {
@@ -114,6 +117,34 @@ export class MessageEntry extends Component<{
     return label;
   }
 
+
+  _getSubText() {
+    if (this.props.message.config.sendFailed) {
+      return <Text numberOfLines={1} style={{fontWeight:'700',  fontSize:12, color: colors.red.hex}}>{"Failed to send, tap to retry."}</Text>
+    }
+    else if (this.props.message.config.sendFailed === false && this.props.message.config.sent === false) {
+      return (
+        <View style={{flexDirection:"row", alignItems:'center'}}>
+          <ActivityIndicator size="small" />
+          <Text numberOfLines={1} style={{fontWeight:'500', paddingLeft:10, fontSize:12, color: colors.black.rgba(0.5)}}>{"Sending message..."}</Text>
+        </View>
+      )
+    }
+    else {
+      let locationId = this.props.message.config.triggerLocationId;
+
+      let locationName = '';
+      if (locationId === ANYWHERE_IN_SPHERE) {
+        locationName = this.props.sphere.config.name;
+      }
+      else {
+        locationName = this.props.sphere.locations[locationId].config.name;
+      }
+      return <Text numberOfLines={1} style={{fontWeight:'300',  fontSize:11, color: colors.black.rgba(0.25)}}>{locationName}</Text>
+    }
+  }
+
+
   render() {
     let padding = 10;
     let rowHeight = 90 - 2*padding;
@@ -123,16 +154,6 @@ export class MessageEntry extends Component<{
 
     let icons = this._getIcons(recipients, iconSize);
     let label = this._getLabel(recipients);
-
-    let locationId = this.props.message.config.triggerLocationId;
-
-    let locationName = '';
-    if (locationId === ANYWHERE_IN_SPHERE) {
-      locationName = this.props.sphere.config.name;
-    }
-    else {
-      locationName = this.props.sphere.locations[locationId].config.name;
-    }
 
     let content = (
       <View style={{
@@ -155,7 +176,7 @@ export class MessageEntry extends Component<{
           <View style={{ flex:1 }} />
           <Text numberOfLines={1} style={{fontWeight:'bold', fontSize:14, color: colors.black.rgba(0.5)}}>{label}</Text>
           <Text style={{fontWeight:'300', paddingTop: 0.4*padding, paddingBottom: 0.4*padding, fontSize:13, color: colors.black.rgba(0.75)}}>{this.props.message.config.content}</Text>
-          <Text numberOfLines={1} style={{fontWeight:'300',  fontSize:11, color: colors.black.rgba(0.25)}}>{locationName}</Text>
+          { this._getSubText() }
           <View style={{ flex:1 }} />
         </View>
         <View style={{ flex:1 }} />
@@ -168,7 +189,19 @@ export class MessageEntry extends Component<{
     return (
       <TouchableOpacity
         onPress={() => {
-          Actions.messageThread({sphereId: this.props.sphereId, messageId: this.props.messageId});
+          if (this.props.message.config.sendFailed) {
+            this.props.store.dispatch({type: "APPEND_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { sendFailed: false, sent:false }})
+            MessageUtil.uploadMessage(
+              this.props.store,
+              this.props.sphereId,
+              this.props.messageId,
+              this.props.message.config,
+              Object.keys(this.props.message.recipients)
+            )
+          }
+          else {
+            Actions.messageThread({sphereId: this.props.sphereId, messageId: this.props.messageId});
+          }
         }}
         style={{
           flexDirection: 'row',

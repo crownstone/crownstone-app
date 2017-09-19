@@ -23,11 +23,31 @@ import {MessageEntry} from "./MessageEntry";
 export class MessageInbox extends Component<any, any> {
   unsubscribeStoreEvents : any;
 
+  _setActiveSphere() {
+    // set the active sphere if needed and setup the object variables.
+    let state = this.props.store.getState();
+    let activeSphere = state.app.activeSphere;
+
+    let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
+
+    // handle the case where we deleted a sphere that was active.
+    if (state.spheres[activeSphere] === undefined) {
+      activeSphere = null;
+    }
+    if (activeSphere === null && sphereIds.length > 0) {
+      this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
+    }
+  }
+
+  componentWillMount() {
+    this._setActiveSphere();
+  }
+
   componentDidMount() {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (change.changeMessageThread) {
+      if (change.changeMessage) {
         this.forceUpdate();
       }
     });
@@ -44,6 +64,7 @@ export class MessageInbox extends Component<any, any> {
     let activeSphereId = state.app.activeSphere;
 
     let sphere = state.spheres[activeSphereId];
+
     let messageIds = Object.keys(sphere.messages);
     if (messageIds.length > 0) {
       items.push({label:'MESSAGES', type: 'lightExplanation',  below:false});
@@ -54,6 +75,7 @@ export class MessageInbox extends Component<any, any> {
         items.push({__item:
           <View style={[styles.listView,{backgroundColor: colors.white.rgba(0.75), paddingRight:0, paddingLeft:0}]}>
             <MessageEntry
+              store={this.props.store}
               message={message}
               messageId={messageId}
               sphere={sphere}
@@ -74,7 +96,7 @@ export class MessageInbox extends Component<any, any> {
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
 
-    if (activeSphere) {
+    if (activeSphere && state.spheres[activeSphere]) {
       let iconSize = 0.14*screenHeight;
       let items = this._getMessages();
 
@@ -147,9 +169,11 @@ export class MessageInbox extends Component<any, any> {
     }
     else {
       return (
-        <View style={{width: screenWidth, height:screenHeight}}>
-          <Text>No Sphere....</Text>
-        </View>
+        <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
+          <TopBar title="Messages" />
+          <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+          <Text style={{color:"white"}}>No Sphere....</Text>
+        </Background>
       );
     }
   }

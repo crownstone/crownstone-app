@@ -4,7 +4,13 @@ import { combineReducers } from 'redux'
 /**
  *  this is a list of all actions regarding the thread system.
  *
- *  ADD_MESSAGE      { sphereId, threadId, messageId, data: { sender, content }}
+ *  ADD_MESSAGE      { sphereId, threadId, messageId, data: {
+ *                                                            senderId,
+ *                                                            content,
+ *                                                            triggerLocationId,
+ *                                                            triggerEvent,
+ *                                                            sent
+ *                                                          }}
  *  READ_MESSAGE     { sphereId, threadId, messageId, messageId }
  *  RECEIVED_MESSAGE { sphereId, threadId, messageId, messageId }
  *  REMOVE_MESSAGE   { sphereId, threadId, messageId }
@@ -15,17 +21,20 @@ import { combineReducers } from 'redux'
 // total picture of a thread data structure.
 let defaultState = {
   config: {
+    cloudId: null,
     triggerLocationId: null,
     triggerEvent: null,
+    everyoneInSphere: false,
     content: null,
     senderId: null,
+    sendFailed: false,
     sent: false,
     sentAt: 1,
     updatedAt: 1,
   },
-  recipients: { memberId: true },
-  received:   { memberId: true },
-  read:       { memberId: true },
+  recipients: { recipientId: true },
+  received:   { userId: 1 },
+  read:       { userId: 1 },
 };
 
 
@@ -33,13 +42,19 @@ let defaultState = {
 const configReducer = (state = defaultState.config, action : any = {}) => {
   switch (action.type) {
     case 'ADD_MESSAGE':
+    case 'APPEND_MESSAGE':
+    case 'ADD_CLOUD_MESSAGE':
       let newState = {...state};
       newState.triggerLocationId = update(action.data.triggerLocationId, newState.triggerLocationId);
       newState.triggerEvent      = update(action.data.triggerEvent,      newState.triggerEvent);
+      newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
       newState.content           = update(action.data.content,           newState.content);
+      newState.everyoneInSphere  = update(action.data.everyoneInSphere,  newState.everyoneInSphere);
       newState.senderId          = update(action.data.senderId,          newState.senderId);
+      newState.sendFailed        = update(action.data.sendFailed,        newState.sendFailed);
       newState.sent              = update(action.data.sent,              newState.sent);
-      newState.sentAt            = getTime(action.data.sentAt);
+      newState.sentAt            = update(action.data.sentAt,            newState.sentAt);
+      newState.updatedAt         = getTime(action.data.updatedAt);
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultState);
@@ -51,13 +66,14 @@ const configReducer = (state = defaultState.config, action : any = {}) => {
 // messageReducer
 const recipientsReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'ADD_CLOUD_MESSAGE':
     case 'ADD_MESSAGE':
-      if (action.data && action.data.memberIds) {
-        let memberIds = action.data.memberIds;
-        if (memberIds.length > 0) {
+      if (action.data && action.data.recipientIds) {
+        let recipientIds = action.data.recipientIds;
+        if (recipientIds.length > 0) {
           let newState = {...state};
-          memberIds.forEach((memberId) => {
-            newState[memberId] = true
+          recipientIds.forEach((recipientId) => {
+            newState[recipientId] = true
           });
           return newState;
         }
@@ -71,10 +87,11 @@ const recipientsReducer = (state = {}, action : any = {}) => {
 // messageReducer
 const receivedReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'I_RECEIVED_MESSAGE':
     case 'RECEIVED_MESSAGE':
-      if (action.memberId !== undefined) {
+      if (action.userId !== undefined) {
         let newState = {...state};
-        newState[action.memberId] = true;
+        newState[action.userId] = getTime(action.data.at);
         return newState;
       }
       return state;
@@ -86,10 +103,11 @@ const receivedReducer = (state = {}, action : any = {}) => {
 // messageReducer
 const readReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
+    case 'I_READ_MESSAGE':
     case 'READ_MESSAGE':
-      if (action.memberId !== undefined) {
+      if (action.userId !== undefined) {
         let newState = {...state};
-        newState[action.memberId] = true;
+        newState[action.userId] = getTime(action.data.at);
         return newState;
       }
       return state;
@@ -117,7 +135,7 @@ export default (state = {}, action : any = {}) => {
       return newState;
     default:
       if (action.messageId !== undefined) {
-        if (state[action.messageId] !== undefined || action.type === "ADD_MESSAGE") {
+        if (state[action.messageId] !== undefined || action.type === "ADD_MESSAGE" || action.type === "ADD_CLOUD_MESSAGE") {
           return {
             ...state,
             ...{[action.messageId]: combinedMessageReducer(state[action.messageId], action)}

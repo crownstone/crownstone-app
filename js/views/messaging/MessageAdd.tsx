@@ -20,6 +20,8 @@ import {Util} from "../../util/Util";
 import { ListEditableItems } from "../components/ListEditableItems";
 import { Icon } from "../components/Icon";
 import { ProfilePicture } from "../components/ProfilePicture";
+import {CLOUD} from "../../cloud/cloudAPI";
+import {MessageUtil} from "../../util/MessageUtil";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
@@ -57,24 +59,39 @@ export class MessageAdd extends Component<any, any> {
     let recipients = [];
     let recipientIds = Object.keys(this.state.recipients);
     recipientIds.forEach((recipientId) => {
-      if (this.state.recipients[recipientId] === true) {
+      if (this.state.recipients[recipientId] === true && recipientId !== EVERYONE_IN_SPHERE) {
         recipients.push(recipientId);
       }
     });
 
+    let everyoneInSphere = this.state.recipients[EVERYONE_IN_SPHERE] === true;
+    let messageId = Util.getUUID();
+
     this.props.store.dispatch({
       type:'ADD_MESSAGE',
       sphereId: this.props.sphereId,
-      threadId: Util.getUUID(),
-      messageId: Util.getUUID(),
+      messageId: messageId,
       data: {
         triggerLocationId: this.state.triggerLocationId,
         triggerEvent: this.state.triggerEvent,
         content: this.state.messageContent,
+        everyoneInSphere: everyoneInSphere,
         senderId: state.user.userId,
-        memberIds: recipients
+        recipientIds: recipients
       }
     });
+
+    MessageUtil.uploadMessage(
+      this.props.store,
+      this.props.sphereId,
+      messageId,
+      { triggerLocationId: this.state.triggerLocationId,
+        triggerEvent: this.state.triggerEvent,
+        content: this.state.messageContent,
+        everyoneInSphere: everyoneInSphere},
+      recipients
+    );
+
     Actions.pop();
   }
 

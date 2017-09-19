@@ -128,6 +128,15 @@ export class SettingsApp extends Component<any, any> {
 
           LOG.info("BackgroundProcessHandler: Set background processes to", newValue);
           Bluenet.setBackgroundScanning(newValue);
+
+          if (newValue === false) {
+            // REMOVE USER FROM ALL SPHERES AND ALL LOCATIONS.
+            let deviceId = Util.data.getCurrentDeviceId(state);
+            if (deviceId) {
+              CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });
+              CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => { });
+            }
+          }
         }
       });
       items.push({

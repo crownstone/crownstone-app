@@ -123,8 +123,8 @@ export class MessageThread extends Component<any, any> {
     let state = this.props.store.getState();
     let sphere = state.spheres[this.props.sphereId];
     let message = sphere.messages[this.props.messageId];
-    let members = message.recipients;
-    let memberIds = Object.keys(members);
+    let recipients = message.recipients;
+    let recipientIds = Object.keys(recipients);
     let locationId = message.config.triggerLocationId;
 
     let locationName = '';
@@ -135,30 +135,31 @@ export class MessageThread extends Component<any, any> {
       locationName = sphere.locations[locationId].config.name;
     }
 
-    let recipients = [];
-    memberIds.forEach((memberId) => {
-      if (memberId === EVERYONE_IN_SPHERE) { // its everyone!
-        recipients.push('everyone in ' + sphere.config.name);
+    let recipientArray = [];
+    if (message.config.everyoneInSphere) {
+      recipientArray.push('Everyone in ' + sphere.config.name)
+    }
+
+    recipientIds.forEach((recipientId) => {
+      if (recipientId === state.user.userId) { // its you!
+        recipientArray.push('you')
       }
-      else if (memberId === state.user.userId) { // its you!
-        recipients.push('you')
-      }
-      else if (sphere.users[memberId]) {  // existing member
-        let sphereMember = sphere.users[memberId];
-        recipients.push(sphereMember.firstName + ' ' + sphereMember.lastName);
+      else if (sphere.users[recipientId]) {  // existing member
+        let sphereMember = sphere.users[recipientId];
+        recipientArray.push(sphereMember.firstName + ' ' + sphereMember.lastName);
       }
       else { // unknown member
-        recipients.push('unknown user')
+        recipientArray.push('unknown user')
       }
     });
 
-    let label = this._getLabel(recipients);
+    let label = this._getLabel(recipientArray);
 
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
           leftAction={() => { Actions.pop(); }}
-          title={ 'Found in the ' + locationName }
+          title={ message.config.everyoneInSphere ? 'Found in ' + locationName : 'Found in the ' + locationName }
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>

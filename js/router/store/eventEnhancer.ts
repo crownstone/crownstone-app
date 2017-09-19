@@ -199,10 +199,12 @@ function checkAction(action, affectedIds) {
     case "REMOVE_DEVICE":
       eventStatus['changeDeviceData'] = affectedIds; break;
     case "ADD_MESSAGE":
+    case "APPEND_MESSAGE":
+    case "ADD_CLOUD_MESSAGE":
     case "READ_MESSAGE":
     case "RECEIVED_MESSAGE":
     case "REMOVE_MESSAGE":
-      eventStatus['changeMessageThread'] = affectedIds; break;
+      eventStatus['changeMessage'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":

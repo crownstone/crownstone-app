@@ -9,6 +9,7 @@ import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
 import {Permissions} from "../backgroundProcesses/Permissions";
 import {ALWAYS_DFU_UPDATE} from "../ExternalConfig";
+import {MessageUtil} from "./MessageUtil";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -345,6 +346,9 @@ export const Util = {
   },
 
   promiseBatchPerformer: function(arr : any[], method : PromiseCallback) {
+    if (arr.length === 0) {
+      return new Promise((resolve, reject) => { resolve() });
+    }
     return Util._promiseBatchPerformer(arr, 0, method);
   },
 

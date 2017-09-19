@@ -108,6 +108,12 @@ function handleAction(action, returnValue, newState, oldState) {
       // handleStoneState(action, newState, oldState, true);
       break;
 
+
+    case "I_RECEIVED_MESSAGE":
+      handleMessageReceived(action, newState); break;
+    case "I_READ_MESSAGE":
+      handleMessageRead(action, newState); break;
+
     case "ADD_INSTALLATION":
     case "UPDATE_INSTALLATION_CONFIG":
       handleInstallation(action, newState);
@@ -418,4 +424,14 @@ function handleInstallation(action, state) {
   };
 
   CLOUD.updateInstallation(installationId, data).catch(() => {});
+}
+
+function handleMessageReceived(action, state) {
+  let message = state.spheres[action.sphereId].messages[action.messageId];
+  CLOUD.receivedMessage(message.config.cloudId).catch((err) => { LOG.error("CloudEnhancer: could not mark message as received!", err); })
+}
+
+function handleMessageRead(action, state) {
+  let message = state.spheres[action.sphereId].messages[action.messageId];
+  CLOUD.readMessage(message.config.cloudId).catch((err) => { LOG.error("CloudEnhancer: could not mark message as read!", err); })
 }

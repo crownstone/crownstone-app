@@ -14,6 +14,10 @@ export const syncUsersInSphere = {
         return;
       }
 
+      if (!state.spheres[activeSphereId]) {
+        return;
+      }
+
       let actions = [];
       let sphereUsers = state.spheres[activeSphereId].users;
 

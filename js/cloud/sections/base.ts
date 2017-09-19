@@ -32,6 +32,7 @@ export const base = {
   _locationId: undefined,
   _stoneId: undefined,
   _applianceId: undefined,
+  _messageId: undefined,
   _networkErrorHandler: () => {},
 
   _post: function(options) {
@@ -152,6 +153,7 @@ export const base = {
   forDevice:              function(deviceId)        { this._deviceId = deviceId;              return this; },
   forAppliance:           function(applianceId)     { this._applianceId = applianceId;        return this; },
   forInstallation:        function(installationId)  { this._installationId = installationId;  return this; },
+  forMessage:             function(messageId)       { this._messageId = messageId;            return this; },
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
@@ -195,5 +197,9 @@ function _getId(url, obj) : string {
   let installationLocation = url.indexOf('AppInstallation');
   if (installationLocation !== -1 && installationLocation < 3)
     return obj._installationId;
+
+  let messagesLocation = url.indexOf('Messages');
+  if (messagesLocation !== -1 && messagesLocation < 3)
+    return obj._messageId;
 }
 

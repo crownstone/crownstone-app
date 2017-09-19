@@ -11,32 +11,86 @@ export const messages = {
     );
   },
 
-  getMessageInSphere: function (background = true) {
-    // return this._setupRequest(
-    //   'POST',
-    //   '/Devices/{id}/installations?appName=' + APP_NAME,
-    //   { background: background },
-    //   'body'
-    // );
+  receivedMessage: function (messageId, background) {
+    return this._setupRequest(
+      'POST',
+      '/Messages/' + messageId,
+      { background: background },
+      'body'
+    );
   },
 
-  getMessageInLocation: function (installationId, data, background = true) {
-    // return this._setupRequest(
-    //   'PUT',
-    //   '/AppInstallations/' + installationId,
-    //   { data: data, background: background },
-    //   'body'
-    // );
+  readMessage: function (messageId, background) {
+    return this._setupRequest(
+      'POST',
+      '/Messages/' + messageId,
+      { background: background },
+      'body'
+    );
   },
 
-  deleteMessage: function (installationId, background = true) {
-    // return this._setupRequest('GET','/AppInstallations/' + installationId, {background: background});
+
+  getMessage: function (background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Messages/{id}',
+      { data: {filter:{"include":{"relation":["recipients","delivered","read"]}}}, background: background }
+    );
   },
 
-  deleteAllMessages: function(sphereId) {
-    // return this._setupRequest(
-    //   'DELETE',
-    //   '/Devices/{id}/devices/' + installationId
-    // );
-  }
+  getNewMessagesInSphere: function (background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Sphere/{id}/myNewMessages',
+      { background: background }
+    );
+  },
+
+  getAllMessagesInSphere: function (background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Sphere/{id}/myMessages',
+      { background: background }
+    );
+  },
+
+  getNewMessagesInLocation: function (locationId, background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Sphere/{id}/myNewMessagesInLocation/' + locationId,
+      { background: background }
+    );
+  },
+
+  getActiveMessages: function(background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Sphere/{id}/myActiveMessages/',
+      { background: background }
+    );
+  },
+
+  addRecipient: function(recipientId, background = true) {
+    return this._setupRequest(
+      'PUT',
+      '/Messages/{id}/recipients/rel/' + recipientId,
+      { background: background }
+    );
+  },
+
+  deleteMessage: function (messageId, background = true) {
+    return this._setupRequest(
+      'DELETE',
+      '/Sphere/{id}/messages/' + messageId,
+      { background: background }
+    );
+  },
+
+  deleteAllMessages: function (background = true) {
+    return this._setupRequest(
+      'DELETE',
+      '/Sphere/{id}/deleteAllMessages',
+      { background: background }
+    );
+  },
 };
