@@ -65,7 +65,7 @@ export class ApplianceSelection extends Component<any, any> {
 
         items.push({__item:
           <View >
-              <View style={[styles.listView,{backgroundColor: this.props.applianceId === applianceId ? colors.white.hex : colors.white.rgba(0.65)}]}>
+              <View style={[styles.listView,{backgroundColor: this.props.applianceId === applianceId ? colors.white.hex : colors.white.rgba(0.65), paddingRight:0}]}>
                 <ApplianceEntry
                   select={selectCallback}
                   delete={Permissions.removeAppliance? deleteCallback : undefined}

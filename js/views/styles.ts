@@ -115,7 +115,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   listTextLarge:{
-    width:(2/3)*screenWidth,
+    flex:10,
     fontSize: 16,
   },
   separator: {

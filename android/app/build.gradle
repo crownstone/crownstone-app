@@ -66,6 +66,7 @@ import com.android.build.OutputFile
  */
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-sentry/sentry.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -144,6 +145,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-sentry')
     compile project(':bluenet')
     compile project(':localization-lib-android')
     compile project(':rn-splash-screen')

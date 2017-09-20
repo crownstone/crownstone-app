@@ -78,6 +78,9 @@ export class Router_Android extends Component {
               <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       panHandlers={null} hideNavBar={false} title="Invite" />
+              <Scene key="messageInbox"               component={Views.MessageInbox}               hideNavBar={true} />
+              <Scene key="messageAdd"                 component={Views.MessageAdd}                 hideNavBar={true} />
+              <Scene key="messageThread"              component={Views.MessageThread}              hideNavBar={true} />
             </Scene>
           </Scene>
         </Router>

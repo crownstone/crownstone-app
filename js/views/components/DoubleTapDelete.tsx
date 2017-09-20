@@ -13,11 +13,13 @@ import {Util} from "../../util/Util";
 export class DoubleTapDelete extends Component<any, any> {
   resetTimeout : any;
   unsubscribe : any;
+  id : string;
 
   constructor() {
     super();
     this.state = {deleteActive:false};
     this.resetTimeout = undefined;
+    this.id = Util.getUUID();
   }
 
   componentWillUnmount() {
@@ -35,23 +37,23 @@ export class DoubleTapDelete extends Component<any, any> {
     this.resetTimeout = setTimeout(() => {
       this.resetTimeout = undefined;
       this.setState({deleteActive:false});
-    }, 1000);
+    }, 2000);
   }
 
 
   render() {
     if (this.state.deleteActive) {
       return (
-        <TouchableOpacity onPress={() => { this.props.callback() }} style={{width:30, alignItems:'center'}}>
-          <Icon name="md-close-circle" size={30} color={colors.red.hex}/>
+        <TouchableOpacity key={this.id + 'active'} onPress={() => { this.props.callback() }} style={{height:50, width:50, alignItems:'center', justifyContent: 'center'}}>
+          <Icon name="md-trash" size={30} color={colors.red.hex}/>
         </TouchableOpacity>
       )
     }
     else {
       return (
-        <TouchableOpacity
-          onPress={() => { this._activateDeleteState(); }}
-          style={{width:30, alignItems:'center'}}
+        <TouchableOpacity  key={this.id + 'passive'}
+                           onPress={() => { this._activateDeleteState(); }}
+          style={{height:50, width:50, alignItems:'center', justifyContent: 'center'}}
         >
           <Icon name="md-close-circle" size={23} color={this.props.deleteColor || colors.darkGray2.hex}/>
         </TouchableOpacity>

@@ -14,6 +14,17 @@ import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundPro
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 import SplashScreen from "rn-splash-screen";
 
+import { config } from './sentrySettings'
+import { Sentry } from 'react-native-sentry';
+
+
+if ( global.__DEV__ !== true) {
+  if (config.ios) {
+    Sentry.config(config.ios).install();
+  }
+}
+
+
 class Root extends Component {
 
   constructor() {

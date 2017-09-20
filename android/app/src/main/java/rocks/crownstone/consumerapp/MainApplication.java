@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import io.sentry.RNSentryPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.facebook.react.flat.FlatUIImplementationProvider;
@@ -43,6 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
+            new RNSentryPackage(MainApplication.this),
 					new KCKeepAwakePackage(),
 					new VectorIconsPackage(),
 					new SvgPackage(),

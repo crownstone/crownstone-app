@@ -28,7 +28,7 @@ export class DeletableEntry extends Component<any, any> {
     else if (this.props.icon)
       barHeight = 50;
     return (
-      <View style={[styles.listView, {height: barHeight, paddingRight: 5}, this.props.wrapperStyle]}>
+      <View style={[styles.listView, {height: barHeight, paddingRight:0}, this.props.wrapperStyle]}>
         {this.props.largeIcon !== undefined ?
           <View style={[styles.centered, {width: 80, paddingRight:20} ]}>{this.props.largeIcon}</View> : undefined}
         {this.props.icon !== undefined ?
@@ -43,7 +43,7 @@ export class DeletableEntry extends Component<any, any> {
           :
           <View style={{flex:1}} />
         }
-        { <DoubleTapDelete key={this.id} callback={this.props.callback} />  }
+        { <DoubleTapDelete key={this.id} callback={this.props.callback} /> }
       </View>
     );
   }

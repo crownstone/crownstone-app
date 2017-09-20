@@ -64,6 +64,10 @@ export class MessageEntry extends Component<{
   }
 
   _getIcons(recipients, iconSize) {
+    if (recipients.length === 0) {
+      return undefined;
+    }
+
     let items = [];
 
     let amount = Math.min(4, recipients.length);
@@ -105,6 +109,9 @@ export class MessageEntry extends Component<{
   }
 
   _getLabel(recipients) {
+    if (recipients.length === 0) {
+      return "Nobody";
+    }
     let label = recipients[0].label;
     for (let i = 1; i < recipients.length - 1; i++) {
       label += ', ' + recipients[i].label

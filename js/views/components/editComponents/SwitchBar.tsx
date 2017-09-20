@@ -11,8 +11,9 @@ import { styles, colors, screenWidth } from '../../styles'
 export class SwitchBar extends Component<any, any> {
   render() {
     return (
-      <View style={[styles.listView, {height:this.props.barHeight}]}>
+      <View style={[styles.listView, {height:this.props.barHeight}, this.props.wrapperStyle]}>
         {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
+        {this.props.iconIndent === true ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]} /> : undefined }
         <Text style={[styles.listTextLarge, this.props.style]}>{this.props.label}</Text>
         <View style={{flex:1}} />
         <Switch

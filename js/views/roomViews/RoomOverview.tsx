@@ -59,6 +59,7 @@ export class RoomOverview extends Component<any, any> {
 
     this.nearestStoneIdInSphere = undefined;
     this.nearestStoneIdInRoom = undefined;
+
   }
 
   componentWillMount() {

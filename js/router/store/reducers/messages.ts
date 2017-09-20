@@ -25,6 +25,7 @@ let defaultState = {
     triggerLocationId: null,
     triggerEvent: null,
     everyoneInSphere: false,
+    everyoneInSphereIncludingOwner: false,
     content: null,
     senderId: null,
     sendFailed: false,
@@ -50,6 +51,7 @@ const configReducer = (state = defaultState.config, action : any = {}) => {
       newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
       newState.content           = update(action.data.content,           newState.content);
       newState.everyoneInSphere  = update(action.data.everyoneInSphere,  newState.everyoneInSphere);
+      newState.everyoneInSphereIncludingOwner = update(action.data.everyoneInSphereIncludingOwner,  newState.everyoneInSphereIncludingOwner);
       newState.senderId          = update(action.data.senderId,          newState.senderId);
       newState.sendFailed        = update(action.data.sendFailed,        newState.sendFailed);
       newState.sent              = update(action.data.sent,              newState.sent);

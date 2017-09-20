@@ -82,6 +82,15 @@ export class SideBar extends Component<any, any> {
         setTimeout(() => {this.props.closeCallback();},0)
       }
     });
+    menuItems.push({
+      id: 'messages',
+      label: 'Messages',
+      icon: <Icon name={"ios-mail"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      callback: () => {
+        Actions.messageInbox();
+        setTimeout(() => {this.props.closeCallback();},0)
+      }
+    });
     return menuItems;
   }
 

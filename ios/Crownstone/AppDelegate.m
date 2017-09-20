@@ -11,6 +11,11 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#if __has_include(<React/RNSentry.h>)
+#import <React/RNSentry.h> // This is used for versions of react >= 0.40
+#else
+#import "RNSentry.h" // This is used for versions of react < 0.40
+#endif
 #import <RCTSplashScreen/RCTSplashScreen.h>
 #import "Crownstone-Swift.h"
 
@@ -30,6 +35,9 @@ Portal *portal;
                                                       moduleName:@"Crownstone"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
+  
+  [RNSentry installWithRootView:rootView];
+
   rootView.backgroundColor = [[UIColor alloc] initWithRed:0.0f green:0.149f blue:0.243f alpha:1];
   
   appendLogToFile(@" Application starting");

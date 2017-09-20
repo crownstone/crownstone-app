@@ -84,7 +84,8 @@ export class SelectFromList extends Component<any, any> {
           { item.icon ? <IconButton name={item.icon} size={item.iconSize || 29} buttonSize={48} radius={29} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 3}}/> : undefined }
           { item.picture || item.person ? <ProfilePicture picture={item.picture} size={50} />: undefined }
           { item.text ? <Text style={{paddingLeft: 15, fontSize: 18, color: colors.black.hex}}>{item.text}</Text> : undefined }
-
+          <View style={{flex:1}} />
+          { this.state.selectedItemIds[item.id] === true ? <Icon name="ios-checkmark" size={30} color={colors.csBlue.hex} /> : undefined }
         </TouchableOpacity>
       );
     }

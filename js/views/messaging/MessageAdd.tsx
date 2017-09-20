@@ -32,6 +32,7 @@ export class MessageAdd extends Component<any, any> {
     super();
 
     this.state = {
+      everyoneInSphereIncludingOwner: true,
       triggerLocationId: ANYWHERE_IN_SPHERE,
       triggerEvent: 'enter',
       messageContent: '',
@@ -50,6 +51,11 @@ export class MessageAdd extends Component<any, any> {
   _createMessage() {
     if (this.state.messageContent.length === 0) {
       Alert.alert("Message is empty..", "I can't send an empty message.", [{text:'Right'}]);
+      return;
+    }
+
+    if (Object.keys(this.state.recipients).length === 0) {
+      Alert.alert("No recipients..", "I can't send a message to nobody.", [{text:'Right'}]);
       return;
     }
 
@@ -76,6 +82,7 @@ export class MessageAdd extends Component<any, any> {
         triggerEvent: this.state.triggerEvent,
         content: this.state.messageContent,
         everyoneInSphere: everyoneInSphere,
+        everyoneInSphereIncludingOwner: everyoneInSphere && this.state.everyoneInSphereIncludingOwner,
         senderId: state.user.userId,
         recipientIds: recipients
       }
@@ -179,6 +186,16 @@ export class MessageAdd extends Component<any, any> {
           Actions.selectFromList({items: userData, title: 'Recipients', callback: (selection) => {
             this.setState({recipients: selection});
           }});
+        }
+      });
+      items.push({
+        label: 'Including you',
+        type: 'switch',
+        wrapperStyle: { backgroundColor: colors.white.rgba(0.75) },
+        iconIndent:true,
+        value: this.state.everyoneInSphereIncludingOwner,
+        callback: (newValue) => {
+          this.setState({everyoneInSphereIncludingOwner: newValue});
         }
       });
     }

@@ -13,6 +13,14 @@ import { AppRouter } from './js/router/Router'
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
 
+import { config } from './sentrySettings'
+import { Sentry } from 'react-native-sentry';
+
+if ( global.__DEV__ !== true) {
+  if (config.android) {
+    Sentry.config(config.ios).install();
+  }
+}
 
 class Root extends Component {
   componentWillMount() {

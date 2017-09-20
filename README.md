@@ -60,6 +60,8 @@ The compiled app can be downloaded from [Crownstone](https://crownstone.rocks/ap
 
 ### React Native
 
+Make copies of ./js/LocalConfig.template.js and ./sentrySettings.template.js and rename them to ./js/LocalConfig.js and ./sentrySettings.js.
+
 Assuming you've already installed npm, nodejs and yarn. You can get Yarn here: https://yarnpkg.com/en/docs/install
 * nodejs
 * Yarn, can be obtained at [yarnpkg.com](https://yarnpkg.com/en/docs/install).

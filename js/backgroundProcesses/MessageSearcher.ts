@@ -87,6 +87,8 @@ class MessageSearcherClass {
           senderId: message.ownerId,
           cloudId: message.id,
           content: message.content,
+          everyoneInSphereIncludingOwner: message.everyoneInSphereIncludingOwner,
+          everyoneInSphere: message.everyoneInSphere,
           triggerEvent: message.triggerEvent,
           triggerLocationId: message.triggerLocationId,
           recipientIds: recipientIds,
