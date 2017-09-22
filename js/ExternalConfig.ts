@@ -6,6 +6,9 @@ const DeviceInfo = require('react-native-device-info');
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
     const RELEASE_MODE = false;
 
+    // ONLY SET THIS TO TRUE WHILE TESTING THE APP
+    export const TESTING_APP = true;
+
     // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
     const IGNORE_LOCAL_CONFIG = false;
 

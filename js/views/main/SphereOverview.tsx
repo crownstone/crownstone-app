@@ -237,29 +237,31 @@ class SphereChangeButton extends Component<any, any> {
     let outerRadius = 0.11*screenWidth;
     let size = 0.084*screenWidth;
     let color = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
-    let textColor = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.3) : colors.notConnected.hex;
-    return <View style={{
-      position:'absolute',
-      top: topBarHeight + 5,
-      left: 5,
-      flexDirection:'row',
-      alignItems:'center',
-      justifyContent:'center',
-    }}>
-      <TouchableOpacity
-        style={{
+    return (
+      <TouchableOpacity style={{
+        position:'absolute',
+        top: topBarHeight,
+        left: 0,
+        padding: 6,
+        paddingRight:10,
+        paddingBottom:10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+      }}
+      onPress={() => { eventBus.emit('showSphereSelectionOverlay'); }}>
+        <View style={{
           width: outerRadius,
           height:outerRadius,
           borderRadius:0.5*outerRadius,
           backgroundColor: colors.white.rgba(0.5),
           alignItems:'center',
           justifyContent:'center',
-        }}
-        onPress={() => { eventBus.emit('showSphereSelectionOverlay'); }}
-      >
-        <Icon name="c1-sphere" size={size} color={ color } />
+        }}>
+          <Icon name="c1-sphere" size={size} color={ color } />
+        </View>
       </TouchableOpacity>
-    </View>
+    );
   }
 }
 

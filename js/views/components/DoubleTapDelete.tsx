@@ -8,6 +8,7 @@ import {
 import { colors } from '../styles'
 import {Icon} from "./Icon";
 import {Util} from "../../util/Util";
+import {IconButton} from "./IconButton";
 
 
 export class DoubleTapDelete extends Component<any, any> {
@@ -44,15 +45,27 @@ export class DoubleTapDelete extends Component<any, any> {
   render() {
     if (this.state.deleteActive) {
       return (
-        <TouchableOpacity key={this.id + 'active'} onPress={() => { this.props.callback() }} style={{height:50, width:50, alignItems:'center', justifyContent: 'center'}}>
-          <Icon name="md-trash" size={30} color={colors.red.hex}/>
+        <TouchableOpacity
+          key={this.id + 'active'}
+          onPress={() => { this.props.callback() }}
+          style={{height:50, width:50, alignItems:'center', justifyContent: 'center'}}
+        >
+          <IconButton
+            name="ios-trash"
+            size={23}
+            buttonSize={28}
+            radius={10}
+            color="#fff"
+            buttonStyle={{backgroundColor: colors.red.hex}}
+          />
         </TouchableOpacity>
       )
     }
     else {
       return (
-        <TouchableOpacity  key={this.id + 'passive'}
-                           onPress={() => { this._activateDeleteState(); }}
+        <TouchableOpacity
+          key={this.id + 'passive'}
+          onPress={() => { this._activateDeleteState(); }}
           style={{height:50, width:50, alignItems:'center', justifyContent: 'center'}}
         >
           <Icon name="md-close-circle" size={23} color={this.props.deleteColor || colors.darkGray2.hex}/>

@@ -47,11 +47,12 @@ export class MessageInbox extends Component<any, any> {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (change.changeMessage) {
+      if (change.changeMessage || change.changeSphereState) {
         this.forceUpdate();
       }
     });
   }
+
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
@@ -69,20 +70,34 @@ export class MessageInbox extends Component<any, any> {
     if (messageIds.length > 0) {
       items.push({label:'MESSAGES', type: 'lightExplanation',  below:false});
 
+      let messages = [];
+
       messageIds.forEach((messageId) => {
-        let message = sphere.messages[messageId];
+        messages.push({message: sphere.messages[messageId], id: messageId});
+      });
+
+
+      messages.forEach((messageData) => {
+        let message = messageData.message;
+        let backgroundColor = colors.white.rgba(0.75);
+        let read = true;
+        if (message.received[state.user.userId] && message.read[state.user.userId] === undefined) {
+          read = false;
+          backgroundColor = colors.green.hex;
+        }
 
         items.push({__item:
-          <View style={[styles.listView,{backgroundColor: colors.white.rgba(0.75), paddingRight:0, paddingLeft:0}]}>
+          <View style={[styles.listView,{backgroundColor: backgroundColor, paddingRight:0, paddingLeft:0}]}>
             <MessageEntry
               store={this.props.store}
               message={message}
-              messageId={messageId}
+              read={read}
+              messageId={messageData.id}
               sphere={sphere}
               sphereId={activeSphereId}
               self={state.user}
               size={45}
-              deleteMessage={ () => { this.props.store.dispatch({type:'REMOVE_MESSAGE', sphereId: activeSphereId, messageId: messageId}) }}
+              deleteMessage={ () => { this.props.store.dispatch({type:'REMOVE_MESSAGE', sphereId: activeSphereId, messageId: messageData.id}) }}
             />
           </View>
         })
@@ -161,7 +176,7 @@ export class MessageInbox extends Component<any, any> {
 
       return (
         <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
-          <TopBar title="Messages" />
+          <TopBar title={"Messages in " + state.spheres[activeSphere].config.name}/>
           <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
           { scrollView }
         </Background>
@@ -170,7 +185,7 @@ export class MessageInbox extends Component<any, any> {
     else {
       return (
         <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
-          <TopBar title="Messages" />
+          <TopBar title={"Messages"} />
           <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
           <Text style={{color:"white"}}>No Sphere....</Text>
         </Background>

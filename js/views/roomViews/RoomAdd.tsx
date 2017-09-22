@@ -177,7 +177,7 @@ export class RoomAdd extends Component<any, any> {
             }, 0);
           })
           .catch((err) => {
-            LOG.error("Something went wrong with creation of rooms", err);
+            LOG.error("RoomAdd: Something went wrong with creation of rooms", err);
             let defaultActions = () => {this.props.eventBus.emit('hideLoading');};
             Alert.alert("Whoops!", "Something went wrong, please try again later!",[{text:"OK", onPress: defaultActions}], { onDismiss: defaultActions })
           })

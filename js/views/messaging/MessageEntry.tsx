@@ -36,31 +36,47 @@ export class MessageEntry extends Component<{
   sphereId: string,
   message: any,
   messageId: string,
+  read: boolean,
 }, any> {
 
   _getRecipients() {
-    let recipients = this.props.message.recipients;
-    let recipientIds = Object.keys(recipients);
 
-    let recipientArray = [];
-    recipientIds.forEach((memberId) => {
-      if (memberId === this.props.self.userId) { // its you!
-        recipientArray.push({id: memberId, picture: this.props.self.picture, label: 'You', color: colors.menuTextSelected.hex})
-      }
-      else if (this.props.sphere.users[memberId]) {  // existing member
-        let sphereMember = this.props.sphere.users[memberId];
-        recipientArray.push({id: memberId, picture: sphereMember.picture, label: sphereMember.firstName})
+    let userArray = [];
+    let senderId = this.props.message.config.senderId;
+    if (this.props.message.config.senderId !== this.props.self.userId) {
+      if (this.props.sphere.users[senderId]) {  // existing member
+        let sphereMember = this.props.sphere.users[senderId];
+        userArray.push({id: senderId, picture: sphereMember.picture, label: sphereMember.firstName})
       }
       else { // unknown member
-        recipientArray.push({id: memberId, icon:'ios-help-circle', label: 'Unknown User'})
+        userArray.push({id: senderId, icon:'ios-help-circle', label: 'Unknown User'})
       }
-    });
+    }
+    else {
+      let recipients = this.props.message.recipients;
+      let recipientIds = Object.keys(recipients);
 
-    if (this.props.message.config.everyoneInSphere) {
-      recipientArray.push({icon: 'ios-people', label: 'Everyone in ' + this.props.sphere.config.name})
+      recipientIds.forEach((memberId) => {
+        if (memberId === this.props.self.userId) { // its you!
+          userArray.push({id: memberId, picture: this.props.self.picture, label: 'You', color: colors.menuTextSelected.hex})
+        }
+        else if (this.props.sphere.users[memberId]) {  // existing member
+          let sphereMember = this.props.sphere.users[memberId];
+          userArray.push({id: memberId, picture: sphereMember.picture, label: sphereMember.firstName})
+        }
+        else { // unknown member
+          userArray.push({id: memberId, icon:'ios-help-circle', label: 'Unknown User'})
+        }
+      });
+
+      if (this.props.message.config.everyoneInSphere) {
+        userArray.push({icon: 'ios-people', label: 'Everyone in ' + this.props.sphere.config.name})
+      }
+
     }
 
-    return recipientArray;
+
+    return userArray;
   }
 
   _getIcons(recipients, iconSize) {
@@ -141,7 +157,7 @@ export class MessageEntry extends Component<{
       let locationId = this.props.message.config.triggerLocationId;
 
       let locationName = '';
-      if (locationId === ANYWHERE_IN_SPHERE) {
+      if (locationId === ANYWHERE_IN_SPHERE || locationId === null || !this.props.sphere.locations[locationId]) {
         locationName = this.props.sphere.config.name;
       }
       else {
@@ -193,34 +209,47 @@ export class MessageEntry extends Component<{
       </View>
     );
 
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (this.props.message.config.sendFailed) {
-            this.props.store.dispatch({type: "APPEND_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { sendFailed: false, sent:false }})
-            MessageUtil.uploadMessage(
-              this.props.store,
-              this.props.sphereId,
-              this.props.messageId,
-              this.props.message.config,
-              Object.keys(this.props.message.recipients)
-            )
-          }
-          else {
-            Actions.messageThread({sphereId: this.props.sphereId, messageId: this.props.messageId});
-          }
-        }}
-        style={{
-          flexDirection: 'row',
-          width: screenWidth,
-          minHeight: rowHeight,
-          paddingTop: padding,
-          paddingBottom:padding,
-          justifyContent:'center',
-        }}
-      >
-        { content }
-      </TouchableOpacity>
-    );
+
+    let style = {
+      flexDirection:  'row',
+      width:          screenWidth,
+      minHeight:      rowHeight,
+      paddingTop:     padding,
+      paddingBottom:  padding,
+      justifyContent: 'center',
+    };
+    if (this.props.message.config.sendFailed || this.props.read === false) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            if (this.props.message.config.sendFailed) {
+              this.props.store.dispatch({type: "APPEND_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { sendFailed: false, sent: false }});
+              MessageUtil.uploadMessage(
+                this.props.store,
+                this.props.sphereId,
+                this.props.messageId,
+                this.props.message.config,
+                Object.keys(this.props.message.recipients),
+              );
+            }
+
+            if (this.props.read === false) {
+              this.props.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
+            }
+          }}
+        style={style}>
+          { content }
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return (
+        <View style={style}>
+          { content }
+        </View>
+      );
+    }
+
+
   }
 }

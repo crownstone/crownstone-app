@@ -71,6 +71,8 @@ export class MessageAdd extends Component<any, any> {
     });
 
     let everyoneInSphere = this.state.recipients[EVERYONE_IN_SPHERE] === true;
+    let everyoneInSphereIncludingOwner = everyoneInSphere && this.state.everyoneInSphereIncludingOwner;
+    let triggerLocationId = this.state.triggerLocationId === ANYWHERE_IN_SPHERE ? null : this.state.triggerLocationId;
     let messageId = Util.getUUID();
 
     this.props.store.dispatch({
@@ -78,11 +80,11 @@ export class MessageAdd extends Component<any, any> {
       sphereId: this.props.sphereId,
       messageId: messageId,
       data: {
-        triggerLocationId: this.state.triggerLocationId,
+        triggerLocationId: triggerLocationId,
         triggerEvent: this.state.triggerEvent,
         content: this.state.messageContent,
         everyoneInSphere: everyoneInSphere,
-        everyoneInSphereIncludingOwner: everyoneInSphere && this.state.everyoneInSphereIncludingOwner,
+        everyoneInSphereIncludingOwner: everyoneInSphereIncludingOwner,
         senderId: state.user.userId,
         recipientIds: recipients
       }
@@ -92,10 +94,12 @@ export class MessageAdd extends Component<any, any> {
       this.props.store,
       this.props.sphereId,
       messageId,
-      { triggerLocationId: this.state.triggerLocationId,
+      { triggerLocationId: triggerLocationId,
         triggerEvent: this.state.triggerEvent,
         content: this.state.messageContent,
-        everyoneInSphere: everyoneInSphere},
+        everyoneInSphere: everyoneInSphere,
+        everyoneInSphereIncludingOwner: everyoneInSphereIncludingOwner,
+      },
       recipients
     );
 
@@ -191,7 +195,7 @@ export class MessageAdd extends Component<any, any> {
       items.push({
         label: 'Including you',
         type: 'switch',
-        wrapperStyle: { backgroundColor: colors.white.rgba(0.75) },
+        wrapperStyle: { backgroundColor: colors.white.rgba(0.85) },
         iconIndent:true,
         value: this.state.everyoneInSphereIncludingOwner,
         callback: (newValue) => {
@@ -220,7 +224,7 @@ export class MessageAdd extends Component<any, any> {
             items.push({
               label: user.text,
               type: 'deletableEntry',
-              wrapperStyle: { backgroundColor: colors.white.rgba(0.75) },
+              wrapperStyle: { backgroundColor: colors.white.rgba(0.85) },
               icon:  <View style={{paddingLeft: 12}}>{icon}</View>,
               callback: () => {
                 let newRecipients = this.state.recipients;

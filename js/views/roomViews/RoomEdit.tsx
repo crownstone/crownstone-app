@@ -159,8 +159,7 @@ export class RoomEdit extends Component<any, any> {
       items.push({
         label: 'Remove Room',
         type: 'button',
-        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff"
-                          buttonStyle={{backgroundColor: colors.red.hex}}/>,
+        icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: colors.red.hex}}/>,
         callback: () => {
           Alert.alert("Are you sure?", "Removing this Room will make all contained Crownstones floating.",
             [{text: "Cancel", style: 'cancel'}, {

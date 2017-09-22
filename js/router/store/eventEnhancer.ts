@@ -204,7 +204,10 @@ function checkAction(action, affectedIds) {
     case "READ_MESSAGE":
     case "RECEIVED_MESSAGE":
     case "REMOVE_MESSAGE":
+    case "I_READ_MESSAGE":
       eventStatus['changeMessage'] = affectedIds; break;
+    case "I_RECEIVED_MESSAGE":
+      eventStatus['iChangedMessage'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":

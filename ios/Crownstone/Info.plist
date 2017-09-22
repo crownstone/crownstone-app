@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Always permissions are required for the Crownstone to work. For more information, see www.crownstone.rocks/background.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -15,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.10.2</string>
+	<string>1.11.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -40,11 +42,11 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We require to use bluetooth to communicate with the Crownstone.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We'd like to use your camera so you can take a picture for your profile!</string>
+	<string>We&apos;d like to use your camera so you can take a picture for your profile!</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>We use your background location to switch your Crownstones when you move around the house.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>iBeacon can only be used with &quot;Always&quot; permission. This is required to use the Crownstone App.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Crownstone would like to access your camera roll so we can let you select a profile picture from your camera roll.</string>
 	<key>UIAppFonts</key>
@@ -76,7 +78,7 @@
 		<string>remote-notification</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
-	<false/>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

@@ -3461,6 +3461,10 @@ react-native-router-flux@~3.37.0:
     react-native-tabs "^1.0.9"
     react-static-container "1.0.1"
 
+react-native-same-toast@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-same-toast/-/react-native-same-toast-1.0.1.tgz#a735aa7db592bd2d70c4035af48475a4205af0ad"
+
 react-native-sentry@^0.23.2:
   version "0.23.2"
   resolved "https://registry.yarnpkg.com/react-native-sentry/-/react-native-sentry-0.23.2.tgz#f9859263d5d274faa6d17604deae2adc94568234"

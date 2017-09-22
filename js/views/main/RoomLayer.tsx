@@ -546,24 +546,27 @@ export class RoomLayer extends Component<any, any> {
 
     let showFloatingCrownstones = this._isFloatingRoomRequired(state);
 
-    // THIS SHOULD BE COVERED BY THE setupStarting and setupCleanedUp events. This is here as a fallback.
-    // If there is a need for an floatingCrownstone location node and there is none in the solver, reload solver.
-    // If the room is there but there is no need for it, reload solver.
-    if (showFloatingCrownstones === true  &&  this.state.locations['null'] === undefined ||
-        showFloatingCrownstones === false && this.state.locations['null'] !== undefined) {
-      if (showFloatingCrownstones) { LOG.error('RoomLayer: Reloading solver due to required but missing floatingCrownstone location.'); }
-      else                         { LOG.error('RoomLayer: Reloading solver due to superfluous floatingCrownstone location.');          }
-      this.loadInSolver();
-    }
-
     let roomNodes = [];
     let roomIdArray = Object.keys(rooms).sort();
+    if (showFloatingCrownstones) {
+      roomIdArray.push(null);
+    }
 
+    // check if the roomId. Race conditions may trigger this.
+    // The null roomId: THIS SHOULD BE COVERED BY THE setupStarting and setupCleanedUp events. This is here as a fallback.
+    // If there is a need for an floatingCrownstone location node and there is none in the solver, reload solver.
+    // If the room is there but there is no need for it, reload solver.
+    for (let i = 0; i < roomIdArray.length; i++) {
+      if (this.state.locations[roomIdArray[i]] === undefined) {
+        LOG.error('RoomLayer: Reloading solver due to roomId that is not in state.', roomIdArray[i] );
+        this.loadInSolver();
+        break;
+      }
+    }
+
+    // gather the room nodes to render.
     for (let i = 0; i < roomIdArray.length; i++) {
       roomNodes.push(this._renderRoom(roomIdArray[i]));
-    }
-    if (showFloatingCrownstones) {
-      roomNodes.push(this._renderRoom(null));
     }
 
     return roomNodes;

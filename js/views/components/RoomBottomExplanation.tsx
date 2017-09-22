@@ -70,7 +70,7 @@ export class RoomBottomExplanation extends Component<any, any> {
 
   _loadSetupMessage() {
     if (this.props.locationId !== null && SetupStateHandler.areSetupStonesAvailable()) {
-      let explanation = "Crownstone in setup mode found. Tap here to see it!";
+      let explanation = "Crownstone in setup mode found.\nTap here to see it!";
       let buttonCallback = () => {
         Actions.pop();
         setTimeout(() => {

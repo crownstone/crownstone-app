@@ -91,9 +91,9 @@ const receivedReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'I_RECEIVED_MESSAGE':
     case 'RECEIVED_MESSAGE':
-      if (action.userId !== undefined) {
+      if (action.data.userId !== undefined) {
         let newState = {...state};
-        newState[action.userId] = getTime(action.data.at);
+        newState[action.data.userId] = getTime(action.data.at);
         return newState;
       }
       return state;
@@ -107,9 +107,9 @@ const readReducer = (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'I_READ_MESSAGE':
     case 'READ_MESSAGE':
-      if (action.userId !== undefined) {
+      if (action.data.userId !== undefined) {
         let newState = {...state};
-        newState[action.userId] = getTime(action.data.at);
+        newState[action.data.userId] = getTime(action.data.at);
         return newState;
       }
       return state;

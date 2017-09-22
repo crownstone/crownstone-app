@@ -1,15 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  AppState,
-  Alert,
-  AppRegistry,
-  Navigator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
+  Animated,
   Text,
   View
 } from 'react-native';
@@ -69,7 +60,7 @@ export class Router_IOS extends Component {
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
                 <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={true} />
               </Scene>
-              <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle}  initial={false} >
+              <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnEvent="newMessage" initial={false} >
                 <Scene key="messageInbox"     component={Views.MessageInbox}    hideNavBar={true} />
                 <Scene key="messageAdd"       component={Views.MessageAdd}      hideNavBar={true} />
                 <Scene key="messageThread"    component={Views.MessageThread}   hideNavBar={true} />
@@ -108,7 +99,51 @@ export class Router_IOS extends Component {
 
 
 class TabIcon extends Component {
+  unsubscribe = null;
+  constructor() {
+    super();
+
+    this.state = { badge: 0, badgeScale: new Animated.Value(1) }
+  }
+
+  componentDidMount() {
+    if (this.props.badgeOnEvent) {
+      this.unsubscribe = eventBus.on(this.props.badgeOnEvent, (amount) => {
+        if (!this.props.selected) {
+          this.setState({ badge : 1 });
+          Animated.sequence([
+            Animated.timing(this.state.badgeScale,{ toValue: 4, duration: 100 }),
+            Animated.timing(this.state.badgeScale,{ toValue: 1, duration: 150 }),
+          ]).start()
+        }
+      })
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.badge > 0 && nextProps.selected) {
+      this.setState({badge: 0});
+    }
+  }
+
+  componentWillUnmount() {
+    if (typeof this.unsubscribe === 'function') {
+      this.unsubscribe();
+    }
+  }
+
   render(){
+    let alertSize = 14;
+    const animatedStyle = {
+      transform: [
+        { scale: this.state.badgeScale },
+      ]
+    };
+    let backgroundColor = this.state.badgeScale.interpolate({
+      inputRange: [1,4],
+      outputRange: [colors.green.hex, colors.csOrange.hex]
+    });
+
     return (
       <View style={{flex:1,alignItems:'center', justifyContent:'center'}}>
         <Icon
@@ -122,6 +157,19 @@ class TabIcon extends Component {
           fontWeight:'200',
           color: (this.props.selected ?  colors.menuTextSelected.hex : colors.menuText.hex)
         }}>{this.props.tabTitle}</Text>
+        { this.state.badge > 0 ?
+          <Animated.View style={
+            [animatedStyle,{
+            position:'absolute',
+            top:3,
+            right:0,
+            width:alertSize,
+            height:alertSize,
+            borderRadius:0.5*alertSize,
+            backgroundColor:backgroundColor,
+            borderWidth: 2,
+            borderColor: colors.white.hex,
+          }]} /> : undefined }
       </View>
     );
   }

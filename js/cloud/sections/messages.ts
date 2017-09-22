@@ -1,4 +1,3 @@
-import {APP_NAME} from "../../ExternalConfig";
 
 export const messages = {
 
@@ -14,7 +13,7 @@ export const messages = {
   receivedMessage: function (messageId, background) {
     return this._setupRequest(
       'POST',
-      '/Messages/' + messageId,
+      '/Messages/' + messageId + '/delivered',
       { background: background },
       'body'
     );
@@ -23,25 +22,25 @@ export const messages = {
   readMessage: function (messageId, background) {
     return this._setupRequest(
       'POST',
-      '/Messages/' + messageId,
+      '/Messages/' + messageId + '/read',
       { background: background },
       'body'
     );
   },
 
 
-  getMessage: function (background = true) {
+  getMessage: function (messageId, background = true) {
     return this._setupRequest(
       'GET',
-      '/Messages/{id}',
-      { data: {filter:{"include":{"relation":["recipients","delivered","read"]}}}, background: background }
+      '/Messages/' + messageId,
+      { data: {filter:{"include":["recipients","delivered","read"]}}, background: background }
     );
   },
 
   getNewMessagesInSphere: function (background = true) {
     return this._setupRequest(
       'GET',
-      '/Sphere/{id}/myNewMessages',
+      '/Spheres/{id}/myNewMessages',
       { background: background }
     );
   },
@@ -49,7 +48,7 @@ export const messages = {
   getAllMessagesInSphere: function (background = true) {
     return this._setupRequest(
       'GET',
-      '/Sphere/{id}/myMessages',
+      '/Spheres/{id}/myMessages',
       { background: background }
     );
   },
@@ -57,7 +56,7 @@ export const messages = {
   getNewMessagesInLocation: function (locationId, background = true) {
     return this._setupRequest(
       'GET',
-      '/Sphere/{id}/myNewMessagesInLocation/' + locationId,
+      '/Spheres/{id}/myNewMessagesInLocation/' + locationId,
       { background: background }
     );
   },
@@ -65,7 +64,7 @@ export const messages = {
   getActiveMessages: function(background = true) {
     return this._setupRequest(
       'GET',
-      '/Sphere/{id}/myActiveMessages/',
+      '/Spheres/{id}/myActiveMessages/',
       { background: background }
     );
   },
@@ -81,7 +80,7 @@ export const messages = {
   deleteMessage: function (messageId, background = true) {
     return this._setupRequest(
       'DELETE',
-      '/Sphere/{id}/messages/' + messageId,
+      '/Spheres/{id}/messages/' + messageId,
       { background: background }
     );
   },
@@ -89,7 +88,7 @@ export const messages = {
   deleteAllMessages: function (background = true) {
     return this._setupRequest(
       'DELETE',
-      '/Sphere/{id}/deleteAllMessages',
+      '/Spheres/{id}/deleteAllMessages',
       { background: background }
     );
   },

@@ -407,6 +407,7 @@ class LocationHandlerClass {
     LOG.info("LocationHandler: Track Spheres called.");
     BluenetPromiseWrapper.isReady()
       .then(() => {
+        Bluenet.requestLocationPermission();
         return BluenetPromiseWrapper.clearTrackedBeacons();
       })
       .then(() => {

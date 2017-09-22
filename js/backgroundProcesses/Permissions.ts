@@ -1,6 +1,7 @@
-
 import {eventBus} from "../util/EventBus";
 import {Util} from "../util/Util";
+import {LOG} from "../logging/Log";
+
 export class PermissionClass {
   _store : any;
   _initialized : boolean = false;
@@ -52,11 +53,13 @@ export class PermissionClass {
 
         let change = data.change;
         if (change.setKeys || change.updateActiveSphere) {
+          LOG.info("Permissions: Update permissions due to databaseChange");
           this._update(this._store.getState());
         }
       });
 
       eventBus.on('userLoggedIn', () => {
+        LOG.info("Permissions: Update permissions due to userLoggedIn");
         this._enableUpdates = true;
         this._update(this._store.getState());
       });
@@ -70,6 +73,7 @@ export class PermissionClass {
   }
 
   _update(state = null, customSphereId = null) {
+    LOG.info("Permissions: Update permissions");
     let activeSphere = customSphereId || state.app.activeSphere;
     let level = Util.data.getUserLevelInSphere(state, activeSphere);
 
@@ -79,6 +83,7 @@ export class PermissionClass {
 
     this._revokeAll();
 
+    LOG.info("Permissions: Set all");
     switch (level) {
       case 'admin':
         this.setBehaviourInCloud    = true; // admin
@@ -112,16 +117,17 @@ export class PermissionClass {
         this.inviteMemberToSphere   = true; // admin and member
         this.inviteGuestToSphere    = true; // admin and member
 
-        this.canAddSchedule         = true; // a or m  --------- implement
-        this.canEditSchedule        = true; // a or m  --------- implement
-        this.canSeeSchedules        = true; // a or m  --------- implement
-        this.canDeleteSchedule      = true; // a or m  --------- implement
+        this.canAddSchedule         = true; // a or m
+        this.canEditSchedule        = true; // a or m
+        this.canSeeSchedules        = true; // a or m
+        this.canDeleteSchedule      = true; // a or m
       case 'guest':
         // nothing will be added.
     }
   }
 
   _revokeAll() {
+    LOG.info("Permissions: Revoking all");
     this.useKeepAliveState      = false; // g
     this.setStoneTime           = false; // a or m
     this.setBehaviourInCloud    = false; // a

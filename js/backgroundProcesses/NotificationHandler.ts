@@ -7,6 +7,8 @@ import { CLOUD } from "../cloud/cloudAPI";
 import { INTENTS } from "../native/libInterface/Constants";
 import { StoneUtil } from "../util/StoneUtil";
 import {LocalNotifications} from "../notifications/LocalNotifications";
+import {Actions} from "react-native-router-flux";
+import {MessageCenter} from "./MessageCenter";
 
 class NotificationHandlerClass {
   store: any = {};
@@ -96,7 +98,7 @@ class NotificationHandlerClass {
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
-        LOG.info("NotificationHandler: Received notification",notification);
+        LOG.info("NotificationHandler: Received notification", notification);
         if (Platform.OS === 'android') {
           NotificationParser.handle(notification)
         }
@@ -161,7 +163,47 @@ class NotificationParserClass {
         case 'setSwitchStateRemotely':
           this._handleSetSwitchStateRemotely(messageData, state); break;
         case 'newMessage':
-          LocalNotifications._handleNewMessage(messageData, state); break;
+          if (messageData.id) {
+            CLOUD.getMessage(messageData.id)
+              .then((result) => {
+                state = this.store.getState();
+                let notified = LocalNotifications._handleNewMessage(messageData, state);
+                if (notified) {
+                  MessageCenter.storeMessage(result);
+                }
+              })
+              .catch((err) => { LOG.error("NotificationParser: Couldn't get message to store", err)})
+          }
+          break;
+      }
+    }
+
+    if (messageData && messageData.type && messageData.source === 'localNotification') {
+      switch (messageData.type) {
+        case 'newMessage':
+          let state = this.store.getState();
+          let forwarded = false;
+          if (state) {
+            let sphere = state.spheres[messageData.sphereId];
+            if (sphere) {
+              let message = sphere.messages[messageData.messageId];
+              if (message) {
+                forwarded = true;
+                Actions.messageThread({sphereId: messageData.sphereId, messageId: messageData.messageId });
+              }
+            }
+          }
+
+          if (!forwarded) {
+            Actions.messageInbox();
+          }
+
+          // actually go to the message tab
+          if (Platform.OS === 'ios') {
+            Actions.messages();
+          }
+
+          break;
       }
     }
   }

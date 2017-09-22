@@ -4,6 +4,7 @@ import { BATCH }         from './storeManager'
 import { LOG }           from '../../logging/Log'
 import { Permissions }   from "../../backgroundProcesses/Permissions";
 import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
+import {eventBus} from "../../util/EventBus";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -108,7 +109,8 @@ function handleAction(action, returnValue, newState, oldState) {
       // handleStoneState(action, newState, oldState, true);
       break;
 
-
+    case "REMOVE_MESSAGE":
+      handleMessageRemove(action, newState, oldState); break;
     case "I_RECEIVED_MESSAGE":
       handleMessageReceived(action, newState); break;
     case "I_READ_MESSAGE":
@@ -122,6 +124,8 @@ function handleAction(action, returnValue, newState, oldState) {
     case "SET_SPHERE_STATE":
       handleSphereState(action, newState);
       break;
+
+
   }
 }
 
@@ -428,10 +432,46 @@ function handleInstallation(action, state) {
 
 function handleMessageReceived(action, state) {
   let message = state.spheres[action.sphereId].messages[action.messageId];
-  CLOUD.receivedMessage(message.config.cloudId).catch((err) => { LOG.error("CloudEnhancer: could not mark message as received!", err); })
+  CLOUD.receivedMessage(message.config.cloudId).catch((err) => {
+    LOG.error("CloudEnhancer: could not mark message as received!", err);
+    eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
+      sphereId: action.sphereId,
+      id: action.messageId,
+      cloudId: message.config.cloudId,
+      specialType: 'receivedMessage'
+    });
+  })
 }
 
 function handleMessageRead(action, state) {
   let message = state.spheres[action.sphereId].messages[action.messageId];
-  CLOUD.readMessage(message.config.cloudId).catch((err) => { LOG.error("CloudEnhancer: could not mark message as read!", err); })
+  CLOUD.readMessage(message.config.cloudId).catch((err) => {
+    LOG.error("CloudEnhancer: could not mark message as read!", err);
+    eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
+      sphereId: action.sphereId,
+      id: action.messageId,
+      cloudId: message.config.cloudId,
+      specialType: 'readMessage'
+    });
+  })
+}
+
+function handleMessageRemove(action, state, oldState) {
+  let message = oldState.spheres[action.sphereId].messages[action.messageId];
+  // if user is sender, delete in cloud.
+  if (message.config.senderId === oldState.user.userId) {
+    CLOUD.forSphere(action.sphereId).deleteMessage(message.config.cloudId).catch((err) => {
+      LOG.error("CloudEnhancer: could not delete message as read!", err);
+      eventBus.emit("submitCloudEvent", {
+        type: 'CLOUD_EVENT_REMOVE_MESSAGES',
+        sphereId: action.sphereId,
+        id: action.messageId,
+        cloudId: message.config.cloudId
+      });
+    });
+  }
+
+
 }

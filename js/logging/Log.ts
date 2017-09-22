@@ -12,11 +12,12 @@ import {
   LOG_STORE,
   LOG_SCHEDULER,
   LOG_TO_FILE,
+  TESTING_APP,
   RELEASE_MODE_USED,
 } from '../ExternalConfig'
 import { Scheduler } from '../logic/Scheduler'
 import { eventBus } from '../util/EventBus'
-import {safeDeleteFile, Util} from '../util/Util'
+import { safeDeleteFile, Util } from '../util/Util'
 
 const DeviceInfo = require('react-native-device-info');
 const RNFS = require('react-native-fs');
@@ -70,11 +71,22 @@ export const LOG : any = {
     if (check) {
       let args = ['LOG ' + type + ' :'];
       for (let i = 0; i < allArguments.length; i++) {
-        args.push(allArguments[i]);
+        let arg = allArguments[i];
+        if (TESTING_APP) {
+          if (typeof arg === 'object') {
+            try {
+              arg = JSON.stringify(arg, undefined, 2);
+            }
+            catch(err) {
+              // ignore
+            }
+          }
+        }
+        args.push(arg);
       }
       logToFile.apply(this, args);
 
-      if (RELEASE_MODE_USED === false) {
+      if (RELEASE_MODE_USED === false || TESTING_APP) {
         console.log.apply(this, args);
       }
     }

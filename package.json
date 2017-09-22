@@ -20,6 +20,7 @@
     "react-native-keep-awake": "^2.0.5",
     "react-native-push-notification": "^2.2.1",
     "react-native-router-flux": "~3.37.0",
+    "react-native-same-toast": "^1.0.1",
     "react-native-sentry": "^0.23.2",
     "react-native-svg": "5.1.5",
     "react-native-swiper": "^1.5.4",

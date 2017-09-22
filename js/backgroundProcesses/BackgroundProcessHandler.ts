@@ -28,9 +28,10 @@ import { NotificationHandler, NotificationParser } from "./NotificationHandler";
 import { Permissions } from "./Permissions";
 import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { BatchUploader } from "./BatchUploader";
-import { MessageSearcher } from "./MessageSearcher";
-const PushNotification = require('react-native-push-notification');
+import { MessageCenter } from "./MessageCenter";
+import { CloudEventHandler } from "./CloudEventHandler";
 
+const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
@@ -382,7 +383,8 @@ class BackgroundProcessHandlerClass {
     NotificationHandler._loadStore(this.store);
     NotificationParser._loadStore(this.store);
     BatchUploader._loadStore(this.store);
-    MessageSearcher._loadStore(this.store);
+    MessageCenter._loadStore(this.store);
+    CloudEventHandler._loadStore(this.store);
     Permissions._loadStore(this.store, this.userLoggedIn);
   }
 }

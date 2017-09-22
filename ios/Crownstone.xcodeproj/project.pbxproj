@@ -24,6 +24,7 @@
 		1A08E0F380E848DF8FB49FA7 /* libRCTSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D0E23DDA8394019BC1776D5 /* libRCTSplashScreen.a */; };
 		2949A06B239243D580FBFB80 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DECEB9CC79AB448890DC6C27 /* libRNVectorIcons.a */; };
 		3D9F3719ACF34F349748EC35 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C648D1E337B4439DA8CF7411 /* FontAwesome.ttf */; };
+		5536AAFCA2F647ABB306701F /* libRCTToast.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 399B9F79E411460EAE31B346 /* libRCTToast.a */; };
 		574066DA52F444A5A07508D3 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BD62BE562BBA4C0CB119E4C6 /* Ionicons.ttf */; };
 		5D0DDA5E1C014AB38EC2AD63 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F76F3A8FD7B44DD79A442EF9 /* libRNFS.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -329,6 +330,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNSentry;
 		};
+		FA7894B11F72D6B600453ACC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E197A1027E624661986DE5C3 /* RCTToast.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CEA144EE1F3EE8E400D40E5D;
+			remoteInfo = RCTToast;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -360,6 +368,7 @@
 		3168EF210533498EAC7B488C /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		3624663A3C2E47DF9D040AB4 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		3850D22C8FD340C8B78DA044 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
+		399B9F79E411460EAE31B346 /* libRCTToast.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTToast.a; sourceTree = "<group>"; };
 		46FE7150DB694F9E85D27BFC /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		562A66FB958C404F86EE89D9 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		56CC7681ADF54110B9733B50 /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
@@ -378,6 +387,7 @@
 		D3FBDC110CEC4744A6A26FF2 /* libRNSentry.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSentry.a; sourceTree = "<group>"; };
 		D42EDABA9EFB4156A87226CD /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		DECEB9CC79AB448890DC6C27 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
+		E197A1027E624661986DE5C3 /* RCTToast.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTToast.xcodeproj; path = "../node_modules/react-native-same-toast/RCTToast.xcodeproj"; sourceTree = "<group>"; };
 		EC4DA3349ECF442DA262E6EC /* RCTSplashScreen.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTSplashScreen.xcodeproj; path = "../node_modules/rn-splash-screen/ios/RCTSplashScreen.xcodeproj"; sourceTree = "<group>"; };
 		F1D30CA378FA4421A1BFF9D6 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		F536239263194292A885D7A7 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
@@ -448,6 +458,7 @@
 				EED8C19564C145BF9A878AA9 /* libKCKeepAwake.a in Frameworks */,
 				C0A12D6754B64676A70BF639 /* libRNSentry.a in Frameworks */,
 				A7B17E76FE044B29BC30B798 /* libz.tbd in Frameworks */,
+				5536AAFCA2F647ABB306701F /* libRCTToast.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -609,6 +620,7 @@
 				EC4DA3349ECF442DA262E6EC /* RCTSplashScreen.xcodeproj */,
 				7F4869DE0D5545099B271BEC /* KCKeepAwake.xcodeproj */,
 				1BFBEBAAB4B143C19E8408BB /* RNSentry.xcodeproj */,
+				E197A1027E624661986DE5C3 /* RCTToast.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -641,6 +653,7 @@
 				00E356EF1AD99517003FC87E /* CrownstoneTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				DC38B87588674F1DBCA52964 /* Resources */,
+				FAE1EF5C1F73DF96009C1E97 /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -759,6 +772,32 @@
 				FA7894411F72720D00453ACC /* libRNSentry.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FA7894991F72D6B600453ACC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FA7894B21F72D6B600453ACC /* libRCTToast.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FAE1EF5C1F73DF96009C1E97 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				3850D22C8FD340C8B78DA044 /* libRCTCamera.a */,
+				2DE3C66843AE4F58A13BDEDF /* libRNDeviceInfo.a */,
+				F76F3A8FD7B44DD79A442EF9 /* libRNFS.a */,
+				81720DF7A506458AA65323BF /* libRCTImageResizer.a */,
+				F536239263194292A885D7A7 /* libRNSVG.a */,
+				DECEB9CC79AB448890DC6C27 /* libRNVectorIcons.a */,
+				1D0E23DDA8394019BC1776D5 /* libRCTSplashScreen.a */,
+				8CF916DF8FF748538BA28025 /* libKCKeepAwake.a */,
+				D3FBDC110CEC4744A6A26FF2 /* libRNSentry.a */,
+				562A66FB958C404F86EE89D9 /* libz.tbd */,
+				399B9F79E411460EAE31B346 /* libRCTToast.a */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -892,6 +931,10 @@
 				{
 					ProductGroup = 832341B11AAA6A8300B99B32 /* Products */;
 					ProjectRef = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
+				},
+				{
+					ProductGroup = FA7894991F72D6B600453ACC /* Products */;
+					ProjectRef = E197A1027E624661986DE5C3 /* RCTToast.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302E01ABCB9EE00DB3ED1 /* Products */;
@@ -1194,6 +1237,13 @@
 			remoteRef = FA7894401F72720D00453ACC /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA7894B21F72D6B600453ACC /* libRCTToast.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTToast.a;
+			remoteRef = FA7894B11F72D6B600453ACC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1331,12 +1381,14 @@
 					"$(SRCROOT)/../node_modules/rn-splash-screen/ios/RCTSplashScreen/**",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-same-toast/RCTToast",
 				);
 				INFOPLIST_FILE = CrownstoneTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1373,12 +1425,14 @@
 					"$(SRCROOT)/../node_modules/rn-splash-screen/ios/RCTSplashScreen/**",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-same-toast/RCTToast",
 				);
 				INFOPLIST_FILE = CrownstoneTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1425,6 +1479,7 @@
 					"$(BUILD_DIR)$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/**",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-same-toast/RCTToast",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1469,6 +1524,7 @@
 					"$(BUILD_DIR)$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/**",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-sentry/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-same-toast/RCTToast",
 				);
 				INFOPLIST_FILE = Crownstone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
