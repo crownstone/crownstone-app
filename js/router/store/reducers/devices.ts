@@ -5,6 +5,7 @@ let defaultSettings = {
   address: null,
   description: null,
   os: null,
+  cloudId: null,
   userAgent: null,
   deviceType: null,
   model: null,
@@ -32,6 +33,7 @@ let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
         let newState = {...state};
         newState.name           = update(action.data.name,           newState.name);
         newState.address        = update(action.data.address,        newState.address);
+        newState.cloudId        = update(action.data.cloudId,        newState.cloudId);
         newState.description    = update(action.data.description,    newState.description);
         newState.location       = update(action.data.location,       newState.location);
         newState.os             = update(action.data.os,             newState.os);

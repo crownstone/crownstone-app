@@ -236,7 +236,7 @@ export class SetupHelper {
         }
       };
 
-      CLOUD.forSphere(sphereId).createStone(sphereId, this.macAddress, this.type)
+      CLOUD.forSphere(sphereId).createStone({sphereId: sphereId, address: this.macAddress, type: this.type})
         .then(resolve)
         .catch((err) => {
           if (err.status === 422) {

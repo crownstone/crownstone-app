@@ -8,11 +8,11 @@ export const appliances = {
     return this._setupRequest('GET', '/Spheres/{id}/ownedAppliances', options);
   },
 
-  createAppliance: function (applianceName, sphereId, icon) {
+  createAppliance: function (data, background = false) {
     return this._setupRequest(
       'POST',
       '/Spheres/{id}/ownedAppliances',
-      {data: {name: applianceName, sphereId:sphereId, icon: icon}},
+      {data: data},
       'body'
     );
   },

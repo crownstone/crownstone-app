@@ -1,16 +1,14 @@
 export const stones = {
   /**
    * Create a crownstone in the cloud so the major and minor can be generated
-   * @param sphereId
-   * @param MACAddress
-   * @param type
+   * @param data
    * @returns {*}
    */
-  createStone: function(sphereId, MACAddress, type) {
+  createStone: function(data : any, background = false) {
     return this._setupRequest(
       'POST',
       '/Spheres/{id}/ownedStones/',
-      {data:{sphereId:sphereId, address:MACAddress, type:type}},
+      {data:data, background: background},
       'body'
     );
   },
@@ -124,7 +122,7 @@ export const stones = {
     return this._setupRequest(
       'GET',
       '/Spheres/{id}/ownedStones',
-      {...options, data: {filter:{"include":{"relation":"locations"}}}} // {...options, data: {filter:{"include":["schedules", "locations"]}}}
+      {...options, data: {filter:{"include":["schedules", "locations"]}}}
     );
   },
 
@@ -168,41 +166,6 @@ export const stones = {
         '/Spheres/{id}/ownedStones/' + stoneId
       );
     }
-  },
-
-
-  createSchedule: function(data, background = true) {
-    return this._setupRequest(
-      'POST',
-      '/Stones/{id}/schedule/',
-      { data: data, background: background },
-      'body'
-    );
-  },
-
-  getSchedule: function(scheduleId, background = true) {
-    return this._setupRequest(
-      'GET',
-      '/Stones/{id}/schedules/'+scheduleId,
-      {background: background}
-    );
-  },
-
-  updateSchedule: function(scheduleId, data, background = true) {
-    return this._setupRequest(
-      'PUT',
-      '/Stones/{id}/schedules/'+scheduleId,
-      { data: data, background: background },
-      'body'
-    );
-  },
-
-  deleteSchedule: function(scheduleId, background = true) {
-    return this._setupRequest(
-      'DELETE',
-      '/Stones/{id}/schedules/'+scheduleId,
-      { background: background }
-    );
   },
 
 

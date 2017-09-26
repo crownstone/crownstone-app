@@ -25,13 +25,13 @@ let sphereUserReducer = (state = defaultSettings, action : any = {}) => {
     case 'UPDATE_SPHERE_USER':
       if (action.data) {
         let newState = {...state};
-        newState.firstName           = update(action.data.firstName,     newState.firstName);
-        newState.lastName            = update(action.data.lastName,      newState.lastName);
-        newState.picture             = update(action.data.picture,       newState.picture);
-        newState.email               = update(action.data.email,         newState.email);
-        newState.invitationPending   = update(action.data.invitationPending,   newState.invitationPending);
-        newState.accessLevel         = update(action.data.accessLevel,   newState.accessLevel);
-        newState.updatedAt           = getTime(action.data.updatedAt);
+        newState.firstName         = update(action.data.firstName,     newState.firstName);
+        newState.lastName          = update(action.data.lastName,      newState.lastName);
+        newState.picture           = update(action.data.picture,       newState.picture);
+        newState.email             = update(action.data.email,         newState.email);
+        newState.invitationPending = update(action.data.invitationPending,   newState.invitationPending);
+        newState.accessLevel       = update(action.data.accessLevel,   newState.accessLevel);
+        newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

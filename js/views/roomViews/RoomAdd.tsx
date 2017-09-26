@@ -146,7 +146,7 @@ export class RoomAdd extends Component<any, any> {
       let existingLocations = getLocationNamesInSphere(state, this.props.sphereId);
       if (existingLocations[this.state.name] === undefined) {
         this.props.eventBus.emit('showLoading', 'Creating room...');
-        CLOUD.forSphere(this.props.sphereId).createLocation(this.state.name, this.state.icon)
+        CLOUD.forSphere(this.props.sphereId).createLocation({name: this.state.name, icon: this.state.icon})
           .then((reply) => {
             if (this.props.fromMovingView === true) {
               // TODO: implemented this way because of broken pop structure in router-flux

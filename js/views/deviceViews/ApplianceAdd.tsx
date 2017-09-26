@@ -66,7 +66,7 @@ export class ApplianceAdd extends Component<any, any> {
     }
     else {
       this.props.eventBus.emit('showLoading', 'Creating new Device Type...');
-      CLOUD.forSphere(this.props.sphereId).createAppliance(this.state.name, this.props.sphereId, this.state.icon)
+      CLOUD.forSphere(this.props.sphereId).createAppliance({name: this.state.name, sphereId:this.props.sphereId, icon: this.state.icon})
         .then((reply) => {
           this.props.eventBus.emit('hideLoading');
           this.props.store.dispatch({type: 'ADD_APPLIANCE', sphereId: this.props.sphereId, applianceId: reply.id, data:{name: this.state.name, icon: this.state.icon}});

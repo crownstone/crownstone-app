@@ -3,11 +3,11 @@ export const locations = {
     return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', {...options, data:{filter:{"include":"presentPeople"}}});
   },
 
-  createLocation: function (locationName, icon) {
+  createLocation: function (data, background = false) {
     return this._setupRequest(
       'POST',
       '/Spheres/{id}/ownedLocations',
-      {data: {name: locationName, icon:icon}},
+      {data: data, background: background},
       'body'
     );
   },

@@ -46,16 +46,20 @@ const configReducer = (state = defaultState.config, action : any = {}) => {
     case 'APPEND_MESSAGE':
     case 'ADD_CLOUD_MESSAGE':
       let newState = {...state};
-      newState.triggerLocationId = update(action.data.triggerLocationId, newState.triggerLocationId);
-      newState.triggerEvent      = update(action.data.triggerEvent,      newState.triggerEvent);
-      newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
-      newState.content           = update(action.data.content,           newState.content);
-      newState.everyoneInSphere  = update(action.data.everyoneInSphere,  newState.everyoneInSphere);
+      newState.triggerLocationId              = update(action.data.triggerLocationId, newState.triggerLocationId);
+      newState.triggerEvent                   = update(action.data.triggerEvent,      newState.triggerEvent);
+      newState.cloudId                        = update(action.data.cloudId,           newState.cloudId);
+      newState.content                        = update(action.data.content,           newState.content);
+      newState.everyoneInSphere               = update(action.data.everyoneInSphere,  newState.everyoneInSphere);
       newState.everyoneInSphereIncludingOwner = update(action.data.everyoneInSphereIncludingOwner,  newState.everyoneInSphereIncludingOwner);
-      newState.senderId          = update(action.data.senderId,          newState.senderId);
-      newState.sendFailed        = update(action.data.sendFailed,        newState.sendFailed);
-      newState.sent              = update(action.data.sent,              newState.sent);
-      newState.sentAt            = update(action.data.sentAt,            newState.sentAt);
+      newState.senderId                       = update(action.data.senderId,          newState.senderId);
+      newState.sendFailed                     = update(action.data.sendFailed,        newState.sendFailed);
+      newState.sent                           = update(action.data.sent,              newState.sent);
+      newState.sentAt                         = update(action.data.sentAt,            newState.sentAt);
+      newState.updatedAt                      = getTime(action.data.updatedAt);
+      return newState;
+    case 'I_RECEIVED_MESSAGE':
+      newState = {...state};
       newState.updatedAt         = getTime(action.data.updatedAt);
       return newState;
     case 'REFRESH_DEFAULTS':

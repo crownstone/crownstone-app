@@ -6,6 +6,7 @@ let defaultSettings = {
   config: {
     name: undefined,
     icon: undefined,
+    cloudId: null,
     dimmable: false,
     onlyOnWhenDark: false,
     hidden: false,
@@ -38,6 +39,7 @@ let applianceConfigReducer = (state = defaultSettings.config, action : any = {})
         let newState = {...state};
         newState.name      = update(action.data.name,     newState.name);
         newState.icon      = update(action.data.icon,     newState.icon);
+        newState.cloudId   = update(action.data.cloudId, newState.cloudId);
         newState.dimmable  = update(action.data.dimmable, newState.dimmable);
         newState.hidden    = update(action.data.hidden, newState.hidden);
         newState.locked    = update(action.data.locked, newState.locked);

@@ -147,6 +147,8 @@ export const spheres = {
 
     let promises       = [];
 
+    let messageData    = [];
+
     let applianceData  = [];
     let stoneData      = [];
     let locationData   = [];
@@ -179,6 +181,14 @@ export const spheres = {
         }).catch((err) => {})
     );
 
+    // for every sphere, we get the locations
+    promises.push(
+      this.getActiveMessages(options)
+        .then((messages) => {
+          messageData = messages;
+        }).catch((err) => {})
+    );
+
     promises.push(
       this.getUserFromType(this.getAdmins.bind(this),  'admin',  adminData,  sphereId, selfId, options)
     );
@@ -206,6 +216,7 @@ export const spheres = {
         admins:         adminData,
         members:        memberData,
         guests:         guestData,
+        messages:       messageData,
         pendingInvites: pendingInvites,
       }
     }).catch((err) => {})

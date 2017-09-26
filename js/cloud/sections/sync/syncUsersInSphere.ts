@@ -1,4 +1,4 @@
-import { LOG } from "../../logging/Log";
+import { LOG } from "../../../logging/Log";
 
 export const syncUsersInSphere = {
 
@@ -42,7 +42,7 @@ export const syncUsersInSphere = {
             store.batchDispatch(actions);
           }
         })
-        .catch((err) => { LOG.error("Error during background user sync: ", err)})
+        .catch((err) => { LOG.error("Error during background user sync: ", err); })
     }
 };
 

@@ -437,7 +437,8 @@ function handleMessageReceived(action, state) {
     eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
       sphereId: action.sphereId,
-      id: action.messageId,
+      id: action.messageId + '_' + 'receivedMessage',
+      localId: action.messageId,
       cloudId: message.config.cloudId,
       specialType: 'receivedMessage'
     });
@@ -451,7 +452,8 @@ function handleMessageRead(action, state) {
     eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
       sphereId: action.sphereId,
-      id: action.messageId,
+      id: action.messageId + '_' + 'receivedMessage',
+      localId: action.messageId,
       cloudId: message.config.cloudId,
       specialType: 'readMessage'
     });
@@ -460,6 +462,10 @@ function handleMessageRead(action, state) {
 
 function handleMessageRemove(action, state, oldState) {
   let message = oldState.spheres[action.sphereId].messages[action.messageId];
+  if (!message.config.cloudId) {
+    return;
+  }
+
   // if user is sender, delete in cloud.
   if (message.config.senderId === oldState.user.userId) {
     CLOUD.forSphere(action.sphereId).deleteMessage(message.config.cloudId).catch((err) => {
@@ -468,6 +474,7 @@ function handleMessageRemove(action, state, oldState) {
         type: 'CLOUD_EVENT_REMOVE_MESSAGES',
         sphereId: action.sphereId,
         id: action.messageId,
+        localId: action.messageId,
         cloudId: message.config.cloudId
       });
     });

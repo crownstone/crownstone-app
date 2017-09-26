@@ -94,6 +94,10 @@ class BackgroundProcessHandlerClass {
         LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
         LocationHandler.initializeTracking();
 
+        // if we use this device as a hub, make sure we request permission for notifications.
+        LOG.info("Sync: Requesting notification permissions during Login.");
+        NotificationHandler.request();
+
         this.showWhatsNew();
       });
 

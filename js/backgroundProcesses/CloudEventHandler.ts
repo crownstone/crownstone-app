@@ -12,7 +12,7 @@ class CloudEventHandlerClass {
       this._initialized = true;
 
       eventBus.on("submitCloudEvent", (data) => {
-        this._store.dispatch({ type: data.type, sphereId: data.sphereId, id: data.id })
+        this._store.dispatch({ ...data })
       });
     }
   }

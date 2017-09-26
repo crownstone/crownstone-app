@@ -14,6 +14,7 @@ let defaultSettings = {
     adminKey: null,
     memberKey: null,
     guestKey: null,
+    cloudId: null,
     meshAccessAddress: null,
     reachable: false,
     present: false,
@@ -76,6 +77,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         newState.adminKey    = update(action.data.adminKey,  newState.adminKey);
         newState.memberKey   = update(action.data.memberKey, newState.memberKey);
         newState.guestKey    = update(action.data.guestKey,  newState.guestKey);
+        newState.cloudId     = update(action.data.cloudId,  newState.cloudId);
         newState.meshAccessAddress = update(action.data.meshAccessAddress, newState.meshAccessAddress);
         newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;
