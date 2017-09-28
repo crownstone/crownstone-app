@@ -84,19 +84,7 @@ export const resolveMissingData = function(store, actions, sphereSyncedIds, clou
       // cleanup messages
       localMessagesIds.forEach((messageId) => {
         if (sphereSyncedIds.cloudMessageIds[messageId] === undefined) {
-          let message = localSphere.messages[messageId];
-          transferPromises.push(
-            verifyDeletionEvent(
-              actions,
-              message,
-              messageId,
-              message.config.cloudId || messageId,
-              sphereId,
-              CLOUD.getMessageDeleteEvent,
-              transferMessages.createOnCloud,
-              { type: 'REMOVE_MESSAGE', sphereId: sphereId, messageId: messageId },
-            )
-          );
+          actions.push({ type: 'REMOVE_MESSAGE', sphereId: sphereId, messageId: messageId });
         }
       })
 
@@ -128,7 +116,7 @@ function verifyDeletionEvent(actions : any[], item, itemId, cloudId, sphereId, c
         return createMethod( actions, { localId: itemId, localData: item, sphereId: sphereId, ...extraIds })
       }
       else {
-        actions.push(removeAction);
+
       }
     })
 }

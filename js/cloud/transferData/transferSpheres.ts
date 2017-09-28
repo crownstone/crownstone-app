@@ -28,7 +28,8 @@ export const transferSpheres = {
 
   updateOnCloud: function( actions, data : transferData ) {
     let payload = {};
-    transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     return CLOUD.updateSphere(data.cloudId, payload)
       .then(() => {})

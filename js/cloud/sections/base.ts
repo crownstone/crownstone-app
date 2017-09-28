@@ -157,7 +157,7 @@ export const base = {
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {
-      LOG.error("ERROR: UNHANDLED HTML ERROR IN API:", reply, debugOptions);
+      LOG.error("ERROR: HTML ERROR IN API:", reply, debugOptions);
     }
     reject(reply);
   }

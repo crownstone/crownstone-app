@@ -21,7 +21,9 @@ export const transferLocations = {
   createOnCloud: function( actions, data : transferData ) {
     let payload = {};
     payload['sphereId'] = data.sphereId;
-    transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     return CLOUD.forSphere(data.sphereId).createLocation(payload)
       .then((result) => {

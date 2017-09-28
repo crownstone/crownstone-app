@@ -22,6 +22,9 @@ let fieldMap : fieldMap = [
   {local: 'type',               cloud: 'type'},
   {local: 'updatedAt',          cloud: 'updatedAt'},
 
+  // this is custom inserted.
+  {local: 'locationId',         cloud: 'locationId'},
+
   // used for local config
   {local: 'cloudId',            cloud:  null },
   {local: 'nearThreshold',      cloud:  null },
@@ -35,9 +38,13 @@ let fieldMap : fieldMap = [
 export const transferStones = {
 
   createOnCloud: function( actions, data : transferData ) {
+    // TODO: include the switch state
+    // TODO: add behaviour
+
     let payload = {};
     payload['sphereId'] = data.sphereId;
-    transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     return CLOUD.forSphere(data.sphereId).createStone(payload)
       .then((result) => {
@@ -64,7 +71,9 @@ export const transferStones = {
     }
 
     return CLOUD.forSphere(data.sphereId).updateStone(data.cloudId, payload)
-      .then(() => {})
+      .then(() => {
+        // TODO: update location as well.
+      })
       .catch((err) => {
         LOG.error("Transfer-Stone: Could not update stone in cloud", err);
         throw err;
@@ -72,6 +81,8 @@ export const transferStones = {
   },
 
   createLocal: function( actions, data: transferData) {
+    this._injectLocationId(data);
+
     return transferUtil._handleLocal(
       actions,
       'ADD_STONE',
@@ -83,6 +94,8 @@ export const transferStones = {
 
 
   updateLocal: function( actions, data: transferData) {
+    this._injectLocationId(data);
+
     return transferUtil._handleLocal(
       actions,
       'UPDATE_STONE_CONFIG',
@@ -91,5 +104,24 @@ export const transferStones = {
       fieldMap
     );
   },
+
+  /**
+   * Since the locationId is handled differently in the cloud, we have to inject it manually.
+   * @param data
+   * @private
+   */
+  _injectLocationId(data) {
+    let locationId = null;
+    if (data.cloudData && data.cloudData.locationId !== undefined) {
+      // no need for insert
+      return;
+    }
+
+    if (data.cloudData && data.cloudData.locations && Array.isArray(data.cloudData.locations) && data.cloudData.locations.length > 0) {
+      locationId = data.cloudData.locations[0].id;
+
+      data.cloudData['locationId'] = locationId;
+    }
+  }
 
 };

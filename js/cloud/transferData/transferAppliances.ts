@@ -17,9 +17,13 @@ let fieldMap : fieldMap = [
 export const transferAppliances = {
 
   createOnCloud: function( actions, data : transferData ) {
+    // TODO: add behaviour
+
     let payload = {};
     payload['sphereId'] = data.sphereId;
-    transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     return CLOUD.forSphere(data.sphereId).createAppliance(payload)
       .then((result) => {

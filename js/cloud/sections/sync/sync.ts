@@ -81,33 +81,60 @@ export const sync = {
     };
 
     // before we start the sync, sync the events.
+    LOG.info("Sync: START Sync Events.");
     return syncEvents(store,background)
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
-      .catch(getUserIdCheckError(() => { return this.syncEvents(store,background); }))
+      .catch(getUserIdCheckError(() => {
+        LOG.info("Sync: RETRY Sync Events.");
+        return this.syncEvents(store,background);
+      }))
       // download data from cloud.
-      .then(() => { return syncDown( userId, options ) })
+      .then(() => {
+        LOG.info("Sync: DONE with Sync Events.");
+        LOG.info("Sync: START Sync Down.");
+        return syncDown( userId, options );
+    })
       // in case this fails, try renewing the accessToken. It can happen if there are no events that there is no cloud call there and that this
       // is the first call that can return an unauthenticated error.
-      .catch(getUserIdCheckError(() => { return syncDown( userId, options ); }))
+      .catch(getUserIdCheckError(() => {
+        LOG.info("Sync: RETRY Sync Down.");
+        return syncDown( userId, options );
+      }))
       .then((data: any) => {
+        LOG.info("Sync: DONE with Sync Down.");
         cloudData = data;
+        LOG.info("Sync: START Sync User.");
         syncUser(store, actions, cloudData.user);
+        LOG.info("Sync: DONE Sync User.");
+        LOG.info("Sync: START Check Messages.");
         MessageCenter.checkForMessages();
+        LOG.info("Sync: DONE Check Messages.");
+        LOG.info("Sync: START matchAvailableData.");
         return matchAvailableData(store, actions, cloudData.spheres, cloudData.spheresData);
       })
       .then((sphereSyncedIdsResult) => {
+        LOG.info("Sync: DONE matchAvailableData.");
         sphereSyncedIds = sphereSyncedIdsResult;
+        LOG.info("Sync: START resolveMissingData.");
         return resolveMissingData(store, actions, sphereSyncedIds, cloudData);
       })
       .then((changedLocationsResult) => {
+        LOG.info("Sync: DONE resolveMissingData.");
         changedLocations = changedLocationsResult;
+        LOG.info("Sync: START syncKeys.");
         syncKeys(actions, cloudData.keys);
+        LOG.info("Sync: DONE syncKeys.");
+        LOG.info("Sync: START syncDevices.");
         return syncDevices(store, actions, cloudData.devices)
       })
       .then(() => {
+        LOG.info("Sync: DONE syncDevices.");
+        LOG.info("Sync: START syncPowerUsage.");
         return syncPowerUsage(state, actions);
       })
       .then(() => {
+        LOG.info("Sync: DONE syncPowerUsage.");
+        LOG.info("Sync: START cleanupPowerUsage.");
         return cleanupPowerUsage(state, actions);
       })
       // FINISHED SYNCING

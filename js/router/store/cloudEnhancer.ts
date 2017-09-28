@@ -222,10 +222,14 @@ function handleStoneInCloud(action, state) {
 }
 
 function handleStoneLocationUpdateInCloud(action, state, oldState) {
-  let sphereId = action.sphereId;
-  let stoneId = action.stoneId;
+  let sphereId   = action.sphereId;
+  let stoneId    = action.stoneId;
   let locationId = action.data.locationId;
-  let updatedAt = state.spheres[sphereId].stones[stoneId].config.updatedAt;
+  let updatedAt  = state.spheres[sphereId].stones[stoneId].config.updatedAt;
+
+  let data = { locationId: locationId };
+
+  CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
 
   let prevLocationId = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] && oldState.spheres[sphereId].stones[stoneId].config.locationId || null;
 

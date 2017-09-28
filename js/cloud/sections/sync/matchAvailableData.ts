@@ -275,6 +275,14 @@ const syncSphereStones = function(actions, transferPromises, state, cloudSpheres
             {sphereId: sphere.id, localId: stone_from_cloud.id, cloudId: stone_from_cloud.id, cloudData: stone_from_cloud}).catch()
         );
       }
+      else if (stone_from_cloud.locationId === undefined) {
+        transferPromises.push(
+          transferStones.updateOnCloud(actions,
+            {sphereId: sphere.id, localId: stone_from_cloud.id, cloudId: stone_from_cloud.id, localData: stoneInState})
+            .then(() => {})
+            .catch()
+        );
+      }
     }
     else {
       transferPromises.push(
@@ -322,7 +330,7 @@ const syncSphereStones = function(actions, transferPromises, state, cloudSpheres
 const syncStoneSchedules = function(actions, transferPromises, state, cloudSpheresData, sphere, stone_from_cloud, cloudScheduleIds, sphereInState) {
   let scheduleMap = {};
   let schedules = {};
-  if (sphereInState) {
+  if (sphereInState && sphereInState.stones[stone_from_cloud.id] && sphereInState.stones[stone_from_cloud.id].schedules) {
     schedules = sphereInState.stones[stone_from_cloud.id].schedules;
     let scheduleIds = Object.keys(schedules);
     scheduleIds.forEach((scheduleId) => {
