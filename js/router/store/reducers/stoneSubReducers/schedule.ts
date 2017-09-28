@@ -70,9 +70,12 @@ export default (state = {}, action : any = {}) => {
     case 'REMOVE_ALL_SCHEDULES_OF_STONE':
       return {};
     case 'REMOVE_STONE_SCHEDULE':
-      let newState = {...state};
-      delete newState[action.scheduleId];
-      return newState;
+      if (state[action.scheduleId]) {
+        let newState = {...state};
+        delete newState[action.scheduleId];
+        return newState;
+      }
+      return state;
     default:
       if (action.scheduleId !== undefined) {
         if (state[action.scheduleId] !== undefined || action.type === "ADD_STONE_SCHEDULE") {

@@ -181,6 +181,7 @@ class BackgroundProcessHandlerClass {
     Scheduler.loadCallback(BACKGROUND_USER_SYNC_TRIGGER, () => {
       if (SetupStateHandler.isSetupInProgress() === false) {
         CLOUD.syncUsers(this.store);
+        MessageCenter.checkForMessages();
       }
     });
 

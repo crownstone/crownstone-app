@@ -1,10 +1,8 @@
-import { BatchCommandHandler } from '../logic/BatchCommandHandler'
-import { LOG }                 from "../logging/Log";
-import { eventBus }            from "../util/EventBus";
-import {NativeBus} from "../native/libInterface/NativeBus";
-import {CLOUD} from "../cloud/cloudAPI";
-import {LocalNotifications} from "../notifications/LocalNotifications";
-import {Util} from "../util/Util";
+import { LOG }                from "../logging/Log";
+import { NativeBus }          from "../native/libInterface/NativeBus";
+import { CLOUD }              from "../cloud/cloudAPI";
+import { LocalNotifications } from "../notifications/LocalNotifications";
+import { Util }               from "../util/Util";
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -55,48 +53,62 @@ class MessageCenterClass {
     return true;
   }
 
-  _processMessage(actions, state, message) {
-    let notified = LocalNotifications._handleNewMessage(message, state);
+  _processMessage(actions, state, cloudMessage) {
+    let notified = LocalNotifications._handleNewMessage(cloudMessage, state);
     if (notified) {
-      this._generateMessageStoringActions(actions, state, message);
+      this._generateMessageStoringActions(actions, state, cloudMessage);
     }
   }
 
-  _generateMessageStoringActions(actions, state, message) {
-    let recipientIds = [];
-    message.recipients.forEach((idObject) => {
-      recipientIds.push(idObject.id);
-    });
+  _findMatchingLocalMessageId(cloudMessage, state, recipientIds = null) {
+    let dbMessageId = null;
 
-    let dbMessageId = Util.getUUID();
-    if (message.ownerId === state.user.userId) {
-      let dbMessages = state.spheres[message.sphereId].messages;
+    if (recipientIds === null) {
+      recipientIds = [];
+      cloudMessage.recipients.forEach((idObject) => {
+        recipientIds.push(idObject.id);
+      });
+    }
+
+
+    if (cloudMessage.ownerId === state.user.userId) {
+      let dbMessages = state.spheres[cloudMessage.sphereId].messages;
       // this should check if we already have this message before storing it in the store.
       // match recipients, content, triggerLocationId and triggerEvent for this.
       let dbMessageIds = Object.keys(dbMessages);
       for (let i = 0; i < dbMessageIds.length; i++) {
         let dbMessage = dbMessages[dbMessageIds[i]];
-        let match = this._isMessageEqual(dbMessage, message, recipientIds);
+        let match = this._isMessageEqual(dbMessage, cloudMessage, recipientIds);
         if (match) {
           dbMessageId = dbMessageIds[i];
           break;
         }
       }
     }
+  }
+
+  _generateMessageStoringActions(actions, state, cloudMessage) {
+    let recipientIds = [];
+    cloudMessage.recipients.forEach((idObject) => {
+      recipientIds.push(idObject.id);
+    });
+
+    let localMessageId = this._findMatchingLocalMessageId(cloudMessage, state, recipientIds);
+    let dbMessageId = localMessageId || Util.getUUID();
 
     // add message to the store
     actions.push({
       type:'ADD_CLOUD_MESSAGE',
-      sphereId: message.sphereId,
+      sphereId: cloudMessage.sphereId,
       messageId: dbMessageId,
       data: {
-        senderId: message.ownerId,
-        cloudId: message.id,
-        content: message.content,
-        everyoneInSphereIncludingOwner: message.everyoneInSphereIncludingOwner,
-        everyoneInSphere: message.everyoneInSphere,
-        triggerEvent: message.triggerEvent,
-        triggerLocationId: message.triggerLocationId,
+        senderId: cloudMessage.ownerId,
+        cloudId: cloudMessage.id,
+        content: cloudMessage.content,
+        everyoneInSphereIncludingOwner: cloudMessage.everyoneInSphereIncludingOwner,
+        everyoneInSphere: cloudMessage.everyoneInSphere,
+        triggerEvent: cloudMessage.triggerEvent,
+        triggerLocationId: cloudMessage.triggerLocationId,
         recipientIds: recipientIds,
         sent: true,
       }
@@ -105,7 +117,7 @@ class MessageCenterClass {
     // indicate that you have received this message
     actions.push({
       type:'I_RECEIVED_MESSAGE',
-      sphereId: message.sphereId,
+      sphereId: cloudMessage.sphereId,
       messageId: dbMessageId,
       data: {
         userId: state.user.userId,
@@ -114,11 +126,11 @@ class MessageCenterClass {
     });
 
     // put the cloud's knowledge of the delivered state in the local database.
-    if (message.delivered) {
-      message.delivered.forEach((delivered) => {
+    if (cloudMessage.delivered) {
+      cloudMessage.delivered.forEach((delivered) => {
         actions.push({
           type:'RECEIVED_MESSAGE',
-          sphereId: message.sphereId,
+          sphereId: cloudMessage.sphereId,
           messageId: dbMessageId,
           data: {
             userId: delivered.userId,
@@ -129,11 +141,11 @@ class MessageCenterClass {
     }
 
     // put the cloud's knowledge of the read state in the local database.
-    if (message.read) {
-      message.read.forEach((read) => {
+    if (cloudMessage.read) {
+      cloudMessage.read.forEach((read) => {
         actions.push({
           type:'READ_MESSAGE',
-          sphereId: message.sphereId,
+          sphereId: cloudMessage.sphereId,
           messageId: dbMessageId,
           data: {
             userId: read.userId,
@@ -144,12 +156,39 @@ class MessageCenterClass {
     }
   }
 
-  storeMessage(message) {
+  storeMessage(cloudMessage) {
     let actions = [];
     let state = this._store.getState();
-    this._generateMessageStoringActions(actions, state, message);
+    this._generateMessageStoringActions(actions, state, cloudMessage);
     if (actions.length > 0) {
       this._store.batchDispatch(actions);
+    }
+  }
+
+  deliveredMessage(sphereId, localMessageId) {
+    let state = this._store.getState();
+    if (localMessageId) {
+      this._store.dispatch({
+        type: "I_RECEIVED_MESSAGE",
+        sphereId: sphereId,
+        messageId: localMessageId,
+        data: {
+          userId: state.user.userId,
+          at: new Date().valueOf(),
+        }
+      });
+    }
+  }
+
+  readMessage(sphereId, localMessageId) {
+    let state = this._store.getState();
+    if (localMessageId) {
+      this._store.dispatch({
+        type: "I_READ_MESSAGE",
+        sphereId: sphereId,
+        messageId: localMessageId,
+        data: {userId: state.user.userId}
+      });
     }
   }
 
@@ -179,9 +218,9 @@ class MessageCenterClass {
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
-          messages.forEach((message) => {
-            if (message.triggerEvent === triggerEvent) {
-              this._processMessage(actions, state, message);
+          messages.forEach((cloudMessage) => {
+            if (cloudMessage.triggerEvent === triggerEvent) {
+              this._processMessage(actions, state, cloudMessage);
             }
           });
           if (actions.length > 0) {
@@ -198,9 +237,9 @@ class MessageCenterClass {
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
-          messages.forEach((message) => {
-            if (message.triggerEvent === triggerEvent) {
-              this._processMessage(actions, state, message);
+          messages.forEach((cloudMessage) => {
+            if (cloudMessage.triggerEvent === triggerEvent) {
+              this._processMessage(actions, state, cloudMessage);
             }
           });
           if (actions.length > 0) {
@@ -209,6 +248,24 @@ class MessageCenterClass {
         }
       })
       .catch((err) => { LOG.error("MessageCenter: Could not handle message in Sphere:", err);})
+  }
+
+  /**
+   * This will check for messages in the current location. It is self contained and can be called whenever.
+   */
+  checkForMessages() {
+    let state = this._store.getState();
+    let presentSphereId = Util.data.getPresentSphere(state);
+
+    if (presentSphereId) {
+      let presentLocationId = Util.data.getUserLocationIdInSphere(state, presentSphereId, state.user.userId);
+      if (presentLocationId) {
+        this._enterRoom(presentLocationId);
+      }
+      else {
+        this._enterSphere(presentSphereId);
+      }
+    }
   }
 }
 

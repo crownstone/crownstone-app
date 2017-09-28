@@ -11,7 +11,7 @@ let fieldMap : fieldMap = [
   {local:'latitude' ,           cloud: 'latitude'},
   {local:'longitude',           cloud: 'longitude'},
   {local:'exitDelay',           cloud: 'exitDelay'},
-  {local:'iBeaconUUID',         cloud: 'iBeaconUUID'},
+  {local:'iBeaconUUID',         cloud: 'uuid'},
   {local:'meshAccessAddress',   cloud: 'meshAccessAddress'},
   {local:'updatedAt',           cloud: 'updatedAt'},
 
@@ -33,7 +33,7 @@ export const transferSpheres = {
     return CLOUD.updateSphere(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
-        LOG.error("Transfer-Sphere: Could not update location in cloud", err);
+        LOG.error("Transfer-Sphere: Could not update sphere in cloud", err);
         throw err;
       });
   },

@@ -17,7 +17,7 @@ let fieldMap : fieldMap = [
     local:'activeDays',
     localFields: ['Mon','Tue','Wed','Thu','Fri','Sat', 'Sun'],
 
-    cloud: 'activeDays.Mon',
+    cloud: 'activeDays',
     cloudFields: ['Mon','Tue','Wed','Thu','Fri','Sat', 'Sun'],
   },
   {local:'updatedAt',              cloud: 'updatedAt'},
@@ -32,7 +32,7 @@ export const transferSchedules = {
     payload['stoneId'] = data.stoneId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    CLOUD.forStone(data.stoneId).createSchedule(payload)
+    return CLOUD.forStone(data.stoneId).createSchedule(payload)
       .then((result) => {
         // update cloudId in local database.
         actions.push({
@@ -44,7 +44,7 @@ export const transferSchedules = {
         });
       })
       .catch((err) => {
-        LOG.error("Transfer-Schedule: Could not create location in cloud", err);
+        LOG.error("Transfer-Schedule: Could not create schedule in cloud", err);
         throw err;
       });
   },
@@ -54,10 +54,10 @@ export const transferSchedules = {
     payload['stoneId'] = data.stoneId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    return CLOUD.forSphere(data.sphereId).updateSchedule(data.cloudId, payload)
+    return CLOUD.forStone(data.stoneId).updateSchedule(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
-        LOG.error("Transfer-Schedule: Could not update location in cloud", err);
+        LOG.error("Transfer-Schedule: Could not update schedule in cloud", err);
         throw err;
       });
   },

@@ -10,6 +10,7 @@ import { getTimeDifference }   from "./shared/syncUtil";
 import { matchAvailableData }  from "./matchAvailableData";
 import { resolveMissingData }  from "./resolveMissingData";
 import { syncEvents }          from "./syncEvents";
+import {MessageCenter} from "../../../backgroundProcesses/MessageCenter";
 
 
 
@@ -46,7 +47,7 @@ export const sync = {
     let accessToken = state.user.accessToken;
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
-    let sphereSyncedData;
+    let sphereSyncedIds;
     let changedLocations;
     let cloudData;
 
@@ -91,11 +92,12 @@ export const sync = {
       .then((data: any) => {
         cloudData = data;
         syncUser(store, actions, cloudData.user);
+        MessageCenter.checkForMessages();
         return matchAvailableData(store, actions, cloudData.spheres, cloudData.spheresData);
       })
-      .then((sphereSyncedDataResult) => {
-        sphereSyncedData = sphereSyncedDataResult;
-        return resolveMissingData(store, actions, sphereSyncedData);
+      .then((sphereSyncedIdsResult) => {
+        sphereSyncedIds = sphereSyncedIdsResult;
+        return resolveMissingData(store, actions, sphereSyncedIds, cloudData);
       })
       .then((changedLocationsResult) => {
         changedLocations = changedLocationsResult;
@@ -121,7 +123,7 @@ export const sync = {
 
         this.events.emit("CloudSyncComplete");
 
-        if (sphereSyncedData.addedSphere === true || changedLocations === true) {
+        if (sphereSyncedIds.addedSphere === true || changedLocations === true) {
           this.events.emit("CloudSyncComplete_spheresChanged");
         }
 

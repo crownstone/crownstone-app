@@ -50,6 +50,11 @@ export class StatusCommunication extends Component<any, any> {
 
     let currentSphere = this.props.sphereId;
 
+    // it can happen on deletion of spheres that the app will crash here.
+    if (!(state && state.spheres && state.spheres[currentSphere])) {
+      return <View />;
+    }
+
     // the bottom distance pops the bottom text up if the orbs are shown. Orbs are shown when there are multiple spheres.
     let noRoomsCurrentSphere = (currentSphere ? Object.keys(state.spheres[currentSphere].locations).length : 0) == 0;
     let noStones = (currentSphere ? Object.keys(state.spheres[currentSphere].stones).length : 0) == 0;

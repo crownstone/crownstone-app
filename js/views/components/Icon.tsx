@@ -1,4 +1,6 @@
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
+import { View } from 'react-native';
+import { Component } from 'react';
 
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -10,6 +12,11 @@ import { iconCorrections } from '../../fonts/iconCorrections'
 export class Icon extends Component<any, any> {
   render() {
     let offsetStyle = {};
+
+    // guard against missing icon names
+    if (!this.props.name) {
+      return <Ionicon {...this.props} name="ios-leaf" style={[{backgroundColor:'transparent'}, this.props.style]} />;
+    }
 
     let prefix = this.props.name.substr(0,3);
 

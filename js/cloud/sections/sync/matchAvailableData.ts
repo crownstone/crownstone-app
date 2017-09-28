@@ -14,12 +14,13 @@ import {transferMessages} from "../../transferData/transferMessages";
 
 
 
-export const matchAvailableData = function(store, actions, spheres, spheresData) {
+export const matchAvailableData = function(store, actions, spheresInCloud, cloudSpheresData) {
   let cloudSphereUserIds = {};
   let cloudSphereIds = {};
   let cloudStoneIds = {};
   let cloudLocationIds = {};
   let cloudApplianceIds = {};
+  let cloudMessageIds = {};
   let cloudScheduleIds = {};
   let addedSphere = false;
 
@@ -29,7 +30,7 @@ export const matchAvailableData = function(store, actions, spheres, spheresData)
 
   // get the state here so we did not have to wait with an old state on the down sync.
   const state = store.getState();
-  spheres.forEach((sphere) => {
+  spheresInCloud.forEach((sphere) => {
     // put id in map so we can easily find it again
     cloudSphereIds[sphere.id] = true;
     cloudSphereUserIds[sphere.id] = {};
@@ -47,7 +48,7 @@ export const matchAvailableData = function(store, actions, spheres, spheresData)
       addedSphere = true;
       transferPromises.push(transferSpheres.createLocal(actions, {sphereId: sphere.id, cloudId: sphere.id, cloudData: sphere}).catch());
     }
-    else if (getTimeDifference(sphereInState.config, sphere) < 0) {
+    else if (getTimeDifference(sphereInState.config, sphere) < 0 || !sphereInState.config.cloudId) {
       transferPromises.push(transferSpheres.updateLocal(actions, {sphereId: sphere.id, cloudId: sphere.id, cloudData: sphere}).catch());
       adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
@@ -55,51 +56,52 @@ export const matchAvailableData = function(store, actions, spheres, spheresData)
       adminInThisSphere = sphereInState.users[state.user.userId] ? sphereInState.users[state.user.userId].accessLevel === 'admin' : false;
     }
 
-    syncSphereUsers(actions, spheresData, sphere, cloudSphereUserIds, state, sphereInState);
+    syncSphereUsers(actions, cloudSpheresData, sphere, cloudSphereUserIds, state, sphereInState);
 
-    syncSphereLocations(actions, transferPromises, state, spheresData, sphere, cloudLocationIds, cloudSphereUserIds, sphereInState);
+    syncSphereLocations(actions, transferPromises, state, cloudSpheresData, sphere, cloudLocationIds, cloudSphereUserIds, sphereInState);
 
-    syncSphereStones(actions, transferPromises, state, spheresData, sphere, cloudStoneIds, cloudScheduleIds, adminInThisSphere, sphereInState);
+    syncSphereStones(actions, transferPromises, state, cloudSpheresData, sphere, cloudStoneIds, cloudScheduleIds, adminInThisSphere, sphereInState);
 
-    syncSphereAppliances(actions, transferPromises, state, spheresData, sphere, cloudApplianceIds, adminInThisSphere, sphereInState);
+    syncSphereAppliances(actions, transferPromises, state, cloudSpheresData, sphere, cloudApplianceIds, adminInThisSphere, sphereInState);
 
-    syncSphereMessages(actions, transferPromises, state, spheresData, sphere, sphereInState);
+    syncSphereMessages(actions, transferPromises, state, cloudSpheresData, sphere, cloudMessageIds, sphereInState);
   });
 
   return Promise.all(transferPromises)
     .then(() => {
       return {
-        cloudSphereUserIds,
-        cloudSphereIds,
-        cloudStoneIds,
-        cloudScheduleIds,
-        cloudLocationIds,
-        cloudApplianceIds,
+        cloudSphereUserIds,  // these are lists of localIds that are present in the cloud.
+        cloudSphereIds,      // these are lists of localIds that are present in the cloud.
+        cloudStoneIds,       // these are lists of localIds that are present in the cloud.
+        cloudMessageIds,     // these are lists of localIds that are present in the cloud.
+        cloudScheduleIds,    // these are lists of localIds that are present in the cloud.
+        cloudLocationIds,    // these are lists of localIds that are present in the cloud.
+        cloudApplianceIds,   // these are lists of localIds that are present in the cloud.
         addedSphere,
       };
     })
 };
 
 
-const syncSphereMessages = function(actions, transferPromises, state, spheresData, sphere, sphereInState) {
+const syncSphereMessages = function(actions, transferPromises, state, cloudSpheresData, sphere, cloudMessageIds, sphereInState) {
   let messageMap = {};
 
   if (sphereInState) {
     let messageIds = Object.keys(sphereInState.messages);
     messageIds.forEach((messageId) => {
-      if (sphereInState.messages[messageId].config.cloudId) {
-        messageMap[sphereInState.messages[messageId].config.cloudId] = messageId;
+      let message = sphereInState.messages[messageId];
+      if (message.config.cloudId) {
+        messageMap[message.config.cloudId] = messageId;
       }
     })
   }
 
-
-
-  spheresData[sphere.id].messages.forEach((message_from_cloud) => {
-    // existing message
+  cloudSpheresData[sphere.id].messages.forEach((message_from_cloud) => {
+    // check if there is an existing message
     let localId = messageMap[message_from_cloud.id];
     if (sphereInState !== undefined && localId !== undefined) {
-      if (getTimeDifference(sphereInState.messages[message_from_cloud.id].config, message_from_cloud) < 0) {
+      cloudMessageIds[localId] = true;
+      if (getTimeDifference(sphereInState.messages[localId].config, message_from_cloud) < 0) {
         // update local
         transferPromises.push(
           transferMessages.updateLocal( actions, {
@@ -110,20 +112,26 @@ const syncSphereMessages = function(actions, transferPromises, state, spheresDat
           }).catch()
         );
       }
-      else if (getTimeDifference(sphereInState.messages[message_from_cloud.id].config, message_from_cloud) > 0) {
+      else if (getTimeDifference(sphereInState.messages[localId].config, message_from_cloud) > 0) {
         // update in cloud --> not possible for messages. Sent is sent.
       }
     }
     else {
-      transferPromises.push(
-        transferMessages.createLocal( actions, {
-          sphereId: sphere.id,
-          localId: Util.getUUID(),
-          cloudId: message_from_cloud.id,
-          cloudData: message_from_cloud,
-          extraFields: { sent: true, sentAt: message_from_cloud['createdAt']}
-        }).catch()
-      );
+      // if the user does not own this message, do not sync it into the local database, it will be handled by the MessageCenter
+      if (message_from_cloud.ownerId === state.user.userId) {
+        // do nothing.
+      }
+      else {
+        transferPromises.push(
+          transferMessages.createLocal( actions, {
+            sphereId: sphere.id,
+            localId: Util.getUUID(),
+            cloudId: message_from_cloud.id,
+            cloudData: message_from_cloud,
+            extraFields: { sent: true, sentAt: message_from_cloud['createdAt']}
+          }).catch()
+        );
+      }
     }
   });
 };
@@ -131,27 +139,27 @@ const syncSphereMessages = function(actions, transferPromises, state, spheresDat
 /**
  * Sync the Admins, members and guests from the cloud to the database.
  */
-const syncSphereUsers = function(actions, spheresData, sphere, cloudSphereUserIds, state, sphereInState) {
+const syncSphereUsers = function(actions, cloudSpheresData, sphere, cloudSphereUserIds, state, sphereInState) {
   // sync admins
-  Object.keys(spheresData[sphere.id].admins).forEach((userId) => {
+  Object.keys(cloudSpheresData[sphere.id].admins).forEach((userId) => {
     cloudSphereUserIds[sphere.id][userId] = true;
-    let user = spheresData[sphere.id].admins[userId];
+    let user = cloudSpheresData[sphere.id].admins[userId];
     syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'admin');
   });
   // sync members
-  Object.keys(spheresData[sphere.id].members).forEach((userId) => {
+  Object.keys(cloudSpheresData[sphere.id].members).forEach((userId) => {
     cloudSphereUserIds[sphere.id][userId] = true;
-    let user = spheresData[sphere.id].members[userId];
+    let user = cloudSpheresData[sphere.id].members[userId];
     syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'member');
   });
   // sync guests
-  Object.keys(spheresData[sphere.id].guests).forEach((userId) => {
+  Object.keys(cloudSpheresData[sphere.id].guests).forEach((userId) => {
     cloudSphereUserIds[sphere.id][userId] = true;
-    let user = spheresData[sphere.id].guests[userId];
+    let user = cloudSpheresData[sphere.id].guests[userId];
     syncSphereUser(actions, sphere, sphereInState, userId, user, state, 'guest');
   });
   // sync pending invites
-  spheresData[sphere.id].pendingInvites.forEach((invite) => {
+  cloudSpheresData[sphere.id].pendingInvites.forEach((invite) => {
     cloudSphereUserIds[sphere.id][invite.email] = true;
     if (sphereInState !== undefined && sphereInState.users[invite.email] === undefined) {
       actions.push({
@@ -172,22 +180,25 @@ const syncSphereUsers = function(actions, spheresData, sphere, cloudSphereUserId
 /**
  * Sync the locations from the cloud to the database.
  */
-const syncSphereLocations = function(actions, transferPromises, state, spheresData, sphere, cloudLocationIds, cloudSphereUserIds, sphereInState) {
-  spheresData[sphere.id].locations.forEach((location_from_cloud) => {
+const syncSphereLocations = function(actions, transferPromises, state, cloudSpheresData, sphere, cloudLocationIds, cloudSphereUserIds, sphereInState) {
+  cloudSpheresData[sphere.id].locations.forEach((location_from_cloud) => {
+    // TODO: move this over to localId.
     cloudLocationIds[location_from_cloud.id] = true;
+
     let locationInState = undefined;
     if (sphereInState !== undefined && sphereInState.locations[location_from_cloud.id] !== undefined) {
       locationInState = sphereInState.locations[location_from_cloud.id];
-      if (getTimeDifference(sphereInState.locations[location_from_cloud.id].config, location_from_cloud) < 0) {
-        transferPromises.push(
-          transferLocations.updateLocal(actions,
-            {sphereId: sphere.id, localId: location_from_cloud.id, cloudId: location_from_cloud.id, cloudData: location_from_cloud}).catch()
-        );
-      }
-      else if (getTimeDifference(sphereInState.locations[location_from_cloud.id].config, location_from_cloud) > 0) {
+      // date in cloud is more recent than it is locally, update cloud
+      if (getTimeDifference(sphereInState.locations[location_from_cloud.id].config, location_from_cloud) > 0) {
         transferPromises.push(
           transferLocations.updateOnCloud(actions,
             {sphereId: sphere.id, localId: location_from_cloud.id, cloudId: location_from_cloud.id, localData: locationInState.config}).catch()
+        );
+      }
+      else if (getTimeDifference(sphereInState.locations[location_from_cloud.id].config, location_from_cloud) < 0 || !locationInState.config.cloudId) {
+        transferPromises.push(
+          transferLocations.updateLocal(actions,
+            {sphereId: sphere.id, localId: location_from_cloud.id, cloudId: location_from_cloud.id, cloudData: location_from_cloud}).catch()
         );
       }
     }
@@ -210,8 +221,10 @@ const syncSphereLocations = function(actions, transferPromises, state, spheresDa
 /**
  * Sync the stones from the cloud to the database.
  */
-const syncSphereStones = function(actions, transferPromises, state, spheresData, sphere, cloudStoneIds, cloudScheduleIds, adminInThisSphere, sphereInState) {
-  spheresData[sphere.id].stones.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
+const syncSphereStones = function(actions, transferPromises, state, cloudSpheresData, sphere, cloudStoneIds, cloudScheduleIds, adminInThisSphere, sphereInState) {
+  cloudSpheresData[sphere.id].stones.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
+
+    // TODO: move this over to localId.
     cloudStoneIds[stone_from_cloud.id] = true; // mark this ID as "yes it is in the cloud"
 
     // determine the linked location id
@@ -223,15 +236,9 @@ const syncSphereStones = function(actions, transferPromises, state, spheresData,
       locationLinkId = null;
     }
     if (sphereInState !== undefined && sphereInState.stones[stone_from_cloud.id] !== undefined) {
-      if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) < 0) {
-        transferPromises.push(
-          transferStones.updateLocal(actions,
-            {sphereId: sphere.id, localId: stone_from_cloud.id, cloudId: stone_from_cloud.id, cloudData: stone_from_cloud}).catch()
-        );
-      }
-      else if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) > 0) {
-        // update cloud since our data is newer!
-        let stoneInState = sphereInState.stones[stone_from_cloud.id];
+      let stoneInState = sphereInState.stones[stone_from_cloud.id];
+      // update cloud since our data is newer!
+      if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) > 0) {
 
         let extraFields = {};
         // only admins get to update the behaviour
@@ -262,6 +269,12 @@ const syncSphereStones = function(actions, transferPromises, state, spheresData,
             .catch()
         );
       }
+      else if (getTimeDifference(sphereInState.stones[stone_from_cloud.id].config, stone_from_cloud) < 0 || !stoneInState.config.cloudId) {
+        transferPromises.push(
+          transferStones.updateLocal(actions,
+            {sphereId: sphere.id, localId: stone_from_cloud.id, cloudId: stone_from_cloud.id, cloudData: stone_from_cloud}).catch()
+        );
+      }
     }
     else {
       transferPromises.push(
@@ -290,7 +303,7 @@ const syncSphereStones = function(actions, transferPromises, state, spheresData,
       );
     }
 
-    syncStoneSchedules(actions, transferPromises, state, spheresData, sphere, stone_from_cloud, cloudScheduleIds, sphereInState)
+    syncStoneSchedules(actions, transferPromises, state, cloudSpheresData, sphere, stone_from_cloud, cloudScheduleIds, sphereInState)
   });
 };
 
@@ -300,57 +313,53 @@ const syncSphereStones = function(actions, transferPromises, state, spheresData,
  * @param actions
  * @param transferPromises
  * @param state
- * @param spheresData
+ * @param cloudSpheresData
  * @param sphere
  * @param stone_from_cloud
  * @param cloudScheduleIds
  * @param sphereInState
  */
-const syncStoneSchedules = function(actions, transferPromises, state, spheresData, sphere, stone_from_cloud, cloudScheduleIds, sphereInState) {
+const syncStoneSchedules = function(actions, transferPromises, state, cloudSpheresData, sphere, stone_from_cloud, cloudScheduleIds, sphereInState) {
+  let scheduleMap = {};
+  let schedules = {};
+  if (sphereInState) {
+    schedules = sphereInState.stones[stone_from_cloud.id].schedules;
+    let scheduleIds = Object.keys(schedules);
+    scheduleIds.forEach((scheduleId) => {
+      let schedule = schedules[scheduleId];
+      if (schedule.cloudId) {
+        scheduleMap[schedule.cloudId] = scheduleId;
+      }
+    })
+  }
+
   // sync down schedules of this stone
   if (stone_from_cloud.schedules && stone_from_cloud.schedules.length > 0) {
     // find the schedule in our local database that matches the one in the cloud
-    let findMatchingSchedule = (scheduleCloudId) => {
-      // if the stone does not exist in the state...
-      if (sphereInState !== undefined && sphereInState.stones[stone_from_cloud.id] !== undefined) {
-        return null;
-      }
-      else {
-        let schedules = sphereInState.stones[stone_from_cloud.id].schedules;
-        let scheduleIds = Object.keys(schedules);
-        for (let i = 0; i < scheduleIds.length; i++) {
-          if (schedules[scheduleIds[i]].cloudId === scheduleCloudId) {
-            return {id: scheduleIds[i], data: schedules[scheduleIds[i]]};
-          }
-        }
-        return null;
-      }
-    };
-
     stone_from_cloud.schedules.forEach((schedule_in_cloud) => {
-      let matchingLocalSchedule = findMatchingSchedule(schedule_in_cloud.id);
-      if (matchingLocalSchedule !== null) {
-        cloudScheduleIds[matchingLocalSchedule.id] = true;
-        if (getTimeDifference(matchingLocalSchedule.data, schedule_in_cloud) < 0) {
+      let localId = scheduleMap[schedule_in_cloud.id];
+      if (localId) {
+        let scheduleInState = schedules[localId];
+        cloudScheduleIds[localId] = true;
+        if (getTimeDifference(scheduleInState, schedule_in_cloud) < 0) {
           // update local
           transferPromises.push(
             transferSchedules.updateLocal(actions, {
               sphereId: sphere.id,
               stoneId: stone_from_cloud.id,
-              localId: matchingLocalSchedule.id,
+              localId: localId,
               cloudId: schedule_in_cloud.id,
               cloudData: schedule_in_cloud
             }).catch()
           );
         }
-        else if (getTimeDifference(matchingLocalSchedule.data, schedule_in_cloud) > 0) {
+        else if (getTimeDifference(scheduleInState, schedule_in_cloud) > 0) {
           // update cloud since local data is newer!
-          let scheduleInState = matchingLocalSchedule.data;
           transferPromises.push(
             transferSchedules.updateOnCloud(actions, {
               sphereId: sphere.id,
               stoneId: stone_from_cloud.id,
-              localId: matchingLocalSchedule.id,
+              localId: localId,
               cloudId: schedule_in_cloud.id,
               localData: scheduleInState,
               cloudData: schedule_in_cloud,
@@ -373,28 +382,23 @@ const syncStoneSchedules = function(actions, transferPromises, state, spheresDat
       }
     });
   }
-}
+};
 
 
 /**
  * Sync the appliances from the cloud to the database.
  */
-const syncSphereAppliances = function(actions, transferPromises, state, spheresData, sphere, cloudApplianceIds, adminInThisSphere, sphereInState) {
-  spheresData[sphere.id].appliances.forEach((appliance_from_cloud) => {
+const syncSphereAppliances = function(actions, transferPromises, state, cloudSpheresData, sphere, cloudApplianceIds, adminInThisSphere, sphereInState) {
+  cloudSpheresData[sphere.id].appliances.forEach((appliance_from_cloud) => {
+    // TODO: move this over to localId.
     cloudApplianceIds[appliance_from_cloud.id] = true; // mark this ID as "yes it is in the cloud"
+
     // check if we have to update of add this appliance
     if (sphereInState !== undefined && sphereInState.appliances[appliance_from_cloud.id] !== undefined) {
-      if (getTimeDifference(sphereInState.appliances[appliance_from_cloud.id].config, appliance_from_cloud) < 0) {
-        transferPromises.push(
-          transferAppliances.updateLocal(actions,
-            {sphereId: sphere.id, localId: appliance_from_cloud.id, cloudId: appliance_from_cloud.id, cloudData: appliance_from_cloud})
-            .catch()
-        );
-      }
-      else if (getTimeDifference(sphereInState.appliances[appliance_from_cloud.id].config, appliance_from_cloud) > 0) {
+      let applianceInState = sphereInState.appliances[appliance_from_cloud.id];
+      if (getTimeDifference(sphereInState.appliances[appliance_from_cloud.id].config, appliance_from_cloud) > 0) {
         // update cloud since our data is newer!
         LOG.info("SYNC: Updating appliance", appliance_from_cloud.id, "in Cloud since our data is newer!");
-        let applianceInState = sphereInState.appliances[appliance_from_cloud.id];
 
         let extraFields = {};
         // only admins get to update the behaviour
@@ -405,6 +409,13 @@ const syncSphereAppliances = function(actions, transferPromises, state, spheresD
         transferPromises.push(
           transferStones.updateOnCloud(actions,
             {sphereId: sphere.id, localId: appliance_from_cloud.id, cloudId: appliance_from_cloud.id, localData: applianceInState, extraFields: extraFields})
+            .catch()
+        );
+      }
+      else if (getTimeDifference(sphereInState.appliances[appliance_from_cloud.id].config, appliance_from_cloud) < 0 || !applianceInState.config.cloudId) {
+        transferPromises.push(
+          transferAppliances.updateLocal(actions,
+            {sphereId: sphere.id, localId: appliance_from_cloud.id, cloudId: appliance_from_cloud.id, cloudData: appliance_from_cloud})
             .catch()
         );
       }
@@ -436,4 +447,4 @@ const syncSphereAppliances = function(actions, transferPromises, state, spheresD
       );
     }
   });
-}
+};

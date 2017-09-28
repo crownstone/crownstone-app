@@ -295,6 +295,9 @@ const glyphMap = {
   'c1-schedule':0xf124,
 };
 
+export const getRandomC1Name = function() {
+  return getRandomName(glyphMap);
+};
 
 export const CustomIcon = VectorIcons.createIconSet(glyphMap, 'Crownstone', 'Crownstone.ttf');
 
@@ -307,3 +310,12 @@ const glyphMap2 = {
 };
 
 export const CustomIcon2 = VectorIcons.createIconSet(glyphMap2,  'CustomIcons', 'CustomIcons.ttf');
+
+export const getRandomC21Name = function() {
+  return getRandomName(glyphMap2);
+};
+
+const getRandomName = function(map) {
+  let keys = Object.keys(map);
+  return keys[Math.floor(Math.random()*keys.length)];
+};

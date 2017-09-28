@@ -21,13 +21,13 @@ export const transferAppliances = {
     payload['sphereId'] = data.sphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    CLOUD.forSphere(data.sphereId).createAppliance(payload)
+    return CLOUD.forSphere(data.sphereId).createAppliance(payload)
       .then((result) => {
         // update cloudId in local database.
         actions.push({type: 'UPDATE_APPLIANCE_CONFIG', sphereId: data.sphereId, applianceId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
-        LOG.error("Transfer-Appliance: Could not create location in cloud", err);
+        LOG.error("Transfer-Appliance: Could not create Appliance in cloud", err);
         throw err;
       });
   },
@@ -48,7 +48,7 @@ export const transferAppliances = {
     return CLOUD.forSphere(data.sphereId).updateAppliance(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
-        LOG.error("Transfer-Appliance: Could not update location in cloud", err);
+        LOG.error("Transfer-Appliance: Could not update Appliance in cloud", err);
         throw err;
       });
   },

@@ -181,22 +181,7 @@ class NotificationParserClass {
     if (messageData && messageData.type && messageData.source === 'localNotification') {
       switch (messageData.type) {
         case 'newMessage':
-          let state = this.store.getState();
-          let forwarded = false;
-          if (state) {
-            let sphere = state.spheres[messageData.sphereId];
-            if (sphere) {
-              let message = sphere.messages[messageData.messageId];
-              if (message) {
-                forwarded = true;
-                Actions.messageThread({sphereId: messageData.sphereId, messageId: messageData.messageId });
-              }
-            }
-          }
-
-          if (!forwarded) {
-            Actions.messageInbox();
-          }
+          Actions.messageInbox();
 
           // actually go to the message tab
           if (Platform.OS === 'ios') {

@@ -4,7 +4,7 @@ export const transferUtil = {
       if (localData[field.local] !== undefined && field.cloud !== null) {
         if (field.localFields) {
           payload[field.cloud] = {};
-          for (let i = 0; i < field.localFields.lenght; i++) {
+          for (let i = 0; i < field.localFields.length; i++) {
             payload[field.cloud][field.cloudFields[i]] = localData[field.local][field.localFields[i]]
           }
         }
@@ -22,7 +22,7 @@ export const transferUtil = {
       if (field.cloud !== null && cloudData[field.cloud]) {
         if (field.localFields) {
           payload[field.local] = {};
-          for (let i = 0; i < field.localFields.lenght; i++) {
+          for (let i = 0; i < field.localFields.length; i++) {
             payload[field.local][field.localFields[i]] = cloudData[field.cloud][field.cloudFields[i]]
           }
         }

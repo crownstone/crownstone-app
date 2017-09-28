@@ -17,6 +17,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth} from '../styles'
+import {getRandomC1Name} from "../../fonts/customIcons";
 
 
 
@@ -25,7 +26,7 @@ export class ApplianceAdd extends Component<any, any> {
 
   constructor(props) {
     super();
-    this.state = {name:'', icon: 'c1-bookshelf', selectedStones: {}};
+    this.state = {name:'', icon: getRandomC1Name(), selectedStones: {}};
     this.refName = "listItems";
   }
 

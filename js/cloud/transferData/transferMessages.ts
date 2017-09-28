@@ -26,13 +26,13 @@ export const transferMessages = {
     payload['sphereId'] = data.sphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    CLOUD.forSphere(data.sphereId).createMessage(payload)
+    return CLOUD.forSphere(data.sphereId).createMessage(payload)
       .then((result) => {
         // update cloudId in local database.
         actions.push({type: 'APPEND_MESSAGE', sphereId: data.sphereId, messageId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
-        LOG.error("Transfer-Message: Could not create location in cloud", err);
+        LOG.error("Transfer-Message: Could not create Message in cloud", err);
         throw err;
       });
   },

@@ -778,7 +778,7 @@ open class BluenetJS: NSObject {
   }
   
   @objc func enableLoggingToFile(_ enableLogging: NSNumber) -> Void {
-    LOGGER.info("BluenetBridge: Called enableLoggingToFile")
+    LOGGER.info("BluenetBridge: Called enableLoggingToFile enableLogging: \(enableLogging)")
     if (enableLogging.boolValue == true) {
       BluenetLib.LOG.setFileLevel(.INFO)
       BluenetLib.LOG.setPrintLevel(.INFO)
@@ -844,7 +844,7 @@ open class BluenetJS: NSObject {
         }
     }
     else {
-      callback([["error" : true, "data": "Missing one of the datafields required for setup."]])
+      callback([["error" : true, "data": "Missing one of the datafields required for setup. 1:\(crownstoneId) 2:\(adminKey) 3:\(memberKey) 4:\(guestKey) 5:\(meshAccessAddress) 6:\(ibeaconUUID) 7:\(ibeaconMajor) 8:\(ibeaconMinor)"]])
     }
   }
   

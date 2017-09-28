@@ -39,13 +39,13 @@ export const transferStones = {
     payload['sphereId'] = data.sphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    CLOUD.forSphere(data.sphereId).createStone(payload)
+    return CLOUD.forSphere(data.sphereId).createStone(payload)
       .then((result) => {
         // update cloudId in local database.
         actions.push({type: 'UPDATE_STONE_CONFIG', sphereId: data.sphereId, stoneId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
-        LOG.error("Transfer-Stone: Could not create location in cloud", err);
+        LOG.error("Transfer-Stone: Could not create stone in cloud", err);
         throw err;
       });
   },
@@ -66,7 +66,7 @@ export const transferStones = {
     return CLOUD.forSphere(data.sphereId).updateStone(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
-        LOG.error("Transfer-Stone: Could not update location in cloud", err);
+        LOG.error("Transfer-Stone: Could not update stone in cloud", err);
         throw err;
       });
   },
