@@ -50,6 +50,7 @@ export class SphereOverview extends Component<any, any> {
       }
 
       if (
+        change.changeAppSettings    ||
         change.changeSphereState    ||
         change.changeSphereConfig   ||
         change.stoneLocationUpdated ||
