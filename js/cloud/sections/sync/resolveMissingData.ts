@@ -46,19 +46,12 @@ export const resolveMissingData = function(store, actions, sphereSyncedIds, clou
           let schedule = stone.schedules[scheduleId];
           // if the scheduleId does not exist in the cloud but we have it locally.
           if (sphereSyncedIds.cloudScheduleIds[scheduleId] === undefined) {
-            transferPromises.push(
-              verifyDeletionEvent(
-                actions,
-                schedule,
-                scheduleId,
-                schedule.cloudId || scheduleId,
-                sphereId,
-                CLOUD.getScheduleDeleteEvent,
-                transferSchedules.createOnCloud,
-                { type: 'REMOVE_STONE_SCHEDULE', sphereId: sphereId, stoneId: stoneId, scheduleId: scheduleId },
-                {stoneId: stoneId}
-              )
-            );
+            if (schedule.cloudId) {
+              actions.push({ type: 'REMOVE_STONE_SCHEDULE', sphereId: sphereId, stoneId: stoneId, scheduleId: scheduleId });
+            }
+            else {
+              transferPromises.push(transferSchedules.createOnCloud( actions, { localId: scheduleId, localData: schedule, sphereId: sphereId, stoneId: stoneId }));
+            }
           }
         });
 
@@ -87,7 +80,6 @@ export const resolveMissingData = function(store, actions, sphereSyncedIds, clou
           actions.push({ type: 'REMOVE_MESSAGE', sphereId: sphereId, messageId: messageId });
         }
       })
-
     }
   });
 
@@ -111,12 +103,13 @@ export const resolveMissingData = function(store, actions, sphereSyncedIds, clou
 function verifyDeletionEvent(actions : any[], item, itemId, cloudId, sphereId, cloudMethod, createMethod, removeAction, extraIds?) {
   return cloudMethod(sphereId, cloudId)
     .then((result) => {
+
       // if there is NO delete event in the cloud.
       if (result.length === 0) {
         return createMethod( actions, { localId: itemId, localData: item, sphereId: sphereId, ...extraIds })
       }
       else {
-
+        actions.push(removeAction);
       }
     })
 }

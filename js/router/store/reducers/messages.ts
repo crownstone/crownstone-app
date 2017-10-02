@@ -42,6 +42,13 @@ let defaultState = {
 // messageReducer
 const configReducer = (state = defaultState.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_MESSAGE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'ADD_MESSAGE':
     case 'APPEND_MESSAGE':
     case 'ADD_CLOUD_MESSAGE':

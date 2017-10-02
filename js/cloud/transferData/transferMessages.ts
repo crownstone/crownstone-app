@@ -13,7 +13,7 @@ let fieldMap : fieldMap = [
   { local: 'senderId',                        cloud:'ownerId'},
   { local: 'updatedAt',                       cloud:'updatedAt'},
 
-  { local: 'cloudId',                         cloud: null },
+  { local: 'cloudId',                         cloud: 'id' ,  cloudToLocalOnly: true },
   { local: 'sendFailed',                      cloud: null },
   { local: 'sent',                            cloud: null },
   { local: 'sentAt',                          cloud: null },
@@ -21,7 +21,7 @@ let fieldMap : fieldMap = [
 
 export const transferMessages = {
 
-  createOnCloud: function( actions, data : transferData ) {
+  createOnCloud: function( actions, data : transferToCloudData ) {
     let payload = {};
     payload['sphereId'] = data.sphereId;
 
@@ -32,7 +32,7 @@ export const transferMessages = {
     return CLOUD.forSphere(data.sphereId).createMessage(payload)
       .then((result) => {
         // update cloudId in local database.
-        actions.push({type: 'APPEND_MESSAGE', sphereId: data.sphereId, messageId: data.localId, data: { cloudId: result.id }});
+        actions.push({type: 'UPDATE_MESSAGE_CLOUD_ID', sphereId: data.sphereId, messageId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
         LOG.error("Transfer-Message: Could not create Message in cloud", err);
@@ -40,7 +40,7 @@ export const transferMessages = {
       });
   },
 
-  createLocal: function( actions, data: transferData) {
+  createLocal: function( actions, data: transferToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'ADD_CLOUD_MESSAGE',
@@ -51,7 +51,7 @@ export const transferMessages = {
   },
 
 
-  updateLocal: function( actions, data: transferData) {
+  updateLocal: function( actions, data: transferToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'APPEND_MESSAGE',

@@ -154,7 +154,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
-          if (Permissions.canDeleteSchedule) {
+          if (Permissions.canDeleteSchedule === false) {
             Alert.alert("Permission Denied.", "You do not have permission to delete a scheduled action. Only members and admins of this Sphere are allowed to do that.",[{text:'OK'}]);
             return;
           }
@@ -243,10 +243,11 @@ export class DeviceScheduleEdit extends Component<any, any> {
           changed = true; break;
         }
       }
+
       if (
         schedule.active !== this.state.active ||
         schedule.switchState !== this.state.switchState ||
-        schedule.time !== this.state.time ||
+        Util.getTimeFormat(StoneUtil.crownstoneTimeToTimestamp(schedule.time)) !== Util.getTimeFormat(this.state.time) ||
         schedule.fadeDuration !== this.state.fadeDuration ||
         schedule.intervalInMinutes !== this.state.intervalInMinutes ||
         schedule.ignoreLocationTriggers !== this.state.ignoreLocationTriggers ||

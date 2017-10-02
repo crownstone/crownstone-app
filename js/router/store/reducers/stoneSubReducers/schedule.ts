@@ -4,7 +4,7 @@ let defaultSettings = {
   label: '',
   time: 0,                // this is a UTC timestamp.
   scheduleEntryIndex: 0,
-  cloudId: '',
+  cloudId: null,
   linkedSchedule: null,
   switchState: 1,
   fadeDuration: 0,
@@ -26,6 +26,13 @@ let defaultSettings = {
 
 let scheduleReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_SCHEDULE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'ADD_STONE_SCHEDULE':
     case 'UPDATE_STONE_SCHEDULE':
       if (action.data) {

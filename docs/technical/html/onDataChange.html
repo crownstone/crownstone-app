@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <title>Data changes from Views</title>
+
+  <script type="text/javascript" src="./js/vis.min.js"></script>
+  <link href="./js/vis-network.min.css" rel="stylesheet" type="text/css" />
+
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+
+    #mynetwork {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+    Overview of flow when data is changes in a local view.
+
+  <div id="mynetwork"></div>
+  <script type="text/javascript">
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+      {id: 'periodicSync', label: 'BGPROCESS: \nFull Sync (periodic)', shape: 'circle', color: '#00607c', font: {color:'#fff'}},
+      {id: 'view', label: '          View          ', shape: 'circle'},
+      {id: 'redux', label: 'Redux Store', shape: 'circle', color: '#ff9c00'},
+      {id: 'ce', label: 'cloud enhancer', shape: 'circle', color: '#ff9c00'},
+      {id: 'ee', label: 'event enhancer', shape: 'circle', color: '#ff9c00'},
+      {id: 'ceh', label: 'BGPROCESS: \ncloudEvent Handler', shape: 'circle', color: '#00607c', font: {color:'#fff'}},
+      {id: 'es', label: 'SyncingScript: \nEvent Sync', shape: 'circle', color: "#a0eb58"},
+      {id: 'cloud', label: '      cloud      ', shape: 'database', font: {vadjust:40}, size:200},
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+      {from: 'view', to: 'redux', label:'change'},
+      {from: 'redux', to: 'ce'},
+      {from: 'ce', to: 'ee'},
+      {from: 'ce', to: 'ceh', label: 'e: submitCloudEvent'},
+      {from: 'ceh', to: 'redux', label:'store Events'},
+      {from: 'redux', to: 'es', label:'handle stored Events'},
+      {from: 'es', to: 'redux', label:'store cloud ids'},
+      {from: 'ceh', to: 'es', label:'execute sync after new entry'},
+      {from: 'es', to: 'cloud', label:'update'},
+      {from: 'ee', to: 'view', label: 'e: databaseChange'},
+      {from: 'periodicSync', to: 'es'},
+      {from: 'periodicSync', to: 'periodicSync'},
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+    var options = {
+      layout: { randomSeed: 112768 },
+      edges: {arrows: 'to', font: {align:'middle'}},
+      physics: { barnesHut: { gravitationalConstant: -50000}}};
+    var network = new vis.Network(container, data, options);
+  </script>
+</body>
+</html>

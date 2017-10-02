@@ -11,14 +11,14 @@ let fieldMap : fieldMap = [
   {local: 'updatedAt', cloud: 'updatedAt'},
 
   // used for local config
-  {local: 'cloudId',           cloud: null },
+  {local: 'cloudId',           cloud: 'id' ,  cloudToLocalOnly: true },
   {local: 'fingerprintRaw',    cloud: null},
   {local: 'fingerprintParsed', cloud: null},
 ];
 
 export const transferLocations = {
 
-  createOnCloud: function( actions, data : transferData ) {
+  createOnCloud: function( actions, data : transferToCloudData ) {
     let payload = {};
     payload['sphereId'] = data.sphereId;
 
@@ -28,7 +28,7 @@ export const transferLocations = {
     return CLOUD.forSphere(data.sphereId).createLocation(payload)
       .then((result) => {
         // update cloudId in local database.
-        actions.push({type: 'UPDATE_LOCATION_CONFIG', sphereId: data.sphereId, locationId: data.localId, data: { cloudId: result.id }});
+        actions.push({type: 'UPDATE_LOCATION_CLOUD_ID', sphereId: data.sphereId, locationId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
         LOG.error("Transfer-Location: Could not create location in cloud", err);
@@ -36,7 +36,11 @@ export const transferLocations = {
       });
   },
 
-  updateOnCloud: function( actions, data : transferData ) {
+  updateOnCloud: function( actions, data : transferToCloudData ) {
+    if (data.cloudId === undefined) {
+      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+    }
+
     let payload = {};
     payload['sphereId'] = data.sphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
@@ -49,7 +53,7 @@ export const transferLocations = {
       });
   },
 
-  createLocal: function( actions, data: transferData) {
+  createLocal: function( actions, data: transferToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'ADD_LOCATION',
@@ -60,7 +64,7 @@ export const transferLocations = {
   },
 
 
-  updateLocal: function( actions, data: transferData) {
+  updateLocal: function( actions, data: transferToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_LOCATION_CONFIG',

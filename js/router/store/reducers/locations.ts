@@ -32,6 +32,13 @@ let userPresenceReducer = (state = [], action : any = {}) => {
 
 let locationConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_LOCATION_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'REMOVE_LOCATION_FINGERPRINT':
       let newState = {...state};
       newState.fingerprintRaw = null;

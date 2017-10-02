@@ -82,11 +82,11 @@ export const sync = {
 
     // before we start the sync, sync the events.
     LOG.info("Sync: START Sync Events.");
-    return syncEvents(store,background)
+    return syncEvents(store)
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
       .catch(getUserIdCheckError(() => {
         LOG.info("Sync: RETRY Sync Events.");
-        return this.syncEvents(store,background);
+        return this.syncEvents(store);
       }))
       // download data from cloud.
       .then(() => {

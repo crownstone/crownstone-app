@@ -1,6 +1,9 @@
 export const transferUtil = {
   fillFieldsForCloud: function(payload, localData, fieldMap) {
     fieldMap.forEach((field) => {
+      if (field.cloudToLocalOnly === true) {
+        return; // we do not allow this field to be synced back up to the cloud. Usually used for IDs.
+      }
       if (localData[field.local] !== undefined && field.cloud !== null) {
         if (field.localFields) {
           payload[field.cloud] = {};
@@ -34,7 +37,7 @@ export const transferUtil = {
   },
 
 
-  _handleLocal: function(actions, type, ids, data: transferData, fieldMap: fieldMap) {
+  _handleLocal: function(actions, type, ids, data: any, fieldMap: fieldMap) {
     return new Promise((resolve, reject) => {
       if (!data.cloudData) {
         reject("Transfer: No cloud data available! Tried: " + type);

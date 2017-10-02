@@ -30,6 +30,13 @@ let defaultSettings = {
 
 let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_SPHERE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'UPDATE_STONE_RSSI':
       // update the time this user has seen the sphere last.
       let newState = {...state};

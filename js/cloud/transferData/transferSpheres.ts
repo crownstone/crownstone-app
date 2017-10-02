@@ -21,12 +21,16 @@ let fieldMap : fieldMap = [
   {local:'guestKey',            cloud:  null },
 
   // used for local
-  {local:'cloudId',             cloud:  null },
+  {local:'cloudId',             cloud:  'id',  cloudToLocalOnly: true  },
 ];
 
 export const transferSpheres = {
 
-  updateOnCloud: function( actions, data : transferData ) {
+  updateOnCloud: function( actions, data : transferToCloudData ) {
+    if (data.cloudId === undefined) {
+      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+    }
+
     let payload = {};
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
@@ -39,7 +43,7 @@ export const transferSpheres = {
       });
   },
 
-  createLocal: function( actions, data: transferData) {
+  createLocal: function( actions, data: transferToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'ADD_SPHERE',
@@ -49,7 +53,7 @@ export const transferSpheres = {
     );
   },
 
-  updateLocal: function( actions, data: transferData) {
+  updateLocal: function( actions, data: transferToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_SPHERE_CONFIG',

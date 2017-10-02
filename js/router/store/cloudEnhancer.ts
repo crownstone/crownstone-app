@@ -106,7 +106,8 @@ function handleAction(action, returnValue, newState, oldState) {
 
     case "ADD_STONE_SCHEDULE":
     case "UPDATE_STONE_SCHEDULE":
-      // handleStoneState(action, newState, oldState, true);
+    case "REMOVE_STONE_SCHEDULE":
+      handleStoneSchedule(action, newState, oldState);
       break;
 
     case "REMOVE_MESSAGE":
@@ -456,7 +457,7 @@ function handleMessageRead(action, state) {
     eventBus.emit("submitCloudEvent", {
       type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
       sphereId: action.sphereId,
-      id: action.messageId + '_' + 'receivedMessage',
+      id: action.messageId + '_' + 'readMessage',
       localId: action.messageId,
       cloudId: message.config.cloudId,
       specialType: 'readMessage'
@@ -485,4 +486,29 @@ function handleMessageRemove(action, state, oldState) {
   }
 
 
+}
+
+function handleStoneSchedule(action, state, oldState) {
+  let newSchedule = state.spheres[action.sphereId].stones[action.stoneId].schedules[action.scheduleId];
+  let oldSchedule = oldState.spheres[action.sphereId].stones[action.stoneId].schedules[action.scheduleId];
+
+  let payload = {
+    sphereId: action.sphereId,
+    stoneId: action.stoneId,
+    id: action.scheduleId,
+    localId: action.scheduleId,
+    cloudId: oldSchedule && oldSchedule.cloudId || null, // if old does not exist, this is a create event which does not have a cloudId
+    data: newSchedule // can be undefined for deleted schedule
+  };
+
+  switch (action.type) {
+    case "ADD_STONE_SCHEDULE":
+      payload["type"] = 'CLOUD_EVENT_CREATE_SCHEDULES'; break;
+    case "UPDATE_STONE_SCHEDULE":
+      payload["type"] = 'CLOUD_EVENT_UPDATE_SCHEDULES'; break;
+    case "REMOVE_STONE_SCHEDULE":
+      payload["type"] = 'CLOUD_EVENT_REMOVE_SCHEDULES'; break;
+  }
+
+  eventBus.emit("submitCloudEvent", payload);
 }

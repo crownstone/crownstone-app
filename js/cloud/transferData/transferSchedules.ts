@@ -21,13 +21,13 @@ let fieldMap : fieldMap = [
     cloudFields: ['Mon','Tue','Wed','Thu','Fri','Sat', 'Sun'],
   },
   {local:'updatedAt',              cloud: 'updatedAt'},
-  {local:'cloudId',                cloud:  null },
+  {local:'cloudId',                cloud: 'id',  cloudToLocalOnly: true },
 ];
 
 
 export const transferSchedules = {
 
-  createOnCloud: function( actions, data : transferData ) {
+  createOnCloud: function( actions, data : transferScheduleToCloudData ) {
     let payload = {};
     payload['stoneId'] = data.stoneId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
@@ -36,7 +36,7 @@ export const transferSchedules = {
       .then((result) => {
         // update cloudId in local database.
         actions.push({
-          type: 'UPDATE_STONE_SCHEDULE',
+          type: 'UPDATE_SCHEDULE_CLOUD_ID',
           sphereId: data.sphereId,
           stoneId: data.stoneId,
           scheduleId: data.localId,
@@ -49,7 +49,11 @@ export const transferSchedules = {
       });
   },
 
-  updateOnCloud: function( actions, data : transferData ) {
+  updateOnCloud: function( actions, data : transferScheduleToCloudData ) {
+    if (data.cloudId === undefined) {
+      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+    }
+
     let payload = {};
     payload['stoneId'] = data.stoneId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
@@ -63,7 +67,7 @@ export const transferSchedules = {
   },
 
 
-  createLocal: function( actions, data: transferData) {
+  createLocal: function( actions, data: transferScheduleToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'ADD_STONE_SCHEDULE',
@@ -74,7 +78,7 @@ export const transferSchedules = {
   },
 
 
-  updateLocal: function( actions, data: transferData) {
+  updateLocal: function( actions, data: transferScheduleToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_STONE_SCHEDULE',

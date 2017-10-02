@@ -26,7 +26,7 @@ let fieldMap : fieldMap = [
   {local: 'locationId',         cloud: 'locationId'},
 
   // used for local config
-  {local: 'cloudId',            cloud:  null },
+  {local: 'cloudId',            cloud:  'id',  cloudToLocalOnly: true  },
   {local: 'nearThreshold',      cloud:  null },
   {local: 'rssi',               cloud:  null },
   {local: 'disabled',           cloud:  null },
@@ -37,7 +37,7 @@ let fieldMap : fieldMap = [
 
 export const transferStones = {
 
-  createOnCloud: function( actions, data : transferData ) {
+  createOnCloud: function( actions, data : transferToCloudData ) {
     // TODO: include the switch state
     // TODO: add behaviour
 
@@ -49,7 +49,7 @@ export const transferStones = {
     return CLOUD.forSphere(data.sphereId).createStone(payload)
       .then((result) => {
         // update cloudId in local database.
-        actions.push({type: 'UPDATE_STONE_CONFIG', sphereId: data.sphereId, stoneId: data.localId, data: { cloudId: result.id }});
+        actions.push({type: 'UPDATE_STONE_CLOUD_ID', sphereId: data.sphereId, stoneId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
         LOG.error("Transfer-Stone: Could not create stone in cloud", err);
@@ -57,7 +57,11 @@ export const transferStones = {
       });
   },
 
-  updateOnCloud: function( actions, data : transferData ) {
+  updateOnCloud: function( actions, data : transferToCloudData ) {
+    if (data.cloudId === undefined) {
+      return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
+    }
+
     let payload = {};
     payload['sphereId'] = data.sphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
@@ -80,7 +84,7 @@ export const transferStones = {
       });
   },
 
-  createLocal: function( actions, data: transferData) {
+  createLocal: function( actions, data: transferToLocalData) {
     this._injectLocationId(data);
 
     return transferUtil._handleLocal(
@@ -93,7 +97,7 @@ export const transferStones = {
   },
 
 
-  updateLocal: function( actions, data: transferData) {
+  updateLocal: function( actions, data: transferToLocalData) {
     this._injectLocationId(data);
 
     return transferUtil._handleLocal(

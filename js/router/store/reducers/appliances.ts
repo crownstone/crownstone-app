@@ -33,6 +33,13 @@ let defaultSettings = {
 
 let applianceConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_APPLIANCE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'ADD_APPLIANCE':
     case 'UPDATE_APPLIANCE_CONFIG':
       if (action.data) {

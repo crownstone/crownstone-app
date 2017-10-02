@@ -85,6 +85,13 @@ let defaultSettings = {
 
 let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_STONE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
@@ -96,6 +103,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.updatedAt       = getTime(action.data.updatedAt);
         return newState;
       }
+      return state;
     case 'UPDATE_STONE_STATE': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
       if (action.data) {
         let newState = {...state};

@@ -4,6 +4,7 @@ import { combineReducers } from 'redux'
 let itemSettings = {
   localId: null,
   sphereId: null,
+  stoneId: null,
   cloudId: null,
   specialType: null,
 };
@@ -13,15 +14,13 @@ let getItemReducer = function(changeType, itemType) {
   return (state = {...itemSettings}, action : any = {}) => {
     switch (action.type) {
       case 'CLOUD_EVENT_' + changeType + '_' + itemType:
-        if (action.sphereId && action.cloudId) {
-          let newState = {...state};
-          newState.localId     = update(action.localId,    newState.localId);
-          newState.sphereId    = update(action.sphereId,    newState.sphereId);
-          newState.cloudId     = update(action.cloudId,     newState.cloudId);
-          newState.specialType = update(action.specialType, newState.specialType);
-          return newState;
-        }
-        return state;
+        let newState = {...state};
+        newState.localId     = update(action.localId,     newState.localId);
+        newState.sphereId    = update(action.sphereId,    newState.sphereId);
+        newState.stoneId     = update(action.stoneId,     newState.stoneId);
+        newState.cloudId     = update(action.cloudId,     newState.cloudId);
+        newState.specialType = update(action.specialType, newState.specialType);
+        return newState;
       default:
         return state;
     }

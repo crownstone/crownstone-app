@@ -346,6 +346,21 @@ const syncStoneSchedules = function(actions, transferPromises, state, cloudSpher
     // find the schedule in our local database that matches the one in the cloud
     stone_from_cloud.schedules.forEach((schedule_in_cloud) => {
       let localId = scheduleMap[schedule_in_cloud.id];
+
+      // if we do not have a schedule with exactly this cloudId, verify that we do not have the same schedule on our device already.
+      if (localId === undefined) {
+        schedules = sphereInState.stones[stone_from_cloud.id].schedules;
+        let scheduleIds = Object.keys(schedules);
+        for (let i = 0; i < scheduleIds.length; i++) {
+          let schedule = schedules[scheduleIds[i]];
+          // is the time the same? comparing xx:xx (ie. 15:45)
+          if (schedule.scheduleEntryIndex === schedule_in_cloud.scheduleEntryIndex) {
+            localId = scheduleIds[i];
+            break;
+          }
+        }
+      }
+
       if (localId) {
         let scheduleInState = schedules[localId];
         cloudScheduleIds[localId] = true;
@@ -370,7 +385,6 @@ const syncStoneSchedules = function(actions, transferPromises, state, cloudSpher
               localId: localId,
               cloudId: schedule_in_cloud.id,
               localData: scheduleInState,
-              cloudData: schedule_in_cloud,
             }).catch()
           );
         }
@@ -381,6 +395,7 @@ const syncStoneSchedules = function(actions, transferPromises, state, cloudSpher
         // add schedule
         transferPromises.push(
           transferSchedules.createLocal(actions, {
+            localId: localId,
             sphereId: sphere.id,
             stoneId: stone_from_cloud.id,
             cloudId: schedule_in_cloud.id,

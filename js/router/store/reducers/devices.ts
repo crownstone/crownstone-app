@@ -19,6 +19,13 @@ let defaultSettings = {
 
 let deviceConfigReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_DEVICE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'SET_TAP_TO_TOGGLE_CALIBRATION':
       if (action.data) {
         let newState = {...state};
