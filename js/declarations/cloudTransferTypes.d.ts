@@ -2,34 +2,26 @@
 type transferToCloudData = {
   localId?: string,
   localData?: any,
-  sphereId: string,
-  cloudId?: string,
+  cloudSphereId: string,
+  cloudId: string,
   extraFields? : any,
 }
+
+type transferNewToCloudData = {
+  localId?: string,
+  localData?: any,
+  localSphereId: string,
+  cloudSphereId: string,
+  extraFields? : any,
+}
+
 
 type transferToLocalData = {
-  localId?: string,
-  sphereId: string,
+  localId: string,
+  localSphereId: string,
   cloudId?: string,
   cloudData?: any,
   extraFields? : any,
-}
-
-type transferScheduleToLocalData = {
-  localId: string,
-  sphereId: string,
-  stoneId: string,
-  cloudId?: string,
-  cloudData?: any,
-}
-
-
-type transferScheduleToCloudData = {
-  localId: string,
-  localData: any,
-  sphereId: string,
-  stoneId: string,
-  cloudId?: string,
 }
 
 
@@ -37,6 +29,17 @@ type fieldMap = [{
   local: string,
   cloud: string,
   cloudToLocalOnly? : boolean,
+  localToCloudOnly? : boolean,
+  permissionNeeded? : boolean,
   localFields?: string[],
   cloudFields? : string[],
 }]
+
+interface globalIdMap {
+  users: any,
+  locations: any,
+  appliances: any,
+  stones: any,
+  messages: any,
+  spheres: any,
+}

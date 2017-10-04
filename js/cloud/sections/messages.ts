@@ -61,11 +61,11 @@ export const messages = {
     );
   },
 
-  getActiveMessages: function(options = {}) {
+  getActiveMessages: function(background = true) {
     return this._setupRequest(
       'GET',
       '/Spheres/{id}/myActiveMessages/',
-      options
+      {background : background}
     );
   },
 

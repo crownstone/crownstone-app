@@ -331,7 +331,7 @@ export class Login extends Component<any, any> {
         this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
 
         // finalize the login due to successful download of data. Enables persistence.
-        StoreManager.finalizeLogIn(userId);
+        StoreManager.finalizeLogIn(userId).catch();
 
         let state = store.getState();
         if (state.user.isNew !== false) {

@@ -1,6 +1,7 @@
 import { CLOUD }        from "../cloudAPI";
 import { LOG }          from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 let fieldMap : fieldMap = [
   {local:'name',           cloud: 'name'   },
@@ -9,6 +10,7 @@ let fieldMap : fieldMap = [
   {local:'locked',         cloud: 'locked' },
   {local:'onlyOnWhenDark', cloud: 'onlyOnWhenDark'},
   {local:'updatedAt',      cloud: 'updatedAt' },
+  {local: 'json',               cloud: 'json', localToCloudOnly: true},
 
   {local:'dimmable',       cloud:  null    },
   {local:'cloudId',        cloud:  'id' ,  cloudToLocalOnly: true    },
@@ -16,19 +18,23 @@ let fieldMap : fieldMap = [
 
 export const transferAppliances = {
 
-  createOnCloud: function( actions, data : transferToCloudData ) {
-    // TODO: add behaviour
-
+  createOnCloud: function( actions, data : transferNewToCloudData ) {
     let payload = {};
-    payload['sphereId'] = data.sphereId;
+    payload['sphereId'] = data.cloudSphereId;
 
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
-    return CLOUD.forSphere(data.sphereId).createAppliance(payload)
+    if (Permissions.setBehaviourInCloud) {
+      payload['json'] = JSON.stringify(data.localData.behaviour);
+    }
+
+
+    return CLOUD.forSphere(data.cloudSphereId).createAppliance(payload)
       .then((result) => {
         // update cloudId in local database.
-        actions.push({type: 'UPDATE_APPLIANCE_CLOUD_ID', sphereId: data.sphereId, applianceId: data.localId, data: { cloudId: result.id }});
+        actions.push({type: 'UPDATE_APPLIANCE_CLOUD_ID', sphereId: data.localSphereId, applianceId: data.localId, data: { cloudId: result.id }});
+        return result.id;
       })
       .catch((err) => {
         LOG.error("Transfer-Appliance: Could not create Appliance in cloud", err);
@@ -36,13 +42,13 @@ export const transferAppliances = {
       });
   },
 
-  updateOnCloud: function( actions, data : transferToCloudData ) {
+  updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
       return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
     }
 
     let payload = {};
-    payload['sphereId'] = data.sphereId;
+    payload['sphereId'] = data.cloudSphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
     // add optional extra fields to payload
@@ -53,7 +59,7 @@ export const transferAppliances = {
       })
     }
 
-    return CLOUD.forSphere(data.sphereId).updateAppliance(data.cloudId, payload)
+    return CLOUD.forSphere(data.cloudSphereId).updateAppliance(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
         LOG.error("Transfer-Appliance: Could not update Appliance in cloud", err);
@@ -65,7 +71,7 @@ export const transferAppliances = {
     return transferUtil._handleLocal(
       actions,
       'ADD_APPLIANCE',
-      { sphereId: data.sphereId, applianceId: data.localId },
+      { sphereId: data.localSphereId, applianceId: data.localId },
       data,
       fieldMap
     );
@@ -76,7 +82,7 @@ export const transferAppliances = {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_APPLIANCE_CONFIG',
-      { sphereId: data.sphereId, applianceId: data.localId },
+      { sphereId: data.localSphereId, applianceId: data.localId },
       data,
       fieldMap
     );

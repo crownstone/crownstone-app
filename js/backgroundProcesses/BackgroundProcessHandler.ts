@@ -340,7 +340,7 @@ class BackgroundProcessHandlerClass {
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.
       CLOUD.setAccess(state.user.accessToken);
-      CLOUD.forUser(state.user.userId).getUserData({background:true})
+      CLOUD.forUser(state.user.userId).getUserData()
         .catch((err) => {
           if (err.status === 401) {
             LOG.warn("BackgroundProcessHandler: Could not verify user, attempting to login again.");

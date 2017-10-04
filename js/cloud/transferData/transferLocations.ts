@@ -18,17 +18,18 @@ let fieldMap : fieldMap = [
 
 export const transferLocations = {
 
-  createOnCloud: function( actions, data : transferToCloudData ) {
+  createOnCloud: function( actions, data : transferNewToCloudData ) {
     let payload = {};
-    payload['sphereId'] = data.sphereId;
+    payload['sphereId'] = data.cloudSphereId;
 
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
-    return CLOUD.forSphere(data.sphereId).createLocation(payload)
+    return CLOUD.forSphere(data.cloudSphereId).createLocation(payload)
       .then((result) => {
         // update cloudId in local database.
-        actions.push({type: 'UPDATE_LOCATION_CLOUD_ID', sphereId: data.sphereId, locationId: data.localId, data: { cloudId: result.id }});
+        actions.push({type: 'UPDATE_LOCATION_CLOUD_ID', sphereId: data.localSphereId, locationId: data.localId, data: { cloudId: result.id }});
+        return result.id;
       })
       .catch((err) => {
         LOG.error("Transfer-Location: Could not create location in cloud", err);
@@ -36,16 +37,16 @@ export const transferLocations = {
       });
   },
 
-  updateOnCloud: function( actions, data : transferToCloudData ) {
+  updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
       return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
     }
 
     let payload = {};
-    payload['sphereId'] = data.sphereId;
+    payload['sphereId'] = data.cloudSphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    return CLOUD.forSphere(data.sphereId).updateLocation(data.cloudId, payload)
+    return CLOUD.forSphere(data.cloudSphereId).updateLocation(data.cloudId, payload)
       .then((result) => { })
       .catch((err) => {
         LOG.error("Transfer-Location: Could not update location in cloud", err);
@@ -57,7 +58,7 @@ export const transferLocations = {
     return transferUtil._handleLocal(
       actions,
       'ADD_LOCATION',
-      { sphereId: data.sphereId, locationId: data.localId },
+      { sphereId: data.localSphereId, locationId: data.localId },
       data,
       fieldMap
     );
@@ -68,7 +69,7 @@ export const transferLocations = {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_LOCATION_CONFIG',
-      { sphereId: data.sphereId, locationId: data.localId },
+      { sphereId: data.localSphereId, locationId: data.localId },
       data,
       fieldMap
     );

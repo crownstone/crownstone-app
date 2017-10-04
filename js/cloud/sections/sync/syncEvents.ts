@@ -10,17 +10,12 @@ import {LOG} from "../../../logging/Log";
 export const syncEvents = function(store) {
   let state = store.getState();
 
-  let create = state.events.create;
-  let update = state.events.update;
   let remove = state.events.remove;
   let special = state.events.special;
 
   let actions = [];
   let promises = [];
 
-
-  promises.push(handleCreate(state, create, actions));
-  promises.push(handleUpdate(state, update, actions));
   promises.push(handleRemove(state, remove, actions));
   promises.push(handleSpecial(state, special, actions));
 
@@ -32,53 +27,6 @@ export const syncEvents = function(store) {
     })
     .catch((err) => { console.log('syncEvents: error', err)})
 
-};
-
-const handleCreate = function(state, events, actions) {
-  return _handleCreateAndUpdate('CREATE', 'createOnCloud', state, events, actions);
-};
-
-
-const handleUpdate = function(state, events, actions) {
-  return _handleCreateAndUpdate('UPDATE', 'updateOnCloud', state, events, actions);
-};
-
-const _handleCreateAndUpdate = function(type, transferMethod, state, events, actions) {
-  let promises = [];
-  let scheduleIds = Object.keys(events.schedules);
-  scheduleIds.forEach((scheduleId) => {
-    let eventData = events.schedules[scheduleId];
-    let success = () => { actions.push({type: 'FINISHED_' + type + '_SCHEDULES', id: scheduleId })};
-
-    let sphere = state.spheres[eventData.sphereId];
-    if (!sphere) { LOG.error("SyncEvents: NO SPHERE"); return success(); }
-
-    let stone = sphere.stones[eventData.stoneId];
-    if (!stone) { LOG.error("SyncEvents: NO stone"); return success(); }
-
-
-    let localSchedule = stone.schedules[scheduleId];
-    if (!localSchedule) { LOG.error("SyncEvents: NO localSchedule"); return success(); }
-
-    let payload = {localId: scheduleId, localData: localSchedule, sphereId: eventData.sphereId, stoneId: eventData.stoneId, cloudId: localSchedule.cloudId };
-    promises.push(
-      transferSchedules[transferMethod](actions, payload)
-        .then(() => { success(); })
-        .catch((err) => {
-          // item does not exist in cloud, so we cant update it. Create it.
-          if (type === 'UPDATE' && err.status === 404) {
-            return transferSchedules.createOnCloud(actions, payload)
-              .then(() => { success(); })
-              .catch((err) => { LOG.error("SyncEvents: could not CREATE schedule on cloud", err);})
-          }
-          else {
-            LOG.error("SyncEvents: could not " + type + " schedule on cloud", err);
-          }
-        })
-    );
-  });
-
-  return Promise.all(promises);
 };
 
 const handleRemove = function(state, events, actions) {
@@ -119,6 +67,7 @@ const handleRemove = function(state, events, actions) {
 const handleSpecial = function(state, events, actions) {
   let promises = [];
   let messageIds = Object.keys(events.messages);
+  let userEventIds = Object.keys(events.user);
   messageIds.forEach((dbId) => {
     let payload = events.messages[dbId];
     let success = () => { actions.push({type: 'FINISHED_SPECIAL_MESSAGES', id: dbId })};
@@ -135,6 +84,26 @@ const handleSpecial = function(state, events, actions) {
           if (err.status === 404 || err.status === 400) { success(); }
         }));
         break;
+    }
+  });
+
+  userEventIds.forEach((userEventId) => {
+    let payload = events.user[userEventId];
+    let success = () => { actions.push({type: 'FINISHED_SPECIAL_USER', id: userEventId })};
+    switch (payload.specialType) {
+      case 'removeProfilePicture':
+        promises.push(CLOUD.removeProfileImage({background: true}).then(() => { success(); })
+          .catch((err) => {
+            // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
+            LOG.error("syncEvents Special: Could not remove image from cloud", err);
+          }));
+        break;
+      case 'uploadProfilePicture':
+        CLOUD.uploadProfileImage(state.user.picture)
+          .then(() => { success() })
+          .catch((err) => {
+            LOG.error("syncEvents Special: Could not upload image to cloud", err);
+          });
     }
   });
 

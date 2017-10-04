@@ -10,6 +10,7 @@ let defaultSettings = {
   userId: null,
   isNew: true,
   picture: null,
+  pictureId: null,
   firmwareVersionsAvailable: {},
   bootloaderVersionsAvailable: {},
   betaAccess: false,
@@ -107,10 +108,11 @@ export default (state = defaultSettings, action : any = {}) => {
         newState.accessToken  = update(action.data.accessToken,  newState.accessToken);
         newState.userId       = update(action.data.userId,       newState.userId);
         newState.picture      = update(action.data.picture,      newState.picture);
+        newState.pictureId      = update(action.data.pictureId,  newState.pictureId);
         newState.uploadLocation       = update(action.data.uploadLocation,      newState.uploadLocation);
         newState.uploadSwitchState    = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
         newState.uploadPowerUsage     = update(action.data.uploadPowerUsage,    newState.uploadPowerUsage);
-        newState.uploadHighFrequencyPowerUsage     = update(action.data.uploadHighFrequencyPowerUsage,    newState.uploadHighFrequencyPowerUsage);
+        newState.uploadHighFrequencyPowerUsage = update(action.data.uploadHighFrequencyPowerUsage,    newState.uploadHighFrequencyPowerUsage);
         newState.uploadDeviceDetails  = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);
         newState.updatedAt    = getTime(action.data.updatedAt);
         return newState;

@@ -3,6 +3,23 @@ import { LOG }          from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
 
+type transferNewSphereToCloudData = {
+  localId: string,
+  localData: any,
+}
+type transferSphereToCloudData = {
+  localData: any,
+  cloudId : any,
+}
+
+type transferNewSphereToLocalData = {
+  localId: string,
+  cloudData: any,
+}
+type transferSphereToLocalData = {
+  localId: string,
+  cloudData: any,
+}
 
 let fieldMap : fieldMap = [
   {local:'name',                cloud: 'name'},
@@ -26,7 +43,23 @@ let fieldMap : fieldMap = [
 
 export const transferSpheres = {
 
-  updateOnCloud: function( actions, data : transferToCloudData ) {
+  createOnCloud: function (actions, data: transferNewSphereToCloudData) {
+    let payload = {};
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
+
+    return CLOUD.createSphere({}, false)
+      .then((result) => {
+        // update cloudId in local database.
+        actions.push({type: 'UPDATE_SPHERE_CLOUD_ID', sphereId: data.localId, data: { cloudId: result.id }});
+      })
+      .catch((err) => {
+        LOG.error("Transfer-Sphere: Could not create Sphere in cloud", err);
+        throw err;
+      });
+  },
+
+  updateOnCloud: function( data : transferSphereToCloudData ) {
     if (data.cloudId === undefined) {
       return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
     }
@@ -43,21 +76,21 @@ export const transferSpheres = {
       });
   },
 
-  createLocal: function( actions, data: transferToLocalData) {
+  createLocal: function( actions, data: transferNewSphereToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'ADD_SPHERE',
-      { sphereId: data.sphereId },
+      { sphereId: data.localId },
       data,
       fieldMap
     );
   },
 
-  updateLocal: function( actions, data: transferToLocalData) {
+  updateLocal: function( actions, data: transferSphereToLocalData) {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_SPHERE_CONFIG',
-      { sphereId: data.sphereId },
+      { sphereId: data.localId },
       data,
       fieldMap
     );

@@ -153,6 +153,26 @@ export const DataUtil = {
     }
   },
 
+  getUserLocation(state, userId) {
+    let presentSphereId = null;
+    let presentLocationId = null;
+
+    // first we determine in which sphere we are:
+    let sphereIds = Object.keys(state.spheres);
+    for (let i = 0; i < sphereIds.length; i++) {
+      if (state.spheres[sphereIds[i]].config.present === true) {
+        presentSphereId = sphereIds[i];
+      }
+    }
+
+    // if the user is in a sphere, search for his location.
+    if (presentSphereId) {
+      presentLocationId = DataUtil.getUserLocationIdInSphere(state, presentSphereId, userId);
+    }
+
+    return { sphereId: presentSphereId, locationId: presentLocationId };
+  },
+
   getUserLocationIdInSphere: function(state, sphereId, userId) {
     let locationIds = Object.keys(state.spheres[sphereId].locations);
     for (let i = 0; i < locationIds.length; i++) {

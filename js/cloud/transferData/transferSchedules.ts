@@ -2,6 +2,32 @@ import { CLOUD }        from "../cloudAPI";
 import { LOG }          from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
+
+
+type transferScheduleToLocalData = {
+  localId: string,
+  localSphereId: string,
+  localStoneId: string,
+  cloudData: any,
+}
+
+
+type transferScheduleToCloudData = {
+  localId: string,
+  localData: any,
+  cloudSphereId: string,
+  cloudStoneId: string,
+  cloudId: string,
+}
+
+type transferNewScheduleToCloudData = {
+  localId: string,
+  localData: any,
+  localSphereId: string,
+  localStoneId: string,
+  cloudStoneId: string,
+}
+
 let fieldMap : fieldMap = [
   {local:'label',                  cloud: 'label'},
   {local:'time',                   cloud: 'triggerTimeOnCrownstone'},
@@ -27,18 +53,18 @@ let fieldMap : fieldMap = [
 
 export const transferSchedules = {
 
-  createOnCloud: function( actions, data : transferScheduleToCloudData ) {
+  createOnCloud: function( actions, data : transferNewScheduleToCloudData ) {
     let payload = {};
-    payload['stoneId'] = data.stoneId;
+    payload['stoneId'] = data.cloudStoneId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    return CLOUD.forStone(data.stoneId).createSchedule(payload)
+    return CLOUD.forStone(data.cloudStoneId).createSchedule(payload)
       .then((result) => {
         // update cloudId in local database.
         actions.push({
           type: 'UPDATE_SCHEDULE_CLOUD_ID',
-          sphereId: data.sphereId,
-          stoneId: data.stoneId,
+          sphereId: data.localSphereId,
+          stoneId: data.localStoneId,
           scheduleId: data.localId,
           data: { cloudId: result.id }
         });
@@ -49,16 +75,16 @@ export const transferSchedules = {
       });
   },
 
-  updateOnCloud: function( actions, data : transferScheduleToCloudData ) {
+  updateOnCloud: function( data : transferScheduleToCloudData ) {
     if (data.cloudId === undefined) {
       return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
     }
 
     let payload = {};
-    payload['stoneId'] = data.stoneId;
+    payload['stoneId'] = data.cloudStoneId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    return CLOUD.forStone(data.stoneId).updateSchedule(data.cloudId, payload)
+    return CLOUD.forStone(data.cloudStoneId).updateSchedule(data.cloudId, payload)
       .then(() => {})
       .catch((err) => {
         LOG.error("Transfer-Schedule: Could not update schedule in cloud", err);
@@ -71,7 +97,7 @@ export const transferSchedules = {
     return transferUtil._handleLocal(
       actions,
       'ADD_STONE_SCHEDULE',
-      { sphereId: data.sphereId, stoneId: data.stoneId, scheduleId: data.localId },
+      { sphereId: data.localSphereId, stoneId: data.localStoneId, scheduleId: data.localId },
       data,
       fieldMap
     );
@@ -82,7 +108,7 @@ export const transferSchedules = {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_STONE_SCHEDULE',
-      { sphereId: data.sphereId, stoneId: data.stoneId, scheduleId: data.localId },
+      { sphereId: data.localSphereId, stoneId: data.localStoneId, scheduleId: data.localId },
       data,
       fieldMap
     );

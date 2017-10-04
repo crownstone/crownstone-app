@@ -1,9 +1,11 @@
 import { CLOUD }        from "../cloudAPI";
 import { LOG }          from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
+import {Permissions} from "../../backgroundProcesses/Permissions";
 
 let fieldMap : fieldMap = [
-  {local: 'applianceId',        cloud: 'applianceId'},
+  {local: 'applianceId',        cloud: 'localApplianceId', cloudToLocalOnly: true},
+  {local: 'cloudApplianceId',   cloud: 'applianceId',      localToCloudOnly: true},
   {local: 'crownstoneId',       cloud: 'uid'},
   {local: 'dimmingEnabled',     cloud: 'dimmingEnabled'},
   {local: 'firmwareVersion',    cloud: 'firmwareVersion'},
@@ -21,9 +23,11 @@ let fieldMap : fieldMap = [
   {local: 'touchToToggle',      cloud: 'touchToToggle'},
   {local: 'type',               cloud: 'type'},
   {local: 'updatedAt',          cloud: 'updatedAt'},
+  {local: 'json',               cloud: 'json', localToCloudOnly: true},
 
   // this is custom inserted.
-  {local: 'locationId',         cloud: 'locationId'},
+  {local: 'locationId',         cloud: 'localLocationId', cloudToLocalOnly: true},
+  {local: 'cloudLocationId',    cloud: 'locationId'     , localToCloudOnly: true},
 
   // used for local config
   {local: 'cloudId',            cloud:  'id',  cloudToLocalOnly: true  },
@@ -37,19 +41,21 @@ let fieldMap : fieldMap = [
 
 export const transferStones = {
 
-  createOnCloud: function( actions, data : transferToCloudData ) {
+  createOnCloud: function( actions, data : transferNewToCloudData ) {
     // TODO: include the switch state
-    // TODO: add behaviour
-
     let payload = {};
-    payload['sphereId'] = data.sphereId;
+    payload['sphereId'] = data.cloudSphereId;
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
-    return CLOUD.forSphere(data.sphereId).createStone(payload)
+    if (Permissions.setBehaviourInCloud) {
+      payload['json'] = JSON.stringify(data.localData.behaviour);
+    }
+
+    return CLOUD.forSphere(data.cloudSphereId).createStone(payload)
       .then((result) => {
         // update cloudId in local database.
-        actions.push({type: 'UPDATE_STONE_CLOUD_ID', sphereId: data.sphereId, stoneId: data.localId, data: { cloudId: result.id }});
+        actions.push({type: 'UPDATE_STONE_CLOUD_ID', sphereId: data.localSphereId, stoneId: data.localId, data: { cloudId: result.id }});
       })
       .catch((err) => {
         LOG.error("Transfer-Stone: Could not create stone in cloud", err);
@@ -57,13 +63,13 @@ export const transferStones = {
       });
   },
 
-  updateOnCloud: function( actions, data : transferToCloudData ) {
+  updateOnCloud: function( data : transferToCloudData ) {
     if (data.cloudId === undefined) {
       return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
     }
 
     let payload = {};
-    payload['sphereId'] = data.sphereId;
+    payload['sphereId'] = data.cloudSphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
     // add optional extra fields to payload
@@ -74,7 +80,7 @@ export const transferStones = {
       })
     }
 
-    return CLOUD.forSphere(data.sphereId).updateStone(data.cloudId, payload)
+    return CLOUD.forSphere(data.cloudSphereId).updateStone(data.cloudId, payload)
       .then(() => {
         // TODO: update location as well.
       })
@@ -90,7 +96,7 @@ export const transferStones = {
     return transferUtil._handleLocal(
       actions,
       'ADD_STONE',
-      { sphereId: data.sphereId, stoneId: data.localId },
+      { sphereId: data.localSphereId, stoneId: data.localId },
       data,
       fieldMap
     );
@@ -103,7 +109,7 @@ export const transferStones = {
     return transferUtil._handleLocal(
       actions,
       'UPDATE_STONE_CONFIG',
-      { sphereId: data.sphereId, stoneId: data.localId },
+      { sphereId: data.localSphereId, stoneId: data.localId },
       data,
       fieldMap
     );

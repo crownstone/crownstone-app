@@ -5,6 +5,11 @@ import { LOG }           from '../../logging/Log'
 import { Permissions }   from "../../backgroundProcesses/Permissions";
 import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
 import {eventBus} from "../../util/EventBus";
+import {transferSchedules} from "../../cloud/transferData/transferSchedules";
+import {transferUser} from "../../cloud/transferData/transferUser";
+import {transferStones} from "../../cloud/transferData/transferStones";
+import {transferAppliances} from "../../cloud/transferData/transferAppliances";
+import {transferSpheres} from "../../cloud/transferData/transferSpheres";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -105,10 +110,11 @@ function handleAction(action, returnValue, newState, oldState) {
       break;
 
     case "ADD_STONE_SCHEDULE":
+      handleStoneScheduleAdd(action, newState); break;
     case "UPDATE_STONE_SCHEDULE":
+      handleStoneScheduleUpdate(action, newState); break;
     case "REMOVE_STONE_SCHEDULE":
-      handleStoneSchedule(action, newState, oldState);
-      break;
+      handleStoneScheduleRemoval(action, newState, oldState); break;
 
     case "REMOVE_MESSAGE":
       handleMessageRemove(action, newState, oldState); break;
@@ -123,7 +129,7 @@ function handleAction(action, returnValue, newState, oldState) {
       break;
 
     case "SET_SPHERE_STATE":
-      handleSphereState(action, newState);
+      handleSphereStateOnDevice(action, newState);
       break;
 
 
@@ -133,93 +139,52 @@ function handleAction(action, returnValue, newState, oldState) {
 
 // user in this case is self, the owner of the phone
 function handleUserInCloud(action, state) {
-  let userId = state.user.userId;
-  CLOUD.forUser(userId);
   if (action.data.picture) {
-    CLOUD.uploadProfileImage(action.data.picture)
-      .then((data) => {
-        LOG.info(data);
-      })
-      .catch((err) => {
-        LOG.error("CloudEnhancer: Could not upload image to cloud", err);
-      });
+    // in case the user has a pending delete profile picture request, we will finish this immediately so a new
+    // picture will not be deleted.
+    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'removeProfilePicture' });
+    eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_SPECIAL_USER',
+      id: 'uploadProfilePicture',
+      specialType: 'uploadProfilePicture'
+    });
   }
   else if (action.data.picture === null) {
-    CLOUD.removeProfileImage({background: true}).catch(() => {});
+    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_USER', id: 'uploadProfilePicture' });
+    eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_SPECIAL_USER',
+      id: 'removeProfilePicture',
+      specialType: 'removeProfilePicture'
+    });
   }
 
-  if (action.data.firstName || action.data.lastName || action.data.isNew !== undefined) {
-    let data = {
-      firstName: state.user.firstName,
-      lastName: state.user.lastName,
-      new: state.user.isNew,
-      uploadLocation:    state.user.uploadLocation,
-      uploadSwitchState: state.user.uploadSwitchState,
-      uploadPowerUsage:  state.user.uploadPowerUsage,
-      uploadDeviceDetails:  state.user.uploadDeviceDetails,
-      updatedAt: state.user.updatedAt
-    };
-    CLOUD.updateUserData(data).catch(() => {});
-  }
+  transferUser.updateOnCloud(state.user)
 }
 
 function handleStoneBehaviourInCloud(action, state) {
-  let sphereId = action.sphereId;
-  let stoneId = action.stoneId;
+  let sphere = state.spheres[action.sphereId];
+  let stone = sphere.stones[action.stoneId];
 
   if (Permissions.setBehaviourInCloud) {
-    let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
-    let behaviourJSON = JSON.stringify(state.spheres[sphereId].stones[stoneId].behaviour);
-    let data = {
-      applianceId:       stoneConfig.applianceId,
-      address:           stoneConfig.macAddress,
-      icon:              stoneConfig.icon,
-      id:                stoneId,
-      dimmingEnabled:    stoneConfig.dimmingEnabled,
-      firmwareVersion:   stoneConfig.firmwareVersion,
-      bootloaderVersion: stoneConfig.bootloaderVersion,
-      hardwareVersion:   stoneConfig.hardwareVersion,
-      meshNetworkId:     stoneConfig.meshNetworkId,
-      major:             stoneConfig.iBeaconMajor,
-      minor:             stoneConfig.iBeaconMinor,
-      name:              stoneConfig.name,
-      onlyOnWhenDark:    stoneConfig.onlyOnWhenDark,
-      sphereId:          sphereId,
-      touchToToggle:     stoneConfig.touchToToggle,
-      updatedAt:         stoneConfig.updatedAt,
-      uid:               stoneConfig.crownstoneId,
-      json:              behaviourJSON,
-    };
-    CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
+    transferStones.updateOnCloud({
+      localId: action.stoneId,
+      localData: stone,
+      cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
+      cloudId:       stone.config.cloudId || action.stoneId,
+    }).catch();
   }
 }
 
 function handleStoneInCloud(action, state) {
-  let sphereId = action.sphereId;
-  let stoneId = action.stoneId;
+  let sphere = state.spheres[action.sphereId];
+  let stone = sphere.stones[action.stoneId];
 
-  let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
-  let data = {
-    applianceId:       stoneConfig.applianceId,
-    address:           stoneConfig.macAddress,
-    icon:              stoneConfig.icon,
-    id:                stoneId,
-    dimmingEnabled:    stoneConfig.dimmingEnabled,
-    firmwareVersion:   stoneConfig.firmwareVersion,
-    bootloaderVersion: stoneConfig.bootloaderVersion,
-    hardwareVersion:   stoneConfig.hardwareVersion,
-    meshNetworkId:     stoneConfig.meshNetworkId,
-    major:             stoneConfig.iBeaconMajor,
-    minor:             stoneConfig.iBeaconMinor,
-    name:              stoneConfig.name,
-    onlyOnWhenDark:    stoneConfig.onlyOnWhenDark,
-    sphereId:          sphereId,
-    touchToToggle:     stoneConfig.touchToToggle,
-    uid:               stoneConfig.crownstoneId,
-    updatedAt:         stoneConfig.updatedAt,
-  };
-
-  CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
+  transferStones.updateOnCloud({
+    localId: action.stoneId,
+    localData: stone,
+    cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
+    cloudId:       stone.config.cloudId  || action.stoneId,
+  }).catch();
 }
 
 function handleStoneLocationUpdateInCloud(action, state, oldState) {
@@ -229,7 +194,6 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   let updatedAt  = state.spheres[sphereId].stones[stoneId].config.updatedAt;
 
   let data = { locationId: locationId };
-
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
 
   let prevLocationId = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] && oldState.spheres[sphereId].stones[stoneId].config.locationId || null;
@@ -249,84 +213,57 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
 }
 
 function handleApplianceInCloud(action, state) {
-  let sphereId = action.sphereId;
-  let applianceId = action.applianceId;
+  let sphere   = state.spheres[action.sphereId];
+  let appliance = sphere.appliances[action.applianceId];
 
-  let applianceConfig = state.spheres[sphereId].appliances[applianceId].config;
-  let data = {
-    name: applianceConfig.name,
-    icon: applianceConfig.icon,
-    id: applianceId,
-    sphereId: sphereId,
-    onlyOnWhenDark: applianceConfig.onlyOnWhenDark,
-    updatedAt: applianceConfig.updatedAt,
-  };
-
-  CLOUD.forSphere(sphereId).updateAppliance(applianceId, data).catch(() => {});
+  transferAppliances.updateOnCloud({
+    localId:       action.stoneId,
+    localData:     appliance,
+    cloudSphereId: sphere.config.cloudId     || action.sphereId, // we used to have the same ids locally and in the cloud.
+    cloudId:       appliance.config.cloudId  || action.applianceId,
+  }).catch();
 }
 
 function handleApplianceBehaviourInCloud(action, state) {
-  let sphereId = action.sphereId;
-  let applianceId = action.applianceId;
+  let sphere    = state.spheres[action.sphereId];
+  let appliance = sphere.appliances[action.applianceId];
 
   if (Permissions.setBehaviourInCloud) {
-    let applianceConfig = state.spheres[sphereId].appliances[applianceId].config;
-    let behaviourJSON = JSON.stringify(state.spheres[sphereId].appliances[applianceId].behaviour);
-    let data = {
-      id:       applianceId,
-      icon:     applianceConfig.icon,
-      onlyOnWhenDark: applianceConfig.onlyOnWhenDark,
-      sphereId: sphereId,
-      json:     behaviourJSON,
-      updatedAt: applianceConfig.updatedAt
-    };
-    CLOUD.forSphere(sphereId).updateAppliance(applianceId, data).catch(() => {});
+    transferAppliances.updateOnCloud({
+      localId:       action.stoneId,
+      localData:     appliance,
+      cloudSphereId: sphere.config.cloudId       || action.sphereId, // we used to have the same ids locally and in the cloud.
+      cloudId:       appliance.config.cloudId    || action.applianceId,
+    }).catch();
   }
 }
 
 function handleLocationInCloud(action, state) {
-  let sphereId = action.sphereId;
-  let locationId = action.locationId;
+  let sphere   = state.spheres[action.sphereId];
+  let location = sphere.locations[action.locationId];
 
-  let locationConfig = state.spheres[sphereId].locations[locationId].config;
-  let data = {
-    name: locationConfig.name,
-    icon: locationConfig.icon,
-    id: locationId,
-    sphereId: sphereId,
-    updatedAt: locationConfig.updatedAt
-  };
-
-  CLOUD.forSphere(sphereId).updateLocation(locationId, data).catch(() => {});
+  transferAppliances.updateOnCloud({
+    localId: action.stoneId,
+    localData: location,
+    cloudSphereId: sphere.config.cloudId    || action.sphereId, // we used to have the same ids locally and in the cloud.
+    cloudId:       location.config.cloudId  || action.locationId,
+  }).catch();
 }
 
 function handleSphereInCloud(action, state) {
-  // these are handled by the views, cloud update for these things is mandatory
-  let sphereId = action.sphereId;
+  let sphere = state.spheres[action.sphereId];
 
-  let sphereConfig = state.spheres[sphereId].config;
-  let data = {
-    aiName: sphereConfig.aiName,
-    aiSex: sphereConfig.aiSex,
-    exitDelay: sphereConfig.exitDelay,
-    meshAccessAddress: sphereConfig.meshAccessAddress,
-    gpsLocation:{
-      lat: sphereConfig.latitude,
-      lng: sphereConfig.longitude,
-    },
-    name: sphereConfig.name,
-    uuid: sphereConfig.iBeaconUUID,
-    updatedAt: sphereConfig.updatedAt,
-  };
-
-  CLOUD.updateSphere(sphereId, data).catch(() => {});
+  transferSpheres.updateOnCloud({
+    localData: sphere,
+    cloudId:   sphere.config.cloudId || action.sphereId,
+  }).catch()
 }
 
 function handleSphereUserInCloud(action, state) {
 
 }
 
-function handleSphereState(action, state) {
+function handleSphereStateOnDevice(action, state) {
   if (state.user.uploadLocation === true) {
     let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
@@ -452,16 +389,13 @@ function handleMessageReceived(action, state) {
 
 function handleMessageRead(action, state) {
   let message = state.spheres[action.sphereId].messages[action.messageId];
-  CLOUD.readMessage(message.config.cloudId).catch((err) => {
-    LOG.error("CloudEnhancer: could not mark message as read!", err);
-    eventBus.emit("submitCloudEvent", {
-      type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
-      sphereId: action.sphereId,
-      id: action.messageId + '_' + 'readMessage',
-      localId: action.messageId,
-      cloudId: message.config.cloudId,
-      specialType: 'readMessage'
-    });
+  eventBus.emit("submitCloudEvent", {
+    type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
+    sphereId: action.sphereId,
+    id: action.messageId + '_' + 'readMessage',
+    localId: action.messageId,
+    cloudId: message.config.cloudId,
+    specialType: 'readMessage'
   })
 }
 
@@ -473,42 +407,73 @@ function handleMessageRemove(action, state, oldState) {
 
   // if user is sender, delete in cloud.
   if (message.config.senderId === oldState.user.userId) {
-    CLOUD.forSphere(action.sphereId).deleteMessage(message.config.cloudId).catch((err) => {
-      LOG.error("CloudEnhancer: could not delete message as read!", err);
-      eventBus.emit("submitCloudEvent", {
-        type: 'CLOUD_EVENT_REMOVE_MESSAGES',
-        sphereId: action.sphereId,
-        id: action.messageId,
-        localId: action.messageId,
-        cloudId: message.config.cloudId
-      });
+    eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_REMOVE_MESSAGES',
+      sphereId: action.sphereId,
+      id: action.messageId,
+      localId: action.messageId,
+      cloudId: message.config.cloudId
     });
   }
+}
 
+
+function handleStoneScheduleAdd(action, state) {
+  let sphere = state.spheres[action.sphereId];
+  let stone = sphere.stones[action.stoneId];
+  let newSchedule = stone.schedules[action.scheduleId];
+
+  let actions = [];
+
+  let payload = {
+    localId: action.scheduleId,
+    localStoneId: action.stoneId,
+    localSphereId: action.sphereId,
+    localData: newSchedule,
+    cloudSphereId: sphere.config.cloudId || action.sphereId,
+    cloudStoneId: stone.config.cloudId || action.stoneId,
+  };
+
+  transferSchedules.createOnCloud(actions, payload)
+    .then(() => {
+      eventBus.emit("submitCloudEvent", actions);
+    }).catch();
 
 }
 
-function handleStoneSchedule(action, state, oldState) {
-  let newSchedule = state.spheres[action.sphereId].stones[action.stoneId].schedules[action.scheduleId];
+
+function handleStoneScheduleUpdate(action, state) {
+  let sphere = state.spheres[action.sphereId];
+  let stone = sphere.stones[action.stoneId];
+  let newSchedule = stone.schedules[action.scheduleId];
+
+  if (!newSchedule.cloudId) {
+    return handleStoneScheduleAdd(action, state);
+  }
+
+  let payload = {
+    localId: action.scheduleId,
+    localData: newSchedule,
+    cloudSphereId: sphere.config.cloudId || action.sphereId,
+    cloudStoneId: stone.config.cloudId || action.stoneId,
+    cloudId: newSchedule.cloudId,
+  };
+
+  transferSchedules.updateOnCloud(payload).catch();
+
+}
+
+function handleStoneScheduleRemoval(action, state, oldState) {
   let oldSchedule = oldState.spheres[action.sphereId].stones[action.stoneId].schedules[action.scheduleId];
 
   let payload = {
+    type: 'CLOUD_EVENT_REMOVE_SCHEDULES',
     sphereId: action.sphereId,
     stoneId: action.stoneId,
     id: action.scheduleId,
     localId: action.scheduleId,
     cloudId: oldSchedule && oldSchedule.cloudId || null, // if old does not exist, this is a create event which does not have a cloudId
-    data: newSchedule // can be undefined for deleted schedule
   };
-
-  switch (action.type) {
-    case "ADD_STONE_SCHEDULE":
-      payload["type"] = 'CLOUD_EVENT_CREATE_SCHEDULES'; break;
-    case "UPDATE_STONE_SCHEDULE":
-      payload["type"] = 'CLOUD_EVENT_UPDATE_SCHEDULES'; break;
-    case "REMOVE_STONE_SCHEDULE":
-      payload["type"] = 'CLOUD_EVENT_REMOVE_SCHEDULES'; break;
-  }
 
   eventBus.emit("submitCloudEvent", payload);
 }

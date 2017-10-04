@@ -30,6 +30,18 @@ export const schedules = {
     );
   },
 
+  /**
+   * request the data of all crownstones in this sphere
+   * @returns {*}
+   */
+  getScheduleWithIndex: function(index, background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Stones/{id}/schedules',
+      {background: background, filter: {where:{scheduleEntryIndex:index}}}
+    )
+  },
+
 
   updateSchedule: function(scheduleId, data, background = true) {
     return this._setupRequest(

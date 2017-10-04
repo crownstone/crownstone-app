@@ -234,20 +234,6 @@ function checkAction(action, affectedIds) {
       eventStatus['changeAppSettings'] = affectedIds; break;
     case 'UPDATE_MESH_NETWORK_ID':
       eventStatus['meshIdUpdated'] = affectedIds; break;
-    case "CLOUD_EVENT_CREATE_APPLIANCES":
-    case "CLOUD_EVENT_CREATE_LOCATIONS":
-    case "CLOUD_EVENT_CREATE_STONES":
-    case "CLOUD_EVENT_CREATE_SCHEDULES":
-    case "CLOUD_EVENT_CREATE_INSTALLATIONS":
-    case "CLOUD_EVENT_CREATE_DEVICES":
-    case "CLOUD_EVENT_CREATE_MESSAGES":
-    case "CLOUD_EVENT_UPDATE_APPLIANCES":
-    case "CLOUD_EVENT_UPDATE_LOCATIONS":
-    case "CLOUD_EVENT_UPDATE_STONES":
-    case "CLOUD_EVENT_UPDATE_SCHEDULES":
-    case "CLOUD_EVENT_UPDATE_INSTALLATIONS":
-    case "CLOUD_EVENT_UPDATE_DEVICES":
-    case "CLOUD_EVENT_UPDATE_MESSAGES":
     case "CLOUD_EVENT_REMOVE_APPLIANCES":
     case "CLOUD_EVENT_REMOVE_LOCATIONS":
     case "CLOUD_EVENT_REMOVE_STONES":

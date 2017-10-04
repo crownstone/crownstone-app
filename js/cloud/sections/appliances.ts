@@ -4,8 +4,8 @@
 
 export const appliances = {
 
-  getAppliancesInSphere: function(options) {
-    return this._setupRequest('GET', '/Spheres/{id}/ownedAppliances', options);
+  getAppliancesInSphere: function(background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/ownedAppliances', background);
   },
 
   createAppliance: function (data, background = false) {

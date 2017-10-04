@@ -70,8 +70,8 @@ export const user = {
    *
    * @returns {*}
    */
-  getUserData: function (options : any = {}) {
-    return this._setupRequest('GET', '/users/{id}', options);
+  getUserData: function (background = true) {
+    return this._setupRequest('GET', '/users/{id}', {background});
   },
 
   /**
@@ -110,11 +110,11 @@ export const user = {
     );
   },
 
-  getKeys: function(options : any = {}) {
+  getKeys: function(background = true) {
     return this._setupRequest(
       'GET',
       'users/{id}/keys',
-      options
+      {background : background}
     );
   },
 

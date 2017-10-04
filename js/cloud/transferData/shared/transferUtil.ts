@@ -4,6 +4,11 @@ export const transferUtil = {
       if (field.cloudToLocalOnly === true) {
         return; // we do not allow this field to be synced back up to the cloud. Usually used for IDs.
       }
+
+      if (field.permissionNeeded && payload.permissionGranted === false) {
+        return;
+      }
+
       if (localData[field.local] !== undefined && field.cloud !== null) {
         if (field.localFields) {
           payload[field.cloud] = {};
@@ -22,6 +27,10 @@ export const transferUtil = {
 
   fillFieldsForLocal: function(payload, cloudData, fieldMap) {
     fieldMap.forEach((field) => {
+      if (field.localToCloudOnly === true) {
+        return; // we do not allow this field to be synced from the cloud to local. Usually used for IDs.
+      }
+
       if (field.cloud !== null && cloudData[field.cloud]) {
         if (field.localFields) {
           payload[field.local] = {};
@@ -44,9 +53,7 @@ export const transferUtil = {
       }
 
       let payload = {};
-      payload['cloudId'] = data.cloudData.id;
       transferUtil.fillFieldsForLocal(payload, data.cloudData, fieldMap);
-
 
       // add optional extra fields to payload
       if (data.extraFields) {

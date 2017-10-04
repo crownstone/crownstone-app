@@ -18,7 +18,14 @@ export const spheres = {
     let state = store.getState();
     let sphereId;
     let creationActions = [];
-    return this.forUser(state.user.userId).createSphere(sphereName, latitude, longitude)
+
+    // only write gps coordinates if we have them.
+    let payload = { name: sphereName };
+    if (latitude && longitude) {
+      payload['gpsLocation'] = {lat:latitude, lng: longitude}
+    }
+
+    return this.forUser(state.user.userId).createSphere(payload, false)
       .then((response) => {
         sphereId = response.id;
 
@@ -78,8 +85,8 @@ export const spheres = {
     }
   },
 
-  getPendingInvites: function(options : any = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/pendingInvites', options);
+  getPendingInvites: function(background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/pendingInvites', {background:background});
   },
 
   resendInvite: function(email, background = false) {
@@ -96,48 +103,42 @@ export const spheres = {
    *
    * @returns {*}
    */
-  getSpheres: function (options : any = {}) {
-    return this._setupRequest('GET', '/users/{id}/spheres', options);
+  getSpheres: function (background = true) {
+    return this._setupRequest('GET', '/users/{id}/spheres', { background: background });
   },
 
-  getUsers: function (options : any = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/users', options);
+  getUsers: function (background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/users', { background : background } );
   },
 
-  getAdmins: function (options : any = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/admins', options);
+  getAdmins: function (background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/admins', { background : background });
   },
 
-  getMembers: function (options : any = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/members', options);
+  getMembers: function (background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/members', { background : background });
   },
 
-  getGuests: function (options : any = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/guests', options);
+  getGuests: function (background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/guests', { background : background });
   },
 
 
   /**
-   * @param sphereName
-   * @param latitude
-   * @param longitude
+   * @param data
+   * @param background
    */
-  createSphere: function(sphereName, latitude, longitude) {
-    let payload = { data: {name:sphereName, gpsLocation: undefined}};
-    // only write gps coordinates if we have them.
-    if (latitude && longitude) {
-      payload.data.gpsLocation = {lat:latitude, lng: longitude}
-    }
-    return this._setupRequest('POST', 'users/{id}/spheres', payload, 'body');
+  createSphere: function(data, background = true) {
+    return this._setupRequest('POST', 'users/{id}/spheres', { data: data, background: background }, 'body');
   },
 
-  getUserPicture(sphereId, email, userId, options : any = {}) {
+  getUserPicture(cloudSphereId, email, userId, background = true) {
     let toPath = Util.getPath(userId + '.jpg');
-    return this.forSphere(sphereId)._download({
+    return this.forSphere(cloudSphereId)._download({
       endPoint:'/Spheres/{id}/profilePic',
       data: {email: email},
       type: 'query',
-      ...options
+      background:background,
     }, toPath);
   },
 

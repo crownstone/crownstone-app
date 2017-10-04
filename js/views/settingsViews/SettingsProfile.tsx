@@ -198,10 +198,10 @@ export class SettingsProfile extends Component<any, any> {
                   processImage(pictureUrl, newFilename)
                     .then((newPicturePath) => {
                       this.setState({picture:newPicturePath});
-                      store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
+                      store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath, pictureId: null}});
                       // update your settings in every sphere that you belong to.
                       sphereIds.forEach((sphereId) => {
-                        store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath}});
+                        store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath, pictureId: null}});
                       });
                     })
                     .catch((err) => {
@@ -210,10 +210,10 @@ export class SettingsProfile extends Component<any, any> {
                 }}
                 removePicture={() => {
                   safeDeleteFile(this.state.picture).catch(() => {});
-                  store.dispatch({type:'USER_UPDATE', data:{picture:null}});
+                  store.dispatch({type:'USER_UPDATE', data:{picture:null, pictureId: null}});
                   // update your settings in every sphere that you belong to.
                   sphereIds.forEach((sphereId) => {
-                    store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null}});
+                    store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null, pictureId: null}});
                   });
                   this.setState({picture:null});
                 }}

@@ -7,6 +7,7 @@ let defaultSettings = {
   invitationPending: false,
   present: false,
   picture: null,
+  pictureId: null,
   accessLevel: undefined, // 'admin', 'member', 'guest'
   updatedAt: 1
 };
@@ -25,12 +26,13 @@ let sphereUserReducer = (state = defaultSettings, action : any = {}) => {
     case 'UPDATE_SPHERE_USER':
       if (action.data) {
         let newState = {...state};
-        newState.firstName         = update(action.data.firstName,     newState.firstName);
-        newState.lastName          = update(action.data.lastName,      newState.lastName);
-        newState.picture           = update(action.data.picture,       newState.picture);
-        newState.email             = update(action.data.email,         newState.email);
-        newState.invitationPending = update(action.data.invitationPending,   newState.invitationPending);
-        newState.accessLevel       = update(action.data.accessLevel,   newState.accessLevel);
+        newState.firstName         = update(action.data.firstName,         newState.firstName);
+        newState.lastName          = update(action.data.lastName,          newState.lastName);
+        newState.picture           = update(action.data.picture,           newState.picture);
+        newState.pictureId         = update(action.data.pictureId,         newState.pictureId);
+        newState.email             = update(action.data.email,             newState.email);
+        newState.invitationPending = update(action.data.invitationPending, newState.invitationPending);
+        newState.accessLevel       = update(action.data.accessLevel,       newState.accessLevel);
         newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;
       }
