@@ -9,6 +9,7 @@ import { StoneUtil } from "../util/StoneUtil";
 import {LocalNotifications} from "../notifications/LocalNotifications";
 import {Actions} from "react-native-router-flux";
 import {MessageCenter} from "./MessageCenter";
+import {MapProvider} from "./MapProvider";
 
 class NotificationHandlerClass {
   store: any = {};
@@ -200,12 +201,17 @@ class NotificationParserClass {
       return;
     }
 
-    if (state && state.spheres[messageData.sphereId] && state.spheres[messageData.sphereId].stones[messageData.stoneId]) {
+    let localSphereId = MapProvider.cloud2localMap.spheres[messageData.sphereId];
+    let localStoneId  = MapProvider.cloud2localMap.stones[messageData.stoneId];
+    if (!localSphereId || !localStoneId) { return; }
+
+
+    if (state && state.spheres[localSphereId] && state.spheres[localSphereId].stones[localStoneId]) {
       LOG.info("NotificationParser: switching based on notification", messageData);
       StoneUtil.switchBHC(
-        messageData.sphereId,
-        messageData.stoneId,
-        state.spheres[messageData.sphereId].stones[messageData.stoneId],
+        localSphereId,
+        localStoneId,
+        state.spheres[localSphereId].stones[localStoneId],
         Math.min(1, Math.max(0, messageData.switchState || 0)),
         this.store,
         {},

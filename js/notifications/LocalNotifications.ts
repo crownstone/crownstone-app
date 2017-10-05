@@ -6,6 +6,7 @@ import {canUseIndoorLocalizationInSphere} from "../util/DataUtil";
 import {eventBus} from "../util/EventBus";
 import Toast from 'react-native-same-toast';
 import {MessageCenter} from "../backgroundProcesses/MessageCenter";
+import {MapProvider} from "../backgroundProcesses/MapProvider";
 
 
 const MESSAGE_SELF_SENT_TIMEOUT = 10 * 1000; // 30 seconds
@@ -16,17 +17,21 @@ export const LocalNotifications = {
       return;
     }
 
+    let localSphereId = MapProvider.cloud2localMap.spheres[messageData.sphereId];
+    let localLocationId = MapProvider.cloud2localMap.locations[messageData.triggerLocationId];
+    if (!localSphereId) { return };
+
     LOG.info("LocalNotifications: received new message!", messageData);
     // do we have this sphere?
-    let sphere = state.spheres[messageData.sphereId];
+    let sphere = state.spheres[localSphereId];
     if (state && sphere) {
       // check if in the sphere
       if (sphere.config.present === true) {
-        if (messageData.triggerLocationId) {
+        if (localLocationId) {
           // check if you're in this location or if you can't be in a location due to disabled localization
           // return if we do NOT have to deliver the message RIGHT NOW
           let canDoLocalization = canUseIndoorLocalizationInSphere(state, messageData.sphereId);
-          if (canDoLocalization && Util.data.getUserLocationIdInSphere(state, messageData.sphereId, state.user.userId) !== messageData.triggerLocationId) {
+          if (canDoLocalization && Util.data.getUserLocationIdInSphere(state, messageData.sphereId, state.user.userId) !== localLocationId) {
             // we will deliver this message on moving to the other room.
             return false;
           }

@@ -78,10 +78,6 @@ export const sync = {
       })
       .then(() => {
         LOG.info("Sync: DONE DeviceSyncer sync.");
-        LOG.info("Sync: START MessageCenter checkForMessages.");
-        MessageCenter.checkForMessages();
-
-        LOG.info("Sync: DONE MessageCenter checkForMessages.");
         LOG.info("Sync: START syncPowerUsage.");
         return syncPowerUsage(state, actions);
       })
@@ -119,6 +115,10 @@ export const sync = {
         if (reloadTrackingRequired) {
           this.events.emit("CloudSyncComplete_spheresChanged");
         }
+
+        LOG.info("Sync after: START MessageCenter checkForMessages.");
+        MessageCenter.checkForMessages();
+        LOG.info("Sync after: DONE MessageCenter checkForMessages.");
 
       })
       .then(() => {

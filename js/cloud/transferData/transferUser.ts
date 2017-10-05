@@ -24,8 +24,6 @@ let fieldMap : fieldMap = [
   {local:'userId',                              cloud:'id',                          cloudToLocalOnly: true},
   {local:'uploadLocation',                      cloud:'uploadLocation'},
   {local:'uploadSwitchState',                   cloud:'uploadSwitchState'},
-  {local:'uploadPowerUsage',                    cloud:'uploadPowerUsage'},
-  {local:'uploadHighFrequencyPowerUsage',       cloud:'uploadHighFrequencyPowerUsage'},
   {local:'uploadDeviceDetails',                 cloud:'uploadDeviceDetails'},
   {local:'updatedAt',                           cloud:'updatedAt'},
 

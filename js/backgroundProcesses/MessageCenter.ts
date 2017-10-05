@@ -3,6 +3,7 @@ import { NativeBus }          from "../native/libInterface/NativeBus";
 import { CLOUD }              from "../cloud/cloudAPI";
 import { LocalNotifications } from "../notifications/LocalNotifications";
 import { Util }               from "../util/Util";
+import {MapProvider} from "./MapProvider";
 
 class MessageCenterClass {
   _initialized: boolean = false;
@@ -31,9 +32,9 @@ class MessageCenterClass {
        (dbMessage.config.content === cloudMessage.content) &&
         (
           (dbMessage.config.triggerLocationId === null && cloudMessage.triggerLocationId === undefined) ||
-          (dbMessage.config.triggerLocationId === cloudMessage.triggerLocationId)
+          (dbMessage.config.triggerLocationId === MapProvider.cloud2localMap.locations[cloudMessage.triggerLocationId])
         )
-        ) {
+      ) {
 
       let dbRecipientIds = Object.keys(dbMessage.recipients);
       if (dbRecipientIds.length === cloudRecipientIds.length) {
@@ -165,12 +166,12 @@ class MessageCenterClass {
     }
   }
 
-  deliveredMessage(sphereId, localMessageId) {
+  deliveredMessage(localSphereId, localMessageId) {
     let state = this._store.getState();
     if (localMessageId) {
       this._store.dispatch({
         type: "I_RECEIVED_MESSAGE",
-        sphereId: sphereId,
+        sphereId: localSphereId,
         messageId: localMessageId,
         data: {
           userId: state.user.userId,
@@ -180,12 +181,12 @@ class MessageCenterClass {
     }
   }
 
-  readMessage(sphereId, localMessageId) {
+  readMessage(localSphereId, localMessageId) {
     let state = this._store.getState();
     if (localMessageId) {
       this._store.dispatch({
         type: "I_READ_MESSAGE",
-        sphereId: sphereId,
+        sphereId: localSphereId,
         messageId: localMessageId,
         data: {userId: state.user.userId}
       });
@@ -214,7 +215,13 @@ class MessageCenterClass {
 
   _handleMessageInLocation(sphereId, locationId, triggerEvent) {
     let state = this._store.getState();
-    CLOUD.forSphere(sphereId).getNewMessagesInLocation(locationId)
+
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[sphereId];
+    let cloudLocationId = MapProvider.local2cloudMap.locations[locationId];
+
+    if (!cloudSphereId || !cloudLocationId) { return; }
+
+    CLOUD.forSphere(cloudSphereId).getNewMessagesInLocation(cloudLocationId)
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
@@ -232,8 +239,11 @@ class MessageCenterClass {
   }
 
   _handleMessageInSphere(sphereId, triggerEvent) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[sphereId];
+    if (!cloudSphereId) { return; }
+
     let state = this._store.getState();
-    CLOUD.forSphere(sphereId).getNewMessagesInSphere()
+    CLOUD.forSphere(cloudSphereId).getNewMessagesInSphere()
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
