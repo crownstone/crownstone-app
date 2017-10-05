@@ -25,7 +25,7 @@ export const syncEvents = function(store) {
         store.batchDispatch(actions);
       }
     })
-    .catch((err) => { console.log('syncEvents: error', err)})
+    .catch((err) => { LOG.error('syncEvents: error', err)})
 
 };
 
