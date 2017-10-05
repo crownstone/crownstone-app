@@ -60,7 +60,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
       else {
         // the stone does not exist locally but it does exist in the cloud.
         // we create it locally.
-        let localId = Util.getUUID();
+        localId = Util.getUUID();
 
         let cloudDataForLocal = {...stone_from_cloud};
         cloudDataForLocal['localApplianceId'] = this._getLocalApplianceId(stone_from_cloud.applianceId);
@@ -111,7 +111,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
     this.transferPromises.push(
       scheduleSyncing.sync(
-        localId ? localStone.schedules : {},
+        localStone && localStone.schedules || {},
         stone_from_cloud.schedules
       )
     );

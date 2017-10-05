@@ -55,7 +55,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
       else {
         // the schedule does not exist locally but it does exist in the cloud.
         // we create it locally.
-        let localId = Util.getUUID();
+        localId = Util.getUUID();
         localScheduleIdsSynced[localId] = true;
         // add schedule
         this.transferPromises.push(

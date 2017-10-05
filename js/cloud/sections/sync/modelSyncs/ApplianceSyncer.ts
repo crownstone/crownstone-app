@@ -44,15 +44,13 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
 
       // item exists locally.
       if (localId) {
-        cloudIdMap[appliance_from_cloud.id] = localId;
         localApplianceIdsSynced[localId] = true;
         this.syncLocalApplianceDown(localId, appliancesInState[localId], appliance_from_cloud);
       }
       else {
         // the appliance does not exist locally but it does exist in the cloud.
         // we create it locally.
-        let localId = Util.getUUID();
-        cloudIdMap[appliance_from_cloud.id] = localId;
+        localId = Util.getUUID();
         this.transferPromises.push(
           transferAppliances.createLocal(this.actions, {
             localId: localId,
@@ -65,6 +63,8 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
           .catch()
         );
       }
+
+      cloudIdMap[appliance_from_cloud.id] = localId;
     });
 
     this.globalCloudIdMap.appliances = cloudIdMap;

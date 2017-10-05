@@ -52,7 +52,7 @@ export class MessageSyncer extends SyncingSphereItemBase {
           // do nothing.
         }
         else {
-          let localId = Util.getUUID();
+          localId = Util.getUUID();
           let cloudDataForLocal = {...message_from_cloud};
           cloudDataForLocal['localTriggerLocationId'] = this._getLocalLocationId(message_from_cloud.triggerLocationId);
           this.transferPromises.push(

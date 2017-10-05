@@ -46,15 +46,13 @@ export class LocationSyncer extends SyncingSphereItemBase {
 
       // item exists locally.
       if (localId) {
-        cloudIdMap[location_from_cloud.id] = localId;
         localLocationIdsSynced[localId] = true;
         this.syncLocalLocationDown(localId, locationsInState[localId], location_from_cloud);
       }
       else {
         // the location does not exist locally but it does exist in the cloud.
         // we create it locally.
-        let localId = Util.getUUID();
-        cloudIdMap[location_from_cloud.id] = localId;
+        localId = Util.getUUID();
         this.transferPromises.push(
           transferLocations.createLocal(this.actions, {
             localId: localId,
@@ -65,6 +63,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         );
       }
 
+      cloudIdMap[location_from_cloud.id] = localId;
       this.syncChildren(localId, localId ? locationsInState[localId] : null, location_from_cloud);
     });
 

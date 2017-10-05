@@ -55,7 +55,7 @@ export class SphereSyncer extends SyncingBase {
       else {
         // the sphere does not exist locally but it does exist in the cloud.
         // we create it locally.
-        let localId = Util.getUUID();
+        localId = Util.getUUID();
         cloudIdMap[sphere_from_cloud.id] = localId;
         this.transferPromises.push(
           transferSpheres.createLocal(this.actions, {
@@ -83,30 +83,30 @@ export class SphereSyncer extends SyncingBase {
     // sync sphere users
     LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
     this.transferPromises.push(
-      sphereUserSyncer.sync(state, localSphere.users || {})
+      sphereUserSyncer.sync(state, localSphere && localSphere.users || {})
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE sphereUserSyncer sync.");
         LOG.info("SphereSync ",localId,": START locationSyncer sync.");
       // sync locations
-        return locationSyncer.sync(state, localSphere.locations || {});
+        return locationSyncer.sync(state, localSphere && localSphere.locations || {});
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE locationSyncer sync.");
         LOG.info("SphereSync ",localId,": START applianceSyncer sync.");
         // sync appliances
-        return applianceSyncer.sync(state, localSphere.appliances || {});
+        return applianceSyncer.sync(state, localSphere && localSphere.appliances || {});
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE applianceSyncer sync.");
         LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
         // sync stones
-        return stoneSyncer.sync(state, localSphere.stones || {});
+        return stoneSyncer.sync(state, localSphere && localSphere.stones || {});
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE stoneSyncer sync.");
         LOG.info("SphereSync ",localId,": START messageSyncer sync.");
         // sync messages
-        return messageSyncer.sync(state, localSphere.messages || {});
+        return messageSyncer.sync(state, localSphere && localSphere.messages || {});
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");
