@@ -7,7 +7,7 @@ import { BatchCommandHandler }                    from '../logic/BatchCommandHan
 import { Util }                                   from '../util/Util'
 import { STONE_TYPES, BEHAVIOUR_TYPES }                      from '../router/store/reducers/stones'
 import { canUseIndoorLocalizationInSphere } from '../util/DataUtil'
-import {Permissions} from "./Permissions";
+import {Permissions} from "./PermissionManager";
 
 const TRIGGER_ID = 'KEEP_ALIVE_HANDLER';
 
@@ -134,7 +134,7 @@ class KeepAliveHandlerClass {
     LOG.info('KeepAliveHandler: (' + keepAliveId + ') setting up keep Alive to stone handle', stone.config.handle);
 
     // guests do not send a state, they just prolong the existing keepAlive.
-    if (Permissions.useKeepAliveState) {
+    if (Permissions.inSphere(sphereId).useKeepAliveState) {
       // determine what to send
       let changeState = false;
       let newState = 0;

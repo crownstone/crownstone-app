@@ -38,7 +38,7 @@ import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
 import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
 import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -286,12 +286,13 @@ export class RoomOverview extends Component<any, any> {
 
     let rightLabel = undefined;
     let rightAction = () => { };
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    if (Permissions.editRoom === true && this.props.locationId !== null) {
+    if (spherePermissions.editRoom === true && this.props.locationId !== null) {
       rightLabel = 'Edit';
       rightAction = () => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId}); };
     }
-    else if (Permissions.editRoom === false && this.props.locationId !== null && enoughCrownstones === true) {
+    else if (spherePermissions.editRoom === false && this.props.locationId !== null && enoughCrownstones === true) {
       rightLabel = 'Train';
       rightAction = () => {
         if (this.viewingRemotely === true) {

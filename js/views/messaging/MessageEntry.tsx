@@ -20,7 +20,6 @@ import {IconButton} from "../components/IconButton";
 import {Util} from "../../util/Util";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {Icon} from "../components/Icon";
-import {Permissions} from "../../backgroundProcesses/Permissions";
 import {ANYWHERE_IN_SPHERE, EVERYONE_IN_SPHERE} from "./MessageAdd";
 import {ProfilePicture} from "../components/ProfilePicture";
 import {DoubleTapDelete} from "../components/DoubleTapDelete";

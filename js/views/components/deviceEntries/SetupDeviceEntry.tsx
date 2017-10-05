@@ -17,7 +17,7 @@ import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from '../../styles'
 import {Util} from "../../../util/Util";
-import {Permissions} from "../../../backgroundProcesses/Permissions";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class SetupDeviceEntry extends Component<any, any> {
@@ -178,7 +178,7 @@ export class SetupDeviceEntry extends Component<any, any> {
   }
 
   setupStone() {
-    if (Permissions.setupCrownstone) {
+    if (Permissions.inSphere(this.props.sphereId).setupCrownstone) {
       if (this.state.disabled === false && this.state.setupInProgress !== true) {
         SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {  })
       }

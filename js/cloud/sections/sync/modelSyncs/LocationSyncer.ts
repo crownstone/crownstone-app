@@ -9,6 +9,7 @@ import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferLocations} from "../../../transferData/transferLocations";
+import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 export class LocationSyncer extends SyncingSphereItemBase {
   userId: string;
@@ -30,7 +31,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
       .then(() => { return this.actions });
   }
 
-  syncDown(locationsInState, locationsInCloud) {
+  syncDown(locationsInState, locationsInCloud) : object {
     let localLocationIdsSynced = {};
     let cloudIdMap = this._getCloudIdMap(locationsInState);
 
@@ -68,6 +69,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
     });
 
     this.globalCloudIdMap.locations = cloudIdMap;
+    return localLocationIdsSynced;
   }
 
   syncChildren(localId, localLocation, location_from_cloud) {
@@ -150,6 +152,8 @@ export class LocationSyncer extends SyncingSphereItemBase {
         this.actions.push({ type: 'REMOVE_LOCATION', sphereId: this.localSphereId, locationId: localLocationId });
       }
       else {
+        if (!Permissions.inSphere(this.localSphereId).canCreateLocations) { return }
+
         this.transferPromises.push(
           transferLocations.createOnCloud(this.actions, { localId: localLocationId, localSphereId: this.localSphereId, cloudSphereId: this.cloudSphereId, localData: localLocation })
             .then((cloudId) => {
@@ -162,6 +166,9 @@ export class LocationSyncer extends SyncingSphereItemBase {
 
   syncLocalLocationDown(localId, locationInState, location_from_cloud) {
     if (shouldUpdateInCloud(locationInState.config, location_from_cloud)) {
+
+      if (!Permissions.inSphere(this.localSphereId).canUploadLocations) { return }
+
       this.transferPromises.push(
         transferLocations.updateOnCloud({
           localId:   localId,
@@ -190,7 +197,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
     locationIds.forEach((locationId) => {
       let location = locationsInState[locationId];
       if (location.config.cloudId) {
-        cloudIdMap[location.config.cloudId] = location;
+        cloudIdMap[location.config.cloudId] = locationId;
       }
     });
 

@@ -43,13 +43,12 @@ export const sync = {
     let accessToken = state.user.accessToken;
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
-    let sphereSyncedIds;
-    let changedLocations;
 
     let globalCloudIdMap = getGlobalCloudIdMap();
     let actions = [];
     let userSyncer = new UserSyncer(actions, [], globalCloudIdMap);
 
+    LOG.info("Sync: START Sync Events.");
     return syncEvents(store)
       // in case the event sync fails, check if the user accessToken is invalid, try to regain it if that's the case and try again.
       .catch(getUserIdCheckError(state, store, () => {
@@ -57,6 +56,8 @@ export const sync = {
         return this.syncEvents(store);
       }))
       .then(() => {
+        LOG.info("Sync: DONE Sync Events.");
+        LOG.info("Sync: START userSyncer sync.");
         return userSyncer.sync(state)
       })
       .catch(getUserIdCheckError(state, store, () => {
@@ -64,17 +65,23 @@ export const sync = {
         return userSyncer.sync(state)
       }))
       .then(() => {
+        LOG.info("Sync: DONE userSyncer sync.");
+        LOG.info("Sync: START SphereSyncer sync.");
         let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap);
         return sphereSyncer.sync(state);
       })
       .then(() => {
+        LOG.info("Sync: DONE SphereSyncer sync.");
+        LOG.info("Sync: START DeviceSyncer sync.");
         let deviceSyncer = new DeviceSyncer(actions, [], globalCloudIdMap);
         return deviceSyncer.sync(state);
       })
       .then(() => {
+        LOG.info("Sync: DONE DeviceSyncer sync.");
+        LOG.info("Sync: START MessageCenter checkForMessages.");
         MessageCenter.checkForMessages();
 
-        LOG.info("Sync: DONE syncDevices.");
+        LOG.info("Sync: DONE MessageCenter checkForMessages.");
         LOG.info("Sync: START syncPowerUsage.");
         return syncPowerUsage(state, actions);
       })
@@ -86,8 +93,18 @@ export const sync = {
       // FINISHED SYNCING
       .then(() => {
         LOG.info("SYNC: Finished. Dispatching ", actions.length, " actions!");
+        let reloadTrackingRequired = false;
+
         actions.forEach((action) => {
           action.triggeredBySync = true;
+
+          switch (action.type) {
+            case 'ADD_SPHERE':
+            case 'REMOVE_SPHERE':
+            case 'ADD_LOCATION':
+            case 'REMOVE_LOCATION':
+              reloadTrackingRequired = true; break;
+          }
         });
 
         if (actions.length > 0) {
@@ -99,7 +116,7 @@ export const sync = {
 
         this.events.emit("CloudSyncComplete");
 
-        if (sphereSyncedIds.addedSphere === true || changedLocations === true) {
+        if (reloadTrackingRequired) {
           this.events.emit("CloudSyncComplete_spheresChanged");
         }
 

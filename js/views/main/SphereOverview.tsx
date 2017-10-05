@@ -23,8 +23,8 @@ import { LOG }                        from '../../logging/Log'
 import {styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {Util} from "../../util/Util";
-import {Permissions} from "../../backgroundProcesses/Permissions";
 import {eventBus} from "../../util/EventBus";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 export class SphereOverview extends Component<any, any> {
@@ -138,9 +138,11 @@ export class SphereOverview extends Component<any, any> {
         background = this.props.backgrounds.mainRemoteNotConnected;
       }
 
+      let spherePermissions = Permissions.inSphere(activeSphere);
+
       let showFinalizeIndoorNavigationButton = (
         state.app.indoorLocalizationEnabled        &&
-        Permissions.doLocalizationTutorial         &&
+        spherePermissions.doLocalizationTutorial         &&
         viewingRemotely                  === false && // only show this if you're there.
         enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
         (noRooms === true || requiresFingerprints === true)     // Need more fingerprints.
@@ -157,7 +159,7 @@ export class SphereOverview extends Component<any, any> {
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
               alternateLeftItem={true}
               leftAction={showFinalizeIndoorNavigationCallback}
-              rightItem={!noStones && Permissions.addRoom && !blockAddButton ? this._getAddRoomIcon() : null}
+              rightItem={!noStones && spherePermissions.addRoom && !blockAddButton ? this._getAddRoomIcon() : null}
               rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
               showHamburgerMenu={true}
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}

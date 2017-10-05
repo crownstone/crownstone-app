@@ -22,7 +22,6 @@ import {deviceStyles} from "../DeviceOverview";
 import {textStyle} from "./DeviceBehaviour";
 import {ListEditableItems} from "../../components/ListEditableItems";
 import {Util} from "../../../util/Util";
-import {Permissions} from "../../../backgroundProcesses/Permissions";
 import {Icon} from "../../components/Icon";
 import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
 import {LOG} from "../../../logging/Log";
@@ -30,6 +29,7 @@ import {eventBus} from "../../../util/EventBus";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {SchedulerEntry} from "../../components/SchedulerEntry";
 import {Scheduler} from "../../../logic/Scheduler";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class DeviceSchedule extends Component<any, any> {
@@ -61,7 +61,7 @@ export class DeviceSchedule extends Component<any, any> {
   }
 
   _getSyncOption(stone) {
-    if (Permissions.canClearAllSchedules) {
+    if (Permissions.inSphere(this.props.sphereId).canClearAllSchedules) {
       return (
         <TouchableOpacity
           style={{
@@ -210,18 +210,20 @@ export class DeviceSchedule extends Component<any, any> {
   }
 
   _getButton(stone, iconSize) {
+    let canAddSchedule = Permissions.inSphere(this.props.sphereId).canAddSchedule;
+
     let button = (
       <IconButton
         name="ios-clock"
         size={0.8*iconSize}
         color="#fff"
-        addIcon={Permissions.canAddSchedule}
+        addIcon={canAddSchedule}
         buttonSize={iconSize}
         buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
       />
     );
 
-    if (Permissions.canAddSchedule === true) {
+    if (canAddSchedule) {
       return (
         <TouchableOpacity onPress={() => {
             if (stone.config.disabled === true) {
@@ -290,7 +292,7 @@ export class DeviceSchedule extends Component<any, any> {
             fontStyle:'italic'
           }}>
             {
-              Permissions.canAddSchedule ?
+              Permissions.inSphere(this.props.sphereId).canAddSchedule ?
                 "Add your first scheduled action by tapping on the big icon in the center!" :
                 "You do not have permission to create schedules."
             }

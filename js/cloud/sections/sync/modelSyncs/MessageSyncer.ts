@@ -33,7 +33,7 @@ export class MessageSyncer extends SyncingSphereItemBase {
       .then(() => { return this.actions });
   }
 
-  syncDown(messagesInState, messagesInCloud) {
+  syncDown(messagesInState, messagesInCloud) : object {
     let localMessageIdsSynced = {};
     let cloudIdMap = this._getCloudIdMap(messagesInState);
     messagesInCloud.forEach((message_from_cloud) => {
@@ -68,6 +68,8 @@ export class MessageSyncer extends SyncingSphereItemBase {
         }
       }
     });
+
+    return localMessageIdsSynced;
   }
 
   _getLocalLocationId(cloudId) {
@@ -142,7 +144,7 @@ export class MessageSyncer extends SyncingSphereItemBase {
     messageIds.forEach((messageId) => {
       let message = messagesInState[messageId];
       if (message.config.cloudId) {
-        cloudIdMap[message.config.cloudId] = message;
+        cloudIdMap[message.config.cloudId] = messageId;
       }
     });
 

@@ -20,7 +20,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors } from './../styles'
 import { LOG } from './../../logging/Log'
 import {LocationHandler} from "../../native/localization/LocationHandler";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 
@@ -155,7 +155,7 @@ export class RoomEdit extends Component<any, any> {
     }
 
 
-    if (Permissions.removeRoom) {
+    if (Permissions.inSphere(this.props.sphereId).removeRoom) {
       items.push({
         label: 'Remove Room',
         type: 'button',

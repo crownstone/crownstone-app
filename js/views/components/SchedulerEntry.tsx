@@ -20,7 +20,7 @@ import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '
 import {Util} from "../../util/Util";
 import {StoneUtil} from "../../util/StoneUtil";
 import {IconButton} from "./IconButton";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 export class SchedulerEntry extends Component<any, any> {
 
@@ -130,7 +130,7 @@ export class SchedulerEntry extends Component<any, any> {
       </View>
     );
 
-    if (Permissions.canEditSchedule) {
+    if (Permissions.inSphere(this.props.sphereId).canEditSchedule) {
       return (
         <TouchableOpacity
           onPress={() => {

@@ -25,11 +25,11 @@ import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
 import { ErrorWatcher } from "./ErrorWatcher";
 import { NotificationHandler, NotificationParser } from "./NotificationHandler";
-import { Permissions } from "./Permissions";
 import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { BatchUploader } from "./BatchUploader";
 import { MessageCenter } from "./MessageCenter";
 import { CloudEventHandler } from "./CloudEventHandler";
+import { Permissions } from "./PermissionManager";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');

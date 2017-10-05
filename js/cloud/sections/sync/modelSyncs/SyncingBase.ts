@@ -50,18 +50,18 @@ export class SyncingBase {
 
 
   /**
-   * This should give a map of keys : cloudId, value: local object
+   * This should give a map of keys : cloudId, value: local Id
    *
    * Rough outline:
    *
 
    let cloudIdMap = {};
    let thingIds = Object.keys(thingsInState);
-   thingIds.forEach((stoneId) => {
-      let thing = thingsInState[stoneId];
+   thingIds.forEach((localThingId) => {
+      let thing = thingsInState[localThingId];
       let cloudIdInThing = thing.config.cloudId; // <---------- location of cloudId in data model can be different!
       if (cloudIdInThing) {
-        cloudIdMap[cloudIdInThing] = thing;
+        cloudIdMap[cloudIdInThing] = localThingId;
       }
     });
 

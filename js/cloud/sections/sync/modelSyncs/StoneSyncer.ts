@@ -6,9 +6,10 @@ import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {transferStones} from "../../../transferData/transferStones";
 import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
-import {Permissions} from "../../../../backgroundProcesses/Permissions";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {ScheduleSyncer} from "./ScheduleSyncer";
+import {LOG} from "../../../../logging/Log";
+import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 export class StoneSyncer extends SyncingSphereItemBase {
 
@@ -29,7 +30,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
       .then(() => { return this.actions });
   }
 
-  syncDown(stonesInState, stonesInCloud) {
+  syncDown(stonesInState, stonesInCloud) : object {
     let localStoneIdsSynced = {};
     let cloudIdMap = this._getCloudIdMap(stonesInState);
 
@@ -79,7 +80,9 @@ export class StoneSyncer extends SyncingSphereItemBase {
       }
 
       this.syncChildren(localId, localId ? stonesInState[localId] : null, stone_from_cloud);
-    })
+    });
+
+    return localStoneIdsSynced;
   }
 
   syncUp(stonesInState, localStoneIdsSynced) {
@@ -105,9 +108,12 @@ export class StoneSyncer extends SyncingSphereItemBase {
       localId,
       stone_from_cloud.id
     );
-    scheduleSyncing.sync(
-      localId ? localStone.schedules : {},
-      stone_from_cloud.schedules
+
+    this.transferPromises.push(
+      scheduleSyncing.sync(
+        localId ? localStone.schedules : {},
+        stone_from_cloud.schedules
+      )
     );
   }
 
@@ -117,7 +123,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
     stoneIds.forEach((stoneId) => {
       let stone = stonesInState[stoneId];
       if (stone.config.cloudId) {
-        cloudIdMap[stone.config.cloudId] = stone;
+        cloudIdMap[stone.config.cloudId] = stoneId;
       }
     });
 
@@ -143,9 +149,11 @@ export class StoneSyncer extends SyncingSphereItemBase {
         this.actions.push({ type: 'REMOVE_STONE', sphereId: this.localSphereId, stoneId: localStoneId });
       }
       else {
+        if (!Permissions.inSphere(this.localSphereId).canCreateStones) { return }
+
         let localDataForCloud = {...localStone};
-        localDataForCloud['cloudApplianceId'] = this._getCloudApplianceId(localStone.applianceId);
-        localDataForCloud['cloudLocationId']  = this._getCloudLocationId(localStone.locationId);
+        localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(localStone.applianceId);
+        localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId( localStone.locationId);
         this.transferPromises.push(
           transferStones.createOnCloud(
             this.actions, { localId: localStoneId, localData: localStone, localSphereId: this.localSphereId, cloudSphereId: this.cloudSphereId }));
@@ -176,9 +184,11 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
   syncLocalStoneDown(localId, stoneInState, stone_from_cloud, locationLinkId) {
     if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud)) {
+      if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
+
       let localDataForCloud = {...stoneInState};
-      localDataForCloud['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
-      localDataForCloud['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
+      localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
+      localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
       this.transferPromises.push(
         transferStones.updateOnCloud({
           cloudSphereId: this.cloudSphereId,
@@ -223,9 +233,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
     }
     // TODO: [2017-10-02] RETROFIT CODE: AFTER A FEW RELEASES
     else if (stone_from_cloud.locationId === undefined) {
+      if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
       let localDataForCloud = {...stoneInState};
-      localDataForCloud['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
-      localDataForCloud['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
+      localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
+      localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
       this.transferPromises.push(
         transferStones.updateOnCloud({
           localId: localId,

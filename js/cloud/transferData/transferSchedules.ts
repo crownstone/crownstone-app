@@ -55,7 +55,6 @@ export const transferSchedules = {
 
   createOnCloud: function( actions, data : transferNewScheduleToCloudData ) {
     let payload = {};
-    payload['stoneId'] = data.cloudStoneId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
     return CLOUD.forStone(data.cloudStoneId).createSchedule(payload)
@@ -81,7 +80,6 @@ export const transferSchedules = {
     }
 
     let payload = {};
-    payload['stoneId'] = data.cloudStoneId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
     return CLOUD.forStone(data.cloudStoneId).updateSchedule(data.cloudId, payload)

@@ -18,10 +18,6 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
 import {IconButton} from "../components/IconButton";
-import {ErrorContent} from "../content/ErrorContent";
-import {eventBus} from "../../util/EventBus";
-import {deviceStyles} from "./DeviceOverview";
-import {textStyle} from "./elements/DeviceBehaviour";
 import {Background} from "../components/Background";
 import {TopBar} from "../components/Topbar";
 import {ListEditableItems} from "../components/ListEditableItems";
@@ -29,9 +25,8 @@ import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {LOG} from "../../logging/Log";
-import {Icon} from "../components/Icon";
 import {StoneUtil} from "../../util/StoneUtil";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -154,7 +149,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
         type: 'button',
         callback: () => {
-          if (Permissions.canDeleteSchedule === false) {
+          if (Permissions.inSphere(this.props.sphereId).canDeleteSchedule === false) {
             Alert.alert("Permission Denied.", "You do not have permission to delete a scheduled action. Only members and admins of this Sphere are allowed to do that.",[{text:'OK'}]);
             return;
           }

@@ -19,7 +19,7 @@ import { processImage, safeDeleteFile } from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth } from './../styles'
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereInvitedUser extends Component<any, any> {
@@ -64,9 +64,11 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
         }}], { cancelable : false });
     }});
 
-    if (user.accessLevel === 'admin'  && Permissions.inviteAdminToSphere ||
-        user.accessLevel === 'member' && Permissions.inviteMemberToSphere ||
-        user.accessLevel === 'guest'  && Permissions.inviteGuestToSphere) {
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
+
+    if ( user.accessLevel === 'admin'  && spherePermissions.inviteAdminToSphere  ||
+         user.accessLevel === 'member' && spherePermissions.inviteMemberToSphere ||
+         user.accessLevel === 'guest'  && spherePermissions.inviteGuestToSphere  ) {
       items.push({
         label: 'Revoke Invite',
         type: 'button',

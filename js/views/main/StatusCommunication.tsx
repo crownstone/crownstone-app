@@ -15,7 +15,7 @@ import { requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalizat
 import { overviewStyles }     from './SphereOverview'
 import { styles, colors, screenWidth, availableScreenHeight} from '../styles'
 import { SetupStateHandler} from "../../native/setup/SetupStateHandler";
-import { Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 export class StatusCommunication extends Component<any, any> {
@@ -82,7 +82,7 @@ export class StatusCommunication extends Component<any, any> {
       overflow: 'hidden'
     };
 
-    if (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.seeSetupCrownstone) {
+    if (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
       return (
         <View style={[generalStyle, {alignItems: 'center', justifyContent: 'center'}]}>
           <Text style={overviewStyles.bottomText}>{'New Crownstone Detected! Tap on it!'}</Text>

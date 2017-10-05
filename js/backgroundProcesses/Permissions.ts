@@ -2,11 +2,7 @@ import {eventBus} from "../util/EventBus";
 import {Util} from "../util/Util";
 import {LOG} from "../logging/Log";
 
-export class PermissionClass {
-  _store : any;
-  _initialized : boolean = false;
-  _enableUpdates : boolean = false;
-
+export class PermissionBase {
   useKeepAliveState      = false; // g
   setStoneTime           = false; // a or m
   setBehaviourInCloud    = false; // a
@@ -40,6 +36,32 @@ export class PermissionClass {
   canSeeSchedules        = false; // a or m
   canDeleteSchedule      = false; // a or m
 
+  canCreateStones        = false; // a or m
+  canCreateLocations     = false; // a or m
+  canCreateAppliances    = false; // a or m
+  canCreateData          = false; // a or m
+  canCreateSpheres       = false; // a or m
+
+  canUploadStones        = false; // a or m
+  canUploadLocations     = false; // a or m
+  canUploadAppliances    = false; // a or m
+  canUploadData          = false; // a or m
+  canUploadSpheres       = false; // a or m
+
+}
+
+export class PermissionClass extends PermissionBase {
+  _store : any;
+  _initialized : boolean = false;
+  _sphereId : string;
+  _enableUpdates : boolean = false;
+
+  constructor(store, sphereId, userAlreadyLoggedIn) {
+    super();
+    this._sphereId = sphereId;
+    this._loadStore(store, userAlreadyLoggedIn);
+  }
+
   _loadStore(store, userAlreadyLoggedIn) {
     if (this._initialized === false) {
       this._store = store;
@@ -52,8 +74,8 @@ export class PermissionClass {
         }
 
         let change = data.change;
-        if (change.setKeys || change.updateActiveSphere) {
-          LOG.info("Permissions: Update permissions due to databaseChange");
+        if (change.setKeys) {
+          LOG.info("Permissions: Update permissions in " + this._sphereId + " due to keySet");
           this._update(this._store.getState());
         }
       });
@@ -72,10 +94,9 @@ export class PermissionClass {
     }
   }
 
-  _update(state = null, customSphereId = null) {
+  _update(state = null) {
     LOG.info("Permissions: Update permissions");
-    let activeSphere = customSphereId || state.app.activeSphere;
-    let level = Util.data.getUserLevelInSphere(state, activeSphere);
+    let level = Util.data.getUserLevelInSphere(state, this._sphereId);
 
     if (level === null) {
       return;
@@ -105,7 +126,7 @@ export class PermissionClass {
         this.deleteSphere           = true; // admin
         this.inviteAdminToSphere    = true; // admin
 
-        this.canClearAllSchedules   = true; // a
+        this.canClearAllSchedules   = true; // admin
       case 'member':
         this.doLocalizationTutorial = true; // admin and member
         this.changeBehaviour        = true; // admin and member
@@ -116,6 +137,18 @@ export class PermissionClass {
 
         this.inviteMemberToSphere   = true; // admin and member
         this.inviteGuestToSphere    = true; // admin and member
+
+        this.canUploadStones        = true; // admin and member
+        this.canUploadLocations     = true; // admin and member
+        this.canUploadAppliances    = true; // admin and member
+        this.canUploadData          = true; // admin and member
+        this.canUploadSpheres       = true; // admin and member
+
+        this.canCreateStones        = true; // a or m
+        this.canCreateLocations     = true; // a or m
+        this.canCreateAppliances    = true; // a or m
+        this.canCreateData          = true; // a or m
+        this.canCreateSpheres       = true; // a or m
 
         this.canAddSchedule         = true; // a or m
         this.canEditSchedule        = true; // a or m
@@ -160,8 +193,18 @@ export class PermissionClass {
     this.canEditSchedule        = false; // a or m
     this.canSeeSchedules        = false; // a or m
     this.canDeleteSchedule      = false; // a or m
+
+    this.canCreateStones        = false; // a or m
+    this.canCreateLocations     = false; // a or m
+    this.canCreateAppliances    = false; // a or m
+    this.canCreateData          = false; // a or m
+    this.canCreateSpheres       = false; // a or m
+
+    this.canUploadStones        = false; // a or m
+    this.canUploadLocations     = false; // a or m
+    this.canUploadAppliances    = false; // a or m
+    this.canUploadData          = false; // a or m
+    this.canUploadSpheres       = false; // a or m
   }
 }
 
-
-export const Permissions = new PermissionClass();

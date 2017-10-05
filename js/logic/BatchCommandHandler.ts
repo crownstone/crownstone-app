@@ -6,8 +6,8 @@ import { LOG }                   from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
 import {DISABLE_NATIVE, MESH_ENABLED, STONE_TIME_REFRESH_INTERVAL}          from '../ExternalConfig'
-import {Permissions} from "../backgroundProcesses/Permissions";
 import {StoneUtil} from "../util/StoneUtil";
+import {Permissions} from "../backgroundProcesses/PermissionManager";
 
 
 /**
@@ -511,7 +511,7 @@ class BatchCommandHandlerClass {
           }
         })
         .then(() => {
-          if (Permissions.setStoneTime && this.store) {
+          if (Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store) {
             // check if we have to tell this crownstone what time it is.
             let state = this.store.getState();
             let lastTime = state.spheres[crownstoneToHandle.sphereId].stones[crownstoneToHandle.stoneId].config.lastUpdatedStoneTime;
@@ -531,7 +531,7 @@ class BatchCommandHandlerClass {
             }
           }
           else {
-            LOG.debug("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.setStoneTime, Permissions.setStoneTime && this.store);
+            LOG.debug("BatchCommandHandler: Decided not to set the time Permissions.setStoneTime:", Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime, Permissions.inSphere(crownstoneToHandle.sphereId).setStoneTime && this.store);
           }
         })
         .then(() => {

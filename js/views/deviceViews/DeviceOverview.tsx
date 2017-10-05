@@ -20,7 +20,6 @@ import { Util } from "../../util/Util";
 import { TopBar } from "../components/Topbar";
 import { DeviceBehaviour } from "./elements/DeviceBehaviour";
 import { DeviceSummary } from "./elements/DeviceSummary";
-import { Permissions } from "../../backgroundProcesses/Permissions";
 import { STONE_TYPES } from "../../router/store/reducers/stones";
 import { DeviceError } from "./elements/DeviceError";
 import { DeviceUpdate } from "./elements/DeviceUpdate";
@@ -31,6 +30,7 @@ import {DeviceSchedule} from "./elements/DeviceSchedule";
 import { LOG } from '../../logging/Log';
 import { BATCH } from "../../router/store/storeManager";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
@@ -147,11 +147,13 @@ export class DeviceOverview extends Component<any, any> {
     this.summaryIndex = summaryIndex;
 
 
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
+
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
-    let hasScheduler = Permissions.canSeeSchedules && stone.config.type !== STONE_TYPES.guidestone && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0');
+    let hasScheduler = spherePermissions.canSeeSchedules && stone.config.type !== STONE_TYPES.guidestone && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0');
     let deviceType = stone.config.type;
 
     // if this stone requires to be dfu-ed to continue working, block all other actions.
@@ -180,20 +182,20 @@ export class DeviceOverview extends Component<any, any> {
           right={() => {
             switch (this.state.swiperIndex) {
               case summaryIndex:
-                return (hasAppliance ? Permissions.editAppliance : Permissions.editCrownstone) ? 'Edit' : undefined;
+                return (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) ? 'Edit' : undefined;
               case behaviourIndex:
-                return (Permissions.changeBehaviour && state.app.indoorLocalizationEnabled) ? 'Change' : undefined;
+                return (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) ? 'Change' : undefined;
             }
           }}
           rightAction={() => {
             switch (this.state.swiperIndex) {
               case summaryIndex:
-                if ((hasAppliance && Permissions.editAppliance) || (!hasAppliance && Permissions.editCrownstone)) {
+                if ((hasAppliance && spherePermissions.editAppliance) || (!hasAppliance && spherePermissions.editCrownstone)) {
                   Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId})
                 }
                 break;
               case behaviourIndex:
-                if (Permissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
+                if (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
                   Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
                 }
                 break;

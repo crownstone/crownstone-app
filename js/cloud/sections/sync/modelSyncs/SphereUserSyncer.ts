@@ -144,7 +144,7 @@ export class SphereUserSyncer extends SyncingSphereItemBase {
     });
   }
 
-  syncDown(sphereUsersInState, sphereUsersInCloud) {
+  syncDown(sphereUsersInState, sphereUsersInCloud) : object {
     let localSphereUserIdsSynced = {};
 
     this.syncUserTypeDown(localSphereUserIdsSynced, sphereUsersInState, sphereUsersInCloud.admins, 'admins');

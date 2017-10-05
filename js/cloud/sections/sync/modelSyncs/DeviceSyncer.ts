@@ -18,6 +18,14 @@ import {LOG} from "../../../../logging/Log";
 import {APP_NAME} from "../../../../ExternalConfig";
 
 
+interface matchingSpecs {
+  id: string,
+  address: string,
+  deviceInCloud: any
+}
+
+
+
 export class DeviceSyncer extends SyncingBase {
   userId: string;
 
@@ -128,8 +136,8 @@ export class DeviceSyncer extends SyncingBase {
     );
   }
 
-  _updateLocalDevice(state, specs, localDevice, matchingSpecs) {
-    let installationId = this._getInstallationIdFromDevice(matchingSpecs.cloudDevice.installations);
+  _updateLocalDevice(state, specs, localDevice, matchingSpecs : matchingSpecs) {
+    let installationId = this._getInstallationIdFromDevice(matchingSpecs.deviceInCloud.installations);
 
     // if the device is known under a different number in the cloud, we update our local identifier
     if (specs.address !== matchingSpecs.address) {
@@ -154,18 +162,18 @@ export class DeviceSyncer extends SyncingBase {
           deviceType:  specs.deviceType,
           userAgent:   specs.userAgent,
           locale:      specs.locale,
-          hubFunction: matchingSpecs.cloudDevice.hubFunction,
+          hubFunction: matchingSpecs.deviceInCloud.hubFunction,
         }
       });
     }
 
     // if the tap to toggle calibration is available and different from what we have stored, update it.
-    if (matchingSpecs.cloudDevice.tapToToggleCalibration && localDevice.tapToToggleCalibration === null) {
+    if (matchingSpecs.deviceInCloud.tapToToggleCalibration && localDevice.tapToToggleCalibration === null) {
       this.actions.push({
         type: 'SET_TAP_TO_TOGGLE_CALIBRATION',
         deviceId: matchingSpecs.id,
         data: {
-          tapToToggleCalibration: matchingSpecs.cloudDevice.tapToToggleCalibration
+          tapToToggleCalibration: matchingSpecs.deviceInCloud.tapToToggleCalibration
         }
       })
     }
@@ -174,7 +182,7 @@ export class DeviceSyncer extends SyncingBase {
     this._verifyInstallation(state, matchingSpecs.id, installationId)
   }
 
-  _createNewDeviceLocally(state, specs, matchingSpecs) {
+  _createNewDeviceLocally(state, specs, matchingSpecs : matchingSpecs) {
     LOG.info("Sync: User device found in cloud, updating local.");
     let installationId = this._getInstallationIdFromDevice(matchingSpecs.deviceInCloud.installations);
 
@@ -242,12 +250,12 @@ export class DeviceSyncer extends SyncingBase {
 
 
   _getCloudLocationId(localId) {
-    if (!localId) { return; }
+    if (!localId) { return null; }
     return this.globalLocalIdMap.locations(localId);
   }
 
   _getCloudSphereId(localId) {
-    if (!localId) { return; }
+    if (!localId) { return null; }
     return this.globalLocalIdMap.spheres(localId);
   }
 
@@ -264,7 +272,7 @@ export class DeviceSyncer extends SyncingBase {
     }
   };
 
-  _findMatchingDeviceInCloud(localDeviceSpecs, devicesInCloud) {
+  _findMatchingDeviceInCloud(localDeviceSpecs, devicesInCloud) : matchingSpecs {
     let deviceId = undefined;
     let address = localDeviceSpecs.address;
     let matchingDevice = undefined;
@@ -275,7 +283,7 @@ export class DeviceSyncer extends SyncingBase {
         matchingDevice = cloudDevice;
         break;
       }
-      else if (cloudDevice.name === name && cloudDevice.description === localDeviceSpecs.description) {
+      else if (cloudDevice.name === localDeviceSpecs.name && cloudDevice.description === localDeviceSpecs.description) {
         deviceId = cloudDevice.id;
         address = cloudDevice.address;
         matchingDevice = cloudDevice;

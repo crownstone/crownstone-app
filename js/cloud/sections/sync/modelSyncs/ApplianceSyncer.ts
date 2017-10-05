@@ -9,7 +9,7 @@ import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferAppliances} from "../../../transferData/transferAppliances";
-import {Permissions} from "../../../../backgroundProcesses/Permissions";
+import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 export class ApplianceSyncer extends SyncingSphereItemBase {
   userId: string;
@@ -29,7 +29,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
       .then(() => { return this.actions; });
   }
 
-  syncDown(appliancesInState, appliancesInCloud) {
+  syncDown(appliancesInState, appliancesInCloud) : object {
     let localApplianceIdsSynced = {};
     let cloudIdMap = this._getCloudIdMap(appliancesInState);
 
@@ -68,6 +68,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
     });
 
     this.globalCloudIdMap.appliances = cloudIdMap;
+    return localApplianceIdsSynced;
   }
 
   syncUp(appliancesInState, localApplianceIdsSynced) {
@@ -91,6 +92,8 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
         this.actions.push({ type: 'REMOVE_APPLIANCE', sphereId: this.localSphereId, applianceId: localApplianceId });
       }
       else {
+        if (!Permissions.inSphere(this.localSphereId).canCreateAppliances) { return }
+
         this.transferPromises.push(
           transferAppliances.createOnCloud(this.actions, {
             localId: localApplianceId,
@@ -109,6 +112,8 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
   syncLocalApplianceDown(localId, applianceInState, appliance_from_cloud) {
     // determine the linked location id
     if (shouldUpdateInCloud(applianceInState.config, appliance_from_cloud)) {
+      if (!Permissions.inSphere(this.localSphereId).canUploadAppliances) { return }
+
       this.transferPromises.push(
         transferAppliances.updateOnCloud({
           cloudSphereId:  this.cloudSphereId,
@@ -138,7 +143,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
     applianceIds.forEach((applianceId) => {
       let appliance = appliancesInState[applianceId];
       if (appliance.config.cloudId) {
-        cloudIdMap[appliance.config.cloudId] = appliance;
+        cloudIdMap[appliance.config.cloudId] = applianceId;
       }
     });
 

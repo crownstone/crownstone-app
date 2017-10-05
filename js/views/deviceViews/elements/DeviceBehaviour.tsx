@@ -20,7 +20,7 @@ import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../util/DataUtil";
 import {BEHAVIOUR_TYPES} from "../../../router/store/reducers/stones";
-import {Permissions} from "../../../backgroundProcesses/Permissions";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 let DISABLED_COLOR = colors.gray.hex;
@@ -80,7 +80,7 @@ export class DeviceBehaviour extends Component<any, any> {
     const stone = sphere.stones[this.props.stoneId];
     const element = Util.data.getElement(sphere, stone);
 
-    let canChangeBehaviour = Permissions.changeBehaviour && state.app.indoorLocalizationEnabled;
+    let canChangeBehaviour = Permissions.inSphere(this.props.sphereId).changeBehaviour && state.app.indoorLocalizationEnabled;
 
     let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId) && stone.config.locationId !== null;
     let nearFarDisabled = canDoIndoorLocalization === false && stone.config.nearThreshold === null && element.behaviour.onAway.active === true && element.behaviour.onNear.active === true;

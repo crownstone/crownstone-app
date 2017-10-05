@@ -2,7 +2,6 @@ import { CLOUD }         from '../../cloud/cloudAPI'
 import { Util }          from '../../util/Util'
 import { BATCH }         from './storeManager'
 import { LOG }           from '../../logging/Log'
-import { Permissions }   from "../../backgroundProcesses/Permissions";
 import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
 import {eventBus} from "../../util/EventBus";
 import {transferSchedules} from "../../cloud/transferData/transferSchedules";
@@ -10,6 +9,7 @@ import {transferUser} from "../../cloud/transferData/transferUser";
 import {transferStones} from "../../cloud/transferData/transferStones";
 import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {transferSpheres} from "../../cloud/transferData/transferSpheres";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -165,7 +165,7 @@ function handleStoneBehaviourInCloud(action, state) {
   let sphere = state.spheres[action.sphereId];
   let stone = sphere.stones[action.stoneId];
 
-  if (Permissions.setBehaviourInCloud) {
+  if (Permissions.inSphere(action.sphereId).setBehaviourInCloud) {
     transferStones.updateOnCloud({
       localId: action.stoneId,
       localData: stone,
@@ -228,7 +228,7 @@ function handleApplianceBehaviourInCloud(action, state) {
   let sphere    = state.spheres[action.sphereId];
   let appliance = sphere.appliances[action.applianceId];
 
-  if (Permissions.setBehaviourInCloud) {
+  if (Permissions.inSphere(action.sphereId).setBehaviourInCloud) {
     transferAppliances.updateOnCloud({
       localId:       action.stoneId,
       localData:     appliance,

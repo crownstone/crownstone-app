@@ -18,7 +18,7 @@ import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from '../../styles'
 import {Util} from "../../../util/Util";
 import {NativeBus} from "../../../native/libInterface/NativeBus";
-import {Permissions} from "../../../backgroundProcesses/Permissions";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class DfuDeviceEntry extends Component<any, any> {
@@ -99,7 +99,7 @@ export class DfuDeviceEntry extends Component<any, any> {
   }
 
   performDFU() {
-    if (Permissions.updateCrownstone) {
+    if (Permissions.inSphere(this.props.sphereId).updateCrownstone) {
       this.props.eventBus.emit("updateCrownstoneFirmware", {
         stoneId: this.props.stoneId,
         sphereId: this.props.sphereId,

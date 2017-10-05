@@ -26,7 +26,6 @@ import {Actions} from 'react-native-router-flux';
 import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
 import {LOG} from "../../../logging/Log";
 import {StoneUtil} from "../../../util/StoneUtil";
-import {Permissions} from "../../../backgroundProcesses/Permissions";
 import {IconButton} from "../IconButton";
 
 

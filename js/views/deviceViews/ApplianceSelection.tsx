@@ -19,7 +19,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth} from './../styles'
 import { Icon } from '../components/Icon';
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 export class ApplianceSelection extends Component<any, any> {
   unsubscribe : any;
@@ -68,7 +68,7 @@ export class ApplianceSelection extends Component<any, any> {
               <View style={[styles.listView,{backgroundColor: this.props.applianceId === applianceId ? colors.white.hex : colors.white.rgba(0.65), paddingRight:0}]}>
                 <ApplianceEntry
                   select={selectCallback}
-                  delete={Permissions.removeAppliance? deleteCallback : undefined}
+                  delete={Permissions.inSphere(this.props.sphereId).removeAppliance? deleteCallback : undefined}
                   deleteColor={this.props.applianceId === applianceId ? colors.black.rgba(0.3) : colors.white.hex }
                   current={this.props.applianceId === applianceId }
                   icon={appliance.config.icon}

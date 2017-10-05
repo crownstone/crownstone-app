@@ -23,8 +23,8 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/animated/FadeInView'
 import { LOG } from '../../logging/Log'
-import {Permissions} from "../../backgroundProcesses/Permissions";
 import {DIMMING_ENABLED} from "../../ExternalConfig";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 
@@ -160,7 +160,7 @@ export class DeviceEdit extends Component<any, any> {
       });
     }
 
-    if (Permissions.removeCrownstone) {
+    if (Permissions.inSphere(this.props.sphereId).removeCrownstone) {
       items.push({
         label: 'Remove from Sphere',
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,

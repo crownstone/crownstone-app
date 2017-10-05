@@ -16,7 +16,7 @@ import { styles, colors } from '../styles';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import {Util} from "../../util/Util";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 export class SettingsSphereInvite extends Component<any, any> {
   inputStates : any;
@@ -33,6 +33,7 @@ export class SettingsSphereInvite extends Component<any, any> {
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
     let items = [];
     items.push({type:'spacer'});
     items.push({
@@ -50,20 +51,26 @@ export class SettingsSphereInvite extends Component<any, any> {
     });
 
 
-    if (Permissions.inviteMemberToSphere && Permissions.inviteGuestToSphere) {
+    if (spherePermissions.inviteMemberToSphere || spherePermissions.inviteAdminToSphere) {
+      // generate permission items
+      let dropDownItems = [];
+      if (spherePermissions.inviteAdminToSphere ) { dropDownItems.push({label:'Admin' }); }
+      if (spherePermissions.inviteMemberToSphere) { dropDownItems.push({label:'Member'}); }
+      dropDownItems.push({label:'Guest'});
+
       items.push({
         type:'dropdown',
         label:'Access Level',
         buttons: false,
         value: this.state.permission,
         dropdownHeight:130,
-        items:[{label:'Member'},{label:'Guest'}],
+        items: dropDownItems,
         callback: (permission) => {
           this.setState({permission:permission});
         }
       });
     }
-    else if (Permissions.inviteGuestToSphere) {
+    else if (spherePermissions.inviteGuestToSphere) {
       items.push({type:'info', label:'Access level', value:'Guest'});
     }
 

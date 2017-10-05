@@ -1,7 +1,7 @@
 import { CLOUD }        from "../cloudAPI";
 import { LOG }          from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
   {local:'name',           cloud: 'name'   },
@@ -20,15 +20,12 @@ export const transferAppliances = {
 
   createOnCloud: function( actions, data : transferNewToCloudData ) {
     let payload = {};
-    payload['sphereId'] = data.cloudSphereId;
-
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
-    if (Permissions.setBehaviourInCloud) {
+    if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud) {
       payload['json'] = JSON.stringify(data.localData.behaviour);
     }
-
 
     return CLOUD.forSphere(data.cloudSphereId).createAppliance(payload)
       .then((result) => {
@@ -48,7 +45,6 @@ export const transferAppliances = {
     }
 
     let payload = {};
-    payload['sphereId'] = data.cloudSphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
     // add optional extra fields to payload

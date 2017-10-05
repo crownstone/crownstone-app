@@ -20,11 +20,11 @@ import {Util} from "../../../util/Util";
 import {Icon} from "../../components/Icon";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {AnimatedCircle} from "../../components/animated/AnimatedCircle";
-import {Permissions} from "../../../backgroundProcesses/Permissions";
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { DimmerButton } from "../../components/DimmerButton";
 import { INTENTS } from "../../../native/libInterface/Constants";
 import {DIMMING_ENABLED} from "../../../ExternalConfig";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 export class DeviceSummary extends Component<any, any> {
   constructor() {
@@ -158,8 +158,10 @@ export class DeviceSummary extends Component<any, any> {
     const element = Util.data.getElement(sphere, stone);
     const location = Util.data.getLocationFromStone(sphere, stone);
 
-    let canChangeSettings = stone.config.applianceId ? Permissions.editAppliance : Permissions.editCrownstone;
-    let canMoveCrownstone = Permissions.moveCrownstone;
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
+
+    let canChangeSettings = stone.config.applianceId ? spherePermissions.editAppliance : spherePermissions.editCrownstone;
+    let canMoveCrownstone = spherePermissions.moveCrownstone;
 
     let locationLabel = "Currently in Room:";
     let locationName = "No";

@@ -3,6 +3,7 @@ import { LOG }   from "../../logging/Log";
 
 
 import { transferUtil } from "./shared/transferUtil";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
   {local: 'name',      cloud: 'name'},
@@ -20,8 +21,6 @@ export const transferLocations = {
 
   createOnCloud: function( actions, data : transferNewToCloudData ) {
     let payload = {};
-    payload['sphereId'] = data.cloudSphereId;
-
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
@@ -43,7 +42,6 @@ export const transferLocations = {
     }
 
     let payload = {};
-    payload['sphereId'] = data.cloudSphereId;
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
     return CLOUD.forSphere(data.cloudSphereId).updateLocation(data.cloudId, payload)

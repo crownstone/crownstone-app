@@ -1,7 +1,7 @@
 import { CLOUD }        from "../cloudAPI";
 import { LOG }          from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
   {local: 'applianceId',        cloud: 'localApplianceId', cloudToLocalOnly: true},
@@ -42,13 +42,10 @@ let fieldMap : fieldMap = [
 export const transferStones = {
 
   createOnCloud: function( actions, data : transferNewToCloudData ) {
-    // TODO: include the switch state
     let payload = {};
-    payload['sphereId'] = data.cloudSphereId;
-    let localConfig = data.localData.config;
-    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
+    transferUtil.fillFieldsForCloud(payload, data.localData.config, fieldMap);
 
-    if (Permissions.setBehaviourInCloud) {
+    if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud) {
       payload['json'] = JSON.stringify(data.localData.behaviour);
     }
 
@@ -69,8 +66,7 @@ export const transferStones = {
     }
 
     let payload = {};
-    payload['sphereId'] = data.cloudSphereId;
-    transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+    transferUtil.fillFieldsForCloud(payload, data.localData.config, fieldMap);
 
     // add optional extra fields to payload
     if (data.extraFields) {

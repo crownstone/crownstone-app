@@ -13,7 +13,7 @@
 import {transferSchedules} from "../../../transferData/transferSchedules";
 import {Util} from "../../../../util/Util";
 import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
-import {SyncingBase, SyncingSphereItemBase} from "./SyncingBase";
+import {SyncingSphereItemBase} from "./SyncingBase";
 
 
 export class ScheduleSyncer extends SyncingSphereItemBase {
@@ -35,7 +35,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
     return Promise.all(this.transferPromises);
   }
 
-  syncDown(schedulesInState, schedulesInCloud) {
+  syncDown(schedulesInState, schedulesInCloud) : object {
     let cloudIdMap = this._getCloudIdMap(schedulesInState);
     let localScheduleIdsSynced = {};
 
@@ -69,6 +69,8 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
       }
 
     });
+
+    return localScheduleIdsSynced;
   }
 
   syncUp(schedulesInState, localScheduleIdsSynced) {

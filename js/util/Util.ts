@@ -7,9 +7,9 @@ import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/st
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
-import {Permissions} from "../backgroundProcesses/Permissions";
 import {ALWAYS_DFU_UPDATE} from "../ExternalConfig";
 import {MessageUtil} from "./MessageUtil";
+import {Permissions} from "../backgroundProcesses/PermissionManager";
 
 export const emailChecker = function(email) {
   let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -297,7 +297,7 @@ export const Util = {
 
     canUpdate: function(stone, state) {
       // only admins are allowed to update
-      if (Permissions.seeUpdateCrownstone) {
+      if (Permissions.activeSphere().seeUpdateCrownstone) {
         if (ALWAYS_DFU_UPDATE)
           return true;
 

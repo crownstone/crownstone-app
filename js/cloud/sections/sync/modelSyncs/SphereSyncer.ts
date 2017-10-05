@@ -15,6 +15,7 @@ import { LocationSyncer }     from "./LocationSyncer";
 import { ApplianceSyncer }    from "./ApplianceSyncer";
 import { StoneSyncer }        from "./StoneSyncer";
 import { MessageSyncer }      from "./MessageSyncer";
+import {LOG} from "../../../../logging/Log";
 
 export class SphereSyncer extends SyncingBase {
 
@@ -34,7 +35,7 @@ export class SphereSyncer extends SyncingBase {
       .then(() => { return this.actions });
   }
 
-  syncDown(state, spheresInState, spheresInCloud) {
+  syncDown(state, spheresInState, spheresInCloud) : object {
     let localSphereIdsSynced = {};
     let cloudIdMap = this._getCloudIdMap(spheresInState);
 
@@ -69,33 +70,48 @@ export class SphereSyncer extends SyncingBase {
     });
 
     this.globalCloudIdMap.spheres = cloudIdMap;
+    return localSphereIdsSynced;
   }
 
   syncChildren(state, localId, localSphere, sphere_from_cloud) {
-    let userSyncer      = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let locationSyncer  = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let applianceSyncer = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let stoneSyncer     = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let messageSyncer   = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
+    let sphereUserSyncer  = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
+    let locationSyncer    = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
+    let applianceSyncer   = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
+    let stoneSyncer       = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
+    let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
 
     // sync sphere users
-    userSyncer.sync(state, localSphere.users || {})
+    LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
+    this.transferPromises.push(
+      sphereUserSyncer.sync(state, localSphere.users || {})
       .then(() => {
-        // sync locations
+        LOG.info("SphereSync ",localId,": DONE sphereUserSyncer sync.");
+        LOG.info("SphereSync ",localId,": START locationSyncer sync.");
+      // sync locations
         return locationSyncer.sync(state, localSphere.locations || {});
       })
       .then(() => {
+        LOG.info("SphereSync ",localId,": DONE locationSyncer sync.");
+        LOG.info("SphereSync ",localId,": START applianceSyncer sync.");
         // sync appliances
         return applianceSyncer.sync(state, localSphere.appliances || {});
       })
       .then(() => {
+        LOG.info("SphereSync ",localId,": DONE applianceSyncer sync.");
+        LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
         // sync stones
         return stoneSyncer.sync(state, localSphere.stones || {});
       })
       .then(() => {
+        LOG.info("SphereSync ",localId,": DONE stoneSyncer sync.");
+        LOG.info("SphereSync ",localId,": START messageSyncer sync.");
         // sync messages
         return messageSyncer.sync(state, localSphere.messages || {});
       })
+      .then(() => {
+        LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");
+      })
+    );
   }
 
   syncUp(spheresInState, localSphereIdsSynced) {
@@ -153,7 +169,7 @@ export class SphereSyncer extends SyncingBase {
     sphereIds.forEach((sphereId) => {
       let sphere = spheresInState[sphereId];
       if (sphere.config.cloudId) {
-        cloudIdMap[sphere.config.cloudId] = sphere;
+        cloudIdMap[sphere.config.cloudId] = sphereId;
       }
     });
 

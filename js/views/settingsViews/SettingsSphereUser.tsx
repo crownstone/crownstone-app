@@ -17,7 +17,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { styles, colors, screenWidth } from '../styles'
 import {LOG} from "../../logging/Log";
 import {Util} from "../../util/Util";
-import {Permissions} from "../../backgroundProcesses/Permissions";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereUser extends Component<any, any> {
@@ -47,7 +47,7 @@ export class SettingsSphereUser extends Component<any, any> {
     const store = this.props.store;
 
     let availablePermissions = [{label:'Member'},{label:"Guest"}];
-    if (Permissions.inviteAdminToSphere) {
+    if (Permissions.inSphere(this.props.sphereId).inviteAdminToSphere) {
       availablePermissions = [{label:"Admin"},{label:'Member'},{label:"Guest"}];
     }
 
