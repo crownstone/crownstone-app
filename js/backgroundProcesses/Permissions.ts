@@ -95,7 +95,7 @@ export class PermissionClass extends PermissionBase {
   }
 
   _update(state = null) {
-    LOG.info("Permissions: Update permissions");
+    LOG.info("Permissions: Update permissions for", this._sphereId);
     let level = Util.data.getUserLevelInSphere(state, this._sphereId);
 
     if (level === null) {
@@ -104,7 +104,7 @@ export class PermissionClass extends PermissionBase {
 
     this._revokeAll();
 
-    LOG.info("Permissions: Set all");
+    LOG.info("Permissions: Set all", this._sphereId);
     switch (level) {
       case 'admin':
         this.setBehaviourInCloud    = true; // admin
@@ -160,7 +160,7 @@ export class PermissionClass extends PermissionBase {
   }
 
   _revokeAll() {
-    LOG.info("Permissions: Revoking all");
+    LOG.info("Permissions: Revoking all", this._sphereId);
     this.useKeepAliveState      = false; // g
     this.setStoneTime           = false; // a or m
     this.setBehaviourInCloud    = false; // a

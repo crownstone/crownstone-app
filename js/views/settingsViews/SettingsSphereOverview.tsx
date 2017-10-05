@@ -38,6 +38,7 @@ export class SettingsSphereOverview extends Component<any, any> {
 
   _getSpheres(state, accessLevel) {
     let items = [];
+
     for (let sphereId in state.spheres) {
       if (state.spheres.hasOwnProperty(sphereId)) {
         let sphere = state.spheres[sphereId];
