@@ -70,7 +70,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
             localSphereId: this.localSphereId,
             localId: localId,
             cloudId: stone_from_cloud.id,
-            cloudData: stone_from_cloud
+            cloudData: cloudDataForLocal
           })
             .then(() => {
               this._copyBehaviourFromCloud(localId, stone_from_cloud );
@@ -156,7 +156,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
         localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId( localStone.locationId);
         this.transferPromises.push(
           transferStones.createOnCloud(
-            this.actions, { localId: localStoneId, localData: localStone, localSphereId: this.localSphereId, cloudSphereId: this.cloudSphereId }));
+            this.actions, { localId: localStoneId, localData: localDataForCloud, localSphereId: this.localSphereId, cloudSphereId: this.cloudSphereId }));
       }
     }
   }
@@ -227,7 +227,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
           localSphereId: this.localSphereId,
           localId: localId,
           cloudId: stone_from_cloud.id,
-          cloudData: stone_from_cloud
+          cloudData: cloudDataForLocal
         }).catch()
       );
     }

@@ -105,13 +105,13 @@ export class MessageSyncer extends SyncingSphereItemBase {
       else {
         // we transform the triggerLocationId since we refer to it with a local Id locally.
         let localDataForCloud = {...localMessage};
-        localDataForCloud['cloudTriggerLocationId'] = this._getCloudLocationId(localMessage.triggerLocationId);
+        localDataForCloud.config['cloudTriggerLocationId'] = this._getCloudLocationId(localMessage.triggerLocationId);
         this.transferPromises.push(
           transferMessages.createOnCloud(this.actions, {
             localId: localMessageId,
             localSphereId: this.localSphereId,
             cloudSphereId: this.cloudSphereId,
-            localData: localMessage
+            localData: localDataForCloud
           })
         );
       }
