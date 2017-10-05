@@ -67,7 +67,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
       this.syncChildren(localId, localId ? locationsInState[localId] : null, location_from_cloud);
     });
 
-    this.globalCloudIdMap.locations = cloudIdMap;
+    this.globalCloudIdMap.locations = {...this.globalCloudIdMap.locations, ...cloudIdMap};
     return localLocationIdsSynced;
   }
 

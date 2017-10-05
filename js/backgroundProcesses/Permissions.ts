@@ -81,7 +81,7 @@ export class PermissionClass extends PermissionBase {
       });
 
       eventBus.on('userLoggedIn', () => {
-        LOG.info("Permissions: Update permissions due to userLoggedIn");
+        LOG.info("Permissions: Update permissions in Sphere " + this._sphereId + "  due to userLoggedIn");
         this._enableUpdates = true;
         this._update(this._store.getState());
       });

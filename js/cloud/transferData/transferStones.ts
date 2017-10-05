@@ -4,8 +4,6 @@ import { transferUtil } from "./shared/transferUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
-  {local: 'applianceId',        cloud: 'localApplianceId', cloudToLocalOnly: true},
-  {local: 'cloudApplianceId',   cloud: 'applianceId',      localToCloudOnly: true},
   {local: 'crownstoneId',       cloud: 'uid'},
   {local: 'dimmingEnabled',     cloud: 'dimmingEnabled'},
   {local: 'firmwareVersion',    cloud: 'firmwareVersion'},
@@ -26,8 +24,10 @@ let fieldMap : fieldMap = [
   {local: 'json',               cloud: 'json', localToCloudOnly: true},
 
   // this is custom inserted.
-  {local: 'locationId',         cloud: 'localLocationId', cloudToLocalOnly: true},
-  {local: 'cloudLocationId',    cloud: 'locationId'     , localToCloudOnly: true},
+  {local: 'applianceId',        cloud: 'localApplianceId', cloudToLocalOnly: true},
+  {local: 'locationId',         cloud: 'localLocationId',  cloudToLocalOnly: true},
+  {local: 'cloudApplianceId',   cloud: 'applianceId',      localToCloudOnly: true},
+  {local: 'cloudLocationId',    cloud: 'locationId',       localToCloudOnly: true},
 
   // used for local config
   {local: 'cloudId',            cloud:  'id',  cloudToLocalOnly: true  },

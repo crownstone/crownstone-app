@@ -6,12 +6,12 @@ export class PermissionManagerClass {
   _store : any;
   _initialized : boolean = false;
   _activeSphereId : string;
-  _userAlreadyLoggedIn : string;
+  _userAlreadyLoggedIn : boolean = false;
   _enableUpdates : boolean = false;
 
   permissionClasses = {};
 
-  _loadStore(store, userAlreadyLoggedIn) {
+  _loadStore(store, userAlreadyLoggedIn : boolean) {
     if (this._initialized === false) {
       this._store = store;
       this._initialized = true;
@@ -25,14 +25,15 @@ export class PermissionManagerClass {
 
         let change = data.change;
         if (change.changeSpheres || change.changeSphereConfig || change.updateActiveSphere) {
-          LOG.info("Permissions: Update permissions due to databaseChange");
+          LOG.info("PermissionManager: Update permissions due to databaseChange");
           this._update(this._store.getState());
         }
       });
 
       eventBus.on('userLoggedIn', () => {
-        LOG.info("Permissions: Update permissions due to userLoggedIn");
+        LOG.info("PermissionManager: Update permissions due to userLoggedIn");
         this._enableUpdates = true;
+        this._userAlreadyLoggedIn = true;
         this._update(this._store.getState());
       });
 
@@ -54,10 +55,10 @@ export class PermissionManagerClass {
     let spheres = state.spheres;
     let sphereIds = Object.keys(spheres);
 
-
     // we don't clean up removed spheres since it does not really matter memory wise
     sphereIds.forEach((sphereId) => {
       if (this.permissionClasses[sphereId] === undefined) {
+        LOG.info("PermissionManager: Creating PermissionClass for ", sphereId);
         this.permissionClasses[sphereId] = new PermissionClass(this._store, sphereId, this._userAlreadyLoggedIn);
       }
     });
@@ -68,7 +69,7 @@ export class PermissionManagerClass {
       return this.permissionClasses[sphereId];
     }
     else {
-      // this returns a class with empty permissions.
+      // this returns a class with empty permissions. This means, nothing is allowed.
       return new PermissionBase();
     }
   }
@@ -78,11 +79,10 @@ export class PermissionManagerClass {
       return this.permissionClasses[this._activeSphereId]
     }
     else {
+      // this returns a class with empty permissions. This means, nothing is allowed.
       return new PermissionBase();
     }
   }
-
-
 }
 
 
