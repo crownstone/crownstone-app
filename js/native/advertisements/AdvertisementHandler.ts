@@ -1,11 +1,13 @@
 import { Scheduler } from '../../logic/Scheduler';
 import { NativeBus } from '../libInterface/NativeBus';
 import { StoneStateHandler } from './StoneStateHandler'
-import { LOG, LogProcessor } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 import { HARDWARE_ERROR_REPORTING, LOG_BLE } from '../../ExternalConfig'
 import { eventBus }  from '../../util/EventBus'
 import { Util }  from '../../util/Util'
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import {LogProcessor} from "../../logging/LogProcessor";
+import {LOG_LEVEL} from "../../logging/LogLevels";
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
 let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
@@ -290,7 +292,8 @@ class AdvertisementHandlerClass {
         sphereId: advertisement.referenceId,
         stoneId: referenceByCrownstoneId.id,
         data: { state: switchState, currentUsage: measuredUsage, applianceId: referenceByCrownstoneId.applianceId },
-        updatedAt: currentTime
+        updatedAt: currentTime,
+        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
       });
     }
 

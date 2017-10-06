@@ -12,7 +12,7 @@ import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { LOG, clearLogs } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 import { styles, colors } from '../styles'
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
@@ -22,7 +22,6 @@ import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 
 export class SettingsPrivacy extends Component<any, any> {
   unsubscribe : any;
-  renderState : any;
 
   constructor() {
     super();

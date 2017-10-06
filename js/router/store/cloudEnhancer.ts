@@ -1,7 +1,7 @@
 import { CLOUD }         from '../../cloud/cloudAPI'
 import { Util }          from '../../util/Util'
 import { BATCH }         from './storeManager'
-import { LOG }           from '../../logging/Log'
+import {LOG, LOGd, LOGi, LOGv, LOGe, LOGw} from '../../logging/Log'
 import { BatchUploader } from "../../backgroundProcesses/BatchUploader";
 import {eventBus} from "../../util/EventBus";
 import {transferSchedules} from "../../cloud/transferData/transferSchedules";
@@ -10,10 +10,26 @@ import {transferStones} from "../../cloud/transferData/transferStones";
 import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {transferSpheres} from "../../cloud/transferData/transferSpheres";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {LOG_LEVEL} from "../../logging/LogLevels";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    LOG.store('will dispatch', action);
+    switch (action.__logLevel) {
+      case LOG_LEVEL.verbose:
+        LOGv.store('will dispatch', action); break;
+      case LOG_LEVEL.debug:
+        LOGd.store('will dispatch', action); break;
+      case LOG_LEVEL.info:
+        LOGi.store('will dispatch', action); break;
+      case LOG_LEVEL.warning:
+        LOGw.store('will dispatch', action); break;
+      case LOG_LEVEL.error:
+        LOGe.store('will dispatch', action); break;
+      case LOG_LEVEL.none:
+        break;
+      default:
+        LOG.store('will dispatch', action);
+    }
 
     // required for some of the actions
     let oldState = getState();

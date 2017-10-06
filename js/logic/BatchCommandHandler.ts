@@ -523,7 +523,7 @@ class BatchCommandHandlerClass {
                   this.store.dispatch({type: "UPDATED_STONE_TIME", sphereId: crownstoneToHandle.sphereId, stoneId: crownstoneToHandle.stoneId})
                 })
                 .catch((err) => {
-                  LOG.warning("BatchCommandHandler: Could not set the time of Crownstone", err);
+                  LOG.warn("BatchCommandHandler: Could not set the time of Crownstone", err);
                 });
             }
             else {

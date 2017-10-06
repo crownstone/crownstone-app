@@ -15,7 +15,7 @@ import { Background } from '../components/Background'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG, clearLogs } from '../../logging/Log'
+import { LOG } from '../../logging/Log'
 import { styles, colors } from '../styles'
 import {Util} from "../../util/Util";
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";

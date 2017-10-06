@@ -1,7 +1,6 @@
 import { Alert, AppState }       from 'react-native';
 
 import { eventBus }              from "../util/EventBus";
-import { LOG, LogProcessor }     from "../logging/Log";
 import { Bluenet }               from "../native/libInterface/Bluenet";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { LocationHandler }       from "../native/localization/LocationHandler";
@@ -30,6 +29,8 @@ import { BatchUploader } from "./BatchUploader";
 import { MessageCenter } from "./MessageCenter";
 import { CloudEventHandler } from "./CloudEventHandler";
 import { Permissions } from "./PermissionManager";
+import {LOG} from "../logging/Log";
+import {LogProcessor} from "../logging/LogProcessor";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
