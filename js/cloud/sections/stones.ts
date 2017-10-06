@@ -1,3 +1,5 @@
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+
 export const stones = {
   /**
    * Create a crownstone in the cloud so the major and minor can be generated
@@ -16,15 +18,16 @@ export const stones = {
 
   /**
    * Update a crownstone in the cloud
-   * @param stoneId
+   * @param localStoneId
    * @param data
    * @param background
    * @returns {*}
    */
-  updateStone: function(stoneId, data, background = true) {
+  updateStone: function(localStoneId, data, background = true) {
+    let cloudStoneId = MapProvider.local2cloudMap.stones[localStoneId] || localStoneId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Spheres/{id}/ownedStones/' + stoneId,
+      '/Spheres/{id}/ownedStones/' + cloudStoneId,
       {background: background, data:data},
       'body'
     );
@@ -63,23 +66,25 @@ export const stones = {
 
   /**
    * Update the link from a crownstone to a room.
-   * @param locationId
-   * @param sphereId
+   * @param localLocationId
+   * @param localSphereId
    * @param updatedAt
    * @param background
+   * @param doNotSetUpdatedTimes
    * @returns {*}
    */
-  updateStoneLocationLink: function(locationId, sphereId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
+  updateStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true, doNotSetUpdatedTimes = false) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
         'PUT',
-        '/Stones/{id}/locations/rel/' + locationId,
+        '/Stones/{id}/locations/rel/' + cloudLocationId,
         {background: background},
       )
       .then(() => {
         if (doNotSetUpdatedTimes !== true) {
           let promises = [];
-          promises.push(this.forSphere(sphereId).updateStone(this._stoneId, {updatedAt: updatedAt}));
-          promises.push(this.forSphere(sphereId).updateLocation(locationId, {updatedAt: updatedAt}));
+          promises.push(this.forSphere(localSphereId).updateStone(this._stoneId,      {updatedAt: updatedAt}));
+          promises.push(this.forSphere(localSphereId).updateLocation(localLocationId, {updatedAt: updatedAt}));
           // we set the updatedAt time in the cloud since changing the links does not update the time there
           return Promise.all(promises);
         }
@@ -89,23 +94,23 @@ export const stones = {
 
   /**
    * Delete the link from a crownstone to a room.
-   * @param locationId
-   * @param sphereId
+   * @param localLocationId
+   * @param localSphereId
    * @param updatedAt
    * @param background
    * @returns {*}
    */
-  deleteStoneLocationLink: function(locationId, sphereId, updatedAt, background = true) {
-    let stoneId = this._stoneId;
+  deleteStoneLocationLink: function(localLocationId, localSphereId, updatedAt, background = true) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
         'DELETE',
-        '/Stones/' + stoneId + '/locations/rel/' + locationId,
+        '/Stones/{id}/locations/rel/' + cloudLocationId,
         {background: background},
       )
       .then(() => {
         let promises = [];
-        promises.push(this.forSphere(sphereId).updateStone(stoneId, {updatedAt: updatedAt}));
-        promises.push(this.forSphere(sphereId).updateLocation(locationId, {updatedAt: updatedAt}));
+        promises.push(this.forSphere(localSphereId).updateStone(this._stoneId, {updatedAt: updatedAt}));
+        promises.push(this.forSphere(localSphereId).updateLocation(localLocationId, {updatedAt: updatedAt}));
         // we set the updatedAt time in the cloud since changing the links does not update the time there
         return Promise.all(promises);
       })
@@ -129,13 +134,14 @@ export const stones = {
 
   /**
    * request the data from this crownstone in the cloud
-   * @param stoneId  database id of crownstone
+   * @param localStoneId  database id of crownstone
    * @returns {*}
    */
-  getStone: function(stoneId) {
+  getStone: function(localStoneId) {
+    let cloudStoneId = MapProvider.local2cloudMap.stones[localStoneId] || localStoneId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'GET',
-      '/Stones/' + stoneId
+      '/Stones/' + cloudStoneId
     );
   },
 
@@ -159,11 +165,12 @@ export const stones = {
    * stoneId  database id of crownstone
    * @returns {*}
    */
-  deleteStone: function(stoneId) {
-    if (stoneId) {
+  deleteStone: function(localStoneId) {
+    let cloudStoneId = MapProvider.local2cloudMap.stones[localStoneId] || localStoneId; // the OR is in case a cloudId has been put into this method.
+    if (cloudStoneId) {
       return this._setupRequest(
         'DELETE',
-        '/Spheres/{id}/ownedStones/' + stoneId
+        '/Spheres/{id}/ownedStones/' + cloudStoneId
       );
     }
   },

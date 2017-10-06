@@ -1,4 +1,5 @@
 import { LOG } from '../../logging/Log'
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export const user = {
   /**
@@ -117,22 +118,5 @@ export const user = {
       {background : background}
     );
   },
-
-
-  enterLocation: function(sphereId, locationId) {
-    return this._setupRequest(
-      'PUT',
-      'users/{id}/currentLocation',
-      { sphereId: sphereId, locationId: locationId, background: true }
-    );
-  },
-
-  // exitLocation: function() {
-  //   return this._setupRequest(
-  //     'DELETE',
-  //     'users/{id}/currentLocation',
-  //     { background: true }
-  //   );
-  // },
 
 };

@@ -1,3 +1,5 @@
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+
 export const locations = {
   getLocations: function (background = false) {
     return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', {background: background, data:{filter:{"include":"presentPeople"}}});
@@ -12,20 +14,22 @@ export const locations = {
     );
   },
 
-  updateLocation: function (locationId, data, background = true) {
+  updateLocation: function (localLocationId, data, background = true) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Spheres/{id}/ownedLocations/' + locationId,
+      '/Spheres/{id}/ownedLocations/' + localLocationId,
       {background: background, data: data},
       'body'
     );
   },
 
 
-  deleteLocation: function(locationId) {
+  deleteLocation: function(localLocationId) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'DELETE',
-      '/Spheres/{id}/ownedLocations/' + locationId
+      '/Spheres/{id}/ownedLocations/' + cloudLocationId
     );
   }
 };

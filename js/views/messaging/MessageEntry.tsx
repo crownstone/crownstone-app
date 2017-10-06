@@ -203,7 +203,14 @@ export class MessageEntry extends Component<{
         </View>
         <View style={{ flex:1 }} />
         <View style={{height: rowHeight, width:60, alignItems: 'center', justifyContent:'center'}}>
-          <DoubleTapDelete key={'deleteButton'+this.props.messageId} callback={() => { this.props.deleteMessage() }}/>
+          <DoubleTapDelete key={'deleteButton'+this.props.messageId} callback={() => {
+            // we delete it and mark it read if required.
+            if (this.props.read === false) {
+              this.props.store.dispatch({type: "I_READ_MESSAGE", sphereId: this.props.sphereId, messageId: this.props.messageId, data: { userId: this.props.self.userId }});
+            }
+
+            this.props.deleteMessage();
+          }}/>
         </View>
       </View>
     );

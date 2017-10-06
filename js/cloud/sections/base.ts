@@ -3,6 +3,7 @@ import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/Util'
 import { EventBusClass } from '../../util/EventBus'
 import { LOG } from '../../logging/Log'
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export const defaultHeaders = {
   'Accept': 'application/json',
@@ -22,7 +23,6 @@ export const uploadHeaders = {
  */
 
 export const base = {
-  events: new EventBusClass(),
   _accessToken: undefined,
   _userId: undefined,
   _deviceId: undefined,
@@ -142,18 +142,19 @@ export const base = {
   // END USER API
   // These methods have all the endpoints embedded in them.
 
-  setNetworkErrorHandler: function(handler)         { this._networkErrorHandler = handler },
-  setAccess:              function(accessToken)     { this._accessToken = accessToken;        return this; },
-  setUserId:              function(userId)          { this._userId = userId;                  return this; },
-  forUser:                function(userId)          { this._userId = userId;                  return this; },
-  forStone:               function(stoneId)         { this._stoneId = stoneId;                return this; },
-  forSphere:              function(sphereId)        { this._sphereId = sphereId;              return this; },
-  forLocation:            function(locationId)      { this._locationId = locationId;          return this; },
-  forEvent:               function(eventId)         { this._eventId = eventId;                return this; },
-  forDevice:              function(deviceId)        { this._deviceId = deviceId;              return this; },
-  forAppliance:           function(applianceId)     { this._applianceId = applianceId;        return this; },
-  forInstallation:        function(installationId)  { this._installationId = installationId;  return this; },
-  forMessage:             function(messageId)       { this._messageId = messageId;            return this; },
+  setNetworkErrorHandler: function(handler)      { this._networkErrorHandler = handler },
+
+  setAccess:          function(accessToken)      { this._accessToken = accessToken;        return this; },
+
+  setUserId:          function(userId)           { this._userId = userId;                 return this; }, // cloudId === localId
+  forUser:            function(userId)           { this._userId = userId;                 return this; }, // cloudId === localId
+  forDevice:          function(deviceId)         { this._deviceId = deviceId;             return this; }, // cloudId === localId
+  forInstallation:    function(installationId)   { this._installationId = installationId; return this; }, // cloudId === localId
+  forStone:           function(localStoneId)     { this._stoneId     = MapProvider.local2cloudMap.stones[localStoneId]         || localStoneId;     return this; },
+  forSphere:          function(localSphereId)    { this._sphereId    = MapProvider.local2cloudMap.spheres[localSphereId]       || localSphereId;    return this; },
+  forLocation:        function(localLocationId)  { this._locationId  = MapProvider.local2cloudMap.locations[localLocationId]   || localLocationId;  return this; },
+  forAppliance:       function(localApplianceId) { this._applianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; return this; },
+  forMessage:         function(localMessageId)   { this._messageId   = MapProvider.local2cloudMap.messages[localMessageId]     || localMessageId;   return this; },
 
   __debugReject: function(reply, reject, debugOptions) {
     if (DEBUG) {

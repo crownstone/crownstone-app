@@ -6,7 +6,7 @@ export class SyncingBase {
 
   constructor(actions : any[], transferPromises: any[], globalCloudIdMap?: globalIdMap) {
     if (!globalCloudIdMap) {
-      globalCloudIdMap = getGlobalCloudIdMap();
+      globalCloudIdMap = getGlobalIdMap();
     }
 
     this.globalCloudIdMap = globalCloudIdMap;
@@ -15,7 +15,7 @@ export class SyncingBase {
   }
 
   _constructLocalIdMap() {
-    this.globalLocalIdMap = getGlobalCloudIdMap();
+    this.globalLocalIdMap = getGlobalIdMap();
     let globalKeys = Object.keys(this.globalCloudIdMap);
     globalKeys.forEach((key) => {
       this.globalLocalIdMap[key] = {};
@@ -114,6 +114,6 @@ export class SyncingSphereItemBase extends SyncingBase {
 }
 
 
-export function getGlobalCloudIdMap() {
-  return {users: {}, locations: {}, appliances: {}, stones: {}, messages: {}, spheres: {}}
+export function getGlobalIdMap() {
+  return {users: {}, locations: {}, appliances: {}, stones: {}, messages: {}, spheres: {}, schedules: {}}
 }

@@ -2,6 +2,8 @@ import {Util} from "../../util/Util";
 
 const RNFS = require('react-native-fs');
 import { LOG} from '../../logging/Log'
+import {transferSpheres} from "../transferData/transferSpheres";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export const spheres = {
 
@@ -25,16 +27,29 @@ export const spheres = {
       payload['gpsLocation'] = {lat:latitude, lng: longitude}
     }
 
+    let localId = Util.getUUID();
     return this.forUser(state.user.userId).createSphere(payload, false)
       .then((response) => {
-        sphereId = response.id;
-
         // add the sphere to the database once it had been added in the cloud.
-        creationActions.push({type:'ADD_SPHERE', sphereId: sphereId, data: {name: response.name, iBeaconUUID: response.uuid, meshAccessAddress: response.meshAccessAddress, exitDelay: response.exitDelay || 600, latitude: response.gpsLocation && response.gpsLocation.lat, longitude: response.gpsLocation && response.gpsLocation.lng}});
+        return transferSpheres.createLocal(creationActions, {localId: localId, cloudData: response})
+      })
+      .then(() => {
         creationActions.push({type:'USER_UPDATE', data: { new: false }});
 
         // add yourself to the sphere members as admin
-        creationActions.push({type: 'ADD_SPHERE_USER', sphereId: sphereId, userId: state.user.userId, data:{picture: state.user.picture, firstName: state.user.firstName, lastName: state.user.lastName, email:state.user.email, accessLevel: 'admin'}});
+        creationActions.push({
+          type: 'ADD_SPHERE_USER',
+          sphereId: localId,
+          userId: state.user.userId,
+          data:{
+            picture: state.user.picture,
+            pictureId: state.user.pictureId,
+            firstName: state.user.firstName,
+            lastName: state.user.lastName,
+            email: state.user.email,
+            accessLevel: 'admin'
+          }
+        });
 
         // get all encryption keys the user has access to and store them in the appropriate spheres.
         return this.getKeys()
@@ -60,10 +75,11 @@ export const spheres = {
   },
 
 
-  updateSphere: function(sphereId, data, background = true) {
+  updateSphere: function(localSphereId, data, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Spheres/' + sphereId,
+      '/Spheres/' + cloudSphereId,
       {background: background, data: data},
       'body'
     );
@@ -132,7 +148,8 @@ export const spheres = {
     return this._setupRequest('POST', 'users/{id}/spheres', { data: data, background: background }, 'body');
   },
 
-  getUserPicture(cloudSphereId, email, userId, background = true) {
+  getUserPicture(localSphereId, email, userId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     let toPath = Util.getPath(userId + '.jpg');
     return this.forSphere(cloudSphereId)._download({
       endPoint:'/Spheres/{id}/profilePic',
@@ -140,27 +157,6 @@ export const spheres = {
       type: 'query',
       background:background,
     }, toPath);
-  },
-
-  getUserFromType: function(userGetter, type, userData, sphereId, selfId, options) {
-    return userGetter(options)
-      .then((users) => {
-        let profilePicturePromises = [];
-        users.forEach((user) => {
-          userData[user.id] = user;
-          userData[user.id].accessLevel = type;
-          if (user.id !== selfId) {
-            profilePicturePromises.push(
-              this.getUserPicture(sphereId, user.email, user.id, options)
-                .then((filename) => {
-                  userData[user.id].picture = filename;
-                })
-                .catch((err) => {LOG.error("failed getting user picture", sphereId, user.email, user.id, options, err)})
-            );
-          }
-        });
-        return Promise.all(profilePicturePromises);
-      })
   },
 
   changeSphereName: function(sphereName) {
@@ -172,6 +168,7 @@ export const spheres = {
   },
 
   deleteUserFromSphere: function(userId) {
+    // userId is the same in the cloud as it is locally
     return this._setupRequest('DELETE', '/Spheres/{id}/users/rel/' + userId);
   },
 
@@ -228,11 +225,12 @@ export const spheres = {
       })
   },
 
-  _deleteSphere: function(sphereId) {
-    if (sphereId) {
+  _deleteSphere: function(localSphereId) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    if (cloudSphereId) {
       return this._setupRequest(
         'DELETE',
-        'Spheres/' + sphereId
+        'Spheres/' + cloudSphereId
       );
     }
   },

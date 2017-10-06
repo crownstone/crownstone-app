@@ -9,7 +9,8 @@ import {NotificationHandler} from "../../../backgroundProcesses/NotificationHand
 import {UserSyncer} from "./modelSyncs/UserSyncer";
 import {SphereSyncer} from "./modelSyncs/SphereSyncer";
 import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
-import {getGlobalCloudIdMap} from "./modelSyncs/SyncingBase";
+import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
+import {eventBus} from "../../../util/EventBus";
 
 
 
@@ -44,7 +45,7 @@ export const sync = {
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
 
-    let globalCloudIdMap = getGlobalCloudIdMap();
+    let globalCloudIdMap = getGlobalIdMap();
     let actions = [];
     let userSyncer = new UserSyncer(actions, [], globalCloudIdMap);
 
@@ -110,10 +111,10 @@ export const sync = {
         LOG.info("Sync: Requesting notification permissions during updating of the device.");
         NotificationHandler.request();
 
-        this.events.emit("CloudSyncComplete");
+        eventBus.emit("CloudSyncComplete");
 
         if (reloadTrackingRequired) {
-          this.events.emit("CloudSyncComplete_spheresChanged");
+          eventBus.emit("CloudSyncComplete_spheresChanged");
         }
 
         LOG.info("Sync after: START MessageCenter checkForMessages.");

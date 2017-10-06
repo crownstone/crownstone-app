@@ -21,9 +21,25 @@ import {LOG_LEVEL} from "./LogLevels";
 
 class Logger {
   level : number;
-  
+  levelPrefix : string;
+
+
   constructor(level) {
     this.level = level;
+    switch(this.level) {
+      case LOG_LEVEL.verbose:
+        this.levelPrefix = 'v'; break;
+      case LOG_LEVEL.debug:
+        this.levelPrefix = 'd'; break;
+      case LOG_LEVEL.info:
+        this.levelPrefix = 'i'; break;
+      case LOG_LEVEL.warning:
+        this.levelPrefix = 'w'; break;
+      case LOG_LEVEL.error:
+        this.levelPrefix = 'e'; break;
+      default:
+        this.levelPrefix = 'v';
+    }
   }
   
   info(...any) {
@@ -73,7 +89,7 @@ class Logger {
   _log(type, globalCheckField, dbCheckField, allArguments) {
     if (Math.min(globalCheckField, dbCheckField) <= this.level) {
 
-      let args = ['LOG ' + type + ' :'];
+      let args = ['LOG' + this.levelPrefix + ' ' + type + ' :'];
       for (let i = 0; i < allArguments.length; i++) {
         let arg = allArguments[i];
         if (TESTING_APP) {

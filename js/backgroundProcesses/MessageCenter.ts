@@ -216,12 +216,7 @@ class MessageCenterClass {
   _handleMessageInLocation(sphereId, locationId, triggerEvent) {
     let state = this._store.getState();
 
-    let cloudSphereId = MapProvider.local2cloudMap.spheres[sphereId];
-    let cloudLocationId = MapProvider.local2cloudMap.locations[locationId];
-
-    if (!cloudSphereId || !cloudLocationId) { return; }
-
-    CLOUD.forSphere(cloudSphereId).getNewMessagesInLocation(cloudLocationId)
+    CLOUD.forSphere(sphereId).getNewMessagesInLocation(locationId)
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
@@ -239,11 +234,8 @@ class MessageCenterClass {
   }
 
   _handleMessageInSphere(sphereId, triggerEvent) {
-    let cloudSphereId = MapProvider.local2cloudMap.spheres[sphereId];
-    if (!cloudSphereId) { return; }
-
     let state = this._store.getState();
-    CLOUD.forSphere(cloudSphereId).getNewMessagesInSphere()
+    CLOUD.forSphere(sphereId).getNewMessagesInSphere()
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];

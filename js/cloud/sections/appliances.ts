@@ -1,6 +1,7 @@
 /**
  * Created by alex on 25/08/16.
  */
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export const appliances = {
 
@@ -17,20 +18,22 @@ export const appliances = {
     );
   },
 
-  updateAppliance: function (applianceId, data, background = true) {
+  updateAppliance: function (localApplianceId, data, background = true) {
+    let cloudApplianceId = MapProvider.local2cloudMap.locations[localApplianceId] || localApplianceId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Spheres/{id}/ownedAppliances/' + applianceId,
+      '/Spheres/{id}/ownedAppliances/' + cloudApplianceId,
       {background: background, data: data},
       'body'
     );
   },
 
-  deleteAppliance: function (applianceId) {
-    if (applianceId) {
+  deleteAppliance: function (localApplianceId) {
+    let cloudApplianceId = MapProvider.local2cloudMap.locations[localApplianceId] || localApplianceId; // the OR is in case a cloudId has been put into this method.
+    if (cloudApplianceId) {
       return this._setupRequest(
         'DELETE',
-        '/Spheres/{id}/ownedAppliances/' + applianceId,
+        '/Spheres/{id}/ownedAppliances/' + cloudApplianceId,
       );
     }
   },

@@ -14,7 +14,17 @@ import {LOG_LEVEL} from "../../logging/LogLevels";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
-    switch (action.__logLevel) {
+    let highestLogLevel = 0;
+    if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
+      for (let i = 0; i < action.payload.length; i++) {
+        if (action.payload[i].__logLevel) { highestLogLevel = Math.max(action.payload[i].__logLevel); }
+      }
+    }
+    else {
+      highestLogLevel = action.__logLevel;
+    }
+
+    switch (highestLogLevel) {
       case LOG_LEVEL.verbose:
         LOGv.store('will dispatch', action); break;
       case LOG_LEVEL.debug:

@@ -42,4 +42,5 @@ interface globalIdMap {
   stones: any,
   messages: any,
   spheres: any,
+  schedules: any,
 }

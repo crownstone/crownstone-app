@@ -1,4 +1,6 @@
 
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+
 export const messages = {
 
   createMessage: function (data, background) {
@@ -10,29 +12,32 @@ export const messages = {
     );
   },
 
-  receivedMessage: function (messageId, background) {
+  receivedMessage: function (localMessageId, background) {
+    let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'POST',
-      '/Messages/' + messageId + '/delivered',
+      '/Messages/' + cloudMessageId + '/delivered',
       { background: background },
       'body'
     );
   },
 
-  readMessage: function (messageId, background) {
+  readMessage: function (localMessageId, background) {
+    let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'POST',
-      '/Messages/' + messageId + '/read',
+      '/Messages/' + cloudMessageId + '/read',
       { background: background },
       'body'
     );
   },
 
 
-  getMessage: function (messageId, background = true) {
+  getMessage: function (localMessageId, background = true) {
+    let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'GET',
-      '/Messages/' + messageId,
+      '/Messages/' + cloudMessageId,
       { data: {filter:{"include":["recipients","delivered","read"]}}, background: background }
     );
   },
@@ -53,10 +58,11 @@ export const messages = {
     );
   },
 
-  getNewMessagesInLocation: function (locationId, background = true) {
+  getNewMessagesInLocation: function (localLocationId, background = true) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'GET',
-      '/Spheres/{id}/myNewMessagesInLocation/' + locationId,
+      '/Spheres/{id}/myNewMessagesInLocation/' + cloudLocationId,
       { background: background }
     );
   },
@@ -70,6 +76,7 @@ export const messages = {
   },
 
   addRecipient: function(recipientId, background = true) {
+    // recipientId is a userId, these are the same in the cloud as locally.
     return this._setupRequest(
       'PUT',
       '/Messages/{id}/recipients/rel/' + recipientId,
@@ -77,10 +84,11 @@ export const messages = {
     );
   },
 
-  deleteMessage: function (messageId, background = true) {
+  deleteMessage: function (localMessageId, background = true) {
+    let cloudMessageId = MapProvider.local2cloudMap.messages[localMessageId] || localMessageId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'DELETE',
-      '/Spheres/{id}/messages/' + messageId,
+      '/Spheres/{id}/messages/' + cloudMessageId,
       { background: background }
     );
   },

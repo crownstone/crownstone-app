@@ -4,7 +4,6 @@ import { Alert } from 'react-native';
 import { Util } from '../util/Util';
 import { user } from './sections/user'
 import { base } from './sections/base'
-import { changeEvents } from './sections/changeEvents'
 import { stones } from './sections/stones'
 import { spheres } from './sections/spheres'
 import { locations } from './sections/locations'
@@ -23,7 +22,6 @@ function combineSections() {
   let result = {};
   Util.mixin(result, base);
   Util.mixin(result, user);
-  Util.mixin(result, changeEvents);
   Util.mixin(result, stones);
   Util.mixin(result, locations);
   Util.mixin(result, spheres);

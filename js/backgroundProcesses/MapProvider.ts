@@ -4,6 +4,7 @@ import {
   getMapOfCrownstonesInAllSpheresByHandle
 } from "../util/DataUtil";
 import {eventBus} from "../util/EventBus";
+import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
 
 /**
  * Map format
@@ -36,8 +37,8 @@ class MapProviderClass {
   stoneHandleMap : any = {};
   stoneCIDMap : any = {};
   state : any = {};
-  cloud2localMap : globalIdMap = { users: {}, locations: {}, appliances: {}, stones: {}, messages: {}, spheres: {} };
-  local2cloudMap : globalIdMap = { users: {}, locations: {}, appliances: {}, stones: {}, messages: {}, spheres: {} };
+  cloud2localMap : globalIdMap = getGlobalIdMap();
+  local2cloudMap : globalIdMap = getGlobalIdMap();
 
   _loadStore(store) {
     if (this._initialized === false) {
@@ -51,19 +52,21 @@ class MapProviderClass {
         this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(   this.state);
       });
 
-      eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap() })
+      eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap(); });
 
+      this._updateCloudIdMap();
     }
   }
 
   _updateCloudIdMap() {
     let state = this._store.getState();
-    this.cloud2localMap = { users: {}, locations: {}, appliances: {}, stones: {}, messages: {}, spheres: {} };
+    this.cloud2localMap = getGlobalIdMap();
+    this.local2cloudMap = getGlobalIdMap();
 
-    let getFromConfig = (source, cloud2local, local2cloud) => {
+    let fillMaps = (source, getCloudIdFromItem, cloud2local, local2cloud) => {
       let sourceIds = Object.keys(source);
       sourceIds.forEach((sourceId) => {
-        let cloudId = source[sourceId];
+        let cloudId = getCloudIdFromItem(source[sourceId]);
         if (cloudId) {
           cloud2local[cloudId] = sourceId;
           local2cloud[sourceId] = cloudId;
@@ -71,13 +74,29 @@ class MapProviderClass {
       })
     };
 
-    getFromConfig(state.spheres, this.cloud2localMap.spheres, this.local2cloudMap.stones);
+    let getFromConfig = (source, cloud2local, local2cloud) => {
+      fillMaps(source, (item) => { return item.config.cloudId; }, cloud2local, local2cloud);
+    };
+
+    let getFromItem = (source, cloud2local, local2cloud) => {
+      fillMaps(source, (item) => { return item.cloudId; }, cloud2local, local2cloud);
+    };
+
+    getFromConfig(state.spheres, this.cloud2localMap.spheres, this.local2cloudMap.spheres);
     let sphereIds = Object.keys(state.spheres);
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
-      getFromConfig(sphere.appliances,  this.cloud2localMap.appliances, this.local2cloudMap.stones);
-      getFromConfig(sphere.locations,   this.cloud2localMap.locations,  this.local2cloudMap.stones);
+      getFromConfig(sphere.messages,    this.cloud2localMap.messages,   this.local2cloudMap.messages);
+      getFromConfig(sphere.appliances,  this.cloud2localMap.appliances, this.local2cloudMap.appliances);
+      getFromConfig(sphere.locations,   this.cloud2localMap.locations,  this.local2cloudMap.locations);
       getFromConfig(sphere.stones,      this.cloud2localMap.stones,     this.local2cloudMap.stones);
+
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        let stone = sphere.stones[stoneId];
+        getFromItem(stone.schedules, this.cloud2localMap.schedules, this.local2cloudMap.schedules);
+      })
+
     });
   }
 }

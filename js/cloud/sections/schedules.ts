@@ -1,3 +1,5 @@
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+
 export const schedules = {
 
   createSchedule: function(data, background = true) {
@@ -9,10 +11,11 @@ export const schedules = {
     );
   },
 
-  getSchedule: function(scheduleId, background = true) {
+  getSchedule: function(localScheduleId, background = true) {
+    let cloudScheduleId = MapProvider.local2cloudMap.schedules[localScheduleId] || localScheduleId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'GET',
-      '/Stones/{id}/schedules/'+scheduleId,
+      '/Stones/{id}/schedules/'+cloudScheduleId,
       {background: background}
     );
   },
@@ -43,19 +46,21 @@ export const schedules = {
   },
 
 
-  updateSchedule: function(scheduleId, data, background = true) {
+  updateSchedule: function(localScheduleId, data, background = true) {
+    let cloudScheduleId = MapProvider.local2cloudMap.schedules[localScheduleId] || localScheduleId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Stones/{id}/schedules/'+scheduleId,
+      '/Stones/{id}/schedules/'+cloudScheduleId,
       { data: data, background: background },
       'body'
     );
   },
 
-  deleteSchedule: function(scheduleId, background = true) {
+  deleteSchedule: function(localScheduleId, background = true) {
+    let cloudScheduleId = MapProvider.local2cloudMap.schedules[localScheduleId] || localScheduleId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'DELETE',
-      '/Stones/{id}/schedules/'+scheduleId,
+      '/Stones/{id}/schedules/'+cloudScheduleId,
       { background: background }
     );
   },

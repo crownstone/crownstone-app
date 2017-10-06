@@ -33,7 +33,7 @@ class LocationHandlerClass {
 
 
     // subscribe to iBeacons when the spheres in the cloud change.
-    CLOUD.events.on('CloudSyncComplete_spheresChanged', () => {
+    eventBus.on('CloudSyncComplete_spheresChanged', () => {
       if (this._readyForLocalization) {
         LocationHandler.initializeTracking();
       }
