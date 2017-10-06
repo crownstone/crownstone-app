@@ -19,7 +19,7 @@ export const MessageUtil = {
 
         // add cloudId to message
         store.dispatch({
-          type:'APPEND_MESSAGE',
+          type:'UPDATE_MESSAGE_CLOUD_ID',
           sphereId: sphereId,
           messageId: messageId,
           data: { cloudId: cloudId }

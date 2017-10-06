@@ -14,7 +14,7 @@ export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 
 export const pxRatio = PixelRatio.get();
 
-export let barHeight = 42;
+export let barHeight = 46;
 export let barHeightLarge = 80;
 
 export let colors : any = {

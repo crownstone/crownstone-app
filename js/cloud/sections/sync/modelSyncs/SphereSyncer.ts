@@ -100,7 +100,7 @@ export class SphereSyncer extends SyncingBase {
         LOG.info("SphereSync ",localId,": DONE applianceSyncer sync.");
         LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
         // sync stones
-        return stoneSyncer.sync(state, localSphere && localSphere.stones || {});
+        return stoneSyncer.sync(localSphere && localSphere.stones || {});
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE stoneSyncer sync.");

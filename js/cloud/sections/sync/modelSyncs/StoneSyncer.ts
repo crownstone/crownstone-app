@@ -17,7 +17,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
     return CLOUD.forSphere(this.cloudSphereId).getStonesInSphere({background: true})
   }
 
-  sync(state, stonesInState) {
+  sync(stonesInState) {
     this._constructLocalIdMap();
 
     return this.download()

@@ -71,6 +71,7 @@ const handleSpecial = function(state, events, actions) {
   messageIds.forEach((dbId) => {
     let payload = events.messages[dbId];
     let success = () => { actions.push({type: 'FINISHED_SPECIAL_MESSAGES', id: dbId })};
+
     switch (payload.specialType) {
       case 'receivedMessage':
         promises.push(CLOUD.receivedMessage(payload.cloudId).then(() => { success(); }).catch((err) => {

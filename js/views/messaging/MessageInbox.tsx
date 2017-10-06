@@ -76,7 +76,7 @@ export class MessageInbox extends Component<any, any> {
         messages.push({message: sphere.messages[messageId], id: messageId});
       });
 
-      messages.sort((a,b) => { return a.message.config.updatedAt - b.message.config.updatedAt; });
+      messages.sort((a,b) => { return b.message.config.updatedAt - a.message.config.updatedAt; });
       messages.forEach((messageData) => {
         let message = messageData.message;
         let backgroundColor = colors.white.rgba(0.75);

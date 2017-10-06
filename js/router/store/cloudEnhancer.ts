@@ -400,17 +400,14 @@ function handleInstallation(action, state) {
 
 function handleMessageReceived(action, state) {
   let message = state.spheres[action.sphereId].messages[action.messageId];
-  CLOUD.receivedMessage(message.config.cloudId).catch((err) => {
-    LOG.error("CloudEnhancer: could not mark message as received!", err);
-    eventBus.emit("submitCloudEvent", {
-      type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
-      sphereId: action.sphereId,
-      id: action.messageId + '_' + 'receivedMessage',
-      localId: action.messageId,
-      cloudId: message.config.cloudId,
-      specialType: 'receivedMessage'
-    });
-  })
+  eventBus.emit("submitCloudEvent", {
+    type: 'CLOUD_EVENT_SPECIAL_MESSAGES',
+    sphereId: action.sphereId,
+    id: action.messageId + '_' + 'receivedMessage',
+    localId: action.messageId,
+    cloudId: message.config.cloudId,
+    specialType: 'receivedMessage'
+  });
 }
 
 function handleMessageRead(action, state) {

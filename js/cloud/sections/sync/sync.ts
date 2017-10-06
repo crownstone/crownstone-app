@@ -10,7 +10,6 @@ import {UserSyncer} from "./modelSyncs/UserSyncer";
 import {SphereSyncer} from "./modelSyncs/SphereSyncer";
 import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
-import {eventBus} from "../../../util/EventBus";
 
 
 
@@ -111,10 +110,10 @@ export const sync = {
         LOG.info("Sync: Requesting notification permissions during updating of the device.");
         NotificationHandler.request();
 
-        eventBus.emit("CloudSyncComplete");
+        this.events.emit("CloudSyncComplete");
 
         if (reloadTrackingRequired) {
-          eventBus.emit("CloudSyncComplete_spheresChanged");
+          this.events.emit("CloudSyncComplete_spheresChanged");
         }
 
         LOG.info("Sync after: START MessageCenter checkForMessages.");

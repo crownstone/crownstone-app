@@ -1,5 +1,5 @@
 import {AppState, Vibration} from 'react-native'
-import {LOG} from "../logging/Log";
+import {LOG, LOGi} from "../logging/Log";
 import {Util} from "../util/Util";
 const PushNotification = require('react-native-push-notification');
 import {canUseIndoorLocalizationInSphere} from "../util/DataUtil";
@@ -9,7 +9,7 @@ import {MessageCenter} from "../backgroundProcesses/MessageCenter";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
 
 
-const MESSAGE_SELF_SENT_TIMEOUT = 10 * 1000; // 30 seconds
+const MESSAGE_SELF_SENT_TIMEOUT = 30 * 1000; // 30 seconds
 
 export const LocalNotifications = {
   _handleNewMessage(messageData, state) {
@@ -19,7 +19,7 @@ export const LocalNotifications = {
 
     let localSphereId = MapProvider.cloud2localMap.spheres[messageData.sphereId];
     let localLocationId = MapProvider.cloud2localMap.locations[messageData.triggerLocationId];
-    if (!localSphereId) { return };
+    if (!localSphereId) { return }
 
     LOG.info("LocalNotifications: received new message!", messageData);
     // do we have this sphere?
@@ -38,15 +38,17 @@ export const LocalNotifications = {
         }
 
         let userId = state.user.userId;
-        if (messageData.senderId === userId) {
-          // search local messages in this sphere to see if this user has recently composed a message with this content.
+        // search local messages in this sphere to see if this user has recently composed a message with this content.
+        if (messageData.ownerId === userId) {
           let sphereMessageIds = Object.keys(sphere.messages);
+          let now = new Date().valueOf();
           for (let i = 0; i < sphereMessageIds.length; i++) {
             let message = sphere.messages[sphereMessageIds[i]];
 
             if (message.config.senderId === userId && message.config.content === messageData.content) {
-              let now = new Date().valueOf();
+              LOGi.messages("Matched message!");
               if (now - message.config.updatedAt < MESSAGE_SELF_SENT_TIMEOUT || now - message.config.sentAt < MESSAGE_SELF_SENT_TIMEOUT) {
+                LOGi.messages("LocalNotifications: Marking the message as delivered and read because it has been sent < 30 seconds ago:", now - message.config.sentAt, now - message.config.updatedAt)
                 MessageCenter.deliveredMessage(messageData.sphereId, sphereMessageIds[i]);
                 MessageCenter.readMessage(messageData.sphereId, sphereMessageIds[i]);
                 return;

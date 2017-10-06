@@ -185,7 +185,7 @@ export class MessageAdd extends Component<any, any> {
       items.push({
         label: userData[1].text,
         type: 'navigation',
-        icon:  <IconButton name={userData[1].icon} size={22} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/>,
+        icon:  <IconButton name={userData[1].icon} size={24} buttonSize={34} radius={17} button={true} color="#fff" buttonStyle={{backgroundColor: colors.green.hex, marginLeft:3, marginRight:7, borderColor: colors.white.hex, borderWidth: 2}}/>,
         callback: () => {
           Actions.selectFromList({items: userData, title: 'Recipients', callback: (selection) => {
             this.setState({recipients: selection});
@@ -195,8 +195,11 @@ export class MessageAdd extends Component<any, any> {
       items.push({
         label: 'Including you',
         type: 'switch',
-        wrapperStyle: { backgroundColor: colors.white.rgba(0.85) },
-        iconIndent:true,
+        wrapperStyle: { backgroundColor: colors.white.rgba(0.6) },
+        style: {paddingLeft: 12},
+        icon: <View style={{paddingLeft: 12}}>
+          <IconButton name='ios-body' size={22} buttonSize={30} radius={15} button={true} color="#fff" buttonStyle={{backgroundColor: colors.menuTextSelected.hex, marginLeft:3, marginRight:7}}/>
+        </View>,
         value: this.state.everyoneInSphereIncludingOwner,
         callback: (newValue) => {
           this.setState({everyoneInSphereIncludingOwner: newValue});
@@ -224,7 +227,7 @@ export class MessageAdd extends Component<any, any> {
             items.push({
               label: user.text,
               type: 'deletableEntry',
-              wrapperStyle: { backgroundColor: colors.white.rgba(0.85) },
+              wrapperStyle: { backgroundColor: colors.white.rgba(0.6) },
               icon:  <View style={{paddingLeft: 12}}>{icon}</View>,
               callback: () => {
                 let newRecipients = this.state.recipients;

@@ -12,7 +12,7 @@ import {
   LOG_STORE,
   LOG_SCHEDULER,
   TESTING_APP,
-  RELEASE_MODE_USED,
+  RELEASE_MODE_USED, LOG_MESSAGES,
 } from '../ExternalConfig'
 import {LogProcessor} from "./LogProcessor";
 import {logToFile} from "./LogUtil";
@@ -84,6 +84,10 @@ class Logger {
 
   mesh(...any) {
     this._log('Mesh -------', LOG_MESH,      LogProcessor.log_mesh, arguments);
+  }
+
+  messages(...any) {
+    this._log('Messages ---', LOG_MESSAGES,  LogProcessor.log_info, arguments);
   }
 
   _log(type, globalCheckField, dbCheckField, allArguments) {
