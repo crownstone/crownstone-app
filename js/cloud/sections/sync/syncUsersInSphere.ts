@@ -30,7 +30,7 @@ export const syncUsersInSphere = {
       }
 
       let locationSyncer = new LocationSyncer(actions, [], activeSphereId, sphere.config.cloudId || activeSphereId);
-      locationSyncer.sync(state, sphere.locations)
+      locationSyncer.sync(store)
         .then(() => {
           if (actions.length > 0) {
             store.batchDispatch(actions);

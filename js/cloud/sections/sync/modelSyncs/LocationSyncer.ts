@@ -18,11 +18,21 @@ export class LocationSyncer extends SyncingSphereItemBase {
     return CLOUD.forSphere(this.cloudSphereId).getLocations();
   }
 
-  sync(state, locationsInState) {
-    this.userId = state.user.userId;
+  _getLocalData(store) {
+    let state = store.getState();
+    if (state && state.spheres[this.localSphereId]) {
+      return state.spheres[this.localSphereId].locations;
+    }
+    return {};
+  }
+
+  sync(store) {
+    let userInState = store.getState().user;
+    this.userId = userInState.userId;
 
     return this.download()
       .then((locationsInCloud) => {
+        let locationsInState = this._getLocalData(store);
         let localLocationIdsSynced = this.syncDown(locationsInState, locationsInCloud);
         this.syncUp(locationsInState, localLocationIdsSynced);
 

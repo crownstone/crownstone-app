@@ -58,8 +58,8 @@ export class DeviceScheduleEdit extends Component<any, any> {
           Wed: true,
           Thu: true,
           Fri: true,
-          Sat: new Date().getDay() === 6, // only on by default if it actually IS Saturday
-          Sun: new Date().getDay() === 0, // only on by default if it actually IS Sunday
+          Sat: false,
+          Sun: false,
         },
       }
     }

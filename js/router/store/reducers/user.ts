@@ -96,25 +96,31 @@ export default (state = defaultSettings, action : any = {}) => {
       }
       return state;
     case 'USER_LOG_IN':
-    case 'USER_UPDATE':
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
+    case 'USER_UPDATE':
       if (action.data) {
         let newState = {...state};
-        newState.firstName    = update(action.data.firstName,    newState.firstName);
-        newState.lastName     = update(action.data.lastName,     newState.lastName);
-        newState.email        = update(action.data.email,        newState.email);
-        newState.passwordHash = update(action.data.passwordHash, newState.passwordHash);
-        newState.isNew        = update(action.data.isNew,        newState.isNew);
-        newState.accessToken  = update(action.data.accessToken,  newState.accessToken);
-        newState.userId       = update(action.data.userId,       newState.userId);
-        newState.picture      = update(action.data.picture,      newState.picture);
-        newState.pictureId      = update(action.data.pictureId,  newState.pictureId);
-        newState.uploadLocation       = update(action.data.uploadLocation,      newState.uploadLocation);
-        newState.uploadSwitchState    = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
-        newState.uploadPowerUsage     = update(action.data.uploadPowerUsage,    newState.uploadPowerUsage);
+        newState.firstName              = update(action.data.firstName,    newState.firstName);
+        newState.lastName               = update(action.data.lastName,     newState.lastName);
+        newState.email                  = update(action.data.email,        newState.email);
+        newState.passwordHash           = update(action.data.passwordHash, newState.passwordHash);
+        newState.isNew                  = update(action.data.isNew,        newState.isNew);
+        newState.accessToken            = update(action.data.accessToken,  newState.accessToken);
+        newState.userId                 = update(action.data.userId,       newState.userId);
+        newState.picture                = update(action.data.picture,      newState.picture);
+        newState.pictureId              = update(action.data.pictureId,  newState.pictureId);
+        newState.uploadLocation         = update(action.data.uploadLocation,      newState.uploadLocation);
+        newState.uploadSwitchState      = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
+        newState.uploadPowerUsage       = update(action.data.uploadPowerUsage,    newState.uploadPowerUsage);
         newState.uploadHighFrequencyPowerUsage = update(action.data.uploadHighFrequencyPowerUsage,    newState.uploadHighFrequencyPowerUsage);
-        newState.uploadDeviceDetails  = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);
-        newState.updatedAt    = getTime(action.data.updatedAt);
+        newState.uploadDeviceDetails    = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);
+
+        if (action.type === 'USER_UPDATE') {
+          newState.updatedAt = getTime(action.data.updatedAt);
+        }
+        else {
+          newState.updatedAt = update(action.data.updatedAt, newState.updatedAt);
+        }
         return newState;
       }
       return state;

@@ -14,17 +14,19 @@ import {transferUser} from "../../../transferData/transferUser";
 export class UserSyncer extends SyncingBase {
   userId : string;
 
-  download(state) {
+  download() {
     return CLOUD.getUserData()
   }
 
-  sync(state) {
+  sync(store) {
+    let state = store.getState();
     this.userId = state.user.userId;
 
-    return this.download(state)
+    return this.download()
       .then((userData) => {
-        this.syncDown(state.user, userData);
-        this.syncUp(state.user, userData);
+        let userInState = store.getState().user;
+        this.syncDown(userInState, userData);
+        this.syncUp(userInState, userData);
         return CLOUD.getKeys()
       })
       .then((keys) => {
@@ -63,7 +65,7 @@ export class UserSyncer extends SyncingBase {
     if (shouldUpdateLocally(userInState, userInCloud)) {
       this.transferPromises.push(transferUser.updateLocal(this.actions, {cloudData: userInCloud}));
     }
-    else if (shouldUpdateInCloud(userInState,userInCloud)) {
+    else if (shouldUpdateInCloud(userInState, userInCloud)) {
       this.transferPromises.push(transferUser.updateOnCloud({localData: userInState, cloudId: userInCloud.id}));
     }
   }

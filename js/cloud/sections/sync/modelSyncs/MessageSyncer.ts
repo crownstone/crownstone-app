@@ -17,14 +17,24 @@ export class MessageSyncer extends SyncingSphereItemBase {
     return CLOUD.forSphere(this.cloudSphereId).getActiveMessages();
   }
 
-  sync(state, messagesInState) {
+  _getLocalData(store) {
+    let state = store.getState();
+    if (state && state.spheres[this.localSphereId]) {
+      return state.spheres[this.localSphereId].messages;
+    }
+    return {};
+  }
+
+  sync(store) {
     // used to transform the locationId for the triggerLocationIds
     this._constructLocalIdMap();
 
-    this.userId = state.user.userId;
+    let userInState = store.getState().user;
+    this.userId = userInState.userId;
 
     return this.download()
       .then((messagesInCloud) => {
+        let messagesInState = this._getLocalData(store);
         let localMessageIdsSynced = this.syncDown(messagesInState, messagesInCloud);
         this.syncUp(messagesInState, localMessageIdsSynced);
 

@@ -21,15 +21,15 @@ let fieldMap : fieldMap = [
   {local:'email',                               cloud:'email'},
   {local:'isNew',                               cloud:'new'},
   {local:'pictureId',                           cloud:'profilePicId'},
-  {local:'userId',                              cloud:'id',                          cloudToLocalOnly: true},
+  {local:'userId',                              cloud:'id',                   cloudToLocalOnly: true},
   {local:'uploadLocation',                      cloud:'uploadLocation'},
   {local:'uploadSwitchState',                   cloud:'uploadSwitchState'},
   {local:'uploadDeviceDetails',                 cloud:'uploadDeviceDetails'},
   {local:'updatedAt',                           cloud:'updatedAt'},
 
   // these are not handled by this script.
-  {local:'firmwareVersionsAvailable',           cloud:null},
-  {local:'bootloaderVersionsAvailable',         cloud:null},
+  {local:'firmwareVersionsAvailable',           cloud: null},
+  {local:'bootloaderVersionsAvailable',         cloud: null},
 
   // these are used for local config.
   {local:'accessToken',                         cloud: null},
@@ -51,7 +51,7 @@ export const transferUser = {
     let payload = {};
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    CLOUD.forUser(data.cloudId).updateUserData(data)
+    CLOUD.forUser(data.cloudId).updateUserData(payload)
       .then(() => { })
       .catch((err) => {
         LOG.error("Transfer-User: Could not update user in cloud", err);

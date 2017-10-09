@@ -23,11 +23,12 @@ export class SphereSyncer extends SyncingBase {
     return CLOUD.getSpheres();
   }
 
-  sync(state) {
-    let spheresInState = state.spheres;
+  sync(store) {
     return this.download()
       .then((spheresInCloud) => {
-        let localSphereIdsSynced = this.syncDown(state, spheresInState, spheresInCloud);
+        let state = store.getState();
+        let spheresInState = state.spheres;
+        let localSphereIdsSynced = this.syncDown(store, spheresInState, spheresInCloud);
         this.syncUp(spheresInState, localSphereIdsSynced);
 
         return Promise.all(this.transferPromises)
@@ -35,7 +36,7 @@ export class SphereSyncer extends SyncingBase {
       .then(() => { return this.actions });
   }
 
-  syncDown(state, spheresInState, spheresInCloud) : object {
+  syncDown(store, spheresInState, spheresInCloud) : object {
     let localSphereIdsSynced = {};
     let cloudIdMap = this._getCloudIdMap(spheresInState);
 
@@ -66,14 +67,14 @@ export class SphereSyncer extends SyncingBase {
         );
       }
 
-      this.syncChildren(state, localId, localId ? spheresInState[localId] : null, sphere_from_cloud);
+      this.syncChildren(store, localId, localId ? spheresInState[localId] : null, sphere_from_cloud);
     });
 
     this.globalCloudIdMap.spheres = cloudIdMap;
     return localSphereIdsSynced;
   }
 
-  syncChildren(state, localId, localSphere, sphere_from_cloud) {
+  syncChildren(store, localId, localSphere, sphere_from_cloud) {
     let sphereUserSyncer  = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
     let locationSyncer    = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
     let applianceSyncer   = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
@@ -83,30 +84,30 @@ export class SphereSyncer extends SyncingBase {
     // sync sphere users
     LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");
     this.transferPromises.push(
-      sphereUserSyncer.sync(state, localSphere && localSphere.users || {})
+      sphereUserSyncer.sync(store)
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE sphereUserSyncer sync.");
         LOG.info("SphereSync ",localId,": START locationSyncer sync.");
       // sync locations
-        return locationSyncer.sync(state, localSphere && localSphere.locations || {});
+        return locationSyncer.sync(store);
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE locationSyncer sync.");
         LOG.info("SphereSync ",localId,": START applianceSyncer sync.");
         // sync appliances
-        return applianceSyncer.sync(state, localSphere && localSphere.appliances || {});
+        return applianceSyncer.sync(store);
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE applianceSyncer sync.");
         LOG.info("SphereSync ",localId,": START stoneSyncer sync.");
         // sync stones
-        return stoneSyncer.sync(localSphere && localSphere.stones || {});
+        return stoneSyncer.sync(store);
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE stoneSyncer sync.");
         LOG.info("SphereSync ",localId,": START messageSyncer sync.");
         // sync messages
-        return messageSyncer.sync(state, localSphere && localSphere.messages || {});
+        return messageSyncer.sync(store);
       })
       .then(() => {
         LOG.info("SphereSync ",localId,": DONE messageSyncer sync.");

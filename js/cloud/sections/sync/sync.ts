@@ -10,6 +10,7 @@ import {UserSyncer} from "./modelSyncs/UserSyncer";
 import {SphereSyncer} from "./modelSyncs/SphereSyncer";
 import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
+import {eventBus} from "../../../util/EventBus";
 
 
 
@@ -58,17 +59,17 @@ export const sync = {
       .then(() => {
         LOG.info("Sync: DONE Sync Events.");
         LOG.info("Sync: START userSyncer sync.");
-        return userSyncer.sync(state)
+        return userSyncer.sync(store)
       })
       .catch(getUserIdCheckError(state, store, () => {
         LOG.info("Sync: RETRY userSyncer Sync.");
-        return userSyncer.sync(state)
+        return userSyncer.sync(store)
       }))
       .then(() => {
         LOG.info("Sync: DONE userSyncer sync.");
         LOG.info("Sync: START SphereSyncer sync.");
         let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap);
-        return sphereSyncer.sync(state);
+        return sphereSyncer.sync(store);
       })
       .then(() => {
         LOG.info("Sync: DONE SphereSyncer sync.");
@@ -110,10 +111,10 @@ export const sync = {
         LOG.info("Sync: Requesting notification permissions during updating of the device.");
         NotificationHandler.request();
 
-        this.events.emit("CloudSyncComplete");
+        eventBus.emit("CloudSyncComplete");
 
         if (reloadTrackingRequired) {
-          this.events.emit("CloudSyncComplete_spheresChanged");
+          eventBus.emit("CloudSyncComplete_spheresChanged");
         }
 
         LOG.info("Sync after: START MessageCenter checkForMessages.");

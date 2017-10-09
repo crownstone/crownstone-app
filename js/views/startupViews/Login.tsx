@@ -276,7 +276,12 @@ export class Login extends Component<any, any> {
     promises.push(
       CLOUD.forUser(userId).getUserData()
         .then((userData) => {
-          store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName, isNew: userData.new}});
+          store.dispatch({type:'USER_APPEND', data:{
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            isNew: userData.new,
+            updatedAt : userData.updatedAt
+          }});
           this.progress += parts;
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received user data.'});
         })

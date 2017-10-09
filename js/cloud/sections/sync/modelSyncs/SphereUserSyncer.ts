@@ -23,16 +23,27 @@ export class SphereUserSyncer extends SyncingSphereItemBase {
     return CLOUD.forSphere(this.cloudSphereId).getUsers();
   }
 
-  sync(state, sphereUsersInState) {
-    this.userId = state.user.userId;
-    this.userPicture = state.user.picture;
+  _getLocalData(store) {
+    let state = store.getState();
+    if (state.spheres[this.localSphereId]) {
+      return state.spheres[this.localSphereId].users;
+    }
+    return {};
+  }
+
+  sync(store) {
+    let userInState = store.getState().user;
+    this.userId = userInState.userId;
+    this.userPicture = userInState.picture;
     let localSphereUserIdsSynced = {};
     return this.download()
       .then((sphereUsersInCloud) => {
+        let sphereUsersInState = this._getLocalData(store);
         localSphereUserIdsSynced = this.syncDown(sphereUsersInState, sphereUsersInCloud);
         return this.downloadPendingInvites();
       })
       .then((pendingInvites) => {
+        let sphereUsersInState = this._getLocalData(store);
         this.syncPendingInvites(localSphereUserIdsSynced, pendingInvites, sphereUsersInState);
         this.syncUp(localSphereUserIdsSynced, sphereUsersInState);
         return Promise.all(this.transferPromises);

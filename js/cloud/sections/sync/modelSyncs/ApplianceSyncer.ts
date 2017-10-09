@@ -18,9 +18,18 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
     return CLOUD.forSphere(this.cloudSphereId).getAppliancesInSphere();
   }
 
-  sync(state, appliancesInState) {
+  _getLocalData(store) {
+    let state = store.getState();
+    if (state && state.spheres[this.localSphereId]) {
+      return state.spheres[this.localSphereId].appliances;
+    }
+    return {};
+  }
+
+  sync(store) {
     return this.download()
       .then((appliancesInCloud) => {
+        let appliancesInState = this._getLocalData(store);
         let localApplianceIdsSynced = this.syncDown(appliancesInState, appliancesInCloud);
         this.syncUp(appliancesInState, localApplianceIdsSynced);
 

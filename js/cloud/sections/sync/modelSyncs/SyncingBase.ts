@@ -28,6 +28,8 @@ export class SyncingBase {
     })
   }
 
+  _getLocalData(store) {}
+
   download(cloudSphereId) {
     // should be implemented if the data should be pulled by the sync script
   }

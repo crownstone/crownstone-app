@@ -20,15 +20,37 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
   localStoneId: string;
   cloudStoneId: string;
 
-  constructor(globalCloudIdMap, actions, transferPromises, localSphereId, cloudSphereId, localStoneId, cloudStoneId) {
-    super(globalCloudIdMap, actions, transferPromises, localSphereId, cloudSphereId);
+  constructor(
+    actions: any[],
+    transferPromises : any[],
+    localSphereId : string,
+    cloudSphereId : string,
+    localStoneId : string,
+    cloudStoneId : string,
+    globalCloudIdMap? : globalIdMap
+  ) {
+    super(actions, transferPromises, localSphereId, cloudSphereId, globalCloudIdMap);
 
     this.localStoneId = localStoneId;
     this.cloudStoneId = cloudStoneId;
   }
 
+  _getLocalData(store) {
+    let state = store.getState();
+    if (
+      state &&
+      state.spheres[this.localSphereId] &&
+      state.spheres[this.localSphereId].stones &&
+      state.spheres[this.localSphereId].stones[this.localStoneId]) {
+      return state.spheres[this.localSphereId].stones[this.localStoneId].schedules;
+    }
+    return {};
+  }
 
-  sync(schedulesInState, schedulesInCloud) {
+
+  sync(store, schedulesInCloud) {
+    let schedulesInState = this._getLocalData(store);
+
     let localScheduleIdsSynced = this.syncDown(schedulesInState, schedulesInCloud);
     this.syncUp(schedulesInState, localScheduleIdsSynced);
 
@@ -38,6 +60,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
   syncDown(schedulesInState, schedulesInCloud) : object {
     let cloudIdMap = this._getCloudIdMap(schedulesInState);
     let localScheduleIdsSynced = {};
+
 
     // find the schedule in our local database that matches the one in the cloud
     schedulesInCloud.forEach((schedule_from_cloud) => {
