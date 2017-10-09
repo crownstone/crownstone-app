@@ -26,7 +26,7 @@ let defaultSettings = {
 
 let scheduleReducer = (state = defaultSettings, action : any = {}) => {
   switch (action.type) {
-    case 'UPDATE_SCHEDULE_CLOUD_ID':
+    case "UPDATE_SCHEDULE_CLOUD_ID":
       if (action.data) {
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);

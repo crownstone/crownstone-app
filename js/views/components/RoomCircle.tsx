@@ -376,7 +376,9 @@ class RoomCircleClass extends Component<any, any> {
         }
       }
     }
-
+    else {
+      this.showAlert = null;
+    }
 
     this.renderState = state;
     const animatedStyle = {

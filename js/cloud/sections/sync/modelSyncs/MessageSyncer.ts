@@ -129,7 +129,10 @@ export class MessageSyncer extends SyncingSphereItemBase {
   }
 
   syncLocalMessageDown(localId, messageInState, message_from_cloud) {
-    if (shouldUpdateLocally(messageInState.config, message_from_cloud)) {
+    if (shouldUpdateInCloud(messageInState.config, message_from_cloud)) {
+      // update in cloud --> not possible for messages. Sent is sent.
+    }
+    else if (shouldUpdateLocally(messageInState.config, message_from_cloud) || !messageInState.config.cloudId) {
       // update local
       let cloudDataForLocal = {...message_from_cloud};
       cloudDataForLocal['localTriggerLocationId'] = this._getLocalLocationId(message_from_cloud.triggerLocationId);
@@ -141,9 +144,6 @@ export class MessageSyncer extends SyncingSphereItemBase {
           cloudData: cloudDataForLocal
         }).catch()
       );
-    }
-    else if (shouldUpdateInCloud(messageInState.config, message_from_cloud)) {
-      // update in cloud --> not possible for messages. Sent is sent.
     }
   };
 

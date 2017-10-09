@@ -128,18 +128,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
   }
 
   syncLocalScheduleDown(localId, scheduleInState, schedule_from_cloud) {
-    if (shouldUpdateLocally(scheduleInState, schedule_from_cloud)) {
-      // update local
-      this.transferPromises.push(
-        transferSchedules.updateLocal(this.actions, {
-          localSphereId: this.localSphereId,
-          localStoneId: this.localStoneId,
-          localId: localId,
-          cloudData: schedule_from_cloud
-        }).catch()
-      );
-    }
-    else if (shouldUpdateInCloud(scheduleInState, schedule_from_cloud)) {
+    if (shouldUpdateInCloud(scheduleInState, schedule_from_cloud)) {
       // update cloud since local data is newer!
       this.transferPromises.push(
         transferSchedules.updateOnCloud({
@@ -148,6 +137,17 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
           localId: localId,
           cloudId: schedule_from_cloud.id,
           localData: scheduleInState,
+        }).catch()
+      );
+    }
+    else if (shouldUpdateLocally(scheduleInState, schedule_from_cloud) || !scheduleInState.cloudId) {
+      // update local
+      this.transferPromises.push(
+        transferSchedules.updateLocal(this.actions, {
+          localSphereId: this.localSphereId,
+          localStoneId: this.localStoneId,
+          localId: localId,
+          cloudData: schedule_from_cloud
         }).catch()
       );
     }
