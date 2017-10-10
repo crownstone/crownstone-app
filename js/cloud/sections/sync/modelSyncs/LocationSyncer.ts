@@ -182,6 +182,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         transferLocations.updateOnCloud({
           localId:   localId,
           localData: locationInState,
+          localSphereId: this.localSphereId,
           cloudSphereId: this.cloudSphereId,
           cloudId:   location_from_cloud.id,
         })

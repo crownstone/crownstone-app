@@ -47,12 +47,8 @@ export const transferAppliances = {
     let payload = {};
     transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
 
-    // add optional extra fields to payload
-    if (data.extraFields) {
-      let extraFieldKeys = Object.keys(data.extraFields);
-      extraFieldKeys.forEach((extraFieldKey) => {
-        payload[extraFieldKey] = data.extraFields[extraFieldKey];
-      })
+    if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud) {
+      payload['json'] = JSON.stringify(data.localData.behaviour);
     }
 
     return CLOUD.forSphere(data.cloudSphereId).updateAppliance(data.cloudId, payload)

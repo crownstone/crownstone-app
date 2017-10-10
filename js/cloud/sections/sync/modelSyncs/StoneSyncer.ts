@@ -201,10 +201,11 @@ export class StoneSyncer extends SyncingSphereItemBase {
       localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
       this.transferPromises.push(
         transferStones.updateOnCloud({
-          cloudSphereId: this.cloudSphereId,
           localId: localId,
-          cloudId: stone_from_cloud.id,
           localData: localDataForCloud,
+          localSphereId: this.localSphereId,
+          cloudSphereId: this.cloudSphereId,
+          cloudId: stone_from_cloud.id,
         })
           .then(() => {
             // check if we have to sync the locations:
@@ -251,6 +252,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
         transferStones.updateOnCloud({
           localId: localId,
           localData: localDataForCloud,
+          localSphereId: this.localSphereId,
           cloudId: stone_from_cloud.id,
           cloudSphereId: this.cloudSphereId,
         })

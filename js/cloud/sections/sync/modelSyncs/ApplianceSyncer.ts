@@ -125,10 +125,11 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
 
       this.transferPromises.push(
         transferAppliances.updateOnCloud({
-          cloudSphereId:  this.cloudSphereId,
           localId:        localId,
-          cloudId:        appliance_from_cloud.id,
           localData:      applianceInState,
+          localSphereId:  this.localSphereId,
+          cloudId:        appliance_from_cloud.id,
+          cloudSphereId:  this.cloudSphereId,
         })
         .catch()
       );

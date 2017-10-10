@@ -52,7 +52,7 @@ class Root extends Component {
     };
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
-      let keyboardHeight = 340;
+      let keyboardHeight = 360;
       let distFromBottom = screenHeight - (posY - this.state.top._value);
       this.focusTime = new Date().valueOf();
       Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration: 200}).start()
@@ -66,7 +66,6 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('showProgress', snapBack));
     this.unsubscribe.push(eventBus.on('hideLoading',  snapBack));
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
-
   }
 
 

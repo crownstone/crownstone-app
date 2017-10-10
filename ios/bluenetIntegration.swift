@@ -38,7 +38,7 @@ typealias voidCallback = () -> Void
   init(viewController: UIViewController) {
     super.init()
     BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
-    
+    BluenetLib.LOG.setTimestampPrinting(newState: true)
     self.classifier = CrownstoneBasicClassifier()
     
     self.bluenet = Bluenet(backgroundEnabled: true)

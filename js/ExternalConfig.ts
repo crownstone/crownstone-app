@@ -110,7 +110,7 @@ const DeviceInfo = require('react-native-device-info');
      * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.
      * This flag is meant to just always log to file, regardless of the user input. Used for debugging.
      */
-    export let LOG_TO_FILE    = false;   // log everything that is logged to a file.
+    export let LOG_TO_FILE             = false;   // log everything that is logged to a file.
     export let LOG_EXTENDED_TO_FILE    = false;   // log even more to file.
 
 /******************** /LOGGING ********************/

@@ -11,6 +11,7 @@ import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {transferSpheres} from "../../cloud/transferData/transferSpheres";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {LOG_LEVEL} from "../../logging/LogLevels";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -188,26 +189,27 @@ function handleUserInCloud(action, state) {
 }
 
 function handleStoneBehaviourInCloud(action, state) {
-  let sphere = state.spheres[action.sphereId];
-  let stone = sphere.stones[action.stoneId];
-
   if (Permissions.inSphere(action.sphereId).setBehaviourInCloud) {
-    transferStones.updateOnCloud({
-      localId: action.stoneId,
-      localData: stone,
-      cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
-      cloudId:       stone.config.cloudId || action.stoneId,
-    }).catch();
+    _handleStone(action, state);
   }
 }
 
 function handleStoneInCloud(action, state) {
+  _handleStone(action, state);
+}
+
+function _handleStone(action, state) {
   let sphere = state.spheres[action.sphereId];
   let stone = sphere.stones[action.stoneId];
 
+  let localDataForCloud = {...stone};
+  if (stone.config.applianceId) { localDataForCloud.config['cloudApplianceId'] = MapProvider.local2cloudMap.appliances[stone.config.applianceId] || stone.config.applianceId; }
+  if (stone.config.locationId)  { localDataForCloud.config['cloudLocationId']  = MapProvider.local2cloudMap.locations[stone.config.locationId]   || stone.config.locationId;  }
+
   transferStones.updateOnCloud({
     localId: action.stoneId,
-    localData: stone,
+    localData: localDataForCloud,
+    localSphereId: action.sphereId,
     cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
     cloudId:       stone.config.cloudId  || action.stoneId,
   }).catch();
@@ -219,7 +221,7 @@ function handleStoneLocationUpdateInCloud(action, state, oldState) {
   let locationId = action.data.locationId;
   let updatedAt  = state.spheres[sphereId].stones[stoneId].config.updatedAt;
 
-  let data = { locationId: locationId };
+  let data = { locationId: MapProvider.local2cloudMap.locations[locationId] || locationId };
   CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
 
   let prevLocationId = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] && oldState.spheres[sphereId].stones[stoneId].config.locationId || null;
@@ -245,6 +247,7 @@ function handleApplianceInCloud(action, state) {
   transferAppliances.updateOnCloud({
     localId:       action.stoneId,
     localData:     appliance,
+    localSphereId: action.sphereId,
     cloudSphereId: sphere.config.cloudId     || action.sphereId, // we used to have the same ids locally and in the cloud.
     cloudId:       appliance.config.cloudId  || action.applianceId,
   }).catch();
@@ -258,6 +261,7 @@ function handleApplianceBehaviourInCloud(action, state) {
     transferAppliances.updateOnCloud({
       localId:       action.stoneId,
       localData:     appliance,
+      localSphereId: action.sphereId,
       cloudSphereId: sphere.config.cloudId       || action.sphereId, // we used to have the same ids locally and in the cloud.
       cloudId:       appliance.config.cloudId    || action.applianceId,
     }).catch();
@@ -269,8 +273,9 @@ function handleLocationInCloud(action, state) {
   let location = sphere.locations[action.locationId];
 
   transferAppliances.updateOnCloud({
-    localId: action.stoneId,
-    localData: location,
+    localId:       action.stoneId,
+    localData:     location,
+    localSphereId: action.sphereId,
     cloudSphereId: sphere.config.cloudId    || action.sphereId, // we used to have the same ids locally and in the cloud.
     cloudId:       location.config.cloudId  || action.locationId,
   }).catch();

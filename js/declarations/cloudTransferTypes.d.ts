@@ -2,6 +2,7 @@
 type transferToCloudData = {
   localId?: string,
   localData?: any,
+  localSphereId: string,
   cloudSphereId: string,
   cloudId: string,
   extraFields? : any,
