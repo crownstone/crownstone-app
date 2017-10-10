@@ -11,6 +11,7 @@ import { CLOUD }                 from '../../cloud/cloudAPI'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalConfig'
 import {SetupStateHandler} from "./SetupStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 
 const networkError = 'network_error';
@@ -124,7 +125,7 @@ export class SetupHelper {
                 }
               };
 
-              if (state.spheres[sphereId].stones[this.stoneIdInCloud] !== undefined) {
+              if (MapProvider.cloud2localMap.stones[this.stoneIdInCloud] !==  undefined) {
                 showRestoreAlert = true;
               }
               else {
@@ -157,7 +158,6 @@ export class SetupHelper {
                   [{text: "OK"}]
                 );
               }
-
 
               LOG.info("setup complete");
 
@@ -295,5 +295,9 @@ export class SetupHelper {
           reject(err);
         })
     });
+  }
+
+  _restoreSchedules() {
+
   }
 }

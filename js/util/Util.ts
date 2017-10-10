@@ -244,23 +244,12 @@ export const Util = {
         return false;
       }
 
-      // a git commit hash is never higher, we pick 12 so 123.122.1234 is the max semver length.
-      if (version.length > 12) {
+      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
         return false;
       }
 
       let A = version.split('.');
-
-      // further ensure only semver is compared
-      if (A.length !== 3) {
-        return false;
-      }
-
       let B = compareWithVersion.split('.');
-
-      if (B.length !== 3) {
-        return false;
-      }
 
       if (A[0] < B[0]) return false;
       else if (A[0] > B[0]) return true;
@@ -274,6 +263,10 @@ export const Util = {
     },
 
     isHigherOrEqual: function(version, compareWithVersion) {
+      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
+        return false;
+      }
+
       if (version === compareWithVersion && version && compareWithVersion) {
         return true;
       }
@@ -283,6 +276,10 @@ export const Util = {
 
     isLower: function(version, compareWithVersion) {
       if (!version || !compareWithVersion) {
+        return false;
+      }
+
+      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
         return false;
       }
 
@@ -385,6 +382,22 @@ export const Util = {
 
 };
 
+
+let checkSemVer = (str) => {
+  // a git commit hash is longer than 12, we pick 12 so 123.122.1234 is the max semver length.
+  if (str.length > 12) {
+    return false;
+  }
+
+  let A = str.split('.');
+
+  // further ensure only semver is compared
+  if (A.length !== 3) {
+    return false;
+  }
+
+  return true;
+};
 
 let pad = (base) => {
   if (Number(base) < 10) {
