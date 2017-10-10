@@ -12,6 +12,9 @@ import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../../ExternalCon
 import {SetupStateHandler} from "./SetupStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
+import {ScheduleUtil} from "../../util/ScheduleUtil";
+import {StoneUtil} from "../../util/StoneUtil";
 
 
 const networkError = 'network_error';
@@ -104,7 +107,6 @@ export class SetupHelper {
               let actions = [];
               let isPlug = this.type === STONE_TYPES.plug;
               let isGuidestone = this.type === STONE_TYPES.guidestone;
-              let state = store.getState();
               let showRestoreAlert = false;
               let addStoneAction = {
                 type:           "ADD_STONE",
@@ -127,6 +129,7 @@ export class SetupHelper {
 
               if (MapProvider.cloud2localMap.stones[this.stoneIdInCloud] !==  undefined) {
                 showRestoreAlert = true;
+                this._restoreSchedules(store, sphereId, MapProvider.cloud2localMap.stones[this.stoneIdInCloud])
               }
               else {
                 // if we do not know the stone, we provide the new name and icon
@@ -166,7 +169,7 @@ export class SetupHelper {
 
               if (silent) { return; }
 
-              state = store.getState();
+              let state = store.getState();
               let popupShown = false;
               if (state.app.indoorLocalizationEnabled) {
                 // show the celebration of 4 stones
@@ -297,7 +300,34 @@ export class SetupHelper {
     });
   }
 
-  _restoreSchedules() {
+  _restoreSchedules(store, sphereId, localStoneId) {
+    let state  = store.getState();
+    let sphere = state.spheres[sphereId];
+    if (!sphere) { return; }
 
+    let stone  = sphere.stones[localStoneId];
+    if (!stone) { return; }
+
+    let schedules = stone.schedules;
+    if (!schedules) { return; }
+
+    let scheduleIds = Object.keys(schedules);
+    if (scheduleIds.length === 0) { return; }
+
+    scheduleIds.forEach((scheduleId) => {
+      let schedule = schedules[scheduleId];
+      // update the time to a recent time.
+      schedule.time = ScheduleUtil.getNextTime(schedule.time, schedule.activeDays);
+      BatchCommandHandler.loadPriority(
+        stone,
+        localStoneId,
+        sphereId,
+        { commandName : 'setSchedule', scheduleConfig: schedule },
+        {},
+        10
+      ).catch((err) => { LOG.error("SetupHelper: could not restore schedules.", err)})
+    });
+    BatchCommandHandler.load(stone, localStoneId, sphereId, { commandName : 'setTime', time: StoneUtil.nowToCrownstoneTime() }, {}, 10).catch(() => {});
+    BatchCommandHandler.executePriority();
   }
 }
