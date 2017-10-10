@@ -100,11 +100,18 @@ const handleSpecial = function(state, events, actions) {
           }));
         break;
       case 'uploadProfilePicture':
-        CLOUD.uploadProfileImage(state.user.picture)
-          .then(() => { success() })
-          .catch((err) => {
-            LOG.error("syncEvents Special: Could not upload image to cloud", err);
-          });
+        if (!state.user.picture) {
+          success();
+        }
+        else {
+          CLOUD.uploadProfileImage(state.user.picture)
+            .then(() => { success() })
+            .catch((err) => {
+              LOG.error("syncEvents Special: Could not upload image to cloud", err);
+            });
+        }
+        break;
+
     }
   });
 

@@ -185,7 +185,7 @@ function handleUserInCloud(action, state) {
     });
   }
 
-  transferUser.updateOnCloud(state.user)
+  transferUser.updateOnCloud({localData: state.user, cloudId: state.user.userId})
 }
 
 function handleStoneBehaviourInCloud(action, state) {
