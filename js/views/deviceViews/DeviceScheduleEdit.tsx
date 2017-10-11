@@ -29,9 +29,13 @@ import {StoneUtil} from "../../util/StoneUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 
+import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
+
 let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
 export class DeviceScheduleEdit extends Component<any, any> {
+  datePickerReference : any;
+
   constructor(props) {
     super();
 
@@ -46,7 +50,6 @@ export class DeviceScheduleEdit extends Component<any, any> {
     else {
       this.state = {
         label: '',
-        time: new Date().valueOf(),
         switchState: 1,
         fadeDuration: 0,
         ignoreLocationTriggers: false,
@@ -110,11 +113,11 @@ export class DeviceScheduleEdit extends Component<any, any> {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    items.push({label:'SELECTED TIME IS ' + Util.getTimeFormat(this.state.time, false), type: 'lightExplanation',  below:false});
+    items.push({label:'PICK A TIME', type: 'lightExplanation',  below:false});
     items.push({__item:
-      <DatePickerIOS
+      <UncontrolledDatePickerIOS
+        ref={(x) => { this.datePickerReference = x; }}
         date={new Date(this.state.time)}
-        onDateChange={(date) => { this.setState({time: date.valueOf()}); }}
         mode="time"
         style={{backgroundColor:colors.white.rgba(0.75), width:screenWidth, height:210}}
       />
@@ -207,6 +210,19 @@ export class DeviceScheduleEdit extends Component<any, any> {
     return activeDay;
   }
 
+  _handleTime() {
+    return new Promise((resolve, reject) => {
+      if (Platform.OS === 'ios') {
+        this.datePickerReference.getDate((date) => {
+          this.setState({ time: date.valueOf() }, resolve);
+        });
+      }
+      else {
+        resolve();
+      }
+    });
+  }
+
   _createSchedule() {
     let validated = this._validate();
     if (validated) {
@@ -224,7 +240,6 @@ export class DeviceScheduleEdit extends Component<any, any> {
         }
       );
     }
-
   }
 
   _updateSchedule() {
@@ -472,13 +487,21 @@ export class DeviceScheduleEdit extends Component<any, any> {
             leftAction={() => {  Actions.pop();  }}
             right={'Save'}
             rightStyle={{fontWeight: 'bold'}}
-            rightAction={() => { this._updateSchedule(); }}
+            rightAction={() => {
+              this._handleTime()
+                .then(() => {this._updateSchedule(); })
+                .catch((err) => { LOG.error("DeviceScheduleEdit: Could not get time.", err); })
+            }}
             title={"Edit Schedule"} /> :
           <TopBar
             leftAction={() => { Actions.pop(); }}
             right={'Create'}
             rightStyle={{fontWeight: 'bold'}}
-            rightAction={() => { this._createSchedule(); }}
+            rightAction={() => {
+              this._handleTime()
+                .then(() => {this._createSchedule(); })
+                .catch((err) => { LOG.error("DeviceScheduleEdit: Could not get time.", err); })
+            }}
             title={"Add Schedule"} />
 
         }
