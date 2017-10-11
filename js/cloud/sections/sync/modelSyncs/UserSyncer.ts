@@ -26,18 +26,9 @@ export class UserSyncer extends SyncingBase {
       .then((userData) => {
         let userInState = store.getState().user;
         this.syncDown(userInState, userData);
-        this.syncUp(userInState, userData);
-        return CLOUD.getKeys()
-      })
-      .then((keys) => {
-        this.syncKeys(keys);
         return Promise.all(this.transferPromises);
       })
       .then(() => { return this.actions });
-  }
-
-  syncUp(userInState, userInCloud) {
-
   }
 
   syncDown(userInState, userInCloud) {
@@ -68,16 +59,6 @@ export class UserSyncer extends SyncingBase {
     else if (shouldUpdateInCloud(userInState, userInCloud)) {
       this.transferPromises.push(transferUser.updateOnCloud({localData: userInState, cloudId: userInCloud.id}));
     }
-  }
-
-  syncKeys(keys) {
-    keys.forEach((keySet) => {
-      this.actions.push({type:'SET_SPHERE_KEYS', sphereId: keySet.sphereId, data:{
-        adminKey:  keySet.keys.owner  || keySet.keys.admin || null,
-        memberKey: keySet.keys.member || null,
-        guestKey:  keySet.keys.guest  || null
-      }})
-    })
   }
 
 }

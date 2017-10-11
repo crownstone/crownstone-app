@@ -465,7 +465,7 @@ function handleStoneScheduleAdd(action, state) {
   transferSchedules.createOnCloud(actions, payload)
     .then(() => {
       eventBus.emit("submitCloudEvent", actions);
-    }).catch();
+    }).catch((err) => {});
 
 }
 

@@ -57,7 +57,7 @@ export const spheres = {
       .then((keyResult) => {
         if (Array.isArray(keyResult)) {
           keyResult.forEach((keySet) => {
-            creationActions.push({type:'SET_SPHERE_KEYS', sphereId: sphereId, data:{
+            creationActions.push({type:'SET_SPHERE_KEYS', sphereId: localId, data:{
               adminKey:  keySet.keys.admin  || null,
               memberKey: keySet.keys.member || null,
               guestKey:  keySet.keys.guest  || null

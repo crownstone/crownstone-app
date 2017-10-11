@@ -129,8 +129,11 @@ export const DataUtil = {
    * @returns {*}
    */
   getElement: function(sphere, stone) {
-    if (stone.config.applianceId) {
+    if (stone.config.applianceId && sphere.appliances[stone.config.applianceId]) {
       return sphere.appliances[stone.config.applianceId];
+    }
+    else if (stone.config.applianceId) {
+      LOG.error("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId)
     }
     else {
       return stone;
@@ -145,7 +148,7 @@ export const DataUtil = {
    * @returns {*}
    */
   getLocationFromStone: function(sphere, stone) {
-    if (stone.config.locationId) {
+    if (stone.config.locationId && sphere.locations[stone.config.locationId]) {
       return sphere.locations[stone.config.locationId];
     }
     else {

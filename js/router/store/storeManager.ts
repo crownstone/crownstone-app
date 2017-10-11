@@ -63,6 +63,7 @@ class StoreManagerClass {
   }
 
   _initializeStore(userId) {
+    LOG.info("StoreManager: initializing Store");
     if (userId === null) {
       this._setupStore({}, false);
     }
@@ -95,12 +96,12 @@ class StoreManagerClass {
   _setupStore(initialState, enableWriteToDisk) {
     if (initialState && typeof initialState === 'string') {
       let data = JSON.parse(initialState);
-      LOG.info("CURRENT DATA:", data);
+      LOG.info("StoreManager: CURRENT DATA:", data);
       this.store = createStore(enableBatching(CrownstoneReducer), data, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }
     else {
-      LOG.info("Creating an empty database");
+      LOG.info("StoreManager: Creating an empty database");
       this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }
@@ -205,7 +206,7 @@ class StoreManagerClass {
         this._persistToDisk()
           .then(() => {
             // remove the userId from the logged in user list.
-            return AsyncStorage.setItem(this.userIdentificationStorageKey, "")
+            return AsyncStorage.setItem(this.userIdentificationStorageKey, "");
           })
           .then(() => {
             // clear the storage key

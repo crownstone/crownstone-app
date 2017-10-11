@@ -1,3 +1,5 @@
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+
 export const devices = {
   getDevices: function (background: true) {
     return this._setupRequest('GET', '/users/{id}/devices', {background:background, data:{filter:{"include":"installations"}}});
@@ -21,18 +23,20 @@ export const devices = {
     );
   },
 
-  updateDeviceLocation: function (locationId, background = true) {
+  updateDeviceLocation: function (localLocationId, background = true) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Devices/{id}/currentLocation/' + locationId,
+      '/Devices/{id}/currentLocation/' + cloudLocationId,
       { background: background }
     );
   },
 
-  updateDeviceSphere: function (sphereId, background = true) {
+  updateDeviceSphere: function (localSphereId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Devices/{id}/currentSphere/' + sphereId,
+      '/Devices/{id}/currentSphere/' + cloudSphereId,
       { background: background }
     );
   },

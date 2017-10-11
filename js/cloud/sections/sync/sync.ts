@@ -11,6 +11,7 @@ import {SphereSyncer} from "./modelSyncs/SphereSyncer";
 import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
 import {eventBus} from "../../../util/EventBus";
+import {KeySyncer} from "./modelSyncs/KeySyncer";
 
 
 
@@ -73,6 +74,12 @@ export const sync = {
       })
       .then(() => {
         LOG.info("Sync: DONE SphereSyncer sync.");
+        LOG.info("Sync: START KeySyncer sync.");
+        let keySyncer = new KeySyncer(actions, [], globalCloudIdMap);
+        return keySyncer.sync();
+      })
+      .then(() => {
+        LOG.info("Sync: DONE KeySyncer sync.");
         LOG.info("Sync: START DeviceSyncer sync.");
         let deviceSyncer = new DeviceSyncer(actions, [], globalCloudIdMap);
         return deviceSyncer.sync(state);

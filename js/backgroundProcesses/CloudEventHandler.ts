@@ -16,7 +16,16 @@ class CloudEventHandlerClass {
 
       let pendingActions = [];
       eventBus.on("submitCloudEvent", (data) => {
-        pendingActions.push(data);
+        if (!data) { return; }
+
+        if (Array.isArray(data) && data.length > 0) {
+          data.forEach((action) => {
+            pendingActions.push(action);
+          });
+        }
+        else {
+           pendingActions.push(data);
+        }
 
         // perform the update on the next tick.
         setTimeout(() => {
