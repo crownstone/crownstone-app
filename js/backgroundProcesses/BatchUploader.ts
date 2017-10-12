@@ -29,6 +29,13 @@ class BatchUploadClass {
   }
 
   batchUpload() {
+    if (this._store.getState().user.uploadHighFrequencyPowerUsage === false) {
+      // clear queue if the uploading is disabled.
+      this.queue = {
+        power: {},
+        energy: {},
+      };
+    }
     this._batchPowerData();
   }
 

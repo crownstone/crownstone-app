@@ -32,10 +32,10 @@ export const transferUtil = {
       }
 
       if (field.cloud !== null && cloudData[field.cloud]) {
-        if (field.localFields) {
+        if (field.cloudFields) {
           payload[field.local] = {};
-          for (let i = 0; i < field.localFields.length; i++) {
-            payload[field.local][field.localFields[i]] = cloudData[field.cloud][field.cloudFields[i]]
+          for (let i = 0; i < field.cloudFields.length; i++) {
+            payload[field.local][field.cloudFields[i]] = cloudData[field.cloud][field.cloudFields[i]]
           }
         }
         else {

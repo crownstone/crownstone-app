@@ -92,7 +92,6 @@ class Logger {
 
   _log(type, globalCheckField, dbCheckField, allArguments) {
     if (Math.min(globalCheckField, dbCheckField) <= this.level) {
-
       let args = ['LOG' + this.levelPrefix + ' ' + type + ' :'];
       for (let i = 0; i < allArguments.length; i++) {
         let arg = allArguments[i];

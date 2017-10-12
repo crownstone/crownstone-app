@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
+import {LOG} from "../../../logging/Log";
 
 let defaultSettings = {
   config: {
@@ -36,6 +37,10 @@ let applianceConfigReducer = (state = defaultSettings.config, action : any = {})
     case 'UPDATE_APPLIANCE_CLOUD_ID':
       if (action.data) {
         let newState = {...state};
+        if (typeof action.data.cloudId !== 'string') {
+          LOG.error("action.data.cloudId",action, action.data.cloudId)
+          throw "The cloud id for this appliance is not a string!"
+        }
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
         return newState;
       }
@@ -44,6 +49,12 @@ let applianceConfigReducer = (state = defaultSettings.config, action : any = {})
     case 'UPDATE_APPLIANCE_CONFIG':
       if (action.data) {
         let newState = {...state};
+
+        if (typeof action.data.cloudId !== 'string') {
+          LOG.error("action.data.cloudId",action, action.data.cloudId)
+          throw "The cloud id for this appliance is not a string!"
+        }
+
         newState.name      = update(action.data.name,     newState.name);
         newState.icon      = update(action.data.icon,     newState.icon);
         newState.cloudId   = update(action.data.cloudId, newState.cloudId);

@@ -8,7 +8,7 @@ export class MeshHelper {
   meshInstruction : meshTodo;
   targets : any;
   _containedInstructions : any[] = [];
-  activeOptions : batchCommandEntryOptions;
+  activeOptions : batchCommandEntryOptions = {};
 
   constructor(sphereId, meshNetworkId, meshInstruction : meshTodo) {
     this.sphereId = sphereId;

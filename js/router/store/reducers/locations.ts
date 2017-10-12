@@ -1,5 +1,6 @@
 import { createStore, combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
+import {LOG} from "../../../logging/Log";
 
 
 let defaultSettings = {
@@ -34,6 +35,10 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
   switch (action.type) {
     case 'UPDATE_LOCATION_CLOUD_ID':
       if (action.data) {
+        if (typeof action.data.cloudId !== 'string') {
+          LOG.error("action.data.cloudId",action,  action.data.cloudId)
+          throw "The cloud id for this location is not a string!"
+        }
         let newState = {...state};
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
         return newState;
@@ -55,6 +60,11 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
     case 'ADD_LOCATION':
     case 'UPDATE_LOCATION_CONFIG':
       if (action.data) {
+        if (typeof action.data.cloudId !== 'string') {
+          LOG.error("action.data.cloudId",action,  action.data.cloudId)
+          throw "The cloud id for this location is not a string!"
+        }
+
         let newState = {...state};
         newState.name = update(action.data.name, newState.name);
         newState.icon = update(action.data.icon, newState.icon);

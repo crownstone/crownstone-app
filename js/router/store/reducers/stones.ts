@@ -88,6 +88,10 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'UPDATE_STONE_CLOUD_ID':
       if (action.data) {
         let newState = {...state};
+        if (typeof action.data.cloudId !== 'string') {
+          LOG.error("action.data.cloudId", action, action.data.cloudId);
+          throw "The cloud id for this stone is not a string!"
+        }
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
         return newState;
       }
@@ -159,6 +163,12 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
+
+        if (typeof action.data.cloudId !== 'string') {
+          LOG.error("action.data.cloudId", action, action.data.cloudId)
+          throw "The cloud id for this stone is not a string!"
+        }
+
         let newState = {...state};
         newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
         newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);

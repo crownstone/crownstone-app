@@ -336,7 +336,7 @@ export class RoomLayer extends Component<any, any> {
       if (this._pressedLocationData !== null && this.state.locations['null'] !== undefined) {
         Animated.spring(this.state.locations['null'].scale, { toValue: 0.9 + Math.random() * 0.35, friction: 1, tension: 70 }).start();
       }
-    }, 500);
+    }, 1000);
   }
 
   clearWiggleInterval() {

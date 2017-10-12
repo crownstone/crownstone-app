@@ -8,7 +8,6 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 let fieldMap : fieldMap = [
   {local: 'name',      cloud: 'name'},
   {local: 'icon',      cloud: 'icon'},
-  {local: 'cloudId',   cloud:  null},
   {local: 'updatedAt', cloud: 'updatedAt'},
 
   // used for local config

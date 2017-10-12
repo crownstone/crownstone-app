@@ -43,6 +43,7 @@ class BackgroundProcessHandlerClass {
   userLoggedIn : boolean = false;
   storeInitialized : boolean = false;
   store : any;
+  connectionPopupActive : boolean = false;
 
   constructor() { }
 
@@ -203,13 +204,16 @@ class BackgroundProcessHandlerClass {
 
     // set the global network error handler.
     CLOUD.setNetworkErrorHandler((error) => {
-      let defaultAction = () => { eventBus.emit('hideLoading');};
-      Alert.alert(
-        "Connection Problem",
-        "Could not connect to the Cloud. Please check your internet connection.",
-        [{text: 'OK', onPress: defaultAction }],
-        { onDismiss: defaultAction }
-      );
+      if (this.connectionPopupActive === false) {
+        this.connectionPopupActive = true;
+        let defaultAction = () => { this.connectionPopupActive = false; eventBus.emit('hideLoading');};
+        Alert.alert(
+          "Connection Problem",
+          "Could not connect to the Cloud. Please check your internet connection.",
+          [{text: 'OK', onPress: defaultAction }],
+          { onDismiss: defaultAction }
+        );
+      }
     });
   }
 

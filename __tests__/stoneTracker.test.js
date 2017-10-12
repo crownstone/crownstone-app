@@ -42,6 +42,7 @@ jest.mock('../js/logic/BatchCommandHandler', () => {
           })
       },
       loadPriority: (stone, stoneId, sphereId, command, attempts) => {
+        console.log("loadPriority",command)
         this.__totalLoads++;
         return new Promise((resolve, reject) => {
           expect(command.state).toBe(this.__expectation.state);
@@ -157,7 +158,7 @@ test('stoneTrackerTest', () => {
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-      setTimeout(() => {resolve();},100);
+      setTimeout(() => {resolve();},10);
     })
     .then(() => {
       return new Promise((resolve, reject) => {
@@ -170,8 +171,8 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-          setTimeout(() => {resolve();},100);
-        },2);
+          setTimeout(() => {resolve();},10);
+        },10);
       })
     })
     .then(() => {
@@ -185,8 +186,8 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-          setTimeout(() => {resolve();},100);
-        },2);
+          setTimeout(() => {resolve();},10);
+        },10);
       })
     })
     .then(() => {
@@ -200,8 +201,15 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-          setTimeout(() => {resolve();},100);
-        },2);
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          setTimeout(() => { resolve();},10);
+        },10);
       })
     })
     .then(() => {
@@ -265,45 +273,66 @@ test('stoneTracker Alternating', () => {
     // test Near Event
     mockBatchCommandHandler.BatchCommandHandler.__mockSetExpectation({times: 1, state: 1});
     tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
     setTimeout(() => {resolve();},100);
   })
     .then(() => {
       return new Promise((resolve, reject) => {
         let inBetweenDistance = addDistanceToRssi(-65, 0.5); // == -67.15
         //in between
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        setTimeout(() => {resolve();},100);
+        setTimeout(() => {
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          setTimeout(() => {resolve();},10);
+        },10);
       })
     })
     .then(() => {
       return new Promise((resolve, reject) => {
         //away
         mockBatchCommandHandler.BatchCommandHandler.__mockSetExpectation({times: 1, state: 0});
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        setTimeout(() => {resolve();},100);
+        setTimeout(() => {
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          setTimeout(() => {resolve();},10);
+        },10);
       })
     })
     .then(() => {
       return new Promise((resolve, reject) => {
         //near
         mockBatchCommandHandler.BatchCommandHandler.__mockSetExpectation({times: 1, state: 1});
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        setTimeout(() => {resolve();},100);
+        setTimeout(() => {
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          setTimeout(() => {resolve(); }, 10);
+        },10);
       })
     })
     .then(() => {

@@ -6,22 +6,37 @@ jest.mock('react-native-fs', () => {return {};});
 jest.mock('react-native-device-info');
 
 
+jest.mock('../js/logging/LogProcessor', () => {
+  return {LogProcessor:{
+    log_info:      100,
+    log_warnings:  100,
+    log_errors:    100,
+    log_mesh:      100,
+    log_scheduler: 100,
+    log_verbose:   100,
+    log_ble:       100,
+    log_events:    100,
+    log_store:     100,
+    log_cloud:     100,
+    log_debug:     100,
+  }}
+});
+
 jest.mock('../js/ExternalConfig', () => {
-  const FORCE_ENABLE_LOGS = false;
   return {
     CLOUD_ADDRESS: 'https://crownstone-cloud-dev.herokuapp.com/api/',
-    DEBUG:          true || FORCE_ENABLE_LOGS,
-    LOG_SCHEDULER:  false || FORCE_ENABLE_LOGS,
-    LOG_BLE:        false || FORCE_ENABLE_LOGS,
-    LOG_EVENTS:     false || FORCE_ENABLE_LOGS,
-    LOG_STORE:      false || FORCE_ENABLE_LOGS,
-    LOG_MESH:       false || FORCE_ENABLE_LOGS,
-    LOG_CLOUD:      false || FORCE_ENABLE_LOGS,
-    LOG_DEBUG:      false || FORCE_ENABLE_LOGS,
-    LOG_INFO:       false || FORCE_ENABLE_LOGS,
-    LOG_ERRORS:     false || FORCE_ENABLE_LOGS,
-    LOG_WARNINGS:   false || FORCE_ENABLE_LOGS,
-    LOG_VERBOSE:    false || FORCE_ENABLE_LOGS,
+    DEBUG:          true,
+    LOG_SCHEDULER:  300,
+    LOG_BLE:        300,
+    LOG_EVENTS:     300,
+    LOG_STORE:      300,
+    LOG_MESH:       300,
+    LOG_CLOUD:      300,
+    LOG_DEBUG:      300,
+    LOG_INFO:       300,
+    LOG_ERRORS:     300,
+    LOG_WARNINGS:   300,
+    LOG_VERBOSE:    300,
     LOG_TO_FILE: false,
     MESH_ENABLED: true,
     DISABLE_NATIVE: false,
@@ -38,6 +53,7 @@ jest.mock('../js/ExternalConfig', () => {
     KEEPALIVE_REPEAT_ATTEMPTS: 1,
     RESET_TIMER_FOR_NEAR_AWAY_EVENTS: 20000,
     RELEASE_MODE_USED: false,
+    TESTING_APP: true,
     TESTING_IN_PROCESS: true,
     LOCAL_TESTING: false
   }
@@ -156,7 +172,6 @@ let checker = (data, reject) => {
       expect(data.args).toEqual(expected.args);
     }
     catch (err) {
-      console.log('FAILED ON :', data.command, JSON.stringify(data.args, undefined, 2), 'EXPECTED', expectedArray[counter]);
       reject(err);
       return;
     }
@@ -210,6 +225,9 @@ test('BatchCommandHandler Mesh', () => {
     expect(directCommands).toMatchSnapshot(); // snapshot 1
     expect(meshNetworks).toMatchSnapshot();   // snapshot 2
 
+
+    eventBus.emit('updateMeshNetwork_sphereId_1', meshEmit1);
+
     setTimeout(() => {
       BatchCommandHandler.load(mockStone2, 'stoneId2', 'sphereId', keepAliveState).then(() => { testBus.emit('test', {command:'keepAliveState', promise:'resolved', id:'load_stoneId2'}) });
       BatchCommandHandler.load(mockStone3, 'stoneId3', 'sphereId', keepAliveState)
@@ -229,8 +247,6 @@ test('BatchCommandHandler Mesh', () => {
       expect(directCommands).toMatchSnapshot(); // snapshot 5
       expect(meshNetworks).toMatchSnapshot();   // snapshot 6
     },250);
-
-    eventBus.emit('updateMeshNetwork_sphereId_1', meshEmit1);
 
     setTimeout(() => {
       eventBus.emit('updateMeshNetwork_sphereId_1', meshEmit1);
