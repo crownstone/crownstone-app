@@ -17,6 +17,7 @@ let fieldMap : fieldMap = [
 ];
 
 export const transferLocations = {
+  fieldMap: fieldMap,
 
   createOnCloud: function( actions, data : transferNewToCloudData ) {
     let payload = {};

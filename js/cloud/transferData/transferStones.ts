@@ -40,6 +40,7 @@ let fieldMap : fieldMap = [
 ];
 
 export const transferStones = {
+  fieldMap: fieldMap,
 
   createOnCloud: function( actions, data : transferNewToCloudData ) {
     let payload = {};

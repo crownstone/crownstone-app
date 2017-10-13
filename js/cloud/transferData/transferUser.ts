@@ -46,6 +46,7 @@ let fieldMap : fieldMap = [
 ];
 
 export const transferUser = {
+  fieldMap: fieldMap,
 
   updateOnCloud: function( data : transferUserToCloudData ) {
     let payload = {};

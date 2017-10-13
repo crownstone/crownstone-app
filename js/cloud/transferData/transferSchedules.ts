@@ -52,6 +52,7 @@ let fieldMap : fieldMap = [
 
 
 export const transferSchedules = {
+  fieldMap: fieldMap,
 
   createOnCloud: function( actions, data : transferNewScheduleToCloudData ) {
     let payload = {};

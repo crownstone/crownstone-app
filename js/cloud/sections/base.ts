@@ -2,7 +2,7 @@ import {request, download, downloadFile} from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/Util'
 import { EventBusClass } from '../../util/EventBus'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 export const defaultHeaders = {

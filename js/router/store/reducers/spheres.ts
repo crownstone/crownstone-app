@@ -34,10 +34,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
     case 'UPDATE_SPHERE_CLOUD_ID':
       if (action.data) {
         let newState = {...state};
-        if (typeof action.data.cloudId !== 'string') {
-          LOG.error("action.data.cloudId", action, action.data.cloudId)
-          throw "The cloud id for this sphere is not a string!"
-        }
         newState.cloudId = update(action.data.cloudId, newState.cloudId);
         return newState;
       }
@@ -78,11 +74,6 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
     case 'ADD_SPHERE':
     case 'UPDATE_SPHERE_CONFIG':
       if (action.data) {
-        if (typeof action.data.cloudId !== 'string') {
-          LOG.error("action.data.cloudId", action, action.data.cloudId)
-          throw "The cloud id for this sphere is not a string!"
-        }
-
         let newState = {...state};
         newState.name        = update(action.data.name,      newState.name);
         newState.aiName      = update(action.data.aiName,    newState.aiName);

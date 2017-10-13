@@ -4,19 +4,20 @@ import { transferUtil } from "./shared/transferUtil";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
-  {local:'name',           cloud: 'name'   },
-  {local:'icon',           cloud: 'icon'   },
-  {local:'hidden',         cloud: 'hidden' },
-  {local:'locked',         cloud: 'locked' },
-  {local:'onlyOnWhenDark', cloud: 'onlyOnWhenDark'},
-  {local:'updatedAt',      cloud: 'updatedAt' },
+  {local: 'name',           cloud: 'name'   },
+  {local: 'icon',           cloud: 'icon'   },
+  {local: 'hidden',         cloud: 'hidden' },
+  {local: 'locked',         cloud: 'locked' },
+  {local: 'onlyOnWhenDark', cloud: 'onlyOnWhenDark'},
+  {local: 'updatedAt',      cloud: 'updatedAt' },
   {local: 'json',               cloud: 'json', localToCloudOnly: true},
 
-  {local:'dimmable',       cloud:  null    },
-  {local:'cloudId',        cloud:  'id' ,  cloudToLocalOnly: true    },
+  {local: 'dimmable',       cloud:  null    },
+  {local: 'cloudId',        cloud:  'id' ,  cloudToLocalOnly: true    },
 ];
 
 export const transferAppliances = {
+  fieldMap: fieldMap,
 
   createOnCloud: function( actions, data : transferNewToCloudData ) {
     let payload = {};

@@ -42,6 +42,7 @@ let fieldMap : fieldMap = [
 ];
 
 export const transferSpheres = {
+  fieldMap: fieldMap,
 
   createOnCloud: function (actions, data: transferNewSphereToCloudData) {
     let payload = {};

@@ -46,10 +46,10 @@ export const transferUtil = {
   },
 
 
-  _handleLocal: function(actions, type, ids, data: any, fieldMap: fieldMap) {
+  _handleLocal: function(actions, actionType, ids, data: any, fieldMap: fieldMap) {
     return new Promise((resolve, reject) => {
       if (!data.cloudData) {
-        reject("Transfer: No cloud data available! Tried: " + type);
+        reject("Transfer: No cloud data available! Tried: " + actionType);
       }
 
       let payload = {};
@@ -64,7 +64,7 @@ export const transferUtil = {
       }
 
       let actionPayload = {
-        type: type,
+        type: actionType,
         data: payload,
         ...ids
       };
