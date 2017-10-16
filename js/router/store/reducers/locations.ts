@@ -48,7 +48,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
     case 'UPDATE_LOCATION_FINGERPRINT':
       if (action.data) {
         let newState = {...state};
-        newState.fingerprintRaw = update(action.data.fingerprintRaw, newState.fingerprintRaw);
+        newState.fingerprintRaw    = update(action.data.fingerprintRaw, newState.fingerprintRaw);
         newState.fingerprintParsed = update(action.data.fingerprintParsed, newState.fingerprintParsed);
         return newState;
       }
@@ -57,12 +57,12 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
     case 'UPDATE_LOCATION_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name = update(action.data.name, newState.name);
-        newState.icon = update(action.data.icon, newState.icon);
-        newState.cloudId        = update(action.data.cloudId,        newState.cloudId);
-        newState.fingerprintRaw = update(action.data.fingerprintRaw, newState.fingerprintRaw);
-        newState.fingerprintParsed = update(action.data.fingerprintParsed, newState.fingerprintParsed);
-        newState.updatedAt = getTime(action.data.updatedAt);
+        newState.name               = update(action.data.name, newState.name);
+        newState.icon               = update(action.data.icon, newState.icon);
+        newState.cloudId            = update(action.data.cloudId,        newState.cloudId);
+        newState.fingerprintRaw     = update(action.data.fingerprintRaw, newState.fingerprintRaw);
+        newState.fingerprintParsed  = update(action.data.fingerprintParsed, newState.fingerprintParsed);
+        newState.updatedAt          = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

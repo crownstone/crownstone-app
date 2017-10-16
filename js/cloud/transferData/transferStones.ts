@@ -46,7 +46,7 @@ export const transferStones = {
     let payload = {};
     transferUtil.fillFieldsForCloud(payload, data.localData.config, fieldMap);
 
-    if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud) {
+    if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud && data.localData.behaviour) {
       payload['json'] = JSON.stringify(data.localData.behaviour);
     }
 
@@ -126,5 +126,7 @@ export const transferStones = {
       data.cloudData['locationId'] = locationId;
     }
   }
+
+  // todo: create new
 
 };

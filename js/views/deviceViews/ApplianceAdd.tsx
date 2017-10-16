@@ -14,10 +14,12 @@ import {
 import { TopBar } from '../components/Topbar'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { CLOUD } from '../../cloud/cloudAPI'
 const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth} from '../styles'
 import {getRandomC1Name} from "../../fonts/customIcons";
+import {transferAppliances} from "../../cloud/transferData/transferAppliances";
+import {Util} from "../../util/Util";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 
 
@@ -67,12 +69,26 @@ export class ApplianceAdd extends Component<any, any> {
     }
     else {
       this.props.eventBus.emit('showLoading', 'Creating new Device Type...');
-      CLOUD.forSphere(this.props.sphereId).createAppliance({name: this.state.name, sphereId:this.props.sphereId, icon: this.state.icon})
-        .then((reply) => {
+      let actions = [];
+      let localId = Util.getUUID();
+      // todo Move to create new location method once it is implemented in transferLocations
+      actions.push({type: 'ADD_APPLIANCE', sphereId: this.props.sphereId, applianceId: localId, data:{name: this.state.name, icon: this.state.icon}});
+      transferAppliances.createOnCloud(actions, {
+        localId: localId,
+        localData: {
+          config: {
+            name: this.state.name,
+            icon: this.state.icon,
+          },
+        },
+        localSphereId: this.props.sphereId,
+        cloudSphereId: MapProvider.local2cloudMap.spheres[this.props.sphereId]
+      })
+        .then(() => {
+          this.props.store.batchDispatch(actions);
           this.props.eventBus.emit('hideLoading');
-          this.props.store.dispatch({type: 'ADD_APPLIANCE', sphereId: this.props.sphereId, applianceId: reply.id, data:{name: this.state.name, icon: this.state.icon}});
-          this.props.callback(reply.id);
-          Actions.pop({popNum:2});
+          this.props.callback(localId);
+          Actions.pop({popNum: 2});
         })
         .catch((err) => {
           let defaultAction = () => { this.props.eventBus.emit('hideLoading');};

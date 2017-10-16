@@ -159,7 +159,6 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
       if (action.data) {
-
         let newState = {...state};
         newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
         newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);

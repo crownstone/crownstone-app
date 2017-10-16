@@ -46,10 +46,12 @@ class MapProviderClass {
 
       // refresh maps when the database changes
       this._store.subscribe(() => {
+        // TODO: make more efficient
         this.state = this._store.getState();
         this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(    this.state);
         this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle(this.state);
         this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(   this.state);
+        this._updateCloudIdMap();
       });
 
       eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap(); });

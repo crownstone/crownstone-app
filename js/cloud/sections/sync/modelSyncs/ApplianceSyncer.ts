@@ -31,7 +31,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
       .then((appliancesInCloud) => {
         let appliancesInState = this._getLocalData(store);
         let localApplianceIdsSynced = this.syncDown(appliancesInState, appliancesInCloud);
-        this.syncUp(appliancesInState, localApplianceIdsSynced);
+        this.syncUp(store, appliancesInState, localApplianceIdsSynced);
 
         return Promise.all(this.transferPromises);
       })
@@ -80,12 +80,13 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
     return localApplianceIdsSynced;
   }
 
-  syncUp(appliancesInState, localApplianceIdsSynced) {
+  syncUp(store, appliancesInState, localApplianceIdsSynced) {
     let localApplianceIds = Object.keys(appliancesInState);
 
     localApplianceIds.forEach((applianceId) => {
       let appliance = appliancesInState[applianceId];
       this.syncLocalApplianceUp(
+        store,
         appliance,
         applianceId,
         localApplianceIdsSynced[applianceId] === true
@@ -94,14 +95,16 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
   }
 
 
-  syncLocalApplianceUp(localAppliance, localApplianceId, hasSyncedDown = false) {
+  syncLocalApplianceUp(store, localAppliance, localApplianceId, hasSyncedDown = false) {
     // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
     if (!hasSyncedDown) {
       if (localAppliance.config.cloudId) {
         this.actions.push({ type: 'REMOVE_APPLIANCE', sphereId: this.localSphereId, applianceId: localApplianceId });
+        // We also need to make sure all items currently using this appliance will propagate the removal of this item.
+        this.propagateRemoval(store, localApplianceId);
       }
       else {
-        if (!Permissions.inSphere(this.localSphereId).canCreateAppliances) { return }
+        if (!Permissions.inSphere(this.localSphereId).canCreateAppliances) { return; }
 
         this.transferPromises.push(
           transferAppliances.createOnCloud(this.actions, {
@@ -115,6 +118,26 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
           })
         );
       }
+    }
+  }
+
+  propagateRemoval(store, localApplianceId) {
+    let state = store.getState();
+    let sphere = state.spheres[this.localSphereId];
+    if (!sphere) { return } // the sphere does not exist yet. In that case we do not need to propagate.
+
+    let stones = sphere.stones;
+    let stoneIds = Object.keys(stones);
+
+    let actions = [];
+    stoneIds.forEach((stoneId) => {
+      if (stones[stoneId].config.applianceId === localApplianceId) {
+        actions.push({type:'UPDATE_STONE_CONFIG', sphereId: this.localSphereId, stoneId: stoneId, data: {applianceId: null}});
+      }
+    });
+
+    if (actions.length > 0) {
+      store.batchDispatch(actions);
     }
   }
 

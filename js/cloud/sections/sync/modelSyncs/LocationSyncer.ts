@@ -34,7 +34,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
       .then((locationsInCloud) => {
         let locationsInState = this._getLocalData(store);
         let localLocationIdsSynced = this.syncDown(locationsInState, locationsInCloud);
-        this.syncUp(locationsInState, localLocationIdsSynced);
+        this.syncUp(store, locationsInState, localLocationIdsSynced);
 
         return Promise.all(this.transferPromises);
       })
@@ -140,12 +140,13 @@ export class LocationSyncer extends SyncingSphereItemBase {
     }
   };
 
-  syncUp(locationsInState, localLocationIdsSynced) {
+  syncUp(store, locationsInState, localLocationIdsSynced) {
     let localLocationIds = Object.keys(locationsInState);
 
     localLocationIds.forEach((locationId) => {
       let location = locationsInState[locationId];
       this.syncLocalLocationUp(
+        store,
         location,
         locationId,
         localLocationIdsSynced[locationId] === true
@@ -154,11 +155,13 @@ export class LocationSyncer extends SyncingSphereItemBase {
   }
 
 
-  syncLocalLocationUp(localLocation, localLocationId, hasSyncedDown = false) {
+  syncLocalLocationUp(store, localLocation, localLocationId, hasSyncedDown = false) {
     // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
     if (!hasSyncedDown) {
       if (localLocation.config.cloudId) {
         this.actions.push({ type: 'REMOVE_LOCATION', sphereId: this.localSphereId, locationId: localLocationId });
+        // We also need to make sure all items currently using this appliance will propagate the removal of this item.
+        this.propagateRemoval(store, localLocationId);
       }
       else {
         if (!Permissions.inSphere(this.localSphereId).canCreateLocations) { return }
@@ -170,6 +173,26 @@ export class LocationSyncer extends SyncingSphereItemBase {
             })
         );
       }
+    }
+  }
+
+  propagateRemoval(store, locationId) {
+    let state = store.getState();
+    let sphere = state.spheres[this.localSphereId];
+    if (!sphere) { return } // the sphere does not exist yet. In that case we do not need to propagate.
+
+    let stones = sphere.stones;
+    let stoneIds = Object.keys(stones);
+
+    let actions = [];
+    stoneIds.forEach((stoneId) => {
+      if (stones[stoneId].config.locationId === locationId) {
+        actions.push({type:'UPDATE_STONE_CONFIG', sphereId: this.localSphereId, stoneId: stoneId, data: {locationId: null}});
+      }
+    });
+
+    if (actions.length > 0) {
+      store.batchDispatch(actions);
     }
   }
 

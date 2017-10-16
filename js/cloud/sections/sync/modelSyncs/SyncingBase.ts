@@ -108,7 +108,13 @@ export class SyncingSphereItemBase extends SyncingBase {
   cloudSphereId : string;
 
 
-  constructor(actions : any[], transferPromises: any[], localSphereId: string, cloudSphereId: string, globalCloudIdMap?: globalIdMap) {
+  constructor(
+    actions : any[],
+    transferPromises: any[],
+    localSphereId: string,
+    cloudSphereId: string,
+    globalCloudIdMap?: globalIdMap
+  ) {
     super(actions, transferPromises, globalCloudIdMap);
     this.localSphereId = localSphereId;
     this.cloudSphereId = cloudSphereId;

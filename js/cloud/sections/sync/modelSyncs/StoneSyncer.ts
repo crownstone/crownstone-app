@@ -8,7 +8,7 @@ import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {ScheduleSyncer} from "./ScheduleSyncer";
-import {LOG, LOGi} from "../../../../logging/Log";
+import {LOG, LOGi, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 export class StoneSyncer extends SyncingSphereItemBase {
@@ -193,6 +193,24 @@ export class StoneSyncer extends SyncingSphereItemBase {
   }
 
   syncLocalStoneDown(localId, stoneInState, stone_from_cloud, locationLinkId) {
+    let localApplianceId = this._getLocalApplianceId(stone_from_cloud.applianceId);
+    let localLocationId  = this._getLocalLocationId(locationLinkId);
+
+    let syncLocal = () => {
+      let cloudDataForLocal = {...stone_from_cloud};
+      cloudDataForLocal['localApplianceId'] = localApplianceId;
+      cloudDataForLocal['localLocationId']  = localLocationId;
+      this.transferPromises.push(
+        transferStones.updateLocal(this.actions, {
+          localSphereId: this.localSphereId,
+          localId: localId,
+          cloudId: stone_from_cloud.id,
+          cloudData: cloudDataForLocal
+        }).catch()
+      );
+    };
+
+
     if (shouldUpdateInCloud(stoneInState.config, stone_from_cloud)) {
       if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
 
@@ -229,22 +247,23 @@ export class StoneSyncer extends SyncingSphereItemBase {
           .catch()
       );
     }
-    else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud) || !stoneInState.config.cloudId) {
-      let cloudDataForLocal = {...stone_from_cloud};
-      cloudDataForLocal['localApplianceId'] = this._getLocalApplianceId(stone_from_cloud.applianceId);
-      cloudDataForLocal['localLocationId']  = this._getLocalLocationId(locationLinkId);
-      this.transferPromises.push(
-        transferStones.updateLocal(this.actions, {
-          localSphereId: this.localSphereId,
-          localId: localId,
-          cloudId: stone_from_cloud.id,
-          cloudData: cloudDataForLocal
-        }).catch()
-      );
+    else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud)) {
+      syncLocal()
+    }
+    else if (!stoneInState.config.cloudId) {
+      syncLocal();
+    }
+    else if (stoneInState.config.applianceId && localApplianceId === null) { // self repair
+      LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing applianceId.");
+      syncLocal();
+    }
+    else if (stoneInState.config.locationId && localLocationId === null) {   // self repair
+      LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
+      syncLocal();
     }
     // TODO: [2017-10-02] RETROFIT CODE: AFTER A FEW RELEASES
     else if (stone_from_cloud.locationId === undefined) {
-      if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return }
+      if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return; }
       let localDataForCloud = {...stoneInState};
       localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
       localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);

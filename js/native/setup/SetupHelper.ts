@@ -116,6 +116,7 @@ export class SetupHelper {
                 sphereId:       sphereId,
                 stoneId:        localId,
                 data: {
+                  cloudId:         this.stoneIdInCloud,
                   type:            this.type,
                   touchToToggle:   isPlug,
                   crownstoneId:    this.cloudResponse.uid,

@@ -279,6 +279,10 @@ function checkAction(action, affectedIds) {
       break;
     case "UPDATE_SCHEDULE_CLOUD_ID":
     case "UPDATE_MESSAGE_CLOUD_ID":
+    case "UPDATE_APPLIANCE_CLOUD_ID":
+    case "UPDATE_LOCATION_CLOUD_ID":
+    case "UPDATE_STONE_CLOUD_ID":
+    case "UPDATE_SPHERE_CLOUD_ID":
       break;
     default:
       LOG.warn("UNKNOWN ACTION TYPE:", action);

@@ -19,7 +19,7 @@ export const appliances = {
   },
 
   updateAppliance: function (localApplianceId, data, background = true) {
-    let cloudApplianceId = MapProvider.local2cloudMap.locations[localApplianceId] || localApplianceId; // the OR is in case a cloudId has been put into this method.
+    let cloudApplianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
       '/Spheres/{id}/ownedAppliances/' + cloudApplianceId,
@@ -29,7 +29,7 @@ export const appliances = {
   },
 
   deleteAppliance: function (localApplianceId) {
-    let cloudApplianceId = MapProvider.local2cloudMap.locations[localApplianceId] || localApplianceId; // the OR is in case a cloudId has been put into this method.
+    let cloudApplianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; // the OR is in case a cloudId has been put into this method.
     if (cloudApplianceId) {
       return this._setupRequest(
         'DELETE',

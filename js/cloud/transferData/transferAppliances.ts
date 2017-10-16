@@ -24,7 +24,7 @@ export const transferAppliances = {
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
-    if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud) {
+    if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud && data.localData.behaviour) {
       payload['json'] = JSON.stringify(data.localData.behaviour);
     }
 
@@ -80,5 +80,7 @@ export const transferAppliances = {
       fieldMap
     );
   },
+
+  // todo: create new
 
 };
