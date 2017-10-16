@@ -28,4 +28,24 @@ export const ScheduleUtil = {
 
     LOG.error("DeviceScheduleEdit: Error, could not determine next time to fire!", time, activeDays);
   },
+
+  getBridgeFormat(input) {
+    return {
+      scheduleEntryIndex     : input.scheduleEntryIndex, // 0 .. 9
+      nextTime               : ScheduleUtil.getNextTime(input.time, input.activeDays),
+      switchState            : input.switchState,
+      fadeDuration           : input.fadeDuration,
+      intervalInMinutes      : input.intervalInMinutes,
+      ignoreLocationTriggers : input.ignoreLocationTriggers,
+      active                 : input.active,
+      repeatMode             : input.repeatMode,
+      activeMonday           : input.activeDays.Mon,
+      activeTuesday          : input.activeDays.Tue,
+      activeWednesday        : input.activeDays.Wed,
+      activeThursday         : input.activeDays.Thu,
+      activeFriday           : input.activeDays.Fri,
+      activeSaturday         : input.activeDays.Sat,
+      activeSunday           : input.activeDays.Sun,
+    }
+  }
 };

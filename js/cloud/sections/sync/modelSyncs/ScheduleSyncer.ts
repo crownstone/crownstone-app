@@ -132,7 +132,6 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
       // update cloud since local data is newer!
       this.transferPromises.push(
         transferSchedules.updateOnCloud({
-          cloudSphereId: this.cloudSphereId,
           cloudStoneId: this.cloudStoneId,
           localId: localId,
           cloudId: schedule_from_cloud.id,

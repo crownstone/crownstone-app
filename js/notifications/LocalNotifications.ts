@@ -30,8 +30,8 @@ export const LocalNotifications = {
         if (localLocationId) {
           // check if you're in this location or if you can't be in a location due to disabled localization
           // return if we do NOT have to deliver the message RIGHT NOW
-          let canDoLocalization = canUseIndoorLocalizationInSphere(state, messageData.sphereId);
-          if (canDoLocalization && Util.data.getUserLocationIdInSphere(state, messageData.sphereId, state.user.userId) !== localLocationId) {
+          let canDoLocalization = canUseIndoorLocalizationInSphere(state, messageData.localSphereId);
+          if (canDoLocalization && Util.data.getUserLocationIdInSphere(state, messageData.localSphereId, state.user.userId) !== localLocationId) {
             // we will deliver this message on moving to the other room.
             return false;
           }
@@ -49,8 +49,8 @@ export const LocalNotifications = {
               LOGi.messages("Matched message!");
               if (now - message.config.updatedAt < MESSAGE_SELF_SENT_TIMEOUT || now - message.config.sentAt < MESSAGE_SELF_SENT_TIMEOUT) {
                 LOGi.messages("LocalNotifications: Marking the message as delivered and read because it has been sent < 30 seconds ago:", now - message.config.sentAt, now - message.config.updatedAt)
-                MessageCenter.deliveredMessage(messageData.sphereId, sphereMessageIds[i]);
-                MessageCenter.readMessage(messageData.sphereId, sphereMessageIds[i]);
+                MessageCenter.deliveredMessage(localSphereId, sphereMessageIds[i]);
+                MessageCenter.readMessage(localSphereId, sphereMessageIds[i]);
                 return;
               }
               else {
@@ -62,7 +62,7 @@ export const LocalNotifications = {
 
         if (AppState.currentState !== 'active') {
           LOG.info("LocalNotifications: on the back, notify.");
-          let data = { source: 'localNotification', type:'newMessage', messageId: messageData.id, sphereId: messageData.sphereId };
+          let data = { source: 'localNotification', type:'newMessage', messageId: messageData.id, sphereId: messageData.sphereId }; // this HAS to be the cloud sphereId since it is pushed to the notification
           // deliver message through local notification.
           PushNotification.localNotification({
             category: 'newMessage',

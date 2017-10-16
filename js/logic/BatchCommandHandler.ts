@@ -92,13 +92,26 @@ class BatchCommandHandlerClass {
    */
   _clearDuplicates(stoneId, sphereId, command : commandInterface) {
     let uuids = Object.keys(this.commands);
+
+    let clean = (todo) => {
+      LOG.warn("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
+      todo.promise.reject("Removed because of duplicate");
+      todo.cleanup();
+    };
+
     for (let i = 0; i < uuids.length; i++) {
       let todo = this.commands[uuids[i]];
       if (todo.sphereId === sphereId && todo.stoneId === stoneId && todo.command.commandName === command.commandName) {
+        if (command.commandName === 'setSchedule' || command.commandName === 'addSchedule') {
+          if (JSON.stringify(command.scheduleConfig) === JSON.stringify(todo.command['scheduleConfig'])) {
+            clean(todo);
+          }
+          break;
+        }
+
+
         if (todo.promise.pending === false) {
-          LOG.warn("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
-          todo.promise.reject("Removed because of duplicate");
-          todo.cleanup();
+          clean(todo);
         }
         else {
           LOG.warn("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);

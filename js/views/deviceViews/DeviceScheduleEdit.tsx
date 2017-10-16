@@ -50,6 +50,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
     else {
       this.state = {
         label: '',
+        time: new Date().valueOf(),
         switchState: 1,
         fadeDuration: 0,
         ignoreLocationTriggers: false,
@@ -329,23 +330,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
   }
 
   _getBridgeFormat(scheduleEntryIndex) {
-    return {
-      scheduleEntryIndex     : scheduleEntryIndex, // 0 .. 9
-      nextTime               : ScheduleUtil.getNextTime(this.state.time, this.state.activeDays),
-      switchState            : this.state.switchState,
-      fadeDuration           : this.state.fadeDuration,
-      intervalInMinutes      : this.state.intervalInMinutes,
-      ignoreLocationTriggers : this.state.ignoreLocationTriggers,
-      active                 : this.state.active,
-      repeatMode             : this._getRepeatMode(),
-      activeMonday           : this.state.activeDays.Mon,
-      activeTuesday          : this.state.activeDays.Tue,
-      activeWednesday        : this.state.activeDays.Wed,
-      activeThursday         : this.state.activeDays.Thu,
-      activeFriday           : this.state.activeDays.Fri,
-      activeSaturday         : this.state.activeDays.Sat,
-      activeSunday           : this.state.activeDays.Sun,
-    }
+    let stateCopy = {...this.state};
+    stateCopy.scheduleEntryIndex = scheduleEntryIndex;
+    stateCopy.repeatMode = this._getRepeatMode();
+    return ScheduleUtil.getBridgeFormat(stateCopy);
   }
 
 

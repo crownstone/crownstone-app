@@ -105,13 +105,16 @@ export class SetupHelper {
             Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300, 'setup19');
             Scheduler.scheduleCallback(() => {
               let actions = [];
+
+              // if we know this crownstone, its localId is in the mapProvider which we can look for with the cloudId
+              let localId = MapProvider.cloud2localMap.stones[this.stoneIdInCloud] || this.stoneIdInCloud;
               let isPlug = this.type === STONE_TYPES.plug;
               let isGuidestone = this.type === STONE_TYPES.guidestone;
               let showRestoreAlert = false;
               let addStoneAction = {
                 type:           "ADD_STONE",
                 sphereId:       sphereId,
-                stoneId:        this.stoneIdInCloud,
+                stoneId:        localId,
                 data: {
                   type:            this.type,
                   touchToToggle:   isPlug,
@@ -129,7 +132,7 @@ export class SetupHelper {
 
               if (MapProvider.cloud2localMap.stones[this.stoneIdInCloud] !==  undefined) {
                 showRestoreAlert = true;
-                this._restoreSchedules(store, sphereId, MapProvider.cloud2localMap.stones[this.stoneIdInCloud])
+                this._restoreSchedules(store, sphereId, MapProvider.cloud2localMap.stones[localId]);
               }
               else {
                 // if we do not know the stone, we provide the new name and icon
@@ -141,7 +144,7 @@ export class SetupHelper {
               actions.push({
                 type: 'UPDATE_STONE_SWITCH_STATE',
                 sphereId: sphereId,
-                stoneId: this.stoneIdInCloud,
+                stoneId: localId,
                 data: { state: isGuidestone ? 0 : 1, currentUsage: 0 },
               });
 
@@ -312,22 +315,31 @@ export class SetupHelper {
     if (!schedules) { return; }
 
     let scheduleIds = Object.keys(schedules);
-    if (scheduleIds.length === 0) { return; }
+    let loadedSchedule = false;
 
     scheduleIds.forEach((scheduleId) => {
       let schedule = schedules[scheduleId];
-      // update the time to a recent time.
-      schedule.time = ScheduleUtil.getNextTime(schedule.time, schedule.activeDays);
-      BatchCommandHandler.loadPriority(
-        stone,
-        localStoneId,
-        sphereId,
-        { commandName : 'setSchedule', scheduleConfig: schedule },
-        {},
-        10
-      ).catch((err) => { LOG.error("SetupHelper: could not restore schedules.", err)})
+      if (schedule.active) {
+        loadedSchedule = true;
+        // copy the schedule so we can change the time from crownstone time to timestamp
+        let scheduleCopy = {...schedule};
+        scheduleCopy.time = StoneUtil.crownstoneTimeToTimestamp(scheduleCopy.time);
+        let scheduleConfig = ScheduleUtil.getBridgeFormat(scheduleCopy);
+
+        BatchCommandHandler.loadPriority(
+          stone,
+          localStoneId,
+          sphereId,
+          { commandName : 'setSchedule', scheduleConfig: scheduleConfig },
+          {},
+          10
+        ).catch((err) => { LOG.error("SetupHelper: could not restore schedules.", err)})
+        }
     });
-    BatchCommandHandler.load(stone, localStoneId, sphereId, { commandName : 'setTime', time: StoneUtil.nowToCrownstoneTime() }, {}, 10).catch(() => {});
-    BatchCommandHandler.executePriority();
+
+    if (loadedSchedule) {
+      BatchCommandHandler.load(stone, localStoneId, sphereId, { commandName: 'setTime', time: StoneUtil.nowToCrownstoneTime()}, {}, 10).catch(() => {});
+      BatchCommandHandler.executePriority();
+    }
   }
 }

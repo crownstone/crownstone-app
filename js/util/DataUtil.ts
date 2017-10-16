@@ -133,7 +133,7 @@ export const DataUtil = {
       return sphere.appliances[stone.config.applianceId];
     }
     else if (stone.config.applianceId) {
-      LOG.error("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId)
+      LOG.error("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId);
     }
     else {
       return stone;

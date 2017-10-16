@@ -6,10 +6,14 @@ export const transferUtil = {
       }
 
       if (field.permissionNeeded && payload.permissionGranted === false) {
-        return;
+        return; // no permission to sync this data up.
       }
 
-      if (localData[field.local] !== undefined && field.cloud !== null) {
+      if (field.cloud === null) {
+        return; // this field will not be synced up.
+      }
+
+      if (localData[field.local] !== undefined) {
         if (field.localFields) {
           payload[field.cloud] = {};
           for (let i = 0; i < field.localFields.length; i++) {
@@ -19,7 +23,6 @@ export const transferUtil = {
         else {
           payload[field.cloud] = localData[field.local]
         }
-
       }
     })
   },
@@ -31,7 +34,16 @@ export const transferUtil = {
         return; // we do not allow this field to be synced from the cloud to local. Usually used for IDs.
       }
 
-      if (field.cloud !== null && cloudData[field.cloud]) {
+      if (field.cloud === null) {
+        return; // this field will not be synced down.
+      }
+
+      // fields that do not exists in the cloud will be listen null
+      if (cloudData[field.cloud] === undefined) {
+        payload[field.local] = null;
+      }
+      else {
+        // if we HAVE cloud data, put it in the local data.
         if (field.cloudFields) {
           payload[field.local] = {};
           for (let i = 0; i < field.cloudFields.length; i++) {

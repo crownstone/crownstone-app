@@ -236,42 +236,43 @@ export class RoomOverview extends Component<any, any> {
    * @param label
    */
   _getRightItem(state, enoughCrownstones, label) {
-    if (this.props.locationId !== null && this.viewingRemotely !== true) {
-      let showFingerprintNeeded = false;
-      if (enoughCrownstones === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
-        showFingerprintNeeded = true;
-      }
-      if (showFingerprintNeeded === true) {
-        if (state.user.seenRoomFingerprintAlert !== true) {
-          let aiName = state.spheres[this.props.sphereId].config.aiName;
-          this.props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
-          Alert.alert(
-            "Lets teach " + aiName + " how to identify this room!",
-            "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
-            [{text: "OK"}]
-          );
-        }
+    if (!state.app.indoorLocalizationEnabled) { return; } // do not show localization if it is disabled
+    if (this.props.locationId === null)       { return; } // floating crownstones do not have settings
+    if (this.viewingRemotely === true)        { return; } // cant train a room when not in the sphere
+    if (!enoughCrownstones)                   { return; } // not enough crownstones to train this room
 
-        let iconSize = 25;
-        return (
-          <AlternatingContent
-            style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
-            fadeDuration={500}
-            switchDuration={2000}
-            contentArray={[
-              <View style={[styles.centered, {
-                width:iconSize,
-                height:iconSize, borderRadius:iconSize*0.5,
-                borderWidth:2,
-                borderColor:'#fff',
-                backgroundColor:colors.iosBlue.hex}]} >
-                <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
-              </View>,
-              <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{ label }</Text>
-            ]} />
-        )
-      }
+    let location = state.spheres[this.props.sphereId].locations[this.props.locationId];
+    if (location.config.fingerPrintRaw !== null) { return; } // there already is a fingerprint, dont show animated training icon.
+
+    // this will show a one-time popup for localization
+    if (state.user.seenRoomFingerprintAlert !== true) {
+      let aiName = state.spheres[this.props.sphereId].config.aiName;
+      this.props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
+      Alert.alert(
+        "Lets teach " + aiName + " how to identify this room!",
+        "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
+        [{text: "OK"}]
+      );
     }
+
+    let iconSize = 25;
+    return (
+      <AlternatingContent
+        style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
+        fadeDuration={500}
+        switchDuration={2000}
+        contentArray={[
+          <View style={[styles.centered, {
+            width:iconSize,
+            height:iconSize, borderRadius:iconSize*0.5,
+            borderWidth:2,
+            borderColor:'#fff',
+            backgroundColor:colors.iosBlue.hex}]} >
+            <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
+          </View>,
+          <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{ label }</Text>
+        ]} />
+    );
   }
 
   _getTopBar(state) {

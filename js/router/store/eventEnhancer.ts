@@ -278,6 +278,7 @@ function checkAction(action, affectedIds) {
     case "FINISHED_SPECIAL_MESSAGES":
       break;
     case "UPDATE_SCHEDULE_CLOUD_ID":
+    case "UPDATE_MESSAGE_CLOUD_ID":
       break;
     default:
       LOG.warn("UNKNOWN ACTION TYPE:", action);

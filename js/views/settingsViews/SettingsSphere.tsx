@@ -171,10 +171,10 @@ export class SettingsSphere extends Component<any, any> {
 
     if (spherePermissions.editSphere) {
       let options = [];
-      options.push({label: '5 Minutes', type: 'checkbar', value: 300});
-      options.push({label: '10 Minutes', type: 'checkbar', value: 600});
-      options.push({label: '15 Minutes', type: 'checkbar', value: 900});
-      options.push({label: '30 Minutes', type: 'checkbar', value: 1800});
+      options.push({label: '5 Minutes', value: 300});
+      options.push({label: '10 Minutes', value: 600});
+      options.push({label: '15 Minutes', value: 900});
+      options.push({label: '30 Minutes', value: 1800});
       items.push({label: 'SPHERE EXIT DELAY', type: 'explanation', below: false});
       items.push({
         type: 'dropdown',

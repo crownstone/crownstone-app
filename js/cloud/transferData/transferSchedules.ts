@@ -1,5 +1,5 @@
 import { CLOUD }        from "../cloudAPI";
-import { LOG }          from "../../logging/Log";
+import {LOG, LOGw} from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
 
 
@@ -15,7 +15,6 @@ type transferScheduleToLocalData = {
 type transferScheduleToCloudData = {
   localId: string,
   localData: any,
-  cloudSphereId: string,
   cloudStoneId: string,
   cloudId: string,
 }
@@ -70,9 +69,28 @@ export const transferSchedules = {
         });
       })
       .catch((err) => {
-        LOG.error("Transfer-Schedule: Could not create schedule in cloud", err);
+        if (err.status === 422) {
+          return CLOUD.forStone(data.cloudStoneId).getScheduleWithIndex(data.localData.getScheduleWithIndex)
+        }
+        else {
+          LOG.error("Transfer-Schedule: Could not create schedule in cloud", err);
+          throw err;
+        }
+      })
+      .then((existingSchedule) => {
+        LOGw.cloud("Transfer-Schedule: trying to update existing schedule in the cloud.");
+        let updateData = {
+          localId: data.localId,
+          localData: data.localData,
+          cloudStoneId: data.cloudStoneId,
+          cloudId: existingSchedule.id,
+        };
+        return transferSchedules.updateOnCloud(updateData);
+      })
+      .catch((err) => {
+        LOG.error("Transfer-Schedule: Could not create/update schedule in cloud", err);
         throw err;
-      });
+      })
   },
 
   updateOnCloud: function( data : transferScheduleToCloudData ) {

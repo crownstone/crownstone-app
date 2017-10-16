@@ -71,9 +71,12 @@ class MessageCenterClass {
       });
     }
 
+    let localSphereId = MapProvider.cloud2localMap.spheres[cloudMessage.sphereId];
+    if (!localSphereId) { return null }
+
 
     if (cloudMessage.ownerId === state.user.userId) {
-      let dbMessages = state.spheres[cloudMessage.sphereId].messages;
+      let dbMessages = state.spheres[localSphereId].messages;
       // this should check if we already have this message before storing it in the store.
       // match recipients, content, triggerLocationId and triggerEvent for this.
       let dbMessageIds = Object.keys(dbMessages);
@@ -95,12 +98,15 @@ class MessageCenterClass {
     });
 
     let localMessageId = this._findMatchingLocalMessageId(cloudMessage, state, recipientIds);
+    let localSphereId  = MapProvider.cloud2localMap.spheres[cloudMessage.sphereId];
+    if (!localSphereId) { return null }
+
     let dbMessageId = localMessageId || Util.getUUID();
 
     // add message to the store
     actions.push({
       type:'ADD_CLOUD_MESSAGE',
-      sphereId: cloudMessage.sphereId,
+      sphereId: localSphereId,
       messageId: dbMessageId,
       data: {
         senderId: cloudMessage.ownerId,
@@ -118,7 +124,7 @@ class MessageCenterClass {
     // indicate that you have received this message
     actions.push({
       type:'I_RECEIVED_MESSAGE',
-      sphereId: cloudMessage.sphereId,
+      sphereId: localSphereId,
       messageId: dbMessageId,
       data: {
         userId: state.user.userId,
@@ -131,7 +137,7 @@ class MessageCenterClass {
       cloudMessage.delivered.forEach((delivered) => {
         actions.push({
           type:'RECEIVED_MESSAGE',
-          sphereId: cloudMessage.sphereId,
+          sphereId: localSphereId,
           messageId: dbMessageId,
           data: {
             userId: delivered.userId,
@@ -146,7 +152,7 @@ class MessageCenterClass {
       cloudMessage.read.forEach((read) => {
         actions.push({
           type:'READ_MESSAGE',
-          sphereId: cloudMessage.sphereId,
+          sphereId: localSphereId,
           messageId: dbMessageId,
           data: {
             userId: read.userId,
