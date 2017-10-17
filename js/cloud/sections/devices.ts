@@ -3,11 +3,11 @@ import {cloudApiBase} from "./cloudApiBase";
 
 export const devices = {
   getDevices: function (background: true) {
-    return cloudApiBase._setupRequest('GET', '/users/{id}/devices', {background:background, data:{filter:{"include":"installations"}}});
+    return this._setupRequest('GET', '/users/{id}/devices', {background:background, data:{filter:{"include":"installations"}}});
   },
 
   createDevice: function (data, background = true) {
-    return cloudApiBase._setupRequest(
+    return this._setupRequest(
       'POST',
       '/users/{id}/devices',
       { data: data, background: background},
@@ -16,7 +16,7 @@ export const devices = {
   },
 
   updateDevice: function (deviceId, data, background = true) {
-    return cloudApiBase._setupRequest(
+    return this._setupRequest(
       'PUT',
       '/Devices/' + deviceId,
       { data: data, background: background },
@@ -26,7 +26,7 @@ export const devices = {
 
   updateDeviceLocation: function (localLocationId, background = true) {
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
-    return cloudApiBase._setupRequest(
+    return this._setupRequest(
       'PUT',
       '/Devices/{id}/currentLocation/' + cloudLocationId,
       { background: background }
@@ -35,7 +35,7 @@ export const devices = {
 
   updateDeviceSphere: function (localSphereId, background = true) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    return cloudApiBase._setupRequest(
+    return this._setupRequest(
       'PUT',
       '/Devices/{id}/currentSphere/' + cloudSphereId,
       { background: background }
@@ -43,14 +43,14 @@ export const devices = {
   },
 
   deleteDevice: function(deviceId) {
-    return cloudApiBase._setupRequest(
+    return this._setupRequest(
       'DELETE',
       '/users/{id}/devices/' + deviceId
     );
   },
 
   deleteAllDevices: function() {
-    return cloudApiBase._setupRequest(
+    return this._setupRequest(
       'DELETE',
       '/users/{id}/deleteAllDevices'
     );

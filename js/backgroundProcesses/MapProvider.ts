@@ -5,6 +5,7 @@ import {
 } from "../util/DataUtil";
 import {eventBus} from "../util/EventBus";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
+import {LOG} from "../logging/Log";
 
 /**
  * Map format
@@ -70,6 +71,7 @@ class MapProviderClass {
   }
 
   refreshAll() {
+    LOG.info("MapProvider: Refreshing All.");
     this.state = this._store.getState();
     this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(    this.state);
     this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle(this.state);
@@ -78,6 +80,7 @@ class MapProviderClass {
   }
 
   _updateCloudIdMap() {
+    LOG.info("MapProvider: Refreshing CloudIdMap.");
     let state = this._store.getState();
     this.cloud2localMap = getGlobalIdMap();
     this.local2cloudMap = getGlobalIdMap();

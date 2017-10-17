@@ -78,7 +78,7 @@ export const spheres = {
 
   updateSphere: function(localSphereId, data, background = true) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    return cloudApiBase._setupRequest(
+    return this._setupRequest(
       'PUT',
       '/Spheres/' + cloudSphereId,
       {background: background, data: data},
@@ -90,11 +90,11 @@ export const spheres = {
     permission = permission.toLowerCase();
     switch (permission) {
       case 'admin':
-        return cloudApiBase._setupRequest('PUT', '/Spheres/{id}/admins', { data: { email: email }});
+        return this._setupRequest('PUT', '/Spheres/{id}/admins', { data: { email: email }});
       case 'member':
-        return cloudApiBase._setupRequest('PUT', '/Spheres/{id}/members', { data: { email: email }});
+        return this._setupRequest('PUT', '/Spheres/{id}/members', { data: { email: email }});
       case 'guest':
-        return cloudApiBase._setupRequest('PUT', '/Spheres/{id}/guests', { data: { email: email }});
+        return this._setupRequest('PUT', '/Spheres/{id}/guests', { data: { email: email }});
       default:
         return new Promise((resolve, reject) => {
           reject(new Error('Invalid Permission: "' + permission + '"'))
@@ -103,15 +103,15 @@ export const spheres = {
   },
 
   getPendingInvites: function(background = true) {
-    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/pendingInvites', {background:background});
+    return this._setupRequest('GET', '/Spheres/{id}/pendingInvites', {background:background});
   },
 
   resendInvite: function(email, background = false) {
-    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/resendInvite', {data:{email: email}, background: background});
+    return this._setupRequest('GET', '/Spheres/{id}/resendInvite', {data:{email: email}, background: background});
   },
 
   revokeInvite: function(email, background = false) {
-    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/removeInvite', {data:{email: email}, background: background});
+    return this._setupRequest('GET', '/Spheres/{id}/removeInvite', {data:{email: email}, background: background});
   },
 
 
@@ -121,23 +121,23 @@ export const spheres = {
    * @returns {*}
    */
   getSpheres: function (background = true) {
-    return cloudApiBase._setupRequest('GET', '/users/{id}/spheres', { background: background });
+    return this._setupRequest('GET', '/users/{id}/spheres', { background: background });
   },
 
   getUsers: function (background = true) {
-    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/users', { background : background } );
+    return this._setupRequest('GET', '/Spheres/{id}/users', { background : background } );
   },
 
   getAdmins: function (background = true) {
-    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/admins', { background : background });
+    return this._setupRequest('GET', '/Spheres/{id}/admins', { background : background });
   },
 
   getMembers: function (background = true) {
-    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/members', { background : background });
+    return this._setupRequest('GET', '/Spheres/{id}/members', { background : background });
   },
 
   getGuests: function (background = true) {
-    return cloudApiBase._setupRequest('GET', '/Spheres/{id}/guests', { background : background });
+    return this._setupRequest('GET', '/Spheres/{id}/guests', { background : background });
   },
 
 
@@ -146,7 +146,7 @@ export const spheres = {
    * @param background
    */
   createSphere: function(data, background = true) {
-    return cloudApiBase._setupRequest('POST', 'users/{id}/spheres', { data: data, background: background }, 'body');
+    return this._setupRequest('POST', 'users/{id}/spheres', { data: data, background: background }, 'body');
   },
 
   getUserPicture(localSphereId, email, userId, background = true) {
@@ -161,16 +161,16 @@ export const spheres = {
   },
 
   changeSphereName: function(sphereName) {
-    return cloudApiBase._setupRequest('PUT', '/Spheres/{id}', { data: { name: sphereName }}, 'body');
+    return this._setupRequest('PUT', '/Spheres/{id}', { data: { name: sphereName }}, 'body');
   },
 
   changeUserAccess: function(email, accessLevel, background = false) {
-    return cloudApiBase._setupRequest('PUT', '/Spheres/{id}/role', {data: {email: email, role:accessLevel}, background:background}, 'query');
+    return this._setupRequest('PUT', '/Spheres/{id}/role', {data: {email: email, role:accessLevel}, background:background}, 'query');
   },
 
   deleteUserFromSphere: function(userId) {
     // userId is the same in the cloud as it is locally
-    return cloudApiBase._setupRequest('DELETE', '/Spheres/{id}/users/rel/' + userId);
+    return this._setupRequest('DELETE', '/Spheres/{id}/users/rel/' + userId);
   },
 
   deleteSphere: function() {
@@ -229,7 +229,7 @@ export const spheres = {
   _deleteSphere: function(localSphereId) {
     let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
     if (cloudSphereId) {
-      return cloudApiBase._setupRequest(
+      return this._setupRequest(
         'DELETE',
         'Spheres/' + cloudSphereId
       );

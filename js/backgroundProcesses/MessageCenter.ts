@@ -199,30 +199,30 @@ class MessageCenterClass {
     }
   }
 
-  _enterSphere(sphereId) {
-    LOG.info("MessageSearcher: enter sphere", sphereId);
-    this._handleMessageInSphere(sphereId, 'enter');
+  _enterSphere(localSphereId) {
+    LOG.info("MessageSearcher: enter sphere", localSphereId);
+    this._handleMessageInSphere(localSphereId, 'enter');
   }
 
-  _exitSphere(sphereId) {
-    LOG.info("MessageSearcher: exit sphere", sphereId);
-    this._handleMessageInSphere(sphereId, 'exit');
+  _exitSphere(localSphereId) {
+    LOG.info("MessageSearcher: exit sphere", localSphereId);
+    this._handleMessageInSphere(localSphereId, 'exit');
   }
 
-  _enterRoom(data) {
+  _enterRoom(data : locationDataContainer) {
     LOG.info("MessageSearcher: enter room", data);
     this._handleMessageInLocation(data.region, data.location, 'enter');
   }
 
-  _exitRoom(data) {
+  _exitRoom(data : locationDataContainer) {
     LOG.info("MessageSearcher: exit room", data);
     this._handleMessageInLocation(data.region, data.location, 'exit');
   }
 
-  _handleMessageInLocation(sphereId, locationId, triggerEvent) {
+  _handleMessageInLocation(localSphereId, localLocationId, triggerEvent) {
     let state = this._store.getState();
 
-    CLOUD.forSphere(sphereId).getNewMessagesInLocation(locationId)
+    CLOUD.forSphere(localSphereId).getNewMessagesInLocation(localLocationId)
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
@@ -239,9 +239,10 @@ class MessageCenterClass {
       .catch((err) => { LOG.error("MessageCenter: Could not handle message in Location:", err);})
   }
 
-  _handleMessageInSphere(sphereId, triggerEvent) {
+  _handleMessageInSphere(localSphereId, triggerEvent) {
     let state = this._store.getState();
-    CLOUD.forSphere(sphereId).getNewMessagesInSphere()
+
+    CLOUD.forSphere(localSphereId).getNewMessagesInSphere()
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
@@ -268,7 +269,7 @@ class MessageCenterClass {
     if (presentSphereId) {
       let presentLocationId = Util.data.getUserLocationIdInSphere(state, presentSphereId, state.user.userId);
       if (presentLocationId) {
-        this._enterRoom(presentLocationId);
+        this._enterRoom({region: presentSphereId, location: presentLocationId});
       }
       else {
         this._enterSphere(presentSphereId);
