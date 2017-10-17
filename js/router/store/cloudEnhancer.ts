@@ -12,6 +12,7 @@ import {transferSpheres} from "../../cloud/transferData/transferSpheres";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {LOG_LEVEL} from "../../logging/LogLevels";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {transferLocations} from "../../cloud/transferData/transferLocations";
 
 export function CloudEnhancer({ getState }) {
   return (next) => (action) => {
@@ -272,7 +273,7 @@ function handleLocationInCloud(action, state) {
   let sphere   = state.spheres[action.sphereId];
   let location = sphere.locations[action.locationId];
 
-  transferAppliances.updateOnCloud({
+  transferLocations.updateOnCloud({
     localId:       action.stoneId,
     localData:     location,
     localSphereId: action.sphereId,
