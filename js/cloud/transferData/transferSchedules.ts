@@ -70,26 +70,28 @@ export const transferSchedules = {
       })
       .catch((err) => {
         if (err.status === 422) {
-          return CLOUD.forStone(data.cloudStoneId).getScheduleWithIndex(data.localData.getScheduleWithIndex)
+          CLOUD.forStone(data.cloudStoneId).getScheduleWithIndex(data.localData.getScheduleWithIndex)
+            .then((existingSchedules) => {
+              if (existingSchedules && Array.isArray(existingSchedules) && existingSchedules.length > 0 && existingSchedules[0].id) {
+                LOGw.cloud("Transfer-Schedule: trying to update existing schedule in the cloud.");
+                let updateData = {
+                  localId: data.localId,
+                  localData: data.localData,
+                  cloudStoneId: data.cloudStoneId,
+                  cloudId: existingSchedules[0].id,
+                };
+                return transferSchedules.updateOnCloud(updateData);
+              }
+            })
+            .catch((err) => {
+              LOG.error("Transfer-Schedule: Could not create/update schedule in cloud", err);
+              throw err;
+            })
         }
         else {
           LOG.error("Transfer-Schedule: Could not create schedule in cloud", err);
           throw err;
         }
-      })
-      .then((existingSchedule) => {
-        LOGw.cloud("Transfer-Schedule: trying to update existing schedule in the cloud.");
-        let updateData = {
-          localId: data.localId,
-          localData: data.localData,
-          cloudStoneId: data.cloudStoneId,
-          cloudId: existingSchedule.id,
-        };
-        return transferSchedules.updateOnCloud(updateData);
-      })
-      .catch((err) => {
-        LOG.error("Transfer-Schedule: Could not create/update schedule in cloud", err);
-        throw err;
       })
   },
 

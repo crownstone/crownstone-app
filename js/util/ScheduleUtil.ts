@@ -47,5 +47,37 @@ export const ScheduleUtil = {
       activeSaturday         : input.activeDays.Sat,
       activeSunday           : input.activeDays.Sun,
     }
+  },
+
+
+  findMatchingScheduleId(schedule, dbSchedules) {
+    let dbScheduleIds = Object.keys(dbSchedules);
+
+    // matching will be done on days, time and state
+    for (let i = 0; i < dbScheduleIds.length; i++) {
+      let dbSchedule = dbSchedules[dbScheduleIds[i]];
+      if (
+        schedule.activeMonday    === dbSchedule.activeDays.Mon &&
+        schedule.activeTuesday   === dbSchedule.activeDays.Tue &&
+        schedule.activeWednesday === dbSchedule.activeDays.Wed &&
+        schedule.activeThursday  === dbSchedule.activeDays.Thu &&
+        schedule.activeFriday    === dbSchedule.activeDays.Fri &&
+        schedule.activeSaturday  === dbSchedule.activeDays.Sat &&
+        schedule.activeSunday    === dbSchedule.activeDays.Sun &&
+        schedule.switchState     === dbSchedule.switchState
+      ) {
+        // we don't care about the time particularly, only about the hours:minutes of it. Regardless of the date.
+        let dbHours = new Date(StoneUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getHours();
+        let dbMinutes = new Date(StoneUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getMinutes();
+
+        let hours = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getHours();
+        let minutes = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getMinutes();
+
+        if (dbHours === hours && dbMinutes === minutes) {
+          return dbScheduleIds[i];
+        }
+      }
+    }
+    return null;
   }
 };

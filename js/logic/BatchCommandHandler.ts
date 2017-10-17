@@ -540,7 +540,7 @@ class BatchCommandHandlerClass {
                 });
             }
             else {
-              LOG.debug("BatchCommandHandler: Decided not to set the time because delta time:", new Date().valueOf() - lastTime);
+              LOG.debug("BatchCommandHandler: Decided not to set the time because delta time:", new Date().valueOf() - lastTime, ' ms.');
             }
           }
           else {

@@ -4,7 +4,7 @@ const RNFS = require('react-native-fs');
 let emptyFunction = function() {};
 import { LOG } from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
-import { defaultHeaders } from './sections/base'
+import { defaultHeaders } from './sections/cloudApiBase'
 import {safeMoveFile, safeDeleteFile, Util} from '../util/Util'
 import {Scheduler} from "../logic/Scheduler";
 

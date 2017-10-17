@@ -30,6 +30,7 @@ import {StoneUtil} from "../../../util/StoneUtil";
 import {SchedulerEntry} from "../../components/SchedulerEntry";
 import {Scheduler} from "../../../logic/Scheduler";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {ScheduleUtil} from "../../../util/ScheduleUtil";
 
 
 export class DeviceSchedule extends Component<any, any> {
@@ -123,7 +124,7 @@ export class DeviceSchedule extends Component<any, any> {
         let syncActions = [];
         let activeIds = {};
         stoneSchedules.forEach((schedule) => {
-          let matchingId = this._findMatchingScheduleId(schedule, dbSchedules);
+          let matchingId = ScheduleUtil.findMatchingScheduleId(schedule, dbSchedules);
           if (matchingId === null) {
             syncActions.push({
               type: 'ADD_STONE_SCHEDULE', stoneId: this.props.stoneId, sphereId: this.props.sphereId, scheduleId: Util.getUUID(),
@@ -164,37 +165,6 @@ export class DeviceSchedule extends Component<any, any> {
       });
 
     BatchCommandHandler.executePriority();
-  }
-
-  _findMatchingScheduleId(schedule, dbSchedules) {
-    let dbScheduleIds = Object.keys(dbSchedules);
-    
-    // matching will be done on days, time and state
-    for (let i = 0; i < dbScheduleIds.length; i++) {
-      let dbSchedule = dbSchedules[dbScheduleIds[i]];
-      if (
-        schedule.activeMonday    === dbSchedule.activeDays.Mon &&
-        schedule.activeTuesday   === dbSchedule.activeDays.Tue &&
-        schedule.activeWednesday === dbSchedule.activeDays.Wed &&
-        schedule.activeThursday  === dbSchedule.activeDays.Thu &&
-        schedule.activeFriday    === dbSchedule.activeDays.Fri &&
-        schedule.activeSaturday  === dbSchedule.activeDays.Sat &&
-        schedule.activeSunday    === dbSchedule.activeDays.Sun &&
-        schedule.switchState     === dbSchedule.switchState
-      ) {
-        // we dont care about the time particularly, only about the hours:minutes of it. Regardless of the date.
-        let dbHours = new Date(StoneUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getHours();
-        let dbMinutes = new Date(StoneUtil.crownstoneTimeToTimestamp(dbSchedule.time)).getMinutes();
-
-        let hours = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getHours();
-        let minutes = new Date(StoneUtil.crownstoneTimeToTimestamp(schedule.nextTime)).getMinutes();
-        
-        if (dbHours === hours && dbMinutes === minutes) {
-          return dbScheduleIds[i];
-        }
-      }
-    }
-    return null;
   }
 
   _getHeader(state, iconSize) {

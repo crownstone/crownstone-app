@@ -44,20 +44,37 @@ class MapProviderClass {
     if (this._initialized === false) {
       this._store = store;
 
-      // refresh maps when the database changes
-      this._store.subscribe(() => {
-        // TODO: make more efficient
-        this.state = this._store.getState();
-        this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(    this.state);
-        this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle(this.state);
-        this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(   this.state);
-        this._updateCloudIdMap();
-      });
-
       eventBus.on("CloudSyncComplete", () => { this._updateCloudIdMap(); });
+      eventBus.on("databaseChange", (data) => {
+        let change = data.change;
+
+        if (
+          change.changeAppliances ||
+          change.changeUsers ||
+          change.changeLocations ||
+          change.changeFingerprint ||
+          change.changeSphereState ||
+          change.changeSpheres ||
+          change.changeSphereUsers ||
+          change.changeStones ||
+          change.changeStoneSchedule ||
+          change.changeDeviceData ||
+          change.changeMessage
+        ) {
+          this.refreshAll();
+        }
+      });
 
       this._updateCloudIdMap();
     }
+  }
+
+  refreshAll() {
+    this.state = this._store.getState();
+    this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(    this.state);
+    this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle(this.state);
+    this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(   this.state);
+    this._updateCloudIdMap();
   }
 
   _updateCloudIdMap() {

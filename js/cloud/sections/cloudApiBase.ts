@@ -16,13 +16,21 @@ export const uploadHeaders = {
 };
 
 
-/**
- * The cloud API is designed to maintain the REST endpoints and to handle responsed and errors on the network level.
- * When the reponses come back successfully, the convenience wrappers allow callbacks for relevant scenarios.
- *
- */
 
-export const base = {
+interface requestOptions {
+  data?: any,
+  background?: boolean,
+  noAccessToken?: boolean,
+
+}
+
+type requestType = 'query' | 'body';
+
+/**
+ * The cloud API is designed to maintain the REST endpoints and to handle responses and errors on the network level.
+ * When the responses come back successfully, the convenience wrappers allow callbacks for relevant scenarios.
+ */
+export const cloudApiBase = {
   _accessToken: undefined,
   _userId: undefined,
   _deviceId: undefined,
@@ -89,14 +97,14 @@ export const base = {
 
   /**
    * This method will check the return type error code for 200 or 204 and unpack the data from the response.
-   * @param reqType
-   * @param endpoint
-   * @param options
-   * @param type
-   * @returns {*}
+   * @param {string} reqType
+   * @param {string} endpoint
+   * @param {requestOptions} options
+   * @param {requestType} type
+   * @returns {Promise<any>}
    * @private
    */
-  _setupRequest: function(reqType, endpoint, options : any = {}, type = 'query') {
+  _setupRequest: function(reqType : string, endpoint : string, options : requestOptions = {}, type : requestType = 'query') {
     let promiseBody = {endPoint: endpoint, data: options.data, type:type, options: options};
     let promise;
     switch (reqType) {
