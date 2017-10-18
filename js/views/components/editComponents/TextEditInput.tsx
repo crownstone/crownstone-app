@@ -89,6 +89,12 @@ export class TextEditInput extends Component<any, any> {
         onBlur={() => { this.blur(); }}
         onSubmitEditing={() => { this.blur(); }}
         onChangeText={(newValue) => {
+          if (this.props.maxLength && newValue) {
+            if (newValue.length > this.props.maxLength) {
+              newValue = newValue.substr(0, this.props.maxLength)
+            }
+          }
+
           let updatedValue = this._checkForEnter(newValue);
           this.props.callback(updatedValue);
         }}

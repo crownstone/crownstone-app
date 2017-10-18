@@ -10,7 +10,7 @@ let fieldMap : fieldMap = [
   {local: 'locked',         cloud: 'locked' },
   {local: 'onlyOnWhenDark', cloud: 'onlyOnWhenDark'},
   {local: 'updatedAt',      cloud: 'updatedAt' },
-  {local: 'json',               cloud: 'json', localToCloudOnly: true},
+  {local: 'json',           cloud: 'json',  localToCloudOnly: true},
 
   {local: 'dimmable',       cloud:  null    },
   {local: 'cloudId',        cloud:  'id' ,  cloudToLocalOnly: true    },
@@ -46,7 +46,8 @@ export const transferAppliances = {
     }
 
     let payload = {};
-    transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud) {
       payload['json'] = JSON.stringify(data.localData.behaviour);

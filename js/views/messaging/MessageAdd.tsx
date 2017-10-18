@@ -177,7 +177,7 @@ export class MessageAdd extends Component<any, any> {
         this.setState({messageContent: newText});
       },
     });
-    items.push({type:'lightExplanation', below: true, align: 'right', style:{paddingTop:2, paddingRight:5}, label: '( ' + this.state.messageContent.length + ' / 140 )' });
+    items.push({type:'lightExplanation', below: true, align: 'right', style:{ paddingTop: 2, paddingRight: 5 }, label: '( ' + this.state.messageContent.length + ' / 140 )' });
 
     let userData = this._getUserData(state, sphere);
     items.push({type:'lightExplanation', below: false, label: 'RECIPIENTS', alreadyPadded: true});

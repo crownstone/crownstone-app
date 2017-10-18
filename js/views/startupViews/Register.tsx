@@ -99,6 +99,7 @@ export class Register extends Component<any, any> {
         validation:'password',
         validationMethod:'icons',
         secureTextEntry: false,
+        keyboardType: 'ascii-capable',
         value: this.state.password,
         validationCallback: (newState) => {this.inputStates.password = newState; this.setPasswordExplanation(newState)},
         alwaysShowState: this.state.alwaysShowState,

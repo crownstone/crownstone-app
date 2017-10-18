@@ -42,7 +42,8 @@ export const transferLocations = {
     }
 
     let payload = {};
-    transferUtil.fillFieldsForCloud(payload, data.localData, fieldMap);
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     return CLOUD.forSphere(data.cloudSphereId).updateLocation(data.cloudId, payload)
       .then((result) => { })

@@ -4,9 +4,6 @@ const DeviceInfo = require('react-native-device-info');
 
 /******************** RELEASE FLAGS ********************/
 
-  // ONLY SET THIS TO TRUE WHILE TESTING THE APP
-  export const TESTING_APP = false;
-
   // USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
   const IGNORE_LOCAL_CONFIG = true;
 

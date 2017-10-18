@@ -44,7 +44,8 @@ export const transferStones = {
 
   createOnCloud: function( actions, data : transferNewToCloudData ) {
     let payload = {};
-    transferUtil.fillFieldsForCloud(payload, data.localData.config, fieldMap);
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud && data.localData.behaviour) {
       payload['json'] = JSON.stringify(data.localData.behaviour);
@@ -67,7 +68,8 @@ export const transferStones = {
     }
 
     let payload = {};
-    transferUtil.fillFieldsForCloud(payload, data.localData.config, fieldMap);
+    let localConfig = data.localData.config;
+    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     if (Permissions.inSphere(data.localSphereId).setBehaviourInCloud) {
       payload['json'] = JSON.stringify(data.localData.behaviour);

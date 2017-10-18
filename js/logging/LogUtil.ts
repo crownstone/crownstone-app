@@ -12,7 +12,6 @@ import {
   LOG_STORE,
   LOG_SCHEDULER,
   LOG_TO_FILE,
-  TESTING_APP,
   RELEASE_MODE_USED,
 } from '../ExternalConfig'
 import { Scheduler } from '../logic/Scheduler'

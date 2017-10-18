@@ -11,7 +11,6 @@ import {
   LOG_MESH,
   LOG_STORE,
   LOG_SCHEDULER,
-  TESTING_APP,
   RELEASE_MODE_USED, LOG_MESSAGES,
 } from '../ExternalConfig'
 import {LogProcessor} from "./LogProcessor";
@@ -95,21 +94,11 @@ class Logger {
       let args = ['LOG' + this.levelPrefix + ' ' + type + ' :'];
       for (let i = 0; i < allArguments.length; i++) {
         let arg = allArguments[i];
-        if (TESTING_APP) {
-          if (typeof arg === 'object') {
-            try {
-              arg = JSON.stringify(arg, undefined, 2);
-            }
-            catch(err) {
-              // ignore
-            }
-          }
-        }
         args.push(arg);
       }
       logToFile.apply(this, args);
 
-      if (RELEASE_MODE_USED === false || TESTING_APP) {
+      if (RELEASE_MODE_USED === false) {
         console.log.apply(this, args);
       }
     }
