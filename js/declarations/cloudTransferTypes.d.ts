@@ -36,12 +36,17 @@ type fieldMap = [{
   cloudFields? : string[],
 }]
 
+interface keyMap {
+  [key: string]: string
+}
+
+
 interface globalIdMap {
-  users: any,
-  locations: any,
-  appliances: any,
-  stones: any,
-  messages: any,
-  spheres: any,
-  schedules: any,
+  users: keyMap,
+  locations: keyMap,
+  appliances: keyMap,
+  stones: keyMap,
+  messages: keyMap,
+  spheres: keyMap,
+  schedules: keyMap,
 }

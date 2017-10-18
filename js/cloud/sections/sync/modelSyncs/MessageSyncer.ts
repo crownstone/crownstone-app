@@ -89,7 +89,7 @@ export class MessageSyncer extends SyncingSphereItemBase {
 
   _getCloudLocationId(localId) {
     if (!localId) { return; }
-    return this.globalLocalIdMap.locations(localId);
+    return this.globalLocalIdMap.locations[localId];
   }
 
 

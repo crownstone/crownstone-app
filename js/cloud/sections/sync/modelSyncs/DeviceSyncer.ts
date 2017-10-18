@@ -251,12 +251,12 @@ export class DeviceSyncer extends SyncingBase {
 
   _getCloudLocationId(localId) {
     if (!localId) { return null; }
-    return this.globalLocalIdMap.locations(localId);
+    return this.globalLocalIdMap.locations[localId];
   }
 
   _getCloudSphereId(localId) {
     if (!localId) { return null; }
-    return this.globalLocalIdMap.spheres(localId);
+    return this.globalLocalIdMap.spheres[localId];
   }
 
   _updateUserLocationInCloud(state, deviceId) {

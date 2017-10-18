@@ -184,12 +184,12 @@ export class StoneSyncer extends SyncingSphereItemBase {
 
   _getCloudApplianceId(localId) {
     if (!localId) { return; }
-    return this.globalLocalIdMap.appliances(localId);
+    return this.globalLocalIdMap.appliances[localId];
   }
 
   _getCloudLocationId(localId) {
     if (!localId) { return; }
-    return this.globalLocalIdMap.locations(localId);
+    return this.globalLocalIdMap.locations[localId];
   }
 
   syncLocalStoneDown(localId, stoneInState, stone_from_cloud, locationLinkId) {

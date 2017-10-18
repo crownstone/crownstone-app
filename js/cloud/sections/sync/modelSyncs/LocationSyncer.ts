@@ -93,7 +93,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         if (peopleInCloudLocations[person.id] === undefined) {
           peopleInCloudLocations[person.id] = true;
           // check if the person exists in our sphere and if we are not that person. Also check if this user is already in the room.
-          if (person.id !== this.userId && this.globalCloudIdMap.users[person.id] === true) {
+          if (person.id !== this.userId && this.globalCloudIdMap.users[person.id] !== undefined) {
             // if no local location exists, or if it does and it has a present user.
             if  (!localLocation || localLocation && localLocation.presentUsers && localLocation.presentUsers.indexOf(person.id) === -1) {
               this.actions.push({
