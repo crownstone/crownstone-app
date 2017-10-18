@@ -57,6 +57,7 @@ export class Router_Android extends Component {
               <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
               <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} panHandlers={null} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} panHandlers={null} hideNavBar={false} title="Recover Crownstone" />
+              <Scene key="selectFromList"             component={Views.SelectFromList}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="sphereOverview"             component={Views.SphereOverview}             panHandlers={null} hideNavBar={true}  initial={this.props.loggedIn} />
               <Scene key="roomOverview"               component={Views.RoomOverview}               panHandlers={null} hideNavBar={true}  />
               <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={false} title="Room Settings" />
