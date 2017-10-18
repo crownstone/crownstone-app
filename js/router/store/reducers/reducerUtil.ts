@@ -54,6 +54,9 @@ export function refreshDefaults(state, defaultObject) {
           newState[field] = defaultObject[field];
         }
       }
+      else if (field === 'cloudId' && newState[field] !== null && typeof newState[field] === 'object') {
+        newState[field] = null;
+      }
     });
     return newState;
   }
