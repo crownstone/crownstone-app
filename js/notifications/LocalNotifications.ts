@@ -1,4 +1,4 @@
-import {AppState, Vibration} from 'react-native'
+import {AppState, Platform, Vibration} from 'react-native'
 import {LOG, LOGi} from "../logging/Log";
 import {Util} from "../util/Util";
 const PushNotification = require('react-native-push-notification');
@@ -64,20 +64,35 @@ export const LocalNotifications = {
           LOG.info("LocalNotifications: on the back, notify.");
           let data = { source: 'localNotification', type:'newMessage', messageId: messageData.id, sphereId: messageData.sphereId }; // this HAS to be the cloud sphereId since it is pushed to the notification
           // deliver message through local notification.
-          PushNotification.localNotification({
-            category: 'newMessage',
-            tag: 'newMessage',
+          if (Platform.OS === 'android') {
+            PushNotification.localNotification({
+              tag: 'newMessage',
 
-            data: data,
-            userInfo: data,
+              data: data,
 
-            title: "New Message Found\n\n" + messageData.content, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
-            message: messageData.content, // (required)
-            playSound: true, // (optional) default: true
-            repeatType: 'minute', // (Android only) Repeating interval. Could be one of `week`, `day`, `hour`, `minute, `time`. If specified as time, it should be accompanied by one more parameter 'repeatTime` which should the number of milliseconds between each interval
-            actions: '["OK"]',  // (Android only) See the doc for notification actions to know more
-          });
+              title: "New Message Found",
+              message: messageData.content, // (required)
+              // ticker (optional) text which can be used for text to speech
+              // color: "blue", // (optional) Color of the text. Default: system default
+              autoCancel: true, // Make this notification automatically dismissed when the user touches it.
+              playSound: true, // (optional) default: true
+              //repeatType: 'day', // (Android only) Repeating interval. Could be one of `week`, `day`, `hour`, `minute, `time`. If specified as time, it should be accompanied by one more parameter 'repeatTime` which should the number of milliseconds between each interval
+              //actions: '["OK"]',  // (Android only) See the doc for notification actions to know more
+              ongoing: false,
+            });
+          }
+          else {
+            PushNotification.localNotification({
+              category: 'newMessage',
 
+              data: data,
+              userInfo: data,
+
+              title: "New Message Found\n\n" + messageData.content, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
+              message: messageData.content, // (required)
+              playSound: true, // (optional) default: true
+            });
+          }
           PushNotification.setApplicationIconBadgeNumber(1);
         }
         else {
