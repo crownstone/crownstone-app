@@ -104,7 +104,7 @@ export class PermissionClass extends PermissionBase {
 
     this._revokeAll();
 
-    LOG.info("Permissions: Set all", this._sphereId);
+    LOG.info("Permissions: Set all", this._sphereId, " for level:", level);
     switch (level) {
       case 'admin':
         this.setBehaviourInCloud    = true; // admin

@@ -27,7 +27,7 @@ import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { eventBus } from "../../util/EventBus";
 import {DevicePowerCurve} from "./elements/DevicePowerCurve";
 import {DeviceSchedule} from "./elements/DeviceSchedule";
-import { LOG } from '../../logging/Log';
+import {LOG, LOGi} from '../../logging/Log';
 import { BATCH } from "../../router/store/storeManager";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
@@ -146,14 +146,13 @@ export class DeviceOverview extends Component<any, any> {
 
     this.summaryIndex = summaryIndex;
 
-
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
     let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
-    let hasScheduler = spherePermissions.canSeeSchedules && stone.config.type !== STONE_TYPES.guidestone && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0');
+    let hasScheduler = stone.config.type !== STONE_TYPES.guidestone;
     let deviceType = stone.config.type;
 
     // if this stone requires to be dfu-ed to continue working, block all other actions.

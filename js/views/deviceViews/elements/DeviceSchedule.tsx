@@ -167,14 +167,20 @@ export class DeviceSchedule extends Component<any, any> {
     BatchCommandHandler.executePriority();
   }
 
-  _getHeader(state, iconSize) {
+  _getHeader(state, iconSize, customLabel = null) {
     let AI = Util.data.getAiData(state, this.props.sphereId);
+    let label = 'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.';
+
+    if (customLabel) {
+      label = customLabel;
+    }
+
     return (
       <View style={{ width: screenWidth, alignItems:'center' }}>
         <View style={{height: 30}} />
         <Text style={[deviceStyles.header]}>Schedule</Text>
         <View style={{height: 0.2*iconSize}} />
-        <Text style={textStyle.specification}>{'You can tell ' + AI.name + ' to switch this Crownstone on or off at a certain time.'}</Text>
+        <Text style={textStyle.specification}>{label}</Text>
       </View>
     );
   }
@@ -229,11 +235,23 @@ export class DeviceSchedule extends Component<any, any> {
     let iconSize = 0.15*screenHeight;
     let items = this._getItems(schedules);
 
-    /**
-     * there is duplicate code here because the flex does not work if just the changed content is passed as array
-     */
     let innerView;
-    if (items.length > 0) {
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
+    if (!spherePermissions.canSeeSchedules) {
+      innerView = (
+        <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
+          { this._getHeader(state, iconSize, "You do not have permission to see or set the Schedules in this Sphere.") }
+        </View>
+      )
+    }
+    else if (!Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0')) {
+      innerView = (
+        <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
+          { this._getHeader(state, iconSize, "This Crownstone needs to be updated in order to use the Schedule feature.") }
+        </View>
+      )
+    }
+    else if (items.length > 0) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
           { this._getHeader(state, iconSize) }
