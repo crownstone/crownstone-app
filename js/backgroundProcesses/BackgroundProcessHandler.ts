@@ -29,7 +29,7 @@ import { BatchUploader } from "./BatchUploader";
 import { MessageCenter } from "./MessageCenter";
 import { CloudEventHandler } from "./CloudEventHandler";
 import { Permissions } from "./PermissionManager";
-import {LOG} from "../logging/Log";
+import {LOG, LOGw} from "../logging/Log";
 import {LogProcessor} from "../logging/LogProcessor";
 
 const PushNotification = require('react-native-push-notification');
@@ -203,10 +203,11 @@ class BackgroundProcessHandlerClass {
     });
 
     // set the global network error handler.
-    CLOUD.setNetworkErrorHandler((error) => {
+    CLOUD.setNetworkErrorHandler((err) => {
       if (this.connectionPopupActive === false) {
         this.connectionPopupActive = true;
         let defaultAction = () => { this.connectionPopupActive = false; eventBus.emit('hideLoading');};
+        LOGw.cloud("Could not connect to the cloud.", err);
         Alert.alert(
           "Connection Problem",
           "Could not connect to the Cloud. Please check your internet connection.",

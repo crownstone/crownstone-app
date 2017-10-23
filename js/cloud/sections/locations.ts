@@ -2,11 +2,11 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {cloudApiBase} from "./cloudApiBase";
 
 export const locations = {
-  getLocations: function (background = false) {
+  getLocations: function (background = true) {
     return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', {background: background, data:{filter:{"include":"presentPeople"}}});
   },
 
-  createLocation: function (data, background = false) {
+  createLocation: function (data, background = true) {
     return this._setupRequest(
       'POST',
       '/Spheres/{id}/ownedLocations',

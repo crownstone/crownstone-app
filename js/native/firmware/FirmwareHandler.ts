@@ -25,14 +25,14 @@ class FirmwareHandlerClass {
       return new Promise((resolve, reject) => { reject("No version available!"); });
     }
     let promises = [];
-    promises.push(CLOUD.getFirmwareDetails(firmwareVersion, hardwareVersion)
+    promises.push(CLOUD.getFirmwareDetails(firmwareVersion, hardwareVersion, false)
       .then((result) => {
         if (result === null) {
           throw "No firmware available.";
         }
         this.newFirmwareDetails = result;
       }));
-    promises.push(CLOUD.getBootloaderDetails(bootloaderVersion, hardwareVersion)
+    promises.push(CLOUD.getBootloaderDetails(bootloaderVersion, hardwareVersion, false)
       .then((result) => {
         if (result === null) {
           throw "No bootloader available.";

@@ -5,9 +5,10 @@ export const stones = {
   /**
    * Create a crownstone in the cloud so the major and minor can be generated
    * @param data
+   * @param background
    * @returns {*}
    */
-  createStone: function(data : any, background = false) {
+  createStone: function(data : any, background = true) {
     return this._setupRequest(
       'POST',
       '/Spheres/{id}/ownedStones/',

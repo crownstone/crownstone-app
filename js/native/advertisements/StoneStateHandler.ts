@@ -47,6 +47,10 @@ class StoneStateHandlerClass {
   }
 
   receivedIBeaconUpdate(sphereId, stone, stoneId, rssi) {
+    let state = this.store.getState();
+    if (!state.spheres[sphereId]) { return; }
+    if (!state.spheres[sphereId].stones[stoneId]) { return; }
+
     // If the app has not yet seen this crownstone, it could be that it does not have a handle.
     // Without handle we do not propagate the update events since we do not know what how to connect to it
     // if we only hear the ibeacon event.
@@ -70,7 +74,7 @@ class StoneStateHandlerClass {
       LOG.debug("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
     }
 
-    let state = this.store.getState();
+
 
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
@@ -95,6 +99,10 @@ class StoneStateHandlerClass {
   }
 
   receivedAdvertisementUpdate(sphereId, stone, stoneId, rssi) {
+    let state = this.store.getState();
+    if (!state.spheres[sphereId]) { return; }
+    if (!state.spheres[sphereId].stones[stoneId]) { return; }
+
     // internal event to tell the app this crownstone has been seen.
     eventBus.emit(Util.events.getCrownstoneTopic(sphereId, stoneId), {
       handle: stone.config.handle,
@@ -125,6 +133,10 @@ class StoneStateHandlerClass {
    * @param serviceData
    */
   receivedUpdateViaMesh(sphereId: string, remoteStoneId: string, meshNetworkId: number, randomFromServiceData : string, advertisingStoneId : string, serviceData) {
+    let state = this.store.getState();
+    if (!state.spheres[sphereId]) { return; }
+    if (!state.spheres[sphereId].stones[remoteStoneId]) { return; }
+
     // emit the mesh update event only for unique advertisements. Due to ibeacon connectable on/off the unique filter is not always working.
     if (this.advertisementIdsPerStoneId[advertisingStoneId] && this.advertisementIdsPerStoneId[advertisingStoneId] !== randomFromServiceData) {
       eventBus.emit(Util.events.getViaMeshTopic(sphereId, meshNetworkId), {
@@ -139,6 +151,11 @@ class StoneStateHandlerClass {
   }
 
   update(sphereId, stoneId) {
+    const state = this.store.getState();
+    if (!state.spheres[sphereId]) { return; }
+    if (!state.spheres[sphereId].stones[stoneId]) { return; }
+
+
     // create an individual tracker for each stone to keep track of the mesh.
     if (this.stonesThatUpdate[sphereId + stoneId] === undefined) {
       LOG.info("Dynamically creating IndividualStoneTracker for sphere: ", sphereId, '(',stoneId,')');
@@ -146,7 +163,7 @@ class StoneStateHandlerClass {
     }
 
     // LOG.info("StoneStateHandlerUpdate", sphereId, stoneId);
-    const state = this.store.getState();
+
 
     // if we hear this stone and yet it is set to disabled, we re-enable it.
     if (state.spheres[sphereId].stones[stoneId].config.disabled === true) {
