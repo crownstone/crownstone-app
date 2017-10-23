@@ -146,8 +146,7 @@ export class AiStart extends Component<any, any> {
   }
 
   handleAnswer(userFirstName) {
-    let name = this.state.aiName;
-    name.replace(" ","");
+    let name = this.state.aiName.trim();
 
     if (name.length === 0) {
       Alert.alert("Ehmm " + userFirstName + ".. :(", "I'd really like a name... Could you give me one please?", [{text:"Right Away!"}])

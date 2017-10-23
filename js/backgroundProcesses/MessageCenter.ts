@@ -54,11 +54,12 @@ class MessageCenterClass {
     return true;
   }
 
-  _processMessage(actions, state, cloudMessage) {
-    let notified = LocalNotifications._handleNewMessage(cloudMessage, state);
+  _processMessage(actions, state, cloudMessage, alreadyNotified) {
+    let notified = LocalNotifications._handleNewMessage(cloudMessage, state, alreadyNotified);
     if (notified) {
       this._generateMessageStoringActions(actions, state, cloudMessage);
     }
+    return notified || alreadyNotified;
   }
 
   _findMatchingLocalMessageId(cloudMessage, state, recipientIds = null) {
@@ -226,11 +227,14 @@ class MessageCenterClass {
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
+
+          let notified = false;
           messages.forEach((cloudMessage) => {
             if (cloudMessage.triggerEvent === triggerEvent) {
-              this._processMessage(actions, state, cloudMessage);
+              notified = this._processMessage(actions, state, cloudMessage, notified) || notified;
             }
           });
+
           if (actions.length > 0) {
             this._store.batchDispatch(actions);
           }
@@ -246,9 +250,10 @@ class MessageCenterClass {
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
+          let notified = false;
           messages.forEach((cloudMessage) => {
             if (cloudMessage.triggerEvent === triggerEvent) {
-              this._processMessage(actions, state, cloudMessage);
+              notified = this._processMessage(actions, state, cloudMessage, notified) || notified;
             }
           });
           if (actions.length > 0) {

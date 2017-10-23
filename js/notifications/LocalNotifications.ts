@@ -12,7 +12,7 @@ import {MapProvider} from "../backgroundProcesses/MapProvider";
 const MESSAGE_SELF_SENT_TIMEOUT = 30 * 1000; // 30 seconds
 
 export const LocalNotifications = {
-  _handleNewMessage(messageData, state) {
+  _handleNewMessage(messageData, state, alreadyNotified = false) {
     if (!messageData.sphereId) {
       return;
     }
@@ -96,11 +96,13 @@ export const LocalNotifications = {
           PushNotification.setApplicationIconBadgeNumber(1);
         }
         else {
-          Toast.showWithGravity('  Message found!  ', Toast.SHORT, Toast.CENTER);
-          LOG.info("LocalNotifications: on the front, just vibe.");
-          // notify the user by vibration that the crownstone will be switched.
-          Vibration.vibrate(200, false);
-          eventBus.emit("newMessage");
+          if (!alreadyNotified) {
+            Toast.showWithGravity('  Message found!  ', Toast.SHORT, Toast.CENTER);
+            LOG.info("LocalNotifications: on the front, just vibe.");
+            // notify the user by vibration that the crownstone will be switched.
+            Vibration.vibrate(200, false);
+            eventBus.emit("newMessage");
+          }
         }
 
         return true;

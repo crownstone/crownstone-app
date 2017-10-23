@@ -26,6 +26,7 @@ import {TutorialLocalization} from "./elements/TutorialLocalization";
 import {Bluenet} from "../../native/libInterface/Bluenet";
 import {TutorialDevices} from "./elements/TutorialDevices";
 import {TutorialBehaviour} from "./elements/TutorialBehaviour";
+import {LOGi} from "../../logging/Log";
 
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
@@ -57,6 +58,7 @@ export class Tutorial extends Component<any, any> {
 
   componentWillUpdate(nextProps, nextState) {
     if (nextState.swiperIndex === 3 && this.requestedPermission === false) {
+      LOGi.info("Tutorial: Requested location permission.");
       Bluenet.requestLocationPermission();
       this.requestedPermission = true;
     }
