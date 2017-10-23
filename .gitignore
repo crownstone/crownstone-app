@@ -73,5 +73,6 @@ app-logs
 !__tests__/**
 !**.tapetest.js
 
+sentrySettings.js
 
 LocalConfig.ts

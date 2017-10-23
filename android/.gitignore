@@ -4,3 +4,4 @@ keys.sh
 keystores
 app/google-services.json
 Android-DFU-Library
+sentry.properties
