@@ -137,7 +137,7 @@ export class SettingsSphere extends Component<any, any> {
         },
         endCallback: (newText) => {
           if (sphereSettings.name !== newText) {
-            if (this.validationState.sphereName === 'valid') {
+            if (this.validationState.sphereName === 'valid' && newText.trim().length >= 2) {
               this.props.eventBus.emit('showLoading', 'Changing sphere name...');
               CLOUD.forSphere(this.props.sphereId).changeSphereName(newText)
                 .then((result) => {

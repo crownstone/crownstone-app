@@ -2,7 +2,7 @@ import { Alert, Platform } from 'react-native'
 import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 const RNFS = require('react-native-fs');
 let emptyFunction = function() {};
-import { LOG } from '../logging/Log'
+import {LOG, LOGe, LOGi} from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
 import { defaultHeaders } from './sections/cloudApiBase'
 import {safeMoveFile, safeDeleteFile, Util} from '../util/Util'
@@ -132,13 +132,12 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
 
 export function downloadFile(url, targetPath, callbacks) {
   return new Promise((resolve, reject) => {
-    let path = Util.getPath();
-
     // get a temp path
-    let tempPath = path + '/' + (10000 + Math.random() * 1e5).toString(36).replace(".", "") + '.tmp';
+    let tempFilename =  Math.round(10000 + Math.random() * 1e5).toString(36) + '.tmp';
+    let tempPath = Util.getPath(tempFilename);
 
-    if (DEBUG)
-      LOG.cloud('download requesting from URL:', url, 'temp:', tempPath, 'target:', targetPath);
+
+    LOGi.cloud('CloudCore:DownloadFile: download requesting from URL:', url, 'temp:', tempPath, 'target:', targetPath);
 
     // download the file.
     RNFS.downloadFile({
@@ -155,7 +154,7 @@ export function downloadFile(url, targetPath, callbacks) {
               callbacks.success();
               resolve(null);
             })
-            .catch((err) => { });
+            .catch((err) => { LOGe.cloud("CloudCore:DownloadFile: Could not delete file", tempPath, ' err:', err); });
         }
         else {
           safeMoveFile(tempPath, targetPath)
@@ -164,11 +163,11 @@ export function downloadFile(url, targetPath, callbacks) {
               callbacks.success();
               resolve(toPath);
             })
-            .catch((err) => { });
+            .catch((err) => {  LOGe.cloud("CloudCore:DownloadFile: Could not move file", tempPath, ' to ', targetPath, 'err:', err); });
         }
       })
       .catch((err) => {
-        safeDeleteFile(tempPath).catch((err) => { });
+        safeDeleteFile(tempPath).catch((err) => { LOGe.cloud("CloudCore:DownloadFile: Could not delete file", tempPath, 'err:', err); });
         reject(err);
       })
   });

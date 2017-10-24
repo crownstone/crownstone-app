@@ -43,7 +43,9 @@ export class TextEditBar extends Component<any, any> {
 
   validateCustom(value, customRules = this.props.validation) {
     // check length
-    if (customRules.minLength  !== undefined && value.length < customRules.minLength)
+    let trimmedValue = value.trim();
+
+    if (customRules.minLength  !== undefined && trimmedValue.length < customRules.minLength)
       return 'errorTooShort';
     if (customRules.maxLength  !== undefined && value.length > customRules.maxLength)
       return 'errorTooLong';

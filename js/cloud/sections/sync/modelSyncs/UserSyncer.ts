@@ -10,6 +10,7 @@ import { CLOUD}               from "../../../cloudAPI";
 import { SyncingBase }        from "./SyncingBase";
 import {Util} from "../../../../util/Util";
 import {transferUser} from "../../../transferData/transferUser";
+import {LOGe} from "../../../../logging/Log";
 
 export class UserSyncer extends SyncingBase {
   userId : string;
@@ -39,7 +40,7 @@ export class UserSyncer extends SyncingBase {
         CLOUD.downloadProfileImage(toPath)
           .then((picturePath) => {
             this.actions.push({type:'USER_APPEND', data:{ picture: picturePath, pictureId: userInCloud.profilePicId }});
-          }).catch()
+          }).catch((err) => { LOGe.cloud("UserSyncer: Could not download profile picture to ", toPath, ' err:', err); })
       );
     }
 

@@ -49,7 +49,7 @@ export class MessageAdd extends Component<any, any> {
   componentWillUnmount() {}
 
   _createMessage() {
-    if (this.state.messageContent.length === 0) {
+    if (this.state.messageContent.trim().length === 0) {
       Alert.alert("Message is empty..", "I can't send an empty message.", [{text:'Right'}]);
       return;
     }
