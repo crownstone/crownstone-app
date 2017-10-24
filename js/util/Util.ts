@@ -41,7 +41,7 @@ export const processImage = function(picture, targetFilename) {
         resizedPath = RNFS.ExternalDirectoryPath;
       }
 
-      let pictureURI = picture.indexOf("file://") === -1 ? picture : picture;
+      let pictureURI = picture.replace('file://','');
 
       ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90, 0, resizedPath)
         .then((resizedImageUri) => {

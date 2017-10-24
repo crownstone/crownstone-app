@@ -249,6 +249,14 @@ export const DataUtil = {
     };
 
     if (sphereId) {
+      if (!state.spheres[sphereId].config.aiSex) {
+        return {
+          name: state.spheres[sphereId].config.aiName || 'AI',
+          his: 'her',
+          him: 'her',
+          he:  'she',
+        }
+      }
       return {
         name: state.spheres[sphereId].config.aiName,
         his: sexes.his[state.spheres[sphereId].config.aiSex],

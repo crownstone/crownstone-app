@@ -19,7 +19,6 @@ export const spheres = {
    */
   createNewSphere(store, sphereName, eventBus, latitude, longitude) {
     let state = store.getState();
-    let sphereId;
     let creationActions = [];
 
     // only write gps coordinates if we have them.
@@ -67,7 +66,7 @@ export const spheres = {
 
           eventBus.emit('sphereCreated');
           store.batchDispatch(creationActions);
-          return sphereId
+          return localId;
         }
         else {
           throw new Error("Key data is not an array.")

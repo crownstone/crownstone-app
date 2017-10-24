@@ -55,7 +55,7 @@ export class TutorialDevices extends Component<any, any> {
 
               // To avoid invited users get to see the Ai Naming, check if they have 1 sphere and if they're admin and if there is no AI at the moment
               if (sphereIds.length === 1) {
-                if (Util.data.getUserLevelInSphere(this.props.state, sphereIds[0]) === 'admin' && this.props.state.spheres[sphereIds[0]].config.aiSex === undefined) {
+                if (Util.data.getUserLevelInSphere(this.props.state, sphereIds[0]) === 'admin' && !this.props.state.spheres[sphereIds[0]].config.aiSex) {
                   Actions.aiStart();
                 }
                 else {

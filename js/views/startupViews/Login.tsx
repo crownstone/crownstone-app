@@ -323,7 +323,7 @@ export class Login extends Component<any, any> {
         }
       })
       .catch((err) => {
-        LOG.debug("Error creating first Sphere.", err);
+        LOG.error("Login: Failed to login.", err);
         let defaultAction = () => {this.props.eventBus.emit('hideProgress')};
         Alert.alert("Whoops!", "An error has occurred while syncing with the Cloud. Please try again later.", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
         throw err;
@@ -369,7 +369,8 @@ export class Login extends Component<any, any> {
         }, 100);
       })
       .catch((err) => {
-        LOG.error("ERROR during login.", err);
+        LOG.error("Login: ERROR during login.", err);
+        this.props.eventBus.emit('hideProgress');
       });
   }
 }
