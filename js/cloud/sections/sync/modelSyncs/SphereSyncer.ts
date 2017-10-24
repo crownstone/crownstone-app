@@ -63,7 +63,7 @@ export class SphereSyncer extends SyncingBase {
             localId: localId,
             cloudData: sphere_from_cloud
           })
-          .catch()
+          .catch(() => {})
         );
       }
 
@@ -150,7 +150,7 @@ export class SphereSyncer extends SyncingBase {
           localData: sphereInState,
           cloudId:   sphere_from_cloud.id,
         })
-        .catch()
+        .catch(() => {})
       );
     }
     else if (shouldUpdateLocally(sphereInState.config, sphere_from_cloud) || !sphereInState.config.cloudId) {
@@ -158,7 +158,7 @@ export class SphereSyncer extends SyncingBase {
         transferSpheres.updateLocal(this.actions, {
           localId:   localId,
           cloudData: sphere_from_cloud
-        }).catch()
+        }).catch(() => {})
       );
     }
   };

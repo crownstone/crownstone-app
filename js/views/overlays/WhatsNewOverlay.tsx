@@ -94,7 +94,7 @@ export class WhatsNewOverlay extends Component<any, any> {
           paddingTop:10,
           paddingBottom:10,
           backgroundColor:'transparent',
-          color:colors.csBlue.hex, height:40, marginTop:20}}>Your app was updated!</Text>
+          color:colors.csBlue.hex, height:40, marginTop:20, overflow:'hidden'}}>Your app was updated!</Text>
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={height-85} width={width}
           dot={<View style={{backgroundColor: colors.menuBackground.rgba(0.15), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.menuBackground.rgba(0.2)}} />}
           activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 9, height: 9, borderRadius: 4.5, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}

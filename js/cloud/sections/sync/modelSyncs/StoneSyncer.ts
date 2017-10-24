@@ -84,7 +84,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
             .then(() => {
               this._copyBehaviourFromCloud(localId, stone_from_cloud );
             })
-            .catch()
+            .catch(() => {})
         );
       }
 
@@ -206,7 +206,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
           localId: localId,
           cloudId: stone_from_cloud.id,
           cloudData: cloudDataForLocal
-        }).catch()
+        }).catch(() => {})
       );
     };
 
@@ -244,7 +244,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
               }
             }
           })
-          .catch()
+          .catch(() => {})
       );
     }
     else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud)) {
@@ -275,7 +275,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
           cloudId: stone_from_cloud.id,
           cloudSphereId: this.cloudSphereId,
         })
-        .catch()
+        .catch(() => {})
       );
     }
   };

@@ -213,7 +213,7 @@ function _handleStone(action, state) {
     localSphereId: action.sphereId,
     cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
     cloudId:       stone.config.cloudId  || action.stoneId,
-  }).catch();
+  }).catch(() => {});
 }
 
 function handleStoneLocationUpdateInCloud(action, state, oldState) {
@@ -251,7 +251,7 @@ function handleApplianceInCloud(action, state) {
     localSphereId: action.sphereId,
     cloudSphereId: sphere.config.cloudId     || action.sphereId, // we used to have the same ids locally and in the cloud.
     cloudId:       appliance.config.cloudId  || action.applianceId,
-  }).catch();
+  }).catch(() => {});
 }
 
 function handleApplianceBehaviourInCloud(action, state) {
@@ -265,7 +265,7 @@ function handleApplianceBehaviourInCloud(action, state) {
       localSphereId: action.sphereId,
       cloudSphereId: sphere.config.cloudId       || action.sphereId, // we used to have the same ids locally and in the cloud.
       cloudId:       appliance.config.cloudId    || action.applianceId,
-    }).catch();
+    }).catch(() => {});
   }
 }
 
@@ -279,7 +279,7 @@ function handleLocationInCloud(action, state) {
     localSphereId: action.sphereId,
     cloudSphereId: sphere.config.cloudId    || action.sphereId, // we used to have the same ids locally and in the cloud.
     cloudId:       location.config.cloudId  || action.locationId,
-  }).catch();
+  }).catch(() => {});
 }
 
 function handleSphereInCloud(action, state) {
@@ -288,7 +288,7 @@ function handleSphereInCloud(action, state) {
   transferSpheres.updateOnCloud({
     localData: sphere,
     cloudId:   sphere.config.cloudId || action.sphereId,
-  }).catch()
+  }).catch(() => {})
 }
 
 function handleSphereUserInCloud(action, state) {
@@ -488,7 +488,7 @@ function handleStoneScheduleUpdate(action, state) {
     cloudId: newSchedule.cloudId,
   };
 
-  transferSchedules.updateOnCloud(payload).catch();
+  transferSchedules.updateOnCloud(payload).catch(() => {});
 
 }
 

@@ -34,6 +34,7 @@ export class RoomLayer extends Component<any, any> {
   _maxScale : number = 1.25;
   _baseRadius : number;
   _pressedLocationData : any = false;
+  _recenteringInProgress = false;
 
   _validTap = false;
   _lastTapLocation = false;
@@ -410,6 +411,10 @@ export class RoomLayer extends Component<any, any> {
   }
 
   _recenter(fadeIn = false) {
+    if (!this._recenteringInProgress) {
+      this._recenteringInProgress = true;
+    }
+
     if (this.boundingBoxData.minX === undefined) {
       this._getBoundingBox();
     }
@@ -439,6 +444,7 @@ export class RoomLayer extends Component<any, any> {
       this.state.pan.setValue({ x: 0, y: 0 });
       this._currentPan = {x:0, y:0};
       this._currentScale = this.boundingBoxData.requiredScale;
+      this._recenteringInProgress = false;
     });
   }
 

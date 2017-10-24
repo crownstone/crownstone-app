@@ -69,7 +69,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
           .then(() => {
             this._copyBehaviourFromCloud(localId, appliance_from_cloud);
           })
-          .catch()
+          .catch(() => {})
         );
       }
 
@@ -154,7 +154,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
           cloudId:        appliance_from_cloud.id,
           cloudSphereId:  this.cloudSphereId,
         })
-        .catch()
+        .catch(() => {})
       );
     }
     else if (shouldUpdateLocally(applianceInState.config, appliance_from_cloud) || !applianceInState.config.cloudId) {
@@ -164,7 +164,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
           localId:        localId,
           cloudId:        appliance_from_cloud.id,
           cloudData:      appliance_from_cloud
-        }).catch()
+        }).catch(() => {})
       );
     }
   };

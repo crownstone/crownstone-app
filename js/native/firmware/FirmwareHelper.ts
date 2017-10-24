@@ -141,7 +141,7 @@ export class FirmwareHelper {
         .then(() => { resolve(); })
         .catch((err) => {
           LOG.error("FirmwareHelper: Error during putInDFU.", err);
-          BluenetPromiseWrapper.phoneDisconnect().catch();
+          BluenetPromiseWrapper.phoneDisconnect().catch(() => {});
           reject(err);
         })
     })
@@ -166,7 +166,7 @@ export class FirmwareHelper {
           })
           .catch((err) => {
             LOG.error("FirmwareHelper: Error during getBootloaderVersion.", err);
-            BluenetPromiseWrapper.phoneDisconnect().catch();
+            BluenetPromiseWrapper.phoneDisconnect().catch(() => {});
             reject(err);
           })
       })

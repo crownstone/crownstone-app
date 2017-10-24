@@ -87,7 +87,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
             localSphereId: this.localSphereId,
             localStoneId: this.localStoneId,
             cloudData: schedule_from_cloud
-          }).catch()
+          }).catch(() => {})
         );
       }
 
@@ -136,7 +136,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
           localId: localId,
           cloudId: schedule_from_cloud.id,
           localData: scheduleInState,
-        }).catch()
+        }).catch(() => {})
       );
     }
     else if (shouldUpdateLocally(scheduleInState, schedule_from_cloud) || !scheduleInState.cloudId) {
@@ -147,7 +147,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
           localStoneId: this.localStoneId,
           localId: localId,
           cloudData: schedule_from_cloud
-        }).catch()
+        }).catch(() => {})
       );
     }
   }

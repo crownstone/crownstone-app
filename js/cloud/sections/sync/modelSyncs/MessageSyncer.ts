@@ -73,7 +73,7 @@ export class MessageSyncer extends SyncingSphereItemBase {
               cloudData: cloudDataForLocal,
               extraFields: { sent: true, sentAt: message_from_cloud['createdAt']}
             })
-            .catch()
+            .catch(() => {})
           );
         }
       }
@@ -142,7 +142,7 @@ export class MessageSyncer extends SyncingSphereItemBase {
           localId: localId,
           cloudId: message_from_cloud.id,
           cloudData: cloudDataForLocal
-        }).catch()
+        }).catch(() => {})
       );
     }
   };

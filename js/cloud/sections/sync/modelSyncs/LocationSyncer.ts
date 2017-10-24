@@ -69,7 +69,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
             localSphereId: this.localSphereId,
             cloudData: location_from_cloud
           })
-          .catch()
+          .catch(() => {})
         );
       }
 
@@ -209,7 +209,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
           cloudSphereId: this.cloudSphereId,
           cloudId:   location_from_cloud.id,
         })
-        .catch()
+        .catch(() => {})
       );
     }
     else if (shouldUpdateLocally(locationInState.config, location_from_cloud) || !locationInState.config.cloudId) {
@@ -218,7 +218,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
           localId:   localId,
           localSphereId: this.localSphereId,
           cloudData: location_from_cloud
-        }).catch()
+        }).catch(() => {})
       );
     }
   };
