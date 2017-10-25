@@ -339,7 +339,6 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
   if (state.user.uploadSwitchState === true && pureSwitch === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
     let data  = {
-      id:          stoneId,
       switchState: stone.state.state,
       updatedAt:   stone.updatedAt,
     };
