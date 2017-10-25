@@ -4,7 +4,7 @@ export class SyncingBase {
   globalCloudIdMap : globalIdMap;
   globalLocalIdMap : globalIdMap;
 
-  constructor(actions : any[], transferPromises: any[], globalCloudIdMap?: globalIdMap) {
+  constructor(actions : any[], transferPromises: any[], globalCloudIdMap: globalIdMap) {
     if (!globalCloudIdMap) {
       globalCloudIdMap = getGlobalIdMap();
     }
@@ -113,7 +113,7 @@ export class SyncingSphereItemBase extends SyncingBase {
     transferPromises: any[],
     localSphereId: string,
     cloudSphereId: string,
-    globalCloudIdMap?: globalIdMap
+    globalCloudIdMap: globalIdMap
   ) {
     super(actions, transferPromises, globalCloudIdMap);
     this.localSphereId = localSphereId;

@@ -1,5 +1,6 @@
 import { LOG } from "../../../logging/Log";
 import {LocationSyncer} from "./modelSyncs/LocationSyncer";
+import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 
 export const syncUsersInSphere = {
 
@@ -29,7 +30,7 @@ export const syncUsersInSphere = {
         return;
       }
 
-      let locationSyncer = new LocationSyncer(actions, [], activeSphereId, sphere.config.cloudId || activeSphereId);
+      let locationSyncer = new LocationSyncer(actions, [], activeSphereId, sphere.config.cloudId || activeSphereId, MapProvider.cloud2localMap);
       locationSyncer.sync(store)
         .then(() => {
           if (actions.length > 0) {

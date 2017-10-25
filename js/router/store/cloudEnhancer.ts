@@ -296,15 +296,20 @@ function handleSphereUserInCloud(action, state) {
 }
 
 function handleSphereStateOnDevice(action, state) {
-  if (state.user.uploadLocation === true) {
-    let deviceId = Util.data.getCurrentDeviceId(state);
-    if (deviceId) {
+  let deviceId = Util.data.getCurrentDeviceId(state);
+  if (deviceId) {
+    if (state.user.uploadLocation === true) {
       if (action.data.present === true) {
-        CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => { });
+        CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => {});
       }
       else {
-        CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => { });
+        CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => {});
+        CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {});
       }
+    }
+    else {
+      CLOUD.forDevice(deviceId).updateDeviceSphere(null).catch(() => {});
+      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => {});
     }
   }
 }
@@ -318,12 +323,12 @@ function handleUserLocationEnter(action, state) {
 }
 
 function handleUserLocationExit(action, state) {
-  if (state.user.uploadLocation === true) {
-    let deviceId = Util.data.getCurrentDeviceId(state);
-    if (deviceId) {
-      CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => { });
-    }
-  }
+  // if (state.user.uploadLocation === true) {
+  //   let deviceId = Util.data.getCurrentDeviceId(state);
+  //   if (deviceId) {
+  //     CLOUD.forDevice(deviceId).updateDeviceLocation(null).catch(() => { });
+  //   }
+  // }
 }
 
 

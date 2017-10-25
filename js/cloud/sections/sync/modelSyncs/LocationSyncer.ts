@@ -10,6 +10,7 @@ import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferLocations} from "../../../transferData/transferLocations";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
+import {LOGi} from "../../../../logging/Log";
 
 export class LocationSyncer extends SyncingSphereItemBase {
   userId: string;
@@ -93,9 +94,10 @@ export class LocationSyncer extends SyncingSphereItemBase {
         if (peopleInCloudLocations[person.id] === undefined) {
           peopleInCloudLocations[person.id] = true;
           // check if the person exists in our sphere and if we are not that person. Also check if this user is already in the room.
+
           if (person.id !== this.userId && this.globalCloudIdMap.users[person.id] !== undefined) {
             // if no local location exists, or if it does and it has a present user.
-            if  (!localLocation || localLocation && localLocation.presentUsers && localLocation.presentUsers.indexOf(person.id) === -1) {
+            if (!localLocation || localLocation && localLocation.presentUsers && localLocation.presentUsers.indexOf(person.id) === -1) {
               this.actions.push({
                 type:       'USER_ENTER_LOCATION',
                 sphereId:   this.localSphereId,
@@ -107,6 +109,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         }
       });
     }
+
 
     // remove the users from this location that are not in the cloud and that are not the current user
     let peopleInCurrentLocation = {};
@@ -169,7 +172,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         this.transferPromises.push(
           transferLocations.createOnCloud(this.actions, { localId: localLocationId, localSphereId: this.localSphereId, cloudSphereId: this.cloudSphereId, localData: localLocation })
             .then((cloudId) => {
-              this.globalCloudIdMap.appliances[cloudId] = localLocationId;
+              this.globalCloudIdMap.locations[cloudId] = localLocationId;
             })
         );
       }

@@ -88,7 +88,7 @@ class MapProviderClass {
     let fillMaps = (source, getCloudIdFromItem, cloud2local, local2cloud) => {
       let sourceIds = Object.keys(source);
       sourceIds.forEach((sourceId) => {
-        let cloudId = getCloudIdFromItem(source[sourceId]);
+        let cloudId = getCloudIdFromItem(source[sourceId], sourceId);
         if (cloudId) {
           cloud2local[cloudId] = sourceId;
           local2cloud[sourceId] = cloudId;
@@ -97,11 +97,13 @@ class MapProviderClass {
     };
 
     let getFromConfig = (source, cloud2local, local2cloud) => {
-      fillMaps(source, (item) => { return item.config.cloudId; }, cloud2local, local2cloud);
+      fillMaps(source, (item, localId) => { return item.config.cloudId; }, cloud2local, local2cloud);
     };
-
+    let getFromId = (source, cloud2local, local2cloud) => {
+      fillMaps(source, (item, localId) => { return localId; }, cloud2local, local2cloud);
+    };
     let getFromItem = (source, cloud2local, local2cloud) => {
-      fillMaps(source, (item) => { return item.cloudId; }, cloud2local, local2cloud);
+      fillMaps(source, (item, localId) => { return item.cloudId; }, cloud2local, local2cloud);
     };
 
     getFromConfig(state.spheres, this.cloud2localMap.spheres, this.local2cloudMap.spheres);
@@ -112,6 +114,8 @@ class MapProviderClass {
       getFromConfig(sphere.appliances,  this.cloud2localMap.appliances, this.local2cloudMap.appliances);
       getFromConfig(sphere.locations,   this.cloud2localMap.locations,  this.local2cloudMap.locations);
       getFromConfig(sphere.stones,      this.cloud2localMap.stones,     this.local2cloudMap.stones);
+
+      getFromId(sphere.users,         this.cloud2localMap.users,      this.local2cloudMap.users);
 
       let stoneIds = Object.keys(sphere.stones);
       stoneIds.forEach((stoneId) => {
