@@ -73,15 +73,15 @@ export class SideBar extends Component<any, any> {
 
   _getMenuItems() {
     let menuItems = [];
-    menuItems.push({
-      id: 'overview',
-      label: 'Overview',
-      icon: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
-      callback: () => {
-        Actions.sphereOverview({type:'reset'});
-        setTimeout(() => {this.props.closeCallback();},0)
-      }
-    });
+    // menuItems.push({
+    //   id: 'overview',
+    //   label: 'Overview',
+    //   icon: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+    //   callback: () => {
+    //     Actions.sphereOverview({type:'reset'});
+    //     setTimeout(() => {this.props.closeCallback();},0)
+    //   }
+    // });
     menuItems.push({
       id: 'messages',
       label: 'Messages',
