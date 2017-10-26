@@ -131,7 +131,7 @@ export class SideBar extends Component<any, any> {
     }
     let menuItems = this._getMenuItems();
     // only show menu items when there's actually something to choose.
-    if (menuItems.length > 1) {
+    if (menuItems.length > 0) {
       content.push(<MenuSegmentSeparator key="categoriesLabel" label="Categories"/>);
       this._fillItemList(content, menuItems);
     }
