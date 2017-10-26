@@ -98,6 +98,7 @@ export class Register extends Component<any, any> {
         type: 'textEdit',
         validation:'password',
         validationMethod:'icons',
+        autoCapitalize:'none',
         secureTextEntry: false,
         keyboardType: 'ascii-capable',
         value: this.state.password,

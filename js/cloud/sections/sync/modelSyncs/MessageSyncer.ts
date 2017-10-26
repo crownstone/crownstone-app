@@ -110,7 +110,8 @@ export class MessageSyncer extends SyncingSphereItemBase {
     // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
     if (!hasSyncedDown) {
       if (localMessage.config.cloudId) {
-        this.actions.push({ type: 'REMOVE_MESSAGE', sphereId: this.localSphereId, messageId: localMessageId });
+        // messages are not removed once they are received.
+        // this.actions.push({ type: 'REMOVE_MESSAGE', sphereId: this.localSphereId, messageId: localMessageId });
       }
       else {
         // we transform the triggerLocationId since we refer to it with a local Id locally.

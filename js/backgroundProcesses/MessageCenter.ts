@@ -8,6 +8,10 @@ import {MapProvider} from "./MapProvider";
 class MessageCenterClass {
   _initialized: boolean = false;
   _store: any;
+  _enterSphereInProgress : boolean = false;
+  _exitSphereInProgress  : boolean = false;
+  _enterRoomInProgress   : boolean = false;
+  _exitRoomInProgress    : boolean = false;
 
   constructor() { }
 
@@ -201,29 +205,49 @@ class MessageCenterClass {
   }
 
   _enterSphere(localSphereId) {
+    if (this._enterSphereInProgress === true) { return; }
+    this._enterSphereInProgress = true;
+
     LOG.info("MessageSearcher: enter sphere", localSphereId);
-    this._handleMessageInSphere(localSphereId, 'enter');
+    this._handleMessageInSphere(localSphereId, 'enter')
+      .then(() => { this._enterSphereInProgress = false; })
+      .catch(() => {          this._enterSphereInProgress = false; })
   }
 
   _exitSphere(localSphereId) {
+    if (this._exitSphereInProgress === true) { return; }
+    this._exitSphereInProgress = true;
+
     LOG.info("MessageSearcher: exit sphere", localSphereId);
-    this._handleMessageInSphere(localSphereId, 'exit');
+    this._handleMessageInSphere(localSphereId, 'exit')
+      .then(() => { this._exitSphereInProgress = false; })
+      .catch(() => {          this._exitSphereInProgress = false; })
   }
 
   _enterRoom(data : locationDataContainer) {
+    if (this._enterRoomInProgress === true) { return; }
+    this._enterRoomInProgress = true;
+
     LOG.info("MessageSearcher: enter room", data);
-    this._handleMessageInLocation(data.region, data.location, 'enter');
+    this._handleMessageInLocation(data.region, data.location, 'enter')
+      .then(() => { this._enterRoomInProgress = false; })
+      .catch(() => {          this._enterRoomInProgress = false; })
   }
 
   _exitRoom(data : locationDataContainer) {
+    if (this._exitRoomInProgress === true) { return; }
+    this._exitRoomInProgress = true;
+
     LOG.info("MessageSearcher: exit room", data);
-    this._handleMessageInLocation(data.region, data.location, 'exit');
+    this._handleMessageInLocation(data.region, data.location, 'exit')
+      .then(() => { this._exitRoomInProgress = false; })
+      .catch(() => {          this._exitRoomInProgress = false; })
   }
 
   _handleMessageInLocation(localSphereId, localLocationId, triggerEvent) {
     let state = this._store.getState();
 
-    CLOUD.forSphere(localSphereId).getNewMessagesInLocation(localLocationId)
+    return CLOUD.forSphere(localSphereId).getNewMessagesInLocation(localLocationId)
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
@@ -246,7 +270,7 @@ class MessageCenterClass {
   _handleMessageInSphere(localSphereId, triggerEvent) {
     let state = this._store.getState();
 
-    CLOUD.forSphere(localSphereId).getNewMessagesInSphere()
+    return CLOUD.forSphere(localSphereId).getNewMessagesInSphere()
       .then((messages) => {
         if (messages && Array.isArray(messages)) {
           let actions = [];
