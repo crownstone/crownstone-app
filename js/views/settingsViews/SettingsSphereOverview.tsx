@@ -97,9 +97,9 @@ export class SettingsSphereOverview extends Component<any, any> {
         }
       });
     }
-    else {
-      items.push({label:'Maximum of 1 Sphere where you are admin for now..',  type:'explanation', below:false});
-    }
+    // else {
+      // items.push({label:'Maximum of 1 Sphere where you are admin for now..',  type:'explanation', below:false});
+    // }
 
     // if you do not have, or are part of, any spheres yet.
     if (adminSpheres.length == 0 && memberSpheres.length == 0 && guestSpheres.length == 0)
