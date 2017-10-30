@@ -21,6 +21,7 @@ import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
 import { NativeBus } from '../../../native/libInterface/NativeBus'
 import { AppUtil } from '../../../util/AppUtil'
 import { SettingConstructor } from '../../../util/SettingConstructor'
+import {LOG} from "../../../logging/Log";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -107,7 +108,12 @@ export class SideBar extends Component<any, any> {
         Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
           {text: 'Cancel', style: 'cancel'},
           {text: 'OK', onPress: () => {
-            AppUtil.quit();
+            try {
+              AppUtil.quit();
+            }
+            catch(err) {
+              LOG.error("Failed to quit.", err);
+            }
           }}
         ])
       }

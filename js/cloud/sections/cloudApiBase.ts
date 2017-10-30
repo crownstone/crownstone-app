@@ -2,8 +2,9 @@ import {request, download, downloadFile} from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/Util'
 import { EventBusClass } from '../../util/EventBus'
-import {LOG, LOGe} from '../../logging/Log'
+import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+const RNFS = require('react-native-fs');
 
 export const defaultHeaders = {
   'Accept': 'application/json',
@@ -66,8 +67,17 @@ export const cloudApiBase = {
     formData.append('image', {type: 'image/jpeg', name: filename, uri: path });
     options.data = formData;
 
-    let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), this._accessToken, true);
-    return this._finalizeRequest(promise, options);
+    return RNFS.exists(options.path)
+      .then((fileExists) => {
+        if (fileExists === false) {
+          throw "File does not exist."
+        }
+        else {
+          LOGi.cloud("CloudAPIBase: file exists, continue upload");
+          let promise = request(options, 'POST', uploadHeaders, _getId(options.endPoint, this), this._accessToken, true);
+          return this._finalizeRequest(promise, options);
+        }
+      })
   },
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)

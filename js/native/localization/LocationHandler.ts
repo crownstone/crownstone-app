@@ -70,9 +70,9 @@ class LocationHandlerClass {
     });
   }
 
-  enterSphere(sphereId) {
+  enterSphere(enteringSphereId) {
     let state = this.store.getState();
-    let sphere = state.spheres[sphereId];
+    let sphere = state.spheres[enteringSphereId];
 
     if (!sphere) {
       LOG.error('LocationHandler: Received enter sphere for a sphere that we shouldn\'t be tracking...');
@@ -80,7 +80,7 @@ class LocationHandlerClass {
     }
 
     // The call on our own eventbus is different from the native bus because enterSphere can be called by fallback mechanisms.
-    eventBus.emit('enterSphere', sphereId);
+    eventBus.emit('enterSphere', enteringSphereId);
 
     // We load the settings and start the localization regardless if we are already in the sphere. The calls themselves
     // are cheap and it could be that the lib has restarted: losing it's state. This will make sure we will always have the
@@ -92,20 +92,20 @@ class LocationHandlerClass {
       adminKey:  sphere.config.adminKey,
       memberKey: sphere.config.memberKey,
       guestKey:  sphere.config.guestKey,
-      referenceId: sphereId
+      referenceId: enteringSphereId
     };
 
-    if (canUseIndoorLocalizationInSphere(state, sphereId) === true) {
-      LOG.info('LocationHandler: Starting indoor localization for sphere', sphereId);
+    if (canUseIndoorLocalizationInSphere(state, enteringSphereId) === true) {
+      LOG.info('LocationHandler: Starting indoor localization for sphere', enteringSphereId);
       Bluenet.startIndoorLocalization();
     }
     else {
-      LOG.info('LocationHandler: Stopping indoor localization for sphere', sphereId, 'due to missing fingerprints or not enough Crownstones.');
+      LOG.info('LocationHandler: Stopping indoor localization for sphere', enteringSphereId, 'due to missing fingerprints or not enough Crownstones.');
       Bluenet.stopIndoorLocalization();
     }
 
     // scan for crownstones on entering a sphere.
-    BatterySavingUtil.startNormalUsage(sphereId);
+    BatterySavingUtil.startNormalUsage(enteringSphereId);
 
 
     LOG.info("Set Settings.", bluenetSettings);
@@ -123,7 +123,20 @@ class LocationHandlerClass {
 
     // update location of the sphere, start the keepAlive and check if we have to perform an enter sphere behaviour trigger.
     if (sphere !== undefined) {
-      LOG.info('LocationHandler: ENTER SPHERE', sphereId);
+      let sphereIds = Object.keys(state.spheres);
+      let otherSpherePresentCount = 0;
+      sphereIds.forEach((checkSphereId) => {
+        if (state.spheres[checkSphereId].config.present === true && checkSphereId !== enteringSphereId) {
+          otherSpherePresentCount += 1;
+        }
+      });
+
+      if (otherSpherePresentCount > 0) {
+        Alert.alert("Warning: Multiple Active Spheres Detected!","I can see " + (otherSpherePresentCount + 1) + " Spheres from here. This is not supported and can cause all sorts of serious issues. Please make sure there are no overlapping Spheres for now.",[{text:'OK'}])
+      }
+
+
+      LOG.info('LocationHandler: ENTER SPHERE', enteringSphereId);
 
       BluenetPromiseWrapper.requestLocation()
         .catch((err) => {
@@ -137,19 +150,19 @@ class LocationHandlerClass {
               let distance = Math.sqrt(dx*dx + dy*dy);
               if (distance > 0.4) {
                 LOG.info('LocationHandler: Update sphere location, old: (', sphere.config.latitude, ',', sphere.config.longitude,') to new: (', location.latitude, ',', location.longitude,')');
-                this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+                this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
               }
             }
             else {
               LOG.info('LocationHandler: Setting sphere location to (', location.latitude, ',', location.longitude,')');
-              this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {latitude: location.latitude, longitude: location.longitude}});
+              this.store.dispatch({type: 'UPDATE_SPHERE_CONFIG', sphereId: enteringSphereId, data: {latitude: location.latitude, longitude: location.longitude}});
             }
           }
         })
         .catch((err) => {});
 
       // set the presence
-      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: true, present: true}});
+      this.store.dispatch({type: 'SET_SPHERE_STATE', sphereId: enteringSphereId, data: {reachable: true, present: true}});
 
       // start the keep alive run. This gives the app some time for syncing and pointing out which stones are NOT disabled.
       Scheduler.scheduleCallback(() => {
@@ -157,7 +170,7 @@ class LocationHandlerClass {
       }, 1000, 'sphere enter keepAlive trigger');
 
       // get the time last seen of the crownstones in this sphere
-      let stones = state.spheres[sphereId].stones;
+      let stones = state.spheres[enteringSphereId].stones;
       let stoneIds = Object.keys(stones);
       let timeLastSeen = 0;
       stoneIds.forEach((stoneId) => {
@@ -168,12 +181,12 @@ class LocationHandlerClass {
       });
 
       // we reduce this amount by 1 times the keep-alive interval. This is done to account for possible lossy keepalives.
-      let sphereTimeout = state.spheres[sphereId].config.exitDelay - KEEPALIVE_INTERVAL;
+      let sphereTimeout = state.spheres[enteringSphereId].config.exitDelay - KEEPALIVE_INTERVAL;
       let timeSinceLastCrownstoneWasSeen = new Date().valueOf() - timeLastSeen;
       if (timeSinceLastCrownstoneWasSeen > sphereTimeout) {
         // trigger crownstones on enter sphere
         LOG.info('LocationHandler: TRIGGER ENTER HOME EVENT FOR SPHERE', sphere.config.name);
-        BehaviourUtil.enactBehaviourInSphere(this.store, sphereId, BEHAVIOUR_TYPES.HOME_ENTER);
+        BehaviourUtil.enactBehaviourInSphere(this.store, enteringSphereId, BEHAVIOUR_TYPES.HOME_ENTER);
       }
       else {
         LOG.info('LocationHandler: DO NOT TRIGGER ENTER HOME EVENT SINCE TIME SINCE LAST SEEN STONE IS ', timeSinceLastCrownstoneWasSeen, ' WHICH IS LESS THAN KEEPALIVE_INTERVAL*1000*1.5 = ', KEEPALIVE_INTERVAL*1000*1.5, ' ms');

@@ -72,21 +72,22 @@ export function request(
       let stopRequest = false;
       let finishedRequest = false;
       // add a timeout for the fetching of data.
-      Scheduler.scheduleCallback(() => {
+      let cancelFallbackCallback = Scheduler.scheduleCallback(() => {
           stopRequest = true;
           if (finishedRequest !== true)
-            reject(new Error('Network request failed'))
+            reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed')
         },
       NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
       fetch(CLOUD_ADDRESS + endPoint, requestConfig)
         .catch((connectionError) => {
           if (stopRequest === false) {
-            reject(new Error('Network request failed'));
+            reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed');
           }
         })
         .then((response) => {
           if (stopRequest === false) {
+            cancelFallbackCallback();
             return handleInitialReply(response);
           }
         })

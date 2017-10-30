@@ -12,6 +12,7 @@ import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
 import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
 import {eventBus} from "../../../util/EventBus";
 import {KeySyncer} from "./modelSyncs/KeySyncer";
+import {Scheduler} from "../../../logic/Scheduler";
 
 
 
@@ -30,13 +31,17 @@ export const sync = {
       return new Promise((resolve, reject) => { resolve() });
     }
 
-    this.__currentlySyncing = true;
-
     let state = store.getState();
     if (!state.user.userId) {
       // do not sync if we're not logged in
       return;
     }
+
+    let cancelFallbackCallback = Scheduler.scheduleBackgroundCallback(() => {
+      if (this.__currentlySyncing === true) {
+        this.__currentlySyncing = false;
+      }
+    }, 30000);
 
     LOG.cloud("SYNC: Start Syncing.");
 
@@ -131,6 +136,7 @@ export const sync = {
       })
       .then(() => {
         this.__currentlySyncing = false;
+        cancelFallbackCallback();
       })
       .catch((err) => {
         LOG.info("SYNC: Failed... Could dispatch ", actions.length, " actions!", actions);
@@ -143,6 +149,7 @@ export const sync = {
         // }
 
         this.__currentlySyncing = false;
+        cancelFallbackCallback();
         LOG.error("SYNC: error during sync:", err);
         throw err;
       })

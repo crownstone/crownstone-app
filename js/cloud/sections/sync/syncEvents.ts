@@ -2,6 +2,7 @@ import { CLOUD } from '../../cloudAPI'
 import { Platform } from 'react-native'
 import {transferSchedules} from "../../transferData/transferSchedules";
 import {LOG} from "../../../logging/Log";
+const RNFS = require('react-native-fs');
 
 /**
  * @param store
@@ -104,11 +105,21 @@ const handleSpecial = function(state, events, actions) {
           success();
         }
         else {
-          CLOUD.uploadProfileImage(state.user.picture)
-            .then(() => { success() })
-            .catch((err) => {
-              LOG.error("syncEvents Special: Could not upload image to cloud", err);
-            });
+          promises.push(
+            RNFS.exists(state.user.picture)
+              .then((fileExists) => {
+                if (fileExists === false) {
+                  success();
+                }
+                else {
+                  return CLOUD.uploadProfileImage(state.user.picture)
+                }
+              })
+              .then(() => { success() })
+              .catch((err) => {
+                LOG.error("syncEvents Special: Could not upload image to cloud", err);
+              })
+          )
         }
         break;
 

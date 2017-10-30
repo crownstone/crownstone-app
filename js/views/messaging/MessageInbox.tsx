@@ -110,84 +110,103 @@ export class MessageInbox extends Component<any, any> {
   render() {
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
+    let messageExplanationStyle = {
+      color: colors.green.hex,
+      textAlign: 'center',
+      paddingLeft: 30,
+      backgroundColor:"transparent",
+      paddingRight: 30,
+      fontWeight: 'bold',
+      fontStyle:'italic'
+    };
+
 
     if (activeSphere && state.spheres[activeSphere]) {
-      let iconSize = 0.14*screenHeight;
-      let items = this._getMessages();
 
-      let iconButton = (
-        <TouchableOpacity
-          onPress={() => { Actions.messageAdd({ sphereId: activeSphere }); }}
-        >
-          <IconButton
-            name="ios-mail"
-            size={iconSize*0.85}
-            color="#fff"
-            addIcon={true}
-            buttonSize={iconSize}
-            buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
-          />
-        </TouchableOpacity>
-      );
+      let stonesAvailable = Object.keys(state.spheres[activeSphere].stones).length > 0;
+      if (stonesAvailable) {
+        let iconSize = 0.14*screenHeight;
+        let items = this._getMessages();
 
-      let headerText = <Text style={textStyle.specification}>{'You can leave messages in a Sphere or room for your friends to find!'}</Text>;
+        let iconButton = (
+          <TouchableOpacity
+            onPress={() => { Actions.messageAdd({ sphereId: activeSphere }); }}
+          >
+            <IconButton
+              name="ios-mail"
+              size={iconSize*0.85}
+              color="#fff"
+              addIcon={true}
+              buttonSize={iconSize}
+              buttonStyle={{backgroundColor:colors.csBlue.hex, borderRadius: 0.2*iconSize}}
+            />
+          </TouchableOpacity>
+        );
 
-      let scrollView;
-      if (items.length > 0) {
-        scrollView = (
-          <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
-            <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
-              <View style={{height: 0.3*iconSize}} />
-              { headerText }
-              <View style={{height: 0.4*iconSize}} />
-              { iconButton }
-              <View style={{height: 0.1*iconSize}} />
-              <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
-              <View style={{height: 0.4*iconSize}} />
-            </View>
-          </ScrollView>
+        let headerText = <Text style={textStyle.specification}>{'You can leave messages in a Sphere or room for your friends to find!'}</Text>;
+
+        let scrollView;
+        if (items.length > 0) {
+          scrollView = (
+            <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
+              <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
+                <View style={{height: 0.3*iconSize}} />
+                { headerText }
+                <View style={{height: 0.4*iconSize}} />
+                { iconButton }
+                <View style={{height: 0.1*iconSize}} />
+                <ListEditableItems key="empty" items={items} style={{width:screenWidth}} />
+                <View style={{height: 0.4*iconSize}} />
+              </View>
+            </ScrollView>
+          );
+        }
+        else {
+          scrollView = (
+            <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
+              <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
+                <View style={{height: 0.3*iconSize}} />
+                { headerText }
+                <View style={{height: 0.4*iconSize}} />
+                { iconButton }
+                <View style={{height: 0.6*iconSize}} />
+                <Text style={messageExplanationStyle}>
+                  Tap the envelope icon to create a new message!
+                </Text>
+                <View style={{flex:2}} />
+              </View>
+            </ScrollView>
+          );
+        }
+
+        return (
+          <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
+            <TopBar title={"Messages in " + state.spheres[activeSphere].config.name}/>
+            <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+            { scrollView }
+          </Background>
         );
       }
       else {
-        scrollView = (
-          <ScrollView style={{height: availableScreenHeight, width: screenWidth}}>
-            <View style={{flex:1, minHeight: availableScreenHeight,  width: screenWidth, alignItems:'center'}}>
-              <View style={{height: 0.3*iconSize}} />
-              { headerText }
-              <View style={{height: 0.4*iconSize}} />
-              { iconButton }
-              <View style={{height: 0.6*iconSize}} />
-              <Text style={{
-                color: colors.green.hex,
-                textAlign: 'center',
-                paddingLeft: 30,
-                backgroundColor:"transparent",
-                paddingRight: 30,
-                fontWeight: 'bold',
-                fontStyle:'italic'
-              }}>
-                Tap the envelope icon to create a new message!
-              </Text>
-              <View style={{flex:2}} />
-            </View>
-          </ScrollView>
+        return (
+          <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
+            <TopBar title={"Messages"} />
+            <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+            <View style={{flex:1}} />
+            <Text style={messageExplanationStyle}>Add some Crownstones to use messages!</Text>
+            <View style={{flex:1}} />
+          </Background>
         );
       }
-
-      return (
-        <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
-          <TopBar title={"Messages in " + state.spheres[activeSphere].config.name}/>
-          <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
-          { scrollView }
-        </Background>
-      )
     }
     else {
       return (
         <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
           <TopBar title={"Messages"} />
           <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
-          <Text style={{color:"white"}}>No Sphere....</Text>
+          <View style={{flex:1}} />
+          <Text style={messageExplanationStyle}>Add a Sphere to use messages!</Text>
+          <View style={{flex:1}} />
         </Background>
       );
     }
