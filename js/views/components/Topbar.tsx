@@ -34,19 +34,28 @@ let barHeight = topBarHeight - statusBarHeight;
 class TopBarAndroid extends Component<any, any> {
   _getLeftContent() {
     if (this.props.showHamburgerMenu === true) {
-      if (this.props.leftItem && this.props.alternateLeftItem === true) {
+      if (this.props.leftItem && this.props.alternateLeftItem === true || (this.props.hamburgerIconAlternationItems && this.props.hamburgerIconAlternationItems.length > 0)) {
+        let items = [
+          <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
+            <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
+          </View>
+        ];
+
+        if (this.props.leftItem && this.props.alternateLeftItem) {
+          items.push(this.props.leftItem);
+        }
+
+        if (this.props.hamburgerIconAlternationItems && this.props.hamburgerIconAlternationItems.length > 0) {
+          this.props.hamburgerIconAlternationItems.forEach((altItem) => { items.push(altItem); })
+        }
+
         return (
           <TouchableOpacity onPress={() => {Actions.refresh({key: 'drawer', open: true, viewProps: this.props})}} style={[topBarStyle.topBarLeftTouch]}>
             <AlternatingContent
               style={[topBarStyle.topBarLeftTouch,{paddingLeft:0}]}
-              fadeDuration={500}
-              switchDuration={2000}
-              contentArray={[
-                this.props.leftItem,
-                <View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
-                  <Icon name="md-menu" size={27} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
-                </View>
-              ]}
+              fadeDuration={ 500 }
+              switchDuration={ 2000 }
+              contentArray={ items }
             />
           </TouchableOpacity>
         )

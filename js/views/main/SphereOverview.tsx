@@ -44,12 +44,12 @@ export class SphereOverview extends Component<any, any> {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-
       if (change.changeSpheres || change.updateActiveSphere) {
         this._setActiveSphere();
       }
 
       if (
+        change.changeMessageState   ||
         change.changeAppSettings    ||
         change.changeSphereState    ||
         change.changeSphereConfig   ||
@@ -108,27 +108,29 @@ export class SphereOverview extends Component<any, any> {
     let blockAddButton = false;
     let noStones = true;
     let noRooms = true;
-    let activeSphere = state.app.activeSphere;
+    let activeSphereId = state.app.activeSphere;
     let background = this.props.backgrounds.main;
 
 
     if (noSpheres === false) {
       // fallback: should not be required
-      if (!activeSphere) {
-        activeSphere = Object.keys(state.spheres)[0];
+      if (!activeSphereId) {
+        activeSphereId = Object.keys(state.spheres)[0];
       }
 
+      let activeSphere = state.spheres[activeSphereId];
+
       // todo: only do this on change
-      let sphereIsPresent = state.spheres[activeSphere].config.present;
+      let sphereIsPresent = activeSphere.config.present;
 
       // are there enough in total?
-      let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state,activeSphere);
+      let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state,activeSphereId);
 
       // do we need more fingerprints?
-      let requiresFingerprints = requireMoreFingerprints(state, activeSphere);
+      let requiresFingerprints = requireMoreFingerprints(state, activeSphereId);
 
-      noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length    : 0) == 0;
-      noRooms  = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
+      noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
+      noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
       if (sphereIsPresent || seeStonesInSetupMode || seeStonesInDFUMode || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
@@ -138,34 +140,36 @@ export class SphereOverview extends Component<any, any> {
         background = this.props.backgrounds.mainRemoteNotConnected;
       }
 
-      let spherePermissions = Permissions.inSphere(activeSphere);
+      let spherePermissions = Permissions.inSphere(activeSphereId);
 
       let showFinalizeIndoorNavigationButton = (
         state.app.indoorLocalizationEnabled        &&
-        spherePermissions.doLocalizationTutorial         &&
+        spherePermissions.doLocalizationTutorial   &&
         viewingRemotely                  === false && // only show this if you're there.
         enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
         (noRooms === true || requiresFingerprints === true)     // Need more fingerprints.
       );
 
-      let showFinalizeIndoorNavigationCallback = () => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms);};
+      let showFinalizeIndoorNavigationCallback = () => { this._finalizeIndoorLocalization(state, activeSphereId, viewingRemotely, noRooms); };
+      let showMailIcon = activeSphere.config.newMessageFound;
 
       return (
         <View>
           <AnimatedBackground hideTopBar={true} image={background}>
             <TopBar
-              title={state.spheres[activeSphere].config.name}
+              title={activeSphere.config.name}
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
               alternateLeftItem={true}
               leftAction={showFinalizeIndoorNavigationCallback}
               rightItem={!noStones && spherePermissions.addRoom && !blockAddButton ? this._getAddRoomIcon() : null}
-              rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
+              rightAction={() => {Actions.roomAdd({sphereId: activeSphereId})}}
               showHamburgerMenu={true}
+              hamburgerIconAlternationItems={showMailIcon ? [this._getMailIcon()] : []}
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
-              <Sphere sphereId={activeSphere} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
-            { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphere} /> : undefined }
+              <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
+            { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
           </AnimatedBackground>
         </View>
       );
@@ -187,6 +191,13 @@ export class SphereOverview extends Component<any, any> {
     }
   }
 
+  _getMailIcon() {
+    return (
+      <View style={{flex: 1, alignItems: 'flex-start', justifyContent: 'center'}}>
+        <Icon name={'md-mail'} size={25} style={{color:colors.white.hex}} />
+      </View>
+    );
+  }
 
   _getAddRoomIcon() {
     // ios props

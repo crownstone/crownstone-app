@@ -145,10 +145,10 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-splash-screen')
     compile project(':react-native-sentry')
     compile project(':bluenet')
     compile project(':localization-lib-android')
-    compile project(':rn-splash-screen')
     compile project(':react-native-image-resizer')
     compile project(':react-native-keep-awake')
     compile project(':react-native-vector-icons')

@@ -12,6 +12,7 @@ import {
 import { AppRouter } from './js/router/Router'
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
+import SplashScreen from 'react-native-splash-screen'
 
 import { config } from './sentrySettings'
 import { Sentry } from 'react-native-sentry';
@@ -25,6 +26,10 @@ if ( global.__DEV__ !== true) {
 class Root extends Component {
   componentWillMount() {
     BackgroundProcessHandler.start();
+  }
+
+  componentDidMount() {
+    SplashScreen.hide();
   }
 
   render() {

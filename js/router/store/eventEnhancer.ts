@@ -198,6 +198,8 @@ function checkAction(action, affectedIds) {
     case "CLEAR_DEVICE_DETAILS":
     case "REMOVE_DEVICE":
       eventStatus['changeDeviceData'] = affectedIds; break;
+    case "SET_SPHERE_MESSAGE_STATE":
+      eventStatus['changeMessageState'] = affectedIds; break;
     case "ADD_MESSAGE":
     case "ADD_CLOUD_MESSAGE":
       eventStatus['addedMessage'] = affectedIds;

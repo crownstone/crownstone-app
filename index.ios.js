@@ -12,7 +12,7 @@ import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/EventBus'
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
-import SplashScreen from "rn-splash-screen";
+import SplashScreen from 'react-native-splash-screen'
 
 import { config } from './sentrySettings'
 import { Sentry } from 'react-native-sentry';

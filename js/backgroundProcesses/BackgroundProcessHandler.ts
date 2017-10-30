@@ -55,7 +55,7 @@ class BackgroundProcessHandlerClass {
       Bluenet.rerouteEvents();
 
       // if there is a badge number, remove it on opening the app.
-      this._checkBadge();
+      this._clearBadge();
 
       // we first setup the event listeners since these events can be fired by the this.startStore().
 
@@ -288,7 +288,7 @@ class BackgroundProcessHandlerClass {
       if (appState === "active" && this.userLoggedIn) {
         BatterySavingUtil.startNormalUsage();
 
-        this._checkBadge();
+        this._clearBadge();
 
         // if the app is open, update the user locations every 10 seconds
         Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
@@ -303,15 +303,9 @@ class BackgroundProcessHandlerClass {
     });
   }
 
-  _checkBadge() {
-    // in case there was a message, make sure the message badge is lit up!
-    PushNotification.getApplicationIconBadgeNumber((result) => {
-      if (result > 0) {
-        eventBus.emit("newMessage");
-        // if there is a badge number, remove it on opening the app.
-        PushNotification.setApplicationIconBadgeNumber(0);
-      }
-    });
+  _clearBadge() {
+    // if there is a badge number, remove it on opening the app.
+    PushNotification.setApplicationIconBadgeNumber(0);
   }
 
   startBluetoothListener() {

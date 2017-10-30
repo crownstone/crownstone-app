@@ -73,7 +73,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
       <FadeInView
         style={[
           styles.fullscreen,
-          {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center'}
+          {backgroundColor: this.props.backgroundColor || colors.csBlue.rgba(0.2), justifyContent:'center', alignItems:'center', overflow:'hidden'}
         ]}
         height={screenHeight}
         duration={200}

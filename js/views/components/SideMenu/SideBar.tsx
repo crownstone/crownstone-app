@@ -39,13 +39,19 @@ export class SideBar extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe.push(eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeUserData || change.changeSpheres || change.changeStones || change.changeAppSettings) {
+      if  (
+        change.changeUserData     ||
+        change.changeSpheres      ||
+        change.changeStones       ||
+        change.changeMessageState ||
+        change.changeAppSettings
+      ) {
         this.forceUpdate();
       }
     }));
     // trigger a redraw then the sphere is entered/left
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.enterSphere, () => { this.forceUpdate() }));
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.exitSphere,  () => { this.forceUpdate() }));
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.enterSphere, () => { this.forceUpdate(); }));
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.exitSphere,  () => { this.forceUpdate(); }));
   }
 
   componentWillUnmount() {
@@ -64,7 +70,7 @@ export class SideBar extends Component<any, any> {
           icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
           callback: () => {
             this.props.viewProps.actions.finalizeLocalization();
-            setTimeout(() => {this.props.closeCallback();},0)
+            setTimeout(() => {this.props.closeCallback();},0);
           }
         });
       }
@@ -83,10 +89,24 @@ export class SideBar extends Component<any, any> {
     //     setTimeout(() => {this.props.closeCallback();},0)
     //   }
     // });
+
+    let state = this.props.store.getState();
+    let activeSphereId = state.app.activeSphere;
+    let highlight = false;
+    if (activeSphereId) {
+      highlight = state.spheres[activeSphereId].config.newMessageFound
+    }
+
     menuItems.push({
       id: 'messages',
-      label: 'Messages',
-      icon: <Icon name={"ios-mail"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      label: highlight ? '* New Message *' : 'Messages',
+      icon: <Icon
+        name={"ios-mail"}
+        size={ highlight ? 32 : 25}
+        color={highlight ? colors.csOrange.hex : colors.menuBackground.rgba(0.75)}
+        style={{backgroundColor:'transparent', padding:0, margin:0}}
+      />,
+      highlight: highlight,
       callback: () => {
         Actions.messageInbox();
         setTimeout(() => {this.props.closeCallback();},0)
@@ -186,6 +206,17 @@ class MenuTopBar extends Component<any, any> {
 
 class MenuItem extends Component<any, any> {
   render(){
+    let backgroundColor = colors.lightGray.rgba(0.5);
+    let foregroundColor = colors.darkGray.rgba(0.5);
+    let weight = '300';
+    let fontStyle = 'normal';
+
+    if (this.props.highlight) {
+      weight    = 'bold';
+      fontStyle = 'italic';
+    //   backgroundColor = colors.csOrange.rgba(0.5);
+    //   foregroundColor = colors.white.hex;
+    }
     return (
       <TouchableOpacity style={{
         flexDirection:'row',
@@ -195,7 +226,7 @@ class MenuItem extends Component<any, any> {
         width: screenWidth*FACTOR - BLUE_PADDING,
         borderBottomWidth:1,
         borderColor: colors.darkGray.rgba(0.1),
-        backgroundColor: colors.lightGray.rgba(0.5),
+        backgroundColor: backgroundColor,
         alignItems:'center'
       }} onPress={() => {
         this.props.callback();
@@ -204,7 +235,7 @@ class MenuItem extends Component<any, any> {
         <View style={[styles.centered,{width:25, marginRight:10}]}>
         {this.props.icon}
         </View>
-        <Text style={{paddingLeft: 15, fontSize:16, fontWeight: '300', color: colors.darkGray.rgba(0.5)}}>{this.props.label}</Text>
+        <Text style={{paddingLeft: 15, fontSize:16, fontWeight: weight, fontStyle: fontStyle, color: foregroundColor}}>{this.props.label}</Text>
       </TouchableOpacity>
     );
   }

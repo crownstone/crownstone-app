@@ -24,6 +24,7 @@ let defaultSettings = {
     exitDelay: 600,
     latitude: null,
     longitude: null,
+    newMessageFound: false,
     updatedAt: 1,
     lastSeen: 1,
   }
@@ -71,6 +72,14 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         return newState;
       }
       return state;
+    case 'SET_SPHERE_MESSAGE_STATE': {
+      if (action.data) {
+        let newState = {...state};
+        newState.newMessageFound  = update(action.data.newMessageFound, newState.newMessageFound);
+        return newState;
+      }
+      return state;
+    }
     case 'ADD_SPHERE':
     case 'UPDATE_SPHERE_CONFIG':
       if (action.data) {

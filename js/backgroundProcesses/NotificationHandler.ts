@@ -159,38 +159,46 @@ class NotificationParserClass {
 
   handle(messageData) {
     if (messageData && messageData.command) {
-      let state = this.store.getState();
-      switch(messageData.command) {
-        case 'setSwitchStateRemotely':
-          this._handleSetSwitchStateRemotely(messageData, state); break;
-        case 'newMessage':
-          if (messageData.id) {
-            CLOUD.getMessage(messageData.id)
-              .then((result) => {
-                state = this.store.getState();
-                let notified = LocalNotifications._handleNewMessage(messageData, state);
-                if (notified) {
-                  MessageCenter.storeMessage(result);
-                }
-              })
-              .catch((err) => { LOG.error("NotificationParser: Couldn't get message to store", err)})
-          }
-          break;
-      }
+      this._handleRemoteNotifications(messageData);
     }
 
     if (messageData && messageData.type && messageData.source === 'localNotification') {
-      switch (messageData.type) {
-        case 'newMessage':
-          Actions.messageInbox();
+      this._handleLocalNotifications(messageData);
+    }
+  }
 
-          // actually go to the message tab
-          if (Platform.OS === 'ios') {
-            Actions.messages();
-          }
+  _handleLocalNotifications(messageData) {
+    switch (messageData.type) {
+      case 'newMessage':
+        Actions.messageInbox();
 
-          break;
-      }
+        // actually go to the message tab
+        if (Platform.OS === 'ios') {
+          Actions.messages();
+        }
+
+        break;
+    }
+  }
+
+  _handleRemoteNotifications(messageData) {
+    let state = this.store.getState();
+    switch(messageData.command) {
+      case 'setSwitchStateRemotely':
+        this._handleSetSwitchStateRemotely(messageData, state); break;
+      case 'newMessage':
+        if (messageData.id) {
+          CLOUD.getMessage(messageData.id)
+            .then((result) => {
+              state = this.store.getState();
+              let notified = LocalNotifications._handleNewMessage(messageData, state);
+              if (notified) {
+                MessageCenter.storeMessage(result);
+              }
+            })
+            .catch((err) => { LOG.error("NotificationParser: Couldn't get message to store", err)})
+        }
+        break;
     }
   }
 

@@ -48,7 +48,7 @@ export const LocalNotifications = {
             if (message.config.senderId === userId && message.config.content === messageData.content) {
               LOGi.messages("Matched message!");
               if (now - message.config.updatedAt < MESSAGE_SELF_SENT_TIMEOUT || now - message.config.sentAt < MESSAGE_SELF_SENT_TIMEOUT) {
-                LOGi.messages("LocalNotifications: Marking the message as delivered and read because it has been sent < 30 seconds ago:", now - message.config.sentAt, now - message.config.updatedAt)
+                LOGi.messages("LocalNotifications: Marking the message as delivered and read because it has been sent < 30 seconds ago:", now - message.config.sentAt, now - message.config.updatedAt);
                 MessageCenter.deliveredMessage(localSphereId, sphereMessageIds[i]);
                 MessageCenter.readMessage(localSphereId, sphereMessageIds[i]);
                 return;
@@ -58,6 +58,12 @@ export const LocalNotifications = {
               }
             }
           }
+        }
+
+
+        // add a flag that there is a new message in this sphere.
+        if (sphere.config.newMessageFound === false) {
+          MessageCenter.newMessageStateInSphere(localSphereId, true);
         }
 
         if (AppState.currentState !== 'active') {
@@ -101,7 +107,6 @@ export const LocalNotifications = {
             LOG.info("LocalNotifications: on the front, just vibe.");
             // notify the user by vibration that the crownstone will be switched.
             Vibration.vibrate(200, false);
-            eventBus.emit("newMessage");
           }
         }
 

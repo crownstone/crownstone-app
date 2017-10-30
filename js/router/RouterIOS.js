@@ -60,7 +60,7 @@ export class Router_IOS extends Component {
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
                 <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={true} />
               </Scene>
-              <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnEvent="newMessage" initial={false} >
+              <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                 <Scene key="messageInbox"     component={Views.MessageInbox}    hideNavBar={true} />
                 <Scene key="messageAdd"       component={Views.MessageAdd}      hideNavBar={true} />
                 <Scene key="messageThread"    component={Views.MessageThread}   hideNavBar={true} />
@@ -107,22 +107,27 @@ class TabIcon extends Component {
   }
 
   componentDidMount() {
-    if (this.props.badgeOnEvent) {
-      this.unsubscribe = eventBus.on(this.props.badgeOnEvent, (amount) => {
-        if (!this.props.selected) {
-          this.setState({ badge : 1 });
-          Animated.sequence([
-            Animated.timing(this.state.badgeScale,{ toValue: 4, duration: 100 }),
-            Animated.timing(this.state.badgeScale,{ toValue: 1, duration: 150 }),
-          ]).start()
-        }
-      })
-    }
-  }
+    if (this.props.badgeOnMessages) {
+      this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+        let state = this.props.store.getState();
+        let activeSphere = state.app.activeSphere;
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.badge > 0 && nextProps.selected) {
-      this.setState({badge: 0});
+        let change = data.change;
+        if (change.changeMessageState && change.changeMessageState.sphereIds[activeSphere]) {
+          let newMessages = state.spheres[activeSphere].config.newMessageFound;
+
+          if (this.state.badge === 0 && newMessages) {
+            this.setState({ badge : 1 });
+            Animated.sequence([
+              Animated.timing(this.state.badgeScale,{ toValue: 4, duration: 100 }),
+              Animated.timing(this.state.badgeScale,{ toValue: 1, duration: 150 }),
+            ]).start()
+          }
+          if (this.state.badge > 0 && !newMessages) {
+            this.setState({ badge : 0 });
+          }
+        }
+      });
     }
   }
 

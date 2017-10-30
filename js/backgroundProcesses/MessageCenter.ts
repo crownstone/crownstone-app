@@ -1,3 +1,4 @@
+import { AppState }           from "react-native"
 import { LOG }                from "../logging/Log";
 import { NativeBus }          from "../native/libInterface/NativeBus";
 import { CLOUD }              from "../cloud/cloudAPI";
@@ -31,11 +32,11 @@ class MessageCenterClass {
 
   _isMessageEqual(dbMessage, cloudMessage, cloudRecipientIds) {
     if (
-      dbMessage.config.everyoneInSphere === cloudMessage.everyoneInSphere &&
+      dbMessage.config.everyoneInSphere               === cloudMessage.everyoneInSphere &&
       dbMessage.config.everyoneInSphereIncludingOwner === cloudMessage.everyoneInSphereIncludingOwner &&
        (dbMessage.config.content === cloudMessage.content) &&
         (
-          (dbMessage.config.triggerLocationId === null && cloudMessage.triggerLocationId === undefined) ||
+          (!dbMessage.config.triggerLocationId && !cloudMessage.triggerLocationId) ||
           (dbMessage.config.triggerLocationId === MapProvider.cloud2localMap.locations[cloudMessage.triggerLocationId])
         )
       ) {
@@ -67,18 +68,14 @@ class MessageCenterClass {
   }
 
   _findMatchingLocalMessageId(cloudMessage, state, recipientIds = null) {
-    let dbMessageId = null;
-
     if (recipientIds === null) {
       recipientIds = [];
       cloudMessage.recipients.forEach((idObject) => {
         recipientIds.push(idObject.id);
       });
     }
-
     let localSphereId = MapProvider.cloud2localMap.spheres[cloudMessage.sphereId];
     if (!localSphereId) { return null }
-
 
     if (cloudMessage.ownerId === state.user.userId) {
       let dbMessages = state.spheres[localSphereId].messages;
@@ -89,8 +86,7 @@ class MessageCenterClass {
         let dbMessage = dbMessages[dbMessageIds[i]];
         let match = this._isMessageEqual(dbMessage, cloudMessage, recipientIds);
         if (match) {
-          dbMessageId = dbMessageIds[i];
-          break;
+          return dbMessageIds[i];
         }
       }
     }
@@ -203,6 +199,15 @@ class MessageCenterClass {
       });
     }
   }
+
+  newMessageStateInSphere(localSphereId, newMessageReceived : boolean = true) {
+    this._store.dispatch({
+      type: "SET_SPHERE_MESSAGE_STATE",
+      sphereId: localSphereId,
+      data: {newMessageFound: newMessageReceived}
+    });
+  }
+
 
   _enterSphere(localSphereId) {
     if (this._enterSphereInProgress === true) { return; }

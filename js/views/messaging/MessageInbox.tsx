@@ -18,6 +18,7 @@ import {TopBar} from "../components/Topbar";
 import {IconButton} from "../components/IconButton";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {MessageEntry} from "./MessageEntry";
+import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 
 
 export class MessageInbox extends Component<any, any> {
@@ -36,11 +37,21 @@ export class MessageInbox extends Component<any, any> {
     }
     if (activeSphere === null && sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
+      return sphereIds[0];
     }
+
+    return activeSphere;
   }
 
   componentWillMount() {
-    this._setActiveSphere();
+    let activeSphere = this._setActiveSphere();
+    if (activeSphere) {
+      let state = this.props.store.getState();
+      let sphere = state.spheres[activeSphere];
+      if (sphere.config.newMessageFound) {
+        MessageCenter.newMessageStateInSphere(activeSphere, false);
+      }
+    }
   }
 
   componentDidMount() {
@@ -48,11 +59,19 @@ export class MessageInbox extends Component<any, any> {
       let change = data.change;
 
       if (change.changeMessage || change.changeSphereState) {
+        let state = this.props.store.getState();
+        let activeSphere = state.app.activeSphere;
+        if (activeSphere) {
+          let sphere = state.spheres[activeSphere];
+          if (sphere.config.newMessageFound) {
+            MessageCenter.newMessageStateInSphere(activeSphere, false);
+          }
+        }
+
         this.forceUpdate();
       }
     });
   }
-
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
@@ -120,10 +139,10 @@ export class MessageInbox extends Component<any, any> {
       fontStyle:'italic'
     };
 
-
     if (activeSphere && state.spheres[activeSphere]) {
+      let sphere = state.spheres[activeSphere];
 
-      let stonesAvailable = Object.keys(state.spheres[activeSphere].stones).length > 0;
+      let stonesAvailable = Object.keys(sphere.stones).length > 0;
       if (stonesAvailable) {
         let iconSize = 0.14*screenHeight;
         let items = this._getMessages();
@@ -181,7 +200,7 @@ export class MessageInbox extends Component<any, any> {
 
         return (
           <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
-            <TopBar title={"Messages in " + state.spheres[activeSphere].config.name}/>
+            <TopBar title={"Messages in " + sphere.config.name}/>
             <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
             { scrollView }
           </Background>

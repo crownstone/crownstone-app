@@ -1,4 +1,6 @@
 rootProject.name = 'Crownstone'
+include ':react-native-splash-screen'
+project(':react-native-splash-screen').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-splash-screen/android')
 include ':react-native-sentry'
 project(':react-native-sentry').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sentry/android')
 
@@ -7,8 +9,6 @@ include ':bluenet'
 include ':localization-lib-android'
 include ':dfu'
 project(':dfu').projectDir = new File(rootProject.projectDir, 'Android-DFU-Library/dfu')
-include ':rn-splash-screen'
-project(':rn-splash-screen').projectDir = new File(rootProject.projectDir, '../node_modules/rn-splash-screen/android')
 include ':react-native-vector-icons'
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
 include ':react-native-svg'
