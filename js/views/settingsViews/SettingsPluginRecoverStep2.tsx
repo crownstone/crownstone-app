@@ -118,7 +118,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
             Alert.alert("Crownstone in Setup mode nearby.",
               "We detect a Crownstone in setup mode close by, as well as one in normal mode which is already in your Sphere and a bit farther away (" + description + "). If you want to try to recover this one, move closer to it.",
               [{text:'OK', onPress: defaultAction }],
-              { onDismiss: defaultAction }
+              { cancelable: false }
             );
           }
         }
@@ -160,7 +160,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
               Alert.alert("No unknown Crownstones found.",
                 "We detect a Crownstone that is already in your Sphere (" + description + ") and not very close. If you want to try to recover this one, move closer to it.",
                 [{text:'OK', onPress: defaultAction }],
-                { onDismiss: defaultAction }
+                { cancelable: false }
               );
             }
           }
@@ -173,7 +173,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
               Alert.alert("No Crownstones near.",
                 "We detect a Crownstone but it's not very close by. Please move closer and try again. If you are already holding your phone very close to the Crownstone something may be wrong.",
                 [{text:'OK', onPress: defaultAction }],
-                { onDismiss: defaultAction }
+                { cancelable: false }
               )
             }
           }
@@ -182,14 +182,14 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
           Alert.alert("Recovery might not be needed.",
             "We can not find a recoverable Crownstone in range, though there is a Crownstone in setup mode close by. Maybe the Crownstone has already been recovered or set to factory defaults? Try adding it to your Sphere!",
             [{text:'OK', onPress: defaultAction }],
-            { onDismiss: defaultAction }
+            { cancelable: false }
           )
         }
         else {
           Alert.alert("No nearby Crownstones.",
             "We can't find any Crownstones nearby, please follow the steps again to retry. Make sure to hold your phone close!",
             [{text:'OK', onPress: defaultAction }],
-            { onDismiss: defaultAction }
+            { cancelable: false }
           )
         }
       })
@@ -212,7 +212,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
         Alert.alert("Success!",
           "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a new Sphere.",
           [{text:'OK', onPress: defaultAction}],
-          { onDismiss: defaultAction }
+          { cancelable: false }
         )
       })
       .catch((err) => {
@@ -222,14 +222,14 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
           Alert.alert("Not in recovery mode.",
             "You have 20 seconds after you plug the Crownstone in to recover. Please follow the steps again to retry.",
             [{text:'OK', onPress: defaultAction}],
-            { onDismiss: defaultAction }
+            { cancelable: false }
           )
         }
         else {
           Alert.alert("Error during recovery.",
             "Please repeat the process to try again.",
             [{text:'OK', onPress: defaultAction}],
-            { onDismiss: defaultAction }
+            { cancelable: false }
           )
         }
       })
