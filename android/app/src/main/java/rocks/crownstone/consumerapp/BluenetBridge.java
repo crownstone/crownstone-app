@@ -2941,6 +2941,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		setScanMode();
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), _deviceFilter);
 	}
+	private void restartScanner() {
+		_scanService.stopIntervalScan();
+		if (!isScannerIdle()) {
+			setScanMode();
+			_scanService.startIntervalScan(getScanInterval(), getScanPause(), _deviceFilter);
+		}
+	}
 	private int getScanInterval() {
 		if (getScannerState() == ScannerState.HIGH_POWER) {
 			if (Build.VERSION.SDK_INT >= 24) {
