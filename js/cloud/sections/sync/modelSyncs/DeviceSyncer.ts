@@ -34,11 +34,12 @@ export class DeviceSyncer extends SyncingBase {
   }
 
   sync(state) {
-    this._constructLocalIdMap();
     this.userId = state.user.userId;
 
     return this.download()
       .then((devicesInCloud) => {
+        this._constructLocalIdMap();
+
         this.syncDown(state, state.devices, devicesInCloud);
         this.syncUp(state, state.devices, devicesInCloud);
 
