@@ -487,7 +487,8 @@ export class DfuOverlay extends Component<any, any> {
     if (this.state.sphereId && this.state.stoneId) {
       let state = this.props.store.getState();
       let userConfig = state.user;
-      let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
+      let sphere = state.spheres[this.state.sphereId];
+      let stoneConfig = sphere.stones[this.state.stoneId].config;
       updateToVersion = userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion];
     }
 

@@ -5,6 +5,7 @@ import { Bluenet }               from '../native/libInterface/Bluenet';
 import { eventBus }              from './EventBus';
 import { LOG }                   from "../logging/Log";
 import { Actions } from "react-native-router-flux";
+import {NativeBus} from "../native/libInterface/NativeBus";
 
 export const AppUtil = {
   quit: function() {
@@ -44,6 +45,7 @@ export const AppUtil = {
 
     // clear all events listeners, should fix a lot of redraw issues which will crash at logout
     eventBus.clearAllEvents();
+    NativeBus.clearAllEvents();
 
     // sign out of all spheres.
     let state = store.getState();

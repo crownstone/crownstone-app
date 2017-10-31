@@ -97,7 +97,7 @@ function checkAction(action, affectedIds) {
     case 'USER_EXIT_LOCATION':
       eventStatus['userPositionUpdate'] = affectedIds;
       break;
-    case 'CLEAR_USERS':
+    case 'CLEAR_USERS_IN_LOCATION':
       eventStatus['changeUsers'] = affectedIds;
       break;
     case 'UPDATE_LOCATION_FINGERPRINT':

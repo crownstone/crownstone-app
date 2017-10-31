@@ -101,6 +101,8 @@ export class UserLayer extends Component<any, any> {
 
       let change = data.change;
       if (
+        change.changeUsers       ||
+        change.changeSphereUsers ||
         (change.userPositionUpdate && change.userPositionUpdate.sphereIds[this.props.sphereId])
       ) {
         this.forceUpdate();

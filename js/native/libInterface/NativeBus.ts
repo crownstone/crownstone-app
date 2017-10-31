@@ -1,9 +1,12 @@
 import { Alert, NativeModules, NativeAppEventEmitter } from 'react-native';
-import { LOG } from '../../logging/Log'
+import {LOG, LOGi} from '../../logging/Log'
+import { Util } from "../../util/Util";
 
 class NativeBusClass {
   topics: any;
   refMap: any;
+
+  _registeredEvents = {};
 
   constructor() {
     this.topics = {
@@ -47,14 +50,32 @@ class NativeBusClass {
       return;
     }
 
+    // generate unique id
+    let id = Util.getUUID();
+
     // subscribe to native event.
     let subscription = NativeAppEventEmitter.addListener(topic, callback);
 
+    let removeCallback = () => {
+      subscription.remove();
+      this._registeredEvents[id] = undefined;
+      delete this._registeredEvents[id];
+    };
+
+    this._registeredEvents[id] = removeCallback;
 
     // return unsubscribe function.
-    return () => {
-      subscription.remove();
-    };
+    return removeCallback;
+  }
+
+  clearAllEvents() {
+    LOGi.info("Clearing all native event listeners.");
+    let keys = Object.keys(this._registeredEvents);
+    keys.forEach((key) => {
+      if (typeof this._registeredEvents[key] === 'function') {
+        this._registeredEvents[key]();
+      }
+    });
   }
 }
 

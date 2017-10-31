@@ -5,7 +5,8 @@ import { LOG } from '../../logging/Log'
 import { Util } from '../../util/Util'
 import { eventBus } from '../../util/EventBus'
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig'
-import {DfuStateHandler} from "../firmware/DfuStateHandler";
+import { DfuStateHandler } from "../firmware/DfuStateHandler";
+import { LOG_LEVEL } from "../../logging/LogLevels";
 
 
 let TRIGGER_ID = "RSSI_TRIGGER_FUNCTION";
@@ -91,7 +92,8 @@ class StoneStateHandlerClass {
         type: 'UPDATE_STONE_RSSI',
         sphereId: sphereId,
         stoneId: stoneId,
-        data: { rssi: rssi, lastSeen: new Date().valueOf() }
+        data: { rssi: rssi, lastSeen: new Date().valueOf() },
+        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
       });
     }
 

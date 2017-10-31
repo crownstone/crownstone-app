@@ -15,7 +15,6 @@ let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
 class AdvertisementHandlerClass {
   _initialized : any;
   store : any;
-  state : any;
   stonesInConnectionProcess : any;
   temporaryIgnore  : any;
   temporaryIgnoreTimeout : any;
@@ -135,7 +134,7 @@ class AdvertisementHandlerClass {
 
     // the service data in this advertisement;
     let serviceData : crownstoneServiceData = advertisement.serviceData;
-    let state = MapProvider.state;
+    let state = this.store.getState();
 
     // service data not available
     if (typeof serviceData !== 'object') {

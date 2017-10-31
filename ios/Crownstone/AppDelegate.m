@@ -16,8 +16,8 @@
 #else
 #import "RNSentry.h" // This is used for versions of react < 0.40
 #endif
-#import <RCTSplashScreen/RCTSplashScreen.h>
 #import "Crownstone-Swift.h"
+#import "SplashScreen.h"
 
 
 
@@ -42,7 +42,7 @@ Portal *portal;
   
   appendLogToFile(@" Application starting");
   // Show splash screen (rn-splash-screen)
-  [RCTSplashScreen show:rootView];
+  [SplashScreen show];  // here
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];

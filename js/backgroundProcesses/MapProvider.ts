@@ -37,7 +37,6 @@ class MapProviderClass {
   stoneSphereHandleMap : any = {};
   stoneHandleMap : any = {};
   stoneCIDMap : any = {};
-  state : any = {};
   cloud2localMap : globalIdMap = getGlobalIdMap();
   local2cloudMap : globalIdMap = getGlobalIdMap();
 
@@ -50,16 +49,17 @@ class MapProviderClass {
         let change = data.change;
 
         if (
-          change.changeAppliances ||
-          change.changeUsers ||
-          change.changeLocations ||
-          change.changeFingerprint ||
-          change.changeSphereState ||
-          change.changeSpheres ||
-          change.changeSphereUsers ||
-          change.changeStones ||
+          change.changeAppliances    ||
+          change.changeUsers         ||
+          change.changeLocations     ||
+          change.changeFingerprint   ||
+          change.changeSphereState   ||
+          change.changeSpheres       ||
+          change.changeSphereUsers   ||
+          change.changeStones        ||
           change.changeStoneSchedule ||
-          change.changeDeviceData ||
+          change.changeDeviceData    ||
+          change.updateStoneConfig   ||
           change.changeMessage
         ) {
           this.refreshAll();
@@ -72,10 +72,10 @@ class MapProviderClass {
 
   refreshAll() {
     LOG.info("MapProvider: Refreshing All.");
-    this.state = this._store.getState();
-    this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(    this.state);
-    this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle(this.state);
-    this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(   this.state);
+    let state = this._store.getState();
+    this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(    state);
+    this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle(state);
+    this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(   state);
     this._updateCloudIdMap();
   }
 

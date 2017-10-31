@@ -555,7 +555,7 @@ export const prepareStoreForUser = function(store) {
     let locationIds = Object.keys(locations);
 
     locationIds.forEach((locationId) => {
-      actions.push({type: 'CLEAR_USERS', sphereId: sphereId, locationId: locationId});
+      actions.push({type: 'CLEAR_USERS_IN_LOCATION', sphereId: sphereId, locationId: locationId});
     });
 
     let stones = spheres[sphereId].stones;
