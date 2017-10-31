@@ -2498,18 +2498,25 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				break;
 			}
 			case BLUETOOTH_TURNED_ON:{
+				// [26-10-2017] Got this event, without getting the turned off event.
+				// This lead to scanner not working, since it thought it was already scanning.
+				// Try to fix this by stopping first.
+				restartScanner();
+
 				// If bluetooth is turned on, the scanservice doesn't automatically restart.
-				updateScanner();
+				//updateScanner();
 				_isResettingBluetooth = false;
-				if (_bleTurnedOff) {
+
+				// TODO: Why only when ble was registered to be turned off?
+//				if (_bleTurnedOff) {
 					_bleTurnedOff = false;
 					sendEvent("bleStatus", "poweredOn");
 					// Scanner already starts automatically in BleScanService
 					// But this sets the correct mode
 					if (_scannerState != ScannerState.DISABLED) {
-						startScanningForCrownstones();
+						startScanningForCrownstonesUniqueOnly();
 					}
-				}
+//				}
 				initBluetooth();
 				break;
 			}
