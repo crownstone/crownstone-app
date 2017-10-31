@@ -41,8 +41,6 @@ Portal *portal;
   rootView.backgroundColor = [[UIColor alloc] initWithRed:0.0f green:0.149f blue:0.243f alpha:1];
   
   appendLogToFile(@" Application starting");
-  // Show splash screen (rn-splash-screen)
-  [SplashScreen show];  // here
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
@@ -53,6 +51,8 @@ Portal *portal;
 
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  [SplashScreen show];
   return YES;
 }
 
