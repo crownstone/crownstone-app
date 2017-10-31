@@ -929,25 +929,59 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_bleExt.recover(address, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
-				BleLog.getInstance().LOGi(TAG, "recover success");
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				callback.invoke(retVal);
+				_bleExt.disconnectAndClose(true, new IStatusCallback() {
+					@Override
+					public void onSuccess() {
+						BleLog.getInstance().LOGi(TAG, "recover success");
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", false);
+						callback.invoke(retVal);
+					}
+
+					@Override
+					public void onError(int error) {
+						BleLog.getInstance().LOGi(TAG, "recover success");
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", false);
+						callback.invoke(retVal);
+					}
+				});
 			}
 
 			@Override
-			public void onError(int error) {
+			public void onError(final int error) {
 				BleLog.getInstance().LOGe(TAG, "recover error "+ error);
 //				BleLog.getInstance().LOGd(TAG, Log.getStackTraceString(new Exception()));
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				if (error == BleErrors.ERROR_NOT_IN_RECOVERY_MODE) {
-					retVal.putString("data", "NOT_IN_RECOVERY_MODE");
-				}
-				else {
-					retVal.putString("data", "recover failed: " + error);
-				}
-				callback.invoke(retVal);
+
+				final IStatusCallback disconnectCallBack = new IStatusCallback() {
+					@Override
+					public void onSuccess() {
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", true);
+						if (error == BleErrors.ERROR_NOT_IN_RECOVERY_MODE) {
+							retVal.putString("data", "NOT_IN_RECOVERY_MODE");
+						}
+						else {
+							retVal.putString("data", "recover failed: " + error);
+						}
+						callback.invoke(retVal);
+					}
+
+					@Override
+					public void onError(int error) {
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", true);
+						if (error == BleErrors.ERROR_NOT_IN_RECOVERY_MODE) {
+							retVal.putString("data", "NOT_IN_RECOVERY_MODE");
+						}
+						else {
+							retVal.putString("data", "recover failed: " + error);
+						}
+						callback.invoke(retVal);
+					}
+				};
+
+				_bleExt.disconnectAndClose(true, disconnectCallBack);
 			}
 		});
 	}
