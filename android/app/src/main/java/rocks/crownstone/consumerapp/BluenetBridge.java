@@ -2969,7 +2969,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private int getScanPause() {
 		if (getScannerState() == ScannerState.HIGH_POWER) {
 			if (Build.VERSION.SDK_INT >= 24) {
-				return SCAN_PAUSE_FAST_ANDROID_N;
+//				return SCAN_PAUSE_FAST_ANDROID_N;
+				return 0;
 			}
 			return SCAN_PAUSE_FAST;
 		}
@@ -2990,11 +2991,18 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
  			// Starting from Android 6.0 (API level 23), Android has doze and app standby.
 			// This means that the interval scanner breaks, due to postDelayed() getting deferred.
-			// Balanced has an interval of 5s and a scan window of 2s.
-			_scanService.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+			// Also, starting from Android 7, you are not allowed to turn on scanning very often.
+			if (_scannerState == ScannerState.HIGH_POWER) {
+				_scanService.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
+			}
+			else {
+				// Balanced has an interval of 5s and a scan window of 2s.
+				_scanService.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+			}
 		}
 		else if (Build.VERSION.SDK_INT >= 21) {
-				_scanService.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
+			// Use interval scanner
+			_scanService.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
 		}
 	}
 
