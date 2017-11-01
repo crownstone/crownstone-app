@@ -26,17 +26,18 @@ export class MessageSyncer extends SyncingSphereItemBase {
   }
 
   sync(store) {
-    // used to transform the locationId for the triggerLocationIds
-    this._constructLocalIdMap();
-
     let userInState = store.getState().user;
     this.userId = userInState.userId;
 
     return this.download()
       .then((messagesInCloud) => {
+        // used to transform the locationId for the triggerLocationIds
+        this._constructLocalIdMap();
+
         let messagesInState = this._getLocalData(store);
-        let localMessageIdsSynced = this.syncDown(messagesInState, messagesInCloud);
-        this.syncUp(messagesInState, localMessageIdsSynced);
+        this.syncDown(messagesInState, messagesInCloud);
+
+        // we do NOT sync up.
 
         return Promise.all(this.transferPromises);
       })
@@ -87,47 +88,6 @@ export class MessageSyncer extends SyncingSphereItemBase {
     return this.globalCloudIdMap.locations[cloudId] || null;
   }
 
-  _getCloudLocationId(localId) {
-    if (!localId) { return; }
-    return this.globalLocalIdMap.locations[localId];
-  }
-
-
-  syncUp(messagesInState, localMessageIdsSynced) {
-    let localMessageIds = Object.keys(messagesInState);
-
-    localMessageIds.forEach((messageId) => {
-      let message = messagesInState[messageId];
-      this.syncLocalMessageUp(
-        message,
-        messageId,
-        localMessageIdsSynced[messageId] === true
-      )
-    });
-  }
-
-  syncLocalMessageUp(localMessage, localMessageId, hasSyncedDown = false) {
-    // if the object does not have a cloudId, it does not exist in the cloud but we have it locally.
-    if (!hasSyncedDown) {
-      if (localMessage.config.cloudId) {
-        // messages are not removed once they are received.
-        // this.actions.push({ type: 'REMOVE_MESSAGE', sphereId: this.localSphereId, messageId: localMessageId });
-      }
-      else {
-        // we transform the triggerLocationId since we refer to it with a local Id locally.
-        let localDataForCloud = {...localMessage};
-        localDataForCloud.config['cloudTriggerLocationId'] = this._getCloudLocationId(localMessage.triggerLocationId);
-        this.transferPromises.push(
-          transferMessages.createOnCloud(this.actions, {
-            localId: localMessageId,
-            localSphereId: this.localSphereId,
-            cloudSphereId: this.cloudSphereId,
-            localData: localDataForCloud
-          })
-        );
-      }
-    }
-  }
 
   syncLocalMessageDown(localId, messageInState, message_from_cloud) {
     if (shouldUpdateInCloud(messageInState.config, message_from_cloud)) {

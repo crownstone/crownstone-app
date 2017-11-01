@@ -1021,7 +1021,6 @@ open class BluenetJS: NSObject {
     }
     else {
       GLOBAL_BLUENET!.bluenet.disableBatterySaving()
-
     }
   }
 

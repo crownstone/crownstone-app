@@ -26,10 +26,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
   }
 
   sync(store) {
-    this._constructLocalIdMap();
-
     return this.download()
       .then((stonesInCloud) => {
+        this._constructLocalIdMap();
+
         let stonesInState = this._getLocalData(store);
         let localStoneIdsSynced = this.syncDown(store, stonesInState, stonesInCloud);
         this.syncUp(stonesInState, localStoneIdsSynced);

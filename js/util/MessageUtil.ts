@@ -3,12 +3,15 @@
 import {CLOUD} from "../cloud/cloudAPI";
 import {Util} from "./Util";
 import {LOG} from "../logging/Log";
+import {MapProvider} from "../backgroundProcesses/MapProvider";
 
 export const MessageUtil = {
   uploadMessage: function(store, sphereId, messageId, message, recipients) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[message.triggerLocationId] || message.triggerLocationId;
+
     // upload message to cloud
     CLOUD.forSphere(sphereId).createMessage({
-      triggerLocationId: message.triggerLocationId,
+      triggerLocationId: cloudLocationId,
       triggerEvent: message.triggerEvent,
       content: message.content,
       everyoneInSphere: message.everyoneInSphere,

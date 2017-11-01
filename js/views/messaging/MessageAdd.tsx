@@ -72,7 +72,7 @@ export class MessageAdd extends Component<any, any> {
 
     let everyoneInSphere = this.state.recipients[EVERYONE_IN_SPHERE] === true;
     let everyoneInSphereIncludingOwner = everyoneInSphere && this.state.everyoneInSphereIncludingOwner;
-    let triggerLocationId = this.state.triggerLocationId === ANYWHERE_IN_SPHERE ? null : this.state.triggerLocationId;
+    let localLocationIdToTrigger = this.state.triggerLocationId === ANYWHERE_IN_SPHERE ? null : this.state.triggerLocationId;
     let messageId = Util.getUUID();
 
     this.props.store.dispatch({
@@ -80,7 +80,7 @@ export class MessageAdd extends Component<any, any> {
       sphereId: this.props.sphereId,
       messageId: messageId,
       data: {
-        triggerLocationId: triggerLocationId,
+        triggerLocationId: localLocationIdToTrigger,
         triggerEvent: this.state.triggerEvent,
         content: this.state.messageContent,
         everyoneInSphere: everyoneInSphere,
@@ -94,7 +94,7 @@ export class MessageAdd extends Component<any, any> {
       this.props.store,
       this.props.sphereId,
       messageId,
-      { triggerLocationId: triggerLocationId,
+      { triggerLocationId: localLocationIdToTrigger,
         triggerEvent: this.state.triggerEvent,
         content: this.state.messageContent,
         everyoneInSphere: everyoneInSphere,
