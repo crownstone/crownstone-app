@@ -132,7 +132,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
         this.props.eventBus.emit("hideLoading");
         this.props.eventBus.emit("useTriggers");
       }}], { cancelable: false });
-    }, 10000);
+    }, 15000);
 
 
     // listen to all advertisements
