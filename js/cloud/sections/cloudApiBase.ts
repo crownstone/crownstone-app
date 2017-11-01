@@ -66,8 +66,7 @@ export const cloudApiBase = {
     filename = filename[filename.length-1];
     formData.append('image', {type: 'image/jpeg', name: filename, uri: path });
     options.data = formData;
-
-    return RNFS.exists(options.path)
+    return RNFS.exists(preparePictureURI(options.path, false))
       .then((fileExists) => {
         if (fileExists === false) {
           throw "File does not exist."
@@ -78,6 +77,7 @@ export const cloudApiBase = {
           return this._finalizeRequest(promise, options);
         }
       })
+      .catch((err) => { LOGe.cloud("_uploadImage: failed to check if file exists:", err); })
   },
   _download: function(options, toPath, beginCallback, progressCallback) {
     return download(options, _getId(options.endPoint, this), this._accessToken, toPath, beginCallback, progressCallback)

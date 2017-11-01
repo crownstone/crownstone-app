@@ -16,7 +16,7 @@ const sha1    = require('sha-1');
 const RNFS    = require('react-native-fs');
 const DeviceInfo = require('react-native-device-info');
 
-import { LOG }                                from '../../logging/Log'
+import {LOG, LOGi} from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
 import {emailChecker, getImageFileFromUser, Util} from '../../util/Util'
 import { CLOUD }                              from '../../cloud/cloudAPI'
@@ -212,19 +212,31 @@ export class Login extends Component<any, any> {
   }
   
   checkForRegistrationPictureUpload(userId, filename) {
+    LOGi.info("Login: checkForRegistrationPictureUpload", userId, filename);
     return new Promise((resolve, reject) => {
       let uploadingImage = false;
       
       let handleFiles = (files) => {
         files.forEach((file) => {
+          LOGi.info("Login: check file", file);
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;
             let newPath = Util.getPath(userId + '.jpg');
-            CLOUD.forUser(userId).uploadProfileImage(file)
-              .then(() => {return RNFS.moveFile(file.path, newPath);})
-              .then(() => {resolve(newPath);})
-              .catch((err) => { reject(err); })
+            LOGi.info("Login: new path", newPath);
+            CLOUD.forUser(userId).uploadProfileImage(file.path)
+              .then(() => {
+                LOGi.info("Login: uploadedImage. Now start moving.");
+                return RNFS.moveFile(file.path, newPath);
+              })
+              .then(() => {
+                LOGi.info("Login: moved image.");
+                resolve(newPath);
+              })
+              .catch((err) => {
+                LOGi.error("Login: failed checkForRegistrationPictureUpload", err);
+                reject(err);
+              })
           }
         });
         if (uploadingImage === false) {
@@ -291,12 +303,17 @@ export class Login extends Component<any, any> {
     let imageFilename = getImageFileFromUser(this.state.email.toLowerCase());
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {
-        if (picturePath === null)
+        LOG.info("Login: step 1");
+        if (picturePath === null) {
+          LOG.info("Login: step 1, downloading..");
           return this.downloadImage(userId); // check if there is a picture we can download
-        else
+        }
+        else {
           return picturePath;
+        }
       })
       .then((picturePath) => {
+        LOG.info("Login: step 2");
         store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
@@ -306,11 +323,13 @@ export class Login extends Component<any, any> {
         LOG.debug("Could be a problem downloading profile picture: ", err);
       })
       .then(() => {
+        LOG.info("Login: step 3");
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         return CLOUD.sync(store, false);
       })
       .then(() => {
+        LOG.info("Login: step 4");
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         let state = store.getState();
@@ -333,6 +352,7 @@ export class Login extends Component<any, any> {
 
     Promise.all(promises)
       .then(() => {
+        LOG.info("Login: finished promises");
         this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
 
         // finalize the login due to successful download of data. Enables persistence.

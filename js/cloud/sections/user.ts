@@ -47,7 +47,7 @@ export const user = {
    *
    * @param file {String} --> full path string.
    */
-  uploadProfileImage: function(file) {
+  uploadProfileImage: function(file: string) {
     return this._uploadImage({endPoint:'/users/{id}/profilePic', path:file, type:'body'})
   },
 
