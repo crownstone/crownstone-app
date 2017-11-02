@@ -4,7 +4,7 @@ import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/ColorConverters'
 export const screenWidth = Dimensions.get('window').width;
 
 export const screenHeight = Platform.OS === 'android' ?
-  Dimensions.get('window').height - 25 :  // android includes the top bar in the window height but we cant draw there.
+  Dimensions.get('window').height - 24 :  // android includes the top bar in the window height but we cant draw there.
   Dimensions.get('window').height;
 
 export const tabBarHeight    = Platform.OS === 'android' ? 0  :  50;
