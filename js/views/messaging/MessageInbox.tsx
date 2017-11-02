@@ -58,7 +58,12 @@ export class MessageInbox extends Component<any, any> {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (change.changeMessage || change.changeSphereState) {
+      if (
+        change.changeStones       ||
+        change.changeMessage      ||
+        change.updateActiveSphere ||
+        change.changeSphereState
+      ) {
         let state = this.props.store.getState();
         let activeSphere = state.app.activeSphere;
         if (activeSphere) {
