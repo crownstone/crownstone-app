@@ -93,7 +93,7 @@ export class SideBar extends Component<any, any> {
     let state = this.props.store.getState();
     let activeSphereId = state.app.activeSphere;
     let highlight = false;
-    if (activeSphereId) {
+    if (activeSphereId && state.spheres[activeSphereId]) {
       highlight = state.spheres[activeSphereId].config.newMessageFound
     }
 

@@ -52,6 +52,7 @@ export class RoomAdd extends Component<any, any> {
       label: device.config.name,
       subtext: subtext,
       type: 'checkbar',
+      showAddIcon: true,
       value: this.state.selectedStones[stoneId] === true,
       callback: () => {
         this.state.selectedStones[stoneId] = !this.state.selectedStones[stoneId] === true;
@@ -80,7 +81,7 @@ export class RoomAdd extends Component<any, any> {
     let floatingStoneIds = Object.keys(floatingStones);
     let shownMovingStone = false;
     if (floatingStoneIds.length > 0) {
-      items.push({label:'FLOATING CROWNSTONES', type:'explanation', below:false});
+      items.push({label:'ADD CROWNSTONES TO ROOM', type:'explanation', below:false});
       let nearestId = this._getNearestStone(floatingStoneIds, floatingStones);
       floatingStoneIds.forEach((stoneId) => {
         // check if we have already shown the moving stone

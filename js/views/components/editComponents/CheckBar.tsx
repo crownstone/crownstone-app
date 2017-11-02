@@ -11,6 +11,23 @@ import { styles, colors, screenWidth, barHeight} from '../../styles'
 
 
 export class CheckBar extends Component<any, any> {
+  _getSelectedIcon() {
+    if (this.props.value) {
+      return (
+        <View style={{paddingTop: 3}}>
+          <Icon name="ios-checkmark" size={30} color={colors.iosBlue.hex}/>
+        </View>
+      );
+    }
+    else if (this.props.showAddIcon) {
+      return (
+        <View style={{paddingTop: 3}}>
+          <Icon name="md-add-circle" size={25} color={colors.lightGray.hex}/>
+        </View>
+      );
+    }
+  }
+
   render() {
     let navBarHeight = this.props.barHeight || barHeight;
     if (this.props.largeIcon)
@@ -33,13 +50,7 @@ export class CheckBar extends Component<any, any> {
             {this.props.subtext ? <Text style={{fontSize:12, color:colors.iosBlue.hex}}>{this.props.subtext}</Text> : undefined}
           </View>
           <View style={{flex:1}} />
-          {
-            this.props.value === true ?
-              <View style={{paddingTop:3}}>
-                <Icon name="ios-checkmark" size={30} color={colors.iosBlue.hex} />
-              </View>
-              : undefined
-          }
+          { this._getSelectedIcon() }
         </View>
       </TouchableHighlight>
     );

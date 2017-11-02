@@ -53,9 +53,14 @@ export class UserPicture extends Component<any, any> {
   }
 
   render() {
+    let picture = null;
+    if (this.props.user && this.props.user.data && this.props.user.data.picture) {
+      picture = this.props.user.data.picture;
+    }
+
     return (
       <Animated.View style={{position:'absolute', width: this.props.size, height: this.props.size, top: this.state.y, left: this.state.x, opacity: this.state.opacity}}>
-        <ProfilePicture picture={this.props.user.data.picture} size={this.props.size} />
+        <ProfilePicture picture={picture} size={this.props.size} />
       </Animated.View>
     );
   }
