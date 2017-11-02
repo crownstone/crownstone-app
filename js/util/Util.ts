@@ -263,6 +263,10 @@ export const Util = {
     },
 
     isHigherOrEqual: function(version, compareWithVersion) {
+      if (!version || !compareWithVersion) {
+        return false;
+      }
+
       if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
         return false;
       }
