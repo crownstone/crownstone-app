@@ -929,25 +929,59 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		_bleExt.recover(address, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
-				BleLog.getInstance().LOGi(TAG, "recover success");
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", false);
-				callback.invoke(retVal);
+				_bleExt.disconnectAndClose(true, new IStatusCallback() {
+					@Override
+					public void onSuccess() {
+						BleLog.getInstance().LOGi(TAG, "recover success");
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", false);
+						callback.invoke(retVal);
+					}
+
+					@Override
+					public void onError(int error) {
+						BleLog.getInstance().LOGi(TAG, "recover success");
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", false);
+						callback.invoke(retVal);
+					}
+				});
 			}
 
 			@Override
-			public void onError(int error) {
+			public void onError(final int error) {
 				BleLog.getInstance().LOGe(TAG, "recover error "+ error);
 //				BleLog.getInstance().LOGd(TAG, Log.getStackTraceString(new Exception()));
-				WritableMap retVal = Arguments.createMap();
-				retVal.putBoolean("error", true);
-				if (error == BleErrors.ERROR_NOT_IN_RECOVERY_MODE) {
-					retVal.putString("data", "NOT_IN_RECOVERY_MODE");
-				}
-				else {
-					retVal.putString("data", "recover failed: " + error);
-				}
-				callback.invoke(retVal);
+
+				final IStatusCallback disconnectCallBack = new IStatusCallback() {
+					@Override
+					public void onSuccess() {
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", true);
+						if (error == BleErrors.ERROR_NOT_IN_RECOVERY_MODE) {
+							retVal.putString("data", "NOT_IN_RECOVERY_MODE");
+						}
+						else {
+							retVal.putString("data", "recover failed: " + error);
+						}
+						callback.invoke(retVal);
+					}
+
+					@Override
+					public void onError(int error) {
+						WritableMap retVal = Arguments.createMap();
+						retVal.putBoolean("error", true);
+						if (error == BleErrors.ERROR_NOT_IN_RECOVERY_MODE) {
+							retVal.putString("data", "NOT_IN_RECOVERY_MODE");
+						}
+						else {
+							retVal.putString("data", "recover failed: " + error);
+						}
+						callback.invoke(retVal);
+					}
+				};
+
+				_bleExt.disconnectAndClose(true, disconnectCallBack);
 			}
 		});
 	}
@@ -2464,18 +2498,25 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				break;
 			}
 			case BLUETOOTH_TURNED_ON:{
+				// [26-10-2017] Got this event, without getting the turned off event.
+				// This lead to scanner not working, since it thought it was already scanning.
+				// Try to fix this by stopping first.
+				restartScanner();
+
 				// If bluetooth is turned on, the scanservice doesn't automatically restart.
-				updateScanner();
+				//updateScanner();
 				_isResettingBluetooth = false;
-				if (_bleTurnedOff) {
+
+				// TODO: Why only when ble was registered to be turned off?
+//				if (_bleTurnedOff) {
 					_bleTurnedOff = false;
 					sendEvent("bleStatus", "poweredOn");
 					// Scanner already starts automatically in BleScanService
 					// But this sets the correct mode
 					if (_scannerState != ScannerState.DISABLED) {
-						startScanningForCrownstones();
+						startScanningForCrownstonesUniqueOnly();
 					}
-				}
+//				}
 				initBluetooth();
 				break;
 			}
@@ -2900,6 +2941,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		setScanMode();
 		_scanService.startIntervalScan(getScanInterval(), getScanPause(), _deviceFilter);
 	}
+	private void restartScanner() {
+		_scanService.stopIntervalScan();
+		if (!isScannerIdle()) {
+			setScanMode();
+			_scanService.startIntervalScan(getScanInterval(), getScanPause(), _deviceFilter);
+		}
+	}
 	private int getScanInterval() {
 		if (getScannerState() == ScannerState.HIGH_POWER) {
 			if (Build.VERSION.SDK_INT >= 24) {
@@ -2921,7 +2969,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private int getScanPause() {
 		if (getScannerState() == ScannerState.HIGH_POWER) {
 			if (Build.VERSION.SDK_INT >= 24) {
-				return SCAN_PAUSE_FAST_ANDROID_N;
+//				return SCAN_PAUSE_FAST_ANDROID_N;
+				return 0;
 			}
 			return SCAN_PAUSE_FAST;
 		}
@@ -2942,11 +2991,18 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
  			// Starting from Android 6.0 (API level 23), Android has doze and app standby.
 			// This means that the interval scanner breaks, due to postDelayed() getting deferred.
-			// Balanced has an interval of 5s and a scan window of 2s.
-			_scanService.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+			// Also, starting from Android 7, you are not allowed to turn on scanning very often.
+			if (_scannerState == ScannerState.HIGH_POWER) {
+				_scanService.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
+			}
+			else {
+				// Balanced has an interval of 5s and a scan window of 2s.
+				_scanService.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
+			}
 		}
 		else if (Build.VERSION.SDK_INT >= 21) {
-				_scanService.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
+			// Use interval scanner
+			_scanService.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
 		}
 	}
 
