@@ -8,5 +8,8 @@
     <style name="Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">#4f6b84</item>
     </style>
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
 
 </resources>

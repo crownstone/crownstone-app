@@ -29,7 +29,7 @@ class Root extends Component {
   }
 
   componentDidMount() {
-    SplashScreen.hide();
+    // SplashScreen.hide();
   }
 
   render() {
