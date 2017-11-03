@@ -11,18 +11,9 @@ import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { styles, colors, screenHeight, screenWidth, availableScreenHeight } from '../styles'
 import {eventBus} from "../../util/EventBus";
 import * as Swiper from 'react-native-swiper';
-import { PhysicsBasedSphereUI } from "./WhatsNew/1.10.0/PhysicsBasedSphereUI";
-import { WhatsNew } from "./WhatsNew/1.10.0/WhatsNew";
-import { NewDeviceUI } from "./WhatsNew/1.10.0/NewDeviceUI";
-import { NewDeviceUIGraph } from "./WhatsNew/1.10.0/NewDeviceUIGraph";
-import { NewLocalizationSettings } from "./WhatsNew/1.10.0/NewLocalizationSettings";
-import { NewScheduler } from "./WhatsNew/1.10.0/NewScheduler";
 import { Awesome } from "./WhatsNew/Awesome";
-import {TimezoneScheduler} from "./WhatsNew/1.10.2/TimezoneScheduler";
-import {SyncingSchedules} from "./WhatsNew/1.10.2/SyncingSchedules";
-import {FirmwareUpdateFix} from "./WhatsNew/1.10.2/FirmwareUpdateFix";
-import {AutomaticRecentering} from "./WhatsNew/1.10.2/AutomaticRecentering";
-import {BugsFixediOS} from "./WhatsNew/1.10.2/BugsFixediOS";
+import {SyncingSchedulesToTheCloud} from "./WhatsNew/1.11.0/SyncingSchedulesToTheCloud";
+import {Messages} from "./WhatsNew/1.11.0/Messages";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -52,18 +43,12 @@ export class WhatsNewOverlay extends Component<any, any> {
     let size = {height: height-50, width: width};
 
     if (Platform.OS === 'ios') {
-      content.push(<FirmwareUpdateFix key="FirmwareUpdateFix"  {...size} />);
-      content.push(<SyncingSchedules key="SyncingSchedules"  {...size}/>);
-      content.push(<TimezoneScheduler key="TimezoneScheduler"  {...size}/>);
-      content.push(<AutomaticRecentering key="AutomaticRecentering"  {...size}/>);
-      content.push(<BugsFixediOS key="BugsFixediOS"  {...size}/>);
+      content.push(<Messages key="Messages"  {...size}/>);
+      content.push(<SyncingSchedulesToTheCloud key="SyncingSchedulesToTheCloud"  {...size} />);
     }
     if (Platform.OS === 'android') {
-      content.push(<WhatsNew key="WhatsNew" />);
-      content.push(<PhysicsBasedSphereUI key="PhysicsBasedSphereUI"  {...size}/>);
-      content.push(<NewDeviceUI key="NewDeviceUI"  {...size}/>);
-      content.push(<NewScheduler key="NewScheduler"  {...size}/>);
-      content.push(<NewDeviceUIGraph key="NewDeviceUIGraph"  {...size}/>);
+      content.push(<Messages key="Messages"  {...size}/>);
+      content.push(<SyncingSchedulesToTheCloud key="SyncingSchedulesToTheCloud"  {...size} />);
     }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }} {...size} />);
 
