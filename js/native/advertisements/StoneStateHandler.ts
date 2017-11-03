@@ -10,7 +10,7 @@ import { LOG_LEVEL } from "../../logging/LogLevels";
 
 
 let TRIGGER_ID = "RSSI_TRIGGER_FUNCTION";
-let RSSI_TIMEOUT = 2500;
+let RSSI_TIMEOUT = 5000;
 let RSSI_REFRESH = 1;
 /**
  * This class keeps track of the disability state of the crownstone.
