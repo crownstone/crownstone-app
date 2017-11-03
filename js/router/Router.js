@@ -21,6 +21,7 @@ import { Background }      from '../views/components/Background'
 import { Router_IOS }      from './RouterIOS';
 import { Router_Android }  from './RouterAndroid';
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
+import SplashScreen from 'react-native-splash-screen'
 
 
 export class AppRouter extends Component {
@@ -46,11 +47,17 @@ export class AppRouter extends Component {
   componentWillMount() {
     if (BackgroundProcessHandler.storeInitialized === true) {
       this.setState({storeInitialized: true, loggedIn: BackgroundProcessHandler.userLoggedIn});
+      if (Platform.OS === "android") {
+          SplashScreen.hide();
+      }
     }
     else {
       this.unsubscribe.push(
         eventBus.on('storePrepared', (result) => {
           this.setState({storeInitialized:true, loggedIn: result.userLoggedIn});
+            if (Platform.OS === "android") {
+                SplashScreen.hide();
+            }
         })
       );
     }
