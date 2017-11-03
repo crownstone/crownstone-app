@@ -269,11 +269,26 @@ export class DeviceSyncer extends SyncingBase {
         let cloudLocationId = this._getCloudLocationId(userLocation.locationId);
         let cloudSphereId   = this._getCloudSphereId(userLocation.sphereId);
 
-        this.transferPromises.push(CLOUD.forDevice(deviceId).updateDeviceLocation(cloudLocationId));
-        this.transferPromises.push(CLOUD.forDevice(deviceId).updateDeviceSphere(cloudSphereId));
+        this.transferPromises.push(
+          CLOUD
+            .forDevice(deviceId)
+            .updateDeviceLocation(cloudLocationId)
+            .catch((err) => {
+              LOG.error("DeviceSyncer: Failed to set device location in cloud :userLocation", userLocation, "cloudLocationId:", cloudLocationId, err);
+            })
+        );
+        this.transferPromises.push(
+          CLOUD
+            .forDevice(deviceId)
+            .updateDeviceSphere(cloudSphereId)
+            .catch((err) => {
+              LOG.error("DeviceSyncer: Failed to set device sphere in cloud :userLocation", userLocation, "cloudSphereId:", cloudSphereId, err);
+            })
+        );
       }
     }
   };
+
 
   _findMatchingDeviceInCloud(localDeviceSpecs, devicesInCloud) : matchingSpecs {
     let deviceId = undefined;
@@ -300,6 +315,7 @@ export class DeviceSyncer extends SyncingBase {
 
     return { id: deviceId, address: address, deviceInCloud: matchingDevice };
   }
+
 
   _getInstallationIdFromDevice(installations) {
     if (installations && Array.isArray(installations) && installations.length > 0) {

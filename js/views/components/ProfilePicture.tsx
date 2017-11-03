@@ -20,7 +20,7 @@ export class ProfilePicture extends Component<any, any> {
       let pictureURI = preparePictureURI(this.props.picture);
       let borderWidth = this.props.borderWidth || 0.07*size;
       return (
-        <View style={[this.props.style, {width: size, height: size + (this.props.name ? 15 : 0)}]}>
+        <View style={this.props.style}>
           <Image style={{
             width:size,
             height:size,
@@ -39,22 +39,22 @@ export class ProfilePicture extends Component<any, any> {
     else {
       return (
         <View style={this.props.style}>
-        <View style={[{
-          backgroundColor:'#fff',
-          width:size,
-          height:size,
-          borderRadius:0.5*size,
-          overflow:'hidden',
-          alignItems:'center',
-          justifyContent:'center'
-         }]}>
-          <Icon
-            name={this.props.placeHolderIcon || 'ios-contact'}
-            size={innerSize} color={this.props.color || colors.menuBackground.hex}
-            style={{paddingTop: Platform.OS === 'android' ? 0 : 0.1*size, margin:0}}
-          />
-        </View>
-        {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
+          <View style={[{
+            backgroundColor:'#fff',
+            width:size,
+            height:size,
+            borderRadius:0.5*size,
+            overflow:'hidden',
+            alignItems:'center',
+            justifyContent:'center'
+           }]}>
+            <Icon
+              name={this.props.placeHolderIcon || 'ios-contact'}
+              size={innerSize} color={this.props.color || colors.menuBackground.hex}
+              style={{paddingTop: Platform.OS === 'android' ? 0 : 0.1*size, margin:0}}
+            />
+          </View>
+          {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
         </View>
       );
     }

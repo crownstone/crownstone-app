@@ -6,6 +6,8 @@ import { eventBus }              from './EventBus';
 import { LOG }                   from "../logging/Log";
 import { Actions } from "react-native-router-flux";
 import {NativeBus} from "../native/libInterface/NativeBus";
+import {CLOUD} from "../cloud/cloudAPI";
+import {Util} from "./Util";
 
 export const AppUtil = {
   quit: function() {
@@ -41,6 +43,9 @@ export const AppUtil = {
   _logOut: function(store, gracefulExit) {
     eventBus.emit("showLoading", "Logging out and closing app...");
 
+    // clear position for this device.
+    let state = store.getState();
+    let deviceId = Util.data.getCurrentDeviceId(state);
     Actions.loginSplash();
 
     // clear all events listeners, should fix a lot of redraw issues which will crash at logout
@@ -48,7 +53,6 @@ export const AppUtil = {
     NativeBus.clearAllEvents();
 
     // sign out of all spheres.
-    let state = store.getState();
     let sphereIds = Object.keys(state.spheres);
     sphereIds.forEach((sphereId) => {
       store.dispatch({type: 'SET_SPHERE_STATE', sphereId: sphereId, data: {reachable: false, present: false}});
@@ -56,7 +60,15 @@ export const AppUtil = {
 
     BluenetPromiseWrapper.clearTrackedBeacons().catch(() => {});
     Bluenet.stopScanning();
-    StoreManager.userLogOut()
+    CLOUD.forDevice(deviceId).updateDeviceSphere(null)
+      .catch(() => {})
+      .then(() => {
+        return CLOUD.forDevice(deviceId).updateDeviceLocation(null);
+      })
+      .catch(() => {})
+      .then(() => {
+        return StoreManager.userLogOut()
+      })
       .then(() => {
         LOG.info("Quit app due to logout.");
         gracefulExit();
@@ -65,6 +77,5 @@ export const AppUtil = {
         LOG.error("Could not log user out!", err);
         gracefulExit();
       });
-
   },
 };

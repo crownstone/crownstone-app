@@ -64,7 +64,6 @@ export class SettingsApp extends Component<any, any> {
   _getItems() {
     const store = this.props.store;
     let state = store.getState();
-    let app = state.app;
 
     let items = [];
     items.push({label: "FEATURES", type: 'explanation', below: false});

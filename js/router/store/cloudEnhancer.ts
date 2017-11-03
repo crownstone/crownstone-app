@@ -318,6 +318,7 @@ function handleUserLocationEnter(action, state) {
     let deviceId = Util.data.getCurrentDeviceId(state);
     if (deviceId) {
       CLOUD.forDevice(deviceId).updateDeviceLocation(action.locationId).catch(() => { });
+      CLOUD.forDevice(deviceId).updateDeviceSphere(action.sphereId).catch(() => {});
     }
   }
 }
