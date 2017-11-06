@@ -1,8 +1,6 @@
-
 import { Alert, AppState }       from 'react-native';
 
 import { eventBus }              from "../util/EventBus";
-import { LOG, LogProcessor }     from "../logging/Log";
 import { Bluenet }               from "../native/libInterface/Bluenet";
 import { BluenetPromiseWrapper } from "../native/libInterface/BluenetPromise";
 import { LocationHandler }       from "../native/localization/LocationHandler";
@@ -20,11 +18,22 @@ import { AdvertisementHandler }  from "../native/advertisements/AdvertisementHan
 import { Scheduler }             from "../logic/Scheduler";
 import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
-import { SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
+import {LOG_EXTENDED_TO_FILE, LOG_TO_FILE, SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL} from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
+import { ErrorWatcher } from "./ErrorWatcher";
+import { NotificationHandler, NotificationParser } from "./NotificationHandler";
+import { BatchCommandHandler } from "../logic/BatchCommandHandler";
+import { BatchUploader } from "./BatchUploader";
+import { MessageCenter } from "./MessageCenter";
+import { CloudEventHandler } from "./CloudEventHandler";
+import { Permissions } from "./PermissionManager";
+import {LOG, LOGw} from "../logging/Log";
+import {LogProcessor} from "../logging/LogProcessor";
 
+const PushNotification = require('react-native-push-notification');
+const DeviceInfo = require('react-native-device-info');
 
 const BACKGROUND_SYNC_TRIGGER = 'backgroundSync';
 const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
@@ -34,6 +43,7 @@ class BackgroundProcessHandlerClass {
   userLoggedIn : boolean = false;
   storeInitialized : boolean = false;
   store : any;
+  connectionPopupActive : boolean = false;
 
   constructor() { }
 
@@ -44,6 +54,9 @@ class BackgroundProcessHandlerClass {
       // route the events to React Native
       Bluenet.rerouteEvents();
 
+      // if there is a badge number, remove it on opening the app.
+      this._clearBadge();
+
       // we first setup the event listeners since these events can be fired by the this.startStore().
 
       // when the user is logged in we track spheres and scan for Crownstones
@@ -52,15 +65,42 @@ class BackgroundProcessHandlerClass {
         // clear the temporary data like state and disability of stones so no old data will be shown
         prepareStoreForUser(this.store);
 
-        LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
-        BluenetPromiseWrapper.isReady()
-          .then(() => {
-            Bluenet.startScanningForCrownstonesUniqueOnly()
-          });
+        let state = this.store.getState();
+        if (state.app.indoorLocalizationEnabled === false) {
+          LOG.info("BackgroundProcessHandler: Set background processes to OFF");
+          Bluenet.setBackgroundScanning(false);
+        }
 
-        LocationHandler.trackSpheres();
+        LOG.info("BackgroundProcessHandler: received userLoggedIn event.");
+
+        // disable battery saving (meaning, no BLE scans reach the app)
+        Bluenet.batterySaving(false);
+
+        // start scanning when the BLE manager is ready.
+        BluenetPromiseWrapper.isReady().then(() => {
+          LOG.info("BackgroundProcessHandler: Start Scanning. now.");
+          return Bluenet.startScanningForCrownstonesUniqueOnly();
+        });
+
+        LocationHandler.initializeTracking();
+
+        this.setupLogging();
 
         this.userLoggedIn = true;
+
+      });
+
+      // when the user is logged in we track spheres and scan for Crownstones
+      // This event is triggered on boot by the start store or by the login process.
+      eventBus.on('userLoggedInFinished', () => {
+        LOG.info("BackgroundProcessHandler: received userLoggedInFinished event.");
+        LocationHandler.initializeTracking();
+
+        // if we use this device as a hub, make sure we request permission for notifications.
+        LOG.info("Sync: Requesting notification permissions during Login.");
+        NotificationHandler.request();
+
+        this.showWhatsNew();
       });
 
       // wait for store to be prepared in order to continue.
@@ -78,18 +118,56 @@ class BackgroundProcessHandlerClass {
 
         this.startBluetoothListener();
 
-        this.updateDeviceName();
+        this.updateDeviceDetails();
 
         LocationHandler.applySphereStateFromStore();
 
-        let state = this.store.getState();
-        Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true));
+        Scheduler.scheduleCallback(() => { this.checkErrors(null); }, 15000, 'checkErrors');
+
+        this.setupLogging();
       });
 
       // Create the store from local storage. If there is no local store yet (first open), this is synchronous
       this.startStore();
     }
     this.started = true;
+  }
+
+
+  showWhatsNew() {
+    let state = this.store.getState();
+    if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
+      Scheduler.scheduleCallback(() => { eventBus.emit("showWhatsNew"); }, 100);
+    }
+  }
+
+  setupLogging() {
+    let state = this.store.getState();
+    Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true) || LOG_TO_FILE === true);
+    if ((state.user.logging === true && state.user.developer === true && state.development.log_ble === true) || LOG_EXTENDED_TO_FILE === true) {
+      Bluenet.enableExtendedLogging(true);
+    }
+  }
+
+
+  checkErrors(sphereId = null) {
+    let state = this.store.getState();
+    let presentSphere = sphereId || Util.data.getPresentSphere(state);
+    if (presentSphere && state.spheres[presentSphere]) {
+      let errorsFound = false;
+      let stonesContainingError = [];
+
+      Util.data.callOnStonesInSphere(state, presentSphere, (stoneId, stone) => {
+        if (stone.errors.hasError === true || (stone.errors.advertisementError && stone.errors.obtainedErrors === true)) {
+          errorsFound = true;
+          stonesContainingError.push({sphereId: presentSphere, stoneId: stoneId, stone:stone});
+        }
+      });
+
+      if (errorsFound) {
+        eventBus.emit("showErrorOverlay", stonesContainingError)
+      }
+    }
   }
 
 
@@ -105,6 +183,7 @@ class BackgroundProcessHandlerClass {
     Scheduler.loadCallback(BACKGROUND_USER_SYNC_TRIGGER, () => {
       if (SetupStateHandler.isSetupInProgress() === false) {
         CLOUD.syncUsers(this.store);
+        MessageCenter.checkForMessages();
       }
     });
 
@@ -124,14 +203,18 @@ class BackgroundProcessHandlerClass {
     });
 
     // set the global network error handler.
-    CLOUD.setNetworkErrorHandler((error) => {
-      let defaultAction = () => { eventBus.emit('hideLoading');};
-      Alert.alert(
-        "Connection Problem",
-        "Could not connect to the Cloud. Please check your internet connection.",
-        [{text: 'OK', onPress: defaultAction }],
-        { onDismiss: defaultAction }
-      );
+    CLOUD.setNetworkErrorHandler((err) => {
+      if (this.connectionPopupActive === false) {
+        this.connectionPopupActive = true;
+        let defaultAction = () => { this.connectionPopupActive = false; eventBus.emit('hideLoading');};
+        LOGw.cloud("Could not connect to the cloud.", err);
+        Alert.alert(
+          "Connection Problem",
+          "Could not connect to the Cloud. Please check your internet connection.",
+          [{text: 'OK', onPress: defaultAction }],
+          { onDismiss: defaultAction }
+        );
+      }
     });
   }
 
@@ -139,15 +222,31 @@ class BackgroundProcessHandlerClass {
   /**
    * Update device specs: Since name is user editable, it can change over time. We use this to update the model.
    */
-  updateDeviceName() {
+  updateDeviceDetails() {
     let state = this.store.getState();
     let currentDeviceSpecs = Util.data.getDeviceSpecs(state);
     let deviceInDatabaseId = Util.data.getDeviceIdFromState(state, currentDeviceSpecs.address);
     if (currentDeviceSpecs.address && deviceInDatabaseId) {
       let deviceInDatabase = state.devices[deviceInDatabaseId];
       // if the address matches but the name does not, update the device name in the cloud.
-      if (deviceInDatabase.address === currentDeviceSpecs.address && currentDeviceSpecs.name != deviceInDatabase.name) {
-        this.store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {name: currentDeviceSpecs.name}})
+      if (deviceInDatabase.address === currentDeviceSpecs.address && 
+        (currentDeviceSpecs.name != deviceInDatabase.name) || 
+        (currentDeviceSpecs.os != deviceInDatabase.os) || 
+        (currentDeviceSpecs.userAgent != deviceInDatabase.userAgent) || 
+        (currentDeviceSpecs.deviceType != deviceInDatabase.deviceType) || 
+        (currentDeviceSpecs.model != deviceInDatabase.model) || 
+        (currentDeviceSpecs.locale != deviceInDatabase.locale) || 
+        (currentDeviceSpecs.description != deviceInDatabase.description))
+        {
+        this.store.dispatch({type: 'UPDATE_DEVICE_CONFIG', deviceId: deviceInDatabaseId, data: {
+          name: currentDeviceSpecs.name,
+          os: currentDeviceSpecs.os,
+          userAgent: currentDeviceSpecs.userAgent,
+          deviceType: currentDeviceSpecs.deviceType,
+          model: currentDeviceSpecs.model,
+          locale: currentDeviceSpecs.locale,
+          description: currentDeviceSpecs.description
+        }})
       }
     }
   }
@@ -161,6 +260,9 @@ class BackgroundProcessHandlerClass {
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
+      // check the state of the crownstone errors and show overlay if needed.
+      this.checkErrors(sphereId);
+
       // do not show popup during setup.
       if (SetupStateHandler.isSetupInProgress() === true) {
         return;
@@ -174,19 +276,26 @@ class BackgroundProcessHandlerClass {
       }
     });
 
+    // check errors if we obtained something from the advertisements.
+    eventBus.on("checkErrors", () => {
+      this.checkErrors();
+    });
+
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);
       // in the foreground: start scanning!
       if (appState === "active" && this.userLoggedIn) {
-        BatterySavingUtil.scanOnlyIfNeeded();
+        BatterySavingUtil.startNormalUsage();
+
+        this._clearBadge();
 
         // if the app is open, update the user locations every 10 seconds
         Scheduler.resumeTrigger(BACKGROUND_USER_SYNC_TRIGGER);
       }
-      else {
+      else if (appState === 'background') {
         // in the background: stop scanning to save battery!
-        BatterySavingUtil.stopScanningIfPossible();
+        BatterySavingUtil.startBatterySaving();
 
         // remove the user sync so it won't use battery in the background
         Scheduler.pauseTrigger(BACKGROUND_USER_SYNC_TRIGGER);
@@ -194,11 +303,16 @@ class BackgroundProcessHandlerClass {
     });
   }
 
+  _clearBadge() {
+    // if there is a badge number, remove it on opening the app.
+    PushNotification.setApplicationIconBadgeNumber(0);
+  }
+
   startBluetoothListener() {
     // Ensure we start scanning when the bluetooth module is powered on.
     NativeBus.on(NativeBus.topics.bleStatus, (status) => {
       if (this.userLoggedIn && status === 'poweredOn') {
-        BatterySavingUtil.scanOnlyIfNeeded();
+        BatterySavingUtil.startNormalUsage();
       }
     });
   }
@@ -226,7 +340,7 @@ class BackgroundProcessHandlerClass {
     if (state.user.accessToken !== null) {
       // in the background we check if we're authenticated, if not we log out.
       CLOUD.setAccess(state.user.accessToken);
-      CLOUD.forUser(state.user.userId).getUserData({background:true})
+      CLOUD.forUser(state.user.userId).getUserData()
         .catch((err) => {
           if (err.status === 401) {
             LOG.warn("BackgroundProcessHandler: Could not verify user, attempting to login again.");
@@ -256,6 +370,9 @@ class BackgroundProcessHandlerClass {
           }
         });
       eventBus.emit("userLoggedIn");
+      if (state.user.isNew === false) {
+        eventBus.emit("userLoggedInFinished");
+      }
       eventBus.emit("storePrepared", {userLoggedIn: true});
     }
     else {
@@ -265,18 +382,25 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
-    MapProvider.loadStore(this.store);
-    LogProcessor.loadStore(this.store);
-    LocationHandler.loadStore(this.store);
-    AdvertisementHandler.loadStore(this.store);
-    Scheduler.loadStore(this.store);
-    StoneStateHandler.loadStore(this.store);
-    DfuStateHandler.loadStore(this.store);
-    SetupStateHandler.loadStore(this.store);
-    KeepAliveHandler.loadStore(this.store);
-    FirmwareWatcher.loadStore(this.store);
-    BatterySavingUtil.loadStore(this.store);
-    // NotificationHandler.loadStore(store);
+    BatchCommandHandler._loadStore(this.store);
+    MapProvider._loadStore(this.store);
+    LogProcessor._loadStore(this.store);
+    LocationHandler._loadStore(this.store);
+    AdvertisementHandler._loadStore(this.store);
+    Scheduler._loadStore(this.store);
+    StoneStateHandler._loadStore(this.store);
+    DfuStateHandler._loadStore(this.store);
+    SetupStateHandler._loadStore(this.store);
+    KeepAliveHandler._loadStore(this.store);
+    FirmwareWatcher._loadStore(this.store);
+    BatterySavingUtil._loadStore(this.store);
+    ErrorWatcher._loadStore(this.store);
+    NotificationHandler._loadStore(this.store);
+    NotificationParser._loadStore(this.store);
+    BatchUploader._loadStore(this.store);
+    MessageCenter._loadStore(this.store);
+    CloudEventHandler._loadStore(this.store);
+    Permissions._loadStore(this.store, this.userLoggedIn);
   }
 }
 
@@ -288,7 +412,7 @@ class BackgroundProcessHandlerClass {
  * Finally we create the app identifier
  * @param store
  */
-function refreshDatabase(store) {
+export function refreshDatabase(store) {
   let state = store.getState();
   let refreshActions = [];
   let sphereIds = Object.keys(state.spheres);

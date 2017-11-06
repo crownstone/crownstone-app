@@ -2,10 +2,12 @@ import { Scheduler } from '../../logic/Scheduler';
 import { NativeBus } from '../libInterface/NativeBus';
 import { StoneStateHandler } from './StoneStateHandler'
 import { LOG } from '../../logging/Log'
-import { LOG_BLE } from '../../ExternalConfig'
+import { HARDWARE_ERROR_REPORTING, LOG_BLE } from '../../ExternalConfig'
 import { eventBus }  from '../../util/EventBus'
 import { Util }  from '../../util/Util'
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import { MapProvider } from "../../backgroundProcesses/MapProvider";
+import {LogProcessor} from "../../logging/LogProcessor";
+import {LOG_LEVEL} from "../../logging/LogLevels";
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
 let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
@@ -13,10 +15,10 @@ let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
 class AdvertisementHandlerClass {
   _initialized : any;
   store : any;
-  state : any;
   stonesInConnectionProcess : any;
   temporaryIgnore  : any;
   temporaryIgnoreTimeout : any;
+  listeners = [];
 
   constructor() {
     this._initialized = false;
@@ -26,7 +28,7 @@ class AdvertisementHandlerClass {
     this.temporaryIgnoreTimeout = undefined;
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE AdvertisementHandler', this._initialized);
     if (this._initialized === false) {
       this.store = store;
@@ -43,13 +45,21 @@ class AdvertisementHandlerClass {
         this.stonesInConnectionProcess[handle] = {timeout: Scheduler.scheduleCallback(() => {
           LOG.warn("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");
           this._restoreConnectionTimeout();
-        }, 15000)};
+        }, 15000, 'ignoreProcessAdvertisementsTimeout')};
       });
 
       // sometimes the first event since state change can be wrong, we use this to ignore it.
       eventBus.on("disconnect", () => {
         // wait before listening to the stones again.
-        Scheduler.scheduleCallback(() => {this._restoreConnectionTimeout();}, 1000);
+        Scheduler.scheduleCallback(() => {this._restoreConnectionTimeout();}, 1000,'_restoreConnectionTimeout');
+      });
+
+      // sometimes the first event since state change can be wrong, we use this to ignore it.
+      eventBus.on("databaseChange", (data) => {
+        let change = data.change;
+        if  (change.changeDeveloperData || change.changeUserDeveloperStatus) {
+          this._reloadListeners();
+        }
       });
 
       // sometimes we need to ignore any trigger for switching because we're doing something else.
@@ -59,7 +69,7 @@ class AdvertisementHandlerClass {
           if (this.temporaryIgnore === true) {
             LOG.error("Temporary ignore of triggers has been on for more than 20 seconds!!");
           }
-        }, 20000 );
+        }, 20000, 'temporaryIgnoreTimeout');
       });
       eventBus.on("useTriggers", () => {
         this.temporaryIgnore = false;
@@ -75,24 +85,33 @@ class AdvertisementHandlerClass {
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
       NativeBus.on(NativeBus.topics.advertisement, this.handleEvent.bind(this));
 
-      // Debug logging of all BLE related events.
-      if (LOG_BLE) {
-        LOG.ble("Subscribing to all BLE Topics");
-        NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
-          LOG.ble('setupAdvertisement', data.name, data.rssi, data.handle, data);
-        });
-        NativeBus.on(NativeBus.topics.advertisement, (data) => {
-          LOG.ble('crownstoneId', data.name, data.rssi, data.handle, data);
-        });
-        NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
-          LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor, data);
-        });
-        NativeBus.on(NativeBus.topics.dfuAdvertisement, (data) => {
-          LOG.ble('dfuAdvertisement', data);
-        });
-      }
+      this._reloadListeners();
 
       this._initialized = true;
+    }
+  }
+
+  _reloadListeners() {
+    // Debug logging of all BLE related events.
+    if (LOG_BLE || LogProcessor.log_ble) {
+      LOG.ble("Subscribing to all BLE Topics");
+      if (this.listeners.length > 0) {
+        this.listeners.forEach((unsubscribe) => { unsubscribe(); });
+      }
+      this.listeners = [];
+
+      this.listeners.push(NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
+        LOG.ble('setupAdvertisement', data.name, data.rssi, data.handle, data);
+      }));
+      this.listeners.push(NativeBus.on(NativeBus.topics.advertisement, (data) => {
+        LOG.ble('crownstoneId', data.name, data.rssi, data.handle, data);
+      }));
+      this.listeners.push(NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
+        LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor, data);
+      }));
+      this.listeners.push(NativeBus.on(NativeBus.topics.dfuAdvertisement, (data) => {
+        LOG.ble('dfuAdvertisement', data);
+      }));
     }
   }
 
@@ -115,7 +134,7 @@ class AdvertisementHandlerClass {
 
     // the service data in this advertisement;
     let serviceData : crownstoneServiceData = advertisement.serviceData;
-    let state = MapProvider.state;
+    let state = this.store.getState();
 
     // service data not available
     if (typeof serviceData !== 'object') {
@@ -168,9 +187,32 @@ class AdvertisementHandlerClass {
     // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
     // reset is complete.
     if (stoneFromAdvertisement.config.dfuResetRequired === true) {
-      LOG.debug("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
+      LOG.debug('AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.');
       return;
     }
+
+    // --------------------- Pass errors to error Watcher --------------------------- //
+    if (HARDWARE_ERROR_REPORTING) {
+      if (advertisement.serviceData.hasError === true) {
+        LOG.info("GOT ERROR", advertisement.serviceData);
+        eventBus.emit("errorDetectedInAdvertisement", {
+          advertisement: advertisement,
+          stone: stoneFromServiceData,
+          stoneId: referenceByCrownstoneId.id,
+          sphereId: advertisement.referenceId
+        });
+      }
+      else if (stoneFromServiceData.errors.advertisementError === true) {
+        LOG.info("GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
+        eventBus.emit("errorResolvedInAdvertisement", {
+          advertisement: advertisement,
+          stone: stoneFromServiceData,
+          stoneId: referenceByCrownstoneId.id,
+          sphereId: advertisement.referenceId
+        });
+      }
+    }
+    // --------------------- /handle errors --------------------------- //
 
 
     // --------------------- Update the Mesh Network --------------------------- //
@@ -242,22 +284,18 @@ class AdvertisementHandlerClass {
       measuredUsage = 0;
     }
 
-    // update the state is there is new data, or if the crownstone is disabled.
-    if (stoneFromServiceData.state.state != switchState          ||
-        stoneFromServiceData.state.currentUsage != measuredUsage ||
-        stoneFromServiceData.config.disabled === true ) {
-
-      // sometimes we need to ignore any distance based toggling.
-      if (this.temporaryIgnore !== true) {
-        Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {
-          type: 'UPDATE_STONE_STATE',
-          sphereId: advertisement.referenceId,
-          stoneId: referenceByCrownstoneId.id,
-          data: { state: switchState, currentUsage: measuredUsage },
-          updatedAt: currentTime
-        });
-      }
+    // sometimes we need to ignore any distance based toggling.
+    if (this.temporaryIgnore !== true) {
+      Scheduler.loadOverwritableAction(TRIGGER_ID,  ADVERTISEMENT_PREFIX + advertisement.handle, {
+        type: 'UPDATE_STONE_STATE',
+        sphereId: advertisement.referenceId,
+        stoneId: referenceByCrownstoneId.id,
+        data: { state: switchState, currentUsage: measuredUsage, applianceId: referenceByCrownstoneId.applianceId },
+        updatedAt: currentTime,
+        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+      });
     }
+
 
     // if the advertisement contains the state of a different Crownstone, we update its disability state
     if (serviceData.stateOfExternalCrownstone === true) {
@@ -265,7 +303,7 @@ class AdvertisementHandlerClass {
     }
 
     // we always update the disability (and rssi) of the Crownstone that is broadcasting.
-    StoneStateHandler.receivedAdvertisementUpdate(sphereId, stoneFromAdvertisement, referenceByCrownstoneId.id, advertisement.rssi);
+    StoneStateHandler.receivedAdvertisementUpdate(sphereId, stoneFromAdvertisement, referenceByHandle.id, advertisement.rssi);
   }
 }
 

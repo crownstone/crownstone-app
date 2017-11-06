@@ -2,6 +2,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Animated,
   Alert,
+  BackAndroid,
   Image,
   ScrollView,
   StyleSheet,
@@ -22,19 +23,77 @@ import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
 
 export class AiStart extends Component<any, any> {
+  backButtonFunction : any;
+
   constructor(props) {
     super();
 
     let state = props.store.getState();
     if (Object.keys(state.spheres).length === 0) {
       LOG.error("User does not have a sphere on startup.");
-      (Actions as any).tabBar();
+      Actions.tabBar();
     }
 
+    let possibleNames = [
+      {name:'Amy', gender:'female'},
+      {name:'Anne', gender:'female'},
+      {name:'Bob', gender:'male'},
+      {name:'Clive', gender:'male'},
+      {name:'Crowny', gender:'female'},
+      {name:'Daisy', gender:'female'},
+      {name:'Dobby', gender:'male'},
+      {name:'Dotty', gender:'female'},
+      {name:'Grey', gender:'male'},
+      {name:'Glados', gender:'female'},
+      {name:'Evy', gender:'female'},
+      {name:'Eve', gender:'female'},
+      {name:'HAL', gender:'male'},
+      {name:'James', gender:'male'},
+      {name:'Marvin', gender:'male'},
+      {name:'Nikki', gender:'female'},
+      {name:'Pulli', gender:'female'},
+      {name:'Robby', gender:'male'},
+      {name:'Sam', gender:'female'},
+      {name:'Sam', gender:'male'},
+      {name:'Sky', gender:'female'},
+      {name:'Suzy', gender:'female'},
+      {name:'Rosii', gender:'female'},
+      {name:'Sonny', gender:'male'},
+      {name:'Stanley', gender:'male'},
+      {name:'Tron', gender:'male'},
+      {name:'Wally', gender:'male'},
+      {name:'Watson', gender:'male'},
+    ];
+
+    let defaultIndex = Math.floor(Math.random() * possibleNames.length);
+
     let sphereId = props.sphereId || Object.keys(state.spheres)[0];
-    let name = state.spheres[sphereId].config.aiName || "Rosii";
-    let sex = state.spheres[sphereId].config.aiSex || "female";
+    let name = state.spheres[sphereId].config.aiName || possibleNames[defaultIndex].name;
+    let sex = state.spheres[sphereId].config.aiSex || possibleNames[defaultIndex].gender;
     this.state = {aiName: name, aiSex: sex};
+  }
+
+  componentDidMount() {
+    if (this.props.canGoBack !== true) {
+      this.disableBackButton();
+    }
+  }
+
+  componentWillUnmount() {
+    this.restoreBackButton();
+  }
+
+  disableBackButton() {
+    // Execute callback function and return true to override.
+    this.backButtonFunction = () => { return true; };
+    BackAndroid.addEventListener('hardwareBackPress', this.backButtonFunction);
+  }
+
+  restoreBackButton() {
+    if (typeof this.backButtonFunction === 'function') {
+      BackAndroid.removeEventListener('hardwareBackPress', this.backButtonFunction);
+      this.backButtonFunction = null;
+    }
   }
 
   render() {
@@ -44,10 +103,11 @@ export class AiStart extends Component<any, any> {
     let availableHeight = screenHeight - topBarHeight - 3*16 - 30 - 50 - 50;
 
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.main}>
+      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark}>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={[styles.centered, {flex:1}]}>
           <View style={{flex:1}} />
-          <Icon name="c1-house" size={0.26*availableHeight} color={colors.menuBackground.hex} />
+          <Icon name="c1-house" size={0.26*availableHeight} color={colors.white.hex} />
           <View style={{flex:1}} />
           <Text style={aiStyle.largeText}>{"Welcome " + userFirstName + "!"}</Text>
           <Text style={aiStyle.boldText}>{"I'm your house!"}</Text>
@@ -67,11 +127,11 @@ export class AiStart extends Component<any, any> {
           <View style={{flexDirection:'row', paddingBottom:10}}>
             <View style={{flex:1}} />
             <TouchableOpacity onPress={() => {this.setState({aiSex:'male'});}} style={{justifyContent:'center'}} >
-              <Icon name="c1-male" size={(this.state.aiSex === 'male' ? 0.21 : 0.18) * availableHeight} color={this.state.aiSex === 'male' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
+              <Icon name="c1-male" size={(this.state.aiSex === 'male' ? 0.21 : 0.18) * availableHeight} color={this.state.aiSex === 'male' ? colors.white.hex : colors.white.rgba(0.15)} />
             </TouchableOpacity>
             <View style={{flex:1}} />
             <TouchableOpacity onPress={() => {this.setState({aiSex:'female'});}}  style={{justifyContent:'center'}} >
-              <Icon name="c1-female" size={(this.state.aiSex === 'female' ? 0.21 : 0.18) * availableHeight} color={this.state.aiSex === 'female' ? colors.menuBackground.hex : colors.menuBackground.rgba(0.15)} />
+              <Icon name="c1-female" size={(this.state.aiSex === 'female' ? 0.21 : 0.18) * availableHeight} color={this.state.aiSex === 'female' ? colors.white.hex : colors.white.rgba(0.15)} />
             </TouchableOpacity>
             <View style={{flex:1}} />
           </View>
@@ -86,8 +146,7 @@ export class AiStart extends Component<any, any> {
   }
 
   handleAnswer(userFirstName) {
-    let name = this.state.aiName;
-    name.replace(" ","");
+    let name = this.state.aiName.trim();
 
     if (name.length === 0) {
       Alert.alert("Ehmm " + userFirstName + ".. :(", "I'd really like a name... Could you give me one please?", [{text:"Right Away!"}])
@@ -123,15 +182,16 @@ export class AiStart extends Component<any, any> {
           Actions.pop();
         }
         else {
+          this.restoreBackButton();
           if (Platform.OS === 'android') {
-            (Actions as any).sphereOverview();
+            Actions.sphereOverview();
           }
           else {
-            (Actions as any).tabBar();
+            Actions.tabBar();
           }
         }
       };
-      Alert.alert(title, detail, [{text: button, onPress: defaultAction}], { onDismiss: defaultAction })
+      Alert.alert(title, detail, [{text: button, onPress: defaultAction}], { cancelable: false })
     }
   }
 }
@@ -139,16 +199,16 @@ export class AiStart extends Component<any, any> {
 
 let aiStyle = StyleSheet.create({
   text: {
-    fontSize:16, backgroundColor:'transparent', color:colors.menuBackground.hex, padding:10
+    fontSize:16, backgroundColor:'transparent', color:colors.white.hex, padding:10
   },
   boldText: {
-    fontSize:19, fontWeight:'bold', backgroundColor:'transparent', color:colors.menuBackground.hex, padding:10
+    fontSize:19, fontWeight:'bold', backgroundColor:'transparent', color:colors.white.hex, padding:10
   },
   largeText: {
-    fontSize:30, fontWeight:'bold', backgroundColor:'transparent', color:colors.menuBackground.hex
+    fontSize:30, fontWeight:'bold', backgroundColor:'transparent', color:colors.white.hex
   },
   button: {
-    borderWidth: 2, width:90, height:50, borderRadius:25, borderColor: colors.menuBackground.rgba(0.75), alignItems:'center', justifyContent:'center'
+    borderWidth: 2, width:90, height:50, borderRadius:25, borderColor: colors.white.rgba(0.75), alignItems:'center', justifyContent:'center'
   }
 });
 

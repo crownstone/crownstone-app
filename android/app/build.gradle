@@ -66,6 +66,7 @@ import com.android.build.OutputFile
  */
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-sentry/sentry.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -101,8 +102,8 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 20
-        versionName "0.9.3"
+        versionCode 24 // Uneven numbers for beta releases!
+        versionName "1.11.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -120,8 +121,12 @@ android {
         }
         release {
             minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources false // Only works with minifyEnabled?
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
+            // debuggable false
+            // jniDebuggable false
+            // zipAlignEnabled true
         }
     }
     // applicationVariants are e.g. debug, release
@@ -140,12 +145,14 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-splash-screen')
+    compile project(':react-native-sentry')
     compile project(':bluenet')
     compile project(':localization-lib-android')
-    compile project(':rn-splash-screen')
+    compile project(':react-native-image-resizer')
+    compile project(':react-native-keep-awake')
     compile project(':react-native-vector-icons')
     compile project(':react-native-svg')
-    compile project(':react-native-image-resizer')
     compile project(':react-native-fs')
     compile project(':react-native-device-info')
     compile project(':react-native-camera')

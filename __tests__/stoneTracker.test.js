@@ -4,11 +4,10 @@
 let jest = require('jest');
 jest.mock('react-native-fs', () => {return {};});
 jest.mock('react-native-device-info');
-
 jest.mock('../js/ExternalConfig', () => {
   return {
     RELEASE_MODE_USED: false,
-    PROMISE_MANAGER_FALLBACK_TIMEOUT: 200,
+    PROMISE_MANAGER_FALLBACK_TIMEOUT: 60000,
     LOG_INFO       : false,
     LOG_WARNINGS   : false,
     LOG_ERRORS     : false,
@@ -20,6 +19,7 @@ jest.mock('../js/ExternalConfig', () => {
     LOG_MESH       : false,
     LOG_CLOUD      : false,
     LOG_DEBUG      : false,
+    MESH_ENABLED   : true,
     SCHEDULER_FALLBACK_TICK: 1,
     TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY: 1,
   }
@@ -41,7 +41,22 @@ jest.mock('../js/logic/BatchCommandHandler', () => {
             throw err;
           })
       },
+      loadPriority: (stone, stoneId, sphereId, command, attempts) => {
+        console.log("loadPriority",command)
+        this.__totalLoads++;
+        return new Promise((resolve, reject) => {
+          expect(command.state).toBe(this.__expectation.state);
+          expect(this.__counter <= this.__expectation.times).toBe(true);
+          this.__counter++;
+          resolve();
+        })
+          .catch((err) => {
+            this.__errorState = true;
+            throw err;
+          })
+      },
       execute: () => { this.__totalExecutes++ },
+      executePriority: () => { this.__totalExecutes++ },
       __counter: 0,
       __totalLoads: 0,
       __totalExecutes: 0,
@@ -69,8 +84,6 @@ jest.mock('../js/logic/BatchCommandHandler', () => {
     }
   }
 });
-
-
 jest.mock('../js/native/advertisements/StoneStateHandler', () => {
   return {
     StoneStateHandler: {
@@ -79,6 +92,9 @@ jest.mock('../js/native/advertisements/StoneStateHandler', () => {
   }
 });
 
+jest.mock('PushNotificationIOS', () => ({ }));
+jest.mock('Linking', () => {});
+jest.mock('NetInfo', () => {});
 
 import { StoneTracker } from '../js/native/advertisements/StoneTracker'
 import { addDistanceToRssi } from '../js/util/Util'
@@ -89,6 +105,7 @@ test('stoneTrackerTest', () => {
   let tracker = new StoneTracker({
     getState: () => {
       return {
+        app: {tapToToggleEnabled: false},
         spheres: {
           test_sphereId: {
             stones: {
@@ -141,9 +158,7 @@ test('stoneTrackerTest', () => {
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
       tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-      tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-      tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-      resolve();
+      setTimeout(() => {resolve();},10);
     })
     .then(() => {
       return new Promise((resolve, reject) => {
@@ -156,8 +171,8 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
           tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-          resolve();
-        },2);
+          setTimeout(() => {resolve();},10);
+        },10);
       })
     })
     .then(() => {
@@ -171,8 +186,8 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-          resolve();
-        },2);
+          setTimeout(() => {resolve();},10);
+        },10);
       })
     })
     .then(() => {
@@ -186,8 +201,15 @@ test('stoneTrackerTest', () => {
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
           tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-          resolve();
-        },2);
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
+          setTimeout(() => { resolve();},10);
+        },10);
       })
     })
     .then(() => {
@@ -204,6 +226,7 @@ test('stoneTracker Alternating', () => {
   let tracker = new StoneTracker({
     getState: () => {
       return {
+        app: {tapToToggleEnabled: false},
         spheres: {
           test_sphereId: {
             stones: {
@@ -250,45 +273,66 @@ test('stoneTracker Alternating', () => {
     // test Near Event
     mockBatchCommandHandler.BatchCommandHandler.__mockSetExpectation({times: 1, state: 1});
     tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
-    resolve();
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+    setTimeout(() => {resolve();},100);
   })
     .then(() => {
       return new Promise((resolve, reject) => {
         let inBetweenDistance = addDistanceToRssi(-65, 0.5); // == -67.15
         //in between
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
-        resolve();
+        setTimeout(() => {
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          tracker.iBeaconUpdate(1,2, inBetweenDistance + 1,'test_sphereId');
+          setTimeout(() => {resolve();},10);
+        },10);
       })
     })
     .then(() => {
       return new Promise((resolve, reject) => {
         //away
         mockBatchCommandHandler.BatchCommandHandler.__mockSetExpectation({times: 1, state: 0});
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
-        resolve();
+        setTimeout(() => {
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          tracker.iBeaconUpdate(1,2,-88,'test_sphereId');
+          setTimeout(() => {resolve();},10);
+        },10);
       })
     })
     .then(() => {
       return new Promise((resolve, reject) => {
         //near
         mockBatchCommandHandler.BatchCommandHandler.__mockSetExpectation({times: 1, state: 1});
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        tracker.iBeaconUpdate(1,2,-63,'test_sphereId');
-        resolve();
+        setTimeout(() => {
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          tracker.iBeaconUpdate(1, 2, -63, 'test_sphereId');
+          setTimeout(() => {resolve(); }, 10);
+        },10);
       })
     })
     .then(() => {
@@ -298,8 +342,6 @@ test('stoneTracker Alternating', () => {
         throw "Error in mockBatchCommandHandler after test"
       }
     })
-
-
 });
 
 

@@ -4,6 +4,7 @@ import {
   CameraRoll,
   Image,
   Dimensions,
+  Platform,
   ScrollView,
   TouchableHighlight,
   Text,
@@ -30,6 +31,7 @@ export class CameraRollView extends Component<any, any> {
   }
 
   componentWillUnmount() {
+    this.active = false;
     clearTimeout(this.fetchPicturesTimeout);
   }
 
@@ -37,21 +39,26 @@ export class CameraRollView extends Component<any, any> {
     if (this.active === true) {
       let query = {
         first: 10,
-        groupTypes: 'SavedPhotos',
         assetType: 'Photos',
       };
+      if (Platform.OS === 'ios') {
+        query['groupTypes'] = 'SavedPhotos';
+      }
+
       if (this.pictureIndex !== undefined) {
         query["after"] = this.pictureIndex;
       }
       
       CameraRoll.getPhotos(query).then((data) => {
-        this.pictureIndex = data.page_info.end_cursor;
-        if (data.page_info.has_next_page === true) {
-          this.fetchPictures();
-        }
+        if (this.active === true) {
+          this.pictureIndex = data.page_info.end_cursor;
+          if (data.page_info.has_next_page === true) {
+            this.fetchPictures();
+          }
 
-        let pictures = [...this.state.pictures, ...data.edges];
-        this.setState({pictures: pictures})
+          let pictures = [...this.state.pictures, ...data.edges];
+          this.setState({pictures: pictures})
+        }
       }).catch((err) => {
         if (err.code === "E_UNABLE_TO_LOAD") {
           let defaultActions = () => {Actions.pop();};
@@ -81,10 +88,12 @@ export class CameraRollView extends Component<any, any> {
       this.state.pictures.forEach((edge, index) => {
         images.push((
           <TouchableHighlight key={'image'+index} onPress={() => {
+            clearTimeout(this.fetchPicturesTimeout);
+            this.active = false;
             this.props.selectCallback(edge.node.image.uri);
             Actions.pop();
             }}>
-            <Image source={{uri:edge.node.image.uri}} style={{width:size,height:size}}/>
+            <Image source={{uri: edge.node.image.uri}} style={{width:size,height:size}}/>
           </TouchableHighlight>
         ));
         if (images.length == amountX) {
@@ -105,7 +114,11 @@ export class CameraRollView extends Component<any, any> {
   render() {
     return (
       <View style={[styles.fullscreen, {backgroundColor:'#fff'}]}>
-        <TopBar title="Choose A Picture" left="Cancel" leftAction={() => {this.active = false; Actions.pop();}} notBack={true} />
+        <TopBar title="Choose A Picture" left="Cancel" leftAction={() => {
+          clearTimeout(this.fetchPicturesTimeout);
+          this.active = false;
+          Actions.pop();
+        }} notBack={true} />
         {this.drawPictures()}
       </View>
     );

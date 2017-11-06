@@ -62,25 +62,49 @@ export class TextEditInput extends Component<any, any> {
     }
   }
 
+  _checkForEnter(newValue) {
+    if (this.props.submitOnEnter === true) {
+      if (newValue) {
+        if (newValue.indexOf('\n') !== -1) {
+          setTimeout(() => { (this.refs[this.refName] as any).blur(); },0);
+          return newValue.replace('\n','');
+        }
+      }
+    }
+    return newValue;
+  }
+
   render() {
     return (
       <TextInput
         ref={this.refName}
-        autoCorrect={this.props.autoCorrect || false}
-        onFocus={() => {this.focus();}}
-        style={[{flex:1, position:'relative', top:1, fontSize:16}, this.props.style]}
+        autoFocus={this.props.autoFocus || false}
         autoCapitalize={this.props.secureTextEntry ? undefined : this.props.autoCapitalize || 'words'}
-        value={this.props.value}
-        placeholder={this.props.placeholder || this.props.label}
-        placeholderTextColor={this.props.placeholderTextColor}
-        secureTextEntry={this.props.secureTextEntry}
-        onChangeText={(newValue) => {
-          this.props.callback(newValue);
-        }}
+        autoCorrect={this.props.autoCorrect || false}
         keyboardType={ this.props.keyboardType || 'default'}
+        blurOnSubmit={this.props.blurOnSubmit || (this.props.multiline !== false)}
+        maxLength={this.props.maxLength}
+        multiline={ this.props.multiline }
         onEndEditing={() => { this.blur(); }}
         onBlur={() => { this.blur(); }}
         onSubmitEditing={() => { this.blur(); }}
+        onChangeText={(newValue) => {
+          if (this.props.maxLength && newValue) {
+            if (newValue.length > this.props.maxLength) {
+              newValue = newValue.substr(0, this.props.maxLength)
+            }
+          }
+
+          let updatedValue = this._checkForEnter(newValue);
+          this.props.callback(updatedValue);
+        }}
+        onFocus={() => {this.focus();}}
+        placeholder={this.props.placeholder || this.props.label}
+        placeholderTextColor={this.props.placeholderTextColor}
+        returnKeyType={this.props.returnKeyType}
+        style={[{flex:1, position:'relative', top:1, fontSize:16}, this.props.style]}
+        secureTextEntry={this.props.secureTextEntry}
+        value={this.props.value}
       />
     );
   }

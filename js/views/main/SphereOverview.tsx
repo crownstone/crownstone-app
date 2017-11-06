@@ -5,44 +5,34 @@ import {
   Dimensions,
   Image,
   Platform,
-  PanResponder,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   Text,
   View
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler }                              from '../../native/setup/SetupStateHandler'
-import { Orbs }                                           from '../components/Orbs'
 import { TopBar }                                         from '../components/Topbar'
 import { FinalizeLocalizationIcon }                       from '../components/FinalizeLocalizationIcon'
 import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
-import { getUserLevelInSphere, requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import { requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }                        from '../../logging/Log'
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
+import {styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
+import {Util} from "../../util/Util";
+import {eventBus} from "../../util/EventBus";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 export class SphereOverview extends Component<any, any> {
-  leftValue : number;
-  animating : boolean;
-  sphereIds : any;
-  _activeSphereIndex : number;
-  _panResponder : any;
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
 
   constructor() {
     super();
-    this.state = { presentUsers: {}, opacity: new Animated.Value(0), left: new Animated.Value(0) };
-    this.leftValue = 0;
-    this.animating = false;
-
-    this.sphereIds = [];
-    this._activeSphereIndex = 0;
-    this._panResponder = {};
   }
 
   componentDidMount() {
@@ -54,14 +44,17 @@ export class SphereOverview extends Component<any, any> {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-
       if (change.changeSpheres || change.updateActiveSphere) {
         this._setActiveSphere();
       }
 
       if (
+        change.changeMessageState   ||
+        change.changeAppSettings    ||
         change.changeSphereState    ||
+        change.changeSphereConfig   ||
         change.stoneLocationUpdated ||
+        change.updateSphereUser     ||
         change.updateStoneConfig    ||
         change.updateActiveSphere   ||
         change.updateLocationConfig ||
@@ -85,130 +78,59 @@ export class SphereOverview extends Component<any, any> {
     // set the active sphere if needed and setup the object variables.
     let state = this.props.store.getState();
     let activeSphere = state.app.activeSphere;
-    this._activeSphereIndex = 0;
 
-    this.sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
+    let sphereIds = Object.keys(state.spheres).sort((a,b) => {return state.spheres[b].config.name - state.spheres[a].config.name});
 
     // handle the case where we deleted a sphere that was active.
     if (state.spheres[activeSphere] === undefined) {
       activeSphere = null;
     }
-    if (activeSphere === null && this.sphereIds.length > 0) {
-      this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: this.sphereIds[0]}});
-      this._activeSphereIndex = this.sphereIds.indexOf(this.sphereIds[0]);
-    }
-    else if (activeSphere) {
-      this._activeSphereIndex = this.sphereIds.indexOf(activeSphere);
-    }
-
-    // set the view position to match the active sphere.
-    if (this.leftValue !== -screenWidth*this._activeSphereIndex) {
-      this.setState({left: new Animated.Value(-screenWidth * this._activeSphereIndex)});
-      this.leftValue = -screenWidth * this._activeSphereIndex;
+    if (activeSphere === null && sphereIds.length > 0) {
+      this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
     }
   }
 
   componentWillMount() {
     this._setActiveSphere();
-
-    // configure the pan responder
-    this._panResponder = PanResponder.create({
-      onPanResponderTerminate:              (evt, gestureState) => {},
-      onShouldBlockNativeResponder:         (evt, gestureState) => false,
-      onStartShouldSetPanResponder:         (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture:  (evt, gestureState) => false,
-      onMoveShouldSetPanResponder:          (evt, gestureState) => false,
-      onMoveShouldSetPanResponderCapture:   (evt, gestureState) => false,
-      onPanResponderTerminationRequest:     (evt, gestureState) => true,
-      onPanResponderGrant:                  (evt, gestureState) => {},
-      onPanResponderMove:                   (evt, gestureState) => {
-        if (this.sphereIds.length > 0) {
-          this.leftValue = -screenWidth * this._activeSphereIndex + gestureState.dx;
-          Animated.timing(this.state.left, {
-            toValue: this.leftValue,
-            duration: 0
-          }).start();
-      }},
-      onPanResponderRelease:                (evt, gestureState) => { this._snapToSphere(gestureState.dx); },
-    });
   }
-
-  /**
-   * this piece of code makes sure the movement is finalized neatly.
-   * @param dx
-   * @private
-   */
-  _snapToSphere(dx) {
-    let initialIndex = this._activeSphereIndex;
-    if (Math.abs(dx) > 0.25*screenWidth) {
-      if (dx > 0) {
-        if (this._activeSphereIndex != 0) {
-          this._activeSphereIndex -= 1;
-        }
-      }
-      else {
-        if (this._activeSphereIndex != this.sphereIds.length-1) {
-          this._activeSphereIndex += 1;
-        }
-      }
-    }
-
-    // move view
-    this.leftValue = -screenWidth*this._activeSphereIndex;
-    Animated.timing(this.state.left, {toValue: this.leftValue, duration: 200}).start();
-
-    // only change the database if we change the active sphere
-    if (initialIndex != this._activeSphereIndex) {
-      this.props.store.dispatch({type: "SET_ACTIVE_SPHERE", data: {activeSphere: this.sphereIds[this._activeSphereIndex]}});
-    }
-  }
-
-
-  // experiment
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   // LOG.info("Should component update?",nextProps, nextState)
-  //   return false
-  // }
-
 
   render() {
     LOG.info("RENDERING_OVERVIEW");
+
     const store = this.props.store;
     const state = store.getState();
 
-    // sphere view dimensions
-    let viewWidth = screenWidth*this.sphereIds.length;
-    let viewHeight = screenHeight - topBarHeight - tabBarHeight;
-
-    let noSpheres = this.sphereIds.length == 0;
+    let amountOfSpheres = Object.keys(state.spheres).length;
+    let noSpheres = amountOfSpheres === 0;
     let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStonesInDFUMode = DfuStateHandler.areDfuStonesAvailable();
     let viewingRemotely = true;
     let blockAddButton = false;
     let noStones = true;
     let noRooms = true;
-    let isAdminInCurrentSphere = false;
-    let activeSphere = state.app.activeSphere;
+    let activeSphereId = state.app.activeSphere;
     let background = this.props.backgrounds.main;
+
 
     if (noSpheres === false) {
       // fallback: should not be required
-      if (!activeSphere) {
-        activeSphere = Object.keys(state.spheres)[0];
+      if (!activeSphereId) {
+        activeSphereId = Object.keys(state.spheres)[0];
       }
 
+      let activeSphere = state.spheres[activeSphereId];
+
       // todo: only do this on change
-      let sphereIsPresent = state.spheres[activeSphere].config.present;
+      let sphereIsPresent = activeSphere.config.present;
 
       // are there enough in total?
-      let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state,activeSphere);
+      let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state,activeSphereId);
 
       // do we need more fingerprints?
-      let requiresFingerprints = requireMoreFingerprints(state, activeSphere);
+      let requiresFingerprints = requireMoreFingerprints(state, activeSphereId);
 
-      noStones = (activeSphere ? Object.keys(state.spheres[activeSphere].stones).length : 0) == 0;
-      noRooms = (activeSphere ? Object.keys(state.spheres[activeSphere].locations).length : 0) == 0;
-      isAdminInCurrentSphere = getUserLevelInSphere(state, activeSphere) === 'admin';
+      noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
+      noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
       if (sphereIsPresent || seeStonesInSetupMode || seeStonesInDFUMode || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
@@ -218,50 +140,63 @@ export class SphereOverview extends Component<any, any> {
         background = this.props.backgrounds.mainRemoteNotConnected;
       }
 
+      let spherePermissions = Permissions.inSphere(activeSphereId);
+
       let showFinalizeIndoorNavigationButton = (
-        isAdminInCurrentSphere                     && // only admins can set this up so only show it if you're an admin.
+        state.app.indoorLocalizationEnabled        &&
+        spherePermissions.doLocalizationTutorial   &&
         viewingRemotely                  === false && // only show this if you're there.
         enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
         (noRooms === true || requiresFingerprints === true)     // Need more fingerprints.
       );
 
-      let showFinalizeIndoorNavigationCallback = () => {this._finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms);};
+      let showFinalizeIndoorNavigationCallback = () => { this._finalizeIndoorLocalization(state, activeSphereId, viewingRemotely, noRooms); };
+      let showMailIcon = activeSphere.config.newMessageFound;
 
       return (
-        <View {...this._panResponder.panHandlers}>
+        <View>
           <AnimatedBackground hideTopBar={true} image={background}>
             <TopBar
-              title={state.spheres[activeSphere].config.name + '\'s Sphere'}
+              title={activeSphere.config.name}
               notBack={!showFinalizeIndoorNavigationButton}
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
-              altenateLeftItem={true}
+              alternateLeftItem={true}
               leftAction={showFinalizeIndoorNavigationCallback}
-              rightItem={!noStones && isAdminInCurrentSphere && !blockAddButton ? this._getAddRoomIcon() : null}
-              rightAction={() => {Actions.roomAdd({sphereId: activeSphere})}}
+              rightItem={!noStones && spherePermissions.addRoom && !blockAddButton ? this._getAddRoomIcon() : null}
+              rightAction={() => {Actions.roomAdd({sphereId: activeSphereId})}}
               showHamburgerMenu={true}
+              hamburgerIconAlternationItems={showMailIcon ? [this._getMailIcon()] : []}
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
             />
-            <Animated.View style={{width: viewWidth, height: viewHeight, position:'absolute', top: topBarHeight, left: this.state.left}}>
-              {this._getSpheres()}
-            </Animated.View>
-            <Orbs amount={this.sphereIds.length} active={this._activeSphereIndex} />
+              <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
+            { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
           </AnimatedBackground>
         </View>
       );
     }
     else {
       return (
-        <View {...this._panResponder.panHandlers}>
-          <AnimatedBackground hideTopBar={true} image={background}>
-            <TopBar
-              title={"Hello There!"}
-              showHamburgerMenu={true}
-            />
-            {this._getSpheres()}
-          </AnimatedBackground>
-        </View>
+        <AnimatedBackground hideTopBar={true} image={background}>
+          <TopBar
+            title={"Hello There!"}
+            showHamburgerMenu={true}
+          />
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <Icon name="c1-house" size={150} color={colors.blue.hex}/>
+            <Text style={overviewStyles.mainText}>No Spheres available.</Text>
+            <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
+          </View>
+        </AnimatedBackground>
       );
     }
+  }
+
+  _getMailIcon() {
+    return (
+      <View style={{flex: 1, alignItems: 'flex-start', justifyContent: 'center'}}>
+        <Icon name={'md-mail'} size={25} style={{color:colors.white.hex}} />
+      </View>
+    );
   }
 
   _getAddRoomIcon() {
@@ -278,24 +213,6 @@ export class SphereOverview extends Component<any, any> {
     )
   }
 
-  _getSpheres() {
-    if (this.sphereIds.length > 0) {
-      let spheres = [];
-      this.sphereIds.forEach((sphereId) => {
-        spheres.push(<Sphere key={sphereId} sphereId={sphereId} store={this.props.store} leftPosition={screenWidth*spheres.length} eventBus={this.props.eventBus} />)
-      });
-      return spheres;
-    }
-    else {
-      return (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Icon name="c1-house" size={150} color={colors.blue.hex}/>
-          <Text style={overviewStyles.mainText}>No Spheres available.</Text>
-          <Text style={overviewStyles.subText}>Go into the settings to create your own Sphere or wait to be added to those of others.</Text>
-        </View>
-      )
-    }
-  }
 
   _finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms) {
     if (viewingRemotely) {
@@ -316,7 +233,7 @@ export class SphereOverview extends Component<any, any> {
       this.props.eventBus.emit("showLocalizationSetupStep2", activeSphere);
     }
     else {
-      (Actions as any).roomOverview({
+      Actions.roomOverview({
         sphereId: activeSphere,
         locationId: null,
         title: 'First things first :)',
@@ -326,6 +243,39 @@ export class SphereOverview extends Component<any, any> {
         explanation: 'Tap a Crownstone to see the options, then tap the left icon to select a room!'
       });
     }
+  }
+}
+
+class SphereChangeButton extends Component<any, any> {
+  render() {
+    let outerRadius = 0.11*screenWidth;
+    let size = 0.084*screenWidth;
+    let color = this.props.viewingRemotely === false ? colors.menuBackground.rgba(0.75) : colors.notConnected.hex;
+    return (
+      <TouchableOpacity style={{
+        position:'absolute',
+        top: topBarHeight,
+        left: 0,
+        padding: 6,
+        paddingRight:10,
+        paddingBottom:10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+      }}
+      onPress={() => { eventBus.emit('showSphereSelectionOverlay'); }}>
+        <View style={{
+          width: outerRadius,
+          height:outerRadius,
+          borderRadius:0.5*outerRadius,
+          backgroundColor: colors.white.rgba(0.5),
+          alignItems:'center',
+          justifyContent:'center',
+        }}>
+          <Icon name="c1-sphere" size={size} color={ color } />
+        </View>
+      </TouchableOpacity>
+    );
   }
 }
 
@@ -347,16 +297,19 @@ export const overviewStyles = StyleSheet.create({
     paddingBottom: 0
   },
   bottomText: {
-    position: 'absolute',
-    bottom: 20,
-    width: screenWidth,
-    backgroundColor: 'transparent',
-    textAlign: 'center',
-    color: colors.blue.hex,
-    fontSize: 12,
-    padding: 15,
-    paddingBottom: 0
+    backgroundColor:'transparent',
+    color: colors.darkGreen.hex,
+    fontSize:12,
+    padding:3
   },
+  swipeButtonText: {
+    backgroundColor: 'transparent',
+    fontSize: 40,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }
 });
 
 

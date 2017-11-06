@@ -10,8 +10,10 @@ import {
 import { ButtonBar }         from './editComponents/ButtonBar'
 import { CheckBar }          from './editComponents/CheckBar'
 import { Dropdown }          from './editComponents/Dropdown'
+import { DeletableEntry }    from "./editComponents/DeletableEntry";
 import { EditSpacer }        from './editComponents/EditSpacer'
 import { Explanation }       from './editComponents/Explanation'
+import { LargeExplanation }  from "./editComponents/LargeExplanation";
 import { IconEdit }          from './editComponents/IconEdit'
 import { InfoBar }           from './editComponents/InfoBar'
 import { NavigationBar }     from './editComponents/NavigationBar'
@@ -21,8 +23,9 @@ import { OptionalSwitchBar } from './editComponents/OptionalSwitchBar'
 import { SwitchBar }         from './editComponents/SwitchBar'
 import { TextEditBar }       from './editComponents/TextEditBar'
 import { TimePicker }        from './editComponents/TimePicker'
+import { TextBlob }          from "./editComponents/TextBlob";
 
-import { styles, screenWidth, barHeight, barHeightLarge } from '../styles'
+import {styles, screenWidth, barHeight, barHeightLarge, colors} from '../styles'
 
 /**
  *
@@ -35,6 +38,12 @@ import { styles, screenWidth, barHeight, barHeightLarge } from '../styles'
      --> {label: field label, value: boolean, callback: (newValue) => {}}
 
  * explanation - Text above or below an editable item with padding.
+     --> {label: text, below: boolean, style: style object to overrule explanation style}
+
+ * lightExplanation - Text above or below an editable item with padding.
+     --> {label: text, below: boolean, style: style object to overrule explanation style}
+
+ * largeExplanation - Text above or below an editable item with padding.
      --> {label: text, below: boolean, style: style object to overrule explanation style}
 
  * icon - Trigger to change the icon
@@ -93,8 +102,16 @@ export class EditableItem extends Component<any, any> {
         return <CheckBar barHeight={barHeight} {...this.props} />;
       case 'dropdown':
         return <Dropdown barHeight={barHeight} {...this.props} />;
+      case 'deletableEntry':
+        return <DeletableEntry barHeight={barHeight} {...this.props} />;
       case 'explanation':
         return <Explanation text={this.props.label} {...this.props} />;
+      case 'lightExplanation':
+        return <Explanation text={this.props.label} {...this.props} color={colors.white.hex} />;
+      case 'largeExplanation':
+        return <LargeExplanation text={this.props.label} {...this.props} />;
+      case 'largeLightExplanation':
+        return <LargeExplanation text={this.props.label} {...this.props} color={colors.white.hex} />;
       case 'icon':
         return <IconEdit barHeightLarge={barHeightLarge} {...this.props} />;
       case 'info':
@@ -113,6 +130,8 @@ export class EditableItem extends Component<any, any> {
         return <EditSpacer {...this.props} />;
       case 'textEdit':
         return <TextEditBar barHeight={barHeight} {...this.props} />;
+      case 'textBlob':
+        return <TextBlob barHeight={barHeight} {...this.props} />;
       case 'timePicker':
         return <TimePicker barHeight={barHeight} {...this.props} />;
       default:

@@ -41,21 +41,13 @@ export class RoomExplanation extends Component<any, any> {
     let buttonCallback = undefined;
 
     // callback to go to the floating crownstones. Is used twice
-    let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { (Actions as any).roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
+    let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
 
     // In case we see a crownstone in setup mode:
-    if (explanation === undefined && seeStoneInSetupMode === true) {
-      // in floating Crownstones
-      if (locationId === null) {
-        explanation = "Crownstones in setup mode have a blue icon."
-      }
-      // Go to the crownstone in setup mode.
-      else {
-        // do nothing at the moment
-        // explanation = "Crownstone in setup mode found. Tap here to see it!";
-        // buttonCallback = goToFloatingCrownstonesCallback;
-      }
+    if (explanation === undefined && seeStoneInSetupMode === true && locationId === null) {
+      explanation = "Crownstones in setup mode have a blue icon."
     }
+
     // in case there are no crownstones in the room.
     else if (explanation === undefined && amountOfStonesInRoom === 0) {
       // in floating Crownstones
@@ -83,7 +75,7 @@ export class RoomExplanation extends Component<any, any> {
     else if (buttonCallback !== undefined) {
       return (
         <TouchableOpacity style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}} onPress={buttonCallback}>
-        <View style={{flexDirection: 'column', padding:10}}>
+        <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
           <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
         </View>
       </TouchableOpacity>
@@ -92,7 +84,7 @@ export class RoomExplanation extends Component<any, any> {
     else {
       return (
         <View style={{backgroundColor: colors.white.rgba(0.6), justifyContent: 'center', alignItems:'center', borderBottomWidth :1, borderColor: colors.menuBackground.rgba(0.3)}}>
-          <View style={{flexDirection: 'column', padding:10}}>
+          <View style={{flexDirection: 'column', padding:10, justifyContent: 'center', alignItems:'center', height: 60}}>
             <Text style={{fontSize: 15, fontWeight: '100', textAlign:'center'}}>{explanation}</Text>
           </View>
         </View>

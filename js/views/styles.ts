@@ -4,23 +4,25 @@ import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/ColorConverters'
 export const screenWidth = Dimensions.get('window').width;
 
 export const screenHeight = Platform.OS === 'android' ?
-  Dimensions.get('window').height - 25 :  // android includes the top bar in the window height but we cant draw there.
+  Dimensions.get('window').height - 24 :  // android includes the top bar in the window height but we cant draw there.
   Dimensions.get('window').height;
+
 export const tabBarHeight    = Platform.OS === 'android' ? 0  :  50;
 export const statusBarHeight = Platform.OS === 'android' ? 0  :  20; // Status bar in iOS is 20 high
-export const topBarHeight    = Platform.OS === 'android' ? 52 :  42 + statusBarHeight; // Status bar in iOS is 20 high
+export const topBarHeight    = Platform.OS === 'android' ? 54 :  44 + statusBarHeight; // Status bar in iOS is 20 high
 export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 
 export const pxRatio = PixelRatio.get();
 
-export let barHeight = 42;
+export let barHeight = 46;
 export let barHeightLarge = 80;
 
 export let colors : any = {
+  darkBackground: {hex:'#4f6b84'},
   csBlue: {hex:'#003E52'},
   csOrange: {hex:'#ff8400'},
   menuBackground: {hex:'#00263e'},
-  menuBackgroundDarker: {hex:'#00162C'},
+  menuBackgroundDarker: {hex:'#00172d'},
   menuText: {hex:'#fff'},
   menuTextSelected: {hex:'#2daeff'},
   white: {hex:'#fff'},
@@ -52,7 +54,7 @@ export let colors : any = {
 for (let color in colors) {
   if (colors.hasOwnProperty(color)) {
     colors[color].rgb = hex2rgb(colors[color].hex);
-    colors[color].rgba = (opacity) => {return 'rgba(' + colors[color].rgb.r + ',' + colors[color].rgb.g + ',' + colors[color].rgb.b + ',' + opacity + ')'};
+    colors[color].rgba = (opacity) => { opacity = Math.min(1,opacity); return 'rgba(' + colors[color].rgb.r + ',' + colors[color].rgb.g + ',' + colors[color].rgb.b + ',' + opacity + ')'};
     // colors[color].hsv = rgb2hsv(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
     // colors[color].hsl = rgb2hsl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
     // colors[color].hcl = rgb2hcl(colors[color].rgb.r,colors[color].rgb.g,colors[color].rgb.b);
@@ -113,12 +115,12 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   listTextLarge:{
-    width:(2/3)*screenWidth,
+    flex:10,
     fontSize: 16,
   },
   separator: {
     height: 1,
-    backgroundColor: colors.gray.hex,
+    backgroundColor: colors.black.rgba(0.25),
   },
   topExplanation: {
     paddingTop:20
@@ -142,6 +144,14 @@ export const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
   },
+  buttonAndroid: {
+    width:0.7*screenWidth,
+    height:50,
+    backgroundColor: colors.white.hex,
+    justifyContent:'center',
+    alignItems:'flex-start',
+    paddingLeft: 15
+  },
   joinedButton: {
     width:0.9*screenWidth,
     height:101,
@@ -155,6 +165,16 @@ export const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center',
   },
+  buttonSeparatorAndroid:{
+    width:0.7*screenWidth,
+    height:1,
+    backgroundColor: colors.lightGray.hex,
+  },
+  buttonSeparatorAndroidHighlight:{
+    width:0.7*screenWidth,
+    height:2,
+    backgroundColor: colors.csOrange.hex
+  },
   joinedButtonSeparator:{
     width:0.9*screenWidth,
     height:1,
@@ -164,6 +184,23 @@ export const styles = StyleSheet.create({
     fontSize:16,
     color: colors.blue.hex
   },
+  buttonTextAndroid : {
+    fontSize:15,
+    color: colors.menuBackground.hex
+  },
+  buttonTextTitleAndroid : {
+    fontSize:18,
+    color: colors.white.hex,
+    fontWeight:'bold'
+  },
+  buttonTitleAndroid : {
+    width:0.7*screenWidth,
+    height:55,
+    backgroundColor: colors.menuBackground.hex,
+    justifyContent:'center',
+    alignItems:'flex-start',
+    paddingLeft: 15
+  },
   menuText: {
     fontSize: 16,
     color: colors.menuText.hex,
@@ -172,9 +209,7 @@ export const styles = StyleSheet.create({
     backgroundColor:"transparent",
     color: colors.darkGray2.rgba(1),
     textAlign:'center',
-    fontWeight:'300',
     fontSize: 10,
   }
-
 });
 

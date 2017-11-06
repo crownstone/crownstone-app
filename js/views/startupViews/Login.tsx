@@ -10,12 +10,15 @@ import {
   Text,
   View
 } from 'react-native';
+
 const Actions = require('react-native-router-flux').Actions;
 const sha1    = require('sha-1');
 const RNFS    = require('react-native-fs');
-import { LOG }                                from '../../logging/Log'
+const DeviceInfo = require('react-native-device-info');
+
+import {LOG, LOGi} from '../../logging/Log'
 import { SessionMemory }                      from './SessionMemory'
-import { emailChecker, getImageFileFromUser } from '../../util/Util'
+import {emailChecker, getImageFileFromUser, Util} from '../../util/Util'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'
@@ -54,7 +57,7 @@ export class Login extends Component<any, any> {
       .then(() => {
         SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
-        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Verification Email Sent'});
       })
       .catch((reply) => {
         let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
@@ -68,19 +71,34 @@ export class Login extends Component<any, any> {
       .then(() => {
         SessionMemory.loginEmail = this.state.email.toLowerCase();
         this.props.eventBus.emit('hideLoading');
-        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase(), title: 'Reset Email Sent', passwordReset:true});
       })
       .catch((reply) => {
         let content = "Please try again.";
         let title = "Cannot Send Email";
+        let validationLink = false;
         if (reply.data && reply.data.error) {
           if (reply.data.error.code == "EMAIL_NOT_FOUND") {
             content = "This email is not registered in the Cloud. Please register to create an account.";
             title = "Unknown Email";
           }
+          else if (reply.data.error.code == 'RESET_FAILED_EMAIL_NOT_VERIFIED') {
+            validationLink = true;
+          }
         }
         let defaultAction = () => {this.props.eventBus.emit('hideLoading')};
-        Alert.alert(title, content, [{text: 'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+
+        if (validationLink) {
+          Alert.alert(
+            'Your email address has not been verified',
+            'Please click on the link in the email that was sent to you. If you did not receive an email, press Resend Email to try again.', [
+            {text: 'Resend Email', onPress: () => this.requestVerificationEmail()},
+            {text: 'OK', onPress: defaultAction}
+          ], { onDismiss: defaultAction });
+        }
+        else {
+          Alert.alert(title, content, [{text: 'OK', onPress: defaultAction}], {onDismiss: defaultAction});
+        }
       });
   }
 
@@ -194,18 +212,31 @@ export class Login extends Component<any, any> {
   }
   
   checkForRegistrationPictureUpload(userId, filename) {
+    LOGi.info("Login: checkForRegistrationPictureUpload", userId, filename);
     return new Promise((resolve, reject) => {
       let uploadingImage = false;
       
       let handleFiles = (files) => {
         files.forEach((file) => {
+          LOGi.info("Login: check file", file);
           // if the file belongs to this user, we want to upload it to the cloud.
           if (file.name === filename) {
             uploadingImage = true;
-            let newPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
-            CLOUD.forUser(userId).uploadProfileImage(file)
-              .then(() => {return RNFS.moveFile(file.path, newPath);})
-              .then(() => {resolve(newPath);})
+            let newPath = Util.getPath(userId + '.jpg');
+            LOGi.info("Login: new path", newPath);
+            CLOUD.forUser(userId).uploadProfileImage(file.path)
+              .then(() => {
+                LOGi.info("Login: uploadedImage. Now start moving.");
+                return RNFS.moveFile(file.path, newPath);
+              })
+              .then(() => {
+                LOGi.info("Login: moved image.");
+                resolve(newPath);
+              })
+              .catch((err) => {
+                LOGi.error("Login: failed checkForRegistrationPictureUpload", err);
+                reject(err);
+              })
           }
         });
         if (uploadingImage === false) {
@@ -214,14 +245,14 @@ export class Login extends Component<any, any> {
       };
 
       // read the document dir for files that have been created during the registration process
-      RNFS.readDir(RNFS.DocumentDirectoryPath)
+      RNFS.readDir(Util.getPath())
         .then(handleFiles)
     });
   }
 
 
   downloadImage(userId) {
-    let toPath = RNFS.DocumentDirectoryPath + '/' + userId + '.jpg';
+    let toPath = Util.getPath(userId + '.jpg');
     return CLOUD.forUser(userId).downloadProfileImage(toPath);
   }
 
@@ -257,7 +288,12 @@ export class Login extends Component<any, any> {
     promises.push(
       CLOUD.forUser(userId).getUserData()
         .then((userData) => {
-          store.dispatch({type:'USER_APPEND', data:{firstName: userData.firstName,lastName: userData.lastName, isNew: userData.new}});
+          store.dispatch({type:'USER_APPEND', data:{
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            isNew: userData.new,
+            updatedAt : userData.updatedAt
+          }});
           this.progress += parts;
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Received user data.'});
         })
@@ -267,12 +303,17 @@ export class Login extends Component<any, any> {
     let imageFilename = getImageFileFromUser(this.state.email.toLowerCase());
     promises.push(this.checkForRegistrationPictureUpload(userId, imageFilename)
       .then((picturePath) => {
-        if (picturePath === null)
+        LOG.info("Login: step 1");
+        if (picturePath === null) {
+          LOG.info("Login: step 1, downloading..");
           return this.downloadImage(userId); // check if there is a picture we can download
-        else
+        }
+        else {
           return picturePath;
+        }
       })
       .then((picturePath) => {
+        LOG.info("Login: step 2");
         store.dispatch({type:'USER_APPEND', data:{picture: picturePath}});
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Handle profile picture.'});
@@ -282,25 +323,26 @@ export class Login extends Component<any, any> {
         LOG.debug("Could be a problem downloading profile picture: ", err);
       })
       .then(() => {
+        LOG.info("Login: step 3");
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         return CLOUD.sync(store, false);
       })
       .then(() => {
+        LOG.info("Login: step 4");
         this.progress += parts;
         this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Syncing with the Cloud.'});
         let state = store.getState();
         if (Object.keys(state.spheres).length == 0 && state.user.isNew !== false) {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Creating first Sphere.'});
-          // TODO: place in tutorial
-          return CLOUD.createNewSphere(store, state.user.firstName, this.props.eventBus);
+          return CLOUD.createNewSphere(store, state.user.firstName + "'s Sphere", this.props.eventBus);
         }
         else {
           this.props.eventBus.emit('updateProgress', {progress: this.progress, progressText:'Sphere available.'});
         }
       })
       .catch((err) => {
-        LOG.debug("Error creating first Sphere.", err);
+        LOG.error("Login: Failed to login.", err);
         let defaultAction = () => {this.props.eventBus.emit('hideProgress')};
         Alert.alert("Whoops!", "An error has occurred while syncing with the Cloud. Please try again later.", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
         throw err;
@@ -310,33 +352,45 @@ export class Login extends Component<any, any> {
 
     Promise.all(promises)
       .then(() => {
+        LOG.info("Login: finished promises");
         this.props.eventBus.emit('updateProgress', {progress: 1, progressText:'Done'});
 
         // finalize the login due to successful download of data. Enables persistence.
-        StoreManager.finalizeLogIn(userId);
+        StoreManager.finalizeLogIn(userId).catch(() => {});
+
+        let state = store.getState();
+        if (state.user.isNew !== false) {
+          // new users do not need to see the "THIS IS WHATS NEW" popup.
+          this.props.store.dispatch({
+            type: "UPDATE_APP_SETTINGS",
+            data: {shownWhatsNewVersion: DeviceInfo.getReadableVersion()}
+          });
+        }
 
         // this starts scanning, tracking spheres and prepping the database for the user
         this.props.eventBus.emit("userLoggedIn");
 
         // set a small delay so the user sees "done"
         setTimeout(() => {
-          let state = store.getState();
+          state = store.getState();
           this.props.eventBus.emit('hideProgress');
 
-
           if (state.user.isNew !== false) {
-            (Actions as any).aiStart({type: 'reset'});
+            Actions.tutorial({type: 'reset'});
           }
           else if (Platform.OS === 'android') {
-            (Actions as any).sphereOverview({type: 'reset'});
+            this.props.eventBus.emit("userLoggedInFinished");
+            Actions.sphereOverview({type: 'reset'});
           }
           else {
-            (Actions as any).tabBar({type: 'reset'});
+            this.props.eventBus.emit("userLoggedInFinished");
+            Actions.tabBar({type: 'reset'});
           }
         }, 100);
       })
       .catch((err) => {
-        LOG.error("ERROR during login.", err);
+        LOG.error("Login: ERROR during login.", err);
+        this.props.eventBus.emit('hideProgress');
       });
   }
 }

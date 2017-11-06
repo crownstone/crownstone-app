@@ -14,6 +14,7 @@ class DfuStateHandlerClass {
   _uuid : string;
   _store : any;
   _initialized : boolean = false;
+  _ignoreDuringDfuOverlay : boolean = false;
   _stonesInDfuMode : any = {};
   _dfuTimeouts : any = {};
 
@@ -21,17 +22,18 @@ class DfuStateHandlerClass {
     this._uuid = Util.getUUID();
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE DfuStateHandler', this._initialized);
     if (this._initialized === false) {
       this._store = store;
       this._init();
 
-      eventBus.on("DFU_completed", (handle) => {
-        this._cleanup(handle);
+      eventBus.on("updateCrownstoneFirmware",      () => { this._ignoreDuringDfuOverlay = true; this._cleanupAll(); });
+      eventBus.on("updateCrownstoneFirmwareEnded", () => {
+        this._ignoreDuringDfuOverlay = false;
         // scan hf just in case for a short time afterwards
         BleUtil.startHighFrequencyScanning(this._uuid, 2500);
-      })
+      });
     }
   }
 
@@ -77,6 +79,8 @@ class DfuStateHandlerClass {
 
       // add setup events in case they are from crownstones that did not finish their DFU process.
       NativeBus.on(NativeBus.topics.setupAdvertisement, (data) => {
+        if (this._ignoreDuringDfuOverlay) { return; }
+
         let stoneData = MapProvider.stoneHandleMap[data.handle];
         if (stoneData && stoneData.stoneConfig.dfuResetRequired === true && stoneData.stoneConfig.handle) {
           handleDfuAdvertisement(data);
@@ -85,6 +89,8 @@ class DfuStateHandlerClass {
 
       // add advertisement events in case they are from crownstones that did not finish their DFU process.
       NativeBus.on(NativeBus.topics.advertisement, (data) => {
+        if (this._ignoreDuringDfuOverlay) { return; }
+
         let stoneData = MapProvider.stoneHandleMap[data.handle];
         if (stoneData && stoneData.stoneConfig.dfuResetRequired === true && stoneData.stoneConfig.handle) {
           handleDfuAdvertisement(data);
@@ -93,6 +99,8 @@ class DfuStateHandlerClass {
 
       // handle DFU events
       NativeBus.on(NativeBus.topics.dfuAdvertisement, (data) => {
+        if (this._ignoreDuringDfuOverlay) { return; }
+
         handleDfuAdvertisement(data);
       });
     }
@@ -108,7 +116,15 @@ class DfuStateHandlerClass {
     // set a new timeout that cleans up after this entry
     this._dfuTimeouts[handle] = Scheduler.scheduleCallback(() => {
       this._cleanup(handle);
-    }, DFU_MODE_TIMEOUT);
+    }, DFU_MODE_TIMEOUT, 'DFU_MODE_TIMEOUT');
+  }
+
+
+  _cleanupAll() {
+    let handles = Object.keys(this._stonesInDfuMode);
+    handles.forEach((handle) => {
+      this._cleanup(handle);
+    })
   }
 
   _cleanup(handle) {

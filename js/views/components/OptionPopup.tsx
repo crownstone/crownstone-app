@@ -2,6 +2,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
   Keyboard,
+  Platform,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
@@ -13,14 +14,16 @@ import { FadeInView }   from './animated/FadeInView'
 import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
 import { styles, colors , screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/EventBus'
+import {CameraRollView} from "../cameraViews/CameraRollView";
+
 
 export class OptionPopup extends Component<any, any> {
   unsubscribe : any;
 
   constructor() {
     super();
-
     this.state = {
+      title: null,
       visible: false,
       buttons: [],
     };
@@ -28,9 +31,9 @@ export class OptionPopup extends Component<any, any> {
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on('showPopup', (buttons) => {
+    this.unsubscribe.push(eventBus.on('showPopup', (data) => {
       Keyboard.dismiss();
-      this.setState({buttons:buttons, visible:true});
+      this.setState({title: data.title || null, buttons:data.buttons, visible:true});
     }));
     this.unsubscribe.push(eventBus.on('hidePopup', () => {this.setState({visible:false})}));
   }
@@ -40,22 +43,22 @@ export class OptionPopup extends Component<any, any> {
     this.unsubscribe = [];
   }
 
-  getChildren() {
+  getChildrenIOS() {
     let amountOfOptions = this.state.buttons.length;
     let buttonContainerHeight = 50 * amountOfOptions + amountOfOptions - 1;
     
     let buttons = [];
     this.state.buttons.forEach((button, index) => {
       buttons.push(
-        <TouchableHighlight style={styles.joinedButtons} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
+        <TouchableOpacity style={styles.joinedButtons} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
           <Text style={styles.buttonText}>{button.text}</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       );
       // insert separator
-      if (index !== amountOfOptions - 1)
-        buttons.push(<View style={styles.joinedButtonSeparator} key={'option_button_separator' + index} />)
+      if (index !== amountOfOptions - 1) {
+        buttons.push(<View style={styles.joinedButtonSeparator} key={'option_button_separator' + index}/>)
+      }
     });
-
 
     return (
       <View style={[styles.joinedButton, {height:buttonContainerHeight}]}>
@@ -64,22 +67,69 @@ export class OptionPopup extends Component<any, any> {
     )
   }
 
-  render() {
-    return (
-      <FadeInView
-        style={[styles.fullscreen, {backgroundColor:'rgba(0,0,0,0.3)'}]}
-        height={screenHeight}
-        visible={this.state.visible}>
+  getChildrenAndroid() {
+    let buttons = [];
+    if (this.state.title) {
+      buttons.push(
+        <View style={styles.buttonTitleAndroid} key={'option_button_title'}>
+          <Text style={styles.buttonTextTitleAndroid}>{this.state.title}</Text>
+        </View>
+      );
+      buttons.push(<View style={styles.buttonSeparatorAndroidHighlight} key={'option_button_separator_title_highlight'} />)
+    }
 
-        <SlideInFromBottomView
-          style={[styles.centered, {backgroundColor:'transparent'}]}
-          height={180}
-          visible={this.state.visible}>
-          {this.getChildren()}
-          <TouchableHighlight style={styles.button} onPress={() => {eventBus.emit("hidePopup");}}><Text
-            style={[styles.buttonText, {fontWeight:'bold'}]}>Cancel</Text></TouchableHighlight>
-        </SlideInFromBottomView>
-      </FadeInView>
+    this.state.buttons.forEach((button, index) => {
+      buttons.push(
+        <TouchableHighlight style={styles.buttonAndroid} onPress={() => {eventBus.emit("hidePopup"); button.callback();}} key={'option_button_' + index}>
+          <Text style={styles.buttonTextAndroid}>{button.text}</Text>
+        </TouchableHighlight>
+      );
+      buttons.push(<View style={styles.buttonSeparatorAndroid} key={'option_button_separator' + index} />)
+    });
+
+    buttons.push(
+      <TouchableHighlight style={styles.buttonAndroid} onPress={() => { eventBus.emit("hidePopup");}} key={'option_button_cancel'}>
+        <Text style={styles.buttonTextAndroid}>Cancel</Text>
+      </TouchableHighlight>
     );
+
+
+    return (
+      <View style={{height:screenHeight, width: screenWidth, alignItems:'center', justifyContent:'center'}}>
+        {buttons}
+      </View>
+    )
+  }
+
+  render() {
+    if (Platform.OS === 'android') {
+      return (
+        <FadeInView
+          style={[styles.fullscreen, {backgroundColor: 'rgba(0,0,0,0.3)'}]}
+          height={screenHeight}
+          duration={100}
+          visible={this.state.visible}>
+          {this.getChildrenAndroid()}
+        </FadeInView>
+      );
+    }
+    else {
+      return (
+        <FadeInView
+          style={[styles.fullscreen, {backgroundColor: 'rgba(0,0,0,0.3)'}]}
+          height={screenHeight}
+          visible={this.state.visible}>
+          <SlideInFromBottomView
+            style={[styles.centered, {backgroundColor: 'transparent'}]}
+            height={180}
+            visible={this.state.visible}>
+            {this.getChildrenIOS()}
+            <TouchableOpacity style={styles.button} onPress={() => { eventBus.emit("hidePopup");}}>
+              <Text style={[styles.buttonText, {fontWeight: 'bold'}]}>Cancel</Text>
+            </TouchableOpacity>
+          </SlideInFromBottomView>
+        </FadeInView>
+      );
+    }
   }
 }

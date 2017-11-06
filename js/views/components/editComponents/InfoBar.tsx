@@ -24,12 +24,12 @@ export class InfoBar extends Component<any, any> {
           {this.props.icon !== undefined ?
           <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
           {this.props.value !== undefined ?
-            <Text style={[styles.listText, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
+            <Text numberOfLines={1} style={[styles.listText, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
             :
-            <Text style={[styles.listTextLarge, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
+            <Text numberOfLines={1} style={[styles.listTextLarge, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
           }
           {this.props.value !== undefined ?
-            <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
+            <Text numberOfLines={1} style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>
             :
             <View style={{flex:1}} />
           }

@@ -1,16 +1,17 @@
 import { update, getTime, refreshDefaults } from './reducerUtil'
 
 let defaultState = {
-  app: {
-    activeSphere: null,
-    notificationToken: null,
-    enableLocalization: true,
-    updatedAt: 1
-  }
+  activeSphere: null,
+  notificationToken: null,
+  tapToToggleEnabled: true,
+  keepAlivesEnabled: true,
+  indoorLocalizationEnabled: true,
+  shownWhatsNewVersion: '0',
+  updatedAt: 1
 };
 
 // appReducer
-export default (state = defaultState.app, action : any = {}) => {
+export default (state = defaultState, action : any = {}) => {
   let newState;
   switch (action.type) {
     case 'SET_NOTIFICATION_TOKEN':
@@ -38,13 +39,23 @@ export default (state = defaultState.app, action : any = {}) => {
       if (action.data) {
         newState = {...state};
         newState.activeSphere        = update(action.data.activeSphere, newState.activeSphere);
-        newState.enableLocalization  = update(action.data.enableLocalization,  newState.enableLocalization);
         newState.updatedAt           = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
+    case 'UPDATE_APP_SETTINGS':
+      if (action.data) {
+        newState = {...state};
+        newState.keepAlivesEnabled         = update(action.data.keepAlivesEnabled,  newState.keepAlivesEnabled);
+        newState.indoorLocalizationEnabled = update(action.data.indoorLocalizationEnabled,  newState.indoorLocalizationEnabled);
+        newState.tapToToggleEnabled        = update(action.data.tapToToggleEnabled,  newState.tapToToggleEnabled);
+        newState.shownWhatsNewVersion      = update(action.data.shownWhatsNewVersion,  newState.shownWhatsNewVersion);
+        newState.updatedAt                 = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
     case 'REFRESH_DEFAULTS':
-      return refreshDefaults(state, defaultState.app);
+      return refreshDefaults(state, defaultState);
     default:
       return state;
   }

@@ -22,12 +22,43 @@ export let getTime = function (remoteTime?) {
 };
 
 export function refreshDefaults(state, defaultObject) {
-  let newState = {...state};
-  let fields = Object.keys(defaultObject);
-  fields.forEach((field) => {
-    if (newState[field] === undefined) {
-      newState[field] = defaultObject[field];
+  // the current entry is an array and has to be an object
+  if (Array.isArray(state) && !Array.isArray(defaultObject) && typeof defaultObject === 'object') {
+    let newState = [...state];
+    let fields = Object.keys(defaultObject);
+    for (let i = 0; i < newState.length; i++) {
+      for (let j = 0; j < fields.length; j++) {
+        if (newState[i][fields[j]] === undefined) {
+          newState[i][fields[j]] = defaultObject[fields[j]];
+        }
+      }
     }
-  });
-  return newState;
+    return newState;
+  }
+  else if (Array.isArray(state) === false && typeof defaultObject === 'object') {
+    let newState = {...state};
+    let fields = Object.keys(defaultObject);
+    fields.forEach((field) => {
+      // if this field does not exist...
+      if (newState[field] === undefined) {
+        if (Array.isArray(defaultObject[field])) {
+          newState[field] = [...defaultObject[field]];
+        }
+        else if (defaultObject[field] === null) { // null is also an object. We need to catch this.
+          newState[field] = null;
+        }
+        else if (typeof defaultObject[field] === 'object') {
+          newState[field] = {...defaultObject[field]};
+        }
+        else {
+          newState[field] = defaultObject[field];
+        }
+      }
+      else if (field === 'cloudId' && newState[field] !== null && typeof newState[field] === 'object') {
+        newState[field] = null;
+      }
+    });
+    return newState;
+  }
+  return state;
 }

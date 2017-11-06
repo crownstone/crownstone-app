@@ -69,8 +69,10 @@ app-logs
 !js/router/RouterIOS.js
 !index.android.js
 !index.ios.js
+!sentrySettings.template.js
 !__tests__/**
 !**.tapetest.js
 
+sentrySettings.js
 
 LocalConfig.ts

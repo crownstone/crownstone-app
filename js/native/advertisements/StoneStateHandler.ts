@@ -5,11 +5,12 @@ import { LOG } from '../../logging/Log'
 import { Util } from '../../util/Util'
 import { eventBus } from '../../util/EventBus'
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig'
-import {DfuStateHandler} from "../firmware/DfuStateHandler";
+import { DfuStateHandler } from "../firmware/DfuStateHandler";
+import { LOG_LEVEL } from "../../logging/LogLevels";
 
 
 let TRIGGER_ID = "RSSI_TRIGGER_FUNCTION";
-let RSSI_TIMEOUT = 2500;
+let RSSI_TIMEOUT = 5000;
 let RSSI_REFRESH = 1;
 /**
  * This class keeps track of the disability state of the crownstone.
@@ -31,7 +32,7 @@ class StoneStateHandlerClass {
     Scheduler.setRepeatingTrigger(TRIGGER_ID, {repeatEveryNSeconds: RSSI_REFRESH});
   }
 
-  loadStore(store) {
+  _loadStore(store) {
     LOG.info('LOADED STORE StoneStateHandlerClass', this._initialized);
     if (this._initialized === false) {
       this.store = store;
@@ -47,6 +48,10 @@ class StoneStateHandlerClass {
   }
 
   receivedIBeaconUpdate(sphereId, stone, stoneId, rssi) {
+    let state = this.store.getState();
+    if (!state.spheres[sphereId]) { return; }
+    if (!state.spheres[sphereId].stones[stoneId]) { return; }
+
     // If the app has not yet seen this crownstone, it could be that it does not have a handle.
     // Without handle we do not propagate the update events since we do not know what how to connect to it
     // if we only hear the ibeacon event.
@@ -70,7 +75,7 @@ class StoneStateHandlerClass {
       LOG.debug("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
     }
 
-    let state = this.store.getState();
+
 
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
@@ -87,7 +92,8 @@ class StoneStateHandlerClass {
         type: 'UPDATE_STONE_RSSI',
         sphereId: sphereId,
         stoneId: stoneId,
-        data: { rssi: rssi, lastSeen: new Date().valueOf() }
+        data: { rssi: rssi, lastSeen: new Date().valueOf() },
+        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
       });
     }
 
@@ -95,6 +101,10 @@ class StoneStateHandlerClass {
   }
 
   receivedAdvertisementUpdate(sphereId, stone, stoneId, rssi) {
+    let state = this.store.getState();
+    if (!state.spheres[sphereId]) { return; }
+    if (!state.spheres[sphereId].stones[stoneId]) { return; }
+
     // internal event to tell the app this crownstone has been seen.
     eventBus.emit(Util.events.getCrownstoneTopic(sphereId, stoneId), {
       handle: stone.config.handle,
@@ -125,6 +135,10 @@ class StoneStateHandlerClass {
    * @param serviceData
    */
   receivedUpdateViaMesh(sphereId: string, remoteStoneId: string, meshNetworkId: number, randomFromServiceData : string, advertisingStoneId : string, serviceData) {
+    let state = this.store.getState();
+    if (!state.spheres[sphereId]) { return; }
+    if (!state.spheres[sphereId].stones[remoteStoneId]) { return; }
+
     // emit the mesh update event only for unique advertisements. Due to ibeacon connectable on/off the unique filter is not always working.
     if (this.advertisementIdsPerStoneId[advertisingStoneId] && this.advertisementIdsPerStoneId[advertisingStoneId] !== randomFromServiceData) {
       eventBus.emit(Util.events.getViaMeshTopic(sphereId, meshNetworkId), {
@@ -139,6 +153,11 @@ class StoneStateHandlerClass {
   }
 
   update(sphereId, stoneId) {
+    const state = this.store.getState();
+    if (!state.spheres[sphereId]) { return; }
+    if (!state.spheres[sphereId].stones[stoneId]) { return; }
+
+
     // create an individual tracker for each stone to keep track of the mesh.
     if (this.stonesThatUpdate[sphereId + stoneId] === undefined) {
       LOG.info("Dynamically creating IndividualStoneTracker for sphere: ", sphereId, '(',stoneId,')');
@@ -146,7 +165,7 @@ class StoneStateHandlerClass {
     }
 
     // LOG.info("StoneStateHandlerUpdate", sphereId, stoneId);
-    const state = this.store.getState();
+
 
     // if we hear this stone and yet it is set to disabled, we re-enable it.
     if (state.spheres[sphereId].stones[stoneId].config.disabled === true) {

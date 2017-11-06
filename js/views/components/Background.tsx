@@ -10,7 +10,7 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} 
 export class Background extends Component<any, any> {
   render() {
     return (
-      <View style={[styles.fullscreen,{elevation: 0}]} >
+      <View style={styles.fullscreen} >
         {this.props.image}
         <View style={styles.fullscreen} >
           {this.props.hideInterface !== true && this.props.hideTopBar !== true ? <View style={{width:screenWidth,height:topBarHeight}} /> : undefined}

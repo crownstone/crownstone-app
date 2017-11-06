@@ -14,7 +14,7 @@ let Actions = require('react-native-router-flux').Actions;
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
 import { LOG }       from '../../logging/Log'
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight } from '../styles'
+import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight } from '../styles'
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 
@@ -33,9 +33,10 @@ export class Sphere extends Component<any, any> {
     }
 
     return (
-      <View style={{width:screenWidth, height: screenHeight - topBarHeight - tabBarHeight, position:'absolute', top: 0, left: this.props.leftPosition}}>
-        <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
-        <RoomLayer store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} />
+      <View style={{width: screenWidth, height: availableScreenHeight}}>
+        <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} opacity={0.5}  />
+        <RoomLayer store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} multipleSpheres={this.props.multipleSpheres} />
+        <StatusCommunication store={store} sphereId={currentSphere} viewingRemotely={viewingRemotely} eventBus={this.props.eventBus} opacity={0.5} />
       </View>
     );
   }

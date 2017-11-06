@@ -1,13 +1,17 @@
 import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
+import {LOG} from "../../../logging/Log";
 
 let defaultSettings = {
   config: {
     name: undefined,
     icon: undefined,
+    cloudId: null,
     dimmable: false,
-    onlyOnWhenDark: null,
+    onlyOnWhenDark: false,
+    hidden: false,
+    locked: false,
     updatedAt: 1
   },
   linkedAppliances: { 
@@ -30,13 +34,23 @@ let defaultSettings = {
 
 let applianceConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_APPLIANCE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'ADD_APPLIANCE':
     case 'UPDATE_APPLIANCE_CONFIG':
       if (action.data) {
         let newState = {...state};
         newState.name      = update(action.data.name,     newState.name);
         newState.icon      = update(action.data.icon,     newState.icon);
+        newState.cloudId   = update(action.data.cloudId, newState.cloudId);
         newState.dimmable  = update(action.data.dimmable, newState.dimmable);
+        newState.hidden    = update(action.data.hidden, newState.hidden);
+        newState.locked    = update(action.data.locked, newState.locked);
         newState.onlyOnWhenDark  = update(action.data.onlyOnWhenDark, newState.onlyOnWhenDark);
         newState.updatedAt = getTime(action.data.updatedAt);
         return newState;

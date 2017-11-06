@@ -1,4 +1,6 @@
 import { LOG } from '../../logging/Log'
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {cloudApiBase} from "./cloudApiBase";
 
 export const user = {
   /**
@@ -45,7 +47,7 @@ export const user = {
    *
    * @param file {String} --> full path string.
    */
-  uploadProfileImage: function(file) {
+  uploadProfileImage: function(file: string) {
     return this._uploadImage({endPoint:'/users/{id}/profilePic', path:file, type:'body'})
   },
 
@@ -70,8 +72,8 @@ export const user = {
    *
    * @returns {*}
    */
-  getUserData: function (options : any = {}) {
-    return this._setupRequest('GET', '/users/{id}', options);
+  getUserData: function (background = true) {
+    return this._setupRequest('GET', '/users/{id}', {background});
   },
 
   /**
@@ -110,29 +112,12 @@ export const user = {
     );
   },
 
-  getKeys: function(options : any = {}) {
+  getKeys: function(background = true) {
     return this._setupRequest(
       'GET',
       'users/{id}/keys',
-      options
+      {background : background}
     );
   },
-
-
-  enterLocation: function(sphereId, locationId) {
-    return this._setupRequest(
-      'PUT',
-      'users/{id}/currentLocation',
-      { sphereId: sphereId, locationId: locationId, background: true }
-    );
-  },
-
-  // exitLocation: function() {
-  //   return this._setupRequest(
-  //     'DELETE',
-  //     'users/{id}/currentLocation',
-  //     { background: true }
-  //   );
-  // },
 
 };

@@ -1,6 +1,9 @@
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {cloudApiBase} from "./cloudApiBase";
+
 export const devices = {
-  getDevices: function (options : any = {}) {
-    return this._setupRequest('GET', '/users/{id}/devices', options);
+  getDevices: function (background: true) {
+    return this._setupRequest('GET', '/users/{id}/devices', {background:background, data:{filter:{"include":"installations"}}});
   },
 
   createDevice: function (data, background = true) {
@@ -21,10 +24,20 @@ export const devices = {
     );
   },
 
-  updateDeviceLocation: function (locationId, background = true) {
+  updateDeviceLocation: function (localLocationId, background = true) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Devices/{id}/currentLocation/' + locationId,
+      '/Devices/{id}/currentLocation/' + cloudLocationId,
+      { background: background }
+    );
+  },
+
+  updateDeviceSphere: function (localSphereId, background = true) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    return this._setupRequest(
+      'PUT',
+      '/Devices/{id}/currentSphere/' + cloudSphereId,
       { background: background }
     );
   },
@@ -33,6 +46,13 @@ export const devices = {
     return this._setupRequest(
       'DELETE',
       '/users/{id}/devices/' + deviceId
+    );
+  },
+
+  deleteAllDevices: function() {
+    return this._setupRequest(
+      'DELETE',
+      '/users/{id}/deleteAllDevices'
     );
   }
 };

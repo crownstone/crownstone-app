@@ -10,7 +10,6 @@ import {
   View
 } from 'react-native';
 
-
 import { Actions } from 'react-native-router-flux';
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
@@ -20,7 +19,8 @@ import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth } from './../styles'
-
+import { IconButton } from "../components/IconButton";
+import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 
 export class SettingsProfile extends Component<any, any> {
   unsubscribe : any;
@@ -43,22 +43,18 @@ export class SettingsProfile extends Component<any, any> {
   }
 
   componentDidMount() {
-    const { store } = this.props;
-    this.unsubscribe = store.subscribe(() => {
-      const state = store.getState();
-      if (this.renderState && this.renderState.user != state.user) {
-        this.renderState = state;
-        // LOG.info("Force Update Profile", this.renderState.user, state.user)
+    this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (change.changeUserData || change.changeUserDeveloperStatus) {
         this.forceUpdate();
       }
-    })
+    });
   }
 
   componentWillUnmount() {
     this.unsubscribe();
   }
 
-  
   _getItems(user) {
     const store = this.props.store;
     const state = store.getState();
@@ -79,7 +75,7 @@ export class SettingsProfile extends Component<any, any> {
         if (this.validationState.firstName === 'valid') {
           store.dispatch({type: 'USER_UPDATE', data: {firstName: newText}});
           // update your settings in every sphere that you belong to.
-          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{firstName: newText}}); });
+          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{firstName: newText}}); });
         }
         else {
           Alert.alert('First name must be at least 1 letter long', 'No numbers allowed either.', [{text: 'OK'}]);
@@ -99,7 +95,7 @@ export class SettingsProfile extends Component<any, any> {
         if (this.validationState.lastName === 'valid') {
           store.dispatch({type: 'USER_UPDATE', data: {lastName: newText}});
           // update your settings in every sphere that you belong to.
-          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, memberId: user.userId, data:{lastName: newText}}); });
+          sphereIds.forEach((sphereId) => { store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{lastName: newText}}); });
 
         }
         else {
@@ -108,28 +104,10 @@ export class SettingsProfile extends Component<any, any> {
       }
     });
 
-    // TODO: make email address editable.
     items.push({
       label:'Email',
       type: 'info',
       value: user.email,
-      // validation:'email',
-      // validationCallback: (result) => {this.validationState.email = result;},
-      // callback: (newEmail) => {
-      //   if (this.validationState.email === 'valid') {
-      //     if (user.email !== newEmail) {
-      //       // CLOUD.updateUserData({background:true, data:{email:newEmail}});
-      //       // TODO: add email system.
-      //       Alert.alert(
-      //         'An email has been sent to \'' + newEmail + '\'.',
-      //         'After you click on the validation link, you can use your new address to log in and it will be synced.',
-      //         [{text: 'OK'}]);
-      //     }
-      //   }
-      //   else {
-      //     Alert.alert('Not a valid email address','Please try again.',[{text:'OK'}]);
-      //   }
-      // }
     });
     items.push({
       label:'Change Password',
@@ -148,20 +126,16 @@ export class SettingsProfile extends Component<any, any> {
     });
 
     items.push({type: 'spacer'});
-    items.push({label:'Privacy', type: 'navigation', callback:() => { (Actions as any).settingsPrivacy(); }});
-    items.push({label: 'You are in control of which data is shared with the cloud.', type: 'explanation', below: true});
-
-    // items.push({label:'Enable Beta Access', value: user.betaAccess, type: 'switch', callback:(newValue) => {
-    //   store.dispatch({
-    //     type: 'SET_BETA_ACCESS',
-    //     data: {betaAccess: newValue}
-    //   });
-    // }});
-    // items.push({label: 'This will enable certain features in the app that might still be a bit experimental. This is ideal for early adopters or developers!', type: 'explanation', below: true});
 
     if (user.developer !== true) {
-      items.push({label:'Enable Developer Mode', value: false, type: 'switch', callback:(newValue) => {
+      items.push({
+        label:'Enable Developer Mode',
+        value: false,
+        icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+        type: 'switch',
+        callback:(newValue) => {
         setTimeout(() => {
+          NotificationHandler._verifyState();
           store.dispatch({
             type: 'SET_DEVELOPER_MODE',
             data: {developer: newValue}
@@ -171,7 +145,12 @@ export class SettingsProfile extends Component<any, any> {
       items.push({label: 'This will enable certain features that may be used for development of the Crownstone.', type: 'explanation', below: true});
     }
     else {
-      items.push({label:'Developer Menu', type: 'navigation', callback:() => { (Actions as any).settingsDeveloper(); }});
+      items.push({
+        label:'Developer Menu',
+        icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuRed.hex}}/>,
+        type: 'navigation',
+        callback:() => { Actions.settingsDeveloper(); }
+      });
       items.push({type: 'spacer'});
     }
 
@@ -206,7 +185,6 @@ export class SettingsProfile extends Component<any, any> {
     const state = store.getState();
     let sphereIds = Object.keys(state.spheres);
     let user = state.user;
-    this.renderState = state; // important for performance check
 
     return (
       <Background image={this.props.backgrounds.menu} >
@@ -216,29 +194,29 @@ export class SettingsProfile extends Component<any, any> {
               <PictureCircle
                 value={this.state.picture}
                 callback={(pictureUrl) => {
-                let newFilename = user.userId + '.jpg';
-                processImage(pictureUrl, newFilename)
-                  .then((newPicturePath) => {
-                    this.setState({picture:newPicturePath});
-                    store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath}});
-                    // update your settings in every sphere that you belong to.
-                    sphereIds.forEach((sphereId) => {
-                      store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath}});
-                    });
-                  })
-                  .catch((err) => {
-                    LOG.info("PICTURE ERROR ",err)
-                  })
-              }}
+                  let newFilename = user.userId + '.jpg';
+                  processImage(pictureUrl, newFilename)
+                    .then((newPicturePath) => {
+                      this.setState({picture:newPicturePath});
+                      store.dispatch({type:'USER_UPDATE', data:{picture:newPicturePath, pictureId: null}});
+                      // update your settings in every sphere that you belong to.
+                      sphereIds.forEach((sphereId) => {
+                        store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data: {picture: newPicturePath, pictureId: null}});
+                      });
+                    })
+                    .catch((err) => {
+                      LOG.info("PICTURE ERROR ",err)
+                    })
+                }}
                 removePicture={() => {
-              safeDeleteFile(this.state.picture);
-              store.dispatch({type:'USER_UPDATE', data:{picture:null}});
-              // update your settings in every sphere that you belong to.
-              sphereIds.forEach((sphereId) => {
-                store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null}});
-              });
-              this.setState({picture:null});
-            }}
+                  safeDeleteFile(this.state.picture).catch(() => {});
+                  store.dispatch({type:'USER_UPDATE', data:{picture:null, pictureId: null}});
+                  // update your settings in every sphere that you belong to.
+                  sphereIds.forEach((sphereId) => {
+                    store.dispatch({type: 'UPDATE_SPHERE_USER', sphereId: sphereId, userId: user.userId, data:{picture: null, pictureId: null}});
+                  });
+                  this.setState({picture:null});
+                }}
                 size={120} />
             </View>
           </View>

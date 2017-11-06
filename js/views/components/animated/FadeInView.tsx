@@ -7,6 +7,7 @@ import { LOG } from '../../../logging/Log'
 
 export class FadeInView extends Component<any, any> {
   visible : boolean;
+  maxOpacity : number;
   pendingTimeout : any;
 
   constructor(props) {
@@ -14,28 +15,35 @@ export class FadeInView extends Component<any, any> {
 
     this.state = {show: props.visible || false, viewOpacity: new Animated.Value(props.visible ? 1 : 0)};
     this.visible = props.visible || false;
+    this.maxOpacity = props.maxOpacity || 1;
     this.pendingTimeout = null;
   }
 
   componentWillUpdate(nextProps) {
     let defaultDuration = 200;
-    if (this.visible !== nextProps.visible) {
+    if ((nextProps.visible !== undefined && this.visible !== nextProps.visible) || (nextProps.maxOpacity !== undefined && this.maxOpacity !== nextProps.maxOpacity)) {
       if (nextProps.visible === true) {
         this.setState({show: true});
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;
-          Animated.timing(this.state.viewOpacity, {toValue: 1, duration:this.props.duration || defaultDuration}).start();
-        },0);
+          Animated.timing(this.state.viewOpacity, {
+            toValue: nextProps.maxOpacity || this.maxOpacity,
+            duration: this.props.duration || defaultDuration
+          }).start();
+        }, 0);
       }
       else {
-        Animated.timing(this.state.viewOpacity, {toValue: 0, duration:this.props.duration || defaultDuration}).start();
+        Animated.timing(this.state.viewOpacity, {toValue: 0, duration: this.props.duration || defaultDuration}).start();
         this.pendingTimeout = setTimeout(() => {
           this.pendingTimeout = null;
           this.setState({show: false});
-        },this.props.duration || defaultDuration);
+        }, this.props.duration || defaultDuration);
       }
-      this.visible = nextProps.visible;
     }
+
+    // set new values as the current state.
+    if (nextProps.maxOpacity !== undefined) { this.maxOpacity = nextProps.maxOpacity; }
+    if (nextProps.visible    !== undefined) { this.visible = nextProps.visible;       }
   }
 
   componentWillUnmount() {

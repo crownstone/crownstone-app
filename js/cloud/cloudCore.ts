@@ -2,10 +2,10 @@ import { Alert, Platform } from 'react-native'
 import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 const RNFS = require('react-native-fs');
 let emptyFunction = function() {};
-import { LOG } from '../logging/Log'
+import {LOG, LOGe, LOGi} from '../logging/Log'
 import { prepareEndpointAndBody } from './cloudUtil'
-import { defaultHeaders } from './sections/base'
-import { safeMoveFile, safeDeleteFile } from '../util/Util'
+import { defaultHeaders } from './sections/cloudApiBase'
+import {safeMoveFile, safeDeleteFile, Util} from '../util/Util'
 import {Scheduler} from "../logic/Scheduler";
 
 /**
@@ -60,8 +60,7 @@ export function request(
     return response.text(); // this is a promise
   };
 
-  if (DEBUG)
-    LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, " body:", body, "config:",requestConfig);
+  LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, "config:", requestConfig);
 
   // the actual request
   return new Promise((resolve, reject) => {
@@ -73,21 +72,22 @@ export function request(
       let stopRequest = false;
       let finishedRequest = false;
       // add a timeout for the fetching of data.
-      Scheduler.scheduleCallback(() => {
+      let cancelFallbackCallback = Scheduler.scheduleCallback(() => {
           stopRequest = true;
           if (finishedRequest !== true)
-            reject(new Error('Network request failed'))
+            reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed')
         },
-      NETWORK_REQUEST_TIMEOUT);
+      NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
       fetch(CLOUD_ADDRESS + endPoint, requestConfig)
         .catch((connectionError) => {
           if (stopRequest === false) {
-            reject(new Error('Network request failed'));
+            reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed');
           }
         })
         .then((response) => {
           if (stopRequest === false) {
+            cancelFallbackCallback();
             return handleInitialReply(response);
           }
         })
@@ -133,17 +133,15 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
 
 export function downloadFile(url, targetPath, callbacks) {
   return new Promise((resolve, reject) => {
-    // TODO: move to util
-    let path = RNFS.DocumentDirectoryPath;
-    if (Platform.OS === 'android') {
-      path = RNFS.ExternalDirectoryPath;
-    }
-
     // get a temp path
-    let tempPath = path + '/' + (10000 + Math.random() * 1e5).toString(36).replace(".", "") + '.tmp';
+    let downloadSessionId = Math.round(10000 + Math.random() * 1e5).toString(36)
+    let tempFilename = downloadSessionId + '.tmp';
+    let tempPath = Util.getPath(tempFilename);
+    tempPath = 'file://' + tempPath.replace("file://","");
+    targetPath = 'file://' + targetPath.replace("file://","");
 
-    if (DEBUG)
-      LOG.cloud('download requesting from URL:', url, 'temp:', tempPath, 'target:', targetPath);
+    LOGi.cloud('CloudCore:DownloadFile: ',downloadSessionId,'download requesting from URL:', url, 'temp:', tempPath, 'target:', targetPath);
+
 
     // download the file.
     RNFS.downloadFile({
@@ -157,23 +155,26 @@ export function downloadFile(url, targetPath, callbacks) {
           // remove the temp file if the download failed
           safeDeleteFile(tempPath)
             .then(() => {
+              LOGi.cloud('CloudCore:DownloadFile:',downloadSessionId,' Download was not status 200:', status);
               callbacks.success();
               resolve(null);
             })
-            .catch((err) => { });
+            .catch((err) => { LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not delete file", tempPath, ' err:', err); });
         }
         else {
           safeMoveFile(tempPath, targetPath)
             .then((toPath) => {
               // if we have renamed the file, we resolve the promise so we can store the changed filename.
+              LOGi.cloud('CloudCore:DownloadFile:',downloadSessionId,' Downloaded file successfully:', targetPath);
               callbacks.success();
               resolve(toPath);
             })
-            .catch((err) => { });
+            .catch((err) => {  LOGe.cloud("CloudCore:DownloadFile:",downloadSessionId," Could not move file", tempPath, ' to ', targetPath, 'err:', err); });
         }
       })
       .catch((err) => {
-        safeDeleteFile(tempPath).catch((err) => { });
+        LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId,"Could not download file err:", err);
+        safeDeleteFile(tempPath).catch((err) => { LOGe.cloud("CloudCore:DownloadFile: ",downloadSessionId," Could not delete file", tempPath, 'err:', err); });
         reject(err);
       })
   });

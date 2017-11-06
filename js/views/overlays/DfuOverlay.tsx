@@ -23,18 +23,22 @@ import {Icon} from "../components/Icon";
 import {NativeBus} from "../../native/libInterface/NativeBus";
 import {BleUtil} from "../../util/BleUtil";
 import {Scheduler} from "../../logic/Scheduler";
+import {Bluenet} from "../../native/libInterface/Bluenet";
+import KeepAwake from 'react-native-keep-awake';
+import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 
 let STEP_TYPES = {
   UPDATE_AVAILABLE:           'UPDATE_AVAILABLE',
+  RELEASE_NOTES:              'RELEASE_NOTES',
   DOWNLOAD_PROGRESS:          'DOWNLOAD_PROGRESS',
-  DOWNLOAD_SUCCES:            'DOWNLOAD_SUCCES',
+  DOWNLOAD_SUCCESS:           'DOWNLOAD_SUCCESS',
   SEARCHING:                  'SEARCHING',
   SEARCHING_MOVE_CLOSER:      'SEARCHING_MOVE_CLOSER',
   SEARCHING_MOVE_EVEN_CLOSER: 'SEARCHING_MOVE_EVEN_CLOSER',
   SEARCHING_RESET_BLE:        'SEARCHING_RESET_BLE',
   GET_BOOTLOADER_VERSION:     'GET_BOOTLOADER_VERSION',
   UPDATE_PROGRESS:            'UPDATE_PROGRESS',
-  UPDATE_SUCCES:              'UPDATE_SUCCES',
+  UPDATE_SUCCESS:             'UPDATE_SUCCESS',
   UPDATE_FAILED:              'UPDATE_FAILED',
   DOWNLOAD_FAILED:            'DOWNLOAD_FAILED',
   SETUP_FAILED:               'SETUP_FAILED',
@@ -44,6 +48,9 @@ let stepSearchingTypes = {};
 stepSearchingTypes[STEP_TYPES.SEARCHING] = true;
 stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_CLOSER] = true;
 stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER] = true;
+
+let RELEASE_NOTES_ERROR = "Could not download release notes.";
+let RELEASE_NOTES_NA = "Release notes not available.";
 
 export class DfuOverlay extends Component<any, any> {
   unsubscribe : any = [];
@@ -72,6 +79,7 @@ export class DfuOverlay extends Component<any, any> {
       currentPhase: 0,
       phasesRequired: null,
       detail: '',
+      releaseNotes: null,
       firmwareUpdatedInStore: false,
       alreadyInDfuMode: false
     };
@@ -80,9 +88,10 @@ export class DfuOverlay extends Component<any, any> {
   componentDidMount() {
     // data = { stoneId : string , sphereId: string };
     this.unsubscribe.push(eventBus.on("updateCrownstoneFirmware", (data : any = {}) => {
+      KeepAwake.activate();
       this.setState({
         visible: true,
-        step: STEP_TYPES.UPDATE_AVAILABLE,
+        step: data.skipIntroduction ? STEP_TYPES.RELEASE_NOTES : STEP_TYPES.UPDATE_AVAILABLE,
         stoneId: data.stoneId,
         sphereId: data.sphereId,
         progress: 0,
@@ -90,6 +99,7 @@ export class DfuOverlay extends Component<any, any> {
         currentPhase: 0,
         phasesRequired: 0,
         detail: '',
+        releaseNotes: null,
         firmwareUpdatedInStore: false,
         alreadyInDfuMode: data.alreadyInDfuMode || false,
         firmwareToUpload: null,
@@ -103,6 +113,40 @@ export class DfuOverlay extends Component<any, any> {
       this.setState({step:step});
     }));
   }
+
+  componentWillUpdate(nextProps, nextState) {
+    // if the overlay went to visible or the step entered the release notes, start the process.
+    if ((this.state.visible !== nextState.visible || this.state.step !== nextState.step) && nextState.step === STEP_TYPES.RELEASE_NOTES) {
+      this.getReleaseNotes(nextState);
+    }
+  }
+
+  getReleaseNotes(releaseNoteState) {
+    let state = this.props.store.getState();
+    let userConfig = state.user;
+    let stoneConfig = state.spheres[releaseNoteState.sphereId].stones[releaseNoteState.stoneId].config;
+
+    FirmwareHandler.getVersions(
+      userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
+      userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion],
+      stoneConfig.hardwareVersion
+    )
+      .then(() => {
+        let releaseNotes = FirmwareHandler.newFirmwareDetails.releaseNotes;
+        if (typeof releaseNotes === 'object') {
+          // the first hit should be the locale of the user, then fallback on english, then fallback on the first key (if no keys exist)
+          releaseNotes = releaseNotes['en'] || releaseNotes['en'] || releaseNotes[Object.keys(releaseNotes)[0]];
+        }
+        // final fallback, release notes not available.
+        releaseNotes = releaseNotes || RELEASE_NOTES_NA;
+        this.setState({releaseNotes: releaseNotes});
+      })
+      .catch((err) => {
+        LOG.error("DfuOverlay: Could not download release notes...", err);
+        this.setState({releaseNotes: RELEASE_NOTES_ERROR});
+      })
+  }
+
 
   componentWillUnmount() {
     this._searchCleanup();
@@ -135,7 +179,7 @@ export class DfuOverlay extends Component<any, any> {
       bootloaderToUpdate: userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion]
     });
 
-    FirmwareHandler.getNewVersions(
+    FirmwareHandler.downloadNewVersions(
       userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion],
       userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion],
       stoneConfig.hardwareVersion
@@ -184,9 +228,12 @@ export class DfuOverlay extends Component<any, any> {
   }
 
   startDFU(userConfig, stoneConfig) {
+    // stop indoor localization during DFU
+    Bluenet.stopIndoorLocalization();
+
     return new Promise((resolve, reject) => {
-      this.setState({step: STEP_TYPES.DOWNLOAD_SUCCES});
-      Scheduler.scheduleCallback(() => { resolve(); }, 2500);
+      this.setState({step: STEP_TYPES.DOWNLOAD_SUCCESS});
+      Scheduler.scheduleCallback(() => { resolve(); }, 2500, 'startDFU timeout');
     })
     .then(() => {
       return this._searchForCrownstone(2000);
@@ -244,7 +291,6 @@ export class DfuOverlay extends Component<any, any> {
     })
     .then(() => {
       this._processCleanup();
-      eventBus.emit("DFU_completed", stoneConfig.handle);
       this.props.store.dispatch({
         type: "UPDATE_STONE_CONFIG",
         stoneId: this.state.stoneId,
@@ -255,7 +301,7 @@ export class DfuOverlay extends Component<any, any> {
           dfuResetRequired: false,
         }
       });
-      this.setState({ step: STEP_TYPES.UPDATE_SUCCES });
+      this.setState({ step: STEP_TYPES.UPDATE_SUCCESS });
     })
   }
 
@@ -329,7 +375,7 @@ export class DfuOverlay extends Component<any, any> {
         if (this.state.step !== STEP_TYPES.SEARCHING) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING);
         }
-      }, searchTimeBeforeView);
+      }, searchTimeBeforeView, 'dfu this.cancelShowTimeout');
 
       // the timeout will show the "get closer" even if nothing is found up to that point.
       // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
@@ -337,19 +383,19 @@ export class DfuOverlay extends Component<any, any> {
         if (this.state.step !== STEP_TYPES.SEARCHING_MOVE_CLOSER) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
-      }, 3000);
+      }, 3000, 'dfu this.cancelMoveCloserTimeout');
 
       this.cancelMoveEvenCloserTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER);
         }
-      }, 6000);
+      }, 6000, 'dfu this.cancelMoveEvenCloserTimeout');
 
       this.cancelResetBleTimeout = Scheduler.scheduleCallback(() => {
         if (this.state.step !== STEP_TYPES.SEARCHING_RESET_BLE) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_RESET_BLE);
         }
-      }, 10000);
+      }, 10000, 'dfu this.cancelResetBleTimeout');
 
 
       // this will show the user that he has to move closer to the crownstone or resolve if the user is close enough.
@@ -369,7 +415,7 @@ export class DfuOverlay extends Component<any, any> {
           this._searchCleanup();
           if (timeSeenView < minimumTimeVisibleWhenShown && stepSearchingTypes[this.state.step]) {
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-            Scheduler.scheduleCallback(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView);
+            Scheduler.scheduleCallback(() => { resolve(data) }, minimumTimeVisibleWhenShown - timeSeenView, 'rssiResolver timeout');
           }
           else {
             resolve(data);
@@ -427,10 +473,25 @@ export class DfuOverlay extends Component<any, any> {
 
     if (this.helper)
       this.helper.finish();
+
+    let state = this.props.store.getState();
+    if (canUseIndoorLocalizationInSphere(state, this.state.sphereId) === true) {
+      LOG.debug("(Re)Starting indoor localization after training");
+      Bluenet.startIndoorLocalization();
+    }
   }
 
 
   getContent() {
+    let updateToVersion = '1.0.0';
+    if (this.state.sphereId && this.state.stoneId) {
+      let state = this.props.store.getState();
+      let userConfig = state.user;
+      let sphere = state.spheres[this.state.sphereId];
+      let stoneConfig = sphere.stones[this.state.stoneId].config;
+      updateToVersion = userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion];
+    }
+
     let abort = () => {
       this.paused = true;
       let defaultAction = () => { this.paused = false; };
@@ -446,10 +507,12 @@ export class DfuOverlay extends Component<any, any> {
     };
 
     let closeOverlay = () => {
-        eventBus.emit("updateCrownstoneFirmwareEnded");
-        this.setState({visible: false});
+      eventBus.emit("updateCrownstoneFirmwareEnded");
+      KeepAwake.deactivate();
+      this.setState({visible: false});
     };
     let radius = 0.28*screenWidth;
+
     switch (this.state.step) {
       case STEP_TYPES.UPDATE_AVAILABLE:
         return <OverlayContent
@@ -457,10 +520,24 @@ export class DfuOverlay extends Component<any, any> {
           icon={'c1-update-arrow'}
           iconSize={0.35*screenWidth}
           header={'There is an update available for your Crownstone!'}
-          text={'This process may take a few minutes. Please stay close to the Crownstone until it is finished. Tap next to get started!'}
-          buttonCallback={() => { this.startProcess();} }
+          text={'This process may take a few minutes. Please stay close to the Crownstone until it is finished. Tap next to see whats new!'}
+          buttonCallback={() => { this.setState({step: STEP_TYPES.RELEASE_NOTES}) } }
           buttonLabel={'Next'}
         />;
+      case STEP_TYPES.RELEASE_NOTES:
+        return <OverlayContent
+          title={'What\'s New:'}
+          icon={'md-book'}
+          iconSize={0.25*screenWidth}
+          header={'Firmware version: ' + updateToVersion}
+          text={this.state.releaseNotes || null}
+          buttonCallback={() => { this.startProcess();} }
+          scrollable={this.state.releaseNotes === null}
+          buttonLabel={'Next'}
+        >
+          <ActivityIndicator animating={true} size="large" />
+          <View style={{flexGrow:1}} />
+        </OverlayContent>;
       case STEP_TYPES.DOWNLOAD_PROGRESS:
         return (
           <OverlayContent
@@ -472,7 +549,7 @@ export class DfuOverlay extends Component<any, any> {
             <View style={{flexGrow:1}} />
           </OverlayContent>
         );
-      case STEP_TYPES.DOWNLOAD_SUCCES:
+      case STEP_TYPES.DOWNLOAD_SUCCESS:
         return (
           <OverlayContent
             title={'Download Complete'}
@@ -584,7 +661,7 @@ export class DfuOverlay extends Component<any, any> {
             header={'Update is in progress. Please stay close to the Crownstone.'}
           />
         );
-      case STEP_TYPES.UPDATE_SUCCES:
+      case STEP_TYPES.UPDATE_SUCCESS:
         return (
           <OverlayContent
             title={'Updating Done!'}
@@ -707,7 +784,7 @@ export class DfuOverlay extends Component<any, any> {
     return (
       <OverlayBox
         visible={this.state.visible}
-        canClose={this.state.step === STEP_TYPES.UPDATE_AVAILABLE}
+        canClose={this.state.step === STEP_TYPES.UPDATE_AVAILABLE || this.state.step === STEP_TYPES.RELEASE_NOTES }
         closeCallback={() => {
           Alert.alert(
             "Are you sure?",

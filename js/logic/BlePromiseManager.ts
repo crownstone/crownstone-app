@@ -15,14 +15,14 @@ class BlePromiseManagerClass {
     this.clearPendingPromiseTimeout = undefined;
   }
 
-  register(promise : () => Promise<any>, message) {
-    return this._register(promise, message, false, PROMISE_MANAGER_FALLBACK_TIMEOUT);
+  register(promise : () => Promise<any>, message, customTimeoutMs: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {
+    return this._register(promise, message, false, customTimeoutMs);
   }
 
-  registerPriority(promise : () => Promise<any>, message, customTimeout: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {
+  registerPriority(promise : () => Promise<any>, message, customTimeoutMs: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {
     // this can interrupt any BatchCommandHandler pending low priority processes.
     eventBus.emit('PriorityCommandSubmitted');
-    return this._register(promise, message, true, customTimeout);
+    return this._register(promise, message, true, customTimeoutMs);
   }
 
   _register(promise : () => Promise<any>, message, priorityCommand : boolean = false, timeout: number = PROMISE_MANAGER_FALLBACK_TIMEOUT) {

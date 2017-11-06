@@ -3,7 +3,10 @@ import locationsReducer from './locations'
 import sphereUserReducer from './sphereUser'
 import stonesReducer from './stones'
 import appliancesReducer from './appliances'
+import messageReducer from './messages'
 import { update, getTime, refreshDefaults } from './reducerUtil'
+import {LOG} from "../../../logging/Log";
+
 
 let defaultSettings = {
   config: {
@@ -12,14 +15,16 @@ let defaultSettings = {
     adminKey: null,
     memberKey: null,
     guestKey: null,
+    cloudId: null,
     meshAccessAddress: null,
     reachable: false,
     present: false,
-    aiName: 'Rosii',
-    aiSex: 'female',
-    exitDelay: 300,
+    aiName: null,
+    aiSex: null,
+    exitDelay: 600,
     latitude: null,
     longitude: null,
+    newMessageFound: false,
     updatedAt: 1,
     lastSeen: 1,
   }
@@ -27,6 +32,13 @@ let defaultSettings = {
 
 let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_SPHERE_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'UPDATE_STONE_RSSI':
       // update the time this user has seen the sphere last.
       let newState = {...state};
@@ -60,6 +72,14 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         return newState;
       }
       return state;
+    case 'SET_SPHERE_MESSAGE_STATE': {
+      if (action.data) {
+        let newState = {...state};
+        newState.newMessageFound  = update(action.data.newMessageFound, newState.newMessageFound);
+        return newState;
+      }
+      return state;
+    }
     case 'ADD_SPHERE':
     case 'UPDATE_SPHERE_CONFIG':
       if (action.data) {
@@ -74,6 +94,7 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
         newState.adminKey    = update(action.data.adminKey,  newState.adminKey);
         newState.memberKey   = update(action.data.memberKey, newState.memberKey);
         newState.guestKey    = update(action.data.guestKey,  newState.guestKey);
+        newState.cloudId     = update(action.data.cloudId,  newState.cloudId);
         newState.meshAccessAddress = update(action.data.meshAccessAddress, newState.meshAccessAddress);
         newState.updatedAt   = getTime(action.data.updatedAt);
         return newState;
@@ -105,6 +126,7 @@ let combinedSphereReducer = combineReducers({
   presets:    presetsReducer,
   locations:  locationsReducer,
   stones:     stonesReducer,
+  messages:   messageReducer,
   appliances: appliancesReducer
 });
 

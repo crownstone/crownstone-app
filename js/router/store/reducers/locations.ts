@@ -1,11 +1,13 @@
 import { createStore, combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
+import {LOG} from "../../../logging/Log";
 
 
 let defaultSettings = {
   config: {
     name:'Untitled Room',
     icon: undefined,
+    cloudId: null,
     updatedAt: 1,
     fingerprintRaw: null,
     fingerprintParsed: null
@@ -22,7 +24,7 @@ let userPresenceReducer = (state = [], action : any = {}) => {
       if (userIndex !== -1) {
         return [...state.slice(0,userIndex).concat(state.slice(userIndex+1))]
       }
-    case 'CLEAR_USERS':
+    case 'CLEAR_USERS_IN_LOCATION':
       return [];
     default:
       return state;
@@ -31,6 +33,13 @@ let userPresenceReducer = (state = [], action : any = {}) => {
 
 let locationConfigReducer = (state = defaultSettings.config, action : any = {}) => {
   switch (action.type) {
+    case 'UPDATE_LOCATION_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.cloudId = update(action.data.cloudId, newState.cloudId);
+        return newState;
+      }
+      return state;
     case 'REMOVE_LOCATION_FINGERPRINT':
       let newState = {...state};
       newState.fingerprintRaw = null;
@@ -39,7 +48,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
     case 'UPDATE_LOCATION_FINGERPRINT':
       if (action.data) {
         let newState = {...state};
-        newState.fingerprintRaw = update(action.data.fingerprintRaw, newState.fingerprintRaw);
+        newState.fingerprintRaw    = update(action.data.fingerprintRaw, newState.fingerprintRaw);
         newState.fingerprintParsed = update(action.data.fingerprintParsed, newState.fingerprintParsed);
         return newState;
       }
@@ -48,11 +57,12 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
     case 'UPDATE_LOCATION_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name = update(action.data.name, newState.name);
-        newState.icon = update(action.data.icon, newState.icon);
-        newState.fingerprintRaw = update(action.data.fingerprintRaw, newState.fingerprintRaw);
-        newState.fingerprintParsed = update(action.data.fingerprintParsed, newState.fingerprintParsed);
-        newState.updatedAt = getTime(action.data.updatedAt);
+        newState.name               = update(action.data.name, newState.name);
+        newState.icon               = update(action.data.icon, newState.icon);
+        newState.cloudId            = update(action.data.cloudId,        newState.cloudId);
+        newState.fingerprintRaw     = update(action.data.fingerprintRaw, newState.fingerprintRaw);
+        newState.fingerprintParsed  = update(action.data.fingerprintParsed, newState.fingerprintParsed);
+        newState.updatedAt          = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

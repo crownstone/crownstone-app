@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
+  Animated,
   Image,
   TouchableHighlight,
   ScrollView,
@@ -11,7 +12,7 @@ import {
 } from 'react-native';
 
 import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
-import { stoneTypes }           from '../../router/store/reducers/stones'
+import { STONE_TYPES }           from '../../router/store/reducers/stones'
 import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }           from '../components/Background'
 import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
@@ -21,7 +22,6 @@ import { INTENTS }              from '../../native/libInterface/Constants'
 import { TopBar }               from '../components/Topbar'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
-import { getUserLevelInSphere } from '../../util/DataUtil'
 import { Util }                 from '../../util/Util'
 import { Icon }                 from '../components/Icon'
 const Actions = require('react-native-router-flux').Actions;
@@ -31,38 +31,61 @@ import {
   getStonesAndAppliancesInLocation,
   enoughCrownstonesInLocationsForIndoorLocalization,
   canUseIndoorLocalizationInSphere,
-  getFloatingStones
+  getFloatingStones, enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
 import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
+import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 
 export class RoomOverview extends Component<any, any> {
-  tapToToggleCalibration : any;
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
   justFinishedSetup : any;
-  nearestStoneId : any;
-  firmwareVersionsAvailable : any = {};
+  nearestStoneIdInSphere : any;
+  nearestStoneIdInRoom : any;
 
   constructor() {
     super();
-    this.state = {pendingRequests:{}};
+    this.state = {pendingRequests:{}, scrollViewHeight: new Animated.Value(screenHeight-tabBarHeight-topBarHeight-100)};
     this.unsubscribeSetupEvents = [];
 
     this.viewingRemotely = true;
     this.justFinishedSetup = "";
 
-    this.nearestStoneId = undefined;
+    this.nearestStoneIdInSphere = undefined;
+    this.nearestStoneIdInRoom = undefined;
+
+  }
+
+  componentWillMount() {
+    let state = this.props.store.getState();
+    let stonesInRoom = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
+    let {stoneArray, ids} = this._getStoneList(stonesInRoom);
+    if (SetupStateHandler.areSetupStonesAvailable()) {
+      if (stoneArray.length === 0) {
+        this.state.scrollViewHeight.setValue(screenHeight - tabBarHeight - topBarHeight - 100 - 60 - 60);
+      }
+      else {
+        this.state.scrollViewHeight.setValue(screenHeight - tabBarHeight - topBarHeight - 100 - 60);
+      }
+    }
   }
 
   componentDidMount() {
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupCancelled",   (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupInProgress",  (data)   => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStoneChange", (handle) => { this.forceUpdate(); }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupStonesDetected", () => {
+      Animated.spring(this.state.scrollViewHeight, { toValue: screenHeight-tabBarHeight-topBarHeight-160, friction: 7, tension: 70 }).start();
+    }));
+    this.unsubscribeSetupEvents.push(this.props.eventBus.on("noSetupStonesVisible", () => {
+      Animated.timing(this.state.scrollViewHeight, { toValue: screenHeight-tabBarHeight-topBarHeight-100, duration: 250 }).start();
+    }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("dfuStoneChange", (handle) => { this.forceUpdate(); }));
     this.unsubscribeSetupEvents.push(this.props.eventBus.on("setupComplete",    (handle) => {
       this.justFinishedSetup = handle;
@@ -146,73 +169,20 @@ export class RoomOverview extends Component<any, any> {
     else {
       return (
         <View key={stoneId + '_entry'}>
-          <View style={[styles.listView, {backgroundColor: colors.white.rgba(0.8)}]}>
-            <DeviceEntry
-              initiallyOpen={this.justFinishedSetup === item.stone.config.handle || this.props.usedForIndoorLocalizationSetup == true && index == 0}
-              eventBus={this.props.eventBus}
-              name={item.device.config.name}
-              stoneId={stoneId}
-              sphereId={this.props.sphereId}
-              icon={item.device.config.icon}
-              state={item.stone.state.state}
-              canUpdate={Util.versions.isLower(item.stone.config.firmwareVersion, this.firmwareVersionsAvailable[item.stone.config.hardwareVersion])}
-              currentUsage={item.stone.config.type !== stoneTypes.guidestone ? item.stone.state.currentUsage : undefined}
-              navigation={false}
-              tapToToggleCalibration={this.tapToToggleCalibration}
-              control={item.stone.config.type !== stoneTypes.guidestone && this.viewingRemotely === false}
-              pending={this.state.pendingRequests[stoneId] !== undefined}
-              disabled={item.stone.config.disabled || this.viewingRemotely || SetupStateHandler.isSetupInProgress() }
-              disabledDescription={SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...' }
-              dimmable={item.device.config.dimmable}
-              showBehaviour={item.stone.config.type !== stoneTypes.guidestone}
-              rssi={item.stone.config.rssi}
-              nearest={stoneId === this.nearestStoneId}
-              onChange={(switchState) => {
-                this.showPending(stoneId);
-                let data = {state: switchState};
-                if (switchState === 0) {
-                  data["currentUsage"] = 0;
-                }
-
-                BatchCommandHandler.loadPriority(item.stone, stoneId, this.props.sphereId, {commandName:'multiSwitch', state: switchState, intent:INTENTS.manual, timeout: 0})
-                  .then(() => {
-                    this.props.store.dispatch({
-                      type: 'UPDATE_STONE_SWITCH_STATE',
-                      sphereId: this.props.sphereId,
-                      stoneId: stoneId,
-                      data: data
-                    });
-                    this.clearPending(stoneId);
-                  })
-                  .catch((err) => {
-                    this.clearPending(stoneId);
-                  });
-
-                BatchCommandHandler.executePriority();
-              }}
-              onMove={() => {
-                Actions.pop();
-                (Actions as any).roomSelection({sphereId: this.props.sphereId, stoneId: stoneId, locationId: this.props.locationId, viewingRemotely: this.viewingRemotely});
-              }}
-              onChangeType={() => { (Actions as any).deviceEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
-              onChangeSettings={() => { (Actions as any).deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: stoneId, viewingRemotely: this.viewingRemotely})}}
-            />
-          </View>
+          <DeviceEntry
+            initiallyOpen={this.justFinishedSetup === item.stone.config.handle || (this.props.usedForIndoorLocalizationSetup == true && index == 0)}
+            eventBus={this.props.eventBus}
+            store={this.props.store}
+            stoneId={stoneId}
+            locationId={this.props.locationId}
+            sphereId={this.props.sphereId}
+            viewingRemotely={this.viewingRemotely}
+            nearestInSphere={stoneId === this.nearestStoneIdInSphere}
+            nearestInRoom={stoneId === this.nearestStoneIdInRoom}
+          />
         </View>
       );
     }
-  }
-
-  showPending(id) {
-    let pendingRequests = this.state.pendingRequests;
-    pendingRequests[id] = true;
-    this.setState({pendingRequests:pendingRequests})
-  }
-
-  clearPending(id) {
-    let pendingRequests = this.state.pendingRequests;
-    delete pendingRequests[id];
-    this.setState({pendingRequests:pendingRequests})
   }
 
   _getStoneList(stones) {
@@ -256,66 +226,99 @@ export class RoomOverview extends Component<any, any> {
       }
     });
 
-    return {stoneArray, ids};
+    return { stoneArray, ids };
   }
 
   /**
    * The right item is the flickering icon for localization.
    * @param state
-   * @param userAdmin
-   * @returns {XML}
+   * @param enoughCrownstones
+   * @param label
    */
-  getRightItem(state, userAdmin) {
-    if (userAdmin === true && this.props.locationId !== null && this.viewingRemotely !== true) {
-      let canDoLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-      let showFingerprintNeeded = false;
-      if (canDoLocalization === true && state.spheres[this.props.sphereId].locations[this.props.locationId].config.fingerprintRaw === null) {
-        showFingerprintNeeded = true;
-      }
-      if (showFingerprintNeeded === true) {
-        if (state.user.seenRoomFingerprintAlert !== true) {
-          let aiName = state.spheres[this.props.sphereId].config.aiName;
-          this.props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
-          Alert.alert("Lets teach " + aiName + " how to identify this room!",
-            "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
-            [{text: "OK"}])
-        }
+  _getRightItem(state, enoughCrownstones, label) {
+    if (!state.app.indoorLocalizationEnabled) { return; } // do not show localization if it is disabled
+    if (this.props.locationId === null)       { return; } // floating crownstones do not have settings
+    if (this.viewingRemotely === true)        { return; } // cant train a room when not in the sphere
+    if (!enoughCrownstones)                   { return; } // not enough crownstones to train this room
 
-        let iconSize = 25;
-        return (
-          <AlternatingContent
-            style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
-            fadeDuration={500}
-            switchDuration={2000}
-            contentArray={[
-              <View style={[styles.centered, {
-                width:iconSize,
-                height:iconSize, borderRadius:iconSize*0.5,
-                borderWidth:2,
-                borderColor:'#fff',
-                backgroundColor:colors.iosBlue.hex}]} >
-                <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
-              </View>,
-              <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>Edit</Text>
-            ]} />
-        )
-      }
+    let location = state.spheres[this.props.sphereId].locations[this.props.locationId];
+    if (location.config.fingerPrintRaw !== null) { return; } // there already is a fingerprint, dont show animated training icon.
+
+    // this will show a one-time popup for localization
+    if (state.user.seenRoomFingerprintAlert !== true) {
+      let aiName = state.spheres[this.props.sphereId].config.aiName;
+      this.props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
+      Alert.alert(
+        "Lets teach " + aiName + " how to identify this room!",
+        "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
+        [{text: "OK"}]
+      );
     }
+
+    let iconSize = 25;
+    return (
+      <AlternatingContent
+        style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
+        fadeDuration={500}
+        switchDuration={2000}
+        contentArray={[
+          <View style={[styles.centered, {
+            width:iconSize,
+            height:iconSize, borderRadius:iconSize*0.5,
+            borderWidth:2,
+            borderColor:'#fff',
+            backgroundColor:colors.iosBlue.hex}]} >
+            <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
+          </View>,
+          <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{ label }</Text>
+        ]} />
+    );
   }
 
-  render() {
-    const store = this.props.store;
-    const state = store.getState();
-    this.firmwareVersionsAvailable = state.user.firmwareVersionsAvailable || {};
-    this.tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
-
+  _getTopBar(state) {
     let title = undefined;
+    let enoughCrownstones = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
     if (this.props.locationId !== null) {
       title = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name;
     }
     else {
       title = "Floating Crownstones";
     }
+
+    let rightLabel = undefined;
+    let rightAction = () => { };
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
+
+    if (spherePermissions.editRoom === true && this.props.locationId !== null) {
+      rightLabel = 'Edit';
+      rightAction = () => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId}); };
+    }
+    else if (spherePermissions.editRoom === false && this.props.locationId !== null && enoughCrownstones === true) {
+      rightLabel = 'Train';
+      rightAction = () => {
+        if (this.viewingRemotely === true) {
+          Alert.alert("You're not in the Sphere", "Training is only possible if you're in the Sphere. Try again when you are.", [{text:"OK"}])
+        }
+        else {
+          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
+        }
+      };
+    }
+
+    return (
+      <TopBar
+        title={ title }
+        right={ rightLabel }
+        rightItem={ this._getRightItem(state, enoughCrownstones, rightLabel) }
+        rightAction={ rightAction }
+        leftAction={ () => { Actions.pop(); }}
+      />
+    );
+  }
+
+  render() {
+    const store = this.props.store;
+    const state = store.getState();
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
@@ -324,7 +327,6 @@ export class RoomOverview extends Component<any, any> {
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
     let stones = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
-    let userAdmin = getUserLevelInSphere(state, this.props.sphereId) === 'admin';
     let canDoLocalization = canUseIndoorLocalizationInSphere(state, this.props.sphereId);
 
     // if we're the only crownstone and in the floating crownstones overview, assume we're always present.
@@ -339,11 +341,12 @@ export class RoomOverview extends Component<any, any> {
     }
     else {
       let {stoneArray, ids} = this._getStoneList(stones);
-      this._getNearestStoneInRoom(stoneArray, ids);
+      this._setNearestStoneInRoom(stoneArray, ids);
+      this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
       content = (
-        <View>
+        <Animated.View style={{height: this.state.scrollViewHeight}}>
           <ScrollView style={{position:'relative', top:-1}}>
-            <View style={{height: Math.max(Object.keys(stoneArray).length*85+ 300, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
+            <View style={{height: Math.max(Object.keys(stoneArray).length*85+200, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
               <SeparatedItemList
                 items={stoneArray}
                 ids={ids}
@@ -352,20 +355,13 @@ export class RoomOverview extends Component<any, any> {
               />
             </View>
           </ScrollView>
-        </View>
+        </Animated.View>
       );
     }
 
     return (
       <Background hideTopBar={true} image={backgroundImage}>
-        <TopBar
-          title={title}
-          right={userAdmin === true && this.props.locationId !== null ? 'Edit' : undefined}
-          rightItem={this.getRightItem(state, userAdmin)}
-          rightAction={() => { (Actions as any).roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId})}}
-          leftAction={ () => { Actions.pop({refresh: {test:true }}); }}
-          showHamburgerMenu={true}
-        />
+        { this._getTopBar(state) }
         <RoomBanner
           presentUsers={users}
           noCrownstones={amountOfStonesInRoom === 0}
@@ -384,17 +380,33 @@ export class RoomOverview extends Component<any, any> {
           locationId={ this.props.locationId }
         />
         {content}
+        <RoomBottomExplanation
+          sphereId={ this.props.sphereId }
+          locationId={ this.props.locationId }
+        />
       </Background>
     );
   }
 
-  _getNearestStoneInRoom(stoneArray, ids) {
+  _setNearestStoneInRoom(stoneArray, ids) {
     let rssi = -1000;
     for (let i = 0; i < stoneArray.length; i++) {
       let stone = stoneArray[i].stone;
       if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
         rssi = stone.config.rssi;
-        this.nearestStoneId = ids[i];
+        this.nearestStoneIdInRoom = ids[i];
+      }
+    }
+  }
+
+  _setNearestStoneInSphere(allStones) {
+    let rssi = -1000;
+    let stoneIds = Object.keys(allStones);
+    for (let i = 0; i < stoneIds.length; i++) {
+      let stone = allStones[stoneIds[i]];
+      if (stone && stone.config && stone.config.rssi && rssi < stone.config.rssi && stone.config.disabled === false) {
+        rssi = stone.config.rssi;
+        this.nearestStoneIdInSphere = stoneIds[i];
       }
     }
   }

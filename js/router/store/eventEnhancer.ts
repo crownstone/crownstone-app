@@ -30,7 +30,7 @@ export function EventEnhancer({ getState }) {
     // Call the next dispatch method in the middleware chain.
     let returnValue = next(action);
     let eventData = {};
-    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}};
+    let affectedIds = {locationIds:{}, sphereIds:{}, stoneIds:{}, applianceIds:{}, threadIds:{} , scheduleIds:{}};
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         let { data, ids } = checkAction(action, affectedIds);
@@ -55,10 +55,12 @@ export function EventEnhancer({ getState }) {
 function checkAction(action, affectedIds) {
   let eventStatus = {};
 
-  if (action.locationId)  { affectedIds.locationIds[action.locationId] = true; }
-  if (action.sphereId)    { affectedIds.sphereIds[action.sphereId] = true; }
-  if (action.stoneId)     { affectedIds.stoneIds[action.stoneId] = true; }
+  if (action.locationId)  { affectedIds.locationIds[action.locationId]   = true; }
+  if (action.sphereId)    { affectedIds.sphereIds[action.sphereId]       = true; }
+  if (action.stoneId)     { affectedIds.stoneIds[action.stoneId]         = true; }
   if (action.applianceId) { affectedIds.applianceIds[action.applianceId] = true; }
+  if (action.threadId)    { affectedIds.threadIds[action.threadId]       = true; }
+  if (action.scheduleId)  { affectedIds.scheduleIds[action.scheduleId]   = true; }
 
   switch (action.type) {
     case 'SET_ACTIVE_SPHERE':
@@ -95,7 +97,7 @@ function checkAction(action, affectedIds) {
     case 'USER_EXIT_LOCATION':
       eventStatus['userPositionUpdate'] = affectedIds;
       break;
-    case 'CLEAR_USERS':
+    case 'CLEAR_USERS_IN_LOCATION':
       eventStatus['changeUsers'] = affectedIds;
       break;
     case 'UPDATE_LOCATION_FINGERPRINT':
@@ -111,7 +113,8 @@ function checkAction(action, affectedIds) {
       eventStatus['updateLocationConfig'] = affectedIds; break;
     case 'SET_SPHERE_STATE':
       eventStatus['changeSphereState'] = affectedIds; break;
-    case 'SET_SPHERE_KEYS': break;
+    case 'SET_SPHERE_KEYS':
+      eventStatus['setKeys'] = affectedIds; break;
     case 'ADD_SPHERE':
       eventStatus['addSphere'] = affectedIds;
       eventStatus['changeSpheres'] = affectedIds;
@@ -143,14 +146,21 @@ function checkAction(action, affectedIds) {
       eventStatus['addStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
     case 'UPDATE_STONE_CONFIG':
+    case 'UPDATE_STONE_ERRORS':
+    case 'RESET_STONE_ERRORS':
+    case 'CLEAR_STONE_ERRORS':
       eventStatus['updateStoneConfig'] = affectedIds; break;
     case 'UPDATE_STONE_LOCATION':
       eventStatus['stoneLocationUpdated'] = affectedIds; break;
     case 'CLEAR_STONE_USAGE':
     case 'UPDATE_STONE_STATE':
     case 'UPDATE_STONE_SWITCH_STATE':
+    case 'REMOVE_ALL_POWER_USAGE':
+    case 'REMOVE_POWER_USAGE_DATE':
       eventStatus['powerUsageUpdated'] = affectedIds;
       eventStatus['stoneUsageUpdated'] = affectedIds; break;
+    case 'UPDATE_STONE_REMOTE_TIME':
+      eventStatus['stoneTimeUpdated'] = affectedIds; break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeExit':
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onRoomEnter':
@@ -161,9 +171,10 @@ function checkAction(action, affectedIds) {
     case "UPDATE_STONE_RSSI":
       eventStatus['stoneRssiUpdated'] = affectedIds; break;
     case 'ADD_STONE_SCHEDULE':
-    case 'UPDATE_STONE_SCHEDULE':
     case 'REMOVE_STONE_SCHEDULE':
-      break;
+      eventStatus['changeStoneSchedule'] = affectedIds;
+    case 'UPDATE_STONE_SCHEDULE':
+      eventStatus['updateStoneSchedule'] = affectedIds; break;
     case 'REMOVE_STONE':
       eventStatus['removeStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
@@ -175,17 +186,35 @@ function checkAction(action, affectedIds) {
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus['changeUserData'] = affectedIds; break;
     case "SET_DEVELOPER_MODE":
-    case "SET_LOGGING":
       eventStatus['changeUserDeveloperStatus'] = true; break;
+    case "SET_LOGGING":
+    case 'SET_DEVELOPER_MODE':
+    case 'SET_LOGGING':
+    case 'REVERT_LOGGING_DETAILS':
+    case 'DEFINE_LOGGING_DETAILS':
+      eventStatus['changeDeveloperData'] = affectedIds; break;
     case "ADD_DEVICE":
     case "UPDATE_DEVICE_CONFIG":
+    case "CLEAR_DEVICE_DETAILS":
     case "REMOVE_DEVICE":
+      eventStatus['changeDeviceData'] = affectedIds; break;
+    case "SET_SPHERE_MESSAGE_STATE":
+      eventStatus['changeMessageState'] = affectedIds; break;
+    case "ADD_MESSAGE":
+    case "ADD_CLOUD_MESSAGE":
+      eventStatus['addedMessage'] = affectedIds;
+    case "APPEND_MESSAGE":
+    case "READ_MESSAGE":
+    case "RECEIVED_MESSAGE":
+    case "REMOVE_MESSAGE":
+    case "I_READ_MESSAGE":
+      eventStatus['changeMessage'] = affectedIds; break;
+    case "I_RECEIVED_MESSAGE":
+      eventStatus['iChangedMessage'] = affectedIds; break;
     case "HYDRATE":
     case "USER_LOGGED_OUT_CLEAR_STORE":
     case "CREATE_APP_IDENTIFIER":
     case 'SET_TAP_TO_TOGGLE_CALIBRATION':
-    case 'SET_DEVELOPER_MODE':
-    case 'SET_LOGGING':
     case 'SET_BETA_ACCESS':
     case 'RESET_SPHERE_STATE':
     case 'SET_APP_IDENTIFIER':
@@ -194,9 +223,69 @@ function checkAction(action, affectedIds) {
     case 'SET_NEW_FIRMWARE_VERSIONS':
     case 'REFRESH_DEFAULTS':
     case 'UPDATE_STONE_DFU_RESET':
+    case 'ADD_INSTALLATION':
+    case 'UPDATE_INSTALLATION_CONFIG':
+    case 'UPDATED_STONE_TIME':
+    case 'SET_NOTIFICATION_TOKEN':
+    case 'SET_BATCH_SYNC_POWER_USAGE':
+    case 'SET_DAY_SYNC_POWER_USAGE':
+    case 'ADD_POWER_USAGE':
+    case 'ADD_BATCH_POWER_USAGE':
       break;
+    case 'UPDATE_APP_SETTINGS':
+      eventStatus['changeAppSettings'] = affectedIds; break;
     case 'UPDATE_MESH_NETWORK_ID':
       eventStatus['meshIdUpdated'] = affectedIds; break;
+    case "CLOUD_EVENT_REMOVE_APPLIANCES":
+    case "CLOUD_EVENT_REMOVE_LOCATIONS":
+    case "CLOUD_EVENT_REMOVE_STONES":
+    case "CLOUD_EVENT_REMOVE_SCHEDULES":
+    case "CLOUD_EVENT_REMOVE_INSTALLATIONS":
+    case "CLOUD_EVENT_REMOVE_DEVICES":
+    case "CLOUD_EVENT_REMOVE_MESSAGES":
+    case "CLOUD_EVENT_SPECIAL_APPLIANCES":
+    case "CLOUD_EVENT_SPECIAL_LOCATIONS":
+    case "CLOUD_EVENT_SPECIAL_STONES":
+    case "CLOUD_EVENT_SPECIAL_SCHEDULES":
+    case "CLOUD_EVENT_SPECIAL_INSTALLATIONS":
+    case "CLOUD_EVENT_SPECIAL_DEVICES":
+    case "CLOUD_EVENT_SPECIAL_MESSAGES":
+    case "FINISHED_CREATE_APPLIANCES":
+    case "FINISHED_CREATE_LOCATIONS":
+    case "FINISHED_CREATE_STONES":
+    case "FINISHED_CREATE_SCHEDULES":
+    case "FINISHED_CREATE_INSTALLATIONS":
+    case "FINISHED_CREATE_DEVICES":
+    case "FINISHED_CREATE_MESSAGES":
+    case "FINISHED_UPDATE_APPLIANCES":
+    case "FINISHED_UPDATE_LOCATIONS":
+    case "FINISHED_UPDATE_STONES":
+    case "FINISHED_UPDATE_SCHEDULES":
+    case "FINISHED_UPDATE_INSTALLATIONS":
+    case "FINISHED_UPDATE_DEVICES":
+    case "FINISHED_UPDATE_MESSAGES":
+    case "FINISHED_REMOVE_APPLIANCES":
+    case "FINISHED_REMOVE_LOCATIONS":
+    case "FINISHED_REMOVE_STONES":
+    case "FINISHED_REMOVE_SCHEDULES":
+    case "FINISHED_REMOVE_INSTALLATIONS":
+    case "FINISHED_REMOVE_DEVICES":
+    case "FINISHED_REMOVE_MESSAGES":
+    case "FINISHED_SPECIAL_APPLIANCES":
+    case "FINISHED_SPECIAL_LOCATIONS":
+    case "FINISHED_SPECIAL_STONES":
+    case "FINISHED_SPECIAL_SCHEDULES":
+    case "FINISHED_SPECIAL_INSTALLATIONS":
+    case "FINISHED_SPECIAL_DEVICES":
+    case "FINISHED_SPECIAL_MESSAGES":
+      break;
+    case "UPDATE_SCHEDULE_CLOUD_ID":
+    case "UPDATE_MESSAGE_CLOUD_ID":
+    case "UPDATE_APPLIANCE_CLOUD_ID":
+    case "UPDATE_LOCATION_CLOUD_ID":
+    case "UPDATE_STONE_CLOUD_ID":
+    case "UPDATE_SPHERE_CLOUD_ID":
+      break;
     default:
       LOG.warn("UNKNOWN ACTION TYPE:", action);
   }

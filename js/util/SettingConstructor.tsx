@@ -17,7 +17,8 @@ import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
-import {MESH_ENABLED} from "../ExternalConfig";
+import { MESH_ENABLED } from "../ExternalConfig";
+import {AlternatingContent} from "../views/components/animated/AlternatingContent";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -25,38 +26,76 @@ const getIcon = function(name : string, size : number, iconColor: string, backgr
     return <Icon name={name} size={size} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />
   }
   else {
-    return <IconButton name={name} size={size} button={true} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
+    return <IconButton name={name} size={size} color={iconColor} buttonStyle={{backgroundColor:backgroundColor}}/>
   }
 };
 
-const insertExplanation = function(items: any[], label : string, below : boolean = false, style? : any) {
+
+const getAlternatingIcons = function(names : string[], sizes : number[], iconColors: string[], backgroundColors : string[]) {
+  if (Platform.OS === 'android') {
+    return (
+      <AlternatingContent
+        style={{width: 25, height:25, marginLeft:2}}
+        fadeDuration={500}
+        switchDuration={2000}
+        contentArray={[
+          getIcon(names[0], sizes[0], iconColors[0], backgroundColors[0]),
+          getIcon(names[1], sizes[1], iconColors[1], backgroundColors[1])
+        ]}
+      />
+    );
+  }
+  else {
+    return (
+      <AlternatingContent
+        style={{width: 30, height:30, backgroundColor: backgroundColors[0], borderRadius: 6}}
+        fadeDuration={500}
+        switchDuration={2000}
+        contentArray={[
+          getIcon(names[0], sizes[0], iconColors[0], backgroundColors[0]),
+          getIcon(names[1], sizes[1], iconColors[1], backgroundColors[1])
+        ]}
+      />
+    );
+  }
+};
+
+const insertExplanation = function(items: any[], label : string, below : boolean = false, alreadyPadded : boolean = false) {
   if (Platform.OS === 'ios') {
-    items.push({type: 'explanation', label: label, below: below});
+    items.push({type: 'explanation', label: label, below: below, alreadyPadded: alreadyPadded});
   }
 };
 
 export const SettingConstructor = function(store, state, eventBus) {
   let items = [];
 
-  insertExplanation(items, 'UPDATE YOUR PROFILE', false);
+  insertExplanation(items, 'MY PROFILE', false);
   items.push({
     id: 'My Account',
     label: 'My Account',
     icon: getIcon('ios-body', 23, colors.white.hex, colors.purple.hex),
     type: 'navigation',
     callback: () => {
-      (Actions as any).settingsProfile()
+      Actions.settingsProfile()
     }
   });
+  items.push({
+    id:'Privacy',
+    label:'Privacy',
+    icon: getIcon('ios-eye', 27, colors.white.hex, colors.darkPurple.hex),
+    type: 'navigation',
+    callback:() => { Actions.settingsPrivacy(); }
+  });
+  insertExplanation(items, 'You are in control of which data is shared with the cloud.', true);
 
-  insertExplanation(items, 'CONFIGURATION', false);
+  insertExplanation(items, 'CONFIGURATION', false, true);
   if (Object.keys(state.spheres).length > 0) {
     items.push({
       id: 'Spheres',
       label: 'Spheres',
-      icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
+      icon: getIcon('c1-sphere', 21.5, colors.white.hex, colors.blue.hex),
       type: 'navigation',
-      callback: () => { (Actions as any).settingsSphereOverview() }
+      callback: () => { Actions.settingsSphereOverview() }
     });
   }
   else {
@@ -66,7 +105,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       icon: getIcon('ios-home', 22, colors.white.hex, colors.blue.hex),
       type: 'navigation',
       callback: () => {
-        createNewSphere(eventBus, store, state.user.firstName).catch(() => {});
+        createNewSphere(eventBus, store, state.user.firstName+"'s Sphere").catch(() => {});
       }
     });
   }
@@ -78,12 +117,20 @@ export const SettingConstructor = function(store, state, eventBus) {
       type: 'navigation',
       style: {color: '#000'},
       icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { (Actions as any).settingsMeshOverview(); }
+      callback: () => { Actions.settingsMeshOverview(); }
     });
   }
 
-  let presentSphere = Util.data.getPresentSphere(state);
-  if (presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere)) {
+  items.push({
+    id: 'App Settings',
+    label: 'App Settings',
+    type: 'navigation',
+    style: {color: '#000'},
+    icon: getAlternatingIcons(['ios-cog','ios-battery-full'],[25,25],[colors.white.hex, colors.white.hex],[colors.darkBackground.hex, colors.darkBackground.hex]) ,
+    callback: () => { Actions.settingsApp(); }
+  });
+
+  if (state.app.tapToToggleEnabled !== false) {
     let tapToToggleSettings = { tutorial: false };
     if (Util.data.getTapToToggleCalibration(state)) {
       tapToToggleSettings.tutorial = true;
@@ -98,20 +145,52 @@ export const SettingConstructor = function(store, state, eventBus) {
     });
   }
 
+  items.push({
+    id: 'whats new',
+    label: Platform.OS === 'android' ? "What's new?" : "What's new in this version?",
+    type: 'button',
+    style: {color: '#000'},
+    icon: getIcon('md-bulb', 23, colors.white.hex, colors.green.hex),
+    callback: () => { eventBus.emit("showWhatsNew"); }
+  });
+
   insertExplanation(items, 'TROUBLESHOOTING', false);
+  items.push({
+    id:'Add',
+    label:'Add a Crownstone',
+    type:'navigation',
+    icon: getIcon('md-add-circle', 22, colors.white.hex, colors.green2.hex),
+    callback: () => {
+      Alert.alert(
+        "Adding a Crownstone",
+        "Plug the new Crownstone in and hold your phone close (touching it) to it. It will show up in the overview.\n\nIf you press OK we will take you to the overview.",
+        [{text:'OK', onPress: () => {
+          if (Platform.OS === 'ios') {
+            Actions.overview();
+          }
+          else {
+            Actions.refresh({key: 'drawer', open: false });
+            Actions.sphereOverview();
+          }
+        }}]
+     );
+    }
+  });
   items.push({
     id:'Help',
     label:'Help',
     type:'navigation',
-    icon: getIcon('ios-help-circle', 22, colors.white.hex, colors.green2.hex),
-    callback: () => { Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {})}
+    icon: getIcon('md-help-circle', 22, colors.white.hex, colors.csBlue.hex),
+    callback: () => {
+      Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
+    }
   });
   items.push({
     id: 'Recover a Crownstone',
     label: 'Recover a Crownstone',
     icon: getIcon('c1-socket2', 23, colors.white.hex, colors.menuTextSelected.hex),
     type: 'navigation',
-    callback: () => { (Actions as any).settingsPluginRecoverStep1(); }
+    callback: () => { Actions.settingsPluginRecoverStep1(); }
   });
   insertExplanation(items, 'If you want to reset a Crownstone because it is not responding correctly, recover it!', true);
 

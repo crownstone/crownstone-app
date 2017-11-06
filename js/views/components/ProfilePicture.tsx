@@ -18,29 +18,20 @@ export class ProfilePicture extends Component<any, any> {
     let innerSize = this.props.innerSize || size;
     if (this.props.picture !== undefined && this.props.picture !== null) {
       let pictureURI = preparePictureURI(this.props.picture);
-      let borderWidth = 0.07*size;
-      LOG.info("PICTURE SIZE: ", size, "pictureURI", pictureURI);
+      let borderWidth = this.props.borderWidth || 0.07*size;
       return (
         <View style={this.props.style}>
-        <View style={{
-            paddingRight: 10,
+          <Image style={{
             width:size,
             height:size,
-            borderRadius:0.5*size,
+            padding: 0,
+            margin:  0,
+            borderRadius: 0.5*size,
             borderWidth:borderWidth,
-            borderColor:"#fff"}}>
-          <Image style={{
-            width:size-2*borderWidth,
-            height:size-2*borderWidth,
-            padding:0,
-            margin:0,
-            borderRadius:0.5*(size-2*borderWidth),
-            backgroundColor: '#fff',
-            // borderColor: colors.menuBackground.hex,
-            // borderWidth: size/30
-            }} source={{uri:pictureURI}}
+            borderColor: colors.white.hex,
+            backgroundColor: 'transparent',
+          }} source={{uri:pictureURI}}
           />
-        </View>
           {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
         </View>
       );
@@ -48,22 +39,22 @@ export class ProfilePicture extends Component<any, any> {
     else {
       return (
         <View style={this.props.style}>
-        <View style={[{
-              backgroundColor:'#fff',
-              width:size,
-              height:size,
-              borderRadius:0.5*size,
-              overflow:'hidden',
-              alignItems:'center',
-              justifyContent:'center'
-             }]}>
-          <Icon
-            name={this.props.placeHolderIcon || 'ios-contact'}
-            size={innerSize} color={this.props.color || colors.menuBackground.hex}
-            style={{paddingTop: Platform.OS === 'android' ? 0 : 0.1*size, margin:0}}
-          />
-        </View>
-        {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
+          <View style={[{
+            backgroundColor:'#fff',
+            width:size,
+            height:size,
+            borderRadius:0.5*size,
+            overflow:'hidden',
+            alignItems:'center',
+            justifyContent:'center'
+           }]}>
+            <Icon
+              name={this.props.placeHolderIcon || 'ios-contact'}
+              size={innerSize} color={this.props.color || colors.menuBackground.hex}
+              style={{paddingTop: Platform.OS === 'android' ? 0 : 0.1*size, margin:0}}
+            />
+          </View>
+          {this.props.name ? <Text style={nameStyle}>{this.props.name}</Text> : undefined}
         </View>
       );
     }

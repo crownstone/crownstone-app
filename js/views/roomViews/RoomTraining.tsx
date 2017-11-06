@@ -18,12 +18,12 @@ import { FingerprintManager } from '../../native/localization/FingerprintManager
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import { Background } from '../components/Background'
-import { getAiData } from '../../util/DataUtil';
 import { LOG } from '../../logging/Log'
 
 import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'
 import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
 import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
+import { Util } from "../../util/Util";
 
 
 export class RoomTraining extends Component<any, any> {
@@ -157,11 +157,12 @@ export class RoomTraining extends Component<any, any> {
 
   render() {
     let state  = this.props.store.getState();
-    let ai = getAiData(state, this.props.sphereId);
+    let ai = Util.data.getAiData(state, this.props.sphereId);
+    let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
     let content = undefined;
     if (this.state.phase === 0) {
-      content = <RoomTraining_explanation ai={ai} next={() => {this.setState({phase:1}); this.start(); }} sampleSize={this.props.sampleSize} roomSize={this.props.roomSize} />
+      content = <RoomTraining_explanation ai={ai} next={() => {this.setState({phase:1}); this.start(); }} sampleSize={this.props.sampleSize} roomSize={this.props.roomSize} roomName={roomName} />
     }
     else if (this.state.phase === 1) {
       content = (
@@ -189,7 +190,7 @@ export class RoomTraining extends Component<any, any> {
     }
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.main}>
+      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         {content}
       </Background>
     );

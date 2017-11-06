@@ -1,38 +1,41 @@
 /**
  * Created by alex on 25/08/16.
  */
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {cloudApiBase} from "./cloudApiBase";
 
 export const appliances = {
 
-  getAppliancesInSphere: function(options) {
-    return this._setupRequest('GET', '/Spheres/{id}/ownedAppliances', options);
+  getAppliancesInSphere: function(background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/ownedAppliances', background);
   },
 
-  createAppliance: function (applianceName, sphereId, icon) {
+  createAppliance: function (data, background = true) {
     return this._setupRequest(
       'POST',
       '/Spheres/{id}/ownedAppliances',
-      {data: {name: applianceName, sphereId:sphereId, icon: icon}},
+      {data: data, background: background},
       'body'
     );
   },
 
-  updateAppliance: function (applianceId, data, background = true) {
+  updateAppliance: function (localApplianceId, data, background = true) {
+    let cloudApplianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Spheres/{id}/ownedAppliances/' + applianceId,
+      '/Spheres/{id}/ownedAppliances/' + cloudApplianceId,
       {background: background, data: data},
       'body'
     );
   },
 
-  deleteAppliance: function (applianceId) {
-    if (applianceId) {
+  deleteAppliance: function (localApplianceId) {
+    let cloudApplianceId = MapProvider.local2cloudMap.appliances[localApplianceId] || localApplianceId; // the OR is in case a cloudId has been put into this method.
+    if (cloudApplianceId) {
       return this._setupRequest(
         'DELETE',
-        '/Spheres/{id}/ownedAppliances/' + applianceId,
+        '/Spheres/{id}/ownedAppliances/' + cloudApplianceId,
       );
     }
   },
-
 };

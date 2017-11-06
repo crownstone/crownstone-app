@@ -8,6 +8,7 @@ test('dawn', function (t) {
   // get today's sunlight times for London
   var times = SunCalc.getTimes(new Date(), lat, lon);
 
+
   let keys = Object.keys(times);
   keys.forEach((key) => {
     console.log(key, times[key].valueOf(), new Date(times[key]))

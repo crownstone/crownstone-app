@@ -1,6 +1,7 @@
+import { Platform } from 'react-native'
 import { AMOUNT_OF_CROWNSTONES_FOR_INDOOR_LOCALIZATION } from '../ExternalConfig'
 import { LOG } from '../logging/Log'
-import { stoneTypes } from '../router/store/reducers/stones'
+import { STONE_TYPES } from '../router/store/reducers/stones'
 
 import { Alert } from 'react-native';
 
@@ -73,6 +74,14 @@ export const DataUtil = {
     return null;
   },
 
+  getDevice: function(state) {
+    let deviceId = this.getDeviceIdFromState(state, state.user.appIdentifier);
+    if (state.devices && deviceId && state.devices[deviceId]) {
+      return state.devices[deviceId];
+    }
+    return null;
+  },
+
   getPresentSphere: function(state) {
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {
@@ -120,12 +129,62 @@ export const DataUtil = {
    * @returns {*}
    */
   getElement: function(sphere, stone) {
-    if (stone.config.applianceId) {
+    if (stone.config.applianceId && sphere.appliances[stone.config.applianceId]) {
       return sphere.appliances[stone.config.applianceId];
+    }
+    else if (stone.config.applianceId) {
+      LOG.error("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId);
     }
     else {
       return stone;
     }
+  },
+
+  /**
+   * If the stone has an appliance, return that appliance, otherwise return the stone. This gets you the item that
+   * contains the active behaviour
+   * @param sphere
+   * @param stone
+   * @returns {*}
+   */
+  getLocationFromStone: function(sphere, stone) {
+    if (stone.config.locationId && sphere.locations[stone.config.locationId]) {
+      return sphere.locations[stone.config.locationId];
+    }
+    else {
+      return null;
+    }
+  },
+
+  getUserLocation(state, userId) {
+    let presentSphereId = null;
+    let presentLocationId = null;
+
+    // first we determine in which sphere we are:
+    let sphereIds = Object.keys(state.spheres);
+    for (let i = 0; i < sphereIds.length; i++) {
+      if (state.spheres[sphereIds[i]].config.present === true) {
+        presentSphereId = sphereIds[i];
+      }
+    }
+
+    // if the user is in a sphere, search for his location.
+    if (presentSphereId) {
+      presentLocationId = DataUtil.getUserLocationIdInSphere(state, presentSphereId, userId);
+    }
+
+    return { sphereId: presentSphereId, locationId: presentLocationId };
+  },
+
+  getUserLocationIdInSphere: function(state, sphereId, userId) {
+    let locationIds = Object.keys(state.spheres[sphereId].locations);
+    for (let i = 0; i < locationIds.length; i++) {
+      let location = state.spheres[sphereId].locations[locationIds[i]];
+      if (location.presentUsers.indexOf(userId) !== -1) {
+        return locationIds[i];
+      }
+    }
+    return null;
   },
 
 
@@ -134,7 +193,7 @@ export const DataUtil = {
     let stoneIds = Object.keys(stones);
 
     for (let i = 0; i < stoneIds.length; i++) {
-      if (stones[stoneIds[i]].config.type === stoneTypes.plug) {
+      if (stones[stoneIds[i]].config.type === STONE_TYPES.plug) {
         return true;
       }
     }
@@ -160,9 +219,14 @@ export const DataUtil = {
   getDeviceSpecs: function(state) {
     let address = state.user.appIdentifier;
     let name = DeviceInfo.getDeviceName();
-    let description = DeviceInfo.getManufacturer() + "," + DeviceInfo.getBrand() + "," + DeviceInfo.getDeviceName();
+    let description = DeviceInfo.getManufacturer() + " : " + DeviceInfo.getBrand() + ' : ' + DeviceInfo.getDeviceId();
+    let os = DeviceInfo.getSystemName() + ' ' + DeviceInfo.getSystemVersion();
+    let deviceType = DeviceInfo.getDeviceId();
+    let model = DeviceInfo.getModel();
+    let userAgent = DeviceInfo.getUserAgent();
+    let locale = DeviceInfo.getDeviceLocale();
 
-    return { name, address, description };
+    return { name, address, description, os, userAgent, locale, deviceType, model };
   },
 
   getCurrentDeviceId: function(state) {
@@ -174,9 +238,89 @@ export const DataUtil = {
         return deviceIds[i];
       }
     }
-    return undefined;
+    return null;
   },
 
+  getAiData: function(state, sphereId) {
+    let sexes = {
+      his: { male:'his', female:'her' },
+      him: { male:'him', female:'her' },
+      he:  { male:'he',  female:'she' },
+    };
+
+    if (sphereId) {
+      if (!state.spheres[sphereId].config.aiSex) {
+        return {
+          name: state.spheres[sphereId].config.aiName || 'AI',
+          his: 'her',
+          him: 'her',
+          he:  'she',
+        }
+      }
+      return {
+        name: state.spheres[sphereId].config.aiName,
+        his: sexes.his[state.spheres[sphereId].config.aiSex],
+        him: sexes.him[state.spheres[sphereId].config.aiSex],
+        he:  sexes.he[state.spheres[sphereId].config.aiSex],
+      }
+    }
+    else {
+      return {
+        name: 'AI',
+        his: 'her',
+        him: 'her',
+        he:  'she',
+      }
+    }
+  },
+
+
+  getSpheresWhereUserHasAccessLevel: function(state, accessLevel) {
+    let items = [];
+    for (let sphereId in state.spheres) {
+      if (state.spheres.hasOwnProperty(sphereId)) {
+        let sphere = state.spheres[sphereId];
+        // there can be a race condition where the current user is yet to be added to spheres but a redraw during the creation process triggers this method
+        if (sphere.users[state.user.userId] && sphere.users[state.user.userId].accessLevel === accessLevel) {
+          items.push({id: sphereId, name: sphere.config.name});
+        }
+      }
+    }
+    return items;
+  },
+
+
+  getUserLevelInSphere: function(state, sphereId) {
+    if (!(state && state.user && state.user.userId)) {
+      return null;
+    }
+    let userId = state.user.userId;
+
+    if (!(
+      state.spheres &&
+      state.spheres[sphereId] &&
+      state.spheres[sphereId].users &&
+      state.spheres[sphereId].users[userId])) {
+      return null;
+    }
+
+    if (state.spheres[sphereId].users[userId])
+      return state.spheres[sphereId].users[userId].accessLevel;
+    else {
+      if (state.spheres[sphereId].config.adminKey !== null) {
+        LOG.error("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
+        return 'admin';
+      }
+      else if (state.spheres[sphereId].config.memberKey !== null) {
+        LOG.error("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
+        return 'member';
+      }
+      else if (state.spheres[sphereId].config.guestKey !== null) {
+        LOG.error("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
+        return 'guest';
+      }
+    }
+  },
 };
 
 export const getAmountOfStonesInLocation = function(state, sphereId, locationId) {
@@ -291,42 +435,6 @@ export const getLocationNamesInSphere = function(state, sphereId) {
 };
 
 
-export const getSpheresWhereUserHasAccessLevel = function(state, accessLevel) {
-  let items = [];
-  for (let sphereId in state.spheres) {
-    if (state.spheres.hasOwnProperty(sphereId)) {
-      let sphere = state.spheres[sphereId];
-      // there can be a race condition where the current user is yet to be added to spheres but a redraw during the creation process triggers this method
-      if (sphere.users[state.user.userId] && sphere.users[state.user.userId].accessLevel === accessLevel) {
-        items.push({id: sphereId, name: sphere.config.name});
-      }
-    }
-  }
-  return items;
-};
-
-
-export const getUserLevelInSphere = function(state, sphereId) {
-  let userId = state.user.userId;
-  if (state.spheres[sphereId].users[userId])
-    return state.spheres[sphereId].users[userId].accessLevel;
-  else {
-    if (state.spheres[sphereId].config.adminKey !== null) {
-      LOG.error("User is admin but is not added to the sphere users. This is likely an issue in the Cloud.");
-      return 'admin';
-    }
-    else if (state.spheres[sphereId].config.memberKey !== null) {
-      LOG.error("User is member but is not added to the sphere users. This is likely an issue in the Cloud.");
-      return 'member';
-    }
-    else if (state.spheres[sphereId].config.guestKey !== null) {
-      LOG.error("User is guest but is not added to the sphere users. This is likely an issue in the Cloud.");
-      return 'guest';
-    }
-  }
-};
-
-
 /**
  * @param state
  * @returns {{}}
@@ -435,32 +543,7 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
   return map;
 }
 
-export const getAiData = function(state, sphereId) {
-  let sexes = {
-    his: { male:'his', female:'her' },
-    him: { male:'him', female:'her' },
-    he:  { male:'he',  female:'she' },
-  };
 
-  if (sphereId) {
-    return {
-      name: state.spheres[sphereId].config.aiName,
-      his: sexes.his[state.spheres[sphereId].config.aiSex],
-      him: sexes.him[state.spheres[sphereId].config.aiSex],
-      he:  sexes.he[state.spheres[sphereId].config.aiSex],
-    }
-  }
-  else {
-    return {
-      name: 'AI',
-      his: 'her',
-      him: 'her',
-      he:  'she',
-    }
-  }
-
-
-};
 
 export const prepareStoreForUser = function(store) {
   const state = store.getState();
@@ -472,7 +555,7 @@ export const prepareStoreForUser = function(store) {
     let locationIds = Object.keys(locations);
 
     locationIds.forEach((locationId) => {
-      actions.push({type: 'CLEAR_USERS', sphereId: sphereId, locationId: locationId});
+      actions.push({type: 'CLEAR_USERS_IN_LOCATION', sphereId: sphereId, locationId: locationId});
     });
 
     let stones = spheres[sphereId].stones;
@@ -518,6 +601,10 @@ export const disableStones = function(store, sphereId) {
 
 
 export const canUseIndoorLocalizationInSphere = function (state, sphereId) {
+  if (state.app.indoorLocalizationEnabled === false) {
+    return false;
+  }
+
   // if we do not have a sphereId return false
   if (!sphereId || !state)
     return false;

@@ -6,11 +6,12 @@ import {
   View,
 } from 'react-native';
 
-import { NativeBus }    from '../../native/libInterface/NativeBus'
 import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/overlays/OverlayBox'
-import { styles, colors , screenHeight, screenWidth } from '../styles'
+import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
+import {eventBus} from "../../util/EventBus";
+import {NativeBus} from "../../native/libInterface/NativeBus";
 
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
@@ -20,7 +21,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
     this.state = {
       visible: false,
-      notificationType: 'unknown' //"unknown", "off", "foreground", "on"
+      notificationType: 'unknown',
     };
     this.unsubscribe = [];
   }
@@ -31,14 +32,17 @@ export class LocationPermissionOverlay extends Component<any, any> {
         case "off":
           this.setState({visible: true, notificationType: status});
           break;
-        case "foreground":
-          this.setState({visible: true, notificationType: status});
-          break;
         case "on":
           this.setState({visible: false, notificationType: status});
           break;
+        case "unknown":
+          this.setState({visible: true, notificationType: status});
+          break;
+        case "noPermission":
+          this.setState({visible: true, notificationType: status});
+          break;
         default: // "unknown":
-          this.setState({visible: this.state.visible, notificationType: status});
+          this.setState({visible: true, notificationType: status});
           break;
       }
     }));
@@ -57,6 +61,8 @@ export class LocationPermissionOverlay extends Component<any, any> {
         return "Location Services are on!";
       case "off":
         return "Location Services are disabled.";
+      case "noPermission":
+        return "Location permission missing.";
       default: // "unknown":
         return "Starting Location Services ...";
     }
@@ -69,6 +75,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
       case "on":
         return "Everything is great!";
       case "off":
+      case "noPermission":
         return "Without location services, Crownstones cannot respond to your location and the app can\'t communicate with Crownstones correctly. This permission is required for the app to function.";
       default: // "unknown":
         return "This should not take long!";
@@ -78,6 +85,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
     switch (this.state.notificationType) {
       case "foreground":
       case "off":
+      case "noPermission":
         return (
           <TouchableOpacity
             onPress={() => { Bluenet.requestLocationPermission() }}
@@ -88,7 +96,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
               borderWidth: 2,
               borderColor: colors.blue.rgba(0.5),
             }]}>
-            <Text style={{fontSize: 12, color: colors.blue.hex}}>{"Request Permission"}</Text>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.blue.hex}}>{"Request Permission"}</Text>
           </TouchableOpacity>
         );
     }
@@ -97,7 +105,10 @@ export class LocationPermissionOverlay extends Component<any, any> {
 
   render() {
     return (
-      <OverlayBox visible={this.state.visible}>
+      <OverlayBox
+        visible={this.state.visible}
+        overrideBackButton={false}
+      >
         <View style={{flex:1}} />
         <Icon
           name="ios-navigate"

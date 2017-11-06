@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <title>New Syncing</title>
+
+  <script type="text/javascript" src="./js/vis.min.js"></script>
+  <link href="./js/vis-network.min.css" rel="stylesheet" type="text/css" />
+
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+
+    #mynetwork {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+    Overview of flow when a periodic sync occurs
+
+  <div id="mynetwork"></div>
+  <script type="text/javascript">
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+      {id: 'periodicSync', label: 'BGPROCESS: \nFull Sync (periodic)', shape: 'circle', color: '#00607c', font: {color:'#fff'}},
+      {id: 'redux', label: 'Redux Store', shape: 'circle', color: '#ff9c00'},
+      {id: 'es', label: 'Event Sync', shape: 'circle'},
+      {id: 'cloud', label: '            cloud            ', shape: 'database', font: {color:'#fff', vadjust:100, size:25},mass:7, size:200, color: '#a0eb58'},
+
+      {id: 'sphereSyncer', label: 'sphereSyncer', shape: 'circle'},
+      {id: 'locationSyncer', label: 'locationSyncer', shape: 'circle'},
+      {id: 'applianceSyncer', label: 'applianceSyncer', shape: 'circle'},
+      {id: 'deviceSyncer', label: 'deviceSyncer', shape: 'circle'},
+      {id: 'messageSyncer', label: 'messageSyncer', shape: 'circle'},
+      {id: 'scheduleSyncer', label: 'scheduleSyncer', shape: 'circle'},
+      {id: 'sphereUserSyncer', label: 'sphereUserSyncer', shape: 'circle'},
+      {id: 'stoneSyncer', label: 'stoneSyncer', shape: 'circle'},
+      {id: 'userSyncer', label: 'userSyncer', shape: 'circle'},
+
+      {id: 'recoverAccessToken', label: 'recoverAccessToken', shape: 'circle'},
+      {id: 'syncPowerUsage', label: 'syncPowerUsage', shape: 'circle'},
+      {id: 'cleanupPowerUsage', label: 'cleanupPowerUsage', shape: 'circle'},
+      {id: 'syncDone', label: 'syncDone', shape: 'circle'},
+
+      {id: 'checkForMessages', label: 'checkForMessages', shape: 'circle'},
+      {id: 'quitApp', label: 'QUIT THE APP', color:"#f00", shape: 'circle'},
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+      {from: 'periodicSync', to: 'es'},
+      {from: 'es', to: 'recoverAccessToken', label:'onFail', color:"#f00",},
+      {from: 'recoverAccessToken', to: 'es', label:'onRecover',  color: "#a0eb58"},
+      {from: 'es', to: 'userSyncer', label:'onSuccess',  color: "#a0eb58"},
+      {from: 'cloud', to: 'userSyncer', label:'download user & keys'},
+      {from: 'userSyncer', to: 'recoverAccessToken', label:'onFail', color:"#f00",},
+      {from: 'recoverAccessToken', to: 'userSyncer', label:'onRecover', color: "#a0eb58"},
+      {from: 'recoverAccessToken', to: 'quitApp', label:'onFail', color:"#f00",},
+      {from: 'userSyncer', to: 'sphereSyncer', label:'onSuccess',  color: "#a0eb58"},
+      {from: 'sphereSyncer', to: 'deviceSyncer'},
+      {from: 'deviceSyncer', to: 'syncPowerUsage'},
+      {from: 'syncPowerUsage', to: 'cloud', label:'upload in batches'},
+      {from: 'syncPowerUsage', to: 'cleanupPowerUsage'},
+      {from: 'cleanupPowerUsage', to: 'syncDone'},
+      {from: 'syncDone', to: 'redux', label:'store changes from sync'},
+      {from: 'syncDone', to: 'checkForMessages'},
+
+
+      {from: 'cloud', to:'sphereSyncer',    label: 'inSphere'},
+      {from: 'cloud', to:'sphereUserSyncer', label: 'download sphereUsers'},
+      {from: 'cloud', to:'locationSyncer',  label: 'download locations'},
+      {from: 'cloud', to:'applianceSyncer', label: 'download appliances'},
+      {from: 'cloud', to:'stoneSyncer',     label: 'download stones & schedules'},
+      {from: 'cloud', to:'messageSyncer',     label: 'download active messages'},
+
+      {from:'locationSyncer',  to: 'cloud', label: 'upload new data'},
+      {from:'applianceSyncer', to: 'cloud', label: 'upload new data'},
+      {from:'stoneSyncer',     to: 'cloud', label: 'upload new data'},
+      {from:'scheduleSyncer',  to: 'cloud', label: 'upload new data'},
+
+      {from: 'sphereSyncer', to: 'sphereUserSyncer', label: 'inSphere'},
+      {from: 'sphereUserSyncer', to: 'locationSyncer', label: 'inSphere'},
+      {from: 'locationSyncer', to: 'applianceSyncer', label: 'inSphere'},
+      {from: 'applianceSyncer', to: 'stoneSyncer', label: 'inSphere'},
+      {from: 'stoneSyncer', to: 'messageSyncer', label: 'inSphere'},
+      {from: 'stoneSyncer', to: 'scheduleSyncer', label: 'per stone'},
+
+
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+    var options = {
+      layout: { randomSeed: 218704 },
+      edges: {arrows: 'to', font: {align:'middle'}},
+      physics: { barnesHut: { gravitationalConstant: -50000}}};
+    var network = new vis.Network(container, data, options);
+  </script>
+</body>
+</html>

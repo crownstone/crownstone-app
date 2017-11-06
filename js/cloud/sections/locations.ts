@@ -1,31 +1,36 @@
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {cloudApiBase} from "./cloudApiBase";
+
 export const locations = {
-  getLocations: function (options : any = {}) {
-    return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', {...options, data:{filter:{"include":"presentPeople"}}});
+  getLocations: function (background = true) {
+    return this._setupRequest('GET', '/Spheres/{id}/ownedLocations', {background: background, data:{filter:{"include":"presentPeople"}}});
   },
 
-  createLocation: function (locationName, icon) {
+  createLocation: function (data, background = true) {
     return this._setupRequest(
       'POST',
       '/Spheres/{id}/ownedLocations',
-      {data: {name: locationName, icon:icon}},
+      {data: data, background: background},
       'body'
     );
   },
 
-  updateLocation: function (locationId, data, background = true) {
+  updateLocation: function (localLocationId, data, background = true) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'PUT',
-      '/Spheres/{id}/ownedLocations/' + locationId,
+      '/Spheres/{id}/ownedLocations/' + cloudLocationId,
       {background: background, data: data},
       'body'
     );
   },
 
 
-  deleteLocation: function(locationId) {
+  deleteLocation: function(localLocationId) {
+    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'DELETE',
-      '/Spheres/{id}/ownedLocations/' + locationId
+      '/Spheres/{id}/ownedLocations/' + cloudLocationId
     );
   }
 };

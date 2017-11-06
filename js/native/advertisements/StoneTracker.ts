@@ -2,7 +2,6 @@ import { Alert, Vibration } from 'react-native';
 
 import { BleUtil }                            from '../../util/BleUtil'
 import { BluenetPromiseWrapper }              from '../libInterface/BluenetPromise'
-import { INTENTS }                            from '../libInterface/Constants'
 import { StoneStateHandler }                  from './StoneStateHandler'
 import { eventBus }                           from '../../util/EventBus';
 import {
@@ -13,11 +12,12 @@ import { addDistanceToRssi, Util }            from '../../util/Util';
 import { BehaviourUtil }                      from '../../util/BehaviourUtil';
 import { LOG }                                from '../../logging/Log'
 import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
-import { TYPES }                              from '../../router/store/reducers/stones'
-import {FirmwareHandler} from "../firmware/FirmwareHandler";
+import { BEHAVIOUR_TYPES }                    from '../../router/store/reducers/stones'
+import { FirmwareHandler }                    from "../firmware/FirmwareHandler";
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
-let SLIDING_WINDOW_FACTOR = 0.5; // [0.1 .. 1] higher is more responsive
+let SLIDING_WINDOW_FACTOR = 0.2; // [0.1 .. 1] higher is more responsive
 
 
 export class StoneTracker {
@@ -25,14 +25,14 @@ export class StoneTracker {
  store : any;
  temporaryIgnore : boolean;
  temporaryIgnoreTimeout : any;
- tapToToggleDisabled : boolean;
+ tapToToggleDisabledTemporarily : boolean;
 
   constructor(store) {
     this.elements = {};
     this.store = store;
     this.temporaryIgnore = false;
     this.temporaryIgnoreTimeout = undefined;
-    this.tapToToggleDisabled = false;
+    this.tapToToggleDisabledTemporarily = false;
 
     eventBus.on("ignoreTriggers", () => {
       this.temporaryIgnore = true;
@@ -46,7 +46,7 @@ export class StoneTracker {
 
     // if we detect a setup stone, we disable tap to toggle temporarily
     eventBus.on("setupStoneChange", (setupCrownstonesAvailable) => {
-      this.tapToToggleDisabled = setupCrownstonesAvailable;
+      this.tapToToggleDisabledTemporarily = setupCrownstonesAvailable;
     });
   }
 
@@ -121,76 +121,80 @@ export class StoneTracker {
 
     // --------------------- Process the Tap-to-Toggle --------------------------- //
 
-
-    let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
-    // not all stones have touch to toggle enabled
-    if (stone.config.touchToToggle === true && tapToToggleCalibration !== null && FirmwareHandler.isDfuInProgress() === false) {
-      // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
-      // the sign > is because the rssi is negative!
-      if (ref.touchTemporarilyDisabled === true) {
-        // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to re-enable it.
-        // rssi measured must be smaller (-80) < (-49 + -4)
-        let enableDistance = addDistanceToRssi(tapToToggleCalibration, 0.35); // the + 0.35 meter makes sure a stationary phone will not continuously tap-to-toggle
-        if (rssi < enableDistance) {
-          ref.touchTemporarilyDisabled = false;
-        }
-      }
-      else {
-        // LOG.info("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TIME_BETWEEN_TAP_TO_TOGGLES);
-        if (rssi > tapToToggleCalibration && (now - ref.touchTime) > TIME_BETWEEN_TAP_TO_TOGGLES) {
-          if (this.tapToToggleDisabled === false) {
-            LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', tapToToggleCalibration);
-            // notify the user by vibration that the crownstone will be switched.
-            Vibration.vibrate(400, false);
-
-            if (state.user.seenTapToToggle !== true) {
-              this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_ALERT', data: {seenTapToToggle: true}});
-              Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
-            }
-
-            let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
-            proxy.performPriority(BluenetPromiseWrapper.toggleSwitchState)
-              .then((newState) => {
-                let data = {state: newState};
-                if (newState === 0) {
-                  data["currentUsage"] = 0;
-                }
-                this.store.dispatch({
-                  type: 'UPDATE_STONE_SWITCH_STATE',
-                  sphereId: sphereId,
-                  stoneId: stoneId,
-                  data: data
-                });
-              })
-              .catch((err) => {});
-
-            ref.touchTime = now;
-            ref.touchTemporarilyDisabled = true;
-            return;
+    if (state.app.tapToToggleEnabled !== false) {
+      let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
+      // not all stones have touch to toggle enabled
+      if (stone.config.touchToToggle === true && tapToToggleCalibration !== null && FirmwareHandler.isDfuInProgress() === false) {
+        // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
+        // the sign > is because the rssi is negative!
+        if (ref.touchTemporarilyDisabled === true) {
+          // to avoid flipping tap to toggle events: we move out of range (rssi smaller than a threshold) to re-enable it.
+          // rssi measured must be smaller (-80) < (-49 + -4)
+          let enableDistance = addDistanceToRssi(tapToToggleCalibration, 0.35); // the + 0.35 meter makes sure a stationary phone will not continuously tap-to-toggle
+          if (rssi < enableDistance) {
+            ref.touchTemporarilyDisabled = false;
           }
-          else {
-            LOG.info("StoneTracker: Tap to Toggle is disabled.");
-            if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
-              this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
-              Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);
+        }
+        else {
+          // LOG.info("Tap to toggle is on", rssi, TOUCH_RSSI_THRESHOLD, (now - ref.touchTime), TIME_BETWEEN_TAP_TO_TOGGLES);
+          if (rssi > tapToToggleCalibration && (now - ref.touchTime) > TIME_BETWEEN_TAP_TO_TOGGLES) {
+            if (this.tapToToggleDisabledTemporarily === false) {
+              LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', tapToToggleCalibration);
+              // notify the user by vibration that the crownstone will be switched.
+              Vibration.vibrate(400, false);
+
+              if (state.user.seenTapToToggle !== true) {
+                this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_ALERT', data: {seenTapToToggle: true}});
+                Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
+              }
+
+              let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
+              proxy.performPriority(BluenetPromiseWrapper.toggleSwitchState)
+                .then((newState) => {
+                  let data = {state: newState};
+                  if (newState === 0) {
+                    data["currentUsage"] = 0;
+                  }
+                  this.store.dispatch({
+                    type: 'UPDATE_STONE_SWITCH_STATE',
+                    sphereId: sphereId,
+                    stoneId: stoneId,
+                    data: data
+                  });
+                })
+                .catch((err) => {});
+
+              ref.touchTime = now;
+              ref.touchTemporarilyDisabled = true;
+              return;
+            }
+            else {
+              LOG.info("StoneTracker: Tap to Toggle is disabled.");
+              if (state.user.seenTapToToggleDisabledDuringSetup !== true) {
+                this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_DISABLED_ALERT', data: {seenTapToToggleDisabledDuringSetup: true}});
+                Alert.alert("Can't tap to toggle...", "I've disabled tap to toggle while you see a Crownstone in setup mode.", [{text: "OK"}]);
+              }
             }
           }
         }
       }
     }
 
-
     // --------------------- Finished Tap-to-Toggle --------------------------- //
+
+
+
+    // --------------------- Process the NEAR / AWAY events --------------------------- //
+
+    // update local tracking of data
+    ref.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * ref.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
+    ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER ? 1 : 0;
+    let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 1.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
 
     // to avoid flickering we do not trigger these events in less than 5 seconds.
     if ((now - ref.lastTriggerTime) < TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY) {
       return;
     }
-
-
-    // update local tracking of data
-    ref.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * ref.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
-    ref.samples += ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER ? 1 : 0;
 
     // we need a decent sample set.
     if (ref.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER)
@@ -202,52 +206,47 @@ export class StoneTracker {
     }
 
 
-
-    // --------------------- Process the NEAR / AWAY events --------------------------- //
-
-    let farThreshold = addDistanceToRssi(stone.config.nearThreshold, 0.5); // the + 0.5 meter makes sure the user is not defining a place where he will sit: on the threshold.
-
     // these event are only used for when there are no room-level options possible
     if (!canUseIndoorLocalizationInSphere(state, sphereId)) {
       if (ref.rssiAverage >= stone.config.nearThreshold) {
         // only trigger if the last type of event this module triggered was NOT a near event.
-        if (ref.lastTriggerType !== TYPES.NEAR) {
+        if (ref.lastTriggerType !== BEHAVIOUR_TYPES.NEAR) {
           // these callbacks will store the cancelable action when there is a delay and store the type of trigger that was fires last.
           let callbacks = {
             // identify that we triggered the event.
             onTrigger: (sphereId, stoneId) => {
-              ref.lastTriggerType = TYPES.NEAR;
+              ref.lastTriggerType = BEHAVIOUR_TYPES.NEAR;
               ref.lastTriggerTime = new Date().valueOf();
             },
             onCancelled: (sphereId, stoneId) => {
               // in the event that only an away event is configured, reset the trigger after being in the near for RESET_TIMER_FOR_NEAR_AWAY_EVENTS seconds
               // by placing this in the cancelScheduledAwayAction, it will be cleared upon the next time the user enters AWAY.
-              ref.lastTriggerType = TYPES.NEAR;
+              ref.lastTriggerType = BEHAVIOUR_TYPES.NEAR;
               ref.lastTriggerTime = new Date().valueOf();
             }
           };
-          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.NEAR, callbacks);
+          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, BEHAVIOUR_TYPES.NEAR, callbacks);
         }
       }
       // far threshold is 0.5m more than the near one so there is not a single line
       else if (ref.rssiAverage < farThreshold) {
         // only trigger if the last type of event this module triggered was NOT an AWAY event.
-        if (ref.lastTriggerType !== TYPES.AWAY) {
+        if (ref.lastTriggerType !== BEHAVIOUR_TYPES.AWAY) {
           let callbacks = {
             // store the cancellation if we need to use it.
             onTrigger: (sphereId, stoneId) => {
               // identify that we triggered the event
-              ref.lastTriggerType = TYPES.AWAY;
+              ref.lastTriggerType = BEHAVIOUR_TYPES.AWAY;
               ref.lastTriggerTime = new Date().valueOf();
             },
             onCancelled: (sphereId, stoneId) => {
               // in the event that only an away event is configured, reset the trigger after being in the near for RESET_TIMER_FOR_NEAR_AWAY_EVENTS seconds
               // by placing this in the cancelScheduledAwayAction, it will be cleared upon the next time the user enters NEAR.
-              ref.lastTriggerType = TYPES.AWAY;
+              ref.lastTriggerType = BEHAVIOUR_TYPES.AWAY;
               ref.lastTriggerTime = new Date().valueOf();
             }
           };
-          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, TYPES.AWAY, callbacks);
+          BehaviourUtil.enactBehaviour(this.store, sphereId, stoneId, BEHAVIOUR_TYPES.AWAY, callbacks);
         }
       }
       // in case we are between near and far, only clear pending timeouts. They will be placed back on the next event.

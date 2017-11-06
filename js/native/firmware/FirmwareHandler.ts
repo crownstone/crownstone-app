@@ -1,9 +1,7 @@
-import {
-  Platform
-} from 'react-native';
+import { Platform }       from 'react-native';
 import { CLOUD }          from "../../cloud/cloudAPI";
 import { LOG }            from "../../logging/Log";
-import { safeDeleteFile } from "../../util/Util";
+import {safeDeleteFile, Util} from "../../util/Util";
 import { FirmwareHelper } from "./FirmwareHelper";
 
 const RNFS = require('react-native-fs');
@@ -27,14 +25,14 @@ class FirmwareHandlerClass {
       return new Promise((resolve, reject) => { reject("No version available!"); });
     }
     let promises = [];
-    promises.push(CLOUD.getFirmwareDetails(firmwareVersion, hardwareVersion)
+    promises.push(CLOUD.getFirmwareDetails(firmwareVersion, hardwareVersion, false)
       .then((result) => {
         if (result === null) {
           throw "No firmware available.";
         }
         this.newFirmwareDetails = result;
       }));
-    promises.push(CLOUD.getBootloaderDetails(bootloaderVersion, hardwareVersion)
+    promises.push(CLOUD.getBootloaderDetails(bootloaderVersion, hardwareVersion, false)
       .then((result) => {
         if (result === null) {
           throw "No bootloader available.";
@@ -47,10 +45,7 @@ class FirmwareHandlerClass {
 
   download(sourceDetails, type) {
     // set path depending on ios or android
-    let toPath = RNFS.DocumentDirectoryPath + '/' + type + '.zip';
-    if (Platform.OS === 'android') {
-      toPath = RNFS.ExternalDirectoryPath + '/' + type + '.zip';
-    }
+    let toPath = Util.getPath(type + '.zip');
 
     this.paths[type] = toPath;
     // remove the file we will write to if it exists
@@ -95,7 +90,7 @@ class FirmwareHandlerClass {
       })
   }
 
-  getNewVersions(firmwareVersion, bootloaderVersion, hardwareVersion) {
+  downloadNewVersions(firmwareVersion, bootloaderVersion, hardwareVersion) {
     return this.getVersions(firmwareVersion, bootloaderVersion, hardwareVersion)
       .then(() => {
         return this.download(this.newFirmwareDetails,'firmware');

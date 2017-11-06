@@ -64,3 +64,6 @@
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
+
+# Added according to https://github.com/luggit/react-native-config/pull/30/commits/f0ad581f96d9210233e3c8756df38610977a97cd
+-keep class rocks.crownstone.consumerapp.BuildConfig { *; }

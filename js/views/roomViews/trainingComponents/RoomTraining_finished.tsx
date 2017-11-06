@@ -17,7 +17,6 @@ const Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../../components/Topbar'
 import { styles, colors, screenWidth, screenHeight } from '../../styles'
 import { Icon } from '../../components/Icon';
-import { LOG } from '../../../logging/Log'
 
 export class RoomTraining_finished extends Component<any, any> {
   render() {
@@ -26,33 +25,24 @@ export class RoomTraining_finished extends Component<any, any> {
         <TopBar
           leftAction={ this.props.quit }
           title={"All Done!"}/>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,
             fontWeight:'600',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center'
           }}>{"Finished learning about this room!"}</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
             fontWeight:'300',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
           }}>{
-            "Once you have taught " + this.props.ai.name + " all the rooms, " + this.props.ai.he + " will start doing " + this.props.ai.his + " best to determine in which room you are!"}
-          </Text>
-          <Text style={{
-            backgroundColor:'transparent',
-            fontSize:16,
-            fontWeight:'300',
-            color: colors.menuBackground.hex,
-            textAlign:'center',
-            paddingTop:20,
-            paddingBottom:20,
-          }}>Press the button below to go back!
+            "Once you have taught " + this.props.ai.name + " all the rooms, " + this.props.ai.he + " will start doing " + this.props.ai.his + " best to determine in which room you are!\n\nPress the button below to go back!"}
           </Text>
           <View style={{flex:1}} />
           <TouchableOpacity

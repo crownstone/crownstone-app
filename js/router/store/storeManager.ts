@@ -6,7 +6,8 @@ import { CloudEnhancer }                from './cloudEnhancer'
 import { EventEnhancer }                from './eventEnhancer'
 import { eventBus }                     from '../../util/EventBus'
 import { LOG }                          from '../../logging/Log'
-import {Scheduler} from "../../logic/Scheduler";
+import { Scheduler }                    from "../../logic/Scheduler";
+import { refreshDatabase }              from "../../backgroundProcesses/BackgroundProcessHandler";
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
@@ -62,6 +63,7 @@ class StoreManagerClass {
   }
 
   _initializeStore(userId) {
+    LOG.info("StoreManager: initializing Store");
     if (userId === null) {
       this._setupStore({}, false);
     }
@@ -70,7 +72,8 @@ class StoreManagerClass {
       AsyncStorage.getItem(this.storageKey)
         .then((data) => {
           this._setupStore(data, true);
-        });
+        })
+        .catch((err)=>{LOG.error("AsyncStorage: failed to get store", err)});
     }
   }
 
@@ -93,12 +96,12 @@ class StoreManagerClass {
   _setupStore(initialState, enableWriteToDisk) {
     if (initialState && typeof initialState === 'string') {
       let data = JSON.parse(initialState);
-      LOG.info("CURRENT DATA:", data);
+      LOG.info("StoreManager: CURRENT DATA:", data);
       this.store = createStore(enableBatching(CrownstoneReducer), data, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }
     else {
-      LOG.info("Creating an empty database");
+      LOG.info("StoreManager: Creating an empty database");
       this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
       this.store.batchDispatch = batchActions;
     }
@@ -140,13 +143,13 @@ class StoreManagerClass {
           .then((userId) => {
             if (userId) {
               let payload = JSON.stringify(this.store.getState());
-              AsyncStorage.setItem(this.storageKey, payload).done();
+              return AsyncStorage.setItem(this.storageKey, payload).done();
             }
           })
           .catch((err) => {
             LOG.error("Trouble writing to disk", err)
           });
-      }, 500);
+      }, 500, 'this.writeToDiskTimeout');
     });
   }
 
@@ -161,7 +164,9 @@ class StoreManagerClass {
       .then((data) => {
         if (data) {
           let parsedData = JSON.parse(data);
-          this.store.dispatch({type:"HYDRATE", state: parsedData})
+          this.store.dispatch({type:"HYDRATE", state: parsedData});
+          // validate and update existing store. There has been an issue where you log out, the app gets updated, log in and have an old database which will be initialized
+          refreshDatabase(this.store);
         }
       })
       .catch((err) => {
@@ -186,6 +191,7 @@ class StoreManagerClass {
         // write everything downloaded from the cloud at login to disk.
         return this._persistToDisk();
       })
+      .catch((err)=>{LOG.error("AsyncStorage finalize login", err)})
   }
 
 
@@ -200,7 +206,7 @@ class StoreManagerClass {
         this._persistToDisk()
           .then(() => {
             // remove the userId from the logged in user list.
-            return AsyncStorage.setItem(this.userIdentificationStorageKey, "")
+            return AsyncStorage.setItem(this.userIdentificationStorageKey, "");
           })
           .then(() => {
             // clear the storage key

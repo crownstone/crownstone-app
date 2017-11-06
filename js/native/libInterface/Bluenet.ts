@@ -46,7 +46,8 @@ if (DISABLE_NATIVE === true) {
     setupCrownstone: () => {},           // called through SetupCrownstone in BLEUtil
 
     quitApp: () => { NativeModules.BluenetJS.quitApp() },                   // Used to quit the app during logout
-    enableLoggingToFile: () => {},
+    enableLoggingToFile: (enabledBool) => {},
+    enableExtendedLogging: (enabledBool) => {},
     clearLogs: () => {},
 
     // mesh
@@ -54,11 +55,26 @@ if (DISABLE_NATIVE === true) {
     meshKeepAliveState: () => {},
     multiSwitch: () => {},
 
-
     getHardwareVersion: () => {},
     getBootloaderVersion: () => {},
     getFirmwareVersion: () => {},
     bootloaderToNormalMode: () => {},
+    getErrors: () => {},
+
+    clearFingerprintsPromise: () => {},
+    clearFingerprints: () => {},
+    setTime: () => {},
+    batterySaving: () => {},
+    setBackgroundScanning: () => {},
+
+    setSchedule: () => {},
+    clearSchedule: () => {},
+    addSchedule: () => {},
+    getSchedules: () => {},
+    getAvailableScheduleEntryIndex: () => {},
+
+    viewsInitialized: () => {},
+
   }
 }
 else {

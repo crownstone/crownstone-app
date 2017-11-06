@@ -2,9 +2,23 @@ import { BEHAVIOUR_TYPE_TO_INTENT, INTENTS } from '../native/libInterface/Consta
 import { BatchCommandHandler } from '../logic/BatchCommandHandler';
 import { LOG } from '../logging/Log';
 import { Util } from './Util';
+import {BEHAVIOUR_TYPES} from "../router/store/reducers/stones";
 const SunCalc = require('suncalc');
 
 export const BehaviourUtil = {
+
+  performCommandCheck: function(state, behaviourType) {
+    if (state.app.indoorLocalizationEnabled === false) {
+      return false;
+    }
+
+    // keepAlives are required for roomExit. Home Exit is only done by keepAlives and should never go through this code.
+    if ((state.app.keepAlivesEnabled === false && behaviourType === BEHAVIOUR_TYPES.ROOM_EXIT) || behaviourType === BEHAVIOUR_TYPES.HOME_EXIT) {
+      return false;
+    }
+
+    return true;
+  },
 
   /**
    * Trigger the behaviour for all crownstones in a certain location
@@ -22,6 +36,12 @@ export const BehaviourUtil = {
   enactBehaviourInLocation: function(store, sphereId, locationId, behaviourType, callbacks = {}) {
     // turn on crownstones in room
     let state = store.getState();
+
+    // Check if the behaviour should be performed, given the app settings
+    if (this.performCommandCheck(state, behaviourType) === false) {
+      return;
+    }
+
     let sphere = state.spheres[sphereId];
     let stoneIds = Object.keys(sphere.stones);
 
@@ -53,6 +73,12 @@ export const BehaviourUtil = {
    */
   enactBehaviourInSphere: function(store : any, sphereId : string, behaviourType : string, callbacks : any = {}) {
     let state = store.getState();
+
+    // Check if the behaviour should be performed, given the app settings
+    if (this.performCommandCheck(state, behaviourType) === false) {
+      return;
+    }
+
     let sphere = state.spheres[sphereId];
     let stoneIds = Object.keys(sphere.stones);
 
@@ -78,6 +104,11 @@ export const BehaviourUtil = {
    *                                        }
    */
   enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
+    // Check if the behaviour should be performed, given the app settings
+    if (this.performCommandCheck(store.getState(), behaviourType) === false) {
+      return;
+    }
+
     this._enactBehaviour(store, sphereId, stoneId, behaviourType, callbacks);
     BatchCommandHandler.execute();
   },
@@ -97,6 +128,12 @@ export const BehaviourUtil = {
    */
   _enactBehaviour: function(store, sphereId, stoneId, behaviourType, callbacks = {}) {
     let state = store.getState();
+
+    // Check if the behaviour should be performed, given the app settings
+    if (this.performCommandCheck(state, behaviourType) === false) {
+      return;
+    }
+
     let sphere = state.spheres[sphereId];
     let stone = sphere.stones[stoneId];
     let element = Util.data.getElement(sphere, stone);
@@ -126,6 +163,11 @@ export const BehaviourUtil = {
    *                                        }
    */
   _enactBehaviourCore: function(store, sphere, sphereId, behaviour, behaviourType, stone, stoneId, element, callbacks : any = {}) {
+    // Check if the behaviour should be performed, given the app settings
+    if (this.performCommandCheck(store.getState(), behaviourType) === false) {
+      return;
+    }
+
     // we set the state regardless of the current state since it may not be correct in the background.
     if (behaviour.active && stone.config.handle) {
       // setup the trigger method.
@@ -150,7 +192,19 @@ export const BehaviourUtil = {
         data['currentUsage'] = 0;
       }
 
-      BatchCommandHandler.load(stone, stoneId, sphereId, {commandName:'multiSwitch', state: behaviour.state, intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]], timeout:behaviour.delay}, 15)
+      BatchCommandHandler.load(
+        stone,
+        stoneId,
+        sphereId,
+        {
+          commandName:'multiSwitch',
+          state: behaviour.state,
+          intent:INTENTS[BEHAVIOUR_TYPE_TO_INTENT[behaviourType]],
+          timeout:behaviour.delay},
+        {},
+        15,
+        'from _enactBehaviourCore in BehaviourUtil'
+      )
         .then(() => {
           store.dispatch({
             type: 'UPDATE_STONE_SWITCH_STATE',
@@ -183,14 +237,33 @@ export const BehaviourUtil = {
     if (behaviour.state > 0 && element.config.onlyOnWhenDark === true) {
       let now = new Date().valueOf();
       // the time in our rotterdam office
-      let latitude = sphere.config.latitude || 51.923611570463152;
-      let longitude = sphere.config.longitude || 4.4667693378575288;
-      let times = SunCalc.getTimes(new Date(), latitude, longitude);
+      let times = this.getEveningTimes(sphere);
 
       // if it is light outside and the onlyOnWhenDark is on, we have to return false.
       // it is light outside between the end of the sunrise and the start of the sunset.
-      return (now < times.dawn.valueOf() || now > times.dusk.valueOf()); // = is dark outside
+      return (now < times.morning || now > times.evening); // = is dark outside
     }
     return true;
+  },
+
+  getEveningTimes: function(sphere) {
+    if (!(sphere && sphere.config)) {
+      sphere = {config:{}};
+    }
+
+    // the time in our rotterdam office
+    let latitude = sphere.config.latitude || 51.923611570463152;
+    let longitude = sphere.config.longitude || 4.4667693378575288;
+    let allTimes = SunCalc.getTimes(new Date(), latitude, longitude);
+    let times = {
+      morning: 0.5*(allTimes.sunrise.valueOf() + allTimes.dawn.valueOf()),
+      evening: 0.5*(allTimes.dusk.valueOf()    + allTimes.sunsetStart.valueOf()),
+    };
+    return {
+      morning: times.morning,
+      evening: times.evening,
+      morningReadable: Util.getTimeFormat(times.morning),
+      eveningReadable: Util.getTimeFormat(times.evening),
+    };
   }
 };

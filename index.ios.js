@@ -12,7 +12,18 @@ import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/EventBus'
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight } from './js/views/styles'
-import SplashScreen from "rn-splash-screen";
+import SplashScreen from 'react-native-splash-screen'
+
+import { config } from './sentrySettings'
+import { Sentry } from 'react-native-sentry';
+
+
+if ( global.__DEV__ !== true) {
+  if (config.ios) {
+    Sentry.config(config.ios).install();
+  }
+}
+
 
 class Root extends Component {
 
@@ -41,7 +52,7 @@ class Root extends Component {
     };
 
     this.unsubscribe.push(eventBus.on('focus', (posY) => {
-      let keyboardHeight = 340;
+      let keyboardHeight = 360;
       let distFromBottom = screenHeight - (posY - this.state.top._value);
       this.focusTime = new Date().valueOf();
       Animated.timing(this.state.top, {toValue: Math.min(0,distFromBottom - keyboardHeight), duration: 200}).start()
@@ -55,7 +66,6 @@ class Root extends Component {
     this.unsubscribe.push(eventBus.on('showProgress', snapBack));
     this.unsubscribe.push(eventBus.on('hideLoading',  snapBack));
     this.unsubscribe.push(eventBus.on('hideProgress', snapBack));
-
   }
 
 

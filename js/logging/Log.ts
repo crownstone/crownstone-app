@@ -11,66 +11,90 @@ import {
   LOG_MESH,
   LOG_STORE,
   LOG_SCHEDULER,
-  LOG_TO_FILE,
-  RELEASE_MODE_USED,
+  RELEASE_MODE_USED, LOG_MESSAGES,
 } from '../ExternalConfig'
-import { Scheduler } from '../logic/Scheduler'
-import { eventBus } from '../util/EventBus'
-import { safeDeleteFile } from '../util/Util'
+import {LogProcessor} from "./LogProcessor";
+import {logToFile} from "./LogUtil";
+import {LOG_LEVEL} from "./LogLevels";
 
-const DeviceInfo = require('react-native-device-info');
-const RNFS = require('react-native-fs');
 
-export const LOG : any = {
-  info: function() {
-    this._log('------------', LOG_INFO, arguments);
-  },
+class Logger {
+  level : number;
+  levelPrefix : string;
 
-  verbose: function() {
-    this._log('VERBOSE ----', LOG_VERBOSE, arguments);
-  },
 
-  warn: function() {
-    this._log('WARNING ! --', LOG_WARNINGS, arguments);
-  },
+  constructor(level) {
+    this.level = level;
+    switch(this.level) {
+      case LOG_LEVEL.verbose:
+        this.levelPrefix = 'v'; break;
+      case LOG_LEVEL.debug:
+        this.levelPrefix = 'd'; break;
+      case LOG_LEVEL.info:
+        this.levelPrefix = 'i'; break;
+      case LOG_LEVEL.warning:
+        this.levelPrefix = 'w'; break;
+      case LOG_LEVEL.error:
+        this.levelPrefix = 'e'; break;
+      default:
+        this.levelPrefix = 'v';
+    }
+  }
+  
+  info(...any) {
+    this._log('------------', LOG_INFO,      LogProcessor.log_info, arguments);
+  }
 
-  event: function() {
-    this._log('EVENT ------', LOG_EVENTS, arguments);
-  },
+  verbose(...any) {
+    this._log('VERBOSE ----', LOG_VERBOSE,   LogProcessor.log_verbose, arguments);
+  }
 
-  error: function() {
-    this._log('ERROR !!! --', LOG_ERRORS, arguments);
-  },
+  warn(...any) {
+    this._log('WARNING ! --', LOG_WARNINGS,  LogProcessor.log_warnings, arguments);
+  }
 
-  debug: function() {
-    this._log('Debug ------', LOG_DEBUG, arguments);
-  },
+  event(...any) {
+    this._log('EVENT ------', LOG_EVENTS,    LogProcessor.log_events, arguments);
+  }
 
-  cloud: function() {
-    this._log('Cloud ------', LOG_CLOUD, arguments);
-  },
+  error(...any) {
+    this._log('ERROR !!! --', LOG_ERRORS,    LogProcessor.log_errors, arguments);
+  }
 
-  ble: function() {
-    this._log('BLE --------', LOG_BLE, arguments);
-  },
+  debug(...any) {
+    this._log('Debug ------', LOG_DEBUG,     LogProcessor.log_debug, arguments);
+  }
 
-  store: function() {
-    this._log('Store ------', LOG_STORE, arguments);
-  },
+  cloud(...any) {
+    this._log('Cloud ------', LOG_CLOUD,     LogProcessor.log_cloud, arguments);
+  }
 
-  scheduler: function() {
-    this._log('Scheduler --', LOG_SCHEDULER, arguments);
-  },
+  ble(...any) {
+    this._log('BLE --------', LOG_BLE,       LogProcessor.log_ble, arguments);
+  }
 
-  mesh: function() {
-    this._log('Mesh -------', LOG_MESH, arguments);
-  },
+  store(...any) {
+    this._log('Store ------', LOG_STORE,     LogProcessor.log_store, arguments);
+  }
 
-  _log: function(type, check, allArguments) {
-    if (check) {
-      let args = ['LOG ' + type + ' :'];
+  scheduler(...any) {
+    this._log('Scheduler --', LOG_SCHEDULER, LogProcessor.log_scheduler, arguments);
+  }
+
+  mesh(...any) {
+    this._log('Mesh -------', LOG_MESH,      LogProcessor.log_mesh, arguments);
+  }
+
+  messages(...any) {
+    this._log('Messages ---', LOG_MESSAGES,  LogProcessor.log_info, arguments);
+  }
+
+  _log(type, globalCheckField, dbCheckField, allArguments) {
+    if (Math.min(globalCheckField, dbCheckField) <= this.level) {
+      let args = ['LOG' + this.levelPrefix + ' ' + type + ' :'];
       for (let i = 0; i < allArguments.length; i++) {
-        args.push(allArguments[i]);
+        let arg = allArguments[i];
+        args.push(arg);
       }
       logToFile.apply(this, args);
 
@@ -79,138 +103,13 @@ export const LOG : any = {
       }
     }
   }
-};
-
-
-function getFilename(timestamp) {
-  let dateStamp = new Date(timestamp).getFullYear() + "-" + (new Date(timestamp).getMonth()+1) + "-" + (new Date(timestamp).getDate());
-  return 'ConsumerAppLog' + dateStamp + '.log';;
-}
-
-export function cleanLogs() {
-  // create a path you want to write to
-  let logPath = RNFS.DocumentDirectoryPath;
-  if (Platform.OS === 'android') {
-    logPath = RNFS.ExternalDirectoryPath;
-  }
-
-  _cleanLogs(logPath);
-}
-
-function _cleanLogs(logPath, amountOfDaysStored = 3) {
-  let allowedLogFiles = {};
-  for (let i = 0; i < amountOfDaysStored; i++) {
-    let timestamp = new Date().valueOf() - i*86400000;
-    allowedLogFiles[getFilename(timestamp)] = true;
-  }
-
-  let flagForRemoval = [];
-  RNFS.readdir(logPath)
-    .then((files) => {
-      for (let i = 0; i < files.length; i++) {
-        if (files[i].substr(0,14) === "ConsumerAppLog" && allowedLogFiles[files[i]] !== true) {
-          flagForRemoval.push(files[i]);
-        }
-      }
-      for (let i = 0; i < flagForRemoval.length; i++) {
-        safeDeleteFile(logPath + "/" + flagForRemoval[i]).catch(()=>{});
-      }
-    })
-    .catch((err) => {
-    });
-}
-
-export function clearLogs() {
-  // create a path you want to write to
-  let logPath = RNFS.DocumentDirectoryPath;
-  if (Platform.OS === 'android') {
-    logPath = RNFS.ExternalDirectoryPath;
-  }
-
-  _cleanLogs(logPath,0);
 }
 
 
+export const LOGv   = new Logger(LOG_LEVEL.verbose);
+export const LOGd   = new Logger(LOG_LEVEL.debug  );
+export const LOGi   = new Logger(LOG_LEVEL.info   );
+export const LOG    = new Logger(LOG_LEVEL.info   );
+export const LOGw   = new Logger(LOG_LEVEL.warning);
+export const LOGe   = new Logger(LOG_LEVEL.error  );
 
-function logToFile() {
-  if (LOG_TO_FILE || LogProcessor.writeToFile === true) {
-    // create a path you want to write to
-    let logPath = RNFS.DocumentDirectoryPath;
-    if (Platform.OS === 'android') {
-      logPath = RNFS.ExternalDirectoryPath;
-    }
-
-    // generate filename based on current date.
-    let filename = getFilename(new Date().valueOf());
-    let filePath = logPath + '/' + filename;
-
-    // create string
-    let str = '' + new Date().valueOf() + ' - ' + new Date() + " -";
-    for (let i = 0; i < arguments.length; i++) {
-      if (typeof arguments[i] === 'object' || Array.isArray(arguments[i])) {
-        str += " " + JSON.stringify(arguments[i])
-      }
-      else {
-        str += " " + arguments[i]
-      }
-    }
-    str += " \n";
-
-    // write the file
-    RNFS.appendFile(filePath, str, 'utf8')
-      .then((success) => {})
-      .catch((err) => {})
-  }
-}
-
-class LogProcessorClass {
-  store : any;
-  writeToFile : boolean;
-
-  constructor() {
-    this.store = undefined;
-    this.writeToFile = false;
-
-  }
-
-  loadStore(store) {
-    this.store = store;
-
-    // use periodic events to clean the logs.
-    let triggerId = "LOG_CLEANING_TRIGGER";
-    Scheduler.setRepeatingTrigger(triggerId, {repeatEveryNSeconds: 5*3600});
-    Scheduler.loadCallback(triggerId,() => { cleanLogs() }, true);
-
-    eventBus.on("databaseChange", (data) => {
-      if (data.change.changeUserDeveloperStatus === true) {
-        this.refreshData();
-      }
-    });
-    this.refreshData();
-
-    LOG.info("Device Manufacturer", DeviceInfo.getManufacturer());  // e.g. Apple
-    LOG.info("Device Brand", DeviceInfo.getBrand());  // e.g. Apple / htc / Xiaomi
-    LOG.info("Device Model", DeviceInfo.getModel());  // e.g. iPhone 6
-    LOG.info("Device ID", DeviceInfo.getDeviceId());  // e.g. iPhone7,2 / or the board on Android e.g. goldfish
-    LOG.info("System Name", DeviceInfo.getSystemName());  // e.g. iPhone OS
-    LOG.info("System Version", DeviceInfo.getSystemVersion());  // e.g. 9.0
-    LOG.info("Bundle ID", DeviceInfo.getBundleId());  // e.g. com.learnium.mobile
-    LOG.info("Build Number", DeviceInfo.getBuildNumber());  // e.g. 89
-    LOG.info("App Version", DeviceInfo.getVersion());  // e.g. 1.1.0
-    LOG.info("App Version (Readable)", DeviceInfo.getReadableVersion());  // e.g. 1.1.0.89
-    LOG.info("Device Name", DeviceInfo.getDeviceName());  // e.g. Becca's iPhone 6
-    LOG.info("User Agent", DeviceInfo.getUserAgent()); // e.g. Dalvik/2.1.0 (Linux; U; Android 5.1; Google Nexus 4 - 5.1.0 - API 22 - 768x1280 Build/LMY47D)
-    LOG.info("Device Locale", DeviceInfo.getDeviceLocale()); // e.g en-US
-    LOG.info("Device Country", DeviceInfo.getDeviceCountry()); // e.g US
-    LOG.info("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https://developers.google.com/instance-id/
-  }
-
-  refreshData() {
-    if (this.store) {
-      let state = this.store.getState();
-      this.writeToFile = state.user.developer === true && state.user.logging === true;
-    }
-  }
-}
-
-export const LogProcessor : any = new LogProcessorClass();

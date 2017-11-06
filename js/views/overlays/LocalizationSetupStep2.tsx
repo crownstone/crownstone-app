@@ -1,6 +1,8 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  BackAndroid,
   Image,
+  Platform,
   Text,
   TouchableOpacity,
   View,
@@ -9,7 +11,7 @@ import {
 import { OverlayBox }                                from '../components/overlays/OverlayBox'
 import { styles, colors, screenHeight, screenWidth } from '../styles'
 import { eventBus }                                  from '../../util/EventBus'
-import { getAiData }                                 from '../../util/DataUtil'
+import { Util }                                      from "../../util/Util";
 
 export class LocalizationSetupStep2 extends Component<any, any> {
   unsubscribe : any;
@@ -25,6 +27,7 @@ export class LocalizationSetupStep2 extends Component<any, any> {
     this.unsubscribe.push(eventBus.on("showLocalizationSetupStep2", (sphereId) => {
       this.setState({visible: true, sphereId: sphereId});
     }));
+
   }
 
   componentWillUnmount() {
@@ -34,10 +37,13 @@ export class LocalizationSetupStep2 extends Component<any, any> {
 
   render() {
     let state = this.props.store.getState();
-    let ai = getAiData(state, this.state.sphereId);
+    let ai = Util.data.getAiData(state, this.state.sphereId);
 
     return (
-      <OverlayBox visible={this.state.visible}>
+      <OverlayBox
+        visible={this.state.visible}
+        overrideBackButton={() => { this.setState({visible:false}); }}
+      >
         <Text style={{fontSize: 23, fontWeight: 'bold', color: colors.menuBackground.hex, padding:15}}>{"The Next Step"}</Text>
         <Image source={require('../../images/localizationExplanation.png')} style={{width:0.6*screenWidth, height:0.6*screenWidth}}/>
         <Text style={{fontSize: 13, color: colors.blue.hex, textAlign:'center'}}>{"You can now teach " + ai.name + " when you are in certain rooms. " +

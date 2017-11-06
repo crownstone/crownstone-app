@@ -1,5 +1,6 @@
 import { LoginSplash }                from '../views/startupViews/LoginSplash'
 import { Login }                      from '../views/startupViews/Login'
+import { SelectFromList }             from '../views/selection/SelectFromList'
 import { Register }                   from '../views/startupViews/Register'
 import { AiStart }                    from '../views/startupViews/AiStart'
 import { RegisterConclusion }         from '../views/startupViews/RegisterConclusion'
@@ -15,14 +16,16 @@ import { RoomTraining_roomSize }      from '../views/roomViews/RoomTraining_room
 import { RoomSelection }              from '../views/roomViews/RoomSelection'
 import { RoomIconSelection }          from '../views/roomViews/RoomIconSelection'
 import { ApplianceSelection }         from '../views/deviceViews/ApplianceSelection'
+import { ApplianceAdd }               from '../views/deviceViews/ApplianceAdd'
+import { DeviceOverview }             from '../views/deviceViews/DeviceOverview'
 import { DeviceEdit }                 from '../views/deviceViews/DeviceEdit'
-import { DeviceEditLogic }            from '../views/deviceViews/DeviceEditLogic'
 import { DeviceBehaviourEdit }        from '../views/deviceViews/DeviceBehaviourEdit'
-import { DeviceIconSelection }        from '../views/deviceViews/DeviceIconSelection'
-import { DelaySelection }             from '../views/deviceViews/DelaySelection'
 import { DeviceScheduleEdit }         from '../views/deviceViews/DeviceScheduleEdit'
-import { DeviceScheduleAdd }          from '../views/deviceViews/DeviceScheduleAdd'
-import { DaySelection }               from '../views/deviceViews/DaySelection'
+import { DeviceIconSelection }        from '../views/deviceViews/DeviceIconSelection'
+import { MessageInbox }               from '../views/messaging/MessageInbox'
+import { MessageAdd }                 from '../views/messaging/MessageAdd'
+import { MessageThread }              from '../views/messaging/MessageThread'
+import { SettingsApp }                from '../views/settingsViews/SettingsApp'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
 import { SettingsPrivacy }            from '../views/settingsViews/SettingsPrivacy'
@@ -35,8 +38,11 @@ import { SettingsSphereUser }         from '../views/settingsViews/SettingsSpher
 import { SettingsSphereInvitedUser }  from '../views/settingsViews/SettingsSphereInvitedUser'
 import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
+import { Tutorial }                   from "../views/tutorialViews/Tutorial";
 
 export const Views = {
+  AiStart,
+  SelectFromList,
   LoginSplash,
   Login,
   Register,
@@ -53,14 +59,16 @@ export const Views = {
   RoomTraining,
   RoomTraining_roomSize,
   ApplianceSelection,
+  ApplianceAdd,
+  DeviceOverview,
   DeviceEdit,
-  DeviceEditLogic,
   DeviceBehaviourEdit,
   DeviceIconSelection,
-  DelaySelection,
   DeviceScheduleEdit,
-  DeviceScheduleAdd,
-  DaySelection,
+  MessageInbox,
+  MessageAdd,
+  MessageThread,
+  SettingsApp,
   SettingsOverview,
   SettingsProfile,
   SettingsPrivacy,
@@ -73,5 +81,5 @@ export const Views = {
   SettingsSphereInvitedUser,
   SettingsPluginRecoverStep1,
   SettingsPluginRecoverStep2,
-  AiStart,
+  Tutorial,
 };

@@ -9,43 +9,47 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} 
 
 
 export class AnimatedBackground extends Component<any, any> {
-  animationStarted : boolean;
-  animating : boolean;
+  staticImage : any;
+  animatedImage : any;
+  value  : number = 0;
 
   constructor(props) {
     super();
 
-    this.state = {viewOpacity: new Animated.Value(0), baseImage: props.image};
-    this.animationStarted = false;
-    this.animating = false;
+    this.staticImage = props.image;
+    this.animatedImage = props.image;
+    this.state = {fade: new Animated.Value(0)};
   }
 
-  startFade() {
-    if (this.animationStarted === false) {
-      let duration = 600;
-      this.animationStarted = true;
-      Animated.timing(this.state.viewOpacity, {toValue: 1, duration: duration}).start();
+  componentWillReceiveProps(nextProps) {
+    let change = false;
+    if (this.value === 0) {
+      if (nextProps.image !== this.staticImage) {
+        change = true;
+        this.animatedImage = nextProps.image;
+      }
+    }
+    else {
+      if (nextProps.image !== this.animatedImage) {
+        change = true;
+        this.staticImage = nextProps.image;
+      }
+    }
 
-      setTimeout(() => {
-        this.animating = false;
-        this.animationStarted = false;
-        this.setState({opacity: new Animated.Value(0), baseImage: this.props.image})
-      }, duration)
+    if (change) {
+      let newValue = this.value === 0 ? 1 : 0;
+      Animated.timing(this.state.fade, {toValue: newValue, duration: this.props.duration || 500}).start();
+      this.value = newValue;
     }
   }
 
   render() {
-    if (this.state.baseImage !== this.props.image) {
-      this.animating = true;
-      setTimeout(() => {this.startFade()}, 0);
-    }
-
     return (
-      <View style={[styles.fullscreen,{elevation: 0}]}>
+      <View style={styles.fullscreen}>
         <View style={styles.fullscreen}>
-          {this.state.baseImage}
+          {this.staticImage}
         </View>
-        {this.animating ? <Animated.View style={[styles.fullscreen, {opacity:this.state.viewOpacity}]}>{this.props.image}</Animated.View> : undefined}
+        <Animated.View style={[styles.fullscreen, {opacity:this.state.fade}]}>{this.animatedImage}</Animated.View>
 
 
         <View style={styles.fullscreen} >

@@ -141,7 +141,7 @@ export class FirmwareHelper {
         .then(() => { resolve(); })
         .catch((err) => {
           LOG.error("FirmwareHelper: Error during putInDFU.", err);
-          BluenetPromiseWrapper.phoneDisconnect().catch();
+          BluenetPromiseWrapper.phoneDisconnect().catch(() => {});
           reject(err);
         })
     })
@@ -166,7 +166,7 @@ export class FirmwareHelper {
           })
           .catch((err) => {
             LOG.error("FirmwareHelper: Error during getBootloaderVersion.", err);
-            BluenetPromiseWrapper.phoneDisconnect().catch();
+            BluenetPromiseWrapper.phoneDisconnect().catch(() => {});
             reject(err);
           })
       })
@@ -297,11 +297,11 @@ export class FirmwareHelper {
           .then(() => {
             eventBus.emit("updateDfuProgress", 0.50);
           })
-          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.6); }); })
-          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.7); }); })
-          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.8); }); })
-          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 0.9); }); })
-          .then(() => { return delay(1000, () => { eventBus.emit("updateDfuProgress", 1.0); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.6); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.7); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.8); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 0.9); }); })
+          .then(() => { return delay(750, () => { eventBus.emit("updateDfuProgress", 1.0); }); })
           .then(() => {
             LOG.info("FirmwareHelper: DFU progress: Reset complete.");
           });
@@ -346,6 +346,6 @@ const delay = function(ms, performAfterDelay = null) {
         performAfterDelay()
       }
       resolve();
-    }, ms);
+    }, ms, 'dfuDelay');
   })
 };

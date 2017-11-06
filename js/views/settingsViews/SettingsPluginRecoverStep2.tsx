@@ -118,7 +118,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
             Alert.alert("Crownstone in Setup mode nearby.",
               "We detect a Crownstone in setup mode close by, as well as one in normal mode which is already in your Sphere and a bit farther away (" + description + "). If you want to try to recover this one, move closer to it.",
               [{text:'OK', onPress: defaultAction }],
-              { onDismiss: defaultAction }
+              { cancelable: false }
             );
           }
         }
@@ -160,7 +160,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
               Alert.alert("No unknown Crownstones found.",
                 "We detect a Crownstone that is already in your Sphere (" + description + ") and not very close. If you want to try to recover this one, move closer to it.",
                 [{text:'OK', onPress: defaultAction }],
-                { onDismiss: defaultAction }
+                { cancelable: false }
               );
             }
           }
@@ -173,7 +173,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
               Alert.alert("No Crownstones near.",
                 "We detect a Crownstone but it's not very close by. Please move closer and try again. If you are already holding your phone very close to the Crownstone something may be wrong.",
                 [{text:'OK', onPress: defaultAction }],
-                { onDismiss: defaultAction }
+                { cancelable: false }
               )
             }
           }
@@ -182,14 +182,14 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
           Alert.alert("Recovery might not be needed.",
             "We can not find a recoverable Crownstone in range, though there is a Crownstone in setup mode close by. Maybe the Crownstone has already been recovered or set to factory defaults? Try adding it to your Sphere!",
             [{text:'OK', onPress: defaultAction }],
-            { onDismiss: defaultAction }
+            { cancelable: false }
           )
         }
         else {
           Alert.alert("No nearby Crownstones.",
             "We can't find any Crownstones nearby, please follow the steps again to retry. Make sure to hold your phone close!",
             [{text:'OK', onPress: defaultAction }],
-            { onDismiss: defaultAction }
+            { cancelable: false }
           )
         }
       })
@@ -212,7 +212,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
         Alert.alert("Success!",
           "This Crownstone has been reset to factory defaults. After plugging it in and out once more, you can add it to a new Sphere.",
           [{text:'OK', onPress: defaultAction}],
-          { onDismiss: defaultAction }
+          { cancelable: false }
         )
       })
       .catch((err) => {
@@ -222,14 +222,14 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
           Alert.alert("Not in recovery mode.",
             "You have 20 seconds after you plug the Crownstone in to recover. Please follow the steps again to retry.",
             [{text:'OK', onPress: defaultAction}],
-            { onDismiss: defaultAction }
+            { cancelable: false }
           )
         }
         else {
           Alert.alert("Error during recovery.",
             "Please repeat the process to try again.",
             [{text:'OK', onPress: defaultAction}],
-            { onDismiss: defaultAction }
+            { cancelable: false }
           )
         }
       })
@@ -239,23 +239,24 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.main}>
+      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark}>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
-          <Text style={[setupStyle.text, {color:colors.menuBackground.hex}]}>Hold your phone next to the Crownstone.</Text>
+          <Text style={[setupStyle.text, {color:colors.white.hex}]}>Hold your phone next to the Crownstone.</Text>
           <View style={setupStyle.lineDistance} />
-          <Text style={[setupStyle.information, {color:colors.menuBackground.hex}]}>{this.state.text}</Text>
+          <Text style={[setupStyle.information, {color:colors.white.hex}]}>{this.state.text}</Text>
           <View style={{flex:1}} />
           <View style={{width: screenWidth, height:imageSize*screenHeight}}>
             <Animated.View style={{opacity:this.state.fade1, position:'absolute', left:leftPos, top: 0}}>
-              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugDark.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlug.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
             </Animated.View>
             <Animated.View style={{opacity:this.state.fade2, position:'absolute', left:leftPos, top: 0}}>
-              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugDarkPairing.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
+              <Image source={require('../../images/lineDrawings/holdingPhoneNextToPlugPairing.png')} style={{width:imageSize*screenHeight, height:imageSize*screenHeight}} />
             </Animated.View>
           </View>
           <View style={{flex:1}} />
           <View style={{marginBottom:20}}>
-            <ActivityIndicator animating={true} size="large"/>
+            <ActivityIndicator animating={true} color={colors.white.hex} size="large"/>
           </View>
         </View>
       </Background>

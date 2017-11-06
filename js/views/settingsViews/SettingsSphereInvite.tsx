@@ -9,14 +9,14 @@ import {
   Text,
   View
 } from 'react-native';
-import { Background } from './../components/Background'
-import { ListEditableItems } from './../components/ListEditableItems'
-import { ProfilePicture } from './../components/ProfilePicture'
+import { Background } from '../components/Background'
+import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles';
-import { getUserLevelInSphere } from '../../util/DataUtil';
+import { styles, colors } from '../styles';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
+import {Util} from "../../util/Util";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 export class SettingsSphereInvite extends Component<any, any> {
   inputStates : any;
@@ -33,6 +33,7 @@ export class SettingsSphereInvite extends Component<any, any> {
   _getItems() {
     const store = this.props.store;
     const state = store.getState();
+    let spherePermissions = Permissions.inSphere(this.props.sphereId);
     let items = [];
     items.push({type:'spacer'});
     items.push({
@@ -50,21 +51,26 @@ export class SettingsSphereInvite extends Component<any, any> {
     });
 
 
-    let level = getUserLevelInSphere(state, this.props.sphereId);
-    if (level == "admin") {
+    if (spherePermissions.inviteMemberToSphere || spherePermissions.inviteAdminToSphere) {
+      // generate permission items
+      let dropDownItems = [];
+      if (spherePermissions.inviteAdminToSphere ) { dropDownItems.push({label:'Admin' }); }
+      if (spherePermissions.inviteMemberToSphere) { dropDownItems.push({label:'Member'}); }
+      dropDownItems.push({label:'Guest'});
+
       items.push({
         type:'dropdown',
         label:'Access Level',
         buttons: false,
         value: this.state.permission,
         dropdownHeight:130,
-        items:[{label:'Member'},{label:'Guest'}],
+        items: dropDownItems,
         callback: (permission) => {
           this.setState({permission:permission});
         }
       });
     }
-    else {
+    else if (spherePermissions.inviteGuestToSphere) {
       items.push({type:'info', label:'Access level', value:'Guest'});
     }
 

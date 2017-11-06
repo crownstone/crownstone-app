@@ -16,8 +16,8 @@ import {
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
 import { styles, colors, screenWidth } from '../../styles'
-import { getUserLevelInSphere } from '../../../util/DataUtil'
 import {Util} from "../../../util/Util";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class SetupDeviceEntry extends Component<any, any> {
@@ -112,7 +112,7 @@ export class SetupDeviceEntry extends Component<any, any> {
         borderRadius:30,
         backgroundColor: color,
         }, styles.centered]}>
-        <Icon name={this.props.item.icon} size={35} color={'#ffffff'} style={{position:'relative', top:2, backgroundColor:'transparent'}} />
+        <Icon name={this.props.item.icon} size={35} color={'#ffffff'} style={{ backgroundColor:'transparent' }} />
       </View>
     );
   }
@@ -178,13 +178,13 @@ export class SetupDeviceEntry extends Component<any, any> {
   }
 
   setupStone() {
-    if (getUserLevelInSphere(this.props.store.getState(), this.props.sphereId) !== 'admin') {
-      Alert.alert("You don't have permission","You can ask an admin in your Sphere to setup this Crownstone",[{text:'OK'}])
+    if (Permissions.inSphere(this.props.sphereId).setupCrownstone) {
+      if (this.state.disabled === false && this.state.setupInProgress !== true) {
+        SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {  })
+      }
     }
     else {
-      if (this.state.disabled === false && this.state.setupInProgress !== true) {
-        SetupStateHandler.setupStone(this.props.handle, this.props.sphereId).catch((err) => {})
-      }
+      Alert.alert("You don't have permission", "You can ask an admin in your Sphere to setup this Crownstone", [{text: 'OK'}])
     }
   }
 

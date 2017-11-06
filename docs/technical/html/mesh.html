@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <title>Batch Command Handler Usage</title>
+
+  <script type="text/javascript" src="./js/vis.min.js"></script>
+  <link href="./js/vis-network.min.css" rel="stylesheet" type="text/css" />
+
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+
+    #mynetwork {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+    Overview of flow to promise manager
+
+  <div id="mynetwork"></div>
+  <script type="text/javascript">
+    let spacing = 275;
+    let counter = 0;
+
+//    fixed:{x:true}, x: spacing*counter,
+//      fixed:{x:true}, x: spacing*counter++,
+//      fixed:{x:true}, x: spacing*counter++,
+//      fixed:{x:true}, x: spacing*counter++,
+//      fixed:{x:true}, x: spacing*counter++,
+//      fixed:{x:true}, x: spacing*counter++,
+//      fixed:{x:true}, x: spacing*counter++,
+//      fixed:{x:true}, x: spacing*counter++,
+//      fixed:{x:true}, x: spacing*counter++,
+//      fixed:{x:true}, x: spacing*counter++,
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+      {id: 'bhc', label: 'Batch Command Handler', shape: 'circle', color: '#007aff'},
+      {id: 'bl', label: 'Bluenet Library', shape: 'circle', color: '#007aff'},
+      {id: 'top', label: 'Topology Representation', shape: 'circle', color: '#003E52'},
+      {id: 'mesh', label: 'Mesh (trickle)', shape: 'circle', color: '#ff9c00'},
+      {id: 'rou', label: 'Routing', shape: 'circle', color: '#ff9c00'},
+      {id: 'thr', label: 'Throttling', shape: 'circle', color: '#8a01ff'},
+      {id: 'ar', label: 'Advertisement\nRelay', shape: 'circle', color: '#8a01ff'},
+      {id: 'cm', label: 'Conflict Merging', shape: 'circle', color: '#8a01ff'},
+      {id: 'ts', label: 'Time syncing', shape: 'circle', color: '#8a01ff'},
+      {id: 'cs', label: '    Crownstone    ', shape: 'circle', color: '#8a01ff'},
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+      {from: 'bhc', to: 'bl', label:'load commands'},
+      {from: 'bl', to: 'thr', label:''},
+      {from: 'thr', to: 'bl', label:''},
+      {from: 'top', to: 'bhc', label:'load'},
+      {from: 'cs', to: 'mesh', label:'update state'},
+      {from: 'cs', to: 'cm', label:''},
+      {from: 'cm', to: 'cs', label:''},
+      {from: 'cs', to: 'ar', label:'update'},
+      {from: 'mesh', to: 'ts', label:''},
+      {from: 'ts', to: 'cs', label:'sync time'},
+      {from: 'mesh', to: 'rou', label:''},
+      {from: 'rou', to: 'ar', label:'update payload'},
+      {from: 'bl', to: 'cs', label:'BLE instruction'},
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+    var options = {
+      nodes: { font: {color:'#fff'}},
+      edges: {arrows: 'to', font: {align:'middle'}, color: "#00263e"},
+      physics: { barnesHut: { gravitationalConstant: -30000}}};
+    var network = new vis.Network(container, data, options);
+  </script>
+</body>
+</html>

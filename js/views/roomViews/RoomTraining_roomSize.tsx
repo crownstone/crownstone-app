@@ -14,19 +14,19 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 
-import { TopBar } from '../components/Topbar'
-import { Background } from '../components/Background'
+import { TopBar }       from '../components/Topbar'
+import { Background }   from '../components/Background'
 import { styles, colors, screenWidth, screenHeight } from '../styles'
-import { Icon } from '../components/Icon';
-import { getAiData } from '../../util/DataUtil';
-import { LOG } from '../../logging/Log'
+import { Icon }         from '../components/Icon';
+import { LOG }          from '../../logging/Log'
+import { Util }         from "../../util/Util";
 
 
 let buttonTextStyle = {
   backgroundColor:'transparent',
   fontSize:15,
   fontWeight:'500',
-  color: colors.menuBackground.hex,
+  color: colors.white.hex,
   textAlign:'left',
 };
 let squareMeterStyle = {
@@ -59,9 +59,9 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
   _getButton(sampleSize, iconSize, text, roomSize) {
     return (
-      <TouchableOpacity style={buttonStyle} onPress={() => { (Actions as any).roomTraining({sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
+      <TouchableOpacity style={buttonStyle} onPress={() => { Actions.roomTraining({sphereId: this.props.sphereId, locationId: this.props.locationId, sampleSize: sampleSize, roomSize: roomSize}) }}>
         <View style={iconContainerStyle}>
-          <Icon name="md-cube" size={iconSize} color={colors.blue.hex} style={{backgroundColor:"transparent"}} />
+          <Icon name="md-cube" size={iconSize} color={colors.green.hex} style={{backgroundColor:"transparent"}} />
         </View>
         <View style={textContainerStyle}>
           <Text style={buttonTextStyle}>{text}</Text>
@@ -74,26 +74,28 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
   render() {
     let state = this.props.store.getState();
-    let ai = getAiData(state, this.props.sphereId);
+    let ai = Util.data.getAiData(state, this.props.sphereId);
+    let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.main}>
+      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
           leftAction={ Actions.pop }
           title={"Teaching " + ai.name}/>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:20,
             fontWeight:'600',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center'
-          }}>{"To let " + ai.name + " find you in this room, we need to help " + ai.him + " a little!"}</Text>
+          }}>{"To let " + ai.name + " find you in " + roomName + ", we need to help " + ai.him + " a little!"}</Text>
           <Text style={{
             backgroundColor:'transparent',
             fontSize:16,
             fontWeight:'600',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
           }}>{"How large is this room?"}</Text>
@@ -101,7 +103,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
             backgroundColor:'transparent',
             fontSize:16,
             fontWeight:'300',
-            color: colors.menuBackground.hex,
+            color: colors.white.hex,
             textAlign:'center',
             paddingTop:20,
           }}>Large rooms take a bit more time to learn about than small rooms.

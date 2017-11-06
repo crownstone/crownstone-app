@@ -21,6 +21,7 @@ import { Background }      from '../views/components/Background'
 import { Router_IOS }      from './RouterIOS';
 import { Router_Android }  from './RouterAndroid';
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
+import SplashScreen from 'react-native-splash-screen'
 
 
 export class AppRouter extends Component {
@@ -46,11 +47,17 @@ export class AppRouter extends Component {
   componentWillMount() {
     if (BackgroundProcessHandler.storeInitialized === true) {
       this.setState({storeInitialized: true, loggedIn: BackgroundProcessHandler.userLoggedIn});
+      if (Platform.OS === "android") {
+          SplashScreen.hide();
+      }
     }
     else {
       this.unsubscribe.push(
         eventBus.on('storePrepared', (result) => {
           this.setState({storeInitialized:true, loggedIn: result.userLoggedIn});
+            if (Platform.OS === "android") {
+                SplashScreen.hide();
+            }
         })
       );
     }
@@ -64,6 +71,7 @@ export class AppRouter extends Component {
     this.backgrounds.menuRemoteConnected     = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/menuBackgroundRemoteConnected.png')} />;
     this.backgrounds.mainDarkLogo            = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/backgroundWLogo.png')} />;
     this.backgrounds.mainDark                = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
+    this.backgrounds.detailsDark             = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/stoneDetails.png')} />;
   }
 
   componentWillUnmount() { // cleanup
@@ -102,7 +110,7 @@ export class AppRouter extends Component {
   }
 
   render() {
-    LOG.debug("RENDERING ROUTER");
+    LOG.info("RENDERING ROUTER");
     if (this.state.storeInitialized === true) {
       let store = StoreManager.getStore();
       if (Platform.OS === 'android') {

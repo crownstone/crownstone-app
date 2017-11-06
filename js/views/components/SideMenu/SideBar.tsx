@@ -21,6 +21,7 @@ import { FinalizeLocalizationIcon } from '../FinalizeLocalizationIcon'
 import { NativeBus } from '../../../native/libInterface/NativeBus'
 import { AppUtil } from '../../../util/AppUtil'
 import { SettingConstructor } from '../../../util/SettingConstructor'
+import {LOG} from "../../../logging/Log";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -36,9 +37,21 @@ export class SideBar extends Component<any, any> {
   }
 
   componentDidMount() {
+    this.unsubscribe.push(eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if  (
+        change.changeUserData     ||
+        change.changeSpheres      ||
+        change.changeStones       ||
+        change.changeMessageState ||
+        change.changeAppSettings
+      ) {
+        this.forceUpdate();
+      }
+    }));
     // trigger a redraw then the sphere is entered/left
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.enterSphere, () => { this.forceUpdate() }));
-    this.unsubscribe.push(NativeBus.on(NativeBus.topics.exitSphere,  () => { this.forceUpdate() }));
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.enterSphere, () => { this.forceUpdate(); }));
+    this.unsubscribe.push(NativeBus.on(NativeBus.topics.exitSphere,  () => { this.forceUpdate(); }));
   }
 
   componentWillUnmount() {
@@ -57,7 +70,7 @@ export class SideBar extends Component<any, any> {
           icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
           callback: () => {
             this.props.viewProps.actions.finalizeLocalization();
-            setTimeout(() => {this.props.closeCallback();},0)
+            setTimeout(() => {this.props.closeCallback();},0);
           }
         });
       }
@@ -67,12 +80,35 @@ export class SideBar extends Component<any, any> {
 
   _getMenuItems() {
     let menuItems = [];
+    // menuItems.push({
+    //   id: 'overview',
+    //   label: 'Overview',
+    //   icon: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+    //   callback: () => {
+    //     Actions.sphereOverview({type:'reset'});
+    //     setTimeout(() => {this.props.closeCallback();},0)
+    //   }
+    // });
+
+    let state = this.props.store.getState();
+    let activeSphereId = state.app.activeSphere;
+    let highlight = false;
+    if (activeSphereId && state.spheres[activeSphereId]) {
+      highlight = state.spheres[activeSphereId].config.newMessageFound
+    }
+
     menuItems.push({
-      id: 'overview',
-      label: 'Overview',
-      icon: <Icon name={"ios-color-filter-outline"} size={25} color={colors.menuBackground.rgba(0.75)} style={{backgroundColor:'transparent', padding:0, margin:0}} />,
+      id: 'messages',
+      label: highlight ? '* New Message *' : 'Messages',
+      icon: <Icon
+        name={"ios-mail"}
+        size={ highlight ? 32 : 25}
+        color={highlight ? colors.csOrange.hex : colors.menuBackground.rgba(0.75)}
+        style={{backgroundColor:'transparent', padding:0, margin:0}}
+      />,
+      highlight: highlight,
       callback: () => {
-        (Actions as any).sphereOverview({type:'reset'});
+        Actions.messageInbox();
         setTimeout(() => {this.props.closeCallback();},0)
       }
     });
@@ -92,7 +128,12 @@ export class SideBar extends Component<any, any> {
         Alert.alert('Are you sure?','Crownstones will not respond to you if you force quit the app. It will not run in the background anymore either.',[
           {text: 'Cancel', style: 'cancel'},
           {text: 'OK', onPress: () => {
-            AppUtil.quit();
+            try {
+              AppUtil.quit();
+            }
+            catch(err) {
+              LOG.error("Failed to quit.", err);
+            }
           }}
         ])
       }
@@ -116,7 +157,7 @@ export class SideBar extends Component<any, any> {
     }
     let menuItems = this._getMenuItems();
     // only show menu items when there's actually something to choose.
-    if (menuItems.length > 1) {
+    if (menuItems.length > 0) {
       content.push(<MenuSegmentSeparator key="categoriesLabel" label="Categories"/>);
       this._fillItemList(content, menuItems);
     }
@@ -165,15 +206,27 @@ class MenuTopBar extends Component<any, any> {
 
 class MenuItem extends Component<any, any> {
   render(){
+    let backgroundColor = colors.lightGray.rgba(0.5);
+    let foregroundColor = colors.darkGray.rgba(0.5);
+    let weight = '300';
+    let fontStyle = 'normal';
+
+    if (this.props.highlight) {
+      weight    = 'bold';
+      fontStyle = 'italic';
+    //   backgroundColor = colors.csOrange.rgba(0.5);
+    //   foregroundColor = colors.white.hex;
+    }
     return (
       <TouchableOpacity style={{
         flexDirection:'row',
         padding:10,
         paddingLeft: 25,
+        height: 50,
         width: screenWidth*FACTOR - BLUE_PADDING,
         borderBottomWidth:1,
         borderColor: colors.darkGray.rgba(0.1),
-        backgroundColor: colors.lightGray.rgba(0.5),
+        backgroundColor: backgroundColor,
         alignItems:'center'
       }} onPress={() => {
         this.props.callback();
@@ -182,7 +235,7 @@ class MenuItem extends Component<any, any> {
         <View style={[styles.centered,{width:25, marginRight:10}]}>
         {this.props.icon}
         </View>
-        <Text style={{paddingLeft: 15, fontSize:16, fontWeight: '300', color: colors.darkGray.rgba(0.5)}}>{this.props.label}</Text>
+        <Text style={{paddingLeft: 15, fontSize:16, fontWeight: weight, fontStyle: fontStyle, color: foregroundColor}}>{this.props.label}</Text>
       </TouchableOpacity>
     );
   }

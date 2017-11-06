@@ -12,10 +12,12 @@ import {
 import { Background }  from '../components/Background'
 import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
+import {colors, screenWidth} from "../styles";
 const Actions = require('react-native-router-flux').Actions;
 
 
 let categories = [
+  // {key: '__new', label: '__new'},
   {key: 'lights', label: 'Lights'},
   {key: 'tech', label: 'Tech'},
   {key: 'furniture', label: 'Furniture'},
@@ -40,8 +42,8 @@ let listOfIcons = {
     'c1-bulb',
     'c1-studiolight',
     'c1-desklamp',
-    'c1-light1',
     'c1-standingLamp',
+    'c1-theaterLight',
   ],
   miscellaneous: [
     'c1-chatBubbles',
@@ -53,6 +55,28 @@ let listOfIcons = {
     'c1-skull',
     'c1-xmastree',
     'c1-house',
+    'c1-safety-pin',
+    'c1-wheel-barrow',
+    'c1-squiggly',
+    'c1-stars',
+    'c1-wheel-barrow-lines',
+    'c1-massage',
+    'c1-weights',
+    'c1-cinema',
+    'c1-fireplace',
+    'c1-curtains',
+    'c1-nuclear-circle',
+    'c1-meditation',
+    'c1-makeupTable',
+    'c1-iron1',
+    'c1-musicNote',
+    'c1-musicCompose',
+    'c1-dance2',
+    'c1-movieCamera',
+    'c1-band',
+    'c1-drums',
+    'c1-musicalNotes',
+    'c1-mannequin',
   ],
   tools: [
     'c1-drill1',
@@ -60,40 +84,49 @@ let listOfIcons = {
     'c1-grinder',
     'c1-drill2',
     'c1-circularSaw',
+    'c1-hammer',
   ],
   tech: [
-    'c1-hdd1',
-    'c1-hdd2',
-    'c1-transmitHdd',
-    'c1-musicPlayer',
-    'c1-controller1',
     'c1-console',
+    'c1-controller1',
     'c1-controller2',
     'c1-controller3',
     'c1-controller4',
-    'c1-scanner',
-    'c1-scanner2',
     'c1-dvd',
-    'c1-appleLogo',
-    'c1-laptop',
-    'c1-speaker2',
-    'c1-speaker',
     'c1-fan2',
-    'c1-pc',
-    'c1-printer',
     'c1-lab',
     'c1-microscope',
     'c1-atom',
     'c1-recycler',
     'c1-nuclear',
+    'c1-appleLogo',
     'c1-projector',
-    'c1-monitor',
     'c1-tv',
     'c1-tv1',
+    'c1-tv2',
     'c1-socket',
     'c1-socket2',
+    'c1-vacuum',
+    'c1-vacuum2',
+    'c1-robot',
+    'c1-wifiLogo',
+    'c1-router',
+    'c1-musicPlayer',
+    'c1-speakers1',
+    'c1-speakers3',
+    'c1-speaker2',
+    'c1-speaker',
   ],
   office: [
+    'c1-scanner',
+    'c1-scanner2',
+    'c1-hdd1',
+    'c1-hdd2',
+    'c1-transmitHdd',
+    'c1-laptop',
+    'c1-pc',
+    'c1-printer',
+    'c1-monitor',
     'c1-archive',
     'c1-fan',
     'c1-alarm1',
@@ -139,6 +172,10 @@ let listOfIcons = {
     'c1-coffeemachine',
     'c1-coffee4',
     'c1-coffeebean',
+    'c1-mixer',
+    'c1-exhaustHood',
+    'c1-exhaustHood2',
+    'c1-microwave',
   ],
   rides: [
     'c1-car1',
@@ -165,6 +202,7 @@ let listOfIcons = {
     'c1-couch',
     'c1-chair',
     'c1-bookshelf',
+    'c1-bed-couch',
   ],
   outside: [
     'c1-cat',
@@ -180,6 +218,9 @@ let listOfIcons = {
     'c1-leaf',
     'c1-plant',
     'c1-droplet',
+    'c1-tree-pot',
+    'c1-arrow-target',
+    'c1-garage',
   ],
   bathroom: [
     'c1-sink1',
@@ -192,7 +233,21 @@ let listOfIcons = {
     'c1-showertub',
     'c1-washingmachine2',
     'c1-wcsign',
-  ]
+    'c1-swimming-circle',
+    'c1-medicine',
+    'c1-testtube',
+    'c1-medicine-bottle',
+    'c1-wheel-chair',
+    'c1-hairDryer',
+    'c1-hairIron',
+    'c1-hairIron2',
+    'c1-hairCurler',
+    'c1-iron2',
+    'c1-shaver1',
+    'c1-shaver2',
+    'c1-toothbrush',
+  ],
+  // __new: []
 };
 
 export class DeviceIconSelection extends Component<any, any> {
@@ -202,11 +257,11 @@ export class DeviceIconSelection extends Component<any, any> {
     const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].appliances[this.props.applianceId].config.icon;
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.main}>
+      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
-          left={"Back"}
           leftAction={Actions.pop}
           title="Pick an Icon"/>
+        <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
             categories={categories}

@@ -98,7 +98,9 @@ export class Register extends Component<any, any> {
         type: 'textEdit',
         validation:'password',
         validationMethod:'icons',
+        autoCapitalize:'none',
         secureTextEntry: false,
+        keyboardType: 'ascii-capable',
         value: this.state.password,
         validationCallback: (newState) => {this.inputStates.password = newState; this.setPasswordExplanation(newState)},
         alwaysShowState: this.state.alwaysShowState,
@@ -223,7 +225,7 @@ export class Register extends Component<any, any> {
       .then(() => {
         this.props.eventBus.emit("hideLoading");
         SessionMemory.loginEmail = this.state.email.toLowerCase();
-        (Actions as any).registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
+        Actions.registerConclusion({type:'reset', email:this.state.email.toLowerCase()});
       })
       .catch((reply) => {
         if (reply.data && reply.data.error && reply.data.error.message) {
