@@ -319,7 +319,7 @@ export class RoomLayer extends Component<any, any> {
       }
 
       if (
-        change.removeStone ||       // in case a stone that was floating was removed (and it was the last one floating)
+        change.changeStones ||      // in case a stone that was floating was removed (and it was the last one floating) or added (and its floating)
         change.stoneLocationUpdated // in case a stone was moved from floating to room and it was the last one floating.)
         ) {
         reloadSolverOnDemand();
