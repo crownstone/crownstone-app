@@ -133,10 +133,11 @@ export class SphereUserSyncer extends SyncingSphereItemBase {
       if (sphereUsersInState[sphereUserId]) {
         let sphereUserInState = sphereUsersInState[sphereUserId];
         if (
-          sphereUserInState.firstName !== sphere_user_in_cloud.firstName    ||
-          sphereUserInState.lastName  !== sphere_user_in_cloud.lastName     ||
-          sphereUserInState.email     !== sphere_user_in_cloud.email        ||
-          sphereUserInState.pictureId !== sphere_user_in_cloud.profilePicId
+          sphereUserInState.firstName   !== sphere_user_in_cloud.firstName    ||
+          sphereUserInState.lastName    !== sphere_user_in_cloud.lastName     ||
+          sphereUserInState.email       !== sphere_user_in_cloud.email        ||
+          sphereUserInState.accessLevel !== type                              ||
+          sphereUserInState.pictureId   !== sphere_user_in_cloud.profilePicId
         ) {
 
           actionBase.type = 'UPDATE_SPHERE_USER';
