@@ -205,11 +205,15 @@ function _handleStone(action, state) {
 
   let localDataForCloud = {...stone};
   if (stone.config.applianceId) { localDataForCloud.config['cloudApplianceId'] = MapProvider.local2cloudMap.appliances[stone.config.applianceId] || stone.config.applianceId; }
+  else                          { localDataForCloud.config['cloudApplianceId'] = null; }
+
   if (stone.config.locationId)  { localDataForCloud.config['cloudLocationId']  = MapProvider.local2cloudMap.locations[stone.config.locationId]   || stone.config.locationId;  }
+  else                          { localDataForCloud.config['cloudLocationId'] = null; }
+
 
   transferStones.updateOnCloud({
-    localId: action.stoneId,
-    localData: localDataForCloud,
+    localId:       action.stoneId,
+    localData:     localDataForCloud,
     localSphereId: action.sphereId,
     cloudSphereId: sphere.config.cloudId || action.sphereId, // we used to have the same ids locally and in the cloud.
     cloudId:       stone.config.cloudId  || action.stoneId,
@@ -358,7 +362,7 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
     let indexOfNewItem = oldStone && oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].data.length || 0;
 
     if (stone.config.applianceId) {
-      data['applianceId'] = stone.config.applianceId;
+      data['applianceId'] = MapProvider.local2cloudMap.appliances[stone.config.applianceId] || stone.config.applianceId;
     }
     BatchUploader.addPowerData(dayIndex, sphereId, stoneId, indexOfNewItem, data);
   }
