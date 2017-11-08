@@ -157,7 +157,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
         .catch(() => {})
       );
     }
-    else if (shouldUpdateLocally(applianceInState.config, appliance_from_cloud) || !applianceInState.config.cloudId) {
+    else if (shouldUpdateLocally(applianceInState.config, appliance_from_cloud)) {
       this.transferPromises.push(
         transferAppliances.updateLocal(this.actions, {
           localSphereId:  this.localSphereId,
@@ -166,6 +166,10 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
           cloudData:      appliance_from_cloud
         }).catch(() => {})
       );
+    }
+
+    if (!applianceInState.config.cloudId) {
+      this.actions.push({type:'UPDATE_APPLIANCE_CLOUD_ID', sphereId: this.localSphereId, applianceId: localId, data:{cloudId: appliance_from_cloud.id}})
     }
   };
 

@@ -46,7 +46,7 @@ class DfuStateHandlerClass {
         let emitDiscovery = false;
 
         if (!MapProvider.stoneHandleMap[handle]) {
-          LOG.info("DfuStateHandler: DFU Crownstone found but could not match it with our database.");
+          LOG.info("DfuStateHandler: DFU Crownstone found but could not match it with our database. Handle:", handle);
           return;
         }
 

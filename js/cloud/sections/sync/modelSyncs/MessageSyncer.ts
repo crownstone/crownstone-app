@@ -106,6 +106,10 @@ export class MessageSyncer extends SyncingSphereItemBase {
         }).catch(() => {})
       );
     }
+
+    if (!messageInState.config.cloudId) {
+      this.actions.push({type:'UPDATE_MESSAGE_CLOUD_ID', sphereId: this.localSphereId, messageId: localId, data:{cloudId: message_from_cloud.id}})
+    }
   };
 
 

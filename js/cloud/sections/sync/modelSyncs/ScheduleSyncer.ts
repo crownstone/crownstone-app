@@ -139,7 +139,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
         }).catch(() => {})
       );
     }
-    else if (shouldUpdateLocally(scheduleInState, schedule_from_cloud) || !scheduleInState.cloudId) {
+    else if (shouldUpdateLocally(scheduleInState, schedule_from_cloud)) {
       // update local
       this.transferPromises.push(
         transferSchedules.updateLocal(this.actions, {
@@ -149,6 +149,10 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
           cloudData: schedule_from_cloud
         }).catch(() => {})
       );
+    }
+
+    if (!scheduleInState.config.cloudId) {
+      this.actions.push({type:'UPDATE_SCHEDULE_CLOUD_ID', sphereId: this.localSphereId, stoneId: this.localStoneId, scheduleId: localId, data:{cloudId: schedule_from_cloud.id}})
     }
   }
 

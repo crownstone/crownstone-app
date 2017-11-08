@@ -27,6 +27,8 @@ import {LocationHandler} from "../../native/localization/LocationHandler";
 export class SettingsApp extends Component<any, any> {
   unsubscribe : any;
   initialKeepAliveState = false;
+  triggerTapToToggleCalibration = false;
+
 
   _getKeepAliveState() {
     let state = this.props.store.getState();
@@ -58,6 +60,10 @@ export class SettingsApp extends Component<any, any> {
     }
 
     this.unsubscribe();
+
+    if (this.triggerTapToToggleCalibration) {
+      this.props.eventBus.emit("CalibrateTapToToggle");
+    }
   }
 
   
@@ -77,6 +83,16 @@ export class SettingsApp extends Component<any, any> {
           type: 'UPDATE_APP_SETTINGS',
           data: {tapToToggleEnabled: newValue}
         });
+        if (newValue === true) {
+          // if we turn it on, we have to setup the training if the user has not already trained this.
+          let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
+          if (!tapToToggleCalibration) {
+            this.triggerTapToToggleCalibration = true;
+          }
+        }
+        else {
+          this.triggerTapToToggleCalibration = false;
+        }
     }});
     if (state.app.indoorLocalizationEnabled) {
       items.push({label: "Tap to toggle allows you to hold your phone against a Crownstone to toggle it automatically!", type: 'explanation', below: true});
