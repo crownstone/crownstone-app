@@ -250,9 +250,6 @@ export class StoneSyncer extends SyncingSphereItemBase {
     else if (shouldUpdateLocally(stoneInState.config, stone_from_cloud)) {
       syncLocal()
     }
-    else if (!stoneInState.config.cloudId) {
-      syncLocal();
-    }
     else if (stoneInState.config.applianceId && localApplianceId === null) { // self repair
       LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing applianceId.");
       syncLocal();
@@ -277,6 +274,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
         })
         .catch(() => {})
       );
+    }
+
+    if (!stoneInState.config.cloudId) {
+      this.actions.push({type:'UPDATE_STONE_CLOUD_ID', sphereId: this.localSphereId, stoneId: localId, data:{cloudId: stone_from_cloud.id}})
     }
   };
 

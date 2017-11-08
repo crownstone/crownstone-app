@@ -3,7 +3,7 @@ import { update, getTime, refreshDefaults } from './reducerUtil'
 let defaultState = {
   activeSphere: null,
   notificationToken: null,
-  tapToToggleEnabled: true,
+  tapToToggleEnabled: false,
   keepAlivesEnabled: true,
   indoorLocalizationEnabled: true,
   shownWhatsNewVersion: '0',

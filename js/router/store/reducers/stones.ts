@@ -42,7 +42,7 @@ let defaultSettings = {
     nearThreshold: null,
     rssi: -1000,
     onlyOnWhenDark: false,
-    touchToToggle: true,
+    tapToToggle: true,
     hidden: false,
     locked: false,
     type: STONE_TYPES.plug,
@@ -182,7 +182,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.nearThreshold     = update(action.data.nearThreshold,     newState.nearThreshold);
         newState.onlyOnWhenDark    = update(action.data.onlyOnWhenDark,    newState.onlyOnWhenDark);
         newState.rssi              = update(action.data.rssi,              newState.rssi);
-        newState.touchToToggle     = update(action.data.touchToToggle,     newState.touchToToggle);
+        newState.tapToToggle       = update(action.data.tapToToggle,       newState.tapToToggle);
         newState.type              = update(action.data.type,              newState.type);
         newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;
@@ -201,6 +201,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       newState.lastUpdatedStoneTime = getTime();
       return newState;
     case 'REFRESH_DEFAULTS':
+
       return refreshDefaults(state, defaultSettings.config);
     default:
       return state;

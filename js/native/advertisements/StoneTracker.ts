@@ -124,7 +124,7 @@ export class StoneTracker {
     if (state.app.tapToToggleEnabled !== false) {
       let tapToToggleCalibration = Util.data.getTapToToggleCalibration(state);
       // not all stones have touch to toggle enabled
-      if (stone.config.touchToToggle === true && tapToToggleCalibration !== null && FirmwareHandler.isDfuInProgress() === false) {
+      if (stone.config.tapToToggle === true && tapToToggleCalibration !== null && FirmwareHandler.isDfuInProgress() === false) {
         // implementation of touch-to-toggle feature. Once every 5 seconds, we require 2 close samples to toggle.
         // the sign > is because the rssi is negative!
         if (ref.touchTemporarilyDisabled === true) {

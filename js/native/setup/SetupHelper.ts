@@ -118,7 +118,7 @@ export class SetupHelper {
                 data: {
                   cloudId:         this.stoneIdInCloud,
                   type:            this.type,
-                  touchToToggle:   isPlug,
+                  tapToToggle:     isPlug,
                   crownstoneId:    this.cloudResponse.uid,
                   firmwareVersion: this.firmwareVersion,
                   hardwareVersion: this.hardwareVersion,

@@ -224,6 +224,10 @@ export class LocationSyncer extends SyncingSphereItemBase {
         }).catch(() => {})
       );
     }
+
+    if (!locationInState.config.cloudId) {
+      this.actions.push({type:'UPDATE_LOCATION_CLOUD_ID', sphereId: this.localSphereId, locationId: localId, data:{cloudId: location_from_cloud.id}})
+    }
   };
 
 

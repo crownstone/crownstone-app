@@ -25,8 +25,6 @@ let fieldMap : fieldMap = [
   {local:'name',                cloud: 'name'},
   {local:'aiName',              cloud: 'aiName'},
   {local:'aiSex',               cloud: 'aiSex'},
-  {local:'latitude' ,           cloud: 'latitude'},
-  {local:'longitude',           cloud: 'longitude'},
   {local:'exitDelay',           cloud: 'exitDelay'},
   {local:'iBeaconUUID',         cloud: 'uuid'},
   {local:'meshAccessAddress',   cloud: 'meshAccessAddress'},
@@ -45,9 +43,9 @@ export const transferSpheres = {
   fieldMap: fieldMap,
 
   createOnCloud: function (actions, data: transferNewSphereToCloudData) {
-    let payload = {};
-    let localConfig = data.localData.config;
-    transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
+    // let payload = {};
+    // let localConfig = data.localData.config;
+    // transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
 
     return CLOUD.createSphere({}, false)
       .then((result) => {
@@ -65,9 +63,14 @@ export const transferSpheres = {
       return new Promise((resolve,reject) => { reject({status: 404, message:"Can not update in cloud, no cloudId available"}); });
     }
 
+
     let payload = {};
     let localConfig = data.localData.config;
     transferUtil.fillFieldsForCloud(payload, localConfig, fieldMap);
+
+    // TODO: fix lat/long
+    // {local:'latitude' ,           cloud: 'latitude'},
+    // {local:'longitude',           cloud: 'longitude'},
 
     return CLOUD.updateSphere(data.cloudId, payload)
       .then(() => {})
@@ -78,6 +81,8 @@ export const transferSpheres = {
   },
 
   createLocal: function( actions, data: transferNewSphereToLocalData) {
+    // TODO: fix lat/long
+
     return transferUtil._handleLocal(
       actions,
       'ADD_SPHERE',
@@ -88,6 +93,8 @@ export const transferSpheres = {
   },
 
   updateLocal: function( actions, data: transferSphereToLocalData) {
+    // TODO: fix lat/long
+
     return transferUtil._handleLocal(
       actions,
       'UPDATE_SPHERE_CONFIG',
@@ -96,7 +103,5 @@ export const transferSpheres = {
       fieldMap
     );
   },
-
-  // todo: create new
 
 };

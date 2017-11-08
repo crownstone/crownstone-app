@@ -153,13 +153,17 @@ export class SphereSyncer extends SyncingBase {
         .catch(() => {})
       );
     }
-    else if (shouldUpdateLocally(sphereInState.config, sphere_from_cloud) || !sphereInState.config.cloudId) {
+    else if (shouldUpdateLocally(sphereInState.config, sphere_from_cloud)) {
       this.transferPromises.push(
         transferSpheres.updateLocal(this.actions, {
           localId:   localId,
           cloudData: sphere_from_cloud
         }).catch(() => {})
       );
+    }
+
+    if (!sphereInState.config.cloudId) {
+      this.actions.push({type:'UPDATE_SPHERE_CLOUD_ID', sphereId: localId, data:{cloudId: sphere_from_cloud.id}})
     }
   };
 

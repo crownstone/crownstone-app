@@ -13,6 +13,7 @@ export const transferUtil = {
         return; // this field will not be synced up.
       }
 
+      // if the data exists locally, upload to cloud.
       if (localData[field.local] !== undefined) {
         if (field.localFields) {
           payload[field.cloud] = {};

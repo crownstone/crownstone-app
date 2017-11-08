@@ -37,6 +37,9 @@ export function refreshDefaults(state, defaultObject) {
   }
   else if (Array.isArray(state) === false && typeof defaultObject === 'object') {
     let newState = {...state};
+
+    migrateFields(newState, defaultObject);
+
     let fields = Object.keys(defaultObject);
     fields.forEach((field) => {
       // if this field does not exist...
@@ -61,4 +64,12 @@ export function refreshDefaults(state, defaultObject) {
     return newState;
   }
   return state;
+}
+
+function migrateFields(newState, defaultObject) {
+
+  // rename touchToToggle to tapToToggle
+  if (newState.touchToToggle !== undefined) {
+    newState.tapToToggle = newState.touchToToggle;
+  }
 }
