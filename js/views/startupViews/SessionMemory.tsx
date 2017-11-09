@@ -1,3 +1,6 @@
 
 
-export let SessionMemory = {loginEmail: null};
+export let SessionMemory = {
+  loginEmail: null,
+  cameraSide: 'front'
+};

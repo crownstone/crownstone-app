@@ -3,13 +3,9 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG } from '../logging/Log'
 
 export class SingleCommand {
-  sphereId : any;
-  stoneId  : any;
   handle   : any;
 
-  constructor(handle, sphereId, stoneId) {
-    this.sphereId = sphereId;
-    this.stoneId = stoneId;
+  constructor(handle) {
     this.handle = handle;
   }
 

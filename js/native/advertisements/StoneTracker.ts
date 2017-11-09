@@ -148,7 +148,7 @@ export class StoneTracker {
                 Alert.alert("That's tap to toggle!", "You had your phone very very close to the Crownstone so I switched it for you!", [{text: "OK"}])
               }
 
-              let proxy = BleUtil.getProxy(stone.config.handle, sphereId, stoneId);
+              let proxy = BleUtil.getProxy(stone.config.handle);
               proxy.performPriority(BluenetPromiseWrapper.toggleSwitchState)
                 .then((newState) => {
                   let data = {state: newState};

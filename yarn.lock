@@ -3406,7 +3406,7 @@ lodash@^4.0.0, lodash@^4.14.0, lodash@^4.16.6, lodash@^4.2.0, lodash@^4.2.1, lod
   version "4.17.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
 
-lodash@^4.17.4:
+lodash@^4.14.2, lodash@^4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4204,10 +4204,11 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
-react-native-camera@~0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-0.10.0.tgz#5d973c9a8aab95f68aede395ba310eae0c3cecdd"
+"react-native-camera-kit@https://github.com/AlexDM0/react-native-camera-kit#master":
+  version "5.3.11"
+  resolved "https://github.com/AlexDM0/react-native-camera-kit#4e95c68dba72635576078b460f2f6f1e662a04fa"
   dependencies:
+    lodash "^4.14.2"
     prop-types "^15.5.10"
 
 react-native-cli@^2.0.1:

@@ -5,7 +5,6 @@ import { Register }                   from '../views/startupViews/Register'
 import { AiStart }                    from '../views/startupViews/AiStart'
 import { RegisterConclusion }         from '../views/startupViews/RegisterConclusion'
 import { PictureView }                from '../views/cameraViews/PictureView'
-import { PicturePreview }             from '../views/cameraViews/PicturePreview'
 import { CameraRollView }             from '../views/cameraViews/CameraRollView'
 import { SphereOverview }             from '../views/main/SphereOverview'
 import { RoomOverview }               from '../views/roomViews/RoomOverview'
@@ -48,7 +47,6 @@ export const Views = {
   Register,
   RegisterConclusion,
   PictureView,
-  PicturePreview,
   CameraRollView,
   SphereOverview,
   RoomOverview,

@@ -122,8 +122,8 @@ export const BleUtil = {
     })
   },
 
-  getProxy: function (bleHandle, sphereId, stoneId) {
-    return new SingleCommand(bleHandle, sphereId, stoneId);
+  getProxy: function (bleHandle) {
+    return new SingleCommand(bleHandle);
   },
 
   /**

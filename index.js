@@ -4,7 +4,6 @@ import { Root } from './App';
 import { config } from './sentrySettings'
 import { Sentry } from 'react-native-sentry';
 
-console.log("here")
 if ( global.__DEV__ !== true) {
   if (Platform.OS === 'android') {
     if (config.android) {
@@ -18,6 +17,4 @@ if ( global.__DEV__ !== true) {
   }
 }
 
-console.log("x")
 AppRegistry.registerComponent('Crownstone', () => Root);
-console.log("y")

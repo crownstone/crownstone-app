@@ -8,6 +8,9 @@ import { Util }  from '../../util/Util'
 import { MapProvider } from "../../backgroundProcesses/MapProvider";
 import {LogProcessor} from "../../logging/LogProcessor";
 import {LOG_LEVEL} from "../../logging/LogLevels";
+import {BleUtil} from "../../util/BleUtil";
+import {BluenetPromiseWrapper} from "../libInterface/BluenetPromise";
+import {BlePromiseManager} from "../../logic/BlePromiseManager";
 
 let TRIGGER_ID = 'CrownstoneAdvertisement';
 let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
@@ -19,6 +22,8 @@ class AdvertisementHandlerClass {
   temporaryIgnore  : any;
   temporaryIgnoreTimeout : any;
   listeners = [];
+
+  factoryResettingCrownstones : any = {};
 
   constructor() {
     this._initialized = false;
@@ -175,8 +180,9 @@ class AdvertisementHandlerClass {
 
     let referenceByHandle = MapProvider.stoneSphereHandleMap[sphereId][advertisement.handle];
 
-    // unknown crownstone
+    // unknown crownstone, factory reset it.
     if (referenceByHandle === undefined) {
+      this._factoryResetUnknownCrownstone(advertisement.handle);
       return;
     }
 
@@ -304,6 +310,26 @@ class AdvertisementHandlerClass {
 
     // we always update the disability (and rssi) of the Crownstone that is broadcasting.
     StoneStateHandler.receivedAdvertisementUpdate(sphereId, stoneFromAdvertisement, referenceByHandle.id, advertisement.rssi);
+  }
+
+  _factoryResetUnknownCrownstone(handle) {
+    if (!this.factoryResettingCrownstones[handle]) {
+      this.factoryResettingCrownstones[handle] = true;
+
+      let clearFlag = () => {
+        this.factoryResettingCrownstones[handle] = null;
+        delete this.factoryResettingCrownstones[handle];
+      };
+
+      let details = { from: 'SingleCommand: connecting to ' + handle + ' doing this: commandFactoryReset' };
+      BlePromiseManager.registerPriority(
+        () => {
+          let proxy = BleUtil.getProxy(handle);
+          return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
+        }, details)
+        .then(() => { clearFlag(); })
+        .catch(() => { clearFlag(); })
+    }
   }
 }
 

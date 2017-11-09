@@ -11,7 +11,7 @@
     "moment": "^2.18.1",
     "react": "16.0.0",
     "react-native": "0.50.3",
-    "react-native-camera": "~0.10.0",
+    "react-native-camera-kit": "https://github.com/AlexDM0/react-native-camera-kit#master",
     "react-native-console-time-polyfill": "^0.0.6",
     "react-native-device-info": "~0.12.1",
     "react-native-drawer": "~2.5.0",
@@ -33,16 +33,16 @@
     "suncalc": "^1.8.0"
   },
   "devDependencies": {
+    "@types/react": "16.0.21",
     "babel-jest": "21.2.0",
     "babel-preset-react-native": "4.0.0",
-    "jest": "21.2.1",
-    "react-test-renderer": "16.0.0",
-    "@types/react": "16.0.21",
     "babel-register": "~6.14.0",
+    "jest": "21.2.1",
     "jest-cli": "^20.0.4",
     "node-fetch": "latest",
     "promise": "latest",
     "react-native-cli": "^2.0.1",
+    "react-test-renderer": "16.0.0",
     "tape": "~4.5.1",
     "typescript": "^2.6.1",
     "whatwg-fetch": "^2.0.1"
