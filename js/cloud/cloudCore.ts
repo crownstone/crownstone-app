@@ -8,6 +8,8 @@ import { defaultHeaders } from './sections/cloudApiBase'
 import {safeMoveFile, safeDeleteFile, Util} from '../util/Util'
 import {Scheduler} from "../logic/Scheduler";
 
+
+
 /**
  *
  * This method communicates with the cloud services.
@@ -79,7 +81,7 @@ export function request(
         },
       NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
-      fetch(CLOUD_ADDRESS + endPoint, requestConfig)
+      fetch(CLOUD_ADDRESS + endPoint, requestConfig as any)
         .catch((connectionError) => {
           if (stopRequest === false) {
             reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed');

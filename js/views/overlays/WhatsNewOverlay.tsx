@@ -10,7 +10,7 @@ import {
 import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { styles, colors, screenHeight, screenWidth, availableScreenHeight } from '../styles'
 import {eventBus} from "../../util/EventBus";
-import * as Swiper from 'react-native-swiper';
+const Swiper = require("react-native-swiper");
 import { Awesome } from "./WhatsNew/Awesome";
 import {SyncingSchedulesToTheCloud} from "./WhatsNew/1.11.0/SyncingSchedulesToTheCloud";
 import {Messages} from "./WhatsNew/1.11.0/Messages";

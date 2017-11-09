@@ -1,15 +1,5 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  AppRegistry,
-  Navigator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Text,
   View
 } from 'react-native';
 import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';

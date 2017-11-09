@@ -29,7 +29,7 @@ export class SelectFromList extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = {
+    let stateData = {
       selectedItemIds: {},
       singularId: null
     };
@@ -37,13 +37,14 @@ export class SelectFromList extends Component<any, any> {
     // select required items beforehand
     props.items.forEach((item) => {
       if (item.selected === true) {
-        this.state.selectedItemIds[item.id] = true;
+        stateData.selectedItemIds[item.id] = true;
         if (item.singular === true) {
-          this.state.singularId = item.id;
+          stateData.singularId = item.id;
         }
       }
-    })
+    });
 
+    this.state = stateData;
   }
 
   _renderItem(item) {

@@ -24,6 +24,8 @@ import { AnimatedDoubleTap } from "../components/animated/AnimatedDoubleTap";
 import { Scheduler } from "../../logic/Scheduler";
 
 export class RoomLayer extends Component<any, any> {
+  state:any; // used to avoid warnings for setting state values
+
   _panResponder: any = {};
   _multiTouch = false;
   _currentSphere = null;

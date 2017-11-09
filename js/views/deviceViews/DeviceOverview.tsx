@@ -15,7 +15,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
 import { Background } from '../components/Background'
-import * as Swiper from 'react-native-swiper';
+const Swiper = require("react-native-swiper");
 import { Util } from "../../util/Util";
 import { TopBar } from "../components/Topbar";
 import { DeviceBehaviour } from "./elements/DeviceBehaviour";
@@ -31,7 +31,6 @@ import {LOG, LOGi} from '../../logging/Log';
 import { BATCH } from "../../router/store/storeManager";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);

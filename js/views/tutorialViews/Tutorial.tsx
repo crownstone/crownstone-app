@@ -11,14 +11,11 @@ import {
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
 
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight, topBarHeight} from '../styles'
 import { Background } from '../components/Background'
-import * as Swiper from 'react-native-swiper';
-import { Util } from "../../util/Util";
+const Swiper = require("react-native-swiper");
 import { TopBar } from "../components/Topbar";
-import { STONE_TYPES } from "../../router/store/reducers/stones";
 import { eventBus } from "../../util/EventBus";
 import {TutorialSphere} from "./elements/TutorialSphere";
 import {TutorialGetStarted} from "./elements/TutorialGetStarted";

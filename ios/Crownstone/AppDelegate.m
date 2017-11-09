@@ -29,7 +29,7 @@ Portal *portal;
 {
   NSURL *jsCodeLocation;
   
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"Crownstone"
@@ -52,7 +52,7 @@ Portal *portal;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   
-  [SplashScreen show];
+//  [SplashScreen show];
   return YES;
 }
 

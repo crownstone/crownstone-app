@@ -44,8 +44,9 @@ export class DeviceScheduleEdit extends Component<any, any> {
       const store = props.store;
       const state = store.getState();
       const schedule = state.spheres[props.sphereId].stones[props.stoneId].schedules[props.scheduleId];
-      this.state = {...schedule, time: StoneUtil.crownstoneTimeToTimestamp(schedule.time)};
-      this.state.activeDays = {...schedule.activeDays};
+      let stateData = {...schedule, time: StoneUtil.crownstoneTimeToTimestamp(schedule.time)};
+      stateData.activeDays = {...schedule.activeDays};
+      this.state = stateData;
     }
     else {
       this.state = {
@@ -330,7 +331,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
   }
 
   _getBridgeFormat(scheduleEntryIndex) {
-    let stateCopy = {...this.state};
+    let stateCopy:any = {...this.state};
     stateCopy.scheduleEntryIndex = scheduleEntryIndex;
     stateCopy.repeatMode = this._getRepeatMode();
     return ScheduleUtil.getBridgeFormat(stateCopy);

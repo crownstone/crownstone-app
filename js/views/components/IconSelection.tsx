@@ -26,13 +26,13 @@ export class IconSelection extends Component<any, any> {
   constructor(props) {
     super();
 
-    this.state = {};
+    let stateContent:any = {};
     props.categories.forEach((category) => {
-      this.state[category.key] = false;
+      stateContent[category.key] = false;
     });
 
-    if (this.state.__new !== undefined) {
-      this.state.__new = true;
+    if (stateContent.__new !== undefined) {
+      stateContent.__new = true;
     }
 
     if (props.debug) {
@@ -61,6 +61,8 @@ export class IconSelection extends Component<any, any> {
       console.log(JSON.stringify(newIconArray, undefined, 2))
       console.log("Amount of duplicate icons: ", Object.keys(this.duplicates).length, ':', JSON.stringify(Object.keys(this.duplicates), undefined, 2))
     }
+
+    this.state = stateContent;
   }
 
   _getIcons() {

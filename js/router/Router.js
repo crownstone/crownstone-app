@@ -1,17 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  AppState,
-  Alert,
-  AppRegistry,
-  Navigator,
-  Dimensions,
   Image,
   Platform,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Text,
-  View
 } from 'react-native';
 import { StoreManager }    from './store/storeManager'
 import { BackgroundProcessHandler } from '../backgroundProcesses/BackgroundProcessHandler'
