@@ -61,13 +61,13 @@ const DeviceInfo = require('react-native-device-info');
     /**
      * Switch to disable the usage of the mesh in the app
      */
-    export const HARDWARE_ERROR_REPORTING = false;
+    export const HARDWARE_ERROR_REPORTING = true;
 
 
     /**
      * Switch to enable/disable the Dimming functionality
      */
-    export const DIMMING_ENABLED = false;
+    export const DIMMING_ENABLED = true;
 
     /**
      * Point to the production cloud.
