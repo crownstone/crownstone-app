@@ -26,9 +26,6 @@ export class DevicePowerCurve extends Component<any, any> {
   unsubscribeStoreEvents;
   // debugInterval;
 
-  constructor() {
-    super();
-  }
 
   componentDidMount() {
     this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {

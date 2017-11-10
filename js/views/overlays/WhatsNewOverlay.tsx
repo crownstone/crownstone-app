@@ -20,8 +20,8 @@ const DeviceInfo = require('react-native-device-info');
 export class WhatsNewOverlay extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = { visible: false };
     this.unsubscribe = [];

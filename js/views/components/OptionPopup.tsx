@@ -20,8 +20,8 @@ import {CameraRollView} from "../cameraViews/CameraRollView";
 export class OptionPopup extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       title: null,
       visible: false,

@@ -28,8 +28,8 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
   lookingForCrownstone : boolean = true;
   uuid : string = Util.getUUID();
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       text:'Looking for Crownstones nearby...',
       fade2: new Animated.Value(0),

@@ -99,8 +99,8 @@ export class Router_IOS extends Component {
 
 class TabIcon extends Component {
   unsubscribe = null;
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = { badge: 0, badgeScale: new Animated.Value(1) }
   }

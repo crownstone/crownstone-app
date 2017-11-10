@@ -17,8 +17,8 @@ import { eventBus } from '../../util/EventBus'
 export class Processing extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       visible: false,

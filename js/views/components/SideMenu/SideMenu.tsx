@@ -18,7 +18,7 @@ import { styles, colors, screenWidth, screenHeight } from '../../styles'
 
 export class SideMenu extends Component<any, any> {
   constructor(props) {
-    super();
+    super(props);
     this.state = {open: props.navigationState.open, viewProps: {}}
   }
 

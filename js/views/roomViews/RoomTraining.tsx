@@ -34,7 +34,7 @@ export class RoomTraining extends Component<any, any> {
   noSignalTimeout : any;
 
   constructor(props) {
-    super();
+    super(props);
     this.state = {phase: 0, text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
     this.collectedData = [];
     this.amountOfInvalidPoints = 0;

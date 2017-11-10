@@ -28,8 +28,8 @@ export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
 export const ANYWHERE_IN_SPHERE = '__sphere__';
 
 export class MessageAdd extends Component<any, any> {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       everyoneInSphereIncludingOwner: true,

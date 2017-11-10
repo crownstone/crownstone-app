@@ -20,8 +20,8 @@ import {DoubleTapDelete} from "./DoubleTapDelete";
 export class ApplianceEntry extends Component<any, any> {
   id : string;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.id = Util.getUUID();
   }
 

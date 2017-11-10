@@ -31,8 +31,8 @@ import { styles, colors , screenWidth, screenHeight } from '../styles'
 export class Login extends Component<any, any> {
   progress : number;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {email: SessionMemory.loginEmail || '', password:''};
     this.progress = 0;
   }

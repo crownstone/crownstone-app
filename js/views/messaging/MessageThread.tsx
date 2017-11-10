@@ -25,9 +25,6 @@ import {ANYWHERE_IN_SPHERE, EVERYONE_IN_SPHERE} from "./MessageAdd";
 
 
 export class MessageThread extends Component<any, any> {
-  constructor() {
-    super();
-  }
 
   componentWillMount() {}
 

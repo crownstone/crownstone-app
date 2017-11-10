@@ -42,8 +42,8 @@ export class DeviceOverview extends Component<any, any> {
   touchEndTimeout: any;
   summaryIndex : number = 0;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {swiperIndex: 0, scrolling:false, swipeEnabled: true};
     this.unsubscribeSwiperEvents.push(eventBus.on("setNewSwiperIndex", (nextIndex) => {

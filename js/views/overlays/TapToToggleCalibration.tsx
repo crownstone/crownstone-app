@@ -19,8 +19,8 @@ import { styles, colors , screenHeight, screenWidth } from '../styles'
 export class TapToToggleCalibration extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = { visible: false, step:0, tutorial: true, canClose: false};
     this.unsubscribe = [];

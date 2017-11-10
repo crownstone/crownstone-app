@@ -16,8 +16,8 @@ import {NativeBus} from "../../native/libInterface/NativeBus";
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       visible: false,

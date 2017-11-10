@@ -15,8 +15,8 @@ export class TextEditInput extends Component<any, any> {
   unsubscribe : any;
   blurValue : string;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.initialized = false;
     this.blurValue = null;
     this.isInFocus = false;

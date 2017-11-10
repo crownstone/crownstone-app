@@ -16,8 +16,8 @@ import SplashScreen from 'react-native-splash-screen'
 
 export class AppRouter extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {initialized:false, loggedIn: false};
     this.unsubscribe = [];
     this.renderState = undefined;

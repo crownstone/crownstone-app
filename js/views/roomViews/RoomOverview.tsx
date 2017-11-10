@@ -49,8 +49,8 @@ export class RoomOverview extends Component<any, any> {
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {pendingRequests:{}, scrollViewHeight: new Animated.Value(screenHeight-tabBarHeight-topBarHeight-100)};
     this.unsubscribeSetupEvents = [];
 

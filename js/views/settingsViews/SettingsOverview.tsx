@@ -21,8 +21,8 @@ const DeviceInfo = require('react-native-device-info');
 export class SettingsOverview extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   componentDidMount() {

@@ -41,7 +41,7 @@ export class DeviceEntry extends Component<any, any> {
   optionMoveTimeout : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.baseHeight = props.height || 80;
     this.optionsHeight = 40;

@@ -7,7 +7,7 @@ export class SlideInView extends Component<any, any> {
   visible : boolean;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {viewHeight: new Animated.Value(props.visible ? props.height : 0)};
     this.visible = props.visible || false;

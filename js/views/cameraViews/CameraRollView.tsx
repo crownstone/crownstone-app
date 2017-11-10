@@ -22,8 +22,8 @@ export class CameraRollView extends Component<any, any> {
   active : any;
   fetchPicturesTimeout : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.pictureIndex = undefined;
     this.state = {pictures:[]};
     this.active = true;

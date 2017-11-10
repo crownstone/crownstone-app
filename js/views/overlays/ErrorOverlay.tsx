@@ -25,8 +25,8 @@ let SEE_THROUGH_OPACITY = 0.33;
 export class ErrorOverlay extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       visible: false,

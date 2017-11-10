@@ -25,7 +25,7 @@ export class UserLayer extends Component<any, any> {
   otherUserSize : number;
 
   constructor(props) {
-    super();
+    super(props);
     this.maxUsersShownOnRoom = props.maxUsersShownOnRoom || 4;
     this.appUserSize         = props.appUserSize         || 50;
     this.otherUserSize       = props.otherUserSize       || 40;

@@ -27,8 +27,8 @@ import {DIMMING_ENABLED} from "../../../ExternalConfig";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 export class DeviceSummary extends Component<any, any> {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {pendingCommand: false}
   }
 

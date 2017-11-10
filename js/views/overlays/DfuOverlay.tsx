@@ -66,8 +66,8 @@ export class DfuOverlay extends Component<any, any> {
   backButtonFunction : any = null;
   killProcess : boolean = false;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.uuid = Util.getUUID();
     this.state = {
       visible: false,

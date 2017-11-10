@@ -29,11 +29,6 @@ export class RoomEdit extends Component<any, any> {
   viewingRemotely : boolean = false;
   unsubscribeStoreEvents : any;
 
-  constructor() {
-    super();
-    this.unsubscribeStoreEvents = undefined;
-  }
-
   componentDidMount() {
     const { store } = this.props;
     // tell the component exactly when it should redraw

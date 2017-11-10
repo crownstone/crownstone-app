@@ -35,8 +35,8 @@ export class Tutorial extends Component<any, any> {
   touchEndTimeout: any;
   requestedPermission;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.requestedPermission = false;
     this.state = {swiperIndex: 0, scrolling:false};

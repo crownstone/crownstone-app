@@ -37,7 +37,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
   datePickerReference : any;
 
   constructor(props) {
-    super();
+    super(props);
 
 
     if (props.scheduleId !== null && props.scheduleId !== undefined) {

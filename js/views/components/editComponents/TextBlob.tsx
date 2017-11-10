@@ -12,8 +12,8 @@ import { emailChecker, characterChecker, numberChecker } from '../../../util/Uti
 export class TextBlob extends Component<any, any> {
   refName : string;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {validation: undefined};
     this.refName = (Math.random() * 1e9).toString(36);
   }

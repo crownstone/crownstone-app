@@ -24,10 +24,6 @@ import {clearLogs} from "../../logging/LogUtil";
 export class SettingsDeveloper extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
-  }
-
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;

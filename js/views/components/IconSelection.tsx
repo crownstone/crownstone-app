@@ -24,7 +24,7 @@ export class IconSelection extends Component<any, any> {
   duplicates: any = {};
 
   constructor(props) {
-    super();
+    super(props);
 
     let stateContent:any = {};
     props.categories.forEach((category) => {

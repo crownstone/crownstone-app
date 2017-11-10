@@ -16,8 +16,8 @@ import { Util }                                      from "../../util/Util";
 export class LocalizationSetupStep2 extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = { visible: false, sphereId: undefined };
     this.unsubscribe = [];

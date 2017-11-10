@@ -22,8 +22,8 @@ export class SettingsMeshOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
   lastOffset : number = null;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { leftOffset: new Animated.Value() };
   }
 
@@ -168,7 +168,7 @@ export class Network extends Component<any, any> {
   nodeHeight : number = 50;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {
       connectionLineHeight: new Animated.Value(this.getLineHeight(props)),

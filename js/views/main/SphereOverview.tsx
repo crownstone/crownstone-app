@@ -31,10 +31,6 @@ export class SphereOverview extends Component<any, any> {
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
 
-  constructor() {
-    super();
-  }
-
   componentDidMount() {
     // watch for setup stones
     this.unsubscribeSetupEvents = [];

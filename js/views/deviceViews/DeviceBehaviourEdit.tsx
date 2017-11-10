@@ -50,8 +50,8 @@ export class DeviceBehaviourEdit extends Component<any, any> {
   viewingRemotely : any;
   canDoIndoorLocalization : boolean;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.detectionTimeout = undefined;
     this.unsubscribeNative = undefined;
     this._uuid = Util.getUUID();

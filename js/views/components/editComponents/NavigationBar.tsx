@@ -13,7 +13,7 @@ export class NavigationBar extends Component<any, any> {
   setActiveElement : any;
 
   constructor(props) {
-    super();
+    super(props);
     let emptyFunction = () => {};
     this.setActiveElement = props.setActiveElement || emptyFunction;
   }

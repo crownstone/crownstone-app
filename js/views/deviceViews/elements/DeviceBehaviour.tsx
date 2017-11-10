@@ -27,9 +27,6 @@ let DISABLED_COLOR = colors.gray.hex;
 let WARNING_COLOR = colors.csOrange.hex;
 
 export class DeviceBehaviour extends Component<any, any> {
-  constructor() {
-    super();
-  }
 
   getWarning(state, nearFarDisabled) {
     let warnings = [];

@@ -58,6 +58,7 @@ export class PermissionClass extends PermissionBase {
 
   constructor(store, sphereId, userAlreadyLoggedIn) {
     super();
+
     this._sphereId = sphereId;
     this._loadStore(store, userAlreadyLoggedIn);
   }

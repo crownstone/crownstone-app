@@ -26,7 +26,7 @@ export class AiStart extends Component<any, any> {
   backButtonFunction : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     let state = props.store.getState();
     if (Object.keys(state.spheres).length === 0) {

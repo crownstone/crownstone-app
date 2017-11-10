@@ -12,8 +12,8 @@ export class AnimatedDoubleTap extends Component<any, any> {
   animating = false;
 
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       iconTopOffset: new Animated.Value(20),

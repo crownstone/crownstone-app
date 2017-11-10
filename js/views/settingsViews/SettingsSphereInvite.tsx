@@ -21,8 +21,8 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 export class SettingsSphereInvite extends Component<any, any> {
   inputStates : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       email: '',
       permission:'Guest'

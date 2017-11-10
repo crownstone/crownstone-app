@@ -66,7 +66,7 @@ export class RoomLayer extends Component<any, any> {
   _clearScheduledDoubleTapGesture = () => {};
 
   constructor(props) {
-    super();
+    super(props);
 
     this._baseRadius = 0.15 * screenWidth;
     let initialScale = 1;

@@ -27,7 +27,7 @@ export class SetupDeviceEntry extends Component<any, any> {
   rssiTimeout : any = null;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.baseHeight = props.height || 80;
 

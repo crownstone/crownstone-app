@@ -28,7 +28,7 @@ export class RoomAdd extends Component<any, any> {
   refName : string;
 
   constructor(props) {
-    super();
+    super(props);
     this.state = {name:'', icon: 'c1-bookshelf', selectedStones: {}};
     this.refName = "listItems";
   }

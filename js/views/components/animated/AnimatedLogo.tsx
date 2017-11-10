@@ -10,7 +10,7 @@ export class AnimatedLogo extends Component<any, any> {
   animationTimeout : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.baseSize = props.size || 100;
     this.state = { size: new Animated.Value(this.baseSize) };

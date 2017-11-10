@@ -45,7 +45,7 @@ export class DimmerButton extends Component<any, any> {
   controlling = false;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.radius = 0.48*props.size;
     this.radiusIndicator = 0.24*this.radius;

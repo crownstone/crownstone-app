@@ -8,7 +8,7 @@ export class SlideFadeInView extends Component<any, any> {
   visible : boolean;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {
       viewOpacity: new Animated.Value(props.visible ? 1 : 0),

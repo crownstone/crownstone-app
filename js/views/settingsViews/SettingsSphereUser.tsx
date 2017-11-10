@@ -21,14 +21,9 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereUser extends Component<any, any> {
-  deleting : boolean;
+  deleting : boolean = false;
   unsubscribe : any;
 
-  constructor() {
-    super();
-    this.deleting = false;
-    this.unsubscribe = undefined;
-  }
 
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {

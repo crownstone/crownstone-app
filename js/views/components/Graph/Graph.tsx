@@ -51,7 +51,7 @@ export class Graph extends Component<any, any> {
   paddingBottom = 50;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.options = {
       interpolation: {
@@ -389,7 +389,7 @@ class GraphTimeline extends Component<any, any> {
   _leftValue = 0;
 
   constructor(props) {
-    super();
+    super(props);
     this.state = { left: new Animated.Value(-props.options.width*(1+2*this.timePaddingFactor))};
   }
 

@@ -27,7 +27,7 @@ export class ApplianceAdd extends Component<any, any> {
   refName : string;
 
   constructor(props) {
-    super();
+    super(props);
     this.state = {name:'', icon: getRandomC1Name(), selectedStones: {}};
     this.refName = "listItems";
   }

@@ -31,7 +31,7 @@ export class SettingsSphere extends Component<any, any> {
   unsubscribeStoreEvents : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     const state = props.store.getState();
     let sphereSettings = state.spheres[props.sphereId].config;

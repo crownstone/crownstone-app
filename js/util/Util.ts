@@ -30,30 +30,14 @@ export const getImageFileFromUser = function(email) {
 };
 
 
-export const processImage = function(picture, targetFilename) {
+export const processImage = function(pictureURI, targetFilename) {
   return new Promise((resolve, reject) => {
-    if (picture !== undefined) {
+    if (pictureURI !== undefined) {
       let targetPath = Util.getPath(targetFilename);
-      let resizedUri = undefined;
-      let resizedPath = undefined;
-      if (Platform.OS === 'android') {
-        // TODO: what path to use for temp?
-        resizedPath = RNFS.ExternalDirectoryPath;
-      }
 
-      let pictureURI = picture.replace('file://','');
-
-      ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90, 0, resizedPath)
-        .then((resizedImageUri) => {
-          resizedUri = resizedImageUri;
-          return safeDeleteFile(targetPath);
-        })
-        .then(() => {
-          if (Platform.OS === 'android') {
-            // TODO: better way to remove the "file:"
-            resizedUri = resizedUri.replace("file:","");
-          }
-          return safeMoveFile(resizedUri, targetPath);
+      ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90)
+        .then(({uri}) => {
+          return safeMoveFile(uri, targetPath);
         })
         .then(() => {
           resolve(targetPath);

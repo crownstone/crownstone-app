@@ -29,8 +29,8 @@ export class RoomBottomExplanation extends Component<any, any> {
   cleanupTimeout : any;
 
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.unsubscribeSetupEvents = [];
     this.state = {explanation: null, buttonCallback: null};
   }

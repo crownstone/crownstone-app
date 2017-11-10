@@ -28,12 +28,8 @@ let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
 
 export class SideBar extends Component<any, any> {
-  unsubscribe : any;
+  unsubscribe : any = [];
 
-  constructor() {
-    super();
-    this.unsubscribe = [];
-  }
 
   componentDidMount() {
     this.unsubscribe.push(eventBus.on("databaseChange", (data) => {

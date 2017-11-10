@@ -54,7 +54,7 @@ class RoomCircleClass extends Component<any, any> {
   renderState : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.initializedPosition = true;
     let initialX = props.pos.x._value;

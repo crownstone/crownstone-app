@@ -18,8 +18,8 @@ import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '
 import {Util} from "../../../util/Util";
 
 export class GuidestoneSummary extends Component<any, any> {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {pendingCommand: false}
   }
 

@@ -14,7 +14,7 @@ export class AnimatedBackground extends Component<any, any> {
   value  : number = 0;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.staticImage = props.image;
     this.animatedImage = props.image;

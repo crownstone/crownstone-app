@@ -32,8 +32,8 @@ export class DeviceEdit extends Component<any, any> {
   deleting : boolean = false;
   unsubscribeStoreEvents : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {showStone:false};
   }
 

@@ -26,8 +26,8 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
   deleting : boolean;
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.deleting = false;
   }
 
