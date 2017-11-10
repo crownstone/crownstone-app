@@ -93,7 +93,7 @@ export class MessageSyncer extends SyncingSphereItemBase {
     if (shouldUpdateInCloud(messageInState.config, message_from_cloud)) {
       // update in cloud --> not possible for messages. Sent is sent.
     }
-    else if (shouldUpdateLocally(messageInState.config, message_from_cloud) || !messageInState.config.cloudId) {
+    else if (shouldUpdateLocally(messageInState.config, message_from_cloud)) {
       // update local
       let cloudDataForLocal = {...message_from_cloud};
       cloudDataForLocal['localTriggerLocationId'] = this._getLocalLocationId(message_from_cloud.triggerLocationId);

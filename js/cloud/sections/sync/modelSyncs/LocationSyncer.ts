@@ -215,7 +215,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
         .catch(() => {})
       );
     }
-    else if (shouldUpdateLocally(locationInState.config, location_from_cloud) || !locationInState.config.cloudId) {
+    else if (shouldUpdateLocally(locationInState.config, location_from_cloud)) {
       this.transferPromises.push(
         transferLocations.updateLocal(this.actions, {
           localId:   localId,

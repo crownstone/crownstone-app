@@ -151,7 +151,7 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
       );
     }
 
-    if (!scheduleInState.config.cloudId) {
+    if (!scheduleInState.cloudId) {
       this.actions.push({type:'UPDATE_SCHEDULE_CLOUD_ID', sphereId: this.localSphereId, stoneId: this.localStoneId, scheduleId: localId, data:{cloudId: schedule_from_cloud.id}})
     }
   }
