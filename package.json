@@ -8,7 +8,8 @@
     "cleanTest": "jest --useStderr --no-cache --clearMocks"
   },
   "dependencies": {
-    "moment": "^2.18.1",
+    "moment": "~2.19.1",
+    "prop-types": "~15.6.0",
     "react": "16.0.0",
     "react-native": "0.50.3",
     "react-native-camera-kit": "https://github.com/AlexDM0/react-native-camera-kit#master",
@@ -16,7 +17,7 @@
     "react-native-device-info": "~0.12.1",
     "react-native-drawer": "~2.5.0",
     "react-native-fs": "~2.8.5",
-    "react-native-image-resizer": "~0.1.0",
+    "react-native-image-resizer": "~1.0.0",
     "react-native-keep-awake": "^2.0.6",
     "react-native-push-notification": "~3.0.1",
     "react-native-router-flux": "~3.43.0",
@@ -27,25 +28,26 @@
     "react-native-swiper": "^1.5.13",
     "react-native-uncontrolled-date-picker-ios": "^1.0.0",
     "react-native-vector-icons": "~4.4.2",
-    "react-redux": "~5.0.3",
-    "redux": "~3.6.0",
+    "react-redux": "~5.0.6",
+    "redux": "~3.7.2",
     "sha-1": "~0.1.1",
     "suncalc": "^1.8.0"
   },
   "devDependencies": {
-    "@types/react": "16.0.21",
+    "@types/react": "16.0.22",
     "babel-jest": "21.2.0",
     "babel-preset-react-native": "4.0.0",
-    "babel-register": "~6.14.0",
-    "jest": "21.2.1",
-    "jest-cli": "^20.0.4",
-    "node-fetch": "latest",
-    "promise": "latest",
+    "babel-register": "~6.26.0",
+    "babel-core": "~6.26.0",
+    "jest": "~21.2.1",
+    "jest-cli": "~21.2.1",
+    "node-fetch": "~1.7.3",
+    "promise": "~8.0.1",
     "react-native-cli": "^2.0.1",
-    "react-test-renderer": "16.0.0",
-    "tape": "~4.5.1",
+    "react-test-renderer": "16.1.0",
+    "tape": "~4.8.0",
     "typescript": "^2.6.1",
-    "whatwg-fetch": "^2.0.1"
+    "whatwg-fetch": "^2.0.3"
   },
   "jest": {
     "preset": "react-native"
