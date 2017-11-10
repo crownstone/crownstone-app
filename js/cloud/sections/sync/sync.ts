@@ -4,15 +4,16 @@ import { Platform }            from 'react-native'
 import { AppUtil }             from "../../../util/AppUtil";
 import { cleanupPowerUsage, syncPowerUsage }   from "./syncPowerUsage";
 import { syncEvents }          from "./syncEvents";
-import {MessageCenter} from "../../../backgroundProcesses/MessageCenter";
-import {NotificationHandler} from "../../../backgroundProcesses/NotificationHandler";
-import {UserSyncer} from "./modelSyncs/UserSyncer";
-import {SphereSyncer} from "./modelSyncs/SphereSyncer";
-import {DeviceSyncer} from "./modelSyncs/DeviceSyncer";
-import {getGlobalIdMap} from "./modelSyncs/SyncingBase";
-import {eventBus} from "../../../util/EventBus";
-import {KeySyncer} from "./modelSyncs/KeySyncer";
-import {Scheduler} from "../../../logic/Scheduler";
+import { MessageCenter }       from "../../../backgroundProcesses/MessageCenter";
+import { NotificationHandler } from "../../../backgroundProcesses/NotificationHandler";
+import { UserSyncer }          from "./modelSyncs/UserSyncer";
+import { SphereSyncer }        from "./modelSyncs/SphereSyncer";
+import { DeviceSyncer }        from "./modelSyncs/DeviceSyncer";
+import { FirmwareBootloaderSyncer } from "./modelSyncs/FirmwareBootloaderSyncer";
+import { getGlobalIdMap }      from "./modelSyncs/SyncingBase";
+import { eventBus }            from "../../../util/EventBus";
+import { KeySyncer }           from "./modelSyncs/KeySyncer";
+import { Scheduler }           from "../../../logic/Scheduler";
 
 
 
@@ -73,6 +74,12 @@ export const sync = {
       }))
       .then(() => {
         LOG.info("Sync: DONE userSyncer sync.");
+        LOG.info("Sync: START FirmwareBootloader sync.");
+        let firmwareBootloaderSyncer = new FirmwareBootloaderSyncer(actions, [], globalCloudIdMap);
+        return firmwareBootloaderSyncer.sync(store);
+      })
+      .then(() => {
+        LOG.info("Sync: DONE FirmwareBootloader sync.");
         LOG.info("Sync: START SphereSyncer sync.");
         let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap);
         return sphereSyncer.sync(store);
@@ -184,4 +191,3 @@ let getUserIdCheckError = (state, store, retryThisAfterRecovery) => {
     }
   }
 };
-

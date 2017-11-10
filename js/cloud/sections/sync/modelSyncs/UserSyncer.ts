@@ -44,16 +44,6 @@ export class UserSyncer extends SyncingBase {
       );
     }
 
-    let cloudFirmwareVersions = userInCloud.firmwareVersionsAvailable || null;
-    let cloudBootloaderVersions = userInCloud.bootloaderVersionsAvailable || null;
-
-    if (
-      userInState && cloudFirmwareVersions && cloudBootloaderVersions &&
-      (userInState.firmwareVersionsAvailable !== cloudFirmwareVersions || userInState.bootloaderVersionsAvailable !== cloudBootloaderVersions)
-    ) {
-      this.actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionsAvailable: cloudFirmwareVersions, bootloaderVersionsAvailable: cloudBootloaderVersions}})
-    }
-
     if (shouldUpdateLocally(userInState, userInCloud)) {
       this.transferPromises.push(transferUser.updateLocal(this.actions, {cloudData: userInCloud}));
     }

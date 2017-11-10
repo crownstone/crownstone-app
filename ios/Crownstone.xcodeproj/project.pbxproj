@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -41,7 +42,6 @@
 		BF81E2A6FBB44062A90F84CC /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F94E04D8F3A48E5ABC73F3E /* MaterialIcons.ttf */; };
 		C0A12D6754B64676A70BF639 /* libRNSentry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D3FBDC110CEC4744A6A26FF2 /* libRNSentry.a */; };
 		C1770742DC1E48B386AA917E /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DE3C66843AE4F58A13BDEDF /* libRNDeviceInfo.a */; };
-		D66D923EEACD45AB8110538B /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3850D22C8FD340C8B78DA044 /* libRCTCamera.a */; };
 		ECECF241F5E043BB8962D8D8 /* libRCTImageResizer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81720DF7A506458AA65323BF /* libRCTImageResizer.a */; };
 		EED8C19564C145BF9A878AA9 /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF916DF8FF748538BA28025 /* libKCKeepAwake.a */; };
 		F55DE0D9CEA9436186D7D431 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68D2A9283AFF4B7892603493 /* libSplashScreen.a */; };
@@ -452,7 +452,6 @@
 		2DE3C66843AE4F58A13BDEDF /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		3168EF210533498EAC7B488C /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		3624663A3C2E47DF9D040AB4 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		3850D22C8FD340C8B78DA044 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
 		399B9F79E411460EAE31B346 /* libRCTToast.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTToast.a; sourceTree = "<group>"; };
 		46FE7150DB694F9E85D27BFC /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		562A66FB958C404F86EE89D9 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -533,7 +532,6 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				D66D923EEACD45AB8110538B /* libRCTCamera.a in Frameworks */,
 				FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */,
 				FA570EAD1EAE30F9001C625D /* iOSDFULibrary.framework in Frameworks */,
 				FA570EAE1EAE30F9001C625D /* PromiseKit.framework in Frameworks */,
@@ -888,7 +886,6 @@
 		FAE1EF5C1F73DF96009C1E97 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				3850D22C8FD340C8B78DA044 /* libRCTCamera.a */,
 				2DE3C66843AE4F58A13BDEDF /* libRNDeviceInfo.a */,
 				F76F3A8FD7B44DD79A442EF9 /* libRNFS.a */,
 				81720DF7A506458AA65323BF /* libRCTImageResizer.a */,
