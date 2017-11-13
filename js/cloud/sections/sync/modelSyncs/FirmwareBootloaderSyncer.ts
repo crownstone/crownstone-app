@@ -4,8 +4,8 @@
  *
  */
 
-import { CLOUD}               from "../../../cloudAPI";
-import { SyncingBase }        from "./SyncingBase";
+import { CLOUD}        from "../../../cloudAPI";
+import { SyncingBase } from "./SyncingBase";
 
 export class FirmwareBootloaderSyncer extends SyncingBase {
   userId : string;

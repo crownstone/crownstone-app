@@ -343,12 +343,8 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 
   if (state.user.uploadSwitchState === true && pureSwitch === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = {
-      switchState: stone.state.state,
-      updatedAt:   stone.updatedAt,
-    };
 
-    CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
+    CLOUD.forStone(stoneId).updateStoneSwitchState(stone.state.state).catch(() => {});
   }
 
   if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {

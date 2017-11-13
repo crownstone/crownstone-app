@@ -63,12 +63,14 @@ export class Root extends Component {
 
   render() {
     if (Platform.OS === 'ios') {
-      return <View style={{flex: 1}}>
-        <StatusBar barStyle="light-content"/>
-        <Animated.View style={{flex: 1, position: 'relative', top: this.state.top}}>
-          <AppRouter/>
-        </Animated.View>
-      </View>
+      return (
+        <View style={{flex: 1}}>
+          <StatusBar barStyle="light-content"/>
+          <Animated.View style={{flex: 1, position: 'relative', top: this.state.top}}>
+            <AppRouter/>
+          </Animated.View>
+        </View>
+      );
     }
     else {
       return (

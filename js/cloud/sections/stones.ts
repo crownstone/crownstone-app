@@ -36,6 +36,21 @@ export const stones = {
   },
 
   /**
+   * Update a crownstone in the cloud
+   * @param switchState
+   * @param background
+   * @returns {*}
+   */
+  updateStoneSwitchState: function(switchState, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Stones/{id}/currentSwitchState?switchState='  + switchState,
+      {background: background},
+      'body'
+    );
+  },
+
+  /**
    * Update a current energy usage
    * @param data
    * @param background
@@ -85,7 +100,7 @@ export const stones = {
       .then(() => {
         if (doNotSetUpdatedTimes !== true) {
           let promises = [];
-          promises.push(this.forSphere(localSphereId).updateStone(this._stoneId,      {updatedAt: updatedAt}));
+          promises.push(this.forSphere(localSphereId).updateStone(this._stoneId,      {locationId: cloudLocationId, updatedAt: updatedAt}));
           promises.push(this.forSphere(localSphereId).updateLocation(localLocationId, {updatedAt: updatedAt}));
           // we set the updatedAt time in the cloud since changing the links does not update the time there
           return Promise.all(promises);
