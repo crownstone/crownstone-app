@@ -1,4 +1,4 @@
-import { AsyncStorage }                 from 'react-native'
+import { Alert, AsyncStorage }          from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import CrownstoneReducer                from './reducer'
 import { NativeEnhancer }               from './nativeEnhancer'
@@ -70,11 +70,27 @@ class StoreManagerClass {
     else {
       this._setUserStorageKey(userId);
       AsyncStorage.getItem(this.storageKey)
+        .catch((err)=>{
+          LOG.error("AsyncStorage: failed to set store", err);
+          this._resetStore();
+          throw err;
+        })
         .then((data) => {
           this._setupStore(data, true);
         })
-        .catch((err)=>{LOG.error("AsyncStorage: failed to get store", err)});
+        .catch((err)=>{});
     }
+  }
+
+  _resetStore() {
+    this.storageKey = null;
+    this._initializeStore(null);
+    Alert.alert(
+      "Failed to read database",
+      "Unfortunately, I was unable to read the database. You will have to log in again, some data may have been lost.",
+      [{text: "OK"}],
+      {cancelable: false}
+    );
   }
 
   _setUserStorageKey(userId) {
