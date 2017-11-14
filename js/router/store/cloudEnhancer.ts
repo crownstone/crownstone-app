@@ -351,16 +351,16 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
     let stone = state.spheres[sphereId].stones[stoneId];
     let data  = { power: stone.state.currentUsage, timestamp: action.updatedAt };
 
-    let dayIndex = Util.getDateFormat(action.updatedAt);
+    let dateId = Util.getDateHourId(action.updatedAt);
 
     // get the index the new item will have. This is used to mark them as synced. If there is no previous item, it is 0.
     let oldStone = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] || null;
-    let indexOfNewItem = oldStone && oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].data.length || 0;
+    let indexOfNewItem = oldStone && oldStone.powerUsage[dateId] && oldStone.powerUsage[dateId].data.length || 0;
 
     if (stone.config.applianceId) {
       data['applianceId'] = MapProvider.local2cloudMap.appliances[stone.config.applianceId] || stone.config.applianceId;
     }
-    BatchUploader.addPowerData(dayIndex, sphereId, stoneId, indexOfNewItem, data);
+    BatchUploader.addPowerData(dateId, sphereId, stoneId, indexOfNewItem, data);
   }
 }
 

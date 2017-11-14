@@ -125,6 +125,18 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
+  getDateHourId: function(timestamp)  {
+    if (timestamp === 0) {
+      return 'unknown';
+    }
+    let date = new Date(timestamp);
+    let month = pad(date.getMonth() + 1);
+    let day = pad(date.getDate());
+    let hours = pad(date.getHours());
+
+    return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':00:00'
+  },
+
   getDateFormat: function(timestamp)  {
     if (timestamp === 0) {
       return 'unknown';

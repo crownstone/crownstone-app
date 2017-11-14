@@ -284,21 +284,21 @@ export class MessageAdd extends Component<any, any> {
       });
     }
 
-    // items.push({ type: 'lightExplanation', label:'WHEN SHOULD IT BE DELIVERED' });
-    // items.push({
-    //   type: 'dropdown',
-    //   label: 'Deliver message on',
-    //   dropdownHeight: 130,
-    //   valueRight: true,
-    //   buttons: 2,
-    //   valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
-    //   value: this.state.triggerEvent,
-    //   items: [{label:'Entering', value:'enter'},{label:'Exiting', value:'exit'}],
-    //   callback: (newValue) => {
-    //     this.setState({triggerEvent: newValue})
-    //   }
-    // });
-    // items.push({ type: 'lightExplanation', label:'If the user is already there, the message will also be delivered!', below:true });
+    items.push({ type: 'lightExplanation', label:'WHEN SHOULD IT BE DELIVERED' });
+    items.push({
+      type: 'dropdown',
+      label: 'Deliver message on',
+      dropdownHeight: 130,
+      valueRight: true,
+      buttons: 2,
+      valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
+      value: this.state.triggerEvent,
+      items: [{label:'Entering', value:'enter'},{label:'Exiting', value:'exit'}],
+      callback: (newValue) => {
+        this.setState({triggerEvent: newValue})
+      }
+    });
+    items.push({ type: 'lightExplanation', label:'When entering is selected and the user is already there, the message will also be delivered!', below:true });
 
     items.push({ type: 'spacer' });
 

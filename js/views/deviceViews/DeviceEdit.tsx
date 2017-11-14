@@ -25,6 +25,7 @@ import { FadeInView } from '../components/animated/FadeInView'
 import { LOG } from '../../logging/Log'
 import {DIMMING_ENABLED} from "../../ExternalConfig";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {Util} from "../../util/Util";
 
 
 
@@ -122,15 +123,22 @@ export class DeviceEdit extends Component<any, any> {
     });
 
     if (DIMMING_ENABLED) {
-      items.push({
-        label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled === true, callback: (newValue) => {
-          store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {dimmingEnabled: newValue}});
-        }
-      });
+      if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0')) {
+        items.push({
+          label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled === true, callback: (newValue) => {
+            store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {dimmingEnabled: newValue}});
+          }
+        });
+      }
+      else {
+        items.push({
+          label: 'Firmware update required for dimming.', type: 'info'
+        });
+      }
+
       items.push({
         label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
-          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(err => {
-          })
+          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
         }
       });
       items.push({

@@ -145,6 +145,7 @@ function checkAction(action, affectedIds) {
     case 'ADD_STONE':
       eventStatus['addStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
+    case 'UPDATE_STONE_LOCAL_CONFIG':
     case 'UPDATE_STONE_CONFIG':
     case 'UPDATE_STONE_ERRORS':
     case 'RESET_STONE_ERRORS':

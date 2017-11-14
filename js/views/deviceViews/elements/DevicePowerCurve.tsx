@@ -49,7 +49,7 @@ export class DevicePowerCurve extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
 
-    let dateId = Util.getDateFormat(new Date().valueOf());
+    let dateId = Util.getDateHourId(new Date().valueOf());
 
     let dataStream = [];
     if (stone.powerUsage[dateId]) {

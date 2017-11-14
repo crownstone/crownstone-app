@@ -41,7 +41,7 @@ const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
 class BackgroundProcessHandlerClass {
   started : boolean = false;
   userLoggedIn : boolean = false;
-  storeInitialized : boolean = false;
+  storePrepared : boolean = false;
   store : any;
   connectionPopupActive : boolean = false;
 
@@ -106,7 +106,7 @@ class BackgroundProcessHandlerClass {
       // wait for store to be prepared in order to continue.
       eventBus.on("storePrepared", () => {
         LOG.info("BackgroundProcessHandler: Store is prepared.");
-        this.storeInitialized = true;
+        this.storePrepared = true;
 
         // pass the store to the singletons
         LOG.info("BackgroundProcessHandler: Starting singletons.");
@@ -324,7 +324,7 @@ class BackgroundProcessHandlerClass {
       this._verifyStore();
     }
     else {
-      eventBus.on('storeInitialized', () => { this._verifyStore(); });
+      eventBus.on('storeManagerInitialized', () => { this._verifyStore(); });
     }
   }
 

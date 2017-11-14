@@ -31,6 +31,7 @@ import {LOG, LOGi} from '../../logging/Log';
 import { BATCH } from "../../router/store/storeManager";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -41,6 +42,7 @@ export class DeviceOverview extends Component<any, any> {
   unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
   summaryIndex : number = 0;
+  showWhatsNewVersion : string = null;
 
   constructor(props) {
     super(props);
@@ -128,6 +130,15 @@ export class DeviceOverview extends Component<any, any> {
     // This will close the connection that is kept open by a dimming command. Dimming is the only command that keeps the connection open.
     // If there is no connection being kept open, this command will not do anything.
     BatchCommandHandler.closeKeptOpenConnection();
+
+    if (this.showWhatsNewVersion !== null) {
+      this.props.store.dispatch({
+        type:"UPDATE_STONE_LOCAL_CONFIG",
+        sphereId: this.props.sphereId,
+        stoneId: this.props.stoneId,
+        data: {firmwareVersionSeenInOverview: this.showWhatsNewVersion}
+      })
+    }
   }
 
 
@@ -137,15 +148,15 @@ export class DeviceOverview extends Component<any, any> {
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
     let hasAppliance = stone.config.applianceId !== null;
 
-    let index = 0;
-    let summaryIndex = index++;
-    let behaviourIndex = index++;
-    let scheduleIndex = index++;
-    let powerMonitorIndex = index++;
+    let summaryIndex = 0;
+    let behaviourIndex = summaryIndex + 1;
 
     this.summaryIndex = summaryIndex;
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
+
+    let showWhatsNew = stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0');
+    if (showWhatsNew) { this.showWhatsNewVersion = stone.config.firmwareVersion; }
 
     let hasError = stone.errors.hasError || stone.errors.advertisementError;
     let canUpdate = Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
@@ -163,8 +174,9 @@ export class DeviceOverview extends Component<any, any> {
       hasScheduler = false;
     }
 
-    if (hasError)  { summaryIndex++; behaviourIndex++; }
-    if (canUpdate) { summaryIndex++; behaviourIndex++; }
+    if (showWhatsNew) { summaryIndex++; behaviourIndex++; }
+    if (hasError)     { summaryIndex++; behaviourIndex++; }
+    if (canUpdate)    { summaryIndex++; behaviourIndex++; }
 
     let checkScrolling = (newState) => {
       if (this.state.scrolling !== newState) {
@@ -215,7 +227,7 @@ export class DeviceOverview extends Component<any, any> {
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
-          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType, stone.config) }
+          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config) }
         </Swiper>
       </Background>
     )
@@ -230,7 +242,7 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType, stoneConfig) {
+  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
     let content = [];
 
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId};
@@ -240,6 +252,9 @@ export class DeviceOverview extends Component<any, any> {
     }
     if (canUpdate) {
       content.push(<DeviceUpdate key={'updateSlide'}  {...props} />);
+    }
+    if (showWhatsNew) {
+      content.push(<DeviceWhatsNew key={'deviceWhatsNewSlide'} {...props} />);
     }
 
     if (stoneConfig.dfuResetRequired) {
