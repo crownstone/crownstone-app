@@ -276,7 +276,7 @@ class AdvertisementHandlerClass {
 
 
 
-    let measuredUsage = Math.floor(serviceData.powerUsage * 0.001);  // usage is in milli Watts
+    let measuredUsage = Math.floor(serviceData.powerUsage);
 
     let currentTime = new Date().valueOf();
 

@@ -47,18 +47,21 @@ interface BluenetPromiseWrapperProtocol {
 }
 
 interface crownstoneServiceData {
-  firmwareVersion   : number,
-  crownstoneId      : string,
-  switchState       : number,
-  eventBitmask      : number,
-  temperature       : number,
-  powerUsage        : number,
-  accumulatedEnergy : number,
-  newDataAvailable  : boolean,
-  hasError          : boolean,
+  protcolVersion      : number,
+  crownstoneId        : string,
+  switchState         : number,
+  eventBitmask        : number,
+  temperature         : number,
+  powerFactor         : number,
+  powerUsageReal      : number,
+  powerUsageAppearent : number,
+  powerUsage          : number,
+  accumulatedEnergy   : number,
+  newDataAvailable    : boolean,
+  hasError            : boolean,
   stateOfExternalCrownstone: boolean,
-  setupMode         : boolean,
-  random            : string
+  setupMode           : boolean,
+  random              : string
 }
 
 interface crownstoneAdvertisement {
