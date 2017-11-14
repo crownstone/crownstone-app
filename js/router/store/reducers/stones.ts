@@ -248,13 +248,6 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
   }
 };
 
-let stoneStatisticsReducer = (state = [], action : any = {}) => {
-  switch (action.type) {
-    default:
-      return state;
-  }
-};
-
 
 let behaviourReducerOnHomeEnter = (state = toggleState, action : any = {}) => {
   switch (action.type) {
@@ -379,7 +372,6 @@ let combinedStoneReducer = combineReducers({
   state: stoneStateReducer,
   behaviour: stoneBehavioursReducer,
   schedules: scheduleReducer,
-  statistics: stoneStatisticsReducer,
   errors: stoneErrorsReducer,
   powerUsage: powerUsageReducer
 });
