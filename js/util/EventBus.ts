@@ -1,4 +1,4 @@
-import { LOG } from '../logging/Log'
+import {LOG, LOGi, LOGv} from '../logging/Log'
 import { Util } from './Util'
 
 
@@ -27,7 +27,7 @@ export class EventBusClass {
     // generate unique id
     let id = Util.getUUID();
 
-    LOG.event('Something is subscribing to ', topic, 'got ID:', id);
+    LOGv.event('Something is subscribing to ', topic, 'got ID:', id);
 
     this._topics[topic].push({id,callback});
     this._topicIds[id] = true;
@@ -51,14 +51,14 @@ export class EventBusClass {
           delete this._topics[topic];
         }
 
-        LOG.event('Something with ID ', id ,' unsubscribed from ', topic);
+        LOGv.event('Something with ID ', id ,' unsubscribed from ', topic);
       }
     };
   }
 
-  emit(topic, data) {
+  emit(topic, data?) {
     if (this._topics[topic] !== undefined) {
-      LOG.event(topic, data);
+      LOGi.event(topic, data);
       // Firing these elements can lead to a removal of a point in this._topics.
       // To ensure we do not cause a shift by deletion (thus skipping a callback) we first put them in a separate Array
       let fireElements = [];

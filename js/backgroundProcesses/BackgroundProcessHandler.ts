@@ -331,10 +331,6 @@ class BackgroundProcessHandlerClass {
   _verifyStore() {
     this.store = StoreManager.getStore();
 
-    // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
-    // also add the app identifier if we don't already have one.
-    refreshDatabase(this.store);
-
     // if we have an accessToken, we proceed with logging in automatically
     let state = this.store.getState();
     if (state.user.accessToken !== null) {
@@ -402,50 +398,6 @@ class BackgroundProcessHandlerClass {
     CloudEventHandler._loadStore(this.store);
     Permissions._loadStore(this.store, this.userLoggedIn);
   }
-}
-
-
-/**
- * If we change the reducer default values, this adds any new fields to the redux database
- * so we don't have to error catch everywhere.
- *
- * Finally we create the app identifier
- * @param store
- */
-export function refreshDatabase(store) {
-  let state = store.getState();
-  let refreshActions = [];
-  let sphereIds = Object.keys(state.spheres);
-
-  // refresh all fields that do not have an ID requirement
-  refreshActions.push({type:'REFRESH_DEFAULTS'});
-  for (let i = 0; i < sphereIds.length; i++) {
-    let sphereId = sphereIds[i];
-    if (Array.isArray(state.spheres[sphereId].presets)) {
-      LOG.info("Initialize: transforming Preset dataType");
-      store.dispatch({type:'REFRESH_DEFAULTS', sphereId: sphereId});
-      refreshDatabase(store);
-      return;
-    }
-
-    let stoneIds = Object.keys(state.spheres[sphereId].stones);
-    let locationIds = Object.keys(state.spheres[sphereId].locations);
-    let applianceIds = Object.keys(state.spheres[sphereId].appliances);
-    let userIds = Object.keys(state.spheres[sphereId].users);
-    let presetIds = Object.keys(state.spheres[sphereId].presets);
-
-    refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
-    stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId:     stoneId});});
-    locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId:  locationId});});
-    applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
-    userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId:      userId});});
-    presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId:    presetId});});
-  }
-
-  // create an app identifier if we do not already have one.
-  refreshActions.push({type:'CREATE_APP_IDENTIFIER'});
-
-  store.batchDispatch(refreshActions);
 }
 
 

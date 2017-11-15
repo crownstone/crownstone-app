@@ -5,9 +5,10 @@ import { NativeEnhancer }               from './nativeEnhancer'
 import { CloudEnhancer }                from './cloudEnhancer'
 import { EventEnhancer }                from './eventEnhancer'
 import { eventBus }                     from '../../util/EventBus'
-import { LOG }                          from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import { Scheduler }                    from "../../logic/Scheduler";
-import { refreshDatabase }              from "../../backgroundProcesses/BackgroundProcessHandler";
+import { PersistenceEnhancer }          from "./persistenceEnhancer";
+import {Persistor} from "./Persistor";
 
 // from https://github.com/tshelburne/redux-batched-actions
 // included due to conflict with newer RN version
@@ -30,6 +31,8 @@ function enableBatching(reducer) {
 }
 // ---------------
 
+const LOGGED_IN_USER_ID_STORAGE_KEY = 'CrownstoneLoggedInUser';
+
 class StoreManagerClass {
   store : any;
   storeInitialized : any;
@@ -38,7 +41,7 @@ class StoreManagerClass {
   userIdentificationStorageKey : string;
   writeToDiskTimeout : any;
   unsubscribe : any;
-
+  persistor : Persistor;
 
   constructor() {
     this.store = {};
@@ -50,6 +53,8 @@ class StoreManagerClass {
 
     this.writeToDiskTimeout = null;
     this.unsubscribe = null;
+
+    this.persistor = new Persistor();
 
     this._init();
   }
@@ -64,94 +69,23 @@ class StoreManagerClass {
 
   _initializeStore(userId) {
     LOG.info("StoreManager: initializing Store");
-    if (userId === null) {
-      this._setupStore({}, false);
-    }
-    else {
-      this._setUserStorageKey(userId);
-      AsyncStorage.getItem(this.storageKey)
-        .then((data) => {
-          this._setupStore(data, true);
+    this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer, PersistenceEnhancer));
+    this.store.batchDispatch = batchActions;
+
+    if (userId !== null) {
+      this.persistor.initialize(userId, this.store)
+        .then(() => {
+          // we emit the storeInitialized event just in case of race conditions.
+          this.storeInitialized = true;
+          eventBus.emit('storeManagerInitialized');
         })
-        .catch((err)=>{LOG.error("AsyncStorage: failed to get store", err)});
+        .catch((err) => {
+          LOGe.store("StoreManager: failed to initialize.", err);
+        })
+
     }
   }
 
-  _setUserStorageKey(userId) {
-    this.storageKey = this._createUserStorageKey(userId);
-  }
-
-  _createUserStorageKey(userId) {
-    return this.storageKeyBase + userId;
-  }
-
-
-  /**
-   * actually create the store, either filled with an initial state or empty.
-   * @param initialState
-   * @param enableWriteToDisk
-   * @returns {{}|*}
-   * @private
-   */
-  _setupStore(initialState, enableWriteToDisk) {
-    if (initialState && typeof initialState === 'string') {
-      let data = JSON.parse(initialState);
-      LOG.info("StoreManager: CURRENT DATA:", data);
-      this.store = createStore(enableBatching(CrownstoneReducer), data, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
-      this.store.batchDispatch = batchActions;
-    }
-    else {
-      LOG.info("StoreManager: Creating an empty database");
-      this.store = createStore(enableBatching(CrownstoneReducer), {}, applyMiddleware(CloudEnhancer, EventEnhancer, NativeEnhancer));
-      this.store.batchDispatch = batchActions;
-    }
-
-    // we now have a functional store!
-    this.storeInitialized = true;
-
-    // if we are not logged in, the database lives only in memory.
-    if (enableWriteToDisk === true) {
-      this._setupWritingToDisk();
-    }
-
-    // we emit the storeInitialized event just in case of race conditions.
-    eventBus.emit('storeInitialized');
-  }
-
-
-  /**
-   * Setting up persistence including overflow protection.
-   * @private
-   */
-  _setupWritingToDisk() {
-    if (this.unsubscribe !== null) {
-      this.unsubscribe();
-      this.unsubscribe = null;
-    }
-
-    this.unsubscribe = this.store.subscribe(() => {
-      // protect against a LOT of writes at the same time, we only write to disk twice a second max.
-      if (this.writeToDiskTimeout !== null && typeof this.writeToDiskTimeout === 'function') {
-        this.writeToDiskTimeout();
-        this.writeToDiskTimeout = null;
-      }
-
-      this.writeToDiskTimeout = Scheduler.scheduleCallback(() => {
-        this.writeToDiskTimeout = null;
-        // only write to disk if we are LOGGED IN.
-        AsyncStorage.getItem(this.userIdentificationStorageKey)
-          .then((userId) => {
-            if (userId) {
-              let payload = JSON.stringify(this.store.getState());
-              return AsyncStorage.setItem(this.storageKey, payload).done();
-            }
-          })
-          .catch((err) => {
-            LOG.error("Trouble writing to disk", err)
-          });
-      }, 500, 'this.writeToDiskTimeout');
-    });
-  }
 
   /**
    * This will get the data of this user from the database in case it is available.
@@ -159,19 +93,11 @@ class StoreManagerClass {
    * @param userId
    */
   userLogIn(userId) {
-    let storageKey = this._createUserStorageKey(userId);
-    return AsyncStorage.getItem(storageKey)
-      .then((data) => {
-        if (data) {
-          let parsedData = JSON.parse(data);
-          this.store.dispatch({type:"HYDRATE", state: parsedData});
-          // validate and update existing store. There has been an issue where you log out, the app gets updated, log in and have an old database which will be initialized
-          refreshDatabase(this.store);
-        }
-      })
+    return this.persistor.initialize(userId, this.store)
       .catch((err) => {
-        LOG.error("Error during userLogIn", err);
-      });
+        LOGe.store("StoreManager: failed to log in user.", err);
+        throw err;
+      })
   }
 
 
@@ -181,17 +107,11 @@ class StoreManagerClass {
    * @returns {*|Promise.<TResult>}
    */
   finalizeLogIn(userId) {
-    this._setUserStorageKey(userId);
     // write to database that we are logged in.
-    return AsyncStorage.setItem(this.userIdentificationStorageKey, userId)
-      .then(() => {
-        // we enable persistence.
-        this._setupWritingToDisk();
-
-        // write everything downloaded from the cloud at login to disk.
-        return this._persistToDisk();
+    return AsyncStorage.setItem(LOGGED_IN_USER_ID_STORAGE_KEY, userId)
+      .catch((err) => {
+        LOGe.store("StoreManager: finalize login failed. ", err);
       })
-      .catch((err)=>{LOG.error("AsyncStorage finalize login", err)})
   }
 
 
@@ -201,35 +121,22 @@ class StoreManagerClass {
   userLogOut() {
     return new Promise((resolve, reject) => {
       // will only do something if we are indeed logged in, denoted by the presence of the user key.
-      if (this.storageKey) {
-        // write everything to disk
-        this._persistToDisk()
+      if (this.persistor.initialized) {
+        this.persistor.persistFull()
           .then(() => {
-            // remove the userId from the logged in user list.
             return AsyncStorage.setItem(this.userIdentificationStorageKey, "");
           })
           .then(() => {
-            // clear the storage key
-            this.storageKey = null;
-
-            // stop writing to disk
-            if (this.writeToDiskTimeout !== null && typeof this.writeToDiskTimeout === 'function') {
-              this.writeToDiskTimeout();
-              this.writeToDiskTimeout = null;
-            }
-
-            // stop the subscription
-            if (this.unsubscribe !== null) {
-              this.unsubscribe();
-              this.unsubscribe = null;
-            }
-
-            // now that the store only lived in memory, clear it
+            return this.persistor.endSession();
+          })
+          .then(() => {
             this.store.dispatch({type: "USER_LOGGED_OUT_CLEAR_STORE"});
+          })
+          .then(() => {
             resolve();
           })
           .catch((err) => {
-            LOG.error("COULD NOT PERSIST TO DISK", err);
+            LOGe.store("StoreManager: Could not log out.", err);
             reject(err);
           })
       }
@@ -237,17 +144,6 @@ class StoreManagerClass {
         resolve();
       }
     })
-  }
-
-  _persistToDisk() {
-    if (this.storageKey) {
-      // write everything to disk
-      let payload = JSON.stringify(this.store.getState());
-      return AsyncStorage.setItem(this.storageKey, payload)
-    }
-    else {
-      return new Promise((resolve, reject) => {resolve()});
-    }
   }
 
   getStore() {

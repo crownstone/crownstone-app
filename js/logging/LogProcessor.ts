@@ -10,17 +10,17 @@ const DeviceInfo = require('react-native-device-info');
 class LogProcessorClass {
   store : any;
   writeToFile :  boolean;
-  log_info:      number;
-  log_warnings:  number;
-  log_errors:    number;
-  log_mesh:      number;
-  log_scheduler: number;
-  log_verbose:   number;
-  log_ble:       number;
-  log_events:    number;
-  log_store:     number;
-  log_cloud:     number;
-  log_debug:     number;
+  log_info:      number = LOG_LEVEL.NONE;
+  log_warnings:  number = LOG_LEVEL.NONE;
+  log_errors:    number = LOG_LEVEL.NONE;
+  log_mesh:      number = LOG_LEVEL.NONE;
+  log_scheduler: number = LOG_LEVEL.NONE;
+  log_verbose:   number = LOG_LEVEL.NONE;
+  log_ble:       number = LOG_LEVEL.NONE;
+  log_events:    number = LOG_LEVEL.NONE;
+  log_store:     number = LOG_LEVEL.NONE;
+  log_cloud:     number = LOG_LEVEL.NONE;
+  log_debug:     number = LOG_LEVEL.NONE;
 
   constructor() {
     this.store = undefined;
