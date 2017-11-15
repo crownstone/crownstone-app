@@ -136,18 +136,17 @@ export class RoomBanner extends Component<any, any> {
 
   render() {
     let leftRatio = this.props.hideRight === true ? 0.95 : LEFT_RATIO;
-    let remoteColor = this.props.viewingRemotely === true ? colors.notConnected.rgba(0.4) : undefined;
     let backgroundColor = undefined;
 
     if (this.props.floatingCrownstones === true && this.props.overlayText === undefined) {
-      backgroundColor = remoteColor || this.props.color || colors.iosBlue.rgba(0.3);
+      backgroundColor = this.props.color || colors.iosBlue.rgba(0.3);
     }
     else if (this.props.noCrownstones === true && this.props.viewingRemotely === false) {
-      backgroundColor = remoteColor || this.props.color || colors.green.rgba(0.8);
+      backgroundColor = this.props.color || colors.green.rgba(0.8);
       leftRatio = 0.95;
     }
     else {
-      backgroundColor = remoteColor || this.props.color || colors.green.rgba(0.7);
+      backgroundColor = this.props.color || colors.green.rgba(0.7);
     }
 
     return (

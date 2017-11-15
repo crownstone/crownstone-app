@@ -192,7 +192,7 @@ class RoomCircleClass extends Component<any, any> {
 
   _getColor(usage, prev = false) {
     if (this.props.viewingRemotely === true) {
-      return colors.notConnected.hex;
+      return colors.green.rgba(0.8);
     }
 
     if (this._areDfuStonesInLocation() === true) {
