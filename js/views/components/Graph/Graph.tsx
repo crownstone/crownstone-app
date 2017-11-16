@@ -26,9 +26,12 @@ import {
   Defs,
 } from 'react-native-svg';
 import { GraphingEngine } from "../../../logic/GraphingEngine";
-import { Util } from "../../../util/Util";
-import { TimeStep } from './TimeStep'
-import { DataStep } from './DataStep'
+import { Util }           from "../../../util/Util";
+import { DataStep }       from './GraphComponents/DataStep'
+import { GraphDefs }      from "./GraphComponents/GraphDefs";
+import { GraphDataAxis }  from "./GraphComponents/GraphDataAxis";
+import { GraphTimeline }  from './GraphComponents/GraphTimeline';
+import { GraphAxis }      from "./GraphComponents/GraphAxis";
 
 let RANGE = 40000; // ms
 let OVERSHOOT = 4000; // ms
@@ -38,8 +41,6 @@ export class Graph extends Component<any, any> {
   options : any;
   interval : any;
 
-  shownTimes : any = {};
-  shownTimesArray : any = [];
   times = [];
 
   range = {start: new Date(), end: new Date()};
@@ -256,7 +257,11 @@ export class Graph extends Component<any, any> {
 
     return (
       <View style={{position:'relative', top:0, left:0, width: this.props.width, height: this.props.height}}>
-        <Svg width={this.props.width} height={this.props.height} style={{position:'absolute', top:0, left:0, width: this.props.width, height: this.props.height}}>
+        <Svg
+          width={this.props.width}
+          height={this.props.height}
+          style={{position:'absolute', top:0, left:0, width: this.props.width, height: this.props.height}}
+        >
           <GraphDefs
             options={this.options}
           />
@@ -281,221 +286,8 @@ export class Graph extends Component<any, any> {
 
 
 
-class GraphDataAxis extends Component<any, any> {
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      this.props.datastepLines !== nextProps.dataStepLines ||
-      this.props.options !== nextProps.options
-    )
-  }
-
-  render() {
-    let elements = [];
-    let options = this.props.options;
-    for (let i = 0; i < this.props.datastepLines.length; i++) {
-      let line = this.props.datastepLines[i];
-      let lineY = line.y + options.padding;
-
-      // do not interfere with the (W) unit annotation
-      if (lineY < 15) {
-        continue;
-      }
-
-      elements.push(<Text key={'datalabel' + line.val} x={options.padding - 8} y={lineY - 6} fontSize={11} fill={colors.white.hex} textAnchor="end" >{line.val}</Text>);
-      elements.push(<Line key={'dataline' + line.val} x1={options.padding} y1={lineY} x2={options.width} y2={lineY} stroke={colors.white.hex}  strokeOpacity={0.1}/>);
-      elements.push(<Line key={'dataline' + line.val + "_sub"} x1={options.padding} y1={lineY} x2={options.width - options.padding} y2={lineY} stroke={colors.white.hex}  strokeOpacity={0.2} />);
-    }
-
-    return (
-      <Svg key={'dataAxisSvg'} width={options.width} height={options.height} style={{position:'absolute', top:0, left:0}}>
-        {elements}
-      </Svg>
-    );
-  }
-}
-
-class GraphDefs extends Component<any, any> {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.options !== nextProps.options;
-  }
-
-  render() {
-    let options = this.props.options;
-    return (
-      <Defs key="GradientDiff">
-        <ClipPath id="showBody">
-          <Rect x={options.padding} y={0} width={options.width} height={options.height} />
-        </ClipPath>
-        <ClipPath id="showSide">
-          <Rect x={0} y={0} width={options.padding} height={options.height} />
-        </ClipPath>
-        <LinearGradient id="grad" x1={0} y1={options.padding} x2={0} y2={options.height - options.paddingBottom}>
-          <Stop offset="0" stopColor={colors.green.hex} stopOpacity="1" />
-          <Stop offset="1" stopColor={colors.green.hex} stopOpacity="0" />
-        </LinearGradient>
-      </Defs>
-    );
-  }
-}
-
-class GraphAxis extends Component<any, any> {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.options !== nextProps.options;
-  }
-
-  render() {
-    let elements = [];
-    let options = this.props.options;
-    let maxX = options.width-options.padding;
-    let minX = options.padding;
-    let maxY = options.height-options.paddingBottom;
-    let minY = options.padding;
-
-    let padding = 10;
-
-    let minXfx = minX - padding;
-    let maxXfx = maxX + padding;
-    let minYfx = minY - padding;
-    let maxYfx = maxY + padding;
-
-    let baseColor = colors.white.hex;
-    let accentColor = colors.csOrange.hex;
-
-    elements.push(<Line key="bottomGridBarBackOrange"      x1={minXfx+2} y1={maxY+2  } x2={maxXfx-2}      y2={maxY+2}   stroke={accentColor}  strokeOpacity={0.55} />);
-    elements.push(<Line key="bottomGridBarBackFull"        x1={0       } y1={maxY    } x2={options.width} y2={maxY}     stroke={baseColor}    strokeOpacity={0.2 } />);
-    elements.push(<Line key="bottomGridBarBackFullOrange"  x1={0       } y1={maxY+2  } x2={options.width} y2={maxY+2}   stroke={accentColor}  strokeOpacity={0.2 } />);
-    elements.push(<Line key="bottomGridBarBack"            x1={minXfx  } y1={maxY    } x2={maxXfx}        y2={maxY}     stroke={baseColor}    strokeOpacity={0.4 } />);
-    elements.push(<Line key="bottomGridBar"                x1={minX    } y1={maxY    } x2={maxX}          y2={maxY}     stroke={baseColor}    strokeOpacity={1   } />);
-    elements.push(<Line key="bottomGridBarOrange"          x1={minX    } y1={maxY+2  } x2={maxX}          y2={maxY+2}   stroke={accentColor}  strokeOpacity={1   } />);
-    elements.push(<Line key="sideGridBarBackOrange"        x1={minX-2  } y1={minYfx+2} x2={minX-2}        y2={maxYfx-2} stroke={accentColor}  strokeOpacity={0.55} />);
-    elements.push(<Line key="sideGridBarBack"              x1={minX    } y1={minYfx  } x2={minX}          y2={maxYfx}   stroke={baseColor}    strokeOpacity={0.4 } />);
-    elements.push(<Line key="sideGridBarOrange"            x1={minX-2  } y1={minY    } x2={minX-2}        y2={maxY}     stroke={accentColor}  strokeOpacity={1   } />);
-    elements.push(<Line key="sideGridBar"                  x1={minX    } y1={minY    } x2={minX}          y2={maxY}     stroke={baseColor}    strokeOpacity={1   } />);
-
-    elements.push(<Text key={'UNIT'} x={options.padding} y={0} fontSize={11} fontWeight="bold" fill={colors.white.hex} textAnchor="end" >{'(W)'}</Text>);
-
-    return (
-      <Svg key={'baseAxisSvg'} width={options.width} height={options.height} style={{position:'absolute', top:0, left:0}}>
-        {elements}
-      </Svg>
-    );
-  }
-}
-
-class GraphTimeline extends Component<any, any> {
-  timePaddingFactor = 2;
-  startTimeStamp = 0;
-  endTimeStamp = 0;
-  _leftValue = 0;
-
-  constructor(props) {
-    super(props);
-    this.state = { left: new Animated.Value(-props.options.width*(1+2*this.timePaddingFactor))};
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.options !== nextProps.options) {
-      return true;
-    }
-
-    let newStart = nextProps.range.start.valueOf();
-    let newEnd = nextProps.range.end.valueOf();
-    let newTimeRange = newEnd-newStart; //ms
-    if (newStart > this.startTimeStamp && newEnd < this.endTimeStamp) {
-      let timeRange = this.endTimeStamp - this.startTimeStamp;
 
 
-      if (timeRange / newTimeRange !== (1 + 2*this.timePaddingFactor)) {
-        return true;
-      }
 
-      let timeOffset = newStart - this.startTimeStamp;
-      let xOffset = (timeOffset / timeRange) * this.props.options.width*(1+2*this.timePaddingFactor);
 
-      this.state.left.setValue(-xOffset);
-      return false;
-    }
-
-    this.startTimeStamp = newStart - this.timePaddingFactor*newTimeRange;
-    this.endTimeStamp = newEnd + this.timePaddingFactor*newTimeRange;
-
-    this.state.left.setValue(-this.props.options.width*(1+2*this.timePaddingFactor));
-
-    // this.forceUpdate();
-    return true;
-  }
-
-  _getElements(options) {
-    let elements = [];
-    
-    let maxY = options.height-options.paddingBottom;
-    let minY = options.padding;
-
-    let padding = 10;
-
-    let minYfx = minY - padding;
-
-    let timeRange = this.props.range.end.valueOf()-this.props.range.start.valueOf(); //ms
-    let factor = options.width / timeRange;
-    let ty = maxY + 20;
-
-    this.startTimeStamp = this.props.range.start.valueOf() - this.timePaddingFactor*timeRange;
-    this.endTimeStamp = this.props.range.end.valueOf() + this.timePaddingFactor*timeRange;
-
-    let step = new TimeStep(new Date(this.startTimeStamp), new Date(this.endTimeStamp), 30 / factor);
-
-    let _toScreen = (t) => {
-      return (t.valueOf() - this.startTimeStamp) * options.width / timeRange;
-    };
-
-    let current;
-    let x;
-    let label;
-    let isMajor;
-    let labelMinor;
-    let count = 0;
-    const MAX = 1000;
-    let color = colors.white.hex;
-
-    step.start();
-    while (step.hasNext() && count < MAX) {
-      step.next();
-
-      count++;
-
-      isMajor = step.isMajor();
-      labelMinor = step.getLabelMinor();
-
-      current = step.getCurrent();
-      x = _toScreen(current);
-
-      label = Util.getTimeFormat(current.valueOf());
-
-      if (isMajor) {
-        elements.push(<Text key={'bottomStepLabel' + label} x={x-20} y={ty} originX={x-20} originY={ty} fontSize={11} fill={color} fillOpacity={0.75} textAnchor="middle" rotate="-45">{label}</Text>);
-        elements.push(<Line key={'bottomStep' + label} x1={x} y1={minYfx} x2={x} y2={maxY} stroke={color} strokeOpacity={0.1}  stroke-width={2} strokeLinecap="round"/>);
-      }
-      else { // minor line
-        elements.push(<Text key={'bottomStepLabel' + label} x={x-20} y={ty} originX={x-20} originY={ty} fontSize={11} fill={color} fillOpacity={0.3} textAnchor="middle" rotate="-45">{label}</Text>);
-        elements.push(<Line key={'bottomStep' + label + "_sub"} x1={x} y1={minYfx} x2={x} y2={maxY}  stroke={color} strokeOpacity={0.1} stroke-width={1} strokeLinecap="round"/>);
-      }
-    }
-
-    return elements;
-  }
-
-  render() {
-    let options = this.props.options;
-    let fullWidth = (1 + (2*this.timePaddingFactor)) * options.width;
-    return (
-      <View style={{width: options.width, height: options.height, overflow: 'hidden', position:'relative'}}>
-        <Animated.View style={{width: fullWidth, height: options.height, overflow: 'hidden', position:'absolute', top:0, left: this.state.left}}>
-          <Svg key={'timelineSvg'} width={fullWidth} height={options.height}>
-            {this._getElements(options)}
-          </Svg>
-        </Animated.View>
-      </View>
-    );
-  }
-}
 

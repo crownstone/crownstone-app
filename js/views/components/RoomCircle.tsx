@@ -328,7 +328,7 @@ class RoomCircleClass extends Component<any, any> {
           stroke={newColor}
           strokeWidth={this.borderWidth}
           strokeDasharray={[pathLength*levelProgress,pathLength]}
-          rotate="-89.9"
+          rotation="-89.9"
           x={this.props.radius}
           y={this.props.radius}
           strokeLinecap="round"

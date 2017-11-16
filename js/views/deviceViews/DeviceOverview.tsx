@@ -244,7 +244,6 @@ export class DeviceOverview extends Component<any, any> {
 
   _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
     let content = [];
-
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId};
 
     if (hasError) {
@@ -269,7 +268,7 @@ export class DeviceOverview extends Component<any, any> {
     }
 
     if (hasBehaviour) {
-      content.push(<DeviceBehaviour key={'behaviourSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+      content.push(<DeviceBehaviour key={'behaviourSlide'} {...props} />);
     }
 
     if (hasScheduler) {
@@ -277,7 +276,7 @@ export class DeviceOverview extends Component<any, any> {
     }
 
     if (hasPowerMonitor) {
-      content.push(<DevicePowerCurve key={'powerSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
+      content.push(<DevicePowerCurve key={'powerSlide'} {...props} />);
     }
 
     return content;

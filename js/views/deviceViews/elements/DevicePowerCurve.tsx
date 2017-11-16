@@ -59,7 +59,7 @@ export class DevicePowerCurve extends Component<any, any> {
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center', paddingTop:30}}>
         <Text style={deviceStyles.header}>Power Usage</Text>
-        <View style={{flex:1}} />
+        <View style={{flex:0.75}} />
         <Graph width={screenWidth} height={availableScreenHeight/2} data={dataStream} xField="timestamp" yField="power"/>
         <View style={{flex:5}}>
           <ScrollView style={{flex:1}}>

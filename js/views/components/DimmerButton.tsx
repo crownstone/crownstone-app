@@ -191,7 +191,7 @@ export class DimmerButton extends Component<any, any> {
             strokeOpacity={0.5}
             strokeDasharray={[0.75*this.pathLength, this.pathLength]}
             strokeDashOffset={0}
-            rotate="135"
+            rotation="135"
             x={this.xCenter}
             y={this.yCenter}
             strokeLinecap="round"
@@ -204,7 +204,7 @@ export class DimmerButton extends Component<any, any> {
             strokeWidth={this.strokeWidth}
             strokeDasharray={[this.state.state*0.75*this.pathLength, this.pathLength]}
             strokeDashOffset={0}
-            rotate="135"
+            rotation="135"
             x={this.xCenter}
             y={this.yCenter}
             strokeLinecap="round"
