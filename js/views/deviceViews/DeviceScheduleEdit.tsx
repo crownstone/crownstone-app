@@ -39,7 +39,6 @@ export class DeviceScheduleEdit extends Component<any, any> {
   constructor(props) {
     super(props);
 
-
     if (props.scheduleId !== null && props.scheduleId !== undefined) {
       const store = props.store;
       const state = store.getState();
@@ -483,6 +482,9 @@ export class DeviceScheduleEdit extends Component<any, any> {
             }}
             title={"Edit Schedule"} /> :
           <TopBar
+            notBack={true}
+            left={'Cancel'}
+            leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
             leftAction={() => { Actions.pop(); }}
             right={'Create'}
             rightStyle={{fontWeight: 'bold'}}

@@ -363,9 +363,8 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.getErrors();
                 break;
               case 'clearErrors':
-                // TODO: wait for fix on firmware to just disable a single error.
-                // actionPromise = BluenetPromiseWrapper.clearErrors(command.clearErrorJSON);
-                actionPromise = BluenetPromiseWrapper.restartCrownstone();
+                actionPromise = BluenetPromiseWrapper.clearErrors(command.clearErrorJSON);
+                // actionPromise = BluenetPromiseWrapper.restartCrownstone();
                 break;
               case 'setTime':
                 let timeToSet = command.time === undefined ? StoneUtil.nowToCrownstoneTime() : command.time;

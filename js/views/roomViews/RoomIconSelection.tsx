@@ -199,12 +199,8 @@ let listOfIcons = {
   ]
 };
 
-export class RoomIconSelection extends Component<any, any> {
+export class RoomIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
-
     return (
       <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
@@ -215,14 +211,11 @@ export class RoomIconSelection extends Component<any, any> {
           <IconSelection
             categories={categories}
             icons={listOfIcons}
-            selectedIcon={selectedIcon}
-            callback={
-            this.props.selectCallback !== undefined ?
-              this.props.selectCallback :
-              (newIcon) => {
-                store.dispatch({type:'UPDATE_LOCATION_CONFIG', sphereId: this.props.sphereId, locationId: this.props.locationId, data:{icon: newIcon}});
-                Actions.pop();
-              }}
+            selectedIcon={this.props.icon}
+            callback={(newIcon) => {
+              this.props.callback(newIcon);
+              Actions.pop();
+            }}
           />
         </ScrollView>
       </Background>

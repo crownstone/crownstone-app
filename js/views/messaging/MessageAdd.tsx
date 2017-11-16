@@ -307,8 +307,11 @@ export class MessageAdd extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hideInterface={true}>
         <TopBar
+          notBack={true}
+          left={'Cancel'}
+          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
           leftAction={() => { Actions.pop(); }}
           right={'Create'}
           rightStyle={{fontWeight: 'bold'}}
@@ -316,7 +319,7 @@ export class MessageAdd extends Component<any, any> {
           title={"New Message"}
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
-        <ScrollView style={{flex:1}}>
+        <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

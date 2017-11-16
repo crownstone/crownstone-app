@@ -26,6 +26,7 @@ import { LOG } from '../../logging/Log'
 import {DIMMING_ENABLED} from "../../ExternalConfig";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
+import {TopBar} from "../components/Topbar";
 
 
 
@@ -35,7 +36,28 @@ export class DeviceEdit extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {showStone:false};
+
+    const store = props.store;
+    const state = store.getState();
+    const stone = state.spheres[props.sphereId].stones[props.stoneId];
+    let appliance = null;
+    if (stone.config.applianceId) {
+      appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
+    }
+
+
+    this.state = {
+      applianceName: appliance.config.name,
+      applianceIcon: appliance.config.icon,
+      applianceId: stone.config.applianceId,
+
+      stoneName: stone.config.name,
+      stoneIcon: stone.config.icon,
+
+      dimmingEnabled: stone.config.dimmingEnabled,
+
+      showStone: false
+    };
   }
 
   componentDidMount() {
@@ -69,31 +91,35 @@ export class DeviceEdit extends Component<any, any> {
 
 
 
-  constructStoneOptions(store, state, stone) {
-    let appliance = null;
-    let applianceId = stone.config.applianceId;
-    if (stone.config.applianceId) {
-      appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
-    }
-
-    let requiredData = {
-      sphereId: this.props.sphereId,
-      stoneId: this.props.stoneId,
-    };
+  constructStoneOptions(stone) {
     let items = [];
 
-    if (appliance) {
+    if (this.state.applianceId) {
       items.push({label:'PLUGGED IN DEVICE TYPE', type: 'explanation',  below:false});
       items.push({
-        label: 'Device Type', type: 'textEdit', placeholder:'Pick a name', value: appliance.config.name, callback: (newText) => {
-          store.dispatch({...requiredData, applianceId: applianceId, type: 'UPDATE_APPLIANCE_CONFIG', data: {name: newText}});
+        label: 'Device Type',
+        type: 'textEdit',
+        placeholder:'Pick a name',
+        value: this.state.applianceName,
+        callback: (newText) => {
+          this.setState({applianceName: newText});
         }
       });
 
       // icon picker
-      items.push({label:'Icon', type: 'icon', value: appliance.config.icon, callback: () => {
-        Actions.deviceIconSelection({applianceId: applianceId, stoneId: this.props.stoneId, icon: appliance.config.icon, sphereId: this.props.sphereId})
-      }});
+      items.push({
+        label:'Icon',
+        type: 'icon',
+        value: this.state.applianceIcon,
+        callback: () => {
+          Actions.deviceIconSelection({
+            icon: this.state.applianceIcon,
+            callback: (newIcon) => {
+              this.setState({applianceIcon: newIcon})
+            }
+          })
+        }
+      });
 
       // unplug device
       items.push({
@@ -102,23 +128,24 @@ export class DeviceEdit extends Component<any, any> {
         icon: <IconButton name="c1-socket2" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.blue.hex}} />,
         style: {color: colors.blue.hex},
         callback: () => {
-          this.setState({showStone:true});
-          setTimeout(() => {store.dispatch({...requiredData, applianceId: applianceId, type: 'UPDATE_STONE_CONFIG', data: {applianceId: null}});}, 300);
+          this.setState({showStone:true, applianceId: null});
         }
       });
       items.push({label:'This Crownstone is currently using the behaviour, name and icon of this device type. Decoupling it will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
-    }
 
-
-    if (appliance) {
       items.push({label: 'CURRENT CROWNSTONE USING THIS TYPE', type: 'explanation', below: false});
     }
     else {
       items.push({label: 'CROWNSTONE', type: 'explanation', below: false});
     }
+
     items.push({
-      label: 'Name', type: 'textEdit', placeholder:'Choose a nice name', value: stone.config.name, callback: (newText) => {
-        store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {name: newText}});
+      label: 'Name',
+      type: 'textEdit',
+      placeholder:'Pick a name',
+      value: this.state.stoneName,
+      callback: (newText) => {
+        this.setState({stoneName: newText})
       }
     });
 
@@ -126,7 +153,7 @@ export class DeviceEdit extends Component<any, any> {
       if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0')) {
         items.push({
           label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled === true, callback: (newValue) => {
-            store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {dimmingEnabled: newValue}});
+            this.setState({dimmingEnabled: newValue});
           }
         });
       }
@@ -148,15 +175,16 @@ export class DeviceEdit extends Component<any, any> {
       });
     }
 
-    if (stone.config.type !== STONE_TYPES.guidestone && !applianceId) {
+    if (stone.config.type !== STONE_TYPES.guidestone && !this.state.applianceId) {
       items.push({label: 'SELECT WHICH DEVICE TYPE IS PLUGGED IN', type: 'explanation', below: false});
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
           Actions.applianceSelection({
-            ...requiredData,
+            sphereId: this.props.sphereId,
+            stoneId: this.props.stoneId,
+            applianceId: this.state.applianceId,
             callback: (applianceId) => {
-              this.setState({showStone:false});
-              store.dispatch({...requiredData, type: 'UPDATE_STONE_CONFIG', data: {applianceId: applianceId}});
+              this.setState({showStone:false, applianceId: applianceId});
             }
           });
         }
@@ -187,7 +215,7 @@ export class DeviceEdit extends Component<any, any> {
               }
               else {
                 this.props.eventBus.emit('showLoading', 'Looking for the Crownstone...');
-                this._removeCrownstone(stone);
+                this._removeCrownstone(stone).catch((err) => {});
               }
             }}]
           )
@@ -313,6 +341,55 @@ export class DeviceEdit extends Component<any, any> {
     )
   }
 
+  _updateCrownstone() {
+    const store = this.props.store;
+    const state = store.getState();
+    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    let appliance = null;
+    if (stone.config.applianceId) {
+      appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
+    }
+
+    let actions = [];
+    if (
+      stone.config.name           !== this.state.stoneName ||
+      stone.config.icon           !== this.state.stoneIcon ||
+      stone.config.dimmingEnabled !== this.state.dimmingEnabled ||
+      stone.config.applianceId    !== this.state.applianceId
+    ) {
+      actions.push({
+        type:'UPDATE_STONE_CONFIG',
+        sphereId: this.props.sphereId,
+        stoneId: this.props.stoneId,
+        data: {
+          name: this.state.stoneName,
+          icon: this.state.stoneIcon,
+          dimmingEnabled: this.state.dimmingEnabled,
+          applianceId: this.state.applianceId,
+        }});
+    }
+
+    if (appliance && this.state.applianceId && (
+        appliance.config.name           !== this.state.applianceName ||
+        appliance.config.icon           !== this.state.applianceIcon
+      )) {
+      actions.push({
+        type:'UPDATE_APPLIANCE_CONFIG',
+        sphereId: this.props.sphereId,
+        applianceId: this.state.applianceId,
+        data: {
+          name: this.state.applianceName,
+          icon: this.state.applianceIcon,
+        }});
+    }
+
+    if (actions.length > 0) {
+      this.props.store.batchDispatch(actions);
+    }
+
+    Actions.pop();
+  }
+
 
   _getVersionInformation(stone) {
     let unknownString = "Not checked.";
@@ -330,12 +407,23 @@ export class DeviceEdit extends Component<any, any> {
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    let options = this.constructStoneOptions(store, state, stone);
+    let options = this.constructStoneOptions(stone);
 
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     return (
-      <Background image={backgroundImage} >
+      <Background hideInterface={true} image={backgroundImage}>
+        <TopBar
+          notBack={true}
+          left={'Cancel'}
+          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
+          leftAction={ Actions.pop }
+          right={'Create'}
+          rightStyle={{fontWeight: 'bold'}}
+          rightAction={ () => { this._updateCrownstone(); }}
+          title="Edit Device"
+        />
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
         <ScrollView>
           <ListEditableItems items={options} separatorIndent={true}/>
           {this._getVersionInformation(stone)}

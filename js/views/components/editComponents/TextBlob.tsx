@@ -5,7 +5,7 @@ import {
   View
 } from 'react-native';
 import { Icon } from '../Icon';
-import { styles, colors } from '../../styles'
+import {styles, colors, screenWidth} from '../../styles'
 import { TextEditInput } from './TextEditInput'
 import { emailChecker, characterChecker, numberChecker } from '../../../util/Util'
 
@@ -19,7 +19,9 @@ export class TextBlob extends Component<any, any> {
   }
 
   componentDidMount() {
-    (this.refs[this.refName] as any).focus()
+    // setTimeout(() => {
+    //   (this.refs[this.refName] as any).focus()
+    // },400);
   }
 
   render() {
@@ -36,6 +38,7 @@ export class TextBlob extends Component<any, any> {
           autoCapitalize={'sentences'}
           multiline={true}
           maxLength={this.props.maxLength}
+          style={{width:screenWidth, height:this.props.barHeight - 10}}
           placeholder={this.props.placeholder || this.props.label}
           value={this.props.value}
         />

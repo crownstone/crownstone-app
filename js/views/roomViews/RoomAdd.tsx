@@ -17,7 +17,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import { LOG } from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from '../styles'
+import {styles, colors, screenWidth} from '../styles'
 import {Util} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -230,7 +230,9 @@ export class RoomAdd extends Component<any, any> {
           right={'Create'}
           rightStyle={{fontWeight: 'bold'}}
           rightAction={ () => { this.createRoom(); }}
-          title="Create Room"/>
+          title="Create Room"
+        />
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
         <ScrollView>
           <View style={{height: itemHeight}}>
             <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} />

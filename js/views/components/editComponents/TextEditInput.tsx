@@ -38,12 +38,14 @@ export class TextEditInput extends Component<any, any> {
   componentDidMount() { }
 
   focus() {
-    this.isInFocus = true;
-    this.initialized = true;
-    this.blurValue = null;
-    (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
-      eventBus.emit("focus", py);
-    })
+    if (this.props.autofocus === false) {
+      this.isInFocus = true;
+      this.initialized = true;
+      this.blurValue = null;
+      (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
+        eventBus.emit("focus", py);
+      })
+    }
   }
 
   blur() {
@@ -102,7 +104,7 @@ export class TextEditInput extends Component<any, any> {
         placeholder={this.props.placeholder || this.props.label}
         placeholderTextColor={this.props.placeholderTextColor}
         returnKeyType={this.props.returnKeyType}
-        style={[{flex:1, position:'relative', top:1, fontSize:16}, this.props.style]}
+        style={[{flex:1, fontSize:16}, this.props.style]}
         secureTextEntry={this.props.secureTextEntry}
         value={this.props.value}
       />

@@ -79,7 +79,7 @@ export class WhatsNewOverlay extends Component<any, any> {
           marginBottom:15,
           backgroundColor:'transparent',
           color:colors.csBlue.hex,
-          marginTop:30,
+          marginTop:15,
           overflow:'hidden'
         }}>Your app was updated!</Text>
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={height-85} width={width}

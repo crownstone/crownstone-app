@@ -42,26 +42,26 @@ export class Router_IOS extends Component {
             <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true}  panHandlers={null} direction="horizontal" />
             <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true}  panHandlers={null} direction="vertical" title="Move to which Room?" />
             <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
-            <Scene key="roomAdd"                    component={Views.RoomAdd}                    hideNavBar={true}  title="Create Room" />
+            <Scene key="roomAdd"                    component={Views.RoomAdd}                    hideNavBar={true}  direction="vertical" />
+            <Scene key="roomEdit"                   component={Views.RoomEdit}                   hideNavBar={true}  direction="vertical" />
+            <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 hideNavBar={true}  direction="vertical" />
             <Scene key="selectFromList"             component={Views.SelectFromList}             hideNavBar={true}  direction="vertical" />
+            <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         hideNavBar={true}  direction="vertical" />
+            <Scene key="messageAdd"                 component={Views.MessageAdd}                 hideNavBar={true}  direction="vertical" />
             <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
             <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
             <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />
             <Scene key="tabBar" tabs={true} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.props.loggedIn}>
               <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
                 <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
-                <Scene key="roomEdit"               component={Views.RoomEdit}                   hideNavBar={false} title="Room Settings" />
                 <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
-                <Scene key="deviceEdit"             component={Views.DeviceEdit}                 hideNavBar={false} title="Edit Device" />
                 <Scene key="deviceOverview"         component={Views.DeviceOverview}             hideNavBar={true} />
                 <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select Device Type" />
                 <Scene key="applianceAdd"           component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
-                <Scene key="deviceScheduleEdit"     component={Views.DeviceScheduleEdit}         hideNavBar={true} />
               </Scene>
               <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                 <Scene key="messageInbox"     component={Views.MessageInbox}    hideNavBar={true} />
-                <Scene key="messageAdd"       component={Views.MessageAdd}      hideNavBar={true} />
                 <Scene key="messageThread"    component={Views.MessageThread}   hideNavBar={true} />
               </Scene>
               <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >

@@ -96,6 +96,15 @@ export class ErrorOverlay extends Component<any, any> {
     }
   }
 
+  _getClearAllMask() : map {
+    return {
+      temperatureDimmer: true,
+      temperatureChip: true,
+      overCurrentDimmer: true,
+      overCurrent: true,
+    }
+  }
+
   _getButton() {
     if (this.state.clearingEnabled) {
       return (
@@ -118,7 +127,7 @@ export class ErrorOverlay extends Component<any, any> {
           <TouchableOpacity
             onPress={() => {
               let currentCrownstone = this.state.stonesContainingError[0];
-              let clearData = {};
+              let clearData = this._getClearAllMask()
               let clearDataInStore = {};
               let firstErrorToClear = this._getFirstError();
               clearData[firstErrorToClear] = true;
@@ -136,7 +145,7 @@ export class ErrorOverlay extends Component<any, any> {
               )
               .then(() => {
                 eventBus.emit("showLoading", "Success!");
-                this.props.store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: currentCrownstone.stoneId, stoneId: currentCrownstone.sphereId, data: clearDataInStore});
+                this.props.store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: currentCrownstone.stoneId, stoneId: currentCrownstone.sphereId, data: clearData});
                 return Scheduler.delay(500);
               })
               .then(() => {

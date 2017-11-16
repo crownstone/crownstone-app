@@ -11,17 +11,28 @@ import {
   View
 } from 'react-native';
 
-import { Background } from './../components/Background'
+import { Background } from '../components/Background'
 import { ApplianceEntry } from '../components/ApplianceEntry'
-import { ListEditableItems } from './../components/ListEditableItems'
+import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 
 const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth} from './../styles'
 import { Icon } from '../components/Icon';
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {EventBusClass} from "../../util/EventBus";
 
-export class ApplianceSelection extends Component<any, any> {
+export class ApplianceSelection extends Component<{
+  sphereId: string,
+  applianceId: string,
+  stoneId: string,
+  eventBus: EventBusClass,
+  store: any,
+  backgrounds: any,
+  callback(applianceId: string): void
+  }, any> {
+
+
   unsubscribe : any;
 
   componentDidMount() {

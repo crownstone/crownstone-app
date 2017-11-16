@@ -250,12 +250,8 @@ let listOfIcons = {
   // __new: []
 };
 
-export class DeviceIconSelection extends Component<any, any> {
+export class DeviceIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].appliances[this.props.applianceId].config.icon;
-
     return (
       <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
@@ -266,14 +262,11 @@ export class DeviceIconSelection extends Component<any, any> {
           <IconSelection
             categories={categories}
             icons={listOfIcons}
-            selectedIcon={selectedIcon}
-            callback={
-            this.props.selectCallback !== undefined ?
-              this.props.selectCallback :
-              (newIcon) => {
-                store.dispatch({type:'UPDATE_APPLIANCE_CONFIG', sphereId: this.props.sphereId, applianceId: this.props.applianceId, data:{icon: newIcon}});
-                Actions.pop();
-              }}
+            selectedIcon={this.props.icon}
+            callback={(newIcon) => {
+              this.props.callback(newIcon);
+              Actions.pop();
+            }}
           />
         </ScrollView>
       </Background>
