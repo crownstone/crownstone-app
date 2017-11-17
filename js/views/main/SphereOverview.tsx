@@ -25,11 +25,18 @@ import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {Util} from "../../util/Util";
 import {eventBus} from "../../util/EventBus";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {AnimatedMenu} from "../components/animated/AnimatedMenu";
 
 
 export class SphereOverview extends Component<any, any> {
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
+
+  constructor(props) {
+    super(props);
+
+    this.state = { menuOpen: false };
+  }
 
   componentDidMount() {
     // watch for setup stones
@@ -158,8 +165,8 @@ export class SphereOverview extends Component<any, any> {
               leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
               alternateLeftItem={true}
               leftAction={showFinalizeIndoorNavigationCallback}
-              rightItem={!noStones && spherePermissions.addRoom && !blockAddButton ? this._getAddRoomIcon() : null}
-              rightAction={() => {Actions.roomAdd({sphereId: activeSphereId})}}
+              right={!noStones && spherePermissions.addRoom && !blockAddButton ? 'Add' : null}
+              rightAction={() => { this.setState({ menuOpen: !this.state.menuOpen });}}
               showHamburgerMenu={true}
               hamburgerIconAlternationItems={showMailIcon ? [this._getMailIcon()] : []}
               actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
@@ -167,6 +174,24 @@ export class SphereOverview extends Component<any, any> {
               <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
             { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
           </AnimatedBackground>
+          <AnimatedMenu
+            visible={this.state.menuOpen}
+            closeMenu={() => { this.setState({menuOpen:false}) }}
+            position={{top: topBarHeight-20, right: 5}}
+            fields={[
+              {label:'Add Room',       onPress: () => { Actions.roomAdd({sphereId: activeSphereId}); }},
+              {label:'Add Crownstone', onPress: () => {
+                Alert.alert(
+                  "Adding a Crownstone",
+                  "Plug the new Crownstone in and hold your phone close to it (touching it). " +
+                  "It will automatically show up in this overview." +
+                  "\n\nYou don't have to press this button for each Crownstone you add :).",
+                  [{text: 'OK'}]
+                );
+              }},
+            ]}
+          >
+          </AnimatedMenu>
         </View>
       );
     }
@@ -195,19 +220,6 @@ export class SphereOverview extends Component<any, any> {
     );
   }
 
-  _getAddRoomIcon() {
-    // ios props
-    let props = {top:-1, right:20, size: 25, paddingTop:0 };
-    if (Platform.OS === 'android') {
-      props = {top:7, right:20, size: 25, paddingTop:3 };
-    }
-    return (
-      <View style={{ flex:1, alignItems:'flex-end', justifyContent:'center', paddingTop: props.paddingTop }}>
-        <Icon name="md-cube" size={props.size} color="#fff" />
-        <Icon name="md-add" size={18} color={colors.green.hex} style={{position:'absolute', top: props.top, right:props.right}} />
-      </View>
-    )
-  }
 
 
   _finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms) {

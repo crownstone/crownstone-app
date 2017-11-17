@@ -156,27 +156,6 @@ export const SettingConstructor = function(store, state, eventBus) {
 
   insertExplanation(items, 'TROUBLESHOOTING', false);
   items.push({
-    id:'Add',
-    label:'Add a Crownstone',
-    type:'navigation',
-    icon: getIcon('md-add-circle', 22, colors.white.hex, colors.green2.hex),
-    callback: () => {
-      Alert.alert(
-        "Adding a Crownstone",
-        "Plug the new Crownstone in and hold your phone close (touching it) to it. It will show up in the overview.\n\nIf you press OK we will take you to the overview.",
-        [{text:'OK', onPress: () => {
-          if (Platform.OS === 'ios') {
-            Actions.overview();
-          }
-          else {
-            Actions.refresh({key: 'drawer', open: false });
-            Actions.sphereOverview();
-          }
-        }}]
-     );
-    }
-  });
-  items.push({
     id:'Help',
     label:'Help',
     type:'navigation',

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.cmcewen.blurview.BlurViewPackage;
 import com.wix.RNCameraKit.RNCameraKitPackage;
 import com.cboy.rn.splashscreen.SplashScreenReactPackage;
 import io.sentry.RNSentryPackage;
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
+            new BlurViewPackage(),
             new RNCameraKitPackage(),
             		new SplashScreenReactPackage(),
 					new RNSentryPackage(MainApplication.this),

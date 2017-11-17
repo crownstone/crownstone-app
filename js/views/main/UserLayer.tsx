@@ -15,6 +15,7 @@ import {colors} from "../styles";
 import {getPresentUsersInLocation} from "../../util/DataUtil";
 import {UserPicture} from "../components/animated/UserPicture";
 import {TextCircle} from "../components/animated/TextCircle";
+import {LOG} from "../../logging/Log";
 
 
 export class UserLayer extends Component<any, any> {
@@ -127,10 +128,16 @@ export class UserLayer extends Component<any, any> {
 
     // for each location, get the users in there.
     locationIds.forEach((locationId) => {
+      let node = this.props.nodes[locationId];
+      if (!node) {
+        console.warn("UserLayer: Can not find node:", locationId, this.props.nodes);
+        return;
+      }
+
+
       let presentUsers = getPresentUsersInLocation(state, this.props.sphereId, locationId);
       if (presentUsers.length > 0) {
         let currentOtherUserIndex = 0;
-        let node = this.props.nodes[locationId];
         let userIsInRoom = false;
 
         presentUsers.forEach((user) => {

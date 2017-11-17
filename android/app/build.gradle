@@ -145,6 +145,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-blur')
     compile project(':react-native-camera-kit')
     compile project(':react-native-splash-screen')
     compile project(':react-native-sentry')
