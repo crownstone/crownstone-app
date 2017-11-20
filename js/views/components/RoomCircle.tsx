@@ -146,13 +146,6 @@ class RoomCircleClass extends Component<any, any> {
         this.usage = usage;
         this.forceUpdate();
       }
-
-      let change = data.change;
-      if (
-        (change.userPositionUpdate && change.userPositionUpdate.locationIds[this.props.locationId])
-      ) {
-        this.forceUpdate();
-      }
     });
 
     this.unsubscribeControlEvents = this.props.eventBus.on('roomCircleTap'+this.props.locationId, (data) => {

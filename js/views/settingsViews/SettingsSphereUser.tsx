@@ -109,7 +109,6 @@ export class SettingsSphereUser extends Component<any, any> {
   }
 
 
-
   render() {
     const store = this.props.store;
     const state = store.getState();

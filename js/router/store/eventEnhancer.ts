@@ -131,6 +131,7 @@ function checkAction(action, affectedIds) {
       eventStatus['updateSphereUser'] = affectedIds;
       break;
     case 'REMOVE_SPHERE_USER':
+      eventStatus['userPositionUpdate'] = affectedIds;
       eventStatus['removeSphereUser'] = affectedIds;
       eventStatus['changeSphereUsers'] = affectedIds;
       eventStatus['updateSphereUser'] = affectedIds;
