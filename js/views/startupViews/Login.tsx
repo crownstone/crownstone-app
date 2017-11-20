@@ -26,6 +26,7 @@ import { Background }                         from '../components/Background'
 import { StoreManager }                       from '../../router/store/storeManager'
 import loginStyles                            from './LoginStyles'
 import { styles, colors , screenWidth, screenHeight } from '../styles'
+import { DEBUG_MODE_ENABLED } from "../../ExternalConfig";
 
 
 export class Login extends Component<any, any> {
@@ -345,6 +346,13 @@ export class Login extends Component<any, any> {
         LOG.error("Login: Failed to login.", err);
         let defaultAction = () => {this.props.eventBus.emit('hideProgress')};
         Alert.alert("Whoops!", "An error has occurred while syncing with the Cloud. Please try again later.", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+
+
+        if (DEBUG_MODE_ENABLED) {
+          let stringifiedError = '' + JSON.stringify(err);
+          Alert.alert("DEBUG: err:", stringifiedError, [{text:'OK'}]);
+        }
+
         throw err;
       })
     );

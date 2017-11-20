@@ -21,6 +21,9 @@ const DeviceInfo = require('react-native-device-info');
     // it is used to link an installation to a specific App.
     export const APP_NAME = 'Crownstone.consumer';
 
+    // WHEN DOING A RELEASE, MAKE SURE THIS FLAG IS SET TO FALSE
+    export const DEBUG_MODE_ENABLED = true;
+
 /******************** /RELEASE FLAGS ********************/
 
 
