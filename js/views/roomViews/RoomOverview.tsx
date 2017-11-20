@@ -95,7 +95,8 @@ export class RoomOverview extends Component<any, any> {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId]) {
+      if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
+          change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
         Actions.pop();
         return;
       }

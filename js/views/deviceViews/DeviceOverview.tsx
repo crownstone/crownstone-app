@@ -74,8 +74,9 @@ export class DeviceOverview extends Component<any, any> {
       let state = store.getState();
       if (
         (state.spheres[this.props.sphereId] === undefined) ||
+        (change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) ||
         (change.removeStone && change.removeStone.stoneIds[this.props.stoneId])
-         ) {
+       ) {
         try {
           Actions.pop();
         } catch (popErr) {
