@@ -205,7 +205,7 @@ class LocationHandlerClass {
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
 
-    if (state.spheres[sphereId].config.present === true) {
+    if (state.spheres[sphereId] && state.spheres[sphereId].config.present === true) {
       LOG.info('Applying EXIT SPHERE');
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);
