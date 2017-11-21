@@ -1,11 +1,6 @@
 
 import {HISTORY_CYCLE_SIZE, HISTORY_PREFIX} from "./Persistor";
 
-interface userKeyObject {
-  key: string,
-  arr: string[]
-}
-
 export const PersistorUtil = {
 
   extractUserKeys: function(allKeys : string[], userId : string) {
@@ -23,7 +18,7 @@ export const PersistorUtil = {
     return userKeys
   },
 
-  extractLatestEntries: function(userKeys : userKeyObject[]) {
+  extractLatestEntries: function(userKeys : userKeyObject[]) : {latestKeys: userKeyObject[], historyReference: numberMap, fallbackVersions: stringMap}{
     let latestKeys = [];
     let history = {};
     let historyReference = {};
@@ -35,16 +30,21 @@ export const PersistorUtil = {
         let key = keyArray[0];
         let index = Number(keyArray[1]);
         if (history[key] === undefined) {
-          history[key] = {index: index, keyData: userKeys[i]};
+          history[key] = {index: index, keyData: userKeys[i], historyIndex: null};
         }
         else if (history[key].index === 9 && index === 0) { // we loop from 0..9. This means 0 is higher than 0.
+          history[key].historyIndex = history[key].index;
           history[key].index = index;
           history[key].keyData = userKeys[i];
 
         }
         else if (history[key] < index) {
+          history[key].historyIndex = history[key].index;
           history[key].index = index;
           history[key].keyData = userKeys[i];
+        }
+        else if (history[key] > index) {
+          history[key].historyIndex = index;
         }
       }
       else {
@@ -54,13 +54,17 @@ export const PersistorUtil = {
 
     // get latest versions
     let historyKeys = Object.keys(history);
+    let fallbackVersions = {};
     for (let i = 0; i < historyKeys.length; i++) {
       let key = historyKeys[i];
+      if (history[key].historyIndex !== null) {
+        fallbackVersions[key] = key + HISTORY_PREFIX + history[key].historyIndex;
+      }
       historyReference[key] = history[key].index;
       latestKeys.push(history[key].keyData)
     }
 
-    return { latestKeys, historyReference };
+    return { latestKeys, historyReference, fallbackVersions };
   },
 
   filterParentEntries: function(userKeys : userKeyObject[]) {

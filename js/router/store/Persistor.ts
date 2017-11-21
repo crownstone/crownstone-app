@@ -1,5 +1,5 @@
 import { AsyncStorage } from 'react-native'
-import {LOG, LOGd, LOGe, LOGi, LOGv} from '../../logging/Log'
+import { LOGd, LOGe, LOGi, LOGv} from '../../logging/Log'
 import {LOG_LEVEL} from "../../logging/LogLevels";
 import {PersistorUtil} from "./PersistorUtil";
 
@@ -24,15 +24,14 @@ export class Persistor {
   userId : string;
   store : any;
   initialized : boolean = false;
-  userKeys = {};
+  userKeyCache : map = {};
   processPending = false;
   executeOnFinish: any = null;
 
-  keyHistory = {};
+  keyHistory : numberMap = {};
 
 
   initialize(userId, store) : Promise<void> {
-    this.userKeys = {};
     this.userId = userId;
     this.store = store;
     return this.hydrate()
@@ -46,7 +45,7 @@ export class Persistor {
       this.initialized = false;
       this.userId = null;
       this.store = null;
-      this.userKeys = {};
+      this.userKeyCache = {};
       if (this.processPending === true) {
         this.executeOnFinish = resolve;
       }
@@ -139,6 +138,8 @@ export class Persistor {
     LOGi.store("Persistor: Starting new v2 hydration.");
 
     let pointerTreeReference = {};
+    let keyListForRetrievalReference = [];
+    let fallbackVersions = {};
     let baseData = {};
 
     return AsyncStorage.getAllKeys()
@@ -148,14 +149,20 @@ export class Persistor {
         // get the keys for this user from the list of all keys.
         let userKeys = PersistorUtil.extractUserKeys(allKeys, this.userId);
 
+
+        // generate a user key cache
+        this._createUserKeyCache(allKeys);
+
+
         // get latest entries from the userKey list
-        let latestData = PersistorUtil.extractLatestEntries(userKeys);
+        let latestData     = PersistorUtil.extractLatestEntries(userKeys);
+        fallbackVersions   = latestData.fallbackVersions;
         let latestUserKeys = latestData.latestKeys;
-        this.keyHistory = latestData.historyReference;
+        this.keyHistory    = latestData.historyReference;
 
         // sort the userKeysList by length
         latestUserKeys.sort((a,b) => { return a.key.length - b.key.length; });
-        LOGd.store("Persistor: userKeys found during hydration:", latestUserKeys);
+        LOGd.store("Persistor: userKeyCache found during hydration:", latestUserKeys);
 
         // filter out the legal and illegal keys. Illegal keys are parent keys that also have children.
         let { filteredUserKeys, illegalKeys } = PersistorUtil.filterParentEntries(latestUserKeys);
@@ -166,14 +173,44 @@ export class Persistor {
 
         // construct pointer tree to fill user fields.
         let { pointerTree, keyListForRetrieval } = PersistorUtil.constructPointerTree(filteredUserKeys, baseData);
+        keyListForRetrievalReference = keyListForRetrieval;
         pointerTreeReference = pointerTree;
 
         LOGd.store("Persistor: dataStructure found during hydration:", baseData);
         return AsyncStorage.multiGet(keyListForRetrieval);
       })
-      .catch((err) => {
-        // TODO: get older keys for the failed gets
-        throw err;
+      .catch((errorArray) => {
+        // attempt to get the historical version of failed keys.
+        if (Array.isArray(errorArray)) {
+          let fallbackKeyMap = {};
+          let failedKeys = [];
+
+          // construct a fallback keyMap
+          keyListForRetrievalReference.forEach((triedKey) => { fallbackKeyMap[triedKey] = true; });
+
+          // handle all errors **ASSUMING** the format is [failedKey, error]
+          errorArray.forEach((err) => {
+            if (Array.isArray(err) && err.length === 2) {
+              LOGe.store("Persistor: Failed getting key", err[0], err[1]);
+              failedKeys.push(err[0]);
+              let strippedKey = PersistorUtil.stripHistoryTag(err[0]);
+              if (fallbackVersions[strippedKey]) {
+                fallbackKeyMap[strippedKey] = fallbackVersions[strippedKey];
+
+                // update keyHistory to match the entry
+                this.keyHistory[strippedKey] = Number(fallbackVersions[strippedKey].split(HISTORY_PREFIX)[1]);
+              }
+            }
+          });
+
+          let fallbackKeyList = Object.keys(fallbackKeyMap);
+
+          // clear broken keys
+          return AsyncStorage.multiRemove(failedKeys)
+            .then(() => { return AsyncStorage.multiGet(fallbackKeyList); })
+        }
+
+        throw errorArray;
       })
       .then((keyValuePairArray) => {
         for (let i = 0; i < keyValuePairArray.length; i++) {
@@ -446,9 +483,9 @@ export class Persistor {
   _cascadeRemovals(keyRemovals : string[]) : Promise<string[]> {
     return new Promise((resolve, reject) => {
       // we require a userKey reference, either get it or we already have it.
-      let userKeys = Object.keys(this.userKeys);
+      let userKeys = Object.keys(this.userKeyCache);
       if (userKeys.length === 0) {
-        return this._createUserKeyCache()
+        return this._getAndCreateUserKeyCache()
           .catch((err) => { reject(err); });
       }
       else {
@@ -463,7 +500,7 @@ export class Persistor {
         }
 
         // cache exists
-        let userKeys = Object.keys(this.userKeys);
+        let userKeys = Object.keys(this.userKeyCache);
         for (let i = 0; i < keyRemovals.length; i++) {
           let candidateWithHistoryTag = keyRemovals[i];
 
@@ -495,37 +532,41 @@ export class Persistor {
 
 
   /**
-   * This creates the cache for all userKeys including their history tags.
+   * This creates the cache for all userKeyCache including their history tags.
    * @private
    */
-  _createUserKeyCache() {
-    this.userKeys = {};
+  _getAndCreateUserKeyCache() {
+    this.userKeyCache = {};
     return AsyncStorage.getAllKeys()
-      .then((keys) => {
-        for (let i = 0; i < keys.length; i++) {
-          let key = keys[i];
-          let keyArray = key.split('.');
-          if (keyArray[0] === this.userId) {
-            this.userKeys[key] = true;
-          }
-        }
+      .then((allKeys) => {
+        this._createUserKeyCache(allKeys);
       })
+  }
+
+  _createUserKeyCache(allKeys) {
+    for (let i = 0; i < allKeys.length; i++) {
+      let key = allKeys[i];
+      let keyArray = key.split('.');
+      if (keyArray[0] === this.userId) {
+        this.userKeyCache[key] = true;
+      }
+    }
   }
 
 
 
   _updateUserKeyCache(updatedKeys : string[]) {
     for (let i = 0; i < updatedKeys.length; i++) {
-      this.userKeys[updatedKeys[i]] = true;
+      this.userKeyCache[updatedKeys[i]] = true;
     }
   }
 
   _removeFromUserKeyCache(keyRemovals : string[]) {
     for (let i = 0; i < keyRemovals.length; i++) {
       let key = keyRemovals[i];
-      if (this.userKeys[key] !== undefined) {
-        this.userKeys[key] = false;
-        delete this.userKeys[key];
+      if (this.userKeyCache[key] !== undefined) {
+        this.userKeyCache[key] = false;
+        delete this.userKeyCache[key];
       }
     }
   }
@@ -590,6 +631,3 @@ function isObject(data) {
     typeof data === 'object'
   );
 }
-
-
-

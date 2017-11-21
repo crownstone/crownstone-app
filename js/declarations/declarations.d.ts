@@ -22,6 +22,8 @@ interface locationDataContainer {
 }
 
 type map = { [proptype: string] : boolean } | {}
+type numberMap = { [proptype: string] : number } | {}
+type stringMap = { [proptype: string] : string } | {}
 
 declare const module: any;
 
