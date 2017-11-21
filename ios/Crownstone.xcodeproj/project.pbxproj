@@ -46,6 +46,10 @@
 		ECECF241F5E043BB8962D8D8 /* libRCTImageResizer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81720DF7A506458AA65323BF /* libRCTImageResizer.a */; };
 		EED8C19564C145BF9A878AA9 /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF916DF8FF748538BA28025 /* libKCKeepAwake.a */; };
 		F55DE0D9CEA9436186D7D431 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68D2A9283AFF4B7892603493 /* libSplashScreen.a */; };
+		FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177CE1FC462F5001C8FD6 /* ErrorTranslator.swift */; };
+		FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D31FC46359001C8FD6 /* Portal.swift */; };
+		FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D51FC46385001C8FD6 /* Logger.swift */; };
+		FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0177D71FC46412001C8FD6 /* EventEmitter.swift */; };
 		FA3FC1F71ED2FABB00DD2F76 /* imageAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */; };
 		FA570EA91EAE30F9001C625D /* BluenetBasicLocalization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */; };
 		FA570EAB1EAE30F9001C625D /* BluenetShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA31EAE30F9001C625D /* BluenetShared.framework */; };
@@ -54,7 +58,7 @@
 		FA570EAE1EAE30F9001C625D /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA61EAE30F9001C625D /* PromiseKit.framework */; };
 		FA570EAF1EAE30F9001C625D /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA71EAE30F9001C625D /* SwiftyJSON.framework */; };
 		FA570EB01EAE30F9001C625D /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EA81EAE30F9001C625D /* Zip.framework */; };
-		FA570EB71EAE320F001C625D /* bluenetIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB31EAE320F001C625D /* bluenetIntegration.swift */; };
+		FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB31EAE320F001C625D /* BluenetIntegration.swift */; };
 		FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB41EAE320F001C625D /* JSONUtils.swift */; };
 		FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = FA570EB61EAE320F001C625D /* NativeBridge.m */; };
 		FA570EC31EAE35D9001C625D /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA570EC01EAE35BA001C625D /* libRCTPushNotification.a */; };
@@ -497,6 +501,10 @@
 		F1D30CA378FA4421A1BFF9D6 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		F536239263194292A885D7A7 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
 		F76F3A8FD7B44DD79A442EF9 /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
+		FA0177CE1FC462F5001C8FD6 /* ErrorTranslator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTranslator.swift; sourceTree = "<group>"; };
+		FA0177D31FC46359001C8FD6 /* Portal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Portal.swift; sourceTree = "<group>"; };
+		FA0177D51FC46385001C8FD6 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		FA0177D71FC46412001C8FD6 /* EventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmitter.swift; sourceTree = "<group>"; };
 		FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = imageAssets.xcassets; sourceTree = "<group>"; };
 		FA570EA11EAE30F9001C625D /* BluenetBasicLocalization.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetBasicLocalization.framework; path = Carthage/Build/iOS/BluenetBasicLocalization.framework; sourceTree = "<group>"; };
 		FA570EA31EAE30F9001C625D /* BluenetShared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BluenetShared.framework; path = Carthage/Build/iOS/BluenetShared.framework; sourceTree = "<group>"; };
@@ -506,7 +514,7 @@
 		FA570EA71EAE30F9001C625D /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		FA570EA81EAE30F9001C625D /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
 		FA570EB21EAE320E001C625D /* Crownstone-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Crownstone-Bridging-Header.h"; sourceTree = "<group>"; };
-		FA570EB31EAE320F001C625D /* bluenetIntegration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = bluenetIntegration.swift; sourceTree = "<group>"; };
+		FA570EB31EAE320F001C625D /* BluenetIntegration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluenetIntegration.swift; sourceTree = "<group>"; };
 		FA570EB41EAE320F001C625D /* JSONUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONUtils.swift; sourceTree = "<group>"; };
 		FA570EB51EAE320F001C625D /* NativeBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NativeBridge.h; sourceTree = "<group>"; };
 		FA570EB61EAE320F001C625D /* NativeBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NativeBridge.m; sourceTree = "<group>"; };
@@ -654,13 +662,12 @@
 		13B07FAE1A68108700A75B9A /* Crownstone */ = {
 			isa = PBXGroup;
 			children = (
+				FA0177D91FC46563001C8FD6 /* BridgeObjCFiles */,
+				FA0177D21FC46338001C8FD6 /* BridgeFiles */,
+				FA0177D01FC4631A001C8FD6 /* Util */,
 				FA847A2B1EDD683E00D992FA /* Crownstone.entitlements */,
 				FA3FC1F61ED2FABB00DD2F76 /* imageAssets.xcassets */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
-				FA570EB31EAE320F001C625D /* bluenetIntegration.swift */,
-				FA570EB41EAE320F001C625D /* JSONUtils.swift */,
-				FA570EB51EAE320F001C625D /* NativeBridge.h */,
-				FA570EB61EAE320F001C625D /* NativeBridge.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -800,6 +807,35 @@
 				DEB1FEE0EEBB4A408A7AD560 /* Feather.ttf */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		FA0177D01FC4631A001C8FD6 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				FA570EB41EAE320F001C625D /* JSONUtils.swift */,
+				FA0177CE1FC462F5001C8FD6 /* ErrorTranslator.swift */,
+				FA0177D51FC46385001C8FD6 /* Logger.swift */,
+				FA0177D71FC46412001C8FD6 /* EventEmitter.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		FA0177D21FC46338001C8FD6 /* BridgeFiles */ = {
+			isa = PBXGroup;
+			children = (
+				FA0177D31FC46359001C8FD6 /* Portal.swift */,
+				FA570EB31EAE320F001C625D /* BluenetIntegration.swift */,
+			);
+			path = BridgeFiles;
+			sourceTree = "<group>";
+		};
+		FA0177D91FC46563001C8FD6 /* BridgeObjCFiles */ = {
+			isa = PBXGroup;
+			children = (
+				FA570EB51EAE320F001C625D /* NativeBridge.h */,
+				FA570EB61EAE320F001C625D /* NativeBridge.m */,
+			);
+			path = BridgeObjCFiles;
 			sourceTree = "<group>";
 		};
 		FA570E671EAE30AB001C625D /* Products */ = {
@@ -1591,11 +1627,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA570EB71EAE320F001C625D /* bluenetIntegration.swift in Sources */,
+				FA570EB71EAE320F001C625D /* BluenetIntegration.swift in Sources */,
 				FA570EB81EAE320F001C625D /* JSONUtils.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				FA0177CF1FC462F5001C8FD6 /* ErrorTranslator.swift in Sources */,
 				FA570EB91EAE320F001C625D /* NativeBridge.m in Sources */,
+				FA0177D41FC46359001C8FD6 /* Portal.swift in Sources */,
+				FA0177D81FC46412001C8FD6 /* EventEmitter.swift in Sources */,
+				FA0177D61FC46385001C8FD6 /* Logger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

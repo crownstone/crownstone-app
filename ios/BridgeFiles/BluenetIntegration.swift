@@ -14,203 +14,20 @@ import BluenetLib
 import BluenetShared
 import BluenetBasicLocalization
 
-let LOGGER = BluenetShared.LogClass(daysToStoreLogs: 3, logBaseFilename: "BridgeLog")
-
-@objc open class ObjectiveCLogger : NSObject {
-  @objc public class func logInfo(log: String) {
-    LOGGER.info(log)
-  }
-}
-
-var GLOBAL_BLUENET : Portal?
-
-typealias voidCallback = () -> Void
-
-@objc open class Portal : NSObject {
-  open var bluenet : Bluenet!
-  open var bluenetLocalization : BluenetLocalization!
-  open var bluenetMotion : BluenetMotion!
-  open var trainingHelper : TrainingHelper!
-  var classifier : CrownstoneBasicClassifier!
-  
-  var subscriptions = [voidCallback]()
-  
-  init(viewController: UIViewController) {
-    super.init()
-    BluenetLib.setBluenetGlobals(viewController: viewController, appName: "Crownstone")
-    BluenetLib.LOG.setTimestampPrinting(newState: true)
-    self.classifier = CrownstoneBasicClassifier()
-    
-    self.bluenet = Bluenet(backgroundEnabled: true)
-
-    // use the accelerometer.
-    // self.bluenetMotion = BluenetMotion()
-    
-    self.bluenet.setSettings(encryptionEnabled: true, adminKey: nil, memberKey: nil, guestKey: nil, referenceId: "unknown")
-    self.bluenetLocalization = BluenetLocalization(backgroundEnabled: true)
-    
-    // insert the classifier that will be used for room-level localization.
-    self.bluenetLocalization.insertClassifier(classifier: self.classifier)
-    
-    self.trainingHelper = TrainingHelper(bluenetLocalization: self.bluenetLocalization)
-    
-    GLOBAL_BLUENET = self
-  }
-  
-  func bluenetOn(_ topic: String, _ callback: @escaping eventCallback) {
-    self.subscriptions.append(self.bluenet.on(topic, callback))
-  }
-  
-  func bluenetLocalizationOn(_ topic: String, _ callback: @escaping eventCallback) {
-    self.subscriptions.append(self.bluenetLocalization.on(topic, callback))
-  }
-  
-  open func applicationDidEnterBackground() {
-    // check if we have to use this to stop the scanning in the background
-    //self.bluenet.applicationDidEnterBackground()
-    //self.bluenetLocalization.applicationDidEnterBackground()
-  }
-  
-  open func applicationWillEnterForeground() {
-    // check if we have to use this to stop the scanning in the background
-    // self.bluenet.applicationWillEnterForeground()
-    // self.bluenetLocalization.applicationWillEnterForeground()
-  }
-  
-  deinit {
-    print("BluenetBridge: CLEANING UP!")
-    
-    // cleanup
-    for unsubscribeCallback in self.subscriptions {
-      unsubscribeCallback()
-    }
-  }
-}
-
-func getBleErrorString(_ err: BleError) -> String {
-  switch err {
-  case .DISCONNECTED:
-    return "DISCONNECTED"
-  case .CONNECTION_CANCELLED:
-    return "CONNECTION_CANCELLED"
-  case .NOT_CONNECTED:
-    return "NOT_CONNECTED"
-  case .NO_SERVICES:
-    return "NO_SERVICES"
-  case .NO_CHARACTERISTICS:
-    return "NO_CHARACTERISTICS"
-  case .SERVICE_DOES_NOT_EXIST:
-    return "SERVICE_DOES_NOT_EXIST"
-  case .CHARACTERISTIC_DOES_NOT_EXIST:
-    return "CHARACTERISTIC_DOES_NOT_EXIST"
-  case .WRONG_TYPE_OF_PROMISE:
-    return "WRONG_TYPE_OF_PROMISE"
-  case .INVALID_UUID:
-    return "INVALID_UUID"
-  case .NOT_INITIALIZED:
-    return "NOT_INITIALIZED"
-  case .CANNOT_SET_TIMEOUT_WITH_THIS_TYPE_OF_PROMISE:
-    return "CANNOT_SET_TIMEOUT_WITH_THIS_TYPE_OF_PROMISE"
-  case .TIMEOUT:
-    return "TIMEOUT"
-  case .DISCONNECT_TIMEOUT:
-    return "DISCONNECT_TIMEOUT"
-  case .CANCEL_PENDING_CONNECTION_TIMEOUT:
-    return "CANCEL_PENDING_CONNECTION_TIMEOUT"
-  case .CONNECT_TIMEOUT:
-    return "CONNECT_TIMEOUT"
-  case .GET_SERVICES_TIMEOUT:
-    return "GET_SERVICES_TIMEOUT"
-  case .GET_CHARACTERISTICS_TIMEOUT:
-    return "GET_CHARACTERISTICS_TIMEOUT"
-  case .READ_CHARACTERISTIC_TIMEOUT:
-    return "READ_CHARACTERISTIC_TIMEOUT"
-  case .WRITE_CHARACTERISTIC_TIMEOUT:
-    return "WRITE_CHARACTERISTIC_TIMEOUT"
-  case .ENABLE_NOTIFICATIONS_TIMEOUT:
-    return "ENABLE_NOTIFICATIONS_TIMEOUT"
-  case .DISABLE_NOTIFICATIONS_TIMEOUT:
-    return "DISABLE_NOTIFICATIONS_TIMEOUT"
-  case .CANNOT_WRITE_AND_VERIFY:
-    return "CANNOT_WRITE_AND_VERIFY"
-  case .CAN_NOT_CONNECT_TO_UUID:
-    return "CAN_NOT_CONNECT_TO_UUID"
-  case .COULD_NOT_FACTORY_RESET:
-    return "COULD_NOT_FACTORY_RESET"
-  case .INVALID_SESSION_DATA:
-    return "INVALID_SESSION_DATA"
-  case .NO_SESSION_NONCE_SET:
-    return "NO_SESSION_NONCE_SET"
-  case .COULD_NOT_VALIDATE_SESSION_NONCE:
-    return "COULD_NOT_VALIDATE_SESSION_NONCE"
-  case .INVALID_SIZE_FOR_ENCRYPTED_PAYLOAD:
-    return "INVALID_SIZE_FOR_ENCRYPTED_PAYLOAD"
-  case .INVALID_SIZE_FOR_SESSION_NONCE_PACKET:
-    return "INVALID_SIZE_FOR_SESSION_NONCE_PACKET"
-  case .INVALID_PACKAGE_FOR_ENCRYPTION_TOO_SHORT:
-    return "INVALID_PACKAGE_FOR_ENCRYPTION_TOO_SHORT"
-  case .INVALID_KEY_FOR_ENCRYPTION:
-    return "INVALID_KEY_FOR_ENCRYPTION"
-  case .DO_NOT_HAVE_ENCRYPTION_KEY:
-    return "DO_NOT_HAVE_ENCRYPTION_KEY"
-  case .COULD_NOT_ENCRYPT:
-    return "COULD_NOT_ENCRYPT"
-  case .COULD_NOT_ENCRYPT_KEYS_NOT_SET:
-    return "COULD_NOT_ENCRYPT_KEYS_NOT_SET"
-  case .COULD_NOT_DECRYPT_KEYS_NOT_SET:
-    return "COULD_NOT_DECRYPT_KEYS_NOT_SET"
-  case .COULD_NOT_DECRYPT:
-    return "COULD_NOT_DECRYPT"
-  case .CAN_NOT_GET_PAYLOAD:
-    return "CAN_NOT_GET_PAYLOAD"
-  case .USERLEVEL_IN_READ_PACKET_INVALID:
-    return "USERLEVEL_IN_READ_PACKET_INVALID"
-  case .READ_SESSION_NONCE_ZERO_MAYBE_ENCRYPTION_DISABLED:
-    return "READ_SESSION_NONCE_ZERO_MAYBE_ENCRYPTION_DISABLED"
-  case .NOT_IN_RECOVERY_MODE:
-    return "NOT_IN_RECOVERY_MODE"
-  case .CANNOT_READ_FACTORY_RESET_CHARACTERISTIC:
-    return "CANNOT_READ_FACTORY_RESET_CHARACTERISTIC"
-  case .RECOVER_MODE_DISABLED:
-    return "RECOVER_MODE_DISABLED"
-  case .INVALID_TX_POWER_VALUE:
-    return "INVALID_TX_POWER_VALUE"
-  case .NO_KEEPALIVE_STATE_ITEMS:
-    return "NO_KEEPALIVE_STATE_ITEMS"
-  case .NO_SWITCH_STATE_ITEMS:
-    return "NO_SWITCH_STATE_ITEMS"
-  case .DFU_OVERRULED:
-    return "DFU_OVERRULED"
-  case .DFU_ABORTED:
-    return "DFU_ABORTED"
-  case .DFU_ERROR:
-    return "DFU_ERROR"
-  case .COULD_NOT_FIND_PERIPHERAL:
-    return "COULD_NOT_FIND_PERIPHERAL"
-  case .PACKETS_DO_NOT_MATCH:
-    return "PACKETS_DO_NOT_MATCH"
-  case .NOT_IN_DFU_MODE:
-    return "NOT_IN_DFU_MODE"
-  case .REPLACED_WITH_OTHER_PROMISE:
-    return "REPLACED_WITH_OTHER_PROMISE"
-  case .INCORRECT_RESPONSE_LENGTH:
-    return "INCORRECT_RESPONSE_LENGTH"
-  case .UNKNOWN_TYPE:
-    return "UNKNOWN_TYPE"
-  case .INCORRECT_SCHEDULE_ENTRY_INDEX:
-    return "INCORRECT_SCHEDULE_ENTRY_INDEX"
-  case .INCORRECT_DATA_COUNT_FOR_ALL_TIMERS:
-    return "INCORRECT_DATA_COUNT_FOR_ALL_TIMERS"
-  case .NO_SCHEDULE_ENTRIES_AVAILABLE:
-    return "NO_SCHEDULE_ENTRIES_AVAILABLE"
-  case .NO_TIMER_FOUND:
-    return "NO_TIMER_FOUND"
-  }
-}
-
 @objc(BluenetJS)
-open class BluenetJS: NSObject {
-  var bridge: RCTBridge!
+open class BluenetJS: RCTEventEmitter {
+  
+  override init() {
+    super.init()
+    EventEmitter.sharedInstance.registerEventEmitter(eventEmitter: self)
+  }
+  
+  /// Base overide for RCTEventEmitter.
+  ///
+  /// - Returns: all supported events
+  @objc open override func supportedEvents() -> [String] {
+    return EventEmitter.sharedInstance.allEvents
+  }
   
   @objc func rerouteEvents() {
     LOGGER.info("BluenetBridge: Called rerouteEvents")
@@ -220,28 +37,40 @@ open class BluenetJS: NSObject {
       globalBluenet.bluenetOn("verifiedAdvertisementData", {data -> Void in
         if let castData = data as? Advertisement {
           if (castData.isSetupPackage()) {
-            self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
+            self.sendEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
+            
+            
+            //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedSetupAdvertisementData", body: castData.getDictionary())
           }
           else if (castData.isDFUPackage()) {
-            self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
+            self.sendEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
+            
+            //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedDFUAdvertisementData", body: castData.getDictionary())
           }
           else {
-            self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
+            self.sendEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
+            
+            //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
           }
           
-          self.bridge.eventDispatcher().sendAppEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
+          self.sendEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
+          
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
         }
       })
       
       globalBluenet.bluenetOn("bleStatus", {data -> Void in
         if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "bleStatus", body: castData)
+          self.sendEvent(withName: "bleStatus", body: castData)
+          
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "bleStatus", body: castData)
         }
       })
       
       globalBluenet.bluenetLocalizationOn("locationStatus", {data -> Void in
         if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "locationStatus", body: castData)
+          self.sendEvent(withName: "locationStatus", body: castData)
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "locationStatus", body: castData)
         }
       })
       
@@ -261,26 +90,30 @@ open class BluenetJS: NSObject {
           // data["progress"]    = NSNumber(value: progress)
           // data["currentSpeedBytesPerSecond"] = NSNumber(value: currentSpeedBytesPerSecond)
           // data["avgSpeedBytesPerSecond"]     = NSNumber(value: avgSpeedBytesPerSecond)
-          self.bridge.eventDispatcher().sendAppEvent(withName: "dfuProgress", body: castData)
+          self.sendEvent(withName: "dfuProgress", body: castData)
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "dfuProgress", body: castData)
         }
       })
       
       globalBluenet.bluenetOn("setupProgress", {data -> Void in
         if let castData = data as? NSNumber {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "setupProgress", body: castData)
+          self.sendEvent(withName: "setupProgress", body: castData)
+//          self.bridge.eventDispatcher().sendAppEvent(withName: "setupProgress", body: castData)
         }
       })
 
       
       globalBluenet.bluenetOn("nearestSetupCrownstone", {data -> Void in
         if let castData = data as? NearestItem {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
+          self.sendEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "nearestSetupCrownstone", body: castData.getDictionary())
         }
       })
       
       globalBluenet.bluenetOn("nearestCrownstone", {data -> Void in
         if let castData = data as? NearestItem {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "nearestCrownstone", body: castData.getDictionary())
+          self.sendEvent(withName: "nearestCrownstone", body: castData.getDictionary())
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "nearestCrownstone", body: castData.getDictionary())
         }
       })
       
@@ -292,7 +125,8 @@ open class BluenetJS: NSObject {
             returnArray.append(packet.getDictionary())
           }
         }
-        self.bridge.eventDispatcher().sendAppEvent(withName: "iBeaconAdvertisement", body: returnArray)
+        self.sendEvent(withName: "iBeaconAdvertisement", body: returnArray)
+        //self.bridge.eventDispatcher().sendAppEvent(withName: "iBeaconAdvertisement", body: returnArray)
       })
       
 //      globalBluenet.bluenetLocalizationOn("lowLevelEnterRegion", {data -> Void in
@@ -305,30 +139,35 @@ open class BluenetJS: NSObject {
       globalBluenet.bluenetLocalizationOn("enterRegion", {data -> Void in
         print("BluenetBridge: enterRegion")
         if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
+          self.sendEvent(withName: "enterSphere", body: castData)
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "enterSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitRegion", {data -> Void in
         print("BluenetBridge: exitRegion")
         if let castData = data as? String {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "exitSphere", body: castData)
+          self.sendEvent(withName: "exitSphere", body: castData)
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "exitSphere", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("enterLocation", {data -> Void in
 //        print("BluenetBridge: enterLocation")
         if let castData = data as? NSDictionary {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
+          self.sendEvent(withName: "enterLocation", body: castData)
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitLocation", {data -> Void in
 //        print("BluenetBridge: exitLocation")
         if let castData = data as? NSDictionary {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
+          self.sendEvent(withName: "exitLocation", body: castData)
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("currentLocation", {data -> Void in
         if let castData = data as? NSDictionary {
-          self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
+          self.sendEvent(withName: "currentLocation", body: castData)
+          //self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
         }
       })
      }
@@ -844,7 +683,7 @@ open class BluenetJS: NSObject {
         }
     }
     else {
-      callback([["error" : true, "data": "Missing one of the datafields required for setup. 1:\(crownstoneId) 2:\(adminKey) 3:\(memberKey) 4:\(guestKey) 5:\(meshAccessAddress) 6:\(ibeaconUUID) 7:\(ibeaconMajor) 8:\(ibeaconMinor)"]])
+      callback([["error" : true, "data": "Missing one of the datafields required for setup. 1:\(String(describing: crownstoneId)) 2:\(adminKey) 3:\(String(describing: memberKey)) 4:\(String(describing: guestKey)) 5:\(meshAccessAddress) 6:\(String(describing: ibeaconUUID)) 7:\(ibeaconMajor) 8:\(ibeaconMinor)"]])
     }
   }
   
@@ -880,7 +719,7 @@ open class BluenetJS: NSObject {
   @objc func meshCommandSetSwitchState(_ crownstoneIds: [NSNumber], state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called meshCommandSetSwitchState")
 //    print("-- Firing meshCommandSetSwitchState crownstoneIds: \(crownstoneIds), state: \(state), intent: \(intent)")
-    GLOBAL_BLUENET!.bluenet.mesh.meshCommandSetSwitchState(crownstoneIds: crownstoneIds as [UInt16], state: state.floatValue)
+    GLOBAL_BLUENET!.bluenet.mesh.meshCommandSetSwitchState(crownstoneIds: crownstoneIds as! [UInt16], state: state.floatValue)
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {

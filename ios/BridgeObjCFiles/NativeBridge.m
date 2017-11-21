@@ -8,9 +8,9 @@
 
 // CalendarManagerBridge.m
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-
-@interface RCT_EXTERN_MODULE(BluenetJS, NSObject)
+@interface RCT_EXTERN_MODULE(BluenetJS, RCTEventEmitter)
 
 
 RCT_EXTERN_METHOD(setSettings:(NSDictionary *)settings callback:(RCTResponseSenderBlock)callback)
