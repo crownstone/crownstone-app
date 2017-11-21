@@ -1,8 +1,11 @@
 import { AsyncStorage } from 'react-native'
 import {LOG, LOGd, LOGe, LOGi, LOGv} from '../../logging/Log'
+import {LOG_LEVEL} from "../../logging/LogLevels";
+import {PersistorUtil} from "./PersistorUtil";
 
-
-const BASE_STORAGE_KEY = 'CrownstoneStore_';
+const LEGACY_BASE_STORAGE_KEY = 'CrownstoneStore_';
+export const HISTORY_PREFIX = '_@$:';
+export const HISTORY_CYCLE_SIZE = 10;
 
 interface persistOptions {
   idContainers: { [propName: string]: boolean },
@@ -13,9 +16,6 @@ interface persistOptions {
     undefinedInB(a: any, b: any, path: string, storageKey: string) : void,
   }
 }
-// in your root javascript file
-import 'react-native-console-time-polyfill';
-import {LOG_LEVEL} from "../../logging/LogLevels";
 
 
 /**
@@ -104,7 +104,7 @@ export class Persistor {
   }
 
   _checkHydrateMode() {
-    return AsyncStorage.getItem(BASE_STORAGE_KEY + this.userId)
+    return AsyncStorage.getItem(LEGACY_BASE_STORAGE_KEY + this.userId)
       .then((data) => {
         if (data) {
           return "classic";
@@ -115,7 +115,7 @@ export class Persistor {
 
   _hydrateClassic() {
     LOGi.store("Persistor: Starting classic hydration.");
-    return AsyncStorage.getItem(BASE_STORAGE_KEY + this.userId)
+    return AsyncStorage.getItem(LEGACY_BASE_STORAGE_KEY + this.userId)
       .then((data) => {
         if (data) {
           return JSON.parse(data);
@@ -131,98 +131,66 @@ export class Persistor {
   _migrate() {
     return this.persistFull()
       .then(() => {
-        return AsyncStorage.removeItem(BASE_STORAGE_KEY + this.userId)
+        return AsyncStorage.removeItem(LEGACY_BASE_STORAGE_KEY + this.userId)
       })
   }
 
   _hydrateV2() {
     LOGi.store("Persistor: Starting new v2 hydration.");
-    let data = {};
-    let pointerIndex = {};
 
-    function storePointer(pointer, assignmentKey, key) {
-      pointerIndex[key] = {assignmentKey: assignmentKey, pointer: pointer};
-    }
+    let pointerTreeReference = {};
+    let baseData = {};
 
     return AsyncStorage.getAllKeys()
-      .then((keys) => {
-        LOGi.store("Persistor: all keys found:", keys);
-        let userKeys = [];
-        let keyListForRetrieval = [];
-        for (let i = 0; i < keys.length; i++) {
-          let key = keys[i];
-          let keyArray = key.split('.');
-          if (keyArray[0] === this.userId) {
-            userKeys.push({key:key, arr: keyArray});
-          }
+      .then((allKeys) => {
+        LOGi.store("Persistor: all keys found:", allKeys);
+
+        // get the keys for this user from the list of all keys.
+        let userKeys = PersistorUtil.extractUserKeys(allKeys, this.userId);
+
+        // get latest entries from the userKey list
+        let latestData = PersistorUtil.extractLatestEntries(userKeys);
+        let latestUserKeys = latestData.latestKeys;
+        this.keyHistory = latestData.historyReference;
+
+        // sort the userKeysList by length
+        latestUserKeys.sort((a,b) => { return a.key.length - b.key.length; });
+        LOGd.store("Persistor: userKeys found during hydration:", latestUserKeys);
+
+        // filter out the legal and illegal keys. Illegal keys are parent keys that also have children.
+        let { filteredUserKeys, illegalKeys } = PersistorUtil.filterParentEntries(latestUserKeys);
+
+        if (illegalKeys.length > 0) {
+          this._batchRemove(illegalKeys).catch((err) => { LOGe.store("Persistor: could not remove illegal keys", err); })
         }
-
-        userKeys.sort((a,b) => { return a.key.length - b.key.length; });
-        LOGd.store("Persistor: userKeys found during hydration:", userKeys);
-
-        // get parent keys out of this list because they will destroy the pointer tree
-        let filteredUserKeys = [];
-        for (let i = 0; i < userKeys.length - 1; i++) {
-          let found = false;
-          let checkKey = userKeys[i].key;
-          for (let j = i + 1; j < userKeys.length; j++) {
-            let candidate = userKeys[j].key;
-
-            if (candidate.substr(0, checkKey.length) === checkKey) {
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            filteredUserKeys.push(userKeys[i]);
-          }
-        }
-
 
         // construct pointer tree to fill user fields.
-        for (let i = 0; i < filteredUserKeys.length; i++) {
-          let key = filteredUserKeys[i].key;
-          let keyArray = filteredUserKeys[i].arr;
+        let { pointerTree, keyListForRetrieval } = PersistorUtil.constructPointerTree(filteredUserKeys, baseData);
+        pointerTreeReference = pointerTree;
 
-          // save in cache map.
-          this.userKeys[key] = true;
-
-          // index 0 is the userId
-          let pointer = data;
-          for (let j = 1; j < keyArray.length; j++) {
-            if (pointer[keyArray[j]] === undefined) {
-              pointer[keyArray[j]] = {};
-            }
-
-            if (keyArray.length > j+1) {
-              pointer = pointer[keyArray[j]]
-            }
-            else {
-              // end of path
-              // get the data on this key
-              storePointer(pointer, keyArray[j], key);
-            }
-          }
-          keyListForRetrieval.push(key);
-        }
-
-        LOGv.store("Persistor: dataStructure found during hydration:", data);
+        LOGd.store("Persistor: dataStructure found during hydration:", baseData);
         return AsyncStorage.multiGet(keyListForRetrieval);
+      })
+      .catch((err) => {
+        // TODO: get older keys for the failed gets
+        throw err;
       })
       .then((keyValuePairArray) => {
         for (let i = 0; i < keyValuePairArray.length; i++) {
           let pair = keyValuePairArray[i];
-          if (pointerIndex[pair[0]]) {
-            pointerIndex[pair[0]].pointer[pointerIndex[pair[0]].assignmentKey] = JSON.parse(pair[1]);
+          if (pointerTreeReference[pair[0]]) {
+            pointerTreeReference[pair[0]].pointer[pointerTreeReference[pair[0]].assignmentKey] = JSON.parse(pair[1]);
           }
         }
-        return data;
+        return baseData;
       })
       .catch((err) => {
         LOGe.store("Persistor: Error during hydrate v2", err);
         throw err;
       })
   }
+
+
 
 
   /**
@@ -305,25 +273,27 @@ export class Persistor {
     }
     */
 
+
+    // The idContainers indicate which parts of the tree consist of arrays.
+    // These allow for wildcard-ish references for the path (uuid string replaced by {id})
     const idContainers = {
       'spheres': true,
       'spheres.{id}.stones':true
     };
 
+    // unpack keys are keys in the path that will not just be stringified and stored, but rather stepped into and stored in pieces.
     const unpackKeys = {
-      'spheres'                 : true,
-      'spheres.{id}'            : true,
-      'spheres.{id}.locations'  : true,
-      'spheres.{id}.appliances' : true,
-      'spheres.{id}.stones'     : true,
-      'spheres.{id}.stones.{id}': true,
+      'spheres'                  : true,
+      'spheres.{id}'             : true,
+      'spheres.{id}.locations'   : true,
+      'spheres.{id}.appliances'  : true,
+      'spheres.{id}.stones'      : true,
+      'spheres.{id}.stones.{id}' : true,
       'spheres.{id}.stones.{id}.powerUsage': true,
     };
 
     let keyValueWrites = [] as [string[]];
-    let keyRemovals = [];
-    let keyRemovalMap = {};
-
+    let keysToRemove = [] as string[];
 
     let options : persistOptions = {
       idContainers: idContainers,
@@ -332,11 +302,10 @@ export class Persistor {
       handlers: {
         difference: (a,b,path,storageKey) => {
           // Store B
-          this._parseForStorage(b, path, storageKey, options, keyValueWrites);
+          this._parseForStorage(b, path, storageKey, options, keyValueWrites, keysToRemove);
         },
         undefinedInB: (a,b,path,storageKey) => {
-          keyRemovals.push(storageKey);
-          keyRemovalMap[storageKey] = true;
+          PersistorUtil.insertAllHistoryKeyPossibilities(storageKey, keysToRemove);
         },
       }
     };
@@ -353,12 +322,11 @@ export class Persistor {
 
     // for things that have been added, we should check if the newState has new fields
     // --> iterate over the newState
-
     options.handlers = {
       difference:   (a,b,path,storageKey) => { /* do nothing */ },
       undefinedInB: (a,b,path,storageKey) => {
         // Store A
-        this._parseForStorage(a, path, storageKey, options, keyValueWrites);
+        this._parseForStorage(a, path, storageKey, options, keyValueWrites, keysToRemove);
       },
     };
 
@@ -368,9 +336,10 @@ export class Persistor {
       compare(newState[field], oldState[field], field, this.userId + '.' + field, options);
     }
 
+    // handle all changes in batches.
     return this._batchPersist(keyValueWrites)
       .then(() => {
-        return this._batchRemove(keyRemovals, keyRemovalMap);
+        return this._batchRemove(keysToRemove);
       })
       .then(() => {
         this.indicateProcessEnded();
@@ -381,13 +350,28 @@ export class Persistor {
     })
   }
 
-  _parseForStorage(data, path, storageKey, options, resultArray) {
-    let storeData = () => {
-      resultArray.push([storageKey, JSON.stringify(data)]);
+  _parseForStorage(data, path, storageKey, options, resultArray, keysToRemove) {
+    let storeAndManageHistory = () => {
+      // if this key has no history, create a new index.
+      if (this.keyHistory[storageKey] === undefined) {
+        this.keyHistory[storageKey] = 0;
+      }
+
+      // remove ancient history for this entry (we store the current one and the new one. The one before gets removed).
+      let previousIndex = (this.keyHistory[storageKey] + (HISTORY_CYCLE_SIZE-1)) % HISTORY_CYCLE_SIZE;
+      let historyKey = storageKey + HISTORY_PREFIX + previousIndex;
+      keysToRemove.push(historyKey);
+
+      // move the index one forward
+      this.keyHistory[storageKey] = (this.keyHistory[storageKey] + 1) % HISTORY_CYCLE_SIZE;
+
+      // update the key and add it the the store
+      let newKey = storageKey + HISTORY_PREFIX + this.keyHistory[storageKey];
+      resultArray.push([newKey, JSON.stringify(data)]);
     };
 
     if (!isObject(data)) {
-      return storeData()
+      return storeAndManageHistory()
     }
 
     if (options.unpackKeys && options.unpackKeys[path]) {
@@ -403,25 +387,14 @@ export class Persistor {
         else {
           nextPath += '.' + field;
         }
-        this._parseForStorage(data[field], nextPath, nextStorageKey, options, resultArray);
+        this._parseForStorage(data[field], nextPath, nextStorageKey, options, resultArray, keysToRemove);
       }
     }
     else {
-      storeData();
+      storeAndManageHistory();
     }
   }
 
-  // _batchSinglePersist(keyValueWrites : [string[]], newKeys: string[]) : Promise<void> {
-  //   let promises = [];
-  //
-  //   keyValueWrites.forEach((kvWrite) => {
-  //     promises.push(AsyncStorage.mergeItem(kvWrite[0], kvWrite[1])
-  //       .then((x) => { console.log("COMPLETED", kvWrite[0], kvWrite[1], x) })
-  //       .catch((err) => { console.log("FAILED", err) }))
-  //   });
-  //
-  //   return Promise.all(promises).then(() => {});
-  // }
 
   _batchPersist(keyValueWrites : [string[]]) : Promise<void> {
     return new Promise((resolve, reject) => {
@@ -430,7 +403,6 @@ export class Persistor {
         for (let i = 0; i < keyValueWrites.length; i++) {
           updatedKeys.push(keyValueWrites[i][0]);
         }
-
 
         AsyncStorage.multiSet(keyValueWrites)
           .then(() => {
@@ -446,10 +418,10 @@ export class Persistor {
     })
   }
 
-  _batchRemove(keyRemovals : string[], keyRemovalMap : map) : Promise<void> {
+  _batchRemove(keyRemovals : string[]) : Promise<void> {
     return new Promise((resolve, reject) => {
       if (keyRemovals.length > 0) {
-          this._cascadeRemovals(keyRemovals, keyRemovalMap)
+          this._cascadeRemovals(keyRemovals)
             .then((allKeyRemovals : string[] ) => {
               return AsyncStorage.multiRemove(allKeyRemovals)
                 .then(() => { this._removeFromUserKeyCache(allKeyRemovals); })
@@ -464,8 +436,16 @@ export class Persistor {
     });
   }
 
-  _cascadeRemovals(keyRemovals : string[], keyRemovalMap : map) : Promise<string[]> {
+
+  /**
+   * If a key is deleted, all of it's children keys should ALSO be deleted. This cascade is handled here.
+   * @param {string[]} keyRemovals
+   * @returns {Promise<string[]>}
+   * @private
+   */
+  _cascadeRemovals(keyRemovals : string[]) : Promise<string[]> {
     return new Promise((resolve, reject) => {
+      // we require a userKey reference, either get it or we already have it.
       let userKeys = Object.keys(this.userKeys);
       if (userKeys.length === 0) {
         return this._createUserKeyCache()
@@ -476,21 +456,33 @@ export class Persistor {
       }
     })
       .then(() => {
+        // create keyRemovalMap for quick lookup.
+        let keyRemovalMap = {};
+        for (let i = 0; i < keyRemovals.length; i++) {
+          keyRemovalMap[keyRemovals[i]] = true;
+        }
+
         // cache exists
         let userKeys = Object.keys(this.userKeys);
         for (let i = 0; i < keyRemovals.length; i++) {
-          let keyToBeDeleted = keyRemovals[i];
-          let keyLength = keyToBeDeleted.length;
+          let candidateWithHistoryTag = keyRemovals[i];
+
+          // since we match the candidate key as a part of a longer key, the history tag has to be stripped.
+          let candidate = PersistorUtil.stripHistoryTag(candidateWithHistoryTag);
+          let keyLength = candidate.length;
 
           for (let j = 0; j < userKeys.length; j++) {
-            let userKey = userKeys[j];
-            // if this key is not already schedules to be removed.
-            if (!keyRemovalMap[userKey]) {
+            let checkKey = userKeys[j];
+            // we check length without history tag for a fair comparison.
+            let checkKeyWithoutHistoryTag = PersistorUtil.stripHistoryTag(checkKey);
+
+            // if this key is not already scheduled to be removed.
+            if (!keyRemovalMap[checkKey]) {
               // if the key is larger than the parent key and the parentKey prefixes this key
-              if (userKey.length > keyLength && userKey.substr(0, keyLength) === keyToBeDeleted) {
-                keyRemovals.push(userKey);
-                keyRemovalMap[userKey] = true;
-                LOGd.store("Persistor: Added field to be removed due to cascade.", userKey);
+              if (checkKeyWithoutHistoryTag.length > keyLength && checkKey.substr(0, keyLength) === candidate) {
+                keyRemovals.push(checkKey);
+                keyRemovalMap[checkKey] = true;
+                LOGd.store("Persistor: Added field to be removed due to cascade.", checkKey);
               }
             }
           }
@@ -501,6 +493,11 @@ export class Persistor {
       })
   }
 
+
+  /**
+   * This creates the cache for all userKeys including their history tags.
+   * @private
+   */
   _createUserKeyCache() {
     this.userKeys = {};
     return AsyncStorage.getAllKeys()
@@ -514,6 +511,8 @@ export class Persistor {
         }
       })
   }
+
+
 
   _updateUserKeyCache(updatedKeys : string[]) {
     for (let i = 0; i < updatedKeys.length; i++) {

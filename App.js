@@ -26,7 +26,6 @@ export class Root extends Component {
     if (Platform.OS === 'ios') {
       SplashScreen.hide();
 
-      this.snapBackKeyboardTimeout = 0;
       this.focusTime = 0;
 
       let snapBack = () => { Animated.timing(this.state.top, {toValue: 0, duration:0}).start(); };
