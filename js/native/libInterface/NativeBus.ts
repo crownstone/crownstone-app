@@ -1,8 +1,13 @@
 import { Alert, NativeModules, NativeEventEmitter } from 'react-native';
 import {LOG, LOGi} from '../../logging/Log'
 import { Util } from "../../util/Util";
+import {DISABLE_NATIVE} from "../../ExternalConfig";
 
-const BluenetEmitter = new NativeEventEmitter(NativeModules.BluenetJS);
+let BluenetEmitter = { addListener: (a,b) => { return {remove:() => {}} }};
+
+if (DISABLE_NATIVE !== true) {
+  BluenetEmitter = new NativeEventEmitter(NativeModules.BluenetJS);
+}
 
 class NativeBusClass {
   topics: any;

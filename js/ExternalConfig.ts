@@ -46,7 +46,7 @@ const DeviceInfo = require('react-native-device-info');
      * Disable Native will automatically mock all BLE commands so the app can run in the simulator.
      * Silence cloud will silently reject all cloud calls.
      */
-    export let DISABLE_NATIVE = DeviceInfo.getModel() === "Simulator";
+    export let DISABLE_NATIVE = DeviceInfo.isEmulator();
     export let SILENCE_CLOUD  = false;
 
     /**

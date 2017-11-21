@@ -28,6 +28,8 @@ export class Persistor {
   processPending = false;
   executeOnFinish: any = null;
 
+  keyHistory = {};
+
 
   initialize(userId, store) : Promise<void> {
     this.userKeys = {};
@@ -105,7 +107,7 @@ export class Persistor {
     return AsyncStorage.getItem(BASE_STORAGE_KEY + this.userId)
       .then((data) => {
         if (data) {
-          return "classic"
+          return "classic";
         }
         return "v2";
       })
@@ -555,13 +557,10 @@ function checkObjects(a, b, path, storageKey, options : persistOptions) {
     // CHANGE!
 
     // check if this field is stored as-is or if we step in.
-    console.log("CHECKING", path)
     if (options.unpackKeys && options.unpackKeys[path]) {
-      console.log("START COMPARE", path)
       compareObjects(a, b, path, storageKey, options);
     }
     else {
-      console.log("MARK DIFFERENCE", path)
       options.handlers.difference(a,b,path,storageKey);
     }
   }

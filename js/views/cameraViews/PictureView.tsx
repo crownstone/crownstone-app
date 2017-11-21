@@ -13,7 +13,7 @@ import { CameraKitCamera, CameraKitCameraScreen } from 'react-native-camera-kit'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { LOG } from '../../logging/Log'
-import {SessionMemory} from "../startupViews/SessionMemory";
+import { SessionMemory } from '../../util/SessionMemory'
 
 export class PictureView extends Component<any, any> {
   cameraView;

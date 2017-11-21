@@ -18,7 +18,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors , screenWidth, screenHeight } from '../styles'
 
-import { SessionMemory } from './SessionMemory'
+import { SessionMemory } from '../../util/SessionMemory'
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must not be empty.';

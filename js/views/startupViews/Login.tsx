@@ -17,8 +17,8 @@ const RNFS    = require('react-native-fs');
 const DeviceInfo = require('react-native-device-info');
 
 import {LOG, LOGi} from '../../logging/Log'
-import { SessionMemory }                      from './SessionMemory'
 import {emailChecker, getImageFileFromUser, Util} from '../../util/Util'
+import { SessionMemory }                      from '../../util/SessionMemory'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'
