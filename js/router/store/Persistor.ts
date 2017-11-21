@@ -15,6 +15,7 @@ interface persistOptions {
 }
 // in your root javascript file
 import 'react-native-console-time-polyfill';
+import {LOG_LEVEL} from "../../logging/LogLevels";
 
 
 /**
@@ -78,7 +79,7 @@ export class Persistor {
       })
       .then((initialState) => {
         LOGd.store("Persistor: Initial state obtained for hydration:", initialState);
-        this.store.dispatch({type:"HYDRATE", state: initialState});
+        this.store.dispatch({type:"HYDRATE", state: initialState, __logLevel: LOG_LEVEL.verbose });
         // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
         // also add the app identifier if we don't already have one.
         this._refreshDatabase();
@@ -143,7 +144,7 @@ export class Persistor {
 
     return AsyncStorage.getAllKeys()
       .then((keys) => {
-        LOGv.store("Persistor: all keys found:", keys);
+        LOGi.store("Persistor: all keys found:", keys);
         let userKeys = [];
         let keyListForRetrieval = [];
         for (let i = 0; i < keys.length; i++) {
@@ -156,9 +157,30 @@ export class Persistor {
 
         userKeys.sort((a,b) => { return a.key.length - b.key.length; });
         LOGd.store("Persistor: userKeys found during hydration:", userKeys);
-        for (let i = 0; i < userKeys.length; i++) {
-          let key = userKeys[i].key;
-          let keyArray = userKeys[i].arr;
+
+        // get parent keys out of this list because they will destroy the pointer tree
+        let filteredUserKeys = [];
+        for (let i = 0; i < userKeys.length - 1; i++) {
+          let found = false;
+          let checkKey = userKeys[i].key;
+          for (let j = i + 1; j < userKeys.length; j++) {
+            let candidate = userKeys[j].key;
+
+            if (candidate.substr(0, checkKey.length) === checkKey) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            filteredUserKeys.push(userKeys[i]);
+          }
+        }
+
+
+        // construct pointer tree to fill user fields.
+        for (let i = 0; i < filteredUserKeys.length; i++) {
+          let key = filteredUserKeys[i].key;
+          let keyArray = filteredUserKeys[i].arr;
 
           // save in cache map.
           this.userKeys[key] = true;
@@ -243,7 +265,7 @@ export class Persistor {
   }
 
   persistChanges(oldState, newState) : Promise<void> {
-    LOGi.store("Persistor: Starting partial persist.");
+    LOGd.store("Persistor: Starting partial persist.");
     return this._persist(oldState, newState, false);
   }
 
@@ -296,7 +318,6 @@ export class Persistor {
       'spheres.{id}.stones.{id}.powerUsage': true,
     };
 
-    let keyWrites = [];
     let keyValueWrites = [] as [string[]];
     let keyRemovals = [];
     let keyRemovalMap = {};
@@ -307,9 +328,9 @@ export class Persistor {
       unpackKeys: unpackKeys,
       fullPersist: fullPersist,
       handlers: {
-        difference:   (a,b,path,storageKey) => {
-          keyWrites.push(storageKey);
-          keyValueWrites.push([storageKey, JSON.stringify(b)]);
+        difference: (a,b,path,storageKey) => {
+          // Store B
+          this._parseForStorage(b, path, storageKey, options, keyValueWrites);
         },
         undefinedInB: (a,b,path,storageKey) => {
           keyRemovals.push(storageKey);
@@ -334,8 +355,8 @@ export class Persistor {
     options.handlers = {
       difference:   (a,b,path,storageKey) => { /* do nothing */ },
       undefinedInB: (a,b,path,storageKey) => {
-        keyWrites.push(storageKey);
-        keyValueWrites.push([storageKey, JSON.stringify(a)]);
+        // Store A
+        this._parseForStorage(a, path, storageKey, options, keyValueWrites);
       },
     };
 
@@ -345,7 +366,7 @@ export class Persistor {
       compare(newState[field], oldState[field], field, this.userId + '.' + field, options);
     }
 
-    return this._batchPersist(keyValueWrites, keyWrites)
+    return this._batchPersist(keyValueWrites)
       .then(() => {
         return this._batchRemove(keyRemovals, keyRemovalMap);
       })
@@ -358,12 +379,60 @@ export class Persistor {
     })
   }
 
-  _batchPersist(keyValueWrites : [string[]], newKeys: string[]) : Promise<void> {
+  _parseForStorage(data, path, storageKey, options, resultArray) {
+    let storeData = () => {
+      resultArray.push([storageKey, JSON.stringify(data)]);
+    };
+
+    if (!isObject(data)) {
+      return storeData()
+    }
+
+    if (options.unpackKeys && options.unpackKeys[path]) {
+      // unpack
+      let keys = Object.keys(data);
+      for (let i = 0; i < keys.length; i++) {
+        let field = keys[i];
+        let nextPath = path;
+        let nextStorageKey = storageKey + '.' + field;
+        if (options.idContainers && options.idContainers[path]) {
+          nextPath += '.{id}'
+        }
+        else {
+          nextPath += '.' + field;
+        }
+        this._parseForStorage(data[field], nextPath, nextStorageKey, options, resultArray);
+      }
+    }
+    else {
+      storeData();
+    }
+  }
+
+  // _batchSinglePersist(keyValueWrites : [string[]], newKeys: string[]) : Promise<void> {
+  //   let promises = [];
+  //
+  //   keyValueWrites.forEach((kvWrite) => {
+  //     promises.push(AsyncStorage.mergeItem(kvWrite[0], kvWrite[1])
+  //       .then((x) => { console.log("COMPLETED", kvWrite[0], kvWrite[1], x) })
+  //       .catch((err) => { console.log("FAILED", err) }))
+  //   });
+  //
+  //   return Promise.all(promises).then(() => {});
+  // }
+
+  _batchPersist(keyValueWrites : [string[]]) : Promise<void> {
     return new Promise((resolve, reject) => {
       if (keyValueWrites.length > 0) {
+        let updatedKeys = [];
+        for (let i = 0; i < keyValueWrites.length; i++) {
+          updatedKeys.push(keyValueWrites[i][0]);
+        }
+
+
         AsyncStorage.multiSet(keyValueWrites)
           .then(() => {
-            this._updateUserKeyCache(newKeys);
+            this._updateUserKeyCache(updatedKeys);
             LOGd.store('Persistor: batch persisted', keyValueWrites);
           })
           .then( ()    => { resolve(); })
@@ -444,9 +513,9 @@ export class Persistor {
       })
   }
 
-  _updateUserKeyCache(newKeys : string[]) {
-    for (let i = 0; i < newKeys.length; i++) {
-      this.userKeys[newKeys[i]] = true;
+  _updateUserKeyCache(updatedKeys : string[]) {
+    for (let i = 0; i < updatedKeys.length; i++) {
+      this.userKeys[updatedKeys[i]] = true;
     }
   }
 
@@ -462,20 +531,19 @@ export class Persistor {
 }
 
 
-
 function compareObjects(a, b, path, storageKey, options: persistOptions) {
   let keys = Object.keys(a);
   for (let i = 0; i < keys.length; i++) {
     let field = keys[i];
     let nextPath = path;
-    let nextStoragekey = storageKey + '.' + field;
+    let nextStorageKey = storageKey + '.' + field;
     if (options.idContainers && options.idContainers[path]) {
       nextPath += '.{id}'
     }
     else {
       nextPath += '.' + field;
     }
-    compare(a[field] ,b[field], nextPath, nextStoragekey, options);
+    compare(a[field] ,b[field], nextPath, nextStorageKey, options);
   }
 }
 
@@ -487,10 +555,13 @@ function checkObjects(a, b, path, storageKey, options : persistOptions) {
     // CHANGE!
 
     // check if this field is stored as-is or if we step in.
+    console.log("CHECKING", path)
     if (options.unpackKeys && options.unpackKeys[path]) {
+      console.log("START COMPARE", path)
       compareObjects(a, b, path, storageKey, options);
     }
     else {
+      console.log("MARK DIFFERENCE", path)
       options.handlers.difference(a,b,path,storageKey);
     }
   }
@@ -507,9 +578,18 @@ function compare(a, b, path, storageKey, options: persistOptions) {
     // todo: compare arrays
     console.warn("Persistor: Comparing arrays is required!", a,b,path,storageKey);
   }
-  else if (typeof a === 'object' && typeof b === 'object') {
+  else if (isObject(a) && isObject(b)) {
     checkObjects(a, b, path, storageKey, options);
   }
 }
 
+
+function isObject(data) {
+  return (
+    data !== undefined &&
+    data !== null &&
+    Array.isArray(data) !== true &&
+    typeof data === 'object'
+  );
+}
 

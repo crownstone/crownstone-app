@@ -37,6 +37,7 @@ export class SideBar extends Component<any, any> {
       if  (
         change.changeUserData     ||
         change.changeSpheres      ||
+        change.changeFingerprint  ||
         change.changeStones       ||
         change.changeMessageState ||
         change.changeAppSettings

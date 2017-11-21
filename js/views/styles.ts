@@ -207,7 +207,7 @@ export const styles = StyleSheet.create({
   },
   version: {
     backgroundColor:"transparent",
-    color: colors.darkGray2.rgba(1),
+    color: colors.darkGray2.hex,
     textAlign:'center',
     fontSize: 10,
   }

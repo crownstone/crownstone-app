@@ -228,7 +228,7 @@ export class RoomEdit extends Component<any, any> {
           left={'Cancel'}
           leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
           leftAction={ Actions.pop }
-          right={'Create'}
+          right={'Save'}
           rightStyle={{fontWeight: 'bold'}}
           rightAction={ () => { this._updateRoom(); }}
           title="Edit Room"

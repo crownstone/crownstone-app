@@ -138,7 +138,7 @@ export class DeviceOverview extends Component<any, any> {
         sphereId: this.props.sphereId,
         stoneId: this.props.stoneId,
         data: {firmwareVersionSeenInOverview: this.showWhatsNewVersion}
-      })
+      });
     }
   }
 
@@ -155,24 +155,31 @@ export class DeviceOverview extends Component<any, any> {
     this.summaryIndex = summaryIndex;
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
+    let permissionLevel = Util.data.getUserLevelInSphere(state, this.props.sphereId);
 
-    let showWhatsNew = stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion && Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0');
+
+    let showWhatsNew = permissionLevel === 'admin' &&
+                       stone.config.firmwareVersionSeenInOverview &&
+                       (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
+                       Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0');
+
     if (showWhatsNew) { this.showWhatsNewVersion = stone.config.firmwareVersion; }
 
-    let hasError = stone.errors.hasError || stone.errors.advertisementError;
-    let canUpdate = Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
-    let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
+    // check what we want to show the user:
+    let hasError        = stone.errors.hasError || stone.errors.advertisementError;
+    let canUpdate       = permissionLevel === 'admin' && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
+    let hasBehaviour    = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
-    let hasScheduler = stone.config.type !== STONE_TYPES.guidestone;
-    let deviceType = stone.config.type;
+    let hasScheduler    = stone.config.type !== STONE_TYPES.guidestone;
+    let deviceType      = stone.config.type;
 
     // if this stone requires to be dfu-ed to continue working, block all other actions.
     if (stone.config.dfuResetRequired) {
-      canUpdate = true;
-      hasError = false;
-      hasBehaviour = false;
+      canUpdate       = true;
+      hasError        = false;
+      hasBehaviour    = false;
       hasPowerMonitor = false;
-      hasScheduler = false;
+      hasScheduler    = false;
     }
 
     if (showWhatsNew) { summaryIndex++; behaviourIndex++; }

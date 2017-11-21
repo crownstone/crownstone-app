@@ -134,13 +134,26 @@ export class DimmerButton extends Component<any, any> {
     });
   }
 
+
+  _transformSwitchState(switchState) {
+    // linearize:
+    let linearState = (Math.acos(-2*switchState+1) / Math.PI);
+
+    // only PWM, not Relay
+    linearState *= 0.99;
+
+    return linearState;
+  }
+
+
   _updateStone(state, keepConnectionOpenTimeout = 6000) {
+    let stateToSwitch = this._transformSwitchState(state);
     let switchId = (Math.random()*1e9).toString(26);
     BatchCommandHandler.loadPriority(
       this.props.stone,
       this.props.stoneId,
       this.props.sphereId,
-      {commandName:'multiSwitch', state: state, intent: INTENTS.manual, timeout: 0},
+      {commandName:'multiSwitch', state: stateToSwitch, intent: INTENTS.manual, timeout: 0},
       {keepConnectionOpen: true, keepConnectionOpenTimeout: keepConnectionOpenTimeout},
       1
     )

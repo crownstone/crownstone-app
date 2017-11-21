@@ -82,7 +82,11 @@ class StoreManagerClass {
         .catch((err) => {
           LOGe.store("StoreManager: failed to initialize.", err);
         })
-
+    }
+    else {
+      // we emit the storeInitialized event just in case of race conditions.
+      this.storeInitialized = true;
+      eventBus.emit('storeManagerInitialized');
     }
   }
 

@@ -1,4 +1,4 @@
-import { LOG } from '../../logging/Log'
+import {LOG, LOGd} from '../../logging/Log'
 import {StoreManager} from "./storeManager";
 
 
@@ -23,8 +23,9 @@ export function PersistenceEnhancer({ getState }) {
     let newState = getState();
 
     if (StoreManager.persistor.initialized) {
+      LOGd.store("PersistorEnhancer: Start persisting store updates.")
       StoreManager.persistor.persistChanges(oldState, newState)
-        .then(() => { })
+        .then(() => { LOGd.store("PersistorEnhancer: finished persisting store updates."); })
         .catch((err) => { LOG.error("PersistorEnhancer: Could not persist.", err); })
     }
     // This will likely be the action itself, unless

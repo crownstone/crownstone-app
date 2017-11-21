@@ -150,7 +150,7 @@ export class SphereOverview extends Component<any, any> {
         spherePermissions.doLocalizationTutorial   &&
         viewingRemotely                  === false && // only show this if you're there.
         enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
-        (noRooms === true || requiresFingerprints === true)     // Need more fingerprints.
+        (noRooms === true || requiresFingerprints === true)  // Need more fingerprints.
       );
 
       let showFinalizeIndoorNavigationCallback = () => { this._finalizeIndoorLocalization(state, activeSphereId, viewingRemotely, noRooms); };
@@ -169,7 +169,7 @@ export class SphereOverview extends Component<any, any> {
               rightAction={() => { this.setState({ menuOpen: !this.state.menuOpen });}}
               showHamburgerMenu={true}
               hamburgerIconAlternationItems={showMailIcon ? [this._getMailIcon()] : []}
-              actions={{finalizeLocalization: showFinalizeIndoorNavigationCallback}}
+              actions={showFinalizeIndoorNavigationButton ? {finalizeLocalization: showFinalizeIndoorNavigationCallback} : {}}
             />
               <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
             { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }

@@ -73,7 +73,7 @@ export class RoomAdd extends Component<any, any> {
         Actions.roomIconSelection({
           icon: this.state.icon,
           sphereId: this.props.sphereId,
-          selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}
+          callback: (newIcon) => { this.setState({icon:newIcon}); }
         }
       )}
     });

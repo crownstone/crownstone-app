@@ -140,7 +140,7 @@ class LocationHandlerClass {
 
       BluenetPromiseWrapper.requestLocation()
         .catch((err) => {
-          LOG.error('Could not get Location when entering a sphere: ', err);
+          LOG.error('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
         })
         .then((location) => {
           if (location && location.latitude && location.longitude) {

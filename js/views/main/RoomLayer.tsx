@@ -89,21 +89,29 @@ export class RoomLayer extends Component<any, any> {
   }
 
   _findPress(x,y) {
+    // center of the view in absolute coordinates
     let cx = 0.5*screenWidth;
     let cy = 0.5*availableScreenHeight;
 
+    // x = 0 on the left, y = 0 on the top. These offsets are the corrections from the center to 0,0.
+    // the view can be larger than the visible area.
     let offsetX = (this.viewWidth - screenWidth)*0.5;
     let offsetY = (this.viewHeight - availableScreenHeight)*0.5;
 
+    // we correct for the current pan offset
     let x2 = x - this._currentPan.x;
     let y2 = y - this._currentPan.y;
 
+    // we calculate the distance from the center
     let dx2 = x2 - cx;
     let dy2 = y2 - cy;
 
+    // since scaling is done about the center AFTER the pan, we correct for the scaling now.
     let dx1 = dx2 / this._currentScale;
     let dy1 = dy2 / this._currentScale;
 
+    // final coordinates on the view are the center coordinates plus the offset from the center (scale corrected) plus the offset from the pan.
+    // these are the coordinates we can use to match the absolute positions of the roomCircles, or "nodes"
     let x1 = cx + dx1 + offsetX;
     let y1 = cy + dy1 + offsetY;
 
@@ -114,22 +122,26 @@ export class RoomLayer extends Component<any, any> {
       let node = this.nodes[nodeIds[i]];
       if (node.x + diameter > x1 && node.y + diameter > y1 && node.x < x1 && node.y < y1) {
         found = true;
+        // null is a special ID since it implies a floating crownstone. This null is not a string, but actual null.
         let nodeId = nodeIds[i] === 'null' ? null : nodeIds[i];
-        if (this._pressedLocationData !== nodeIds[i]) {
+
+        // if we select a new node, animate it popping up and turning a bit translucent.
+        if (this._pressedLocationData !== false && this._pressedLocationData.nodeId !== nodeIds[i]) {
+          // top any animation this node was doing.
           this.state.locations[nodeId].scale.stopAnimation();
           this.state.locations[nodeId].opacity.stopAnimation();
-          this._pressedLocationData = nodeId;
 
           let tapAnimations = [];
-          tapAnimations.push(Animated.spring(this.state.locations[nodeIds[i]].scale, { toValue: 1.25, friction: 4, tension: 70 }));
-          tapAnimations.push(Animated.timing(this.state.locations[this._pressedLocationData].opacity, {toValue: 0.2, duration: 100}));
+          tapAnimations.push(Animated.spring(this.state.locations[nodeId].scale, { toValue: 1.25, friction: 4, tension: 70 }));
+          tapAnimations.push(Animated.timing(this.state.locations[nodeId].opacity, {toValue: 0.2, duration: 100}));
           Animated.parallel(tapAnimations).start();
         }
 
-        return {nodeId: nodeId, dx: (x - node.x), dy: (node.y - y)};
+        return {nodeId: nodeId, dx: (x1 - node.x), dy: (node.y - y1)}; // --> _pressedLocationData
       }
     }
 
+    // nothing is selected.
     return false;
   }
 
@@ -249,14 +261,20 @@ export class RoomLayer extends Component<any, any> {
         this._multiTouch = false;
 
         if (this._validTap === true) {
-          if (this._lastTapLocation === this._pressedLocationData.nodeId && new Date().valueOf() - this._lastTap < 300) {
+          if  (
+                (
+                  this._pressedLocationData === this._lastTapLocation ||
+                  this._pressedLocationData && (this._lastTapLocation === this._pressedLocationData.nodeId)
+                ) &&
+                new Date().valueOf() - this._lastTap < 300
+              ) {
             this._recenter();
           }
           else {
             showRecenterGesture();
           }
 
-          this._lastTapLocation = this._pressedLocationData.nodeId;
+          this._lastTapLocation = this._pressedLocationData && this._pressedLocationData.nodeId || false;
           this._lastTap = new Date().valueOf();
         }
 
@@ -336,7 +354,7 @@ export class RoomLayer extends Component<any, any> {
 
   setWiggleInterval() {
     this.wiggleInterval = setInterval(() => {
-      if (this._pressedLocationData !== null && this.state.locations['null'] !== undefined) {
+      if (this._pressedLocationData !== false && this._pressedLocationData.nodeId !== null && this.state.locations['null'] !== undefined) {
         Animated.spring(this.state.locations['null'].scale, { toValue: 0.9 + Math.random() * 0.35, friction: 1, tension: 60 }).start();
       }
     }, 1000);

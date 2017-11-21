@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
+  ActivityIndicator,
   Linking,
   PixelRatio,
   ScrollView,
@@ -27,6 +28,7 @@ import {DIMMING_ENABLED} from "../../ExternalConfig";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
 import {TopBar} from "../components/Topbar";
+import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 
 
 
@@ -47,8 +49,8 @@ export class DeviceEdit extends Component<any, any> {
 
 
     this.state = {
-      applianceName: appliance.config.name,
-      applianceIcon: appliance.config.icon,
+      applianceName: appliance && appliance.config.name || '',
+      applianceIcon: appliance && appliance.config.icon || '',
       applianceId: stone.config.applianceId,
 
       stoneName: stone.config.name,
@@ -56,7 +58,9 @@ export class DeviceEdit extends Component<any, any> {
 
       dimmingEnabled: stone.config.dimmingEnabled,
 
-      showStone: false
+      showStone: false,
+
+      gettingFirmwareVersion: false
     };
   }
 
@@ -152,7 +156,7 @@ export class DeviceEdit extends Component<any, any> {
     if (DIMMING_ENABLED) {
       if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0')) {
         items.push({
-          label: 'Allow Dimming', type: 'switch', value: stone.config.dimmingEnabled === true, callback: (newValue) => {
+          label: 'Allow Dimming', type: 'switch', value: this.state.dimmingEnabled === true, callback: (newValue) => {
             this.setState({dimmingEnabled: newValue});
           }
         });
@@ -393,13 +397,47 @@ export class DeviceEdit extends Component<any, any> {
 
   _getVersionInformation(stone) {
     let unknownString = "Not checked.";
-    return (
-      <View style={{paddingTop:15, paddingBottom:30}}>
-        <Text style={styles.version}>{'hardware: '   + (stone.config.hardwareVersion || unknownString)}</Text>
-        <Text style={styles.version}>{'bootloader: ' + (stone.config.bootloaderVersion || unknownString)}</Text>
-        <Text style={styles.version}>{'firmware: '   + (stone.config.firmwareVersion || unknownString)}</Text>
-      </View>
-    )
+
+    if (this.state.gettingFirmwareVersion) {
+      return (
+        <View style={{paddingTop:15, paddingBottom:30}}>
+          <Text style={[styles.version,{paddingBottom:4}]}>{'Checking firmware version... '}</Text>
+          <ActivityIndicator animating={true} size='small' color={colors.darkGray2.hex} />
+        </View>
+      );
+    }
+    else {
+      return (
+        <TouchableOpacity style={{paddingTop:15, paddingBottom:30}} onPress={() => {
+          if (stone.config.disabled) {
+            return Alert.alert("Can't see this stone!", "I have to be in range to get the firwmare version of this Crownstone.", [{text:'OK'}]);
+          }
+
+          this.setState({gettingFirmwareVersion: true});
+          BatchCommandHandler.load(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware in DeviceEdit')
+            .then((firmwareVersion) => {
+              this.setState({gettingFirmwareVersion: false});
+              this.props.store.dispatch({
+                type: "UPDATE_STONE_CONFIG",
+                stoneId: this.props.stoneId,
+                sphereId: this.props.sphereId,
+                data: {
+                  firmwareVersion: firmwareVersion, //firmwareVersion,
+                }
+              });
+            })
+            .catch((err) => {
+              Alert.alert("Whoops!", "I could not get the firmware version....", [{text:'OK'}]);
+              this.setState({gettingFirmwareVersion: false});
+            });
+          BatchCommandHandler.executePriority();
+        }}>
+          <Text style={styles.version}>{'hardware: '   + (stone.config.hardwareVersion || unknownString)}</Text>
+          <Text style={styles.version}>{'bootloader: ' + (stone.config.bootloaderVersion || unknownString)}</Text>
+          <Text style={styles.version}>{'firmware: '   + (stone.config.firmwareVersion || unknownString)}</Text>
+        </TouchableOpacity>
+      );
+    }
   }
 
   render() {
@@ -418,7 +456,7 @@ export class DeviceEdit extends Component<any, any> {
           left={'Cancel'}
           leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
           leftAction={ Actions.pop }
-          right={'Create'}
+          right={'Save'}
           rightStyle={{fontWeight: 'bold'}}
           rightAction={ () => { this._updateCrownstone(); }}
           title="Edit Device"

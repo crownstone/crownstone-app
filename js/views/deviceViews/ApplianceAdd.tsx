@@ -38,12 +38,10 @@ export class ApplianceAdd extends Component<any, any> {
     items.push({label:'Type Name', type: 'textEdit', placeholder:'My device name', value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
-    items.push({label:'Icon', type: 'icon', value: this.state.icon,
-      callback: () => {
+    items.push({label:'Icon', type: 'icon', value: this.state.icon, callback: () => {
         Actions.deviceIconSelection({
           icon: this.state.icon,
-          sphereId: this.props.sphereId,
-          selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}
+          callback: (newIcon) => { this.setState({icon:newIcon}); }
         }
       )}
     });
