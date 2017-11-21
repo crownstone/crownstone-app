@@ -124,7 +124,7 @@ export class RoomLayer extends Component<any, any> {
           Animated.parallel(tapAnimations).start();
         }
 
-        return {nodeId: nodeId, dx: (x - node.x), dy: (node.y - y)};
+        return {nodeId: nodeId, dx: (x1 - node.x), dy: (node.y - y1)};
       }
     }
 
