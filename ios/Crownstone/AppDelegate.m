@@ -31,10 +31,10 @@ Portal *portal;
   
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"Crownstone"
-                                               initialProperties:nil
-                                                   launchOptions:launchOptions];
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL: jsCodeLocation
+                                                      moduleName: @"Crownstone"
+                                               initialProperties: nil
+                                                   launchOptions: launchOptions];
   
   [RNSentry installWithRootView:rootView];
 

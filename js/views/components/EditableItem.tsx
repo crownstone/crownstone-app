@@ -116,6 +116,8 @@ export class EditableItem extends Component<any, any> {
         return <IconEdit barHeightLarge={barHeightLarge} {...this.props} />;
       case 'info':
         return <InfoBar barHeight={barHeight} {...this.props} />;
+      case 'disabledInfo':
+        return <InfoBar barHeight={barHeight} {...this.props} style={[this.props.style, {color: colors.darkGray2.hex }]} />;
       case 'navigation':
         return <NavigationBar barHeight={barHeight} {...this.props} />;
       case 'picture':

@@ -57,6 +57,7 @@ export class DeviceEdit extends Component<any, any> {
       stoneIcon: stone.config.icon,
 
       dimmingEnabled: stone.config.dimmingEnabled,
+      tapToToggle: stone.config.tapToToggle,
 
       showStone: false,
 
@@ -95,7 +96,7 @@ export class DeviceEdit extends Component<any, any> {
 
 
 
-  constructStoneOptions(stone) {
+  constructStoneOptions(stone, state) {
     let items = [];
 
     if (this.state.applianceId) {
@@ -162,7 +163,7 @@ export class DeviceEdit extends Component<any, any> {
         });
       }
       else {
-        items.push({ label: 'Firmware update required for dimming.', type: 'info', style: {color: colors.darkGray2.hex }});
+        items.push({ label: 'Firmware update required for dimming.', type: 'disabledInfo'});
       }
 
       items.push({
@@ -176,6 +177,30 @@ export class DeviceEdit extends Component<any, any> {
         below: true
       });
     }
+
+
+    if (state.app.tapToToggleEnabled) {
+      items.push({
+        label: 'Tap to toggle', type: 'switch', value: this.state.tapToToggle === true, callback: (newValue) => {
+          this.setState({tapToToggle: newValue});
+        }
+      });
+
+      items.push({
+        label: 'Tap to toggle can be enabled per Crownstone.',
+        type: 'explanation',
+        below: true
+      });
+    }
+    else {
+      items.push({ label: 'Tap to toggle is disabled.', type: 'disabledInfo'});
+      items.push({
+        label: 'To use this, you have to enable it globally in the app settings.',
+        type: 'explanation',
+        below: true
+      });
+    }
+
 
     if (stone.config.type !== STONE_TYPES.guidestone && !this.state.applianceId) {
       items.push({label: 'SELECT WHICH DEVICE TYPE IS PLUGGED IN', type: 'explanation', below: false});
@@ -358,6 +383,7 @@ export class DeviceEdit extends Component<any, any> {
       stone.config.name           !== this.state.stoneName ||
       stone.config.icon           !== this.state.stoneIcon ||
       stone.config.dimmingEnabled !== this.state.dimmingEnabled ||
+      stone.config.tapToToggle    !== this.state.tapToToggle ||
       stone.config.applianceId    !== this.state.applianceId
     ) {
       actions.push({
@@ -368,6 +394,7 @@ export class DeviceEdit extends Component<any, any> {
           name: this.state.stoneName,
           icon: this.state.stoneIcon,
           dimmingEnabled: this.state.dimmingEnabled,
+          tapToToggle: this.state.tapToToggle,
           applianceId: this.state.applianceId,
         }});
     }
@@ -444,7 +471,7 @@ export class DeviceEdit extends Component<any, any> {
     const state = store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-    let options = this.constructStoneOptions(stone);
+    let options = this.constructStoneOptions(stone, state);
 
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
