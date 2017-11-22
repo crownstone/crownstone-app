@@ -14,6 +14,7 @@ import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { Util } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
+import Toast from 'react-native-same-toast';
 import { styles, colors } from './../styles'
 import { TopBar } from '../components/Topbar';
 import { RoomList } from '../components/RoomList';
@@ -45,7 +46,8 @@ export class RoomSelection extends Component<any, any> {
     return (
       <TouchableHighlight key={roomId + '_entry'} onPress={() => {
         Actions.pop();
-        store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: roomId}})
+        store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: roomId}});
+        Toast.showWithGravity(' Moved Crownstone! ', Toast.SHORT, Toast.CENTER);
       }}>
         <View style={[styles.listView, {paddingRight:5}]}>
           <RoomList
