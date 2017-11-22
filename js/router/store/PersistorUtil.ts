@@ -38,12 +38,12 @@ export const PersistorUtil = {
           history[key].keyData = userKeys[i];
 
         }
-        else if (history[key] < index) {
+        else if (history[key].index < index) {
           history[key].historyIndex = history[key].index;
           history[key].index = index;
           history[key].keyData = userKeys[i];
         }
-        else if (history[key] > index) {
+        else if (history[key].index > index) {
           history[key].historyIndex = index;
         }
       }

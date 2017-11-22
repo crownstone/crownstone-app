@@ -162,9 +162,7 @@ export class DeviceEdit extends Component<any, any> {
         });
       }
       else {
-        items.push({
-          label: 'Firmware update required for dimming.', type: 'info'
-        });
+        items.push({ label: 'Firmware update required for dimming.', type: 'info', style: {color: colors.darkGray2.hex }});
       }
 
       items.push({
@@ -344,6 +342,7 @@ export class DeviceEdit extends Component<any, any> {
       }}]
     )
   }
+
 
   _updateCrownstone() {
     const store = this.props.store;
