@@ -195,7 +195,7 @@ export class DeviceEdit extends Component<any, any> {
     else {
       items.push({ label: 'Tap to toggle is disabled.', type: 'disabledInfo'});
       items.push({
-        label: 'To use this, you have to enable it globally in the app settings.',
+        label: 'To use tap to toggle, you have to enable it globally in the app settings.',
         type: 'explanation',
         below: true
       });

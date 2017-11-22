@@ -94,7 +94,7 @@ export const LocalNotifications = {
               data: data,
               userInfo: data,
 
-              title: "New Message Found\n\n" + messageData.content, // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
+              title: "New Message Found\n", // (optional, for iOS this is only used in apple watch, the title will be the app name on other iOS devices)
               message: messageData.content, // (required)
               playSound: true, // (optional) default: true
             });
@@ -115,5 +115,38 @@ export const LocalNotifications = {
     }
 
     return false;
-  }
+  },
+
+
+  sendLocalPopup: function(text, sound = false) {
+    if (AppState.currentState !== 'active') {
+      let data = {source: 'crownstonePopup', type: 'info'};
+      if (Platform.OS === 'android') {
+        PushNotification.localNotification({
+          tag: 'crownstonePopup',
+          data: data,
+          message: text, // (required)
+          autoCancel: true, // Make this notification automatically dismissed when the user touches it.
+          playSound: sound, // (optional) default: true
+          ongoing: false,
+        });
+      }
+      else {
+        PushNotification.localNotification({
+          category: 'crownstonePopup',
+          data: data,
+          userInfo: data,
+          message: text,
+          playSound: sound, // (optional) default: true
+        });
+      }
+    }
+    else {
+      Toast.showWithGravity(' ' + text + ' ', Toast.SHORT, Toast.CENTER);
+      Vibration.vibrate(200, false);
+    }
+  },
+
+
+
 };

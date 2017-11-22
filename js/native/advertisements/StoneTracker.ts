@@ -15,6 +15,7 @@ import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
 import { BEHAVIOUR_TYPES }                    from '../../router/store/reducers/stones'
 import { FirmwareHandler }                    from "../firmware/FirmwareHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {LocalNotifications} from "../../notifications/LocalNotifications";
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.2; // [0.1 .. 1] higher is more responsive
@@ -141,7 +142,7 @@ export class StoneTracker {
             if (this.tapToToggleDisabledTemporarily === false) {
               LOG.info("StoneTracker: Tap to Toggle fired. measured RSSI:", rssi, ' required:', tapToToggleCalibration);
               // notify the user by vibration that the crownstone will be switched.
-              Vibration.vibrate(400, false);
+              LocalNotifications.sendLocalPopup('Tap to Toggle!', false);
 
               if (state.user.seenTapToToggle !== true) {
                 this.store.dispatch({type: 'USER_SEEN_TAP_TO_TOGGLE_ALERT', data: {seenTapToToggle: true}});

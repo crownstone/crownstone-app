@@ -42,12 +42,12 @@ export class Router_IOS extends Component {
             <Scene key="roomTraining"               component={Views.RoomTraining}               hideNavBar={true}  panHandlers={null} direction="horizontal" />
             <Scene key="roomSelection"              component={Views.RoomSelection}              hideNavBar={true}  panHandlers={null} direction="vertical" title="Move to which Room?" />
             <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
-            <Scene key="roomAdd"                    component={Views.RoomAdd}                    hideNavBar={true}  direction="vertical" />
-            <Scene key="roomEdit"                   component={Views.RoomEdit}                   hideNavBar={true}  direction="vertical" />
-            <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 hideNavBar={true}  direction="vertical" />
-            <Scene key="selectFromList"             component={Views.SelectFromList}             hideNavBar={true}  direction="vertical" />
-            <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         hideNavBar={true}  direction="vertical" />
-            <Scene key="messageAdd"                 component={Views.MessageAdd}                 hideNavBar={true}  direction="vertical" />
+            <Scene key="roomAdd"                    component={Views.RoomAdd}                    hideNavBar={true}  panHandlers={null} direction="vertical" />
+            <Scene key="roomEdit"                   component={Views.RoomEdit}                   hideNavBar={true}  panHandlers={null} direction="vertical" />
+            <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 hideNavBar={true}  panHandlers={null} direction="vertical" />
+            <Scene key="selectFromList"             component={Views.SelectFromList}             hideNavBar={true}  panHandlers={null} direction="vertical" />
+            <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         hideNavBar={true}  panHandlers={null} direction="vertical" />
+            <Scene key="messageAdd"                 component={Views.MessageAdd}                 hideNavBar={true}  panHandlers={null} direction="vertical" />
             <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        hideNavBar={true}  panHandlers={null} direction="vertical" title="Pick an Icon" />
             <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
             <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} hideNavBar={false} title="Recover Crownstone" />

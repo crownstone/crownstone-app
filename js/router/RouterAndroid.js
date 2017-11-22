@@ -33,7 +33,7 @@ export class Router_Android extends Component {
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                panHandlers={null} hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      panHandlers={null} hideNavBar={true}  />
-              <Scene key="tutorial"                   component={Views.Tutorial}                   hideNavBar={true}  />
+              <Scene key="tutorial"                   component={Views.Tutorial}                   panHandlers={null} hideNavBar={true}  />
               <Scene key="register"                   component={Views.Register}                   panHandlers={null} hideNavBar={false} title="Register" {...navBarStyle} />
               <Scene key="registerConclusion"         component={Views.RegisterConclusion}         panHandlers={null} hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} renderLeftButton={()=>{}} />
               <Scene key="pictureView"                component={Views.PictureView}                panHandlers={null} hideNavBar={true}  direction="vertical" />
@@ -48,10 +48,10 @@ export class Router_Android extends Component {
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} panHandlers={null} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="selectFromList"             component={Views.SelectFromList}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="sphereOverview"             component={Views.SphereOverview}             panHandlers={null} hideNavBar={true}  initial={this.props.loggedIn} />
-              <Scene key="roomOverview"               component={Views.RoomOverview}               panHandlers={null} hideNavBar={true}  />
-              <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={true}  />
-              <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true}  title="Create Room" />
-              <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={true} />
+              <Scene key="roomOverview"               component={Views.RoomOverview}               panHandlers={null} hideNavBar={true} />
+              <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={true} direction="vertical" />
+              <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true} direction="vertical" />
+              <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={true} direction="vertical" />
               <Scene key="deviceOverview"             component={Views.DeviceOverview}             panHandlers={null} hideNavBar={true} />
               <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         panHandlers={null} hideNavBar={true} />
               <Scene key="applianceAdd"               component={Views.ApplianceAdd}               panHandlers={null} hideNavBar={true} direction="vertical" />
@@ -68,9 +68,9 @@ export class Router_Android extends Component {
               <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       panHandlers={null} hideNavBar={false} title="Invite" />
-              <Scene key="messageInbox"               component={Views.MessageInbox}               hideNavBar={true} />
-              <Scene key="messageAdd"                 component={Views.MessageAdd}                 hideNavBar={true} />
-              <Scene key="messageThread"              component={Views.MessageThread}              hideNavBar={true} />
+              <Scene key="messageInbox"               component={Views.MessageInbox}               panHandlers={null} hideNavBar={true} />
+              <Scene key="messageAdd"                 component={Views.MessageAdd}                 panHandlers={null} hideNavBar={true} direction="vertical" />
+              <Scene key="messageThread"              component={Views.MessageThread}              panHandlers={null} hideNavBar={true} />
             </Scene>
           </Scene>
         </Router>
