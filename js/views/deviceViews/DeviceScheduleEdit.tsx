@@ -134,9 +134,20 @@ export class DeviceScheduleEdit extends Component<any, any> {
       this.setState({label:newText});
     }});
     items.push({label:'ACTION', type: 'lightExplanation',  below:false});
-    items.push({label:'Switch Crownstone', type: 'switch', value: this.state.switchState === 1, callback: (newValue) => {
-      this.setState({switchState: newValue ? 1 : 0});
-    }});
+    items.push({
+      type: 'dropdown',
+      label: 'Turn the Crownstone: ',
+      dropdownHeight: 130,
+      valueRight: true,
+      buttons: 2,
+      valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
+      value: this.state.switchState,
+      items: [{label:'On', value:1}, {label:'Off', value:0}],
+      callback: (newValue) => {
+        this.setState({switchState: newValue})
+      }
+    });
+
 
     items.push({label:'REPEAT', type: 'lightExplanation',  below:false});
     items.push({__item:

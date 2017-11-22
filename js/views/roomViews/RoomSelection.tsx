@@ -42,12 +42,16 @@ export class RoomSelection extends Component<any, any> {
     this.unsubscribe();
   }
 
-  _getRoomItem(store, state, requiredData, roomId, room) {
+  _moveCrownstone(roomId) {
+    Actions.pop();
+    this.props.store.dispatch({type: "UPDATE_STONE_LOCATION", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locationId: roomId}});
+    Toast.showWithGravity(' Moved Crownstone! ', Toast.SHORT, Toast.CENTER);
+  }
+
+  _getRoomItem(state, roomId, room) {
     return (
       <TouchableHighlight key={roomId + '_entry'} onPress={() => {
-        Actions.pop();
-        store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: roomId}});
-        Toast.showWithGravity(' Moved Crownstone! ', Toast.SHORT, Toast.CENTER);
+        this._moveCrownstone( roomId );
       }}>
         <View style={[styles.listView, {paddingRight:5}]}>
           <RoomList
@@ -63,17 +67,14 @@ export class RoomSelection extends Component<any, any> {
 
   _getItems() {
     let items = [];
-    let requiredData = {sphereId: this.props.sphereId, stoneId: this.props.stoneId};
-
-    const store = this.props.store;
-    const state = store.getState();
+    const state = this.props.store.getState();
 
     let rooms = state.spheres[this.props.sphereId].locations;
     let roomIds = Object.keys(rooms);
     items.push({label:"ROOMS IN CURRENT SPHERE",  type:'explanation', below:false});
     roomIds.forEach((roomId) => {
       let room = rooms[roomId];
-      items.push({__item: this._getRoomItem(store, state, requiredData, roomId, room)});
+      items.push({__item: this._getRoomItem(state, roomId, room)});
     });
 
     items.push({
@@ -93,8 +94,7 @@ export class RoomSelection extends Component<any, any> {
       style: {color:colors.blue.hex},
       type: 'navigation',
       callback: () => {
-        Actions.pop();
-        store.dispatch({...requiredData, type: "UPDATE_STONE_LOCATION", data: {locationId: null}});
+        this._moveCrownstone( null );
       }
     });
     items.push({label:"If you do not add the Crownstone to a room, it can not be used for indoor localization purposes.",  type:'explanation', below: true});
