@@ -69,7 +69,7 @@ export class AnimatedMenu extends Component<any, any> {
       this.visible = true;
       let animations = [
         Animated.timing(this.state.opacity, {toValue: 1, duration:250}),
-        Animated.timing(this.state.viewHeight, {toValue: screenHeight, duration:350})
+        Animated.timing(this.state.viewHeight, {toValue: screenHeight, duration:450})
       ];
       Animated.parallel(animations).start();
     })
@@ -77,8 +77,8 @@ export class AnimatedMenu extends Component<any, any> {
 
   hide() {
     let animations = [
-      Animated.timing(this.state.opacity, {toValue: 0, duration:200, delay: 150}),
-      Animated.timing(this.state.viewHeight, {toValue: 0, duration:350})
+      Animated.timing(this.state.opacity, {toValue: 0, duration:200, delay: 300}),
+      Animated.timing(this.state.viewHeight, {toValue: 0, duration:450})
     ];
     Animated.parallel(animations).start(() => {
       setTimeout(() => {

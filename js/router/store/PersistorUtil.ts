@@ -18,7 +18,7 @@ export const PersistorUtil = {
     return userKeys
   },
 
-  extractLatestEntries: function(userKeys : userKeyObject[]) : {latestKeys: userKeyObject[], historyReference: numberMap, fallbackVersions: stringMap}{
+  extractLatestEntries: function(userKeys : userKeyObject[]) : {latestKeys: userKeyObject[], historyReference: numberMap } {
     let latestKeys = [];
     let history = {};
     let historyReference = {};
@@ -27,24 +27,24 @@ export const PersistorUtil = {
     for (let i = 0; i < userKeys.length; i++) {
       let keyArray = userKeys[i].key.split(HISTORY_PREFIX);
       if (keyArray.length === 2) {
-        let key = keyArray[0];
+        let pureKey = keyArray[0];
         let index = Number(keyArray[1]);
-        if (history[key] === undefined) {
-          history[key] = {index: index, keyData: userKeys[i], historyIndex: null};
+        if (history[pureKey] === undefined) {
+          history[pureKey] = {index: index, keyData: userKeys[i], historyIndex: null};
         }
-        else if (history[key].index === 9 && index === 0) { // we loop from 0..9. This means 0 is higher than 0.
-          history[key].historyIndex = history[key].index;
-          history[key].index = index;
-          history[key].keyData = userKeys[i];
+        else if (history[pureKey].index === 9 && index === 0) { // we loop from 0..9. This means 0 is higher than 0.
+          history[pureKey].historyIndex = history[pureKey].index;
+          history[pureKey].index = index;
+          history[pureKey].keyData = userKeys[i];
 
         }
-        else if (history[key].index < index) {
-          history[key].historyIndex = history[key].index;
-          history[key].index = index;
-          history[key].keyData = userKeys[i];
+        else if (history[pureKey].index < index) {
+          history[pureKey].historyIndex = history[pureKey].index;
+          history[pureKey].index = index;
+          history[pureKey].keyData = userKeys[i];
         }
-        else if (history[key].index > index) {
-          history[key].historyIndex = index;
+        else if (history[pureKey].index > index) {
+          history[pureKey].historyIndex = index;
         }
       }
       else {
@@ -54,20 +54,16 @@ export const PersistorUtil = {
 
     // get latest versions
     let historyKeys = Object.keys(history);
-    let fallbackVersions = {};
     for (let i = 0; i < historyKeys.length; i++) {
-      let key = historyKeys[i];
-      if (history[key].historyIndex !== null) {
-        fallbackVersions[key] = key + HISTORY_PREFIX + history[key].historyIndex;
-      }
-      historyReference[key] = history[key].index;
-      latestKeys.push(history[key].keyData)
+      let pureKey = historyKeys[i];
+      historyReference[pureKey] = history[pureKey].index;
+      latestKeys.push(history[pureKey].keyData)
     }
 
-    return { latestKeys, historyReference, fallbackVersions };
+    return { latestKeys, historyReference };
   },
 
-  filterParentEntries: function(userKeys : userKeyObject[]) {
+  filterParentEntries: function(userKeys : userKeyObject[]) : { filteredUserKeys : string[], illegalKeys : string[] } {
     // get parent keys out of this list because they will destroy the pointer tree
     let illegalKeys = [];
     let filteredUserKeys = [];
@@ -83,10 +79,10 @@ export const PersistorUtil = {
         }
       }
       if (!found) {
-        filteredUserKeys.push(userKeys[i]);
+        filteredUserKeys.push(checkKey);
       }
       else {
-        illegalKeys.push(userKeys[i]);
+        illegalKeys.push(checkKey);
       }
     }
 
@@ -98,11 +94,10 @@ export const PersistorUtil = {
    * The pointer tree will not have any history tags.
    * @param userKeys
    * @param baseData
-   * @returns {{pointerTree: {}; keyListForRetrieval: Array}}
+   * @returns {pointerTree: {}}
    */
-  constructPointerTree: function (userKeys : userKeyObject[], baseData : object) {
+  constructPointerTree: function (userKeys : string[], baseData : object) {
     let pointerTree = {};
-    let keyListForRetrieval = [];
 
     function storePointer(pointer, assignmentKey, key) {
       // The key contains a history tag so it can be matched to the retrieved value.
@@ -111,21 +106,15 @@ export const PersistorUtil = {
     }
 
     for (let i = 0; i < userKeys.length; i++) {
-      let key = userKeys[i].key;
-      let dataPath = userKeys[i].arr;
+      let strippedKey = PersistorUtil.stripHistoryTag(userKeys[i]);
+      let dataPath = strippedKey.split('.');
 
-      let strippedEndOfPath = PersistorUtil.stripHistoryTag(dataPath[ dataPath.length - 1]);
 
       // index 0 is the userId so we skip this in the keyArray
       let pointer = baseData;
       for (let j = 1; j < dataPath.length; j++) {
         if (pointer[dataPath[j]] === undefined) {
-          if (j === dataPath.length - 1) { // at the very end of the path, the history tag is removed.
-            pointer[strippedEndOfPath] = {};
-          }
-          else {
-            pointer[dataPath[j]] = {};
-          }
+          pointer[dataPath[j]] = {};
         }
 
         if (j < dataPath.length - 1) {
@@ -134,13 +123,12 @@ export const PersistorUtil = {
         else {
           // end of path
           // get the data on this key
-          storePointer(pointer, strippedEndOfPath, key);
+          storePointer(pointer, dataPath[j], strippedKey);
         }
       }
-      keyListForRetrieval.push(key);
     }
 
-    return { pointerTree, keyListForRetrieval }
+    return pointerTree;
   },
 
   insertAllHistoryKeyPossibilities: function(storageKey, array) {

@@ -1,5 +1,5 @@
-import { AsyncStorage } from 'react-native'
-import { LOGd, LOGe, LOGi, LOGv} from '../../logging/Log'
+import { Alert, AsyncStorage } from 'react-native'
+import {LOGd, LOGe, LOGi, LOGv, LOGw} from '../../logging/Log'
 import {LOG_LEVEL} from "../../logging/LogLevels";
 import {PersistorUtil} from "./PersistorUtil";
 
@@ -17,6 +17,11 @@ interface persistOptions {
   }
 }
 
+interface asyncMultiError {
+  key: string,
+  message: string
+}
+
 
 /**
  */
@@ -32,6 +37,7 @@ export class Persistor {
 
 
   initialize(userId, store) : Promise<void> {
+    LOGi.store("Persistor: Initializing...");
     this.userId = userId;
     this.store = store;
     return this.hydrate()
@@ -63,27 +69,48 @@ export class Persistor {
     }
   }
 
+
+  fail() {
+    Alert.alert(
+      "Failed to read database",
+      "Unfortunately, I was unable to read the database. You will have to log in again, some data may have been lost.",
+      [{text: "OK"}],
+      {cancelable: false}
+    );
+  }
+
+
   hydrate() {
     this.processPending = true;
     LOGi.store("Persistor: Starting Hydration...");
     let migrationRequired = false;
+    let abortHydration = false;
     return this._checkHydrateMode()
       .then((result) => {
         LOGi.store("Persistor: hydration mode determined: ", result);
         switch (result) {
           case 'classic':
             migrationRequired = true;
-            return this._hydrateClassic();
+            return this._hydrateClassic()
+              .catch((err) => {
+                this.fail();
+                migrationRequired = false;
+                return {};
+              })
           case 'v2':
             return this._hydrateV2()
+          case 'reset':
+            abortHydration = true;
         }
       })
       .then((initialState) => {
-        LOGd.store("Persistor: Initial state obtained for hydration:", initialState);
-        this.store.dispatch({type:"HYDRATE", state: initialState, __logLevel: LOG_LEVEL.verbose });
-        // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
-        // also add the app identifier if we don't already have one.
-        this._refreshDatabase();
+        if (abortHydration === false) {
+          LOGd.store("Persistor: Initial state obtained for hydration:", initialState);
+          this.store.dispatch({type:"HYDRATE", state: initialState, __logLevel: LOG_LEVEL.verbose });
+          // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
+          // also add the app identifier if we don't already have one.
+          this._refreshDatabase();
+        }
       })
       .then(() => {
         if (migrationRequired) {
@@ -110,6 +137,11 @@ export class Persistor {
         }
         return "v2";
       })
+      .catch(() => {
+        AsyncStorage.removeItem(LEGACY_BASE_STORAGE_KEY + this.userId)
+          .then(() => { this.fail(); })
+          .then(() => { return 'reset'; })
+      })
   }
 
   _hydrateClassic() {
@@ -134,100 +166,186 @@ export class Persistor {
       })
   }
 
-  _hydrateV2() {
-    LOGi.store("Persistor: Starting new v2 hydration.");
 
-    let pointerTreeReference = {};
-    let keyListForRetrievalReference = [];
-    let fallbackVersions = {};
-    let baseData = {};
-
+  /**
+   * Extract the user keys from the available keys and return a set we will work with.
+   * @private
+   */
+  _step1() : Promise<string[]> {
+    // reset globals that we change in this method.
+    this.keyHistory   = {};
+    this.userKeyCache = {};
+    LOGd.store("Persistor: Hydration v2 Step1, gettings all keys.");
     return AsyncStorage.getAllKeys()
       .then((allKeys) => {
-        LOGi.store("Persistor: all keys found:", allKeys);
+        LOGd.store("Persistor: all keys found:", allKeys);
 
         // get the keys for this user from the list of all keys.
         let userKeys = PersistorUtil.extractUserKeys(allKeys, this.userId);
 
-
         // generate a user key cache
         this._createUserKeyCache(allKeys);
 
-
         // get latest entries from the userKey list
         let latestData     = PersistorUtil.extractLatestEntries(userKeys);
-        fallbackVersions   = latestData.fallbackVersions;
         let latestUserKeys = latestData.latestKeys;
         this.keyHistory    = latestData.historyReference;
 
         // sort the userKeysList by length
         latestUserKeys.sort((a,b) => { return a.key.length - b.key.length; });
-        LOGd.store("Persistor: userKeyCache found during hydration:", latestUserKeys);
+        LOGd.store("Persistor: Hydration v2 Step1, userKeyCache found during hydration:", latestUserKeys);
 
         // filter out the legal and illegal keys. Illegal keys are parent keys that also have children.
         let { filteredUserKeys, illegalKeys } = PersistorUtil.filterParentEntries(latestUserKeys);
 
+        // delete illegal keys.
         if (illegalKeys.length > 0) {
-          this._batchRemove(illegalKeys).catch((err) => { LOGe.store("Persistor: could not remove illegal keys", err); })
+          LOGd.store("Persistor: Hydration v2 Step1, removing illegal keys...", illegalKeys);
+          // illegal keys do not have to be _batchRemoved since that also cascades.
+          return AsyncStorage.multiRemove(illegalKeys)
+            .catch((err) => {
+              LOGe.store("Persistor: Hydration v2 Step1, Failed in step 1", err);
+              throw err;
+            })
+            .then(() => {
+              LOGd.store("Persistor: Hydration v2 Step1, illegal keys removed, retrying step 1.");
+              return this._step1();
+            })
         }
-
-        // construct pointer tree to fill user fields.
-        let { pointerTree, keyListForRetrieval } = PersistorUtil.constructPointerTree(filteredUserKeys, baseData);
-        keyListForRetrievalReference = keyListForRetrieval;
-        pointerTreeReference = pointerTree;
-
-        LOGd.store("Persistor: dataStructure found during hydration:", baseData);
-        return AsyncStorage.multiGet(keyListForRetrieval);
-      })
-      .catch((errorArray) => {
-        // attempt to get the historical version of failed keys.
-        if (Array.isArray(errorArray)) {
-          let fallbackKeyMap = {};
-          let failedKeys = [];
-
-          // construct a fallback keyMap
-          keyListForRetrievalReference.forEach((triedKey) => { fallbackKeyMap[triedKey] = true; });
-
-          // handle all errors **ASSUMING** the format is [failedKey, error]
-          errorArray.forEach((err) => {
-            if (Array.isArray(err) && err.length === 2) {
-              LOGe.store("Persistor: Failed getting key", err[0], err[1]);
-              failedKeys.push(err[0]);
-              let strippedKey = PersistorUtil.stripHistoryTag(err[0]);
-              if (fallbackVersions[strippedKey]) {
-                fallbackKeyMap[strippedKey] = fallbackVersions[strippedKey];
-
-                // update keyHistory to match the entry
-                this.keyHistory[strippedKey] = Number(fallbackVersions[strippedKey].split(HISTORY_PREFIX)[1]);
-              }
-            }
-          });
-
-          let fallbackKeyList = Object.keys(fallbackKeyMap);
-
-          // clear broken keys
-          return AsyncStorage.multiRemove(failedKeys)
-            .then(() => { return AsyncStorage.multiGet(fallbackKeyList); })
+        else {
+          return filteredUserKeys;
         }
-
-        throw errorArray;
-      })
-      .then((keyValuePairArray) => {
-        for (let i = 0; i < keyValuePairArray.length; i++) {
-          let pair = keyValuePairArray[i];
-          if (pointerTreeReference[pair[0]]) {
-            pointerTreeReference[pair[0]].pointer[pointerTreeReference[pair[0]].assignmentKey] = JSON.parse(pair[1]);
-          }
-        }
-        return baseData;
-      })
-      .catch((err) => {
-        LOGe.store("Persistor: Error during hydrate v2", err);
-        throw err;
       })
   }
 
 
+  /**
+   * Try to get the supplied keys. If this fails, remove those that fail and start back in step 1
+   *
+   * @param keyList
+   * @private
+   */
+  _step2(keyList : string[]) {
+    LOGd.store("Persistor: Hydration v2 Step2, getting data from keys.");
+    return AsyncStorage.multiGet(keyList)
+      .catch((errorArray : asyncMultiError[]) => {
+        LOGd.store("Persistor: Hydration v2 Step2, error while getting data.");
+        // attempt to get the historical version of failed keys.
+        if (Array.isArray(errorArray)) {
+          // handle all errors
+          let failedKeys = [];
+          errorArray.forEach((err : asyncMultiError) => {
+            let key = err.key;
+            LOGw.store("Persistor: Hydration v2 Step2, problem getting key in step 2:", key, err.message);
+            failedKeys.push(key);
+          })
+
+          // clear broken keys.
+          LOGd.store("Persistor: Hydration v2 Step2, removing failing keys.", failedKeys);
+          return AsyncStorage.multiRemove(failedKeys)
+            .catch((err) => {
+              LOGe.store("Persistor: Hydration v2 Step2, Failed in step 2.", err);
+              throw err;
+            })
+            .then(() => {     return this._step1() })
+            .then((keys) => { return this._step2(keys) })
+        }
+
+        else {
+          LOGe.store("Persistor: Failed step 2", errorArray);
+          throw errorArray;
+        }
+      })
+  }
+
+
+  /**
+   * Checking received data for nulls
+   * @param keyValuePairArray
+   * @returns {any}
+   * @private
+   */
+  _step3(keyValuePairArray) {
+    LOGd.store("Persistor: Hydration v2 Step3, checking received data for nulls.");
+
+    // check if we have empty data in our set. This means a key was empty. This should not happen.
+    // The only thing we can do is strip the key from the selection.
+    let invalidKeys = [];
+    let validKeys = [];
+    for (let i = 0; i < keyValuePairArray.length; i++) {
+      let pair = keyValuePairArray[i];
+      let key = pair[0];
+      let data = pair[1];
+
+      if (data === null) {
+        invalidKeys.push(key);
+      }
+      else {
+        validKeys.push(key);
+      }
+    }
+
+
+    // invalid keys are being batchRemoved. This will cascase as well.
+    if (invalidKeys.length > 0) {
+      LOGd.store("Persistor: Hydration v2 Step3, Removing invalid keys.", invalidKeys);
+      return this._batchRemove(invalidKeys)
+        .catch((err) => {
+          LOGe.store("Persistor: Hydration v2 Step3, Failed step 3", err);
+          throw err;
+        })
+        .then(()                  => { return this._step1();                  })
+        .then((userKeys)          => { return this._step2(userKeys);          })
+        .then((keyValuePairArray) => { return this._step3(keyValuePairArray); })
+    }
+    else {
+      return keyValuePairArray;
+    }
+  }
+
+
+  /**
+   * Creating pointer tree and placing data.
+   * @param keyValuePairArray
+   * @returns {{}}
+   * @private
+   */
+  _step4(keyValuePairArray) {
+    LOGd.store("Persistor: Hydration v2 Step4, creating pointer tree and placing data.");
+    let usedKeys = [];
+    for (let i = 0; i < keyValuePairArray.length; i++) {
+      usedKeys.push(keyValuePairArray[i][0]);
+    }
+
+    // construct pointer tree to fill user fields.
+    let baseData = {};
+    let pointerTree = PersistorUtil.constructPointerTree(usedKeys, baseData);
+    for (let i = 0; i < keyValuePairArray.length; i++) {
+      // the pointer tree uses stripped keys so it is immune to historical data.
+      let pair = keyValuePairArray[i];
+      let strippedKey = PersistorUtil.stripHistoryTag(pair[0]);
+      let data = pair[1];
+
+      if (pointerTree[strippedKey]) {
+        pointerTree[strippedKey].pointer[pointerTree[strippedKey].assignmentKey] = JSON.parse(data);
+      }
+    }
+    return baseData;
+  }
+
+
+  _hydrateV2() {
+    LOGi.store("Persistor: Starting new v2 hydration.");
+    return this._step1()
+      .then((userKeys)          => { return this._step2(userKeys); })
+      .then((keyValuePairArray) => { return this._step3(keyValuePairArray); })
+      .then((keyValuePairArray) => { return this._step4(keyValuePairArray); })
+      .catch((err) => {
+        LOGe.store("Persistor: Error during hydrate v2", err);
+        this.fail();
+        return {};
+      })
+  }
 
 
   /**
@@ -536,7 +654,6 @@ export class Persistor {
    * @private
    */
   _getAndCreateUserKeyCache() {
-    this.userKeyCache = {};
     return AsyncStorage.getAllKeys()
       .then((allKeys) => {
         this._createUserKeyCache(allKeys);
@@ -544,6 +661,7 @@ export class Persistor {
   }
 
   _createUserKeyCache(allKeys) {
+    this.userKeyCache = {};
     for (let i = 0; i < allKeys.length; i++) {
       let key = allKeys[i];
       let keyArray = key.split('.');
