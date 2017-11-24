@@ -127,7 +127,11 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _pressedDevice(stone) {
-    let newState = (stone.state.state === 1 ? 0 : 1);
+    let newState = (stone.state.state > 0 ? 0 : 1);
+    if (stone.config.dimmingEnabled === true) {
+      newState = (stone.state.state > 0 ? 0 : 0.99);
+    }
+
     this.setState({pendingCommand:true});
 
     StoneUtil.switchBHC(
@@ -153,7 +157,7 @@ export class DeviceEntry extends Component<any, any> {
         content = <ActivityIndicator animating={true} size='large' />;
       }
       else {
-        content = <Switch value={stone.state.state === 1} onValueChange={() => { this._pressedDevice(stone); }}/>;
+        content = <Switch value={stone.state.state > 0} onValueChange={() => { this._pressedDevice(stone); }}/>;
       }
     }
 

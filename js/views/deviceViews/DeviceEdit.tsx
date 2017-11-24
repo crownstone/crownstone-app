@@ -29,7 +29,8 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
 import {TopBar} from "../components/Topbar";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
-
+import {StoneUtil} from "../../util/StoneUtil";
+import { INTENTS } from "../../native/libInterface/Constants";
 
 
 export class DeviceEdit extends Component<any, any> {
@@ -376,6 +377,22 @@ export class DeviceEdit extends Component<any, any> {
     let appliance = null;
     if (stone.config.applianceId) {
       appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
+    }
+
+    // turn the stone off if dimming is being disabled
+    if (stone.config.dimmingEnabled !== this.state.dimmingEnabled && this.state.dimmingEnabled === false) {
+      StoneUtil.switchBHC(
+        this.props.sphereId,
+        this.props.stoneId,
+        stone,
+        0,
+        this.props.store,
+        {},
+        (err) => {},
+        INTENTS.manual,
+        10,
+        'from disabling dimming'
+      );
     }
 
     let actions = [];
