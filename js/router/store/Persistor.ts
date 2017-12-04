@@ -22,8 +22,10 @@ interface asyncMultiError {
   message: string
 }
 
+const FAILED_DB_ERROR = 'FAILED_REPAIR_DB';
 
 /**
+ *
  */
 export class Persistor {
   userId : string;
@@ -80,6 +82,8 @@ export class Persistor {
   }
 
 
+
+
   hydrate() {
     this.processPending = true;
     LOGi.store("Persistor: Starting Hydration...");
@@ -93,6 +97,9 @@ export class Persistor {
             migrationRequired = true;
             return this._hydrateClassic()
               .catch((err) => {
+                if (err === FAILED_DB_ERROR) {
+                  throw err;
+                }
                 this.fail();
                 migrationRequired = false;
                 return {};
@@ -101,6 +108,9 @@ export class Persistor {
             return this._hydrateV2()
           case 'reset':
             abortHydration = true;
+            break;
+          default:
+            throw 'FAILED_GETTING_HYDRATE_MODES';
         }
       })
       .then((initialState) => {
@@ -138,9 +148,17 @@ export class Persistor {
         return "v2";
       })
       .catch(() => {
-        AsyncStorage.removeItem(LEGACY_BASE_STORAGE_KEY + this.userId)
+        return AsyncStorage.removeItem(LEGACY_BASE_STORAGE_KEY + this.userId)
           .then(() => { this.fail(); })
           .then(() => { return 'reset'; })
+          .catch(() => {
+            Alert.alert(
+              "Error getting Database",
+              "You will need to reinstall the app to resolve this issue. Our apologies for the inconvenience.",
+              [{text:'OK'}]
+            );
+            throw FAILED_DB_ERROR;
+          })
       })
   }
 
@@ -250,9 +268,8 @@ export class Persistor {
             .then(() => {     return this._step1() })
             .then((keys) => { return this._step2(keys) })
         }
-
         else {
-          LOGe.store("Persistor: Failed step 2", errorArray);
+          LOGe.store("Persistor: Error is not array as we expected. Failed step 2", errorArray);
           throw errorArray;
         }
       })
@@ -670,8 +687,6 @@ export class Persistor {
       }
     }
   }
-
-
 
   _updateUserKeyCache(updatedKeys : string[]) {
     for (let i = 0; i < updatedKeys.length; i++) {

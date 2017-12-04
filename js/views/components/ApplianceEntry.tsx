@@ -46,7 +46,7 @@ export class ApplianceEntry extends Component<any, any> {
           <Text style={{fontSize: 18, fontWeight: '300'}}>{this.props.name}</Text>
           { this.props.current ? <Text style={{fontSize: 15, fontWeight: '100', color: colors.blue.hex, position:'relative', top:1, paddingLeft:5}}>(current)</Text> : undefined }
         </TouchableOpacity>
-        <DoubleTapDelete key={this.id} callback={this.props.delete} />
+        { this.props.delete ? <DoubleTapDelete key={this.id} callback={this.props.delete} /> : undefined }
       </View>
     );
   }

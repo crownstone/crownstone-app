@@ -69,7 +69,7 @@ export const PersistorUtil = {
     let filteredUserKeys = [];
     for (let i = 0; i < userKeys.length - 1; i++) {
       let found = false;
-      let checkKey = userKeys[i].key;
+      let checkKey = PersistorUtil.stripHistoryTag(userKeys[i].key);
       for (let j = i + 1; j < userKeys.length; j++) {
         let candidate = userKeys[j].key;
 
@@ -79,10 +79,10 @@ export const PersistorUtil = {
         }
       }
       if (!found) {
-        filteredUserKeys.push(checkKey);
+        filteredUserKeys.push(userKeys[i].key);
       }
       else {
-        illegalKeys.push(checkKey);
+        illegalKeys.push(userKeys[i].key);
       }
     }
 

@@ -2,23 +2,21 @@
 // __tests__/Intro-test.js
 // Note: test renderer must be required after react-native.
 let jest = require('jest');
-jest.mock('react-native-fs', () => {return {};});
-jest.mock('react-native-device-info');
 jest.mock('../js/ExternalConfig', () => {
   return {
     RELEASE_MODE_USED: false,
     PROMISE_MANAGER_FALLBACK_TIMEOUT: 60000,
-    LOG_INFO       : false,
-    LOG_WARNINGS   : false,
-    LOG_ERRORS     : false,
-    LOG_VERBOSE    : false,
-    LOG_SCHEDULER  : false,
-    LOG_BLE        : false,
-    LOG_EVENTS     : false,
-    LOG_STORE      : false,
-    LOG_MESH       : false,
-    LOG_CLOUD      : false,
-    LOG_DEBUG      : false,
+    LOG_INFO       : 100,
+    LOG_WARNINGS   : 100,
+    LOG_ERRORS     : 100,
+    LOG_VERBOSE    : 100,
+    LOG_SCHEDULER  : 100,
+    LOG_BLE        : 100,
+    LOG_EVENTS     : 100,
+    LOG_STORE      : 100,
+    LOG_MESH       : 100,
+    LOG_CLOUD      : 100,
+    LOG_DEBUG      : 100,
     MESH_ENABLED   : true,
     SCHEDULER_FALLBACK_TICK: 1,
     TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY: 1,
@@ -42,7 +40,6 @@ jest.mock('../js/logic/BatchCommandHandler', () => {
           })
       },
       loadPriority: (stone, stoneId, sphereId, command, attempts) => {
-        console.log("loadPriority",command)
         this.__totalLoads++;
         return new Promise((resolve, reject) => {
           expect(command.state).toBe(this.__expectation.state);
@@ -92,9 +89,6 @@ jest.mock('../js/native/advertisements/StoneStateHandler', () => {
   }
 });
 
-jest.mock('PushNotificationIOS', () => ({ }));
-jest.mock('Linking', () => {});
-jest.mock('NetInfo', () => {});
 
 import { StoneTracker } from '../js/native/advertisements/StoneTracker'
 import { addDistanceToRssi } from '../js/util/Util'

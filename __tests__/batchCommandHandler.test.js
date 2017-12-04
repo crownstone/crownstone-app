@@ -5,7 +5,6 @@ let jest = require('jest');
 jest.mock('react-native-fs', () => {return {};});
 jest.mock('react-native-device-info');
 
-
 jest.mock('../js/logging/LogProcessor', () => {
   return {LogProcessor:{
     log_info:      100,

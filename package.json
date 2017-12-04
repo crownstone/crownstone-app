@@ -11,7 +11,7 @@
     "moment": "~2.19.1",
     "prop-types": "~15.6.0",
     "react": "16.0.0",
-    "react-native": "0.50.3",
+    "react-native": "0.50.4",
     "react-native-blur": "^3.2.2",
     "react-native-camera-kit": "https://github.com/AlexDM0/react-native-camera-kit#master",
     "react-native-console-time-polyfill": "^0.0.6",
@@ -52,6 +52,12 @@
     "whatwg-fetch": "^2.0.3"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "setupFiles": ["./jest/setup.js"],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/js/router/store/Persistor.js",
+      "**/js/router/store/PersistorUtil.js"
+    ]
   }
 }
