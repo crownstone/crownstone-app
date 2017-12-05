@@ -4,6 +4,7 @@ import {
   Animated,
   Dimensions,
   Image,
+  Linking,
   Platform,
   StyleSheet,
   TouchableHighlight,
@@ -186,7 +187,7 @@ export class SphereOverview extends Component<any, any> {
                   "Plug the new Crownstone in and hold your phone close to it (touching it). " +
                   "It will automatically show up in this overview." +
                   "\n\nYou don't have to press this button for each Crownstone you add :).",
-                  [{text: 'OK'}]
+                  [{text: 'Buy', onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},{text: 'OK'}]
                 );
               }},
             ]}

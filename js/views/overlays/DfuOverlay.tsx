@@ -530,9 +530,9 @@ export class DfuOverlay extends Component<any, any> {
           icon={'md-book'}
           iconSize={0.25*screenWidth}
           header={'Firmware version: ' + updateToVersion}
-          text={this.state.releaseNotes || null}
+          text={this.state.releaseNotes ? this.state.releaseNotes + '\n\n' : null}
           buttonCallback={() => { this.startProcess();} }
-          scrollable={this.state.releaseNotes === null}
+          scrollable={this.state.releaseNotes !== null}
           buttonLabel={'Next'}
         >
           <ActivityIndicator animating={true} size="large" />
@@ -667,7 +667,7 @@ export class DfuOverlay extends Component<any, any> {
             title={'Updating Done!'}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
-                <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
+                <TouchableOpacity style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}} onPress={closeOverlay}>
                   <ProgressCircle
                     radius={radius}
                     borderWidth={0.25*radius}
@@ -676,7 +676,7 @@ export class DfuOverlay extends Component<any, any> {
                     absolute={true}
                   />
                   <Icon name="md-checkmark" size={radius} color={colors.green.hex} style={{position:'relative', left:0, top:0.05*radius}} />
-                </View>
+                </TouchableOpacity>
               </View>}
             header={'Everything is finished, enjoy the new version!'}
             buttonCallback={closeOverlay}

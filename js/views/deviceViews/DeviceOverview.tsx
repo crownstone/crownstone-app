@@ -66,6 +66,19 @@ export class DeviceOverview extends Component<any, any> {
     }));
   }
 
+  componentWillMount() {
+    const state = this.props.store.getState();
+    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    if (stone.config.firmwareVersionSeenInOverview === null) {
+      this.props.store.dispatch({
+        type: "UPDATE_STONE_LOCAL_CONFIG",
+        sphereId: this.props.sphereId,
+        stoneId: this.props.stoneId,
+        data: {firmwareVersionSeenInOverview: stone.config.firmwareVersion}
+      });
+    }
+  }
+
   componentDidMount() {
     const { store } = this.props;
     // tell the component exactly when it should redraw
@@ -75,18 +88,15 @@ export class DeviceOverview extends Component<any, any> {
       let state = store.getState();
       if (
         (state.spheres[this.props.sphereId] === undefined) ||
-        (change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) ||
-        (change.removeStone && change.removeStone.stoneIds[this.props.stoneId])
+        (change.removeSphere && change.removeSphere.sphereIds[this.props.sphereId]) ||
+        (change.removeStone  && change.removeStone.stoneIds[this.props.stoneId])
        ) {
         BackAction();
         return;
       }
 
-
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-      // TODO: this piece of code leads to too many .pop(), causing an error to be thrown on android.
-      // investigate why this check is required:
       if (!stone || !stone.config) {
         BackAction();
         return;
@@ -125,13 +135,18 @@ export class DeviceOverview extends Component<any, any> {
     // If there is no connection being kept open, this command will not do anything.
     BatchCommandHandler.closeKeptOpenConnection();
 
-    if (this.showWhatsNewVersion !== null) {
-      this.props.store.dispatch({
-        type:"UPDATE_STONE_LOCAL_CONFIG",
-        sphereId: this.props.sphereId,
-        stoneId: this.props.stoneId,
-        data: {firmwareVersionSeenInOverview: this.showWhatsNewVersion}
-      });
+    const state = this.props.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (sphere) {
+      const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      if (stone && stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) {
+        this.props.store.dispatch({
+          type: "UPDATE_STONE_LOCAL_CONFIG",
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          data: {firmwareVersionSeenInOverview: stone.config.firmwareVersion}
+        });
+      }
     }
   }
 
@@ -149,7 +164,6 @@ export class DeviceOverview extends Component<any, any> {
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
     let permissionLevel = Util.data.getUserLevelInSphere(state, this.props.sphereId);
-
 
     let showWhatsNew = permissionLevel === 'admin' &&
                        stone.config.firmwareVersionSeenInOverview &&

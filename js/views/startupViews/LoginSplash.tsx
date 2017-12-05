@@ -1,6 +1,7 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
+  Linking,
   StyleSheet,
   TouchableOpacity,
   Text,
@@ -36,6 +37,19 @@ export class LoginSplash extends Component<any, any> {
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+          style={{
+            position:'absolute',
+            bottom:5,
+            left:5,
+            width: 0.5*screenWidth,
+            height:30,
+            alignItems:'flex-start',
+            justifyContent:'flex-end'
+          }}
+          onPress={() => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }}>
+          <Text style={{fontSize: 14, fontWeight: 'bold', color: colors.white.hex, fontStyle:'italic', textDecorationLine: 'underline', backgroundColor:'transparent'}}>{'Get Them Here!'}</Text>
+        </TouchableOpacity>
         <Text style={versionStyle}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
       </Background>
     )

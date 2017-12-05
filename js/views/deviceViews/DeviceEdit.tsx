@@ -476,9 +476,10 @@ export class DeviceEdit extends Component<any, any> {
             });
           BatchCommandHandler.executePriority();
         }}>
-          <Text style={styles.version}>{'hardware: '   + (stone.config.hardwareVersion || unknownString)}</Text>
-          <Text style={styles.version}>{'bootloader: ' + (stone.config.bootloaderVersion || unknownString)}</Text>
-          <Text style={styles.version}>{'firmware: '   + (stone.config.firmwareVersion || unknownString)}</Text>
+          <Text style={styles.version}>{'address: '     + (stone.config.macAddress || unknownString)}</Text>
+          <Text style={styles.version}>{'hardware id: ' + (stone.config.hardwareVersion || unknownString)}</Text>
+          <Text style={styles.version}>{'bootloader: '  + (stone.config.bootloaderVersion || unknownString)}</Text>
+          <Text style={styles.version}>{'firmware: '    + (stone.config.firmwareVersion || unknownString)}</Text>
         </TouchableOpacity>
       );
     }
