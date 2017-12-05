@@ -177,7 +177,7 @@ export class RoomAdd extends Component<any, any> {
             store.batchDispatch(actions);
 
             if (this.props.fromMovingView === true) {
-              BackAction(3);
+              BackAction(2);
             }
             else {
               BackAction();

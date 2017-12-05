@@ -77,18 +77,18 @@ export class ApplianceSelection extends Component<{
 
         items.push({__item:
           <View >
-              <View style={[styles.listView,{backgroundColor: this.props.applianceId === applianceId ? colors.white.hex : colors.white.rgba(0.65), paddingRight:0}]}>
-                <ApplianceEntry
-                  select={selectCallback}
-                  delete={Permissions.inSphere(this.props.sphereId).removeAppliance ? deleteCallback : undefined}
-                  deleteColor={this.props.applianceId === applianceId ? colors.black.rgba(0.3) : colors.white.hex }
-                  current={this.props.applianceId === applianceId }
-                  icon={appliance.config.icon}
-                  name={appliance.config.name}
-                  navigation={false}
-                  size={45}
-                />
-              </View>
+            <View style={[styles.listView,{backgroundColor: this.props.applianceId === applianceId ? colors.white.hex : colors.white.rgba(0.65), paddingRight:0}]}>
+              <ApplianceEntry
+                select={selectCallback}
+                delete={Permissions.inSphere(this.props.sphereId).removeAppliance ? deleteCallback : undefined}
+                deleteColor={this.props.applianceId === applianceId ? colors.black.rgba(0.3) : colors.white.hex }
+                current={this.props.applianceId === applianceId }
+                icon={appliance.config.icon}
+                name={appliance.config.name}
+                navigation={false}
+                size={45}
+              />
+            </View>
           </View>
         })
       });
