@@ -30,8 +30,9 @@ export class Router_IOS extends Component {
       <View style={{flex:1}}>
         <Router createReducer={reducerCreate} store={this.props.store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.menuBackground.hex}}} backgrounds={this.props.backgrounds} getBackground={this.props.getBackground.bind(this)} eventBus={eventBus}>
           <Scene key="Root" hideNavBar={false}>
-            <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
+            <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true}  type="reset" initial={false && this.props.loggedIn === false} />
             <Scene key="login"                      component={Views.Login}                      hideNavBar={true}  />
+            <Scene key="logout"                     component={Views.Logout}                     hideNavBar={true}  />
             <Scene key="tutorial"                   component={Views.Tutorial}                   hideNavBar={true}  />
             <Scene key="register"                   component={Views.Register}                   hideNavBar={false} title="Register" {...navBarStyle} />
             <Scene key="registerConclusion"         component={Views.RegisterConclusion}         hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} />

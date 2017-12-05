@@ -48,7 +48,14 @@ export class LoginSplash extends Component<any, any> {
             justifyContent:'flex-end'
           }}
           onPress={() => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }}>
-          <Text style={{fontSize: 14, fontWeight: 'bold', color: colors.white.hex, fontStyle:'italic', textDecorationLine: 'underline', backgroundColor:'transparent'}}>{'Get Them Here!'}</Text>
+          <Text style={{
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: colors.white.hex,
+            fontStyle:'italic',
+            textDecorationLine: 'underline',
+            backgroundColor:'transparent'
+          }}>{'Buy Crownstones!'}</Text>
         </TouchableOpacity>
         <Text style={versionStyle}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
       </Background>

@@ -46,7 +46,7 @@ export const AppUtil = {
     // clear position for this device.
     let state = store.getState();
     let deviceId = Util.data.getCurrentDeviceId(state);
-    Actions.loginSplash();
+    Actions.logout();
 
     // clear all events listeners, should fix a lot of redraw issues which will crash at logout
     eventBus.clearAllEvents();

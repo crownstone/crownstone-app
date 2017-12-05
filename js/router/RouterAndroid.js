@@ -33,6 +33,7 @@ export class Router_Android extends Component {
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                panHandlers={null} hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      panHandlers={null} hideNavBar={true}  />
+              <Scene key="logout"                     component={Views.Logout}                     panHandlers={null} hideNavBar={true}  />
               <Scene key="tutorial"                   component={Views.Tutorial}                   panHandlers={null} hideNavBar={true}  />
               <Scene key="register"                   component={Views.Register}                   panHandlers={null} hideNavBar={false} title="Register" {...navBarStyle} />
               <Scene key="registerConclusion"         component={Views.RegisterConclusion}         panHandlers={null} hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} renderLeftButton={()=>{}} />

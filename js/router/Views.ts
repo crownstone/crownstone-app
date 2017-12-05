@@ -1,5 +1,6 @@
 import { LoginSplash }                from '../views/startupViews/LoginSplash'
 import { Login }                      from '../views/startupViews/Login'
+import { Logout }                     from "../views/startupViews/Logout";
 import { SelectFromList }             from '../views/selection/SelectFromList'
 import { Register }                   from '../views/startupViews/Register'
 import { AiStart }                    from '../views/startupViews/AiStart'
@@ -44,6 +45,7 @@ export const Views = {
   SelectFromList,
   LoginSplash,
   Login,
+  Logout,
   Register,
   RegisterConclusion,
   PictureView,
