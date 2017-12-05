@@ -39,6 +39,7 @@ import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
 import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../util/Back";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -97,7 +98,7 @@ export class RoomOverview extends Component<any, any> {
 
       if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
           change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
-        Actions.pop();
+        BackAction();
         return;
       }
 
@@ -312,7 +313,7 @@ export class RoomOverview extends Component<any, any> {
         right={ rightLabel }
         rightItem={ this._getRightItem(state, enoughCrownstones, rightLabel) }
         rightAction={ rightAction }
-        leftAction={ () => { Actions.pop(); }}
+        leftAction={ () => { BackAction(); }}
       />
     );
   }

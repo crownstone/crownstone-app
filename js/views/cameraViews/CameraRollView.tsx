@@ -15,6 +15,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
 import { styles, colors } from '../styles'
 import { LOG } from '../../logging/Log'
+import {BackAction} from "../../util/Back";
 
 export class CameraRollView extends Component<any, any> {
   pictureIndex : any;
@@ -61,7 +62,7 @@ export class CameraRollView extends Component<any, any> {
         }
       }).catch((err) => {
         if (err.code === "E_UNABLE_TO_LOAD") {
-          let defaultActions = () => {Actions.pop();};
+          let defaultActions = () => {BackAction();};
           Alert.alert(
             "I do not have access to your pictures...",
             "You can give me access by going to the settings on your phone, select Crownstone and enable the picture permissions.",
@@ -91,7 +92,7 @@ export class CameraRollView extends Component<any, any> {
             clearTimeout(this.fetchPicturesTimeout);
             this.active = false;
             this.props.selectCallback(edge.node.image.uri);
-            Actions.pop();
+            BackAction();
             }}>
             <Image source={{uri: edge.node.image.uri}} style={{width:size,height:size}}/>
           </TouchableHighlight>
@@ -117,7 +118,7 @@ export class CameraRollView extends Component<any, any> {
         <TopBar title="Choose A Picture" left="Cancel" leftAction={() => {
           clearTimeout(this.fetchPicturesTimeout);
           this.active = false;
-          Actions.pop();
+          BackAction();
         }} notBack={true} />
         {this.drawPictures()}
       </View>

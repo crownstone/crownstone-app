@@ -27,6 +27,7 @@ import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
 import {LOG} from "../../../logging/Log";
 import {StoneUtil} from "../../../util/StoneUtil";
 import {IconButton} from "../IconButton";
+import {BackAction} from "../../../util/Back";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -254,7 +255,7 @@ export class DeviceEntry extends Component<any, any> {
           <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
           <View style={{height: this.optionsHeight-1, backgroundColor: 'transparent', flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity style={buttonStyle} onPress={() => {
-              Actions.pop();
+              BackAction();
               Actions.roomSelection({
                 sphereId: this.props.sphereId,
                 stoneId: this.props.stoneId,

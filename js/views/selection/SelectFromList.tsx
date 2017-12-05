@@ -22,6 +22,7 @@ import {Icon} from "../components/Icon";
 import {SeparatedItemList} from "../components/SeparatedItemList";
 import {EditableItem} from "../components/EditableItem";
 import {ProfilePicture} from "../components/ProfilePicture";
+import {BackAction} from "../../util/Back";
 
 
 export class SelectFromList extends Component<any, any> {
@@ -71,7 +72,7 @@ export class SelectFromList extends Component<any, any> {
 
             if (item.singular) {
               this.props.callback(newIds);
-              Actions.pop();
+              BackAction();
             }
           }}
           style={{
@@ -97,13 +98,13 @@ export class SelectFromList extends Component<any, any> {
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
-          leftAction={() => { Actions.pop(); }}
+          leftAction={() => { BackAction(); }}
           notBack={true}
           left={'Cancel'}
           right={'Select'}
           leftStyle={{color: colors.white.hex}}
           rightStyle={{fontWeight: 'bold'}}
-          rightAction={() => { this.props.callback(this.state.selectedItemIds); Actions.pop() }}
+          rightAction={() => { this.props.callback(this.state.selectedItemIds); BackAction() }}
           title={this.props.title}
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />

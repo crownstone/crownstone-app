@@ -17,6 +17,7 @@ import {
   getFloatingStones
 } from '../../util/DataUtil'
 import { styles, colors } from '../styles'
+import {BackAction} from "../../util/Back";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -41,7 +42,9 @@ export class RoomExplanation extends Component<any, any> {
     let buttonCallback = undefined;
 
     // callback to go to the floating crownstones. Is used twice
-    let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
+    let goToFloatingCrownstonesCallback = () => {
+      BackAction();
+      setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
 
     // In case we see a crownstone in setup mode:
     if (explanation === undefined && seeStoneInSetupMode === true && locationId === null) {

@@ -24,6 +24,7 @@ import { Util } from "../../util/Util";
 import {PermissionClass} from "../../backgroundProcesses/Permissions";
 import {TopBar} from "../components/Topbar";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../util/Back";
 
 export class SettingsSphere extends Component<any, any> {
   deleting : boolean;
@@ -271,7 +272,7 @@ export class SettingsSphere extends Component<any, any> {
               .then(() => {
                 this.props.eventBus.emit('hideLoading');
                 this.deleting = true;
-                Actions.pop();
+                BackAction();
 
                 let state = this.props.store.getState();
                 let actions = [];
@@ -297,7 +298,7 @@ export class SettingsSphere extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.menu} hideTopBar={true}>
-        <TopBar title={this.state.sphereName} leftAction={() => { Actions.pop(); }} />
+        <TopBar title={this.state.sphereName} leftAction={() => { BackAction(); }} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

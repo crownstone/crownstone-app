@@ -19,6 +19,7 @@ import { styles, colors } from './../styles'
 import { TopBar } from '../components/Topbar';
 import { RoomList } from '../components/RoomList';
 import { Icon } from '../components/Icon';
+import {BackAction} from "../../util/Back";
 
 export class RoomSelection extends Component<any, any> {
   unsubscribe : any;
@@ -29,7 +30,7 @@ export class RoomSelection extends Component<any, any> {
       let change = data.change;
 
       if (change.removeSphere && change["removeSphere"].sphereIds[this.props.sphereId]) {
-        return Actions.pop();
+        return BackAction();
       }
 
       if (change.changeLocations && change["changeLocations"].sphereIds[this.props.sphereId]) {
@@ -43,7 +44,7 @@ export class RoomSelection extends Component<any, any> {
   }
 
   _moveCrownstone(roomId) {
-    Actions.pop();
+    BackAction();
     this.props.store.dispatch({type: "UPDATE_STONE_LOCATION", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locationId: roomId}});
     Toast.showWithGravity(' Moved Crownstone! ', Toast.SHORT, Toast.CENTER);
   }
@@ -107,7 +108,7 @@ export class RoomSelection extends Component<any, any> {
     return (
       <Background hideInterface={true} image={backgroundImage} >
         <TopBar
-          leftAction={ () => { Actions.pop(); }}
+          leftAction={ () => { BackAction(); }}
           title={this.props.title} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

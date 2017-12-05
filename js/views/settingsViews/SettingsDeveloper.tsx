@@ -19,6 +19,7 @@ import { styles, colors } from '../styles'
 import {Util} from "../../util/Util";
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 import {clearLogs} from "../../logging/LogUtil";
+import {BackAction} from "../../util/Back";
 
 
 export class SettingsDeveloper extends Component<any, any> {
@@ -181,7 +182,7 @@ export class SettingsDeveloper extends Component<any, any> {
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);
 
-        Actions.pop();
+        BackAction();
     }});
     items.push({label: "Revert back to the normal user state.", type: 'explanation', below: true});
 

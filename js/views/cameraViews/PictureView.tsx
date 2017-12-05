@@ -14,6 +14,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { styles, colors, screenWidth, screenHeight } from '../styles'
 import { LOG } from '../../logging/Log'
 import { SessionMemory } from '../../util/SessionMemory'
+import {BackAction} from "../../util/Back";
 
 export class PictureView extends Component<any, any> {
   cameraView;
@@ -37,11 +38,11 @@ export class PictureView extends Component<any, any> {
 
   onBottomButtonPressed(event) {
     if (event.type === 'left') {
-      Actions.pop();
+      BackAction();
     }
     else if (event.type === 'right') {
       this.props.selectCallback(event.captureImages[0].uri);
-      Actions.pop();
+      BackAction();
     }
     else {
 

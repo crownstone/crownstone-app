@@ -21,6 +21,7 @@ import {styles, colors, screenWidth} from './../styles'
 import { Icon } from '../components/Icon';
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {EventBusClass} from "../../util/EventBus";
+import {BackAction} from "../../util/Back";
 
 export class ApplianceSelection extends Component<{
   sphereId: string,
@@ -41,7 +42,7 @@ export class ApplianceSelection extends Component<{
 
       // if the stone has been deleted, close everything.
       if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
-        return Actions.pop();
+        return BackAction();
       }
 
       if (change.changeAppliances && change.changeAppliances.sphereIds[this.props.sphereId]) {
@@ -68,7 +69,7 @@ export class ApplianceSelection extends Component<{
       applianceIds.forEach((applianceId) => {
         let appliance = appliances[applianceId];
 
-        let selectCallback = () => { this.props.callback(applianceId); Actions.pop(); };
+        let selectCallback = () => { this.props.callback(applianceId); BackAction(); };
         let deleteCallback = () => {
           Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",
             [{text:'Cancel', style: 'cancel'}, {text:'Delete', style: 'destructive', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
@@ -117,7 +118,7 @@ export class ApplianceSelection extends Component<{
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-        this.props.callback(null); Actions.pop();
+        this.props.callback(null); BackAction();
       }
     });
     return items;

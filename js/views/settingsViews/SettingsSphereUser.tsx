@@ -18,6 +18,7 @@ import { styles, colors, screenWidth } from '../styles'
 import {LOG} from "../../logging/Log";
 import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereUser extends Component<any, any> {
@@ -92,7 +93,7 @@ export class SettingsSphereUser extends Component<any, any> {
                 sphereId: this.props.sphereId,
                 userId: this.props.userId,
               });
-              Actions.pop();
+              BackAction();
             }}], {cancelable : false});
           })
           .catch((err) => {

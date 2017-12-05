@@ -22,6 +22,7 @@ import { Icon } from "../components/Icon";
 import { ProfilePicture } from "../components/ProfilePicture";
 import {CLOUD} from "../../cloud/cloudAPI";
 import {MessageUtil} from "../../util/MessageUtil";
+import {BackAction} from "../../util/Back";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
@@ -103,7 +104,7 @@ export class MessageAdd extends Component<any, any> {
       recipients
     );
 
-    Actions.pop();
+    BackAction();
   }
 
   _getLocationItems(sphere) {
@@ -312,7 +313,7 @@ export class MessageAdd extends Component<any, any> {
           notBack={true}
           left={'Cancel'}
           leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
-          leftAction={() => { Actions.pop(); }}
+          leftAction={() => { BackAction(); }}
           right={'Create'}
           rightStyle={{fontWeight: 'bold'}}
           rightAction={() => { this._createMessage(); }}

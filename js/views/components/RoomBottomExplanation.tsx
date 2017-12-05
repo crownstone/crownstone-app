@@ -14,6 +14,7 @@ import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
 const Actions = require('react-native-router-flux').Actions;
 import { styles, colors } from '../styles'
 import {eventBus} from "../../util/EventBus";
+import {BackAction} from "../../util/Back";
 
 
 /**
@@ -72,7 +73,7 @@ export class RoomBottomExplanation extends Component<any, any> {
     if (this.props.locationId !== null && SetupStateHandler.areSetupStonesAvailable()) {
       let explanation = "Crownstone in setup mode found.\nTap here to see it!";
       let buttonCallback = () => {
-        Actions.pop();
+        BackAction();
         setTimeout(() => {
           Actions.roomOverview({sphereId: this.props.sphereId, locationId: null})
         }, 150);

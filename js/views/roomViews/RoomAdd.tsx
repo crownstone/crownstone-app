@@ -21,6 +21,7 @@ import {styles, colors, screenWidth} from '../styles'
 import {Util} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {BackAction} from "../../util/Back";
 
 
 
@@ -176,12 +177,10 @@ export class RoomAdd extends Component<any, any> {
             store.batchDispatch(actions);
 
             if (this.props.fromMovingView === true) {
-              // TODO: implemented this way because of broken pop structure in router-flux
-              Actions.pop({popNum:2});
-              Actions.pop();
+              BackAction(3);
             }
             else {
-              Actions.pop();
+              BackAction();
             }
 
             this.props.eventBus.emit('hideLoading');
@@ -211,7 +210,7 @@ export class RoomAdd extends Component<any, any> {
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     if (this.props.sphereId === null) {
-      Actions.pop();
+      BackAction();
       return <View />
     }
 

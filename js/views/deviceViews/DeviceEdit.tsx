@@ -31,6 +31,7 @@ import {TopBar} from "../components/Topbar";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {StoneUtil} from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
+import {BackAction} from "../../util/Back";
 
 
 export class DeviceEdit extends Component<any, any> {
@@ -76,7 +77,7 @@ export class DeviceEdit extends Component<any, any> {
 
       // in case the sphere is deleted
       if (state.spheres[this.props.sphereId] === undefined) {
-        Actions.pop();
+        BackAction();
         return;
       }
 
@@ -335,7 +336,7 @@ export class DeviceEdit extends Component<any, any> {
               "Try deleting it again or use the recovery procedure to put it in setup mode.",
               [{text:'OK', onPress: () => {
                 this.props.eventBus.emit('hideLoading');
-                Actions.pop();
+                BackAction();
               }}]
             )
           })
@@ -363,7 +364,7 @@ export class DeviceEdit extends Component<any, any> {
     Alert.alert("Success!", labelText,
       [{text:'OK', onPress: () => {
         this.props.eventBus.emit('hideLoading');
-        Actions.pop();
+        BackAction();
         this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }}]
     )
@@ -434,7 +435,7 @@ export class DeviceEdit extends Component<any, any> {
       this.props.store.batchDispatch(actions);
     }
 
-    Actions.pop();
+    BackAction();
   }
 
 

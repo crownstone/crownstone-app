@@ -17,11 +17,12 @@ import { IconButton } from '../components/IconButton'
 import { Util } from '../../util/Util'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-import {styles, colors, screenWidth} from './../styles'
+import { styles, colors, screenWidth} from './../styles'
 import { LOG } from './../../logging/Log'
-import {LocationHandler} from "../../native/localization/LocationHandler";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {TopBar} from "../components/Topbar";
+import { LocationHandler } from "../../native/localization/LocationHandler";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import { TopBar } from "../components/Topbar";
+import {BackAction} from "../../util/Back";
 
 
 
@@ -50,7 +51,7 @@ export class RoomEdit extends Component<any, any> {
 
       let state = store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
-        Actions.pop();
+        BackAction();
         return;
       }
 
@@ -212,7 +213,7 @@ export class RoomEdit extends Component<any, any> {
           icon: this.state.icon
         }});
     }
-    Actions.pop();
+    BackAction();
   }
 
   render() {

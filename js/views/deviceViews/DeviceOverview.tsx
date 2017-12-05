@@ -32,6 +32,7 @@ import { BATCH } from "../../router/store/storeManager";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
+import {BackAction} from "../../util/Back";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -77,11 +78,7 @@ export class DeviceOverview extends Component<any, any> {
         (change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) ||
         (change.removeStone && change.removeStone.stoneIds[this.props.stoneId])
        ) {
-        try {
-          Actions.pop();
-        } catch (popErr) {
-          LOG.error("DeviceOverview pop error 1:", popErr);
-        }
+        BackAction();
         return;
       }
 
@@ -91,11 +88,7 @@ export class DeviceOverview extends Component<any, any> {
       // TODO: this piece of code leads to too many .pop(), causing an error to be thrown on android.
       // investigate why this check is required:
       if (!stone || !stone.config) {
-        try {
-          Actions.pop();
-        } catch (popErr) {
-          LOG.error("DeviceOverview pop error 2:", popErr);
-        }
+        BackAction();
         return;
       }
 
@@ -195,7 +188,7 @@ export class DeviceOverview extends Component<any, any> {
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
-          leftAction={() => { Actions.pop(); }}
+          leftAction={() => { BackAction(); }}
           rightItem={this.state.scrolling ? this._getScrollingElement() : undefined}
           right={() => {
             switch (this.state.swiperIndex) {

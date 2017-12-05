@@ -410,5 +410,8 @@ test('PersistorTest - Add Stone', () => {
     .then(() => {
       return AsyncStorage.getAllKeys();
     })
+    .then(() => {
+      persistor.endSession()
+    })
 
 });

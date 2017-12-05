@@ -20,6 +20,7 @@ import {getRandomC1Name} from "../../fonts/customIcons";
 import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {Util} from "../../util/Util";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {BackAction} from "../../util/Back";
 
 
 
@@ -86,7 +87,7 @@ export class ApplianceAdd extends Component<any, any> {
           this.props.store.batchDispatch(actions);
           this.props.eventBus.emit('hideLoading');
           this.props.callback(localId);
-          Actions.pop({popNum: 2});
+          BackAction(2);
         })
         .catch((err) => {
           let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
@@ -104,7 +105,7 @@ export class ApplianceAdd extends Component<any, any> {
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     if (this.props.sphereId === null) {
-      Actions.pop();
+      BackAction();
       return <View />
     }
 

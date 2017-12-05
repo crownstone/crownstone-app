@@ -13,6 +13,7 @@ import { Background }  from '../components/Background'
 import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
+import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -214,7 +215,7 @@ export class RoomIconSelection extends Component<{callback(icon: string) : void,
             selectedIcon={this.props.icon}
             callback={(newIcon) => {
               this.props.callback(newIcon);
-              Actions.pop();
+              BackAction();
             }}
           />
         </ScrollView>
