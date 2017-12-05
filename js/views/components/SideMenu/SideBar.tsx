@@ -174,13 +174,14 @@ export class SideBar extends Component<any, any> {
     }
     return (
       <View style={{flexDirection:'column', flex:1, height:screenHeight,  backgroundColor: color}}>
-        <MenuTopBar />
-        <Image source={require('../../../images/menuBackground.png')} style={{width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight - topBarHeight}} >
+        <Image source={require('../../../images/menuBackground.png')} style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight - topBarHeight}} />
+        <View style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight - topBarHeight}}>
+          <MenuTopBar />
           <MenuCategoryImage />
           <ScrollView>
             {this._getContent()}
           </ScrollView>
-        </Image>
+        </View>
       </View>
     );
   }

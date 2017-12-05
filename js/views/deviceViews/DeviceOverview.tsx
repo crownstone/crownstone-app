@@ -115,7 +115,7 @@ export class DeviceOverview extends Component<any, any> {
         applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
         ) {
           this.forceUpdate();
-      }
+        }
     });
   }
 
