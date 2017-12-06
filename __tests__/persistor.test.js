@@ -413,5 +413,25 @@ test('PersistorTest - Add Stone', () => {
     .then(() => {
       persistor.endSession()
     })
+});
 
+test('PersistorTest - Load incomplete db', () => {
+  let db = require("./data/db_withoutLocations").db;
+  let database = {
+    ...db,
+  }
+
+  AsyncStorage.__setDb(database);
+  AsyncStorage.__setDelErrKeys({});
+  AsyncStorage.__setGetErrKeys({});
+
+  let persistor = new Persistor();
+
+  let store = createStore(
+    enableBatching(CrownstoneReducer), {},
+    applyMiddleware(EventEnhancer, NativeEnhancer, PersistenceEnhancer)
+  );
+  store.batchDispatch = batchActions;
+
+  return persistor.initialize("test", store)
 });

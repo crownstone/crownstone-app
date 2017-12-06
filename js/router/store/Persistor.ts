@@ -381,16 +381,25 @@ export class Persistor {
     refreshActions.push({type:'REFRESH_DEFAULTS'});
     for (let i = 0; i < sphereIds.length; i++) {
       let sphereId = sphereIds[i];
-      let stoneIds = Object.keys(state.spheres[sphereId].stones);
-      let locationIds = Object.keys(state.spheres[sphereId].locations);
-      let applianceIds = Object.keys(state.spheres[sphereId].appliances);
-      let userIds = Object.keys(state.spheres[sphereId].users);
 
       refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
-      stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId:     stoneId});});
-      locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId:  locationId});});
-      applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
-      userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId:      userId});});
+
+      if (state.spheres[sphereId].stones) {
+        let stoneIds = Object.keys(state.spheres[sphereId].stones);
+        stoneIds.forEach((stoneId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId:     stoneId});});
+      }
+      if (state.spheres[sphereId].locations) {
+        let locationIds = Object.keys(state.spheres[sphereId].locations);
+        locationIds.forEach((locationId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId:  locationId});});
+      }
+      if (state.spheres[sphereId].appliances) {
+        let applianceIds = Object.keys(state.spheres[sphereId].appliances);
+        applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
+      }
+      if (state.spheres[sphereId].users) {
+        let userIds = Object.keys(state.spheres[sphereId].users);
+        userIds.forEach((userId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId:      userId});});
+      }
     }
 
     // create an app identifier if we do not already have one.
