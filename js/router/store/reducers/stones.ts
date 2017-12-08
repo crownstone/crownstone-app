@@ -50,6 +50,8 @@ let defaultSettings = {
     stoneTime: 0,
     stoneTimeChecked: 0,
     lastSeen: 1,
+    lastSeenViaMesh: 1,
+    lastSeenTemperature: 0,
     updatedAt: 1,
     lastUpdatedStoneTime: 0,
   },
@@ -123,7 +125,15 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.rssi            = update(action.data.rssi, newState.rssi);
-        newState.lastSeen        = update(action.data.lastSeen, newState.lastSeen);
+        return newState;
+      }
+      return state;
+    case 'UPDATE_STONE_DIAGNOSTICS':
+      if (action.data) {
+        let newState = {...state};
+        if (action.data.lastSeen)            { newState.lastSeen = action.data.lastSeen; }
+        if (action.data.lastSeenViaMesh)     { newState.lastSeenViaMesh = action.data.lastSeenViaMesh; }
+        if (action.data.lastSeenTemperature) { newState.lastSeenTemperature = action.data.lastSeenTemperature; }
         return newState;
       }
       return state;

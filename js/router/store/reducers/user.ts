@@ -20,6 +20,7 @@ let defaultSettings = {
   appIdentifier: null,
   developer: false,
   logging: false,
+  uploadDiagnostics: true,
   uploadLocation: true,
   uploadSwitchState: true,
   uploadPowerUsage: false,

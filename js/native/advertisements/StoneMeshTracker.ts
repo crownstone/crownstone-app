@@ -7,7 +7,7 @@ import {Util} from "../../util/Util";
 const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
 const meshRemovalTimeout : number = 200; // seconds
 
-export class IndividualStoneTracker {
+export class StoneMeshTracker {
   unsubscribeMeshListener : any;
   meshNetworkId : number;
   stoneUID      : number;
@@ -28,6 +28,15 @@ export class IndividualStoneTracker {
     this.timeLastSeen = 0;
 
     this.init()
+
+    // TODO: emit the mesh update event only for unique advertisements. Due to ibeacon connectable on/off the unique filter is not always working.
+    if (this.advertisementIdsPerStoneId[advertisingStoneId] && this.advertisementIdsPerStoneId[advertisingStoneId] !== randomFromServiceData) {
+      eventBus.emit(Util.events.getViaMeshTopic(sphereId, meshNetworkId), {
+        id: remoteStoneId,
+        serviceData: serviceData
+      });
+    }
+    this.advertisementIdsPerStoneId[advertisingStoneId] = randomFromServiceData;
   }
 
   init() {

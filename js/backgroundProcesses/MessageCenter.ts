@@ -16,7 +16,7 @@ class MessageCenterClass {
 
   constructor() { }
 
-  _loadStore(store: any) {
+  loadStore(store: any) {
     LOG.info('LOADED STORE MessageSearcher', this._initialized);
     if (this._initialized === false) {
       this._store = store;

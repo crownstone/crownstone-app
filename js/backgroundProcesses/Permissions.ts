@@ -60,10 +60,10 @@ export class PermissionClass extends PermissionBase {
     super();
 
     this._sphereId = sphereId;
-    this._loadStore(store, userAlreadyLoggedIn);
+    this.loadStore(store, userAlreadyLoggedIn);
   }
 
-  _loadStore(store, userAlreadyLoggedIn) {
+  loadStore(store, userAlreadyLoggedIn) {
     if (this._initialized === false) {
       this._store = store;
       this._initialized = true;

@@ -34,6 +34,8 @@ export class StoneSyncer extends SyncingSphereItemBase {
         let localStoneIdsSynced = this.syncDown(store, stonesInState, stonesInCloud);
         this.syncUp(stonesInState, localStoneIdsSynced);
 
+        this.uploadDiagnostics(store, stonesInState, stonesInCloud);
+
         return Promise.all(this.transferPromises)
       })
       .then(() => { return this.actions });
@@ -301,4 +303,67 @@ export class StoneSyncer extends SyncingSphereItemBase {
         this.actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onAway', sphereId: this.localSphereId, stoneId: localId, data: behaviour.onAway });
     }
   };
+
+
+  uploadDiagnostics(store, stonesInState, stonesInCloud) {
+    let userInState = store.getState().user;
+
+    if (!userInState.uploadDiagnostics) {
+      return;
+    }
+
+    let cloudIdMap = this._getCloudIdMap(stonesInState);
+
+    stonesInCloud.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
+      let localId = cloudIdMap[stone_from_cloud.id];
+
+      if (localId) {
+        let stoneInState = stonesInState[localId];
+
+        let cloudId = stone_from_cloud.id;
+        let uploaded = false;
+        if (stoneInState.config.lastSeen) {
+          uploaded = true;
+          this.transferPromises.push(
+            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
+              timestamp: new Date().valueOf(),
+              type: 'lastSeen',
+              value: stoneInState.config.lastSeen
+            })
+          );
+        }
+
+        if (stoneInState.config.lastSeenTemperature) {
+          uploaded = true;
+          this.transferPromises.push(
+            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
+              timestamp: new Date().valueOf(),
+              type: 'lastSeenTemperature',
+              value: stoneInState.config.lastSeenTemperature
+            })
+          );
+        }
+
+        if (stoneInState.config.lastSeenViaMesh) {
+          uploaded = true;
+          this.transferPromises.push(
+            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
+              timestamp: new Date().valueOf(),
+              type: 'lastSeenViaMesh',
+              value: stoneInState.config.lastSeenViaMesh
+            })
+          );
+        }
+
+        if (uploaded) {
+          this.actions.push({
+            type: 'UPDATE_STONE_DIAGNOSTICS',
+            sphereId: this.localSphereId,
+            stoneId: localId,
+            data: {lastSeen: null, lastSeenTemperature: null, lastSeenViaMesh: null}
+          });
+        }
+      }
+    });
+  }
 }

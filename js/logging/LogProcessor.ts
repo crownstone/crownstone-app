@@ -28,7 +28,7 @@ class LogProcessorClass {
 
   }
 
-  _loadStore(store) {
+  loadStore(store) {
     this.store = store;
 
     // use periodic events to clean the logs.

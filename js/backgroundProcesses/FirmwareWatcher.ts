@@ -9,7 +9,7 @@ class FirmwareWatcherClass {
 
   constructor() { }
 
-  _loadStore(store: any) {
+  loadStore(store: any) {
     LOG.info('LOADED STORE FirmwareWatcher', this._initialized);
     if (this._initialized === false) {
       this.store = store;

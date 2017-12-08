@@ -23,7 +23,7 @@ class KeepAliveHandlerClass {
     this.state = {};
   }
 
-  _loadStore(store) {
+  loadStore(store) {
     LOG.info('LOADED STORE KeepAliveHandler', this._initialized);
     if (this._initialized === false) {
       this.store = store;

@@ -1,40 +1,28 @@
-import { Alert, Vibration } from 'react-native';
-
-import { BleUtil }                            from '../../util/BleUtil'
-import { BluenetPromiseWrapper }              from '../libInterface/BluenetPromise'
-import { StoneStateHandler }                  from './StoneStateHandler'
-import { eventBus }                           from '../../util/EventBus';
-import {
-  TIME_BETWEEN_TAP_TO_TOGGLES,
-  TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY
-} from '../../ExternalConfig';
-import { addDistanceToRssi, Util }            from '../../util/Util';
-import { BehaviourUtil }                      from '../../util/BehaviourUtil';
-import { LOG }                                from '../../logging/Log'
-import { canUseIndoorLocalizationInSphere }   from '../../util/DataUtil'
-import { BEHAVIOUR_TYPES }                    from '../../router/store/reducers/stones'
-import { FirmwareHandler }                    from "../firmware/FirmwareHandler";
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {LOG} from "../../logging/Log";
+import {eventBus} from "../../util/EventBus";
+import {FirmwareHandler} from "../firmware/FirmwareHandler";
+import {BEHAVIOUR_TYPES} from "../../router/store/reducers/stones";
+import {BleUtil} from "../../util/BleUtil";
+import {BluenetPromiseWrapper} from "../libInterface/BluenetPromise";
+import {canUseIndoorLocalizationInSphere} from "../../util/DataUtil";
+import {TIME_BETWEEN_TAP_TO_TOGGLES, TRIGGER_TIME_BETWEEN_SWITCHING_NEAR_AWAY} from "../../ExternalConfig";
+import {addDistanceToRssi, Util} from "../../util/Util";
 import {LocalNotifications} from "../../notifications/LocalNotifications";
+import {BehaviourUtil} from "../../util/BehaviourUtil";
+
 
 let MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER = 2;
 let SLIDING_WINDOW_FACTOR = 0.2; // [0.1 .. 1] higher is more responsive
 
 
-export class StoneTracker {
- elements : any;
- store : any;
- temporaryIgnore : boolean;
- temporaryIgnoreTimeout : any;
- tapToToggleDisabledTemporarily : boolean;
+/**
+ * Each Stone Entity will have a StoneBehaviour which only job is to respond to triggers to enact its behaviour.
+ **/
+export class StoneBehaviour {
 
-  constructor(store) {
-    this.elements = {};
-    this.store = store;
-    this.temporaryIgnore = false;
-    this.temporaryIgnoreTimeout = undefined;
-    this.tapToToggleDisabledTemporarily = false;
+  store;
 
+  constructor() {
     eventBus.on("ignoreTriggers", () => {
       this.temporaryIgnore = true;
       this.temporaryIgnoreTimeout = setTimeout(() => {
@@ -51,48 +39,11 @@ export class StoneTracker {
     });
   }
 
+  ibeaconUpdate(ibeaconPackage : ibeaconPackage) {
 
-  iBeaconUpdate(major, minor, rssi, referenceId) {
-    let sphereId = referenceId;
+  }
 
-    // only use valid rssi measurements, 0 or 128 are not valid measurements
-    if (rssi === undefined || rssi > -1) {
-      LOG.debug("StoneTracker: IGNORE: no rssi.");
-      return;
-    }
-
-    if (sphereId === undefined || major  === undefined || minor === undefined) {
-      LOG.debug("StoneTracker: IGNORE: no sphereId or no major or no minor.");
-      return;
-    }
-
-    // check if we have the sphere
-    let state = this.store.getState();
-    let sphere = state.spheres[sphereId];
-    if (!(sphere)) {
-      LOG.debug("StoneTracker: IGNORE: unknown sphere.");
-      return;
-    }
-
-    // check if we have a stone with this major / minor
-    let stoneId = this._getStoneFromIBeacon(sphere, major, minor);
-    if (!(stoneId)) {
-      LOG.debug("StoneTracker: IGNORE: unknown stone.");
-      return;
-    }
-
-    let stone = sphere.stones[stoneId];
-
-    // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
-    // reset is complete.
-    if (stone.config.dfuResetRequired === true) {
-      LOG.debug("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
-      return;
-    }
-
-    // tell the handler that this stone/beacon is still in range.
-    StoneStateHandler.receivedIBeaconUpdate(sphereId, stone, stoneId, rssi);
-
+  doBehaviourOnIbeacon() {
     // currentTime
     let now = new Date().valueOf();
 
@@ -257,20 +208,6 @@ export class StoneTracker {
     }
   }
 
-  /**
-   * Todo: get smart map for this.
-   * @param sphere
-   * @param major
-   * @param minor
-   * @returns {*}
-   */
-  _getStoneFromIBeacon(sphere, major, minor) {
-    let stoneIds = Object.keys(sphere.stones);
-    for (let i = 0; i < stoneIds.length; i++) {
-      let stone = sphere.stones[stoneIds[i]].config;
-      if (stone.iBeaconMajor == major && stone.iBeaconMinor == minor) {
-        return stoneIds[i];
-      }
-    }
-  }
+  // tap 2 toggle
+  // near/far behaviour
 }

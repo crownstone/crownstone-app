@@ -25,7 +25,7 @@ class BatchCommandHandlerClass {
 
   constructor() {}
 
-  _loadStore(store) {
+  loadStore(store) {
     this.store = store;
   }
 

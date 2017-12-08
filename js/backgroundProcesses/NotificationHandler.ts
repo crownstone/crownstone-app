@@ -17,7 +17,7 @@ class NotificationHandlerClass {
 
   constructor() {}
 
-  _loadStore(store) {
+  loadStore(store) {
     this.store = store;
     this.configure();
 
@@ -25,7 +25,7 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
-      LOG.info("NotificationHandler: Request for notification permission submitted from _loadStore");
+      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
   }
@@ -35,7 +35,7 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
-      LOG.info("NotificationHandler: Request for notification permission submitted from _loadStore");
+      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
   }
@@ -153,7 +153,7 @@ class NotificationParserClass {
 
   constructor() {}
 
-  _loadStore(store) {
+  loadStore(store) {
     this.store = store;
   }
 

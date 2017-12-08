@@ -14,9 +14,7 @@ import { prepareStoreForUser }   from "../util/DataUtil";
 import { StoreManager }          from "../router/store/storeManager";
 import { KeepAliveHandler }      from "./KeepAliveHandler";
 import { FirmwareWatcher }       from "./FirmwareWatcher";
-import { AdvertisementHandler }  from "../native/advertisements/AdvertisementHandler";
 import { Scheduler }             from "../logic/Scheduler";
-import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
 import {LOG_EXTENDED_TO_FILE, LOG_TO_FILE, SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL} from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
@@ -31,6 +29,8 @@ import { CloudEventHandler } from "./CloudEventHandler";
 import { Permissions } from "./PermissionManager";
 import {LOG, LOGw} from "../logging/Log";
 import {LogProcessor} from "../logging/LogProcessor";
+import {BleLogger} from "../native/advertisements/BleLogger";
+import {StoneManager} from "../native/advertisements/StoneManager";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -378,25 +378,27 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
-    BatchCommandHandler._loadStore(this.store);
-    MapProvider._loadStore(this.store);
-    LogProcessor._loadStore(this.store);
-    LocationHandler._loadStore(this.store);
-    AdvertisementHandler._loadStore(this.store);
-    Scheduler._loadStore(this.store);
-    StoneStateHandler._loadStore(this.store);
-    DfuStateHandler._loadStore(this.store);
-    SetupStateHandler._loadStore(this.store);
-    KeepAliveHandler._loadStore(this.store);
-    FirmwareWatcher._loadStore(this.store);
-    BatterySavingUtil._loadStore(this.store);
-    ErrorWatcher._loadStore(this.store);
-    NotificationHandler._loadStore(this.store);
-    NotificationParser._loadStore(this.store);
-    BatchUploader._loadStore(this.store);
-    MessageCenter._loadStore(this.store);
-    CloudEventHandler._loadStore(this.store);
-    Permissions._loadStore(this.store, this.userLoggedIn);
+    BatchCommandHandler.loadStore(this.store);
+    MapProvider.loadStore(this.store);
+    LogProcessor.loadStore(this.store);
+    LocationHandler.loadStore(this.store);
+    Scheduler.loadStore(this.store);
+    StoneManager.loadStore(this.store);
+    DfuStateHandler.loadStore(this.store);
+    SetupStateHandler.loadStore(this.store);
+    KeepAliveHandler.loadStore(this.store);
+    FirmwareWatcher.loadStore(this.store);
+    BatterySavingUtil.loadStore(this.store);
+    ErrorWatcher.loadStore(this.store);
+    NotificationHandler.loadStore(this.store);
+    NotificationParser.loadStore(this.store);
+    BatchUploader.loadStore(this.store);
+    MessageCenter.loadStore(this.store);
+    CloudEventHandler.loadStore(this.store);
+    Permissions.loadStore(this.store, this.userLoggedIn);
+
+
+    BleLogger.init();
   }
 }
 
