@@ -65,6 +65,10 @@ import com.android.build.OutputFile
  * ]
  */
 
+project.ext.react = [
+    entryFile: "index.js"
+]
+
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/react-native-sentry/sentry.gradle"
 
@@ -84,9 +88,8 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
-//    buildToolsVersion '25.0.0'
-    buildToolsVersion '23.0.1'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     signingConfigs {
         release {
@@ -145,26 +148,25 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-blur')
-    compile project(':react-native-camera-kit')
-    compile project(':react-native-splash-screen')
-    compile project(':react-native-sentry')
     compile project(':bluenet')
     compile project(':localization-lib-android')
     compile project(':react-native-image-resizer')
-    compile project(':react-native-keep-awake')
     compile project(':react-native-vector-icons')
     compile project(':react-native-svg')
     compile project(':react-native-fs')
     compile project(':react-native-device-info')
-    compile project(':react-native-camera')
     compile project(':react-native-push-notification')
+    compile project(':react-native-splash-screen')
+    compile project(':react-native-keep-awake')
+    compile project(":react-native-camera-kit")
+    compile project(':react-native-blur')
+    compile project(':react-native-sentry')
     compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:23.0.1"
+    compile "com.android.support:appcompat-v7:25.0.2"
     compile "com.facebook.react:react-native:+"  // From node_modules
 //    compile 'no.nordicsemi.android:dfu:1.3.0'
     compile project(':dfu')
-    compile ('com.google.android.gms:play-services-gcm:8.1.0') {
+    compile ('com.google.android.gms:play-services-gcm:9.6.1') {
         force = true;
     }
 }
