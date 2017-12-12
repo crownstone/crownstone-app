@@ -111,10 +111,11 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.disabled = false;
+        newState.lastSeenTemperature = update(action.data.lastSeenTemperature, newState.lastSeenTemperature);;
         return newState;
       }
       return state;
-    case 'UPDATE_MESH_NETWORK_ID': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
+    case 'UPDATE_MESH_NETWORK_ID':
       if (action.data) {
         let newState = {...state};
         newState.meshNetworkId   = update(action.data.meshNetworkId, newState.meshNetworkId);
@@ -131,9 +132,9 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
     case 'UPDATE_STONE_DIAGNOSTICS':
       if (action.data) {
         let newState = {...state};
-        if (action.data.lastSeen)            { newState.lastSeen = action.data.lastSeen; }
-        if (action.data.lastSeenViaMesh)     { newState.lastSeenViaMesh = action.data.lastSeenViaMesh; }
-        if (action.data.lastSeenTemperature) { newState.lastSeenTemperature = action.data.lastSeenTemperature; }
+        action.data.lastSeen            = update(action.data.lastSeen,            newState.lastSeen);
+        action.data.lastSeenViaMesh     = update(action.data.lastSeenViaMesh,     newState.lastSeenViaMesh);
+        action.data.lastSeenTemperature = update(action.data.lastSeenTemperature, newState.lastSeenTemperature);
         return newState;
       }
       return state;

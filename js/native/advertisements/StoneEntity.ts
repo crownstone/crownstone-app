@@ -1,22 +1,26 @@
-import {LOG_LEVEL} from "../../logging/LogLevels";
-import {LOG} from "../../logging/Log";
-import {DISABLE_TIMEOUT, FALLBACKS_ENABLED, HARDWARE_ERROR_REPORTING} from "../../ExternalConfig";
-import {eventBus} from "../../util/EventBus";
-import {Util} from "../../util/Util";
-import {Scheduler} from "../../logic/Scheduler";
-import {DfuStateHandler} from "../firmware/DfuStateHandler";
-import {IndividualStoneTracker} from "./IndividualStoneTracker";
-import {LocationHandler} from "../localization/LocationHandler";
-import {StoneMeshTracker} from "./StoneMeshTracker";
-import {StoneBehaviour} from "./StoneBehaviour";
+import { LOG_LEVEL }        from "../../logging/LogLevels";
+import { LOG }              from "../../logging/Log";
+import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, HARDWARE_ERROR_REPORTING } from "../../ExternalConfig";
+import { eventBus }         from "../../util/EventBus";
+import { Util }             from "../../util/Util";
+import { Scheduler }        from "../../logic/Scheduler";
+import { LocationHandler }  from "../localization/LocationHandler";
+import { StoneMeshTracker } from "./StoneMeshTracker";
+import { StoneBehaviour }   from "./StoneBehaviour";
 
-let TRIGGER_ID = "RSSI_TRIGGER_FUNCTION";
 let RSSI_TIMEOUT = 5000;
-let RSSI_REFRESH = 1;
+
+const UPDATE_STATE_FROM_ADVERTISEMENT = 'UPDATE_STATE_FROM_ADVERTISEMENT';
+const UPDATE_STONE_TIME_LAST_SEEN     = 'UPDATE_STONE_TIME_LAST_SEEN';
+const UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH = 'UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH';
+const UPDATE_STONE_RSSI               = 'UPDATE_STONE_RSSI';
+
 /**
  * This will control a stone. It will make sure advertisements will update its state and keep track of its position in the mesh.
  */
 export class StoneEntity {
+
+  subscriptions;
 
   stoneId;
   sphereId;
@@ -36,11 +40,12 @@ export class StoneEntity {
     this.sphereId = sphereId;
     this.stoneId = stoneId;
 
-    this.behaviour   = new StoneBehaviour(store, sphereId, stoneId);
+    this.behaviour   = new StoneBehaviour(  store, sphereId, stoneId);
     this.meshTracker = new StoneMeshTracker(store, sphereId, stoneId);
 
     this.subscribe();
   }
+
 
   _validate(state = undefined) {
     if (!state) {
@@ -52,18 +57,30 @@ export class StoneEntity {
     return true;
   }
 
+
   subscribe() {
     // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
-    eventBus.on("connect", (handle) => {
-      // TODO: update this to the StoneStoreManager
-      Scheduler.clearOverwritableTriggerAction(TRIGGER_ID, ADVERTISEMENT_PREFIX + handle);
-    });
+    // This is to avoid the case where a state that was recorded pre-connection is shown post-connection
+    // (ie. switch off instead of on)
+    this.subscriptions.push(eventBus.on("connect", (handle) => {
+      let state = this.store.getState();
+      let sphere = state.spheres[this.sphereId];
+      let stone = sphere.stones[this.stoneId];
 
+      if (stone.config.handle === handle) {
+        this.storeManager.clearActions(this.stoneId);
+      }
+    }));
   }
+
 
   destroy() {
-
+    this.storeManager.clearActions(this.stoneId);
+    this.subscriptions.forEach((unsubscribe) => { unsubscribe(); });
+    this.behaviour.destroy();
+    this.meshTracker.destroy();
   }
+
 
   ibeaconUpdate(ibeaconPackage : ibeaconPackage) {
     let state = this.store.getState();
@@ -88,6 +105,8 @@ export class StoneEntity {
     }
 
     this._updateDisabledState();
+
+    // update RSSI, we only use the iBeacon once since it has an average rssi
     this._updateRssi(ibeaconPackage.rssi);
 
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
@@ -99,12 +118,12 @@ export class StoneEntity {
     }
 
     // update the behaviour controller.
-    this.behaviour.ibeaconUpdate(ibeaconPackage);
+    this.behaviour.ibeaconUpdate(state, stone, ibeaconPackage);
   }
+
 
   _emitUpdateEvents(stone, rssi) {
     // These events are used in the Batch Command Handler
-
     eventBus.emit(Util.events.getCrownstoneTopic(this.sphereId, this.stoneId), {
       handle: stone.config.handle,
       stoneId: this.stoneId,
@@ -120,6 +139,7 @@ export class StoneEntity {
       });
     }
   }
+
 
   _updateDisabledState() {
     const state = this.store.getState();
@@ -156,10 +176,13 @@ export class StoneEntity {
         stoneId: this.stoneId,
         data: {disabled: true, rssi: -1000}
       });
+
+      eventBus.emit("CrownstoneDisabled", this.sphereId);
     };
 
-    this.disabledTimeout  = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + this.stoneId + "_");
+    this.disabledTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + this.stoneId + "_");
   }
+
 
   _updateRssi(rssi) {
     const state = this.store.getState();
@@ -168,16 +191,14 @@ export class StoneEntity {
     let stone = sphere.stones[this.stoneId];
 
     // only update rssi if there is a measurable difference and check if rssi is smaller than 0 to make sure its a valid measurement.
-    if (Math.abs(stone.config.rssi - rssi) > 1 && rssi < 0) {
-      // update RSSI, we only use the iBeacon once since it has an average rssi
-      // TODO: use StoneStoreManager
-      // Scheduler.loadOverwritableAction(TRIGGER_ID, this.stoneId, {
-      //   type: 'UPDATE_STONE_RSSI',
-      //   sphereId: this.sphereId,
-      //   stoneId: this.stoneId,
-      //   data: { rssi: ibeaconPackage.rssi, lastSeen: new Date().valueOf() },
-      //   __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-      // });
+    if (stone.config.rssi !== rssi && rssi < 0) {
+      this.storeManager.loadAction(this.stoneId, UPDATE_STONE_RSSI, {
+        type: 'UPDATE_STONE_RSSI',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        data: { rssi: rssi },
+        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+      });
     }
 
     if (this.clearRssiTimeout && typeof this.clearRssiTimeout === 'function') {
@@ -198,32 +219,79 @@ export class StoneEntity {
     this.clearRssiTimeout = Scheduler.scheduleCallback(clearRSSICallback, RSSI_TIMEOUT, "updateRSSI_" + this.stoneId + "_");
   }
 
-  handleAdvertisementOfExternalCrownstone() {
-    // TODO : only log time last seen
-    this._emitUpdateEvents() // emit
-  }
 
+  /**
+   * This stone entity has sent an advertisement containing the state of ANOTHER crownstone. Handle this.
+   * @param stone
+   * @param {crownstoneAdvertisement} advertisement
+   */
+  handleAdvertisementOfExternalCrownstone(stone, advertisement : crownstoneAdvertisement) {
+    this._updateStoneLastSeen();
 
-  handleDirectAdvertisement(advertisement : crownstoneAdvertisement) {
-    // TODO : log last seen
-    this.handleAdvertisementContent(advertisement);
-
+    // if this crownstone was disabled, change this since we saw it directly
     this._updateDisabledState();
 
-    this._emitUpdateEvents() // emit
+    /// tell the rest of the app this stone was seen, and its meshnetwork was heard from.
+    this._emitUpdateEvents(stone, advertisement.rssi) // emit
   }
 
-  handleContentViaMesh(advertisement : crownstoneAdvertisement) {
-    // TODO : log lastSeenInMesh
-    this.handleAdvertisementContent(advertisement);
+
+  /**
+   * This stone entity has sent an advertisement containing it's own state. Handle this.
+   * @param stone
+   * @param {crownstoneAdvertisement} advertisement
+   */
+  handleDirectAdvertisement(stone, advertisement : crownstoneAdvertisement) {
+    this._updateStoneLastSeen();
+
+    // if this crownstone was disabled, change this since we saw it directly
+    this._updateDisabledState();
+
+    // update the state entity
+    this._handleAdvertisementContent(stone, advertisement);
+
+    // tell the rest of the app this stone was seen, and its meshnetwork was heard from.
+    this._emitUpdateEvents(stone, advertisement.rssi) // emit
   }
 
-  handleAdvertisementContent(advertisement : crownstoneAdvertisement) {
-    let state = this.store.getState();
-    if (!this._validate(state)) { return; }
-    let sphere = state.spheres[this.sphereId];
-    let stone = sphere.stones[this.stoneId];
 
+  /**
+   * This stones service data was advertised by another crownstone
+   * @param stone
+   * @param {crownstoneAdvertisement} advertisement
+   */
+  handleContentViaMesh(stone, advertisement : crownstoneAdvertisement) {
+    eventBus.emit(Util.events.getViaMeshTopic(this.sphereId, stone.config.meshNetworkId), {
+      id: this.stoneId,
+      serviceData: advertisement.serviceData
+    });
+
+    // if this crownstone was disabled, change this since we saw it indirectly
+    this._updateDisabledState();
+
+    // update the state entity
+    this._handleAdvertisementContent(stone, advertisement);
+
+    // last seen via mesh.
+    this.storeManager.loadAction(this.stoneId, UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH, {
+      type: 'UPDATE_STONE_DIAGNOSTICS',
+      sphereId: this.sphereId,
+      stoneId: this.stoneId,
+      data: {
+        lastSeenViaMesh: new Date().valueOf(),
+      },
+      __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+    });
+  }
+
+
+  /**
+   * Handle the data in the serviceData of the advertisement. This data belongs to this entity
+   * @param stone
+   * @param {crownstoneAdvertisement} advertisement
+   * @private
+   */
+  _handleAdvertisementContent(stone, advertisement : crownstoneAdvertisement) {
     // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
     // reset is complete.
     if (stone.config.dfuResetRequired === true) {
@@ -234,12 +302,7 @@ export class StoneEntity {
     this.handleErrors(stone, advertisement);
 
     this.handleState(stone, advertisement);
-    // TODO: log temperature
-
-
   }
-
-
 
 
   handleErrors(stone, advertisement) {
@@ -268,8 +331,7 @@ export class StoneEntity {
   }
 
 
-
-  handleState(stone, advertisement) {
+  handleState(stone, advertisement : crownstoneAdvertisement) {
     let serviceData = advertisement.serviceData;
     let measuredUsage = Math.floor(serviceData.powerUsage);
 
@@ -287,72 +349,36 @@ export class StoneEntity {
       measuredUsage = 0;
     }
 
-    if (this.temporaryIgnore !== true) {
-      let action = {
-        type: 'UPDATE_STONE_STATE',
-        sphereId: this.sphereId,
-        stoneId: this.stoneId,
-        data: { state: switchState, currentUsage: measuredUsage, applianceId: stone.config..applianceId },
-        updatedAt: currentTime,
-        __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
-      };
-      // TODO: use StoneStoreManager
-    }
-
-  }
-  // rssi
-  // state
-  // power usage
-  // disabled
-  // forward to behaviour
-  // keep track of mesh state
-
-
-
-  receivedAdvertisementUpdate(sphereId, stone, stoneId, rssi) {
-    let state = this.store.getState();
-    if (!state.spheres[sphereId]) { return; }
-    if (!state.spheres[sphereId].stones[stoneId]) { return; }
-
-    // internal event to tell the app this crownstone has been seen.
-    eventBus.emit(Util.events.getCrownstoneTopic(sphereId, stoneId), {
-      handle: stone.config.handle,
-      stoneId: stoneId,
-      rssi: rssi,
+    this.storeManager.loadAction(this.stoneId, UPDATE_STATE_FROM_ADVERTISEMENT, {
+      type: 'UPDATE_STONE_STATE',
+      sphereId: this.sphereId,
+      stoneId: this.stoneId,
+      data: {
+        state: switchState,
+        currentUsage: measuredUsage,
+        applianceId: stone.config.applianceId,
+        lastSeenTemperature : serviceData.temperature
+      },
+      updatedAt: currentTime,
+      __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
     });
 
-    // emit that something from this mesh network has broadcasted
-    if (stone.config.meshNetworkId) {
-      eventBus.emit(Util.events.getMeshTopic(sphereId, stone.config.meshNetworkId), {
-        handle: stone.config.handle,
-        stoneId: stoneId,
-        meshNetworkId: stone.config.meshNetworkId,
-        rssi: rssi,
-      });
-    }
-
-    this.update(sphereId, stoneId);
   }
+
 
   /**
-   *
-   * @param sphereId
-   * @param remoteStoneId       The remote stone id (the one who owns the payload, not the advertisement)
-   * @param meshNetworkId
-   * @param randomFromServiceData
-   * @param advertisingStoneId
-   * @param serviceData
+   * Util method to avoid code duplication
+   * @private
    */
-  receivedUpdateViaMesh(sphereId: string, remoteStoneId: string, meshNetworkId: number, randomFromServiceData : string, advertisingStoneId : string, serviceData: crownstoneServiceData) {
-    let state = this.store.getState();
-    if (!state.spheres[sphereId]) { return; }
-    if (!state.spheres[sphereId].stones[remoteStoneId]) { return; }
-
-
-
-    // update the visibility of the Crownstone
-    this.update(sphereId, remoteStoneId);
+  _updateStoneLastSeen() {
+    this.storeManager.loadAction(this.stoneId, UPDATE_STONE_TIME_LAST_SEEN, {
+      type: 'UPDATE_STONE_DIAGNOSTICS',
+      sphereId: this.sphereId,
+      stoneId: this.stoneId,
+      data: {
+        lastSeen: new Date().valueOf(),
+      },
+      __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+    });
   }
-
-
 }

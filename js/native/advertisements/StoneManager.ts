@@ -1,22 +1,18 @@
-import {eventBus} from "../../util/EventBus";
-import {LogProcessor} from "../../logging/LogProcessor";
-import {DISABLE_TIMEOUT, FALLBACKS_ENABLED, HARDWARE_ERROR_REPORTING, LOG_BLE} from "../../ExternalConfig";
-import {LOG} from "../../logging/Log";
-import {NativeBus} from "../libInterface/NativeBus";
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {BlePromiseManager} from "../../logic/BlePromiseManager";
-import {BleUtil} from "../../util/BleUtil";
-import {BluenetPromiseWrapper} from "../libInterface/BluenetPromise";
-import {Scheduler} from "../../logic/Scheduler";
-import {Util} from "../../util/Util";
-import {LOG_LEVEL} from "../../logging/LogLevels";
-import {StoneEntity} from "./StoneEntity";
-import {LocationHandler} from "../localization/LocationHandler";
-import {DfuStateHandler} from "../firmware/DfuStateHandler";
+import { eventBus }               from "../../util/EventBus";
+import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
+import { LOG }                    from "../../logging/Log";
+import { NativeBus }              from "../libInterface/NativeBus";
+import { MapProvider }            from "../../backgroundProcesses/MapProvider";
+import { BlePromiseManager }      from "../../logic/BlePromiseManager";
+import { BleUtil }                from "../../util/BleUtil";
+import { BluenetPromiseWrapper }  from "../libInterface/BluenetPromise";
+import { Scheduler }              from "../../logic/Scheduler";
+import { Util }                   from "../../util/Util";
+import { StoneEntity }            from "./StoneEntity";
+import { LocationHandler }        from "../localization/LocationHandler";
+import { DfuStateHandler }        from "../firmware/DfuStateHandler";
+import { StoneStoreManager }      from "./StoneStoreManager";
 
-
-let TRIGGER_ID = 'STONE_MANAGER';
-let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
 
 /**
  * The Stone Manager receives all updates from advertisements and ibeacons
@@ -26,21 +22,24 @@ let ADVERTISEMENT_PREFIX =  "updateStoneFromAdvertisement_";
  */
 class StoneManagerClass {
 
-  store = undefined;
+  store;
+  storeManager;
   _initialized = false;
   stonesInConnectionProcess : any;
   factoryResettingCrownstones : any = {};
-  temporaryIgnore = false;
-  temporaryIgnoreTimeout = undefined;
 
   entities = {};
+  sphereEntityCollections = {};
+
 
   loadStore(store) {
     if (this._initialized === false) {
       this.store = store;
+      this.storeManager = new StoneStoreManager(store);
       this._init();
     }
   }
+
 
   _init() {
     if (this._initialized === false) {
@@ -59,22 +58,26 @@ class StoneManagerClass {
       });
 
 
-      // TODO: check for relevance
-      // eventBus.on("ignoreTriggers", () => {
-      //   this.temporaryIgnore = true;
-      //   this.temporaryIgnoreTimeout = Scheduler.scheduleCallback(() => {
-      //     if (this.temporaryIgnore === true) {
-      //       LOG.error("Temporary ignore of triggers has been on for more than 20 seconds!!");
-      //     }
-      //   }, 20000, 'temporaryIgnoreTimeout');
-      // });
-      // eventBus.on("useTriggers", () => {
-      //   this.temporaryIgnore = false;
-      //   if (typeof this.temporaryIgnoreTimeout === 'function') {
-      //     this.temporaryIgnoreTimeout();
-      //     this.temporaryIgnoreTimeout = null;
-      //   }
-      // });
+      // clean entities if we remove a stone or a sphere
+      eventBus.on("databaseChange", (data) => {
+        let change = data.change;
+        let changedAction = change.removeStone || change.removeSphere
+        if (changedAction) {
+          let sphereIds = Object.keys(changedAction.sphereIds);
+          sphereIds.forEach((sphereId) => {
+            if (this.sphereEntityCollections[sphereId]) {
+              let stoneIds = Object.keys(this.sphereEntityCollections[sphereId]);
+              stoneIds.forEach((stoneId) => {
+                if (this.sphereEntityCollections[sphereId][stoneId]) {
+                  this.removeEntity(sphereId, stoneId);
+                }
+              });
+            }
+          });
+        }
+      });
+
+      eventBus.on("CrownstoneDisabled", (sphereId) => { this._evaluateDisabledState(sphereId); });
 
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
       NativeBus.on(NativeBus.topics.advertisement, this.handleAdvertisement.bind(this));
@@ -88,24 +91,35 @@ class StoneManagerClass {
     }
   }
 
+
   _restoreConnectionTimeout() {
     Object.keys(this.stonesInConnectionProcess).forEach((handle) => {
       if (typeof this.stonesInConnectionProcess[handle].timeout === 'function') {
         this.stonesInConnectionProcess[handle].timeout();
-        this.stonesInConnectionProcess[handle].timeout = null;
       }
     });
     this.stonesInConnectionProcess = {};
   }
 
+
   createEntity(sphereId, stoneId) {
-    this.entities[stoneId] = new StoneEntity(this.store, this.storeManager, sphereId, stoneId)
+    this.entities[stoneId] = new StoneEntity(this.store, this.storeManager, sphereId, stoneId);
+
+    if (!this.sphereEntityCollections[sphereId]) {
+      this.sphereEntityCollections[sphereId] = {};
+    }
+
+    this.sphereEntityCollections[sphereId][stoneId] = true;
   }
 
-  removeEntity(stoneId) {
+
+  removeEntity(sphereId, stoneId) {
     this.entities[stoneId].destroy();
     delete this.entities[stoneId];
+    this.sphereEntityCollections[sphereId][stoneId] = false;
+    delete this.sphereEntityCollections[sphereId][stoneId];
   }
+
 
   handleIBeacon(ibeaconPackage : ibeaconPackage) {
     let sphereId = ibeaconPackage.referenceId;
@@ -204,20 +218,42 @@ class StoneManagerClass {
     if (!this.entities[referenceByCrownstoneId.id]) { this.createEntity(sphereId, referenceByCrownstoneId.id); }
     if (!this.entities[referenceByHandle.id])       { this.createEntity(sphereId, referenceByHandle.id);       }
 
-    if (serviceData.stateOfExternalCrownstone === true) {
-      let stoneFromServiceData   = state.spheres[advertisement.referenceId].stones[referenceByCrownstoneId.id];
-      let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
+    let stoneFromServiceData   = state.spheres[advertisement.referenceId].stones[referenceByCrownstoneId.id];
+    let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
 
+    if (serviceData.stateOfExternalCrownstone === true) {
       this._resolveMeshNetworkIds(sphereId, stoneFromServiceData, referenceByCrownstoneId.id, stoneFromAdvertisement, referenceByHandle.id);
 
-      this.entities[referenceByCrownstoneId.id].handleContentViaMesh(advertisement);
-      this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(advertisement);
+      this.entities[referenceByCrownstoneId.id].handleContentViaMesh(stoneFromServiceData, advertisement);
+      this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(stoneFromAdvertisement, advertisement);
 
     }
     else {
-      this.entities[referenceByCrownstoneId.id].handleDirectAdvertisement(advertisement);
+      this.entities[referenceByCrownstoneId.id].handleDirectAdvertisement(stoneFromAdvertisement, advertisement);
     }
   }
+
+
+  _factoryResetUnknownCrownstone(handle) {
+    if (!this.factoryResettingCrownstones[handle]) {
+      this.factoryResettingCrownstones[handle] = true;
+
+      let clearFlag = () => {
+        this.factoryResettingCrownstones[handle] = null;
+        delete this.factoryResettingCrownstones[handle];
+      };
+
+      let details = { from: 'SingleCommand: connecting to ' + handle + ' doing this: commandFactoryReset' };
+      BlePromiseManager.registerPriority(
+        () => {
+          let proxy = BleUtil.getProxy(handle);
+          return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
+        }, details )
+        .then(() => { clearFlag(); })
+        .catch(() => { clearFlag(); })
+    }
+  }
+
 
   _resolveMeshNetworkIds(sphereId, stoneFromServiceData, stoneFromServiceDataId, stoneFromAdvertisement, stoneFromAdvertisementId) {
     let meshNetworkId_external   = stoneFromServiceData.config.meshNetworkId;
@@ -265,49 +301,19 @@ class StoneManagerClass {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  _other() {
+  _evaluateDisabledState(sphereId) {
+    let state = this.store.getState();
     // check if there are any stones left that are not disabled.
-    let otherStoneIds = Object.keys(state.spheres[this.sphereId].stones);
+    let stoneIds = Object.keys(state.spheres[sphereId].stones);
     let allDisabled = true;
-    otherStoneIds.forEach((otherStoneId) => {
-      if (otherStoneId !== this.stoneId) {
-        if (state.spheres[this.sphereId].stones[otherStoneId].config.disabled === false) {
-          allDisabled = false;
-        }
+    stoneIds.forEach((stoneId) => {
+      if (state.spheres[sphereId].stones[stoneId].config.disabled === false) {
+        allDisabled = false;
       }
     });
 
     // fallback to ensure we never miss an enter or exit event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
-      // TODO: find good central decision point for this.
       // if we are in DFU, do not leave the sphere by fallback
       if (DfuStateHandler.areDfuStonesAvailable() !== true) {
         if (allDisabled === true) {
@@ -317,30 +323,8 @@ class StoneManagerClass {
       }
       else {
         // reschedule the fallback if we are in dfu.
-        this.disabledTimeout = Scheduler.scheduleBackgroundCallback(disableCallback, DISABLE_TIMEOUT, "disable_" + stoneId + "_")
+        Scheduler.scheduleBackgroundCallback(() => { this._evaluateDisabledState(sphereId); }, DISABLE_TIMEOUT, "disable")
       }
-    }
-  }
-
-
-
-  _factoryResetUnknownCrownstone(handle) {
-    if (!this.factoryResettingCrownstones[handle]) {
-      this.factoryResettingCrownstones[handle] = true;
-
-      let clearFlag = () => {
-        this.factoryResettingCrownstones[handle] = null;
-        delete this.factoryResettingCrownstones[handle];
-      };
-
-      let details = { from: 'SingleCommand: connecting to ' + handle + ' doing this: commandFactoryReset' };
-      BlePromiseManager.registerPriority(
-        () => {
-          let proxy = BleUtil.getProxy(handle);
-          return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
-        }, details)
-        .then(() => { clearFlag(); })
-        .catch(() => { clearFlag(); })
     }
   }
 }

@@ -6,7 +6,6 @@ import {Util} from "../../util/Util";
 
 const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
 const meshRemovalTimeout : number = 200; // seconds
-
 export class StoneMeshTracker {
   unsubscribeMeshListener : any;
   meshNetworkId : number;
@@ -18,6 +17,7 @@ export class StoneMeshTracker {
   notThisStoneCounter : number  = 0;
   timeLastSeen : number  = 0;
 
+  subscriptions = [];
 
   constructor(store, sphereId, stoneId) {
     this.store = store;
@@ -28,46 +28,43 @@ export class StoneMeshTracker {
     this.timeLastSeen = 0;
 
     this.init()
-
-    // TODO: emit the mesh update event only for unique advertisements. Due to ibeacon connectable on/off the unique filter is not always working.
-    if (this.advertisementIdsPerStoneId[advertisingStoneId] && this.advertisementIdsPerStoneId[advertisingStoneId] !== randomFromServiceData) {
-      eventBus.emit(Util.events.getViaMeshTopic(sphereId, meshNetworkId), {
-        id: remoteStoneId,
-        serviceData: serviceData
-      });
-    }
-    this.advertisementIdsPerStoneId[advertisingStoneId] = randomFromServiceData;
   }
 
   init() {
-    eventBus.on("databaseChange", (data) => {
+    this.subscriptions.push(eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if ( change.meshIdUpdated && change.meshIdUpdated.stoneIds[this.stoneId] ) {
         this.updateListener();
       }
-    });
+    }));
 
     this.updateListener();
   }
 
+  destroy() {
+    this.subscriptions.forEach((unsubscribe) => { unsubscribe(); });
+    this._clearMeshListener();
+  }
 
-  updateListener() {
-    // TODO: this is a quick fix to make it not crash, fix this better.
-    if (this.store.getState().spheres[this.sphereId] === undefined) {
-      LOG.warn("Missing sphere:", this.sphereId);
-      return;
-    }
-    if (this.store.getState().spheres[this.sphereId].stones[this.stoneId] === undefined) {
-      LOG.warn("Missing stone:", this.stoneId);
-      return;
-    }
-    this.meshNetworkId = this.store.getState().spheres[this.sphereId].stones[this.stoneId].config.meshNetworkId;
-
-    // cleanup previous listener
+  _clearMeshListener() {
     if (this.unsubscribeMeshListener && typeof this.unsubscribeMeshListener === 'function') {
       this.unsubscribeMeshListener();
       this.unsubscribeMeshListener = undefined;
     }
+  }
+
+
+  updateListener() {
+    let state = this.store.getState();
+    let sphere = state.spheres[this.sphereId];
+    if (!sphere) { return; }
+    let stone = sphere.stones[this.stoneId];
+    if (!stone) { return; }
+
+    this.meshNetworkId = stone.config.meshNetworkId;
+
+    // cleanup previous listener
+    this._clearMeshListener();
 
     let now = new Date().valueOf();
 
@@ -76,11 +73,9 @@ export class StoneMeshTracker {
       this.unsubscribeMeshListener = eventBus.on(Util.events.getViaMeshTopic(this.sphereId, this.meshNetworkId), (data) => {
         if (data.id === this.stoneId) {
           this.timeLastSeen = now;
-          // LOG.info("PROGRESSING RESET ", this.stoneUID, " from ", this.meshNetworkId, "to ", 0);
           this.notThisStoneCounter = 0;
         }
         else {
-          // LOG.info("PROGRESSING ", this.stoneUID, " from ", this.meshNetworkId, "to ", this.notThisStoneCounter);
           this.notThisStoneCounter += 1;
         }
 
