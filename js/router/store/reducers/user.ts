@@ -113,6 +113,7 @@ export default (state = defaultSettings, action : any = {}) => {
         newState.uploadLocation         = update(action.data.uploadLocation,      newState.uploadLocation);
         newState.uploadSwitchState      = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
         newState.uploadPowerUsage       = update(action.data.uploadPowerUsage,    newState.uploadPowerUsage);
+        newState.uploadDiagnostics      = update(action.data.uploadDiagnostics,    newState.uploadDiagnostics);
         newState.uploadHighFrequencyPowerUsage = update(action.data.uploadHighFrequencyPowerUsage,    newState.uploadHighFrequencyPowerUsage);
         newState.uploadDeviceDetails    = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);
 
