@@ -105,8 +105,8 @@ android {
         applicationId "rocks.crownstone.consumerapp"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 24 // Uneven numbers for beta releases!
-        versionName "1.11.0"
+        versionCode 27 // Uneven numbers for beta releases!
+        versionName "1.12.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
