@@ -54,7 +54,7 @@ interface crownstoneServiceData {
   temperature         : number,
   powerFactor         : number,
   powerUsageReal      : number,
-  powerUsageAppearent : number,
+  powerUsageApparent  : number,
   powerUsage          : number,
   accumulatedEnergy   : number,
   newDataAvailable    : boolean,
