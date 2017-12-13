@@ -68,7 +68,7 @@ class MapProviderClass {
         }
       });
 
-      this._updateCloudIdMap();
+      this.refreshAll();
     }
   }
 

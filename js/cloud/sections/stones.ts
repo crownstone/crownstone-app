@@ -30,7 +30,7 @@ export const stones = {
     return this._setupRequest(
       'PUT',
       '/Spheres/{id}/ownedStones/' + cloudStoneId,
-      {background: background, data:data},
+      {background: background, data: data},
       'body'
     );
   },
@@ -199,6 +199,7 @@ export const stones = {
       'POST',
       '/Stones/{id}/diagnostics',
       { background: background, data: data },
+      'body'
     );
   }
 

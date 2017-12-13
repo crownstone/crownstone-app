@@ -8,7 +8,7 @@ import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {ScheduleSyncer} from "./ScheduleSyncer";
-import {LOG, LOGi, LOGw} from "../../../../logging/Log";
+import {LOG, LOGe, LOGi, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 export class StoneSyncer extends SyncingSphereItemBase {
@@ -312,6 +312,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
       return;
     }
 
+    if (!Permissions.inSphere(this.localSphereId).canUploadDiagnostics) {
+      return;
+    }
+
     let cloudIdMap = this._getCloudIdMap(stonesInState);
 
     stonesInCloud.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
@@ -329,7 +333,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
               timestamp: new Date().valueOf(),
               type: 'lastSeen',
               value: stoneInState.config.lastSeen
-            })
+            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeen Diagnostic", err); })
           );
         }
 
@@ -340,7 +344,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
               timestamp: new Date().valueOf(),
               type: 'lastSeenTemperature',
               value: stoneInState.config.lastSeenTemperature
-            })
+            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenTemperature Diagnostic", err); })
           );
         }
 
@@ -351,7 +355,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
               timestamp: new Date().valueOf(),
               type: 'lastSeenViaMesh',
               value: stoneInState.config.lastSeenViaMesh
-            })
+            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenViaMesh Diagnostic", err); })
           );
         }
 

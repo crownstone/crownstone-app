@@ -11,7 +11,7 @@ import {
   LOG_MESH,
   LOG_STORE,
   LOG_SCHEDULER,
-  RELEASE_MODE_USED, LOG_MESSAGES,
+  RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
 } from '../ExternalConfig'
 import {LogProcessor} from "./LogProcessor";
 import {logToFile} from "./LogUtil";
@@ -87,6 +87,10 @@ class Logger {
 
   messages(...any) {
     this._log('Messages ---', LOG_MESSAGES,  LogProcessor.log_info, arguments);
+  }
+
+  native(...any) {
+    this._log('Messages ---', LOG_NATIVE,  LogProcessor.log_native, arguments);
   }
 
   _log(type, globalCheckField, dbCheckField, allArguments) {

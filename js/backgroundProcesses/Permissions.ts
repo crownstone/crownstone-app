@@ -5,7 +5,6 @@ import {LOG} from "../logging/Log";
 export class PermissionBase {
   useKeepAliveState       = false; // g
   setStoneTime            = false; // a or m
-  storeDiagnosticsInCloud = false; // a or m
   setBehaviourInCloud     = false; // a
   seeUpdateCrownstone     = false; // a?
   updateCrownstone        = false; // a
@@ -43,13 +42,16 @@ export class PermissionBase {
   canCreateData           = false; // a or m
   canCreateSpheres        = false; // a or m
 
+  canUploadDiagnostics    = false; // a or m
   canUploadStones         = false; // a or m
   canUploadLocations      = false; // a or m
   canUploadAppliances     = false; // a or m
   canUploadData           = false; // a or m
   canUploadSpheres        = false; // a or m
+};
 
-}
+const EmptyPermissions = new PermissionBase();
+
 
 export class PermissionClass extends PermissionBase {
   _store : any;
@@ -134,7 +136,6 @@ export class PermissionClass extends PermissionBase {
         this.changeBehaviour         = true; // admin and member
         this.useKeepAliveState       = true; // admin and member
         this.setStoneTime            = true; // admin and member
-        this.storeDiagnosticsInCloud = true; // admin and member
         this.manageUsers             = true; // admin and member
         this.moveCrownstone          = true; // admin and member
 
@@ -146,6 +147,7 @@ export class PermissionClass extends PermissionBase {
         this.canUploadAppliances     = true; // admin and member
         this.canUploadData           = true; // admin and member
         this.canUploadSpheres        = true; // admin and member
+        this.canUploadDiagnostics    = true; // admin and member
 
         this.canCreateStones         = true; // a or m
         this.canCreateLocations      = true; // a or m
@@ -164,51 +166,10 @@ export class PermissionClass extends PermissionBase {
 
   _revokeAll() {
     LOG.info("Permissions: Revoking all", this._sphereId);
-    this.useKeepAliveState       = false; // g
-    this.setStoneTime            = false; // a or m
-    this.setBehaviourInCloud     = false; // a
-    this.storeDiagnosticsInCloud = false; // a
-    this.seeUpdateCrownstone     = false; // a?
-    this.updateCrownstone        = false; // a
-    this.setupCrownstone         = false; // a
-    this.seeSetupCrownstone      = false; // a
-    this.moveCrownstone          = false; // a or m
-
-    this.doLocalizationTutorial  = false; // a?
-    this.addRoom                 = false; // a?
-    this.editRoom                = false; // a
-    this.removeRoom              = false; // a
-
-    this.editCrownstone          = false; // a
-    this.changeBehaviour         = false; // a or m
-    this.removeCrownstone        = false; // a
-    this.editAppliance           = false; // a
-    this.removeAppliance         = false; // a
-
-    this.editSphere              = false; // a
-    this.manageUsers             = false; // a or m
-    this.deleteSphere            = false; // a
-    this.inviteAdminToSphere     = false; // a
-    this.inviteMemberToSphere    = false; // a or m
-    this.inviteGuestToSphere     = false; // a or m
-
-    this.canClearAllSchedules    = false; // a
-    this.canAddSchedule          = false; // a or m
-    this.canEditSchedule         = false; // a or m
-    this.canSeeSchedules         = false; // a or m
-    this.canDeleteSchedule       = false; // a or m
-
-    this.canCreateStones         = false; // a or m
-    this.canCreateLocations      = false; // a or m
-    this.canCreateAppliances     = false; // a or m
-    this.canCreateData           = false; // a or m
-    this.canCreateSpheres        = false; // a or m
-
-    this.canUploadStones         = false; // a or m
-    this.canUploadLocations      = false; // a or m
-    this.canUploadAppliances     = false; // a or m
-    this.canUploadData           = false; // a or m
-    this.canUploadSpheres        = false; // a or m
+    let permissions = Object.keys(EmptyPermissions);
+    for (let i = 0; i < permissions.length; i++) {
+      this[permissions[i]] = true;
+    }
   }
 }
 

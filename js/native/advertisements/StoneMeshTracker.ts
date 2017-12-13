@@ -1,11 +1,12 @@
 import { Alert, Vibration } from 'react-native';
 
 import { eventBus } from '../../util/EventBus';
-import { LOG }      from '../../logging/Log';
-import {Util} from "../../util/Util";
+import { LOGd }     from '../../logging/Log';
+import { Util }     from "../../util/Util";
 
 const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
 const meshRemovalTimeout : number = 200; // seconds
+
 export class StoneMeshTracker {
   unsubscribeMeshListener : any;
   meshNetworkId : number;
@@ -20,6 +21,7 @@ export class StoneMeshTracker {
   subscriptions = [];
 
   constructor(store, sphereId, stoneId) {
+    LOGd.native("StoneMeshTracker: Initializing for stone", stoneId);
     this.store = store;
     this.sphereId  = sphereId;
     this.stoneId = stoneId;
@@ -27,7 +29,7 @@ export class StoneMeshTracker {
     this.stoneUID = store.getState().spheres[sphereId].stones[stoneId].config.crownstoneId;
     this.timeLastSeen = 0;
 
-    this.init()
+    this.init();
   }
 
   init() {

@@ -91,6 +91,7 @@ const DeviceInfo = require('react-native-device-info');
   export let LOG_STORE      = LOG_LEVEL.ERROR;   // enabling LOG.store      commands to be shown.
   export let LOG_CLOUD      = LOG_LEVEL.ERROR;   // enabling LOG.cloud      commands to be shown.
   export let LOG_DEBUG      = LOG_LEVEL.ERROR;   // enabling LOG.debug      commands to be shown.
+  export let LOG_NATIVE     = LOG_LEVEL.info;   // enabling LOG.native      commands to be shown.
 
   /**
    * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.

@@ -14,6 +14,7 @@ class LogProcessorClass {
   log_warnings:  number = LOG_LEVEL.NONE;
   log_errors:    number = LOG_LEVEL.NONE;
   log_mesh:      number = LOG_LEVEL.NONE;
+  log_native:    number = LOG_LEVEL.NONE;
   log_scheduler: number = LOG_LEVEL.NONE;
   log_verbose:   number = LOG_LEVEL.NONE;
   log_ble:       number = LOG_LEVEL.NONE;
@@ -73,6 +74,7 @@ class LogProcessorClass {
       this.log_warnings  = dev === true && log === true && devState.log_warnings  === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
       this.log_errors    = dev === true && log === true && devState.log_errors    === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
       this.log_mesh      = dev === true && log === true && devState.log_mesh      === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
+      this.log_native    = dev === true && log === true && devState.log_native    === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
       this.log_scheduler = dev === true && log === true && devState.log_scheduler === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
       this.log_verbose   = dev === true && log === true && devState.log_verbose   === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;
       this.log_ble       = dev === true && log === true && devState.log_ble       === true ? LOG_LEVEL.INFO : LOG_LEVEL.NONE;

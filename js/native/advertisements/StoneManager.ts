@@ -1,6 +1,6 @@
 import { eventBus }               from "../../util/EventBus";
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED } from "../../ExternalConfig";
-import { LOG }                    from "../../logging/Log";
+import { LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
 import { NativeBus }              from "../libInterface/NativeBus";
 import { MapProvider }            from "../../backgroundProcesses/MapProvider";
 import { BlePromiseManager }      from "../../logic/BlePromiseManager";
@@ -25,7 +25,7 @@ class StoneManagerClass {
   store;
   storeManager;
   _initialized = false;
-  stonesInConnectionProcess : any;
+  stonesInConnectionProcess : any = {};
   factoryResettingCrownstones : any = {};
 
   entities = {};
@@ -34,6 +34,7 @@ class StoneManagerClass {
 
   loadStore(store) {
     if (this._initialized === false) {
+      LOGi.native("StoreManager: loadStore");
       this.store = store;
       this.storeManager = new StoneStoreManager(store);
       this._init();
@@ -47,7 +48,7 @@ class StoneManagerClass {
       eventBus.on("connect", (handle) => {
         // this is a fallback mechanism in case no disconnect event is fired.
         this.stonesInConnectionProcess[handle] = { timeout: Scheduler.scheduleCallback(() => {
-            LOG.warn("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");
+            LOGw.native("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");
             this._restoreConnectionTimeout();
           }, 15000, 'ignoreProcessAdvertisementsTimeout')};
       });
@@ -122,16 +123,18 @@ class StoneManagerClass {
 
 
   handleIBeacon(ibeaconPackage : ibeaconPackage) {
+    LOGd.native("StoneManager: Handling iBeacon");
+
     let sphereId = ibeaconPackage.referenceId;
 
     // only use valid rssi measurements, 0 or 128 are not valid measurements
     if (ibeaconPackage.rssi === undefined || ibeaconPackage.rssi > -1) {
-      LOG.debug("StoneManager.handleIbeacon: IGNORE: no rssi.");
+      LOGd.native("StoneManager.handleIbeacon: IGNORE: no rssi.");
       return;
     }
 
     if (sphereId === undefined || ibeaconPackage.major  === undefined || ibeaconPackage.minor === undefined) {
-      LOG.debug("StoneManager.handleIbeacon: IGNORE: no sphereId or no major or no minor.");
+      LOGd.native("StoneManager.handleIbeacon: IGNORE: no sphereId or no major or no minor.");
       return;
     }
 
@@ -139,28 +142,33 @@ class StoneManagerClass {
     let state = this.store.getState();
     let sphere = state.spheres[sphereId];
     if (!(sphere)) {
-      LOG.debug("StoneManager.handleIbeacon: IGNORE: unknown sphere.");
+      LOGd.native("StoneManager.handleIbeacon: IGNORE: unknown sphere.");
       return;
     }
 
     // check if we have a stone with this major / minor
-    let stoneId = MapProvider.stoneIBeaconMap[ibeaconPackage.uuid + '_' + ibeaconPackage.major + '_' + ibeaconPackage.minor];
-    if (!(stoneId)) {
-      LOG.debug("StoneManager.handleIbeacon: IGNORE: unknown stone.");
+    let ibeaconString = ibeaconPackage.uuid + '_' + ibeaconPackage.major + '_' + ibeaconPackage.minor;
+    let stoneData = MapProvider.stoneIBeaconMap[ibeaconString.toLowerCase()];
+    if (!(stoneData)) {
+      LOGd.native("StoneManager.handleIbeacon: IGNORE: unknown stone.");
       return;
     }
+
+    let stoneId = stoneData.id;
 
     // create an entity for this crownstone if one does not exist yet.
     if (!this.entities[stoneId]) { this.createEntity(sphereId, stoneId); }
 
+    LOGv.native("StoneManager.handleIbeacon: propagating to entity.");
     this.entities[stoneId].ibeaconUpdate(ibeaconPackage);
   }
 
 
   handleAdvertisement(advertisement : crownstoneAdvertisement) {
+    LOGd.native("StoneManager: Handling Advertisement");
     // this is on manager level, not on entity level since setup crownstones do not have an entity but do need this functionality.
     if (this.stonesInConnectionProcess[advertisement.handle] !== undefined) {
-      LOG.debug("AdvertisementHandler: IGNORE: connecting to stone.");
+      LOGd.native("StoneManager: IGNORE: connecting to stone.");
       return;
     }
 
@@ -170,19 +178,19 @@ class StoneManagerClass {
 
     // service data not available
     if (typeof serviceData !== 'object') {
-      LOG.debug("AdvertisementHandler: IGNORE: serviceData is not an object.");
+      LOGd.native("StoneManager: IGNORE: serviceData is not an object.");
       return;
     }
 
     // check if we have a state
     if (state.spheres === undefined) {
-      LOG.debug("AdvertisementHandler: IGNORE: We have no spheres.");
+      LOGd.native("StoneManager: IGNORE: We have no spheres.");
       return;
     }
 
     // only relevant if we are in a sphere.
     if (state.spheres[advertisement.referenceId] === undefined) {
-      LOG.debug("AdvertisementHandler: IGNORE: This specific sphere is unknown to us.");
+      LOGd.native("StoneManager: IGNORE: This specific sphere is unknown to us.");
       return;
     }
 
@@ -200,7 +208,7 @@ class StoneManagerClass {
     // repair mechanism to store the handle.
     if (serviceData.stateOfExternalCrownstone === false && referenceByCrownstoneId !== undefined) {
       if (referenceByCrownstoneId.handle != advertisement.handle) {
-        LOG.debug("AdvertisementHandler: IGNORE: Store handle in our database so we can use the next advertisement.");
+        LOGd.native("StoneManager: IGNORE: Store handle in our database so we can use the next advertisement.");
         this.store.dispatch({type: "UPDATE_STONE_HANDLE", sphereId: advertisement.referenceId, stoneId: referenceByCrownstoneId.id, data:{handle: advertisement.handle}});
         return;
       }
@@ -317,7 +325,7 @@ class StoneManagerClass {
       // if we are in DFU, do not leave the sphere by fallback
       if (DfuStateHandler.areDfuStonesAvailable() !== true) {
         if (allDisabled === true) {
-          LOG.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
+          LOGi.info("FALLBACK: StoneStateHandler: FORCE LEAVING SPHERE DUE TO ALL CROWNSTONES BEING DISABLED");
           LocationHandler.exitSphere(sphereId);
         }
       }

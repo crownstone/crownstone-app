@@ -42,7 +42,10 @@ export class StoneStoreManager {
       }
     });
 
-    this.store.batchDispatch(actions);
+
+    if (actions.length > 0) {
+      this.store.batchDispatch(actions);
+    }
     this.actionsPerCrownstone = {};
   }
 

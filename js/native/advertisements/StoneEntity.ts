@@ -1,5 +1,5 @@
 import { LOG_LEVEL }        from "../../logging/LogLevels";
-import { LOG }              from "../../logging/Log";
+import { LOG, LOGi } from "../../logging/Log";
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, HARDWARE_ERROR_REPORTING } from "../../ExternalConfig";
 import { eventBus }         from "../../util/EventBus";
 import { Util }             from "../../util/Util";
@@ -7,6 +7,7 @@ import { Scheduler }        from "../../logic/Scheduler";
 import { LocationHandler }  from "../localization/LocationHandler";
 import { StoneMeshTracker } from "./StoneMeshTracker";
 import { StoneBehaviour }   from "./StoneBehaviour";
+import { StoneStoreManager } from "./StoneStoreManager";
 
 let RSSI_TIMEOUT = 5000;
 
@@ -20,21 +21,20 @@ const UPDATE_STONE_RSSI               = 'UPDATE_STONE_RSSI';
  */
 export class StoneEntity {
 
-  subscriptions;
+  subscriptions = [];
 
   stoneId;
   sphereId;
   store;
-  storeManager;
-  meshTracker;
-  behaviour;
+  storeManager : StoneStoreManager;
+  meshTracker : StoneMeshTracker;
+  behaviour : StoneBehaviour;
 
   disabledTimeout;
   clearRssiTimeout;
 
-  connecting;
-
   constructor(store, storeManager, sphereId, stoneId) {
+    LOGi.native("StoneEntity: Creating entity for ", stoneId);
     this.store = store;
     this.storeManager = storeManager;
     this.sphereId = sphereId;

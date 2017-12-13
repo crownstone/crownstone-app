@@ -508,6 +508,7 @@ export const getMapOfCrownstonesInAllSpheresByCID = function(state) {
  * @param state
  * @returns {{}}
  *
+ * THE KEY IS LOWERCASE
  * return dataType = { (ibeaconUUID + '_' + major + '_' + minor) : { details }}
  *
  * details = {
@@ -550,8 +551,11 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
         locationId: stoneConfig.locationId && locations && locations[stoneConfig.locationId] ? stoneConfig.locationId : null
       };
 
-      map[iBeaconUUID + '_' + stoneConfig.iBeaconMajor + '_' + stoneConfig.iBeaconMajor ] = data
+      let ibeaconString = iBeaconUUID + '_' + stoneConfig.iBeaconMajor + '_' + stoneConfig.iBeaconMinor;
+      map[ibeaconString.toLowerCase()] = data
     }
+
+    return map;
   };
 }
 
