@@ -46,6 +46,8 @@ export class Router_IOS extends Component {
             <Scene key="roomAdd"                    component={Views.RoomAdd}                    hideNavBar={true}  panHandlers={null} direction="vertical" />
             <Scene key="roomEdit"                   component={Views.RoomEdit}                   hideNavBar={true}  panHandlers={null} direction="vertical" />
             <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 hideNavBar={true}  panHandlers={null} direction="vertical" />
+            <Scene key="applianceSelection"         component={Views.ApplianceSelection}         hideNavBar={false} panHandlers={null} direction="vertical" title="Select Device Type" />
+            <Scene key="applianceAdd"               component={Views.ApplianceAdd}               hideNavBar={true}  direction="horizontal" />
             <Scene key="selectFromList"             component={Views.SelectFromList}             hideNavBar={true}  panHandlers={null} direction="vertical" />
             <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         hideNavBar={true}  panHandlers={null} direction="vertical" />
             <Scene key="messageAdd"                 component={Views.MessageAdd}                 hideNavBar={true}  panHandlers={null} direction="vertical" />
@@ -57,8 +59,6 @@ export class Router_IOS extends Component {
                 <Scene key="sphereOverview"         component={Views.SphereOverview}             hideNavBar={true} />
                 <Scene key="roomOverview"           component={Views.RoomOverview}               hideNavBar={true} />
                 <Scene key="deviceOverview"         component={Views.DeviceOverview}             hideNavBar={true} />
-                <Scene key="applianceSelection"     component={Views.ApplianceSelection}         hideNavBar={false} direction="vertical" title="Select Device Type" />
-                <Scene key="applianceAdd"           component={Views.ApplianceAdd}               hideNavBar={true} direction="vertical" />
                 <Scene key="deviceBehaviourEdit"    component={Views.DeviceBehaviourEdit}        hideNavBar={false} title="Edit Behaviour" />
               </Scene>
               <Scene key="messages" tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >

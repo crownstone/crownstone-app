@@ -38,10 +38,10 @@ export class TextEditInput extends Component<any, any> {
   componentDidMount() { }
 
   focus() {
-    if (this.props.autofocus === false) {
-      this.isInFocus = true;
-      this.initialized = true;
-      this.blurValue = null;
+    this.isInFocus = true;
+    this.initialized = true;
+    this.blurValue = null;
+    if (!this.props.autoFocus) {
       (this.refs[this.refName] as any).measure((fx, fy, width, height, px, py) => {
         eventBus.emit("focus", py);
       })

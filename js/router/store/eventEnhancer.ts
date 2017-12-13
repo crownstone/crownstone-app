@@ -241,10 +241,12 @@ function checkAction(action, affectedIds) {
     case "CLOUD_EVENT_REMOVE_APPLIANCES":
     case "CLOUD_EVENT_REMOVE_LOCATIONS":
     case "CLOUD_EVENT_REMOVE_STONES":
+    case "CLOUD_EVENT_REMOVE_USER":
     case "CLOUD_EVENT_REMOVE_SCHEDULES":
     case "CLOUD_EVENT_REMOVE_INSTALLATIONS":
     case "CLOUD_EVENT_REMOVE_DEVICES":
     case "CLOUD_EVENT_REMOVE_MESSAGES":
+    case "CLOUD_EVENT_SPECIAL_USER":
     case "CLOUD_EVENT_SPECIAL_APPLIANCES":
     case "CLOUD_EVENT_SPECIAL_LOCATIONS":
     case "CLOUD_EVENT_SPECIAL_STONES":
@@ -273,6 +275,7 @@ function checkAction(action, affectedIds) {
     case "FINISHED_REMOVE_INSTALLATIONS":
     case "FINISHED_REMOVE_DEVICES":
     case "FINISHED_REMOVE_MESSAGES":
+    case "FINISHED_SPECIAL_USER":
     case "FINISHED_SPECIAL_APPLIANCES":
     case "FINISHED_SPECIAL_LOCATIONS":
     case "FINISHED_SPECIAL_STONES":
@@ -289,6 +292,8 @@ function checkAction(action, affectedIds) {
     case "UPDATE_SPHERE_CLOUD_ID":
       break;
     case "UPDATE_STONE_DIAGNOSTICS":
+      break;
+    case "USER_UPDATE_PICTURE":
       break;
     default:
       LOG.warn("UNKNOWN ACTION TYPE:", action);

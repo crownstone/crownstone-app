@@ -126,6 +126,14 @@ export default (state = defaultSettings, action : any = {}) => {
         return newState;
       }
       return state;
+    case 'USER_UPDATE_PICTURE':
+      if (action.data) {
+        let newState = {...state};
+        newState.picture   = update(action.data.picture,    newState.picture  );
+        newState.pictureId = update(action.data.pictureId,  newState.pictureId);
+        return newState;
+      }
+      return state;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings);
     default:
