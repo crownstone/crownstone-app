@@ -11,7 +11,7 @@ export class PermissionManagerClass {
 
   permissionClasses = {};
 
-  _loadStore(store, userAlreadyLoggedIn : boolean) {
+  loadStore(store, userAlreadyLoggedIn : boolean) {
     if (this._initialized === false) {
       this._store = store;
       this._initialized = true;

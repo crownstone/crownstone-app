@@ -2,6 +2,7 @@ import { update, refreshDefaults } from './reducerUtil'
 
 let defaultState = {
   log_info:      true,
+  log_native:    true,
   log_warnings:  true,
   log_errors:    true,
   log_mesh:      true,
@@ -25,6 +26,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_warnings =  update(action.data.log_warnings,   newState.log_warnings);
         newState.log_errors =    update(action.data.log_errors,     newState.log_errors);
         newState.log_mesh =      update(action.data.log_mesh,       newState.log_mesh);
+        newState.log_native =    update(action.data.log_native,     newState.log_native);
         newState.log_scheduler = update(action.data.log_scheduler,  newState.log_scheduler);
         newState.log_verbose =   update(action.data.log_verbose,    newState.log_verbose);
         newState.log_ble =       update(action.data.log_ble,        newState.log_ble);

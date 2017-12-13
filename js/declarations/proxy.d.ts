@@ -65,16 +65,27 @@ interface crownstoneServiceData {
 }
 
 interface crownstoneAdvertisement {
-  handle            : string,
-  name              : string,
-  rssi              : number,
-  referenceId       : string,
+  handle              : string,
+  name                : string,
+  rssi                : number,
+  referenceId         : string,
   isCrownstoneFamily  : boolean,
   isCrownstonePlug    : boolean,
   isCrownstoneBuiltin : boolean,
   isGuidestone        : boolean,
   isInDFUMode         : boolean,
-  serviceUUID       : string,
-  serviceData       : crownstoneServiceData
+  serviceUUID         : string,
+  serviceData         : crownstoneServiceData
+}
+
+
+interface ibeaconPackage {
+  id    : string,
+  uuid  : string,
+  major : string,
+  minor : string,
+  distance  : number,
+  rssi  : number,
+  referenceId  : string,
 }
 

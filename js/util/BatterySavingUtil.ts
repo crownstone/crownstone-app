@@ -13,7 +13,7 @@ class BatterySavingClass {
 
   constructor() { }
 
-  _loadStore(store) {
+  loadStore(store) {
     LOG.info('LOADED STORE BatterySavingUtil', this._initialized);
     if (this._initialized === false) {
       this.store = store;

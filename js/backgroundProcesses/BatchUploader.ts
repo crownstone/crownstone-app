@@ -16,7 +16,7 @@ class BatchUploadClass {
 
   constructor() {}
 
-  _loadStore(store) {
+  loadStore(store) {
     this._store = store;
     if (this._initialized === false) {
       this._store = store;

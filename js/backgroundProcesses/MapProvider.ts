@@ -1,7 +1,7 @@
 
 import {
   getMapOfCrownstonesBySphereByHandle, getMapOfCrownstonesInAllSpheresByCID,
-  getMapOfCrownstonesInAllSpheresByHandle
+  getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByIBeacon
 } from "../util/DataUtil";
 import {eventBus} from "../util/EventBus";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
@@ -13,6 +13,7 @@ import {LOG} from "../logging/Log";
  * stoneCIDMap = {sphereId: {crownstoneId: {map}}}
  * stoneSphereHandleMap = {sphereId: {handle: {map}}}
  * stoneHandleMap = {handle: {map}}}
+ * stoneIBeaconMap = { (ibeaconUUID + '_' + major + '_' + minor) : {map}}}
  *
  * map = {
  *  id: stoneId, // redux database id
@@ -37,10 +38,11 @@ class MapProviderClass {
   stoneSphereHandleMap : any = {};
   stoneHandleMap : any = {};
   stoneCIDMap : any = {};
+  stoneIBeaconMap : any = {};
   cloud2localMap : globalIdMap = getGlobalIdMap();
   local2cloudMap : globalIdMap = getGlobalIdMap();
 
-  _loadStore(store) {
+  loadStore(store) {
     if (this._initialized === false) {
       this._store = store;
 
@@ -66,16 +68,17 @@ class MapProviderClass {
         }
       });
 
-      this._updateCloudIdMap();
+      this.refreshAll();
     }
   }
 
   refreshAll() {
     LOG.info("MapProvider: Refreshing All.");
     let state = this._store.getState();
-    this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(    state);
-    this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle(state);
-    this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(   state);
+    this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(     state);
+    this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle( state);
+    this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(    state);
+    this.stoneIBeaconMap      = getMapOfCrownstonesInAllSpheresByIBeacon(state);
     this._updateCloudIdMap();
   }
 

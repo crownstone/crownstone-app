@@ -288,6 +288,8 @@ function checkAction(action, affectedIds) {
     case "UPDATE_STONE_CLOUD_ID":
     case "UPDATE_SPHERE_CLOUD_ID":
       break;
+    case "UPDATE_STONE_DIAGNOSTICS":
+      break;
     default:
       LOG.warn("UNKNOWN ACTION TYPE:", action);
   }
