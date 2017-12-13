@@ -2635,7 +2635,10 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			serviceDataMap.putInt("switchState", serviceData.getSwitchState());
 			serviceDataMap.putInt("eventBitmask", eventBitmask);
 			serviceDataMap.putInt("temperature", serviceData.getTemperature());
-			serviceDataMap.putInt("powerUsage", serviceData.getPowerUsage());
+			serviceDataMap.putDouble("powerUsage", serviceData.getPowerUsage() / 1000.0);
+			serviceDataMap.putDouble("powerFactor", 1);
+			serviceDataMap.putDouble("powerUsageReal", serviceData.getPowerUsage() / 1000.0);
+			serviceDataMap.putDouble("powerUsageApparent", serviceData.getPowerUsage() / 1000.0);
 			serviceDataMap.putInt("accumulatedEnergy", serviceData.getAccumulatedEnergy());
 			serviceDataMap.putBoolean("newDataAvailable", CrownstoneServiceData.isNewData(eventBitmask));
 			serviceDataMap.putBoolean("stateOfExternalCrownstone", CrownstoneServiceData.isExternalData(eventBitmask));
