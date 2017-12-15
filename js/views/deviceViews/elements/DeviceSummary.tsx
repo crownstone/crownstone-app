@@ -25,14 +25,55 @@ import { DimmerButton } from "../../components/DimmerButton";
 import { INTENTS } from "../../../native/libInterface/Constants";
 import {DIMMING_ENABLED} from "../../../ExternalConfig";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
 
 export class DeviceSummary extends Component<any, any> {
+  storedSwitchState = 0;
+
+
   constructor(props) {
     super(props);
-    this.state = {pendingCommand: false}
+    this.state = {pendingCommand: false};
+
+    const state = props.store.getState();
+    const sphere = state.spheres[props.sphereId];
+    const stone = sphere.stones[props.stoneId];
+    this.storedSwitchState = stone.state.state;
+  }
+
+  componentWillUnmount() {
+    this.safeStoreUpdate();
+  }
+
+  /**
+   * this will store the switchstate if it is not already done. Used for dimmers which use the "TRANSIENT" action.
+   */
+  safeStoreUpdate() {
+    const state = this.props.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return; }
+
+    const stone = sphere.stones[this.props.stoneId];
+    if (!stone) { return; }
+
+    if (stone.state.state !== this.storedSwitchState) {
+      let data = {state: stone.state.state};
+      if (stone.state.state === 0) {
+        data['currentUsage'] = 0;
+      }
+      this.props.store.dispatch({
+        type: 'UPDATE_STONE_SWITCH_STATE',
+        sphereId: this.props.sphereId,
+        stoneId: this.props.stoneId,
+        data: data
+      });
+
+      this.storedSwitchState = stone.state.state;
+    }
   }
 
   _triggerApplianceSelection(stone) {
+    this.safeStoreUpdate();
     Actions.applianceSelection({
       sphereId: this.props.sphereId,
       applianceId: stone.config.applianceId,
@@ -104,7 +145,18 @@ export class DeviceSummary extends Component<any, any> {
 
 
     if (stone.config.dimmingEnabled === true && DIMMING_ENABLED) {
-      return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />;
+      return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} callback={(newState) => {
+        let data = {state: newState};
+        if (newState === 0) {
+          data['currentUsage'] = 0;
+        }
+        this.props.store.dispatch({
+          type: 'UPDATE_STONE_SWITCH_STATE_TRANSIENT',
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          data: data
+        })
+      }} />;
     }
 
     if (this.state.pendingCommand === true) {
@@ -131,7 +183,7 @@ export class DeviceSummary extends Component<any, any> {
             newState,
             this.props.store,
             {},
-            () => { this.setState({pendingCommand:false});},
+            () => { this.setState({pendingCommand:false}); this.storedSwitchState = newState; },
             INTENTS.manual,
             1,
             'from _getButton in DeviceSummary'

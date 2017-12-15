@@ -2,6 +2,10 @@ import {LOG, LOGd} from '../../logging/Log'
 import {StoreManager} from "./storeManager";
 
 
+const TransientTypes = {
+
+}
+
 /**
  * This will ensure that the usage of the classifier will be done according
  * to when the fingerprints of all rooms are ready.
@@ -18,6 +22,11 @@ export function PersistenceEnhancer({ getState }) {
     let returnValue = next(action);
 
     if (action.type === 'HYDRATE') { return returnValue; }
+
+    // certain types do not need to be persisted
+    if (TransientTypes[action.type]) { return returnValue; }
+
+
 
     // state after update
     let newState = getState();

@@ -160,6 +160,7 @@ export class DimmerButton extends Component<any, any> {
       .then(() => {
       if (this.state.pendingId === switchId) {
         this.setState({pendingCommand: false});
+        this.props.callback(stateToSwitch);
       }
     }).catch((err) => {
       if (this.state.pendingId === switchId) {

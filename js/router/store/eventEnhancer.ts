@@ -292,6 +292,7 @@ function checkAction(action, affectedIds) {
     case "UPDATE_SPHERE_CLOUD_ID":
       break;
     case "UPDATE_STONE_DIAGNOSTICS":
+    case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":
       break;
     case "USER_UPDATE_PICTURE":
       break;

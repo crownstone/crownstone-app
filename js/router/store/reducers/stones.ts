@@ -243,6 +243,7 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
       return newState;
     case 'UPDATE_STONE_STATE':
     case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
+    case 'UPDATE_STONE_SWITCH_STATE_TRANSIENT': // this duplicate call will allow the cloudEnhancer to differentiate.
       if (action.data) {
         let newState          = {...state};
         newState.state        = update(action.data.state,        newState.state);
