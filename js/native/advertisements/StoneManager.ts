@@ -217,10 +217,11 @@ class StoneManagerClass {
     let referenceByHandle = MapProvider.stoneSphereHandleMap[sphereId][advertisement.handle];
 
     // unknown crownstone, factory reset it.
-    if (referenceByHandle === undefined) {
-      this._factoryResetUnknownCrownstone(advertisement.handle);
-      return;
-    }
+    // TODO: restore this method when the race condition is covered (after setup, before loading into store this can happen)
+    // if (referenceByHandle === undefined) {
+    //   this._factoryResetUnknownCrownstone(advertisement.handle);
+    //   return;
+    // }
 
     // create an entity for this crownstone if one does not exist yet.
     if (!this.entities[referenceByCrownstoneId.id]) { this.createEntity(sphereId, referenceByCrownstoneId.id); }
