@@ -87,16 +87,16 @@ let combinedLocationReducer = combineReducers({
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
     case 'REMOVE_SPHERE_USER':
-      if (action.data && action.data.userId) {
+      if (action.userId) {
         // we need to remove the user from all locations before removing him from sphere.
         let locationIds = Object.keys(state);
         locationIds.forEach((locationId) => {
           let location = state[locationId];
-          if (location.presentUsers.indexOf(action.data.userId) !== -1) {
+          if (location.presentUsers.indexOf(action.userId) !== -1) {
             return {
               ...state,
               ...{[locationId]: combinedLocationReducer(state[locationId],
-                {type:'USER_EXIT_LOCATION', sphereId: action.sphereId, locationId: locationId, data:{userId: action.data.userId}})}
+                {type:'USER_EXIT_LOCATION', sphereId: action.sphereId, locationId: locationId, data: {userId: action.userId}})}
             };
           }
         });

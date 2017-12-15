@@ -60,7 +60,7 @@ export class DimmerButton extends Component<any, any> {
     this.yCenter = 0.55*props.size;
 
     this.refName = (Math.random() * 1e9).toString(36);
-    this.state = {state: props.state || 0, pendingCommand: false, pendingId: ''}
+    this.state = {state: this._transformSwitchStateToUI(props.state) || 0, pendingCommand: false, pendingId: ''}
   }
 
   componentWillMount() {
@@ -135,19 +135,41 @@ export class DimmerButton extends Component<any, any> {
   }
 
 
-  _transformSwitchState(switchState) {
+  /**
+   * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
+   * @param switchState
+   * @returns {number}
+   * @private
+   */
+  _transformSwitchStateToStone(switchState) {
     // linearize:
     let linearState = (Math.acos(-2*switchState+1) / Math.PI);
 
     // only PWM, not Relay
     linearState *= 0.99;
 
+    linearState = Math.round(linearState*100)/100;
+
     return linearState;
+  }
+
+  /**
+   * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
+   * @param switchState
+   * @returns {number}
+   * @private
+   */
+  _transformSwitchStateToUI(switchState) {
+    let UIState = ((Math.cos(switchState*Math.PI / 0.99) - 1) / -2);
+
+    UIState = Math.round(UIState*100)/100;
+
+    return UIState;
   }
 
 
   _updateStone(state, keepConnectionOpenTimeout = 6000) {
-    let stateToSwitch = this._transformSwitchState(state);
+    let stateToSwitch = this._transformSwitchStateToStone(state);
     let switchId = (Math.random()*1e9).toString(26);
     BatchCommandHandler.loadPriority(
       this.props.stone,

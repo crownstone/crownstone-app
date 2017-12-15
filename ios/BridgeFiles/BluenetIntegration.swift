@@ -151,21 +151,23 @@ open class BluenetJS: RCTEventEmitter {
         }
       })
       globalBluenet.bluenetLocalizationOn("enterLocation", {data -> Void in
-//        print("BluenetBridge: enterLocation")
+        print("BluenetBridge: enterLocation")
         if let castData = data as? NSDictionary {
           self.sendEvent(withName: "enterLocation", body: castData)
           //self.bridge.eventDispatcher().sendAppEvent(withName: "enterLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("exitLocation", {data -> Void in
-//        print("BluenetBridge: exitLocation")
+        print("BluenetBridge: exitLocation")
         if let castData = data as? NSDictionary {
           self.sendEvent(withName: "exitLocation", body: castData)
           //self.bridge.eventDispatcher().sendAppEvent(withName: "exitLocation", body: castData)
         }
       })
       globalBluenet.bluenetLocalizationOn("currentLocation", {data -> Void in
+        //print("BluenetBridge: currentLocation")
         if let castData = data as? NSDictionary {
+          //print("BluenetBridge: currentLocation \(castData)")
           self.sendEvent(withName: "currentLocation", body: castData)
           //self.bridge.eventDispatcher().sendAppEvent(withName: "currentLocation", body: castData)
         }
@@ -605,14 +607,14 @@ open class BluenetJS: RCTEventEmitter {
       BluenetLib.LOG.setPrintLevel(.INFO)
       
       LOGGER.setFileLevel(.VERBOSE)
-      LOGGER.setPrintLevel(.INFO)
+      LOGGER.setPrintLevel(.VERBOSE)
     }
     else {
       BluenetLib.LOG.setFileLevel(.INFO)
       BluenetLib.LOG.setPrintLevel(.INFO)
       
       LOGGER.setFileLevel(.INFO)
-      LOGGER.setPrintLevel(.INFO)
+      LOGGER.setPrintLevel(.VERBOSE)
     }
   }
   
