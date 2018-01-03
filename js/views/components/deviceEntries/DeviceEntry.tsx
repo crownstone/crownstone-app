@@ -18,7 +18,7 @@ import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
 import { styles, colors, screenWidth } from '../../styles'
 import {AlternatingContent} from '../animated/AlternatingContent';
-import {ALWAYS_DFU_UPDATE} from '../../../ExternalConfig';
+import {ALWAYS_DFU_UPDATE, MINIMUM_REQUIRED_FIRMWARE_VERSION} from '../../../ExternalConfig';
 import {STONE_TYPES} from '../../../router/store/reducers/stones';
 import {BatchCommandHandler} from '../../../logic/BatchCommandHandler';
 import {INTENTS} from '../../../native/libInterface/Constants';
@@ -210,7 +210,9 @@ export class DeviceEntry extends Component<any, any> {
       </View>
       );
     }
-    else if ((Util.versions.canUpdate(stone, state) === true) && stone.config.disabled === false) {
+    else if (
+      ((Util.versions.canUpdate(stone, state) === true) || Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) &&
+      stone.config.disabled === false) {
       return (
         <View style={[{
           width:60,
@@ -311,7 +313,7 @@ export class DeviceEntry extends Component<any, any> {
               />
             </View>
           </TouchableOpacity>
-          {useControl === true ? this._getControl(stone) : undefined}
+          {useControl === true && Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}
           {this.state.optionsOpen === true ? undefined :
             <View style={{position:'absolute', top: this.baseHeight-8, left: 0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray2.hex}} />
           }

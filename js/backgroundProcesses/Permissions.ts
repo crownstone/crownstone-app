@@ -7,7 +7,7 @@ export class PermissionBase {
   setStoneTime            = false; // a or m
   setBehaviourInCloud     = false; // a
   seeUpdateCrownstone     = false; // a?
-  updateCrownstone        = false; // a
+  canUpdateCrownstone     = false; // a
   setupCrownstone         = false; // a
   seeSetupCrownstone      = false; // a
   moveCrownstone          = false; // a or m
@@ -113,7 +113,7 @@ export class PermissionClass extends PermissionBase {
       case 'admin':
         this.setBehaviourInCloud     = true; // admin
         this.seeUpdateCrownstone     = true; // admin
-        this.updateCrownstone        = true; // admin
+        this.canUpdateCrownstone     = true; // admin
         this.setupCrownstone         = true; // admin
         this.seeSetupCrownstone      = true; // admin
 

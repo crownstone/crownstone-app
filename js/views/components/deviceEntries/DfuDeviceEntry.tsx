@@ -99,7 +99,7 @@ export class DfuDeviceEntry extends Component<any, any> {
   }
 
   performDFU() {
-    if (Permissions.inSphere(this.props.sphereId).updateCrownstone) {
+    if (Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
       this.props.eventBus.emit("updateCrownstoneFirmware", {
         stoneId: this.props.stoneId,
         sphereId: this.props.sphereId,

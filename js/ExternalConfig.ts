@@ -78,6 +78,11 @@ const DeviceInfo = require('react-native-device-info');
     export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
 
 
+    /**
+     * The app will not allow usage of crownstones with a lower version than this.
+     */
+    export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '1.7.1';
+
 /******************** /APP ********************/
 
 

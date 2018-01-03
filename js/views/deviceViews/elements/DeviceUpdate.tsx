@@ -16,32 +16,69 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
 import {IconButton} from "../../components/IconButton";
 import {eventBus} from "../../../util/EventBus";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class DeviceUpdate extends Component<any, any> {
   _getText(disabled) {
-    if (disabled) {
+    if (this.props.mandatory === true && Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
+      if (disabled) {
+        return 'This update is mandatory before the Crownstone can be used again.\n\n' +
+               'The update phase requires you to stay close to the Crownstone and can take up to 2 minutes. You will have to be near the Crownstone to start though..'
+      }
+      else {
+        return 'This update is mandatory before the Crownstone can be used again.\n\n' +
+               'The update phase requires you to stay close to the Crownstone and can take up to 2 minutes. Press the button below to get started!'
+      }
+    }
+    else if (this.props.mandatory === true && Permissions.inSphere(this.props.sphereId).canUpdateCrownstone === false) {
+      return 'The Admin in your sphere needs to update this Crownstone before it can be used again.'
+    }
+    else if (disabled) {
       return 'New firmware brings new features and improved stability!\n\nThe update phase requires you to stay close to the Crownstone and can take up to 2 minutes. You will have to be near the Crownstone to start though..'
     }
     return 'New firmware brings new features and improved stability!\n\nThe update phase requires you to stay close to the Crownstone and can take up to 2 minutes. Press the button below to get started!'
   }
 
-  render() {
+  _getTitle() {
     const state = this.props.store.getState();
     const dfuResetRequired = state.spheres[this.props.sphereId].stones[this.props.stoneId].config.dfuResetRequired;
+    if (dfuResetRequired) {
+      return 'Finish Update';
+    }
+    else if (this.props.mandatory === true) {
+      return 'Update Required';
+    }
+    else {
+      return 'Update Available!';
+    }
+  }
+
+  _getIcon() {
+    let iconColor = colors.darkBackground.hex;
+    if (this.props.mandatory) {
+      iconColor = colors.orange.hex;
+    }
+    return (
+      <IconButton
+        name="c1-update-arrow"
+        size={0.15*screenHeight}
+        color={iconColor}
+        buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor: colors.white.hex, borderRadius: 0.03*screenHeight}}
+        style={{position:'relative', top: 0.0051*screenHeight}}
+      />
+    );
+  }
+
+  render() {
+    const state = this.props.store.getState();
     const disabled = state.spheres[this.props.sphereId].stones[this.props.stoneId].config.disabled;
 
     return (
       <View style={{flex:1, alignItems:'center', padding: 30}}>
-        <Text style={deviceStyles.header}>{dfuResetRequired ? 'Finish Update' : 'Update Available!'}</Text>
+        <Text style={deviceStyles.header}>{this._getTitle()}</Text>
         <View style={{flex:1}} />
-        <IconButton
-          name="c1-update-arrow"
-          size={0.15*screenHeight}
-          color={colors.darkBackground.hex}
-          buttonStyle={{width: 0.2*screenHeight, height: 0.2*screenHeight, backgroundColor:colors.white.hex, borderRadius: 0.03*screenHeight}}
-          style={{position:'relative', top: 0.0051*screenHeight}}
-        />
+        { this._getIcon() }
         <View style={{flex:1}} />
         <Text style={deviceStyles.text}>{this._getText(disabled)}</Text>
         <View style={{flex:1}} />

@@ -33,6 +33,7 @@ import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
 import {BackAction} from "../../util/Back";
+import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -163,9 +164,8 @@ export class DeviceOverview extends Component<any, any> {
     this.summaryIndex = summaryIndex;
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
-    let permissionLevel = Util.data.getUserLevelInSphere(state, this.props.sphereId);
 
-    let showWhatsNew = permissionLevel === 'admin' &&
+    let showWhatsNew = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone &&
                        stone.config.firmwareVersionSeenInOverview &&
                        (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
                        Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0');
@@ -174,7 +174,7 @@ export class DeviceOverview extends Component<any, any> {
 
     // check what we want to show the user:
     let hasError        = stone.errors.hasError || stone.errors.advertisementError;
-    let canUpdate       = permissionLevel === 'admin' && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
+    let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
     let hasBehaviour    = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
     let hasScheduler    = stone.config.type !== STONE_TYPES.guidestone;
@@ -264,8 +264,19 @@ export class DeviceOverview extends Component<any, any> {
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
     }
+
+    if (Util.versions.canIUse(stoneConfig.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) {
+      content.push(<DeviceUpdate key={'updateSlide'} mandatory={true} {...props} />);
+      return content;
+    }
+
+
+
+
+
+
     if (canUpdate) {
-      content.push(<DeviceUpdate key={'updateSlide'}  {...props} />);
+      content.push(<DeviceUpdate key={'updateSlide'} mandatory={false} canUpdate={canUpdate} {...props} />);
     }
     if (showWhatsNew) {
       content.push(<DeviceWhatsNew key={'deviceWhatsNewSlide'} {...props} />);

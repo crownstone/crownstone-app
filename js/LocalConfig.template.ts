@@ -64,6 +64,11 @@ const DeviceInfo = require('react-native-device-info');
   // point to the local cloud when using a phone
   // export let CLOUD_ADDRESS = DeviceInfo.getModel() !== "Simulator" ? 'http://10.27.8.130:3000/api/' : 'http://0.0.0.0:3000/api/';
 
+  /**
+   * The app will not allow usage of crownstones with a lower version than this.
+   */
+  export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '1.7.1';
+
 /******************** /APP ********************/
 
 
