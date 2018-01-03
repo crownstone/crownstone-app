@@ -112,7 +112,6 @@ export class DimmerButton extends Component<any, any> {
             }
             else if (data.state >= 0 && data.state <= 1 && this.state.state !== data.state) {
               this._updateStone(data.state);
-
             }
           }
         }
@@ -142,6 +141,9 @@ export class DimmerButton extends Component<any, any> {
    * @private
    */
   _transformSwitchStateToStone(switchState) {
+    if (switchState >= 0.05 && switchState < 0.1) { switchState = 0.1; }
+    if (switchState <  0.05)                      { switchState = 0.0; }
+
     // linearize:
     let linearState = (Math.acos(-2*switchState+1) / Math.PI);
 
@@ -203,7 +205,7 @@ export class DimmerButton extends Component<any, any> {
     let state = this.state.state;
     let label = 'Turn On';
     let stateColor = colors.green.hex;
-    if (state > 0) {
+    if (state > 0.05) {
       label = 'Turn Off';
       stateColor = colors.menuBackground.hex;
     }

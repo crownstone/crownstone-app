@@ -3,7 +3,7 @@ import {StoreManager} from "./storeManager";
 
 
 const TransientTypes = {
-
+  UPDATE_STONE_SWITCH_STATE_TRANSIENT: true
 }
 
 /**
@@ -26,13 +26,11 @@ export function PersistenceEnhancer({ getState }) {
     // certain types do not need to be persisted
     if (TransientTypes[action.type]) { return returnValue; }
 
-
-
     // state after update
     let newState = getState();
 
     if (StoreManager.persistor.initialized) {
-      LOGd.store("PersistorEnhancer: Start persisting store updates.")
+      LOGd.store("PersistorEnhancer: Start persisting store updates.");
       StoreManager.persistor.persistChanges(oldState, newState)
         .then(() => { LOGd.store("PersistorEnhancer: finished persisting store updates."); })
         .catch((err) => { LOG.error("PersistorEnhancer: Could not persist.", err); })

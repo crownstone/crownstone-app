@@ -25,11 +25,11 @@ import { DimmerButton } from "../../components/DimmerButton";
 import { INTENTS } from "../../../native/libInterface/Constants";
 import {DIMMING_ENABLED} from "../../../ExternalConfig";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
+import {EventBusClass} from "../../../util/EventBus";
 
 export class DeviceSummary extends Component<any, any> {
   storedSwitchState = 0;
-
+  unsubscribeStoreEvents;
 
   constructor(props) {
     super(props);
@@ -86,34 +86,6 @@ export class DeviceSummary extends Component<any, any> {
           data: {applianceId: applianceId}
         });
       }});
-  }
-
-  _getIcon(stone, element) {
-    let currentState = stone.state.state;
-    let stateColor = colors.menuBackground.hex;
-    if (currentState > 0) {
-      stateColor = colors.green.hex;
-    }
-
-    if (stone.config.disabled) {
-      stateColor = colors.gray.hex;
-    }
-
-    let size = 0.2*screenHeight;
-    let innerSize = size - 6;
-    return (
-      <TouchableOpacity onPress={() => {
-        this._triggerApplianceSelection(stone);
-      }} >
-        <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
-          <AnimatedCircle size={size} color={stateColor}>
-            <AnimatedCircle size={innerSize} color={stateColor} borderWidth={3} borderColor={colors.white.hex}>
-              <Icon name={element.config.icon} size={0.575*innerSize} color={'#fff'} />
-            </AnimatedCircle>
-          </AnimatedCircle>
-        </AnimatedCircle>
-      </TouchableOpacity>
-    );
   }
 
   _getButton(stone) {
@@ -207,7 +179,6 @@ export class DeviceSummary extends Component<any, any> {
     const state = store.getState();
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
-    const element = Util.data.getElement(sphere, stone);
     const location = Util.data.getLocationFromStone(sphere, stone);
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
@@ -241,7 +212,15 @@ export class DeviceSummary extends Component<any, any> {
                            leftTapAction={canChangeSettings ? () => { this._triggerApplianceSelection(stone); }  : null}
         />
         <View style={{flex:1}} />
-        <View style={{width:screenWidth, alignItems: 'center' }}>{this._getIcon(stone, element)}</View>
+        <View style={{width:screenWidth, alignItems: 'center' }}>
+          <DeviceButton
+            store={this.props.store}
+            eventBus={this.props.eventBus}
+            stoneId={this.props.stoneId}
+            sphereId={this.props.sphereId}
+            callback={(stone) => { this._triggerApplianceSelection(stone); }}
+          />
+        </View>
         <View style={{flex:1}} />
         <Text style={deviceStyles.explanation}>{Util.spreadString('tap icon to set device type')}</Text>
         <View style={{flex:1}} />
@@ -252,6 +231,68 @@ export class DeviceSummary extends Component<any, any> {
   }
 }
 
+
+export class DeviceButton extends Component<{store: any, sphereId: string, stoneId: string, eventBus: EventBusClass, callback(any): void}, any> {
+  unsubscribeStoreEvents;
+
+  componentWillMount() {
+    // tell the component exactly when it should redraw
+    this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
+      let change = data.change;
+      if (
+        change.stoneUsageUpdatedTransient && change.stoneUsageUpdatedTransient.stoneIds[this.props.stoneId]
+      ) {
+        this.forceUpdate();
+      }
+    });
+
+
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeStoreEvents();
+  }
+
+
+
+  render() {
+    const store = this.props.store;
+    const state = store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    const stone = sphere.stones[this.props.stoneId];
+    const element = Util.data.getElement(sphere, stone);
+
+    let currentState = stone.state.state;
+    let stateColor = colors.menuBackground.hex;
+    if (currentState > 0) {
+      stateColor = colors.green.hex;
+    }
+
+    if (stone.config.disabled) {
+      stateColor = colors.gray.hex;
+    }
+
+    let size = 0.2*screenHeight;
+    let innerSize = size - 6;
+    return (
+      <TouchableOpacity onPress={() => {
+        const store = this.props.store;
+        const state = store.getState();
+        const sphere = state.spheres[this.props.sphereId];
+        const stone = sphere.stones[this.props.stoneId];
+        this.props.callback(stone);
+      }} >
+        <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
+          <AnimatedCircle size={size} color={stateColor}>
+            <AnimatedCircle size={innerSize} color={stateColor} borderWidth={3} borderColor={colors.white.hex}>
+              <Icon name={element.config.icon} size={0.575*innerSize} color={'#fff'} />
+            </AnimatedCircle>
+          </AnimatedCircle>
+        </AnimatedCircle>
+      </TouchableOpacity>
+    );
+  }
+}
 
 export class DeviceInformation extends Component<any, any> {
   render() {

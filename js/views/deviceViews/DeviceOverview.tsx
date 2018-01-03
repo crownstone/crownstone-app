@@ -259,7 +259,7 @@ export class DeviceOverview extends Component<any, any> {
 
   _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
     let content = [];
-    let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId};
+    let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
 
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
