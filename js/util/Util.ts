@@ -258,6 +258,21 @@ export const Util = {
       }
     },
 
+
+    /**
+     * This is the same as the isHigherOrEqual except it allows access to githashes. It is up to the dev to determine what it can and cannot do.
+     * @param myVersion
+     * @param minimumRequiredVersion
+     * @returns {any}
+     */
+    canIUse: function(myVersion, minimumRequiredVersion) {
+      if (checkSemVer(myVersion) === false) {
+        return true;
+      }
+
+      return Util.versions.isHigherOrEqual(myVersion, minimumRequiredVersion);
+    },
+
     isHigherOrEqual: function(version, compareWithVersion) {
       if (!version || !compareWithVersion) {
         return false;

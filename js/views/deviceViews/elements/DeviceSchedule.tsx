@@ -244,7 +244,7 @@ export class DeviceSchedule extends Component<any, any> {
         </View>
       )
     }
-    else if (!Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0')) {
+    else if (!Util.versions.canIUse(stone.config.firmwareVersion, '1.5.0')) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
           { this._getHeader(state, iconSize, "This Crownstone needs to be updated in order to use the Schedule feature.") }

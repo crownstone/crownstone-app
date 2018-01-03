@@ -157,7 +157,7 @@ export class DeviceEdit extends Component<any, any> {
     });
 
     if (DIMMING_ENABLED) {
-      if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0')) {
+      if (Util.versions.canIUse(stone.config.firmwareVersion, '1.7.0')) {
         items.push({
           label: 'Allow Dimming', type: 'switch', value: this.state.dimmingEnabled === true, callback: (newValue) => {
             this.setState({dimmingEnabled: newValue});

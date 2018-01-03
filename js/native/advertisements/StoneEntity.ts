@@ -307,7 +307,7 @@ export class StoneEntity {
 
   handleErrors(stone, advertisement) {
     if (HARDWARE_ERROR_REPORTING) {
-      if (Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.3.1')) {
+      if (Util.versions.canIUse(stone.config.firmwareVersion, '1.3.1')) {
         if (advertisement.serviceData.hasError === true) {
           LOG.info("GOT ERROR", advertisement.serviceData);
           eventBus.emit("errorDetectedInAdvertisement", {

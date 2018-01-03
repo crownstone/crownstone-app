@@ -78,7 +78,7 @@ export class StoneBehaviour {
       return;
     }
 
-    let toggled = this.handleTapToToggle(state, stone, ibeaconPackage.rssi);
+    let toggled = this._handleTapToToggle(state, stone, ibeaconPackage.rssi);
 
     // update local tracking of data
     if (this.rssiAverage === undefined) {
@@ -89,12 +89,12 @@ export class StoneBehaviour {
 
 
     if (!toggled) {
-      this.handleNearFar(state, stone);
+      this._handleNearFar(state, stone);
     }
   }
 
 
-  handleTapToToggle(state, stone, rssi) {
+  _handleTapToToggle(state, stone, rssi) {
     if (!state.app.tapToToggleEnabled)     { return false; }
     if (!stone.config.tapToToggle)         { return false; }
     if (FirmwareHandler.isDfuInProgress()) { return false; }
@@ -162,7 +162,7 @@ export class StoneBehaviour {
   }
 
 
-  handleNearFar(state, stone) {
+  _handleNearFar(state, stone) {
     let now = new Date().valueOf();
 
     // to avoid flickering we do not trigger these events in less than 5 seconds.
