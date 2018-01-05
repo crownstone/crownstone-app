@@ -16,8 +16,8 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
 import {IconButton} from "../../components/IconButton";
 import {ErrorContent} from "../../content/ErrorContent";
-import {eventBus} from "../../../util/EventBus";
 import {deviceStyles} from "../DeviceOverview";
+import {StoneUtil} from "../../../util/StoneUtil";
 
 
 export class DeviceError extends Component<any, any> {
@@ -41,7 +41,7 @@ export class DeviceError extends Component<any, any> {
         <View style={{flex:1}} />
         <TouchableOpacity
           onPress={() => {
-            eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
+            StoneUtil.clearErrors(this.props.sphereId, this.props.stoneId, stone, store);
           }}
           style={[styles.centered, {
             width: 0.6 * screenWidth,
@@ -51,7 +51,7 @@ export class DeviceError extends Component<any, any> {
             borderColor: colors.red.hex,
             backgroundColor: colors.white.hex
           }]}>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{"Resolve"}</Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex}}>{"Reset Error"}</Text>
         </TouchableOpacity>
         <View style={{flex:1}} />
       </View>

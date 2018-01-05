@@ -309,7 +309,7 @@ export class StoneEntity {
     if (HARDWARE_ERROR_REPORTING) {
       if (Util.versions.canIUse(stone.config.firmwareVersion, '1.3.1')) {
         if (advertisement.serviceData.hasError === true) {
-          LOG.info("GOT ERROR", advertisement.serviceData);
+          LOG.info("StoneEntity: GOT ERROR", advertisement.serviceData);
           eventBus.emit("errorDetectedInAdvertisement", {
             advertisement: advertisement,
             stone: stone,
@@ -318,7 +318,7 @@ export class StoneEntity {
           });
         }
         else if (stone.errors.advertisementError === true) {
-          LOG.info("GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
+          LOG.info("StoneEntity: GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
           eventBus.emit("errorResolvedInAdvertisement", {
             advertisement: advertisement,
             stone: stone,
@@ -360,7 +360,7 @@ export class StoneEntity {
         lastSeenTemperature : serviceData.temperature
       },
       updatedAt: currentTime,
-      __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+      // __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
     });
 
   }

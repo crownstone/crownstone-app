@@ -21,6 +21,7 @@ if (DISABLE_NATIVE === true) {
     stopScanning: () => {},
     keepAliveState: () => {},
     keepAlive: () => {},
+    requestBleState: () => {},
 
     forceClearActiveRegion: () => {},
     startIndoorLocalization: () => {},

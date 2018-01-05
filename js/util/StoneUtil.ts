@@ -1,7 +1,12 @@
 
 import {BatchCommandHandler} from "../logic/BatchCommandHandler";
 import {INTENTS} from "../native/libInterface/Constants";
-
+import {LOG} from "../logging/Log";
+import {Scheduler} from "../logic/Scheduler";
+import {eventBus} from "./EventBus";
+import {
+  Alert,
+} from 'react-native';
 
 export const StoneUtil = {
   switchBHC: function (
@@ -68,5 +73,43 @@ export const StoneUtil = {
   nowToCrownstoneTime: function() : number {
     return StoneUtil.timestampToCrownstoneTime(new Date().valueOf())
   },
+
+  clearErrors: function(sphereId, stoneId, stone, store) {
+    let clearData = {
+      dimmerOnFailure:    true,
+      dimmerOffFailure:   true,
+      temperatureDimmer:  true,
+      temperatureChip:    true,
+      overCurrentDimmer:  true,
+      overCurrent:        true,
+    }
+
+    eventBus.emit("showLoading", "Attempting to Reset Error...");
+    BatchCommandHandler.loadPriority(
+      stone,
+      stoneId,
+      sphereId,
+      {commandName:'clearErrors', clearErrorJSON: clearData},
+      {},
+      1000,
+      'from _getButton in ErrorOverlay'
+    )
+      .then(() => {
+        eventBus.emit("showLoading", "Success!");
+        store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: clearData});
+        return Scheduler.delay(500);
+      })
+      .then(() => {
+        eventBus.emit("hideLoading");
+        Alert.alert("Success!","The Error has been reset. Normal functionality is re-enabled.",[{text:'OK'}]);
+      })
+      .catch((err) => {
+        LOG.error("ErrorOverlay: Could not reset errors of Crownstone", err);
+        let defaultAction = () => { eventBus.emit("hideLoading"); };
+        Alert.alert("Failed to reset error :(","You can move closer and try again or ignore the error for now.",[{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+      });
+
+    BatchCommandHandler.executePriority()
+  }
 
 };

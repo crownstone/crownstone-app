@@ -41,7 +41,7 @@ class ErrorWatcherClass {
         1e5,
         'from processError in ErrorWatcher'
       )
-        .then((errors) => {
+        .then((errors : errorData) => {
           if (this.pendingErrorObtaining[advertisement.handle] !== undefined) {
             this.pendingErrorObtaining[advertisement.handle] = undefined;
             delete this.pendingErrorObtaining[advertisement.handle]

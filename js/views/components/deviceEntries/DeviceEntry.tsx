@@ -175,7 +175,7 @@ export class DeviceEntry extends Component<any, any> {
 
   _basePressed(stone) {
     if (stone.errors.hasError === true) {
-      this.props.eventBus.emit('showResolveErrorOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId, stone: stone });
+      Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
     }
     else {
       this._toggleOptions();

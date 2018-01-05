@@ -43,6 +43,8 @@ RCT_EXTERN_METHOD(getErrors:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(clearErrors:(NSDictionary *)errors callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(restartCrownstone:(RCTResponseSenderBlock)callback)
 
+RCT_EXTERN_METHOD(requestBleState)
+
 // Bluenet localization
 RCT_EXTERN_METHOD(requestLocation:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(requestLocationPermission)

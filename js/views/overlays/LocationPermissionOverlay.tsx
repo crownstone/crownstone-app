@@ -56,7 +56,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
   _getTitle() {
     switch (this.state.notificationType) {
       case "foreground":
-        return "Only foreground permissions granted.";
+        return "Only while-in-app permissions granted.";
       case "on":
         return "Location Services are on!";
       case "off":

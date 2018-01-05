@@ -361,6 +361,9 @@ open class BluenetJS: RCTEventEmitter {
     exit(0)
   }
   
+  @objc func requestBleState() {
+    GLOBAL_BLUENET!.bluenet.emitBleState()
+  }
   
   @objc func requestLocation(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called requestLocation")

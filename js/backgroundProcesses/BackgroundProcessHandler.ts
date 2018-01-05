@@ -315,6 +315,8 @@ class BackgroundProcessHandlerClass {
         BatterySavingUtil.startNormalUsage();
       }
     });
+
+    Bluenet.requestBleState();
   }
 
   startStore() {

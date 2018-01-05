@@ -263,17 +263,13 @@ export class DeviceOverview extends Component<any, any> {
 
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
+      return content;
     }
 
     if (Util.versions.canIUse(stoneConfig.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) {
       content.push(<DeviceUpdate key={'updateSlide'} mandatory={true} {...props} />);
       return content;
     }
-
-
-
-
-
 
     if (canUpdate) {
       content.push(<DeviceUpdate key={'updateSlide'} mandatory={false} canUpdate={canUpdate} {...props} />);
