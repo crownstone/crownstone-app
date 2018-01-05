@@ -29,7 +29,7 @@ export const sync = {
   sync: function (store, background = true) {
     if (this.__currentlySyncing) {
       LOG.info("SYNC: Skip Syncing, sync already in progress.");
-      return new Promise((resolve, reject) => { resolve() });
+      return new Promise((resolve, reject) => { resolve(true) });
     }
 
     let state = store.getState();

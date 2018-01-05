@@ -263,6 +263,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
     // TODO: [2017-10-02] RETROFIT CODE: AFTER A FEW RELEASES
     else if (stone_from_cloud.locationId === undefined) {
       if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return; }
+
       let localDataForCloud = {...stoneInState};
       localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
       localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);

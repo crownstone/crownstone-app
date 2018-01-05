@@ -16,7 +16,7 @@ export class UserSyncer extends SyncingBase {
   userId : string;
 
   download() {
-    return CLOUD.getUserData()
+    return CLOUD.forUser(this.userId).getUserData()
   }
 
   sync(store) {

@@ -200,6 +200,8 @@ function handleStoneInCloud(action, state) {
 }
 
 function _handleStone(action, state) {
+  if (!Permissions.inSphere(action.sphereId).canUpdateCrownstone) { return }
+
   let sphere = state.spheres[action.sphereId];
   let stone = sphere.stones[action.stoneId];
 

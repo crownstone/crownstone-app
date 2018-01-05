@@ -102,11 +102,12 @@ export class PermissionClass extends PermissionBase {
     LOG.info("Permissions: Update permissions for", this._sphereId);
     let level = Util.data.getUserLevelInSphere(state, this._sphereId);
 
+    this._revokeAll();
+
     if (level === null) {
       return;
     }
 
-    this._revokeAll();
 
     LOG.info("Permissions: Set all", this._sphereId, " for level:", level);
     switch (level) {
@@ -168,7 +169,7 @@ export class PermissionClass extends PermissionBase {
     LOG.info("Permissions: Revoking all", this._sphereId);
     let permissions = Object.keys(EmptyPermissions);
     for (let i = 0; i < permissions.length; i++) {
-      this[permissions[i]] = true;
+      this[permissions[i]] = false;
     }
   }
 }
