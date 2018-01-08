@@ -346,10 +346,11 @@ export class RoomOverview extends Component<any, any> {
       let {stoneArray, ids} = this._getStoneList(stones);
       this._setNearestStoneInRoom(stoneArray, ids);
       this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
+      let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
       content = (
         <Animated.View style={{height: this.state.scrollViewHeight}}>
           <ScrollView style={{position:'relative', top:-1}}>
-            <View style={{height: Math.max(Object.keys(stoneArray).length*85+200, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
+            <View style={{height: Math.max(stoneArray.length*81 + 0.5*viewHeight, viewHeight)} /* make sure we fill the screen */}>
               <SeparatedItemList
                 items={stoneArray}
                 ids={ids}

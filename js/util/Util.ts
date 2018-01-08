@@ -399,6 +399,8 @@ export const Util = {
 
 
 let checkSemVer = (str) => {
+  if (!str) { return false; }
+
   // a git commit hash is longer than 12, we pick 12 so 123.122.1234 is the max semver length.
   if (str.length > 12) {
     return false;
