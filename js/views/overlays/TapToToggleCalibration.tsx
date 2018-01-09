@@ -52,7 +52,6 @@ export class TapToToggleCalibration extends Component<any, any> {
 
     // make sure we don't strangely trigger stuff while doing this.
     eventBus.emit("ignoreTriggers");
-    console.log("HERE")
 
     let learnDistancePromise = () => {
       return new Promise((resolve, reject) => {
@@ -67,7 +66,7 @@ export class TapToToggleCalibration extends Component<any, any> {
             let sphereIds = Object.keys(state.spheres);
             let minRSSI = -1000;
 
-            // search through all present spheres for plugs that are not disabled and have RSSI indicators
+            // search through all present spheres  that are not disabled and have RSSI indicators
             sphereIds.forEach((sphereId) => {
               let sphere = state.spheres[sphereId];
               if (sphere.config.present === true) {
@@ -89,7 +88,7 @@ export class TapToToggleCalibration extends Component<any, any> {
 
     BlePromiseManager.registerPriority(learnDistancePromise, {from:'Tap-to-toggle distance estimation.'})
       .then((nearestRSSI : number) => {
-        if (nearestRSSI > -70) {
+        if (nearestRSSI > -90) {
           let rssiAddedDistance = Math.max(nearestRSSI - 5, addDistanceToRssi(nearestRSSI, 0.1));
           LOG.info("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
 

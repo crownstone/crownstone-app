@@ -239,9 +239,7 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if (
-        change.stoneUsageUpdatedTransient && change.stoneUsageUpdatedTransient.stoneIds[this.props.stoneId]
-      ) {
+      if (change.stoneUsageUpdatedTransient && change.stoneUsageUpdatedTransient.stoneIds[this.props.stoneId]) {
         this.forceUpdate();
       }
     });

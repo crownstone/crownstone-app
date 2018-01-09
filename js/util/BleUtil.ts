@@ -4,7 +4,7 @@ import {LOG, LOGd} from '../logging/Log'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 import { Util } from './Util'
 
-import { SingleCommand } from '../logic/SingleCommand'
+import { DirectCommand } from '../logic/DirectCommand'
 import {Scheduler} from "../logic/Scheduler";
 
 
@@ -123,7 +123,7 @@ export const BleUtil = {
   },
 
   getProxy: function (bleHandle) {
-    return new SingleCommand(bleHandle);
+    return new DirectCommand(bleHandle);
   },
 
   /**

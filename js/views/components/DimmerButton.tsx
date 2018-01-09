@@ -133,7 +133,16 @@ export class DimmerButton extends Component<any, any> {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    let stateFromProps = this._transformSwitchStateToUI(nextProps.state) || 0;
+    if (stateFromProps !== this.state.state && this.state.pendingCommand === false) {
+      this.setState({state: stateFromProps})
+    }
+  }
 
+  componentWillUnmount() {
+    cancelAnimationFrame(this._animationFrame);
+  }
   /**
    * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
    * @param switchState
@@ -197,9 +206,6 @@ export class DimmerButton extends Component<any, any> {
     this.setState({pendingCommand: true, pendingId: switchId, state: state});
   }
 
-  componentWillUnmount() {
-    cancelAnimationFrame(this._animationFrame);
-  }
 
   render() {
     let state = this.state.state;

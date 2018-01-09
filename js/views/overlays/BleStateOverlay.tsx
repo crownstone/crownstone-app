@@ -36,7 +36,7 @@ export class BleStateOverlay extends Component<any, any> {
           this.setState({visible: true, notificationType: status});
           break;
         default: // "unknown":
-          this.setState({visible: true, notificationType: status});
+          this.setState({notificationType: status});
           break;
       }
     }));

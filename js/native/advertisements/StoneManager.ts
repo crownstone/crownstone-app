@@ -252,7 +252,7 @@ class StoneManagerClass {
         delete this.factoryResettingCrownstones[handle];
       };
 
-      let details = { from: 'SingleCommand: connecting to ' + handle + ' doing this: commandFactoryReset' };
+      let details = { from: 'DirectCommand: connecting to ' + handle + ' doing this: commandFactoryReset' };
       BlePromiseManager.registerPriority(
         () => {
           let proxy = BleUtil.getProxy(handle);

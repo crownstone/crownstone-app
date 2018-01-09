@@ -291,6 +291,21 @@ open class BluenetJS: RCTEventEmitter {
   }
   
   
+  @objc func getSwitchState(_ callback: @escaping RCTResponseSenderBlock) {
+    LOGGER.info("BluenetBridge: Called getSwitchState")
+    GLOBAL_BLUENET!.bluenet.state.getSwitchState()
+      .then{switchState in callback([["error" : false, "data":switchState]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN getSwitchState \(err)"]])
+        }
+    }
+  }
+  
+  
   
   @objc func keepAliveState(_ changeState: NSNumber, state: NSNumber, timeout: NSNumber, callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called keepAliveState")

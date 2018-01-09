@@ -262,13 +262,6 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
         return newState;
       }
       return state;
-    case 'UPDATE_STONE_PREVIOUS_SWITCH_STATE':
-      if (action.data) {
-        let newState           = {...state};
-        newState.previousState = newState.state;
-        return newState;
-      }
-      return state;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.state);
     default:

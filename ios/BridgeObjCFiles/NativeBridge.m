@@ -29,6 +29,7 @@ RCT_EXTERN_METHOD(phoneDisconnect:(RCTResponseSenderBlock)callback)
 // nonnull IS REQUIRED FOR ALL NUMBER ENTREES
 RCT_EXTERN_METHOD(toggleSwitchState:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(setSwitchState:(nonnull NSNumber *)state callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(getSwitchState:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAliveState:(nonnull NSNumber *)changeState state:(nonnull NSNumber *)state timeout:(nonnull NSNumber *)timeout callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(keepAlive:(RCTResponseSenderBlock)callback)
 

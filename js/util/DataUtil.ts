@@ -129,6 +129,8 @@ export const DataUtil = {
    * @returns {*}
    */
   getElement: function(sphere, stone) {
+    if (!sphere) { return stone; }
+
     if (stone.config.applianceId && sphere.appliances[stone.config.applianceId]) {
       return sphere.appliances[stone.config.applianceId];
     }
