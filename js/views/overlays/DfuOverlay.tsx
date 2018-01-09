@@ -15,7 +15,7 @@ import { OverlayContent }  from '../components/overlays/OverlayContent'
 import { OverlayBox }      from '../components/overlays/OverlayBox'
 import { eventBus }        from '../../util/EventBus'
 import { FirmwareHandler } from "../../native/firmware/FirmwareHandler";
-import { LOG }             from "../../logging/Log";
+import {LOG, LOGd} from "../../logging/Log";
 import { Util }            from "../../util/Util";
 import { ProgressCircle }  from "../components/ProgressCircle";
 import { styles, colors , screenHeight, screenWidth } from '../styles'
@@ -402,7 +402,7 @@ export class DfuOverlay extends Component<any, any> {
       let rssiResolver = (data, setupMode, dfuMode) => {
         data.setupMode = setupMode || false;
         data.dfuMode = dfuMode || false;
-        LOG.debug("DfuOverlay: Found match:", data);
+        LOGd.info("DfuOverlay: Found match:", data);
         if ((data.setupMode && data.rssi < -99) || (data.rssi < -80)) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
@@ -476,7 +476,7 @@ export class DfuOverlay extends Component<any, any> {
 
     let state = this.props.store.getState();
     if (canUseIndoorLocalizationInSphere(state, this.state.sphereId) === true) {
-      LOG.debug("(Re)Starting indoor localization after training");
+      LOGd.info("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
     }
   }

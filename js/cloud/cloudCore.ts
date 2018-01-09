@@ -52,10 +52,10 @@ export function request(
         if (response.headers.map['content-length'] &&
           response.headers.map['content-length'].length > 0 &&
           response.headers.map['content-length'][0] == 0) {
-          // LOG.debug("Error: JSON-CONTENT IS EMPTY", response);
+          // LOGd.info("Error: JSON-CONTENT IS EMPTY", response);
           return response.json(); // this is a promise
         }
-        // LOG.debug("JSON CONTENT", response);
+        // LOGd.info("JSON CONTENT", response);
         return response.json(); // this is a promise
       }
     }

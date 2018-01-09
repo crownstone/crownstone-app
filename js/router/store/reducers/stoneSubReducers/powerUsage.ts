@@ -11,6 +11,7 @@ let defaultState = {
 
 let dataState  ={
   power: null,
+  powerFactor: null,
   applianceId: null,
   timestamp: 0,
   synced: false,
@@ -27,6 +28,9 @@ let powerUsageDataReducer = (state = defaultState.data, action : any = {}) => {
         data.timestamp = getTime(action.data.timestamp || action.updatedAt);
         data.applianceId = action.data.applianceId || null;
         data.power = action.data.currentUsage;
+        if (action.data.powerFactor !== undefined && action.data.powerFactor !== null) {
+          data.powerFactor = action.data.powerFactor;
+        }
 
         // By setting the synced to null, we tell the system not to sync this point to the cloud
         //   data.synced = null;
@@ -44,6 +48,9 @@ let powerUsageDataReducer = (state = defaultState.data, action : any = {}) => {
           data.timestamp = getTime(action.data[i].timestamp || action.updatedAt);
           data.applianceId = action.data[i].applianceId || null;
           data.power = action.data[i].power;
+          if (action.data[i].powerFactor !== undefined && action.data[i].powerFactor !== null) {
+            data.powerFactor = action.data[i].powerFactor;
+          }
 
           newState.push(data);
         }
@@ -61,6 +68,9 @@ let powerUsageDataReducer = (state = defaultState.data, action : any = {}) => {
         data.applianceId = action.data.applianceId || null;
         data.synced = update(action.data.synced, data.synced);
         data.power = action.data.power;
+        if (action.data.powerFactor !== undefined && action.data.powerFactor !== null) {
+          data.powerFactor = action.data.powerFactor;
+        }
 
         newState.push(data);
 

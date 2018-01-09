@@ -75,7 +75,7 @@ export const syncPowerUsage = function(state, actions) {
           for (let x = 0; x < data.length; x++) {
             // if synced is null, it will not be synced.
             if (data[x].synced === false) {
-              uploadData.push({ power: data[x].power, timestamp: data[x].timestamp, applianceId: data[x].applianceId});
+              uploadData.push({ power: data[x].power, powerFactor: data[x].powerFactor, timestamp: data[x].timestamp, applianceId: data[x].applianceId});
               indices.push(x);
 
               if (uploadData.length >= maxBatchSize) {

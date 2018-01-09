@@ -1,5 +1,5 @@
 import { LOG_LEVEL }        from "../../logging/LogLevels";
-import { LOG, LOGi } from "../../logging/Log";
+import {LOG, LOGd, LOGi} from "../../logging/Log";
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, HARDWARE_ERROR_REPORTING } from "../../ExternalConfig";
 import { eventBus }         from "../../util/EventBus";
 import { Util }             from "../../util/Util";
@@ -90,7 +90,7 @@ export class StoneEntity {
     // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
     // reset is complete.
     if (stone.config.dfuResetRequired === true) {
-      LOG.debug("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
+      LOGd.info("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
       return;
     }
 
@@ -101,7 +101,7 @@ export class StoneEntity {
       this._emitUpdateEvents(stone, ibeaconPackage.rssi);
     }
     else {
-      LOG.debug("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
+      LOGd.info("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
     }
 
     this._updateDisabledState();
@@ -295,7 +295,7 @@ export class StoneEntity {
     // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
     // reset is complete.
     if (stone.config.dfuResetRequired === true) {
-      LOG.debug('AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.');
+      LOGd.info('AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.');
       return;
     }
 
@@ -333,7 +333,8 @@ export class StoneEntity {
 
   handleState(stone, advertisement : crownstoneAdvertisement) {
     let serviceData = advertisement.serviceData;
-    let measuredUsage = Math.floor(serviceData.powerUsage);
+    let measuredUsage = Math.floor(serviceData.powerUsageReal);
+    let powerFactor = serviceData.powerFactor;
 
     let currentTime = new Date().valueOf();
 
@@ -356,6 +357,7 @@ export class StoneEntity {
       data: {
         state: switchState,
         currentUsage: measuredUsage,
+        powerFactor: powerFactor,
         applianceId: stone.config.applianceId,
         lastSeenTemperature : serviceData.temperature
       },

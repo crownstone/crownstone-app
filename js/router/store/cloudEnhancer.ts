@@ -52,7 +52,7 @@ export function CloudEnhancer({ getState }) {
     // state after update
     let newState = getState();
 
-    //LOG.debug("isNew state:", getState())
+    //LOGd.info("isNew state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, newState, oldState);
@@ -351,7 +351,7 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 
   if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = { power: stone.state.currentUsage, timestamp: action.updatedAt };
+    let data  = { power: stone.state.currentUsage, powerFactor: stone.state.powerFactor, timestamp: action.updatedAt };
 
     let dateId = Util.getDateHourId(action.updatedAt);
 

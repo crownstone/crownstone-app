@@ -47,21 +47,26 @@ interface BluenetPromiseWrapperProtocol {
 }
 
 interface crownstoneServiceData {
-  protcolVersion      : number,
-  crownstoneId        : string,
-  switchState         : number,
-  eventBitmask        : number,
-  temperature         : number,
-  powerFactor         : number,
-  powerUsageReal      : number,
-  powerUsageApparent  : number,
-  powerUsage          : number,
-  accumulatedEnergy   : number,
-  newDataAvailable    : boolean,
-  hasError            : boolean,
-  stateOfExternalCrownstone: boolean,
-  setupMode           : boolean,
-  random              : string
+  opCode                    : number
+  dataType                  : number
+  stateOfExternalCrownstone : boolean
+  hasError                  : boolean
+  setupMode                 : boolean
+  crownstoneId              : number,
+  switchState               : number,
+  flagsBitmask              : number,
+  temperature               : number,
+  powerFactor               : number,
+  powerUsageReal            : number,
+  powerUsageApparent        : number,
+  accumulatedEnergy         : number,
+  timestamp                 : number,
+  dimmingAvailable          : boolean,
+  dimmingAllowed            : boolean,
+  switchLocked              : boolean,
+  errorMode                 : boolean,
+  errors                    : errorData,
+  uniqueElement             : number
 }
 
 interface crownstoneAdvertisement {

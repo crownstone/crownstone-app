@@ -50,7 +50,7 @@ class LocationHandlerClass {
       this._initialized = true;
       this.store = store;
 
-      // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOG.debug('CURRENT ROOM', data)});
+      // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
       NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); });
       NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
       NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}

@@ -132,7 +132,7 @@ export const SettingConstructor = function(store, state, eventBus) {
 
   if (state.app.tapToToggleEnabled !== false) {
     let tapToToggleSettings = { tutorial: false };
-    if (Util.data.getTapToToggleCalibration(state)) {
+    if (!Util.data.getTapToToggleCalibration(state)) {
       tapToToggleSettings.tutorial = true;
     }
     items.push({

@@ -355,3 +355,5 @@ export const deviceStyles = StyleSheet.create({
     textAlign:'center'
   },
 });
+
+

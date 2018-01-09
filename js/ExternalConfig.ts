@@ -109,7 +109,6 @@ const DeviceInfo = require('react-native-device-info');
     export let LOG_EVENTS     = LOG_LEVEL.ERROR;   // enabling LOG.event      commands to be shown.
     export let LOG_STORE      = LOG_LEVEL.ERROR;   // enabling LOG.store      commands to be shown.
     export let LOG_CLOUD      = LOG_LEVEL.ERROR;   // enabling LOG.cloud      commands to be shown.
-    export let LOG_DEBUG      = LOG_LEVEL.ERROR;   // enabling LOG.debug      commands to be shown.
     export let LOG_NATIVE     = LOG_LEVEL.ERROR;   // enabling LOG.native      commands to be shown.
 
     /**

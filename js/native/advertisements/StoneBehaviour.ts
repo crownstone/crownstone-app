@@ -1,5 +1,5 @@
 import { Alert }                    from "react-native"
-import { LOG }                      from "../../logging/Log";
+import {LOG, LOGd} from "../../logging/Log";
 import { eventBus }                 from "../../util/EventBus";
 import { FirmwareHandler }          from "../firmware/FirmwareHandler";
 import { BEHAVIOUR_TYPES }          from "../../router/store/reducers/stones";
@@ -42,6 +42,8 @@ export class StoneBehaviour {
     this.store = store;
     this.sphereId = sphereId;
     this.stoneId = stoneId;
+
+    this.subscribe();
   }
 
 
@@ -74,7 +76,7 @@ export class StoneBehaviour {
   ibeaconUpdate(state, stone, ibeaconPackage : ibeaconPackage) {
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore === true) {
-      LOG.debug("StoneTracker: IGNORE: temporary ignore enabled.");
+      LOGd.info("StoneTracker: IGNORE: temporary ignore enabled.");
       return;
     }
 

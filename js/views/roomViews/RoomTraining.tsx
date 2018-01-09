@@ -18,7 +18,7 @@ import { FingerprintManager } from '../../native/localization/FingerprintManager
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import { Background } from '../components/Background'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGd} from '../../logging/Log'
 
 import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'
 import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
@@ -45,7 +45,7 @@ export class RoomTraining extends Component<any, any> {
   }
 
   componentDidMount() {
-    LOG.debug("Stopping indoor localization for training purposes");
+    LOGd.info("Stopping indoor localization for training purposes");
     Bluenet.stopIndoorLocalization();
   }
 
@@ -55,7 +55,7 @@ export class RoomTraining extends Component<any, any> {
 
     let state = this.props.store.getState();
     if (canUseIndoorLocalizationInSphere(state, this.props.sphereId) === true) {
-      LOG.debug("(Re)Starting indoor localization after training");
+      LOGd.info("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
     }
   }

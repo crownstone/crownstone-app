@@ -4,7 +4,6 @@ import {
   LOG_ERRORS,
   LOG_WARNINGS,
   LOG_VERBOSE,
-  LOG_DEBUG,
   LOG_EVENTS,
   LOG_CLOUD,
   LOG_BLE,
@@ -59,10 +58,6 @@ class Logger {
 
   error(...any) {
     this._log('ERROR !!! --', LOG_ERRORS,    LogProcessor.log_errors, arguments);
-  }
-
-  debug(...any) {
-    this._log('Debug ------', LOG_DEBUG,     LogProcessor.log_debug, arguments);
   }
 
   cloud(...any) {

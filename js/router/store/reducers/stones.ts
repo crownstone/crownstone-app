@@ -57,7 +57,9 @@ let defaultSettings = {
   },
   state: {
     state: 0.0,
+    previousState: 0.0,
     currentUsage: 0,
+    powerFactor: null,
     updatedAt: 1
   },
   schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
@@ -247,14 +249,26 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
     case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
     case 'UPDATE_STONE_SWITCH_STATE_TRANSIENT': // this duplicate call will allow the cloudEnhancer to differentiate.
       if (action.data) {
-        let newState          = {...state};
-        newState.state        = update(action.data.state,        newState.state);
-        newState.currentUsage = update(action.data.currentUsage, newState.currentUsage);
-        newState.updatedAt    = getTime(action.data.updatedAt);
+        let newState           = {...state};
+
+        if (newState.state !== action.data.state && action.data.state !== null && action.data.state !== undefined) {
+          newState.previousState = newState.state;
+        }
+
+        newState.state         = update(action.data.state,  newState.state);
+        newState.currentUsage  = update(action.data.currentUsage, newState.currentUsage);
+        newState.powerFactor   = update(action.data.powerFactor,  newState.powerFactor);
+        newState.updatedAt     = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
-
+    case 'UPDATE_STONE_PREVIOUS_SWITCH_STATE':
+      if (action.data) {
+        let newState           = {...state};
+        newState.previousState = newState.state;
+        return newState;
+      }
+      return state;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.state);
     default:
@@ -415,3 +429,4 @@ export default (state = {}, action : any = {}) => {
       return state;
   }
 };
+

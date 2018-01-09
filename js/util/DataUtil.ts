@@ -82,7 +82,7 @@ export const DataUtil = {
     return null;
   },
 
-  getPresentSphere: function(state) {
+  getPresentSphereId: function(state) {
     let sphereIds = Object.keys(state.spheres);
     for (let i = 0; i < sphereIds.length; i++ ) {
       if (state.spheres[sphereIds[i]].config.present === true) {

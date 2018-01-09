@@ -16,7 +16,7 @@ const sha1    = require('sha-1');
 const RNFS    = require('react-native-fs');
 const DeviceInfo = require('react-native-device-info');
 
-import {LOG, LOGi} from '../../logging/Log'
+import {LOG, LOGd, LOGi} from '../../logging/Log'
 import {emailChecker, getImageFileFromUser, Util} from '../../util/Util'
 import { SessionMemory }                      from '../../util/SessionMemory'
 import { CLOUD }                              from '../../cloud/cloudAPI'
@@ -321,7 +321,7 @@ export class Login extends Component<any, any> {
       })
       .catch((err) => {
         // likely a 404, ignore
-        LOG.debug("Could be a problem downloading profile picture: ", err);
+        LOGd.info("Could be a problem downloading profile picture: ", err);
       })
       .then(() => {
         LOG.info("Login: step 3");
@@ -409,8 +409,8 @@ class LoginButton extends Component<any, any> {
   render() {
     if (screenHeight > 500) {
       return (
-        <View style={[loginStyles.loginButtonContainer, {bottom:30} ]}>
-          <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
+        <View style={[loginStyles.loginButtonContainer, {bottom:30, height:110} ]}>
+          <TouchableOpacity style={{height:110, width: 110}}  onPress={() => { this.props.loginCallback() }}>
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
           </TouchableOpacity>
         </View>
@@ -428,7 +428,7 @@ class LoginButton extends Component<any, any> {
           justifyContent:'center',
           backgroundColor:'transparent'
         }}>
-          <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
+          <TouchableOpacity style={{height:60, width: 0.6*screenWidth}} onPress={() => { this.props.loginCallback() }}>
             <View style={{
               backgroundColor:'transparent',
               height: 60,

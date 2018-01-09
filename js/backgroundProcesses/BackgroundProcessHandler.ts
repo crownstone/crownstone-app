@@ -152,7 +152,7 @@ class BackgroundProcessHandlerClass {
 
   checkErrors(sphereId = null) {
     let state = this.store.getState();
-    let presentSphere = sphereId || Util.data.getPresentSphere(state);
+    let presentSphere = sphereId || Util.data.getPresentSphereId(state);
     if (presentSphere && state.spheres[presentSphere]) {
       let errorsFound = false;
       let stonesContainingError = [];

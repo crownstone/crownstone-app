@@ -52,6 +52,7 @@ export class TapToToggleCalibration extends Component<any, any> {
 
     // make sure we don't strangely trigger stuff while doing this.
     eventBus.emit("ignoreTriggers");
+    console.log("HERE")
 
     let learnDistancePromise = () => {
       return new Promise((resolve, reject) => {
@@ -73,7 +74,7 @@ export class TapToToggleCalibration extends Component<any, any> {
                 let stoneIds = Object.keys(sphere.stones);
                 stoneIds.forEach((stoneId) => {
                   let stone = sphere.stones[stoneId];
-                  if (stone.config.type === STONE_TYPES.plug && stone.config.disabled === false) {
+                  if (stone.config.disabled === false) {
                     minRSSI = Math.max(stone.config.rssi, minRSSI);
                   }
                 });
@@ -114,7 +115,7 @@ export class TapToToggleCalibration extends Component<any, any> {
           }
           else {
             let defaultAction = () => {this.learnDistance(attempt + 1)};
-            Alert.alert("That's a bit far away.", "Try to hold your phone really close to the Plug and press OK to retry!", [{text:'OK', onPress: defaultAction }], { onDismiss: defaultAction })
+            Alert.alert("That's a bit far away.", "Try to hold your phone really close to a Crownstone and press OK to retry!", [{text:'OK', onPress: defaultAction }], { onDismiss: defaultAction })
           }
 
         }
@@ -128,8 +129,7 @@ export class TapToToggleCalibration extends Component<any, any> {
 
   getContent() {
     let state = this.props.store.getState();
-    let presentSphere = Util.data.getPresentSphere(state);
-    let canTrainTap2Toggle = presentSphere && Util.data.userHasPlugsInSphere(state, presentSphere);
+    let presentSphereId = Util.data.getPresentSphereId(state);
 
     let props : any = {};
     switch(this.state.step) {
@@ -137,8 +137,8 @@ export class TapToToggleCalibration extends Component<any, any> {
         props = {
           title: 'Using Tap-to-Toggle',
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-          header: "Now that you've added a Crownstone Plug, you can use tap-to-toggle!",
-          explanation: "Tap-to-toggle means you can switch a Plug just by holding your phone really close to it!",
+          header: "Now that you've added a Crownstone, you can use tap-to-toggle!",
+          explanation: "Tap-to-toggle means you can switch the Crownstone just by holding your phone really close to it!",
           back: false,
           nextCallback: () => {this.setState({step:1});},
           nextLabel: 'Next'
@@ -149,7 +149,7 @@ export class TapToToggleCalibration extends Component<any, any> {
           title: 'Setting it up',
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
           header: "In order to use tap-to-toggle, you need to help me a little.",
-          explanation: "This will only take a minute and will only have to be done once. Hold your phone really close to a Plug and press 'Next'.",
+          explanation: "This will only take a minute and will only have to be done once. Hold your phone really close to a Crownstone and press 'Next'.",
           back: true,
           backCallback: () => {this.setState({step:0});},
           nextCallback: () => {this.learnDistance()},
@@ -187,8 +187,8 @@ export class TapToToggleCalibration extends Component<any, any> {
         props = {
           title: "Let's give it a try!",
           image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkToggle.png'),
-          header: "Touch your phone to the Plug to trigger tap-to-toggle!",
-          explanation: "Once the phone vibrates, it will start to toggle the Plug.",
+          header: "Touch your phone to the Crownstone to trigger tap-to-toggle!",
+          explanation: "Once the phone vibrates, it will start to toggle. If you're trying this on a built-in, make sure you enable tap-to-toggle in it's settings (Room overview -> Crownstone Overview -> Edit).",
           back: true,
           backCallback: () => {this.setState({step:1});},
           nextCallback: () => {this.setState({visible: false});},
@@ -197,11 +197,11 @@ export class TapToToggleCalibration extends Component<any, any> {
         break;
     }
 
-    if (!canTrainTap2Toggle) {
+    if (!presentSphereId) {
       props = {
         title: 'Training Tap-to-Toggle',
         image: require('../../images/lineDrawings/holdingPhoneNextToPlugDarkBlank.png'),
-        header: "Tap-to-toggle can only be trained if you're in a Sphere that contains Crownstone Plugs.",
+        header: "Tap-to-toggle can only be trained if you're in a Sphere.",
         explanation: 'Try it again later when you\'re in your Sphere',
         back: false,
         nextCallback: () => { this.setState({visible: false});},
@@ -217,7 +217,6 @@ export class TapToToggleCalibration extends Component<any, any> {
         <View style={{flex:1}}/>
         <Text style={{fontSize: 12, color: colors.blue.hex, textAlign:'center', paddingLeft:10, paddingRight:10}}>{props.explanation}</Text>
         <View style={{flex:1}}/>
-
         { props.back ?
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={props.backCallback} style={[styles.centered, {
