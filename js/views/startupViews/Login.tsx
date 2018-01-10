@@ -409,8 +409,8 @@ class LoginButton extends Component<any, any> {
   render() {
     if (screenHeight > 500) {
       return (
-        <View style={[loginStyles.loginButtonContainer, {bottom:30, height:110} ]}>
-          <TouchableOpacity style={{height:110, width: 110}}  onPress={() => { this.props.loginCallback() }}>
+        <View style={[loginStyles.loginButtonContainer, {bottom:30} ]}>
+          <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
           </TouchableOpacity>
         </View>

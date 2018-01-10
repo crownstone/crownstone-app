@@ -71,6 +71,8 @@ export class Router_IOS extends Component {
                 <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           hideNavBar={false} title="Privacy" />
                 <Scene key="settingsApp"                component={Views.SettingsApp}               hideNavBar={false} title="Preferences" />
                 <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      hideNavBar={false} title="Mesh Overview" />
+                <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     hideNavBar={false} title="Stone BLE Debug" />
+                <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          hideNavBar={false} title="BLE Debug" />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         hideNavBar={false} title="Developer" />
                 <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    hideNavBar={false} title="Sphere Overview" />
                 <Scene key="settingsSphere"             component={Views.SettingsSphere}            hideNavBar={true} title="[Sphere name here]" />

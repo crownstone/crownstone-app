@@ -244,6 +244,11 @@ export class StoneEntity {
   handleDirectAdvertisement(stone, advertisement : crownstoneAdvertisement) {
     this._updateStoneLastSeen();
 
+    const state = this.store.getState();
+    if (state.development.use_advertisement_rssi_too) {
+      this._updateRssi(advertisement.rssi);
+    }
+
     // if this crownstone was disabled, change this since we saw it directly
     this._updateDisabledState();
 

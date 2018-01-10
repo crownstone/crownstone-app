@@ -13,12 +13,14 @@ let defaultState = {
   log_store:     false,
   log_cloud:     false,
   log_debug:     false,
+  use_advertisement_rssi_too: false
 };
 
 // developmentReducer
 export default (state = defaultState, action : any = {}) => {
   let newState;
   switch (action.type) {
+    case 'CHANGE_DEV_SETTINGS':
     case 'DEFINE_LOGGING_DETAILS':
       if (action.data) {
         newState = {...state};
@@ -34,6 +36,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_store =     update(action.data.log_store,      newState.log_store);
         newState.log_cloud =     update(action.data.log_cloud,      newState.log_cloud);
         newState.log_debug =     update(action.data.log_debug,      newState.log_debug);
+        newState.use_advertisement_rssi_too = update(action.data.use_advertisement_rssi_too,      newState.use_advertisement_rssi_too);
         return newState;
       }
       return state;

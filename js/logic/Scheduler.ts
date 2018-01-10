@@ -104,6 +104,16 @@ class SchedulerClass {
     this.triggers[id].options = options;
   }
 
+  /**
+   * Set a trigger that can be loaded with actions or callbacks. Will be fired on ticks.
+   * @param id
+   * @param {Object} options       | Possible options:
+   *                                    repeatEveryNSeconds
+   */
+  removeTrigger(id) {
+    delete this.triggers[id];
+  }
+
 
   /**
    * Overwritable actions are for Advertisements and other things that may accumulate
@@ -365,7 +375,7 @@ class SchedulerClass {
     let trigger = this.triggers[triggerId];
 
     if (trigger) {
-      this.postpone(trigger);
+      this._postpone(trigger);
     }
   }
 
@@ -404,7 +414,7 @@ class SchedulerClass {
   }
 
 
-  postpone(trigger) {
+  _postpone(trigger) {
     trigger.lastTriggerTime = new Date().valueOf();
   }
 

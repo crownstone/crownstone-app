@@ -88,7 +88,7 @@ export class TapToToggleCalibration extends Component<any, any> {
 
     BlePromiseManager.registerPriority(learnDistancePromise, {from:'Tap-to-toggle distance estimation.'})
       .then((nearestRSSI : number) => {
-        if (nearestRSSI > -90) {
+        if (nearestRSSI > -95) { // TODO: Discuss about limits.
           let rssiAddedDistance = Math.max(nearestRSSI - 5, addDistanceToRssi(nearestRSSI, 0.1));
           LOG.info("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
 

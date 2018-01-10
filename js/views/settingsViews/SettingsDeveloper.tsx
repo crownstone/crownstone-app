@@ -28,7 +28,7 @@ export class SettingsDeveloper extends Component<any, any> {
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings) {
+      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings || change.stoneRssiUpdated) {
         this.forceUpdate();
       }
     });
@@ -167,6 +167,29 @@ export class SettingsDeveloper extends Component<any, any> {
     else {
       items.push({label: "No device available... Try triggering a sync?", type: 'explanation', below: true});
     }
+
+    items.push({
+      label:"BLE Debug",
+      type: 'navigation',
+      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      callback:() => {
+        Actions.settingsBleDebug()
+      }});
+    items.push({
+      label:"Use Advertisement RSSI",
+      value: dev.use_advertisement_rssi_too,
+      type: 'switch',
+      icon: <IconButton name="md-git-network" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({
+          type: 'CHANGE_DEV_SETTINGS',
+          data: {
+            use_advertisement_rssi_too: newValue,
+          }
+        });
+      }});
+
+    items.push({label: "By default we use iBeacon RSSI values since they are averaged. When enabled, we will ALSO use the RSSI values from advertisements. Advertisment RSSI values only come in in the foreground.", type: 'explanation', below: true});
 
 
     items.push({
