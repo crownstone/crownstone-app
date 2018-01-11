@@ -62,25 +62,30 @@ class BatchCommandHandlerClass {
   }
 
   _load(stone, stoneId: string, sphereId: string, command: commandInterface, priority: boolean, attempts: number, options: batchCommandEntryOptions) {
-    return new Promise((resolve, reject) => {
-      // remove duplicates from list.
-      this._clearDuplicates(stoneId, sphereId, command);
-      let uuid = Util.getUUID();
-      this.commands[uuid] = {
-        priority: priority,
-        handle:   stone.config.handle,
-        sphereId: sphereId,
-        stoneId:  stoneId,
-        stone:    stone,
-        command:  command,
-        attempts: attempts,
-        options:  options,
-        initialized: false,
-        cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
-        promise:  { resolve: resolve, reject: reject, pending: false}
-      };
-      eventBus.emit("BatchCommandHandlerLoadAction");
-    });
+    if (stone.config.locked === true && command.commandName === "multiSwitch") {
+      return new Promise((resolve, reject) => { reject("Stone is Locked"); });
+    }
+    else {
+      return new Promise((resolve, reject) => {
+        // remove duplicates from list.
+        this._clearDuplicates(stoneId, sphereId, command);
+        let uuid = Util.getUUID();
+        this.commands[uuid] = {
+          priority: priority,
+          handle:   stone.config.handle,
+          sphereId: sphereId,
+          stoneId:  stoneId,
+          stone:    stone,
+          command:  command,
+          attempts: attempts,
+          options:  options,
+          initialized: false,
+          cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
+          promise:  { resolve: resolve, reject: reject, pending: false}
+        };
+        eventBus.emit("BatchCommandHandlerLoadAction");
+      });
+    }
   }
 
   /**

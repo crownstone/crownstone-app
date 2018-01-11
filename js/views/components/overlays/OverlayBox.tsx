@@ -18,6 +18,7 @@ interface overlayBoxProps {
   backgroundColor?:    any,
   maxOpacity?:         number,
   height?:             number,
+  width?:              number,
   canClose?:           boolean,
   closeCallback?:      any,
   style?:              any
@@ -79,7 +80,7 @@ export class OverlayBox extends Component<overlayBoxProps, any> {
         duration={200}
         maxOpacity={this.props.maxOpacity}
         visible={this.props.visible}>
-        <View style={{backgroundColor:colors.white.rgba(0.5), width:0.85*screenWidth, height: this.props.height || Math.min(500,0.9*availableScreenHeight), borderRadius: 25, padding: 12}}>
+        <View style={{backgroundColor:colors.white.rgba(0.5), width: this.props.width || 0.85*screenWidth, height: this.props.height || Math.min(500,0.9*availableScreenHeight), borderRadius: 25, padding: 12}}>
           <View style={[
             styles.centered,
             {backgroundColor:'#fff', flex:1, borderRadius: 25-0.02*screenWidth, padding: 0.03*screenWidth, overflow:'hidden'},

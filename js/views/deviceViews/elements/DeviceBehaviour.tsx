@@ -28,8 +28,19 @@ let WARNING_COLOR = colors.csOrange.hex;
 
 export class DeviceBehaviour extends Component<any, any> {
 
-  getWarning(state, nearFarDisabled) {
+  getWarning(state, stone, nearFarDisabled) {
     let warnings = [];
+    if (stone.config.locked) {
+      return (
+        <View
+          style={{flexDirection: 'row'}}
+          onPress={() => { Actions.settingsApp(); }}
+        >
+          <Text style={textStyle.softWarning}>{'This Crownstone is locked so the behaviour is disabled.'}</Text>
+        </View>
+      );
+    }
+
     if (state.app.indoorLocalizationEnabled === false) {
       return (
         <TouchableOpacity
@@ -104,7 +115,7 @@ export class DeviceBehaviour extends Component<any, any> {
           <BehaviourResponse data={element.behaviour} stone={stone} type={BEHAVIOUR_TYPES.AWAY}      appSettings={state.app} canChangeBehaviour={canChangeBehaviour} sphereId={this.props.sphereId} stoneId={this.props.stoneId}  />
         }
         <View style={{flex: 2}} />
-        { this.getWarning(state, nearFarDisabled) }
+        { this.getWarning(state, stone, nearFarDisabled) }
         <View style={{flex: 2}} />
         { element.config.onlyOnWhenDark === true && state.app.indoorLocalizationEnabled ?
         <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => {
@@ -190,6 +201,10 @@ class BehaviourResponse extends Component<any, any> {
   }
 
   _isDisabled() {
+    if (this.props.stone.config.locked === true) {
+      return true;
+    }
+
     if (this.props.appSettings.indoorLocalizationEnabled === false) {
       return true;
     }
@@ -295,6 +310,14 @@ export const textStyle = StyleSheet.create({
     fontSize:13,
     padding:15,
     fontWeight:'600'
+  },
+  softWarning: {
+    color: colors.white.hex,
+    width:screenWidth,
+    textAlign:'center',
+    fontStyle:'italic',
+    fontSize:13,
+    padding:15,
+    fontWeight:'600'
   }
-
 });

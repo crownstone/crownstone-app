@@ -19,9 +19,10 @@ import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionO
 import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
-import { Icon } from '../views/components/Icon';
-import { Util } from '../util/Util'
+import { Icon }                      from '../views/components/Icon';
+import { Util }                      from '../util/Util'
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
+import {LockOverlay}                 from "../views/overlays/LockOverlay";
 
 
 export class Router_IOS extends Component {
@@ -84,6 +85,7 @@ export class Router_IOS extends Component {
           </Scene>
         </Router>
         <DfuOverlay store={this.props.store} />
+        <LockOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />

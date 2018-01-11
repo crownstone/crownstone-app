@@ -5,8 +5,6 @@ import stonesReducer from './stones'
 import appliancesReducer from './appliances'
 import messageReducer from './messages'
 import { update, getTime, refreshDefaults } from './reducerUtil'
-import {LOG} from "../../../logging/Log";
-
 
 let defaultSettings = {
   config: {

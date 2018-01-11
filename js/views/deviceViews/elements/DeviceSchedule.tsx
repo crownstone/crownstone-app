@@ -251,6 +251,13 @@ export class DeviceSchedule extends Component<any, any> {
         </View>
       )
     }
+    else if (stone.config.locked === true) {
+      innerView = (
+        <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
+          { this._getHeader(state, iconSize, "This Crownstone is locked so Schedules are disabled.") }
+        </View>
+      )
+    }
     else if (items.length > 0) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>

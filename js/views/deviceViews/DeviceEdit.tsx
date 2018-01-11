@@ -188,18 +188,15 @@ export class DeviceEdit extends Component<any, any> {
         }
       });
 
-      items.push({
-        label: 'Tap to toggle can be enabled per Crownstone.',
-        type: 'explanation',
-        below: true
-      });
+      items.push({label: 'Tap to toggle can be enabled per Crownstone.', type: 'explanation', below: true, style: {paddingBottom:0}});
     }
     else {
       items.push({ label: 'Tap to toggle is disabled.', type: 'disabledInfo'});
       items.push({
         label: 'To use tap to toggle, you have to enable it globally in the app settings.',
         type: 'explanation',
-        below: true
+        below: true,
+        style: {paddingBottom:0}
       });
     }
 

@@ -150,9 +150,15 @@ export class DeviceEntry extends Component<any, any> {
 
   _getControl(stone) {
     let content;
+    let action = null;
     if (stone.config.disabled === false) {
       if (stone.errors.advertisementError) {
         content = <Switch value={stone.state.state === 1} disabled={true} />
+        action = () => { this._basePressed(stone); }
+      }
+      else if (stone.config.locked) {
+        content = <Icon name={'md-lock'} color={colors.black.rgba(0.2)} size={32} />
+        action = () => { this._basePressed(stone); }
       }
       else if (this.state.pendingCommand === true) {
         content = <ActivityIndicator animating={true} size='large' />;
@@ -162,11 +168,18 @@ export class DeviceEntry extends Component<any, any> {
       }
     }
 
-    return (
-      <View style={{height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'}}>
-        {content}
-      </View>
-    );
+
+    let wrapperStyle = {height: this.baseHeight, width: 60, alignItems:'flex-end', justifyContent:'center'};
+    if (action) {
+      return (
+        <TouchableOpacity onPress={() => { action() }} style={wrapperStyle}>
+          {content}
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return <View style={wrapperStyle}>{content}</View>;
+    }
   }
 
   _iconPressed() {
@@ -174,7 +187,7 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   _basePressed(stone) {
-    if (stone.errors.hasError === true) {
+    if (stone.errors.hasError === true || stone.config.locked) {
       Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
     }
     else {
@@ -283,13 +296,13 @@ export class DeviceEntry extends Component<any, any> {
   render() {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+
     let element = stone.config.applianceId ? state.spheres[this.props.sphereId].appliances[stone.config.applianceId] : stone;
     let useControl = stone.config.type !== STONE_TYPES.guidestone;
     let backgroundColor = this.state.backgroundColor.interpolate({
       inputRange: [0,10],
       outputRange: ['rgba(255, 255, 255, 0.8)',  colors.csOrange.rgba(0.5)]
     });
-
 
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>

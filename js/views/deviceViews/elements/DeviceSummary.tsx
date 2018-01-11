@@ -25,7 +25,8 @@ import { DimmerButton } from "../../components/DimmerButton";
 import { INTENTS } from "../../../native/libInterface/Constants";
 import {DIMMING_ENABLED} from "../../../ExternalConfig";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {EventBusClass} from "../../../util/EventBus";
+import {eventBus, EventBusClass} from "../../../util/EventBus";
+import {LockedStateUI} from "../../components/LockedStateUI";
 
 export class DeviceSummary extends Component<any, any> {
   storedSwitchState = 0;
@@ -115,6 +116,18 @@ export class DeviceSummary extends Component<any, any> {
       );
     }
 
+    if (stone.config.locked) {
+      return (
+        <LockedStateUI
+          size={0.3*screenHeight}
+          state={currentState}
+          stone={stone}
+          sphereId={this.props.sphereId}
+          stoneId={this.props.stoneId}
+          unlockDataCallback={() => { this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
+        />
+      );
+    }
 
     if (stone.config.dimmingEnabled === true && DIMMING_ENABLED) {
       return <DimmerButton size={0.3*screenHeight} state={currentState} stone={stone} sphereId={this.props.sphereId} stoneId={this.props.stoneId} callback={(newState) => {
@@ -160,7 +173,6 @@ export class DeviceSummary extends Component<any, any> {
             1,
             'from _getButton in DeviceSummary'
           );
-
         }}>
           <AnimatedCircle size={size*1.05} color={colors.black.rgba(0.08)}>
             <AnimatedCircle size={size} color={colors.white.hex}>
@@ -174,6 +186,30 @@ export class DeviceSummary extends Component<any, any> {
     }
   }
 
+  _getLockIcon(stone) {
+    let wrapperStyle = {
+      width: 35,
+      height: 35,
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      alignItems: 'center',
+      justifyContent: "center"
+    };
+    if (stone.config.disabled === false && stone.config.locked === false) {
+      return (
+        <TouchableOpacity
+          onPress={() => {this.props.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
+          style={wrapperStyle}>
+          <Icon name={"md-lock"} color={colors.white.rgba(0.5)} size={30}/>
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return <View style={wrapperStyle} />;
+    }
+  }
+
   render() {
     const store = this.props.store;
     const state = store.getState();
@@ -181,6 +217,7 @@ export class DeviceSummary extends Component<any, any> {
     const stone = sphere.stones[this.props.stoneId];
     const location = Util.data.getLocationFromStone(sphere, stone);
 
+    // stone.config.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let canChangeSettings = stone.config.applianceId ? spherePermissions.editAppliance : spherePermissions.editCrownstone;
@@ -194,7 +231,7 @@ export class DeviceSummary extends Component<any, any> {
     }
 
     return (
-      <View style={{flex:1, paddingBottom:35}}>
+      <View style={{flex:1, paddingBottom: 35}}>
         <DeviceInformation left={"Energy Consumption:"}
                            leftValue={stone.state.currentUsage + ' W'}
                            right={locationLabel}
@@ -226,11 +263,11 @@ export class DeviceSummary extends Component<any, any> {
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />
+        { this._getLockIcon(stone) }
       </View>
     )
   }
 }
-
 
 export class DeviceButton extends Component<{store: any, sphereId: string, stoneId: string, eventBus: EventBusClass, callback(any): void}, any> {
   unsubscribeStoreEvents;

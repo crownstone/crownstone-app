@@ -158,7 +158,7 @@ export class FirmwareHelper {
           .then((bootloaderVersion) => {
             LOG.info("FirmwareHelper: DFU progress: Obtained bootloader version:", bootloaderVersion);
             this.stoneBootloaderVersion = bootloaderVersion;
-            return BluenetPromiseWrapper.phoneDisconnect()
+            return BluenetPromiseWrapper.phoneDisconnect();
           })
           .then(() => { return delay(1000); })
           .then(() => {

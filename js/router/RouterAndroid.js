@@ -77,7 +77,8 @@ export class Router_Android extends Component {
             </Scene>
           </Scene>
         </Router>
-        <DfuOverlay store={this.props.store} />
+        <DfuOverlay  store={this.props.store} />
+        <LockOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />

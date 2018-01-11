@@ -76,7 +76,12 @@ export class StoneBehaviour {
   ibeaconUpdate(state, stone, ibeaconPackage : ibeaconPackage) {
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore === true) {
-      LOGd.info("StoneTracker: IGNORE: temporary ignore enabled.");
+      LOGd.info("StoneBehaviour: IGNORE: temporary ignore enabled.");
+      return;
+    }
+
+    if (stone.config.locked === true) {
+      LOGd.info("StoneBehaviour: IGNORE: stone is locked.");
       return;
     }
 

@@ -67,7 +67,7 @@ export const hex2rgb = function(hex) {
  * @returns {string}
  * @constructor
  */
-export const rgb2hex = function(r,g,b) {
+export const rgb2hex = function(r,g?,b?) {
   if (typeof r == "object") {
     b = r.b;
     g = r.g;
@@ -86,7 +86,7 @@ export const rgb2hex = function(r,g,b) {
  * @returns {{h: [0..360], -1 as undefined, c: [0..1], l: [0..1]}}
  * @constructor
  */
-export const rgb2hcl = function(r,g,b) {
+export const rgb2hcl = function(r,g?,b?) {
   if (typeof r == "object") {
     b = r.b;
     g = r.g;
@@ -216,7 +216,7 @@ export const hsl2rgb = function(h, s, l){
  * @param g
  * @param b
  */
-export const rgb2hsl = function(r, g, b){
+export const rgb2hsl = function(r, g?, b?){
   if (typeof r == "object") {
     b = r.b;
     g = r.g;
@@ -258,7 +258,7 @@ export const rgb2hsl = function(r, g, b){
  * @returns {{h: [0..360], s: [0..1], v: [0..1]}}
  * @constructor
  */
-export const rgb2hsv = function(r,g,b) {
+export const rgb2hsv = function(r,g?,b?) {
   if (typeof r == "object") {
     b = r.b;
     g = r.g;
