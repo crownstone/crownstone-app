@@ -75,6 +75,8 @@ if (DISABLE_NATIVE === true) {
     getAvailableScheduleEntryIndex: () => {},
 
     viewsInitialized: () => {},
+    lockSwitch:() => {},
+    allowDimming:() => {},
 
   }
 }

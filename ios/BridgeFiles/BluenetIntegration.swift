@@ -328,7 +328,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func keepAlive(_ callback: @escaping RCTResponseSenderBlock) {
     LOGGER.info("BluenetBridge: Called keepAlive")
-    GLOBAL_BLUENET!.bluenet.control.keepAlive()
+    GLOBAL_BLUENET!.bluenet.control.keepAliveRepeat()
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {
@@ -709,7 +709,7 @@ open class BluenetJS: RCTEventEmitter {
   
   @objc func meshKeepAlive(_ callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called meshKeepAlive")
-    GLOBAL_BLUENET!.bluenet.mesh.keepAlive()
+    GLOBAL_BLUENET!.bluenet.mesh.keepAliveRepeat()
       .then{_ in callback([["error" : false]])}
       .catch{err in
         if let bleErr = err as? BleError {
@@ -736,20 +736,6 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
-  @objc func meshCommandSetSwitchState(_ crownstoneIds: [NSNumber], state: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
-    LOGGER.info("BluenetBridge: Called meshCommandSetSwitchState")
-//    print("-- Firing meshCommandSetSwitchState crownstoneIds: \(crownstoneIds), state: \(state), intent: \(intent)")
-    GLOBAL_BLUENET!.bluenet.mesh.meshCommandSetSwitchState(crownstoneIds: crownstoneIds as! [UInt16], state: state.floatValue)
-      .then{_ in callback([["error" : false]])}
-      .catch{err in
-        if let bleErr = err as? BleError {
-          callback([["error" : true, "data": getBleErrorString(bleErr)]])
-        }
-        else {
-          callback([["error" : true, "data": "UNKNOWN ERROR IN meshKeepAliveState \(err)"]])
-        }
-    }
-  }
   
   @objc func multiSwitch(_ arrayOfStoneSwitchPackets: [NSDictionary], callback: @escaping RCTResponseSenderBlock) -> Void {
     LOGGER.info("BluenetBridge: Called multiSwitch")
@@ -1135,6 +1121,37 @@ open class BluenetJS: RCTEventEmitter {
     
   }
 
+  @objc func allowDimming(_ allow: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let allowBool = allow.boolValue
+    LOGGER.info("BluenetBridge: Called allowDimming")
+    GLOBAL_BLUENET!.bluenet.control.allowDimming(allow: allowBool)
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN allowDimming"]])
+        }
+    }
+  }
+  
+  @objc func lockSwitch(_ lock: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    let lockBool = lock.boolValue
+    LOGGER.info("BluenetBridge: Called lockSwitch")
+    GLOBAL_BLUENET!.bluenet.control.lockSwitch(lock: lockBool)
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN lockSwitch"]])
+        }
+    }
+  }
+  
+  
   
   @objc func viewsInitialized() {
     LOGGER.info("BluenetBridge: Called viewsInitialized")

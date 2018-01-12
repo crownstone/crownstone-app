@@ -46,6 +46,8 @@ interface BluenetPromiseWrapperProtocol {
   getSchedules()                                : Promise< [bridgeScheduleEntry] >,
 
   getSwitchState()                              : Promise< number >,
+  lockSwitch(lock : Boolean)                    : Promise< void >,
+  allowDimming(allow: Boolean)                  : Promise< void >,
 }
 
 interface crownstoneServiceData {

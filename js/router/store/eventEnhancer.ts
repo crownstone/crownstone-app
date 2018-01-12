@@ -296,6 +296,7 @@ function checkAction(action, affectedIds) {
       break;
     case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":
       eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
+    case "UPDATE_STONE_CONFIG_TRANSIENT":
     case "USER_UPDATE_PICTURE":
       break;
     default:

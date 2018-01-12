@@ -11,10 +11,11 @@ import { StoneStoreManager } from "./StoneStoreManager";
 
 let RSSI_TIMEOUT = 5000;
 
-const UPDATE_STATE_FROM_ADVERTISEMENT = 'UPDATE_STATE_FROM_ADVERTISEMENT';
-const UPDATE_STONE_TIME_LAST_SEEN     = 'UPDATE_STONE_TIME_LAST_SEEN';
+const UPDATE_CONFIG_FROM_ADVERTISEMENT     = 'UPDATE_CONFIG_FROM_ADVERTISEMENT';
+const UPDATE_STATE_FROM_ADVERTISEMENT      = 'UPDATE_STATE_FROM_ADVERTISEMENT';
+const UPDATE_STONE_TIME_LAST_SEEN          = 'UPDATE_STONE_TIME_LAST_SEEN';
 const UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH = 'UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH';
-const UPDATE_STONE_RSSI               = 'UPDATE_STONE_RSSI';
+const UPDATE_STONE_RSSI                    = 'UPDATE_STONE_RSSI';
 
 /**
  * This will control a stone. It will make sure advertisements will update its state and keep track of its position in the mesh.
@@ -304,9 +305,74 @@ export class StoneEntity {
       return;
     }
 
+    this.handleConfig(stone, advertisement);
+
+    this.handleTransientConfig(stone, advertisement);
+
     this.handleErrors(stone, advertisement);
 
     this.handleState(stone, advertisement);
+  }
+
+
+  /**
+   * This will take any configuration from the Crownstone that we don't currently have up to date in the app and update it
+   * These are only transient values that are not worth it to send them to the cloud
+   * This goes for:
+   *  DimmingAvailable
+   * @param stone
+   * @param {crownstoneAdvertisement} advertisement
+   */
+  handleTransientConfig(stone, advertisement : crownstoneAdvertisement) {
+    let changeData : any = {};
+    let changed = false;
+    if (stone.config.dimmingAvailable !== advertisement.serviceData.dimmingAvailable) {
+      changed = true;
+      changeData.dimmingAvailable = advertisement.serviceData.dimmingAvailable;
+    }
+
+    if (changed) {
+      this.storeManager.loadAction(this.stoneId, UPDATE_CONFIG_FROM_ADVERTISEMENT, {
+        type: 'UPDATE_STONE_CONFIG_TRANSIENT',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        data: changeData,
+        updatedAt: new Date().valueOf(),
+      });
+    }
+
+  }
+  /**
+   * This will take any configuration from the Crownstone that we don't currently have up to date in the app and update it
+   * This goes for:
+   *  Locked
+   *  DimmingAvailable
+   *  DimmingAllowed
+   * @param stone
+   * @param {crownstoneAdvertisement} advertisement
+   */
+  handleConfig(stone, advertisement : crownstoneAdvertisement) {
+    let changeData : any = {};
+    let changed = false;
+    if (stone.config.locked !== advertisement.serviceData.switchLocked) {
+      changed = true;
+      changeData.locked = advertisement.serviceData.switchLocked;
+    }
+    if (stone.config.dimmingEnabled !== advertisement.serviceData.dimmingAllowed) {
+      changed = true;
+      changeData.dimmingEnabled = advertisement.serviceData.dimmingAllowed;
+    }
+
+    if (changed) {
+      this.storeManager.loadAction(this.stoneId, UPDATE_CONFIG_FROM_ADVERTISEMENT, {
+        type: 'UPDATE_STONE_CONFIG',
+        sphereId: this.sphereId,
+        stoneId: this.stoneId,
+        data: changeData,
+        updatedAt: new Date().valueOf(),
+      });
+    }
+
   }
 
 
@@ -367,7 +433,7 @@ export class StoneEntity {
         lastSeenTemperature : serviceData.temperature
       },
       updatedAt: currentTime,
-      // __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
+      __logLevel: LOG_LEVEL.verbose, // this command only lets this log skip the LOG.store unless LOG_VERBOSE is on.
     });
 
   }

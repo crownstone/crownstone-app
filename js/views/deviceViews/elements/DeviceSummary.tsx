@@ -27,6 +27,7 @@ import {DIMMING_ENABLED} from "../../../ExternalConfig";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 import {eventBus, EventBusClass} from "../../../util/EventBus";
 import {LockedStateUI} from "../../components/LockedStateUI";
+import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
 
 export class DeviceSummary extends Component<any, any> {
   storedSwitchState = 0;
@@ -124,6 +125,11 @@ export class DeviceSummary extends Component<any, any> {
           stone={stone}
           sphereId={this.props.sphereId}
           stoneId={this.props.stoneId}
+          unlockCrownstone={ () => {
+            let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'lockSwitch', value: false })
+            BatchCommandHandler.executePriority();
+            return promise;
+          }}
           unlockDataCallback={() => { this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.props.sphereId, stoneId: this.props.stoneId, data: {locked: false}})}}
         />
       );
@@ -201,7 +207,7 @@ export class DeviceSummary extends Component<any, any> {
         <TouchableOpacity
           onPress={() => {this.props.eventBus.emit('showLockOverlay', { sphereId: this.props.sphereId, stoneId: this.props.stoneId })}}
           style={wrapperStyle}>
-          <Icon name={"md-lock"} color={colors.white.rgba(0.5)} size={30}/>
+          <Icon name={"md-unlock"} color={colors.white.rgba(0.5)} size={30}/>
         </TouchableOpacity>
       );
     }

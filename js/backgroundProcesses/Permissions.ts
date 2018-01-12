@@ -11,6 +11,8 @@ export class PermissionBase {
   setupCrownstone         = false; // a
   seeSetupCrownstone      = false; // a
   moveCrownstone          = false; // a or m
+  canLockCrownstone       = false; // a
+  canUnlockCrownstone     = false; // a
 
   doLocalizationTutorial  = false; // a?
   addRoom                 = false; // a?
@@ -132,6 +134,8 @@ export class PermissionClass extends PermissionBase {
         this.inviteAdminToSphere     = true; // admin
 
         this.canClearAllSchedules    = true; // admin
+        this.canLockCrownstone       = true; // admin
+        this.canUnlockCrownstone     = true; // admin
       case 'member':
         this.doLocalizationTutorial  = true; // admin and member
         this.changeBehaviour         = true; // admin and member

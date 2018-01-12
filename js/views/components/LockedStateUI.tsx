@@ -18,12 +18,10 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import {eventBus} from "../../util/EventBus";
-import {AnimatedCircle} from "./animated/AnimatedCircle";
-import {StoneUtil} from "../../util/StoneUtil";
-import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
-import {INTENTS} from "../../native/libInterface/Constants";
 import {AnimatedDial} from "./AnimatedDial";
 import {Icon} from "./Icon";
+import {LOGe} from "../../logging/Log";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 export class LockedStateUI extends Component<any, any> {
   _panResponder;
@@ -50,25 +48,29 @@ export class LockedStateUI extends Component<any, any> {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderTerminationRequest: (evt, gestureState) => false,
       onPanResponderGrant: (evt, gestureState) => {
-        if (this.state.unlockingInProgress === false) {
-          this.controlling = true;
-          this._startTime = new Date().valueOf();
-          this._updateLoop();
-          eventBus.emit("UIGestureControl", false);
+        if (Permissions.inSphere(this.props.sphereId).canUnlockCrownstone) {
+          if (this.state.unlockingInProgress === false) {
+            this.controlling = true;
+            this._startTime = new Date().valueOf();
+            this._updateLoop();
+            eventBus.emit("UIGestureControl", false);
+          }
         }
       },
       onPanResponderMove: (evt, gestureState) => {},
 
       onPanResponderRelease: (evt, gestureState) => {
-        this._startTime = 0;
-        clearTimeout(this.timeout);
-        if (this.state.level === 1) {
-          this._unlockCrownstone()
+        if (Permissions.inSphere(this.props.sphereId).canUnlockCrownstone) {
+          this._startTime = 0;
+          clearTimeout(this.timeout);
+          if (this.state.level === 1) {
+            this._unlockCrownstone()
+          }
+          else {
+            this.setState({level: 0});
+          }
+          eventBus.emit("UIGestureControl", true)
         }
-        else {
-          this.setState({level: 0});
-        }
-        eventBus.emit("UIGestureControl", true)
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
@@ -85,8 +87,16 @@ export class LockedStateUI extends Component<any, any> {
   _unlockCrownstone() {
     this.setState({unlockingInProgress: true});
 
-    setTimeout(() => { this.setState({ unlockingInProgress: false, unlocked: true })}, 600);
-    setTimeout(() => { this.props.unlockDataCallback() }, 1300);
+    this.props.unlockCrownstone()
+      .then(() => {
+        this.setState({ unlockingInProgress: false, unlocked: true });
+        setTimeout(() => { this.props.unlockDataCallback() }, 500);
+      })
+      .catch((err) => {
+        LOGe.info("LockedStateUI: failed to unlock Crownstone", err);
+        this.setState({ unlockingInProgress: false, failed: true });
+        setTimeout(() => { this.setState({ failed: false }); }, 1500);
+      })
   }
 
   _updateLoop() {
@@ -96,11 +106,11 @@ export class LockedStateUI extends Component<any, any> {
 
       if (level === 1) {
         this.controlling = false;
-        this.setState({level:1})
+        this.setState({level:1, failed: false})
         clearTimeout(this.timeout);
       }
       else {
-        this.setState({level: level});
+        this.setState({level: level, failed: false});
         this.timeout = setTimeout(() => {
           this._updateLoop();
         }, 100);
@@ -112,6 +122,19 @@ export class LockedStateUI extends Component<any, any> {
   _getContent() {
     let viewStyle = {width: this.props.size, height: this.props.size, position:'absolute', top:0, left:0, alignItems:'center', justifyContent:'center'};
     let textStyle = {fontSize:12, textAlign:'center', color: colors.white.hex, paddingTop:5, fontWeight: 'bold'};
+    if (!Permissions.inSphere(this.props.sphereId).canUnlockCrownstone) {
+      return (
+        <View style={viewStyle}>
+          <Icon
+            name="md-lock"
+            size={this.props.size*0.3}
+            color={colors.white.hex}
+          />
+          <Text style={textStyle}>{"Ask an admin\nto unlock me!"}</Text>
+        </View>
+      )
+    }
+
     if (this.state.unlockingInProgress) {
       return (
         <View style={viewStyle}>
@@ -132,13 +155,25 @@ export class LockedStateUI extends Component<any, any> {
         </View>
       )
     }
+    else if (this.state.failed) {
+      return (
+        <View style={viewStyle}>
+          <Icon
+            name="md-lock"
+            size={this.props.size*0.3}
+            color={colors.red.hex}
+          />
+          <Text style={textStyle}>{"Couldn't unlock...\nYou must be near."}</Text>
+        </View>
+      )
+    }
     else {
       return (
         <View style={viewStyle}>
           <Icon
             name="md-lock"
             size={this.props.size*0.3}
-            color="#fff"
+            color={colors.white.hex}
           />
           <Text style={textStyle}>{"Press and hold\nto unlock!"}</Text>
         </View>

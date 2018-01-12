@@ -83,12 +83,13 @@ RCT_EXTERN_METHOD(batterySaving:(nonnull NSNumber *)state)
 RCT_EXTERN_METHOD(setBackgroundScanning:(nonnull NSNumber *)state)
 RCT_EXTERN_METHOD(viewsInitialized)
 
+RCT_EXTERN_METHOD(allowDimming:(nonnull NSNumber *)allow callback:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(lockSwitch:(nonnull NSNumber *)lock callback:(RCTResponseSenderBlock)callback)
 
 // MESH
 
 RCT_EXTERN_METHOD(meshKeepAlive:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(meshKeepAliveState:(nonnull NSNumber *)timeout stoneKeepAlivePackets:(NSArray *)stoneKeepAlivePackets callback:(RCTResponseSenderBlock)callback)
-RCT_EXTERN_METHOD(meshCommandSetSwitchState:(NSArray<NSNumber *> *)crownstoneIds state:(nonnull NSNumber *)state intent:(nonnull NSNumber *)intent callback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(multiSwitch:(NSArray *)arrayOfStoneSwitchPackets callback:(RCTResponseSenderBlock)callback)
 
 // DFU
