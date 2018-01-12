@@ -23,7 +23,7 @@ import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/animated/FadeInView'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGe} from '../../logging/Log'
 import {DIMMING_ENABLED} from "../../ExternalConfig";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
@@ -32,6 +32,7 @@ import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {StoneUtil} from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
 import {BackAction} from "../../util/Back";
+import {Scheduler} from "../../logic/Scheduler";
 
 
 export class DeviceEdit extends Component<any, any> {
@@ -378,27 +379,13 @@ export class DeviceEdit extends Component<any, any> {
     }
 
     // turn the stone off if dimming is being disabled
-    if (stone.config.dimmingEnabled !== this.state.dimmingEnabled && this.state.dimmingEnabled === false) {
-      StoneUtil.switchBHC(
-        this.props.sphereId,
-        this.props.stoneId,
-        stone,
-        0,
-        this.props.store,
-        {},
-        (err) => {},
-        INTENTS.manual,
-        10,
-        'from disabling dimming'
-      );
-    }
+    this._setDimState(stone)
 
     let actions = [];
     if (
-      stone.config.name           !== this.state.stoneName ||
-      stone.config.icon           !== this.state.stoneIcon ||
-      stone.config.dimmingEnabled !== this.state.dimmingEnabled ||
-      stone.config.tapToToggle    !== this.state.tapToToggle ||
+      stone.config.name           !== this.state.stoneName      ||
+      stone.config.icon           !== this.state.stoneIcon      ||
+      stone.config.tapToToggle    !== this.state.tapToToggle    ||
       stone.config.applianceId    !== this.state.applianceId
     ) {
       actions.push({
@@ -408,15 +395,14 @@ export class DeviceEdit extends Component<any, any> {
         data: {
           name: this.state.stoneName,
           icon: this.state.stoneIcon,
-          dimmingEnabled: this.state.dimmingEnabled,
           tapToToggle: this.state.tapToToggle,
           applianceId: this.state.applianceId,
         }});
     }
 
     if (appliance && this.state.applianceId && (
-        appliance.config.name           !== this.state.applianceName ||
-        appliance.config.icon           !== this.state.applianceIcon
+        appliance.config.name  !== this.state.applianceName ||
+        appliance.config.icon  !== this.state.applianceIcon
       )) {
       actions.push({
         type:'UPDATE_APPLIANCE_CONFIG',
@@ -433,6 +419,45 @@ export class DeviceEdit extends Component<any, any> {
     }
 
     BackAction();
+  }
+
+  _setDimState(stone) {
+    if (stone.config.dimmingEnabled !== this.state.dimmingEnabled) {
+      let promises = [];
+      if (this.state.dimmingEnabled === false) {
+        this.props.eventBus.emit("showLoading", "Enabling dimming on this Crownstone...");
+        // turn the relay on if dimming is being disabled and the stone is dimming
+        if (stone.state.state > 0) {
+          promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'multiSwitch', state: 1, intent: INTENTS.manual, timeout: 0}));
+        }
+        promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: false })
+          .catch((err) => {
+            LOGe.info("DeviceEdit: Could not set dimming settings on Crownstone", err);
+            Alert.alert("I'm sorry...","I couldn't disable dimming on this Crownstone. Please move closer and try again.", [{text:'OK'}])
+          }));
+      }
+
+      if (this.state.dimmingEnabled === true) {
+        this.props.eventBus.emit("showLoading", "Disabling dimming on this Crownstone...");
+        promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: true })
+          .catch((err) => {
+            LOGe.info("DeviceEdit: Could not set dimming settings on Crownstone", err);
+            Alert.alert("I'm sorry...","I couldn't enable dimming on this Crownstone. Please move closer and try again.", [{text:'OK'}])
+          }));
+      }
+      BatchCommandHandler.executePriority();
+      Promise.all(promises).then(() => {
+        this.props.eventBus.emit("hideLoading");
+        this.props.store.dispatch({
+          type: 'UPDATE_STONE_CONFIG',
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          data: {
+            dimmingEnabled: this.state.dimmingEnabled,
+          }
+        });
+      });
+    }
   }
 
 
