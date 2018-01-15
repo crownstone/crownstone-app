@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import {
   LOG_INFO,
+  LOG_ADVERTISEMENTS,
   LOG_ERRORS,
   LOG_WARNINGS,
   LOG_VERBOSE,
@@ -62,6 +63,10 @@ class Logger {
 
   cloud(...any) {
     this._log('Cloud ------', LOG_CLOUD,     LogProcessor.log_cloud, arguments);
+  }
+
+  advertisements(...any) {
+    this._log('ADVERTISEMENTS --------', LOG_ADVERTISEMENTS, LogProcessor.log_advertisements, arguments);
   }
 
   ble(...any) {

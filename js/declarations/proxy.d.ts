@@ -50,6 +50,7 @@ interface BluenetPromiseWrapperProtocol {
   allowDimming(allow: Boolean)                  : Promise< void >,
 }
 
+
 interface crownstoneServiceData {
   opCode                    : number
   dataType                  : number
@@ -72,6 +73,7 @@ interface crownstoneServiceData {
   errors                    : errorData,
   uniqueElement             : number
 }
+
 
 interface crownstoneAdvertisement {
   handle              : string,
@@ -110,6 +112,7 @@ interface errorData {
   bitMask           : number
 }
 
+
 interface clearErrorData {
   overCurrent       : boolean
   overCurrentDimmer : boolean
@@ -118,6 +121,7 @@ interface clearErrorData {
   dimmerOnFailure   : boolean
   dimmerOffFailure  : boolean
 }
+
 
 interface locationType {
   latitude:  number,

@@ -425,23 +425,22 @@ export class DeviceEdit extends Component<any, any> {
     if (stone.config.dimmingEnabled !== this.state.dimmingEnabled) {
       let promises = [];
       if (this.state.dimmingEnabled === false) {
-        this.props.eventBus.emit("showLoading", "Enabling dimming on this Crownstone...");
+        this.props.eventBus.emit("showLoading", "Disabling dimming on this Crownstone...");
         // turn the relay on if dimming is being disabled and the stone is dimming
         if (stone.state.state > 0) {
           promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'multiSwitch', state: 1, intent: INTENTS.manual, timeout: 0}));
         }
         promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: false })
           .catch((err) => {
-            LOGe.info("DeviceEdit: Could not set dimming settings on Crownstone", err);
+            LOGe.info("DeviceEdit: Could not disable dimming on Crownstone", err);
             Alert.alert("I'm sorry...","I couldn't disable dimming on this Crownstone. Please move closer and try again.", [{text:'OK'}])
           }));
       }
-
-      if (this.state.dimmingEnabled === true) {
-        this.props.eventBus.emit("showLoading", "Disabling dimming on this Crownstone...");
+      else {
+        this.props.eventBus.emit("showLoading", "Enabling dimming on this Crownstone...");
         promises.push(BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'allowDimming', value: true })
           .catch((err) => {
-            LOGe.info("DeviceEdit: Could not set dimming settings on Crownstone", err);
+            LOGe.info("DeviceEdit: Could not enable dimming on Crownstone", err);
             Alert.alert("I'm sorry...","I couldn't enable dimming on this Crownstone. Please move closer and try again.", [{text:'OK'}])
           }));
       }

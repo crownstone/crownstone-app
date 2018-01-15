@@ -82,8 +82,6 @@ let defaultSettings = {
     dimmerOnFailure: false,
     dimmerOffFailure: false,
     hasError: false,
-    obtainedErrors: false,
-    advertisementError: false,
   },
   powerUsage: {
     //day as string: 2017-05-01 : { cloud: {...}, data: [] }
@@ -340,8 +338,6 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
     case 'UPDATE_STONE_ERRORS':
       if (action.data) {
         let newState = {...state};
-        newState.advertisementError = update(action.data.advertisementError, newState.advertisementError);
-        newState.obtainedErrors     = update(action.data.obtainedErrors,     newState.obtainedErrors);
         newState.overCurrent        = update(action.data.overCurrent,        newState.overCurrent);
         newState.overCurrentDimmer  = update(action.data.overCurrentDimmer,  newState.overCurrentDimmer);
         newState.temperatureChip    = update(action.data.temperatureChip,    newState.temperatureChip);
@@ -361,15 +357,18 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
         newState.temperatureDimmer = update(action.data.temperatureDimmer, newState.temperatureDimmer);
         newState.dimmerOnFailure   = update(action.data.dimmerOnFailure,   newState.dimmerOnFailure);
         newState.dimmerOffFailure  = update(action.data.dimmerOffFailure,  newState.dimmerOffFailure);
-        newState.obtainedErrors    = false;
 
-        newState.hasError = newState.overCurrent || newState.overCurrentDimmer || newState.temperatureChip || newState.temperatureDimmer || newState.dimmerOnFailure || newState.dimmerOffFailure;
+        newState.hasError = newState.overCurrent        ||
+                            newState.overCurrentDimmer  ||
+                            newState.temperatureChip    ||
+                            newState.temperatureDimmer  ||
+                            newState.dimmerOnFailure    ||
+                            newState.dimmerOffFailure;
         return newState;
       }
       return state;
     case 'CLEAR_STONE_ERRORS':
       let newState = {...state};
-      newState.advertisementError = false;
       newState.overCurrent        = false;
       newState.overCurrentDimmer  = false;
       newState.temperatureChip    = false;
@@ -377,7 +376,6 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
       newState.dimmerOnFailure    = false;
       newState.dimmerOffFailure   = false;
       newState.hasError           = false;
-      newState.obtainedErrors     = false;
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.errors);

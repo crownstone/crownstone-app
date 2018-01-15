@@ -31,8 +31,15 @@ export class StoneEntity {
   meshTracker : StoneMeshTracker;
   behaviour : StoneBehaviour;
 
+  lastKnownTimestamp = 0;
+  lastKnownUniqueElement;
+  lastKnownRSSI : number;
   disabledTimeout;
   clearRssiTimeout;
+
+  ignoreTimeout = null;
+  ignoreAdvertisements = false;
+  ignoreConditions = null;
 
   constructor(store, storeManager, sphereId, stoneId) {
     LOGi.native("StoneEntity: Creating entity for ", stoneId);
@@ -72,6 +79,14 @@ export class StoneEntity {
         this.storeManager.clearActions(this.stoneId);
       }
     }));
+
+    this.subscriptions.push(eventBus.on("temporaryStopListening_" + this.stoneId, (timeoutMs : number, condition?) => {
+      this.ignoreAdvertisements = true;
+      this.ignoreTimeout = Scheduler.scheduleCallback(() => {
+        this.ignoreAdvertisements = false;
+        this.ignoreTimeout = null;
+      }, timeoutMs, "ignore timeout for Crownstone " + this.stoneId );
+    }));
   }
 
 
@@ -91,7 +106,7 @@ export class StoneEntity {
     // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
     // reset is complete.
     if (stone.config.dfuResetRequired === true) {
-      LOGd.info("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
+      LOGd.advertisements("AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.");
       return;
     }
 
@@ -102,13 +117,12 @@ export class StoneEntity {
       this._emitUpdateEvents(stone, ibeaconPackage.rssi);
     }
     else {
-      LOGd.info("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
+      LOGd.advertisements("StoneStateHandler: IGNORE iBeacon message: store has no handle.");
     }
 
     this._updateDisabledState();
-
-    // update RSSI, we only use the iBeacon once since it has an average rssi
     this._updateRssi(ibeaconPackage.rssi);
+    this._handleBehaviour(state, stone);
 
     // fallback to ensure we never miss an enter event caused by a bug in ios 10
     if (FALLBACKS_ENABLED) {
@@ -117,9 +131,6 @@ export class StoneEntity {
         LocationHandler.enterSphere(this.sphereId);
       }
     }
-
-    // update the behaviour controller.
-    this.behaviour.ibeaconUpdate(state, stone, ibeaconPackage);
   }
 
 
@@ -170,7 +181,7 @@ export class StoneEntity {
       let state = this.store.getState();
       if (!this._validate(state)) { return; }
 
-      LOG.info("StoneStateHandler: Disabling stone ", this.stoneId);
+      LOGi.advertisements("StoneStateHandler: Disabling stone ", this.stoneId);
       this.store.dispatch({
         type: 'UPDATE_STONE_DISABILITY',
         sphereId: this.sphereId,
@@ -190,6 +201,9 @@ export class StoneEntity {
     if (!this._validate(state)) { return; }
     let sphere = state.spheres[this.sphereId];
     let stone = sphere.stones[this.stoneId];
+
+    // the lastKnownRSSI is used for behaviour
+    if (rssi < 0) { this.lastKnownRSSI = rssi; }
 
     // only update rssi if there is a measurable difference and check if rssi is smaller than 0 to make sure its a valid measurement.
     if (stone.config.rssi !== rssi && rssi < 0) {
@@ -234,6 +248,12 @@ export class StoneEntity {
 
     /// tell the rest of the app this stone was seen, and its meshnetwork was heard from.
     this._emitUpdateEvents(stone, advertisement.rssi) // emit
+
+    const state = this.store.getState();
+    if (state.development.use_advertisement_rssi_too) {
+      this._updateRssi(advertisement.rssi);
+      this._handleBehaviour(state, stone);
+    }
   }
 
 
@@ -258,6 +278,10 @@ export class StoneEntity {
 
     // tell the rest of the app this stone was seen, and its meshnetwork was heard from.
     this._emitUpdateEvents(stone, advertisement.rssi) // emit
+
+    if (state.development.use_advertisement_rssi_too) {
+      this._handleBehaviour(state, stone);
+    }
   }
 
 
@@ -290,6 +314,11 @@ export class StoneEntity {
     });
   }
 
+  _handleBehaviour(state, stone) {
+    // update the behaviour controller.
+    this.behaviour.update(state, stone, this.lastKnownRSSI);
+  }
+
 
   /**
    * Handle the data in the serviceData of the advertisement. This data belongs to this entity
@@ -298,10 +327,31 @@ export class StoneEntity {
    * @private
    */
   _handleAdvertisementContent(stone, advertisement : crownstoneAdvertisement) {
+    if (advertisement.serviceData.timestamp <= this.lastKnownTimestamp) {
+      LOGd.advertisements("StoneEntity: IGNORE: we already know a newer state.");
+      return;
+    }
+    else if (this.lastKnownUniqueElement === advertisement.serviceData.uniqueElement) { // this is a fallback for before 2.0.0 firmware. The lastKnownUniqueElement is not perse a timestamp.
+      LOGd.advertisements("StoneEntity: IGNORE: already seen this message.");
+      return;
+    }
+
+    // ensure we do not re-use old data
+    this.lastKnownUniqueElement = advertisement.serviceData.uniqueElement;
+    this.lastKnownTimestamp     = advertisement.serviceData.timestamp;
+
+    if (this.ignoreAdvertisements === true) {
+      let allowData = this._checkForClearConditions(stone, advertisement);
+      LOGd.advertisements('StoneEntity: IGNORE: ignore timeout is set for this Crownstone.');
+      if (!allowData) {
+        return;
+      }
+    }
+
     // handle the case of a failed DFU that requires a reset. If it boots in normal mode, we can not use it until the
     // reset is complete.
     if (stone.config.dfuResetRequired === true) {
-      LOGd.info('AdvertisementHandler: IGNORE: DFU reset is required for this Crownstone.');
+      LOGd.advertisements('StoneEntity: IGNORE: DFU reset is required for this Crownstone.');
       return;
     }
 
@@ -312,6 +362,18 @@ export class StoneEntity {
     this.handleErrors(stone, advertisement);
 
     this.handleState(stone, advertisement);
+  }
+
+
+  /**
+   * This function will check if the ignore conditions are validated and the dataflow can be resumed.
+   * @param stone
+   * @param {crownstoneAdvertisement} advertisement
+   * @returns {boolean}
+   * @private
+   */
+  _checkForClearConditions(stone, advertisement : crownstoneAdvertisement) {
+    return false;
   }
 
 
@@ -354,47 +416,94 @@ export class StoneEntity {
   handleConfig(stone, advertisement : crownstoneAdvertisement) {
     let changeData : any = {};
     let changed = false;
+    let transient = false; // transient does not store data in the cloud and optionally persists it. It is used for momentary changes to the DB
+
+    if (stone.config.dimmingAvailable !== advertisement.serviceData.dimmingAvailable) {
+      changed = true;
+      transient = true;
+      changeData.dimmingAvailable = advertisement.serviceData.dimmingAvailable;
+    }
     if (stone.config.locked !== advertisement.serviceData.switchLocked) {
       changed = true;
+      transient = false;
       changeData.locked = advertisement.serviceData.switchLocked;
     }
     if (stone.config.dimmingEnabled !== advertisement.serviceData.dimmingAllowed) {
       changed = true;
+      transient = false;
       changeData.dimmingEnabled = advertisement.serviceData.dimmingAllowed;
     }
 
+
     if (changed) {
       this.storeManager.loadAction(this.stoneId, UPDATE_CONFIG_FROM_ADVERTISEMENT, {
-        type: 'UPDATE_STONE_CONFIG',
+        type: transient ? 'UPDATE_STONE_CONFIG_TRANSIENT' : 'UPDATE_STONE_CONFIG',
         sphereId: this.sphereId,
         stoneId: this.stoneId,
         data: changeData,
         updatedAt: new Date().valueOf(),
       });
     }
-
   }
 
 
-  handleErrors(stone, advertisement) {
+  _errorsHaveChanged(stoneErrors, advertisementErrors : errorData) {
+    if (stoneErrors.hasError === false) { return true };
+
+    if (
+      stoneErrors.overCurrent       !== advertisementErrors.overCurrent       ||
+      stoneErrors.overCurrentDimmer !== advertisementErrors.overCurrentDimmer ||
+      stoneErrors.temperatureChip   !== advertisementErrors.temperatureChip   ||
+      stoneErrors.temperatureDimmer !== advertisementErrors.temperatureDimmer ||
+      stoneErrors.dimmerOnFailure   !== advertisementErrors.dimmerOnFailure   ||
+      stoneErrors.dimmerOffFailure  !== advertisementErrors.dimmerOffFailure
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  handleErrors(stone, advertisement : crownstoneAdvertisement) {
     if (HARDWARE_ERROR_REPORTING) {
       if (Util.versions.canIUse(stone.config.firmwareVersion, '1.3.1')) {
         if (advertisement.serviceData.hasError === true) {
-          LOG.info("StoneEntity: GOT ERROR", advertisement.serviceData);
-          eventBus.emit("errorDetectedInAdvertisement", {
-            advertisement: advertisement,
-            stone: stone,
-            stoneId: this.stoneId,
-            sphereId: this.sphereId
-          });
+          LOGi.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
+          if (advertisement.serviceData.errorMode) {
+            if (this._errorsHaveChanged(stone.errors, advertisement.serviceData.errors)) {
+              this.store.dispatch({
+                type: 'UPDATE_STONE_ERRORS',
+                sphereId: this.sphereId,
+                stoneId: this.stoneId,
+                data: {
+                  overCurrent:       advertisement.serviceData.errors.overCurrent,
+                  overCurrentDimmer: advertisement.serviceData.errors.overCurrentDimmer,
+                  temperatureChip:   advertisement.serviceData.errors.temperatureChip,
+                  temperatureDimmer: advertisement.serviceData.errors.temperatureDimmer,
+                  dimmerOnFailure:   advertisement.serviceData.errors.dimmerOnFailure,
+                  dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
+                }
+              });
+            }
+          }
+          else {
+            // only mark as error is it is not already marked as error
+            if (stone.errors.hasError === false) {
+              this.store.dispatch({
+                type: 'UPDATE_STONE_ERRORS',
+                sphereId: this.sphereId,
+                stoneId: this.stoneId,
+                data: { hasError: true }
+              });
+            }
+          }
         }
-        else if (stone.errors.advertisementError === true) {
-          LOG.info("StoneEntity: GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
-          eventBus.emit("errorResolvedInAdvertisement", {
-            advertisement: advertisement,
-            stone: stone,
-            stoneId: this.stoneId,
-            sphereId: this.sphereId
+        else if (stone.errors.hasError === true) {
+          LOGi.advertisements("StoneEntity: GOT NO ERROR WHERE THERE WAS AN ERROR BEFORE", advertisement.serviceData);
+          this.store.dispatch({
+            type:     'CLEAR_STONE_ERRORS',
+            sphereId: this.sphereId,
+            stoneId:  this.stoneId,
           });
         }
       }

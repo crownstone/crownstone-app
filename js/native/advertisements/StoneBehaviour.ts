@@ -73,7 +73,7 @@ export class StoneBehaviour {
   }
 
 
-  ibeaconUpdate(state, stone, ibeaconPackage : ibeaconPackage) {
+  update(state, stone, rssi) {
     // sometimes we need to ignore any distance based toggling.
     if (this.temporaryIgnore === true) {
       LOGd.info("StoneBehaviour: IGNORE: temporary ignore enabled.");
@@ -85,13 +85,13 @@ export class StoneBehaviour {
       return;
     }
 
-    let toggled = this._handleTapToToggle(state, stone, ibeaconPackage.rssi);
+    let toggled = this._handleTapToToggle(state, stone, rssi);
 
     // update local tracking of data
     if (this.rssiAverage === undefined) {
-      this.rssiAverage = ibeaconPackage.rssi
+      this.rssiAverage = rssi
     }
-    this.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * this.rssiAverage + SLIDING_WINDOW_FACTOR * ibeaconPackage.rssi;
+    this.rssiAverage = (1 - SLIDING_WINDOW_FACTOR) * this.rssiAverage + SLIDING_WINDOW_FACTOR * rssi;
     this.samples += (this.samples < MINIMUM_AMOUNT_OF_SAMPLES_FOR_NEAR_AWAY_TRIGGER) ? 1 : 0;
 
 

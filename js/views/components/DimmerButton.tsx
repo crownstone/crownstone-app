@@ -26,6 +26,7 @@ import {INTENTS} from "../../native/libInterface/Constants";
 export class DimmerButton extends Component<any, any> {
   _panResponder;
   _animationFrame;
+  requestedStateChange = false; // used to keep track of a user wanting to set a dim level while dimmingAvailable is still false.
   refName : string;
   startY : number = 0;
 
@@ -131,6 +132,7 @@ export class DimmerButton extends Component<any, any> {
         return true;
       },
     });
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -172,7 +174,6 @@ export class DimmerButton extends Component<any, any> {
    */
   _transformSwitchStateToUI(switchState) {
     let UIState = ((Math.cos(switchState*Math.PI / 0.99) - 1) / -2);
-
     UIState = Math.round(UIState*100)/100;
 
     return UIState;
@@ -180,6 +181,7 @@ export class DimmerButton extends Component<any, any> {
 
 
   _updateStone(state, keepConnectionOpenTimeout = 6000) {
+    this.requestedStateChange = true;
     let stateToSwitch = this._transformSwitchStateToStone(state);
     let switchId = (Math.random()*1e9).toString(26);
     BatchCommandHandler.loadPriority(
@@ -191,15 +193,16 @@ export class DimmerButton extends Component<any, any> {
       1
     )
       .then(() => {
-      if (this.state.pendingId === switchId) {
-        this.setState({pendingCommand: false});
-        this.props.callback(stateToSwitch);
-      }
-    }).catch((err) => {
-      if (this.state.pendingId === switchId) {
-        this.setState({pendingCommand: false});
-      }
-    });
+        if (this.state.pendingId === switchId) {
+          this.setState({pendingCommand: false});
+          this.props.callback(stateToSwitch);
+        }
+      })
+      .catch((err) => {
+        if (this.state.pendingId === switchId) {
+          this.setState({pendingCommand: false});
+        }
+      })
     if (this.state.pendingCommand === false) {
       BatchCommandHandler.executePriority();
     }
@@ -216,13 +219,16 @@ export class DimmerButton extends Component<any, any> {
       stateColor = colors.menuBackground.hex;
     }
 
+
+    let dimmingPending = this.props.stone.config.dimmingAvailable === false && this.requestedStateChange;
     let innerSize = 0.50*this.props.size;
     let angle = (this.angleMin - (this.angleMin - this.angleMax)*state)*this.deg2Rad;
     let indicatorX = this.xCenter + this.correctedRadius*Math.sin(angle);
     let indicatorY = this.yCenter + this.correctedRadius*Math.cos(angle);
     return (
-      <View ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center'}}>
-        <Svg {...this._panResponder.panHandlers} style={{
+      <View style={{width: screenWidth, height: this.props.size, alignItems:'center'}}>
+      <View {...this._panResponder.panHandlers}  ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center', position:'absolute', top:0, left:0}}>
+        <Svg style={{
           width: screenWidth,
           height: this.props.size,
           position:'absolute',
@@ -280,6 +286,20 @@ export class DimmerButton extends Component<any, any> {
             fillOpacity={0}
           />
       </Svg>
+        { dimmingPending ?
+            <View style={{
+              position:'absolute',
+              top: indicatorY - this.radiusIndicator,
+              left:indicatorX - this.radiusIndicator,
+              width:  2 * this.radiusIndicator,
+              height: 2 * this.radiusIndicator,
+              alignItems:'center',
+              justifyContent:'center'
+            }}
+            ><ActivityIndicator animating={true} size='small' color={colors.menuBackground.hex} /></View> :
+           undefined
+        }
+      </View>
       <TouchableOpacity style={{
         position:'absolute',
         top: this.yCenter - 0.5*innerSize,
@@ -303,8 +323,8 @@ export class DimmerButton extends Component<any, any> {
                   <ActivityIndicator animating={true} size='small' color={stateColor} /> :
                   <Text style={{color: stateColor, fontSize: 0.2 * innerSize, fontWeight: '600'}}>{label}</Text>
               }
-              <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'500'}}>{'(' + Math.round(100*state) + ' %)'}</Text>
-              <View style={{flex:0.75}} />
+              { dimmingPending ? undefined : <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'500'}}>{'(' + Math.round(100*state) + ' %)'}</Text> }
+              { dimmingPending ? <View style={{flex: 1}} /> : <View style={{flex:0.75}} /> }
             </AnimatedCircle>
           </AnimatedCircle>
         </AnimatedCircle>

@@ -16,11 +16,10 @@ import { KeepAliveHandler }      from "./KeepAliveHandler";
 import { FirmwareWatcher }       from "./FirmwareWatcher";
 import { Scheduler }             from "../logic/Scheduler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
-import {LOG_EXTENDED_TO_FILE, LOG_TO_FILE, SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL} from "../ExternalConfig";
+import { LOG_EXTENDED_TO_FILE, LOG_TO_FILE, SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
-import { ErrorWatcher } from "./ErrorWatcher";
 import { NotificationHandler, NotificationParser } from "./NotificationHandler";
 import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { BatchUploader } from "./BatchUploader";
@@ -158,7 +157,7 @@ class BackgroundProcessHandlerClass {
       let stonesContainingError = [];
 
       Util.data.callOnStonesInSphere(state, presentSphere, (stoneId, stone) => {
-        if (stone.errors.hasError === true || (stone.errors.advertisementError && stone.errors.obtainedErrors === true)) {
+        if (stone.errors.hasError === true) {
           errorsFound = true;
           stonesContainingError.push({sphereId: presentSphere, stoneId: stoneId, stone:stone});
         }
@@ -391,7 +390,6 @@ class BackgroundProcessHandlerClass {
     KeepAliveHandler.loadStore(this.store);
     FirmwareWatcher.loadStore(this.store);
     BatterySavingUtil.loadStore(this.store);
-    ErrorWatcher.loadStore(this.store);
     NotificationHandler.loadStore(this.store);
     NotificationParser.loadStore(this.store);
     BatchUploader.loadStore(this.store);

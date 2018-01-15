@@ -152,7 +152,7 @@ export class DeviceEntry extends Component<any, any> {
     let content;
     let action = null;
     if (stone.config.disabled === false) {
-      if (stone.errors.advertisementError) {
+      if (stone.errors.hasError) {
         content = <Switch value={stone.state.state === 1} disabled={true} />
         action = () => { this._basePressed(stone); }
       }
@@ -202,7 +202,7 @@ export class DeviceEntry extends Component<any, any> {
           (stone.state.state > 0 ? colors.green.hex : colors.menuBackground.hex)
     );
 
-    if (stone.errors.advertisementError === true) {
+    if (stone.errors.hasError === true) {
       return (
         <View style={[{
           width:60,

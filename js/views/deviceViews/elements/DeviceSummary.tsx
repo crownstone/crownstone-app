@@ -236,6 +236,8 @@ export class DeviceSummary extends Component<any, any> {
       locationName = location.config.name;
     }
 
+    let showDimmingText = stone.config.dimmingAvailable === false && stone.config.dimmingEnabled === true && stone.config.disabled === false;
+
     return (
       <View style={{flex:1, paddingBottom: 35}}>
         <DeviceInformation left={"Energy Consumption:"}
@@ -265,7 +267,7 @@ export class DeviceSummary extends Component<any, any> {
           />
         </View>
         <View style={{flex:1}} />
-        <Text style={deviceStyles.explanation}>{Util.spreadString('tap icon to set device type')}</Text>
+        <Text style={deviceStyles.explanation}>{Util.spreadString(showDimmingText ? "The dimmer is starting up!\nI'll dim as soon as I can!" : 'tap icon to set device type')}</Text>
         <View style={{flex:1}} />
         <View style={{width:screenWidth, alignItems: 'center'}}>{this._getButton(stone)}</View>
         <View style={{flex:0.5}} />

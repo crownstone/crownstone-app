@@ -173,7 +173,7 @@ export class DeviceOverview extends Component<any, any> {
     if (showWhatsNew) { this.showWhatsNewVersion = stone.config.firmwareVersion; }
 
     // check what we want to show the user:
-    let hasError        = stone.errors.hasError || stone.errors.advertisementError;
+    let hasError        = stone.errors.hasError;
     let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
     let hasBehaviour    = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;

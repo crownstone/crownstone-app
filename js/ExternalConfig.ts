@@ -94,11 +94,12 @@ const DeviceInfo = require('react-native-device-info');
      * Main logging settings.
      * These will override developer settings only if true but they are currently on by default in developer settings.
      */
-    export let LOG_INFO       = LOG_LEVEL.info;    // enabling LOG.info       commands to be shown.
-    export let LOG_WARNINGS   = LOG_LEVEL.info;    // enabling LOG.warn       commands to be shown.
-    export let LOG_ERRORS     = LOG_LEVEL.info;    // enabling LOG.error      commands to be shown.
-    export let LOG_MESH       = LOG_LEVEL.info;    // enabling LOG.mesh       commands to be shown.
-    export let LOG_MESSAGES   = LOG_LEVEL.info;    // enabling LOG.mesh       commands to be shown.
+    export let LOG_INFO           = LOG_LEVEL.info;    // enabling LOG.info           commands to be shown.
+    export let LOG_WARNINGS       = LOG_LEVEL.info;    // enabling LOG.warn           commands to be shown.
+    export let LOG_ERRORS         = LOG_LEVEL.info;    // enabling LOG.error          commands to be shown.
+    export let LOG_MESH           = LOG_LEVEL.info;    // enabling LOG.mesh           commands to be shown.
+    export let LOG_MESSAGES       = LOG_LEVEL.info;    // enabling LOG.mesh           commands to be shown.
+    export let LOG_ADVERTISEMENTS = LOG_LEVEL.info;    // enabling LOG.advertisement  commands to be shown.
 
     /**
      * Specific logging settings used for debugging mostly. These will override developer settings only if true.
