@@ -1,5 +1,10 @@
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
+import { eventBus }              from "../util/EventBus";
+import { conditionMap }          from "../native/advertisements/StoneEntity";
+
+
+const MESH_PROPAGATION_TIMEOUT_MS = 2000;
 
 
 export class MeshHelper {
@@ -44,10 +49,21 @@ export class MeshHelper {
       let multiSwitchInstructions : multiSwitchPayload[] = this.meshInstruction.multiSwitch;
         // get data from set
         let multiSwitchPackets = [];
+        let multiSwitchWaitInstructions = [];
         multiSwitchInstructions.forEach((instruction : multiSwitchPayload) => {
           if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
             // get the longest timeout and use that
             multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
+            multiSwitchWaitInstructions.push(() => {
+              eventBus.emit(
+                'temporaryStopListening_' + instruction.stoneId,
+                {
+                        timeoutMs: MESH_PROPAGATION_TIMEOUT_MS,
+                        conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: instruction.state}]
+                      }
+              );
+            });
+
             instruction.promise.pending = true;
             MeshHelper._mergeOptions(instruction.options, this.activeOptions);
             this._containedInstructions.push(instruction);
@@ -57,13 +73,16 @@ export class MeshHelper {
           }
         });
 
-
         if (multiSwitchPackets.length === 0) {
           return null;
         }
         // update the used channels.
         LOG.mesh('MeshHelper: Dispatching ', 'multiSwitchPackets ', multiSwitchPackets);
-        return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets);
+        return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets)
+          .then((result) => {
+            multiSwitchWaitInstructions.forEach((waitInstruction) => { waitInstruction(); });
+            return result;
+          })
       }
     return null;
   }

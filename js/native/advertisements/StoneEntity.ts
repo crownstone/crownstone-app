@@ -90,19 +90,29 @@ export class StoneEntity {
       }
     }));
 
-    this.subscriptions.push(eventBus.on("temporaryStopListening_" + this.stoneId, (timeoutMs : number, conditions?) => {
-      if (conditions) {
-        this.ignoreConditions = conditions;
+    // these timeouts are required for mesh propagation
+    this.subscriptions.push(eventBus.on("temporaryStopListening_" + this.stoneId, (data) => {
+      if (!data.timeoutMs) { return; }
+
+      // clear any previous timeouts
+      this._clearTimeout();
+
+      // use conditions if we have them
+      if (data.conditions) {
+        this.ignoreConditions = data.conditions;
       }
       else {
         this.ignoreConditions = null;
       }
+
+      // set the ignore flag
       this.ignoreAdvertisements = true;
+
+      // set the timoeut which will cancel the ignore
       this.ignoreTimeout = Scheduler.scheduleCallback(() => {
-        this.ignoreAdvertisements = false;
         this.ignoreTimeout = null;
-        this.ignoreConditions = null;
-      }, timeoutMs, "ignore timeout for Crownstone " + this.stoneId );
+        this._clearTimeout();
+      }, data.timeoutMs, "ignore timeout for Crownstone " + this.stoneId );
     }));
   }
 
@@ -391,7 +401,6 @@ export class StoneEntity {
    */
   _checkForClearConditions(stone, advertisement : crownstoneAdvertisement) {
     if (this.ignoreConditions) {
-
       let result = true;
       if (Array.isArray(this.ignoreConditions)) {
         for (let i = 0; i < this.ignoreConditions.length; i++) {
@@ -402,6 +411,12 @@ export class StoneEntity {
           }
         }
 
+        // clean up timeout
+        if (result === true) {
+          LOGi.advertisements("StoneEntity: Conditions met for cancellation of advertisement ignore.");
+          this._clearTimeout();
+        }
+
         return result;
       }
       else {
@@ -410,6 +425,15 @@ export class StoneEntity {
     }
 
     return false;
+  }
+
+  _clearTimeout() {
+    this.ignoreConditions = null;
+    this.ignoreAdvertisements = false;
+    if (typeof this.ignoreTimeout === 'function') {
+      this.ignoreTimeout();
+      this.ignoreTimeout = null;
+    }
   }
 
 

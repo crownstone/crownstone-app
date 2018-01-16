@@ -29,6 +29,7 @@ interface keepAliveStatePayload {
 
 interface multiSwitchPayload {
   handle: string,
+  stoneId: string,
   crownstoneId: string,
   state: number,
   intent: number,
