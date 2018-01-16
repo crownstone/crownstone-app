@@ -1,5 +1,5 @@
 import { LOG_LEVEL }        from "../../logging/LogLevels";
-import {LOG, LOGd, LOGi} from "../../logging/Log";
+import {LOG, LOGd, LOGi, LOGw} from "../../logging/Log";
 import { DISABLE_TIMEOUT, FALLBACKS_ENABLED, HARDWARE_ERROR_REPORTING } from "../../ExternalConfig";
 import { eventBus }         from "../../util/EventBus";
 import { Util }             from "../../util/Util";
@@ -16,6 +16,16 @@ const UPDATE_STATE_FROM_ADVERTISEMENT      = 'UPDATE_STATE_FROM_ADVERTISEMENT';
 const UPDATE_STONE_TIME_LAST_SEEN          = 'UPDATE_STONE_TIME_LAST_SEEN';
 const UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH = 'UPDATE_STONE_TIME_LAST_SEEN_VIA_MESH';
 const UPDATE_STONE_RSSI                    = 'UPDATE_STONE_RSSI';
+
+
+export const conditionMap = {
+  SWITCH_STATE: 'switchState',
+}
+
+interface condition {
+  type: string,
+  expectedValue: any
+}
 
 /**
  * This will control a stone. It will make sure advertisements will update its state and keep track of its position in the mesh.
@@ -39,7 +49,7 @@ export class StoneEntity {
 
   ignoreTimeout = null;
   ignoreAdvertisements = false;
-  ignoreConditions = null;
+  ignoreConditions : condition[] = null;
 
   constructor(store, storeManager, sphereId, stoneId) {
     LOGi.native("StoneEntity: Creating entity for ", stoneId);
@@ -80,11 +90,18 @@ export class StoneEntity {
       }
     }));
 
-    this.subscriptions.push(eventBus.on("temporaryStopListening_" + this.stoneId, (timeoutMs : number, condition?) => {
+    this.subscriptions.push(eventBus.on("temporaryStopListening_" + this.stoneId, (timeoutMs : number, conditions?) => {
+      if (conditions) {
+        this.ignoreConditions = conditions;
+      }
+      else {
+        this.ignoreConditions = null;
+      }
       this.ignoreAdvertisements = true;
       this.ignoreTimeout = Scheduler.scheduleCallback(() => {
         this.ignoreAdvertisements = false;
         this.ignoreTimeout = null;
+        this.ignoreConditions = null;
       }, timeoutMs, "ignore timeout for Crownstone " + this.stoneId );
     }));
   }
@@ -373,6 +390,25 @@ export class StoneEntity {
    * @private
    */
   _checkForClearConditions(stone, advertisement : crownstoneAdvertisement) {
+    if (this.ignoreConditions) {
+
+      let result = true;
+      if (Array.isArray(this.ignoreConditions)) {
+        for (let i = 0; i < this.ignoreConditions.length; i++) {
+          let condition : condition = this.ignoreConditions[i];
+          if (advertisement.serviceData[condition.type] !== condition.expectedValue) {
+            result = false;
+            break;
+          }
+        }
+
+        return result;
+      }
+      else {
+        LOGw.advertisements("StoneEntity: ILLEGAL IGNORECONDITION. EXPETED ARRAY");
+      }
+    }
+
     return false;
   }
 
