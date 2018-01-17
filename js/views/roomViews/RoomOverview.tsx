@@ -220,13 +220,20 @@ export class RoomOverview extends Component<any, any> {
       });
     }
 
+    let tempStoneDataArray = [];
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
       let handle = stones[stoneId].stone.config.handle;
       if (shownHandles[handle] === undefined) {
-        ids.push(stoneId);
-        stoneArray.push(stones[stoneId]);
+        tempStoneDataArray.push({stone: stones[stoneId], id: stoneId});
       }
+    });
+
+    tempStoneDataArray.sort((a,b) => { console.log(a,b); return a.stone.stone.config.crownstoneId - b.stone.stone.config.crownstoneId });
+
+    tempStoneDataArray.forEach((stoneData) => {
+      ids.push(stoneData.id);
+      stoneArray.push(stoneData.stone);
     });
 
     return { stoneArray, ids };

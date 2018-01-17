@@ -479,7 +479,7 @@ export class DeviceEdit extends Component<any, any> {
           }
 
           this.setState({gettingFirmwareVersion: true});
-          BatchCommandHandler.load(stone, this.props.stoneId, this.props.sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware in DeviceEdit')
+          StoneUtil.checkFirmwareVersion(this.props.sphereId, this.props.stoneId, stone)
             .then((firmwareVersion) => {
               this.setState({gettingFirmwareVersion: false});
               this.props.store.dispatch({
@@ -495,12 +495,12 @@ export class DeviceEdit extends Component<any, any> {
               Alert.alert("Whoops!", "I could not get the firmware version....", [{text:'OK'}]);
               this.setState({gettingFirmwareVersion: false});
             });
-          BatchCommandHandler.executePriority();
         }}>
-          <Text style={styles.version}>{'address: '     + (stone.config.macAddress || unknownString)}</Text>
-          <Text style={styles.version}>{'hardware id: ' + (stone.config.hardwareVersion || unknownString)}</Text>
-          <Text style={styles.version}>{'bootloader: '  + (stone.config.bootloaderVersion || unknownString)}</Text>
-          <Text style={styles.version}>{'firmware: '    + (stone.config.firmwareVersion || unknownString)}</Text>
+          <Text style={styles.version}>{'address: '      + (stone.config.macAddress        || unknownString)}</Text>
+          <Text style={styles.version}>{'hardware id: '  + (stone.config.hardwareVersion   || unknownString)}</Text>
+          <Text style={styles.version}>{'bootloader: '   + (stone.config.bootloaderVersion || unknownString)}</Text>
+          <Text style={styles.version}>{'firmware: '     + (stone.config.firmwareVersion   || unknownString)}</Text>
+          <Text style={styles.version}>{'crownstoneId: ' + (stone.config.crownstoneId      || unknownString)}</Text>
         </TouchableOpacity>
       );
     }

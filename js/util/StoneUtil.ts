@@ -74,6 +74,12 @@ export const StoneUtil = {
     return StoneUtil.timestampToCrownstoneTime(new Date().valueOf())
   },
 
+  checkFirmwareVersion: function(sphereId, stoneId, stone) {
+    let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware')
+    BatchCommandHandler.executePriority();
+    return promise;
+  },
+
   clearErrors: function(sphereId, stoneId, stone, store) {
     let clearData = {
       dimmerOnFailure:    true,
