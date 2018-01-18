@@ -62,7 +62,9 @@ export function request(
     return response.text(); // this is a promise
   };
 
-  LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, "config:", requestConfig);
+  let logToken = Util.getToken();
+
+  LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, "config:", requestConfig, logToken);
 
   // the actual request
   return new Promise((resolve, reject) => {
@@ -100,7 +102,7 @@ export function request(
         })
         .then((parsedResponse) => {
           if (stopRequest === false) {
-            LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: STATUS, data: parsedResponse});
+            LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: STATUS, data: parsedResponse}, logToken);
             finishedRequest = true;
             resolve({status: STATUS, data: parsedResponse});
           }

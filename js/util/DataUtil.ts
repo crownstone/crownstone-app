@@ -556,9 +556,9 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
       let ibeaconString = iBeaconUUID + '_' + stoneConfig.iBeaconMajor + '_' + stoneConfig.iBeaconMinor;
       map[ibeaconString.toLowerCase()] = data
     }
-
-    return map;
   };
+
+  return map;
 }
 
 function _getMap(state, requestedKey, sphereMap : boolean) {
@@ -579,7 +579,7 @@ function _getMap(state, requestedKey, sphereMap : boolean) {
       let stoneId = stoneIds[j];
       let stoneConfig = state.spheres[sphereId].stones[stoneId].config;
 
-      let data = {
+      let data : StoneMap = {
         id: stoneId,
         cid: stoneConfig.crownstoneId,
         handle: stoneConfig.handle,

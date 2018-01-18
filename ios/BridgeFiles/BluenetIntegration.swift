@@ -52,7 +52,7 @@ open class BluenetJS: RCTEventEmitter {
             
             //self.bridge.eventDispatcher().sendAppEvent(withName: "verifiedAdvertisementData", body: castData.getDictionary())
           }
-          
+
           self.sendEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())
           
           //self.bridge.eventDispatcher().sendAppEvent(withName: "anyVerifiedAdvertisementData", body: castData.getDictionary())

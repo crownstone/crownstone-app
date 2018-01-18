@@ -229,7 +229,8 @@ export class RoomOverview extends Component<any, any> {
       }
     });
 
-    tempStoneDataArray.sort((a,b) => { console.log(a,b); return a.stone.stone.config.crownstoneId - b.stone.stone.config.crownstoneId });
+    // sort the order of things by crownstone Id
+    tempStoneDataArray.sort((a,b) => { return a.stone.stone.config.crownstoneId - b.stone.stone.config.crownstoneId });
 
     tempStoneDataArray.forEach((stoneData) => {
       ids.push(stoneData.id);
@@ -459,5 +460,3 @@ export const topBarStyle = StyleSheet.create({
     color: colors.iosBlue.hex
   }
 });
-
-

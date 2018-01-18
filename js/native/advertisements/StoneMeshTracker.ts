@@ -1,8 +1,8 @@
 import { Alert, Vibration } from 'react-native';
 
-import { eventBus } from '../../util/EventBus';
-import { LOGd }     from '../../logging/Log';
-import { Util }     from "../../util/Util";
+import { eventBus }   from '../../util/EventBus';
+import { LOGd, LOGi } from '../../logging/Log';
+import { Util }       from "../../util/Util";
 
 const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
 const meshRemovalTimeout : number = 200; // seconds
@@ -89,7 +89,7 @@ export class StoneMeshTracker {
   }
 
   removeFromMesh() {
-    // LOG.info("Removing stone", this.stoneUID, " from ", this.meshNetworkId);
+    LOGi.mesh("StoneMeshTracker: Removing stone", this.stoneUID, " from ", this.meshNetworkId);
     this.notThisStoneCounter = 0;
     this.store.dispatch({
       type: 'UPDATE_MESH_NETWORK_ID',

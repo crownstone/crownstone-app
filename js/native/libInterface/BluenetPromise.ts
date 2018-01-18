@@ -44,7 +44,10 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
 
     // connect
     if (handle) {
-      return BluenetPromise('connect', handle);
+      return BluenetPromise('connect', handle)
+        .then(() => {
+          eventBus.emit("connected", handle);
+        })
     }
     else {
       return new Promise((resolve, reject) => {

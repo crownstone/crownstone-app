@@ -197,6 +197,11 @@ export const Util = {
   },
 
 
+  getToken : () : string => {
+    return Math.floor(Math.random() * 1e8 /* 65536 */).toString(36);
+  },
+
+
   mixin: function(base, section) {
     for (let key in section) {
       if (section.hasOwnProperty(key))

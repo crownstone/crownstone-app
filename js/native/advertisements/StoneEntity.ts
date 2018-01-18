@@ -91,7 +91,7 @@ export class StoneEntity {
     }));
 
     // these timeouts are required for mesh propagation
-    this.subscriptions.push(eventBus.on("temporaryStopListening_" + this.stoneId, (data) => {
+    this.subscriptions.push(eventBus.on(Util.events.getIgnoreTopic(this.stoneId), (data) => {
       if (!data.timeoutMs) { return; }
 
       // clear any previous timeouts
@@ -354,7 +354,9 @@ export class StoneEntity {
    * @private
    */
   _handleAdvertisementContent(stone, advertisement : crownstoneAdvertisement) {
-    if (advertisement.serviceData.timestamp <= this.lastKnownTimestamp) {
+    // these timestamps are in seconds.
+    let dtWithLastDataPoint = advertisement.serviceData.timestamp - this.lastKnownTimestamp;
+    if (dtWithLastDataPoint <= 0 && Math.abs(dtWithLastDataPoint) < 2000) { // the ABS is to make sure an incorrect overflow correction will not block advertisements for hours.
       LOGd.advertisements("StoneEntity: IGNORE: we already know a newer state.");
       return;
     }
@@ -405,14 +407,25 @@ export class StoneEntity {
       if (Array.isArray(this.ignoreConditions)) {
         for (let i = 0; i < this.ignoreConditions.length; i++) {
           let condition : condition = this.ignoreConditions[i];
-          if (advertisement.serviceData[condition.type] !== condition.expectedValue) {
-            result = false;
-            break;
+
+          if (condition.type === conditionMap.SWITCH_STATE) {
+            let switchState = Math.min(1,advertisement.serviceData[condition.type] / 100);
+            if (switchState !== condition.expectedValue) {
+              result = false;
+              break;
+            }
+          }
+          else {
+            if (advertisement.serviceData[condition.type] !== condition.expectedValue) {
+              result = false;
+              break;
+            }
           }
         }
 
         // clean up timeout
         if (result === true) {
+          eventBus.emit(Util.events.getIgnoreConditionFulfilledTopic(this.stoneId));
           LOGi.advertisements("StoneEntity: Conditions met for cancellation of advertisement ignore.");
           this._clearTimeout();
         }

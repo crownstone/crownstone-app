@@ -16,28 +16,26 @@ import {
 
 import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
-import { styles, colors, screenWidth } from '../../styles'
-import {AlternatingContent} from '../animated/AlternatingContent';
-import {ALWAYS_DFU_UPDATE, MINIMUM_REQUIRED_FIRMWARE_VERSION} from '../../../ExternalConfig';
-import {STONE_TYPES} from '../../../router/store/reducers/stones';
-import {BatchCommandHandler} from '../../../logic/BatchCommandHandler';
-import {INTENTS} from '../../../native/libInterface/Constants';
-import {Actions} from 'react-native-router-flux';
-import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
-import {LOG} from "../../../logging/Log";
-import {StoneUtil} from "../../../util/StoneUtil";
-import {IconButton} from "../IconButton";
-import {BackAction} from "../../../util/Back";
+import { styles, colors, screenWidth }        from '../../styles'
+import { AlternatingContent }                 from '../animated/AlternatingContent';
+import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
+import { STONE_TYPES }                        from '../../../router/store/reducers/stones';
+import { INTENTS }                            from '../../../native/libInterface/Constants';
+import { Actions }                            from 'react-native-router-flux';
+import { StoneUtil }                          from "../../../util/StoneUtil";
+import { BackAction }                         from "../../../util/Back";
+import { DeviceCommandProgressBar }           from "./DeviceCommandProgressBar";
+import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 
 
 export class DeviceEntry extends Component<any, any> {
   baseHeight : number;
   optionsHeight : number;
   openHeight : number;
-  unsubscribe : any;
-  optionsAreOpen : boolean;
-  animating : boolean;
-  id : string;
+  unsubscribe = [];
+  optionsAreOpen = false;
+  animating = false;
+  id = Util.getUUID();
   initiallyOpenTimeout : any;
   optionMoveTimeout : any;
 
@@ -47,14 +45,14 @@ export class DeviceEntry extends Component<any, any> {
     this.baseHeight = props.height || 80;
     this.optionsHeight = 40;
     this.openHeight = this.baseHeight + this.optionsHeight;
-    this.unsubscribe = [];
 
-    this.state = {height: new Animated.Value(this.baseHeight), optionsHeight:  new Animated.Value(0), optionsOpen: false, pendingCommand: false, backgroundColor: new Animated.Value(0)};
-    this.optionsAreOpen = false;
-    this.animating = false;
-    this.id = Util.getUUID();
-    this.initiallyOpenTimeout = undefined;
-    this.optionMoveTimeout = undefined;
+    this.state = {
+      height:          new Animated.Value(this.baseHeight),
+      optionsHeight:   new Animated.Value(0),
+      optionsOpen:     false,
+      pendingCommand:  false,
+      backgroundColor: new Animated.Value(0)
+    };
   }
 
   componentDidMount() {
@@ -62,12 +60,14 @@ export class DeviceEntry extends Component<any, any> {
       this.initiallyOpenTimeout = setTimeout(() => { this._openOptions(600); }, 200);
     }
 
+    // this event will close the options if another crownstone entry opens their options. This makes sure only one options field is open at any given time.
     this.unsubscribe.push(this.props.eventBus.on('focusDeviceEntry', (id) => {
       if (id !== this.id) {
         this._closeOptions();
       }
     }));
 
+    // this event makes the background of the device entry blink to incidate the error.
     this.unsubscribe.push(this.props.eventBus.on('showErrorInOverview', (stoneId) => {
       if (stoneId === this.props.stoneId) {
         Animated.spring(this.state.backgroundColor, { toValue: 10, friction: 1.5, tension: 90 }).start();
@@ -97,6 +97,10 @@ export class DeviceEntry extends Component<any, any> {
     clearTimeout(this.optionMoveTimeout);
   }
 
+
+  /**
+   *  Close the options of the Crownstone device entry
+   */
   _closeOptions(delay = 200) {
     if (this.optionsAreOpen === true && this.animating === false) {
       this.animating = true;
@@ -107,6 +111,10 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
+
+  /**
+   *  Open the options of the Crownstone device entry
+   */
   _openOptions(delay = 200) {
     if (this.optionsAreOpen === false && this.animating === false) {
       this.props.eventBus.emit('focusDeviceEntry', this.id);
@@ -118,14 +126,7 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
-  _toggleOptions() {
-    if (this.optionsAreOpen === false) {
-      this._openOptions();
-    }
-    else {
-      this._closeOptions();
-    }
-  }
+
 
   _pressedDevice(stone) {
     let newState = (stone.state.state > 0 ? 0 : 1);
@@ -165,6 +166,7 @@ export class DeviceEntry extends Component<any, any> {
       }
       else {
         content = <Switch value={stone.state.state > 0} onValueChange={() => { this._pressedDevice(stone); }}/>;
+        action = () => { this._pressedDevice(stone);  }
       }
     }
 
@@ -182,16 +184,17 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
-  _iconPressed() {
-    Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
-  }
-
-  _basePressed(stone) {
-    if (stone.errors.hasError === true || stone.config.locked) {
+  _basePressed(stone, allowToggleOptions = true) {
+    if (stone.errors.hasError === true || stone.config.locked || allowToggleOptions === false) {
       Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
     }
     else {
-      this._toggleOptions();
+      if (this.optionsAreOpen === false) {
+        this._openOptions();
+      }
+      else {
+        this._closeOptions();
+      }
     }
   }
 
@@ -282,7 +285,11 @@ export class DeviceEntry extends Component<any, any> {
               <Text style={textStyle}>move</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[buttonStyle, {justifyContent:'center'}]} onPress={() => {
-              Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
+              Actions.deviceOverview({
+                sphereId: this.props.sphereId,
+                stoneId: this.props.stoneId,
+                viewingRemotely: this.props.viewingRemotely
+              });
             }}>
               <Icon name='ios-cog' size={29} color='#aaa' style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
               <Text style={textStyle}>settings</Text>
@@ -306,14 +313,12 @@ export class DeviceEntry extends Component<any, any> {
 
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
+        <DeviceCommandProgressBar {...this.props} pendingCommand={this.state.pendingCommand } baseHeight={this.baseHeight} />
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}}
-                            onPress={() => { this._iconPressed(); }}>
+          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(stone, false); }}>
             {this._getIcon(element, stone, state)}
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => {
-            this._basePressed(stone);
-          }}>
+          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(stone); }}>
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
               <DeviceEntrySubText
@@ -334,77 +339,5 @@ export class DeviceEntry extends Component<any, any> {
         {this._getOptions()}
       </Animated.View>
     );
-  }
-}
-
-
-class DeviceEntrySubText extends Component<any, any> {
-  render() {
-    let currentUsage = this.props.currentUsage;
-    let rssi = this.props.rssi;
-    let disabled = this.props.disabled;
-
-    if (disabled === false && currentUsage !== undefined) {
-      // show it in orange if it's in tap to toggle range
-      let color = colors.iosBlue.hex;
-      if (this.props.tap2toggleThreshold && rssi >= this.props.tap2toggleThreshold) {
-        color = colors.orange.hex;
-      }
-
-      if (this.props.nearestInSphere === true) {
-        return (
-          <View style={{flexDirection:'row'}}>
-            <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
-            <Text style={{fontSize: 12, color: color}}>{' (Nearest)'}</Text>
-          </View>
-        )
-      }
-      else if (this.props.nearestInRoom === true) {
-        return (
-          <View style={{flexDirection:'row'}}>
-            <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
-            <Text style={{fontSize: 12, color: color}}>{' (Nearest in room)'}</Text>
-          </View>
-        )
-      }
-      else if (rssi > -60) {
-        return (
-          <View style={{flexDirection:'row'}}>
-            <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
-            <Text style={{fontSize: 12, color: color}}>{' (Very near)'}</Text>
-          </View>
-        )
-      }
-      else if (rssi > -70) {
-        return (
-          <View style={{flexDirection:'row'}}>
-            <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
-            <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Near)'}</Text>
-          </View>
-        )
-      }
-      else {
-        return <Text style={{fontSize: 12}}>{currentUsage + ' W'}</Text>
-      }
-    }
-    else if (disabled === false) {
-      if (this.props.nearest === true) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Nearest)'}</Text>
-      }
-      else if (rssi > -60) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Very near)'}</Text>
-      }
-      else if (rssi > -70) {
-        return <Text style={{fontSize: 12, color:colors.iosBlue.hex}}>{' (Near)'}</Text>
-      }
-    }
-    else if (disabled === true) {
-      return <Text style={{fontSize: 12}}>{
-        SetupStateHandler.isSetupInProgress() ? 'Please wait until the setup process is complete.' : 'Searching...'
-      }</Text>
-    }
-    else {
-      return <View />
-    }
   }
 }

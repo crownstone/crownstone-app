@@ -25,20 +25,18 @@ import {LOG} from "../logging/Log";
  *  applianceId: string / undefined
  *  locationName: string / undefined
  *  locationId: string / undefined,
- *  cloudIdMap: {
- *    globalIdMap
- *  }
  * }
  *
  */
 
+
 class MapProviderClass {
   _store : any;
   _initialized : boolean = false;
-  stoneSphereHandleMap : any = {};
-  stoneHandleMap : any = {};
-  stoneCIDMap : any = {};
-  stoneIBeaconMap : any = {};
+  stoneSphereHandleMap : StoneSphereHandleMap = {};
+  stoneHandleMap : StoneHandleMap = {};
+  stoneCIDMap : StoneCIDMap = {};
+  stoneIBeaconMap : StoneIBeaconMap = {};
   cloud2localMap : globalIdMap = getGlobalIdMap();
   local2cloudMap : globalIdMap = getGlobalIdMap();
 

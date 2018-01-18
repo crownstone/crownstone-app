@@ -161,7 +161,12 @@ export class DeviceEdit extends Component<any, any> {
       if (Util.versions.canIUse(stone.config.firmwareVersion, '1.7.0')) {
         items.push({
           label: 'Allow Dimming', type: 'switch', value: this.state.dimmingEnabled === true, callback: (newValue) => {
-            this.setState({dimmingEnabled: newValue});
+            if (Permissions.inSphere(this.props.sphereId).canEnableDimming) {
+              this.setState({dimmingEnabled: newValue});
+            }
+            else {
+              Alert.alert("Permission Required", "Only Admins have permission to enable dimming on a Crownstone.", [{text:"OK"}])
+            }
           }
         });
       }

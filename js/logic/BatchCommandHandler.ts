@@ -96,7 +96,6 @@ class BatchCommandHandlerClass {
         topicsToScan.push({ sphereId: sphereId, topic: Util.events.getCrownstoneTopic(sphereId, command.stoneId) });
       });
     });
-
     return topicsToScan;
   }
 
@@ -440,7 +439,7 @@ class BatchCommandHandlerClass {
       }
     };
 
-    // if we did not find anything to connect to, we will reduce app open attempts.
+    // if we did not find anything to connect to, we will reduce all open attempts.
     if (!connectedCrownstone) {
       connectedCrownstone = {stoneId: null, meshNetworkId: null};
     }

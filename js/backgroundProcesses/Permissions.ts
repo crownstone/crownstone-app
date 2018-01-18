@@ -13,6 +13,7 @@ export class PermissionBase {
   moveCrownstone          = false; // a or m
   canLockCrownstone       = false; // a
   canUnlockCrownstone     = false; // a
+  canEnableDimming        = false; // a
 
   doLocalizationTutorial  = false; // a?
   addRoom                 = false; // a?
@@ -136,6 +137,7 @@ export class PermissionClass extends PermissionBase {
         this.canClearAllSchedules    = true; // admin
         this.canLockCrownstone       = true; // admin
         this.canUnlockCrownstone     = true; // admin
+        this.canEnableDimming        = true; // admin
       case 'member':
         this.doLocalizationTutorial  = true; // admin and member
         this.changeBehaviour         = true; // admin and member
@@ -154,16 +156,16 @@ export class PermissionClass extends PermissionBase {
         this.canUploadSpheres        = true; // admin and member
         this.canUploadDiagnostics    = true; // admin and member
 
-        this.canCreateStones         = true; // a or m
-        this.canCreateLocations      = true; // a or m
-        this.canCreateAppliances     = true; // a or m
-        this.canCreateData           = true; // a or m
-        this.canCreateSpheres        = true; // a or m
+        this.canCreateStones         = true; // admin and member
+        this.canCreateLocations      = true; // admin and member
+        this.canCreateAppliances     = true; // admin and member
+        this.canCreateData           = true; // admin and member
+        this.canCreateSpheres        = true; // admin and member
 
-        this.canAddSchedule          = true; // a or m
-        this.canEditSchedule         = true; // a or m
-        this.canSeeSchedules         = true; // a or m
-        this.canDeleteSchedule       = true; // a or m
+        this.canAddSchedule          = true; // admin and member
+        this.canEditSchedule         = true; // admin and member
+        this.canSeeSchedules         = true; // admin and member
+        this.canDeleteSchedule       = true; // admin and member
       case 'guest':
         // nothing will be added.
     }

@@ -2,9 +2,10 @@ import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
 import { eventBus }              from "../util/EventBus";
 import { conditionMap }          from "../native/advertisements/StoneEntity";
+import {Util} from "../util/Util";
 
 
-const MESH_PROPAGATION_TIMEOUT_MS = 2000;
+const MESH_PROPAGATION_TIMEOUT_MS = 10000;
 
 
 export class MeshHelper {
@@ -56,7 +57,7 @@ export class MeshHelper {
             multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
             multiSwitchWaitInstructions.push(() => {
               eventBus.emit(
-                'temporaryStopListening_' + instruction.stoneId,
+                Util.events.getIgnoreTopic(instruction.stoneId),
                 {
                         timeoutMs: MESH_PROPAGATION_TIMEOUT_MS,
                         conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: instruction.state}]

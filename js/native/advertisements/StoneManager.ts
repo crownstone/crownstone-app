@@ -276,6 +276,7 @@ class StoneManagerClass {
     // if these stones are not known to be in a mesh network, they are in the same, new, network.
     if (meshNetworkId_external === null && meshNetworkId_advertiser === null) {
       meshNetworkId = Math.round(Math.random()*1e6).toString(36);
+      LOGi.mesh("StoneManager: Found new mesh network:", meshNetworkId);
       let actions = [];
       actions.push(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromServiceDataId, meshNetworkId));
       actions.push(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromAdvertisementId, meshNetworkId));
@@ -283,14 +284,17 @@ class StoneManagerClass {
     }
     // if they are in a different mesh network, place them in the same one.
     else if (meshNetworkId_external !== meshNetworkId_advertiser) {
+      LOGi.mesh("StoneManager: Updating mesh networks!");
       if (meshNetworkId_external === null) {
         // copy mesh id from stoneFromAdvertisement to stoneFromServiceData
         meshNetworkId = meshNetworkId_advertiser;
+        LOGi.mesh("StoneManager: Adding Stone to existing mesh network", stoneFromServiceDataId, meshNetworkId);
         this.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromServiceDataId, meshNetworkId));
       }
       else if (meshNetworkId_advertiser === null) {
         // copy mesh id from stoneFromServiceData to stoneFromAdvertisement
         meshNetworkId = meshNetworkId_external;
+        LOGi.mesh("StoneManager: Adding Stone to existing mesh network", stoneFromAdvertisementId, meshNetworkId);
         this.store.dispatch(Util.mesh.getChangeMeshIdAction(sphereId, stoneFromAdvertisementId, meshNetworkId));
       }
       else {
@@ -304,9 +308,10 @@ class StoneManagerClass {
           Util.mesh.setNetworkId(this.store, sphereId, stonesInNetwork_advertiser, meshNetworkId);
         }
         else {
-          meshNetworkId = meshNetworkId_external;
+          meshNetworkId = meshNetworkId_advertiser;
           Util.mesh.setNetworkId(this.store, sphereId, stonesInNetwork_external, meshNetworkId);
         }
+        LOGi.mesh("StoneManager: Merging networks:", meshNetworkId_advertiser, meshNetworkId_external, " into ", meshNetworkId);
       }
     }
   }
