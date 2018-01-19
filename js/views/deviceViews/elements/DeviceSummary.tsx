@@ -296,8 +296,6 @@ export class DeviceButton extends Component<{store: any, sphereId: string, stone
     this.unsubscribeStoreEvents();
   }
 
-
-
   render() {
     const store = this.props.store;
     const state = store.getState();

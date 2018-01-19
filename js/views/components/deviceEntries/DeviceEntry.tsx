@@ -26,6 +26,7 @@ import { StoneUtil }                          from "../../../util/StoneUtil";
 import { BackAction }                         from "../../../util/Back";
 import { DeviceCommandProgressBar }           from "./DeviceCommandProgressBar";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
+import {AnimatedCircle} from "../animated/AnimatedCircle";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -252,14 +253,9 @@ export class DeviceEntry extends Component<any, any> {
     }
     else {
       return (
-        <View style={[{
-          width:60,
-          height:60,
-          borderRadius:30,
-          backgroundColor: color,
-        }, styles.centered]}>
+        <AnimatedCircle size={60} color={color}>
           <Icon name={element.config.icon} size={35} color={'#ffffff'} />
-        </View>
+        </AnimatedCircle>
       );
     }
   }
