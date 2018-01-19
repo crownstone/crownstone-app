@@ -58,6 +58,7 @@ class MapProviderClass {
           change.changeSphereUsers   ||
           change.changeStones        ||
           change.changeStoneSchedule ||
+          change.changeStoneHandle   ||
           change.changeDeviceData    ||
           change.updateStoneConfig   ||
           change.changeMessage

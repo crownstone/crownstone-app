@@ -81,7 +81,7 @@ const DeviceInfo = require('react-native-device-info');
     /**
      * The app will not allow usage of crownstones with a lower version than this.
      */
-    export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '1.7.1';
+    export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '2.0.0';
 
 /******************** /APP ********************/
 

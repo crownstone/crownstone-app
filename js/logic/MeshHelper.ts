@@ -129,7 +129,7 @@ export class MeshHelper {
       this.meshInstruction.keepAlive.forEach((instruction : keepAlivePayload) => {
         instruction.promise.pending = true;
         MeshHelper._mergeOptions(instruction.options, this.activeOptions);
-        this._containedInstructions.push( instruction.promise );
+        this._containedInstructions.push( instruction );
       });
 
       return BluenetPromiseWrapper.meshKeepAlive();

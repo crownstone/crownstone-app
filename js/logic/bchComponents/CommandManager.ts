@@ -48,7 +48,7 @@ export class CommandManager {
     let uuids = Object.keys(this.commands);
 
     let clean = (todo) => {
-      LOG.warn("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
+      LOGd.info("BatchCommandHandler: removing duplicate entry for ", stoneId, command.commandName);
       todo.promise.reject("Removed because of duplicate");
       todo.cleanup();
     };
@@ -68,7 +68,7 @@ export class CommandManager {
           clean(todo);
         }
         else {
-          LOG.warn("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
+          LOGd.info("BatchCommandHandler: Detected pending duplicate entry for ", stoneId, command.commandName);
         }
       }
     }

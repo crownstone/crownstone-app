@@ -63,10 +63,13 @@ export class DeviceCommandProgressBar extends Component<any, any> {
 
     // Shows the progress on connecting to a crownstone
     this.unsubscribe.push(this.props.eventBus.on('connecting', (handle) => {
+      // if we do not know this stone, ignore the event. This happens during a setup (or recovery)
+      let connectedStone = MapProvider.stoneSphereHandleMap[this.props.sphereId][handle];
+      if (!connectedStone) { return; }
+
       // get the most recent mesh network id of this stone.
       let state = this.props.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-      let connectedStone = MapProvider.stoneSphereHandleMap[this.props.sphereId][handle];
 
       // if we are connected with this stone or one in it's meshnetwork, we show progress
       if ((connectedStone.id === this.props.stoneId || connectedStone.stoneConfig.meshNetworkId === stone.config.meshNetworkId)) {
@@ -89,10 +92,13 @@ export class DeviceCommandProgressBar extends Component<any, any> {
       // these events are only relevant if we switched this Crownstone
       if (!this.props.pendingCommand) { return; }
 
+      // if we do not know this stone, ignore the event. This happens during a setup (or recovery)
+      let connectedStone = MapProvider.stoneSphereHandleMap[this.props.sphereId][handle];
+      if (!connectedStone) { return; }
+
       // get the most recent mesh network id of this stone.
       let state = this.props.store.getState();
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-      let connectedStone = MapProvider.stoneSphereHandleMap[this.props.sphereId][handle];
 
       let isInMesh = connectedStone.stoneConfig.meshNetworkId === null;
       // if the stone is not in the mesh
