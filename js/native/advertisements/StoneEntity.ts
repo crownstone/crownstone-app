@@ -80,7 +80,7 @@ export class StoneEntity {
     // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
     // This is to avoid the case where a state that was recorded pre-connection is shown post-connection
     // (ie. switch off instead of on)
-    this.subscriptions.push(eventBus.on("connect", (handle) => {
+    this.subscriptions.push(eventBus.on("connecting", (handle) => {
       let state = this.store.getState();
       let sphere = state.spheres[this.sphereId];
       let stone = sphere.stones[this.stoneId];
@@ -107,6 +107,9 @@ export class StoneEntity {
 
       // set the ignore flag
       this.ignoreAdvertisements = true;
+
+      // clear any pending advertisementUpdates for this Crownstone.
+      this.storeManager.clearActions(this.stoneId);
 
       // set the timoeut which will cancel the ignore
       this.ignoreTimeout = Scheduler.scheduleCallback(() => {

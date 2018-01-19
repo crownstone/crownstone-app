@@ -26,8 +26,16 @@ export class DeviceEntrySubText extends Component<any, any> {
     if (disabled === false && currentUsage !== undefined) {
       // show it in orange if it's in tap to toggle range
       let color = colors.iosBlue.hex;
-      if (this.props.tap2toggleThreshold && rssi >= this.props.tap2toggleThreshold) {
+      if (this.props.tap2toggleThreshold && rssi >= this.props.tap2toggleThreshold && this.props.tap2toggleEnabled) {
         color = colors.orange.hex;
+      }
+
+      if (this.props.statusText) {
+        return (
+          <View style={{flexDirection:'row'}}>
+            <Text style={{fontSize: 12}}>{this.props.statusText}</Text>
+          </View>
+        )
       }
 
       if (this.props.nearestInSphere === true) {

@@ -51,7 +51,8 @@ export class DeviceEntry extends Component<any, any> {
       optionsHeight:   new Animated.Value(0),
       optionsOpen:     false,
       pendingCommand:  false,
-      backgroundColor: new Animated.Value(0)
+      backgroundColor: new Animated.Value(0),
+      statusText:      null,
     };
   }
 
@@ -313,7 +314,7 @@ export class DeviceEntry extends Component<any, any> {
 
     return (
       <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
-        <DeviceCommandProgressBar {...this.props} pendingCommand={this.state.pendingCommand } baseHeight={this.baseHeight} />
+        <DeviceCommandProgressBar {...this.props} pendingCommand={this.state.pendingCommand } baseHeight={this.baseHeight} updateStatusText={(text) => { this.setState({statusText: text}) }} />
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
           <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(stone, false); }}>
             {this._getIcon(element, stone, state)}
@@ -322,12 +323,14 @@ export class DeviceEntry extends Component<any, any> {
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
               <DeviceEntrySubText
+                statusText={this.state.statusText}
                 rssi={stone.config.rssi}
                 disabled={stone.config.disabled}
                 currentUsage={stone.state.currentUsage}
                 nearestInSphere={this.props.nearestInSphere}
                 nearestInRoom={this.props.nearestInRoom}
                 tap2toggleThreshold={Util.data.getTapToToggleCalibration(state)}
+                tap2toggleEnabled={state.app.tapToToggleEnabled}
               />
             </View>
           </TouchableOpacity>

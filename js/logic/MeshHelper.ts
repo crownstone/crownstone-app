@@ -5,7 +5,7 @@ import { conditionMap }          from "../native/advertisements/StoneEntity";
 import {Util} from "../util/Util";
 
 
-const MESH_PROPAGATION_TIMEOUT_MS = 10000;
+const MESH_PROPAGATION_TIMEOUT_MS = 5000;
 
 
 export class MeshHelper {

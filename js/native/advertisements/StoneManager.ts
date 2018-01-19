@@ -45,7 +45,7 @@ class StoneManagerClass {
   _init() {
     if (this._initialized === false) {
       // make sure we clear any pending advertisement package updates that are scheduled for this crownstone
-      eventBus.on("connect", (handle) => {
+      eventBus.on("connecting", (handle) => {
         // this is a fallback mechanism in case no disconnect event is fired.
         this.stonesInConnectionProcess[handle] = { timeout: Scheduler.scheduleCallback(() => {
             LOGw.native("(Ignore if doing setup) Force restoring listening to all crownstones since no disconnect state after 15 seconds.");

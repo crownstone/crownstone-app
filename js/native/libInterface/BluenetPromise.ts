@@ -40,7 +40,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   isReady:             () => { return BluenetPromise('isReady');              },
   connect:             (handle) => {
     // tell the app that something is connecting.
-    eventBus.emit("connect", handle);
+    eventBus.emit("connecting", handle);
 
     // connect
     if (handle) {
