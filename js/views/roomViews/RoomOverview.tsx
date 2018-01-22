@@ -134,6 +134,7 @@ export class RoomOverview extends Component<any, any> {
     this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
 
+    // we keep open a connection for a few seconds to await a second command
     BatchCommandHandler.closeKeptOpenConnection();
   }
 

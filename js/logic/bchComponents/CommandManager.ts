@@ -163,7 +163,9 @@ export class CommandManager {
           // meshNetworks[stoneConfig.meshNetworkId].other.push({ ...todo });
 
           // currently we forward all other commands to direct calls, todo: over mesh.
-          directCommands[todo.sphereId].push(todo);
+          if (todo.stoneId !== null && targetStoneId === todo.stoneId) {
+            directCommands[todo.sphereId].push(todo);
+          }
         }
       }
     }
