@@ -133,6 +133,8 @@ export class RoomOverview extends Component<any, any> {
   componentWillUnmount() {
     this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
+
+    BatchCommandHandler.closeKeptOpenConnection();
   }
 
   _renderer(item, index, stoneId) {

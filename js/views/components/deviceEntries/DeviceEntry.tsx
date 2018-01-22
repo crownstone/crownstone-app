@@ -143,7 +143,7 @@ export class DeviceEntry extends Component<any, any> {
       this.props.stoneId,
       stone, newState,
       this.props.store,
-      {},
+      {keepConnectionOpen: false, keepConnectionOpenTimeout: 2},
       () => { this.setState({pendingCommand:false}); },
       INTENTS.manual,
       1,

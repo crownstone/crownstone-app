@@ -110,7 +110,7 @@ export class DeviceCommandProgressBar extends Component<any, any> {
       else {
         // if we are connected with this stone or one in it's meshnetwork, we show progress
         if (connectedStone.id === this.props.stoneId || connectedStone.stoneConfig.meshNetworkId === stone.config.meshNetworkId) {
-          this.props.updateStatusText("Verifying...");
+          this.props.updateStatusText("checking...");
           this.state.progressWidth.stopAnimation();
           Animated.timing(this.state.progressWidth, { toValue: 0.15*screenWidth, duration: 150 }).start()
         }
@@ -129,7 +129,7 @@ export class DeviceCommandProgressBar extends Component<any, any> {
   }
 
   _failureFinish() {
-    this.props.updateStatusText("I couldn't verify success...");
+    this.props.updateStatusText(null);
     Animated.timing(this.state.progressColor, {toValue: -1, duration: 250}).start( () => { this._hideCommandProgressBar(500) });
   }
 
@@ -153,7 +153,7 @@ export class DeviceCommandProgressBar extends Component<any, any> {
         this.props.updateStatusText("connecting...");
       }
       else {
-        this.props.updateStatusText("searching...");
+        this.props.updateStatusText("preparing...");
       }
       animations.push(Animated.timing(this.state.progressOpacity, { toValue: 1, duration: 50 }));
       animations.push(Animated.timing(this.state.progressWidth, { toValue: 0.05*screenWidth, duration: 350 }));

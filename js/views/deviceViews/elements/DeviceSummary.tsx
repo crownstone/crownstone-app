@@ -14,20 +14,19 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
-import { LOG } from '../../../logging/Log'
-import {Util} from "../../../util/Util";
-import {Icon} from "../../components/Icon";
-import {StoneUtil} from "../../../util/StoneUtil";
-import {AnimatedCircle} from "../../components/animated/AnimatedCircle";
+import { colors, screenWidth, screenHeight } from '../../styles'
+import { Util }                from "../../../util/Util";
+import { Icon }                from "../../components/Icon";
+import { StoneUtil }           from "../../../util/StoneUtil";
+import { AnimatedCircle }      from "../../components/animated/AnimatedCircle";
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
-import { DimmerButton } from "../../components/DimmerButton";
-import { INTENTS } from "../../../native/libInterface/Constants";
-import {DIMMING_ENABLED} from "../../../ExternalConfig";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
-import {eventBus, EventBusClass} from "../../../util/EventBus";
-import {LockedStateUI} from "../../components/LockedStateUI";
-import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
+import { DimmerButton }        from "../../components/DimmerButton";
+import { INTENTS }             from "../../../native/libInterface/Constants";
+import { DIMMING_ENABLED}      from "../../../ExternalConfig";
+import { Permissions}          from "../../../backgroundProcesses/PermissionManager";
+import { EventBusClass}        from "../../../util/EventBus";
+import { LockedStateUI}        from "../../components/LockedStateUI";
+import { BatchCommandHandler } from "../../../logic/BatchCommandHandler";
 
 export class DeviceSummary extends Component<any, any> {
   storedSwitchState = 0;
