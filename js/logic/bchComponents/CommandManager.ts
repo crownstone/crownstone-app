@@ -1,7 +1,7 @@
 import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
-import {LOG, LOGd} from '../../logging/Log'
-import {DISABLE_NATIVE, MESH_ENABLED, STONE_TIME_REFRESH_INTERVAL}          from '../../ExternalConfig'
+import {LOG, LOGd, LOGe}         from '../../logging/Log'
+import {DISABLE_NATIVE, MESH_ENABLED, STONE_TIME_REFRESH_INTERVAL} from '../../ExternalConfig'
 
 
 /**
@@ -74,6 +74,96 @@ export class CommandManager {
     }
   }
 
+
+  isMeshEnabledCommand(command : commandInterface) {
+    switch (command.commandName) {
+      case 'keepAlive':
+      case 'keepAliveState':
+      case 'multiSwitch':
+        return true;
+      default:
+        return false;
+    }
+  }
+
+
+  _extractDirectCommand(todo, targetStoneId, markAsInitialized, directCommands : directCommands) {
+    // apply filter if required.
+    if (targetStoneId !== null && targetStoneId !== todo.stoneId) {
+      return;
+    }
+
+    // create the data fields for each sphere if they have not been created yet.
+    if (directCommands[todo.sphereId] === undefined) { directCommands[todo.sphereId] = []; }
+
+    directCommands[todo.sphereId].push(todo);
+    this._processCommand(todo, markAsInitialized);
+  }
+
+  _extractMeshCommand(todo, targetNetworkId, targetStoneId, markAsInitialized, directCommands: directCommands, meshNetworks : sphereMeshNetworks) {
+    let command = todo.command;
+    let stoneConfig = todo.stone.config;
+
+    // apply filter if required.
+    if (targetNetworkId !== null) {
+      // if we are not in the required mesh network AND this is not the target stone, cancel
+      if (targetNetworkId !== stoneConfig.meshNetworkId && targetStoneId !== todo.stoneId) {
+        return;
+      }
+    }
+    else if (targetStoneId !== null && targetStoneId !== todo.stoneId) {
+      // this is not the target stone. Ignore.
+      return;
+    }
+
+    // create the data fields for each sphere if they have not been created yet.
+    if (directCommands[todo.sphereId] === undefined) { directCommands[todo.sphereId] = []; }
+    if (meshNetworks[todo.sphereId]   === undefined) { meshNetworks[todo.sphereId]   = {}; }
+
+    if (stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
+      // handle this 1:1
+      directCommands[todo.sphereId].push(todo);
+      this._processCommand(todo, markAsInitialized);
+    }
+    else {
+      // this is a function to ensure that we do not create a field in the meshNetwork
+      if (meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] === undefined) {
+        meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] = {
+          keepAlive:      [],
+          keepAliveState: [],
+          multiSwitch:    []
+        };
+      }
+
+      let payload = _getPayloadFromCommand(todo);
+      switch (command.commandName) {
+        case 'keepAlive':
+          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAlive.push(payload);
+          break;
+        case 'keepAliveState':
+          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAliveState.push(payload);
+          break;
+        case 'multiSwitch':
+          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
+          break;
+        default:
+          LOGe.info("CommandManager: Invalid command received. This should not happen!");
+      }
+
+      this._processCommand(todo, markAsInitialized);
+    }
+  }
+
+  _processCommand(todo, markAsInitialized) {
+    // If we mark this command as initialized it will be handled by the attemptHandler.
+    // This is required to avoid the cases where commands that are loaded while there is a pending process
+    // If that pending process fails, anything that was loaded during that time would be cancelled as well.
+    if (markAsInitialized === true) {
+      todo.initialized = true;
+    }
+  }
+
+
   /**
    *
    * If a target network id is provided, the filter will only allow stones which match that id unless the stoneId specifically matches the targetStoneId
@@ -96,77 +186,13 @@ export class CommandManager {
     for (let i = 0; i < uuids.length; i++) {
       let todo = commandsToHandle[uuids[i]];
 
-      // If we mark this command as initialized it will be handled by the attemptHandler.
-      // This is required to avoid the cases where commands that are loaded while there is a pending process
-      // If that pending process fails, anything that was loaded during that time would be cancelled as well.
-      if (markAsInitialized === true) {
-        todo.initialized = true;
-      }
-
       let command = todo.command;
-      let stoneConfig = todo.stone.config;
 
-      // apply filter if required.
-      if (targetNetworkId !== null) {
-        if (targetNetworkId !== stoneConfig.meshNetworkId && targetStoneId !== todo.stoneId) {
-          continue;
-        }
-      }
-      else if (targetStoneId !== null) {
-        if (targetStoneId !== todo.stoneId) {
-          continue;
-        }
-      }
-
-      // create the data fields for each sphere if they have not been created yet.
-      if (directCommands[todo.sphereId] === undefined) { directCommands[todo.sphereId] = []; }
-      if (meshNetworks[todo.sphereId]   === undefined) { meshNetworks[todo.sphereId]   = {}; }
-
-      // mesh not supported, no mesh detected for this stone
-      if (
-        !MESH_ENABLED ||
-        stoneConfig.meshNetworkId === null ||
-        stoneConfig.meshNetworkId === undefined
-      ) {
-        // handle this 1:1
-        directCommands[todo.sphereId].push(todo);
+      if (this.isMeshEnabledCommand(command) === true && MESH_ENABLED) {
+        this._extractMeshCommand(todo, targetNetworkId, targetStoneId, markAsInitialized, directCommands, meshNetworks);
       }
       else {
-        // this is a function to ensure that we do not create a field in the meshNetwork
-        let verifyMeshPayloadPrefix = () => {
-          if (meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] === undefined) {
-            meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] = {
-              keepAlive:      [],
-              keepAliveState: [],
-              multiSwitch:    [],
-              other:          []
-            };
-          }
-        };
-
-        let payload = _getPayloadFromCommand(todo);
-
-        if (command.commandName === 'keepAlive') {
-          verifyMeshPayloadPrefix();
-          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAlive.push(payload);
-        }
-        else if (command.commandName === 'keepAliveState') {
-          verifyMeshPayloadPrefix();
-          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAliveState.push(payload);
-        }
-        else if (command.commandName === 'multiSwitch') {
-          verifyMeshPayloadPrefix();
-          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
-        }
-        else {
-          // handle the command via the mesh or 1:1
-          // meshNetworks[stoneConfig.meshNetworkId].other.push({ ...todo });
-
-          // currently we forward all other commands to direct calls, todo: over mesh.
-          if (todo.stoneId !== null && targetStoneId === todo.stoneId) {
-            directCommands[todo.sphereId].push(todo);
-          }
-        }
+        this._extractDirectCommand(todo, targetStoneId, markAsInitialized, directCommands);
       }
     }
 

@@ -73,6 +73,8 @@ class BatchCommandHandlerClass {
    * @private
    */
   _getObjectsToScan() {
+    // this will mark all candidates during this scan as initialized. These are ALL marked as initialized since if we do not find ANY crownstones,
+    // we will have to reduce the attempts of all of them.
     let { directCommands, meshNetworks } = this._commandHandler.extractTodo(null, null, true);
 
     // get sphereIds of the spheres we need to do things in.
@@ -108,6 +110,7 @@ class BatchCommandHandlerClass {
    */
   _handleAllCommandsForStone(connectionInfo: connectionInfo, activeOptions : any = {}) {
     return new Promise((resolve, reject) => {
+      // get everything we CAN and WILL do now with this Crownstone.
       let { directCommands, meshNetworks } = this._commandHandler.extractTodo(connectionInfo.stoneId, connectionInfo.meshNetworkId);
 
       // check if we have to perform any mesh commands for this Crownstone.
@@ -444,6 +447,7 @@ class BatchCommandHandlerClass {
       connectedCrownstone = {stoneId: null, meshNetworkId: null};
     }
 
+    // get all todos that would have been done to reduce their attempt counts.
     let { directCommands, meshNetworks } = this._commandHandler.extractTodo(connectedCrownstone.stoneId, connectedCrownstone.meshNetworkId);
     let directCommandSpheres = Object.keys(directCommands);
     directCommandSpheres.forEach((sphereId) => {
@@ -463,7 +467,6 @@ class BatchCommandHandlerClass {
       networkTodo.keepAlive.forEach(handleAttempt);
       networkTodo.keepAliveState.forEach(handleAttempt);
       networkTodo.multiSwitch.forEach(handleAttempt);
-      networkTodo.other.forEach(handleAttempt);
     });
   }
 

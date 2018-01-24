@@ -66,8 +66,7 @@ interface connectionInfo  {
 interface meshTodo {
   keepAlive:      keepAlivePayload[],
   keepAliveState: keepAliveStatePayload[],
-  multiSwitch:    multiSwitchPayload[],
-  other:          any[]
+  multiSwitch:    multiSwitchPayload[]
 }
 
 type commandInterface = { commandName: 'keepAlive' } |
