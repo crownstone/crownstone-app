@@ -5,7 +5,7 @@ import { Animated,  StatusBar,  View, Platform } from 'react-native';
 import { AppRouter } from './js/router/Router'
 import { eventBus } from './js/util/EventBus'
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
-import { colors, screenWidth, screenHeight } from './js/views/styles'
+import { colors, screenWidth, screenHeight, tabBarMargin, topBarMargin } from './js/views/styles'
 import SplashScreen from 'react-native-splash-screen'
 
 
@@ -63,11 +63,13 @@ export class Root extends Component {
   render() {
     if (Platform.OS === 'ios') {
       return (
-        <View style={{flex: 1}}>
-          <StatusBar barStyle="light-content"/>
-          <Animated.View style={{flex: 1, position: 'relative', top: this.state.top}}>
-            <AppRouter/>
-          </Animated.View>
+        <View style={{flex: 1, backgroundColor: colors.menuBackgroundDarker.hex}}>
+          <View style={{flex: 1, marginBottom: tabBarMargin, marginTop: topBarMargin}}>
+            <StatusBar barStyle="light-content"/>
+            <Animated.View style={{flex: 1, position: 'relative', top: this.state.top}}>
+              <AppRouter/>
+            </Animated.View>
+          </View>
         </View>
       );
     }

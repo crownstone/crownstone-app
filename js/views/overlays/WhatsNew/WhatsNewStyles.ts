@@ -14,14 +14,14 @@ export const WNStyles = StyleSheet.create({
     textAlign:'center'
   },
   text: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight:'bold',
     color: colors.csBlue.hex,
     textAlign:'center'
   },
   detail: {
     fontSize: 13,
-    color: colors.csBlue.hex,
+    color: colors.csBlue.rgba(0.75),
     textAlign:'center'
   },
   innerScrollView: {

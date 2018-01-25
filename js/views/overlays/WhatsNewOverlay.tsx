@@ -12,8 +12,10 @@ import { styles, colors, screenHeight, screenWidth, availableScreenHeight } from
 import {eventBus} from "../../util/EventBus";
 const Swiper = require("react-native-swiper");
 import { Awesome } from "./WhatsNew/Awesome";
-import {SyncingSchedulesToTheCloud} from "./WhatsNew/1.11.0/SyncingSchedulesToTheCloud";
-import {Messages} from "./WhatsNew/1.11.0/Messages";
+import {Mesh} from "./WhatsNew/2.0.0/Mesh";
+import {Dimmer} from "./WhatsNew/2.0.0/Dimmer";
+import {FirmwareUpdate} from "./WhatsNew/2.0.0/FirmwareUpdate";
+import {BatteryImprovements} from "./WhatsNew/2.0.0/BatteryImprovements";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -23,7 +25,7 @@ export class WhatsNewOverlay extends Component<any, any> {
   constructor(props) {
     super(props);
 
-    this.state = { visible: false };
+    this.state = { visible: true };
     this.unsubscribe = [];
   }
 
@@ -43,12 +45,16 @@ export class WhatsNewOverlay extends Component<any, any> {
     let size = {height: height-50, width: width};
 
     if (Platform.OS === 'ios') {
-      content.push(<Messages key="Messages"  {...size}/>);
-      content.push(<SyncingSchedulesToTheCloud key="SyncingSchedulesToTheCloud"  {...size} />);
+      content.push(<Dimmer key="Dimmer"  {...size}/>);
+      content.push(<Mesh key="Mesh"  {...size}/>);
+      content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
+      content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
     }
     if (Platform.OS === 'android') {
-      content.push(<Messages key="Messages"  {...size}/>);
-      content.push(<SyncingSchedulesToTheCloud key="SyncingSchedulesToTheCloud"  {...size} />);
+      content.push(<Dimmer key="Dimmer"  {...size} />);
+      content.push(<Mesh key="Mesh"  {...size}/>);
+      content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
+      content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
     }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }} {...size} />);
 

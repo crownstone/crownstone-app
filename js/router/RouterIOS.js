@@ -18,9 +18,8 @@ import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
 import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { Views }                     from './Views'
-import { styles, colors, screenWidth, screenHeight } from '../views/styles'
+import { styles, colors, tabBarMargin, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
-import { Util }                      from '../util/Util'
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 import {LockOverlay}                 from "../views/overlays/LockOverlay";
 
@@ -67,7 +66,7 @@ export class Router_IOS extends Component {
                 <Scene key="messageThread"    component={Views.MessageThread}   hideNavBar={true} />
               </Scene>
               <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={false} >
-                <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true} title="Settings"/>
+                <Scene key="settingsOverview"           component={Views.SettingsOverview}          hideNavBar={true}  title="Settings"/>
                 <Scene key="settingsProfile"            component={Views.SettingsProfile}           hideNavBar={false} title="Your Profile" />
                 <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           hideNavBar={false} title="Privacy" />
                 <Scene key="settingsApp"                component={Views.SettingsApp}               hideNavBar={false} title="Preferences" />
@@ -76,7 +75,7 @@ export class Router_IOS extends Component {
                 <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          hideNavBar={false} title="BLE Debug" />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         hideNavBar={false} title="Developer" />
                 <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    hideNavBar={false} title="Sphere Overview" />
-                <Scene key="settingsSphere"             component={Views.SettingsSphere}            hideNavBar={true} title="[Sphere name here]" />
+                <Scene key="settingsSphere"             component={Views.SettingsSphere}            hideNavBar={true}  title="[Sphere name here]" />
                 <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}        hideNavBar={false} title="[Username here]" />
                 <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser} hideNavBar={false} title="[Username here]" />
                 <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}      hideNavBar={false} title="Invite" />

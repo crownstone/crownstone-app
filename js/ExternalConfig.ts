@@ -6,7 +6,7 @@ const DeviceInfo = require('react-native-device-info');
 
 
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
-    const RELEASE_MODE = false;
+    const RELEASE_MODE = true;
 
     // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
     const IGNORE_LOCAL_CONFIG = false;
@@ -22,7 +22,7 @@ const DeviceInfo = require('react-native-device-info');
     export const APP_NAME = 'Crownstone.consumer';
 
     // WHEN DOING A RELEASE, MAKE SURE THIS FLAG IS SET TO FALSE
-    export const DEBUG_MODE_ENABLED = true;
+    export const DEBUG_MODE_ENABLED = false;
 
 /******************** /RELEASE FLAGS ********************/
 
@@ -116,7 +116,7 @@ const DeviceInfo = require('react-native-device-info');
      * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.
      * This flag is meant to just always log to file, regardless of the user input. Used for debugging.
      */
-    export let LOG_TO_FILE          = true;   // log everything that is logged to a file.
+    export let LOG_TO_FILE          = false;   // log everything that is logged to a file.
     export let LOG_EXTENDED_TO_FILE = false;   // log even more to file.
 
 /******************** /LOGGING ********************/

@@ -11,7 +11,6 @@ import {
 import { LOG }                                        from '../../logging/Log'
 import { BlePromiseManager }                          from '../../logic/BlePromiseManager'
 import { addDistanceToRssi, Util }                    from '../../util/Util'
-import { STONE_TYPES }                                 from '../../router/store/reducers/stones'
 import { OverlayBox }                                 from '../components/overlays/OverlayBox'
 import { eventBus }                                   from '../../util/EventBus'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
@@ -88,7 +87,7 @@ export class TapToToggleCalibration extends Component<any, any> {
 
     BlePromiseManager.registerPriority(learnDistancePromise, {from:'Tap-to-toggle distance estimation.'})
       .then((nearestRSSI : number) => {
-        if (nearestRSSI > -95) { // TODO: Discuss about limits.
+        if (nearestRSSI > -75) {
           let rssiAddedDistance = Math.max(nearestRSSI - 5, addDistanceToRssi(nearestRSSI, 0.1));
           LOG.info("TapToToggleCalibration: measured RSSI", nearestRSSI, 'added distance value:', rssiAddedDistance);
 
@@ -273,6 +272,8 @@ export class TapToToggleCalibration extends Component<any, any> {
         closeCallback={() => {this.abortCloseCallback();}}
         overrideBackButton={() => { if (this.state.step === 0) { this.abortCloseCallback(); }}}
         backgroundColor={colors.csBlue.rgba(0.3)}
+        width={Math.min(320, 0.9*screenWidth)}
+        height={Math.min(500, 0.95*screenHeight)}
       >
         {this.getContent()}
       </OverlayBox>
