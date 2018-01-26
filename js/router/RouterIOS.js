@@ -22,6 +22,7 @@ import { styles, colors, tabBarMargin, screenWidth, tabBarHeight } from '../view
 import { Icon }                      from '../views/components/Icon';
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 import {LockOverlay}                 from "../views/overlays/LockOverlay";
+import {SettingsFAQ} from "../views/settingsViews/SettingsFAQ";
 
 
 export class Router_IOS extends Component {
@@ -79,6 +80,7 @@ export class Router_IOS extends Component {
                 <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}        hideNavBar={false} title="[Username here]" />
                 <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser} hideNavBar={false} title="[Username here]" />
                 <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}      hideNavBar={false} title="Invite" />
+                <Scene key="settingsFAQ"                component={Views.SettingsFAQ}      hideNavBar={false} title="Help" />
               </Scene>
             </Scene>
           </Scene>

@@ -43,7 +43,7 @@ export class Root extends Component {
       }));
       this.unsubscribe.push(eventBus.on('hidePopup', snapBackKeyboard));
       this.unsubscribe.push(eventBus.on('showPopup', snapBackKeyboard));
-      this.unsubscribe.push(eventBus.on('blur', snapBackKeyboard));
+      this.unsubscribe.push(eventBus.on('blur',      snapBackKeyboard));
 
       // catch for the simulator
       this.unsubscribe.push(eventBus.on('showLoading',  snapBack));

@@ -41,6 +41,7 @@ import { SettingsSphereInvitedUser }  from '../views/settingsViews/SettingsSpher
 import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
 import { Tutorial }                   from "../views/tutorialViews/Tutorial";
+import { SettingsFAQ }                from "../views/settingsViews/SettingsFAQ";
 
 export const Views = {
   AiStart,
@@ -77,6 +78,7 @@ export const Views = {
   SettingsBleDebug,
   SettingsStoneBleDebug,
   SettingsDeveloper,
+  SettingsFAQ,
   SettingsMeshOverview,
   SettingsSphereOverview,
   SettingsSphere,

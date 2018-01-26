@@ -101,6 +101,8 @@ export class DeviceEdit extends Component<any, any> {
 
   constructStoneOptions(stone, state) {
     let items = [];
+    let hasAppliance = stone.config.type !== STONE_TYPES.guidestone && !this.state.applianceId;
+
 
     if (this.state.applianceId) {
       items.push({label:'PLUGGED IN DEVICE TYPE', type: 'explanation',  below:false});
@@ -139,7 +141,7 @@ export class DeviceEdit extends Component<any, any> {
           this.setState({showStone:true, applianceId: null});
         }
       });
-      items.push({label:'This Crownstone is currently using the behaviour, name and icon of this device type. Decoupling it will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true});
+      items.push({label:'This Crownstone is currently using the behaviour, name and icon of this device type. Decoupling it will revert the behaviour back to the empty Crownstone configuration.', type: 'explanation',  below:true, style:{paddingBottom:0}});
 
       items.push({label: 'CURRENT CROWNSTONE USING THIS TYPE', type: 'explanation', below: false});
     }
@@ -194,7 +196,7 @@ export class DeviceEdit extends Component<any, any> {
         }
       });
 
-      items.push({label: 'Tap to toggle can be enabled per Crownstone.', type: 'explanation', below: true, style: {paddingBottom:0}});
+      items.push({label: 'Tap to toggle can be enabled per Crownstone.', type: 'explanation', below: true});
     }
     else {
       items.push({ label: 'Tap to toggle is disabled.', type: 'disabledInfo'});
@@ -202,13 +204,12 @@ export class DeviceEdit extends Component<any, any> {
         label: 'To use tap to toggle, you have to enable it globally in the app settings.',
         type: 'explanation',
         below: true,
-        style: {paddingBottom:0}
       });
     }
 
 
-    if (stone.config.type !== STONE_TYPES.guidestone && !this.state.applianceId) {
-      items.push({label: 'SELECT WHICH DEVICE TYPE IS PLUGGED IN', type: 'explanation', below: false});
+    if (hasAppliance) {
+      items.push({label: 'SELECT WHICH DEVICE TYPE IS PLUGGED IN', type: 'explanation', below: false, style:{paddingTop:0}});
       items.push({
         label: 'Select...', type: 'navigation', labelStyle: {color: colors.blue.hex}, callback: () => {
           Actions.applianceSelection({

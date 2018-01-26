@@ -206,7 +206,8 @@ export class RoomIconSelection extends Component<{callback(icon: string) : void,
       <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
           leftAction={Actions.pop}
-          title="Pick an Icon"/>
+          title="Pick an Icon"
+        />
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
