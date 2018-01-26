@@ -70,7 +70,7 @@ export class Tutorial extends Component<any, any> {
     };
 
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hideInterface={true}>
         <TopBar title={"Welcome!"} />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight}
