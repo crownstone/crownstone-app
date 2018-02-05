@@ -202,7 +202,8 @@ class StoneManagerClass {
 
     // check if we have a Crownstone with this CID, if not, ignore it.
     if (referenceByCrownstoneId === undefined) {
-      return;
+      LOGd.native("StoneManager: IGNORE: unknown Crownsotne Id.");
+      return;;
     }
 
     // repair mechanism to store the handle.
@@ -215,6 +216,10 @@ class StoneManagerClass {
     }
 
     let referenceByHandle = MapProvider.stoneSphereHandleMap[sphereId][advertisement.handle];
+    if (!referenceByHandle) {
+      LOGw.native("StoneManager: IGNORE: UNKNOWN REFERENCE BY HANDLE");
+      return;
+    }
 
     // unknown crownstone, factory reset it.
     // TODO: restore this method when the race condition is covered (after setup, before loading into store this can happen)
