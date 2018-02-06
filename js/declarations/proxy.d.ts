@@ -52,26 +52,27 @@ interface BluenetPromiseWrapperProtocol {
 
 
 interface crownstoneServiceData {
-  opCode                    : number
-  dataType                  : number
-  stateOfExternalCrownstone : boolean
-  hasError                  : boolean
-  setupMode                 : boolean
-  crownstoneId              : number,
-  switchState               : number,
-  flagsBitmask              : number,
-  temperature               : number,
-  powerFactor               : number,
-  powerUsageReal            : number,
-  powerUsageApparent        : number,
-  accumulatedEnergy         : number,
-  timestamp                 : number,
+  opCode?                   : number, // unencrypted type (optional)
+  dataType?                 : number, // encrypted type (optional)
+  stateOfExternalCrownstone : boolean,
+  hasError                  : boolean,
+  setupMode                 : boolean,
+  crownstoneId              : number, // [0..255]
+  switchState               : number, // [0..1]
+  flagsBitmask?             : number, // bitmask (optional)
+  temperature               : number, // °C
+  powerFactor               : number, // [-1..1] __not 0__ (default 1.0)
+  powerUsageReal            : number, // W
+  powerUsageApparent        : number, // VA
+  accumulatedEnergy         : number, // J
+  timestamp                 : number, // reconstructed timestamp, -1 if not available, uint16 counter when time is not set
   dimmingAvailable          : boolean,
   dimmingAllowed            : boolean,
   switchLocked              : boolean,
-  errorMode                 : boolean,
-  errors                    : errorData,
-  uniqueElement             : number
+  timeSet                   : boolean,
+  errorMode                 : boolean, // True when service data is of type error.
+  errors                    : errorData, // Has to be correct when errorMode is true.
+  uniqueElement             : number // partial timestamp, counter, etc
 }
 
 

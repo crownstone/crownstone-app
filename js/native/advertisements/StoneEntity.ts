@@ -359,7 +359,7 @@ export class StoneEntity {
   _handleAdvertisementContent(stone, advertisement : crownstoneAdvertisement) {
     // these timestamps are in seconds.
     let dtWithLastDataPoint = advertisement.serviceData.timestamp - this.lastKnownTimestamp;
-    if (dtWithLastDataPoint <= 0 && Math.abs(dtWithLastDataPoint) < 2000) { // the ABS is to make sure an incorrect overflow correction will not block advertisements for hours.
+    if (advertisement.serviceData.timestamp !== -1 && dtWithLastDataPoint <= 0 && Math.abs(dtWithLastDataPoint) < 2000) { // the ABS is to make sure an incorrect overflow correction will not block advertisements for hours.
       LOGd.advertisements("StoneEntity: IGNORE: we already know a newer state.");
       return;
     }
