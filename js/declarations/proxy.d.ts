@@ -57,11 +57,11 @@ interface crownstoneServiceData {
   stateOfExternalCrownstone : boolean,
   hasError                  : boolean,
   setupMode                 : boolean,
-  crownstoneId              : number, // [0..255]
-  switchState               : number, // [0..1]
+  crownstoneId              : number, // [0 .. 255]
+  switchState               : number, // [0.0 .. 1.0]
   flagsBitmask?             : number, // bitmask (optional)
   temperature               : number, // °C
-  powerFactor               : number, // [-1..1] __not 0__ (default 1.0)
+  powerFactor               : number, // [-1.0 .. 1.0] __not 0__ (default 1.0)
   powerUsageReal            : number, // W
   powerUsageApparent        : number, // VA
   accumulatedEnergy         : number, // J
@@ -110,7 +110,7 @@ interface errorData {
   temperatureDimmer : boolean
   dimmerOnFailure   : boolean
   dimmerOffFailure  : boolean
-  bitMask           : number
+  bitMask           : number // For debug
 }
 
 
