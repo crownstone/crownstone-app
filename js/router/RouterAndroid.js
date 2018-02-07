@@ -14,6 +14,7 @@ import { ErrorOverlay }              from '../views/overlays/ErrorOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
 import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
 import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
+import { LockOverlay }               from '../views/overlays/LockOverlay'
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
 import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'

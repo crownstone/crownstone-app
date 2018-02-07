@@ -71,9 +71,10 @@ import nl.dobots.bluenet.ble.extended.callbacks.EventListener;
 import nl.dobots.bluenet.ble.extended.CrownstoneSetup;
 import nl.dobots.bluenet.ble.extended.structs.BleDevice;
 import nl.dobots.bluenet.ble.extended.structs.BleDeviceList;
-import nl.dobots.bluenet.ble.mesh.structs.MeshControlMsg;
-import nl.dobots.bluenet.ble.mesh.structs.MeshKeepAlivePacket;
-import nl.dobots.bluenet.ble.mesh.structs.MeshMultiSwitchPacket;
+import nl.dobots.bluenet.ble.mesh.structs.keepalive.MeshKeepAlivePacket;
+import nl.dobots.bluenet.ble.mesh.structs.keepalive.MeshKeepAliveSameTimeoutPacket;
+import nl.dobots.bluenet.ble.mesh.structs.multiswitch.MeshMultiSwitchListPacket;
+import nl.dobots.bluenet.ble.mesh.structs.multiswitch.MeshMultiSwitchPacket;
 import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
 import nl.dobots.bluenet.ibeacon.BleIbeaconFilter;
 import nl.dobots.bluenet.ibeacon.BleIbeaconRanging;
@@ -211,7 +212,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	private Handler _handler;
 
 	private Map<String, WritableMap> _ibeaconAdvertisements = new HashMap<>();
-
 
 	private DfuServiceInitiator _dfuServiceInitiator = null;
 	private DfuServiceController _dfuServiceController = null;
@@ -560,6 +560,28 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		}
 //		_isResettingBluetooth = true;
 //		_bleExt.getBleBase().resetBle();
+	}
+
+	@ReactMethod
+	public void requestBleState() {
+		BleLog.getInstance().LOGi(TAG, "requestBleState ble=" + !_bleTurnedOff + " location=" + !_locationServiceTurnedOff + " locationPermission=" + !_locationPermissionMissing);
+
+		if (_bleTurnedOff) {
+			sendEvent("bleStatus", "poweredOff");
+		}
+		else {
+			sendEvent("bleStatus", "poweredOn");
+		}
+
+		if (_locationServiceTurnedOff) {
+			sendEvent("locationStatus", "off");
+		}
+		else if (_locationPermissionMissing) {
+			sendEvent("locationStatus", "noPermission");
+		}
+		else {
+			sendEvent("locationStatus", "on");
+		}
 	}
 
 	@ReactMethod
@@ -1288,6 +1310,30 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	//########################################################################################
 
 	@ReactMethod
+	public void getSwitchState(final Callback callback) {
+		BleLog.getInstance().LOGd(TAG, "getSwitchState");
+		_bleExt.readSwitch(new IIntegerCallback() {
+			@Override
+			public void onSuccess(int result) {
+				BleLog.getInstance().LOGi(TAG, "get switch success: " + result);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				retVal.putDouble("data", convertSwitchVal(result));
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGi(TAG, "get switch failed: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "get switch failed: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
 	public void setSwitchState(Float switchStateFloat, final Callback callback) {
 		BleLog.getInstance().LOGd(TAG, "set switch to: " + switchStateFloat);
 		int switchState = convertSwitchVal(switchStateFloat);
@@ -1337,12 +1383,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 	}
 
 	@ReactMethod
-	public void multiSwitch(ReadableArray switchItems, final Callback callback) {
+	public void multiSwitch(final ReadableArray switchItems, final Callback callback) {
 		// switchItems = [{crownstoneId: number(uint16), timeout: number(uint16), state: number(float) [ 0 .. 1 ], intent: number [0,1,2,3,4] }, {}, ...]
 		BleLog.getInstance().LOGi(TAG, "multiSwitch " + switchItems.toString());
 
 		// Create the multi switch packet
-		MeshMultiSwitchPacket packet = new MeshMultiSwitchPacket();
+		MeshMultiSwitchListPacket listPacket = new MeshMultiSwitchListPacket();
+
 		boolean success = true;
 		for (int i=0; i<switchItems.size(); i++) {
 			ReadableMap itemMap = switchItems.getMap(i);
@@ -1351,7 +1398,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			int intent =               itemMap.getInt("intent");
 			double switchStateDouble = itemMap.getDouble("state");
 			int switchState = convertSwitchVal(switchStateDouble);
-			if (!packet.addMultiSwitch(crownstoneId, switchState, timeout, intent)) {
+			if (!listPacket.addItem(crownstoneId, switchState, timeout, intent)) {
 				success = false;
 				BleLog.getInstance().LOGe(TAG, "Unable to add multiSwitch item: " + itemMap);
 				break;
@@ -1366,6 +1413,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			return;
 		}
 
+		MeshMultiSwitchPacket packet = new MeshMultiSwitchPacket();
+		packet.setPayload(listPacket);
 		byte[] payload = packet.toArray();
 		_bleExt.writeControl(new ControlMsg(BluenetConfig.CMD_MULTI_SWITCH, payload.length, payload), new IStatusCallback() {
 			@Override
@@ -1383,42 +1432,40 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				callback.invoke(retVal);
 			}
 		});
-
-//		// Write a mesh control msg with the packet as payload
-////		byte[] payload = packet.toArray();
-////		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, payload.length, payload);
-//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_MULTI_SWITCH, packet);
-//		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
-//			@Override
-//			public void onSuccess() {
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", false);
-//				callback.invoke(retVal);
-//			}
-//
-//			@Override
-//			public void onError(int error) {
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", true);
-//				retVal.putString("data", "multiSwitch failed: " + error);
-//				callback.invoke(retVal);
-//			}
-//		});
 	}
 
 	private int convertSwitchVal(double switchVal) {
-		// For now: no dimming
-//		int switchState = (int) Math.round(BluenetConfig.SWITCH_ON * switchVal);
 		int switchValInt = 0;
-		if (switchVal > 0) {
+		if (switchVal >= 1.0) {
 			switchValInt = BluenetConfig.SWITCH_ON;
 		}
+		else if (switchVal > 0) {
+			switchValInt = (int) Math.round(switchVal * BluenetConfig.SWITCH_ON);
+		}
+
 		return switchValInt;
 	}
 
+	/** Convert switch value to 0.0 .. 1.0 value.
+	 *
+	 * @param switchVal      Integer value.
+	 * @return               Converted value.
+	 */
 	private double convertSwitchVal(int switchVal) {
-		// For now: no dimming
 		return (double)switchVal / BluenetConfig.SWITCH_ON;
+	}
+
+	/** Converts switch state to 0.0 .. 1.0 value.
+	 *
+	 * @param switchState    Combined dimmer and relay state.
+	 * @return               Converted value.
+	 */
+	private double convertSwitchState(int switchState) {
+		if (switchState > BluenetConfig.SWITCH_ON) {
+			switchState = BluenetConfig.SWITCH_ON;
+		}
+		return (double)switchState / BluenetConfig.SWITCH_ON;
+
 	}
 
 
@@ -1546,6 +1593,57 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (clearErrorsMap.getBoolean("temperatureChip"))   { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_TEMP_CHIP, stateErrorBitmask); }
 		if (clearErrorsMap.getBoolean("temperatureDimmer")) { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_TEMP_DIMMER, stateErrorBitmask); }
 		_bleExt.writeResetStateErrors(stateErrorBitmask, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+
+	//########################################################################################
+	//                       CONFIG COMMANDS
+	//########################################################################################
+
+	@ReactMethod
+	public void lockSwitch(boolean enable, final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "lockSwitch: " + enable);
+		_bleExt.writeSwitchLock(enable, new IStatusCallback() {
+			@Override
+			public void onSuccess() {
+				BleLog.getInstance().LOGd(TAG, "Success");
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", false);
+				callback.invoke(retVal);
+			}
+
+			@Override
+			public void onError(int error) {
+				BleLog.getInstance().LOGd(TAG, "error: " + error);
+				WritableMap retVal = Arguments.createMap();
+				retVal.putBoolean("error", true);
+				retVal.putString("data", "error: " + error);
+				callback.invoke(retVal);
+			}
+		});
+	}
+
+	@ReactMethod
+	public void allowDimming(boolean enable, final Callback callback) {
+		BleLog.getInstance().LOGi(TAG, "allowDimming: " + enable);
+		_bleExt.writeAllowDimming(enable, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				BleLog.getInstance().LOGd(TAG, "Success");
@@ -2054,12 +2152,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (action) {
 			actionInt = 1;
 		}
-		// For now: no dimming
-		int switchState = 0;
-		if (state > 0) {
-			switchState = BluenetConfig.SWITCH_ON;
-		}
-		_bleExt.writeKeepAliveState(actionInt, switchState, timeout, new IStatusCallback() {
+		int switchVal = convertSwitchVal(state);
+		_bleExt.writeKeepAliveState(actionInt, switchVal, timeout, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				BleLog.getInstance().LOGd(TAG, "keepAliveState success");
@@ -2100,25 +2194,6 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 				callback.invoke(retVal);
 			}
 		});
-
-//		// Write a message with no payload, as per protocol.
-//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, 0, new byte[0]);
-//		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
-//			@Override
-//			public void onSuccess() {
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", false);
-//				callback.invoke(retVal);
-//			}
-//
-//			@Override
-//			public void onError(int error) {
-//				WritableMap retVal = Arguments.createMap();
-//				retVal.putBoolean("error", true);
-//				retVal.putString("data", "meshKeepAlive failed: " + error);
-//				callback.invoke(retVal);
-//			}
-//		});
 	}
 
 	@ReactMethod
@@ -2127,24 +2202,19 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		BleLog.getInstance().LOGd(TAG, "keepAliveState: " + keepAliveItems.toString());
 
 		// Create new packet, fill it with keep alive items.
-		MeshKeepAlivePacket packet = new MeshKeepAlivePacket(timeout);
+		MeshKeepAliveSameTimeoutPacket sameTimeoutPacket = new MeshKeepAliveSameTimeoutPacket();
+		sameTimeoutPacket.setTimeout(timeout);
+
 		boolean success = true;
 		for (int i=0; i<keepAliveItems.size(); i++) {
 			ReadableMap itemMap = keepAliveItems.getMap(i);
 			int crownstoneId = itemMap.getInt("crownstoneId");
 			int actionSwitchState = BluenetConfig.KEEP_ALIVE_NO_ACTION;
 			if (itemMap.getBoolean("action")) {
-				double switchStateDouble = itemMap.getDouble("state");
-				// For now: no dimming
-//				actionSwitchState = (int) Math.round(BluenetConfig.SWITCH_ON * switchStateDouble);
-				if (switchStateDouble > 0) {
-					actionSwitchState = BluenetConfig.SWITCH_ON;
-				}
-				else {
-					actionSwitchState = 0;
-				}
+				double switchValDouble = itemMap.getDouble("state");
+				actionSwitchState = convertSwitchVal(switchValDouble);
 			}
-			if (!packet.addKeepAlive(crownstoneId, actionSwitchState)) {
+			if (!sameTimeoutPacket.addItem(crownstoneId, actionSwitchState)) {
 				success = false;
 				BleLog.getInstance().LOGe(TAG, "Unable to add keep alive item: " + itemMap);
 				break;
@@ -2159,11 +2229,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			return;
 		}
 
-		// Write a mesh control msg with the packet as payload
-//		byte[] payload = packet.toArray();
-//		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, payload.length, payload);
-		MeshControlMsg msg = new MeshControlMsg(BluenetConfig.MESH_HANDLE_KEEP_ALIVE, packet);
-		_bleExt.writeMeshMessage(msg, new IStatusCallback() {
+		// Write a control msg with the packet as payload
+		MeshKeepAlivePacket packet = new MeshKeepAlivePacket();
+		packet.setPayload(sameTimeoutPacket);
+
+		byte[] payload = packet.toArray();
+		_bleExt.writeControl(new ControlMsg(BluenetConfig.CMD_KEEP_ALIVE_MESH, payload.length, payload), new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				WritableMap retVal = Arguments.createMap();
@@ -2585,13 +2656,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 			BleDevice prevDev = _scannedDeviceMap.get(address);
 			if (prevDev != null) {
 				CrownstoneServiceData prevServiceData = prevDev.getServiceData();
-				if (prevServiceData.getRandomBytes() != null
-						&& prevServiceData.getRandomBytes().equals(serviceData.getRandomBytes())
-						&& prevServiceData.getPowerUsage() == serviceData.getPowerUsage()
-						&& prevServiceData.getAccumulatedEnergy() == serviceData.getAccumulatedEnergy()
-						&& prevServiceData.getSwitchState() == serviceData.getSwitchState()
-						&& prevServiceData.getEventBitmask() == serviceData.getEventBitmask()
-						) {
+				if (prevServiceData.getChangingBytes() != null && prevServiceData.getChangingBytes().equals(serviceData.getChangingBytes())) {
 					// This advertisement is similar to the previous one
 					BleLog.getInstance().LOGv(TAG, "Advertisement of device " + address + " is not unique");
 					return;
@@ -2616,36 +2681,64 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		advertisementMap.putBoolean("isCrownstoneBuiltin", device.isCrownstoneBuiltin());
 		advertisementMap.putBoolean("isGuidestone", device.isGuidestone());
 		advertisementMap.putBoolean("isInDFUMode", device.isDfuMode());
+		advertisementMap.putString("serviceUUID", Integer.toHexString(serviceData.getServiceUuid())); // TODO: make sure it's zero padded
 
 
 		WritableMap serviceDataMap = Arguments.createMap();
 //		if (serviceData != null) {
-			// ServiceUUID of the advertisementData
+		serviceDataMap.putInt("opCode", serviceData.getOpCode());
+//		serviceDataMap.putInt("dataType", 255); // Not stored in ServiceData
+		serviceDataMap.putBoolean("stateOfExternalCrownstone", serviceData.getFlagExternalData());
+		serviceDataMap.putBoolean("hasError", serviceData.getFlagError());
+		serviceDataMap.putBoolean("setupMode", serviceData.isSetupMode());
 
-			advertisementMap.putString("serviceUUID", Integer.toHexString(serviceData.getServiceUuid())); // TODO: make sure it's zero padded
+		int crownstoneId = serviceData.getCrownstoneId();
+		if (serviceData.getFlagExternalData()) {
+			crownstoneId = serviceData.getCrownstoneExternalId();
+		}
+		serviceDataMap.putInt("crownstoneId", crownstoneId);
 
-			byte eventBitmask = serviceData.getEventBitmask();
-			int crownstoneId = serviceData.getCrownstoneId();
+		serviceDataMap.putInt("switchState", serviceData.getSwitchState());
+//		serviceDataMap.putInt("flagsBitmask", flagsBitmask); // Not stored in ServiceData
+		serviceDataMap.putInt("temperature", serviceData.getTemperature());
+		serviceDataMap.putDouble("powerFactor", 1);
+		serviceDataMap.putDouble("powerUsageReal", serviceData.getPowerUsageReal());
+		serviceDataMap.putDouble("powerUsageApparent", serviceData.getPowerUsageApparent());
+		serviceDataMap.putDouble("accumulatedEnergy", serviceData.getAccumulatedEnergy());
 
-			serviceDataMap.putInt("firmwareVersion", serviceData.getFirmwareVersion());
-			if (CrownstoneServiceData.isExternalData(eventBitmask)) {
-				crownstoneId = serviceData.getCrownstoneStateId();
-			}
-			serviceDataMap.putInt("crownstoneId", crownstoneId);
-			serviceDataMap.putInt("switchState", serviceData.getSwitchState());
-			serviceDataMap.putInt("eventBitmask", eventBitmask);
-			serviceDataMap.putInt("temperature", serviceData.getTemperature());
-			serviceDataMap.putDouble("powerUsage", serviceData.getPowerUsage() / 1000.0);
-			serviceDataMap.putDouble("powerFactor", 1);
-			serviceDataMap.putDouble("powerUsageReal", serviceData.getPowerUsage() / 1000.0);
-			serviceDataMap.putDouble("powerUsageApparent", serviceData.getPowerUsage() / 1000.0);
-			serviceDataMap.putDouble("accumulatedEnergy", serviceData.getAccumulatedEnergy());
-			serviceDataMap.putBoolean("newDataAvailable", CrownstoneServiceData.isNewData(eventBitmask));
-			serviceDataMap.putBoolean("stateOfExternalCrownstone", CrownstoneServiceData.isExternalData(eventBitmask));
-			serviceDataMap.putBoolean("setupMode", serviceData.isSetupMode());
-			serviceDataMap.putBoolean("dfuMode", device.isDfuMode());
-			serviceDataMap.putString("random", serviceData.getRandomBytes());
-			advertisementMap.putMap("serviceData", serviceDataMap);
+		if (serviceData.getType() == CrownstoneServiceData.TYPE_V1 || serviceData.getType() == CrownstoneServiceData.TYPE_UNKNOWN) {
+			serviceDataMap.putDouble("timestamp", -1);
+		}
+		else if (serviceData.getFlagTimeSet()) {
+			serviceDataMap.putDouble("timestamp", serviceData.getReconstructedTimestamp());
+		}
+		else {
+			serviceDataMap.putDouble("timestamp", serviceData.getPartialTimestamp());
+		}
+
+		serviceDataMap.putBoolean("dimmingAvailable", serviceData.getFlagDimmingAvailable());
+		serviceDataMap.putBoolean("dimmingAllowed", serviceData.getFlagDimmingAllowed());
+		serviceDataMap.putBoolean("switchLocked", serviceData.getFlagSwitchLocked());
+		serviceDataMap.putBoolean("timeSet", serviceData.getFlagTimeSet());
+
+		boolean errorMode = false;
+		if (serviceData.getType() == CrownstoneServiceData.TYPE_ERROR || serviceData.getType() == CrownstoneServiceData.TYPE_EXT_ERROR) {
+			errorMode = true;
+		}
+		serviceDataMap.putBoolean("errorMode", errorMode);
+
+		WritableMap errorMap = Arguments.createMap();
+		errorMap.putBoolean("overCurrent", serviceData.getErrorOverCurrent());
+		errorMap.putBoolean("overCurrentDimmer", serviceData.getErrorOverCurrentDimmer());
+		errorMap.putBoolean("temperatureChip", serviceData.getErrorChipTemperature());
+		errorMap.putBoolean("temperatureDimmer", serviceData.getErrorDimmerTemperature());
+		errorMap.putBoolean("dimmerOnFailure", serviceData.getErrorDimmerFailureOn());
+		errorMap.putBoolean("dimmerOffFailure", serviceData.getErrorDimmerFailureOff());
+		errorMap.putInt("bitMask", 0); // Not stored in ServiceData
+		serviceDataMap.putMap("errors", errorMap);
+
+		serviceDataMap.putString("uniqueElement", serviceData.getChangingBytes());
+		advertisementMap.putMap("serviceData", serviceDataMap);
 //		}
 
 //		sendEvent("advertisementData", advertisementMap);
