@@ -367,7 +367,7 @@ class BatchCommandHandlerClass {
     return new Promise((resolve, reject) => {
       let scheduleCloseTimeout = (timeout) => {
         this._removeCloseConnectionTimeout = Scheduler.scheduleCallback(() => {
-          this._cleanKeepOpen(true);
+          this._cleanKeepOpen();
           resolve();
         }, timeout, 'Close connection in BHC due to timeout.');
       };
@@ -378,13 +378,13 @@ class BatchCommandHandlerClass {
       }
 
       this._unsubscribeCloseListener = eventBus.on("BatchCommandHandlerCloseConnection", () => {
-        this._cleanKeepOpen(true);
+        this._cleanKeepOpen();
         resolve();
       });
 
       this._unsubscribeLoadListener = eventBus.on("BatchCommandHandlerLoadAction", () => {
         // remove all listeners before moving on.
-        this._cleanKeepOpen(false);
+        this._cleanKeepOpen();
 
         this._handleAllCommandsForStone(crownstoneToHandle)
           .then((optionsOfPerformedActions : batchCommandEntryOptions) => {
@@ -395,7 +395,7 @@ class BatchCommandHandlerClass {
             return this._keepConnectionOpen(options, crownstoneToHandle, false);
           })
           .then(() => {
-            this._cleanKeepOpen(true);
+            this._cleanKeepOpen();
             resolve();
           })
           .catch((err) => { reject(err); })
@@ -403,7 +403,7 @@ class BatchCommandHandlerClass {
     });
   }
 
-  _cleanKeepOpen(includeTimeout: boolean) {
+  _cleanKeepOpen(includeTimeout: boolean = true) {
     if (typeof this._unsubscribeCloseListener === 'function') {
       this._unsubscribeCloseListener();
       this._unsubscribeCloseListener = null;
