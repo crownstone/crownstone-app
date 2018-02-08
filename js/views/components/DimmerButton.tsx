@@ -225,9 +225,11 @@ export class DimmerButton extends Component<any, any> {
     let angle = (this.angleMin - (this.angleMin - this.angleMax)*state)*this.deg2Rad;
     let indicatorX = this.xCenter + this.correctedRadius*Math.sin(angle);
     let indicatorY = this.yCenter + this.correctedRadius*Math.cos(angle);
+
+    // The view HAS to have opacity:1 in order for the .measure method to work on android. Yes. Seriously.
     return (
       <View style={{width: screenWidth, height: this.props.size, alignItems:'center'}}>
-      <View {...this._panResponder.panHandlers}  ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center', position:'absolute', top:0, left:0}}>
+      <View {...this._panResponder.panHandlers}  ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center', position:'absolute', top:0, left:0, opacity:1}}>
         <Svg style={{
           width: screenWidth,
           height: this.props.size,
