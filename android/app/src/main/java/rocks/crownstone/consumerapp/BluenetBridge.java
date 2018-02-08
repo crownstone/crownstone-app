@@ -1592,6 +1592,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements Interva
 		if (clearErrorsMap.getBoolean("overCurrentDimmer")) { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_OVERCURRENT_DIMMER, stateErrorBitmask); }
 		if (clearErrorsMap.getBoolean("temperatureChip"))   { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_TEMP_CHIP, stateErrorBitmask); }
 		if (clearErrorsMap.getBoolean("temperatureDimmer")) { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_TEMP_DIMMER, stateErrorBitmask); }
+		if (clearErrorsMap.getBoolean("dimmerOnFailure"))   { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_DIMMER_ON_FAILURE, stateErrorBitmask); }
+		if (clearErrorsMap.getBoolean("dimmerOffFailure"))  { stateErrorBitmask = BleExtState.setStateErrorBit(BluenetConfig.STATE_ERROR_POS_DIMMER_OFF_FAILURE, stateErrorBitmask); }
 		_bleExt.writeResetStateErrors(stateErrorBitmask, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
