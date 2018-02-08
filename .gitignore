@@ -68,6 +68,7 @@ app-logs
 !js/router/RouterAndroid.js
 !js/router/RouterIOS.js
 !index.js
+!vis.js
 !./App.js
 !sentrySettings.template.js
 !__tests__/**
