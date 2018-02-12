@@ -16,6 +16,7 @@ import {Mesh} from "./WhatsNew/2.0.0/Mesh";
 import {Dimmer} from "./WhatsNew/2.0.0/Dimmer";
 import {FirmwareUpdate} from "./WhatsNew/2.0.0/FirmwareUpdate";
 import {BatteryImprovements} from "./WhatsNew/2.0.0/BatteryImprovements";
+import {Locking} from "./WhatsNew/2.0.0/Locking";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -48,12 +49,14 @@ export class WhatsNewOverlay extends Component<any, any> {
       content.push(<Dimmer key="Dimmer"  {...size}/>);
       content.push(<Mesh key="Mesh"  {...size}/>);
       content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
+      content.push(<Locking key="Locking"  {...size}/>);
       content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
     }
     if (Platform.OS === 'android') {
       content.push(<Dimmer key="Dimmer"  {...size} />);
       content.push(<Mesh key="Mesh"  {...size}/>);
       content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
+      content.push(<Locking key="Locking"  {...size}/>);
       content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
     }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }} {...size} />);
