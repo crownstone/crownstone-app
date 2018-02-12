@@ -27,6 +27,7 @@ import { BackAction }                         from "../../../util/Back";
 import { DeviceCommandProgressBar }           from "./DeviceCommandProgressBar";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 import {AnimatedCircle} from "../animated/AnimatedCircle";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -270,13 +271,18 @@ export class DeviceEntry extends Component<any, any> {
           <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
           <View style={{height: this.optionsHeight-1, backgroundColor: 'transparent', flexDirection: 'row', alignItems: 'center'}}>
             <TouchableOpacity style={buttonStyle} onPress={() => {
-              BackAction();
-              Actions.roomSelection({
-                sphereId: this.props.sphereId,
-                stoneId: this.props.stoneId,
-                locationId: this.props.locationId,
-                viewingRemotely: this.props.viewingRemotely
-              });
+              if (Permissions.inSphere(this.props.sphereId).moveCrownstone) {
+                BackAction();
+                Actions.roomSelection({
+                  sphereId: this.props.sphereId,
+                  stoneId: this.props.stoneId,
+                  locationId: this.props.locationId,
+                  viewingRemotely: this.props.viewingRemotely
+                });
+              }
+              else {
+                Alert.alert("Can't move Crownstones", "Guests in a Sphere cannot move Crownstones around.",[{text:"OK"}])
+              }
             }}>
               <Icon name='md-log-in' size={24} color='#aaa' style={{backgroundColor: 'transparent', position: 'relative'}}/>
               <Text style={textStyle}>move</Text>

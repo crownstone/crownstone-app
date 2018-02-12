@@ -226,7 +226,6 @@ export class DeviceSummary extends Component<any, any> {
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
     let canChangeSettings = stone.config.applianceId ? spherePermissions.editAppliance : spherePermissions.editCrownstone;
-    let canMoveCrownstone = spherePermissions.moveCrownstone;
 
     let locationLabel = "Currently in Room:";
     let locationName = "No";
@@ -243,7 +242,7 @@ export class DeviceSummary extends Component<any, any> {
                            leftValue={stone.state.currentUsage + ' W'}
                            right={locationLabel}
                            rightValue={locationName}
-                           rightTapAction={canMoveCrownstone ? () => {
+                           rightTapAction={spherePermissions.moveCrownstone ? () => {
                            Actions.roomSelection({
                              sphereId: this.props.sphereId,
                              stoneId: this.props.stoneId,
@@ -262,7 +261,7 @@ export class DeviceSummary extends Component<any, any> {
             eventBus={this.props.eventBus}
             stoneId={this.props.stoneId}
             sphereId={this.props.sphereId}
-            callback={(stone) => { this._triggerApplianceSelection(stone); }}
+            callback={(stone) => { spherePermissions.canChangeAppliance ? this._triggerApplianceSelection(stone) : null }}
           />
         </View>
         <View style={{flex:1}} />

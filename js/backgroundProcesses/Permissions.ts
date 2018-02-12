@@ -23,6 +23,7 @@ export class PermissionBase {
   editCrownstone          = false; // a
   changeBehaviour         = false; // a or m
   removeCrownstone        = false; // a
+  canChangeAppliance      = false; // a or m
   editAppliance           = false; // a
   removeAppliance         = false; // a
 
@@ -166,6 +167,8 @@ export class PermissionClass extends PermissionBase {
         this.canEditSchedule         = true; // admin and member
         this.canSeeSchedules         = true; // admin and member
         this.canDeleteSchedule       = true; // admin and member
+
+        this.canChangeAppliance      = true; // admin and member
       case 'guest':
         // nothing will be added.
     }
