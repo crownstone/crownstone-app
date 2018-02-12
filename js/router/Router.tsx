@@ -15,7 +15,7 @@ import SplashScreen from 'react-native-splash-screen'
 
 
 interface backgroundType {
-  setup:any, 
+  setup:any,
   main: any,
   mainRemoteNotConnected: any,
   menuRemoteNotConnected: any,
@@ -27,7 +27,16 @@ interface backgroundType {
 
 export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared: boolean}> {
 
-  backgrounds : backgroundType;
+  backgrounds : backgroundType = {
+    setup:undefined,
+    main: undefined,
+    mainRemoteNotConnected: undefined,
+    menuRemoteNotConnected: undefined,
+    menu: undefined,
+    mainDarkLogo: undefined,
+    mainDark: undefined,
+    detailsDark: undefined,
+  };
   unsubscribe = [];
 
   constructor(props) {
