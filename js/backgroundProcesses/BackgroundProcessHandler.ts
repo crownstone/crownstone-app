@@ -121,8 +121,6 @@ class BackgroundProcessHandlerClass {
 
         LocationHandler.applySphereStateFromStore();
 
-        Scheduler.scheduleCallback(() => { this.checkErrors(null); }, 15000, 'checkErrors');
-
         this.setupLogging();
       });
 
@@ -259,9 +257,6 @@ class BackgroundProcessHandlerClass {
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
-      // check the state of the crownstone errors and show overlay if needed.
-      this.checkErrors(sphereId);
-
       // do not show popup during setup.
       if (SetupStateHandler.isSetupInProgress() === true) {
         return;
@@ -273,11 +268,6 @@ class BackgroundProcessHandlerClass {
         if (Util.data.userHasPlugsInSphere(state,sphereId))
           eventBus.emit("CalibrateTapToToggle");
       }
-    });
-
-    // check errors if we obtained something from the advertisements.
-    eventBus.on("checkErrors", () => {
-      this.checkErrors();
     });
 
     // listen to the state of the app: if it is in the foreground or background

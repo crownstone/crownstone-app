@@ -31,7 +31,6 @@ interface condition {
  * This will control a stone. It will make sure advertisements will update its state and keep track of its position in the mesh.
  */
 export class StoneEntity {
-
   subscriptions = [];
 
   stoneId;
@@ -560,6 +559,7 @@ export class StoneEntity {
                   dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
                 }
               });
+              eventBus.emit('showErrorOverlay', [stone]);
             }
           }
           else {
@@ -571,6 +571,7 @@ export class StoneEntity {
                 stoneId: this.stoneId,
                 data: { hasError: true }
               });
+              eventBus.emit('showErrorOverlay', [stone]);
             }
           }
         }
