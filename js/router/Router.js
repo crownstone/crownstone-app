@@ -18,7 +18,7 @@ export class AppRouter extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {initialized:false, loggedIn: false};
+    this.state = {loggedIn: false, storePrepared: false};
     this.unsubscribe = [];
     this.renderState = undefined;
     this.backgrounds = {
@@ -35,8 +35,8 @@ export class AppRouter extends Component {
    * Preloading backgrounds
    */
   componentWillMount() {
-    if (BackgroundProcessHandler.storeInitialized === true) {
-      this.setState({storeInitialized: true, loggedIn: BackgroundProcessHandler.userLoggedIn});
+    if (BackgroundProcessHandler.storePrepared === true) {
+      this.setState({storePrepared: true, loggedIn: BackgroundProcessHandler.userLoggedIn});
       if (Platform.OS === "android") {
           SplashScreen.hide();
       }
@@ -44,7 +44,7 @@ export class AppRouter extends Component {
     else {
       this.unsubscribe.push(
         eventBus.on('storePrepared', (result) => {
-          this.setState({storeInitialized:true, loggedIn: result.userLoggedIn});
+          this.setState({storePrepared:true, loggedIn: result.userLoggedIn});
             if (Platform.OS === "android") {
                 SplashScreen.hide();
             }
@@ -98,7 +98,7 @@ export class AppRouter extends Component {
 
   render() {
     LOG.info("RENDERING ROUTER");
-    if (this.state.storeInitialized === true) {
+    if (this.state.storePrepared === true) {
       let store = StoreManager.getStore();
       if (Platform.OS === 'android') {
         return (
