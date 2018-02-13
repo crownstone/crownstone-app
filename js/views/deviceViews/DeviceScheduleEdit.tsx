@@ -45,6 +45,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
       const state = store.getState();
       const schedule = state.spheres[props.sphereId].stones[props.stoneId].schedules[props.scheduleId];
       let stateData = {...schedule, time: StoneUtil.crownstoneTimeToTimestamp(schedule.time)};
+
+      // we do not want to copy the updatedAt since updates to the data SHOULD update this time in the cloud.
+      delete stateData['updatedAt'];
+
       stateData.activeDays = {...schedule.activeDays};
       this.state = stateData;
     }
