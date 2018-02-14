@@ -559,7 +559,7 @@ export class StoneEntity {
                   dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
                 }
               });
-              eventBus.emit('showErrorOverlay', [stone]);
+              eventBus.emit('showErrorOverlay', [{stoneId: this.stoneId, stone: stone}]);
             }
           }
           else {
@@ -571,7 +571,7 @@ export class StoneEntity {
                 stoneId: this.stoneId,
                 data: { hasError: true }
               });
-              eventBus.emit('showErrorOverlay', [stone]);
+              eventBus.emit('showErrorOverlay', [{stoneId: this.stoneId, stone: stone}]);
             }
           }
         }
