@@ -31,13 +31,12 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     let sphere = state.spheres[props.sphereId];
     let stone = sphere.stones[props.stoneId];
 
-
     this._crownstoneId = stone.config.crownstoneId;
     this._ibeaconUuid = sphere.config.iBeaconUUID;
     this._major = stone.config.iBeaconMajor;
     this._minor = stone.config.iBeaconMinor;
 
-    this.state = {advertismentPayload: '', advertisementTimestamp: null, ibeaconPayload: '', ibeaconTimestamp: null}
+    this.state = {advertisementPayload: '', advertisementTimestamp: null, ibeaconPayload: '', ibeaconTimestamp: null}
   }
 
   componentDidMount() {
@@ -61,7 +60,7 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     if (!data.serviceData) { return; }
 
     if (data.serviceData.crownstoneId === this._crownstoneId) {
-      this.setState({advertismentPayload: JSON.stringify(data, undefined, 2), advertisementTimestamp: new Date().valueOf()});
+      this.setState({advertisementPayload: JSON.stringify(data, undefined, 2), advertisementTimestamp: new Date().valueOf()});
     }
   }
 
@@ -104,7 +103,7 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     items.push({__item:
         <View style={{backgroundColor: colors.white.hex, minHeight: 100}}>
           <Text style={{padding:15, color: new Date().valueOf() - this.state.advertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>
-            {this.state.advertismentPayload || "No Data"}
+            {this.state.advertisementPayload || "No Data"}
           </Text>
         </View>
     });

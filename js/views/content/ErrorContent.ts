@@ -32,10 +32,10 @@ export const ErrorContent = {
         return "This Crownstone became too warm because it used so much power during dimming!\n\nYou can reset this error to restore functionality. If this happens more often, contact us at http://www.crownstone.rocks resolve this.";
       }
       else if (errors.dimmerOnFailure) {
-        return "I detected a problem with the dimmer funtionality. I turned on the relay to protect your devices.\n\nYou can reset this error to restore functionality. If this happens more often, contact us at http://www.crownstone.rocks resolve this.";
+        return "I detected a problem with the dimmer functionality. I turned on the relay to protect your devices.\n\nYou can reset this error to restore functionality. If this happens more often, contact us at http://www.crownstone.rocks resolve this.";
       }
       else if (errors.dimmerOffFailure) {
-        return "I detected a problem with the dimmer funtionality. I turned on the relay to protect your devices.\n\nYou can reset this error to restore functionality. If this happens more often, contact us at http://www.crownstone.rocks resolve this.";
+        return "I detected a problem with the dimmer functionality. I turned on the relay to protect your devices.\n\nYou can reset this error to restore functionality. If this happens more often, contact us at http://www.crownstone.rocks resolve this.";
       }
       else if (errors.temperatureChip) {
         return "The Crownstone got way too warm! I had to switch it off to protect you and your devices.\n\nIf you reset the error, you will be able to use it again, but check if your devices do not use too much power.";

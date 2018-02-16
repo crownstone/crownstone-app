@@ -235,4 +235,14 @@ export const spheres = {
     }
   },
 
+  leaveSphere: function(localSphereId) {
+    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
+    if (cloudSphereId) {
+      return this._setupRequest(
+        'DELETE',
+        'users/{id}/spheres/rel/' + cloudSphereId
+      );
+    }
+  }
+
 };
