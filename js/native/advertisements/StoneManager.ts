@@ -263,7 +263,7 @@ class StoneManagerClass {
           let proxy = BleUtil.getProxy(handle);
           return proxy.performPriority(BluenetPromiseWrapper.commandFactoryReset)
         }, details )
-        .then(() => { clearFlag(); })
+        .then( () => { clearFlag(); })
         .catch(() => { clearFlag(); })
     }
   }

@@ -79,7 +79,7 @@ export class SettingsMeshOverview extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let sphereId = Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
+    let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
     let sphere = state.spheres[sphereId];
     let locationIds = Object.keys(state.spheres[sphereId].locations);
     locationIds.push(null); // to account for all floating crownstones

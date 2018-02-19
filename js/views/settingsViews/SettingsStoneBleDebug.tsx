@@ -21,8 +21,9 @@ export class SettingsStoneBleDebug extends Component<any, any> {
   unsubscribeNative : any[] = [];
   _crownstoneId : number;
   _ibeaconUuid : string;
-  _major : string;
-  _minor : string;
+  _major  : string;
+  _minor  : string;
+  _handle : string;
 
   constructor(props) {
     super(props);
@@ -31,13 +32,22 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     let sphere = state.spheres[props.sphereId];
     let stone = sphere.stones[props.stoneId];
 
-
     this._crownstoneId = stone.config.crownstoneId;
-    this._ibeaconUuid = sphere.config.iBeaconUUID;
-    this._major = stone.config.iBeaconMajor;
-    this._minor = stone.config.iBeaconMinor;
+    this._ibeaconUuid  = sphere.config.iBeaconUUID;
+    this._major        = stone.config.iBeaconMajor;
+    this._minor        = stone.config.iBeaconMinor;
+    this._handle       = stone.config.handle;
 
-    this.state = {advertismentPayload: '', advertisementTimestamp: null, ibeaconPayload: '', ibeaconTimestamp: null}
+    this.state = {
+      advertisementPayload: '',
+      directAdvertisementPayload: '',
+      advertisementStateExternal: false,
+      directAdvertisementStateExternal: false,
+      advertisementTimestamp: null,
+      directAdvertisementTimestamp: null,
+      ibeaconPayload: '',
+      ibeaconTimestamp: null
+    };
   }
 
   componentDidMount() {
@@ -60,8 +70,25 @@ export class SettingsStoneBleDebug extends Component<any, any> {
   _parseAdvertisement(data : crownstoneAdvertisement) {
     if (!data.serviceData) { return; }
 
+    let newData : any = {}
+    let changes = false;
+
     if (data.serviceData.crownstoneId === this._crownstoneId) {
-      this.setState({advertismentPayload: JSON.stringify(data, undefined, 2), advertisementTimestamp: new Date().valueOf()});
+      newData['advertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
+      newData["advertisementPayload"] = JSON.stringify(data, undefined, 2)
+      newData["advertisementTimestamp"] = new Date().valueOf();
+      changes = true;
+    }
+
+    if (data.handle === this._handle) {
+      newData['directAdvertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
+      newData["directAdvertisementPayload"] = JSON.stringify(data, undefined, 2)
+      newData["directAdvertisementTimestamp"] = new Date().valueOf();
+      changes = true;
+    }
+
+    if (changes) {
+      this.setState(newData);
     }
   }
 
@@ -99,12 +126,24 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     });
     items.push({label: "Time received: " + (this.state.ibeaconTimestamp ? new Date(this.state.ibeaconTimestamp) : "no data"), type: 'explanation', below: true})
 
+    items.push({label: "Green Background means external state.", type: 'largeExplanation'});
 
-    items.push({label: "Latest Advertisement data:", type: 'largeExplanation'});
+    items.push({label: "Latest Direct Advertisement data:", type: 'largeExplanation'});
     items.push({__item:
-        <View style={{backgroundColor: colors.white.hex, minHeight: 100}}>
+        <View style={{backgroundColor: this.state.directAdvertisementStateExternal ? colors.green.rgba(0.1) : colors.white.hex, minHeight: 100}}>
+          <Text style={{padding:15, color: new Date().valueOf() - this.state.directAdvertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>
+            {this.state.directAdvertisementPayload || "No Data"}
+          </Text>
+        </View>
+    });
+    items.push({label: "Time received: " + (this.state.directAdvertisementTimestamp ? new Date(this.state.directAdvertisementTimestamp) : "no data"), type: 'explanation', below: true})
+
+
+    items.push({label: "Latest Applied Advertisement data:", type: 'largeExplanation'});
+    items.push({__item:
+        <View style={{backgroundColor: this.state.advertisementStateExternal ? colors.green.rgba(0.1) : colors.white.hex, minHeight: 100}}>
           <Text style={{padding:15, color: new Date().valueOf() - this.state.advertisementTimestamp > 10000 ? colors.gray.hex : colors.black.hex, fontSize:12}}>
-            {this.state.advertismentPayload || "No Data"}
+            {this.state.advertisementPayload || "No Data"}
           </Text>
         </View>
     });
