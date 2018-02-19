@@ -2,6 +2,8 @@
 export const ErrorContent = {
   
   getTextDescription: function(phase,errors) {
+    console.log("GETTING ERR DESC", phase, errors)
+
     if (phase === 1) {
       // PHASE 1 This is only when detected. The user has to find the Crownstone to actually disable it.
       if (errors.temperatureDimmer) {

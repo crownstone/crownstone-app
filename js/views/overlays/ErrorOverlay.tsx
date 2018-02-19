@@ -28,21 +28,21 @@ export class ErrorOverlay extends Component<any, any> {
     this.state = {
       visible: false,
       maxOpacity: 1,
-      stonesContainingError: [] // [{ stoneId : stoneId, stone: stoneObject }]
+      stoneId: null,
+      sphereId: null,
     };
     this.unsubscribe = [];
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on("showErrorOverlay", (stonesContainingError) => {
-      if (stonesContainingError.length > 0) {
-        if (this.state.visible === false) {
-          this.setState({
-            visible: true,
-            maxOpacity: 1,
-            stonesContainingError: stonesContainingError,
-          });
-        }
+    this.unsubscribe.push(eventBus.on("showErrorOverlay", (data) => { // { stoneId : stoneId, sphereId: sphereId }
+      if (this.state.visible === false) {
+        this.setState({
+          visible: true,
+          maxOpacity: 1,
+          stoneId: data.stoneId,
+          sphereId: data.sphereId,
+        });
       }
     }));
 
@@ -53,29 +53,32 @@ export class ErrorOverlay extends Component<any, any> {
     this.unsubscribe = [];
   }
 
-  _getText() {
-    if (this.state.stonesContainingError.length === 0) {
-      return;
+  _getText(stone) {
+    if (stone === null) {
+      return "";
     }
 
-    return ErrorContent.getTextDescription(1, this.state.stonesContainingError[0].stone.errors);
+    return ErrorContent.getTextDescription(1, stone.errors);
   }
 
-  _getButton() {
+  _getButton(stone) {
+    if (stone === null) {
+      return <View />;
+    }
+
     return (
       <TouchableOpacity
         onPress={() => {
-          let currentCrownstone = this.state.stonesContainingError[0];
-          let locationId = currentCrownstone.stone.config.locationId;
+          let locationId = stone.config.locationId;
           Actions.roomOverview({
-            sphereId: currentCrownstone.sphereId,
+            sphereId: this.state.sphereId,
             locationId: locationId,
-            errorCrownstone: currentCrownstone.stoneId
+            errorCrownstone: this.state.stoneId
           });
           this.setState({maxOpacity: SEE_THROUGH_OPACITY});
           setTimeout(() => {
-            eventBus.emit("showErrorInOverview", currentCrownstone.stoneId);
-            this.setState({visible: false});
+            eventBus.emit("showErrorInOverview", this.state.stoneId);
+            this.setState({visible: false, stoneId: null, sphereId: null});
           }, 300);
         }}
         style={[styles.centered, {
@@ -85,7 +88,7 @@ export class ErrorOverlay extends Component<any, any> {
           borderWidth: 2,
           borderColor: colors.red.hex,
         }]}>
-        <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{"Find" + (this.state.stonesContainingError.length > 1 ? ' 1st' : '') + " Crownstone"}</Text>
+        <Text style={{fontSize: 12, fontWeight: 'bold', color: colors.red.hex}}>{"Find Crownstone"}</Text>
       </TouchableOpacity>
     );
   }
@@ -93,9 +96,14 @@ export class ErrorOverlay extends Component<any, any> {
 
   render() {
     let aiData = { name: 'Amy' };
-    if (this.state.stonesContainingError.length > 0) {
-      aiData = Util.data.getAiData(this.props.store.getState(), this.state.stonesContainingError[0].sphereId);
+    let state = this.props.store.getState()
+    let stone = null;
+    if (this.state.sphereId) {
+      aiData = Util.data.getAiData(state, this.state.sphereId);
+      let sphere = state.spheres[this.state.sphereId];
+      stone = sphere.stones[this.state.stoneId];
     }
+
 
     return (
       <OverlayBox visible={this.state.visible} height={0.95*availableScreenHeight} maxOpacity={this.state.maxOpacity} overrideBackButton={true}>
@@ -110,13 +118,13 @@ export class ErrorOverlay extends Component<any, any> {
         <View style={{flex:1}} />
         <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.red.hex, padding:15, textAlign:'center'}}>{"Crownstone Hardware Error"}</Text>
         <Text style={{fontSize: 12, fontWeight: '500',  color: colors.red.hex, padding:15, paddingBottom: 0, textAlign:'center'}}>
-          {this._getText()}
+          {this._getText(stone)}
         </Text>
         <Text style={{fontSize: 12, fontWeight: '400',  color: colors.red.hex, padding:15, paddingTop:5, alignSelf:'flex-end', fontStyle:'italic'}}>
           {'~ Yours, ' + aiData.name}
         </Text>
         <View style={{flex:1}} />
-        {this._getButton()}
+        {this._getButton(stone)}
         <View style={{flex:1}} />
       </OverlayBox>
     );

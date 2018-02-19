@@ -392,7 +392,10 @@ export class StoneEntity {
 
     this.handleErrors(stone, advertisement);
 
-    this.handleState(stone, advertisement);
+    if (!advertisement.serviceData.errorMode) {
+      this.handleState(stone, advertisement);
+    }
+
   }
 
 
@@ -559,7 +562,7 @@ export class StoneEntity {
                   dimmerOffFailure:  advertisement.serviceData.errors.dimmerOffFailure,
                 }
               });
-              eventBus.emit('showErrorOverlay', [{stoneId: this.stoneId, stone: stone}]);
+              eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
             }
           }
           else {
@@ -571,7 +574,7 @@ export class StoneEntity {
                 stoneId: this.stoneId,
                 data: { hasError: true }
               });
-              eventBus.emit('showErrorOverlay', [{stoneId: this.stoneId, stone: stone}]);
+              eventBus.emit('showErrorOverlay', {stoneId: this.stoneId, sphereId: this.sphereId});
             }
           }
         }

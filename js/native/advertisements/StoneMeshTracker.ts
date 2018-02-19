@@ -8,7 +8,7 @@ const meshRemovalThreshold : number = 200; // times not this crownstone in mesh
 const meshRemovalTimeout : number = 200; // seconds
 
 export class StoneMeshTracker {
-  unsubscribeMeshListener : any;
+  unsubscribeMeshListeners = [];
   meshNetworkId : number;
   stoneUID      : number;
   store         : any;
@@ -45,14 +45,12 @@ export class StoneMeshTracker {
 
   destroy() {
     this.subscriptions.forEach((unsubscribe) => { unsubscribe(); });
-    this._clearMeshListener();
+    this._clearMeshListeners();
   }
 
-  _clearMeshListener() {
-    if (this.unsubscribeMeshListener && typeof this.unsubscribeMeshListener === 'function') {
-      this.unsubscribeMeshListener();
-      this.unsubscribeMeshListener = undefined;
-    }
+  _clearMeshListeners() {
+     this.unsubscribeMeshListeners.forEach((unsubscribe) => { unsubscribe(); });
+     this.unsubscribeMeshListeners = [];
   }
 
 
@@ -66,13 +64,13 @@ export class StoneMeshTracker {
     this.meshNetworkId = stone.config.meshNetworkId;
 
     // cleanup previous listener
-    this._clearMeshListener();
+    this._clearMeshListeners();
 
     let now = new Date().valueOf();
 
     // if we have a network, listen for its advertisements
     if (this.meshNetworkId !== null) {
-      this.unsubscribeMeshListener = eventBus.on(Util.events.getViaMeshTopic(this.sphereId, this.meshNetworkId), (data) => {
+      this.unsubscribeMeshListeners.push(eventBus.on(Util.events.getViaMeshTopic(this.sphereId, this.meshNetworkId), (data) => {
         if (data.id === this.stoneId) {
           this.timeLastSeen = now;
           this.notThisStoneCounter = 0;
@@ -84,7 +82,7 @@ export class StoneMeshTracker {
         if (this.notThisStoneCounter >= meshRemovalThreshold && now - this.timeLastSeen > meshRemovalTimeout*1000) {
           this.removeFromMesh();
         }
-      });
+      }));
     }
   }
 

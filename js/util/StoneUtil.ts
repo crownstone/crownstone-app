@@ -81,28 +81,35 @@ export const StoneUtil = {
   },
 
   clearErrors: function(sphereId, stoneId, stone, store) {
-    let clearData = {
+    let clearTheseErrors = {
       dimmerOnFailure:    true,
       dimmerOffFailure:   true,
       temperatureDimmer:  true,
       temperatureChip:    true,
       overCurrentDimmer:  true,
       overCurrent:        true,
-    }
+    };
 
     eventBus.emit("showLoading", "Attempting to Reset Error...");
     BatchCommandHandler.loadPriority(
       stone,
       stoneId,
       sphereId,
-      {commandName:'clearErrors', clearErrorJSON: clearData},
+      {commandName:'clearErrors', clearErrorJSON: clearTheseErrors},
       {},
       1000,
       'from _getButton in ErrorOverlay'
     )
       .then(() => {
         eventBus.emit("showLoading", "Success!");
-        store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: clearData});
+        store.dispatch({type: 'RESET_STONE_ERRORS', sphereId: sphereId, stoneId: stoneId, data: {
+            dimmerOnFailure:    false,
+            dimmerOffFailure:   false,
+            temperatureDimmer:  false,
+            temperatureChip:    false,
+            overCurrentDimmer:  false,
+            overCurrent:        false,
+        }});
         return Scheduler.delay(500);
       })
       .then(() => {
