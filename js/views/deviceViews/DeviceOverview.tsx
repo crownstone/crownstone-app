@@ -174,6 +174,7 @@ export class DeviceOverview extends Component<any, any> {
 
     // check what we want to show the user:
     let hasError        = stone.errors.hasError;
+    let mustUpdate      = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
     let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
     let hasBehaviour    = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
@@ -189,9 +190,12 @@ export class DeviceOverview extends Component<any, any> {
       hasScheduler    = false;
     }
 
-    if (showWhatsNew) { summaryIndex++; behaviourIndex++; }
-    if (hasError)     { summaryIndex++; behaviourIndex++; }
-    if (canUpdate)    { summaryIndex++; behaviourIndex++; }
+    // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
+    if (!hasError && !mustUpdate) {
+      if (showWhatsNew) { summaryIndex++; behaviourIndex++; }
+      if (canUpdate)    { summaryIndex++; behaviourIndex++; }
+    }
+
 
     let checkScrolling = (newState) => {
       if (this.state.scrolling !== newState) {
@@ -242,7 +246,7 @@ export class DeviceOverview extends Component<any, any> {
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
-          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config) }
+          { this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config) }
         </Swiper>
       </Background>
     )
@@ -257,7 +261,7 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
+  _getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
     let content = [];
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
 
@@ -266,7 +270,7 @@ export class DeviceOverview extends Component<any, any> {
       return content;
     }
 
-    if (Util.versions.canIUse(stoneConfig.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false) {
+    if (mustUpdate) {
       content.push(<DeviceUpdate key={'updateSlide'} mandatory={true} {...props} />);
       return content;
     }
