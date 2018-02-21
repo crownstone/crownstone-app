@@ -1,7 +1,8 @@
 import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
 import {LOG, LOGd, LOGe}         from '../../logging/Log'
-import {DISABLE_NATIVE, MESH_ENABLED, STONE_TIME_REFRESH_INTERVAL} from '../../ExternalConfig'
+import {DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL} from '../../ExternalConfig'
+import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 
 /**
@@ -188,7 +189,7 @@ export class CommandManager {
 
       let command = todo.command;
 
-      if (this.isMeshEnabledCommand(command) === true && MESH_ENABLED) {
+      if (this.isMeshEnabledCommand(command) === true && MapProvider.meshEnabled ) {
         this._extractMeshCommand(todo, targetNetworkId, targetStoneId, markAsInitialized, directCommands, meshNetworks);
       }
       else {

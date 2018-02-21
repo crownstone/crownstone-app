@@ -168,6 +168,7 @@ export class SettingsDeveloper extends Component<any, any> {
       items.push({label: "No device available... Try triggering a sync?", type: 'explanation', below: true});
     }
 
+
     items.push({
       label:"BLE Debug",
       type: 'navigation',
@@ -181,17 +182,66 @@ export class SettingsDeveloper extends Component<any, any> {
       type: 'switch',
       icon: <IconButton name="md-git-network" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
       callback:(newValue) => {
-        store.dispatch({
-          type: 'CHANGE_DEV_SETTINGS',
-          data: {
-            use_advertisement_rssi_too: newValue,
-          }
-        });
-      }});
+        let execute = () => {
+          store.dispatch({
+            type: 'CHANGE_DEV_SETTINGS',
+            data: {
+              use_advertisement_rssi_too: newValue,
+            }
+          });
+        }
 
+        if (newValue === true) {
+          Alert.alert("Are you sure?", "Only enable this if you know what you're doing!",[{text:"Do it.", onPress: execute}, {text:"Nevermind..."}])
+        }
+        else {
+          execute();
+        }
+      }});
     items.push({label: "By default we use iBeacon RSSI values since they are averaged. When enabled, we will ALSO use the RSSI values from advertisements. Advertisment RSSI values only come in in the foreground.", type: 'explanation', below: true});
 
 
+    items.push({label: "MESH", type: 'explanation', below: false, alreadyPadded: true});
+    items.push({
+      label:"Use the Mesh",
+      value: dev.use_mesh,
+      type: 'switch',
+      icon: <IconButton name='md-share' size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({
+          type: 'CHANGE_DEV_SETTINGS',
+          data: {
+            use_mesh: newValue,
+          }
+        });
+      }});
+    items.push({
+      label:"Reset networks",
+      type: 'button',
+      style: {color: colors.black.hex},
+      icon: <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
+      callback:() => {
+        Alert.alert("Are you sure?", "This will reset all mesh networks in the current Sphere.",
+          [
+            {text:"Do it.", onPress: () => {
+            const store = this.props.store;
+            const state = store.getState();
+            let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
+            let stones = state.spheres[sphereId].stones;
+            let actions = [];
+            let stoneIds = Object.keys(stones);
+            stoneIds.forEach((stoneId) => {
+              actions.push({type:'UPDATE_STONE_CONFIG', sphereId: sphereId, stoneId: stoneId, data:{meshNetworkId: null}})
+            })
+            store.batchDispatch(actions);
+            Alert.alert("Reset Done", "Rediscovery will start automatically.",[{text:"OK"}]);
+            }}
+          ]
+        )
+      }
+    });
+
+    items.push({label: "RESET DEVELOPER STATE", type: 'explanation', below: false});
     items.push({
       label:"Disable Developer Mode",
       type: 'button',

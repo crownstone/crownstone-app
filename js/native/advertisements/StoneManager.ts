@@ -1,5 +1,5 @@
 import { eventBus }               from "../../util/EventBus";
-import {DISABLE_TIMEOUT, FALLBACKS_ENABLED, MESH_ENABLED} from "../../ExternalConfig";
+import {DISABLE_TIMEOUT, FALLBACKS_ENABLED} from "../../ExternalConfig";
 import { LOGd, LOGi, LOGv, LOGw } from "../../logging/Log";
 import { NativeBus }              from "../libInterface/NativeBus";
 import { MapProvider }            from "../../backgroundProcesses/MapProvider";
@@ -30,7 +30,6 @@ class StoneManagerClass {
 
   entities = {};
   sphereEntityCollections = {};
-
 
   loadStore(store) {
     if (this._initialized === false) {
@@ -270,7 +269,7 @@ class StoneManagerClass {
 
 
   _resolveMeshNetworkIds(sphereId, stoneFromServiceData, stoneFromServiceDataId, stoneFromAdvertisement, stoneFromAdvertisementId) {
-    if (!MESH_ENABLED) { return; }
+    if (!MapProvider.meshEnabled) { return; }
 
     let meshNetworkId_external   = stoneFromServiceData.config.meshNetworkId;
     let meshNetworkId_advertiser = stoneFromAdvertisement.config.meshNetworkId;

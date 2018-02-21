@@ -35,11 +35,13 @@ export class SideBar extends Component<any, any> {
     this.unsubscribe.push(eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (
-        change.changeUserData     ||
-        change.changeSpheres      ||
-        change.changeFingerprint  ||
-        change.changeStones       ||
-        change.changeMessageState ||
+        change.changeUserData            ||
+        change.changeSpheres             ||
+        change.changeFingerprint         ||
+        change.changeStones              ||
+        change.changeMessageState        ||
+        change.changeDeveloperData       ||
+        change.changeUserDeveloperStatus ||
         change.changeAppSettings
       ) {
         this.forceUpdate();

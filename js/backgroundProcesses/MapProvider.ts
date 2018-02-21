@@ -6,6 +6,7 @@ import {
 import {eventBus} from "../util/EventBus";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import {LOG} from "../logging/Log";
+import {MESH_ENABLED} from "../ExternalConfig";
 
 /**
  * Map format
@@ -40,6 +41,8 @@ class MapProviderClass {
   cloud2localMap : globalIdMap = getGlobalIdMap();
   local2cloudMap : globalIdMap = getGlobalIdMap();
 
+  meshEnabled = false;
+
   loadStore(store) {
     if (this._initialized === false) {
       this._store = store;
@@ -65,15 +68,27 @@ class MapProviderClass {
         ) {
           this.refreshAll();
         }
+
+        if (change.changeUserDeveloperStatus || change.changeDeveloperData) {
+          let state = this._store.getState();
+          this._evalMeshState(state);
+        }
       });
 
       this.refreshAll();
     }
   }
 
+  _evalMeshState(state) {
+    this.meshEnabled = MESH_ENABLED && state.user.developer && state.development.use_mesh;
+  }
+
   refreshAll() {
     LOG.info("MapProvider: Refreshing All.");
     let state = this._store.getState();
+
+    this._evalMeshState(state);
+
     this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(     state);
     this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle( state);
     this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(    state);

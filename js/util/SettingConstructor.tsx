@@ -17,8 +17,8 @@ import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
-import { MESH_ENABLED } from "../ExternalConfig";
 import {AlternatingContent} from "../views/components/animated/AlternatingContent";
+import {MapProvider} from "../backgroundProcesses/MapProvider";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -110,7 +110,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     });
   }
 
-  if (Object.keys(state.spheres).length > 0 && MESH_ENABLED) {
+  if (Object.keys(state.spheres).length > 0 && MapProvider.meshEnabled) {
     items.push({
       id: 'Mesh Overview',
       label: 'Mesh Overview',
