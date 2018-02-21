@@ -47,17 +47,17 @@ export class WhatsNewOverlay extends Component<any, any> {
 
     if (Platform.OS === 'ios') {
       content.push(<Dimmer key="Dimmer"  {...size}/>);
-      content.push(<Mesh key="Mesh"  {...size}/>);
+      // content.push(<Mesh key="Mesh"  {...size}/>);
       content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
       content.push(<Locking key="Locking"  {...size}/>);
-      content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
+      // content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
     }
     if (Platform.OS === 'android') {
       content.push(<Dimmer key="Dimmer"  {...size} />);
-      content.push(<Mesh key="Mesh"  {...size}/>);
+      // content.push(<Mesh key="Mesh"  {...size}/>);
       content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
       content.push(<Locking key="Locking"  {...size}/>);
-      content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
+      // content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
     }
     content.push(<Awesome key="Awesome" closeCallback={() => { this._closePopup() }} {...size} />);
 
