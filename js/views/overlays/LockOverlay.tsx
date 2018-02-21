@@ -48,6 +48,10 @@ export class LockOverlay extends Component<any, any> {
       return "Only Admins have permission to lock Crownstones...";
     }
 
+    if (stone.config.dimmingEnabled) {
+      return "You can only lock Crownstones that are not configured as dimmer.";
+    }
+
     if (stone.state.state > 0) {
       return "You can lock this Crownstone so it will not turn off without someone unlocking it first.";
     }
@@ -76,7 +80,7 @@ export class LockOverlay extends Component<any, any> {
   }
 
   _getButtons(stone) {
-    if (!Permissions.inSphere(this.state.sphereId).canLockCrownstone) {
+    if (!Permissions.inSphere(this.state.sphereId).canLockCrownstone || stone.config.dimmingEnabled) {
       return (
         <View style={{flexDirection: 'row'}}>
           <View style={{flex: 1}}/>

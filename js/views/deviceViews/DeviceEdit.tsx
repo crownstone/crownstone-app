@@ -429,6 +429,11 @@ export class DeviceEdit extends Component<any, any> {
 
   _setDimState(stone) {
     if (stone.config.dimmingEnabled !== this.state.dimmingEnabled) {
+      if (stone.config.locked) {
+        Alert.alert("Crownstone Locked", "You have to unlock the Crownstone before " + (this.state.dimmingEnabled ? 'enabling' : 'disabling') + "dimming.", [{text:'OK'}]);
+        return;
+      }
+
       let promises = [];
       if (this.state.dimmingEnabled === false) {
         this.props.eventBus.emit("showLoading", "Disabling dimming on this Crownstone...");
