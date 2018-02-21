@@ -235,7 +235,7 @@ export class SettingsDeveloper extends Component<any, any> {
             })
             store.batchDispatch(actions);
             Alert.alert("Reset Done", "Rediscovery will start automatically.",[{text:"OK"}]);
-            }}
+            }},[{text:"Cancel"}]
           ]
         )
       }
