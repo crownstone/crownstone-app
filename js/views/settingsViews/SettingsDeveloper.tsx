@@ -20,6 +20,7 @@ import {Util} from "../../util/Util";
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 import {clearLogs} from "../../logging/LogUtil";
 import {BackAction} from "../../util/Back";
+import {MeshUtil} from "../../util/MeshUtil";
 
 
 export class SettingsDeveloper extends Component<any, any> {
@@ -216,25 +217,19 @@ export class SettingsDeveloper extends Component<any, any> {
         });
       }});
     items.push({
-      label:"Reset networks",
-      type: 'button',
+      label: 'Reset networks',
+      type:  'button',
       style: {color: colors.black.hex},
-      icon: <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
+      icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
       callback:() => {
         Alert.alert("Are you sure?", "This will reset all mesh networks in the current Sphere.",
           [
             {text:"Do it.", onPress: () => {
-            const store = this.props.store;
-            const state = store.getState();
-            let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
-            let stones = state.spheres[sphereId].stones;
-            let actions = [];
-            let stoneIds = Object.keys(stones);
-            stoneIds.forEach((stoneId) => {
-              actions.push({type:'UPDATE_STONE_CONFIG', sphereId: sphereId, stoneId: stoneId, data:{meshNetworkId: null}})
-            })
-            store.batchDispatch(actions);
-            Alert.alert("Reset Done", "Rediscovery will start automatically.",[{text:"OK"}]);
+              const store = this.props.store;
+              const state = store.getState();
+              let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
+              MeshUtil.clearMeshNetworkIds(store, sphereId);
+              Alert.alert("Reset Done", "Rediscovery will start automatically.",[{text:"OK"}]);
             }},[{text:"Cancel"}]
           ]
         )

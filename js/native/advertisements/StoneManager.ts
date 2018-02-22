@@ -155,6 +155,8 @@ class StoneManagerClass {
 
     let stoneId = stoneData.id;
 
+    eventBus.emit("iBeaconOfValidCrownstone", {stoneId: stoneId, rssi: ibeaconPackage.rssi});
+
     // create an entity for this crownstone if one does not exist yet.
     if (!this.entities[stoneId]) { this.createEntity(sphereId, stoneId); }
 
@@ -165,11 +167,6 @@ class StoneManagerClass {
 
   handleAdvertisement(advertisement : crownstoneAdvertisement) {
     LOGd.native("StoneManager: Handling Advertisement");
-    // this is on manager level, not on entity level since setup crownstones do not have an entity but do need this functionality.
-    if (this.stonesInConnectionProcess[advertisement.handle] !== undefined) {
-      LOGd.native("StoneManager: IGNORE: connecting to stone.");
-      return;
-    }
 
     // the service data in this advertisement;
     let serviceData : crownstoneServiceData = advertisement.serviceData;
@@ -217,6 +214,17 @@ class StoneManagerClass {
     let referenceByHandle = MapProvider.stoneSphereHandleMap[sphereId][advertisement.handle];
     if (!referenceByHandle) {
       LOGw.native("StoneManager: IGNORE: UNKNOWN REFERENCE BY HANDLE");
+      return;
+    }
+
+    // emit event of valid crownstone
+    if (advertisement.rssi && advertisement.rssi < 0) {
+      eventBus.emit("AdvertisementOfValidCrownstone", {stoneId: referenceByHandle.id, rssi: advertisement.rssi})
+    }
+
+    // this is on manager level, not on entity level since setup crownstones do not have an entity but do need this functionality.
+    if (this.stonesInConnectionProcess[advertisement.handle] !== undefined) {
+      LOGd.native("StoneManager: IGNORE: connecting to stone.");
       return;
     }
 

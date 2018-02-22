@@ -56,11 +56,11 @@ interface meshNetworks  {
 }
 
 interface connectionInfo  {
-  sphereId : string,
-  stoneId: string,
-  stone: any,
+  sphereId :      string,
+  stoneId:        string,
+  stone:          any,
   meshNetworkId?: string,
-  handle : string,
+  handle :        string,
 }
 
 interface meshTodo {
@@ -103,7 +103,6 @@ interface batchCommandEntry {
   handle:       string,
   sphereId:     string,
   stoneId:      string,
-  stone:        any,
   initialized:  boolean,
   attempts:     number,
   options:      batchCommandEntryOptions,

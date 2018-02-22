@@ -30,6 +30,7 @@ import {LOG, LOGw} from "../logging/Log";
 import {LogProcessor} from "../logging/LogProcessor";
 import {BleLogger} from "../native/advertisements/BleLogger";
 import {StoneManager} from "../native/advertisements/StoneManager";
+import {MeshUtil} from "../util/MeshUtil";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -277,6 +278,10 @@ class BackgroundProcessHandlerClass {
       if (appState === "active" && this.userLoggedIn) {
         BatterySavingUtil.startNormalUsage();
 
+        // clear all mesh network ids in all spheres on opening the app.
+        MeshUtil.clearMeshNetworkIds(this.store)
+
+        // remove any badges from the app icon on the phone.
         this._clearBadge();
 
         // if the app is open, update the user locations every 10 seconds

@@ -2,13 +2,14 @@ import { eventBus }              from '../util/EventBus'
 import { Util }                  from '../util/Util'
 import { BlePromiseManager }     from './BlePromiseManager'
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
-import { LOG, LOGd }             from '../logging/Log'
+import {LOG, LOGd, LOGi} from '../logging/Log'
 import { Scheduler }             from './Scheduler'
 import { MeshHelper }            from './MeshHelper'
 import { DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL } from '../ExternalConfig'
 import { StoneUtil }             from "../util/StoneUtil";
 import { Permissions }           from "../backgroundProcesses/PermissionManager";
 import { CommandManager }        from "./bchComponents/CommandManager";
+import {RssiLogger} from "../native/advertisements/RssiLogger";
 
 
 /**
@@ -75,7 +76,7 @@ class BatchCommandHandlerClass {
   _getObjectsToScan() {
     // this will mark all candidates during this scan as initialized. These are ALL marked as initialized since if we do not find ANY crownstones,
     // we will have to reduce the attempts of all of them.
-    let { directCommands, meshNetworks } = this._commandHandler.extractTodo(null, null, true);
+    let { directCommands, meshNetworks } = this._commandHandler.extractTodo(this.store.getState(),null, null, true);
 
     // get sphereIds of the spheres we need to do things in.
     let meshSphereIds = Object.keys(meshNetworks);
@@ -111,7 +112,7 @@ class BatchCommandHandlerClass {
   _handleAllCommandsForStone(connectionInfo: connectionInfo, activeOptions : any = {}) {
     return new Promise((resolve, reject) => {
       // get everything we CAN and WILL do now with this Crownstone.
-      let { directCommands, meshNetworks } = this._commandHandler.extractTodo(connectionInfo.stoneId, connectionInfo.meshNetworkId);
+      let { directCommands, meshNetworks } = this._commandHandler.extractTodo(this.store.getState(), connectionInfo.stoneId, connectionInfo.meshNetworkId);
 
       // check if we have to perform any mesh commands for this Crownstone.
       let meshSphereIds = Object.keys(meshNetworks);
@@ -236,6 +237,56 @@ class BatchCommandHandlerClass {
 
 
   /**
+   * This searches for very recent readings of Crownstones that are near before we start to search for them.
+   * @param rssiScanThreshold
+   * @returns {any}
+   * @private
+   */
+  _getConnectionTarget(rssiScanThreshold) : Promise<connectionInfo> {
+    return new Promise((resolve, reject) => {
+      let state = this.store.getState();
+
+      let { directTargets, relayOnlyTargets, sphereMap } = this._commandHandler.extractConnectionTargets(state)
+
+      let nearestRelay = null;
+      let nearestDirect = RssiLogger.getNearestStoneId(directTargets, 2, rssiScanThreshold);
+      if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = RssiLogger.getNearestStoneId(directTargets,    2);                    }
+      if (!nearestDirect)                               { nearestRelay  = RssiLogger.getNearestStoneId(relayOnlyTargets, 2, rssiScanThreshold); }
+      if (!nearestRelay && rssiScanThreshold !== null)  { nearestRelay  = RssiLogger.getNearestStoneId(relayOnlyTargets, 2);                    }
+
+      let foundId = nearestDirect || nearestRelay;
+
+      if (nearestDirect) {
+        LOGi.info("BatchCommandHandler: Found stone to directly connect to:", nearestDirect);
+      }
+      else if (nearestRelay) {
+        LOGi.info("BatchCommandHandler: Found stone to connect to in order for it to relay a command for us:", nearestDirect);
+      }
+      else {
+        LOGi.info("BatchCommandHandler: No relevant stones found in the scan history for the last few seconds");
+      }
+
+      if (foundId) {
+        let sphereId = sphereMap[foundId];
+        let sphere = state.spheres[sphereId];
+        let stone = sphere.stones[foundId];
+
+        resolve({
+          sphereId :      sphereId,
+          stoneId:        foundId,
+          stone:          stone,
+          meshNetworkId:  stone.config.meshNetworkId,
+          handle :        stone.config.handle,
+        });
+      }
+
+      reject();
+    });
+  }
+
+
+
+  /**
    * This method will search for Crownstones using the topics provided by the _getObjectsToScan.
    * It will connect to the first responder and perform all commands for that Crownstone. It will then move on to the next one.
    * @returns {Promise<T>}
@@ -263,16 +314,22 @@ class BatchCommandHandlerClass {
 
       let activeCrownstone = null;
 
-      // scan for target
-      this._searchScan(topicsToScan, rssiScanThreshold, highPriorityActive, 5000)
-        .catch((err) => {
-          // nothing found within -91. if this is a low priority call, we will attempt it without the rssi threshold.
-          if (rssiScanThreshold !== null && highPriorityActive === false) {
-            return this._searchScan(topicsToScan, null, false, 5000)
-          }
-          else {
-            throw err;
-          }
+
+
+      // get a connection target
+      this._getConnectionTarget(rssiScanThreshold)
+        .catch(() => {
+          // cant find a crownstone in the recent scans, look for one.
+          return this._searchScan(topicsToScan, rssiScanThreshold, highPriorityActive, 5000)
+            .catch((err) => {
+              // nothing found within -91. if this is a low priority call, we will attempt it without the rssi threshold.
+              if (rssiScanThreshold !== null && highPriorityActive === false) {
+                return this._searchScan(topicsToScan, null, false, 5000)
+              }
+              else {
+                throw err;
+              }
+            })
         })
         .then((crownstoneToHandle : connectionInfo) => {
           activeCrownstone = crownstoneToHandle;

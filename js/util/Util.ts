@@ -245,12 +245,15 @@ export const Util = {
         return false;
       }
 
-      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
         return false;
       }
 
-      let A = version.split('.');
-      let B = compareWithVersion.split('.');
+      let A = versionClean.split('.');
+      let B = compareWithVersionClean.split('.');
 
       if (A[0] < B[0]) return false;
       else if (A[0] > B[0]) return true;
@@ -258,7 +261,20 @@ export const Util = {
         if (A[1] < B[1]) return false;
         else if (A[1] > B[1]) return true;
         else { // A[1] == B[1]
-          return (A[2] > B[2]);
+          if (A[2] < B[2]) return false;
+          else if (A[2] > B[2]) return true;
+          else { // A[2] == B[2]
+            if (versionRc !== null && compareWithVersionRc !== null) {
+              return (versionRc > compareWithVersionRc);
+            }
+            else if (versionRc !== null) {
+              // 2.0.0.rc0 is smaller than 2.0.0
+              return false;
+            }
+            else {
+              return true;
+            }
+          }
         }
       }
     },
@@ -271,11 +287,14 @@ export const Util = {
      * @returns {any}
      */
     canIUse: function(myVersion, minimumRequiredVersion) {
-      if (checkSemVer(myVersion) === false) {
+      let [myVersionClean, myVersionRc] = getRC(myVersion);
+      let [minimumRequiredVersionClean, minimumRequiredVersionRc] = getRC(minimumRequiredVersion);
+
+      if (checkSemVer(myVersionClean) === false) {
         return true;
       }
 
-      return Util.versions.isHigherOrEqual(myVersion, minimumRequiredVersion);
+      return Util.versions.isHigherOrEqual(myVersionClean, minimumRequiredVersionClean);
     },
 
     isHigherOrEqual: function(version, compareWithVersion) {
@@ -283,7 +302,10 @@ export const Util = {
         return false;
       }
 
-      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
         return false;
       }
 
@@ -299,7 +321,10 @@ export const Util = {
         return false;
       }
 
-      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
         return false;
       }
 
@@ -402,6 +427,17 @@ export const Util = {
 
 };
 
+
+function getRC(version) {
+  let lowerCaseVersion = version.toLowerCase()
+  let lowerCaseRC_split = lowerCaseVersion.split("-rc");
+  let RC = null
+  if (lowerCaseRC_split.length > 1) {
+    RC = lowerCaseRC_split[1];
+  }
+
+  return [lowerCaseRC_split[0], RC];
+}
 
 let checkSemVer = (str) => {
   if (!str) { return false; }

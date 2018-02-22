@@ -94,7 +94,7 @@ function handleAction(action, returnValue, newState, oldState) {
 
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
-    case 'UPDATE_MESH_NETWORK_ID':
+    // case 'UPDATE_MESH_NETWORK_ID':
       handleStoneInCloud(action, newState);
       break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
