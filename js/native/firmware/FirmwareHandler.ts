@@ -21,9 +21,9 @@ class FirmwareHandlerClass {
   constructor() { }
 
   getVersions(firmwareVersion, bootloaderVersion, hardwareVersion) {
-    if (!firmwareVersion || !bootloaderVersion) {
-      return new Promise((resolve, reject) => { reject("No version available!"); });
-    }
+    if (!firmwareVersion)   { return new Promise((resolve, reject) => { reject("No firmware version available!");   }); }
+    if (!bootloaderVersion) { return new Promise((resolve, reject) => { reject("No bootloader version available!"); }); }
+
     let promises = [];
     promises.push(CLOUD.getFirmwareDetails(firmwareVersion, hardwareVersion, false)
       .then((result) => {
