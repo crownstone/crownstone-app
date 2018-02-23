@@ -22,6 +22,7 @@ import PhysicsEngine from '../../logic/PhysicsEngine';
 import { UserLayer } from './UserLayer';
 import { AnimatedDoubleTap } from "../components/animated/AnimatedDoubleTap";
 import { Scheduler } from "../../logic/Scheduler";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 export class RoomLayer extends Component<any, any> {
   state:any; // used to avoid warnings for setting state values
@@ -488,7 +489,7 @@ export class RoomLayer extends Component<any, any> {
     const store = this.props.store;
     const state = store.getState();
     let floatingStones = getFloatingStones(state, this._currentSphere);
-    let showFloatingCrownstones = floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
+    let showFloatingCrownstones = floatingStones.length > 0 || (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone);
 
     let roomIds = Object.keys(state.spheres[this._currentSphere].locations);
     let center = {x: 0.5*this.viewWidth - this._baseRadius, y: 0.5*this.viewHeight - this._baseRadius};
@@ -555,7 +556,7 @@ export class RoomLayer extends Component<any, any> {
         store={this.props.store}
         scale={this.state.locations[locationId].scale}
         pos={{x: this.state.locations[locationId].x, y: this.state.locations[locationId].y}}
-        seeStonesInSetupMode={SetupStateHandler.areSetupStonesAvailable()}
+        seeStonesInSetupMode={SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone}
         viewingRemotely={this.props.viewingRemotely}
         key={locationId || 'floating'}
       />
@@ -564,7 +565,7 @@ export class RoomLayer extends Component<any, any> {
 
   _isFloatingRoomRequired(state) {
     let floatingStones = getFloatingStones(state, this.props.sphereId);
-    return floatingStones.length > 0 || SetupStateHandler.areSetupStonesAvailable() === true;
+    return floatingStones.length > 0 || (SetupStateHandler.areSetupStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone);
   }
 
   getRooms(state) {

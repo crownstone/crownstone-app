@@ -134,6 +134,9 @@ class BackgroundProcessHandlerClass {
 
   showWhatsNew() {
     let state = this.store.getState();
+    if (!state.app.shownWhatsNewVersion || state.app.shownWhatsNewVersion === '0') {
+      this.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} })
+    }
     if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
       Scheduler.scheduleCallback(() => { eventBus.emit("showWhatsNew"); }, 100);
     }
