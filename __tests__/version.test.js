@@ -31,4 +31,6 @@ test('versionTest', () => {
   expect(Util.versions.isHigherOrEqual('2.0.0-rc1', '1.0.0')).toBe(true);
   expect(Util.versions.isHigherOrEqual('2.0.0-rc1', '2.0.0-rc2')).toBe(false);
   expect(Util.versions.isHigherOrEqual('2.0.0-rc1', '2.0.0-rc0')).toBe(true);
+
+  expect(Util.versions.isHigher('1.2.2','1.2.2')).toBe(false);
 });

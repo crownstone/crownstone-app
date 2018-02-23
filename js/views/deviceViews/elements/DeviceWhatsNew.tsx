@@ -20,9 +20,10 @@ import {eventBus} from "../../../util/EventBus";
 
 export class DeviceWhatsNew extends Component<any, any> {
   _getBodyText(firmwareVersion) {
-    switch (firmwareVersion.substr(0,3)) {
-      case '1.7':
-      case '2.0':
+    switch (firmwareVersion) {
+      case '1.7.1':
+      case '2.0.0':
+      case '2.0.1':
         return "Dimming is now available!" +
           "\n\nYou can enable dimming per Crownstone in the Crownstone settings. These can be found in the top right corner of the Crownstone overview.";
 
@@ -34,9 +35,10 @@ export class DeviceWhatsNew extends Component<any, any> {
   }
 
   _getButtonText(firmwareVersion) {
-    switch (firmwareVersion.substr(0,3)) {
-      case '1.7':
-      case '2.0':
+    switch (firmwareVersion) {
+      case '1.7.1':
+      case '2.0.0':
+      case '2.0.1':
         return "Take me there now!";
 
       default:
@@ -47,9 +49,10 @@ export class DeviceWhatsNew extends Component<any, any> {
   }
 
   _getButtonAction(firmwareVersion) {
-    switch (firmwareVersion.substr(0,3)) {
-      case '1.7':
-      case '2.0':
+    switch (firmwareVersion) {
+      case '1.7.1':
+      case '2.0.0':
+      case '2.0.1':
         this._clearFlag(firmwareVersion);
         return Actions.deviceEdit({ sphereId: this.props.sphereId, stoneId: this.props.stoneId });
 

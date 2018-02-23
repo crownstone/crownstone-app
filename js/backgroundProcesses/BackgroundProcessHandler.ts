@@ -148,27 +148,6 @@ class BackgroundProcessHandlerClass {
   }
 
 
-  checkErrors(sphereId = null) {
-    let state = this.store.getState();
-    let presentSphere = sphereId || Util.data.getPresentSphereId(state);
-    if (presentSphere && state.spheres[presentSphere]) {
-      let errorsFound = false;
-      let stonesContainingError = [];
-
-      Util.data.callOnStonesInSphere(state, presentSphere, (stoneId, stone) => {
-        if (stone.errors.hasError === true) {
-          errorsFound = true;
-          stonesContainingError.push({sphereId: presentSphere, stoneId: stoneId, stone:stone});
-        }
-      });
-
-      if (errorsFound) {
-        eventBus.emit("showErrorOverlay", stonesContainingError)
-      }
-    }
-  }
-
-
   /**
    * Triggers background sync, sets the networkError handler which is used when there is no internet connection
    */

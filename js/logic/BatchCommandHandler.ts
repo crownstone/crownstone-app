@@ -505,7 +505,7 @@ class BatchCommandHandlerClass {
     }
 
     // get all todos that would have been done to reduce their attempt counts.
-    let { directCommands, meshNetworks } = this._commandHandler.extractTodo(connectedCrownstone.stoneId, connectedCrownstone.meshNetworkId);
+    let { directCommands, meshNetworks } = this._commandHandler.extractTodo(this.store.getState(), connectedCrownstone.stoneId, connectedCrownstone.meshNetworkId);
     let directCommandSpheres = Object.keys(directCommands);
     directCommandSpheres.forEach((sphereId) => {
       let commandsInSphere = directCommands[sphereId];

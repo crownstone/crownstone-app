@@ -165,10 +165,15 @@ export class DeviceOverview extends Component<any, any> {
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
+
+    let whatsNewEnabledFirmwares = {
+      '2.0.0': true,
+      '2.0.1': true,
+    }
     let showWhatsNew = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone &&
                        stone.config.firmwareVersionSeenInOverview &&
                        (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
-                       Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.7.0');
+                        whatsNewEnabledFirmwares[stone.config.firmwareVersion];
 
     if (showWhatsNew) { this.showWhatsNewVersion = stone.config.firmwareVersion; }
 
