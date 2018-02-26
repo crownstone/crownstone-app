@@ -1,5 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import { Svg, Circle } from 'react-native-svg';
+import { View } from 'react-native'
 
 export class ProgressCircle extends Component<any, any> {
   render() {
@@ -14,19 +15,21 @@ export class ProgressCircle extends Component<any, any> {
     }
 
     return (
-      <Svg style={style}>
-        <Circle
-          r={radius-borderWidth}
-          stroke={this.props.color}
-          strokeWidth={0.5*borderWidth}
-          strokeDasharray={[pathLength*this.props.progress,pathLength]}
-          rotation="-89.9"
-          x={radius}
-          y={radius}
-          strokeLinecap="round"
-          fill="transparent"
-        />
-      </Svg>
+      <View style={style}>
+        <Svg width={2*radius} height={2*radius}>
+          <Circle
+            r={radius-borderWidth}
+            stroke={this.props.color}
+            strokeWidth={0.5*borderWidth}
+            strokeDasharray={[pathLength*this.props.progress,pathLength]}
+            rotation="-89.9"
+            x={radius}
+            y={radius}
+            strokeLinecap="round"
+            fill="transparent"
+          />
+        </Svg>
+      </View>
     )
   }
 }

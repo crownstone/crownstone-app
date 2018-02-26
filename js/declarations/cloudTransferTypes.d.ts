@@ -26,7 +26,7 @@ type transferToLocalData = {
 }
 
 
-type fieldMap = [{
+type fieldMap = {
   local: string,
   cloud: string,
   cloudToLocalOnly? : boolean,
@@ -34,7 +34,7 @@ type fieldMap = [{
   permissionNeeded? : boolean,
   localFields?: string[],
   cloudFields? : string[],
-}]
+}[]
 
 interface keyMap {
   [key: string]: string

@@ -150,6 +150,17 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-svg')
+    compile project(':react-native-splash-screen')
+    compile project(':react-native-sentry')
+    compile project(':react-native-push-notification')
+    compile project(':react-native-keep-awake')
+    compile project(':react-native-image-resizer')
+    compile project(':react-native-fs')
+    compile project(':react-native-device-info')
+    compile project(':react-native-camera-kit')
+    compile project(':react-native-blur')
     compile project(':bluenet')
     compile project(':localization-lib-android')
     compile project(':react-native-image-resizer')

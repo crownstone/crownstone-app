@@ -276,12 +276,29 @@ class RoomCircleClass extends Component<any, any> {
     let pathLength = Math.PI * 2 * (this.props.radius - this.borderWidth);
     if (usage == 0 && !(this.props.locationId === null && this.props.seeStonesInSetupMode === true)) {
       return (
-        <Svg style={{
-          width: this.outerDiameter,
-          height: this.outerDiameter,
-          position:'absolute',
-          top:0,left:0
-        }}>
+        <View style={{position:'absolute', top:0, left:0}}>
+          <Svg width={this.outerDiameter} height={this.outerDiameter}>
+            <Circle
+              r={this.props.radius - this.borderWidth}
+              stroke={colorOfLowerLayer}
+              strokeWidth={this.borderWidth}
+              x={this.props.radius}
+              y={this.props.radius}
+              strokeLinecap="round"
+              fill="white"
+            />
+          </Svg>
+        </View>
+      );
+    }
+
+    let levelProgress = this._getFactor(usage);
+    if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
+      levelProgress = this.state.setupProgress / 20;
+    }
+    return (
+      <View style={{position:'absolute', top:0, left:0}}>
+        <Svg width={this.outerDiameter} height={this.outerDiameter}>
           <Circle
             r={this.props.radius - this.borderWidth}
             stroke={colorOfLowerLayer}
@@ -291,43 +308,19 @@ class RoomCircleClass extends Component<any, any> {
             strokeLinecap="round"
             fill="white"
           />
+          <Circle
+            r={this.props.radius - this.borderWidth}
+            stroke={newColor}
+            strokeWidth={this.borderWidth}
+            strokeDasharray={[pathLength*levelProgress,pathLength]}
+            rotation="-89.9"
+            x={this.props.radius}
+            y={this.props.radius}
+            strokeLinecap="round"
+            fill="rgba(0,0,0,0)"
+          />
         </Svg>
-      );
-    }
-
-    let levelProgress = this._getFactor(usage);
-    if (this.props.locationId === null && this.props.seeStonesInSetupMode === true) {
-      levelProgress = this.state.setupProgress / 20;
-    }
-
-    return (
-      <Svg style={{
-        width: this.outerDiameter,
-        height: this.outerDiameter,
-        position:'absolute',
-        top:0,left:0
-      }}>
-        <Circle
-          r={this.props.radius - this.borderWidth}
-          stroke={colorOfLowerLayer}
-          strokeWidth={this.borderWidth}
-          x={this.props.radius}
-          y={this.props.radius}
-          strokeLinecap="round"
-          fill="white"
-        />
-        <Circle
-          r={this.props.radius - this.borderWidth}
-          stroke={newColor}
-          strokeWidth={this.borderWidth}
-          strokeDasharray={[pathLength*levelProgress,pathLength]}
-          rotation="-89.9"
-          x={this.props.radius}
-          y={this.props.radius}
-          strokeLinecap="round"
-          fill="rgba(0,0,0,0)"
-        />
-      </Svg>
+      </View>
     )
   }
 

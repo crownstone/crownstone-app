@@ -230,19 +230,14 @@ export class DimmerButton extends Component<any, any> {
     return (
       <View style={{width: screenWidth, height: this.props.size, alignItems:'center'}}>
       <View {...this._panResponder.panHandlers}  ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center', position:'absolute', top:0, left:0, opacity:1}}>
-        <Svg style={{
-          width: screenWidth,
-          height: this.props.size,
-          position:'absolute',
-          top:0,left:0
-        }}>
+        <Svg width={screenWidth} height={this.props.size}>
           <Circle
             r={this.correctedRadius}
             stroke={colors.white.hex}
             strokeWidth={this.strokeWidth}
             strokeOpacity={0.5}
             strokeDasharray={[0.75*this.pathLength, this.pathLength]}
-            strokeDashOffset={0}
+            strokeDashoffset={0}
             rotation="135"
             x={this.xCenter}
             y={this.yCenter}
@@ -255,7 +250,7 @@ export class DimmerButton extends Component<any, any> {
             stroke={colors.green.hex}
             strokeWidth={this.strokeWidth}
             strokeDasharray={[this.state.state*0.75*this.pathLength, this.pathLength]}
-            strokeDashOffset={0}
+            strokeDashoffset={0}
             rotation="135"
             x={this.xCenter}
             y={this.yCenter}
