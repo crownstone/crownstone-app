@@ -4167,6 +4167,12 @@ sentry-cli-binary@^1.21.0:
   dependencies:
     progress "2.0.0"
 
+sentry-cli-binary@^1.25.0:
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/sentry-cli-binary/-/sentry-cli-binary-1.25.0.tgz#61d11b019712b5b1075e488731d6960b28959183"
+  dependencies:
+    progress "2.0.0"
+
 serve-favicon@~2.3.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/serve-favicon/-/serve-favicon-2.3.2.tgz#dd419e268de012ab72b319d337f2105013f9381f"

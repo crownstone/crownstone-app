@@ -7,6 +7,15 @@ import { eventBus } from './js/util/EventBus'
 import { BackgroundProcessHandler } from './js/backgroundProcesses/BackgroundProcessHandler'
 import { colors, screenWidth, screenHeight, tabBarMargin, topBarMargin } from './js/views/styles'
 import SplashScreen from 'react-native-splash-screen'
+import { Sentry } from 'react-native-sentry';
+import { config } from './sentrySettings';
+
+if (Platform.OS === 'android') {
+  Sentry.config(config.android).install();
+}
+else {
+  Sentry.config(config.ios).install();
+}
 
 
 export class Root extends Component {
