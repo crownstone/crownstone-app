@@ -47,13 +47,16 @@
     "promise": "~8.0.1",
     "react-native-cli": "^2.0.1",
     "react-test-renderer": "16.1.0",
+    "sentry-cli-binary": "^1.25.0",
     "tape": "~4.8.0",
     "typescript": "^2.6.1",
     "whatwg-fetch": "^2.0.3"
   },
   "jest": {
     "preset": "react-native",
-    "setupFiles": ["./jest/setup.js"],
+    "setupFiles": [
+      "./jest/setup.js"
+    ],
     "collectCoverage": true,
     "collectCoverageFrom": [
       "**/js/router/store/Persistor.js",
