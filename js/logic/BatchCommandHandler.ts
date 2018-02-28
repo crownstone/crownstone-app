@@ -365,10 +365,10 @@ class BatchCommandHandlerClass {
 
   _connectAndHandleCommands(crownstoneToHandle : connectionInfo) {
     return new Promise((resolve, reject) => {
-      LOG.info("BatchCommandHandler: connecting to ", crownstoneToHandle, this.activePromiseId);
+      LOG.info("BatchCommandHandler: connecting to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
       BluenetPromiseWrapper.connect(crownstoneToHandle.handle)
         .then(() => {
-          LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle, this.activePromiseId);
+          LOG.info("BatchCommandHandler: Connected to ", crownstoneToHandle.stone.config.name, this.activePromiseId);
           return this._handleAllCommandsForStone(crownstoneToHandle);
         })
         .then((optionsOfPerformedActions : batchCommandEntryOptions) => {

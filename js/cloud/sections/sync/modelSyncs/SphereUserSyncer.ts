@@ -134,7 +134,7 @@ export class SphereUserSyncer extends SyncingSphereItemBase {
           sphereUserInState.lastName    !== sphere_user_in_cloud.lastName     ||
           sphereUserInState.email       !== sphere_user_in_cloud.email        ||
           sphereUserInState.accessLevel !== type                              ||
-          (sphereUserInState.pictureId   !== sphere_user_in_cloud.profilePicId && sphereUserInState.pictureId !== null && sphere_user_in_cloud.profilePicId !== undefined) // it can happen that null and undefined are compared if there is no picture.
+          (sphereUserInState.pictureId  !== sphere_user_in_cloud.profilePicId && !(sphereUserInState.pictureId === null && sphere_user_in_cloud.profilePicId === undefined)) // it can happen that null and undefined are compared if there is no picture.
         ) {
           actionBase.type = 'UPDATE_SPHERE_USER';
           if (sphereUserInState.pictureId !== sphere_user_in_cloud.profilePicId) {

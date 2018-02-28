@@ -104,7 +104,7 @@ export class OverlayContent extends Component<any, any> {
     // only do this if there is a button
     if (this.props.buttonCallback || this.props.text) {
       if (this.props.text || !this.props.header)
-        return <View style={{flex: 1}} />
+        return <View style={{flex: 1, maxHeight:20}} />
     }
   }
 
@@ -127,7 +127,7 @@ export class OverlayContent extends Component<any, any> {
     if (this.props.scrollable) {
       return (
         <View style={{flex:1, height: this.viewHeight, alignItems:'center'}}>
-          <ScrollView style={{width: this.props.width || 0.85*screenWidth, height: this.viewHeight}} scrollEventThrottle={32} onScroll={(e) => { this.handleScroll(e);}} onContentSizeChange={(w,h) => {this.handleSizeChange(w,h);}} >
+          <ScrollView style={{width: this.props.width || 0.85*screenWidth, height: this.viewHeight, paddingLeft: 15, paddingRight: 15}} scrollEventThrottle={32} onScroll={(e) => { this.handleScroll(e);}} onContentSizeChange={(w,h) => {this.handleSizeChange(w,h);}} >
             <View style={{alignItems:'center'}}>
               <Text style={{fontSize: 20, fontWeight: 'bold', textAlign:'center', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
               { this.getEyeCatcher() }

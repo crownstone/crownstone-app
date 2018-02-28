@@ -530,9 +530,9 @@ export class DfuOverlay extends Component<any, any> {
           icon={'md-book'}
           iconSize={0.25*screenWidth}
           header={'Firmware version: ' + updateToVersion}
-          text={this.state.releaseNotes ? this.state.releaseNotes + '\n\n' : null}
+          text={this.state.releaseNotes ? this.state.releaseNotes : null}
           buttonCallback={() => { this.startProcess();} }
-          scrollable={this.state.releaseNotes !== null}
+          scrollable={true}
           buttonLabel={'Next'}
         >
           <ActivityIndicator animating={true} size="large" />

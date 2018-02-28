@@ -23,7 +23,7 @@
     "react-native-push-notification": "~3.0.1",
     "react-native-router-flux": "~3.43.0",
     "react-native-same-toast": "^1.0.1",
-    "react-native-sentry": "^0.30.2",
+    "react-native-sentry": "^0.30.3",
     "react-native-splash-screen": "~3.0.6",
     "react-native-svg": "6.0.0",
     "react-native-swiper": "^1.5.13",

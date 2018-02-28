@@ -3688,9 +3688,9 @@ react-native-same-toast@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-native-same-toast/-/react-native-same-toast-1.0.1.tgz#a735aa7db592bd2d70c4035af48475a4205af0ad"
 
-react-native-sentry@^0.30.2:
-  version "0.30.2"
-  resolved "https://registry.yarnpkg.com/react-native-sentry/-/react-native-sentry-0.30.2.tgz#6e432954db24d541c2810bfb386cd7adbad4497e"
+react-native-sentry@^0.30.3:
+  version "0.30.3"
+  resolved "https://registry.yarnpkg.com/react-native-sentry/-/react-native-sentry-0.30.3.tgz#b64e59127070521aac51724235543e89def5ee73"
   dependencies:
     chalk "^2.3.0"
     glob "^7.1.1"

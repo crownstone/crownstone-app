@@ -544,7 +544,7 @@ export class StoneEntity {
 
   handleErrors(stone, advertisement : crownstoneAdvertisement) {
     if (HARDWARE_ERROR_REPORTING) {
-      if (Util.versions.canIUse(stone.config.firmwareVersion, '1.3.1')) {
+      if (Util.versions.canIUse(stone.config.firmwareVersion, '2.0.0')) {
         if (advertisement.serviceData.hasError === true) {
           LOGi.advertisements("StoneEntity: GOT ERROR", advertisement.serviceData);
           if (advertisement.serviceData.errorMode) {
