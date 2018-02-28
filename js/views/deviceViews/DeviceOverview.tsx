@@ -34,6 +34,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
 import {BackAction} from "../../util/Back";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
+import {DeviceSmartBehaviour} from "./elements/smartBehaviour/DeviceSmartBehaviour";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -157,7 +158,6 @@ export class DeviceOverview extends Component<any, any> {
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
     let hasAppliance = stone.config.applianceId !== null;
-
     let summaryIndex = 0;
     let behaviourIndex = summaryIndex + 1;
 
@@ -248,7 +248,7 @@ export class DeviceOverview extends Component<any, any> {
           scrollEnabled={this.state.swipeEnabled}
           bounces={true}
           loadMinimal={false}
-          onScrollBeginDrag={  () => { checkScrolling(true);  }}
+          onScrollBeginDrag={ () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
           { this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config) }
@@ -269,6 +269,9 @@ export class DeviceOverview extends Component<any, any> {
   _getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
     let content = [];
     let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
+
+    content.push(<DeviceSmartBehaviour key={'smartBehaviour'} {...props} />);
+    return content
 
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);

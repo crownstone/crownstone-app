@@ -251,7 +251,6 @@ export class DeviceSummary extends Component<any, any> {
         />
         <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
                            leftValue={stone.config.applianceId ? stone.config.name : 'None'}
-                           right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'}
                            leftTapAction={canChangeSettings ? () => { this._triggerApplianceSelection(stone); }  : null}
         />
         <View style={{flex:1}} />
