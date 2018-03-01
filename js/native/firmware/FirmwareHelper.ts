@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import { BlePromiseManager }     from '../../logic/BlePromiseManager'
 import { BluenetPromiseWrapper}  from '../libInterface/BluenetPromise';
 import { NativeBus }             from '../libInterface/NativeBus';
-import { LOG }                   from '../../logging/Log'
+import {LOG, LOGi} from '../../logging/Log'
 import { Util }                  from '../../util/Util'
 import { SetupStateHandler } from "../setup/SetupStateHandler";
 import { eventBus } from "../../util/EventBus";
@@ -105,6 +105,7 @@ export class FirmwareHelper {
 
   putInDFU(crownstoneMode: crownstoneModes) {
     if (crownstoneMode.dfuMode === true) {
+      LOGi.info("FirmwareHelper: putInDFU: already in DFU mode!", crownstoneMode);
       return new Promise((resolve, reject) => { resolve(); });
     }
 

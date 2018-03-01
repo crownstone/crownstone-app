@@ -23,6 +23,7 @@ class BleLoggerClass {
         }
       });
       this._initialized = true;
+      this._reloadListeners();
     }
   }
 
@@ -39,7 +40,7 @@ class BleLoggerClass {
         LOG.ble('setupAdvertisement', data.name, data.rssi, data.handle, data);
       }));
       this.listeners.push(NativeBus.on(NativeBus.topics.advertisement, (data) => {
-        LOG.ble('crownstoneId', data.name, data.rssi, data.handle, data);
+        LOG.ble('advertisement', data.name, data.rssi, data.handle, data);
       }));
       this.listeners.push(NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => {
         LOG.ble('iBeaconAdvertisement', data[0].rssi, data[0].major, data[0].minor, data);
