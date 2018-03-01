@@ -18,7 +18,6 @@ export class OverlayContent extends Component<any, any> {
 
   constructor(props) {
     super(props);
-
     this.state = {showDownIndicator: false};
   }
 
@@ -104,7 +103,7 @@ export class OverlayContent extends Component<any, any> {
     // only do this if there is a button
     if (this.props.buttonCallback || this.props.text) {
       if (this.props.text || !this.props.header)
-        return <View style={{flex: 1, maxHeight:20}} />
+        return <View style={{flex: 1}} />
     }
   }
 
@@ -118,18 +117,20 @@ export class OverlayContent extends Component<any, any> {
   }
 
   handleSizeChange(width, height) {
-    if (height > this.viewHeight) {
+    let viewHeight = this.props.height - 75|| this.viewHeight;
+    if (height > viewHeight) {
       this.setState({showDownIndicator: true});
     }
   }
 
   render() {
+    let height = this.props.height - 75 || this.viewHeight;
     if (this.props.scrollable) {
       return (
-        <View style={{flex:1, height: this.viewHeight, alignItems:'center'}}>
-          <ScrollView style={{width: this.props.width || 0.85*screenWidth, height: this.viewHeight, paddingLeft: 15, paddingRight: 15}} scrollEventThrottle={32} onScroll={(e) => { this.handleScroll(e);}} onContentSizeChange={(w,h) => {this.handleSizeChange(w,h);}} >
-            <View style={{alignItems:'center'}}>
-              <Text style={{fontSize: 20, fontWeight: 'bold', textAlign:'center', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
+        <View style={{height: height, alignItems:'center'}}>
+          <ScrollView style={{width: this.props.width || 0.85*screenWidth, height: height, paddingLeft: 15, paddingRight: 15}} scrollEventThrottle={32} onScroll={(e) => { this.handleScroll(e);}} onContentSizeChange={(w,h) => {this.handleSizeChange(w,h);}} >
+            <View style={{alignItems:'center', minHeight: height}}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', textAlign:'center', color: colors.csBlue.hex, paddingBottom:15}}>{this.props.title}</Text>
               { this.getEyeCatcher() }
               { this.getHeader() }
               { this.getContentSpacer() }
@@ -146,8 +147,8 @@ export class OverlayContent extends Component<any, any> {
     }
     else {
       return (
-        <View style={{flex:1, height: 0.9*availableScreenHeight, alignItems:'center'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', textAlign:'center', color: colors.csBlue.hex, padding:15}}>{this.props.title}</Text>
+        <View style={{height: height, alignItems:'center'}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold', textAlign:'center', color: colors.csBlue.hex, paddingBottom:15}}>{this.props.title}</Text>
           { this.getEyeCatcher() }
           { this.getHeader() }
           { this.getContentSpacer() }

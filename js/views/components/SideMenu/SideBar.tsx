@@ -232,7 +232,7 @@ class MenuItem extends Component<any, any> {
         setTimeout(() => { this.props.closeCallback(); }, 0)
       }}>
         <View style={[styles.centered,{width:25, marginRight:10}]}>
-        {this.props.icon}
+          {this.props.icon}
         </View>
         <Text style={{paddingLeft: 15, fontSize:16, fontWeight: weight, fontStyle: fontStyle, color: foregroundColor}}>{this.props.label}</Text>
       </TouchableOpacity>
