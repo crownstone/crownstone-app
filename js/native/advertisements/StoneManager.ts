@@ -33,7 +33,7 @@ class StoneManagerClass {
 
   loadStore(store) {
     if (this._initialized === false) {
-      LOGi.native("StoreManager: loadStore");
+      LOGi.native("StoneManager: loadStore");
       this.store = store;
       this.storeManager = new StoneStoreManager(store);
       this._init();

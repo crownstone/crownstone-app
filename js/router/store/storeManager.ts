@@ -1,4 +1,4 @@
-import { AsyncStorage }                 from 'react-native'
+import { AsyncStorage, Alert }          from 'react-native'
 import { createStore, applyMiddleware } from 'redux'
 import CrownstoneReducer                from './reducer'
 import { NativeEnhancer }               from './nativeEnhancer'
@@ -81,6 +81,12 @@ class StoreManagerClass {
         })
         .catch((err) => {
           LOGe.store("StoreManager: failed to initialize.", err);
+          Alert.alert("Problem with the database..","Please log in again.",[{text:"OK", onPress: () => {
+              this.persistor.endSession();
+              this.storeInitialized = true;
+              eventBus.emit('storeManagerInitialized');
+            }
+          }],{cancelable: false});
         })
     }
     else {

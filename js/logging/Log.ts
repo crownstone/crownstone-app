@@ -90,7 +90,7 @@ class Logger {
   }
 
   native(...any) {
-    this._log('Messages ---', LOG_NATIVE,  LogProcessor.log_native, arguments);
+    this._log('Native ---', LOG_NATIVE,  LogProcessor.log_native, arguments);
   }
 
   _log(type, globalCheckField, dbCheckField, allArguments) {

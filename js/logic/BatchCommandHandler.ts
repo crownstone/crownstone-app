@@ -111,6 +111,7 @@ class BatchCommandHandlerClass {
    */
   _handleAllCommandsForStone(connectionInfo: connectionInfo, activeOptions : any = {}) {
     return new Promise((resolve, reject) => {
+
       // get everything we CAN and WILL do now with this Crownstone.
       let { directCommands, meshNetworks } = this._commandHandler.extractTodo(this.store.getState(), connectionInfo.stoneId, connectionInfo.meshNetworkId);
 
@@ -135,6 +136,7 @@ class BatchCommandHandlerClass {
       if (promise === null) {
         let directSphereIds = Object.keys(directCommands);
         let actionPromise = null;
+        let actionPromiseName = null;
         let performedAction = null;
         for (let i = 0; i < directSphereIds.length; i++) {
           let commandsInSphere = directCommands[directSphereIds[i]];
@@ -144,6 +146,7 @@ class BatchCommandHandlerClass {
             performedAction = action;
             // merge the active options with those of the mesh instructions.
             MeshHelper._mergeOptions(action.options, activeOptions);
+            actionPromiseName = command.commandName;
             switch (command.commandName) {
               case 'getFirmwareVersion':
                 actionPromise = BluenetPromiseWrapper.getFirmwareVersion();
@@ -207,6 +210,7 @@ class BatchCommandHandlerClass {
         if (actionPromise !== null) {
           // clean up by resolving the promises of the items contained in the mesh messages.
           promise = actionPromise.then((data) => {
+            LOGi.info("BatchCommandHandler:", actionPromiseName, "finalized successfully.");
             performedAction.promise.resolve(data);
             performedAction.cleanup();
           })

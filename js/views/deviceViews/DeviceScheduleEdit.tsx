@@ -485,7 +485,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hideInterface={true}>
         { this.props.scheduleId ?
           <TopBar
             leftAction={() => {  BackAction();  }}

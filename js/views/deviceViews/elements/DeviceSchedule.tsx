@@ -62,7 +62,7 @@ export class DeviceSchedule extends Component<any, any> {
   }
 
   _getSyncOption(stone) {
-    if (Permissions.inSphere(this.props.sphereId).canClearAllSchedules) {
+    if (Permissions.inSphere(this.props.sphereId).canDeleteSchedule) {
       return (
         <TouchableOpacity
           style={{

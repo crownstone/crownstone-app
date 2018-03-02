@@ -198,7 +198,7 @@ export class RoomOverview extends Component<any, any> {
     let shownHandles = {};
 
 
-    if (DfuStateHandler.areDfuStonesAvailable() === true) {
+    if (DfuStateHandler.areDfuStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
       let dfuStones = DfuStateHandler.getDfuStones();
       let dfuIds = Object.keys(dfuStones);
       dfuIds.forEach((dfuId) => {
@@ -210,7 +210,7 @@ export class RoomOverview extends Component<any, any> {
     }
 
     // add the stoneIds of the Crownstones in setup mode to the list but only if we're in the floating category
-    if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null) {
+    if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
       let setupStones = SetupStateHandler.getSetupStones();
       let setupIds = Object.keys(setupStones);
       setupIds.forEach((setupId) => {
