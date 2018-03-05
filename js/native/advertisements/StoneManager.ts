@@ -242,12 +242,11 @@ class StoneManagerClass {
     let stoneFromServiceData   = state.spheres[advertisement.referenceId].stones[referenceByCrownstoneId.id];
     let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
 
-    if (serviceData.stateOfExternalCrownstone === true) {
+    if (serviceData.stateOfExternalCrownstone === true && MapProvider.meshEnabled) {
       this._resolveMeshNetworkIds(sphereId, stoneFromServiceData, referenceByCrownstoneId.id, stoneFromAdvertisement, referenceByHandle.id);
 
       this.entities[referenceByCrownstoneId.id].handleContentViaMesh(stoneFromServiceData, advertisement);
       this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(stoneFromAdvertisement, advertisement);
-
     }
     else {
       this.entities[referenceByCrownstoneId.id].handleDirectAdvertisement(stoneFromAdvertisement, advertisement);
