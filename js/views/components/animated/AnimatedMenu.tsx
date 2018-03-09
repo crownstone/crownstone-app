@@ -9,8 +9,13 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} from '../../styles'
+import {
+  styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight,
+  availableScreenHeight
+} from '../../styles'
 import { BlurView } from 'react-native-blur';
+import {FadeInView} from "./FadeInView";
+import {eventBus} from "../../../util/EventBus";
 
 export class AnimatedMenu extends Component<any, any> {
   visible    : boolean;
@@ -25,13 +30,10 @@ export class AnimatedMenu extends Component<any, any> {
     super(props);
     this.state = {
       viewHeight: new Animated.Value(props.visible ? this.menuHeight : 0),
-      opacity: new Animated.Value(props.visible ? 1 : 0),
-      showMenuOverlay: false
+      position: {top:0, left:0, right:0, bottom:0},
+      content: [],
+      visible: false
     };
-    this.visible = props.visible || false;
-  }
-
-  componentWillMount() {
 
     // configure the pan responder
     this._panResponder = PanResponder.create({
@@ -42,7 +44,7 @@ export class AnimatedMenu extends Component<any, any> {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderGrant: (evt, gestureState) => {
-        this.props.closeMenu();
+        this.hide();
       },
       onPanResponderMove: (evt, gestureState) => {},
       onPanResponderRelease: (evt, gestureState) => {},
@@ -51,47 +53,36 @@ export class AnimatedMenu extends Component<any, any> {
         return true;
       },
     });
+
+    eventBus.on("showBlurredMenu", (data) => {
+      if (data.fields && Array.isArray(data.fields)) {
+        this.setState({content: data.fields, position: data.position});
+        this.show()
+      }
+    })
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.visible !== nextProps.visible) {
-      if (nextProps.visible === true) {
-        this.show();
-      }
-      else {
-        this.hide();
-      }
-    }
-  }
 
   show() {
-    this.setState({showMenuOverlay:true}, () => {
-      this.visible = true;
-      let animations = [
-        Animated.timing(this.state.opacity, {toValue: 1, duration:250}),
-        Animated.timing(this.state.viewHeight, {toValue: screenHeight, duration:450})
-      ];
-      Animated.parallel(animations).start();
+    this.setState({visible:true}, () => {
+      Animated.timing(this.state.viewHeight, {toValue: screenHeight, duration:450}).start()
     })
   }
 
   hide() {
-    let animations = [
-      Animated.timing(this.state.opacity, {toValue: 0, duration:200, delay: 300}),
-      Animated.timing(this.state.viewHeight, {toValue: 0, duration:450})
-    ];
-    Animated.parallel(animations).start(() => {
-      setTimeout(() => {
-        this.setState({ showMenuOverlay: false });
-      },30);
-      this.visible = false;
+    Animated.timing(this.state.viewHeight, {toValue: 0, duration:450}).start(() => {
+      this.setState({ visible: false, content: [] });
     });
+  }
+  instantHide() {
+    this.setState({ visible: false, content: [] });
+    this.state.viewHeight.setValue(0);
   }
 
   _getFields() {
     let fields = [];
-    for (let i = 0; i < this.props.fields.length; i++) {
-      let field = this.props.fields[i];
+    for (let i = 0; i < this.state.content.length; i++) {
+      let field = this.state.content[i];
       fields.push(
         <TouchableOpacity
           key={field.label}
@@ -101,11 +92,11 @@ export class AnimatedMenu extends Component<any, any> {
             alignItems: 'center',
             justifyContent:'center',
           }}
-          onPress={() => { field.onPress(); this.props.closeMenu(); }}>
+          onPress={() => { this.instantHide(); field.onPress();  }}>
           <Text style={{backgroundColor:"transparent", fontSize:16, color:colors.black.rgba(0.5), fontWeight:'500', fontStyle:'italic'}}>{field.label}</Text>
         </TouchableOpacity>
       );
-      if (i < this.props.fields.length -1) {
+      if (i < this.state.content.length -1) {
         fields.push(<View style={{width:this.menuItemWidth, height:this.menuSpacerHeight, backgroundColor:colors.white.rgba(0.1)}} key={field.label+"_spacer"} />);
       }
     }
@@ -114,17 +105,21 @@ export class AnimatedMenu extends Component<any, any> {
   }
 
   render() {
-    if (this.state.showMenuOverlay) {
-      let totalHeight = this.menuItemHeight*this.props.fields.length+ (this.props.fields.length-1)*this.menuSpacerHeight
-      return (
+    let totalHeight = this.menuItemHeight*this.state.content.length+ (this.state.content.length-1)*this.menuSpacerHeight
+    return (
+      <FadeInView
+        style={[styles.fullscreen]}
+        height={screenHeight}
+        duration={30}
+        visible={this.state.visible}
+      >
         <Animated.View
           style={{
             position:'absolute',
             overflow:'hidden',
-            opacity: this.state.opacity,
             width: screenWidth,
             height: this.state.viewHeight,
-        }}>
+          }}>
           <View
             style={{
               position:'absolute',
@@ -136,7 +131,7 @@ export class AnimatedMenu extends Component<any, any> {
           />
           <View
             style={{
-              ...this.props.position,
+              ...this.state.position,
               position:'absolute',
               width: 6,
               height: 6,
@@ -144,18 +139,18 @@ export class AnimatedMenu extends Component<any, any> {
             }}
           />
           <BlurView
-            style={[this.props.style,
-            {...this.props.position},
-            {position:'absolute',
-              width: this.menuItemWidth,
-              height: totalHeight,
-              borderRadius:15,
-            }]}
+            style={[this.state.style,
+              {...this.state.position},
+              {position:'absolute',
+                width: this.menuItemWidth,
+                height: totalHeight,
+                borderRadius:15,
+              }]}
             blurType="light"
             blurAmount={20}
           />
           <View style={{
-            ...this.props.position,
+            ...this.state.position,
             position:'absolute',
             width: this.menuItemWidth,
             height: totalHeight,
@@ -169,12 +164,7 @@ export class AnimatedMenu extends Component<any, any> {
             {this._getFields()}
           </View>
         </Animated.View>
-      );
-    }
-    else {
-      return <View/>;
-    }
-
-
+      </FadeInView>
+    );
   }
 }

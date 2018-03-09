@@ -26,6 +26,10 @@ import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
 
 export class SettingsPluginRecoverStep2 extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Recovering" }
+  };
+
   lookingForCrownstone : boolean = true;
   uuid : string = Util.getUUID();
 
@@ -240,7 +244,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
     let imageSize = 0.45;
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>Hold your phone next to the Crownstone.</Text>

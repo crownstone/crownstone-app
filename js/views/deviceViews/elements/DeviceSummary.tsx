@@ -249,11 +249,7 @@ export class DeviceSummary extends Component<any, any> {
                              locationId: this.props.locationId,
                            }); } : null}
         />
-        <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
-                           leftValue={stone.config.applianceId ? stone.config.name : 'None'}
-                           leftTapAction={canChangeSettings ? () => { this._triggerApplianceSelection(stone); }  : null}
-        />
-        <View style={{flex:1}} />
+        <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>
           <DeviceButton
             store={this.props.store}
@@ -277,7 +273,7 @@ export class DeviceSummary extends Component<any, any> {
 export class DeviceButton extends Component<{store: any, sphereId: string, stoneId: string, eventBus: EventBusClass, callback(any): void}, any> {
   unsubscribeStoreEvents;
 
-  componentWillMount() {
+  componentDidMount() {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;

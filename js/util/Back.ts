@@ -3,9 +3,12 @@ import {LOG} from "../logging/Log";
 const Actions = require('react-native-router-flux').Actions;
 
 
-export const BackAction = function(amount = 1) {
+export const BackAction = function(popToName?) {
   try {
-    for (let i = 0; i < amount; i++) {
+    if (popToName) {
+      Actions.popTo(popToName)
+    }
+    else {
       Actions.pop();
     }
   } catch (popErr) {

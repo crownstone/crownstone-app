@@ -41,7 +41,7 @@ export const AppUtil = {
   },
 
   _logOut: function(store, gracefulExit) {
-    eventBus.emit("showLoading", "Logging out and closing app...");
+    eventBus.emit("showLoading", {text:"Logging out and closing app...", opacity:0.25});
 
     // clear position for this device.
     let state = store.getState();

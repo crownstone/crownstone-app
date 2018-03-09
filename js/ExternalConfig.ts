@@ -13,6 +13,9 @@ const DeviceInfo = require('react-native-device-info');
 
     export const FALLBACKS_ENABLED = true;
 
+    // possiblity to block Sentry
+    export let USE_SENTRY = true;
+
     // DO NOT CHANGE THIS LINE.
     // the global is meant as a last resort, forcing release to true when compiled in release mode.
     export const RELEASE_MODE_USED = (RELEASE_MODE && DeviceInfo.getModel() !== "Simulator") || global.__DEV__ !== true;

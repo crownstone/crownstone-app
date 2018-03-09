@@ -34,11 +34,14 @@ export class LockedStateUI extends Component<any, any> {
   constructor(props) {
     super(props);
 
+    this.props = props;
     this.state = {level: 0, unlockingInProgress: false, unlocked: false};
     this.loadingAmountRequired = 3000;
+
+    this.init();
   }
 
-  componentWillMount() {
+  init() {
     // configure the pan responder
     this._panResponder = PanResponder.create({
       // Ask to be the responder:

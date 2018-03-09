@@ -61,10 +61,12 @@ export class DimmerButton extends Component<any, any> {
     this.yCenter = 0.55*props.size;
 
     this.refName = (Math.random() * 1e9).toString(36);
-    this.state = {state: this._transformSwitchStateToUI(props.state) || 0, pendingCommand: false, pendingId: ''}
+    this.state = {state: this._transformSwitchStateToUI(props.state) || 0, pendingCommand: false, pendingId: ''};
+
+    this.init();
   }
 
-  componentWillMount() {
+  init() {
     let getStateFromGesture = (gestureState) => {
       let x = ((gestureState.x0 + gestureState.dx) - 0.5*screenWidth);
       let y = (gestureState.y0 + gestureState.dy - (this.startY+ 0.5*this.props.size));

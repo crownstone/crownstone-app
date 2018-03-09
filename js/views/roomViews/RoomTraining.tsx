@@ -191,7 +191,7 @@ export class RoomTraining extends Component<any, any> {
     }
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
+      <Background image={this.props.backgrounds.detailsDark}>
         {content}
       </Background>
     );

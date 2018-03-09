@@ -22,7 +22,7 @@ import { Icon } from '../components/Icon';
 export class CloudChoice extends Component<any, any> {
   render() {
     return (
-      <Background hideInterface={true} background={require('../../images/mainBackground.png')}>
+      <Background background={require('../../images/mainBackground.png')}>
         <View style={styles.shadedStatusBar} />
         <View style={setupStyle.lineDistance} />
         <Text style={[setupStyle.h3, styles.centered, {flex:1,textAlign:'center'}]}>PLEASE SELECT</Text>

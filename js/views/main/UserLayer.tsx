@@ -86,9 +86,6 @@ export class UserLayer extends Component<any, any> {
     }
   }
 
-  componentWillMount() {
-    // set the usage initially
-  }
 
   componentDidMount() {
     const store = this.props.store;

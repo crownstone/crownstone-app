@@ -1,3 +1,13 @@
+
+import { YellowBox } from 'react-native';
+YellowBox.ignoreWarnings([
+  'Module RCTImageLoader requires',
+  'Module ToastManager',
+  'Warning: componentWillUpdate is deprecated',
+  'Warning: componentWillMount is deprecated',
+  'Warning: componentWillReceiveProps is deprecated',
+]);
+
 import { AppRegistry, Platform } from 'react-native';
 import { Root } from './App';
 

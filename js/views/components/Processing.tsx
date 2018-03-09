@@ -24,41 +24,61 @@ export class Processing extends Component<any, any> {
       visible: false,
       text: undefined,
       progress: undefined,
-      progressText: undefined
+      progressText: undefined,
+      opacity: undefined
     };
     this.unsubscribe = [];
   }
 
   componentDidMount() {
-    this.unsubscribe.push(eventBus.on('showLoading', (text) => {this.setState({
-      visible:      true,
-      progress:     undefined,
-      text:         text,
-      progressText: undefined
-    })}));
+    this.unsubscribe.push(eventBus.on('showLoading', (data) => {
+      if (typeof data === "string") {
+        this.setState({
+          visible: true,
+          progress: undefined,
+          text: data,
+          progressText: undefined,
+          opacity: null,
+        })
+      }
+      else {
+        this.setState({
+          visible: true,
+          progress: undefined,
+          text: data.text,
+          progressText: undefined,
+          opacity: data.opacity === undefined ? null : data.opacity,
+        })
+      }
+    }));
+
     this.unsubscribe.push(eventBus.on('showProgress', (data) => {this.setState({
       visible:      true,
       progress:     data.progress === undefined ? 0               : data.progress,
       text:         data.text     === undefined ? this.state.text : data.text,
-      progressText: data.progressText
+      opacity:      data.opacity  === undefined ? null            : data.opacity,
+      progressText: data.progressText,
     })}));
     this.unsubscribe.push(eventBus.on('updateProgress', (data) => {this.setState({
       visible:      true,
       progress:     data.progress     === undefined ? this.state.progress     : data.progress,
       text:         data.text         === undefined ? this.state.text         : data.text,
-      progressText: data.progressText === undefined ? this.state.progressText : data.progressText
+      progressText: data.progressText === undefined ? this.state.progressText : data.progressText,
+      opacity:      data.opacity      === undefined ? this.state.opacity      : data.opacity
     })}));
     this.unsubscribe.push(eventBus.on('hideProgress', () => {this.setState({
       visible:      false,
       progress:     undefined,
       text:         undefined,
-      progressText: undefined
+      progressText: undefined,
+      opacity:      null,
     })}));
     this.unsubscribe.push(eventBus.on('hideLoading', () => {this.setState({
       visible:      false,
       progress:     undefined,
       text:         undefined,
-      progressText: undefined
+      progressText: undefined,
+      opacity:      null,
     })}));
   }
 
@@ -70,7 +90,7 @@ export class Processing extends Component<any, any> {
   render() {
     return (
       <FadeInView
-        style={[styles.fullscreen, {backgroundColor:'rgba(0,0,0,0.75)',justifyContent:'center', alignItems:'center'}]}
+        style={[styles.fullscreen, {backgroundColor:colors.black.rgba(this.state.opacity || 0.75),justifyContent:'center', alignItems:'center'}]}
         height={screenHeight}
         duration={200}
         visible={this.state.visible}>

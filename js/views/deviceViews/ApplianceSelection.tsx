@@ -33,6 +33,13 @@ export class ApplianceSelection extends Component<{
   callback(applianceId: string): void
   }, any> {
 
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    return {
+      title: "Select Device Type",
+    }
+  };
+
 
   unsubscribe : any;
 
@@ -151,7 +158,7 @@ export class ApplianceSelection extends Component<{
 
   render() {
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark} >
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} >
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

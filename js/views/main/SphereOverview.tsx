@@ -21,22 +21,68 @@ import { Icon }                                           from '../components/Ic
 import { Sphere }                                         from './Sphere'
 import { requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }                        from '../../logging/Log'
-import {styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../styles'
+import {styles, colors, screenWidth, screenHeight, availableScreenHeight, topBarHeight, statusBarHeight} from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {Util} from "../../util/Util";
 import {eventBus} from "../../util/EventBus";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {AnimatedMenu} from "../components/animated/AnimatedMenu";
+import {TopbarButton} from '../components/Topbar/TopbarButton';
+import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 
 
 export class SphereOverview extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    let paramsToUse = params;
+    if (!params.title) {
+      if (NAVBAR_PARAMS_CACHE !== null) {
+        paramsToUse = NAVBAR_PARAMS_CACHE;
+      }
+      else {
+        paramsToUse = getNavBarParams(params.store.getState(), params);
+      }
+    }
+
+    return {
+      title: paramsToUse.title,
+      headerRight: paramsToUse.showAdd ? <TopbarButton
+        text={"Add"}
+        onPress={() => {
+          eventBus.emit("showBlurredMenu", {
+            fields:[
+              {label:'Add Room',       onPress: () => { Actions.roomAdd({sphereId: params.activeSphereId}); }},
+              {label:'Add Crownstone', onPress: () => {
+                  Alert.alert(
+                    "Adding a Crownstone",
+                    "Plug the new Crownstone in and hold your phone close to it (touching it). " +
+                    "It will automatically show up in this overview." +
+                    "\n\nYou don't have to press this button for each Crownstone you add :).",
+                    [{text: 'Buy', onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},{text: 'OK'}]
+                  );
+                }},
+            ], position:{top: topBarHeight - 10, right:5}
+          })
+        }}
+      /> : undefined
+
+      // headerTitle: <Component /> // used to insert custom header Title component
+      // headerLeft: <Component /> // used to insert custom header Right component
+      // headerRight: <Component /> // used to insert custom header Right component
+      // headerBackImage: require("path to image") // customize back button image
+    }
+  };
+
   unsubscribeSetupEvents : any;
   unsubscribeStoreEvents : any;
 
   constructor(props) {
     super(props);
 
-    this.state = { menuOpen: false };
+    this.state = { menuOpen: true };
+
+    this._setActiveSphere();
   }
 
   componentDidMount() {
@@ -68,6 +114,7 @@ export class SphereOverview extends Component<any, any> {
         change.changeLocations
       ) {
         this.forceUpdate();
+        this._updateNavBar();
       }
     });
   }
@@ -75,6 +122,7 @@ export class SphereOverview extends Component<any, any> {
   componentWillUnmount() {
     this.unsubscribeSetupEvents.forEach((unsubscribe) => {unsubscribe();});
     this.unsubscribeStoreEvents();
+    NAVBAR_PARAMS_CACHE = null;
   }
 
 
@@ -92,10 +140,15 @@ export class SphereOverview extends Component<any, any> {
     if (activeSphere === null && sphereIds.length > 0) {
       this.props.store.dispatch({type:"SET_ACTIVE_SPHERE", data: {activeSphere: sphereIds[0]}});
     }
+
+    this._updateNavBar();
   }
 
-  componentWillMount() {
-    this._setActiveSphere();
+
+  _updateNavBar() {
+    let state = this.props.store.getState();
+    let params = getNavBarParams(state, this.props);
+    this.props.navigation.setParams(params)
   }
 
   render() {
@@ -105,104 +158,37 @@ export class SphereOverview extends Component<any, any> {
     const state = store.getState();
 
     let amountOfSpheres = Object.keys(state.spheres).length;
-    let noSpheres = amountOfSpheres === 0;
-    let seeStonesInSetupMode = SetupStateHandler.areSetupStonesAvailable();
-    let seeStonesInDFUMode = DfuStateHandler.areDfuStonesAvailable();
-    let viewingRemotely = true;
-    let blockAddButton = false;
-    let noStones = true;
-    let noRooms = true;
     let activeSphereId = state.app.activeSphere;
     let background = this.props.backgrounds.main;
 
-
-    if (noSpheres === false) {
-      // fallback: should not be required
-      if (!activeSphereId) {
-        activeSphereId = Object.keys(state.spheres)[0];
-      }
-
+    if (amountOfSpheres > 0) {
       let activeSphere = state.spheres[activeSphereId];
-
-      // todo: only do this on change
       let sphereIsPresent = activeSphere.config.present;
 
-      // are there enough in total?
-      let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state,activeSphereId);
+      let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
+      let noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
 
-      // do we need more fingerprints?
-      let requiresFingerprints = requireMoreFingerprints(state, activeSphereId);
-
-      noStones = (activeSphereId ? Object.keys(activeSphere.stones).length    : 0) == 0;
-      noRooms  = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
-
-      if (sphereIsPresent || seeStonesInSetupMode || seeStonesInDFUMode || (noStones === true && noRooms === true)) {
+      let viewingRemotely = true;
+      if (sphereIsPresent || SetupStateHandler.areSetupStonesAvailable() || DfuStateHandler.areDfuStonesAvailable() || (noStones === true && noRooms === true)) {
         viewingRemotely = false;
+        background = this.props.backgrounds.main;
       }
-
-      if (viewingRemotely === true) {
+      else {
         background = this.props.backgrounds.mainRemoteNotConnected;
       }
 
-      let spherePermissions = Permissions.inSphere(activeSphereId);
-
-      let showFinalizeIndoorNavigationButton = (
-        state.app.indoorLocalizationEnabled        &&
-        spherePermissions.doLocalizationTutorial   &&
-        viewingRemotely                  === false && // only show this if you're there.
-        enoughCrownstonesForLocalization === true  && // Have 4 or more crownstones
-        (noRooms === true || requiresFingerprints === true)  // Need more fingerprints.
-      );
-
-      let showFinalizeIndoorNavigationCallback = () => { this._finalizeIndoorLocalization(state, activeSphereId, viewingRemotely, noRooms); };
-      let showMailIcon = activeSphere.config.newMessageFound;
-
       return (
         <View>
-          <AnimatedBackground hideTopBar={true} image={background}>
-            <TopBar
-              title={activeSphere.config.name}
-              notBack={!showFinalizeIndoorNavigationButton}
-              leftItem={showFinalizeIndoorNavigationButton ? <FinalizeLocalizationIcon topBar={true} /> : undefined}
-              alternateLeftItem={true}
-              leftAction={showFinalizeIndoorNavigationCallback}
-              right={!noStones && spherePermissions.addRoom && !blockAddButton ? 'Add' : null}
-              rightAction={() => { this.setState({ menuOpen: !this.state.menuOpen });}}
-              showHamburgerMenu={true}
-              hamburgerIconAlternationItems={showMailIcon ? [this._getMailIcon()] : []}
-              actions={showFinalizeIndoorNavigationButton ? {finalizeLocalization: showFinalizeIndoorNavigationCallback} : {}}
-            />
+          <AnimatedBackground image={background}>
               <Sphere sphereId={activeSphereId} store={this.props.store} eventBus={this.props.eventBus} multipleSpheres={amountOfSpheres > 1} />
             { amountOfSpheres > 1 ? <SphereChangeButton viewingRemotely={viewingRemotely} sphereId={activeSphereId} /> : undefined }
           </AnimatedBackground>
-          <AnimatedMenu
-            visible={this.state.menuOpen}
-            closeMenu={() => { this.setState({menuOpen:false}) }}
-            position={{top: topBarHeight-20, right: 5}}
-            fields={[
-              {label:'Add Room',       onPress: () => { Actions.roomAdd({sphereId: activeSphereId}); }},
-              {label:'Add Crownstone', onPress: () => {
-                Alert.alert(
-                  "Adding a Crownstone",
-                  "Plug the new Crownstone in and hold your phone close to it (touching it). " +
-                  "It will automatically show up in this overview." +
-                  "\n\nYou don't have to press this button for each Crownstone you add :).",
-                  [{text: 'Buy', onPress: () => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }},{text: 'OK'}]
-                );
-              }},
-            ]}
-          >
-          </AnimatedMenu>
         </View>
       );
     }
     else {
       return (
-        <AnimatedBackground hideTopBar={true} image={background}>
-          <TopBar
-            title={"Hello There!"}
-            showHamburgerMenu={true}
-          />
+        <AnimatedBackground image={background}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Icon name="c1-house" size={150} color={colors.blue.hex}/>
             <Text style={overviewStyles.mainText}>No Spheres available.</Text>
@@ -223,8 +209,8 @@ export class SphereOverview extends Component<any, any> {
 
 
 
-  _finalizeIndoorLocalization(state, activeSphere, viewingRemotely, noRooms) {
-    if (viewingRemotely) {
+  _finalizeIndoorLocalization(state, activeSphere, sphereIsPresent, noRooms) {
+    if (!sphereIsPresent) {
       Alert.alert(
         "You'll have to be in the Sphere to continue.",
         "If you're in range of any of the Crownstones in the sphere, the background will turn blue and you can start teaching your house to find you!",
@@ -255,6 +241,70 @@ export class SphereOverview extends Component<any, any> {
   }
 }
 
+function getNavBarParams(state, props) {
+  LOG.info("UPDATING SPHERE OVERVIEW NAV BAR");
+
+  let amountOfSpheres = Object.keys(state.spheres).length;
+
+  let blockAddButton = false;
+  let activeSphereId = state.app.activeSphere;
+
+
+  if (amountOfSpheres > 0) {
+    let activeSphere = state.spheres[activeSphereId];
+    let sphereIsPresent = activeSphere.config.present;
+
+    // are there enough in total?
+    let enoughCrownstonesForLocalization = enoughCrownstonesForIndoorLocalization(state, activeSphereId);
+
+    // do we need more fingerprints?
+    let requiresFingerprints = requireMoreFingerprints(state, activeSphereId);
+
+    let noStones = (activeSphereId ? Object.keys(activeSphere.stones).length : 0) == 0;
+    let noRooms = (activeSphereId ? Object.keys(activeSphere.locations).length : 0) == 0;
+
+
+    let spherePermissions = Permissions.inSphere(activeSphereId);
+
+    let showFinalizeIndoorNavigationButton = (
+      state.app.indoorLocalizationEnabled &&
+      spherePermissions.doLocalizationTutorial &&
+      sphereIsPresent === false && // only show this if you're there.
+      enoughCrownstonesForLocalization === true && // Have 4 or more crownstones
+      (noRooms === true || requiresFingerprints === true)  // Need more fingerprints.
+    );
+
+
+    let showFinalizeIndoorNavigationCallback = () => {
+      this._finalizeIndoorLocalization(state, activeSphereId, sphereIsPresent, noRooms);
+    };
+    let showMailIcon = activeSphere.config.newMessageFound;
+
+    NAVBAR_PARAMS_CACHE = {
+      title: activeSphere.config.name,
+      showFinalizeNavigationButton: showFinalizeIndoorNavigationButton,
+      showAdd: !noStones && spherePermissions.addRoom && !blockAddButton,
+      showHamburgerMenu: true,
+      activeSphereId: activeSphereId
+    }
+  }
+  else {
+    NAVBAR_PARAMS_CACHE = {
+      title: "Hello there!",
+      showFinalizeNavigationButton: false,
+      showAdd: false,
+      showHamburgerMenu: true
+    }
+  }
+
+  return NAVBAR_PARAMS_CACHE;
+}
+
+let NAVBAR_PARAMS_CACHE = null;
+
+
+
+
 class SphereChangeButton extends Component<any, any> {
   render() {
     let outerRadius = 0.11*screenWidth;
@@ -263,7 +313,7 @@ class SphereChangeButton extends Component<any, any> {
     return (
       <TouchableOpacity style={{
         position:'absolute',
-        top: topBarHeight,
+        top: 0,
         left: 0,
         padding: 6,
         paddingRight:10,

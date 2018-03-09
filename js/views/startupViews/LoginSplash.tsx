@@ -2,6 +2,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   Dimensions,
   Linking,
+  Image,
   StyleSheet,
   TouchableOpacity,
   Text,
@@ -26,38 +27,51 @@ let versionStyle = {
 
 export class LoginSplash extends Component<any, any> {
   render() {
+    let factor = 0.225;
+
+
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>
+      <Background fullScreen={true} image={this.props.backgrounds.mainDark}>
         <View style={styles.shadedStatusBar} />
-        <View style={loginStyles.loginButtonContainer}>
-          <TouchableOpacity onPress={() => {Actions.register()}} >
-            <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Register</Text></View>
+        <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
+          <View style={{flex:0.5}} />
+          <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
+          <View style={{flex:2}} />
+          <View style={loginStyles.loginButtonContainer}>
+            <View style={{flexDirection:'row'}}>
+              <View style={{flex:1}} />
+              <TouchableOpacity onPress={() => {Actions.register()}} >
+                <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Register</Text></View>
+              </TouchableOpacity>
+              <View style={{flex:1}} />
+              <TouchableOpacity onPress={() => {Actions.login()}} >
+                <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
+              </TouchableOpacity>
+              <View style={{flex:1}} />
+            </View>
+          </View>
+          <TouchableOpacity
+            style={{
+              position:'absolute',
+              bottom:5,
+              left:5,
+              width: 0.5*screenWidth,
+              height:30,
+              alignItems:'flex-start',
+              justifyContent:'flex-end'
+            }}
+            onPress={() => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }}>
+            <Text style={{
+              fontSize: 14,
+              fontWeight: 'bold',
+              color: colors.white.hex,
+              fontStyle:'italic',
+              textDecorationLine: 'underline',
+              backgroundColor:'transparent'
+            }}>{'Buy Crownstones!'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {Actions.login()}} >
-            <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
-          </TouchableOpacity>
+          <Text style={versionStyle}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
         </View>
-        <TouchableOpacity
-          style={{
-            position:'absolute',
-            bottom:5,
-            left:5,
-            width: 0.5*screenWidth,
-            height:30,
-            alignItems:'flex-start',
-            justifyContent:'flex-end'
-          }}
-          onPress={() => { Linking.openURL('https://shop.crownstone.rocks/?launch=en&ref=http://crownstone.rocks/en/').catch(err => {}) }}>
-          <Text style={{
-            fontSize: 14,
-            fontWeight: 'bold',
-            color: colors.white.hex,
-            fontStyle:'italic',
-            textDecorationLine: 'underline',
-            backgroundColor:'transparent'
-          }}>{'Buy Crownstones!'}</Text>
-        </TouchableOpacity>
-        <Text style={versionStyle}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>
       </Background>
     )
   }

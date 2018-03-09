@@ -23,10 +23,26 @@ import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import { TopBar } from "../components/Topbar";
 import {BackAction} from "../../util/Back";
+import {CancelButton} from "../components/Topbar/CancelButton";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
 
 
 
 export class RoomEdit extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    return {
+      title: "Edit Room",
+      headerLeft: <CancelButton onPress={BackAction} />,
+      headerRight: <TopbarButton
+        text={"Save"}
+        onPress={() => {
+          params.rightAction ? params.rightAction() : () => {}
+        }}
+      />
+    }
+  };
+
   deleting : boolean = false;
   viewingRemotely : boolean = false;
   unsubscribeStoreEvents : any;
@@ -41,6 +57,8 @@ export class RoomEdit extends Component<any, any> {
       name: room.config.name,
       icon: room.config.icon
     };
+
+    this.props.navigation.setParams({rightAction: () => { this._updateRoom(); }})
   }
 
   componentDidMount() {
@@ -51,7 +69,9 @@ export class RoomEdit extends Component<any, any> {
 
       let state = store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
-        BackAction();
+        if (this.deleting === false) {
+          BackAction();
+        }
         return;
       }
 
@@ -87,7 +107,7 @@ export class RoomEdit extends Component<any, any> {
 
         // jump back to root
         this.props.eventBus.emit('hideLoading');
-        Actions.sphereOverview({type:'reset'});
+        Actions.popTo('sphereOverview')
 
         // reload fingerprints.
         LocationHandler.loadFingerprints();
@@ -217,23 +237,14 @@ export class RoomEdit extends Component<any, any> {
   }
 
   render() {
+
     const store = this.props.store;
     const state = store.getState();
     this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false;
 
     let backgroundImage = this.props.getBackground('menu', this.viewingRemotely);
     return (
-      <Background hideInterface={true} image={backgroundImage}>
-        <TopBar
-          notBack={true}
-          left={'Cancel'}
-          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
-          leftAction={ Actions.pop }
-          right={'Save'}
-          rightStyle={{fontWeight: 'bold'}}
-          rightAction={ () => { this._updateRoom(); }}
-          title="Edit Room"
-        />
+      <Background image={backgroundImage}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

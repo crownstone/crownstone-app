@@ -41,26 +41,21 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
 
   constructor(props) {
     super(props);
-    this.state = {loggedIn: false, storePrepared: false};
-  }
+    let initialState = {loggedIn: false, storePrepared: false};
 
-  /**
-   * Preloading backgrounds
-   */
-  componentWillMount() {
     if (BackgroundProcessHandler.storePrepared === true) {
-      this.setState({storePrepared: true, loggedIn: BackgroundProcessHandler.userLoggedIn});
+      initialState = {storePrepared: true, loggedIn: BackgroundProcessHandler.userLoggedIn};
       if (Platform.OS === "android") {
-          SplashScreen.hide();
+        SplashScreen.hide();
       }
     }
     else {
       this.unsubscribe.push(
         eventBus.on('storePrepared', (result) => {
           this.setState({storePrepared:true, loggedIn: result.userLoggedIn});
-            if (Platform.OS === "android") {
-                SplashScreen.hide();
-            }
+          if (Platform.OS === "android") {
+            SplashScreen.hide();
+          }
         })
       );
     }
@@ -72,7 +67,10 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
     this.backgrounds.mainDarkLogo            = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/backgroundWLogo.png')} />;
     this.backgrounds.mainDark                = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/background.png')} />;
     this.backgrounds.detailsDark             = <Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../images/stoneDetails.png')} />;
+
+    this.state = initialState;
   }
+
 
   componentWillUnmount() { // cleanup
     this.cleanUp()
@@ -136,7 +134,9 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
     }
     else {
       // this is the await store part.
-      return <Background hideInterface={true} image={this.backgrounds.mainDarkLogo} />
+      return (
+        <Background fullScreen={true} image={this.backgrounds.mainDarkLogo} />
+      )
     }
   }
 }

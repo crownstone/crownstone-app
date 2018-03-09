@@ -28,4 +28,6 @@ export const WNStyles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 50,
   },
+  outerScrollView: {
+  },
 });

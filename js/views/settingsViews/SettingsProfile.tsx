@@ -23,23 +23,26 @@ import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 
 export class SettingsProfile extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "My Account" }
+  };
+
+
   unsubscribe : any;
   renderState : any;
   validationState : any;
 
   constructor(props) {
     super(props);
-    this.state = {picture:null, firstName: null, lastName: null};
     this.renderState = {};
-    this.validationState = {firstName:undefined, lastName:undefined, email:undefined}
-  }
+    this.validationState = {firstName: undefined, lastName: undefined, email: undefined}
 
-  componentWillMount() {
-    const store = this.props.store;
+    const store = props.store;
     const state = store.getState();
     let user = state.user;
 
-    this.setState({picture: user.picture, firstName: user.firstName, lastName: user.lastName});
+    let initialState = {picture: user.picture, firstName: user.firstName, lastName: user.lastName};
+    this.state = initialState;
   }
 
   componentDidMount() {

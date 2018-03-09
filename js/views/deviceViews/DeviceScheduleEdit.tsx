@@ -31,10 +31,35 @@ import {ScheduleUtil} from "../../util/ScheduleUtil";
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
 import {BackAction} from "../../util/Back";
+import {CancelButton} from "../components/Topbar/CancelButton";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
 
 let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
 export class DeviceScheduleEdit extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    let title = 'Add Schedule';
+    let rightLabel = 'Create';
+    if (params.scheduleId) {
+      title = 'Edit Schedule';
+      rightLabel = 'Save'
+    }
+
+    return {
+      title: title,
+      headerLeft: <CancelButton onPress={BackAction} />,
+      headerRight: <TopbarButton
+        text={rightLabel}
+        onPress={() => {
+          params.rightAction ? params.rightAction() : () => {}
+        }}
+      />
+    }
+  };
+
+
   datePickerReference : any;
 
   constructor(props) {
@@ -72,6 +97,21 @@ export class DeviceScheduleEdit extends Component<any, any> {
           Sun: false,
         },
       }
+    }
+
+    if (this.props.scheduleId) {
+      this.props.navigation.setParams({rightAction: () => {
+          this._handleTime()
+            .then(() => {this._updateSchedule(); })
+            .catch((err) => { LOG.error("DeviceScheduleEdit: Could not get time.", err); })
+        }})
+    }
+    else {
+      this.props.navigation.setParams({rightAction: () => {
+          this._handleTime()
+            .then(() => {this._createSchedule(); })
+            .catch((err) => { LOG.error("DeviceScheduleEdit: Could not get time.", err); })
+        }})
     }
   }
 
@@ -486,33 +526,6 @@ export class DeviceScheduleEdit extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
-        { this.props.scheduleId ?
-          <TopBar
-            leftAction={() => {  BackAction();  }}
-            right={'Save'}
-            rightStyle={{fontWeight: 'bold'}}
-            rightAction={() => {
-              this._handleTime()
-                .then(() => {this._updateSchedule(); })
-                .catch((err) => { LOG.error("DeviceScheduleEdit: Could not get time.", err); })
-            }}
-            title={"Edit Schedule"} /> :
-          <TopBar
-            notBack={true}
-            left={'Cancel'}
-            leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
-            leftAction={() => { BackAction(); }}
-            right={'Create'}
-            rightStyle={{fontWeight: 'bold'}}
-            rightAction={() => {
-              this._handleTime()
-                .then(() => {this._createSchedule(); })
-                .catch((err) => { LOG.error("DeviceScheduleEdit: Could not get time.", err); })
-            }}
-            title={"Add Schedule"} />
-
-        }
-
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
           <View style={{alignItems:'center', width: screenWidth}}>

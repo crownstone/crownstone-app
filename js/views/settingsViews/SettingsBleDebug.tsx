@@ -16,6 +16,12 @@ import {IconCircle} from "../components/IconCircle";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsBleDebug extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "BLE Debug",
+    }
+  };
+
   unsubscribe : any;
 
   componentDidMount() {

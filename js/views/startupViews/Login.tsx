@@ -16,17 +16,17 @@ const sha1    = require('sha-1');
 const RNFS    = require('react-native-fs');
 const DeviceInfo = require('react-native-device-info');
 
-import {LOG, LOGd, LOGi} from '../../logging/Log'
-import {emailChecker, getImageFileFromUser, Util} from '../../util/Util'
-import { SessionMemory }                      from '../../util/SessionMemory'
-import { CLOUD }                              from '../../cloud/cloudAPI'
-import { TopBar }                             from '../components/Topbar';
-import { TextEditInput }                      from '../components/editComponents/TextEditInput'
-import { Background }                         from '../components/Background'
-import { StoreManager }                       from '../../router/store/storeManager'
-import loginStyles                            from './LoginStyles'
+import { LOG, LOGd, LOGi } from '../../logging/Log'
+import { emailChecker, getImageFileFromUser, Util }   from '../../util/Util'
+import { SessionMemory }                              from '../../util/SessionMemory'
+import { CLOUD }                                      from '../../cloud/cloudAPI'
+import { TextEditInput }                              from '../components/editComponents/TextEditInput'
+import { Background }                                 from '../components/Background'
+import { StoreManager }                               from '../../router/store/storeManager'
+import loginStyles                                    from './LoginStyles'
 import { styles, colors , screenWidth, screenHeight } from '../styles'
-import { DEBUG_MODE_ENABLED } from "../../ExternalConfig";
+import { DEBUG_MODE_ENABLED }                         from '../../ExternalConfig';
+import {TopBar} from "../components/Topbar";
 
 
 export class Login extends Component<any, any> {
@@ -179,10 +179,16 @@ export class Login extends Component<any, any> {
   }
 
   render() {
+    let factor = 0.2;
+
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.mainDarkLogo}>
-        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent'}} shadeStatus={true} />
-        <View style={loginStyles.spacer}>
+      <Background fullScreen={true} image={this.props.backgrounds.mainDark}>
+        <View style={styles.shadedStatusBar} />
+        <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent', paddingTop:0}} />
+        <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
+          <View style={{flex:2, width:screenWidth}} />
+          <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>
+          <View style={{flex:3, width:screenWidth}} />
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput
               style={{width: 0.8*screenWidth, padding:10}}
@@ -195,6 +201,7 @@ export class Login extends Component<any, any> {
               callback={(newValue) => { this.setState({email:newValue});}}
             />
           </View>
+          <View style={{height:10, width:screenWidth}} />
           <View style={[loginStyles.textBoxView, {width: 0.8*screenWidth}]}>
             <TextEditInput
               style={{width: 0.8*screenWidth, padding:10}}
@@ -205,7 +212,8 @@ export class Login extends Component<any, any> {
               callback={(newValue) => { this.setState({password:newValue});}}
             />
           </View>
-          <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}><Text style={loginStyles.forgot}>Forgot Password?</Text></TouchableHighlight>
+          <TouchableHighlight style={{borderRadius:20, height:40, width:screenWidth*0.6, justifyContent:'center', alignItems:'center'}} onPress={this.resetPopup.bind(this)}>
+          <Text style={{color: '#93cfff'}}>Forgot Password?</Text></TouchableHighlight>
           <LoginButton loginCallback={() => {this.attemptLogin()}} />
         </View>
       </Background>
@@ -409,25 +417,19 @@ class LoginButton extends Component<any, any> {
   render() {
     if (screenHeight > 500) {
       return (
-        <View style={[loginStyles.loginButtonContainer, {bottom:30} ]}>
+        <View style={{flex:1, minHeight: 130}}>
+          <View style={{flex:1}} />
           <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
           </TouchableOpacity>
+          <View style={{flex:1.5}} />
         </View>
       )
     }
     else {
       return (
-        <View style={{
-          position:'absolute',
-          bottom:20,
-          flex:1,
-          width: screenWidth,
-          flexDirection:'row',
-          alignItems:'center',
-          justifyContent:'center',
-          backgroundColor:'transparent'
-        }}>
+        <View style={{flex:1}}>
+          <View style={{flex:1}} />
           <TouchableOpacity style={{height:60, width: 0.6*screenWidth}} onPress={() => { this.props.loginCallback() }}>
             <View style={{
               backgroundColor:'transparent',
@@ -438,15 +440,15 @@ class LoginButton extends Component<any, any> {
               borderColor:'white',
               alignItems:'center',
               justifyContent:'center',
-              margin: (screenWidth - 2*110) / 6,
-              marginBottom:0}}>
+            }}>
               <Text style={{
                 color:'white',
                 fontSize:18,
-                fontWeight:'300'
+                fontWeight:'bold'
               }}>Log In</Text>
             </View>
           </TouchableOpacity>
+          <View style={{flex:1}} />
         </View>
       )
     }

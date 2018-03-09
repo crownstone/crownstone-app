@@ -24,6 +24,12 @@ import loginStyles from './LoginStyles'
 import {BackAction} from "../../util/Back";
 
 export class AiStart extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Your AI",
+    }
+  };
+
   backButtonFunction : any;
 
   constructor(props) {
@@ -104,7 +110,7 @@ export class AiStart extends Component<any, any> {
     let availableHeight = screenHeight - topBarHeight - 3*16 - 30 - 50 - 50;
 
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={[styles.centered, {flex:1}]}>
           <View style={{flex:1}} />

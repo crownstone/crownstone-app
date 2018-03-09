@@ -23,12 +23,28 @@ import { ProfilePicture } from "../components/ProfilePicture";
 import {CLOUD} from "../../cloud/cloudAPI";
 import {MessageUtil} from "../../util/MessageUtil";
 import {BackAction} from "../../util/Back";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {CancelButton} from "../components/Topbar/CancelButton";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
 export const ANYWHERE_IN_SPHERE = '__sphere__';
 
 export class MessageAdd extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    return {
+      title: "New Message",
+      headerLeft: <CancelButton onPress={BackAction} />,
+      headerRight: <TopbarButton
+        text={"Create"}
+        onPress={() => {
+          params.rightAction ? params.rightAction() : () => {}
+        }}
+      />
+    }
+  };
+
   constructor(props) {
     super(props);
 
@@ -41,13 +57,8 @@ export class MessageAdd extends Component<any, any> {
     };
 
     this.state.recipients[EVERYONE_IN_SPHERE] = true
+    this.props.navigation.setParams({rightAction: () => { this._createMessage();}})
   }
-
-  componentWillMount() {}
-
-  componentDidMount() {}
-
-  componentWillUnmount() {}
 
   _createMessage() {
     if (this.state.messageContent.trim().length === 0) {
@@ -308,17 +319,7 @@ export class MessageAdd extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideInterface={true}>
-        <TopBar
-          notBack={true}
-          left={'Cancel'}
-          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
-          leftAction={() => { BackAction(); }}
-          right={'Create'}
-          rightStyle={{fontWeight: 'bold'}}
-          rightAction={() => { this._createMessage(); }}
-          title={"New Message"}
-        />
+      <Background image={this.props.backgrounds.detailsDark} >
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />

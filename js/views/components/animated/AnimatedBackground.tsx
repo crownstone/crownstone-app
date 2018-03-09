@@ -44,21 +44,23 @@ export class AnimatedBackground extends Component<any, any> {
   }
 
   render() {
+    let height = screenHeight;
+    if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {
+      height -= topBarHeight;
+    }
+    if (this.props.hasNavBar !== false && this.props.fullScreen !== true) {
+      height -= tabBarHeight;
+    }
+
     return (
-      <View style={styles.fullscreen}>
-        <View style={styles.fullscreen}>
+      <View style={[styles.fullscreen, {height:height}]}>
+        <View style={[styles.fullscreen, {height:height}]}>
           {this.staticImage}
         </View>
-        <Animated.View style={[styles.fullscreen, {opacity:this.state.fade}]}>{this.animatedImage}</Animated.View>
-
-
-        <View style={styles.fullscreen} >
-          {this.props.hideInterface !== true && this.props.hideTopBar !== true ? <View style={{width:screenWidth,height:topBarHeight}} /> : undefined}
+        <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>{this.animatedImage}</Animated.View>
           <View style={{flex:1}}>
             {this.props.children}
           </View>
-          {this.props.hideInterface !== true && this.props.hideTabBar !== true ? <View style={{width: screenWidth,height:tabBarHeight}} /> : undefined}
-        </View>
       </View>
     );
   }

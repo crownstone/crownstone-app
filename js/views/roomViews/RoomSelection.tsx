@@ -106,7 +106,7 @@ export class RoomSelection extends Component<any, any> {
   render() {
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
     return (
-      <Background hideInterface={true} image={backgroundImage} >
+      <Background image={backgroundImage} >
         <TopBar
           leftAction={ () => { BackAction(); }}
           title={this.props.title} />

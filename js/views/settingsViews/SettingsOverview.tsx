@@ -19,6 +19,12 @@ import { SettingConstructor } from '../../util/SettingConstructor'
 const DeviceInfo = require('react-native-device-info');
 
 export class SettingsOverview extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Settings",
+    }
+  };
+
   unsubscribe : any;
 
   constructor(props) {
@@ -71,11 +77,7 @@ export class SettingsOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background hideTopBar={true} image={this.props.backgrounds.menu} >
-        <TopBar
-          title={"Settings"}
-          notBack={true}
-        />
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
           <Text style={[styles.version,{paddingBottom: 20}]}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>

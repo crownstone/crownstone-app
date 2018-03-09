@@ -17,10 +17,14 @@ import { setupStyle, NextButton } from './SetupShared'
 import { styles, colors, screenWidth, screenHeight } from './../styles'
 
 export class SettingsPluginRecoverStep1 extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Recovery" }
+  };
+
   render() {
     let imageSize = 0.40;
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>{"If you're physically next to the Crownstone, you can restore it to factory defaults."}</Text>

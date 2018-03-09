@@ -21,6 +21,10 @@ import {createNewSphere} from "../../util/CreateSphere";
 
 
 export class SettingsSphereOverview extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Sphere Overview" }
+  };
+
   unsubscribe : any;
 
   componentDidMount() {

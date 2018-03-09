@@ -9,17 +9,18 @@ import { colors, screenWidth, screenHeight, tabBarMargin, topBarMargin } from '.
 import SplashScreen from 'react-native-splash-screen'
 import { Sentry } from 'react-native-sentry';
 import { config } from './sentrySettings';
+import { USE_SENTRY } from './js/ExternalConfig'
 
-if (Platform.OS === 'android') {
-  Sentry.config(config.android).install();
+if (USE_SENTRY) {
+  if (Platform.OS === 'android') {
+    Sentry.config(config.android).install();
+  }
+  else {
+    Sentry.config(config.ios).install();
+  }
 }
-else {
-  Sentry.config(config.ios).install();
-}
-
 
 export class Root extends Component {
-
   constructor() {
     super();
 

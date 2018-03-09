@@ -31,6 +31,10 @@ Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
 };
 
 export class Tutorial extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Welcome!" }
+  };
+
   unsubscribeSwipeEvent : any;
   touchEndTimeout: any;
   requestedPermission;
@@ -70,8 +74,7 @@ export class Tutorial extends Component<any, any> {
     };
 
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideInterface={true}>
-        <TopBar title={"Welcome!"} />
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} >
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight}
           dot={<View style={{backgroundColor: colors.white.rgba(0.35), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.black.rgba(0.1)}} />}

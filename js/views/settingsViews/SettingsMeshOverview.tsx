@@ -19,6 +19,10 @@ import { IconCircle } from "../components/IconCircle";
 let FLOATING_NETWORK_KEY = '__null';
 
 export class SettingsMeshOverview extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Mesh Overview" }
+  };
+
   unsubscribeStoreEvents : any;
   lastOffset : number = null;
 

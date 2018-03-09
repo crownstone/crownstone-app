@@ -24,6 +24,10 @@ import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereInvitedUser extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Invited User" }
+  };
+
   deleting : boolean;
   unsubscribe : any;
 

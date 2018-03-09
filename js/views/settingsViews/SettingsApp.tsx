@@ -25,6 +25,10 @@ import {LocationHandler} from "../../native/localization/LocationHandler";
 
 
 export class SettingsApp extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "App Settings" }
+  };
+
   unsubscribe : any;
   initialKeepAliveState = false;
   triggerTapToToggleCalibration = false;

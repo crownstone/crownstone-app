@@ -24,6 +24,12 @@ import {MeshUtil} from "../../util/MeshUtil";
 
 
 export class SettingsDeveloper extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Developer",
+    }
+  };
+
   unsubscribe : any;
 
   componentDidMount() {

@@ -15,8 +15,8 @@ export class BatteryImprovements extends Component<any, any> {
     let factor = 0.0001*screenWidth;
     let size = 12*factor;
     return (
-      <View style={{flex:1, paddingBottom:0, padding:10, alignItems:'center', justifyContent:'center'}}>
-        <ScrollView style={{}}>
+      <View style={{flex:1, paddingBottom:0, alignItems:'center', justifyContent:'center'}}>
+        <ScrollView style={[WNStyles.outerScrollView,{width: this.props.width}]}>
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>Battery Improvements!</Text>
             <Image source={require('../../../../images/whatsNew/2.0.0/batteryImprovements.png')} style={{width:539*size, height:543*size}} />

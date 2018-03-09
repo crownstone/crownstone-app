@@ -22,7 +22,41 @@ import {MessageCenter} from "../../backgroundProcesses/MessageCenter";
 
 
 export class MessageInbox extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    let state = params.store.getState();
+    let activeSphere = state.app.activeSphere;
+    let title = "Messages";
+    if (activeSphere && state.spheres[activeSphere]) {
+      let sphere = state.spheres[activeSphere];
+      title += " in " +  sphere.config.name;
+    }
+
+    return {
+      title: title,
+    }
+  };
+
   unsubscribeStoreEvents : any;
+
+  constructor(props) {
+    super(props);
+
+    this.init();
+  }
+
+  init() {
+    let activeSphere = this._setActiveSphere();
+    if (activeSphere) {
+      let state = this.props.store.getState();
+      let sphere = state.spheres[activeSphere];
+      if (sphere.config.newMessageFound) {
+        MessageCenter.newMessageStateInSphere(activeSphere, false);
+      }
+    }
+  }
+
 
   _setActiveSphere() {
     // set the active sphere if needed and setup the object variables.
@@ -43,16 +77,7 @@ export class MessageInbox extends Component<any, any> {
     return activeSphere;
   }
 
-  componentWillMount() {
-    let activeSphere = this._setActiveSphere();
-    if (activeSphere) {
-      let state = this.props.store.getState();
-      let sphere = state.spheres[activeSphere];
-      if (sphere.config.newMessageFound) {
-        MessageCenter.newMessageStateInSphere(activeSphere, false);
-      }
-    }
-  }
+
 
   componentDidMount() {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
@@ -204,8 +229,7 @@ export class MessageInbox extends Component<any, any> {
         }
 
         return (
-          <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
-            <TopBar title={"Messages in " + sphere.config.name}/>
+          <Background image={this.props.backgrounds.detailsDark}>
             <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
             { scrollView }
           </Background>
@@ -213,8 +237,7 @@ export class MessageInbox extends Component<any, any> {
       }
       else {
         return (
-          <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
-            <TopBar title={"Messages"} />
+          <Background image={this.props.backgrounds.detailsDark}>
             <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>Add some Crownstones to use messages!</Text>
@@ -225,8 +248,7 @@ export class MessageInbox extends Component<any, any> {
     }
     else {
       return (
-        <Background hideTopBar={true} image={this.props.backgrounds.detailsDark}>
-          <TopBar title={"Messages"} />
+        <Background image={this.props.backgrounds.detailsDark}>
           <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>Add a Sphere to use messages!</Text>

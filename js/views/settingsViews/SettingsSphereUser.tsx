@@ -22,6 +22,10 @@ import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereUser extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Sphere User" }
+  };
+
   deleting : boolean = false;
   unsubscribe : any;
 

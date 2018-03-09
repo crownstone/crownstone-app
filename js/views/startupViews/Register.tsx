@@ -19,6 +19,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { styles, colors , screenWidth, screenHeight } from '../styles'
 
 import { SessionMemory } from '../../util/SessionMemory'
+import {BackAction} from "../../util/Back";
 
 // these will inform the user of possible issues with the passwords.
 let passwordStateNeutral = 'Your password must not be empty.';
@@ -26,6 +27,13 @@ let passwordStateConflict = 'Passwords do not match.';
 let passwordStateOK = '';
 
 export class Register extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    return {
+      title: "Register",
+    }
+  };
+
   inputStates : any;
 
   constructor(props) {
@@ -241,7 +249,7 @@ export class Register extends Component<any, any> {
 
   render() {
     return (
-      <Background hideTabBar={true} image={this.props.backgrounds.menu}>
+      <Background hasNavBar={false} image={this.props.backgrounds.menu}>
         <ScrollView keyboardShouldPersistTaps="always" >
           <ListEditableItems items={this.getItems()} separatorIndent={true} />
         </ScrollView>

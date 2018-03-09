@@ -25,8 +25,19 @@ import {PermissionClass} from "../../backgroundProcesses/Permissions";
 import {TopBar} from "../components/Topbar";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
+import {topBarHeight} from "../styles";
 
 export class SettingsSphere extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    let state = params.store.getState();
+    let sphere = state.spheres[params.sphereId] ;
+    return {
+      title: sphere.config.name,
+    }
+  };
+
+
   deleting : boolean;
   validationState : any;
   unsubscribeStoreEvents : any;
@@ -339,8 +350,7 @@ export class SettingsSphere extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.menu} hideTopBar={true}>
-        <TopBar title={this.state.sphereName} leftAction={() => { BackAction(); }} />
+      <Background image={this.props.backgrounds.menu} >
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

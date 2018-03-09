@@ -21,16 +21,34 @@ import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {Util} from "../../util/Util";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
+import {CancelButton} from "../components/Topbar/CancelButton";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
 
 
 
 export class ApplianceAdd extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    return {
+      title: "Add Device Type",
+      headerLeft: <CancelButton onPress={BackAction} />,
+      headerRight: <TopbarButton
+        text={"Create"}
+        onPress={() => {
+          params.rightAction ? params.rightAction() : () => {}
+        }}
+      />
+    }
+  };
+
   refName : string;
 
   constructor(props) {
     super(props);
     this.state = {name:'', icon: getRandomC1Name(), selectedStones: {}};
     this.refName = "listItems";
+
+    this.props.navigation.setParams({rightAction: () => { this.createDevice();}})
   }
 
   _getItems() {
@@ -112,16 +130,7 @@ export class ApplianceAdd extends Component<any, any> {
     let items = this._getItems();
     let imageSize = 0.9;
     return (
-      <Background hideInterface={true} image={backgroundImage} >
-        <TopBar
-          notBack={true}
-          left={'Cancel'}
-          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
-          leftAction={ Actions.pop }
-          right={'Create'}
-          rightStyle={{fontWeight: 'bold'}}
-          rightAction={ () => { this.createDevice(); }}
-          title="Add Device Type"/>
+      <Background hasNavBar={false} image={backgroundImage} >
         <View style={{flex:1}}>
             <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} separatorIndent={true} />
             <View style={{flex:1, alignItems:'center', justifyContent:'center', paddingTop:10, paddingBottom: tabBarHeight + 20}}>

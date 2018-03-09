@@ -20,6 +20,10 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 
 export class SettingsSphereInvite extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Invite" }
+  };
+
   inputStates : any;
 
   constructor(props) {

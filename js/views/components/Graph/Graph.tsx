@@ -76,13 +76,12 @@ export class Graph extends Component<any, any> {
     if (props.options) {
       this.setOptions(props.options);
     }
-  }
 
-  componentWillMount() {
     let now = new Date().valueOf();
     this.range.start = new Date(now - RANGE);
     this.range.end   = new Date(now + OVERSHOOT);
   }
+
 
   componentDidMount() {
     this.loadData();

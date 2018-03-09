@@ -14,6 +14,9 @@ const DeviceInfo = require('react-native-device-info');
   // it is used to link an installation to a specific App.
   export const APP_NAME = 'Crownstone.consumer';
 
+  // possiblity to block Sentry
+  export const USE_SENTRY = true;
+
 /******************** /RELEASE FLAGS ********************/
 
 

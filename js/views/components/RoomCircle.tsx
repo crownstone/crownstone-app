@@ -95,12 +95,11 @@ class RoomCircleClass extends Component<any, any> {
     this.fadeDuration = this.movementDuration;
 
     this.unsubscribeSetupEvents = [];
+
+    // set the usage initially
+    this.usage = getCurrentPowerUsageInLocation(props.store.getState(), props.sphereId, props.locationId);
   }
 
-  componentWillMount() {
-    // set the usage initially
-    this.usage = getCurrentPowerUsageInLocation(this.props.store.getState(), this.props.sphereId, this.props.locationId);
-  }
 
   componentDidMount() {
     const { store } = this.props;

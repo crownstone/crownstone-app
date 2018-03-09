@@ -34,6 +34,11 @@ export class RoomBottomExplanation extends Component<any, any> {
     super(props);
     this.unsubscribeSetupEvents = [];
     this.state = {explanation: null, buttonCallback: null};
+
+    let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
+    if (seeStoneInSetupMode === true && this.props.locationId !== null) {
+      this._loadSetupMessage();
+    }
   }
 
   componentDidMount() {
@@ -53,12 +58,6 @@ export class RoomBottomExplanation extends Component<any, any> {
     clearTimeout(this.cleanupTimeout);
   }
 
-  componentWillMount() {
-    let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
-    if (seeStoneInSetupMode === true && this.props.locationId !== null) {
-      this._loadSetupMessage();
-    }
-  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.locationId === null) {

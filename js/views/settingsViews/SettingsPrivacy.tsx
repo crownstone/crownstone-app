@@ -21,6 +21,10 @@ import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 
 
 export class SettingsPrivacy extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Privacy" }
+  };
+
   unsubscribe : any;
 
   constructor(props) {

@@ -87,6 +87,8 @@ export class RoomLayer extends Component<any, any> {
       this.viewWidth =  3 * screenWidth;
       this.viewHeight = 3 * availableScreenHeight;
     }
+
+    this.init();
   }
 
   _findPress(x,y) {
@@ -161,7 +163,7 @@ export class RoomLayer extends Component<any, any> {
     }
   }
 
-  componentWillMount() {
+  init() {
     this.panListener = this.state.pan.addListener(value => this._currentPan = value);
     this.loadInSolver();
 
