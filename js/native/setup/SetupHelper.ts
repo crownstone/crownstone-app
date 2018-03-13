@@ -111,7 +111,7 @@ export class SetupHelper {
               let isPlug = this.type === STONE_TYPES.plug;
               let isGuidestone = this.type === STONE_TYPES.guidestone;
               let showRestoreAlert = false;
-              let addStoneAction = {
+              let finalizeSetupStoneAction = {
                 type:           "ADD_STONE",
                 sphereId:       sphereId,
                 stoneId:        localId,
@@ -131,17 +131,18 @@ export class SetupHelper {
                 }
               };
 
-              if (MapProvider.cloud2localMap.stones[this.stoneIdInCloud] !==  undefined) {
+              if (MapProvider.cloud2localMap.stones[this.stoneIdInCloud]) {
                 showRestoreAlert = true;
+                finalizeSetupStoneAction.type = "UPDATE_STONE_CONFIG";
                 this._restoreSchedules(store, sphereId, MapProvider.cloud2localMap.stones[localId]);
               }
               else {
                 // if we do not know the stone, we provide the new name and icon
-                addStoneAction.data["name"] = this.name + ' ' + this.cloudResponse.uid;
-                addStoneAction.data["icon"] = this.icon;
+                finalizeSetupStoneAction.data["name"] = this.name + ' ' + this.cloudResponse.uid;
+                finalizeSetupStoneAction.data["icon"] = this.icon;
               }
 
-              actions.push(addStoneAction);
+              actions.push(finalizeSetupStoneAction);
               actions.push({
                 type: 'UPDATE_STONE_SWITCH_STATE',
                 sphereId: sphereId,

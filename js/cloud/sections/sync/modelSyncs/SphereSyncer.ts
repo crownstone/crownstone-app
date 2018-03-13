@@ -16,6 +16,7 @@ import { ApplianceSyncer }    from "./ApplianceSyncer";
 import { StoneSyncer }        from "./StoneSyncer";
 import { MessageSyncer }      from "./MessageSyncer";
 import {LOG} from "../../../../logging/Log";
+import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 export class SphereSyncer extends SyncingBase {
 
@@ -145,6 +146,8 @@ export class SphereSyncer extends SyncingBase {
 
   syncLocalSphereDown(localId, sphereInState, sphere_from_cloud) {
     if (shouldUpdateInCloud(sphereInState.config, sphere_from_cloud)) {
+      if (!Permissions.inSphere(localId).canUploadSpheres) { return }
+
       this.transferPromises.push(
         transferSpheres.updateOnCloud({
           localData: sphereInState,

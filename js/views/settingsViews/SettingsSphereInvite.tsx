@@ -17,12 +17,13 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../util/Back";
 
 export class SettingsSphereInvite extends Component<any, any> {
   inputStates : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       email: '',
       permission:'Guest'
@@ -124,7 +125,7 @@ export class SettingsSphereInvite extends Component<any, any> {
           userId: this.state.email.toLowerCase(),
           data: { email: this.state.email.toLowerCase(), invitationPending: true, accessLevel: this.state.permission.toLowerCase()}
         });
-        let defaultAction = () => { Actions.pop(); };
+        let defaultAction = () => { BackAction(); };
         Alert.alert("Invite has been sent!","An email has been sent to " + this.state.email + ".", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction })
       })
       .catch((err) => {

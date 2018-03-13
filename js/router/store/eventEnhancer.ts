@@ -131,6 +131,7 @@ function checkAction(action, affectedIds) {
       eventStatus['updateSphereUser'] = affectedIds;
       break;
     case 'REMOVE_SPHERE_USER':
+      eventStatus['userPositionUpdate'] = affectedIds;
       eventStatus['removeSphereUser'] = affectedIds;
       eventStatus['changeSphereUsers'] = affectedIds;
       eventStatus['updateSphereUser'] = affectedIds;
@@ -145,6 +146,7 @@ function checkAction(action, affectedIds) {
     case 'ADD_STONE':
       eventStatus['addStone'] = affectedIds;
       eventStatus['changeStones'] = affectedIds;
+    case 'UPDATE_STONE_LOCAL_CONFIG':
     case 'UPDATE_STONE_CONFIG':
     case 'UPDATE_STONE_ERRORS':
     case 'RESET_STONE_ERRORS':
@@ -186,6 +188,7 @@ function checkAction(action, affectedIds) {
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus['changeUserData'] = affectedIds; break;
     case "SET_DEVELOPER_MODE":
+    case "CHANGE_DEV_SETTINGS":
       eventStatus['changeUserDeveloperStatus'] = true; break;
     case "SET_LOGGING":
     case 'SET_DEVELOPER_MODE':
@@ -239,10 +242,12 @@ function checkAction(action, affectedIds) {
     case "CLOUD_EVENT_REMOVE_APPLIANCES":
     case "CLOUD_EVENT_REMOVE_LOCATIONS":
     case "CLOUD_EVENT_REMOVE_STONES":
+    case "CLOUD_EVENT_REMOVE_USER":
     case "CLOUD_EVENT_REMOVE_SCHEDULES":
     case "CLOUD_EVENT_REMOVE_INSTALLATIONS":
     case "CLOUD_EVENT_REMOVE_DEVICES":
     case "CLOUD_EVENT_REMOVE_MESSAGES":
+    case "CLOUD_EVENT_SPECIAL_USER":
     case "CLOUD_EVENT_SPECIAL_APPLIANCES":
     case "CLOUD_EVENT_SPECIAL_LOCATIONS":
     case "CLOUD_EVENT_SPECIAL_STONES":
@@ -271,6 +276,7 @@ function checkAction(action, affectedIds) {
     case "FINISHED_REMOVE_INSTALLATIONS":
     case "FINISHED_REMOVE_DEVICES":
     case "FINISHED_REMOVE_MESSAGES":
+    case "FINISHED_SPECIAL_USER":
     case "FINISHED_SPECIAL_APPLIANCES":
     case "FINISHED_SPECIAL_LOCATIONS":
     case "FINISHED_SPECIAL_STONES":
@@ -285,6 +291,14 @@ function checkAction(action, affectedIds) {
     case "UPDATE_LOCATION_CLOUD_ID":
     case "UPDATE_STONE_CLOUD_ID":
     case "UPDATE_SPHERE_CLOUD_ID":
+      break;
+    case "UPDATE_STONE_DIAGNOSTICS":
+    case "UPDATE_STONE_PREVIOUS_SWITCH_STATE":
+      break;
+    case "UPDATE_STONE_SWITCH_STATE_TRANSIENT":
+      eventStatus['stoneUsageUpdatedTransient'] = affectedIds; break;
+    case "UPDATE_STONE_CONFIG_TRANSIENT":
+    case "USER_UPDATE_PICTURE":
       break;
     default:
       LOG.warn("UNKNOWN ACTION TYPE:", action);

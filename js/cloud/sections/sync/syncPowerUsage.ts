@@ -3,6 +3,7 @@ import {LOG} from "../../../logging/Log";
 import {Util} from "../../../util/Util";
 import {CLOUD} from "../../cloudAPI";
 import {HISTORY_PERSISTENCE} from "../../../ExternalConfig";
+import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 export const cleanupPowerUsage = function(state, actions) {
   LOG.info("SYNC: cleanupPowerUsage starting");
@@ -53,6 +54,7 @@ export const syncPowerUsage = function(state, actions) {
 
   // check if we have to upload local data:
   for (let i = 0; i < sphereIds.length; i++) {
+    if (!Permissions.inSphere(sphereIds[i]).canUploadData) { continue; }
 
     // for all spheres
     let sphere = state.spheres[sphereIds[i]];
@@ -75,7 +77,7 @@ export const syncPowerUsage = function(state, actions) {
           for (let x = 0; x < data.length; x++) {
             // if synced is null, it will not be synced.
             if (data[x].synced === false) {
-              uploadData.push({ power: data[x].power, timestamp: data[x].timestamp, applianceId: data[x].applianceId});
+              uploadData.push({ power: data[x].power, powerFactor: data[x].powerFactor, timestamp: data[x].timestamp, applianceId: data[x].applianceId});
               indices.push(x);
 
               if (uploadData.length >= maxBatchSize) {

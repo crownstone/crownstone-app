@@ -39,6 +39,7 @@ import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
 import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../util/Back";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -49,8 +50,8 @@ export class RoomOverview extends Component<any, any> {
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {pendingRequests:{}, scrollViewHeight: new Animated.Value(screenHeight-tabBarHeight-topBarHeight-100)};
     this.unsubscribeSetupEvents = [];
 
@@ -95,20 +96,22 @@ export class RoomOverview extends Component<any, any> {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
 
-      if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId]) {
-        Actions.pop();
+      if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
+          change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
+        BackAction();
         return;
       }
 
       if (
-        (change.updateApplianceConfig)  ||
-        (change.updateStoneConfig)      ||
-        (change.changeFingerprint)      ||
-        (change.stoneRssiUpdated  && change.stoneRssiUpdated.sphereIds[this.props.sphereId]) ||
-        (change.stoneUsageUpdated && change.stoneUsageUpdated.sphereIds[this.props.sphereId]) ||
-        (change.changeSphereState && change.changeSphereState.sphereIds[this.props.sphereId]) ||
-        (change.changeStoneState  && change.changeStoneState.sphereIds[this.props.sphereId])  ||
-        (change.stoneLocationUpdated && change.stoneLocationUpdated.sphereIds[this.props.sphereId])  ||
+        (change.updateApplianceConfig) ||
+        (change.updateStoneConfig)     ||
+        (change.changeFingerprint)     ||
+        (change.changeSphereUsers      && change.changeSphereUsers.sphereIds[this.props.sphereId])     ||
+        (change.stoneRssiUpdated       && change.stoneRssiUpdated.sphereIds[this.props.sphereId])      ||
+        (change.stoneUsageUpdated      && change.stoneUsageUpdated.sphereIds[this.props.sphereId])     ||
+        (change.changeSphereState      && change.changeSphereState.sphereIds[this.props.sphereId])     ||
+        (change.changeStoneState       && change.changeStoneState.sphereIds[this.props.sphereId])      ||
+        (change.stoneLocationUpdated   && change.stoneLocationUpdated.sphereIds[this.props.sphereId])  ||
         (change.changeStones)
       ) {
         this.forceUpdate();
@@ -130,6 +133,9 @@ export class RoomOverview extends Component<any, any> {
   componentWillUnmount() {
     this.unsubscribeSetupEvents.forEach((unsubscribe) => { unsubscribe(); });
     this.unsubscribeStoreEvents();
+
+    // we keep open a connection for a few seconds to await a second command
+    BatchCommandHandler.closeKeptOpenConnection();
   }
 
   _renderer(item, index, stoneId) {
@@ -192,7 +198,7 @@ export class RoomOverview extends Component<any, any> {
     let shownHandles = {};
 
 
-    if (DfuStateHandler.areDfuStonesAvailable() === true) {
+    if (DfuStateHandler.areDfuStonesAvailable() === true && Permissions.inSphere(this.props.sphereId).canUpdateCrownstone) {
       let dfuStones = DfuStateHandler.getDfuStones();
       let dfuIds = Object.keys(dfuStones);
       dfuIds.forEach((dfuId) => {
@@ -204,7 +210,7 @@ export class RoomOverview extends Component<any, any> {
     }
 
     // add the stoneIds of the Crownstones in setup mode to the list but only if we're in the floating category
-    if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null) {
+    if (SetupStateHandler.areSetupStonesAvailable() === true && this.props.locationId === null && Permissions.inSphere(this.props.sphereId).seeSetupCrownstone) {
       let setupStones = SetupStateHandler.getSetupStones();
       let setupIds = Object.keys(setupStones);
       setupIds.forEach((setupId) => {
@@ -217,13 +223,21 @@ export class RoomOverview extends Component<any, any> {
       });
     }
 
+    let tempStoneDataArray = [];
     stoneIds.forEach((stoneId) => {
       // do not show the same device twice
       let handle = stones[stoneId].stone.config.handle;
       if (shownHandles[handle] === undefined) {
-        ids.push(stoneId);
-        stoneArray.push(stones[stoneId]);
+        tempStoneDataArray.push({stone: stones[stoneId], id: stoneId});
       }
+    });
+
+    // sort the order of things by crownstone Id
+    tempStoneDataArray.sort((a,b) => { return a.stone.stone.config.crownstoneId - b.stone.stone.config.crownstoneId });
+
+    tempStoneDataArray.forEach((stoneData) => {
+      ids.push(stoneData.id);
+      stoneArray.push(stoneData.stone);
     });
 
     return { stoneArray, ids };
@@ -311,7 +325,7 @@ export class RoomOverview extends Component<any, any> {
         right={ rightLabel }
         rightItem={ this._getRightItem(state, enoughCrownstones, rightLabel) }
         rightAction={ rightAction }
-        leftAction={ () => { Actions.pop(); }}
+        leftAction={ () => { BackAction(); }}
       />
     );
   }
@@ -343,10 +357,11 @@ export class RoomOverview extends Component<any, any> {
       let {stoneArray, ids} = this._getStoneList(stones);
       this._setNearestStoneInRoom(stoneArray, ids);
       this._setNearestStoneInSphere(state.spheres[this.props.sphereId].stones);
+      let viewHeight = screenHeight-tabBarHeight-topBarHeight-100;
       content = (
         <Animated.View style={{height: this.state.scrollViewHeight}}>
           <ScrollView style={{position:'relative', top:-1}}>
-            <View style={{height: Math.max(Object.keys(stoneArray).length*85+200, screenHeight-tabBarHeight-topBarHeight-100)} /* make sure we fill the screen */}>
+            <View style={{height: Math.max(stoneArray.length*81 + 0.5*viewHeight, viewHeight)} /* make sure we fill the screen */}>
               <SeparatedItemList
                 items={stoneArray}
                 ids={ids}
@@ -448,5 +463,3 @@ export const topBarStyle = StyleSheet.create({
     color: colors.iosBlue.hex
   }
 });
-
-

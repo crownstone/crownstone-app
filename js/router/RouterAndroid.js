@@ -1,15 +1,5 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
-  Alert,
-  AppRegistry,
-  Navigator,
-  Dimensions,
-  Image,
-  PixelRatio,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Text,
   View
 } from 'react-native';
 import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
@@ -24,6 +14,7 @@ import { ErrorOverlay }              from '../views/overlays/ErrorOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
 import { LocalizationSetupStep1 }    from '../views/overlays/LocalizationSetupStep1'
 import { LocalizationSetupStep2 }    from '../views/overlays/LocalizationSetupStep2'
+import { LockOverlay }               from '../views/overlays/LockOverlay'
 import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibration'
 import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
@@ -43,11 +34,11 @@ export class Router_Android extends Component {
             <Scene key="Root" hideNavBar={false}>
               <Scene key="loginSplash"                component={Views.LoginSplash}                panHandlers={null} hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
               <Scene key="login"                      component={Views.Login}                      panHandlers={null} hideNavBar={true}  />
-              <Scene key="tutorial"                   component={Views.Tutorial}                   hideNavBar={true}  />
+              <Scene key="logout"                     component={Views.Logout}                     panHandlers={null} hideNavBar={true}  />
+              <Scene key="tutorial"                   component={Views.Tutorial}                   panHandlers={null} hideNavBar={true}  />
               <Scene key="register"                   component={Views.Register}                   panHandlers={null} hideNavBar={false} title="Register" {...navBarStyle} />
               <Scene key="registerConclusion"         component={Views.RegisterConclusion}         panHandlers={null} hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} renderLeftButton={()=>{}} />
               <Scene key="pictureView"                component={Views.PictureView}                panHandlers={null} hideNavBar={true}  direction="vertical" />
-              <Scene key="picturePreview"             component={Views.PicturePreview}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="cameraRollView"             component={Views.CameraRollView}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="aiStart"                    component={Views.AiStart}                    panHandlers={null} hideNavBar={false} direction="vertical" title="Hello!" renderLeftButton={()=>{}} />
               <Scene key="roomTraining_roomSize"      component={Views.RoomTraining_roomSize}      panHandlers={null} hideNavBar={true}  direction="vertical" />
@@ -59,10 +50,10 @@ export class Router_Android extends Component {
               <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} panHandlers={null} hideNavBar={false} title="Recover Crownstone" />
               <Scene key="selectFromList"             component={Views.SelectFromList}             panHandlers={null} hideNavBar={true}  direction="vertical" />
               <Scene key="sphereOverview"             component={Views.SphereOverview}             panHandlers={null} hideNavBar={true}  initial={this.props.loggedIn} />
-              <Scene key="roomOverview"               component={Views.RoomOverview}               panHandlers={null} hideNavBar={true}  />
-              <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={false} title="Room Settings" />
-              <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true}  title="Create Room" />
-              <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={false} title="Edit Device" />
+              <Scene key="roomOverview"               component={Views.RoomOverview}               panHandlers={null} hideNavBar={true} />
+              <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={true} direction="vertical" />
+              <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true} direction="vertical" />
+              <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={true} direction="vertical" />
               <Scene key="deviceOverview"             component={Views.DeviceOverview}             panHandlers={null} hideNavBar={true} />
               <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         panHandlers={null} hideNavBar={true} />
               <Scene key="applianceAdd"               component={Views.ApplianceAdd}               panHandlers={null} hideNavBar={true} direction="vertical" />
@@ -72,6 +63,8 @@ export class Router_Android extends Component {
               <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
               <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
               <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          panHandlers={null} hideNavBar={false} title="Developer" />
+              <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}           panHandlers={null} hideNavBar={false} title="BLE Debug" />
+              <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}      panHandlers={null} hideNavBar={false} title="Stone BLE Debug" />
               <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}       panHandlers={null} hideNavBar={false} title="Mesh Overview" />
               <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}            panHandlers={null} hideNavBar={false} title="Developer" />
               <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     panHandlers={null} hideNavBar={false} title="Sphere Overview" />
@@ -79,13 +72,14 @@ export class Router_Android extends Component {
               <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  panHandlers={null} hideNavBar={false} title="[Username here]" />
               <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       panHandlers={null} hideNavBar={false} title="Invite" />
-              <Scene key="messageInbox"               component={Views.MessageInbox}               hideNavBar={true} />
-              <Scene key="messageAdd"                 component={Views.MessageAdd}                 hideNavBar={true} />
-              <Scene key="messageThread"              component={Views.MessageThread}              hideNavBar={true} />
+              <Scene key="messageInbox"               component={Views.MessageInbox}               panHandlers={null} hideNavBar={true} />
+              <Scene key="messageAdd"                 component={Views.MessageAdd}                 panHandlers={null} hideNavBar={true} direction="vertical" />
+              <Scene key="messageThread"              component={Views.MessageThread}              panHandlers={null} hideNavBar={true} />
             </Scene>
           </Scene>
         </Router>
-        <DfuOverlay store={this.props.store} />
+        <DfuOverlay  store={this.props.store} />
+        <LockOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />
         <TapToToggleCalibration store={this.props.store} />

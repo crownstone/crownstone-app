@@ -40,11 +40,14 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   isReady:             () => { return BluenetPromise('isReady');              },
   connect:             (handle) => {
     // tell the app that something is connecting.
-    eventBus.emit("connect", handle);
+    eventBus.emit("connecting", handle);
 
     // connect
     if (handle) {
-      return BluenetPromise('connect', handle);
+      return BluenetPromise('connect', handle)
+        .then(() => {
+          eventBus.emit("connected", handle);
+        })
     }
     else {
       return new Promise((resolve, reject) => {
@@ -95,17 +98,20 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   bootloaderToNormalMode:     ( handle ) => { return BluenetPromise('bootloaderToNormalMode', handle); },
 
   //new
-  getErrors:                  () => { return BluenetPromise('getErrors'); }, // returns { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
   clearErrors:                (clearErrorJSON) => { return BluenetPromise('clearErrors', clearErrorJSON); },
-  restartCrownstone:          () => { return BluenetPromise('restartCrownstone'); },
-  clearFingerprintsPromise:   () => { return BluenetPromise('clearFingerprintsPromise'); },
+  getErrors:                  ()     => { return BluenetPromise('getErrors'); }, // returns { overCurrent: boolean, overCurrentDimmer: boolean, temperatureChip: boolean, temperatureDimmer: boolean, bitMask: uint32 }
+  restartCrownstone:          ()     => { return BluenetPromise('restartCrownstone'); },
+  clearFingerprintsPromise:   ()     => { return BluenetPromise('clearFingerprintsPromise'); },
   setTime:                    (time) => { return BluenetPromise('setTime',time); },
-  getTime:                    () => { return BluenetPromise('getTime'); },
+  getTime:                    ()     => { return BluenetPromise('getTime'); },
 
   addSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('addSchedule', data); }, // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
   setSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('setSchedule', data); },
   clearSchedule:                  (scheduleEntryIndex: number) => { return BluenetPromise('clearSchedule', scheduleEntryIndex); },
   getAvailableScheduleEntryIndex: () => { return BluenetPromise('getAvailableScheduleEntryIndex'); },             // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules
   getSchedules:                   () => { return BluenetPromise('getSchedules'); },                               // must return array of bridgeScheduleEntry
-};
 
+  getSwitchState:                 () => { return BluenetPromise('getSwitchState'); },
+  lockSwitch:                     (lock: boolean)   => { return BluenetPromise('lockSwitch', lock); },
+  allowDimming:                   (allow : boolean) => { return BluenetPromise('allowDimming', allow); },
+};

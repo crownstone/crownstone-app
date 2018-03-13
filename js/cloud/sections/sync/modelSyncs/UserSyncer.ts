@@ -16,7 +16,7 @@ export class UserSyncer extends SyncingBase {
   userId : string;
 
   download() {
-    return CLOUD.getUserData()
+    return CLOUD.forUser(this.userId).getUserData()
   }
 
   sync(store) {
@@ -42,16 +42,6 @@ export class UserSyncer extends SyncingBase {
             this.actions.push({type:'USER_APPEND', data:{ picture: picturePath, pictureId: userInCloud.profilePicId }});
           }).catch((err) => { LOGe.cloud("UserSyncer: Could not download profile picture to ", toPath, ' err:', err); })
       );
-    }
-
-    let cloudFirmwareVersions = userInCloud.firmwareVersionsAvailable || null;
-    let cloudBootloaderVersions = userInCloud.bootloaderVersionsAvailable || null;
-
-    if (
-      userInState && cloudFirmwareVersions && cloudBootloaderVersions &&
-      (userInState.firmwareVersionsAvailable !== cloudFirmwareVersions || userInState.bootloaderVersionsAvailable !== cloudBootloaderVersions)
-    ) {
-      this.actions.push({type:'SET_NEW_FIRMWARE_VERSIONS', data: {firmwareVersionsAvailable: cloudFirmwareVersions, bootloaderVersionsAvailable: cloudBootloaderVersions}})
     }
 
     if (shouldUpdateLocally(userInState, userInCloud)) {

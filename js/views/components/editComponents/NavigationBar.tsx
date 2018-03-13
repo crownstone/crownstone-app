@@ -13,7 +13,7 @@ export class NavigationBar extends Component<any, any> {
   setActiveElement : any;
 
   constructor(props) {
-    super();
+    super(props);
     let emptyFunction = () => {};
     this.setActiveElement = props.setActiveElement || emptyFunction;
   }
@@ -22,6 +22,8 @@ export class NavigationBar extends Component<any, any> {
     let navBarHeight = this.props.barHeight || barHeight;
     if (this.props.largeIcon)
       navBarHeight = 75;
+    else if (this.props.mediumIcon)
+      navBarHeight = 62;
     else if (this.props.icon)
       navBarHeight = 50;
 
@@ -29,6 +31,7 @@ export class NavigationBar extends Component<any, any> {
       <TouchableHighlight onPress={() => {this.setActiveElement(); this.props.callback()}}>
         <View style={[styles.listView, {height: navBarHeight}]}>
           {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
+          {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
           {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
 
           {this.props.value !== undefined && this.props.valueRight !== true ?
@@ -36,6 +39,7 @@ export class NavigationBar extends Component<any, any> {
             :
             <Text numberOfLines={1} style={[styles.listTextLarge, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
           }
+          {this.props.subtext ? <Text style={[{fontSize:12, color:colors.iosBlue.hex}, this.props.subtextStyle]}>{this.props.subtext}</Text> : undefined}
           {this.props.value !== undefined ?
             this.props.valueRight ?
               <Text style={[{flex:1, fontSize:16}, this.props.valueStyle, this.props.style]}>{this.props.value}</Text>

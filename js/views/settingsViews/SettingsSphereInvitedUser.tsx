@@ -20,14 +20,15 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth } from './../styles'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereInvitedUser extends Component<any, any> {
   deleting : boolean;
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.deleting = false;
   }
 
@@ -90,7 +91,7 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
                         sphereId: this.props.sphereId,
                         userId: this.props.userId,
                       });
-                      Actions.pop();
+                      BackAction();
                     };
                     Alert.alert("Invitation Revoked!", "", [{
                       text: "OK",

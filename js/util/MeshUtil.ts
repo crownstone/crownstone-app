@@ -1,3 +1,5 @@
+import {LOGi} from "../logging/Log";
+
 export const MeshUtil = {
 
   /**
@@ -63,5 +65,32 @@ export const MeshUtil = {
       data: {meshNetworkId: networkId}
     }
   },
+
+  clearMeshNetworkIds(store, sphereId = null) {
+    LOGi.mesh("MeshUtil: Clearing the mesh network ids.");
+    const state = store.getState();
+    let actions = [];
+
+    let getClearMeshNeworkActionsInSphere = (sphereId) => {
+      let sphere = state.spheres[sphereId];
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        actions.push({type:'UPDATE_MESH_NETWORK_ID', sphereId: sphereId, stoneId: stoneId, data:{meshNetworkId: null}})
+      })
+    }
+    if (sphereId) {
+      getClearMeshNeworkActionsInSphere(sphereId);
+    }
+    else {
+      let sphereIds = Object.keys(state.spheres);
+      sphereIds.forEach((sphereId) => {
+        getClearMeshNeworkActionsInSphere(sphereId);
+      })
+    }
+
+    if (actions.length > 0) {
+      store.batchDispatch(actions);
+    }
+  }
 
 };

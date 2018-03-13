@@ -2,6 +2,7 @@ import { update, refreshDefaults } from './reducerUtil'
 
 let defaultState = {
   log_info:      true,
+  log_native:    true,
   log_warnings:  true,
   log_errors:    true,
   log_mesh:      true,
@@ -12,12 +13,15 @@ let defaultState = {
   log_store:     false,
   log_cloud:     false,
   log_debug:     false,
+  use_advertisement_rssi_too: false,
+  use_mesh: false
 };
 
 // developmentReducer
 export default (state = defaultState, action : any = {}) => {
   let newState;
   switch (action.type) {
+    case 'CHANGE_DEV_SETTINGS':
     case 'DEFINE_LOGGING_DETAILS':
       if (action.data) {
         newState = {...state};
@@ -25,6 +29,7 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_warnings =  update(action.data.log_warnings,   newState.log_warnings);
         newState.log_errors =    update(action.data.log_errors,     newState.log_errors);
         newState.log_mesh =      update(action.data.log_mesh,       newState.log_mesh);
+        newState.log_native =    update(action.data.log_native,     newState.log_native);
         newState.log_scheduler = update(action.data.log_scheduler,  newState.log_scheduler);
         newState.log_verbose =   update(action.data.log_verbose,    newState.log_verbose);
         newState.log_ble =       update(action.data.log_ble,        newState.log_ble);
@@ -32,6 +37,8 @@ export default (state = defaultState, action : any = {}) => {
         newState.log_store =     update(action.data.log_store,      newState.log_store);
         newState.log_cloud =     update(action.data.log_cloud,      newState.log_cloud);
         newState.log_debug =     update(action.data.log_debug,      newState.log_debug);
+        newState.use_mesh =      update(action.data.use_mesh,       newState.use_mesh);
+        newState.use_advertisement_rssi_too = update(action.data.use_advertisement_rssi_too,      newState.use_advertisement_rssi_too);
         return newState;
       }
       return state;

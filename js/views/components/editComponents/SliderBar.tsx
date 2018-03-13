@@ -8,8 +8,8 @@ import { styles, colors } from '../../styles'
 
 
 export class SliderBar extends Component<any, any> {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   render() {

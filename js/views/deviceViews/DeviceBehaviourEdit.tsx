@@ -17,6 +17,7 @@ import { Util, addDistanceToRssi }     from '../../util/Util'
 import { NativeBus }                   from '../../native/libInterface/NativeBus'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import {BehaviourUtil} from "../../util/BehaviourUtil";
+import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -50,8 +51,8 @@ export class DeviceBehaviourEdit extends Component<any, any> {
   viewingRemotely : any;
   canDoIndoorLocalization : boolean;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.detectionTimeout = undefined;
     this.unsubscribeNative = undefined;
     this._uuid = Util.getUUID();
@@ -66,7 +67,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
 
       // if the stone has been deleted, close everything.
       if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
-        return Actions.pop();
+        return BackAction();
       }
 
       let state = this.props.store.getState();

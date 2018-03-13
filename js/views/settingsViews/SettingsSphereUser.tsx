@@ -18,17 +18,13 @@ import { styles, colors, screenWidth } from '../styles'
 import {LOG} from "../../logging/Log";
 import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereUser extends Component<any, any> {
-  deleting : boolean;
+  deleting : boolean = false;
   unsubscribe : any;
 
-  constructor() {
-    super();
-    this.deleting = false;
-    this.unsubscribe = undefined;
-  }
 
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
@@ -97,7 +93,7 @@ export class SettingsSphereUser extends Component<any, any> {
                 sphereId: this.props.sphereId,
                 userId: this.props.userId,
               });
-              Actions.pop();
+              BackAction();
             }}], {cancelable : false});
           })
           .catch((err) => {
@@ -112,7 +108,6 @@ export class SettingsSphereUser extends Component<any, any> {
 
     return items;
   }
-
 
 
   render() {

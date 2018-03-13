@@ -1,7 +1,7 @@
 import { CLOUD }        from "../cloudAPI";
 import { LOG }          from "../../logging/Log";
 import { transferUtil } from "./shared/transferUtil";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
   {local: 'name',           cloud: 'name'   },
@@ -11,7 +11,6 @@ let fieldMap : fieldMap = [
   {local: 'onlyOnWhenDark', cloud: 'onlyOnWhenDark'},
   {local: 'updatedAt',      cloud: 'updatedAt' },
   {local: 'json',           cloud: 'json',  localToCloudOnly: true},
-
   {local: 'dimmable',       cloud:  null    },
   {local: 'cloudId',        cloud:  'id' ,  cloudToLocalOnly: true    },
 ];

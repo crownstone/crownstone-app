@@ -22,7 +22,7 @@ export class AnimatedCircle extends Component<any, any> {
   value : number;
 
   constructor(props) {
-    super();
+    super(props);
     this.color1 = props.color;
     this.color2 = props.color;
     this.state = {colorPhase: new Animated.Value(0)};

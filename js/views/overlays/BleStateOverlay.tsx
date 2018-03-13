@@ -13,8 +13,8 @@ import { styles, colors , screenHeight, screenWidth } from '../styles'
 export class BleStateOverlay extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       visible: false,
@@ -36,7 +36,7 @@ export class BleStateOverlay extends Component<any, any> {
           this.setState({visible: true, notificationType: status});
           break;
         default: // "unknown":
-          this.setState({visible: true, notificationType: status});
+          this.setState({notificationType: status});
           break;
       }
     }));

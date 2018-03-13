@@ -16,14 +16,14 @@ import { Util } from '../../util/Util'
 import { styles, colors, screenWidth } from './../styles'
 import { IconCircle } from "../components/IconCircle";
 
-let floatingNetworkKey = '__null';
+let FLOATING_NETWORK_KEY = '__null';
 
 export class SettingsMeshOverview extends Component<any, any> {
   unsubscribeStoreEvents : any;
   lastOffset : number = null;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { leftOffset: new Animated.Value() };
   }
 
@@ -47,9 +47,9 @@ export class SettingsMeshOverview extends Component<any, any> {
     networksAvailable.forEach((networkKey) => {
       networkElements.push(<Network
         key={networkKey}
-        label={networkKey === floatingNetworkKey? 'Not in Mesh:' : 'Network #' + networkKey + ':'}
+        label={networkKey === FLOATING_NETWORK_KEY? 'Not in Mesh:' : 'Network #' + networkKey + ':'}
         data={networks[networkKey]}
-        connected={networkKey !== floatingNetworkKey}
+        connected={networkKey !== FLOATING_NETWORK_KEY}
       />)
     });
 
@@ -79,7 +79,7 @@ export class SettingsMeshOverview extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
-    let sphereId = Util.data.getPresentSphere(state) || Object.keys(state.spheres)[0];
+    let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
     let sphere = state.spheres[sphereId];
     let locationIds = Object.keys(state.spheres[sphereId].locations);
     locationIds.push(null); // to account for all floating crownstones
@@ -90,7 +90,7 @@ export class SettingsMeshOverview extends Component<any, any> {
     locationIds.forEach((locationId) => {
       let stonesInLocation = Util.data.getStonesInLocationArray(state, sphereId, locationId);
       stonesInLocation.forEach((stone) => {
-        let key = stone.config.meshNetworkId || floatingNetworkKey;
+        let key = stone.config.meshNetworkId || FLOATING_NETWORK_KEY;
         if (networks[key] === undefined) {
           networks[key] = [];
         }
@@ -105,8 +105,12 @@ export class SettingsMeshOverview extends Component<any, any> {
     // refine to hide networks with only one contestant
     let networkKeys = Object.keys(networks);
     networkKeys.forEach((networkKey) => {
-      if (networks[networkKey].length === 1 && networkKey !== floatingNetworkKey) {
-        networks[floatingNetworkKey].push(networks[networkKey][0]);
+      if (networks[networkKey].length === 1 && networkKey !== FLOATING_NETWORK_KEY) {
+        if (networks[FLOATING_NETWORK_KEY] === undefined) {
+          networks[FLOATING_NETWORK_KEY] = [];
+        }
+
+        networks[FLOATING_NETWORK_KEY].push(networks[networkKey][0]);
         delete networks[networkKey];
       }
     });
@@ -140,7 +144,7 @@ export class SettingsMeshOverview extends Component<any, any> {
           }}>
             {"It can take some time for me to hear what is connected to what. Make sure your phone is near Crownstones to hear they are connected to. If one Crownstone cannot see the others, try moving it closer to the nearest one."}
           </Text>
-          { networkKeys.length === 1 && networkKeys[0] === floatingNetworkKey ? undefined :
+          { networkKeys.length === 1 && networkKeys[0] === FLOATING_NETWORK_KEY ? undefined :
             <Text style={{
               backgroundColor:'transparent',
               fontSize:16,
@@ -168,7 +172,7 @@ export class Network extends Component<any, any> {
   nodeHeight : number = 50;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {
       connectionLineHeight: new Animated.Value(this.getLineHeight(props)),

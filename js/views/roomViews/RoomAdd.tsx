@@ -17,10 +17,11 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import { LOG } from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from '../styles'
+import {styles, colors, screenWidth} from '../styles'
 import {Util} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {BackAction} from "../../util/Back";
 
 
 
@@ -28,7 +29,7 @@ export class RoomAdd extends Component<any, any> {
   refName : string;
 
   constructor(props) {
-    super();
+    super(props);
     this.state = {name:'', icon: 'c1-bookshelf', selectedStones: {}};
     this.refName = "listItems";
   }
@@ -73,7 +74,7 @@ export class RoomAdd extends Component<any, any> {
         Actions.roomIconSelection({
           icon: this.state.icon,
           sphereId: this.props.sphereId,
-          selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}
+          callback: (newIcon) => { this.setState({icon:newIcon}); }
         }
       )}
     });
@@ -176,12 +177,10 @@ export class RoomAdd extends Component<any, any> {
             store.batchDispatch(actions);
 
             if (this.props.fromMovingView === true) {
-              // TODO: implemented this way because of broken pop structure in router-flux
-              Actions.pop({popNum:2});
-              Actions.pop();
+              BackAction(2);
             }
             else {
-              Actions.pop();
+              BackAction();
             }
 
             this.props.eventBus.emit('hideLoading');
@@ -211,7 +210,7 @@ export class RoomAdd extends Component<any, any> {
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     if (this.props.sphereId === null) {
-      Actions.pop();
+      BackAction();
       return <View />
     }
 
@@ -230,7 +229,9 @@ export class RoomAdd extends Component<any, any> {
           right={'Create'}
           rightStyle={{fontWeight: 'bold'}}
           rightAction={ () => { this.createRoom(); }}
-          title="Create Room"/>
+          title="Create Room"
+        />
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
         <ScrollView>
           <View style={{height: itemHeight}}>
             <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} />

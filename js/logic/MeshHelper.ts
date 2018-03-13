@@ -1,5 +1,11 @@
 import { BluenetPromiseWrapper } from '../native/libInterface/BluenetPromise';
 import { LOG }                   from '../logging/Log'
+import { eventBus }              from "../util/EventBus";
+import { conditionMap }          from "../native/advertisements/StoneEntity";
+import {Util} from "../util/Util";
+
+
+const MESH_PROPAGATION_TIMEOUT_MS = 8000;
 
 
 export class MeshHelper {
@@ -42,29 +48,43 @@ export class MeshHelper {
   _handleMultiSwitchCommands() {
     if (this.meshInstruction.multiSwitch.length > 0) {
       let multiSwitchInstructions : multiSwitchPayload[] = this.meshInstruction.multiSwitch;
-        // get data from set
-        let multiSwitchPackets = [];
-        multiSwitchInstructions.forEach((instruction : multiSwitchPayload) => {
-          if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
-            // get the longest timeout and use that
-            multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
-            instruction.promise.pending = true;
-            MeshHelper._mergeOptions(instruction.options, this.activeOptions);
-            this._containedInstructions.push(instruction);
-          }
-          else {
-            LOG.error("MeshHelper: Invalid multiSwitchPackets instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
-          }
-        });
+      // get data from set
+      let multiSwitchPackets = [];
+      let multiSwitchWaitInstructions = [];
+      multiSwitchInstructions.forEach((instruction : multiSwitchPayload) => {
+        if (instruction.crownstoneId !== undefined && instruction.timeout !== undefined && instruction.state !== undefined && instruction.intent !== undefined) {
+          // get the longest timeout and use that
+          multiSwitchPackets.push({crownstoneId: instruction.crownstoneId, timeout: instruction.timeout, intent: instruction.intent, state: instruction.state});
+          multiSwitchWaitInstructions.push(() => {
+            eventBus.emit(
+              Util.events.getIgnoreTopic(instruction.stoneId),
+              {
+                      timeoutMs: MESH_PROPAGATION_TIMEOUT_MS,
+                      conditions: [{type: conditionMap.SWITCH_STATE, expectedValue: instruction.state}]
+                    }
+            );
+          });
 
-
-        if (multiSwitchPackets.length === 0) {
-          return null;
+          instruction.promise.pending = true;
+          MeshHelper._mergeOptions(instruction.options, this.activeOptions);
+          this._containedInstructions.push(instruction);
         }
-        // update the used channels.
-        LOG.mesh('MeshHelper: Dispatching ', 'multiSwitchPackets ', multiSwitchPackets);
-        return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets);
+        else {
+          LOG.error("MeshHelper: Invalid multiSwitchPackets instruction, required crownstoneId, timeout, state, intent. Got:", instruction);
+        }
+      });
+
+      if (multiSwitchPackets.length === 0) {
+        return null;
       }
+      // update the used channels.
+      LOG.mesh('MeshHelper: Dispatching ', 'multiSwitchPackets ', multiSwitchPackets);
+      return BluenetPromiseWrapper.multiSwitch(multiSwitchPackets)
+        .then((result) => {
+          multiSwitchWaitInstructions.forEach((waitInstruction) => { waitInstruction(); });
+          return result;
+        })
+    }
     return null;
   }
 
@@ -109,7 +129,7 @@ export class MeshHelper {
       this.meshInstruction.keepAlive.forEach((instruction : keepAlivePayload) => {
         instruction.promise.pending = true;
         MeshHelper._mergeOptions(instruction.options, this.activeOptions);
-        this._containedInstructions.push( instruction.promise );
+        this._containedInstructions.push( instruction );
       });
 
       return BluenetPromiseWrapper.meshKeepAlive();

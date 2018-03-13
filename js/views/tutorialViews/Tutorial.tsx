@@ -11,14 +11,11 @@ import {
   Text,
   View
 } from 'react-native';
-const Actions = require('react-native-router-flux').Actions;
 
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight, topBarHeight} from '../styles'
 import { Background } from '../components/Background'
-import * as Swiper from 'react-native-swiper';
-import { Util } from "../../util/Util";
+const Swiper = require("react-native-swiper");
 import { TopBar } from "../components/Topbar";
-import { STONE_TYPES } from "../../router/store/reducers/stones";
 import { eventBus } from "../../util/EventBus";
 import {TutorialSphere} from "./elements/TutorialSphere";
 import {TutorialGetStarted} from "./elements/TutorialGetStarted";
@@ -38,8 +35,8 @@ export class Tutorial extends Component<any, any> {
   touchEndTimeout: any;
   requestedPermission;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.requestedPermission = false;
     this.state = {swiperIndex: 0, scrolling:false};
@@ -73,7 +70,7 @@ export class Tutorial extends Component<any, any> {
     };
 
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hideInterface={true}>
         <TopBar title={"Welcome!"} />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <Swiper style={swiperStyles.wrapper} showsPagination={true} height={screenHeight - topBarHeight}

@@ -21,12 +21,13 @@ import { styles, colors, screenWidth, screenHeight, topBarHeight } from '../styl
 import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/editComponents/TextEditInput'
 import loginStyles from './LoginStyles'
+import {BackAction} from "../../util/Back";
 
 export class AiStart extends Component<any, any> {
   backButtonFunction : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     let state = props.store.getState();
     if (Object.keys(state.spheres).length === 0) {
@@ -179,7 +180,7 @@ export class AiStart extends Component<any, any> {
         this.props.store.dispatch({type:'USER_UPDATE', data: {isNew: false}});
         this.props.store.dispatch({type:'UPDATE_SPHERE_CONFIG', sphereId: sphereId, data: {aiName: this.state.aiName, aiSex: this.state.aiSex}});
         if (this.props.canGoBack === true) {
-          Actions.pop();
+          BackAction();
         }
         else {
           this.restoreBackButton();

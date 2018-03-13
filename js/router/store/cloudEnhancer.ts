@@ -52,7 +52,7 @@ export function CloudEnhancer({ getState }) {
     // state after update
     let newState = getState();
 
-    //LOG.debug("isNew state:", getState())
+    //LOGd.info("isNew state:", getState())
     if (action.type === BATCH && action.payload && Array.isArray(action.payload)) {
       action.payload.forEach((action) => {
         handleAction(action, returnValue, newState, oldState);
@@ -94,7 +94,7 @@ function handleAction(action, returnValue, newState, oldState) {
 
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
-    case 'UPDATE_MESH_NETWORK_ID':
+    // case 'UPDATE_MESH_NETWORK_ID':
       handleStoneInCloud(action, newState);
       break;
     case 'UPDATE_STONE_BEHAVIOUR_FOR_onHomeEnter':
@@ -200,6 +200,8 @@ function handleStoneInCloud(action, state) {
 }
 
 function _handleStone(action, state) {
+  if (!Permissions.inSphere(action.sphereId).canUpdateCrownstone) { return }
+
   let sphere = state.spheres[action.sphereId];
   let stone = sphere.stones[action.stoneId];
 
@@ -343,28 +345,24 @@ function handleStoneState(action, state, oldState, pureSwitch = false) {
 
   if (state.user.uploadSwitchState === true && pureSwitch === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = {
-      switchState: stone.state.state,
-      updatedAt:   stone.updatedAt,
-    };
 
-    CLOUD.forSphere(sphereId).updateStone(stoneId, data).catch(() => {});
+    CLOUD.forStone(stoneId).updateStoneSwitchState(stone.state.state).catch(() => {});
   }
 
   if (state.user.uploadPowerUsage === true && state.user.uploadHighFrequencyPowerUsage === true) {
     let stone = state.spheres[sphereId].stones[stoneId];
-    let data  = { power: stone.state.currentUsage, timestamp: action.updatedAt };
+    let data  = { power: stone.state.currentUsage, powerFactor: stone.state.powerFactor, timestamp: action.updatedAt };
 
-    let dayIndex = Util.getDateFormat(action.updatedAt);
+    let dateId = Util.getDateHourId(action.updatedAt);
 
     // get the index the new item will have. This is used to mark them as synced. If there is no previous item, it is 0.
     let oldStone = oldState.spheres[sphereId] && oldState.spheres[sphereId].stones[stoneId] || null;
-    let indexOfNewItem = oldStone && oldStone.powerUsage[dayIndex] && oldStone.powerUsage[dayIndex].data.length || 0;
+    let indexOfNewItem = oldStone && oldStone.powerUsage[dateId] && oldStone.powerUsage[dateId].data.length || 0;
 
     if (stone.config.applianceId) {
       data['applianceId'] = MapProvider.local2cloudMap.appliances[stone.config.applianceId] || stone.config.applianceId;
     }
-    BatchUploader.addPowerData(dayIndex, sphereId, stoneId, indexOfNewItem, data);
+    BatchUploader.addPowerData(dateId, sphereId, stoneId, indexOfNewItem, data);
   }
 }
 

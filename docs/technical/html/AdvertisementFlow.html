@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+  <title>Batch Command Handler Usage</title>
+
+  <script type="text/javascript" src="./js/vis.js"></script>
+  <link href="./js/vis-network.min.css" rel="stylesheet" type="text/css" />
+
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+
+    #mynetwork {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+    Overview of flow to promise manager
+
+  <div id="mynetwork"></div>
+  <script type="text/javascript">
+    let spacing = 275;
+    let counter = 0;
+    // create an array with nodes
+    var nodes = new vis.DataSet([
+      {fixed:{x:true}, x: spacing*counter, id: 'ad', label: 'BLE\nAdvertisement\nSelf', shape: 'circle', color: '#007aff', font:{color:'#fff'}},
+      {fixed:{x:true}, x: spacing*counter, id: 'adr', label: 'BLE\nAdvertisement\nRelay', shape: 'circle', color: '#007aff', font:{color:'#fff'}},
+      {fixed:{x:true}, x: spacing*counter++, id: 'ib', label: 'IBeacon\nAdvertisement', shape: 'circle', color: '#007aff', font:{color:'#fff'}},
+      {fixed:{x:true}, x: spacing*counter++, id: 'StoneManager', label: 'Stone Mananger', shape: 'circle', color: '#003E52', font:{color:'#fff'}},
+      {fixed:{x:true}, x: spacing*counter++, id: 'StoneStoreManager', label: 'Stone \nStore Manager', shape: 'circle', color: '#ff9c00', font:{color:'#fff'}},
+      {fixed:{x:true}, x: spacing*counter, id: 'StoneEntity1', label: 'Stone 1 Entity', shape: 'circle', color: '#ff9c00', font:{color:'#fff'}},
+      {fixed:{x:true}, x: spacing*counter, id: 'StoneEntity2', label: 'Stone 2 Entity', shape: 'circle', color: '#ff9c00', font:{color:'#fff'}},
+      {fixed:{x:true}, x: spacing*counter++, id: 'StoneEntityN', label: 'Stone N Entity', shape: 'circle', color: '#ff9c00', font:{color:'#fff'}},
+      {x: spacing*counter, id: 'StoneBehaviour1', label: 'Stone 1 Behaviour', shape: 'circle', color: '#8a01ff', font:{color:'#fff'}},
+      {x: spacing*counter, id: 'StoneBehaviour2', label: 'Stone 2 Behaviour', shape: 'circle', color: '#8a01ff', font:{color:'#fff'}},
+      {x: spacing*counter, id: 'StoneBehaviourN', label: 'Stone ... Behaviour', shape: 'circle', color: '#8a01ff', font:{color:'#fff'}},
+      {x: spacing*counter, id: 'StoneMeshTracker1', label: 'Stone 1 Mesh Tracker', shape: 'circle', color: '#8a01ff', font:{color:'#fff'}},
+      {x: spacing*counter, id: 'StoneMeshTracker2', label: 'Stone 2 Mesh Tracker', shape: 'circle', color: '#8a01ff', font:{color:'#fff'}},
+      {x: spacing*counter, id: 'StoneMeshTrackerN', label: 'Stone N Mesh Tracker', shape: 'circle', color: '#8a01ff', font:{color:'#fff'}},
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+      {from: 'ad', to: 'StoneManager', label:'load'},
+      {from: 'adr', to: 'StoneManager', label:'load'},
+      {from: 'ib', to: 'StoneManager', label:'update state'},
+      {from: 'StoneManager', to: 'StoneStoreManager', label:'Create'},
+      {from: 'StoneManager', to: 'StoneEntity1', label:'Create & Forward Adv'},
+      {from: 'StoneManager', to: 'StoneEntity2', label:'Create & Forward Adv'},
+      {from: 'StoneManager', to: 'StoneEntityN', label:'Create & Forward Adv'},
+      {from: 'StoneStoreManager', to: 'StoneEntity1', label:'Forward'},
+      {from: 'StoneStoreManager', to: 'StoneEntity2', label:'Forward'},
+      {from: 'StoneStoreManager', to: 'StoneEntityN', label:'Forward'},
+      {from: 'StoneEntity1', to: 'StoneBehaviour1', label:''},
+      {from: 'StoneEntity2', to: 'StoneBehaviour2', label:''},
+      {from: 'StoneEntityN', to: 'StoneBehaviourN', label:''},
+      {from: 'StoneEntity1', to: 'StoneMeshTracker1', label:''},
+      {from: 'StoneEntity2', to: 'StoneMeshTracker2', label:''},
+      {from: 'StoneEntityN', to: 'StoneMeshTrackerN', label:''},
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+    var options = {
+      layout:{ randomSeed: 77515},
+      edges: {arrows: 'to', font: {align:'middle'}, color: "#00263e"},
+      physics: { barnesHut: { gravitationalConstant: -30000}}};
+    var network = new vis.Network(container, data, options);
+  </script>
+</body>
+</html>

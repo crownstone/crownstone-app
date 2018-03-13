@@ -1,7 +1,7 @@
 package rocks.crownstone.consumerapp;
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
-import com.cboy.rn.splashscreen.SplashScreen; // here
+import org.devio.rn.splashscreen.SplashScreen;
 
 public class MainActivity extends ReactActivity {
     @Override

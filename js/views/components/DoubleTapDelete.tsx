@@ -16,8 +16,8 @@ export class DoubleTapDelete extends Component<any, any> {
   unsubscribe : any;
   id : string;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {deleteActive:false};
     this.resetTimeout = undefined;
     this.id = Util.getUUID();

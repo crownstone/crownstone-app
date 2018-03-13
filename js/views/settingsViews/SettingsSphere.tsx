@@ -24,6 +24,7 @@ import { Util } from "../../util/Util";
 import {PermissionClass} from "../../backgroundProcesses/Permissions";
 import {TopBar} from "../components/Topbar";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {BackAction} from "../../util/Back";
 
 export class SettingsSphere extends Component<any, any> {
   deleting : boolean;
@@ -31,7 +32,7 @@ export class SettingsSphere extends Component<any, any> {
   unsubscribeStoreEvents : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     const state = props.store.getState();
     let sphereSettings = state.spheres[props.sphereId].config;
@@ -233,8 +234,20 @@ export class SettingsSphere extends Component<any, any> {
     }
 
 
+    items.push({label:'DANGER',  type:'explanation', below: false});
+    let leaveColor = spherePermissions.deleteSphere ? colors.orange.hex : colors.red.hex;
+    items.push({
+      label: 'Leave this Sphere',
+      icon: <IconButton name="md-exit" size={22} button={true} color="#fff" buttonStyle={{backgroundColor: leaveColor, marginLeft:3, marginRight:7}} />,
+      style: {color:leaveColor},
+      type: 'button',
+      callback: () => {
+        this._leaveSphere(state);
+      }
+    });
+    items.push({label:'Leaving a sphere cannot be undone. You will have to be invited again.',  type:'explanation', below:true});
+
     if (spherePermissions.deleteSphere) {
-      items.push({type:'spacer'});
       items.push({
         label: 'Delete this Sphere',
         icon: <IconButton name="ios-trash" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex, marginLeft:3, marginRight:7}} />,
@@ -247,6 +260,49 @@ export class SettingsSphere extends Component<any, any> {
     }
 
     return items;
+  }
+
+  _leaveSphere(state) {
+    Alert.alert(
+      "Are you sure you want to leave this Sphere?",
+      "If you are the Sphere owner, you will have to transfer ownership first.",
+      [
+        {text:'No'},
+        {text:'Yes', onPress:() => {
+            this.props.eventBus.emit('showLoading','Removing you from this Sphere in the Cloud.');
+            CLOUD.forUser(state.user.userId).leaveSphere(this.props.sphereId)
+              .then(() => {
+                this._processLocalDeletion()
+              })
+              .catch((err) => {
+                let explanation = "Please try again later.";
+                if (err && err.data && err.data.error && err.data.error.message === "can't exit from sphere where user with id is the owner") {
+                  explanation = "You are the owner of this Sphere. You cannot leave without transferring ownership to another user.";
+                }
+
+                this.props.eventBus.emit('hideLoading');
+                Alert.alert("Could not leave Sphere!", explanation, [{text:"OK"}]);
+              })
+        }}
+      ]
+    );
+  }
+
+  _processLocalDeletion(){
+    this.props.eventBus.emit('hideLoading');
+    this.deleting = true;
+    BackAction();
+
+    let state = this.props.store.getState();
+    let actions = [];
+    if (state.app.activeSphere === this.props.sphereId)
+      actions.push({type:"CLEAR_ACTIVE_SPHERE"});
+
+    actions.push({type:'REMOVE_SPHERE', sphereId: this.props.sphereId});
+
+    // stop tracking sphere.
+    Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
+    this.props.store.batchDispatch(actions);
   }
 
   _deleteSphere(state) {
@@ -269,20 +325,7 @@ export class SettingsSphere extends Component<any, any> {
             this.props.eventBus.emit('showLoading','Removing this Sphere in the Cloud.');
             CLOUD.forSphere(this.props.sphereId).deleteSphere()
               .then(() => {
-                this.props.eventBus.emit('hideLoading');
-                this.deleting = true;
-                Actions.pop();
-
-                let state = this.props.store.getState();
-                let actions = [];
-                if (state.app.activeSphere === this.props.sphereId)
-                  actions.push({type:"CLEAR_ACTIVE_SPHERE"});
-
-                actions.push({type:'REMOVE_SPHERE', sphereId: this.props.sphereId});
-
-                // stop tracking sphere.
-                Bluenet.stopTrackingIBeacon(state.spheres[this.props.sphereId].config.iBeaconUUID);
-                this.props.store.batchDispatch(actions);
+                this._processLocalDeletion();
               })
               .catch((err) => {
                 this.props.eventBus.emit('hideLoading');
@@ -297,7 +340,7 @@ export class SettingsSphere extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.menu} hideTopBar={true}>
-        <TopBar title={this.state.sphereName} leftAction={() => { Actions.pop(); }} />
+        <TopBar title={this.state.sphereName} leftAction={() => { BackAction(); }} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

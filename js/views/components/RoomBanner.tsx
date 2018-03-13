@@ -37,14 +37,18 @@ export class RoomBanner extends Component<any, any> {
         let maxVisible = 3;
         for (let i = 0; i < presentUsers.length && i < maxVisible; i++) {
           let user = presentUsers[i];
-          users.push(<ProfilePicture
-            key={user.id + 'roomFace' + i}
-            picture={user.data.picture}
-            size={30}
-            innerSize={30}
-            name={user.data.firstName}
-            style={{position:'relative', top: Platform.OS === 'android' ?  0 : 2, padding:2}}
-          />);
+          if (user && user.data) {
+            users.push(
+              <ProfilePicture
+                key={user.id + 'roomFace' + i}
+                picture={user.data.picture}
+                size={30}
+                innerSize={30}
+                name={user.data.firstName}
+                style={{position: 'relative', top: Platform.OS === 'android' ? 0 : 2, padding: 2}}
+              />
+            );
+          }
         }
         if (this.props.presentUsers.length > maxVisible) {
           users.push(<View key={'roomNumberIndicator'} style={[{
@@ -136,18 +140,17 @@ export class RoomBanner extends Component<any, any> {
 
   render() {
     let leftRatio = this.props.hideRight === true ? 0.95 : LEFT_RATIO;
-    let remoteColor = this.props.viewingRemotely === true ? colors.notConnected.rgba(0.4) : undefined;
     let backgroundColor = undefined;
 
     if (this.props.floatingCrownstones === true && this.props.overlayText === undefined) {
-      backgroundColor = remoteColor || this.props.color || colors.iosBlue.rgba(0.3);
+      backgroundColor = this.props.color || colors.iosBlue.rgba(0.3);
     }
     else if (this.props.noCrownstones === true && this.props.viewingRemotely === false) {
-      backgroundColor = remoteColor || this.props.color || colors.green.rgba(0.8);
+      backgroundColor = this.props.color || colors.green.rgba(0.8);
       leftRatio = 0.95;
     }
     else {
-      backgroundColor = remoteColor || this.props.color || colors.green.rgba(0.7);
+      backgroundColor = this.props.color || colors.green.rgba(0.7);
     }
 
     return (

@@ -19,19 +19,17 @@ import { styles, colors } from '../styles'
 import {Util} from "../../util/Util";
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 import {clearLogs} from "../../logging/LogUtil";
+import {BackAction} from "../../util/Back";
+import {MeshUtil} from "../../util/MeshUtil";
 
 
 export class SettingsDeveloper extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
-  }
-
   componentDidMount() {
     this.unsubscribe = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings) {
+      if  (change.changeDeviceData || change.changeDeveloperData || change.changeUserData || change.changeUserDeveloperStatus || change.changeAppSettings || change.stoneRssiUpdated) {
         this.forceUpdate();
       }
     });
@@ -173,6 +171,73 @@ export class SettingsDeveloper extends Component<any, any> {
 
 
     items.push({
+      label:"BLE Debug",
+      type: 'navigation',
+      icon: <IconButton name="ios-build" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkPurple.hex}} />,
+      callback:() => {
+        Actions.settingsBleDebug()
+      }});
+    items.push({
+      label:"Use Advertisement RSSI",
+      value: dev.use_advertisement_rssi_too,
+      type: 'switch',
+      icon: <IconButton name="md-git-network" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+      callback:(newValue) => {
+        let execute = () => {
+          store.dispatch({
+            type: 'CHANGE_DEV_SETTINGS',
+            data: {
+              use_advertisement_rssi_too: newValue,
+            }
+          });
+        }
+
+        if (newValue === true) {
+          Alert.alert("Are you sure?", "Only enable this if you know what you're doing!",[{text:"Do it.", onPress: execute}, {text:"Nevermind..."}])
+        }
+        else {
+          execute();
+        }
+      }});
+    items.push({label: "By default we use iBeacon RSSI values since they are averaged. When enabled, we will ALSO use the RSSI values from advertisements. Advertisment RSSI values only come in in the foreground.", type: 'explanation', below: true});
+
+
+    items.push({label: "MESH", type: 'explanation', below: false, alreadyPadded: true});
+    items.push({
+      label:"Use the Mesh",
+      value: dev.use_mesh,
+      type: 'switch',
+      icon: <IconButton name='md-share' size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({
+          type: 'CHANGE_DEV_SETTINGS',
+          data: {
+            use_mesh: newValue,
+          }
+        });
+      }});
+    items.push({
+      label: 'Reset networks',
+      type:  'button',
+      style: {color: colors.black.hex},
+      icon:  <IconButton name="ios-nuclear" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkGreen.hex}} />,
+      callback:() => {
+        Alert.alert("Are you sure?", "This will reset all mesh networks in the current Sphere.",
+          [
+            {text:"Do it.", onPress: () => {
+              const store = this.props.store;
+              const state = store.getState();
+              let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
+              MeshUtil.clearMeshNetworkIds(store, sphereId);
+              Alert.alert("Reset Done", "Rediscovery will start automatically.",[{text:"OK"}]);
+            }},[{text:"Cancel"}]
+          ]
+        )
+      }
+    });
+
+    items.push({label: "RESET DEVELOPER STATE", type: 'explanation', below: false});
+    items.push({
       label:"Disable Developer Mode",
       type: 'button',
       icon: <IconButton name="md-close-circle" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.red.hex}} />,
@@ -185,7 +250,7 @@ export class SettingsDeveloper extends Component<any, any> {
         clearAllLogs();
         Bluenet.enableLoggingToFile(false);
 
-        Actions.pop();
+        BackAction();
     }});
     items.push({label: "Revert back to the normal user state.", type: 'explanation', below: true});
 

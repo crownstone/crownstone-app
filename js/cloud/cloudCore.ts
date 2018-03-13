@@ -8,6 +8,8 @@ import { defaultHeaders } from './sections/cloudApiBase'
 import {safeMoveFile, safeDeleteFile, Util} from '../util/Util'
 import {Scheduler} from "../logic/Scheduler";
 
+
+
 /**
  *
  * This method communicates with the cloud services.
@@ -50,17 +52,19 @@ export function request(
         if (response.headers.map['content-length'] &&
           response.headers.map['content-length'].length > 0 &&
           response.headers.map['content-length'][0] == 0) {
-          // LOG.debug("Error: JSON-CONTENT IS EMPTY", response);
+          // LOGd.info("Error: JSON-CONTENT IS EMPTY", response);
           return response.json(); // this is a promise
         }
-        // LOG.debug("JSON CONTENT", response);
+        // LOGd.info("JSON CONTENT", response);
         return response.json(); // this is a promise
       }
     }
     return response.text(); // this is a promise
   };
 
-  LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, "config:", requestConfig);
+  let logToken = Util.getToken();
+
+  LOG.cloud(method,"requesting from URL:", CLOUD_ADDRESS + endPoint, "config:", requestConfig, logToken);
 
   // the actual request
   return new Promise((resolve, reject) => {
@@ -79,7 +83,7 @@ export function request(
         },
       NETWORK_REQUEST_TIMEOUT,'NETWORK_REQUEST_TIMEOUT');
 
-      fetch(CLOUD_ADDRESS + endPoint, requestConfig)
+      fetch(CLOUD_ADDRESS + endPoint, requestConfig as any)
         .catch((connectionError) => {
           if (stopRequest === false) {
             reject('Network request to ' + CLOUD_ADDRESS + endPoint + ' failed');
@@ -98,7 +102,7 @@ export function request(
         })
         .then((parsedResponse) => {
           if (stopRequest === false) {
-            LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: STATUS, data: parsedResponse});
+            LOG.cloud("REPLY from", endPoint, " with options: ", requestConfig, " is: ", {status: STATUS, data: parsedResponse}, logToken);
             finishedRequest = true;
             resolve({status: STATUS, data: parsedResponse});
           }

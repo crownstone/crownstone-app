@@ -15,8 +15,8 @@ import {DoubleTapDelete} from "../DoubleTapDelete";
 export class DeletableEntry extends Component<any, any> {
   id: string;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.id = Util.getUUID();
   }

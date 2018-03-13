@@ -14,14 +14,6 @@ let defaultSettings = {
     locked: false,
     updatedAt: 1
   },
-  linkedAppliances: { 
-    onOn:  {},
-    onOff: {},
-    updatedAt: 1
-  },
-  schedule: { // this schedule will be overruled by the appliance if applianceId is not undefined.
-    updatedAt: 1
-  },
   behaviour: { // this behaviour will be overruled by the appliance if applianceId is not undefined.
     onHomeEnter: { /* toggleState */ },
     onHomeExit:  { /* toggleState */ },
@@ -63,17 +55,6 @@ let applianceConfigReducer = (state = defaultSettings.config, action : any = {})
   }
 };
 
-
-let linkedAppliancesReducer = (state = defaultSettings.linkedAppliances, action : any = {}) => {
-  switch (action.type) {
-    case 'ADD_LINKED_DEVICES':
-    case 'UPDATE_LINKED_DEVICES':
-    case 'REMOVE_LINKED_DEVICES':
-      return {...state, ...action.data};
-    default:
-      return state;
-  }
-};
 
 
 let behaviourReducerOnHomeEnter = (state = toggleState, action : any = {}) => {
@@ -124,16 +105,6 @@ let behaviourReducerOnAway = (state = toggleStateAway, action : any = {}) => {
       return state;
   }
 };
-let scheduleReducer = (state = {}, action : any = {}) => {
-  switch (action.type) {
-    case 'ADD_APPLIANCE_SCHEDULE':
-    case 'UPDATE_APPLIANCE_SCHEDULE':
-    case 'REMOVE_APPLIANCE_SCHEDULE':
-      return {...state, ...action.data};
-    default:
-      return state;
-  }
-};
 
 let applianceBehavioursReducer = combineReducers({
   onHomeEnter: behaviourReducerOnHomeEnter,
@@ -148,8 +119,6 @@ let applianceBehavioursReducer = combineReducers({
 let combinedApplianceReducer = combineReducers({
   config: applianceConfigReducer,
   behaviour: applianceBehavioursReducer,
-  linkedAppliances: linkedAppliancesReducer,
-  schedule: scheduleReducer,
 });
 
 // stonesReducer

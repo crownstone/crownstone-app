@@ -13,7 +13,9 @@ import { Background }  from '../components/Background'
 import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
+import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
+
 
 
 let categories = [
@@ -33,6 +35,8 @@ let categories = [
 
 let listOfIcons = {
   lights: [
+    'c1-christmasLights',
+    'c1-deskLight',
     'c1-lamp1',
     'c1-lamp2',
     'c1-lamp3',
@@ -77,6 +81,12 @@ let listOfIcons = {
     'c1-drums',
     'c1-musicalNotes',
     'c1-mannequin',
+    'c1-radiator',
+    'c1-thermometer',
+    'c1-wheelchair2',
+    'c1-recordPlayer',
+    'c1-waterSensor',
+    'c1-windSensor',
   ],
   tools: [
     'c1-drill1',
@@ -124,6 +134,8 @@ let listOfIcons = {
     'c1-hdd2',
     'c1-transmitHdd',
     'c1-laptop',
+    'c1-screen',
+    'c1-computer',
     'c1-pc',
     'c1-printer',
     'c1-monitor',
@@ -132,6 +144,7 @@ let listOfIcons = {
     'c1-alarm1',
     'c1-alarm2',
     'c1-airco',
+    'c1-airco2',
     'c1-alarmClock',
     'c1-cube1',
     'c1-cube2',
@@ -152,6 +165,11 @@ let listOfIcons = {
     'c1-blender1',
     'c1-blender2',
     'c1-blender3',
+    'c1-fridge',
+    'c1-fridge2',
+    'c1-fridge3',
+    'c1-fridge4',
+    'c1-inductionCooker',
     'c1-forkKnife',
     'c1-cocktailGlass1',
     'c1-drink',
@@ -166,6 +184,8 @@ let listOfIcons = {
     'c1-coffee2',
     'c1-soup',
     'c1-oven',
+    'c1-oven2',
+    'c1-oven3',
     'c1-cleaver',
     'c1-coffeepot',
     'c1-coffee3',
@@ -173,6 +193,7 @@ let listOfIcons = {
     'c1-coffee4',
     'c1-coffeebean',
     'c1-mixer',
+    'c1-toaster',
     'c1-exhaustHood',
     'c1-exhaustHood2',
     'c1-microwave',
@@ -250,12 +271,8 @@ let listOfIcons = {
   // __new: []
 };
 
-export class DeviceIconSelection extends Component<any, any> {
+export class DeviceIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].appliances[this.props.applianceId].config.icon;
-
     return (
       <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
@@ -266,14 +283,11 @@ export class DeviceIconSelection extends Component<any, any> {
           <IconSelection
             categories={categories}
             icons={listOfIcons}
-            selectedIcon={selectedIcon}
-            callback={
-            this.props.selectCallback !== undefined ?
-              this.props.selectCallback :
-              (newIcon) => {
-                store.dispatch({type:'UPDATE_APPLIANCE_CONFIG', sphereId: this.props.sphereId, applianceId: this.props.applianceId, data:{icon: newIcon}});
-                Actions.pop();
-              }}
+            selectedIcon={this.props.icon}
+            callback={(newIcon) => {
+              this.props.callback(newIcon);
+              BackAction();
+            }}
           />
         </ScrollView>
       </Background>

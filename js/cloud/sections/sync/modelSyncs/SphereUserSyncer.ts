@@ -4,11 +4,8 @@
  *
  */
 
-import {shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 import {CLOUD} from "../../../cloudAPI";
-import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
-import {transferLocations} from "../../../transferData/transferLocations";
 import {LOG} from "../../../../logging/Log";
 
 export class SphereUserSyncer extends SyncingSphereItemBase {
@@ -137,9 +134,8 @@ export class SphereUserSyncer extends SyncingSphereItemBase {
           sphereUserInState.lastName    !== sphere_user_in_cloud.lastName     ||
           sphereUserInState.email       !== sphere_user_in_cloud.email        ||
           sphereUserInState.accessLevel !== type                              ||
-          sphereUserInState.pictureId   !== sphere_user_in_cloud.profilePicId
+          (sphereUserInState.pictureId  !== sphere_user_in_cloud.profilePicId && !(sphereUserInState.pictureId === null && sphere_user_in_cloud.profilePicId === undefined)) // it can happen that null and undefined are compared if there is no picture.
         ) {
-
           actionBase.type = 'UPDATE_SPHERE_USER';
           if (sphereUserInState.pictureId !== sphere_user_in_cloud.profilePicId) {
             handleProfilePictureAndStore(actionBase);

@@ -23,8 +23,8 @@ import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
 export class SettingsPrivacy extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   componentDidMount() {
@@ -77,6 +77,19 @@ export class SettingsPrivacy extends Component<any, any> {
       }});
     items.push({
       label: 'Show the other people in your sphere if the Crownstone is on or off!',
+      type: 'explanation',
+      below: true
+    });
+    items.push({
+      label:"Share diagnostics",
+      value: user.uploadDiagnostics,
+      type: 'switch',
+      icon: <IconButton name="ios-bug" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.darkBackground.hex}} />,
+      callback:(newValue) => {
+        store.dispatch({ type: 'USER_UPDATE', data: {uploadDiagnostics: newValue} });
+      }});
+    items.push({
+      label: 'Help us gather statistics on the health of your Crownstones!',
       type: 'explanation',
       below: true
     });

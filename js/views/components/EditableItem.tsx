@@ -26,6 +26,7 @@ import { TimePicker }        from './editComponents/TimePicker'
 import { TextBlob }          from "./editComponents/TextBlob";
 
 import {styles, screenWidth, barHeight, barHeightLarge, colors} from '../styles'
+import {CollapsableBar} from "./editComponents/Collapsable";
 
 /**
  *
@@ -36,6 +37,9 @@ import {styles, screenWidth, barHeight, barHeightLarge, colors} from '../styles'
 
  * checkbar - Just a text which acts like a button (modeled after iOS Delete contact button)
      --> {label: field label, value: boolean, callback: (newValue) => {}}
+
+ * collapsable - Just a text which acts like a button (modeled after iOS Delete contact button)
+     --> {label: field label, content: string, contentHeight: number}
 
  * explanation - Text above or below an editable item with padding.
      --> {label: text, below: boolean, style: style object to overrule explanation style}
@@ -100,6 +104,8 @@ export class EditableItem extends Component<any, any> {
         return <ButtonBar barHeight={barHeight} {...this.props} />;
       case 'checkbar':
         return <CheckBar barHeight={barHeight} {...this.props} />;
+        case 'collapsable':
+        return <CollapsableBar barHeight={barHeight} {...this.props} />;
       case 'dropdown':
         return <Dropdown barHeight={barHeight} {...this.props} />;
       case 'deletableEntry':
@@ -116,6 +122,8 @@ export class EditableItem extends Component<any, any> {
         return <IconEdit barHeightLarge={barHeightLarge} {...this.props} />;
       case 'info':
         return <InfoBar barHeight={barHeight} {...this.props} />;
+      case 'disabledInfo':
+        return <InfoBar barHeight={barHeight} {...this.props} style={[this.props.style, {color: colors.darkGray2.hex }]} />;
       case 'navigation':
         return <NavigationBar barHeight={barHeight} {...this.props} />;
       case 'picture':

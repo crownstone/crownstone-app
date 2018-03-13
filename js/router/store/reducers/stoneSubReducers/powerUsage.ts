@@ -11,6 +11,7 @@ let defaultState = {
 
 let dataState  ={
   power: null,
+  powerFactor: null,
   applianceId: null,
   timestamp: 0,
   synced: false,
@@ -27,6 +28,9 @@ let powerUsageDataReducer = (state = defaultState.data, action : any = {}) => {
         data.timestamp = getTime(action.data.timestamp || action.updatedAt);
         data.applianceId = action.data.applianceId || null;
         data.power = action.data.currentUsage;
+        if (action.data.powerFactor !== undefined && action.data.powerFactor !== null) {
+          data.powerFactor = action.data.powerFactor;
+        }
 
         // By setting the synced to null, we tell the system not to sync this point to the cloud
         //   data.synced = null;
@@ -44,6 +48,9 @@ let powerUsageDataReducer = (state = defaultState.data, action : any = {}) => {
           data.timestamp = getTime(action.data[i].timestamp || action.updatedAt);
           data.applianceId = action.data[i].applianceId || null;
           data.power = action.data[i].power;
+          if (action.data[i].powerFactor !== undefined && action.data[i].powerFactor !== null) {
+            data.powerFactor = action.data[i].powerFactor;
+          }
 
           newState.push(data);
         }
@@ -61,6 +68,9 @@ let powerUsageDataReducer = (state = defaultState.data, action : any = {}) => {
         data.applianceId = action.data.applianceId || null;
         data.synced = update(action.data.synced, data.synced);
         data.power = action.data.power;
+        if (action.data.powerFactor !== undefined && action.data.powerFactor !== null) {
+          data.powerFactor = action.data.powerFactor;
+        }
 
         newState.push(data);
 
@@ -112,6 +122,13 @@ let powerUsageCloudReducer = (state = defaultState.cloud, action : any = {}) => 
 };
 
 
+
+let combinedPowerUsageReducer = combineReducers({
+  cloud: powerUsageCloudReducer,
+  data: powerUsageDataReducer,
+});
+
+
 // powerUsageReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
@@ -126,7 +143,7 @@ export default (state = {}, action : any = {}) => {
       return state;
     case 'UPDATE_STONE_STATE': // this action is only used for measurement from advertisements
       if (action.data && action.data.currentUsage !== undefined && action.updatedAt) {
-        let dateId = Util.getDateFormat(action.updatedAt);
+        let dateId = Util.getDateHourId(action.updatedAt);
         if (dateId !== 'unknown') {
           return {
             ...state,
@@ -142,8 +159,8 @@ export default (state = {}, action : any = {}) => {
           ...{[action.dateId]: combinedPowerUsageReducer(state[action.dateId], action)}
         };
 
-        // check day sync state:
-        if (action.dateId !== Util.getDateFormat(new Date().valueOf())) {
+        // check hour sync state:
+        if (action.dateId !== Util.getDateHourId(new Date().valueOf())) {
           let allSynced = true;
           // we can't really binary search this since due to crashes or quits, this set can have an un-synced gap.
           for (let i = 0; i < newState[action.dateId].data.length; i++) {
@@ -174,8 +191,3 @@ export default (state = {}, action : any = {}) => {
       return state;
   }
 };
-
-let combinedPowerUsageReducer = combineReducers({
-  cloud: powerUsageCloudReducer,
-  data: powerUsageDataReducer,
-});

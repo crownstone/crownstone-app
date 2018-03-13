@@ -30,6 +30,7 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {ScheduleUtil} from "../../util/ScheduleUtil";
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
+import {BackAction} from "../../util/Back";
 
 let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -37,15 +38,19 @@ export class DeviceScheduleEdit extends Component<any, any> {
   datePickerReference : any;
 
   constructor(props) {
-    super();
-
+    super(props);
 
     if (props.scheduleId !== null && props.scheduleId !== undefined) {
       const store = props.store;
       const state = store.getState();
       const schedule = state.spheres[props.sphereId].stones[props.stoneId].schedules[props.scheduleId];
-      this.state = {...schedule, time: StoneUtil.crownstoneTimeToTimestamp(schedule.time)};
-      this.state.activeDays = {...schedule.activeDays};
+      let stateData = {...schedule, time: StoneUtil.crownstoneTimeToTimestamp(schedule.time)};
+
+      // we do not want to copy the updatedAt since updates to the data SHOULD update this time in the cloud.
+      delete stateData['updatedAt'];
+
+      stateData.activeDays = {...schedule.activeDays};
+      this.state = stateData;
     }
     else {
       this.state = {
@@ -134,9 +139,20 @@ export class DeviceScheduleEdit extends Component<any, any> {
       this.setState({label:newText});
     }});
     items.push({label:'ACTION', type: 'lightExplanation',  below:false});
-    items.push({label:'Switch Crownstone', type: 'switch', value: this.state.switchState === 1, callback: (newValue) => {
-      this.setState({switchState: newValue ? 1 : 0});
-    }});
+    items.push({
+      type: 'dropdown',
+      label: 'Turn the Crownstone: ',
+      dropdownHeight: 130,
+      valueRight: true,
+      buttons: 2,
+      valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
+      value: this.state.switchState,
+      items: [{label:'On', value:1}, {label:'Off', value:0}],
+      callback: (newValue) => {
+        this.setState({switchState: newValue})
+      }
+    });
+
 
     items.push({label:'REPEAT', type: 'lightExplanation',  below:false});
     items.push({__item:
@@ -173,7 +189,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
               "Are you sure?",
               "Remove scheduled action?",
               [{text: 'Cancel', style: 'cancel'}, {text: 'Remove', style:'destructive', onPress: () => {
-                Actions.pop();
+                BackAction();
                 this.props.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
               }}]
             )
@@ -273,7 +289,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
           Alert.alert(
             "Can't see Crownstone",
             "You cannot change the schedule without being near to the Crownstone.",
-            [{text:"OK", onPress: () => { Actions.pop();}}],
+            [{text:"OK", onPress: () => { BackAction();}}],
             {cancelable: false}
           );
           return;
@@ -305,7 +321,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          Actions.pop();
+          BackAction();
         }
         else {
           // schedule is active, tell the Crownstone to update it.
@@ -320,17 +336,17 @@ export class DeviceScheduleEdit extends Component<any, any> {
           scheduleId: this.props.scheduleId,
           data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
         });
-        Actions.pop();
+        BackAction();
       }
     }
     else {
       LOG.error("DeviceScheduleEdit: _updateSchedule should not be called without this.props.scheduleId");
-      Actions.pop();
+      BackAction();
     }
   }
 
   _getBridgeFormat(scheduleEntryIndex) {
-    let stateCopy = {...this.state};
+    let stateCopy:any = {...this.state};
     stateCopy.scheduleEntryIndex = scheduleEntryIndex;
     stateCopy.repeatMode = this._getRepeatMode();
     return ScheduleUtil.getBridgeFormat(stateCopy);
@@ -363,7 +379,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
             scheduleId: config.scheduleId,
             data: {scheduleEntryIndex:scheduleEntryIndex, ...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays) }
           });
-          Actions.pop();
+          BackAction();
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch((err) => {
@@ -402,7 +418,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          Actions.pop();
+          BackAction();
         }, 500, 'Update Schedule UI callback');
       })
       .catch((err) => {
@@ -431,14 +447,14 @@ export class DeviceScheduleEdit extends Component<any, any> {
             scheduleId: this.props.scheduleId,
             data: {...this.state, time: ScheduleUtil.getNextTime(this.state.time, this.state.activeDays)}
           });
-          Actions.pop();
+          BackAction();
         }, 500, 'Deactivate Schedule UI callback');
       })
       .catch(() => {
         Alert.alert(
           "Whoops!",
           "I could not tell the Crownstone to disable this scheduled action. Would you like to try again? Make sure you're in range of the Crownstone!",
-          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._disableSchedule(stone, schedule); } }],
+          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {text:"OK", onPress: () => { this._disableSchedule(stone, schedule); } }],
           {cancelable: false}
         )
       });
@@ -453,14 +469,14 @@ export class DeviceScheduleEdit extends Component<any, any> {
         Scheduler.scheduleCallback(() => {
           this.props.eventBus.emit("hideLoading");
           this.props.store.dispatch({type:"REMOVE_STONE_SCHEDULE", sphereId: this.props.sphereId, stoneId: this.props.stoneId, scheduleId: this.props.scheduleId});
-          Actions.pop();
+          BackAction();
         }, 500, 'Disable Schedule UI callback');
       })
       .catch(() => {
         Alert.alert(
           "Whoops!",
           "I could not tell the Crownstone to remove this scheduled action. Would you like to try again? Make sure you're in range of the Crownstone!",
-          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); Actions.pop(); }}, {text:"OK", onPress: () => { this._deleteSchedule(stone, schedule); } }],
+          [{text:"No...", onPress:() => { this.props.eventBus.emit("hideLoading"); BackAction(); }}, {text:"OK", onPress: () => { this._deleteSchedule(stone, schedule); } }],
           {cancelable: false}
         )
       });
@@ -469,10 +485,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hideInterface={true}>
         { this.props.scheduleId ?
           <TopBar
-            leftAction={() => {  Actions.pop();  }}
+            leftAction={() => {  BackAction();  }}
             right={'Save'}
             rightStyle={{fontWeight: 'bold'}}
             rightAction={() => {
@@ -482,7 +498,10 @@ export class DeviceScheduleEdit extends Component<any, any> {
             }}
             title={"Edit Schedule"} /> :
           <TopBar
-            leftAction={() => { Actions.pop(); }}
+            notBack={true}
+            left={'Cancel'}
+            leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
+            leftAction={() => { BackAction(); }}
             right={'Create'}
             rightStyle={{fontWeight: 'bold'}}
             rightAction={() => {

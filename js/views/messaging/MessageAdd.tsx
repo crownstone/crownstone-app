@@ -22,14 +22,15 @@ import { Icon } from "../components/Icon";
 import { ProfilePicture } from "../components/ProfilePicture";
 import {CLOUD} from "../../cloud/cloudAPI";
 import {MessageUtil} from "../../util/MessageUtil";
+import {BackAction} from "../../util/Back";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';
 export const ANYWHERE_IN_SPHERE = '__sphere__';
 
 export class MessageAdd extends Component<any, any> {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       everyoneInSphereIncludingOwner: true,
@@ -103,7 +104,7 @@ export class MessageAdd extends Component<any, any> {
       recipients
     );
 
-    Actions.pop();
+    BackAction();
   }
 
   _getLocationItems(sphere) {
@@ -284,21 +285,21 @@ export class MessageAdd extends Component<any, any> {
       });
     }
 
-    // items.push({ type: 'lightExplanation', label:'WHEN SHOULD IT BE DELIVERED' });
-    // items.push({
-    //   type: 'dropdown',
-    //   label: 'Deliver message on',
-    //   dropdownHeight: 130,
-    //   valueRight: true,
-    //   buttons: 2,
-    //   valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
-    //   value: this.state.triggerEvent,
-    //   items: [{label:'Entering', value:'enter'},{label:'Exiting', value:'exit'}],
-    //   callback: (newValue) => {
-    //     this.setState({triggerEvent: newValue})
-    //   }
-    // });
-    // items.push({ type: 'lightExplanation', label:'If the user is already there, the message will also be delivered!', below:true });
+    items.push({ type: 'lightExplanation', label:'WHEN SHOULD IT BE DELIVERED' });
+    items.push({
+      type: 'dropdown',
+      label: 'Deliver message on',
+      dropdownHeight: 130,
+      valueRight: true,
+      buttons: 2,
+      valueStyle: {color: colors.darkGray2.hex, textAlign: 'right', fontSize: 15},
+      value: this.state.triggerEvent,
+      items: [{label:'Entering', value:'enter'},{label:'Exiting', value:'exit'}],
+      callback: (newValue) => {
+        this.setState({triggerEvent: newValue})
+      }
+    });
+    items.push({ type: 'lightExplanation', label:'When entering is selected and the user is already there, the message will also be delivered!', below:true });
 
     items.push({ type: 'spacer' });
 
@@ -307,16 +308,19 @@ export class MessageAdd extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hideInterface={true}>
         <TopBar
-          leftAction={() => { Actions.pop(); }}
+          notBack={true}
+          left={'Cancel'}
+          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
+          leftAction={() => { BackAction(); }}
           right={'Create'}
           rightStyle={{fontWeight: 'bold'}}
           rightAction={() => { this._createMessage(); }}
           title={"New Message"}
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
-        <ScrollView style={{flex:1}}>
+        <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>

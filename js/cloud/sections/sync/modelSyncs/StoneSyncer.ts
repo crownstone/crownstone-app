@@ -8,7 +8,7 @@ import {CLOUD} from "../../../cloudAPI";
 import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {ScheduleSyncer} from "./ScheduleSyncer";
-import {LOG, LOGi, LOGw} from "../../../../logging/Log";
+import {LOG, LOGe, LOGi, LOGw} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 export class StoneSyncer extends SyncingSphereItemBase {
@@ -33,6 +33,8 @@ export class StoneSyncer extends SyncingSphereItemBase {
         let stonesInState = this._getLocalData(store);
         let localStoneIdsSynced = this.syncDown(store, stonesInState, stonesInCloud);
         this.syncUp(stonesInState, localStoneIdsSynced);
+
+        this.uploadDiagnostics(store, stonesInState, stonesInCloud);
 
         return Promise.all(this.transferPromises)
       })
@@ -261,6 +263,7 @@ export class StoneSyncer extends SyncingSphereItemBase {
     // TODO: [2017-10-02] RETROFIT CODE: AFTER A FEW RELEASES
     else if (stone_from_cloud.locationId === undefined) {
       if (!Permissions.inSphere(this.localSphereId).canUploadStones) { return; }
+
       let localDataForCloud = {...stoneInState};
       localDataForCloud.config['cloudApplianceId'] = this._getCloudApplianceId(stoneInState.applianceId);
       localDataForCloud.config['cloudLocationId']  = this._getCloudLocationId(stoneInState.locationId);
@@ -301,4 +304,71 @@ export class StoneSyncer extends SyncingSphereItemBase {
         this.actions.push({ type: 'UPDATE_STONE_BEHAVIOUR_FOR_onAway', sphereId: this.localSphereId, stoneId: localId, data: behaviour.onAway });
     }
   };
+
+
+  uploadDiagnostics(store, stonesInState, stonesInCloud) {
+    let userInState = store.getState().user;
+
+    if (!userInState.uploadDiagnostics) {
+      return;
+    }
+
+    if (!Permissions.inSphere(this.localSphereId).canUploadDiagnostics) {
+      return;
+    }
+
+    let cloudIdMap = this._getCloudIdMap(stonesInState);
+
+    stonesInCloud.forEach((stone_from_cloud) => { // underscores so its visually different from stoneInState
+      let localId = cloudIdMap[stone_from_cloud.id];
+
+      if (localId) {
+        let stoneInState = stonesInState[localId];
+
+        let cloudId = stone_from_cloud.id;
+        let uploaded = false;
+        if (stoneInState.config.lastSeen) {
+          uploaded = true;
+          this.transferPromises.push(
+            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
+              timestamp: new Date().valueOf(),
+              type: 'lastSeen',
+              value: stoneInState.config.lastSeen
+            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeen Diagnostic", err); })
+          );
+        }
+
+        if (stoneInState.config.lastSeenTemperature) {
+          uploaded = true;
+          this.transferPromises.push(
+            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
+              timestamp: new Date().valueOf(),
+              type: 'lastSeenTemperature',
+              value: stoneInState.config.lastSeenTemperature
+            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenTemperature Diagnostic", err); })
+          );
+        }
+
+        if (stoneInState.config.lastSeenViaMesh) {
+          uploaded = true;
+          this.transferPromises.push(
+            CLOUD.forStone(cloudId).sendStoneDiagnosticInfo({
+              timestamp: new Date().valueOf(),
+              type: 'lastSeenViaMesh',
+              value: stoneInState.config.lastSeenViaMesh
+            }).catch((err) => { LOGe.cloud("StoneSyncer: Could not upload lastSeenViaMesh Diagnostic", err); })
+          );
+        }
+
+        if (uploaded) {
+          this.actions.push({
+            type: 'UPDATE_STONE_DIAGNOSTICS',
+            sphereId: this.localSphereId,
+            stoneId: localId,
+            data: {lastSeen: null, lastSeenTemperature: null, lastSeenViaMesh: null}
+          });
+        }
+      }
+    });
+  }
 }

@@ -1,7 +1,6 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
   Alert,
-  AppRegistry,
   Navigator,
   Dimensions,
   Image,
@@ -29,21 +28,20 @@ let FACTOR = 0.75; // also the sidemenu.js needs to be changed for this.
 let BLUE_PADDING = 4;
 
 export class SideBar extends Component<any, any> {
-  unsubscribe : any;
+  unsubscribe : any = [];
 
-  constructor() {
-    super();
-    this.unsubscribe = [];
-  }
 
   componentDidMount() {
     this.unsubscribe.push(eventBus.on("databaseChange", (data) => {
       let change = data.change;
       if  (
-        change.changeUserData     ||
-        change.changeSpheres      ||
-        change.changeStones       ||
-        change.changeMessageState ||
+        change.changeUserData            ||
+        change.changeSpheres             ||
+        change.changeFingerprint         ||
+        change.changeStones              ||
+        change.changeMessageState        ||
+        change.changeDeveloperData       ||
+        change.changeUserDeveloperStatus ||
         change.changeAppSettings
       ) {
         this.forceUpdate();
@@ -178,13 +176,14 @@ export class SideBar extends Component<any, any> {
     }
     return (
       <View style={{flexDirection:'column', flex:1, height:screenHeight,  backgroundColor: color}}>
-        <MenuTopBar />
-        <Image source={require('../../../images/menuBackground.png')} style={{width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight - topBarHeight}} >
+        <Image source={require('../../../images/menuBackground.png')} style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight}} />
+        <View style={{position:'absolute', top:0, left:0, width: screenWidth * FACTOR - BLUE_PADDING, height: screenHeight}}>
+          <MenuTopBar />
           <MenuCategoryImage />
           <ScrollView>
             {this._getContent()}
           </ScrollView>
-        </Image>
+        </View>
       </View>
     );
   }
@@ -233,7 +232,7 @@ class MenuItem extends Component<any, any> {
         setTimeout(() => { this.props.closeCallback(); }, 0)
       }}>
         <View style={[styles.centered,{width:25, marginRight:10}]}>
-        {this.props.icon}
+          {this.props.icon}
         </View>
         <Text style={{paddingLeft: 15, fontSize:16, fontWeight: weight, fontStyle: fontStyle, color: foregroundColor}}>{this.props.label}</Text>
       </TouchableOpacity>

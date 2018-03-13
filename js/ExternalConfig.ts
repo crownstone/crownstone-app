@@ -6,7 +6,7 @@ const DeviceInfo = require('react-native-device-info');
 
 
     // ONLY CHANGE THIS LINE IF YOU WANT TO DISABLE RELEASE MODE
-    const RELEASE_MODE = true;
+    const RELEASE_MODE = false;
 
     // IF TRUE, USED TO FAKE RELEASE MODE BUT WITH DEBUGGING
     const IGNORE_LOCAL_CONFIG = false;
@@ -20,6 +20,9 @@ const DeviceInfo = require('react-native-device-info');
     // this is the name of the app in the database. It has to be exactly this to match the database entry for push notifications.
     // it is used to link an installation to a specific App.
     export const APP_NAME = 'Crownstone.consumer';
+
+    // WHEN DOING A RELEASE, MAKE SURE THIS FLAG IS SET TO FALSE
+    export const DEBUG_MODE_ENABLED = false;
 
 /******************** /RELEASE FLAGS ********************/
 
@@ -43,7 +46,7 @@ const DeviceInfo = require('react-native-device-info');
      * Disable Native will automatically mock all BLE commands so the app can run in the simulator.
      * Silence cloud will silently reject all cloud calls.
      */
-    export let DISABLE_NATIVE = DeviceInfo.getModel() === "Simulator";
+    export let DISABLE_NATIVE = DeviceInfo.isEmulator();
     export let SILENCE_CLOUD  = false;
 
     /**
@@ -56,24 +59,29 @@ const DeviceInfo = require('react-native-device-info');
     /**
      * Switch to disable the usage of the mesh in the app
      */
-    export const MESH_ENABLED = false;
+    export const MESH_ENABLED = true;
 
     /**
      * Switch to disable the usage of the mesh in the app
      */
-    export const HARDWARE_ERROR_REPORTING = false;
+    export const HARDWARE_ERROR_REPORTING = true;
 
 
     /**
      * Switch to enable/disable the Dimming functionality
      */
-    export const DIMMING_ENABLED = false;
+    export const DIMMING_ENABLED = true;
 
     /**
      * Point to the production cloud.
      */
     export let CLOUD_ADDRESS = 'https://cloud.crownstone.rocks/api/';
 
+
+    /**
+     * The app will not allow usage of crownstones with a lower version than this.
+     */
+    export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '2.0.0';
 
 /******************** /APP ********************/
 
@@ -86,11 +94,12 @@ const DeviceInfo = require('react-native-device-info');
      * Main logging settings.
      * These will override developer settings only if true but they are currently on by default in developer settings.
      */
-    export let LOG_INFO       = LOG_LEVEL.info;    // enabling LOG.info       commands to be shown.
-    export let LOG_WARNINGS   = LOG_LEVEL.info;    // enabling LOG.warn       commands to be shown.
-    export let LOG_ERRORS     = LOG_LEVEL.info;    // enabling LOG.error      commands to be shown.
-    export let LOG_MESH       = LOG_LEVEL.info;    // enabling LOG.mesh       commands to be shown.
-    export let LOG_MESSAGES   = LOG_LEVEL.info;    // enabling LOG.mesh       commands to be shown.
+    export let LOG_INFO           = LOG_LEVEL.info;    // enabling LOG.info           commands to be shown.
+    export let LOG_WARNINGS       = LOG_LEVEL.info;    // enabling LOG.warn           commands to be shown.
+    export let LOG_ERRORS         = LOG_LEVEL.info;    // enabling LOG.error          commands to be shown.
+    export let LOG_MESH           = LOG_LEVEL.info;    // enabling LOG.mesh           commands to be shown.
+    export let LOG_MESSAGES       = LOG_LEVEL.info;    // enabling LOG.mesh           commands to be shown.
+    export let LOG_ADVERTISEMENTS = LOG_LEVEL.info;    // enabling LOG.advertisement  commands to be shown.
 
     /**
      * Specific logging settings used for debugging mostly. These will override developer settings only if true.
@@ -101,14 +110,14 @@ const DeviceInfo = require('react-native-device-info');
     export let LOG_EVENTS     = LOG_LEVEL.ERROR;   // enabling LOG.event      commands to be shown.
     export let LOG_STORE      = LOG_LEVEL.ERROR;   // enabling LOG.store      commands to be shown.
     export let LOG_CLOUD      = LOG_LEVEL.ERROR;   // enabling LOG.cloud      commands to be shown.
-    export let LOG_DEBUG      = LOG_LEVEL.ERROR;   // enabling LOG.debug      commands to be shown.
+    export let LOG_NATIVE     = LOG_LEVEL.ERROR;   // enabling LOG.native      commands to be shown.
 
     /**
      * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.
      * This flag is meant to just always log to file, regardless of the user input. Used for debugging.
      */
-    export let LOG_TO_FILE             = false;   // log everything that is logged to a file.
-    export let LOG_EXTENDED_TO_FILE    = false;   // log even more to file.
+    export let LOG_TO_FILE          = false;   // log everything that is logged to a file.
+    export let LOG_EXTENDED_TO_FILE = false;   // log even more to file.
 
 /******************** /LOGGING ********************/
 

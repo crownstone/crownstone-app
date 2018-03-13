@@ -15,10 +15,10 @@ import { OverlayContent }  from '../components/overlays/OverlayContent'
 import { OverlayBox }      from '../components/overlays/OverlayBox'
 import { eventBus }        from '../../util/EventBus'
 import { FirmwareHandler } from "../../native/firmware/FirmwareHandler";
-import { LOG }             from "../../logging/Log";
+import {LOG, LOGd} from "../../logging/Log";
 import { Util }            from "../../util/Util";
 import { ProgressCircle }  from "../components/ProgressCircle";
-import { styles, colors , screenHeight, screenWidth } from '../styles'
+import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../styles'
 import {Icon} from "../components/Icon";
 import {NativeBus} from "../../native/libInterface/NativeBus";
 import {BleUtil} from "../../util/BleUtil";
@@ -52,6 +52,9 @@ stepSearchingTypes[STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER] = true;
 let RELEASE_NOTES_ERROR = "Could not download release notes.";
 let RELEASE_NOTES_NA = "Release notes not available.";
 
+let HEIGHT = Math.min(500, 0.95 * screenHeight);
+let WIDTH = Math.max(0.85*screenWidth, Math.min(0.95*screenWidth, 295));
+
 export class DfuOverlay extends Component<any, any> {
   unsubscribe : any = [];
   processSubscriptions = [];
@@ -66,8 +69,8 @@ export class DfuOverlay extends Component<any, any> {
   backButtonFunction : any = null;
   killProcess : boolean = false;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.uuid = Util.getUUID();
     this.state = {
       visible: false,
@@ -402,7 +405,7 @@ export class DfuOverlay extends Component<any, any> {
       let rssiResolver = (data, setupMode, dfuMode) => {
         data.setupMode = setupMode || false;
         data.dfuMode = dfuMode || false;
-        LOG.debug("DfuOverlay: Found match:", data);
+        LOGd.info("DfuOverlay: Found match:", data);
         if ((data.setupMode && data.rssi < -99) || (data.rssi < -80)) {
           eventBus.emit("updateDfuStep", STEP_TYPES.SEARCHING_MOVE_CLOSER);
         }
@@ -476,7 +479,7 @@ export class DfuOverlay extends Component<any, any> {
 
     let state = this.props.store.getState();
     if (canUseIndoorLocalizationInSphere(state, this.state.sphereId) === true) {
-      LOG.debug("(Re)Starting indoor localization after training");
+      LOGd.info("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
     }
   }
@@ -516,6 +519,7 @@ export class DfuOverlay extends Component<any, any> {
     switch (this.state.step) {
       case STEP_TYPES.UPDATE_AVAILABLE:
         return <OverlayContent
+          height={HEIGHT}
           title={'Update Available'}
           icon={'c1-update-arrow'}
           iconSize={0.35*screenWidth}
@@ -526,13 +530,14 @@ export class DfuOverlay extends Component<any, any> {
         />;
       case STEP_TYPES.RELEASE_NOTES:
         return <OverlayContent
+          height={HEIGHT}
           title={'What\'s New:'}
           icon={'md-book'}
           iconSize={0.25*screenWidth}
           header={'Firmware version: ' + updateToVersion}
-          text={this.state.releaseNotes || null}
+          text={this.state.releaseNotes ? this.state.releaseNotes : null}
           buttonCallback={() => { this.startProcess();} }
-          scrollable={this.state.releaseNotes === null}
+          scrollable={true}
           buttonLabel={'Next'}
         >
           <ActivityIndicator animating={true} size="large" />
@@ -541,6 +546,7 @@ export class DfuOverlay extends Component<any, any> {
       case STEP_TYPES.DOWNLOAD_PROGRESS:
         return (
           <OverlayContent
+            height={HEIGHT}
             title={'Downloading Updates'}
             icon={'md-cloud-download'}
             header={'Downloading updates from cloud...'}
@@ -552,6 +558,7 @@ export class DfuOverlay extends Component<any, any> {
       case STEP_TYPES.DOWNLOAD_SUCCESS:
         return (
           <OverlayContent
+            height={HEIGHT}
             title={'Download Complete'}
             icon={'md-cloud-done'}
             header={'Downloading complete!'}
@@ -563,6 +570,7 @@ export class DfuOverlay extends Component<any, any> {
           <OverlayContent
             title={'Searching'}
             icon={'c2-crownstone'}
+            height={HEIGHT}
             header={'Looking for Crownstone..'}
             buttonCallback={abort}
             buttonLabel={'Abort'}
@@ -576,6 +584,7 @@ export class DfuOverlay extends Component<any, any> {
           <OverlayContent
             title={'Searching'}
             icon={'c2-crownstone'}
+            height={HEIGHT}
             header={'Please move a little closer to it!'}
             buttonCallback={abort}
             buttonLabel={'Abort'}
@@ -587,11 +596,12 @@ export class DfuOverlay extends Component<any, any> {
       case STEP_TYPES.SEARCHING_MOVE_EVEN_CLOSER:
         return (
             <OverlayContent
-                title={'Searching'}
-                icon={'c2-crownstone'}
-                header={'Please hold your phone as close to it as possible!'}
-                buttonCallback={abort}
-                buttonLabel={'Abort'}
+              height={HEIGHT}
+              title={'Searching'}
+              icon={'c2-crownstone'}
+              header={'Please hold your phone as close to it as possible!'}
+              buttonCallback={abort}
+              buttonLabel={'Abort'}
             >
               <ActivityIndicator animating={true} size="large" />
               <View style={{flexGrow:1}} />
@@ -600,11 +610,12 @@ export class DfuOverlay extends Component<any, any> {
       case STEP_TYPES.SEARCHING_RESET_BLE:
         return (
             <OverlayContent
-                title={'Searching'}
-                icon={'c2-crownstone'}
-                header={'Please hold your phone as close to it as possible!\nIf that doesn\'t work, try turning your Bluetooth off and on.'}
-                buttonCallback={abort}
-                buttonLabel={'Abort'}
+              height={HEIGHT}
+              title={'Searching'}
+              icon={'c2-crownstone'}
+              header={'Please hold your phone as close to it as possible!\nIf that doesn\'t work, try turning your Bluetooth off and on.'}
+              buttonCallback={abort}
+              buttonLabel={'Abort'}
             >
               <ActivityIndicator animating={true} size="large" />
               <View style={{flexGrow:1}} />
@@ -614,6 +625,7 @@ export class DfuOverlay extends Component<any, any> {
         return (
           <OverlayContent
             title={'Preparing Crownstone'}
+            height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
@@ -634,6 +646,7 @@ export class DfuOverlay extends Component<any, any> {
         return (
           <OverlayContent
             title={'Updating Crownstone'}
+            height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
@@ -665,9 +678,10 @@ export class DfuOverlay extends Component<any, any> {
         return (
           <OverlayContent
             title={'Updating Done!'}
+            height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
-                <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
+                <TouchableOpacity style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}} onPress={closeOverlay}>
                   <ProgressCircle
                     radius={radius}
                     borderWidth={0.25*radius}
@@ -676,7 +690,7 @@ export class DfuOverlay extends Component<any, any> {
                     absolute={true}
                   />
                   <Icon name="md-checkmark" size={radius} color={colors.green.hex} style={{position:'relative', left:0, top:0.05*radius}} />
-                </View>
+                </TouchableOpacity>
               </View>}
             header={'Everything is finished, enjoy the new version!'}
             buttonCallback={closeOverlay}
@@ -687,6 +701,7 @@ export class DfuOverlay extends Component<any, any> {
         return (
           <OverlayContent
             title={'Update failed...'}
+            height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
@@ -709,6 +724,7 @@ export class DfuOverlay extends Component<any, any> {
         return (
           <OverlayContent
             title={'Update failed...'}
+            height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
@@ -731,6 +747,7 @@ export class DfuOverlay extends Component<any, any> {
         return (
           <OverlayContent
             title={'Success, But...'}
+            height={HEIGHT}
             eyeCatcher={
               <View style={{flexGrow:4, backgroundColor:"transparent", alignItems:'center', justifyContent:'center'}}>
                 <View style={{position:'relative', width: 2*radius, height:2*radius, alignItems:'center', justifyContent:'center'}}>
@@ -785,6 +802,8 @@ export class DfuOverlay extends Component<any, any> {
       <OverlayBox
         visible={this.state.visible}
         canClose={this.state.step === STEP_TYPES.UPDATE_AVAILABLE || this.state.step === STEP_TYPES.RELEASE_NOTES }
+        width={WIDTH}
+        height={HEIGHT}
         closeCallback={() => {
           Alert.alert(
             "Are you sure?",

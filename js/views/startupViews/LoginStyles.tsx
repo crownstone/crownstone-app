@@ -30,7 +30,7 @@ export default StyleSheet.create({
   },
   loginButtonContainer: {
     position:'absolute',
-    bottom:30,
+    bottom:60,
     flex:1,
     width: screenWidth,
     flexDirection:'row',

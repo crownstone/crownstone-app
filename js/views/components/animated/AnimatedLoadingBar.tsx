@@ -20,7 +20,7 @@ export class AnimatedLoadingBar extends Component<any, any> {
   progressTarget : any;
 
   constructor(props) {
-    super();
+    super(props);
     this.width = props.width || screenWidth * 0.6;
     this.barHeight = props.height || 30;
     this.borderWidth = 3;

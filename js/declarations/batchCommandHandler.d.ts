@@ -29,6 +29,7 @@ interface keepAliveStatePayload {
 
 interface multiSwitchPayload {
   handle: string,
+  stoneId: string,
   crownstoneId: string,
   state: number,
   intent: number,
@@ -55,18 +56,17 @@ interface meshNetworks  {
 }
 
 interface connectionInfo  {
-  sphereId : string,
-  stoneId: string,
-  stone: any,
+  sphereId :      string,
+  stoneId:        string,
+  stone:          any,
   meshNetworkId?: string,
-  handle : string,
+  handle :        string,
 }
 
 interface meshTodo {
   keepAlive:      keepAlivePayload[],
   keepAliveState: keepAliveStatePayload[],
-  multiSwitch:    multiSwitchPayload[],
-  other:          any[]
+  multiSwitch:    multiSwitchPayload[]
 }
 
 type commandInterface = { commandName: 'keepAlive' } |
@@ -84,7 +84,9 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'getAvailableScheduleEntryIndex' } |
   { commandName : 'setSchedule', scheduleConfig: bridgeScheduleEntry } |
   { commandName : 'addSchedule', scheduleConfig: bridgeScheduleEntry } |
-  { commandName : 'getSchedules' }
+  { commandName : 'getSchedules' } |
+  { commandName : 'lockSwitch',   value: boolean } |
+  { commandName : 'allowDimming', value: boolean }
 
 
 interface batchCommands  {
@@ -101,7 +103,6 @@ interface batchCommandEntry {
   handle:       string,
   sphereId:     string,
   stoneId:      string,
-  stone:        any,
   initialized:  boolean,
   attempts:     number,
   options:      batchCommandEntryOptions,

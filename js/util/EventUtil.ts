@@ -14,4 +14,10 @@ export const EventUtil = {
   getDfuTopic: function (handle) {
     return 'dfuAdvertisement_' + handle;
   },
+  getIgnoreTopic: function (stoneId) {
+    return 'temporaryStopListening_' + stoneId;
+  },
+  getIgnoreConditionFulfilledTopic: function (stoneId) {
+    return 'ignoreConditionFulfilled_' + stoneId;
+  },
 };

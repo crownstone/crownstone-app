@@ -1,11 +1,12 @@
 
 import {
   getMapOfCrownstonesBySphereByHandle, getMapOfCrownstonesInAllSpheresByCID,
-  getMapOfCrownstonesInAllSpheresByHandle
+  getMapOfCrownstonesInAllSpheresByHandle, getMapOfCrownstonesInAllSpheresByIBeacon
 } from "../util/DataUtil";
 import {eventBus} from "../util/EventBus";
 import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
 import {LOG} from "../logging/Log";
+import {MESH_ENABLED} from "../ExternalConfig";
 
 /**
  * Map format
@@ -13,6 +14,7 @@ import {LOG} from "../logging/Log";
  * stoneCIDMap = {sphereId: {crownstoneId: {map}}}
  * stoneSphereHandleMap = {sphereId: {handle: {map}}}
  * stoneHandleMap = {handle: {map}}}
+ * stoneIBeaconMap = { (ibeaconUUID + '_' + major + '_' + minor) : {map}}}
  *
  * map = {
  *  id: stoneId, // redux database id
@@ -24,23 +26,24 @@ import {LOG} from "../logging/Log";
  *  applianceId: string / undefined
  *  locationName: string / undefined
  *  locationId: string / undefined,
- *  cloudIdMap: {
- *    globalIdMap
- *  }
  * }
  *
  */
 
+
 class MapProviderClass {
   _store : any;
   _initialized : boolean = false;
-  stoneSphereHandleMap : any = {};
-  stoneHandleMap : any = {};
-  stoneCIDMap : any = {};
+  stoneSphereHandleMap : StoneSphereHandleMap = {};
+  stoneHandleMap : StoneHandleMap = {};
+  stoneCIDMap : StoneCIDMap = {};
+  stoneIBeaconMap : StoneIBeaconMap = {};
   cloud2localMap : globalIdMap = getGlobalIdMap();
   local2cloudMap : globalIdMap = getGlobalIdMap();
 
-  _loadStore(store) {
+  meshEnabled = false;
+
+  loadStore(store) {
     if (this._initialized === false) {
       this._store = store;
 
@@ -58,24 +61,38 @@ class MapProviderClass {
           change.changeSphereUsers   ||
           change.changeStones        ||
           change.changeStoneSchedule ||
+          change.changeStoneHandle   ||
           change.changeDeviceData    ||
           change.updateStoneConfig   ||
           change.changeMessage
         ) {
           this.refreshAll();
         }
+
+        if (change.changeUserDeveloperStatus || change.changeDeveloperData) {
+          let state = this._store.getState();
+          this._evalMeshState(state);
+        }
       });
 
-      this._updateCloudIdMap();
+      this.refreshAll();
     }
+  }
+
+  _evalMeshState(state) {
+    this.meshEnabled = MESH_ENABLED && state.user.developer && state.development.use_mesh;
   }
 
   refreshAll() {
     LOG.info("MapProvider: Refreshing All.");
     let state = this._store.getState();
-    this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(    state);
-    this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle(state);
-    this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(   state);
+
+    this._evalMeshState(state);
+
+    this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(     state);
+    this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle( state);
+    this.stoneCIDMap          = getMapOfCrownstonesInAllSpheresByCID(    state);
+    this.stoneIBeaconMap      = getMapOfCrownstonesInAllSpheresByIBeacon(state);
     this._updateCloudIdMap();
   }
 

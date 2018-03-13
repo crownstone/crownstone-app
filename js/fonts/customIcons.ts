@@ -293,6 +293,27 @@ const glyphMap = {
   'c1-clock5':0xf122,
   'c1-clock6':0xf123,
   'c1-schedule':0xf124,
+
+  'c1-christmasLights':0xf125,
+  'c1-fridge':0xf126,
+  'c1-fridge2':0xf127,
+  'c1-oven3':0xf128,
+  'c1-fridge3':0xf129,
+  'c1-fridge4':0xf12a,
+  'c1-inductionCooker':0xf12b,
+  'c1-radiator':0xf12c,
+  'c1-deskLight':0xf12d,
+  'c1-toaster':0xf12e,
+  'c1-thermometer':0xf12f,
+  'c1-wheelchair2':0xf130,
+  'c1-recordPlayer':0xf131,
+  'c1-fan3':0xf132,
+  'c1-waterSensor':0xf133,
+  'c1-windSensor':0xf134,
+  'c1-airco2':0xf135,
+  'c1-present':0xf136,
+  'c1-screen':0xf137,
+  'c1-computer':0xf138,
 };
 
 export const getRandomC1Name = function() {

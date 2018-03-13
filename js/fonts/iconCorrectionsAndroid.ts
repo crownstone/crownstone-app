@@ -1,3 +1,6 @@
+// Adding to top makes the icon goes down
+// Adding to left makes the icon go to the right
+
 const c1CorrectionsAndroid = {
   'c1-syncDrives':          {change: false, top: +0.000, left: +0.000},
   'c1-hdd1':                {change: false, top: +0.000, left: +0.000},
@@ -234,7 +237,7 @@ const c2CorrectionsAndroid = {
 };
 
 const ioniconCorrectionsAndroid = {
-  
+  'ios-warning':        {change: true, top: -0.065, left: +0.000},
 };
 
 

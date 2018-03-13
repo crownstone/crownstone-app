@@ -62,7 +62,7 @@ export class DeviceSchedule extends Component<any, any> {
   }
 
   _getSyncOption(stone) {
-    if (Permissions.inSphere(this.props.sphereId).canClearAllSchedules) {
+    if (Permissions.inSphere(this.props.sphereId).canDeleteSchedule) {
       return (
         <TouchableOpacity
           style={{
@@ -244,10 +244,17 @@ export class DeviceSchedule extends Component<any, any> {
         </View>
       )
     }
-    else if (!Util.versions.isHigherOrEqual(stone.config.firmwareVersion, '1.5.0')) {
+    else if (!Util.versions.canIUse(stone.config.firmwareVersion, '1.5.0')) {
       innerView = (
         <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
           { this._getHeader(state, iconSize, "This Crownstone needs to be updated in order to use the Schedule feature.") }
+        </View>
+      )
+    }
+    else if (stone.config.locked === true) {
+      innerView = (
+        <View style={{flex:1, width: screenWidth, alignItems:'center'}}>
+          { this._getHeader(state, iconSize, "This Crownstone is locked so Schedules are disabled.") }
         </View>
       )
     }

@@ -15,8 +15,8 @@ export class SeparatedItemList extends Component<any, any> {
   index : any;
   focusTimeout : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.textFields = [];
     this.textFieldMap = {};
     this.index = 0;

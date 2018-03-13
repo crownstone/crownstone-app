@@ -4,7 +4,7 @@ import { BleUtil }            from '../../util/BleUtil';
 import { STONE_TYPES }         from '../../router/store/reducers/stones'
 import { eventBus }           from '../../util/EventBus';
 import { Util }               from '../../util/Util';
-import { LOG }                from '../../logging/Log';
+import {LOG, LOGd} from '../../logging/Log';
 import { SETUP_MODE_TIMEOUT } from '../../ExternalConfig';
 import { DfuStateHandler }    from "../firmware/DfuStateHandler";
 import {Scheduler} from "../../logic/Scheduler";
@@ -43,7 +43,7 @@ class SetupStateHandlerClass {
     this._currentSetupState = {busy: false, handle: undefined, name: undefined, type: undefined, icon: undefined};
   }
 
-  _loadStore(store) {
+  loadStore(store) {
     LOG.info('LOADED STORE SetupStateHandler', this._initialized);
     if (this._initialized === false) {
       this._store = store;
@@ -91,7 +91,7 @@ class SetupStateHandlerClass {
 
         let stoneData = MapProvider.stoneHandleMap[handle];
         if (stoneData && stoneData.stoneConfig.dfuResetRequired === true) {
-          LOG.debug("SetupStateHandler: Fallback for DFU stones is called. Stopping setup event propagation.");
+          LOGd.info("SetupStateHandler: Fallback for DFU stones is called. Stopping setup event propagation.");
           return;
         }
 

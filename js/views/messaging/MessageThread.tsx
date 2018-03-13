@@ -21,13 +21,11 @@ import { ListEditableItems } from "../components/ListEditableItems";
 import { Icon } from "../components/Icon";
 import { ProfilePicture } from "../components/ProfilePicture";
 import {ANYWHERE_IN_SPHERE, EVERYONE_IN_SPHERE} from "./MessageAdd";
+import {BackAction} from "../../util/Back";
 
 
 
 export class MessageThread extends Component<any, any> {
-  constructor() {
-    super();
-  }
 
   componentWillMount() {}
 
@@ -158,7 +156,7 @@ export class MessageThread extends Component<any, any> {
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
-          leftAction={() => { Actions.pop(); }}
+          leftAction={() => { BackAction(); }}
           title={ message.config.everyoneInSphere ? 'Found in ' + locationName : 'Found in the ' + locationName }
         />
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />

@@ -13,15 +13,12 @@ let radius = 8; // make sure this is not an odd number
 export class Orbs extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {};
     this.unsubscribe = [];
   }
 
-  componentDidMount() {
-
-  }
 
   componentWillUnmount() {
     this.unsubscribe.forEach((callback) => {callback()});

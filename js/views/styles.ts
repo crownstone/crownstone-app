@@ -1,15 +1,25 @@
 import { Dimensions, PixelRatio, Platform, StyleSheet } from 'react-native'
 import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/ColorConverters'
+const DeviceInfo = require('react-native-device-info');
+
+export const deviceModel = DeviceInfo.getModel()
+
+
+
+export const topBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
+export const tabBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
+export const tabBarHeight    = (Platform.OS === 'android' ? 0  :  (deviceModel === 'iPhone X' ? 50 : 50));
+export const statusBarHeight = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 20 : 20); // Status bar in iOS is 20 high
+export const topBarHeight    = Platform.OS === 'android' ? 54  :  (deviceModel === 'iPhone X' ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
 
 export const screenWidth = Dimensions.get('window').width;
 
-export const screenHeight = Platform.OS === 'android' ?
+export let screenHeight = Platform.OS === 'android' ?
   Dimensions.get('window').height - 24 :  // android includes the top bar in the window height but we cant draw there.
   Dimensions.get('window').height;
 
-export const tabBarHeight    = Platform.OS === 'android' ? 0  :  50;
-export const statusBarHeight = Platform.OS === 'android' ? 0  :  20; // Status bar in iOS is 20 high
-export const topBarHeight    = Platform.OS === 'android' ? 54 :  44 + statusBarHeight; // Status bar in iOS is 20 high
+screenHeight = screenHeight - topBarMargin - tabBarMargin;
+
 export const availableScreenHeight = screenHeight - topBarHeight - tabBarHeight;
 
 export const pxRatio = PixelRatio.get();
@@ -22,7 +32,7 @@ export let colors : any = {
   csBlue: {hex:'#003E52'},
   csOrange: {hex:'#ff8400'},
   menuBackground: {hex:'#00263e'},
-  menuBackgroundDarker: {hex:'#00172d'},
+  menuBackgroundDarker: {hex:'#001122'},
   menuText: {hex:'#fff'},
   menuTextSelected: {hex:'#2daeff'},
   white: {hex:'#fff'},
@@ -207,7 +217,7 @@ export const styles = StyleSheet.create({
   },
   version: {
     backgroundColor:"transparent",
-    color: colors.darkGray2.rgba(1),
+    color: colors.darkGray2.hex,
     textAlign:'center',
     fontSize: 10,
   }

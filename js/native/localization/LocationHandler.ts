@@ -5,29 +5,25 @@ import { BluenetPromiseWrapper }    from '../libInterface/BluenetPromise';
 import { Bluenet  }                 from '../libInterface/Bluenet';
 import { BehaviourUtil }            from '../../util/BehaviourUtil';
 import { KeepAliveHandler }         from '../../backgroundProcesses/KeepAliveHandler';
-import { StoneTracker }             from '../advertisements/StoneTracker';
 import { Scheduler }                from '../../logic/Scheduler';
 import { LOG }                      from '../../logging/Log';
 import { Util }                     from '../../util/Util';
 import { BEHAVIOUR_TYPES }          from '../../router/store/reducers/stones';
 import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
-import { eventBus }                 from '../../util/EventBus';
-import { CLOUD }                    from '../../cloud/cloudAPI';
-import { BatterySavingUtil }        from '../../util/BatterySavingUtil';
+import { eventBus }          from '../../util/EventBus';
+import { BatterySavingUtil } from '../../util/BatterySavingUtil';
 
 
 class LocationHandlerClass {
   _initialized : boolean;
   store : any;
-  tracker : any;
   _uuid : string;
   _readyForLocalization = false;
 
   constructor() {
     this._initialized = false;
     this.store = undefined;
-    this.tracker = undefined;
 
     this._uuid = Util.getUUID();
 
@@ -48,27 +44,20 @@ class LocationHandlerClass {
     });
   }
 
-  _loadStore(store) {
+  loadStore(store) {
     LOG.info('LocationHandler: LOADED STORE LocationHandler', this._initialized);
     if (this._initialized === false) {
       this._initialized = true;
       this.store = store;
-      this.tracker = new StoneTracker(store);
 
-      // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOG.debug('CURRENT ROOM', data)});
+      // NativeBus.on(NativeBus.topics.currentRoom, (data) => {LOGd.info('CURRENT ROOM', data)});
       NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => { this.enterSphere(sphereId); });
       NativeBus.on(NativeBus.topics.exitSphere,  (sphereId) => { this.exitSphere(sphereId); });
       NativeBus.on(NativeBus.topics.enterRoom,   (data)     => { this._enterRoom(data); }); // data = {region: sphereId, location: locationId}
       NativeBus.on(NativeBus.topics.exitRoom,    (data)     => { this._exitRoom(data); });  // data = {region: sphereId, location: locationId}
-      NativeBus.on(NativeBus.topics.iBeaconAdvertisement, (data) => { this._iBeaconAdvertisement(data); });
     }
   }
 
-  _iBeaconAdvertisement(data) {
-    data.forEach((iBeaconPackage) => {
-      this.tracker.iBeaconUpdate(iBeaconPackage.major, iBeaconPackage.minor, iBeaconPackage.rssi, iBeaconPackage.referenceId);
-    });
-  }
 
   enterSphere(enteringSphereId) {
     let state = this.store.getState();
@@ -140,7 +129,7 @@ class LocationHandlerClass {
 
       BluenetPromiseWrapper.requestLocation()
         .catch((err) => {
-          LOG.error('Could not get Location when entering a sphere: ', err);
+          LOG.error('LocationHandler: Could not get GPS Location when entering a sphere: ', err);
         })
         .then((location) => {
           if (location && location.latitude && location.longitude) {
@@ -205,7 +194,7 @@ class LocationHandlerClass {
     // make sure we only leave a sphere once. It can happen that the disable timeout fires before the exit region in the app.
     let state = this.store.getState();
 
-    if (state.spheres[sphereId].config.present === true) {
+    if (state.spheres[sphereId] && state.spheres[sphereId].config.present === true) {
       LOG.info('Applying EXIT SPHERE');
       // remove user from all rooms
       this._removeUserFromRooms(state, sphereId, state.user.userId);

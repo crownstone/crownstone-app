@@ -16,9 +16,9 @@ const sha1    = require('sha-1');
 const RNFS    = require('react-native-fs');
 const DeviceInfo = require('react-native-device-info');
 
-import {LOG, LOGi} from '../../logging/Log'
-import { SessionMemory }                      from './SessionMemory'
+import {LOG, LOGd, LOGi} from '../../logging/Log'
 import {emailChecker, getImageFileFromUser, Util} from '../../util/Util'
+import { SessionMemory }                      from '../../util/SessionMemory'
 import { CLOUD }                              from '../../cloud/cloudAPI'
 import { TopBar }                             from '../components/Topbar';
 import { TextEditInput }                      from '../components/editComponents/TextEditInput'
@@ -26,13 +26,14 @@ import { Background }                         from '../components/Background'
 import { StoreManager }                       from '../../router/store/storeManager'
 import loginStyles                            from './LoginStyles'
 import { styles, colors , screenWidth, screenHeight } from '../styles'
+import { DEBUG_MODE_ENABLED } from "../../ExternalConfig";
 
 
 export class Login extends Component<any, any> {
   progress : number;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {email: SessionMemory.loginEmail || '', password:''};
     this.progress = 0;
   }
@@ -320,7 +321,7 @@ export class Login extends Component<any, any> {
       })
       .catch((err) => {
         // likely a 404, ignore
-        LOG.debug("Could be a problem downloading profile picture: ", err);
+        LOGd.info("Could be a problem downloading profile picture: ", err);
       })
       .then(() => {
         LOG.info("Login: step 3");
@@ -345,6 +346,13 @@ export class Login extends Component<any, any> {
         LOG.error("Login: Failed to login.", err);
         let defaultAction = () => {this.props.eventBus.emit('hideProgress')};
         Alert.alert("Whoops!", "An error has occurred while syncing with the Cloud. Please try again later.", [{text:'OK', onPress: defaultAction}], { onDismiss: defaultAction});
+
+
+        if (DEBUG_MODE_ENABLED) {
+          let stringifiedError = '' + JSON.stringify(err);
+          Alert.alert("DEBUG: err:", stringifiedError, [{text:'OK'}]);
+        }
+
         throw err;
       })
     );
@@ -399,9 +407,9 @@ export class Login extends Component<any, any> {
 
 class LoginButton extends Component<any, any> {
   render() {
-    if (screenHeight > 480) {
+    if (screenHeight > 500) {
       return (
-        <View style={loginStyles.loginButtonContainer}>
+        <View style={[loginStyles.loginButtonContainer, {bottom:30} ]}>
           <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
             <View style={loginStyles.loginButton}><Text style={loginStyles.loginText}>Log In</Text></View>
           </TouchableOpacity>
@@ -420,7 +428,7 @@ class LoginButton extends Component<any, any> {
           justifyContent:'center',
           backgroundColor:'transparent'
         }}>
-          <TouchableOpacity onPress={() => { this.props.loginCallback() }}>
+          <TouchableOpacity style={{height:60, width: 0.6*screenWidth}} onPress={() => { this.props.loginCallback() }}>
             <View style={{
               backgroundColor:'transparent',
               height: 60,

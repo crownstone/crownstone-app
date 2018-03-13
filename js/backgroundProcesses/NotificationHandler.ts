@@ -10,6 +10,7 @@ import {LocalNotifications} from "../notifications/LocalNotifications";
 import {Actions} from "react-native-router-flux";
 import {MessageCenter} from "./MessageCenter";
 import {MapProvider} from "./MapProvider";
+import {SphereUserSyncer} from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
 
 class NotificationHandlerClass {
   store: any = {};
@@ -17,7 +18,7 @@ class NotificationHandlerClass {
 
   constructor() {}
 
-  _loadStore(store) {
+  loadStore(store) {
     this.store = store;
     this.configure();
 
@@ -25,7 +26,7 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
-      LOG.info("NotificationHandler: Request for notification permission submitted from _loadStore");
+      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
   }
@@ -35,7 +36,7 @@ class NotificationHandlerClass {
     let device = Util.data.getDevice(state);
     // double check the token if we should have one.
     if (state.app.notificationToken !== null || device) {
-      LOG.info("NotificationHandler: Request for notification permission submitted from _loadStore");
+      LOG.info("NotificationHandler: Request for notification permission submitted from loadStore");
       this.request();
     }
   }
@@ -61,7 +62,7 @@ class NotificationHandlerClass {
 
         let installationId = state.devices[deviceId].installationId;
 
-        if (!installationId) {
+        if (!installationId || !state.installations[installationId]) {
           LOG.warn("NotificationHandler: No Installation found.");
           CLOUD.forDevice(deviceId).createInstallation({ deviceType: Platform.OS })
             .then((installation) => {
@@ -153,7 +154,7 @@ class NotificationParserClass {
 
   constructor() {}
 
-  _loadStore(store) {
+  loadStore(store) {
     this.store = store;
   }
 
@@ -199,9 +200,38 @@ class NotificationParserClass {
             .catch((err) => { LOG.error("NotificationParser: Couldn't get message to store", err)})
         }
         break;
+      case "sphereUsersUpdated":
+        if (messageData.sphereId) {
+          this._updateSphereUsers(messageData);
+        }
+        break;
+      case "sphereUserRemoved":
+        if (messageData.sphereId) {
+          if (messageData.removedUserId === state.user.userId) {
+            CLOUD.sync(this.store).catch((err) => { LOG.error("Could not sync to remove user from sphere!", err); });
+          }
+          else {
+            this._updateSphereUsers(messageData);
+          }
+        }
+        break;
     }
   }
 
+  _updateSphereUsers(messageData) {
+    let localSphereId = MapProvider.cloud2localMap.spheres[messageData.sphereId];
+    if (localSphereId) {
+      let actions = [];
+      let sphereUserSyncer = new SphereUserSyncer(actions, [], localSphereId, messageData.sphereId, MapProvider.cloud2localMap);
+      sphereUserSyncer.sync(this.store)
+        .then(() => {
+          if (actions.length > 0) {
+            this.store.batchDispatch(actions);
+          }
+        })
+        .catch((err) => { LOG.error("NotifcationParser: Failed to update sphere users.", err); })
+    }
+  }
 
 
   _handleSetSwitchStateRemotely(messageData, state) {

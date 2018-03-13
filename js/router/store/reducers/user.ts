@@ -20,6 +20,7 @@ let defaultSettings = {
   appIdentifier: null,
   developer: false,
   logging: false,
+  uploadDiagnostics: true,
   uploadLocation: true,
   uploadSwitchState: true,
   uploadPowerUsage: false,
@@ -112,6 +113,7 @@ export default (state = defaultSettings, action : any = {}) => {
         newState.uploadLocation         = update(action.data.uploadLocation,      newState.uploadLocation);
         newState.uploadSwitchState      = update(action.data.uploadSwitchState,   newState.uploadSwitchState);
         newState.uploadPowerUsage       = update(action.data.uploadPowerUsage,    newState.uploadPowerUsage);
+        newState.uploadDiagnostics      = update(action.data.uploadDiagnostics,    newState.uploadDiagnostics);
         newState.uploadHighFrequencyPowerUsage = update(action.data.uploadHighFrequencyPowerUsage,    newState.uploadHighFrequencyPowerUsage);
         newState.uploadDeviceDetails    = update(action.data.uploadDeviceDetails, newState.uploadDeviceDetails);
 
@@ -121,6 +123,14 @@ export default (state = defaultSettings, action : any = {}) => {
         else {
           newState.updatedAt = update(action.data.updatedAt, newState.updatedAt);
         }
+        return newState;
+      }
+      return state;
+    case 'USER_UPDATE_PICTURE':
+      if (action.data) {
+        let newState = {...state};
+        newState.picture   = update(action.data.picture,    newState.picture  );
+        newState.pictureId = update(action.data.pictureId,  newState.pictureId);
         return newState;
       }
       return state;

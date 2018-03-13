@@ -26,6 +26,7 @@ import {INTENTS} from "../../native/libInterface/Constants";
 export class DimmerButton extends Component<any, any> {
   _panResponder;
   _animationFrame;
+  requestedStateChange = false; // used to keep track of a user wanting to set a dim level while dimmingAvailable is still false.
   refName : string;
   startY : number = 0;
 
@@ -45,7 +46,7 @@ export class DimmerButton extends Component<any, any> {
   controlling = false;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.radius = 0.48*props.size;
     this.radiusIndicator = 0.24*this.radius;
@@ -60,7 +61,7 @@ export class DimmerButton extends Component<any, any> {
     this.yCenter = 0.55*props.size;
 
     this.refName = (Math.random() * 1e9).toString(36);
-    this.state = {state: props.state || 0, pendingCommand: false, pendingId: ''}
+    this.state = {state: this._transformSwitchStateToUI(props.state) || 0, pendingCommand: false, pendingId: ''}
   }
 
   componentWillMount() {
@@ -112,7 +113,6 @@ export class DimmerButton extends Component<any, any> {
             }
             else if (data.state >= 0 && data.state <= 1 && this.state.state !== data.state) {
               this._updateStone(data.state);
-
             }
           }
         }
@@ -132,53 +132,105 @@ export class DimmerButton extends Component<any, any> {
         return true;
       },
     });
+
   }
 
+  componentWillReceiveProps(nextProps) {
+    let stateFromProps = this._transformSwitchStateToUI(nextProps.state) || 0;
+    if (stateFromProps !== this.state.state && this.state.pendingCommand === false) {
+      this.setState({state: stateFromProps})
+    }
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this._animationFrame);
+  }
+  /**
+   * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
+   * @param switchState
+   * @returns {number}
+   * @private
+   */
+  _transformSwitchStateToStone(switchState) {
+    if (switchState >= 0.05 && switchState < 0.1) { switchState = 0.1; }
+    if (switchState <  0.05)                      { switchState = 0.0; }
+
+    // linearize:
+    let linearState = (Math.acos(-2*switchState+1) / Math.PI);
+
+    // only PWM, not Relay
+    linearState *= 0.99;
+
+    linearState = Math.round(linearState*100)/100;
+
+    return linearState;
+  }
+
+  /**
+   * SwitchState is 0..1 and it is linear. We transform this to a different switch state on the Crownstone since the Crownstone dim curve is not linear.
+   * @param switchState
+   * @returns {number}
+   * @private
+   */
+  _transformSwitchStateToUI(switchState) {
+    let UIState = ((Math.cos(switchState*Math.PI / 0.99) - 1) / -2);
+    UIState = Math.round(UIState*100)/100;
+
+    return UIState;
+  }
+
+
   _updateStone(state, keepConnectionOpenTimeout = 6000) {
+    this.requestedStateChange = true;
+    let stateToSwitch = this._transformSwitchStateToStone(state);
     let switchId = (Math.random()*1e9).toString(26);
     BatchCommandHandler.loadPriority(
       this.props.stone,
       this.props.stoneId,
       this.props.sphereId,
-      {commandName:'multiSwitch', state: state, intent: INTENTS.manual, timeout: 0},
+      {commandName:'multiSwitch', state: stateToSwitch, intent: INTENTS.manual, timeout: 0},
       {keepConnectionOpen: true, keepConnectionOpenTimeout: keepConnectionOpenTimeout},
       1
     )
       .then(() => {
-      if (this.state.pendingId === switchId) {
-        this.setState({pendingCommand: false});
-      }
-    }).catch((err) => {
-      if (this.state.pendingId === switchId) {
-        this.setState({pendingCommand: false});
-      }
-    });
+        if (this.state.pendingId === switchId) {
+          this.setState({pendingCommand: false});
+          this.props.callback(stateToSwitch);
+        }
+      })
+      .catch((err) => {
+        if (this.state.pendingId === switchId) {
+          this.setState({pendingCommand: false});
+        }
+      })
     if (this.state.pendingCommand === false) {
       BatchCommandHandler.executePriority();
     }
     this.setState({pendingCommand: true, pendingId: switchId, state: state});
   }
 
-  componentWillUnmount() {
-    cancelAnimationFrame(this._animationFrame);
-  }
 
   render() {
     let state = this.state.state;
     let label = 'Turn On';
     let stateColor = colors.green.hex;
-    if (state > 0) {
+    if (state > 0.05) {
       label = 'Turn Off';
       stateColor = colors.menuBackground.hex;
     }
 
+
+    let dimmingPending = this.props.stone.config.dimmingAvailable === false && this.requestedStateChange;
     let innerSize = 0.50*this.props.size;
     let angle = (this.angleMin - (this.angleMin - this.angleMax)*state)*this.deg2Rad;
     let indicatorX = this.xCenter + this.correctedRadius*Math.sin(angle);
     let indicatorY = this.yCenter + this.correctedRadius*Math.cos(angle);
+
+    // The view HAS to have opacity:1 in order for the .measure method to work on android. Yes. Seriously.
     return (
-      <View ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center'}}>
-        <Svg {...this._panResponder.panHandlers} style={{
+      <View style={{width: screenWidth, height: this.props.size, alignItems:'center'}}>
+      <View {...this._panResponder.panHandlers}  ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center', position:'absolute', top:0, left:0, opacity:1}}>
+        <Svg style={{
           width: screenWidth,
           height: this.props.size,
           position:'absolute',
@@ -191,7 +243,7 @@ export class DimmerButton extends Component<any, any> {
             strokeOpacity={0.5}
             strokeDasharray={[0.75*this.pathLength, this.pathLength]}
             strokeDashOffset={0}
-            rotate="135"
+            rotation="135"
             x={this.xCenter}
             y={this.yCenter}
             strokeLinecap="round"
@@ -204,7 +256,7 @@ export class DimmerButton extends Component<any, any> {
             strokeWidth={this.strokeWidth}
             strokeDasharray={[this.state.state*0.75*this.pathLength, this.pathLength]}
             strokeDashOffset={0}
-            rotate="135"
+            rotation="135"
             x={this.xCenter}
             y={this.yCenter}
             strokeLinecap="round"
@@ -236,6 +288,20 @@ export class DimmerButton extends Component<any, any> {
             fillOpacity={0}
           />
       </Svg>
+        { dimmingPending ?
+            <View style={{
+              position:'absolute',
+              top: indicatorY - this.radiusIndicator,
+              left:indicatorX - this.radiusIndicator,
+              width:  2 * this.radiusIndicator,
+              height: 2 * this.radiusIndicator,
+              alignItems:'center',
+              justifyContent:'center'
+            }}
+            ><ActivityIndicator animating={true} size='small' color={colors.menuBackground.hex} /></View> :
+           undefined
+        }
+      </View>
       <TouchableOpacity style={{
         position:'absolute',
         top: this.yCenter - 0.5*innerSize,
@@ -259,8 +325,8 @@ export class DimmerButton extends Component<any, any> {
                   <ActivityIndicator animating={true} size='small' color={stateColor} /> :
                   <Text style={{color: stateColor, fontSize: 0.2 * innerSize, fontWeight: '600'}}>{label}</Text>
               }
-              <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'500'}}>{'(' + Math.round(100*state) + ' %)'}</Text>
-              <View style={{flex:0.75}} />
+              { dimmingPending ? undefined : <Text style={{color: stateColor, fontSize:0.15*innerSize, fontWeight:'500'}}>{'(' + Math.round(100*state) + ' %)'}</Text> }
+              { dimmingPending ? <View style={{flex: 1}} /> : <View style={{flex:0.75}} /> }
             </AnimatedCircle>
           </AnimatedCircle>
         </AnimatedCircle>

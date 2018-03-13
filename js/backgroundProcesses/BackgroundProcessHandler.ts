@@ -14,15 +14,12 @@ import { prepareStoreForUser }   from "../util/DataUtil";
 import { StoreManager }          from "../router/store/storeManager";
 import { KeepAliveHandler }      from "./KeepAliveHandler";
 import { FirmwareWatcher }       from "./FirmwareWatcher";
-import { AdvertisementHandler }  from "../native/advertisements/AdvertisementHandler";
 import { Scheduler }             from "../logic/Scheduler";
-import { StoneStateHandler }     from "../native/advertisements/StoneStateHandler";
 import { SetupStateHandler }     from "../native/setup/SetupStateHandler";
-import {LOG_EXTENDED_TO_FILE, LOG_TO_FILE, SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL} from "../ExternalConfig";
+import { LOG_EXTENDED_TO_FILE, LOG_TO_FILE, SPHERE_USER_SYNC_INTERVAL, SYNC_INTERVAL } from "../ExternalConfig";
 import { BatterySavingUtil }     from "../util/BatterySavingUtil";
 import { MapProvider }           from "./MapProvider";
 import { DfuStateHandler }       from "../native/firmware/DfuStateHandler";
-import { ErrorWatcher } from "./ErrorWatcher";
 import { NotificationHandler, NotificationParser } from "./NotificationHandler";
 import { BatchCommandHandler } from "../logic/BatchCommandHandler";
 import { BatchUploader } from "./BatchUploader";
@@ -31,6 +28,9 @@ import { CloudEventHandler } from "./CloudEventHandler";
 import { Permissions } from "./PermissionManager";
 import {LOG, LOGw} from "../logging/Log";
 import {LogProcessor} from "../logging/LogProcessor";
+import {BleLogger} from "../native/advertisements/BleLogger";
+import {StoneManager} from "../native/advertisements/StoneManager";
+import {MeshUtil} from "../util/MeshUtil";
 
 const PushNotification = require('react-native-push-notification');
 const DeviceInfo = require('react-native-device-info');
@@ -41,7 +41,7 @@ const BACKGROUND_USER_SYNC_TRIGGER = 'activeSphereUserSync';
 class BackgroundProcessHandlerClass {
   started : boolean = false;
   userLoggedIn : boolean = false;
-  storeInitialized : boolean = false;
+  storePrepared : boolean = false;
   store : any;
   connectionPopupActive : boolean = false;
 
@@ -106,7 +106,7 @@ class BackgroundProcessHandlerClass {
       // wait for store to be prepared in order to continue.
       eventBus.on("storePrepared", () => {
         LOG.info("BackgroundProcessHandler: Store is prepared.");
-        this.storeInitialized = true;
+        this.storePrepared = true;
 
         // pass the store to the singletons
         LOG.info("BackgroundProcessHandler: Starting singletons.");
@@ -122,8 +122,6 @@ class BackgroundProcessHandlerClass {
 
         LocationHandler.applySphereStateFromStore();
 
-        Scheduler.scheduleCallback(() => { this.checkErrors(null); }, 15000, 'checkErrors');
-
         this.setupLogging();
       });
 
@@ -136,6 +134,9 @@ class BackgroundProcessHandlerClass {
 
   showWhatsNew() {
     let state = this.store.getState();
+    if (!state.app.shownWhatsNewVersion || state.app.shownWhatsNewVersion === '0') {
+      this.store.dispatch({type:"UPDATE_APP_SETTINGS", data:{shownWhatsNewVersion : DeviceInfo.getReadableVersion()} })
+    }
     if (state.app.shownWhatsNewVersion !== DeviceInfo.getReadableVersion()) {
       Scheduler.scheduleCallback(() => { eventBus.emit("showWhatsNew"); }, 100);
     }
@@ -146,27 +147,6 @@ class BackgroundProcessHandlerClass {
     Bluenet.enableLoggingToFile((state.user.logging === true && state.user.developer === true) || LOG_TO_FILE === true);
     if ((state.user.logging === true && state.user.developer === true && state.development.log_ble === true) || LOG_EXTENDED_TO_FILE === true) {
       Bluenet.enableExtendedLogging(true);
-    }
-  }
-
-
-  checkErrors(sphereId = null) {
-    let state = this.store.getState();
-    let presentSphere = sphereId || Util.data.getPresentSphere(state);
-    if (presentSphere && state.spheres[presentSphere]) {
-      let errorsFound = false;
-      let stonesContainingError = [];
-
-      Util.data.callOnStonesInSphere(state, presentSphere, (stoneId, stone) => {
-        if (stone.errors.hasError === true || (stone.errors.advertisementError && stone.errors.obtainedErrors === true)) {
-          errorsFound = true;
-          stonesContainingError.push({sphereId: presentSphere, stoneId: stoneId, stone:stone});
-        }
-      });
-
-      if (errorsFound) {
-        eventBus.emit("showErrorOverlay", stonesContainingError)
-      }
     }
   }
 
@@ -260,9 +240,6 @@ class BackgroundProcessHandlerClass {
     let state = this.store.getState();
     let deviceInDatabaseId = Util.data.getCurrentDeviceId(state);
     NativeBus.on(NativeBus.topics.enterSphere, (sphereId) => {
-      // check the state of the crownstone errors and show overlay if needed.
-      this.checkErrors(sphereId);
-
       // do not show popup during setup.
       if (SetupStateHandler.isSetupInProgress() === true) {
         return;
@@ -276,11 +253,6 @@ class BackgroundProcessHandlerClass {
       }
     });
 
-    // check errors if we obtained something from the advertisements.
-    eventBus.on("checkErrors", () => {
-      this.checkErrors();
-    });
-
     // listen to the state of the app: if it is in the foreground or background
     AppState.addEventListener('change', (appState) => {
       LOG.info("App State Change", appState);
@@ -288,6 +260,10 @@ class BackgroundProcessHandlerClass {
       if (appState === "active" && this.userLoggedIn) {
         BatterySavingUtil.startNormalUsage();
 
+        // clear all mesh network ids in all spheres on opening the app.
+        MeshUtil.clearMeshNetworkIds(this.store)
+
+        // remove any badges from the app icon on the phone.
         this._clearBadge();
 
         // if the app is open, update the user locations every 10 seconds
@@ -315,6 +291,8 @@ class BackgroundProcessHandlerClass {
         BatterySavingUtil.startNormalUsage();
       }
     });
+
+    Bluenet.requestBleState();
   }
 
   startStore() {
@@ -324,16 +302,12 @@ class BackgroundProcessHandlerClass {
       this._verifyStore();
     }
     else {
-      eventBus.on('storeInitialized', () => { this._verifyStore(); });
+      eventBus.on('storeManagerInitialized', () => { this._verifyStore(); });
     }
   }
 
   _verifyStore() {
     this.store = StoreManager.getStore();
-
-    // update the store based on new fields in the database (changes to the reducers: new fields in the default values)
-    // also add the app identifier if we don't already have one.
-    refreshDatabase(this.store);
 
     // if we have an accessToken, we proceed with logging in automatically
     let state = this.store.getState();
@@ -382,70 +356,27 @@ class BackgroundProcessHandlerClass {
 
 
   startSingletons() {
-    BatchCommandHandler._loadStore(this.store);
-    MapProvider._loadStore(this.store);
-    LogProcessor._loadStore(this.store);
-    LocationHandler._loadStore(this.store);
-    AdvertisementHandler._loadStore(this.store);
-    Scheduler._loadStore(this.store);
-    StoneStateHandler._loadStore(this.store);
-    DfuStateHandler._loadStore(this.store);
-    SetupStateHandler._loadStore(this.store);
-    KeepAliveHandler._loadStore(this.store);
-    FirmwareWatcher._loadStore(this.store);
-    BatterySavingUtil._loadStore(this.store);
-    ErrorWatcher._loadStore(this.store);
-    NotificationHandler._loadStore(this.store);
-    NotificationParser._loadStore(this.store);
-    BatchUploader._loadStore(this.store);
-    MessageCenter._loadStore(this.store);
-    CloudEventHandler._loadStore(this.store);
-    Permissions._loadStore(this.store, this.userLoggedIn);
+    BatchCommandHandler.loadStore(this.store);
+    MapProvider.loadStore(this.store);
+    LogProcessor.loadStore(this.store);
+    LocationHandler.loadStore(this.store);
+    Scheduler.loadStore(this.store);
+    StoneManager.loadStore(this.store);
+    DfuStateHandler.loadStore(this.store);
+    SetupStateHandler.loadStore(this.store);
+    KeepAliveHandler.loadStore(this.store);
+    FirmwareWatcher.loadStore(this.store);
+    BatterySavingUtil.loadStore(this.store);
+    NotificationHandler.loadStore(this.store);
+    NotificationParser.loadStore(this.store);
+    BatchUploader.loadStore(this.store);
+    MessageCenter.loadStore(this.store);
+    CloudEventHandler.loadStore(this.store);
+    Permissions.loadStore(this.store, this.userLoggedIn);
+
+
+    BleLogger.init();
   }
-}
-
-
-/**
- * If we change the reducer default values, this adds any new fields to the redux database
- * so we don't have to error catch everywhere.
- *
- * Finally we create the app identifier
- * @param store
- */
-export function refreshDatabase(store) {
-  let state = store.getState();
-  let refreshActions = [];
-  let sphereIds = Object.keys(state.spheres);
-
-  // refresh all fields that do not have an ID requirement
-  refreshActions.push({type:'REFRESH_DEFAULTS'});
-  for (let i = 0; i < sphereIds.length; i++) {
-    let sphereId = sphereIds[i];
-    if (Array.isArray(state.spheres[sphereId].presets)) {
-      LOG.info("Initialize: transforming Preset dataType");
-      store.dispatch({type:'REFRESH_DEFAULTS', sphereId: sphereId});
-      refreshDatabase(store);
-      return;
-    }
-
-    let stoneIds = Object.keys(state.spheres[sphereId].stones);
-    let locationIds = Object.keys(state.spheres[sphereId].locations);
-    let applianceIds = Object.keys(state.spheres[sphereId].appliances);
-    let userIds = Object.keys(state.spheres[sphereId].users);
-    let presetIds = Object.keys(state.spheres[sphereId].presets);
-
-    refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, sphereOnly: true});
-    stoneIds.forEach(    (stoneId)     => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, stoneId:     stoneId});});
-    locationIds.forEach( (locationId)  => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, locationId:  locationId});});
-    applianceIds.forEach((applianceId) => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, applianceId: applianceId});});
-    userIds.forEach(     (userId)      => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, userId:      userId});});
-    presetIds.forEach(   (presetId)    => { refreshActions.push({type:'REFRESH_DEFAULTS', sphereId: sphereId, presetId:    presetId});});
-  }
-
-  // create an app identifier if we do not already have one.
-  refreshActions.push({type:'CREATE_APP_IDENTIFIER'});
-
-  store.batchDispatch(refreshActions);
 }
 
 

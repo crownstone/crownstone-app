@@ -15,8 +15,8 @@ export class TextEditBar extends Component<any, any> {
   refNameVerification : string;
   validationTimeout : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {validation: undefined};
 
     this.verificationContent = '';

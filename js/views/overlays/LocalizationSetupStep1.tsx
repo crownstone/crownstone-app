@@ -45,8 +45,8 @@ export class LocalizationSetupStep1 extends Component<any, any> {
   cleanup : any;
   cleanup_circle1 : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.csSize = 0.2*screenWidth;
 

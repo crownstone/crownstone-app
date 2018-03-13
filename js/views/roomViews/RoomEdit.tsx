@@ -17,10 +17,12 @@ import { IconButton } from '../components/IconButton'
 import { Util } from '../../util/Util'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { styles, colors } from './../styles'
+import { styles, colors, screenWidth} from './../styles'
 import { LOG } from './../../logging/Log'
-import {LocationHandler} from "../../native/localization/LocationHandler";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import { LocationHandler } from "../../native/localization/LocationHandler";
+import { Permissions } from "../../backgroundProcesses/PermissionManager";
+import { TopBar } from "../components/Topbar";
+import {BackAction} from "../../util/Back";
 
 
 
@@ -29,9 +31,16 @@ export class RoomEdit extends Component<any, any> {
   viewingRemotely : boolean = false;
   unsubscribeStoreEvents : any;
 
-  constructor() {
-    super();
-    this.unsubscribeStoreEvents = undefined;
+  constructor(props) {
+    super(props);
+
+    const store = props.store;
+    const state = store.getState();
+    const room  = state.spheres[props.sphereId].locations[props.locationId];
+    this.state = {
+      name: room.config.name,
+      icon: room.config.icon
+    };
   }
 
   componentDidMount() {
@@ -42,7 +51,7 @@ export class RoomEdit extends Component<any, any> {
 
       let state = store.getState();
       if (state.spheres[this.props.sphereId] === undefined) {
-        Actions.pop();
+        BackAction();
         return;
       }
 
@@ -102,18 +111,28 @@ export class RoomEdit extends Component<any, any> {
 
     let ai = state.spheres[this.props.sphereId].config.aiName;
 
-    let requiredData = {sphereId: this.props.sphereId, locationId: this.props.locationId};
     let items = [];
 
     items.push({label:'ROOM SETTINGS',  type:'explanation', below:false});
-    items.push({label:'Room Name', type: 'textEdit', value: room.config.name, callback: (newText) => {
-      store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
-    }, endCallback: (newText) => {
-      newText = (newText === '') ? 'Untitled Room' : newText;
-      store.dispatch({...requiredData, ...{type:'UPDATE_LOCATION_CONFIG', data:{name:newText}}});
-    }});
+    items.push({
+      label:'Room Name',
+      type: 'textEdit',
+      value: this.state.name,
+      callback: (newText) => {
+        this.setState({name: newText});
+      },
+      endCallback: (newText) => {
+        newText = (newText === '') ? 'Untitled Room' : newText;
+        this.setState({name: newText});
+      }
+    });
     items.push({label:'Icon', type: 'icon', value: room.config.icon, callback: () => {
-      Actions.roomIconSelection({locationId: this.props.locationId, icon: room.config.icon, sphereId: this.props.sphereId})
+      Actions.roomIconSelection({
+        icon: this.state.icon,
+        callback: (newIcon) => {
+          this.setState({icon: newIcon});
+        }
+      })
     }});
 
 
@@ -179,6 +198,24 @@ export class RoomEdit extends Component<any, any> {
     return items;
   }
 
+  _updateRoom() {
+    const store = this.props.store;
+    const state = store.getState();
+    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
+
+    if (room.config.name !== this.state.name || room.config.icon !== this.state.icon) {
+      this.props.store.dispatch({
+        type:'UPDATE_LOCATION_CONFIG',
+        sphereId: this.props.sphereId,
+        locationId: this.props.locationId,
+        data: {
+          name: this.state.name,
+          icon: this.state.icon
+        }});
+    }
+    BackAction();
+  }
+
   render() {
     const store = this.props.store;
     const state = store.getState();
@@ -186,7 +223,18 @@ export class RoomEdit extends Component<any, any> {
 
     let backgroundImage = this.props.getBackground('menu', this.viewingRemotely);
     return (
-      <Background image={backgroundImage} >
+      <Background hideInterface={true} image={backgroundImage}>
+        <TopBar
+          notBack={true}
+          left={'Cancel'}
+          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
+          leftAction={ Actions.pop }
+          right={'Save'}
+          rightStyle={{fontWeight: 'bold'}}
+          rightAction={ () => { this._updateRoom(); }}
+          title="Edit Room"
+        />
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

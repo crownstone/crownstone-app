@@ -20,7 +20,7 @@ export class BugsFixedAndroid extends Component<any, any> {
           <View style={WNStyles.innerScrollView}>
             <Text style={WNStyles.text}>Issues that caused the app to crash when the firmware update was finished are now resolved.</Text>
             <View style={{height:30}} />
-            <Image source={require('../../../../images/whatsNew/1.10.2/bugDied.png')} style={{width:479*size, height:480*size}} />
+            <Image source={require('../../../../images/whatsNew/1.10.2/bugsFixed.png')} style={{width:479*size, height:480*size}} />
             <View style={{height:30}} />
             <Text style={WNStyles.detail}>You can safely update all Crownstones now :)</Text>
           </View>

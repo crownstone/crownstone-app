@@ -27,8 +27,10 @@ let defaultSettings = {
     crownstoneId: undefined,
     disabled: true,
     cloudId: null,
+    dimmingAvailable: false,
     dimmingEnabled: false,
     firmwareVersion: null,
+    firmwareVersionSeenInOverview: null,
     bootloaderVersion: null,
     dfuResetRequired: false,
     hardwareVersion: null,
@@ -48,13 +50,17 @@ let defaultSettings = {
     type: STONE_TYPES.plug,
     stoneTime: 0,
     stoneTimeChecked: 0,
-    lastSeen: 1,
+    lastSeen: null,
+    lastSeenViaMesh: null,
+    lastSeenTemperature: null,
     updatedAt: 1,
     lastUpdatedStoneTime: 0,
   },
   state: {
     state: 0.0,
+    previousState: 0.0,
     currentUsage: 0,
+    powerFactor: null,
     updatedAt: 1
   },
   schedules: { // this schedule will be overruled by the appliance if applianceId is not undefined.
@@ -73,9 +79,9 @@ let defaultSettings = {
     overCurrentDimmer: false,
     temperatureChip: false,
     temperatureDimmer: false,
+    dimmerOnFailure: false,
+    dimmerOffFailure: false,
     hasError: false,
-    obtainedErrors: false,
-    advertisementError: false,
   },
   powerUsage: {
     //day as string: 2017-05-01 : { cloud: {...}, data: [] }
@@ -108,10 +114,11 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.disabled = false;
+        newState.lastSeenTemperature = update(action.data.lastSeenTemperature, newState.lastSeenTemperature);;
         return newState;
       }
       return state;
-    case 'UPDATE_MESH_NETWORK_ID': // this is a duplicate action. If the state is updated, the stone is not disabled by definition
+    case 'UPDATE_MESH_NETWORK_ID':
       if (action.data) {
         let newState = {...state};
         newState.meshNetworkId   = update(action.data.meshNetworkId, newState.meshNetworkId);
@@ -122,7 +129,15 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
       if (action.data) {
         let newState = {...state};
         newState.rssi            = update(action.data.rssi, newState.rssi);
-        newState.lastSeen        = update(action.data.lastSeen, newState.lastSeen);
+        return newState;
+      }
+      return state;
+    case 'UPDATE_STONE_DIAGNOSTICS':
+      if (action.data) {
+        let newState = {...state};
+        newState.lastSeen            = update(action.data.lastSeen,            newState.lastSeen);
+        newState.lastSeenViaMesh     = update(action.data.lastSeenViaMesh,     newState.lastSeenViaMesh);
+        newState.lastSeenTemperature = update(action.data.lastSeenTemperature, newState.lastSeenTemperature);
         return newState;
       }
       return state;
@@ -156,14 +171,31 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         return newState;
       }
       return state;
+    case 'UPDATE_STONE_LOCAL_CONFIG':
+      if (action.data) {
+        let newState = {...state};
+        newState.firmwareVersionSeenInOverview = update(action.data.firmwareVersionSeenInOverview, newState.firmwareVersionSeenInOverview);
+        newState.cloudId                       = update(action.data.cloudId,           newState.cloudId);
+        newState.disabled                      = update(action.data.disabled,          newState.disabled);
+        newState.dfuResetRequired              = update(action.data.dfuResetRequired,  newState.dfuResetRequired);
+        newState.meshNetworkId                 = update(action.data.meshNetworkId,  newState.meshNetworkId);
+        newState.handle                        = update(action.data.handle,            newState.handle);
+        newState.hidden                        = update(action.data.hidden,            newState.hidden);
+        newState.locked                        = update(action.data.locked,            newState.locked);
+        newState.rssi                          = update(action.data.rssi,              newState.rssi);
+        return newState;
+      }
+      return state;
     case 'ADD_STONE':
     case 'UPDATE_STONE_CONFIG':
+    case 'UPDATE_STONE_CONFIG_TRANSIENT':
       if (action.data) {
         let newState = {...state};
         newState.applianceId       = update(action.data.applianceId,       newState.applianceId);
         newState.crownstoneId      = update(action.data.crownstoneId,      newState.crownstoneId);
         newState.cloudId           = update(action.data.cloudId,           newState.cloudId);
         newState.dimmingEnabled    = update(action.data.dimmingEnabled,    newState.dimmingEnabled);
+        newState.dimmingAvailable  = update(action.data.dimmingAvailable,  newState.dimmingAvailable);
         newState.disabled          = update(action.data.disabled,          newState.disabled);
         newState.firmwareVersion   = update(action.data.firmwareVersion,   newState.firmwareVersion);
         newState.bootloaderVersion = update(action.data.bootloaderVersion, newState.bootloaderVersion);
@@ -217,24 +249,23 @@ let stoneStateReducer = (state = defaultSettings.state, action : any = {}) => {
       return newState;
     case 'UPDATE_STONE_STATE':
     case 'UPDATE_STONE_SWITCH_STATE': // this duplicate call will allow the cloudEnhancer to differentiate.
+    case 'UPDATE_STONE_SWITCH_STATE_TRANSIENT': // this duplicate call will allow the cloudEnhancer to differentiate.
       if (action.data) {
-        let newState          = {...state};
-        newState.state        = update(action.data.state,        newState.state);
-        newState.currentUsage = update(action.data.currentUsage, newState.currentUsage);
-        newState.updatedAt    = getTime(action.data.updatedAt);
+        let newState           = {...state};
+
+        if (newState.state !== action.data.state && action.data.state !== null && action.data.state !== undefined) {
+          newState.previousState = newState.state;
+        }
+
+        newState.state         = update(action.data.state,  newState.state);
+        newState.currentUsage  = update(action.data.currentUsage, newState.currentUsage);
+        newState.powerFactor   = update(action.data.powerFactor,  newState.powerFactor);
+        newState.updatedAt     = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
-
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.state);
-    default:
-      return state;
-  }
-};
-
-let stoneStatisticsReducer = (state = [], action : any = {}) => {
-  switch (action.type) {
     default:
       return state;
   }
@@ -308,13 +339,19 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
     case 'UPDATE_STONE_ERRORS':
       if (action.data) {
         let newState = {...state};
-        newState.advertisementError = update(action.data.advertisementError, newState.advertisementError);
-        newState.obtainedErrors     = update(action.data.obtainedErrors, newState.obtainedErrors);
         newState.overCurrent        = update(action.data.overCurrent,       newState.overCurrent);
         newState.overCurrentDimmer  = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
         newState.temperatureChip    = update(action.data.temperatureChip,   newState.temperatureChip);
         newState.temperatureDimmer  = update(action.data.temperatureDimmer, newState.temperatureDimmer);
-        newState.hasError = newState.overCurrent || newState.overCurrentDimmer || newState.temperatureChip || newState.temperatureDimmer;
+        newState.dimmerOnFailure    = update(action.data.dimmerOnFailure,   newState.dimmerOnFailure);
+        newState.dimmerOffFailure   = update(action.data.dimmerOffFailure,  newState.dimmerOffFailure);
+
+        newState.hasError = newState.overCurrent       ||
+                            newState.overCurrentDimmer ||
+                            newState.temperatureChip   ||
+                            newState.temperatureDimmer ||
+                            newState.dimmerOnFailure   ||
+                            newState.dimmerOffFailure;
         return newState;
       }
       return state;
@@ -325,21 +362,27 @@ let stoneErrorsReducer = (state = defaultSettings.errors, action: any = {}) => {
         newState.overCurrentDimmer = update(action.data.overCurrentDimmer, newState.overCurrentDimmer);
         newState.temperatureChip   = update(action.data.temperatureChip,   newState.temperatureChip);
         newState.temperatureDimmer = update(action.data.temperatureDimmer, newState.temperatureDimmer);
-        newState.obtainedErrors    = false;
+        newState.dimmerOnFailure   = update(action.data.dimmerOnFailure,   newState.dimmerOnFailure);
+        newState.dimmerOffFailure  = update(action.data.dimmerOffFailure,  newState.dimmerOffFailure);
 
-        newState.hasError = newState.overCurrent || newState.overCurrentDimmer || newState.temperatureChip || newState.temperatureDimmer;
+        newState.hasError = newState.overCurrent       ||
+                            newState.overCurrentDimmer ||
+                            newState.temperatureChip   ||
+                            newState.temperatureDimmer ||
+                            newState.dimmerOnFailure   ||
+                            newState.dimmerOffFailure;
         return newState;
       }
       return state;
     case 'CLEAR_STONE_ERRORS':
       let newState = {...state};
-      newState.advertisementError = false;
-      newState.overCurrent        = false;
-      newState.overCurrentDimmer  = false;
-      newState.temperatureChip    = false;
-      newState.temperatureDimmer  = false;
-      newState.hasError           = false;
-      newState.obtainedErrors     = false;
+      newState.overCurrent       = false;
+      newState.overCurrentDimmer = false;
+      newState.temperatureChip   = false;
+      newState.temperatureDimmer = false;
+      newState.dimmerOnFailure   = false;
+      newState.dimmerOffFailure  = false;
+      newState.hasError          = false;
       return newState;
     case 'REFRESH_DEFAULTS':
       return refreshDefaults(state, defaultSettings.errors);
@@ -364,7 +407,6 @@ let combinedStoneReducer = combineReducers({
   state: stoneStateReducer,
   behaviour: stoneBehavioursReducer,
   schedules: scheduleReducer,
-  statistics: stoneStatisticsReducer,
   errors: stoneErrorsReducer,
   powerUsage: powerUsageReducer
 });
@@ -388,3 +430,4 @@ export default (state = {}, action : any = {}) => {
       return state;
   }
 };
+

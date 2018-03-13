@@ -1,10 +1,10 @@
 import { NativeBus } from '../native/libInterface/NativeBus';
 import { Bluenet  }  from '../native/libInterface/Bluenet';
-import { LOG } from '../logging/Log'
+import {LOG, LOGd} from '../logging/Log'
 import { HIGH_FREQUENCY_SCAN_MAX_DURATION } from '../ExternalConfig'
 import { Util } from './Util'
 
-import { SingleCommand } from '../logic/SingleCommand'
+import { DirectCommand } from '../logic/DirectCommand'
 import {Scheduler} from "../logic/Scheduler";
 
 
@@ -43,7 +43,7 @@ export const BleUtil = {
   },
 
   _getNearestCrownstoneFromEvent: function(event, stateContainer, timeoutMilliseconds = 10000) {
-    LOG.debug("_getNearestCrownstoneFromEvent: LOOKING FOR NEAREST");
+    LOGd.info("_getNearestCrownstoneFromEvent: LOOKING FOR NEAREST");
     return new Promise((resolve, reject) => {
       let measurementMap = {};
       let highFrequencyRequestUUID = Util.getUUID();
@@ -110,7 +110,7 @@ export const BleUtil = {
         resolve(advertisement.setupPackage);
       };
 
-      LOG.debug("detectCrownstone: Subscribing TO ", NativeBus.topics.advertisement);
+      LOGd.info("detectCrownstone: Subscribing TO ", NativeBus.topics.advertisement);
       cleanup.unsubscribe = NativeBus.on(NativeBus.topics.advertisement, sortingCallback);
 
       // if we cant find something in 10 seconds, we fail.
@@ -122,8 +122,8 @@ export const BleUtil = {
     })
   },
 
-  getProxy: function (bleHandle, sphereId, stoneId) {
-    return new SingleCommand(bleHandle, sphereId, stoneId);
+  getProxy: function (bleHandle) {
+    return new DirectCommand(bleHandle);
   },
 
   /**
@@ -142,7 +142,7 @@ export const BleUtil = {
 
     if (this.highFrequencyScanUsers[id] === undefined) {
       if (Object.keys(this.highFrequencyScanUsers).length === 0) {
-        LOG.debug("Starting HF Scanning!");
+        LOGd.info("Starting HF Scanning!");
         Bluenet.startScanningForCrownstones();
       }
       this.highFrequencyScanUsers[id] = {timeout: undefined};
@@ -169,7 +169,7 @@ export const BleUtil = {
       }
       delete this.highFrequencyScanUsers[id];
       if (Object.keys(this.highFrequencyScanUsers).length === 0) {
-        LOG.debug("Stopping HF Scanning!");
+        LOGd.info("Stopping HF Scanning!");
         Bluenet.startScanningForCrownstonesUniqueOnly();
       }
     }

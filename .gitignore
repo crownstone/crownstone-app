@@ -64,15 +64,15 @@ app-logs
 
 # ignore all js files since they are compiled
 *.js
-!js/router/Router.js
 !js/router/RouterAndroid.js
 !js/router/RouterIOS.js
-!index.android.js
-!index.ios.js
+!index.js
+!vis.js
+!./App.js
 !sentrySettings.template.js
 !__tests__/**
 !**.tapetest.js
 
 sentrySettings.js
-
+sentry.properties
 LocalConfig.ts

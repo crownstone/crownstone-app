@@ -5,8 +5,6 @@ import stonesReducer from './stones'
 import appliancesReducer from './appliances'
 import messageReducer from './messages'
 import { update, getTime, refreshDefaults } from './reducerUtil'
-import {LOG} from "../../../logging/Log";
-
 
 let defaultSettings = {
   config: {
@@ -109,21 +107,9 @@ let sphereConfigReducer = (state = defaultSettings.config, action : any = {}) =>
   }
 };
 
-let presetsReducer = (state = {}, action : any = {}) => {
-  switch (action.type) {
-    case 'REFRESH_DEFAULTS':
-      if (Array.isArray(state)) {
-        return {}
-      }
-    default:
-      return state;
-  }
-};
-
 let combinedSphereReducer = combineReducers({
   config:     sphereConfigReducer,
   users:      sphereUserReducer,
-  presets:    presetsReducer,
   locations:  locationsReducer,
   stones:     stonesReducer,
   messages:   messageReducer,

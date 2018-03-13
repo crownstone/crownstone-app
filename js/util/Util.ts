@@ -30,30 +30,14 @@ export const getImageFileFromUser = function(email) {
 };
 
 
-export const processImage = function(picture, targetFilename) {
+export const processImage = function(pictureURI, targetFilename) {
   return new Promise((resolve, reject) => {
-    if (picture !== undefined) {
+    if (pictureURI !== undefined) {
       let targetPath = Util.getPath(targetFilename);
-      let resizedUri = undefined;
-      let resizedPath = undefined;
-      if (Platform.OS === 'android') {
-        // TODO: what path to use for temp?
-        resizedPath = RNFS.ExternalDirectoryPath;
-      }
 
-      let pictureURI = picture.replace('file://','');
-
-      ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90, 0, resizedPath)
-        .then((resizedImageUri) => {
-          resizedUri = resizedImageUri;
-          return safeDeleteFile(targetPath);
-        })
-        .then(() => {
-          if (Platform.OS === 'android') {
-            // TODO: better way to remove the "file:"
-            resizedUri = resizedUri.replace("file:","");
-          }
-          return safeMoveFile(resizedUri, targetPath);
+      ImageResizer.createResizedImage(pictureURI, screenWidth * pxRatio * 0.5, screenHeight * pxRatio * 0.5, 'JPEG', 90)
+        .then(({uri}) => {
+          return safeMoveFile(uri, targetPath);
         })
         .then(() => {
           resolve(targetPath);
@@ -141,6 +125,18 @@ export const Util = {
   data: DataUtil,
   events: EventUtil,
 
+  getDateHourId: function(timestamp)  {
+    if (timestamp === 0) {
+      return 'unknown';
+    }
+    let date = new Date(timestamp);
+    let month = pad(date.getMonth() + 1);
+    let day = pad(date.getDate());
+    let hours = pad(date.getHours());
+
+    return date.getFullYear() + '/' + month + '/' + day + ' ' + hours + ':00:00'
+  },
+
   getDateFormat: function(timestamp)  {
     if (timestamp === 0) {
       return 'unknown';
@@ -201,6 +197,11 @@ export const Util = {
   },
 
 
+  getToken : () : string => {
+    return Math.floor(Math.random() * 1e8 /* 65536 */).toString(36);
+  },
+
+
   mixin: function(base, section) {
     for (let key in section) {
       if (section.hasOwnProperty(key))
@@ -244,12 +245,15 @@ export const Util = {
         return false;
       }
 
-      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
         return false;
       }
 
-      let A = version.split('.');
-      let B = compareWithVersion.split('.');
+      let A = versionClean.split('.');
+      let B = compareWithVersionClean.split('.');
 
       if (A[0] < B[0]) return false;
       else if (A[0] > B[0]) return true;
@@ -257,9 +261,46 @@ export const Util = {
         if (A[1] < B[1]) return false;
         else if (A[1] > B[1]) return true;
         else { // A[1] == B[1]
-          return (A[2] > B[2]);
+          if (A[2] < B[2]) return false;
+          else if (A[2] > B[2]) return true;
+          else { // A[2] == B[2]
+            if (versionRc === null && compareWithVersionRc === null) {
+              return false;
+            }
+            else if (versionRc !== null && compareWithVersionRc !== null) {
+              return (versionRc > compareWithVersionRc);
+            }
+            else if (versionRc !== null) {
+              // 2.0.0.rc0 is smaller than 2.0.0
+              return false;
+            }
+            else {
+              return true;
+            }
+          }
         }
       }
+    },
+
+
+    /**
+     * This is the same as the isHigherOrEqual except it allows access to githashes. It is up to the dev to determine what it can and cannot do.
+     * @param myVersion
+     * @param minimumRequiredVersion
+     * @returns {any}
+     */
+    canIUse: function(myVersion, minimumRequiredVersion) {
+      if (!myVersion)              { return false; }
+      if (!minimumRequiredVersion) { return false; }
+
+      let [myVersionClean, myVersionRc] = getRC(myVersion);
+      let [minimumRequiredVersionClean, minimumRequiredVersionRc] = getRC(minimumRequiredVersion);
+
+      if (checkSemVer(myVersionClean) === false) {
+        return true;
+      }
+
+      return Util.versions.isHigherOrEqual(myVersionClean, minimumRequiredVersionClean);
     },
 
     isHigherOrEqual: function(version, compareWithVersion) {
@@ -267,7 +308,10 @@ export const Util = {
         return false;
       }
 
-      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
         return false;
       }
 
@@ -283,7 +327,10 @@ export const Util = {
         return false;
       }
 
-      if (checkSemVer(version) === false || checkSemVer(compareWithVersion) === false) {
+      let [versionClean, versionRc] = getRC(version);
+      let [compareWithVersionClean, compareWithVersionRc] = getRC(compareWithVersion);
+
+      if (checkSemVer(versionClean) === false || checkSemVer(compareWithVersionClean) === false) {
         return false;
       }
 
@@ -387,7 +434,20 @@ export const Util = {
 };
 
 
+function getRC(version) {
+  let lowerCaseVersion = version.toLowerCase()
+  let lowerCaseRC_split = lowerCaseVersion.split("-rc");
+  let RC = null
+  if (lowerCaseRC_split.length > 1) {
+    RC = lowerCaseRC_split[1];
+  }
+
+  return [lowerCaseRC_split[0], RC];
+}
+
 let checkSemVer = (str) => {
+  if (!str) { return false; }
+
   // a git commit hash is longer than 12, we pick 12 so 123.122.1234 is the max semver length.
   if (str.length > 12) {
     return false;

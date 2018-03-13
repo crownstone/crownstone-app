@@ -20,7 +20,7 @@ export class ProgressCircle extends Component<any, any> {
           stroke={this.props.color}
           strokeWidth={0.5*borderWidth}
           strokeDasharray={[pathLength*this.props.progress,pathLength]}
-          rotate="-89.9"
+          rotation="-89.9"
           x={radius}
           y={radius}
           strokeLinecap="round"

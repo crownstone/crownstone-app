@@ -54,7 +54,7 @@ class RoomCircleClass extends Component<any, any> {
   renderState : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.initializedPosition = true;
     let initialX = props.pos.x._value;
@@ -146,13 +146,6 @@ class RoomCircleClass extends Component<any, any> {
         this.usage = usage;
         this.forceUpdate();
       }
-
-      let change = data.change;
-      if (
-        (change.userPositionUpdate && change.userPositionUpdate.locationIds[this.props.locationId])
-      ) {
-        this.forceUpdate();
-      }
     });
 
     this.unsubscribeControlEvents = this.props.eventBus.on('roomCircleTap'+this.props.locationId, (data) => {
@@ -192,7 +185,7 @@ class RoomCircleClass extends Component<any, any> {
 
   _getColor(usage, prev = false) {
     if (this.props.viewingRemotely === true) {
-      return colors.notConnected.hex;
+      return colors.green.rgba(0.8);
     }
 
     if (this._areDfuStonesInLocation() === true) {
@@ -328,7 +321,7 @@ class RoomCircleClass extends Component<any, any> {
           stroke={newColor}
           strokeWidth={this.borderWidth}
           strokeDasharray={[pathLength*levelProgress,pathLength]}
-          rotate="-89.9"
+          rotation="-89.9"
           x={this.props.radius}
           y={this.props.radius}
           strokeLinecap="round"

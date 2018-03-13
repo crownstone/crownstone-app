@@ -231,3 +231,27 @@ test('Promise skips', function (t) {
       });
 });
 
+test('Promise x', function (t) {
+  successfulPromise5
+    .then((res) => {
+      return a()
+    })
+    .then(() => { return failedPromise5})
+    .then((res) => {
+      return a()
+    })
+    .then(() => {  t.end();})
+    .catch((err) => {
+      t.end();
+    });
+});
+
+function a() {
+  return new Promise((res, rej) => {
+    res()
+  })
+    .then(() => {
+      console.log("then")
+    })
+    .catch((x) => { console.log( "caught" )})
+}

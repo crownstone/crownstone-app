@@ -11,17 +11,29 @@ import {
   View
 } from 'react-native';
 
-import { Background } from './../components/Background'
+import { Background } from '../components/Background'
 import { ApplianceEntry } from '../components/ApplianceEntry'
-import { ListEditableItems } from './../components/ListEditableItems'
+import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 
 const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth} from './../styles'
 import { Icon } from '../components/Icon';
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
+import {EventBusClass} from "../../util/EventBus";
+import {BackAction} from "../../util/Back";
 
-export class ApplianceSelection extends Component<any, any> {
+export class ApplianceSelection extends Component<{
+  sphereId: string,
+  applianceId: string,
+  stoneId: string,
+  eventBus: EventBusClass,
+  store: any,
+  backgrounds: any,
+  callback(applianceId: string): void
+  }, any> {
+
+
   unsubscribe : any;
 
   componentDidMount() {
@@ -30,7 +42,7 @@ export class ApplianceSelection extends Component<any, any> {
 
       // if the stone has been deleted, close everything.
       if (change.removeStone && change.removeStone.stoneIds[this.props.stoneId]) {
-        return Actions.pop();
+        return BackAction();
       }
 
       if (change.changeAppliances && change.changeAppliances.sphereIds[this.props.sphereId]) {
@@ -57,7 +69,7 @@ export class ApplianceSelection extends Component<any, any> {
       applianceIds.forEach((applianceId) => {
         let appliance = appliances[applianceId];
 
-        let selectCallback = () => { this.props.callback(applianceId); Actions.pop(); };
+        let selectCallback = () => { this.props.callback(applianceId); BackAction(); };
         let deleteCallback = () => {
           Alert.alert("Are you sure?","We will be automatically remove \"" + appliance.config.name + "\" from any Crownstones using it.",
             [{text:'Cancel', style: 'cancel'}, {text:'Delete', style: 'destructive', onPress: () => { this._removeAppliance(store, state, applianceId); }}])
@@ -65,18 +77,18 @@ export class ApplianceSelection extends Component<any, any> {
 
         items.push({__item:
           <View >
-              <View style={[styles.listView,{backgroundColor: this.props.applianceId === applianceId ? colors.white.hex : colors.white.rgba(0.65), paddingRight:0}]}>
-                <ApplianceEntry
-                  select={selectCallback}
-                  delete={Permissions.inSphere(this.props.sphereId).removeAppliance? deleteCallback : undefined}
-                  deleteColor={this.props.applianceId === applianceId ? colors.black.rgba(0.3) : colors.white.hex }
-                  current={this.props.applianceId === applianceId }
-                  icon={appliance.config.icon}
-                  name={appliance.config.name}
-                  navigation={false}
-                  size={45}
-                />
-              </View>
+            <View style={[styles.listView,{backgroundColor: this.props.applianceId === applianceId ? colors.white.hex : colors.white.rgba(0.65), paddingRight:0}]}>
+              <ApplianceEntry
+                select={selectCallback}
+                delete={Permissions.inSphere(this.props.sphereId).removeAppliance ? deleteCallback : undefined}
+                deleteColor={this.props.applianceId === applianceId ? colors.black.rgba(0.3) : colors.white.hex }
+                current={this.props.applianceId === applianceId }
+                icon={appliance.config.icon}
+                name={appliance.config.name}
+                navigation={false}
+                size={45}
+              />
+            </View>
           </View>
         })
       });
@@ -106,7 +118,7 @@ export class ApplianceSelection extends Component<any, any> {
       style: {color:colors.blue.hex},
       type: 'button',
       callback: () => {
-        this.props.callback(null); Actions.pop();
+        this.props.callback(null); BackAction();
       }
     });
     return items;
@@ -139,7 +151,7 @@ export class ApplianceSelection extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} >
+      <Background hideTabBar={true} image={this.props.backgrounds.detailsDark} >
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

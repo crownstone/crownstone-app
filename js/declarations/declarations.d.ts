@@ -21,6 +21,10 @@ interface locationDataContainer {
   location: string,
 }
 
+type map = { [proptype: string] : boolean } | {}
+type numberMap = { [proptype: string] : number } | {}
+type stringMap = { [proptype: string] : string } | {}
+
 declare const module: any;
 
 type PromiseCallback = (any) => Promise<any>

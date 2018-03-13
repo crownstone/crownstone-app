@@ -13,7 +13,7 @@ class BatterySavingClass {
 
   constructor() { }
 
-  _loadStore(store) {
+  loadStore(store) {
     LOG.info('LOADED STORE BatterySavingUtil', this._initialized);
     if (this._initialized === false) {
       this.store = store;
@@ -30,11 +30,11 @@ class BatterySavingClass {
    * @param sphereId
    */
   startNormalUsage(sphereId = null) {
-    // LOG.debug("BatterySavingUtil: startNormalUsage, sphereId: ", sphereId);
+    // LOGd.info("BatterySavingUtil: startNormalUsage, sphereId: ", sphereId);
     let cancelPostponedScan = () => {
-      // LOG.debug("BatterySavingUtil: startNormalUsage, cancelPostponedScan, starting.");
+      // LOGd.info("BatterySavingUtil: startNormalUsage, cancelPostponedScan, starting.");
       if (typeof this._cancelPostponedBatterySaving === 'function') {
-        // LOG.debug("BatterySavingUtil: startNormalUsage, cancelPostponedScan, started.");
+        // LOGd.info("BatterySavingUtil: startNormalUsage, cancelPostponedScan, started.");
         this._cancelPostponedBatterySaving();
         this._cancelPostponedBatterySaving = null;
       }
@@ -42,7 +42,7 @@ class BatterySavingClass {
 
     // do not do anything to the scanning if high frequency scan is on.
     if (BleUtil.highFrequencyScanUsed() === true) {
-      // LOG.debug("BatterySavingUtil: startNormalUsage, highFrequencyScanUsed.");
+      // LOGd.info("BatterySavingUtil: startNormalUsage, highFrequencyScanUsed.");
       cancelPostponedScan();
       return;
     }
@@ -56,7 +56,7 @@ class BatterySavingClass {
     //  - not all handles are known
 
     let appInForeground = AppState.currentState === 'active';
-    let inSphereId = Util.data.getPresentSphere(state) || sphereId;
+    let inSphereId = Util.data.getPresentSphereId(state) || sphereId;
     let inSphere = inSphereId !== null;
     let notAllHandlesAreKnown = null;
     if (inSphere) {
@@ -67,9 +67,9 @@ class BatterySavingClass {
       });
     }
 
-    // LOG.debug("BatterySavingUtil: startNormalUsage, checking execute startNormalUsage, appInForeground", appInForeground, "inSphere", inSphere, "notAllHandlesAreKnown", notAllHandlesAreKnown, 'total:',appInForeground && inSphere || inSphere && notAllHandlesAreKnown === true);
+    // LOGd.info("BatterySavingUtil: startNormalUsage, checking execute startNormalUsage, appInForeground", appInForeground, "inSphere", inSphere, "notAllHandlesAreKnown", notAllHandlesAreKnown, 'total:',appInForeground && inSphere || inSphere && notAllHandlesAreKnown === true);
     if (appInForeground || (inSphere && notAllHandlesAreKnown === true)) {
-      // LOG.debug("BatterySavingUtil: startNormalUsage, executing");
+      // LOGd.info("BatterySavingUtil: startNormalUsage, executing");
       cancelPostponedScan();
       Bluenet.batterySaving(false);
       BluenetPromiseWrapper.isReady().then(() => {
@@ -90,7 +90,7 @@ class BatterySavingClass {
    * @param forceNotInSphere
    */
   startBatterySaving(forceNotInSphere = false) {
-    // LOG.debug("BatterySavingUtil: startBatterySaving, forceNotInSphere: ", forceNotInSphere);
+    // LOGd.info("BatterySavingUtil: startBatterySaving, forceNotInSphere: ", forceNotInSphere);
     // do not do anything to the scanning if high frequency scan is on.
     if (BleUtil.highFrequencyScanUsed() === true) {
       // try again later tho.
@@ -106,7 +106,7 @@ class BatterySavingClass {
     //  - user not in a sphere
 
     let appNotInForeground = AppState.currentState !== 'active';
-    let inSphereId = Util.data.getPresentSphere(state);
+    let inSphereId = Util.data.getPresentSphereId(state);
     if (forceNotInSphere === true) {
       inSphereId = null;
     }
@@ -120,9 +120,9 @@ class BatterySavingClass {
       });
     }
 
-    // LOG.debug("BatterySavingUtil: startBatterySaving, checking execute startBatterySaving, appNotInForeground", appNotInForeground, "inSphere", inSphere, "allHandlesKnown", allHandlesKnown, 'total:',appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown)));
+    // LOGd.info("BatterySavingUtil: startBatterySaving, checking execute startBatterySaving, appNotInForeground", appNotInForeground, "inSphere", inSphere, "allHandlesKnown", allHandlesKnown, 'total:',appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown)));
     if (appNotInForeground === true && (inSphere === false || (inSphere === true && allHandlesKnown))) {
-      // LOG.debug("BatterySavingUtil: startBatterySaving, execute");
+      // LOGd.info("BatterySavingUtil: startBatterySaving, execute");
       Bluenet.batterySaving(true);
     }
     else if (!allHandlesKnown && appNotInForeground === true) {

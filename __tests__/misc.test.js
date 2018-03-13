@@ -2,8 +2,8 @@
 // __tests__/Intro-test.js
 // Note: test renderer must be required after react-native.
 let jest = require('jest');
-jest.mock('react-native-fs', () => {return {};});
-jest.mock('react-native-device-info');
+
+
 jest.mock('../js/ExternalConfig', () => {
   return {
     RELEASE_MODE_USED: false,

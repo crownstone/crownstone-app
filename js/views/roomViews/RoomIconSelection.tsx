@@ -13,6 +13,7 @@ import { Background }  from '../components/Background'
 import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
+import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 
@@ -199,30 +200,24 @@ let listOfIcons = {
   ]
 };
 
-export class RoomIconSelection extends Component<any, any> {
+export class RoomIconSelection extends Component<{callback(icon: string) : void, icon: string, backgrounds: any}, any> {
   render() {
-    const store   = this.props.store;
-    const state   = store.getState();
-    const selectedIcon = this.props.icon || state.spheres[this.props.sphereId].locations[this.props.locationId].config.icon;
-
     return (
       <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
         <TopBar
           leftAction={Actions.pop}
-          title="Pick an Icon"/>
+          title="Pick an Icon"
+        />
         <View style={{backgroundColor: colors.csOrange.hex, height:2, width:screenWidth}} />
         <ScrollView>
           <IconSelection
             categories={categories}
             icons={listOfIcons}
-            selectedIcon={selectedIcon}
-            callback={
-            this.props.selectCallback !== undefined ?
-              this.props.selectCallback :
-              (newIcon) => {
-                store.dispatch({type:'UPDATE_LOCATION_CONFIG', sphereId: this.props.sphereId, locationId: this.props.locationId, data:{icon: newIcon}});
-                Actions.pop();
-              }}
+            selectedIcon={this.props.icon}
+            callback={(newIcon) => {
+              this.props.callback(newIcon);
+              BackAction();
+            }}
           />
         </ScrollView>
       </Background>

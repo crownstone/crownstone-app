@@ -20,9 +20,6 @@ import { styles, colors } from './../styles'
 
 
 export class RegisterConclusion extends Component<any, any> {
-  constructor() {
-    super();
-  }
 
   render() {
     return (

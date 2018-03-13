@@ -11,7 +11,7 @@ export class FadeInView extends Component<any, any> {
   pendingTimeout : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {show: props.visible || false, viewOpacity: new Animated.Value(props.visible ? 1 : 0)};
     this.visible = props.visible || false;

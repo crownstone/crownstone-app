@@ -12,6 +12,7 @@ import { Icon } from './Icon';
 import { styles, colors, screenWidth, topBarHeight, statusBarHeight} from '../styles'
 let Actions = require('react-native-router-flux').Actions;
 import { AlternatingContent }   from './animated/AlternatingContent'
+import {BackAction} from "../../util/Back";
 
 let barHeight = topBarHeight - statusBarHeight;
 
@@ -83,12 +84,12 @@ class TopBarAndroid extends Component<any, any> {
     }
     else {
       // back
-      let backAction = () => { Actions.pop(); };
+      let backCallback = () => { BackAction(); };
       if (typeof this.props.leftAction === 'function') {
-        backAction = this.props.leftAction;
+        backCallback = this.props.leftAction;
       }
       return (
-        <TouchableOpacity onPress={() => { backAction(); }}style={[topBarStyle.topBarLeftTouch]} ><View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
+        <TouchableOpacity onPress={() => { backCallback(); }}style={[topBarStyle.topBarLeftTouch]} ><View style={{flexDirection:'row', alignItems:'center', flex:0, height: barHeight}}>
             <Icon name="md-arrow-back" size={22} color={colors.white.hex} style={{paddingRight:6, marginTop:2}} />
           </View>
         </TouchableOpacity>

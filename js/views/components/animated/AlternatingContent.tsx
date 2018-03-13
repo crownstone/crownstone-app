@@ -11,7 +11,7 @@ export class AlternatingContent extends Component<any, any> {
   visible : any;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {visibleIndex: 0};
     this.visible = props.visible || false;

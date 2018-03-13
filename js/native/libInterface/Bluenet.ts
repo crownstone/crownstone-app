@@ -21,6 +21,7 @@ if (DISABLE_NATIVE === true) {
     stopScanning: () => {},
     keepAliveState: () => {},
     keepAlive: () => {},
+    requestBleState: () => {},
 
     forceClearActiveRegion: () => {},
     startIndoorLocalization: () => {},
@@ -74,6 +75,8 @@ if (DISABLE_NATIVE === true) {
     getAvailableScheduleEntryIndex: () => {},
 
     viewsInitialized: () => {},
+    lockSwitch:() => {},
+    allowDimming:() => {},
 
   }
 }

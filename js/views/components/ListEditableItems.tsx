@@ -6,8 +6,8 @@ export class ListEditableItems extends Component<any, any> {
   _renderer(item, index,) {
     return (
       <EditableItem
-        key={ index}
-        elementIndex={ index}
+        key={ index }
+        elementIndex={ index }
         setActiveElement={() => { this.setState({activeElement: index})}}
         {...item}
       />

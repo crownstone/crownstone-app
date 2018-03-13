@@ -12,7 +12,7 @@ export class UserPicture extends Component<any, any> {
   opacity : number;
 
   constructor(props) {
-    super();
+    super(props);
 
     this.state = {x: new Animated.Value(props.x || 0), y: new Animated.Value(props.y || 0), opacity: new Animated.Value(0)};
     this.x = props.x || 0;

@@ -14,7 +14,7 @@ import { styles, colors, screenWidth } from '../../styles'
 
 export class Dropdown extends Component<any, any> {
   constructor(props) {
-    super();
+    super(props);
     this.state = {open:false, value: props.value};
   }
 

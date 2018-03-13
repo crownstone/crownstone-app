@@ -8,7 +8,7 @@ class CloudEventHandlerClass {
   _initialized : boolean = false;
   _eventSyncInProgress : boolean = false;
 
-  _loadStore(store) {
+  loadStore(store) {
     if (this._initialized === false) {
       this._store = store;
       this._initialized = true;

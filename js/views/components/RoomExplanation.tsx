@@ -17,6 +17,8 @@ import {
   getFloatingStones
 } from '../../util/DataUtil'
 import { styles, colors } from '../styles'
+import {BackAction} from "../../util/Back";
+import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 /**
  * This element contains all logic to show the explanation bar in the room overview.
@@ -35,13 +37,15 @@ export class RoomExplanation extends Component<any, any> {
 
     // check if we have special cases
     let amountOfStonesInRoom = Object.keys(getStonesAndAppliancesInLocation(state, sphereId, locationId)).length;
-    let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
+    let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable() && Permissions.inSphere(sphereId).seeSetupCrownstone;
 
     // if the button callback is not undefined at draw time, we draw a button, not a view
     let buttonCallback = undefined;
 
     // callback to go to the floating crownstones. Is used twice
-    let goToFloatingCrownstonesCallback = () => { Actions.pop(); setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
+    let goToFloatingCrownstonesCallback = () => {
+      BackAction();
+      setTimeout(() => { Actions.roomOverview({sphereId: sphereId, locationId: null}) }, 150)};
 
     // In case we see a crownstone in setup mode:
     if (explanation === undefined && seeStoneInSetupMode === true && locationId === null) {

@@ -1,7 +1,7 @@
 import {Scheduler} from "../logic/Scheduler";
 import {CLOUD} from "../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL} from "../ExternalConfig";
-import {LOG} from "../logging/Log";
+import {LOG, LOGd} from "../logging/Log";
 import {Util} from "../util/Util";
 
 const TRIGGER_ID = 'BATCH_UPLOADER_INTERVAL';
@@ -16,7 +16,7 @@ class BatchUploadClass {
 
   constructor() {}
 
-  _loadStore(store) {
+  loadStore(store) {
     this._store = store;
     if (this._initialized === false) {
       this._store = store;
@@ -75,7 +75,7 @@ class BatchUploadClass {
 
       return CLOUD.forStone(stoneId).updateBatchPowerUsage(data, true)
         .then(() => {
-          LOG.debug("BatchUploader: Updated Batch Usage for indices", indices);
+          LOGd.info("BatchUploader: Updated Batch Usage for indices", indices);
           actions.push({type: "SET_BATCH_SYNC_POWER_USAGE", sphereId: sphereId, stoneId: stoneId, dateId: dateId, data: { indices: indices }});
           successfulUploads++;
         })

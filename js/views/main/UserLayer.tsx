@@ -15,6 +15,7 @@ import {colors} from "../styles";
 import {getPresentUsersInLocation} from "../../util/DataUtil";
 import {UserPicture} from "../components/animated/UserPicture";
 import {TextCircle} from "../components/animated/TextCircle";
+import {LOG} from "../../logging/Log";
 
 
 export class UserLayer extends Component<any, any> {
@@ -25,7 +26,7 @@ export class UserLayer extends Component<any, any> {
   otherUserSize : number;
 
   constructor(props) {
-    super();
+    super(props);
     this.maxUsersShownOnRoom = props.maxUsersShownOnRoom || 4;
     this.appUserSize         = props.appUserSize         || 50;
     this.otherUserSize       = props.otherUserSize       || 40;
@@ -103,6 +104,7 @@ export class UserLayer extends Component<any, any> {
       if (
         change.changeUsers       ||
         change.changeSphereUsers ||
+        change.updateSphereUser  ||
         (change.userPositionUpdate && change.userPositionUpdate.sphereIds[this.props.sphereId])
       ) {
         this.forceUpdate();
@@ -127,10 +129,16 @@ export class UserLayer extends Component<any, any> {
 
     // for each location, get the users in there.
     locationIds.forEach((locationId) => {
+      let node = this.props.nodes[locationId];
+      if (!node) {
+        console.warn("UserLayer: Can not find node:", locationId, this.props.nodes);
+        return;
+      }
+
+
       let presentUsers = getPresentUsersInLocation(state, this.props.sphereId, locationId);
       if (presentUsers.length > 0) {
         let currentOtherUserIndex = 0;
-        let node = this.props.nodes[locationId];
         let userIsInRoom = false;
 
         presentUsers.forEach((user) => {

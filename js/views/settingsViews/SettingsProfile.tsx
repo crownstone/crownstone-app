@@ -27,8 +27,8 @@ export class SettingsProfile extends Component<any, any> {
   renderState : any;
   validationState : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {picture:null, firstName: null, lastName: null};
     this.renderState = {};
     this.validationState = {firstName:undefined, lastName:undefined, email:undefined}

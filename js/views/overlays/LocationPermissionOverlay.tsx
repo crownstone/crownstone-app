@@ -16,8 +16,8 @@ import {NativeBus} from "../../native/libInterface/NativeBus";
 export class LocationPermissionOverlay extends Component<any, any> {
   unsubscribe : any;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       visible: false,
@@ -56,7 +56,7 @@ export class LocationPermissionOverlay extends Component<any, any> {
   _getTitle() {
     switch (this.state.notificationType) {
       case "foreground":
-        return "Only foreground permissions granted.";
+        return "Only while-in-app permissions granted.";
       case "on":
         return "Location Services are on!";
       case "off":
@@ -116,7 +116,9 @@ export class LocationPermissionOverlay extends Component<any, any> {
           color={colors.blue.hex}
         />
         <View style={{flex:1}} />
-        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue.hex, padding:5, textAlign:'center'}}>{this._getTitle()}</Text>
+        <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.blue.hex, padding:5, textAlign:'center'}}>
+          {this._getTitle()}
+        </Text>
         <Text style={{fontSize: 11, fontWeight: '400',  color: colors.blue.hex, padding:5, textAlign:'center'}}>
           {this._getText()}
         </Text>

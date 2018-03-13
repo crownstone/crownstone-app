@@ -9,7 +9,7 @@ export class SlideInFromBottomView extends Component<any, any> {
   visible : boolean;
 
   constructor(props) {
-    super();
+    super(props);
 
     let height = Dimensions.get('window').height;
 

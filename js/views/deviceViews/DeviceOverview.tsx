@@ -15,7 +15,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
 import { Background } from '../components/Background'
-import * as Swiper from 'react-native-swiper';
+const Swiper = require("react-native-swiper");
 import { Util } from "../../util/Util";
 import { TopBar } from "../components/Topbar";
 import { DeviceBehaviour } from "./elements/DeviceBehaviour";
@@ -31,7 +31,9 @@ import {LOG, LOGi} from '../../logging/Log';
 import { BATCH } from "../../router/store/storeManager";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-
+import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
+import {BackAction} from "../../util/Back";
+import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -42,9 +44,10 @@ export class DeviceOverview extends Component<any, any> {
   unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
   summaryIndex : number = 0;
+  showWhatsNewVersion : string = null;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {swiperIndex: 0, scrolling:false, swipeEnabled: true};
     this.unsubscribeSwiperEvents.push(eventBus.on("setNewSwiperIndex", (nextIndex) => {
@@ -64,6 +67,19 @@ export class DeviceOverview extends Component<any, any> {
     }));
   }
 
+  componentWillMount() {
+    const state = this.props.store.getState();
+    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    if (stone.config.firmwareVersionSeenInOverview === null) {
+      this.props.store.dispatch({
+        type: "UPDATE_STONE_LOCAL_CONFIG",
+        sphereId: this.props.sphereId,
+        stoneId: this.props.stoneId,
+        data: {firmwareVersionSeenInOverview: stone.config.firmwareVersion}
+      });
+    }
+  }
+
   componentDidMount() {
     const { store } = this.props;
     // tell the component exactly when it should redraw
@@ -73,27 +89,17 @@ export class DeviceOverview extends Component<any, any> {
       let state = store.getState();
       if (
         (state.spheres[this.props.sphereId] === undefined) ||
-        (change.removeStone && change.removeStone.stoneIds[this.props.stoneId])
-         ) {
-        try {
-          Actions.pop();
-        } catch (popErr) {
-          LOG.error("DeviceOverview pop error 1:", popErr);
-        }
+        (change.removeSphere && change.removeSphere.sphereIds[this.props.sphereId]) ||
+        (change.removeStone  && change.removeStone.stoneIds[this.props.stoneId])
+       ) {
+        BackAction();
         return;
       }
 
-
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
-      // TODO: this piece of code leads to too many .pop(), causing an error to be thrown on android.
-      // investigate why this check is required:
       if (!stone || !stone.config) {
-        try {
-          Actions.pop();
-        } catch (popErr) {
-          LOG.error("DeviceOverview pop error 2:", popErr);
-        }
+        BackAction();
         return;
       }
 
@@ -110,7 +116,7 @@ export class DeviceOverview extends Component<any, any> {
         applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
         ) {
           this.forceUpdate();
-      }
+        }
     });
   }
 
@@ -129,6 +135,20 @@ export class DeviceOverview extends Component<any, any> {
     // This will close the connection that is kept open by a dimming command. Dimming is the only command that keeps the connection open.
     // If there is no connection being kept open, this command will not do anything.
     BatchCommandHandler.closeKeptOpenConnection();
+
+    const state = this.props.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (sphere) {
+      const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      if (stone && stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) {
+        this.props.store.dispatch({
+          type: "UPDATE_STONE_LOCAL_CONFIG",
+          sphereId: this.props.sphereId,
+          stoneId: this.props.stoneId,
+          data: {firmwareVersionSeenInOverview: stone.config.firmwareVersion}
+        });
+      }
+    }
   }
 
 
@@ -138,34 +158,49 @@ export class DeviceOverview extends Component<any, any> {
     const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
     let hasAppliance = stone.config.applianceId !== null;
 
-    let index = 0;
-    let summaryIndex = index++;
-    let behaviourIndex = index++;
-    let scheduleIndex = index++;
-    let powerMonitorIndex = index++;
+    let summaryIndex = 0;
+    let behaviourIndex = summaryIndex + 1;
 
     this.summaryIndex = summaryIndex;
 
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let hasError = stone.errors.hasError || stone.errors.advertisementError;
-    let canUpdate = Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
-    let hasBehaviour = stone.config.type !== STONE_TYPES.guidestone;
+
+    let whatsNewEnabledFirmwares = {
+      '2.0.0': true,
+      '2.0.1': true,
+    }
+    let showWhatsNew = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone &&
+                       stone.config.firmwareVersionSeenInOverview &&
+                       (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
+                        whatsNewEnabledFirmwares[stone.config.firmwareVersion];
+
+    if (showWhatsNew) { this.showWhatsNewVersion = stone.config.firmwareVersion; }
+
+    // check what we want to show the user:
+    let hasError        = stone.errors.hasError;
+    let mustUpdate      = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
+    let canUpdate       = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
+    let hasBehaviour    = stone.config.type !== STONE_TYPES.guidestone;
     let hasPowerMonitor = stone.config.type !== STONE_TYPES.guidestone;
-    let hasScheduler = stone.config.type !== STONE_TYPES.guidestone;
-    let deviceType = stone.config.type;
+    let hasScheduler    = stone.config.type !== STONE_TYPES.guidestone;
+    let deviceType      = stone.config.type;
 
     // if this stone requires to be dfu-ed to continue working, block all other actions.
     if (stone.config.dfuResetRequired) {
-      canUpdate = true;
-      hasError = false;
-      hasBehaviour = false;
+      canUpdate       = true;
+      hasError        = false;
+      hasBehaviour    = false;
       hasPowerMonitor = false;
-      hasScheduler = false;
+      hasScheduler    = false;
     }
 
-    if (hasError)  { summaryIndex++; behaviourIndex++; }
-    if (canUpdate) { summaryIndex++; behaviourIndex++; }
+    // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
+    if (!hasError && !mustUpdate) {
+      if (showWhatsNew) { summaryIndex++; behaviourIndex++; }
+      if (canUpdate)    { summaryIndex++; behaviourIndex++; }
+    }
+
 
     let checkScrolling = (newState) => {
       if (this.state.scrolling !== newState) {
@@ -176,7 +211,7 @@ export class DeviceOverview extends Component<any, any> {
     return (
       <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
         <TopBar
-          leftAction={() => { Actions.pop(); }}
+          leftAction={() => { BackAction(); }}
           rightItem={this.state.scrolling ? this._getScrollingElement() : undefined}
           right={() => {
             switch (this.state.swiperIndex) {
@@ -216,7 +251,7 @@ export class DeviceOverview extends Component<any, any> {
           onScrollBeginDrag={  () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
-          { this._getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType, stone.config) }
+          { this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config) }
         </Swiper>
       </Background>
     )
@@ -231,16 +266,25 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getContent(hasError, canUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, deviceType, stoneConfig) {
+  _getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
     let content = [];
-
-    let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId};
+    let props = {store: this.props.store, sphereId: this.props.sphereId, stoneId: this.props.stoneId, eventBus: this.props.eventBus};
 
     if (hasError) {
       content.push(<DeviceError key={'errorSlide'} {...props} />);
+      return content;
     }
+
+    if (mustUpdate) {
+      content.push(<DeviceUpdate key={'updateSlide'} mandatory={true} {...props} />);
+      return content;
+    }
+
     if (canUpdate) {
-      content.push(<DeviceUpdate key={'updateSlide'}  {...props} />);
+      content.push(<DeviceUpdate key={'updateSlide'} mandatory={false} canUpdate={canUpdate} {...props} />);
+    }
+    if (showWhatsNew) {
+      content.push(<DeviceWhatsNew key={'deviceWhatsNewSlide'} {...props} />);
     }
 
     if (stoneConfig.dfuResetRequired) {
@@ -255,7 +299,7 @@ export class DeviceOverview extends Component<any, any> {
     }
 
     if (hasBehaviour) {
-      content.push(<DeviceBehaviour key={'behaviourSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId} />);
+      content.push(<DeviceBehaviour key={'behaviourSlide'} {...props} />);
     }
 
     if (hasScheduler) {
@@ -263,7 +307,7 @@ export class DeviceOverview extends Component<any, any> {
     }
 
     if (hasPowerMonitor) {
-      content.push(<DevicePowerCurve key={'powerSlide'} store={this.props.store} sphereId={this.props.sphereId} stoneId={this.props.stoneId}/>);
+      content.push(<DevicePowerCurve key={'powerSlide'} {...props} />);
     }
 
     return content;
@@ -320,3 +364,5 @@ export const deviceStyles = StyleSheet.create({
     textAlign:'center'
   },
 });
+
+

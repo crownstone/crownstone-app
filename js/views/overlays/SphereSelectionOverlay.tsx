@@ -23,8 +23,8 @@ export class SphereSelectionOverlay extends Component<any, any> {
   unsubscribe : any;
   activeSphere : string;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { visible: false };
     this.unsubscribe = [];
   }

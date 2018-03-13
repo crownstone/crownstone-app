@@ -26,9 +26,6 @@ export class DevicePowerCurve extends Component<any, any> {
   unsubscribeStoreEvents;
   // debugInterval;
 
-  constructor() {
-    super();
-  }
 
   componentDidMount() {
     this.unsubscribeStoreEvents = eventBus.on("databaseChange", (data) => {
@@ -52,7 +49,7 @@ export class DevicePowerCurve extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     const stone = sphere.stones[this.props.stoneId];
 
-    let dateId = Util.getDateFormat(new Date().valueOf());
+    let dateId = Util.getDateHourId(new Date().valueOf());
 
     let dataStream = [];
     if (stone.powerUsage[dateId]) {
@@ -62,7 +59,7 @@ export class DevicePowerCurve extends Component<any, any> {
     return (
       <View style={{flex:1, flexDirection: 'column', alignItems:'center', paddingTop:30}}>
         <Text style={deviceStyles.header}>Power Usage</Text>
-        <View style={{flex:1}} />
+        <View style={{flex:0.75}} />
         <Graph width={screenWidth} height={availableScreenHeight/2} data={dataStream} xField="timestamp" yField="power"/>
         <View style={{flex:5}}>
           <ScrollView style={{flex:1}}>

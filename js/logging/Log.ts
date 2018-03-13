@@ -1,17 +1,17 @@
 import { Platform } from 'react-native';
 import {
   LOG_INFO,
+  LOG_ADVERTISEMENTS,
   LOG_ERRORS,
   LOG_WARNINGS,
   LOG_VERBOSE,
-  LOG_DEBUG,
   LOG_EVENTS,
   LOG_CLOUD,
   LOG_BLE,
   LOG_MESH,
   LOG_STORE,
   LOG_SCHEDULER,
-  RELEASE_MODE_USED, LOG_MESSAGES,
+  RELEASE_MODE_USED, LOG_MESSAGES, LOG_NATIVE,
 } from '../ExternalConfig'
 import {LogProcessor} from "./LogProcessor";
 import {logToFile} from "./LogUtil";
@@ -61,12 +61,12 @@ class Logger {
     this._log('ERROR !!! --', LOG_ERRORS,    LogProcessor.log_errors, arguments);
   }
 
-  debug(...any) {
-    this._log('Debug ------', LOG_DEBUG,     LogProcessor.log_debug, arguments);
-  }
-
   cloud(...any) {
     this._log('Cloud ------', LOG_CLOUD,     LogProcessor.log_cloud, arguments);
+  }
+
+  advertisements(...any) {
+    this._log('ADVERTISEMENTS --------', LOG_ADVERTISEMENTS, LogProcessor.log_advertisements, arguments);
   }
 
   ble(...any) {
@@ -87,6 +87,10 @@ class Logger {
 
   messages(...any) {
     this._log('Messages ---', LOG_MESSAGES,  LogProcessor.log_info, arguments);
+  }
+
+  native(...any) {
+    this._log('Native ---', LOG_NATIVE,  LogProcessor.log_native, arguments);
   }
 
   _log(type, globalCheckField, dbCheckField, allArguments) {

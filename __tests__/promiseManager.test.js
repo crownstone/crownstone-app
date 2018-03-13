@@ -2,24 +2,22 @@
 // __tests__/Intro-test.js
 // Note: test renderer must be required after react-native.
 let jest = require('jest');
-jest.mock('react-native-fs', () => {return {};});
-jest.mock('react-native-device-info');
 
 jest.mock('../js/ExternalConfig', () => {
   return {
     RELEASE_MODE_USED: false,
     PROMISE_MANAGER_FALLBACK_TIMEOUT: 200,
-    LOG_INFO       : false,
-    LOG_WARNINGS   : false,
-    LOG_ERRORS     : false,
-    LOG_VERBOSE    : false,
-    LOG_SCHEDULER  : false,
-    LOG_BLE        : false,
-    LOG_EVENTS     : false,
-    LOG_STORE      : false,
-    LOG_MESH       : false,
-    LOG_CLOUD      : false,
-    LOG_DEBUG      : false,
+    LOG_INFO       : 100,
+    LOG_WARNINGS   : 100,
+    LOG_ERRORS     : 100,
+    LOG_VERBOSE    : 100,
+    LOG_SCHEDULER  : 100,
+    LOG_BLE        : 100,
+    LOG_EVENTS     : 100,
+    LOG_STORE      : 100,
+    LOG_MESH       : 100,
+    LOG_CLOUD      : 100,
+    LOG_DEBUG      : 100,
     SCHEDULER_FALLBACK_TICK: 1,
   }
 });

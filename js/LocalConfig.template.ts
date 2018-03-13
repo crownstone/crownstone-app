@@ -64,6 +64,11 @@ const DeviceInfo = require('react-native-device-info');
   // point to the local cloud when using a phone
   // export let CLOUD_ADDRESS = DeviceInfo.getModel() !== "Simulator" ? 'http://10.27.8.130:3000/api/' : 'http://0.0.0.0:3000/api/';
 
+  /**
+   * The app will not allow usage of crownstones with a lower version than this.
+   */
+  export let MINIMUM_REQUIRED_FIRMWARE_VERSION = '1.7.1';
+
 /******************** /APP ********************/
 
 
@@ -75,11 +80,12 @@ const DeviceInfo = require('react-native-device-info');
    * Main logging settings.
    * These will override developer settings only if true but they are currently on by default in developer settings.
    */
-  export let LOG_INFO       = LOG_LEVEL.info;    // enabling LOG.info       commands to be shown.
-  export let LOG_WARNINGS   = LOG_LEVEL.info;    // enabling LOG.warn       commands to be shown.
-  export let LOG_ERRORS     = LOG_LEVEL.info;    // enabling LOG.error      commands to be shown.
-  export let LOG_MESH       = LOG_LEVEL.info;    // enabling LOG.mesh       commands to be shown.
-  export let LOG_MESSAGES   = LOG_LEVEL.info;    // enabling LOG.mesh       commands to be shown.
+  export let LOG_INFO           = LOG_LEVEL.info;    // enabling LOG.info           commands to be shown.
+  export let LOG_WARNINGS       = LOG_LEVEL.info;    // enabling LOG.warn           commands to be shown.
+  export let LOG_ERRORS         = LOG_LEVEL.info;    // enabling LOG.error          commands to be shown.
+  export let LOG_MESH           = LOG_LEVEL.info;    // enabling LOG.mesh           commands to be shown.
+  export let LOG_MESSAGES       = LOG_LEVEL.info;    // enabling LOG.mesh           commands to be shown.
+  export let LOG_ADVERTISEMENTS = LOG_LEVEL.info;    // enabling LOG.advertisement  commands to be shown.
 
   /**
   * Specific logging settings used for debugging mostly. These will override developer settings only if true.
@@ -90,7 +96,7 @@ const DeviceInfo = require('react-native-device-info');
   export let LOG_EVENTS     = LOG_LEVEL.ERROR;   // enabling LOG.event      commands to be shown.
   export let LOG_STORE      = LOG_LEVEL.ERROR;   // enabling LOG.store      commands to be shown.
   export let LOG_CLOUD      = LOG_LEVEL.ERROR;   // enabling LOG.cloud      commands to be shown.
-  export let LOG_DEBUG      = LOG_LEVEL.ERROR;   // enabling LOG.debug      commands to be shown.
+  export let LOG_NATIVE     = LOG_LEVEL.info;   // enabling LOG.native      commands to be shown.
 
   /**
    * Log to file. Even if this is false, if the user configures it in the user profile through the developer mode, logging to file will still be used.

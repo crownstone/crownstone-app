@@ -1,11 +1,11 @@
 import { LoginSplash }                from '../views/startupViews/LoginSplash'
 import { Login }                      from '../views/startupViews/Login'
+import { Logout }                     from "../views/startupViews/Logout";
 import { SelectFromList }             from '../views/selection/SelectFromList'
 import { Register }                   from '../views/startupViews/Register'
 import { AiStart }                    from '../views/startupViews/AiStart'
 import { RegisterConclusion }         from '../views/startupViews/RegisterConclusion'
 import { PictureView }                from '../views/cameraViews/PictureView'
-import { PicturePreview }             from '../views/cameraViews/PicturePreview'
 import { CameraRollView }             from '../views/cameraViews/CameraRollView'
 import { SphereOverview }             from '../views/main/SphereOverview'
 import { RoomOverview }               from '../views/roomViews/RoomOverview'
@@ -29,6 +29,8 @@ import { SettingsApp }                from '../views/settingsViews/SettingsApp'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
 import { SettingsPrivacy }            from '../views/settingsViews/SettingsPrivacy'
+import { SettingsBleDebug }           from '../views/settingsViews/SettingsBleDebug'
+import { SettingsStoneBleDebug }      from '../views/settingsViews/SettingsStoneBleDebug'
 import { SettingsDeveloper }          from '../views/settingsViews/SettingsDeveloper'
 import { SettingsMeshOverview }       from '../views/settingsViews/SettingsMeshOverview'
 import { SettingsSphereOverview }     from '../views/settingsViews/SettingsSphereOverview'
@@ -39,16 +41,17 @@ import { SettingsSphereInvitedUser }  from '../views/settingsViews/SettingsSpher
 import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPluginRecoverStep1'
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
 import { Tutorial }                   from "../views/tutorialViews/Tutorial";
+import { SettingsFAQ }                from "../views/settingsViews/SettingsFAQ";
 
 export const Views = {
   AiStart,
   SelectFromList,
   LoginSplash,
   Login,
+  Logout,
   Register,
   RegisterConclusion,
   PictureView,
-  PicturePreview,
   CameraRollView,
   SphereOverview,
   RoomOverview,
@@ -72,7 +75,10 @@ export const Views = {
   SettingsOverview,
   SettingsProfile,
   SettingsPrivacy,
+  SettingsBleDebug,
+  SettingsStoneBleDebug,
   SettingsDeveloper,
+  SettingsFAQ,
   SettingsMeshOverview,
   SettingsSphereOverview,
   SettingsSphere,

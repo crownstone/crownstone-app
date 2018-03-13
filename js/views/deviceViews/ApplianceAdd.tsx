@@ -20,6 +20,7 @@ import {getRandomC1Name} from "../../fonts/customIcons";
 import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {Util} from "../../util/Util";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
+import {BackAction} from "../../util/Back";
 
 
 
@@ -27,7 +28,7 @@ export class ApplianceAdd extends Component<any, any> {
   refName : string;
 
   constructor(props) {
-    super();
+    super(props);
     this.state = {name:'', icon: getRandomC1Name(), selectedStones: {}};
     this.refName = "listItems";
   }
@@ -38,12 +39,10 @@ export class ApplianceAdd extends Component<any, any> {
     items.push({label:'Type Name', type: 'textEdit', placeholder:'My device name', value: this.state.name, callback: (newText) => {
       this.setState({name:newText});
     }});
-    items.push({label:'Icon', type: 'icon', value: this.state.icon,
-      callback: () => {
+    items.push({label:'Icon', type: 'icon', value: this.state.icon, callback: () => {
         Actions.deviceIconSelection({
           icon: this.state.icon,
-          sphereId: this.props.sphereId,
-          selectCallback: (newIcon) => {Actions.pop(); this.setState({icon:newIcon});}
+          callback: (newIcon) => { this.setState({icon:newIcon}); }
         }
       )}
     });
@@ -88,7 +87,7 @@ export class ApplianceAdd extends Component<any, any> {
           this.props.store.batchDispatch(actions);
           this.props.eventBus.emit('hideLoading');
           this.props.callback(localId);
-          Actions.pop({popNum: 2});
+          BackAction(2);
         })
         .catch((err) => {
           let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
@@ -106,7 +105,7 @@ export class ApplianceAdd extends Component<any, any> {
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     if (this.props.sphereId === null) {
-      Actions.pop();
+      BackAction();
       return <View />
     }
 

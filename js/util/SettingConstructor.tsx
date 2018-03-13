@@ -17,8 +17,8 @@ import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
-import { MESH_ENABLED } from "../ExternalConfig";
 import {AlternatingContent} from "../views/components/animated/AlternatingContent";
+import {MapProvider} from "../backgroundProcesses/MapProvider";
 
 
 const getIcon = function(name : string, size : number, iconColor: string, backgroundColor : string) {
@@ -110,7 +110,7 @@ export const SettingConstructor = function(store, state, eventBus) {
     });
   }
 
-  if (Object.keys(state.spheres).length > 0 && MESH_ENABLED) {
+  if (Object.keys(state.spheres).length > 0 && MapProvider.meshEnabled) {
     items.push({
       id: 'Mesh Overview',
       label: 'Mesh Overview',
@@ -132,7 +132,7 @@ export const SettingConstructor = function(store, state, eventBus) {
 
   if (state.app.tapToToggleEnabled !== false) {
     let tapToToggleSettings = { tutorial: false };
-    if (Util.data.getTapToToggleCalibration(state)) {
+    if (!Util.data.getTapToToggleCalibration(state)) {
       tapToToggleSettings.tutorial = true;
     }
     items.push({
@@ -155,27 +155,6 @@ export const SettingConstructor = function(store, state, eventBus) {
   });
 
   insertExplanation(items, 'TROUBLESHOOTING', false);
-  items.push({
-    id:'Add',
-    label:'Add a Crownstone',
-    type:'navigation',
-    icon: getIcon('md-add-circle', 22, colors.white.hex, colors.green2.hex),
-    callback: () => {
-      Alert.alert(
-        "Adding a Crownstone",
-        "Plug the new Crownstone in and hold your phone close (touching it) to it. It will show up in the overview.\n\nIf you press OK we will take you to the overview.",
-        [{text:'OK', onPress: () => {
-          if (Platform.OS === 'ios') {
-            Actions.overview();
-          }
-          else {
-            Actions.refresh({key: 'drawer', open: false });
-            Actions.sphereOverview();
-          }
-        }}]
-     );
-    }
-  });
   items.push({
     id:'Help',
     label:'Help',

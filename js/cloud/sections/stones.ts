@@ -30,7 +30,22 @@ export const stones = {
     return this._setupRequest(
       'PUT',
       '/Spheres/{id}/ownedStones/' + cloudStoneId,
-      {background: background, data:data},
+      {background: background, data: data},
+      'body'
+    );
+  },
+
+  /**
+   * Update a crownstone in the cloud
+   * @param switchState
+   * @param background
+   * @returns {*}
+   */
+  updateStoneSwitchState: function(switchState, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Stones/{id}/currentSwitchState?switchState='  + switchState,
+      {background: background},
       'body'
     );
   },
@@ -85,7 +100,7 @@ export const stones = {
       .then(() => {
         if (doNotSetUpdatedTimes !== true) {
           let promises = [];
-          promises.push(this.forSphere(localSphereId).updateStone(this._stoneId,      {updatedAt: updatedAt}));
+          promises.push(this.forSphere(localSphereId).updateStone(this._stoneId,      {locationId: cloudLocationId, updatedAt: updatedAt}));
           promises.push(this.forSphere(localSphereId).updateLocation(localLocationId, {updatedAt: updatedAt}));
           // we set the updatedAt time in the cloud since changing the links does not update the time there
           return Promise.all(promises);
@@ -176,6 +191,17 @@ export const stones = {
       );
     }
   },
+
+
+
+  sendStoneDiagnosticInfo: function(data, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Stones/{id}/diagnostics',
+      { background: background, data: data },
+      'body'
+    );
+  }
 
 
 };

@@ -64,8 +64,10 @@ export const cloudApiBase = {
     let path = preparePictureURI(options.path);
     let filename = path.split('/');
     filename = filename[filename.length-1];
-    formData.append('image', {type: 'image/jpeg', name: filename, uri: path });
+    // cast to any because the typescript typings are incorrect for FormData
+    (formData as any).append('picture', {uri: path, name: filename, type: 'image/jpg'});
     options.data = formData;
+
     return RNFS.exists(preparePictureURI(options.path, false))
       .then((fileExists) => {
         if (fileExists === false) {

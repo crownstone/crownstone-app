@@ -15,7 +15,7 @@ let fieldMap : fieldMap = [
   {local: 'iBeaconMinor',       cloud: 'minor'},
   {local: 'locked',             cloud: 'locked'},
   {local: 'macAddress',         cloud: 'address'},
-  {local: 'meshNetworkId',      cloud: 'meshNetworkId'},
+  // {local: 'meshNetworkId',      cloud: 'meshNetworkId'},
   {local: 'name',               cloud: 'name'},
   {local: 'onlyOnWhenDark',     cloud: 'onlyOnWhenDark'},
   {local: 'tapToToggle',        cloud: 'touchToToggle'},

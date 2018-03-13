@@ -18,12 +18,13 @@ import { FingerprintManager } from '../../native/localization/FingerprintManager
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import { Background } from '../components/Background'
-import { LOG } from '../../logging/Log'
+import {LOG, LOGd} from '../../logging/Log'
 
 import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'
 import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
 import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
 import { Util } from "../../util/Util";
+import {BackAction} from "../../util/Back";
 
 
 export class RoomTraining extends Component<any, any> {
@@ -34,7 +35,7 @@ export class RoomTraining extends Component<any, any> {
   noSignalTimeout : any;
 
   constructor(props) {
-    super();
+    super(props);
     this.state = {phase: 0, text:'initializing', active: false, opacity: new Animated.Value(0), iconIndex: 0, progress:0};
     this.collectedData = [];
     this.amountOfInvalidPoints = 0;
@@ -44,7 +45,7 @@ export class RoomTraining extends Component<any, any> {
   }
 
   componentDidMount() {
-    LOG.debug("Stopping indoor localization for training purposes");
+    LOGd.info("Stopping indoor localization for training purposes");
     Bluenet.stopIndoorLocalization();
   }
 
@@ -54,7 +55,7 @@ export class RoomTraining extends Component<any, any> {
 
     let state = this.props.store.getState();
     if (canUseIndoorLocalizationInSphere(state, this.props.sphereId) === true) {
-      LOG.debug("(Re)Starting indoor localization after training");
+      LOGd.info("(Re)Starting indoor localization after training");
       Bluenet.startIndoorLocalization();
     }
   }
@@ -72,7 +73,7 @@ export class RoomTraining extends Component<any, any> {
 
       this.stop(true);
 
-      let defaultAction = () => { Actions.pop({popNum:2}); };
+      let defaultAction = () => { BackAction(2); };
       Alert.alert(
         "No Crownstones in range...",
         "To be able to identify this room, I need to see at least 3 Crownstones in but I can't see any from here... Try to reposition your Crownstones so I can see more of them.",
@@ -113,7 +114,7 @@ export class RoomTraining extends Component<any, any> {
 
       this.stop(true);
 
-      let defaultAction = () => { Actions.pop({popNum:2}); };
+      let defaultAction = () => { BackAction(2); };
       Alert.alert(
         "I can not see enough Crownstones...",
         "To be able to identify this room, I need to see at least 3 Crownstones but I see only " + averageAmountOfMeasurements + "." +
@@ -176,7 +177,7 @@ export class RoomTraining extends Component<any, any> {
                 "Cancelling this process will revert it to the way it was before.",
                 [
                   {text:'No', onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
-                  {text:'Yes', onPress: () => { this.stop(true); Actions.pop({popNum:2}); }}
+                  {text:'Yes', onPress: () => { this.stop(true); BackAction(2); }}
                 ],
                 { cancelable : false }
               )
@@ -186,7 +187,7 @@ export class RoomTraining extends Component<any, any> {
       )
     }
     else if (this.state.phase === 2) {
-      content = <RoomTraining_finished ai={ai} quit={() => { Actions.pop({popNum:2}); }} />
+      content = <RoomTraining_finished ai={ai} quit={() => { BackAction(2); }} />
     }
 
     return (
