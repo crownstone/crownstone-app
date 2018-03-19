@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 const Actions = require('react-native-router-flux').Actions;
+import KeepAwake from 'react-native-keep-awake';
 
 import { FingerprintManager } from '../../native/localization/FingerprintManager'
 import { Bluenet } from '../../native/libInterface/Bluenet'
@@ -192,7 +193,9 @@ export class RoomTraining extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>
-        {content}
+        <KeepAwake>
+          {content}
+        </KeepAwake>
       </Background>
     );
   }
