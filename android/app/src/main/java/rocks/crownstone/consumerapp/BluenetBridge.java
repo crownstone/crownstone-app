@@ -6,11 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.LocationManager;
@@ -18,7 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.IBinder;
 import android.os.Process;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -180,6 +177,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	private boolean _isInitialized = false;
 
 	private BleScanner _scanner;
+	private boolean _scannerInitialized = false;
 	private boolean _initScannerInBackground = true;
 
 //	private boolean _scanServiceIsBound = false;
@@ -305,6 +303,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	private void init() {
+		BleLog.getInstance().LOGw(TAG, "init");
 		_isInitialized = false;
 
 		// create handler with its own thread
@@ -323,27 +322,12 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		BleLog.addFileLogger(_fileLogger);
 
 		_scanner = new BleScanner();
-		_scanner.setScanInterval(SCAN_INTERVAL_IN_SPHERE, SCAN_PAUSE_IN_SPHERE);
-		getBleExt().setConnectTimeout(CONNECT_TIMEOUT_MS);
-		getBleExt().setNumRetries(CONNECT_NUM_RETRIES);
-//		initBluetooth();
-
-//		// create and bind to the BleScanService
-//		BleLog.getInstance().LOGi(TAG, "binding to service..");
-//		Intent intent = new Intent(_reactContext, BleScanService.class);
-//		Pair logLevels = getLogLevel(BleScanService.class);
-//		intent.putExtra(BleScanService.EXTRA_LOG_LEVEL, (int)logLevels.first);
-//		intent.putExtra(BleScanService.EXTRA_FILE_LOG_LEVEL, (int)logLevels.second);
-//		boolean success = _reactContext.bindService(intent, _connection, Context.BIND_AUTO_CREATE);
-//		BleLog.getInstance().LOGi(TAG, "successfully bound to service: " + success);
-
 		_localization = FingerprintLocalization.getInstance();
 		_isResettingBluetooth = false;
 
 		DfuServiceListenerHelper.registerProgressListener(_reactContext, _dfuProgressListener);
 
 		_isInitialized = true;
-//		checkReady();
 	}
 
 	private void setLogLevels(Triplet[] logLevels) {
@@ -375,12 +359,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 
 		Activity activity = _reactContext.getCurrentActivity();
 		Notification notification = getScanServiceNotification("Crownstone is running in the background");
-		_scanner.init(_initScannerInBackground, activity, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
+		_scanner.init(true, _initScannerInBackground, activity, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				BleLog.getInstance().LOGi(TAG, "Initialized bluetooth");
 
-				getIBeaconRanger().setRssiThreshold(IBEACON_RANGING_MIN_RSSI);
 				checkReady();
 			}
 
@@ -389,6 +372,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 				BleLog.getInstance().LOGe(TAG, "Bluetooth init error: " + error);
 			}
 		});
+	}
+
+	private void onScannerInitialized() {
+		_scanner.setScanInterval(SCAN_INTERVAL_IN_SPHERE, SCAN_PAUSE_IN_SPHERE);
+		getBleExt().setConnectTimeout(CONNECT_TIMEOUT_MS);
+		getBleExt().setNumRetries(CONNECT_NUM_RETRIES);
+		getIBeaconRanger().setRssiThreshold(IBEACON_RANGING_MIN_RSSI);
+		getIBeaconRanger().registerListener(this);
 	}
 
     @Override
@@ -417,7 +408,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		BleLog.getInstance().LOGi(TAG, "rerouteEvents");
 		_scanner.registerEventListener(this);
 		_scanner.registerScanDeviceListener(this);
-		getIBeaconRanger().registerListener(this);
+
 
 //		init();
 //		sendEvent("advertisementData", map);
@@ -2340,7 +2331,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		if (_scanner.isInitialized()) {
 			Notification notification = getScanServiceNotification("Crownstone is running in the background");
 
-			_scanner.runInBackground(enable, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
+			_scanner.runInBackground(true, enable, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
 				@Override
 				public void onSuccess() {
 					BleLog.getInstance().LOGi(TAG, "success");
@@ -2537,8 +2528,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 				_locationPermissionMissing = false;
 //				initBluetooth();
 				_scanner.checkReady(false, _initScannerInBackground, _reactContext.getCurrentActivity(), null);
-				sendEvent("locationStatus", "on"); // Assume it's on?
 				checkReady();
+				sendEvent("locationStatus", "on"); // Assume it's on?
 				break;
 			}
 			case BLE_PERMISSIONS_MISSING: {
@@ -2591,6 +2582,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			case LOCATION_SERVICES_TURNED_ON:
 				_locationServiceTurnedOff = false;
 				_scanner.checkReady(false, _initScannerInBackground, _reactContext.getCurrentActivity(), null);
+				checkReady();
 				sendEvent("locationStatus", "on");
 				break;
 		}
@@ -2900,16 +2892,20 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			return;
 		}
 
-//		if (!_isInitialized) {
-//			BleLog.getInstance().LOGd(TAG, "not initialized");
-//			init();
-//			return;
-//		}
+		if (!_isInitialized) {
+			BleLog.getInstance().LOGw(TAG, "not initialized");
+			return;
+		}
 
 		_scanner.checkReady(true, _initScannerInBackground, _reactContext.getCurrentActivity(), new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				BleLog.getInstance().LOGi(TAG, "Ready!");
+				if (!_scannerInitialized) {
+					onScannerInitialized();
+					_scannerInitialized = true;
+				}
+
 				for (Callback callback: _readyCallbacks) {
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", false);

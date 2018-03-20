@@ -15,20 +15,7 @@ import com.rnfs.RNFSPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.wix.RNCameraKit.RNCameraKitPackage;
 import com.cmcewen.blurview.BlurViewPackage;
-import com.cmcewen.blurview.BlurViewPackage;
-import com.wix.RNCameraKit.RNCameraKitPackage;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
-import io.sentry.RNSentryPackage;
-import com.corbt.keepawake.KCKeepAwakePackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
-import com.facebook.react.flat.FlatUIImplementationProvider;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
-import com.facebook.react.uimanager.UIImplementationProvider;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.horcrux.svg.SvgPackage;
-import fr.bamlab.rnimageresizer.ImageResizerPackage;
-import com.rnfs.RNFSPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -51,17 +38,6 @@ public class MainApplication extends Application implements ReactApplication {
 			return Arrays.<ReactPackage>asList(
 					new BluenetBridgePacket(),
 					new MainReactPackage(),
-            new VectorIconsPackage(),
-            new SvgPackage(),
-            new SplashScreenReactPackage(),
-            new RNSentryPackage(MainApplication.this),
-            new ReactNativePushNotificationPackage(),
-            new KCKeepAwakePackage(),
-            new ImageResizerPackage(),
-            new RNFSPackage(),
-            new RNDeviceInfo(),
-            new RNCameraKitPackage(),
-            new BlurViewPackage(),
 					new VectorIconsPackage(),
 					new SvgPackage(),
 					new ImageResizerPackage(),
@@ -75,11 +51,6 @@ public class MainApplication extends Application implements ReactApplication {
 					new ReactNativePushNotificationPackage()
 			);
 		}
-
-//		@Override
-//		protected UIImplementationProvider getUIImplementationProvider() {
-//			return new FlatUIImplementationProvider();
-//		}
 
 
 		@Override
