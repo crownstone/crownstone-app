@@ -34,6 +34,7 @@ import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 export class SphereOverview extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
+    if (params === undefined) { return }
 
     let paramsToUse = params;
     if (!params.title) {
@@ -243,15 +244,18 @@ export class SphereOverview extends Component<any, any> {
 
 function getNavBarParams(state, props) {
   LOG.info("UPDATING SPHERE OVERVIEW NAV BAR");
-
-  let amountOfSpheres = Object.keys(state.spheres).length;
+  let sphereIds = Object.keys(state.spheres);
+  let amountOfSpheres = sphereIds.length;
 
   let blockAddButton = false;
   let activeSphereId = state.app.activeSphere;
 
-
   if (amountOfSpheres > 0) {
     let activeSphere = state.spheres[activeSphereId];
+    if (activeSphere === undefined) {
+      activeSphere = state.spheres[sphereIds[0]]
+    }
+
     let sphereIsPresent = activeSphere.config.present;
 
     // are there enough in total?

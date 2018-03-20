@@ -14,8 +14,8 @@ import {
   availableScreenHeight
 } from '../../styles'
 import { BlurView } from 'react-native-blur';
-import {FadeInView} from "./FadeInView";
-import {eventBus} from "../../../util/EventBus";
+import { FadeInView } from "./FadeInView";
+import { eventBus }  from "../../../util/EventBus";
 
 export class AnimatedMenu extends Component<any, any> {
   visible    : boolean;

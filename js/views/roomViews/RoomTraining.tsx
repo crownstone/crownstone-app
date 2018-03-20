@@ -193,9 +193,8 @@ export class RoomTraining extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>
-        <KeepAwake>
-          {content}
-        </KeepAwake>
+        <KeepAwake />
+        {content}
       </Background>
     );
   }
