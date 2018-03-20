@@ -134,6 +134,11 @@ android {
             // zipAlignEnabled true
         }
     }
+
+    dexOptions {
+        jumboMode = true
+    }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
