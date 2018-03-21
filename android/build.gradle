@@ -20,8 +20,16 @@ buildscript {
     }
 }
 
+def googlePlayServicesVersion = '11.8.0'
+
 allprojects {
     repositories {
+        configurations.all {
+            resolutionStrategy {
+                force "com.google.android.gms:play-services-gcm:$googlePlayServicesVersion"
+                force "com.google.android.gms:play-services-base:$googlePlayServicesVersion"
+            }
+        }
         mavenLocal()
         jcenter()
         maven {
