@@ -78,6 +78,7 @@ import nl.dobots.bluenet.ble.mesh.structs.multiswitch.MeshMultiSwitchPacket;
 import nl.dobots.bluenet.ibeacon.BleBeaconRangingListener;
 import nl.dobots.bluenet.ibeacon.BleIbeaconFilter;
 import nl.dobots.bluenet.ibeacon.BleIbeaconRanging;
+import nl.dobots.bluenet.scanner.BleIntervalScanner;
 import nl.dobots.bluenet.scanner.BleScanner;
 import nl.dobots.bluenet.service.BleScanService;
 import nl.dobots.bluenet.service.BluetoothPermissionRequest;
@@ -106,16 +107,18 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Triplet[] LOG_LEVELS = new Triplet[]{
 			                                             // log lvl   file log lvl
-			new Triplet<>(BleScanService.class,          Log.WARN,     Log.WARN),
-			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,     Log.WARN),
-			new Triplet<>(BluenetBridge.class,           Log.DEBUG,    Log.DEBUG),
-			new Triplet<>(BleBaseEncryption.class,       Log.WARN,     Log.WARN),
-			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,     Log.WARN),
-			new Triplet<>(BleDevice.class,               Log.WARN,     Log.WARN),
 			new Triplet<>(BleCore.class,                 Log.DEBUG,    Log.WARN),
 			new Triplet<>(BleBase.class,                 Log.DEBUG,    Log.DEBUG),
 			new Triplet<>(BleExt.class,                  Log.DEBUG,    Log.WARN),
+			new Triplet<>(BleScanner.class,              Log.DEBUG,    Log.WARN),
+			new Triplet<>(BleIntervalScanner.class,      Log.DEBUG,    Log.WARN),
+			new Triplet<>(BleScanService.class,          Log.WARN,     Log.WARN),
+			new Triplet<>(CrownstoneServiceData.class,   Log.WARN,     Log.WARN),
+			new Triplet<>(BleBaseEncryption.class,       Log.WARN,     Log.WARN),
+			new Triplet<>(BleIbeaconRanging.class,       Log.WARN,     Log.WARN),
+			new Triplet<>(BleDevice.class,               Log.WARN,     Log.WARN),
 			new Triplet<>(CrownstoneSetup.class,         Log.INFO,     Log.INFO),
+			new Triplet<>(BluenetBridge.class,           Log.DEBUG,    Log.DEBUG),
 	};
 
 	private static final Triplet[] LOG_LEVELS_EXTENDED = new Triplet[]{
@@ -322,6 +325,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		BleLog.addFileLogger(_fileLogger);
 
 		_scanner = new BleScanner();
+		initBluetooth(false);
+
 		_localization = FingerprintLocalization.getInstance();
 		_isResettingBluetooth = false;
 
@@ -354,32 +359,54 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		setLogLevels(LOG_LEVELS);
 	}
 
-	private void initBluetooth() {
+	private void initBluetooth(final boolean makeReady) {
 		BleLog.getInstance().LOGd(TAG, "initBluetooth");
 
 		Activity activity = _reactContext.getCurrentActivity();
 		Notification notification = getScanServiceNotification("Crownstone is running in the background");
-		_scanner.init(true, _initScannerInBackground, activity, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
+		_scanner.init(makeReady, _initScannerInBackground, activity, notification, ONGOING_NOTIFICATION_ID, new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				BleLog.getInstance().LOGi(TAG, "Initialized bluetooth");
-
-				checkReady();
+				checkReady(false); // Call checkReady for ready callbacks.
 			}
 
 			@Override
 			public void onError(int error) {
 				BleLog.getInstance().LOGe(TAG, "Bluetooth init error: " + error);
+				switch (error) {
+					case BleErrors.ERROR_BLUETOOTH_NOT_ENABLED: {
+						_bleTurnedOff = true;
+						sendEvent("bleStatus", "poweredOff");
+						break;
+					}
+					case BleErrors.ERROR_LOCATION_SERVICES_NOT_ENABLED: {
+						_locationServiceTurnedOff = true;
+						sendEvent("locationStatus", "off");
+						break;
+					}
+					case BleErrors.ERROR_LOCATION_PERMISSION_MISSING: {
+						_locationPermissionMissing = true;
+						sendEvent("locationStatus", "noPermission");
+						break;
+					}
+				}
 			}
 		});
 	}
 
 	private void onScannerInitialized() {
-		_scanner.setScanInterval(SCAN_INTERVAL_IN_SPHERE, SCAN_PAUSE_IN_SPHERE);
+//		_scanner.setScanInterval(SCAN_INTERVAL_IN_SPHERE, SCAN_PAUSE_IN_SPHERE);
 		getBleExt().setConnectTimeout(CONNECT_TIMEOUT_MS);
 		getBleExt().setNumRetries(CONNECT_NUM_RETRIES);
 		getIBeaconRanger().setRssiThreshold(IBEACON_RANGING_MIN_RSSI);
 		getIBeaconRanger().registerListener(this);
+		_bleTurnedOff = false;
+		sendEvent("bleStatus", "poweredOn");
+		_locationPermissionMissing = false;
+		sendEvent("locationStatus", "on");
+		_locationServiceTurnedOff = false;
+		sendEvent("locationStatus", "off");
 	}
 
     @Override
@@ -424,14 +451,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	}
 
 	@ReactMethod
-	public void isReady(final Callback callback) {
+	public synchronized void isReady(final Callback callback) {
 		// Check if bluenet lib is ready (scanner and bluetooth).
 		// Only invoke callback once lib is ready, do not invoke on error.
 		// Only called at start of app.
 		// Can be called multiple times, and should all be invoked once ready.
 		BleLog.getInstance().LOGi(TAG, "isReady: " + callback);
 		_readyCallbacks.add(callback);
-		checkReady();
+		checkReady(true);
 	}
 
 	@ReactMethod
@@ -2526,10 +2553,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		switch (event) {
 			case BLE_PERMISSIONS_GRANTED: {
 				_locationPermissionMissing = false;
-//				initBluetooth();
 				_scanner.checkReady(false, _initScannerInBackground, _reactContext.getCurrentActivity(), null);
-				checkReady();
-				sendEvent("locationStatus", "on"); // Assume it's on?
+				checkReady(false);
+				if (_locationServiceTurnedOff) {
+					sendEvent("locationStatus", "off");
+				}
+				else {
+					sendEvent("locationStatus", "on");
+				}
 				break;
 			}
 			case BLE_PERMISSIONS_MISSING: {
@@ -2538,36 +2569,14 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 				break;
 			}
 			case BLUETOOTH_TURNED_ON:{
-//				// [26-10-2017] Got this event, without getting the turned off event.
-//				// This lead to scanner not working, since it thought it was already scanning.
-//				// Try to fix this by stopping first.
-//				restartScanner();
-//
-//				// If bluetooth is turned on, the scanservice doesn't automatically restart.
-//				//updateScanner();
-//				_isResettingBluetooth = false;
-//
-//				// TODO: Why only when ble was registered to be turned off?
-////				if (_bleTurnedOff) {
-//					_bleTurnedOff = false;
-//					sendEvent("bleStatus", "poweredOn");
-//					// Scanner already starts automatically in BleScanService
-//					// But this sets the correct mode
-//					if (_scannerState != ScannerState.DISABLED) {
-//						startScanningForCrownstonesUniqueOnly();
-//					}
-////				}
-//				initBluetooth();
-
 				_bleTurnedOff = false;
 				_scanner.checkReady(false, _initScannerInBackground, _reactContext.getCurrentActivity(), null);
-				checkReady();
+				checkReady(false);
 				sendEvent("bleStatus", "poweredOn");
 				break;
 			}
 			case BLUETOOTH_TURNED_OFF: {
 				_bleTurnedOff = true;
-//				initBluetooth();
 				sendEvent("bleStatus", "poweredOff");
 				break;
 			}
@@ -2582,8 +2591,13 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			case LOCATION_SERVICES_TURNED_ON:
 				_locationServiceTurnedOff = false;
 				_scanner.checkReady(false, _initScannerInBackground, _reactContext.getCurrentActivity(), null);
-				checkReady();
-				sendEvent("locationStatus", "on");
+				checkReady(false);
+				if (_locationPermissionMissing) {
+					sendEvent("locationStatus", "noPermission");
+				}
+				else {
+					sendEvent("locationStatus", "on");
+				}
 				break;
 		}
 		// TODO: send out event
@@ -2884,7 +2898,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 
 	// Checks if scanner and bluetooth are ready.
 	// If so, invoke ready callbacks.
-	private synchronized void checkReady() {
+	private synchronized void checkReady(boolean makeReady) {
 		BleLog.getInstance().LOGd(TAG, "checkReady");
 
 		if (_readyCallbacks.isEmpty()) {
@@ -2897,7 +2911,7 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			return;
 		}
 
-		_scanner.checkReady(true, _initScannerInBackground, _reactContext.getCurrentActivity(), new IStatusCallback() {
+		_scanner.checkReady(makeReady, _initScannerInBackground, _reactContext.getCurrentActivity(), new IStatusCallback() {
 			@Override
 			public void onSuccess() {
 				BleLog.getInstance().LOGi(TAG, "Ready!");
@@ -2906,18 +2920,38 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 					_scannerInitialized = true;
 				}
 
-				for (Callback callback: _readyCallbacks) {
+				List<Callback> readyCallbacks = new ArrayList<>(_readyCallbacks);
+				_readyCallbacks.clear();
+				for (Callback callback: readyCallbacks) {
 					WritableMap retVal = Arguments.createMap();
 					retVal.putBoolean("error", false);
 					callback.invoke(retVal);
 				}
-				_readyCallbacks.clear();
 			}
 
 			@Override
 			public void onError(int error) {
 				BleLog.getInstance().LOGi(TAG, "Not ready: " + error);
-				// Check later..
+
+				switch (error) {
+					case BleErrors.ERROR_BLUETOOTH_NOT_ENABLED: {
+						_bleTurnedOff = true;
+						sendEvent("bleStatus", "poweredOff");
+						break;
+					}
+					case BleErrors.ERROR_LOCATION_SERVICES_NOT_ENABLED: {
+						_locationServiceTurnedOff = true;
+						sendEvent("locationStatus", "off");
+						break;
+					}
+					case BleErrors.ERROR_LOCATION_PERMISSION_MISSING: {
+						_locationPermissionMissing = true;
+						sendEvent("locationStatus", "noPermission");
+						break;
+					}
+				}
+
+				// TODO: Check again later?
 			}
 		});
 	}
@@ -2950,83 +2984,63 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 			return;
 		}
 		setScanMode();
-		_scanner.setScanInterval(getScanInterval(), getScanPause());
+//		_scanner.setScanInterval(getScanDuration(), getScanPause());
 		_scanner.setScanFilter(_deviceFilter);
-		_scanner.startScanning(new IStatusCallback() {
-			@Override
-			public void onSuccess() {
-				BleLog.getInstance().LOGi(TAG, "success");
-			}
-
-			@Override
-			public void onError(int error) {
-				BleLog.getInstance().LOGi(TAG, "error: " + error);
-			}
-		});
+		_scanner.startScanning(null);
 	}
 	private void restartScanner() {
 		_scanner.stopScanning();
 		if (!isScannerIdle()) {
 			setScanMode();
-			_scanner.setScanInterval(getScanInterval(), getScanPause());
+//			_scanner.setScanInterval(getScanDuration(), getScanPause());
 			_scanner.setScanFilter(_deviceFilter);
-			_scanner.startScanning(new IStatusCallback() {
-				@Override
-				public void onSuccess() {
-
-				}
-
-				@Override
-				public void onError(int error) {
-
-				}
-			});
+			_scanner.startScanning(null);
 		}
 	}
-	private int getScanInterval() {
-		if (getScannerState() == ScannerState.HIGH_POWER) {
-			if (Build.VERSION.SDK_INT >= 24) {
-				return SCAN_INTERVAL_FAST_ANDROID_N;
-			}
-			return SCAN_INTERVAL_FAST;
-		}
-		if (getIBeaconRanger().getEnteredRegions().isEmpty()) {
-			if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
-				return SCAN_INTERVAL_OUTSIDE_SPHERE_ANDROID_N;
-			}
-			return SCAN_INTERVAL_OUTSIDE_SPHERE;
-		}
-		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
-			return SCAN_INTERVAL_IN_SPHERE_ANDROID_N;
-		}
-		return SCAN_INTERVAL_IN_SPHERE;
-	}
-	private int getScanPause() {
-		if (getScannerState() == ScannerState.HIGH_POWER) {
-			if (Build.VERSION.SDK_INT >= 24) {
-//				return SCAN_PAUSE_FAST_ANDROID_N;
-				return 0;
-			}
-			return SCAN_PAUSE_FAST;
-		}
-		if (getIBeaconRanger().getEnteredRegions().isEmpty()) {
-			if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
-//				return SCAN_PAUSE_OUTSIDE_SPHERE_ANDROID_N;
-				return 0;
-			}
-			return SCAN_PAUSE_OUTSIDE_SPHERE;
-		}
-		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
-//			return SCAN_PAUSE_IN_SPHERE_ANDROID_N;
-			return 0;
-		}
-		return SCAN_PAUSE_IN_SPHERE;
-	}
+//	private int getScanDuration() {
+//		if (getScannerState() == ScannerState.HIGH_POWER) {
+//			if (Build.VERSION.SDK_INT >= 24) {
+//				return SCAN_INTERVAL_FAST_ANDROID_N;
+//			}
+//			return SCAN_INTERVAL_FAST;
+//		}
+//		if (getIBeaconRanger().getEnteredRegions().isEmpty()) {
+//			if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
+//				return SCAN_INTERVAL_OUTSIDE_SPHERE_ANDROID_N;
+//			}
+//			return SCAN_INTERVAL_OUTSIDE_SPHERE;
+//		}
+//		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
+//			return SCAN_INTERVAL_IN_SPHERE_ANDROID_N;
+//		}
+//		return SCAN_INTERVAL_IN_SPHERE;
+//	}
+//	private int getScanPause() {
+//		if (getScannerState() == ScannerState.HIGH_POWER) {
+//			if (Build.VERSION.SDK_INT >= 24) {
+////				return SCAN_PAUSE_FAST_ANDROID_N;
+//				return 0;
+//			}
+//			return SCAN_PAUSE_FAST;
+//		}
+//		if (getIBeaconRanger().getEnteredRegions().isEmpty()) {
+//			if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
+////				return SCAN_PAUSE_OUTSIDE_SPHERE_ANDROID_N;
+//				return 0;
+//			}
+//			return SCAN_PAUSE_OUTSIDE_SPHERE;
+//		}
+//		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
+////			return SCAN_PAUSE_IN_SPHERE_ANDROID_N;
+//			return 0;
+//		}
+//		return SCAN_PAUSE_IN_SPHERE;
+//	}
 	private void setScanMode() {
-		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
- 			// Starting from Android 6.0 (API level 23), Android has doze and app standby.
-			// This means that the interval scanner breaks, due to postDelayed() getting deferred.
-			// Also, starting from Android 7, you are not allowed to turn on scanning very often.
+//		if (Build.VERSION.SDK_INT >= 24) { // doze is actually since 23
+// 			// Starting from Android 6.0 (API level 23), Android has doze and app standby.
+//			// This means that the interval scanner breaks, due to postDelayed() getting deferred.
+//			// Also, starting from Android 7, you are not allowed to turn on scanning very often.
 			if (_scannerState == ScannerState.HIGH_POWER) {
 				_scanner.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
 			}
@@ -3034,11 +3048,11 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 				// Balanced has an interval of 5s and a scan window of 2s.
 				_scanner.setScanMode(ScanSettings.SCAN_MODE_BALANCED);
 			}
-		}
-		else if (Build.VERSION.SDK_INT >= 21) {
-			// Use interval scanner
-			_scanner.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
-		}
+//		}
+//		else if (Build.VERSION.SDK_INT >= 21) {
+//			// Use interval scanner
+//			_scanner.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
+//		}
 	}
 
 	private Pair getLogLevel(Class<?> cls) {
