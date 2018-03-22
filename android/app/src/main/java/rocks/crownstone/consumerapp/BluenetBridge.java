@@ -243,38 +243,18 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 				BleLog.getInstance().LOGd(TAG, "_bleTurnedOff=" + _bleTurnedOff
 						+ " _locationServiceTurnedOff=" + _locationServiceTurnedOff
 						+ " _locationPermissionMissing=" + _locationPermissionMissing);
-//				if (_bleExtInitialized) {
-//					// If BleExt was already initialized, but ble or location service was turned off,
-//					// then re-init BleExt, so that it will request for permissions again.
-//					// [8-sep-2017] Don't initBluetooth here, but init when stuff is turned on again?
-//					if (_bleTurnedOff) {
-//						BleLog.getInstance().LOGd(TAG, "bluetooth is turned off");
-//						sendEvent("bleStatus", "poweredOff");
-////						initBluetooth();
-//					}
-//					if (_locationServiceTurnedOff) {
-//						BleLog.getInstance().LOGd(TAG, "location service is turned off");
-//						sendEvent("locationStatus", "off");
-////						initBluetooth();
-//					}
-//				}
-//				else {
-//					initBluetooth();
-//				}
+
 				if (_bleTurnedOff) {
 					BleLog.getInstance().LOGd(TAG, "bluetooth is turned off");
 					sendEvent("bleStatus", "poweredOff");
-//					initBluetooth();
 				}
 				if (_locationServiceTurnedOff) {
 					BleLog.getInstance().LOGd(TAG, "location service is turned off");
 					sendEvent("locationStatus", "off");
-//					initBluetooth();
 				}
 				if (_locationPermissionMissing) {
 					BleLog.getInstance().LOGd(TAG, "location permission not granted");
 					sendEvent("locationStatus", "noPermission");
-//					initBluetooth();
 				}
 			}
 
@@ -404,9 +384,8 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 		_bleTurnedOff = false;
 		sendEvent("bleStatus", "poweredOn");
 		_locationPermissionMissing = false;
-		sendEvent("locationStatus", "on");
 		_locationServiceTurnedOff = false;
-		sendEvent("locationStatus", "off");
+		sendEvent("locationStatus", "on");
 	}
 
     @Override
