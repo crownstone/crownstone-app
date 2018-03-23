@@ -107,9 +107,9 @@ public class BluenetBridge extends ReactContextBaseJavaModule implements EventLi
 	// only add classes where you want to change the default level from verbose to something else
 	private static final Triplet[] LOG_LEVELS = new Triplet[]{
 			                                             // log lvl   file log lvl
-			new Triplet<>(BleCore.class,                 Log.DEBUG,    Log.WARN),
+			new Triplet<>(BleCore.class,                 Log.DEBUG,    Log.INFO),
 			new Triplet<>(BleBase.class,                 Log.DEBUG,    Log.DEBUG),
-			new Triplet<>(BleExt.class,                  Log.DEBUG,    Log.WARN),
+			new Triplet<>(BleExt.class,                  Log.DEBUG,    Log.INFO),
 			new Triplet<>(BleScanner.class,              Log.DEBUG,    Log.WARN),
 			new Triplet<>(BleIntervalScanner.class,      Log.DEBUG,    Log.WARN),
 			new Triplet<>(BleScanService.class,          Log.WARN,     Log.WARN),
