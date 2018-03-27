@@ -161,8 +161,10 @@ export const SettingConstructor = function(store, state, eventBus) {
     type:'navigation',
     icon: getIcon('md-help-circle', 22, colors.white.hex, colors.csBlue.hex),
     callback: () => {
-      Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
+      // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
+      Actions.settingsFAQ()
     }
+
   });
   items.push({
     id: 'Recover a Crownstone',

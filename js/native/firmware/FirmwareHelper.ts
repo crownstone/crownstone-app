@@ -194,9 +194,9 @@ export class FirmwareHelper {
 
     switch (this.phases[phaseNumber]) {
       case bootloaderUpdate:
-        return this._updateBootloader(crownstoneMode);
+        return this._updateBootloader(crownstoneMode).then(() => { return 'BOOTLOADER_UPLOADED'});
       case firmwareUpdate:
-        return this._updateFirmware(crownstoneMode);
+        return this._updateFirmware(crownstoneMode).then(() => { return 'FIRMWARE_UPLOADED'});
       case resetAfterUpdate:
         return this._reset(crownstoneMode);
       case setupAfterUpdate:

@@ -105,7 +105,7 @@ export class ApplianceAdd extends Component<any, any> {
           this.props.store.batchDispatch(actions);
           this.props.eventBus.emit('hideLoading');
           this.props.callback(localId);
-          BackAction(2);
+          BackAction('deviceOverview');
         })
         .catch((err) => {
           let defaultAction = () => { this.props.eventBus.emit('hideLoading');};
@@ -119,7 +119,6 @@ export class ApplianceAdd extends Component<any, any> {
   }
 
   render() {
-    let state = this.props.store.getState();
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     if (this.props.sphereId === null) {

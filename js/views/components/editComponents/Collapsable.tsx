@@ -46,35 +46,30 @@ export class CollapsableBar extends Component<any, any> {
   }
 
   render() {
-    let navBarHeight = this.props.barHeight || barHeight;
-    if (this.props.largeIcon)
-      navBarHeight = 75;
-    else if (this.props.mediumIcon)
-      navBarHeight = 62;
-    else if (this.props.icon)
-      navBarHeight = 50;
+    let paddingAmount = 15;
+    let labelStyle = {paddingTop:paddingAmount, paddingBottom:paddingAmount}
 
     return (
       <TouchableHighlight onPress={() => { this._handleClick() }}>
         <View>
-        <View style={[styles.listView, {height: navBarHeight}]}>
-          {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
-          {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
-          {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
+          <View style={[styles.listView, {flex: 1}]}>
+            {this.props.largeIcon !== undefined ? <View style={[styles.centered, {width: 80, paddingRight: 20}]}>{this.props.largeIcon}</View> : undefined}
+            {this.props.mediumIcon !== undefined ? <View style={[styles.centered, {width: 0.15 * screenWidth, paddingRight: 15}]}>{this.props.mediumIcon}</View> : undefined}
+            {this.props.icon !== undefined ? <View style={[styles.centered, {width:0.12 * screenWidth, paddingRight:15}]}>{this.props.icon}</View> : undefined}
 
-          {this.props.value !== undefined && this.props.valueRight !== true ?
-            <Text numberOfLines={1} style={[styles.listText, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
-            :
-            <Text numberOfLines={1} style={[styles.listTextLarge, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
-          }
-          <View style={{paddingTop:3}}>
-            {this.props.arrowDown === true ? <Icon name="ios-arrow-down" size={18} color={'#888'} /> : <Icon name="ios-arrow-forward" size={18} color={'#888'} />}
+            {this.props.value !== undefined && this.props.valueRight !== true ?
+              <Text style={[styles.listText, labelStyle, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
+              :
+              <Text style={[styles.listTextLarge, labelStyle, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
+            }
+            <View style={{paddingTop:3}}>
+              {this.props.arrowDown === true ? <Icon name="ios-arrow-down" size={18} color={'#888'} /> : <Icon name="ios-arrow-forward" size={18} color={'#888'} />}
+            </View>
           </View>
-        </View>
-        <SlideInView visible={this.state.open} height={this.props.contentHeight || 100} duration={200} style={{backgroundColor: colors.white.hex }}>
-          <Separator fullLength={true} color={colors.black.rgba(0.15)}/>
-          <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 5}}>{this.props.content}</Text>
-        </SlideInView>
+          <SlideInView visible={this.state.open} height={this.props.contentHeight || 100} duration={200} style={{backgroundColor: colors.white.hex }}>
+            <Separator fullLength={true} color={colors.black.rgba(0.15)}/>
+            <Text style={{paddingLeft:25, paddingRight: 15, paddingTop: 10}}>{this.props.content}</Text>
+          </SlideInView>
         </View>
       </TouchableHighlight>
     );

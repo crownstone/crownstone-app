@@ -239,26 +239,44 @@ export class DfuOverlay extends Component<any, any> {
       return this._searchForCrownstone(2000);
     })
     .then((data : any) => {
+      // if the firmware should not be upgraded, and the bootloader shouldnt be upgraderd don't check the bootloader version
+      let firmwareUpdateRequired   = Util.versions.isHigher(userConfig.firmwareVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.firmwareVersion);
+      let bootloaderUpdateRequired = Util.versions.isHigher(userConfig.bootloaderVersionsAvailable[stoneConfig.hardwareVersion], stoneConfig.bootloaderVersion);
+
+      if (!firmwareUpdateRequired && !bootloaderUpdateRequired) {
+        return false;
+      }
+
       this.setState({ step: STEP_TYPES.GET_BOOTLOADER_VERSION, phaseDescription:'setting up...', detail:'putting Crownstone in update mode...' });
       this.helper = FirmwareHandler.getFirmwareHelper(this.props.store, this.state.sphereId, this.state.stoneId);
       return this.helper.putInDFU(data);
     })
-    .then(() => {
+    .then((shouldGetFirmwareVersions) => {
+      if (shouldGetFirmwareVersions === false) {
+        return false;
+      }
       this.setState({phaseDescription:'determining...',});
       return this.helper.getBootloaderVersion();
     })
     .then((bootloaderVersion) => {
-      // add Bootloader version to store
-      this.props.store.dispatch({
-        type: "UPDATE_STONE_CONFIG",
-        stoneId: this.state.stoneId,
-        sphereId: this.state.sphereId,
-        data: {
-          bootloaderVersion: bootloaderVersion,
-        }
-      });
+      let didGetBootloaderVersion = bootloaderVersion !== false;
 
+      // do not store bootloader version if we didnt have to get it.
+      if (didGetBootloaderVersion) {
+        // add Bootloader version to store
+        this.props.store.dispatch({
+          type: "UPDATE_STONE_CONFIG",
+          stoneId: this.state.stoneId,
+          sphereId: this.state.sphereId,
+          data: {
+            bootloaderVersion: bootloaderVersion,
+          }
+        });
+      }
+
+      // check what we have to do for this Crownstone. This will give us an amount of phases to do.
       let phasesRequired = this.helper.getAmountOfPhases(stoneConfig.dfuResetRequired);
+
       if (this.helper.resetRequired === true) {
         this.props.store.dispatch({
           type: "UPDATE_STONE_DFU_RESET",
@@ -269,9 +287,10 @@ export class DfuOverlay extends Component<any, any> {
           }
         });
       }
+
       if (phasesRequired > 0) {
         // if the first phase expects the Crownstone to be in normal mode, switch back from DFU first.
-        if (this.helper.dfuSegmentFinishedAtPhase(0) === true) {
+        if (this.helper.dfuSegmentFinishedAtPhase(0) === true && didGetBootloaderVersion === false) {
           return this.helper.restartInAppMode()
             .then(() => {
               return this.handlePhase(0, phasesRequired);
@@ -313,18 +332,8 @@ export class DfuOverlay extends Component<any, any> {
     return new Promise((resolve, reject) => {
       this._searchForCrownstone(0)
         .then((data) => {
-          // store the firmware version
-          if (this.helper.dfuSegmentFinishedAtPhase(phase)) {
-            this.props.store.dispatch({
-              type: "UPDATE_STONE_CONFIG",
-              stoneId: this.state.stoneId,
-              sphereId: this.state.sphereId,
-              data: {
-                firmwareVersion: this.state.firmwareToUpload,
-              }
-            });
-          }
 
+          // update phase info to state
           this.setState({
             step: STEP_TYPES.UPDATE_PROGRESS,
             currentPhase: phase,
@@ -335,7 +344,31 @@ export class DfuOverlay extends Component<any, any> {
           });
 
           this.helper.performPhase(phase, data)
-            .then(() => {
+            .then((completedProcess) => {
+
+              // ==== store progress in in database ====
+              if (completedProcess === "BOOTLOADER_UPLOADED") {
+                this.props.store.dispatch({
+                  type: "UPDATE_STONE_CONFIG",
+                  stoneId: this.state.stoneId,
+                  sphereId: this.state.sphereId,
+                  data: {
+                    bootloaderVersion: this.helper.newBootloaderDetails.version,
+                  }
+                });
+              }
+              else if (completedProcess === "FIRMWARE_UPLOADED") {
+                this.props.store.dispatch({
+                  type: "UPDATE_STONE_CONFIG",
+                  stoneId: this.state.stoneId,
+                  sphereId: this.state.sphereId,
+                  data: {
+                    firmwareVersion: this.helper.newFirmwareDetails.version,
+                  }
+                });
+              }
+              // ========================================
+
               let nextPhase = phase + 1;
               // if there are 4 required, the last one we need to do is 3 since we start at 0. (this means nextPhase = 4 @ phase = 3)
               if (nextPhase < phasesRequired) {
@@ -359,7 +392,7 @@ export class DfuOverlay extends Component<any, any> {
     }
 
     let timeStart = new Date().valueOf();
-    let searchTimeBeforeView = 2000;
+    let searchTimeBeforeView = 2500;
     let state = this.props.store.getState();
     let stoneConfig = state.spheres[this.state.sphereId].stones[this.state.stoneId].config;
 

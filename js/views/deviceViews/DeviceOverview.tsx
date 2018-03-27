@@ -38,6 +38,8 @@ import {DeviceSmartBehaviour} from "./elements/smartBehaviour/DeviceSmartBehavio
 import {topBarStyle} from "../roomViews/RoomOverview";
 import {enoughCrownstonesForIndoorLocalization} from "../../util/DataUtil";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {SphereDeleted} from "../static/SphereDeleted";
+import {StoneDeleted} from "../static/StoneDeleted";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
@@ -114,14 +116,14 @@ export class DeviceOverview extends Component<any, any> {
         (change.removeSphere && change.removeSphere.sphereIds[this.props.sphereId]) ||
         (change.removeStone  && change.removeStone.stoneIds[this.props.stoneId])
        ) {
-        BackAction();
+        this.forceUpdate();
         return;
       }
 
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
       if (!stone || !stone.config) {
-        BackAction();
+        this.forceUpdate();
         return;
       }
 
@@ -185,7 +187,10 @@ export class DeviceOverview extends Component<any, any> {
 
   render() {
     const state = this.props.store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return <SphereDeleted/> }
+    const stone = sphere.stones[this.props.stoneId];
+    if (!stone) { return <StoneDeleted/> }
     let summaryIndex = 0;
     this.summaryIndex = summaryIndex;
 

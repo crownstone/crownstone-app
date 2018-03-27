@@ -41,6 +41,8 @@ import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {SphereDeleted} from "../static/SphereDeleted";
+import {RoomDeleted} from "../static/RoomDeleted";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -125,7 +127,7 @@ export class RoomOverview extends Component<any, any> {
       if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
           change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
         if (Actions.currentScene === "roomOverview") {
-          BackAction();
+          this.forceUpdate()
         }
         return;
       }
@@ -283,10 +285,17 @@ export class RoomOverview extends Component<any, any> {
   render() {
     const store = this.props.store;
     const state = store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return <SphereDeleted/> }
+    let location = null;
+    if (this.props.locationId) {
+      location = sphere.locations[this.props.locationId];
+      if (!location) { return <RoomDeleted /> }
+    }
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
-    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
+    this.viewingRemotely = sphere.config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
@@ -430,7 +439,7 @@ function getNavBarParams(state, props, viewingRemotely) {
     title = state.spheres[props.sphereId].locations[props.locationId].config.name;
   }
   else {
-    title = "Floating Crownstones";
+    title = "Floating";
   }
 
   let rightLabel = undefined;

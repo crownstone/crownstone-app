@@ -22,6 +22,12 @@ import { Icon } from '../components/Icon';
 import {BackAction} from "../../util/Back";
 
 export class RoomSelection extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Move where?",
+    }
+  };
+
   unsubscribe : any;
 
   componentDidMount() {
@@ -107,9 +113,6 @@ export class RoomSelection extends Component<any, any> {
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
     return (
       <Background image={backgroundImage} >
-        <TopBar
-          leftAction={ () => { BackAction(); }}
-          title={this.props.title} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>
