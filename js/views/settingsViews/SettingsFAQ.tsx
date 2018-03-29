@@ -26,6 +26,11 @@ export class SettingsFAQ extends Component<any, any> {
   _getItems() {
     let items = [];
 
+    let appStoreLabel = "App Store";
+    if (Platform.OS === 'android') {
+      appStoreLabel = "Play Store";
+    }
+
     items.push({
       type:'largeExplanation',
       label:"Frequently Asked Questions\n\nHow do I ...",
@@ -100,6 +105,68 @@ export class SettingsFAQ extends Component<any, any> {
       contentHeight: 175
     });
 
+
+    items.push({
+      type:'largeExplanation',
+      label:"What to do if ...",
+    });
+
+    items.push({
+      type:'collapsable',
+      label:"... a new Crownstone won't show up.",
+      content:"Make sure the Crownstone is powered and that you're close to it. " +
+      "During setup mode the Crownstone is transmitting very quietly so other people can't claim your Crownstones!\n\n" +
+      "If it still won't show up, you may want to try the recovery procedure (see 'what to do if I want to recover a Crownstone' below).",
+      contentHeight: 175
+    });
+
+    items.push({
+      type:'collapsable',
+      label:"... a Crownstone is on 'Searching'.",
+      content:"Ensure there is power on the Crownstone and that you can reach it.\n\n" +
+      "If you're near (within a meter) and it is still on 'Searching' you may want to try the recovery procedure (see 'what to do if I want to recover a Crownstone' below).",
+      contentHeight: 155
+    });
+
+    let label = "If that fails, quit the app (double tap home button and swipe it up to really close it).\n";
+    if (Platform.OS === 'android') {
+      label = "If that fails, quit the app (Go to the side menu and select force quit).\n";
+    }
+    items.push({
+      type:'collapsable',
+      label:"... the setup process fails.",
+      content:"Retry a few times.\n\n" +
+      "If that fails, turn your bluetooth off and on.\n\n" +
+      label +
+      "Check if there are updates available in the " + appStoreLabel + ".\n\n" +
+      "Certain Android phones have issues with Bluetooth. If you have a different phone available, log in there with your account and use that phone to do the setup.",
+      contentHeight: 245
+    });
+
+    items.push({
+      type:'collapsable',
+      label:"... a Crownstone toggles unexpectedly.",
+      content:"This could happen due to Tap-to-Toggle. If this is the case, you can retrain or disable it.\n\n" +
+      "Room enter and room exit behaviour is currently not accounting for multiple users. We are working hard on much smarter behaviour that will solve this issue.\n\n" +
+      "Sphere enter and sphere exit require you to be in range of the Crownstones as well as the app running in the background.",
+      contentHeight: 225
+    });
+
+
+    label = "- Go to the Settings\n- Tap on Recover a Crownstone";
+    if (Platform.OS === 'android') {
+      label = "- Tap on Recover a Crownstone in the side menu\n";
+    }
+    items.push({
+      type:'collapsable',
+      label:"... I want to recover a Crownstone.",
+      content: label +
+      "- Follow the instructions.\n" +
+      "- If something goes wrong, read the error message. It explains what is going on.",
+      contentHeight: 175
+    });
+
+
     items.push({
       type:'largeExplanation',
       label:"More help is available on the website",
@@ -126,7 +193,7 @@ export class SettingsFAQ extends Component<any, any> {
     return (
       <Background image={this.props.backgrounds.menu} >
         <ScrollView>
-          <ListEditableItems items={this._getItems()} separatorIndent={true} />
+          <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>
       </Background>
     );

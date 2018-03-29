@@ -63,7 +63,7 @@ export class CollapsableBar extends Component<any, any> {
               <Text style={[styles.listTextLarge, labelStyle, this.props.labelStyle, this.props.style]}>{this.props.label}</Text>
             }
             <View style={{paddingTop:3}}>
-              {this.props.arrowDown === true ? <Icon name="ios-arrow-down" size={18} color={'#888'} /> : <Icon name="ios-arrow-forward" size={18} color={'#888'} />}
+              {this.state.open === true ? <Icon name="ios-arrow-down" size={18} color={'#888'} style={{paddingLeft:5}} /> : <Icon name="ios-arrow-forward" size={18} color={'#888'} style={{paddingLeft:5}} />}
             </View>
           </View>
           <SlideInView visible={this.state.open} height={this.props.contentHeight || 100} duration={200} style={{backgroundColor: colors.white.hex }}>

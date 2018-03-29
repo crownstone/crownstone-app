@@ -47,8 +47,7 @@ export class Router_IOS extends Component {
                   <Scene key="messageInbox"               component={Views.MessageInbox}    />
                   <Scene key="messageThread"              component={Views.MessageThread}   />
                 </Scene>
-                <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}  initial={true} >
-                  <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
+                <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}>
                   <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
                   <Scene key="settingsProfile"            component={Views.SettingsProfile}           />
                   <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
@@ -62,6 +61,7 @@ export class Router_IOS extends Component {
                   <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}        />
                   <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser} />
                   <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}      />
+                  <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
                 </Scene>
               </Tabs>
               <Scene key="pictureView"                    component={Views.PictureView}                />
