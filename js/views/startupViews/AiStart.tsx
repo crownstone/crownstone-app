@@ -19,7 +19,7 @@ import { Background } from '../components/Background'
 import { LOG } from '../../logging/Log'
 import { styles, colors, screenWidth, screenHeight, topBarHeight } from '../styles'
 import { Icon } from '../components/Icon';
-import { TextEditInput } from '../components/editComponents/TextEditInput'
+import { TextEditInput } from '../components/EditComponents/TextEditInput'
 import loginStyles from './LoginStyles'
 import {BackAction} from "../../util/Back";
 

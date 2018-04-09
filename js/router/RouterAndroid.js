@@ -19,7 +19,7 @@ import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibrat
 import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
-import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
+import { AnimatedMenu }              from "../views/components/Animated/AnimatedMenu";
 import { SideBar }                   from "../views/components/SideMenu/SideBar";
 
 import { Views }                     from './Views'

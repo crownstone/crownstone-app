@@ -7,26 +7,26 @@ import {
   View
 } from 'react-native';
 
-import { ButtonBar }         from './editComponents/ButtonBar'
-import { CheckBar }          from './editComponents/CheckBar'
-import { Dropdown }          from './editComponents/Dropdown'
-import { DeletableEntry }    from "./editComponents/DeletableEntry";
-import { EditSpacer }        from './editComponents/EditSpacer'
-import { Explanation }       from './editComponents/Explanation'
-import { LargeExplanation }  from "./editComponents/LargeExplanation";
-import { IconEdit }          from './editComponents/IconEdit'
-import { InfoBar }           from './editComponents/InfoBar'
-import { NavigationBar }     from './editComponents/NavigationBar'
-import { PictureEdit }       from './editComponents/PictureEdit'
-import { SliderBar }         from './editComponents/SliderBar'
-import { OptionalSwitchBar } from './editComponents/OptionalSwitchBar'
-import { SwitchBar }         from './editComponents/SwitchBar'
-import { TextEditBar }       from './editComponents/TextEditBar'
-import { TimePicker }        from './editComponents/TimePicker'
-import { TextBlob }          from "./editComponents/TextBlob";
+import { ButtonBar }         from './EditComponents/ButtonBar'
+import { CheckBar }          from './EditComponents/CheckBar'
+import { Dropdown }          from './EditComponents/Dropdown'
+import { DeletableEntry }    from "./EditComponents/DeletableEntry";
+import { EditSpacer }        from './EditComponents/EditSpacer'
+import { Explanation }       from './EditComponents/Explanation'
+import { LargeExplanation }  from "./EditComponents/LargeExplanation";
+import { IconEdit }          from './EditComponents/IconEdit'
+import { InfoBar }           from './EditComponents/InfoBar'
+import { NavigationBar }     from './EditComponents/NavigationBar'
+import { PictureEdit }       from './EditComponents/PictureEdit'
+import { SliderBar }         from './EditComponents/SliderBar'
+import { OptionalSwitchBar } from './EditComponents/OptionalSwitchBar'
+import { SwitchBar }         from './EditComponents/SwitchBar'
+import { TextEditBar }       from './EditComponents/TextEditBar'
+import { TimePicker }        from './EditComponents/TimePicker'
+import { TextBlob }          from "./EditComponents/TextBlob";
 
 import {styles, screenWidth, barHeight, barHeightLarge, colors} from '../styles'
-import {CollapsableBar} from "./editComponents/Collapsable";
+import {CollapsableBar} from "./EditComponents/Collapsable";
 
 /**
  *

@@ -3,6 +3,8 @@ import SpringSolver                         from './physicsComponents/SpringSolv
 import CentralGravitySolver                 from './physicsComponents/CentralGravitySolver';
 import ForceAtlas2BasedRepulsionSolver      from './physicsComponents/FA2BasedRepulsionSolver';
 import ForceAtlas2BasedCentralGravitySolver from './physicsComponents/FA2BasedCentralGravitySolver';
+import MassMover from "./physicsComponents/MassMover";
+import KamadaKawai from "./physicsComponents/KamadaKawai";
 
 class PhysicsEngine {
 
@@ -22,11 +24,13 @@ class PhysicsEngine {
   startedStabilization  : any;
   stabilizationIterations  : any;
   ready : any;
+  baseOptions : any;
   options  : any;
   timestep = 0.5;
   layoutFailed = false;
 
   nodesSolver: any;
+  massMover: any;
   edgesSolver: any;
   gravitySolver: any;
   modelOptions: any;
@@ -70,14 +74,14 @@ class PhysicsEngine {
     this.ready = false; // will be set to true if the stabilize
 
     // default options
-    this.options = {
+    this.baseOptions = {
       enabled: true,
       barnesHut: {
-        theta: 0.5,
-        gravitationalConstant: -3000,
+        theta: 0.4,
+        gravitationalConstant: -6000,
         centralGravity: 0.3,
-        springLength: 95,
-        springConstant: 0.04,
+        springLength: 50,
+        springConstant: 0.02,
         damping: 0.09,
         avoidOverlap: 0
       },
@@ -104,12 +108,22 @@ class PhysicsEngine {
       adaptiveTimestep: true,
       useLinearAttractors: true,
       useOverlapAvoidance: true,
+      useDynamicEdges: true,
       center: center
     };
+    this.options = deepExtend({}, this.baseOptions);
     this.timestep = 0.5;
     this.layoutFailed = false;
 
     this.init();
+  }
+
+  setOptions(options) {
+    if (options) {
+      let baseOptions = deepExtend({}, this.options);
+      this.options = deepExtend(baseOptions, options);
+      this.init()
+    }
   }
 
   clear() {
@@ -118,20 +132,67 @@ class PhysicsEngine {
   }
 
 
-  load(nodes, edges) {
+  load(nodes : any, edges : any[] = []) {
+    // inject ids into edges if they arent there yet.
+    if (edges && Array.isArray(edges)) {
+      for (let i = 0; i < edges.length; i++) {
+        if (edges[i].id === undefined) {
+          edges[i].id = "edge_" + i;
+        }
+        edges[i].connected = true;
+        if (!nodes[edges[i].from] || !nodes[edges[i].to]) {
+          edges[i].connected = false;
+        }
+      }
+    }
+    else {
+      edges = [];
+    }
+
     this.physicsBody.nodes = nodes;
-    let edgeIds = Object.keys(edges);
     let nodeIds = Object.keys(nodes).sort();
 
+
     this.positionInitially(nodes, nodeIds);
+    if (edges.length > 0) {
+      let springLength = this.options[this.options.solver].springLength;
+      let layoutSolver = new KamadaKawai(
+        nodes,
+        edges,
+        this.options.useDynamicEdges ? 2*springLength : springLength,
+        this.options[this.options.solver].springConstant
+      );
+      layoutSolver.solve()
+
+
+      if (this.options.useDynamicEdges === true) {
+        for (let i = 0; i < edges.length; i++) {
+          if (edges[i].connected) {
+            let viaId = "edge_viaNode" + i;
+            edges[i]._viaId = viaId;
+            nodes[viaId] = {
+              id: viaId,
+              mass: 1,
+              fixed: false,
+              support: true,
+              x: 0.5 * (nodes[edges[i].from].x + nodes[edges[i].to].x),
+              y: 0.5 * (nodes[edges[i].from].y + nodes[edges[i].to].y)
+            }
+          }
+        }
+      }
+    }
+
+    nodeIds = Object.keys(nodes).sort();
+
     this.onChange();
 
     // load edges into nodeModel
     nodeIds.forEach((nodeId) => {
       nodes[nodeId].edges = [];
-      edgeIds.forEach((edgeId) => {
-        if (edges[edgeId].from === nodeId || edges[edgeId].to === nodeId && edges[edgeId].from !== edges[edgeId].to) {
-          nodes[nodeId].edges.push(edges[edgeId]);
+      edges.forEach((edge) => {
+        if (edge.from === nodeId || edge.to === nodeId && edge.from !== edge.to) {
+          nodes[nodeId].edges.push(edge);
         }
       })
     });
@@ -154,6 +215,7 @@ class PhysicsEngine {
       this.nodesSolver = new ForceAtlas2BasedRepulsionSolver(this.physicsBody, options);
       this.edgesSolver = new SpringSolver(this.physicsBody, options);
       this.gravitySolver = new ForceAtlas2BasedCentralGravitySolver(this.physicsBody, options);
+      this.massMover = new MassMover(this.physicsBody, options);
     }
     else { // barnesHut
       options = this.options.barnesHut;
@@ -163,6 +225,7 @@ class PhysicsEngine {
       this.nodesSolver = new BarnesHutSolver(this.physicsBody, options);
       this.edgesSolver = new SpringSolver(this.physicsBody, options);
       this.gravitySolver = new CentralGravitySolver(this.physicsBody, options);
+      this.massMover = new MassMover(this.physicsBody, options);
     }
 
     this.modelOptions = options;
@@ -268,11 +331,9 @@ class PhysicsEngine {
     }
 
     // get edge indices for physics
-    for (let edgeId in edges) {
-      if (edges.hasOwnProperty(edgeId)) {
-        if (edges[edgeId].physics !== false) {
-          this.physicsBody.physicsEdgeIndices.push(edges[edgeId].id);
-        }
+    for (let i = 0; i < edges.length; i++)  {
+      if (edges[i].physics !== false) {
+        this.physicsBody.physicsEdgeIndices.push(edges[i].id);
       }
     }
 
@@ -339,7 +400,6 @@ class PhysicsEngine {
 
         let radius = (2*this.radius + 10*i);
         let angle = i * (2 * Math.PI) / (radius / (1.5*this.radius));
-
 
         node.x = this.options.center.x + radius * Math.cos(angle);
         node.y = this.options.center.y + radius * Math.sin(angle);
@@ -415,10 +475,9 @@ class PhysicsEngine {
 
     // store the state so we can revert
     this.previousStates[nodeId] = {x:node.x, y:node.y, vx:velocities[nodeId].x, vy:velocities[nodeId].y};
-
     if (node.fixed === false) {
       let dx   = this.modelOptions.damping * velocities[nodeId].x;   // damping force
-      let ax   = (forces[nodeId].x - dx) / node.mass;        // acceleration
+      let ax   = (forces[nodeId].x - dx) / node.mass;                // acceleration
       velocities[nodeId].x += ax * timestep;                         // velocity
       velocities[nodeId].x = (Math.abs(velocities[nodeId].x) > maxVelocity) ? ((velocities[nodeId].x > 0) ? maxVelocity : -maxVelocity) : velocities[nodeId].x;
       node.x   += velocities[nodeId].x * timestep;                    // position
@@ -430,7 +489,7 @@ class PhysicsEngine {
 
     if (node.fixed === false) {
       let dy   = this.modelOptions.damping * velocities[nodeId].y;    // damping force
-      let ay   = (forces[nodeId].y - dy) / node.mass;         // acceleration
+      let ay   = (forces[nodeId].y - dy) / node.mass;                 // acceleration
       velocities[nodeId].y += ay * timestep;                          // velocity
       velocities[nodeId].y = (Math.abs(velocities[nodeId].y) > maxVelocity) ? ((velocities[nodeId].y > 0) ? maxVelocity : -maxVelocity) : velocities[nodeId].y;
       node.y   += velocities[nodeId].y * timestep;                     // position
@@ -449,6 +508,7 @@ class PhysicsEngine {
    * calculate the forces for one physics iteration.
    */
   calculateForces() {
+    // this.massMover.solve();
     this.gravitySolver.solve();
     this.nodesSolver.solve();
     this.edgesSolver.solve();
@@ -510,8 +570,46 @@ class PhysicsEngine {
       this.onStable(this.stabilizationIterations);
     }
   }
-
-
 }
+
+
+function deepExtend(a, b, protoExtend = false, allowDeletion = false) {
+  for (var prop in b) {
+    if (b.hasOwnProperty(prop) || protoExtend === true) {
+      if (b[prop] && b[prop].constructor === Object) {
+        if (a[prop] === undefined) {
+          a[prop] = {};
+        }
+        if (a[prop].constructor === Object) {
+          deepExtend(a[prop], b[prop], protoExtend);
+        }
+        else {
+          if ((b[prop] === null) && a[prop] !== undefined && allowDeletion === true) {
+            delete a[prop];
+          }
+          else {
+            a[prop] = b[prop];
+          }
+        }
+      }
+      else if (Array.isArray(b[prop])) {
+        a[prop] = [];
+        for (let i = 0; i < b[prop].length; i++) {
+          a[prop].push(b[prop][i]);
+        }
+      }
+      else {
+        if ((b[prop] === null) && a[prop] !== undefined && allowDeletion === true) {
+          delete a[prop];
+        }
+        else {
+          a[prop] = b[prop];
+        }
+      }
+    }
+  }
+  return a;
+};
+
 
 export default PhysicsEngine;

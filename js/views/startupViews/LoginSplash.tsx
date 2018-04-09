@@ -31,8 +31,7 @@ export class LoginSplash extends Component<any, any> {
 
 
     return (
-      <Background fullScreen={true} image={this.props.backgrounds.mainDark}>
-        <View style={styles.shadedStatusBar} />
+      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:0.5}} />
           <Image source={require('../../images/crownstoneLogoWithText.png')} style={{width:factor * 998, height: factor*606}}/>

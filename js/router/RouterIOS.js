@@ -17,12 +17,12 @@ import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibrat
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
 import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
+import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
+import { LockOverlay }               from "../views/overlays/LockOverlay";
 import { Views }                     from './Views'
 import { styles, colors, tabBarMargin, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
-import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
-import { LockOverlay }               from "../views/overlays/LockOverlay";
-import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
+import { AnimatedMenu }              from "../views/components/Animated/AnimatedMenu";
 
 
 export class Router_IOS extends Component {
@@ -47,12 +47,13 @@ export class Router_IOS extends Component {
                   <Scene key="messageInbox"               component={Views.MessageInbox}    />
                   <Scene key="messageThread"              component={Views.MessageThread}   />
                 </Scene>
-                <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle}>
+                <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
                   <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
                   <Scene key="settingsProfile"            component={Views.SettingsProfile}           />
                   <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
                   <Scene key="settingsApp"                component={Views.SettingsApp}               />
                   <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
+                  <Scene key="SettingsMeshTopology"       component={Views.SettingsMeshTopology}      />
                   <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
                   <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
                   <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />

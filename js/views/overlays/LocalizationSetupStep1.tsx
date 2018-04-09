@@ -11,7 +11,7 @@ import {
 
 import { FinalizeLocalizationIcon } from '../components/FinalizeLocalizationIcon'
 import { Icon }                     from '../components/Icon'
-import { FadeInView }               from '../components/animated/FadeInView'
+import { FadeInView }               from '../components/Animated/FadeInView'
 import { styles, colors, tabBarHeight, topBarHeight, screenHeight, screenWidth } from '../styles'
 import { eventBus } from '../../util/EventBus'
 

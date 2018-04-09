@@ -22,7 +22,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { FadeInView } from '../components/animated/FadeInView'
+import { FadeInView } from '../components/Animated/FadeInView'
 import {LOG, LOGe} from '../../logging/Log'
 import {DIMMING_ENABLED} from "../../ExternalConfig";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";

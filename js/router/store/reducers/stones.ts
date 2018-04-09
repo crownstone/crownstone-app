@@ -4,6 +4,7 @@ import { LOG } from '../../../logging/Log'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
 import powerUsageReducer from './stoneSubReducers/powerUsage'
 import scheduleReducer from './stoneSubReducers/schedule'
+import meshReducer from './stoneSubReducers/mesh'
 
 export let BEHAVIOUR_TYPES = {
   NEAR: 'onNear',
@@ -17,7 +18,8 @@ export let BEHAVIOUR_TYPES = {
 export let STONE_TYPES = {
   plug: "PLUG",
   builtin: "BUILTIN",
-  guidestone: "GUIDESTONE"
+  guidestone: "GUIDESTONE",
+  crownstoneUSB: "CROWNSTONE_USB"
 };
 
 let defaultSettings = {
@@ -85,6 +87,9 @@ let defaultSettings = {
   },
   powerUsage: {
     //day as string: 2017-05-01 : { cloud: {...}, data: [] }
+  },
+  mesh: {
+
   }
 };
 
@@ -403,12 +408,13 @@ let stoneBehavioursReducer = combineReducers({
 
 
 let combinedStoneReducer = combineReducers({
-  config: stoneConfigReducer,
-  state: stoneStateReducer,
-  behaviour: stoneBehavioursReducer,
-  schedules: scheduleReducer,
-  errors: stoneErrorsReducer,
-  powerUsage: powerUsageReducer
+  config:     stoneConfigReducer,
+  state:      stoneStateReducer,
+  behaviour:  stoneBehavioursReducer,
+  schedules:  scheduleReducer,
+  errors:     stoneErrorsReducer,
+  powerUsage: powerUsageReducer,
+  mesh:       meshReducer
 });
 
 // stonesReducer

@@ -11,8 +11,8 @@ import {
   View,
 } from 'react-native';
 
-import { OverlayContent }  from '../components/overlays/OverlayContent'
-import { OverlayBox }      from '../components/overlays/OverlayBox'
+import { OverlayContent }  from '../components/Overlays/OverlayContent'
+import { OverlayBox }      from '../components/Overlays/OverlayBox'
 import { eventBus }        from '../../util/EventBus'
 import { FirmwareHandler } from "../../native/firmware/FirmwareHandler";
 import {LOG, LOGd} from "../../logging/Log";

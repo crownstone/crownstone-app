@@ -11,6 +11,7 @@ import {Scheduler} from "../../logic/Scheduler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 
 
+
 /**
  * This class keeps track of the Crownstones in setup state.
  */
@@ -157,12 +158,14 @@ class SetupStateHandlerClass {
   }
 
   static _getTypeData(advertisement) {
-    if (advertisement.isCrownstonePlug)
+    if (advertisement.serviceData.deviceType      == 'plug')
       return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:STONE_TYPES.plug,       handle: advertisement.handle};
-    else if (advertisement.isCrownstoneBuiltin)
+    else if (advertisement.serviceData.deviceType == 'builtin')
       return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:STONE_TYPES.builtin,    handle: advertisement.handle};
-    else if (advertisement.isGuidestone)
+    else if (advertisement.serviceData.deviceType == 'guidestone')
       return {name: 'Guidestone',         icon: 'c2-crownstone',    type:STONE_TYPES.guidestone, handle: advertisement.handle};
+    else if (advertisement.serviceData.deviceType == 'crownstoneUSB')
+      return {name: 'Crownstone USB',     icon: 'c1-router',        type:STONE_TYPES.crownstoneUSB, handle: advertisement.handle};
     else {
       LOG.error("UNKNOWN DEVICE in setup procedure", advertisement);
     }

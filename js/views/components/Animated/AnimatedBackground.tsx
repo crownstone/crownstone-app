@@ -4,6 +4,7 @@ import {
   Image,
   View
 } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
 
 import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} from '../../styles'
 
@@ -58,9 +59,9 @@ export class AnimatedBackground extends Component<any, any> {
           {this.staticImage}
         </View>
         <Animated.View style={[styles.fullscreen, {height:height, opacity:this.state.fade}]}>{this.animatedImage}</Animated.View>
-          <View style={{flex:1}}>
+          <SafeAreaView style={{flex:1}}>
             {this.props.children}
-          </View>
+          </SafeAreaView>
       </View>
     );
   }

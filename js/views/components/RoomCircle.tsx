@@ -18,7 +18,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { Svg, Circle } from 'react-native-svg';
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {AnimatedCircle} from "./animated/AnimatedCircle";
+import {AnimatedCircle} from "./Animated/AnimatedCircle";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'
@@ -64,6 +64,8 @@ class RoomCircleClass extends Component<any, any> {
       top: new Animated.Value(initialY),
       left: new Animated.Value(initialX),
       colorFadeOpacity: new Animated.Value(0),
+      scale: new Animated.Value(1),
+      opacity: new Animated.Value(1),
       setupProgress: 20,
     };
 
@@ -147,8 +149,16 @@ class RoomCircleClass extends Component<any, any> {
       }
     });
 
-    this.unsubscribeControlEvents = this.props.eventBus.on('roomCircleTap'+this.props.locationId, (data) => {
+    this.unsubscribeControlEvents = this.props.eventBus.on('nodeWasTapped'+this.props.locationId, (data) => {
       this.handleTap(data);
+    })
+
+    this.unsubscribeControlEvents = this.props.eventBus.on('nodeTouched'+this.props.locationId, (data) => {
+      this.handleTouch(data);
+    })
+
+    this.unsubscribeControlEvents = this.props.eventBus.on('nodeReleased'+this.props.locationId, (data) => {
+      this.handleTouchReleased(data);
     })
   }
 
@@ -368,12 +378,12 @@ class RoomCircleClass extends Component<any, any> {
     this.renderState = state;
     const animatedStyle = {
       transform: [
-        { scale: this.props.scale },
+        { scale: this.state.scale },
       ]
     };
 
     return (
-      <Animated.View style={[animatedStyle,{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.props.opacity}]}>
+      <Animated.View style={[animatedStyle,{position:'absolute',  top: this.props.pos.y, left: this.props.pos.x, opacity: this.state.opacity}]}>
         <View>
           {this.getCircle()}
           {this.showAlert !== null ? this._getAlertIcon() : undefined}
@@ -382,8 +392,37 @@ class RoomCircleClass extends Component<any, any> {
     )
   }
 
+  handleTouch(data) {
+    // top any animation this node was doing.
+    this.state.scale.stopAnimation();
+    this.state.opacity.stopAnimation();
+
+    let tapAnimations = [];
+    tapAnimations.push(Animated.spring(this.state.scale, { toValue: 1.25, friction: 4, tension: 70 }));
+    tapAnimations.push(Animated.timing(this.state.opacity, {toValue: 0.2, duration: 100}));
+    Animated.parallel(tapAnimations).start();
+  }
+
+  handleTouchReleased(data) {
+    // top any animation this node was doing.
+    this.state.scale.stopAnimation();
+    this.state.opacity.stopAnimation();
+
+    let revertAnimations = [];
+    revertAnimations.push(Animated.timing(this.state.scale, {toValue: 1, duration: 100}));
+    revertAnimations.push(Animated.timing(this.state.opacity, {toValue: 1, duration: 100}));
+    Animated.parallel(revertAnimations).start();
+  }
+
   handleTap(data) {
     let handled = false;
+
+    this.state.scale.stopAnimation();
+    this.state.opacity.stopAnimation();
+
+    this.state.scale.setValue(1);
+    this.state.opacity.setValue(1);
+
     if (this.showAlert !== null) {
       if (this.showAlert === ALERT_TYPES.fingerprintNeeded) {
         if (data.dx > this.outerDiameter*0.70 && data.dy > -this.outerDiameter*0.3) {

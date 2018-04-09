@@ -20,7 +20,7 @@ import { LOG, LOGd, LOGi } from '../../logging/Log'
 import { emailChecker, getImageFileFromUser, Util }   from '../../util/Util'
 import { SessionMemory }                              from '../../util/SessionMemory'
 import { CLOUD }                                      from '../../cloud/cloudAPI'
-import { TextEditInput }                              from '../components/editComponents/TextEditInput'
+import { TextEditInput }                              from '../components/EditComponents/TextEditInput'
 import { Background }                                 from '../components/Background'
 import { StoreManager }                               from '../../router/store/storeManager'
 import loginStyles                                    from './LoginStyles'
@@ -182,8 +182,7 @@ export class Login extends Component<any, any> {
     let factor = 0.2;
 
     return (
-      <Background fullScreen={true} image={this.props.backgrounds.mainDark}>
-        <View style={styles.shadedStatusBar} />
+      <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true}>
         <TopBar leftStyle={{color:'#fff'}} left={Platform.OS === 'android' ? null : 'Back'} leftAction={() => {Actions.loginSplash({type:'reset'})}} style={{backgroundColor:'transparent', paddingTop:0}} />
         <View style={{flexDirection:'column', alignItems:'center', justifyContent: 'center', flex: 1}}>
           <View style={{flex:2, width:screenWidth}} />

@@ -17,7 +17,7 @@ import {
 import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
 import { styles, colors, screenWidth }        from '../../styles'
-import { AlternatingContent }                 from '../animated/AlternatingContent';
+import { AlternatingContent }                 from '../Animated/AlternatingContent';
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
 import { STONE_TYPES }                        from '../../../router/store/reducers/stones';
 import { INTENTS }                            from '../../../native/libInterface/Constants';
@@ -26,7 +26,7 @@ import { StoneUtil }                          from "../../../util/StoneUtil";
 import { BackAction }                         from "../../../util/Back";
 import { DeviceCommandProgressBar }           from "./DeviceCommandProgressBar";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
-import {AnimatedCircle} from "../animated/AnimatedCircle";
+import {AnimatedCircle} from "../Animated/AnimatedCircle";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 

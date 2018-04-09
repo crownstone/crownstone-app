@@ -12,6 +12,7 @@ import { Router_IOS }      from './RouterIOS';
 import { Router_Android }  from './RouterAndroid';
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 import SplashScreen from 'react-native-splash-screen'
+import {Splash} from "../views/startupViews/Splash";
 
 
 interface backgroundType {
@@ -135,7 +136,7 @@ export class AppRouter extends Component<any, {loggedIn: boolean, storePrepared:
     else {
       // this is the await store part.
       return (
-        <Background fullScreen={true} image={this.backgrounds.mainDarkLogo} />
+        <Splash backgrounds={this.backgrounds} />
       )
     }
   }

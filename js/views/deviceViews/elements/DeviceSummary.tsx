@@ -18,7 +18,7 @@ import { colors, screenWidth, screenHeight } from '../../styles'
 import { Util }                from "../../../util/Util";
 import { Icon }                from "../../components/Icon";
 import { StoneUtil }           from "../../../util/StoneUtil";
-import { AnimatedCircle }      from "../../components/animated/AnimatedCircle";
+import { AnimatedCircle }      from "../../components/Animated/AnimatedCircle";
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { DimmerButton }        from "../../components/DimmerButton";
 import { INTENTS }             from "../../../native/libInterface/Constants";

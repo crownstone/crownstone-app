@@ -237,14 +237,13 @@ export class RoomEdit extends Component<any, any> {
   }
 
   render() {
-
     const store = this.props.store;
     const state = store.getState();
     this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false;
 
     let backgroundImage = this.props.getBackground('menu', this.viewingRemotely);
     return (
-      <Background image={backgroundImage}>
+      <Background hasNavBar={false} image={backgroundImage}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />

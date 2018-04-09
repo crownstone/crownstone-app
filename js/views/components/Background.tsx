@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} from '../styles'
+import { styles, colors, screenWidth, screenHeight, statusBarHeight, topBarHeight, tabBarHeight} from '../styles'
 
 
 export class Background extends Component<any, any> {
@@ -19,12 +19,13 @@ export class Background extends Component<any, any> {
     }
 
     return (
-      <View style={[styles.fullscreen, {height:height}]} >
+      <View style={[styles.fullscreen, {height:height, overflow:"hidden"}]} >
         {this.props.image}
         <View style={[styles.fullscreen, {height:height}]} >
-          <View style={{flex:1}}>
+          { this.props.shadedStatusBar === true ? <View style={styles.shadedStatusBar} /> : undefined}
+          <SafeAreaView style={{flex:1}}>
             {this.props.children}
-          </View>
+          </SafeAreaView>
         </View>
       </View>
     );
