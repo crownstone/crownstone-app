@@ -103,6 +103,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   restartCrownstone:          ()     => { return BluenetPromise('restartCrownstone'); },
   clearFingerprintsPromise:   ()     => { return BluenetPromise('clearFingerprintsPromise'); },
   setTime:                    (time) => { return BluenetPromise('setTime',time); },
+  meshSetTime:                (time) => { return BluenetPromise('meshSetTime',time); },
   getTime:                    ()     => { return BluenetPromise('getTime'); },
 
   addSchedule:                    (data: bridgeScheduleEntry)  => { return BluenetPromise('addSchedule', data); }, // must return "NO_SCHEDULE_ENTRIES_AVAILABLE" as error if there are no available schedules

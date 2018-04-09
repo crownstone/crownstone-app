@@ -25,7 +25,7 @@ let meshReducer = (state = dataState, action : any = {}) => {
 // meshReducer
 export default (state = {}, action : any = {}) => {
   switch (action.type) {
-    case 'REMOVE_FROM_MESH':
+    case 'CLEAR_MESH_TOPOLOGY':
       return {};
     default:
       if (action.nodeId !== undefined) {

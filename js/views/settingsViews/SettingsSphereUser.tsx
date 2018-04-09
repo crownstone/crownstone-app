@@ -121,6 +121,7 @@ export class SettingsSphereUser extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture

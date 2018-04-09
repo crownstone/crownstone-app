@@ -12,7 +12,7 @@ import {
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from '../styles';
+import {styles, colors, screenWidth} from '../styles';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import {Util} from "../../util/Util";
@@ -143,6 +143,7 @@ export class SettingsSphereInvite extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

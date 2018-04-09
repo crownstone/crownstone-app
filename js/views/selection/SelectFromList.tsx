@@ -96,17 +96,7 @@ export class SelectFromList extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
-        <TopBar
-          leftAction={() => { BackAction(); }}
-          notBack={true}
-          left={'Cancel'}
-          right={'Select'}
-          leftStyle={{color: colors.white.hex}}
-          rightStyle={{fontWeight: 'bold'}}
-          rightAction={() => { this.props.callback(this.state.selectedItemIds); BackAction() }}
-          title={this.props.title}
-        />
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
           <SeparatedItemList

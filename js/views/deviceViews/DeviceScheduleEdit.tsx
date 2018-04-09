@@ -525,7 +525,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView style={{flex:1}}>
           <View style={{alignItems:'center', width: screenWidth}}>

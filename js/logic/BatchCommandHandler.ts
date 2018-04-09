@@ -73,31 +73,15 @@ class BatchCommandHandlerClass {
    * @returns {Array}
    * @private
    */
-  _getObjectsToScan() {
-    // this will mark all candidates during this scan as initialized. These are ALL marked as initialized since if we do not find ANY crownstones,
-    // we will have to reduce the attempts of all of them.
-    let { directCommands, meshNetworks } = this._commandHandler.extractTodo(this.store.getState(),null, null, true);
-
+  _getTopicsFromTargets(directTargets) {
     // get sphereIds of the spheres we need to do things in.
-    let meshSphereIds = Object.keys(meshNetworks);
-    let directSphereIds = Object.keys(directCommands);
     let topicsToScan = [];
 
-    // find all topics in the mesh sphereId
-    meshSphereIds.forEach((sphereId) => {
-      let meshNetworkIds = Object.keys(meshNetworks[sphereId]);
-      meshNetworkIds.forEach((networkId) => {
-        LOG.info("BatchCommandHandler: meshNetworkCommands for sphere", sphereId, ", command:", meshNetworks[sphereId][networkId], this.activePromiseId);
-        topicsToScan.push({ sphereId: sphereId, topic: Util.events.getMeshTopic(sphereId, networkId) });
-      });
-    });
-
     // find all the topics for individual crownstones.
-    directSphereIds.forEach((sphereId) => {
-      directCommands[sphereId].forEach((command) => {
-        LOG.info("BatchCommandHandler: directCommands for sphere:", sphereId, " stone:", command.stoneId, ", command:", command.command, this.activePromiseId);
-        topicsToScan.push({ sphereId: sphereId, topic: Util.events.getCrownstoneTopic(sphereId, command.stoneId) });
-      });
+    let stoneIds = Object.keys(directTargets);
+    stoneIds.forEach((stoneId) => {
+      LOG.info("BatchCommandHandler: directCommands for sphere:", directTargets[stoneId], " stone:", stoneId, this.activePromiseId);
+      topicsToScan.push({ sphereId: directTargets[stoneId], topic: Util.events.getCrownstoneTopic(directTargets[stoneId], stoneId) });
     });
     return topicsToScan;
   }
@@ -105,14 +89,16 @@ class BatchCommandHandlerClass {
 
   /**
    * This will commands one by one to the connected Crownstone.
-   * @param connectionInfo
+   * @param connectedStoneInfo
    * @param activeOptions
    * @returns { Promise<T> }
    */
-  _handleAllCommandsForStone(connectionInfo: connectionInfo, activeOptions : any = {}) {
+  _handleAllCommandsForStone(connectedStoneInfo: connectionInfo, activeOptions : any = {}) {
     return new Promise((resolve, reject) => {
       // get everything we CAN and WILL do now with this Crownstone.
-      let { directCommands, meshNetworks } = this._commandHandler.extractTodo(this.store.getState(), connectionInfo.stoneId, connectionInfo.meshNetworkId);
+      let directCommands = this._commandHandler.extractDirectCommands(this.store.getState(), connectedStoneInfo.stoneId, false);
+
+      let meshNetworks = this._commandHandler.extractMeshCommands(this.store.getState(), connectedStoneInfo.stoneId, connectedStoneInfo.meshNetworkId);
 
       // check if we have to perform any mesh commands for this Crownstone.
       let meshSphereIds = Object.keys(meshNetworks);
@@ -122,7 +108,7 @@ class BatchCommandHandlerClass {
         let meshNetworkIds = Object.keys(networksInSphere);
         // pick the first network to handle
         if (meshNetworkIds.length > 0) {
-          let helper = new MeshHelper(meshSphereIds[i], meshNetworkIds[i], networksInSphere[meshNetworkIds[0]]);
+          let helper = new MeshHelper(meshSphereIds[i], meshNetworkIds[i], networksInSphere[meshNetworkIds[0]], connectedStoneInfo.stoneId);
           promise = helper.performAction();
 
           // merge the active options with those of the mesh instructions.
@@ -158,9 +144,10 @@ class BatchCommandHandlerClass {
                 actionPromise = BluenetPromiseWrapper.clearErrors(command.clearErrorJSON);
                 // actionPromise = BluenetPromiseWrapper.restartCrownstone();
                 break;
+              case 'meshSetTime':
               case 'setTime':
                 let timeToSet = command.time === undefined ? StoneUtil.nowToCrownstoneTime() : command.time;
-                actionPromise = BluenetPromiseWrapper.setTime(timeToSet);
+                actionPromise = BluenetPromiseWrapper.meshSetTime(timeToSet);
                 break;
               case 'getTime':
                 actionPromise = BluenetPromiseWrapper.getTime();
@@ -220,7 +207,7 @@ class BatchCommandHandlerClass {
         promise
           .then(() => {
             // we assume the cleanup of the action(s) has been called.
-            return this._handleAllCommandsForStone(connectionInfo, activeOptions);
+            return this._handleAllCommandsForStone(connectedStoneInfo, activeOptions);
           })
           .then(() => {
             resolve(activeOptions);
@@ -242,37 +229,29 @@ class BatchCommandHandlerClass {
    * @returns {any}
    * @private
    */
-  _getConnectionTarget(rssiScanThreshold) : Promise<connectionInfo> {
+  _getConnectionTarget(rssiScanThreshold, directTargets) : Promise<connectionInfo> {
     return new Promise((resolve, reject) => {
       let state = this.store.getState();
 
-      let { directTargets, relayOnlyTargets, sphereMap } = this._commandHandler.extractConnectionTargets(state)
-
-      let nearestRelay = null;
       let nearestDirect = RssiLogger.getNearestStoneId(directTargets, 2, rssiScanThreshold);
       if (!nearestDirect && rssiScanThreshold !== null) { nearestDirect = RssiLogger.getNearestStoneId(directTargets,    2);                    }
-      if (!nearestDirect)                               { nearestRelay  = RssiLogger.getNearestStoneId(relayOnlyTargets, 2, rssiScanThreshold); }
-      if (!nearestRelay && rssiScanThreshold !== null)  { nearestRelay  = RssiLogger.getNearestStoneId(relayOnlyTargets, 2);                    }
 
-      let foundId = nearestDirect || nearestRelay;
+      let foundId = nearestDirect;
+      let foundSphereId = directTargets[nearestDirect];
 
       if (nearestDirect) {
         LOGi.info("BatchCommandHandler: Found stone to directly connect to:", nearestDirect);
-      }
-      else if (nearestRelay) {
-        LOGi.info("BatchCommandHandler: Found stone to connect to in order for it to relay a command for us:", nearestDirect);
       }
       else {
         LOGi.info("BatchCommandHandler: No relevant stones found in the scan history for the last few seconds");
       }
 
       if (foundId) {
-        let sphereId = sphereMap[foundId];
-        let sphere = state.spheres[sphereId];
+        let sphere = state.spheres[foundSphereId];
         let stone = sphere.stones[foundId];
 
-        resolve({
-          sphereId :      sphereId,
+        return resolve({
+          sphereId :      foundSphereId,
           stoneId:        foundId,
           stone:          stone,
           meshNetworkId:  stone.config.meshNetworkId,
@@ -287,16 +266,27 @@ class BatchCommandHandlerClass {
 
 
   /**
-   * This method will search for Crownstones using the topics provided by the _getObjectsToScan.
+   * This method will search for Crownstones using the topics provided by the _getTopicsFromTargets.
    * It will connect to the first responder and perform all commands for that Crownstone. It will then move on to the next one.
    * @returns {Promise<T>}
    */
   _searchAndHandleCommands() {
     return new Promise((resolve, reject) => {
-      let topicsToScan = this._getObjectsToScan();
+      // we record the time here to enable failing of failed commands by the attemptHandler that were loaded before this time.
+      let executionTimestamp = new Date().valueOf();
+
+
+      let state = this.store.getState();
+      let { directTargets, relayOnlyTargets } = this._commandHandler.extractConnectionTargets(state)
+
+      // We will not use the relayOnlyTargets for now since the handling of the mesh should be improved for this.
+      // However, we will send the entire mesh payload to each stone. This gives us the redundancy of the old system (individual connections),
+      // while keeping the performance improvement of the mesh.
+
+      let topicsToScan = this._getTopicsFromTargets(directTargets);
       if (topicsToScan.length === 0) {
         // Use the attempt handler to clean up after something fails.
-        this.attemptHandler(null, 'Nothing to scan');
+        this.attemptHandler(null, executionTimestamp,'Nothing to scan');
 
         LOG.info("BatchCommandHandler: No topics to scan during BatchCommandHandler execution", this.activePromiseId);
         resolve();
@@ -314,12 +304,10 @@ class BatchCommandHandlerClass {
 
       let activeCrownstone = null;
 
-
-
       // get a connection target
-      this._getConnectionTarget(rssiScanThreshold)
+      this._getConnectionTarget(rssiScanThreshold, directTargets)
         .catch(() => {
-          // cant find a crownstone in the recent scans, look for one.
+          // cant find a crownstone in the recent scans, look for one now.
           return this._searchScan(topicsToScan, rssiScanThreshold, highPriorityActive, 5000)
             .catch((err) => {
               // nothing found within -91. if this is a low priority call, we will attempt it without the rssi threshold.
@@ -346,7 +334,7 @@ class BatchCommandHandlerClass {
         })
         .catch((err) => {
           // Use the attempt handler to clean up after something fails.
-          this.attemptHandler(activeCrownstone, err);
+          this.attemptHandler(activeCrownstone, executionTimestamp, err);
 
           // attempt to reschedule on failure.
           if (this._commandHandler.commandsAvailable()) {
@@ -485,12 +473,12 @@ class BatchCommandHandlerClass {
    * @param connectedCrownstone
    * @param err
    */
-  attemptHandler(connectedCrownstone, err) {
+  attemptHandler(connectedCrownstone, executionTimestamp, err) {
     let handleAttempt = (command) => {
       // The command has to be initialized first.
       // This is required to avoid the cases where commands that are loaded while there is a pending process
       // If that pending process fails, anything that was loaded during that time would be cancelled as well.
-      if (command.initialized === true) {
+      if (command.timestamp <= executionTimestamp) {
         command.attempts -= 1;
         if (command.attempts <= 0) {
           command.promise.reject(err);
@@ -505,25 +493,11 @@ class BatchCommandHandlerClass {
     }
 
     // get all todos that would have been done to reduce their attempt counts.
-    let { directCommands, meshNetworks } = this._commandHandler.extractTodo(this.store.getState(), connectedCrownstone.stoneId, connectedCrownstone.meshNetworkId);
-    let directCommandSpheres = Object.keys(directCommands);
-    directCommandSpheres.forEach((sphereId) => {
+    let directCommands = this._commandHandler.extractDirectCommands(this.store.getState(), connectedCrownstone.stoneId);
+    let directCommandSphereIds = Object.keys(directCommands);
+    directCommandSphereIds.forEach((sphereId) => {
       let commandsInSphere = directCommands[sphereId];
       commandsInSphere.forEach(handleAttempt);
-    });
-
-    let meshNetworkSpheres = Object.keys(meshNetworks);
-    meshNetworkSpheres.forEach((sphereId) => {
-      let networkTodo = meshNetworks[sphereId][connectedCrownstone.meshNetworkId];
-
-      // only handle the attempts if there are any for this sphere.
-      if (!networkTodo) {
-        return;
-      }
-
-      networkTodo.keepAlive.forEach(handleAttempt);
-      networkTodo.keepAliveState.forEach(handleAttempt);
-      networkTodo.multiSwitch.forEach(handleAttempt);
     });
   }
 

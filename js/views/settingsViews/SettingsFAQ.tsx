@@ -13,7 +13,7 @@ import {
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import {Actions} from "react-native-router-flux";
-import {colors} from "../styles";
+import {colors, screenWidth} from "../styles";
 import {IconButton} from "../components/IconButton";
 
 export class SettingsFAQ extends Component<any, any> {
@@ -192,6 +192,7 @@ export class SettingsFAQ extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.menu} >
+        <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>

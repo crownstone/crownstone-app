@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-navigation';
 import { styles, colors, screenWidth, screenHeight, statusBarHeight, topBarHeight, tabBarHeight} from '../styles'
 
 
-export class Background extends Component<any, any> {
+export class Background extends Component<{hasNavBar?: boolean, fullScreen?: boolean, hasTopBar?: boolean, image: any, shadedStatusBar?: boolean}, any> {
   render() {
     let height = screenHeight;
     if (this.props.hasTopBar !== false && this.props.fullScreen !== true) {

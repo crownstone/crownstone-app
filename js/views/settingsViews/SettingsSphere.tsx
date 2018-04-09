@@ -25,7 +25,7 @@ import {PermissionClass} from "../../backgroundProcesses/Permissions";
 import {TopBar} from "../components/Topbar";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
-import {topBarHeight} from "../styles";
+import {screenWidth, topBarHeight} from "../styles";
 
 export class SettingsSphere extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -351,6 +351,7 @@ export class SettingsSphere extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.menu} >
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

@@ -1,6 +1,6 @@
 interface keepAlivePayload {
   attempts: number,
-  initialized: boolean,
+  timestamp: number,
   options: batchCommandEntryOptions,
   cleanup(): void,
   promise:{
@@ -15,7 +15,7 @@ interface keepAliveStatePayload {
   crownstoneId: string,
   changeState: boolean,
   state: number,
-  initialized: boolean,
+  timestamp: number,
   options: batchCommandEntryOptions,
   timeout: number,
   attempts: number,
@@ -33,7 +33,7 @@ interface multiSwitchPayload {
   crownstoneId: string,
   state: number,
   intent: number,
-  initialized: boolean,
+  timestamp: number,
   options: batchCommandEntryOptions,
   timeout: number,
   attempts: number,
@@ -78,6 +78,7 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'keepAliveBatchCommand' } |
   { commandName : 'getErrors' } |
   { commandName : 'getTime' } |
+  { commandName : 'meshSetTime', time: number } |
   { commandName : 'setTime', time: number } |
   { commandName : 'clearErrors', clearErrorJSON: any } |
   { commandName : 'clearSchedule', scheduleEntryIndex: number } |
@@ -99,15 +100,15 @@ interface directCommands  {
 }
 
 interface batchCommandEntry {
-  priority:     boolean,
-  handle:       string,
-  sphereId:     string,
-  stoneId:      string,
-  initialized:  boolean,
-  attempts:     number,
-  options:      batchCommandEntryOptions,
-  command:      commandInterface,
-  cleanup():    void,
+  priority:  boolean,
+  handle:    string,
+  sphereId:  string,
+  stoneId:   string,
+  timestamp: number,
+  attempts:  number,
+  options:   batchCommandEntryOptions,
+  command:   commandInterface,
+  cleanup(): void,
   promise:{
     resolve(any?) : void,
     reject(any?) :  void,

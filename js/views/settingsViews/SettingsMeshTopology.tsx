@@ -182,7 +182,7 @@ export class SettingsMeshTopology extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ForceDirectedView
           nodeIds={stoneIds}
           nodeRadius={this._baseRadius}

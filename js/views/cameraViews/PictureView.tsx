@@ -17,6 +17,12 @@ import { SessionMemory } from '../../util/SessionMemory'
 import {BackAction} from "../../util/Back";
 
 export class PictureView extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Take Picture",
+    }
+  };
+
   cameraView;
 
   componentDidMount() {
@@ -54,6 +60,7 @@ export class PictureView extends Component<any, any> {
     // somehow the camera does not take full screen size.
     return (
       <View style={{flex:1, width: screenWidth, height: screenHeight}}>
+        <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
         <View style={{width: screenWidth, height: 10, backgroundColor: colors.black.hex }} />
         <CameraKitCameraScreen
           ref={(cam) => this.cameraView = cam}

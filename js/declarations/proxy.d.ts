@@ -37,6 +37,7 @@ interface BluenetPromiseWrapperProtocol {
   clearErrors(clearErrorJSON : clearErrorData)  : Promise< void >,
   restartCrownstone()                           : Promise< void >,
   setTime(time : number)                        : Promise< void >,
+  meshSetTime(time : number)                    : Promise< void >,
   getTime()                                     : Promise< number >, // timestamp in seconds since epoch
 
   addSchedule(data : bridgeScheduleEntry)       : Promise< void >,

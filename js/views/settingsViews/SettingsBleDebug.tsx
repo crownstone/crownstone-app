@@ -10,7 +10,7 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { styles, colors } from '../styles'
+import {styles, colors, screenWidth} from '../styles'
 import {Util} from "../../util/Util";
 import {IconCircle} from "../components/IconCircle";
 const Actions = require('react-native-router-flux').Actions;
@@ -95,6 +95,7 @@ export class SettingsBleDebug extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.menu} >
+        <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

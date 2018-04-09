@@ -225,8 +225,6 @@ export class DeviceSummary extends Component<any, any> {
     // stone.config.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let canChangeSettings = stone.config.applianceId ? spherePermissions.editAppliance : spherePermissions.editCrownstone;
-
     let locationLabel = "Tap here to move me!";
     let locationName = "Not in room";
     if (location) {

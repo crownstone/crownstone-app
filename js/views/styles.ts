@@ -116,7 +116,7 @@ export const styles = StyleSheet.create({
   },
   listView: {
     flexDirection: 'row',
-    backgroundColor: 'transparent',
+    backgroundColor: colors.white.hex,
     paddingLeft:15,
     paddingRight:15,
     alignItems: 'center',
@@ -124,7 +124,7 @@ export const styles = StyleSheet.create({
   listText:{
     width:(1/3)*screenWidth,
     fontSize: 16,
-    backgroundColor:"transparent"
+    backgroundColor: colors.white.hex
   },
   listTextLarge:{
     flex:10,

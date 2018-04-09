@@ -285,7 +285,7 @@ export class DeviceIconSelection extends Component<{callback(icon: string) : voi
   render() {
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:2, width:screenWidth}} />
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <IconSelection
             categories={categories}

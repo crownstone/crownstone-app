@@ -13,11 +13,17 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
-import { styles, colors } from '../styles'
+import {styles, colors, screenWidth} from '../styles'
 import { LOG } from '../../logging/Log'
 import {BackAction} from "../../util/Back";
 
 export class CameraRollView extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Choose a Picture",
+    }
+  };
+
   pictureIndex : any;
   state : any;
   active : any;
@@ -115,11 +121,7 @@ export class CameraRollView extends Component<any, any> {
   render() {
     return (
       <View style={[styles.fullscreen, {backgroundColor:'#fff'}]}>
-        <TopBar title="Choose A Picture" left="Cancel" leftAction={() => {
-          clearTimeout(this.fetchPicturesTimeout);
-          this.active = false;
-          BackAction();
-        }} notBack={true} />
+        <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
         {this.drawPictures()}
       </View>
     );

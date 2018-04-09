@@ -430,7 +430,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
 
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
     return (
-      <Background image={backgroundImage} >
+      <Background hasNavBar={false} image={backgroundImage} >
         <ScrollView>
           <ListEditableItems items={options} separatorIndent={true} />
         </ScrollView>

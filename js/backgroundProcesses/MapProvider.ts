@@ -69,25 +69,21 @@ class MapProviderClass {
           this.refreshAll();
         }
 
-        if (change.changeUserDeveloperStatus || change.changeDeveloperData) {
-          let state = this._store.getState();
-          this._evalMeshState(state);
-        }
       });
 
       this.refreshAll();
     }
   }
 
-  _evalMeshState(state) {
-    this.meshEnabled = MESH_ENABLED && state.user.developer && state.development.use_mesh;
+  _evalMeshState() {
+    this.meshEnabled = MESH_ENABLED;
   }
 
   refreshAll() {
     LOG.info("MapProvider: Refreshing All.");
     let state = this._store.getState();
 
-    this._evalMeshState(state);
+    this._evalMeshState();
 
     this.stoneSphereHandleMap = getMapOfCrownstonesBySphereByHandle(     state);
     this.stoneHandleMap       = getMapOfCrownstonesInAllSpheresByHandle( state);
