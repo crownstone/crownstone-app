@@ -17,7 +17,7 @@ import {
 import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
 import { styles, colors, screenWidth }        from '../../styles'
-import { AlternatingContent }                 from '../animated/AlternatingContent';
+import { AlternatingContent }                 from '../Animated/AlternatingContent';
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
 import { STONE_TYPES }                        from '../../../router/store/reducers/stones';
 import { INTENTS }                            from '../../../native/libInterface/Constants';
@@ -26,32 +26,23 @@ import { StoneUtil }                          from "../../../util/StoneUtil";
 import { BackAction }                         from "../../../util/Back";
 import { DeviceCommandProgressBar }           from "./DeviceCommandProgressBar";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
-import {AnimatedCircle} from "../animated/AnimatedCircle";
+import {AnimatedCircle} from "../Animated/AnimatedCircle";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class DeviceEntry extends Component<any, any> {
   baseHeight : number;
-  optionsHeight : number;
-  openHeight : number;
   unsubscribe = [];
-  optionsAreOpen = false;
   animating = false;
   id = Util.getUUID();
-  initiallyOpenTimeout : any;
-  optionMoveTimeout : any;
 
   constructor(props) {
     super(props);
 
     this.baseHeight = props.height || 80;
-    this.optionsHeight = 40;
-    this.openHeight = this.baseHeight + this.optionsHeight;
 
     this.state = {
-      height:          new Animated.Value(this.baseHeight),
-      optionsHeight:   new Animated.Value(0),
-      optionsOpen:     false,
+      height:          this.baseHeight,
       pendingCommand:  false,
       backgroundColor: new Animated.Value(0),
       statusText:      null,
@@ -59,17 +50,6 @@ export class DeviceEntry extends Component<any, any> {
   }
 
   componentDidMount() {
-    if (this.props.initiallyOpen) {
-      this.initiallyOpenTimeout = setTimeout(() => { this._openOptions(600); }, 200);
-    }
-
-    // this event will close the options if another crownstone entry opens their options. This makes sure only one options field is open at any given time.
-    this.unsubscribe.push(this.props.eventBus.on('focusDeviceEntry', (id) => {
-      if (id !== this.id) {
-        this._closeOptions();
-      }
-    }));
-
     // this event makes the background of the device entry blink to incidate the error.
     this.unsubscribe.push(this.props.eventBus.on('showErrorInOverview', (stoneId) => {
       if (stoneId === this.props.stoneId) {
@@ -81,54 +61,9 @@ export class DeviceEntry extends Component<any, any> {
     }));
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    // If the component is already mounted and it gets a new set of props that want it to be initially open,
-    // we open it if it is not already open, opening or already initiallyOpen
-    if (
-      this.props.initiallyOpen !== nextProps.initiallyOpen &&
-      nextProps.initiallyOpen === true &&
-      this.state.optionsOpen === false &&
-      this.animating === false
-       ) {
-      this._openOptions(600);
-    }
-  }
-
   componentWillUnmount() { // cleanup
     this.unsubscribe.forEach((unsubscribe) => { unsubscribe();});
-    clearTimeout(this.initiallyOpenTimeout);
-    clearTimeout(this.optionMoveTimeout);
   }
-
-
-  /**
-   *  Close the options of the Crownstone device entry
-   */
-  _closeOptions(delay = 200) {
-    if (this.optionsAreOpen === true && this.animating === false) {
-      this.animating = true;
-      this.setState({optionsOpen: false});
-      Animated.timing(this.state.height, {toValue: this.baseHeight, duration: this.props.duration || delay}).start();
-      Animated.timing(this.state.optionsHeight, {toValue: 0, duration: this.props.duration || delay}).start();
-      this.optionMoveTimeout = setTimeout(() => {this.optionsAreOpen = false; this.animating = false;}, delay);
-    }
-  }
-
-
-  /**
-   *  Open the options of the Crownstone device entry
-   */
-  _openOptions(delay = 200) {
-    if (this.optionsAreOpen === false && this.animating === false) {
-      this.props.eventBus.emit('focusDeviceEntry', this.id);
-      this.animating = true;
-      this.setState({optionsOpen: true});
-      Animated.timing(this.state.height, {toValue: this.openHeight, duration: this.props.duration || delay}).start();
-      Animated.timing(this.state.optionsHeight, {toValue: this.optionsHeight, duration: this.props.duration || delay}).start();
-      this.optionMoveTimeout = setTimeout(() => {this.optionsAreOpen = true; this.animating = false;}, delay);
-    }
-  }
-
 
 
   _pressedDevice(stone) {
@@ -158,11 +93,11 @@ export class DeviceEntry extends Component<any, any> {
     if (stone.config.disabled === false) {
       if (stone.errors.hasError) {
         content = <Switch value={stone.state.state === 1} disabled={true} />
-        action = () => { this._basePressed(stone); }
+        action = () => { this._basePressed(); }
       }
       else if (stone.config.locked) {
         content = <Icon name={'md-lock'} color={colors.black.rgba(0.2)} size={32} />
-        action = () => { this._basePressed(stone); }
+        action = () => { this._basePressed(); }
       }
       else if (this.state.pendingCommand === true) {
         content = <ActivityIndicator animating={true} size='large' />;
@@ -187,18 +122,8 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
-  _basePressed(stone, allowToggleOptions = true) {
-    if (stone.errors.hasError === true || stone.config.locked || allowToggleOptions === false) {
-      Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
-    }
-    else {
-      if (this.optionsAreOpen === false) {
-        this._openOptions();
-      }
-      else {
-        this._closeOptions();
-      }
-    }
+  _basePressed() {
+    Actions.deviceOverview({sphereId: this.props.sphereId, stoneId: this.props.stoneId, viewingRemotely: this.props.viewingRemotely})
   }
 
   _getIcon(element, stone, state) {
@@ -261,48 +186,6 @@ export class DeviceEntry extends Component<any, any> {
     }
   }
 
-  _getOptions() {
-    let textStyle = {fontSize:14, padding:5, color: colors.darkGray2.hex, paddingBottom:7};
-    let buttonStyle = {flex: 1, paddingLeft:12, paddingRight:12, height: 35, alignItems: 'center', justifyContent:'center', flexDirection:'row'};
-
-    if (this.state.optionsOpen || this.animating) {
-      return (
-        <Animated.View style={{height: this.state.optionsHeight, width: screenWidth, alignItems: 'center', overflow: 'hidden'}}>
-          <View style={{height: 1, width: 0.9 * screenWidth, backgroundColor: '#dedede'}}/>
-          <View style={{height: this.optionsHeight-1, backgroundColor: 'transparent', flexDirection: 'row', alignItems: 'center'}}>
-            <TouchableOpacity style={buttonStyle} onPress={() => {
-              if (Permissions.inSphere(this.props.sphereId).moveCrownstone) {
-                BackAction();
-                Actions.roomSelection({
-                  sphereId: this.props.sphereId,
-                  stoneId: this.props.stoneId,
-                  locationId: this.props.locationId,
-                  viewingRemotely: this.props.viewingRemotely
-                });
-              }
-              else {
-                Alert.alert("Can't move Crownstones", "Guests in a Sphere cannot move Crownstones around.",[{text:"OK"}])
-              }
-            }}>
-              <Icon name='md-log-in' size={24} color='#aaa' style={{backgroundColor: 'transparent', position: 'relative'}}/>
-              <Text style={textStyle}>move</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[buttonStyle, {justifyContent:'center'}]} onPress={() => {
-              Actions.deviceOverview({
-                sphereId: this.props.sphereId,
-                stoneId: this.props.stoneId,
-                viewingRemotely: this.props.viewingRemotely
-              });
-            }}>
-              <Icon name='ios-cog' size={29} color='#aaa' style={{backgroundColor: 'transparent', position: 'relative', top: 1}}/>
-              <Text style={textStyle}>settings</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      )
-    }
-  }
-
   render() {
     let state = this.props.store.getState();
     let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
@@ -318,10 +201,10 @@ export class DeviceEntry extends Component<any, any> {
       <Animated.View style={[styles.listView,{flexDirection: 'column', height: this.state.height, overflow:'hidden', backgroundColor:backgroundColor}]}>
         {/*<DeviceCommandProgressBar {...this.props} pendingCommand={this.state.pendingCommand } baseHeight={this.baseHeight} updateStatusText={(text) => { this.setState({statusText: text}) }} />*/}
         <View style={{flexDirection: 'row', height: this.baseHeight, paddingRight: 0, paddingLeft: 0, flex: 1}}>
-          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(stone, false); }}>
+          <TouchableOpacity style={{paddingRight: 20, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
             {this._getIcon(element, stone, state)}
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(stone); }}>
+          <TouchableOpacity style={{flex: 1, height: this.baseHeight, justifyContent: 'center'}} onPress={() => { this._basePressed(); }}>
             <View style={{flexDirection: 'column'}}>
               <Text style={{fontSize: 17, fontWeight: '100'}}>{element.config.name}</Text>
               <DeviceEntrySubText
@@ -337,11 +220,7 @@ export class DeviceEntry extends Component<any, any> {
             </View>
           </TouchableOpacity>
           {useControl === true && Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) ? this._getControl(stone) : undefined}
-          {this.state.optionsOpen === true ? undefined :
-            <View style={{position:'absolute', top: this.baseHeight-8, left: 0.5*screenWidth - 20 - 5, width:20, height:4, borderRadius:2, backgroundColor:colors.lightGray2.hex}} />
-          }
         </View>
-        {this._getOptions()}
       </Animated.View>
     );
   }

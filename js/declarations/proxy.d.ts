@@ -37,6 +37,7 @@ interface BluenetPromiseWrapperProtocol {
   clearErrors(clearErrorJSON : clearErrorData)  : Promise< void >,
   restartCrownstone()                           : Promise< void >,
   setTime(time : number)                        : Promise< void >,
+  meshSetTime(time : number)                    : Promise< void >,
   getTime()                                     : Promise< number >, // timestamp in seconds since epoch
 
   addSchedule(data : bridgeScheduleEntry)       : Promise< void >,
@@ -50,6 +51,8 @@ interface BluenetPromiseWrapperProtocol {
   allowDimming(allow: Boolean)                  : Promise< void >,
 }
 
+
+type deviceType = 'undefined' | 'plug' | 'guidestone' | 'builtin' | 'crownstoneUSB'
 
 interface crownstoneServiceData {
   opCode?                   : number, // unencrypted type (optional)
@@ -70,6 +73,8 @@ interface crownstoneServiceData {
   dimmingAllowed            : boolean,
   switchLocked              : boolean,
   timeSet                   : boolean,
+  deviceType                : deviceType,
+  rssiOfExternalCrownstone  : number,
   errorMode                 : boolean, // True when service data is of type error.
   errors                    : errorData, // Has to be correct when errorMode is true.
   uniqueElement             : number // partial timestamp, counter, etc
@@ -82,9 +87,6 @@ interface crownstoneAdvertisement {
   rssi                : number,
   referenceId         : string,
   isCrownstoneFamily  : boolean,
-  isCrownstonePlug    : boolean,
-  isCrownstoneBuiltin : boolean,
-  isGuidestone        : boolean,
   isInDFUMode         : boolean,
   serviceUUID         : string,
   serviceData         : crownstoneServiceData

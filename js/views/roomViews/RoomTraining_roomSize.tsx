@@ -78,7 +78,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
     let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
     return (
-      <Background hideInterface={true} image={this.props.backgrounds.detailsDark}>
+      <Background image={this.props.backgrounds.detailsDark}>
         <TopBar
           leftAction={ Actions.pop }
           title={"Teaching " + ai.name}/>

@@ -17,7 +17,7 @@ import { styles, colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
-import {AlternatingContent} from "../views/components/animated/AlternatingContent";
+import {AlternatingContent} from "../views/components/Animated/AlternatingContent";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
 
 
@@ -117,7 +117,7 @@ export const SettingConstructor = function(store, state, eventBus) {
       type: 'navigation',
       style: {color: '#000'},
       icon: getIcon('md-share', 23, colors.white.hex, colors.menuBackground.hex),
-      callback: () => { Actions.settingsMeshOverview(); }
+      callback: () => { Actions.settingsMeshTopology(); }
     });
   }
 
@@ -161,8 +161,10 @@ export const SettingConstructor = function(store, state, eventBus) {
     type:'navigation',
     icon: getIcon('md-help-circle', 22, colors.white.hex, colors.csBlue.hex),
     callback: () => {
-      Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
+      // Linking.openURL('https://crownstone.rocks/app-help/').catch(err => {});
+      Actions.settingsFAQ()
     }
+
   });
   items.push({
     id: 'Recover a Crownstone',

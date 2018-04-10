@@ -18,7 +18,7 @@ const Actions = require('react-native-router-flux').Actions;
 import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import {eventBus} from "../../util/EventBus";
-import {AnimatedCircle} from "./animated/AnimatedCircle";
+import {AnimatedCircle} from "./Animated/AnimatedCircle";
 import {StoneUtil} from "../../util/StoneUtil";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../../native/libInterface/Constants";
@@ -61,10 +61,12 @@ export class DimmerButton extends Component<any, any> {
     this.yCenter = 0.55*props.size;
 
     this.refName = (Math.random() * 1e9).toString(36);
-    this.state = {state: this._transformSwitchStateToUI(props.state) || 0, pendingCommand: false, pendingId: ''}
+    this.state = {state: this._transformSwitchStateToUI(props.state) || 0, pendingCommand: false, pendingId: ''};
+
+    this.init();
   }
 
-  componentWillMount() {
+  init() {
     let getStateFromGesture = (gestureState) => {
       let x = ((gestureState.x0 + gestureState.dx) - 0.5*screenWidth);
       let y = (gestureState.y0 + gestureState.dy - (this.startY+ 0.5*this.props.size));
@@ -230,19 +232,14 @@ export class DimmerButton extends Component<any, any> {
     return (
       <View style={{width: screenWidth, height: this.props.size, alignItems:'center'}}>
       <View {...this._panResponder.panHandlers}  ref={this.refName} style={{width: screenWidth, height: this.props.size, alignItems:'center', position:'absolute', top:0, left:0, opacity:1}}>
-        <Svg style={{
-          width: screenWidth,
-          height: this.props.size,
-          position:'absolute',
-          top:0,left:0
-        }}>
+        <Svg width={screenWidth} height={this.props.size}>
           <Circle
             r={this.correctedRadius}
             stroke={colors.white.hex}
             strokeWidth={this.strokeWidth}
             strokeOpacity={0.5}
             strokeDasharray={[0.75*this.pathLength, this.pathLength]}
-            strokeDashOffset={0}
+            strokeDashoffset={0}
             rotation="135"
             x={this.xCenter}
             y={this.yCenter}
@@ -255,7 +252,7 @@ export class DimmerButton extends Component<any, any> {
             stroke={colors.green.hex}
             strokeWidth={this.strokeWidth}
             strokeDasharray={[this.state.state*0.75*this.pathLength, this.pathLength]}
-            strokeDashOffset={0}
+            strokeDashoffset={0}
             rotation="135"
             x={this.xCenter}
             y={this.yCenter}

@@ -2,7 +2,7 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   View
 } from 'react-native';
-import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
+import { Scene, Router, Actions, DefaultRenderer, Modal, Drawer } from 'react-native-router-flux';
 import { eventBus }                  from '../util/EventBus'
 import { Bluenet }                   from '../native/libInterface/Bluenet';
 import { reducerCreate }             from './store/reducers/navigation'
@@ -19,6 +19,9 @@ import { TapToToggleCalibration }    from '../views/overlays/TapToToggleCalibrat
 import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOverlay";
 import { BleStateOverlay }           from '../views/overlays/BleStateOverlay'
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
+import { AnimatedMenu }              from "../views/components/Animated/AnimatedMenu";
+import { SideBar }                   from "../views/components/SideMenu/SideBar";
+
 import { Views }                     from './Views'
 import { styles, colors, screenWidth, screenHeight } from '../views/styles'
 
@@ -30,54 +33,62 @@ export class Router_Android extends Component {
     return (
       <View style={{flex:1, backgroundColor: colors.menuBackground.hex}}>
         <Router createReducer={reducerCreate} store={this.props.store} {...navBarStyle} getSceneStyle={() => {return {backgroundColor: colors.black.hex}}} backgrounds={this.props.backgrounds} getBackground={this.props.getBackground.bind(this)} eventBus={eventBus}>
-          <Scene key="drawer" component={SideMenu} open={false} store={this.props.store}>
-            <Scene key="Root" hideNavBar={false}>
-              <Scene key="loginSplash"                component={Views.LoginSplash}                panHandlers={null} hideNavBar={true}  type="reset" initial={this.props.loggedIn === false} />
-              <Scene key="login"                      component={Views.Login}                      panHandlers={null} hideNavBar={true}  />
-              <Scene key="logout"                     component={Views.Logout}                     panHandlers={null} hideNavBar={true}  />
-              <Scene key="tutorial"                   component={Views.Tutorial}                   panHandlers={null} hideNavBar={true}  />
-              <Scene key="register"                   component={Views.Register}                   panHandlers={null} hideNavBar={false} title="Register" {...navBarStyle} />
-              <Scene key="registerConclusion"         component={Views.RegisterConclusion}         panHandlers={null} hideNavBar={false} title="Almost Finished!" type="reset" {...navBarStyle} renderLeftButton={()=>{}} />
-              <Scene key="pictureView"                component={Views.PictureView}                panHandlers={null} hideNavBar={true}  direction="vertical" />
-              <Scene key="cameraRollView"             component={Views.CameraRollView}             panHandlers={null} hideNavBar={true}  direction="vertical" />
-              <Scene key="aiStart"                    component={Views.AiStart}                    panHandlers={null} hideNavBar={false} direction="vertical" title="Hello!" renderLeftButton={()=>{}} />
-              <Scene key="roomTraining_roomSize"      component={Views.RoomTraining_roomSize}      panHandlers={null} hideNavBar={true}  direction="vertical" />
-              <Scene key="roomTraining"               component={Views.RoomTraining}               panHandlers={null} hideNavBar={true}  direction="horizontal" />
-              <Scene key="roomSelection"              component={Views.RoomSelection}              panHandlers={null} hideNavBar={true}  direction="vertical" title="Move to which Room?" />
-              <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
-              <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        panHandlers={null} hideNavBar={true}  direction="vertical" title="Pick an Icon" />
-              <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} panHandlers={null} hideNavBar={false} direction="vertical" title="Recover Crownstone" />
-              <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} panHandlers={null} hideNavBar={false} title="Recover Crownstone" />
-              <Scene key="selectFromList"             component={Views.SelectFromList}             panHandlers={null} hideNavBar={true}  direction="vertical" />
-              <Scene key="sphereOverview"             component={Views.SphereOverview}             panHandlers={null} hideNavBar={true}  initial={this.props.loggedIn} />
-              <Scene key="roomOverview"               component={Views.RoomOverview}               panHandlers={null} hideNavBar={true} />
-              <Scene key="roomEdit"                   component={Views.RoomEdit}                   panHandlers={null} hideNavBar={true} direction="vertical" />
-              <Scene key="roomAdd"                    component={Views.RoomAdd}                    panHandlers={null} hideNavBar={true} direction="vertical" />
-              <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 panHandlers={null} hideNavBar={true} direction="vertical" />
-              <Scene key="deviceOverview"             component={Views.DeviceOverview}             panHandlers={null} hideNavBar={true} />
-              <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         panHandlers={null} hideNavBar={true} />
-              <Scene key="applianceAdd"               component={Views.ApplianceAdd}               panHandlers={null} hideNavBar={true} direction="vertical" />
-              <Scene key="applianceSelection"         component={Views.ApplianceSelection}         panHandlers={null} hideNavBar={false} title="Select Device Type" />
-              <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        panHandlers={null} hideNavBar={false} title="Edit Behaviour" />
-              <Scene key="settingsApp"                component={Views.SettingsApp}                panHandlers={null} hideNavBar={false} title="Preferences"/>
-              <Scene key="settingsOverview"           component={Views.SettingsOverview}           panHandlers={null} hideNavBar={false} title="Settings"/>
-              <Scene key="settingsProfile"            component={Views.SettingsProfile}            panHandlers={null} hideNavBar={false} title="Your Profile" />
-              <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          panHandlers={null} hideNavBar={false} title="Developer" />
-              <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}           panHandlers={null} hideNavBar={false} title="BLE Debug" />
-              <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}      panHandlers={null} hideNavBar={false} title="Stone BLE Debug" />
-              <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}       panHandlers={null} hideNavBar={false} title="Mesh Overview" />
-              <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}            panHandlers={null} hideNavBar={false} title="Developer" />
-              <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     panHandlers={null} hideNavBar={false} title="Sphere Overview" />
-              <Scene key="settingsSphere"             component={Views.SettingsSphere}             panHandlers={null} hideNavBar={true}  title="[Sphere name here]" />
-              <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         panHandlers={null} hideNavBar={false} title="[Username here]" />
-              <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  panHandlers={null} hideNavBar={false} title="[Username here]" />
-              <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       panHandlers={null} hideNavBar={false} title="Invite" />
-              <Scene key="messageInbox"               component={Views.MessageInbox}               panHandlers={null} hideNavBar={true} />
-              <Scene key="messageAdd"                 component={Views.MessageAdd}                 panHandlers={null} hideNavBar={true} direction="vertical" />
-              <Scene key="messageThread"              component={Views.MessageThread}              panHandlers={null} hideNavBar={true} />
-            </Scene>
-          </Scene>
+          <Modal>
+            <Scene key="loginSplash"                component={Views.LoginSplash}                hideNavBar={true} type="reset" initial={this.props.loggedIn === false} />
+            <Scene key="login"                      component={Views.Login}                      hideNavBar={true} />
+            <Scene key="logout"                     component={Views.Logout}                     hideNavBar={true} />
+            <Scene key="tutorial"                   component={Views.Tutorial}                   />
+            <Scene key="register"                   component={Views.Register}                   />
+            <Scene key="registerConclusion"         component={Views.RegisterConclusion}         />
+            <Scene key="pictureView"                component={Views.PictureView}                />
+            <Scene key="cameraRollView"             component={Views.CameraRollView}             />
+            <Scene key="aiStart"                    component={Views.AiStart}                    />
+            <Scene key="roomTraining_roomSize"      component={Views.RoomTraining_roomSize}      />
+            <Scene key="roomTraining"               component={Views.RoomTraining}               />
+            <Scene key="roomSelection"              component={Views.RoomSelection}              />
+            <Scene key="roomIconSelection"          component={Views.RoomIconSelection}          />
+            <Scene key="deviceIconSelection"        component={Views.DeviceIconSelection}        />
+            <Scene key="settingsPluginRecoverStep1" component={Views.SettingsPluginRecoverStep1} />
+            <Scene key="settingsPluginRecoverStep2" component={Views.SettingsPluginRecoverStep2} />
+            <Scene key="selectFromList"             component={Views.SelectFromList}             />
+            <Drawer
+              hideNavBar
+              key="drawer"
+              contentComponent={SideBar}
+              drawerWidth={0.75*screenWidth}
+              initial={this.props.loggedIn}
+            >
+              <Scene key="sphereOverview"           component={Views.SphereOverview}             />
+            </Drawer>
+            <Scene key="roomOverview"               component={Views.RoomOverview}               />
+            <Scene key="roomEdit"                   component={Views.RoomEdit}                   />
+            <Scene key="roomAdd"                    component={Views.RoomAdd}                    />
+            <Scene key="deviceEdit"                 component={Views.DeviceEdit}                 />
+            <Scene key="deviceOverview"             component={Views.DeviceOverview}             />
+            <Scene key="deviceScheduleEdit"         component={Views.DeviceScheduleEdit}         />
+            <Scene key="applianceAdd"               component={Views.ApplianceAdd}               />
+            <Scene key="applianceSelection"         component={Views.ApplianceSelection}         />
+            <Scene key="deviceBehaviourEdit"        component={Views.DeviceBehaviourEdit}        />
+            <Scene key="settingsApp"                component={Views.SettingsApp}                />
+            <Scene key="settingsOverview"           component={Views.SettingsOverview}           />
+            <Scene key="settingsProfile"            component={Views.SettingsProfile}            />
+            <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}          />
+            <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}           />
+            <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}      />
+            <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}       />
+            <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}            />
+            <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}     />
+            <Scene key="settingsSphere"             component={Views.SettingsSphere}             />
+            <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}         />
+            <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser}  />
+            <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}       />
+            <Scene key="messageInbox"               component={Views.MessageInbox}               />
+            <Scene key="messageAdd"                 component={Views.MessageAdd}                 />
+            <Scene key="messageThread"              component={Views.MessageThread}              />
+          </Modal>
         </Router>
+
+        <AnimatedMenu />
         <DfuOverlay  store={this.props.store} />
         <LockOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
@@ -100,7 +111,6 @@ let navBarStyle = {
   navigationBarStyle:{backgroundColor:colors.menuBackground.hex},
   titleStyle:{color:'white'},
   backButtonImage: require('../images/androidBackIcon.png'),
-  leftButtonIconStyle: {width:15, height:15},
-  leftButtonStyle: {alignItems:'center', justifyContent:'flex-start'},
+  leftButtonIconStyle: {width:15, height:15, marginTop:8},
 };
 

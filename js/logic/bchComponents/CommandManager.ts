@@ -29,7 +29,7 @@ export class CommandManager {
           command:  command,
           attempts: attempts,
           options:  options,
-          initialized: false,
+          timestamp: new Date().valueOf(),
           cleanup:  () => { this.commands[uuid] = undefined; delete this.commands[uuid]; },
           promise:  { resolve: resolve, reject: reject, pending: false}
         };
@@ -88,7 +88,7 @@ export class CommandManager {
   }
 
 
-  _extractDirectCommand(todo, targetStoneId, markAsInitialized, directCommands : directCommands) {
+  _extractDirectCommand(todo, targetStoneId, directCommands : directCommands) {
     // apply filter if required.
     if (targetStoneId !== null && targetStoneId !== todo.stoneId) {
       return;
@@ -98,14 +98,17 @@ export class CommandManager {
     if (directCommands[todo.sphereId] === undefined) { directCommands[todo.sphereId] = []; }
 
     directCommands[todo.sphereId].push(todo);
-    this._processCommand(todo, markAsInitialized);
   }
 
-  _extractMeshCommand(state, todo : batchCommandEntry, targetNetworkId, targetStoneId, markAsInitialized, directCommands: directCommands, meshNetworks : sphereMeshNetworks) {
+  _extractMeshCommand(state, todo : batchCommandEntry, targetNetworkId, targetStoneId, meshNetworks : sphereMeshNetworks) {
     let command = todo.command;
     let sphere = state.spheres[todo.sphereId]; if (!sphere) { return; }
     let stone  = sphere.stones[todo.stoneId];  if (!stone)  { return; }
     let stoneConfig = stone.config;
+
+    if (stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
+      return;
+    }
 
     // apply filter if required.
     if (targetNetworkId !== null) {
@@ -120,49 +123,30 @@ export class CommandManager {
     }
 
     // create the data fields for each sphere if they have not been created yet.
-    if (directCommands[todo.sphereId] === undefined) { directCommands[todo.sphereId] = []; }
     if (meshNetworks[todo.sphereId]   === undefined) { meshNetworks[todo.sphereId]   = {}; }
 
-    if (stoneConfig.meshNetworkId === null || stoneConfig.meshNetworkId === undefined) {
-      // handle this 1:1
-      directCommands[todo.sphereId].push(todo);
-      this._processCommand(todo, markAsInitialized);
+    // this is a function to ensure that we do not create a field in the meshNetwork
+    if (meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] === undefined) {
+      meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] = {
+        keepAlive:      [],
+        keepAliveState: [],
+        multiSwitch:    []
+      };
     }
-    else {
-      // this is a function to ensure that we do not create a field in the meshNetwork
-      if (meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] === undefined) {
-        meshNetworks[todo.sphereId][stoneConfig.meshNetworkId] = {
-          keepAlive:      [],
-          keepAliveState: [],
-          multiSwitch:    []
-        };
-      }
 
-      let payload = _getPayloadFromCommand(todo, stoneConfig);
-      switch (command.commandName) {
-        case 'keepAlive':
-          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAlive.push(payload);
-          break;
-        case 'keepAliveState':
-          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAliveState.push(payload);
-          break;
-        case 'multiSwitch':
-          meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
-          break;
-        default:
-          LOGe.info("CommandManager: Invalid command received. This should not happen!");
-      }
-
-      this._processCommand(todo, markAsInitialized);
-    }
-  }
-
-  _processCommand(todo, markAsInitialized) {
-    // If we mark this command as initialized it will be handled by the attemptHandler.
-    // This is required to avoid the cases where commands that are loaded while there is a pending process
-    // If that pending process fails, anything that was loaded during that time would be cancelled as well.
-    if (markAsInitialized === true) {
-      todo.initialized = true;
+    let payload = _getPayloadFromCommand(todo, stoneConfig);
+    switch (command.commandName) {
+      case 'keepAlive':
+        meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAlive.push(payload);
+        break;
+      case 'keepAliveState':
+        meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].keepAliveState.push(payload);
+        break;
+      case 'multiSwitch':
+        meshNetworks[todo.sphereId][stoneConfig.meshNetworkId].multiSwitch.push(payload);
+        break;
+      default:
+        LOGe.info("CommandManager: Invalid command received. This should not happen!");
     }
   }
 
@@ -173,33 +157,54 @@ export class CommandManager {
    * If only a targetStoneId is provided, the filter will allow only matching stoneIds
    *
    * @param targetStoneId     // database id of stone. If provided, we only put todos for this stone in the list.
-   * @param targetNetworkId   // Mesh network id of the Crownstone. If provided, we only put todos for this mesh network in the list.
-   * @param markAsInitialized   // When true, the commands that are returned will be marked as initialized by the extraction process.
-   * @returns {{directCommands: {}, meshNetworks: sphereMeshNetworks}}
+   * @returns directCommadns
    * @private
    */
-  extractTodo(state, targetStoneId : string = null, targetNetworkId : string = null, markAsInitialized = false) {
+  extractDirectCommands(state, targetStoneId : string = null, addMeshEnabledCommands = true) {
     // This will determine if there are high priority commands to filter for, and if so return only those. If not, returns all.
     let commandsToHandle = this._getCommandsToHandle(state);
 
     let directCommands : directCommands = {};
-    let meshNetworks : sphereMeshNetworks = {};
 
     let uuids = Object.keys(commandsToHandle);
     for (let i = 0; i < uuids.length; i++) {
       let todo = commandsToHandle[uuids[i]];
-
-      let command = todo.command;
-
-      if (this.isMeshEnabledCommand(command) === true && MapProvider.meshEnabled ) {
-        this._extractMeshCommand(state, todo, targetNetworkId, targetStoneId, markAsInitialized, directCommands, meshNetworks);
+      if (this.isMeshEnabledCommand(todo.command) && !addMeshEnabledCommands) {
+        continue;
       }
-      else {
-        this._extractDirectCommand(todo, targetStoneId, markAsInitialized, directCommands);
-      }
+
+      this._extractDirectCommand(todo, targetStoneId, directCommands);
     }
 
-    return { directCommands, meshNetworks };
+    return directCommands;
+  }
+
+  /**
+   *
+   * If a target network id is provided, the filter will only allow stones which match that id unless the stoneId specifically matches the targetStoneId
+   * If only a targetStoneId is provided, the filter will allow only matching stoneIds
+   *
+   * @param targetStoneId     // database id of stone. If provided, we only put todos for this stone in the list.
+   * @returns directCommadns
+   * @private
+   */
+  extractMeshCommands(state, targetStoneId : string = null, targetNetworkId : string = null) {
+    // This will determine if there are high priority commands to filter for, and if so return only those. If not, returns all.
+    let commandsToHandle = this._getCommandsToHandle(state);
+
+    let meshCommands : sphereMeshNetworks = {};
+
+    let uuids = Object.keys(commandsToHandle);
+    for (let i = 0; i < uuids.length; i++) {
+      let todo = commandsToHandle[uuids[i]];
+      if (!this.isMeshEnabledCommand(todo.command)) {
+        continue;
+      }
+
+      this._extractMeshCommand(state, todo,targetNetworkId, targetStoneId, meshCommands)
+    }
+
+    return meshCommands;
   }
 
   extractConnectionTargets(state) {
@@ -227,25 +232,32 @@ export class CommandManager {
         let allMembersInNetwork = MeshUtil.getStonesInNetwork(state, todo.sphereId, stone.config.meshNetworkId);
 
         for (let j = 0; j < allMembersInNetwork.length; j++) {
-          allRelayTargets[allMembersInNetwork[j].id] = true;
+          allRelayTargets[allMembersInNetwork[j].id] = todo.sphereId;
         }
       }
       else {
-        directTargets[todo.stoneId] = true;
+        directTargets[todo.stoneId] = todo.sphereId;
       }
     }
 
     let relayTargetIds = Object.keys(allRelayTargets);
     for ( let i = 0; i < relayTargetIds.length; i++ ) {
-      if (!directTargets[relayTargetIds[i]]) {
-        relayOnlyTargets[relayTargetIds[i]] = true;
+      let targetId = relayTargetIds[i];
+      if (!directTargets[targetId]) {
+        relayOnlyTargets[targetId] = allRelayTargets[targetId];
       }
     }
 
-    return { directTargets, relayOnlyTargets, sphereMap };
+    return { directTargets, relayOnlyTargets };
   }
 
 
+  /**
+   * This method will collect all commands we require from te current this.commands by taking high priority into account.
+   * @param state
+   * @returns {batchCommands}
+   * @private
+   */
   _getCommandsToHandle(state) : batchCommands {
     // this is the list we will iterate over and process.
     let todoList = this.commands;
@@ -338,7 +350,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   if (command.commandName === 'keepAlive') {
     payload = {
       attempts: batchCommand.attempts,
-      initialized: batchCommand.initialized,
+      timestamp: batchCommand.timestamp,
       options: batchCommand.options,
       cleanup: batchCommand.cleanup,
       promise: batchCommand.promise
@@ -347,7 +359,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   else if (command.commandName === 'keepAliveState') {
     payload = {
       attempts: batchCommand.attempts,
-      initialized: batchCommand.initialized,
+      timestamp: batchCommand.timestamp,
       options: batchCommand.options,
       handle: stoneConfig.handle,
       crownstoneId: stoneConfig.crownstoneId,
@@ -361,7 +373,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   else if (command.commandName === 'setSwitchState') {
     payload = {
       attempts: batchCommand.attempts,
-      initialized: batchCommand.initialized,
+      timestamp: batchCommand.timestamp,
       crownstoneId: stoneConfig.crownstoneId,
       options: batchCommand.options,
       handle: stoneConfig.handle,
@@ -374,7 +386,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
     payload = {
       stoneId: batchCommand.stoneId,
       attempts: batchCommand.attempts,
-      initialized: batchCommand.initialized,
+      timestamp: batchCommand.timestamp,
       crownstoneId: stoneConfig.crownstoneId,
       options: batchCommand.options,
       handle: stoneConfig.handle,

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { SideBar }  from './SideBar'
 import Drawer       from 'react-native-drawer';
-import { Scene, Router, Actions, DefaultRenderer } from 'react-native-router-flux';
+import { Scene, Router, Actions } from 'react-native-router-flux';
 import { styles, colors, screenWidth, screenHeight } from '../../styles'
 
 export class SideMenu extends Component<any, any> {
@@ -45,7 +45,7 @@ export class SideMenu extends Component<any, any> {
         tweenHandler={(ratio) => ({
           main: { opacity:Math.max(0.5,1-0.75*ratio) }
         })}>
-        <DefaultRenderer navigationState={children[0]} onNavigate={this.props.onNavigate} />
+        {/*<DefaultRenderer navigationState={children[0]} onNavigate={this.props.onNavigate} />*/}
       </Drawer>
     );
   }

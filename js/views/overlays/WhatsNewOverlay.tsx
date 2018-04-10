@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 
-import { OverlayBox }         from '../components/overlays/OverlayBox'
+import { OverlayBox }         from '../components/Overlays/OverlayBox'
 import { styles, colors, screenHeight, screenWidth, availableScreenHeight } from '../styles'
 import {eventBus} from "../../util/EventBus";
 const Swiper = require("react-native-swiper");
@@ -43,14 +43,14 @@ export class WhatsNewOverlay extends Component<any, any> {
 
   _getContent(width, height) {
     let content = [];
-    let size = {height: height-50, width: width};
+    let size = {height: height-10, width: width};
 
     if (Platform.OS === 'ios') {
       content.push(<Dimmer key="Dimmer"  {...size}/>);
-      // content.push(<Mesh key="Mesh"  {...size}/>);
+      content.push(<Mesh key="Mesh"  {...size}/>);
       content.push(<FirmwareUpdate key="FirmwareUpdate"  {...size}/>);
       content.push(<Locking key="Locking"  {...size}/>);
-      // content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
+      content.push(<BatteryImprovements key="BatteryImprovements"  {...size}/>);
     }
     if (Platform.OS === 'android') {
       content.push(<Dimmer key="Dimmer"  {...size} />);
@@ -70,14 +70,15 @@ export class WhatsNewOverlay extends Component<any, any> {
   }
 
   render() {
-    let height = 0.9 * availableScreenHeight;
-    let width = 0.85*screenWidth-35;
+    let height = Math.min(460, 0.9 * screenHeight);
+    let width = 0.85*screenWidth-30;
     return (
       <OverlayBox
         visible={this.state.visible}
         overrideBackButton={true}
         height={height}
         canClose={true}
+        style={{padding:0}}
         closeCallback={() => {
           this._closePopup()
         }}
@@ -85,13 +86,13 @@ export class WhatsNewOverlay extends Component<any, any> {
         <Text style={{
           fontSize: 18,
           fontWeight:'bold',
-          marginBottom:15,
           backgroundColor:'transparent',
           color:colors.csBlue.hex,
           marginTop:15,
+          marginBottom:25,
           overflow:'hidden'
         }}>Your app was updated!</Text>
-        <Swiper style={swiperStyles.wrapper} showsPagination={true} height={height-85} width={width}
+        <Swiper style={{}} showsPagination={true} height={height-80} width={width}
           dot={<View style={{backgroundColor: colors.menuBackground.rgba(0.15), width: 8, height: 8,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.menuBackground.rgba(0.2)}} />}
           activeDot={<View style={{backgroundColor: colors.white.rgba(1), width: 9, height: 9, borderRadius: 4.5, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, borderWidth:1, borderColor: colors.csOrange.rgba(1)}} />}
           loop={false}

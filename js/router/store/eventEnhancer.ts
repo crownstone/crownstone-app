@@ -188,6 +188,7 @@ function checkAction(action, affectedIds) {
     case 'USER_APPEND': // append means filling in the data without updating the cloud.
       eventStatus['changeUserData'] = affectedIds; break;
     case "SET_DEVELOPER_MODE":
+    case "SET_BETA_ACCESS":
     case "CHANGE_DEV_SETTINGS":
       eventStatus['changeUserDeveloperStatus'] = true; break;
     case "SET_LOGGING":

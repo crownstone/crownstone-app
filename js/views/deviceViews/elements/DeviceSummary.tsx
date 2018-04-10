@@ -18,7 +18,7 @@ import { colors, screenWidth, screenHeight } from '../../styles'
 import { Util }                from "../../../util/Util";
 import { Icon }                from "../../components/Icon";
 import { StoneUtil }           from "../../../util/StoneUtil";
-import { AnimatedCircle }      from "../../components/animated/AnimatedCircle";
+import { AnimatedCircle }      from "../../components/Animated/AnimatedCircle";
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { DimmerButton }        from "../../components/DimmerButton";
 import { INTENTS }             from "../../../native/libInterface/Constants";
@@ -225,10 +225,8 @@ export class DeviceSummary extends Component<any, any> {
     // stone.config.disabled = false
     let spherePermissions = Permissions.inSphere(this.props.sphereId);
 
-    let canChangeSettings = stone.config.applianceId ? spherePermissions.editAppliance : spherePermissions.editCrownstone;
-
-    let locationLabel = "Currently in Room:";
-    let locationName = "No";
+    let locationLabel = "Tap here to move me!";
+    let locationName = "Not in room";
     if (location) {
       locationLabel = "Located in:";
       locationName = location.config.name;
@@ -238,7 +236,7 @@ export class DeviceSummary extends Component<any, any> {
 
     return (
       <View style={{flex:1, paddingBottom: 35}}>
-        <DeviceInformation left={"Energy Consumption:"}
+        <DeviceInformation left={"Energy Usage:"}
                            leftValue={stone.state.currentUsage + ' W'}
                            right={locationLabel}
                            rightValue={locationName}
@@ -249,12 +247,7 @@ export class DeviceSummary extends Component<any, any> {
                              locationId: this.props.locationId,
                            }); } : null}
         />
-        <DeviceInformation left={stone.config.applianceId ? "Crownstone Name:" : "Connected Device:"}
-                           leftValue={stone.config.applianceId ? stone.config.name : 'None'}
-                           right={"Connected to Mesh:"} rightValue={stone.config.meshNetworkId ? 'Yes' : 'Not Yet'}
-                           leftTapAction={canChangeSettings ? () => { this._triggerApplianceSelection(stone); }  : null}
-        />
-        <View style={{flex:1}} />
+        <View style={{flex:2}} />
         <View style={{width:screenWidth, alignItems: 'center' }}>
           <DeviceButton
             store={this.props.store}
@@ -278,7 +271,7 @@ export class DeviceSummary extends Component<any, any> {
 export class DeviceButton extends Component<{store: any, sphereId: string, stoneId: string, eventBus: EventBusClass, callback(any): void}, any> {
   unsubscribeStoreEvents;
 
-  componentWillMount() {
+  componentDidMount() {
     // tell the component exactly when it should redraw
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
@@ -345,7 +338,7 @@ export class DeviceInformation extends Component<any, any> {
         <View style={{width:screenWidth, flexDirection:'row', paddingLeft:10, paddingRight:10}}>
           {this.props.leftTapAction ?  <TouchableOpacity onPress={this.props.leftTapAction}><Text style={deviceStyles.text}>{this.props.leftValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.leftValue}</Text>}
           <View style={{flex:1}} />
-          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction}><Text style={deviceStyles.text}>{this.props.rightValue}</Text></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
+          {this.props.rightTapAction ? <TouchableOpacity onPress={this.props.rightTapAction} style={{flexDirection:'row'}}><Text style={deviceStyles.clickableTexct}>{this.props.rightValue}</Text><Icon name={"md-log-in"} size={20} color={colors.white.hex} style={{paddingLeft:5}} /></TouchableOpacity> : <Text style={deviceStyles.text}>{this.props.rightValue}</Text>}
         </View>
       </View>
     )
@@ -359,6 +352,11 @@ let deviceStyles = StyleSheet.create({
     color: textColor.hex,
     fontSize: 18,
     fontWeight:'600'
+  },
+  clickableTexct: {
+    color: textColor.hex,
+    fontSize: 18,
+    fontWeight:'600',
   },
   subText: {
     color: textColor.rgba(0.5),

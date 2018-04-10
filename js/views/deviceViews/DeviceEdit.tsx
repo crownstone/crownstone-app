@@ -22,7 +22,7 @@ import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { FadeInView } from '../components/animated/FadeInView'
+import { FadeInView } from '../components/Animated/FadeInView'
 import {LOG, LOGe} from '../../logging/Log'
 import {DIMMING_ENABLED} from "../../ExternalConfig";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
@@ -33,9 +33,25 @@ import {StoneUtil} from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
 import {BackAction} from "../../util/Back";
 import {Scheduler} from "../../logic/Scheduler";
+import {CancelButton} from "../components/Topbar/CancelButton";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
 
 
 export class DeviceEdit extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    return {
+      title: "Edit Device",
+      headerLeft: <CancelButton onPress={BackAction} />,
+      headerRight: <TopbarButton
+        text={"Save"}
+        onPress={() => {
+          params.rightAction ? params.rightAction() : () => {}
+        }}
+      />
+    }
+  };
+
   deleting : boolean = false;
   unsubscribeStoreEvents : any;
 
@@ -66,6 +82,8 @@ export class DeviceEdit extends Component<any, any> {
 
       gettingFirmwareVersion: false
     };
+
+    this.props.navigation.setParams({rightAction: () => { this._updateCrownstone();}})
   }
 
   componentDidMount() {
@@ -527,17 +545,7 @@ export class DeviceEdit extends Component<any, any> {
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
 
     return (
-      <Background hideInterface={true} image={backgroundImage}>
-        <TopBar
-          notBack={true}
-          left={'Cancel'}
-          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
-          leftAction={ Actions.pop }
-          right={'Save'}
-          rightStyle={{fontWeight: 'bold'}}
-          rightAction={ () => { this._updateCrownstone(); }}
-          title="Edit Device"
-        />
+      <Background hasNavBar={false} image={backgroundImage}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
         <ScrollView>
           <ListEditableItems items={options} separatorIndent={true}/>

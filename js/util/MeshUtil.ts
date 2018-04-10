@@ -91,6 +91,33 @@ export const MeshUtil = {
     if (actions.length > 0) {
       store.batchDispatch(actions);
     }
+  },
+
+  clearTopology(store, sphereId = null) {
+    LOGi.mesh("MeshUtil: Clearing the mesh topology.");
+    const state = store.getState();
+    let actions = [];
+
+    let getClearMeshTopologyActionsInSphere = (sphereId) => {
+      let sphere = state.spheres[sphereId];
+      let stoneIds = Object.keys(sphere.stones);
+      stoneIds.forEach((stoneId) => {
+        actions.push({type:'CLEAR_MESH_TOPOLOGY', sphereId: sphereId, stoneId: stoneId})
+      })
+    }
+    if (sphereId) {
+      getClearMeshTopologyActionsInSphere(sphereId);
+    }
+    else {
+      let sphereIds = Object.keys(state.spheres);
+      sphereIds.forEach((sphereId) => {
+        getClearMeshTopologyActionsInSphere(sphereId);
+      })
+    }
+
+    if (actions.length > 0) {
+      store.batchDispatch(actions);
+    }
   }
 
 };

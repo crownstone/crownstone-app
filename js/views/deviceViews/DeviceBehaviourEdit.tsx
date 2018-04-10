@@ -41,6 +41,12 @@ timeOptionsV2.push({label: '15 minutes',   value: 900});
 timeOptionsV2.push({label: '30 minutes',   value: 1800});
 
 export class DeviceBehaviourEdit extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Behaviour",
+    }
+  };
+
   detectionTimeout : any;
   unsubscribeNative : any;
   unsubscribe : any;
@@ -424,7 +430,7 @@ export class DeviceBehaviourEdit extends Component<any, any> {
 
     let backgroundImage = this.props.getBackground('menu', this.props.viewingRemotely);
     return (
-      <Background image={backgroundImage} >
+      <Background hasNavBar={false} image={backgroundImage} >
         <ScrollView>
           <ListEditableItems items={options} separatorIndent={true} />
         </ScrollView>

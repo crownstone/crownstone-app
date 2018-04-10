@@ -12,14 +12,16 @@ export class MeshHelper {
   sphereId : any;
   meshNetworkId : any;
   meshInstruction : meshTodo;
+  connectedCrownstoneId : string;
   targets : any;
   _containedInstructions : any[] = [];
   activeOptions : batchCommandEntryOptions = {};
 
-  constructor(sphereId, meshNetworkId, meshInstruction : meshTodo) {
+  constructor(sphereId, meshNetworkId, meshInstruction : meshTodo, connectedCrownstoneId: string) {
     this.sphereId = sphereId;
     this.meshNetworkId = meshNetworkId;
     this.meshInstruction = meshInstruction;
+    this.connectedCrownstoneId = connectedCrownstoneId;
   }
 
   performAction() {
@@ -38,8 +40,10 @@ export class MeshHelper {
     return actionPromise
       .then((result) => {
         this._containedInstructions.forEach((instruction) => {
-          instruction.promise.resolve(result);
-          instruction.cleanup();
+          if (instruction.stoneId === this.connectedCrownstoneId) {
+            instruction.promise.resolve(result);
+            instruction.cleanup();
+          }
         })
       })
   }

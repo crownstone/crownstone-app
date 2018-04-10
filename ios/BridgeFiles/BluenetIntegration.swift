@@ -1151,6 +1151,21 @@ open class BluenetJS: RCTEventEmitter {
     }
   }
   
+  @objc func meshSetTime(_ time: NSNumber, callback: @escaping RCTResponseSenderBlock) -> Void {
+    LOGGER.info("BluenetBridge: Called meshSetTime")
+    GLOBAL_BLUENET!.bluenet.mesh.batchCommand(crownstoneIds: [], commandPacket: ControlPacketsGenerator.getSetTimePacket(time.uint32Value))
+      .then{_ in callback([["error" : false]])}
+      .catch{err in
+        if let bleErr = err as? BleError {
+          callback([["error" : true, "data": getBleErrorString(bleErr)]])
+        }
+        else {
+          callback([["error" : true, "data": "UNKNOWN ERROR IN meshSetTime"]])
+        }
+    }
+  }
+  
+  
   
   
   @objc func viewsInitialized() {

@@ -13,10 +13,10 @@ import {
 
 import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
 import { STONE_TYPES }           from '../../router/store/reducers/stones'
-import { AlternatingContent }   from '../components/animated/AlternatingContent'
+import { AlternatingContent }   from '../components/Animated/AlternatingContent'
 import { Background }           from '../components/Background'
-import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
-import { SetupDeviceEntry }     from '../components/deviceEntries/SetupDeviceEntry'
+import { DeviceEntry }          from '../components/DeviceEntries/DeviceEntry'
+import { SetupDeviceEntry }     from '../components/DeviceEntries/SetupDeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { INTENTS }              from '../../native/libInterface/Constants'
 import { TopBar }               from '../components/Topbar'
@@ -35,14 +35,37 @@ import {
 } from '../../util/DataUtil'
 import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
-import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
+import {DfuDeviceEntry}  from '../components/DeviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
 import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {SphereDeleted} from "../static/SphereDeleted";
+import {RoomDeleted} from "../static/RoomDeleted";
 
 
 export class RoomOverview extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    let paramsToUse = params;
+    if (!params.title) {
+      if (NAVBAR_PARAMS_CACHE !== null) {
+        paramsToUse = NAVBAR_PARAMS_CACHE;
+      }
+      else {
+        paramsToUse = getNavBarParams(params.store.getState(), params, true);
+      }
+    }
+
+    return {
+      title: paramsToUse.title,
+      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>
+    }
+  };
+
+
   unsubscribeStoreEvents : any;
   unsubscribeSetupEvents : any;
   viewingRemotely : boolean;
@@ -52,7 +75,8 @@ export class RoomOverview extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = {pendingRequests:{}, scrollViewHeight: new Animated.Value(screenHeight-tabBarHeight-topBarHeight-100)};
+
+    let initialState = {pendingRequests:{}, scrollViewHeight:null};
     this.unsubscribeSetupEvents = [];
 
     this.viewingRemotely = true;
@@ -61,20 +85,24 @@ export class RoomOverview extends Component<any, any> {
     this.nearestStoneIdInSphere = undefined;
     this.nearestStoneIdInRoom = undefined;
 
-  }
-
-  componentWillMount() {
-    let state = this.props.store.getState();
-    let stonesInRoom = getStonesAndAppliancesInLocation(state, this.props.sphereId, this.props.locationId);
+    let state = props.store.getState();
+    let stonesInRoom = getStonesAndAppliancesInLocation(state, props.sphereId, props.locationId);
     let {stoneArray, ids} = this._getStoneList(stonesInRoom);
     if (SetupStateHandler.areSetupStonesAvailable()) {
       if (stoneArray.length === 0) {
-        this.state.scrollViewHeight.setValue(screenHeight - tabBarHeight - topBarHeight - 100 - 60 - 60);
+        initialState.scrollViewHeight = new Animated.Value(screenHeight - tabBarHeight - topBarHeight - 100 - 60 - 60);
       }
       else {
-        this.state.scrollViewHeight.setValue(screenHeight - tabBarHeight - topBarHeight - 100 - 60);
+        initialState.scrollViewHeight = new Animated.Value(screenHeight - tabBarHeight - topBarHeight - 100 - 60);
       }
     }
+    else {
+      initialState.scrollViewHeight = new Animated.Value(screenHeight-tabBarHeight-topBarHeight-100);
+    }
+
+    this.state = initialState;
+
+    this._updateNavBar();
   }
 
   componentDidMount() {
@@ -98,7 +126,9 @@ export class RoomOverview extends Component<any, any> {
 
       if (change.removeLocation && change.removeLocation.locationIds[this.props.locationId] ||
           change.removeSphere   && change.removeSphere.sphereIds[this.props.sphereId]) {
-        BackAction();
+        if (Actions.currentScene === "roomOverview") {
+          this.forceUpdate()
+        }
         return;
       }
 
@@ -115,6 +145,7 @@ export class RoomOverview extends Component<any, any> {
         (change.changeStones)
       ) {
         this.forceUpdate();
+        this._updateNavBar();
         return;
       }
 
@@ -136,6 +167,7 @@ export class RoomOverview extends Component<any, any> {
 
     // we keep open a connection for a few seconds to await a second command
     BatchCommandHandler.closeKeptOpenConnection();
+    NAVBAR_PARAMS_CACHE = null;
   }
 
   _renderer(item, index, stoneId) {
@@ -243,100 +275,27 @@ export class RoomOverview extends Component<any, any> {
     return { stoneArray, ids };
   }
 
-  /**
-   * The right item is the flickering icon for localization.
-   * @param state
-   * @param enoughCrownstones
-   * @param label
-   */
-  _getRightItem(state, enoughCrownstones, label) {
-    if (!state.app.indoorLocalizationEnabled) { return; } // do not show localization if it is disabled
-    if (this.props.locationId === null)       { return; } // floating crownstones do not have settings
-    if (this.viewingRemotely === true)        { return; } // cant train a room when not in the sphere
-    if (!enoughCrownstones)                   { return; } // not enough crownstones to train this room
 
-    let location = state.spheres[this.props.sphereId].locations[this.props.locationId];
-    if (location.config.fingerPrintRaw !== null) { return; } // there already is a fingerprint, dont show animated training icon.
-
-    // this will show a one-time popup for localization
-    if (state.user.seenRoomFingerprintAlert !== true) {
-      let aiName = state.spheres[this.props.sphereId].config.aiName;
-      this.props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
-      Alert.alert(
-        "Lets teach " + aiName + " how to identify this room!",
-        "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
-        [{text: "OK"}]
-      );
-    }
-
-    let iconSize = 25;
-    return (
-      <AlternatingContent
-        style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
-        fadeDuration={500}
-        switchDuration={2000}
-        contentArray={[
-          <View style={[styles.centered, {
-            width:iconSize,
-            height:iconSize, borderRadius:iconSize*0.5,
-            borderWidth:2,
-            borderColor:'#fff',
-            backgroundColor:colors.iosBlue.hex}]} >
-            <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
-          </View>,
-          <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.rightStyle]}>{ label }</Text>
-        ]} />
-    );
-  }
-
-  _getTopBar(state) {
-    let title = undefined;
-    let enoughCrownstones = enoughCrownstonesForIndoorLocalization(state, this.props.sphereId);
-    if (this.props.locationId !== null) {
-      title = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name;
-    }
-    else {
-      title = "Floating Crownstones";
-    }
-
-    let rightLabel = undefined;
-    let rightAction = () => { };
-    let spherePermissions = Permissions.inSphere(this.props.sphereId);
-
-    if (spherePermissions.editRoom === true && this.props.locationId !== null) {
-      rightLabel = 'Edit';
-      rightAction = () => { Actions.roomEdit({sphereId: this.props.sphereId, locationId: this.props.locationId}); };
-    }
-    else if (spherePermissions.editRoom === false && this.props.locationId !== null && enoughCrownstones === true) {
-      rightLabel = 'Train';
-      rightAction = () => {
-        if (this.viewingRemotely === true) {
-          Alert.alert("You're not in the Sphere", "Training is only possible if you're in the Sphere. Try again when you are.", [{text:"OK"}])
-        }
-        else {
-          Actions.roomTraining_roomSize({sphereId: this.props.sphereId, locationId: this.props.locationId});
-        }
-      };
-    }
-
-    return (
-      <TopBar
-        title={ title }
-        right={ rightLabel }
-        rightItem={ this._getRightItem(state, enoughCrownstones, rightLabel) }
-        rightAction={ rightAction }
-        leftAction={ () => { BackAction(); }}
-      />
-    );
+  _updateNavBar() {
+    let state = this.props.store.getState();
+    let params = getNavBarParams(state, this.props, this.viewingRemotely);
+    this.props.navigation.setParams(params)
   }
 
   render() {
     const store = this.props.store;
     const state = store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return <SphereDeleted/> }
+    let location = null;
+    if (this.props.locationId) {
+      location = sphere.locations[this.props.locationId];
+      if (!location) { return <RoomDeleted /> }
+    }
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
     let seeStoneInDfuMode = DfuStateHandler.areDfuStonesAvailable();
-    this.viewingRemotely = state.spheres[this.props.sphereId].config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
+    this.viewingRemotely = sphere.config.present === false && seeStoneInSetupMode !== true && seeStoneInDfuMode !== true;
 
     let usage  = getCurrentPowerUsageInLocation(state, this.props.sphereId, this.props.locationId);
     let users  = getPresentUsersInLocation(state, this.props.sphereId, this.props.locationId);
@@ -375,8 +334,7 @@ export class RoomOverview extends Component<any, any> {
     }
 
     return (
-      <Background hideTopBar={true} image={backgroundImage}>
-        { this._getTopBar(state) }
+      <Background image={backgroundImage}>
         <RoomBanner
           presentUsers={users}
           noCrownstones={amountOfStonesInRoom === 0}
@@ -427,6 +385,88 @@ export class RoomOverview extends Component<any, any> {
   }
 }
 
+
+/**
+ * The right item is the flickering icon for localization.
+ * @param state
+ * @param enoughCrownstones
+ * @param label
+ */
+function getNavBarRightItem(state, enoughCrownstones, label, props, viewingRemotely) {
+  if (!state.app.indoorLocalizationEnabled) { return; } // do not show localization if it is disabled
+  if (props.locationId === null)            { return; } // floating crownstones do not have settings
+  if (viewingRemotely === true)             { return; } // cant train a room when not in the sphere
+  if (!enoughCrownstones)                   { return; } // not enough crownstones to train this room
+
+  let location = state.spheres[props.sphereId].locations[props.locationId];
+  if (location.config.fingerPrintRaw !== null) { return; } // there already is a fingerprint, dont show animated training icon.
+
+  // this will show a one-time popup for localization
+  if (state.user.seenRoomFingerprintAlert !== true) {
+    let aiName = state.spheres[props.sphereId].config.aiName;
+    props.store.dispatch({type: 'USER_SEEN_ROOM_FINGERPRINT_ALERT', data: {seenRoomFingerprintAlert: true}});
+    Alert.alert(
+      "Lets teach " + aiName + " how to identify this room!",
+      "Tap the flashing icon in the top right corner to go the edit menu and tap the button 'Teach " + aiName + " to find you!'.",
+      [{text: "OK"}]
+    );
+  }
+
+  let iconSize = 25;
+  return (
+    <AlternatingContent
+      style={{flex:1, width:60, height:42, justifyContent:'center', alignItems:'flex-end'}}
+      fadeDuration={500}
+      switchDuration={2000}
+      contentArray={[
+        <View style={[styles.centered, {
+          width:iconSize,
+          height:iconSize, borderRadius:iconSize*0.5,
+          borderWidth:2,
+          borderColor:'#fff',
+          backgroundColor:colors.iosBlue.hex}]} >
+          <Icon name="c1-locationPin1" color="#fff" size={15} style={{backgroundColor:'transparent'}} />
+        </View>,
+        <Text style={[topBarStyle.topBarRight, topBarStyle.text, props.rightStyle]}>{ label }</Text>
+      ]} />
+  );
+}
+
+function getNavBarParams(state, props, viewingRemotely) {
+  let title = undefined;
+  let enoughCrownstones = enoughCrownstonesForIndoorLocalization(state, props.sphereId);
+  if (props.locationId !== null) {
+    title = state.spheres[props.sphereId].locations[props.locationId].config.name;
+  }
+  else {
+    title = "Floating";
+  }
+
+  let rightLabel = undefined;
+  let rightAction = () => { };
+  let spherePermissions = Permissions.inSphere(props.sphereId);
+
+  if (spherePermissions.editRoom === true && props.locationId !== null) {
+    rightLabel = 'Edit';
+    rightAction = () => { Actions.roomEdit({sphereId: props.sphereId, locationId: props.locationId}); };
+  }
+  else if (spherePermissions.editRoom === false && props.locationId !== null && enoughCrownstones === true) {
+    rightLabel = 'Train';
+    rightAction = () => {
+      if (viewingRemotely === true) {
+        Alert.alert("You're not in the Sphere", "Training is only possible if you're in the Sphere. Try again when you are.", [{text:"OK"}])
+      }
+      else {
+        Actions.roomTraining_roomSize({sphereId: props.sphereId, locationId: props.locationId});
+      }
+    };
+  }
+
+  NAVBAR_PARAMS_CACHE = {title: title, rightItem: getNavBarRightItem(state, enoughCrownstones, rightLabel, props, viewingRemotely), rightAction: rightAction, rightLabel: rightLabel}
+  return NAVBAR_PARAMS_CACHE;
+}
+
+let NAVBAR_PARAMS_CACHE = null;
 
 
 export const topBarStyle = StyleSheet.create({

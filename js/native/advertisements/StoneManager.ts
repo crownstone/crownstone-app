@@ -33,7 +33,7 @@ class StoneManagerClass {
 
   loadStore(store) {
     if (this._initialized === false) {
-      LOGi.native("StoneManager: loadStore");
+      LOGi.native("StoreManager: loadStore");
       this.store = store;
       this.storeManager = new StoneStoreManager(store);
       this._init();
@@ -242,11 +242,12 @@ class StoneManagerClass {
     let stoneFromServiceData   = state.spheres[advertisement.referenceId].stones[referenceByCrownstoneId.id];
     let stoneFromAdvertisement = state.spheres[advertisement.referenceId].stones[referenceByHandle.id];
 
-    if (serviceData.stateOfExternalCrownstone === true && MapProvider.meshEnabled) {
+    if (serviceData.stateOfExternalCrownstone === true) {
       this._resolveMeshNetworkIds(sphereId, stoneFromServiceData, referenceByCrownstoneId.id, stoneFromAdvertisement, referenceByHandle.id);
 
       this.entities[referenceByCrownstoneId.id].handleContentViaMesh(stoneFromServiceData, advertisement);
-      this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(stoneFromAdvertisement, advertisement);
+      this.entities[referenceByHandle.id].handleAdvertisementOfExternalCrownstone(stoneFromAdvertisement, advertisement, referenceByCrownstoneId.id);
+
     }
     else {
       this.entities[referenceByCrownstoneId.id].handleDirectAdvertisement(stoneFromAdvertisement, advertisement);

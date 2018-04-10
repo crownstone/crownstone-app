@@ -11,7 +11,7 @@ import {
 import { LOG }                                        from '../../logging/Log'
 import { BlePromiseManager }                          from '../../logic/BlePromiseManager'
 import { addDistanceToRssi, Util }                    from '../../util/Util'
-import { OverlayBox }                                 from '../components/overlays/OverlayBox'
+import { OverlayBox }                                 from '../components/Overlays/OverlayBox'
 import { eventBus }                                   from '../../util/EventBus'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
 

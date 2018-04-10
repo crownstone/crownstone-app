@@ -4,12 +4,10 @@ const DeviceInfo = require('react-native-device-info');
 
 export const deviceModel = DeviceInfo.getModel()
 
-
-
 export const topBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
 export const tabBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
-export const tabBarHeight    = (Platform.OS === 'android' ? 0  :  (deviceModel === 'iPhone X' ? 50 : 50));
-export const statusBarHeight = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 20 : 20); // Status bar in iOS is 20 high
+export const tabBarHeight    = (Platform.OS === 'android' ? 0  :  (deviceModel === 'iPhone X' ? 49 +34: 49));
+export const statusBarHeight = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 44 : 20); // Status bar in iOS is 20 high
 export const topBarHeight    = Platform.OS === 'android' ? 54  :  (deviceModel === 'iPhone X' ? 44 : 44 ) + statusBarHeight; // Status bar in iOS is 20 high
 
 export const screenWidth = Dimensions.get('window').width;
@@ -31,6 +29,8 @@ export let colors : any = {
   darkBackground: {hex:'#4f6b84'},
   csBlue: {hex:'#003E52'},
   csOrange: {hex:'#ff8400'},
+  darkCsOrange: {hex:'#d97500'},
+  lightCsOrange: {hex:'#ffa94d'},
   menuBackground: {hex:'#00263e'},
   menuBackgroundDarker: {hex:'#001122'},
   menuText: {hex:'#fff'},
@@ -48,6 +48,7 @@ export let colors : any = {
   blue: {hex:'#0075c9'},
   blue2: {hex:'#2698e9'},
   green: {hex:'#a0eb58'},
+  lightGreen: {hex:'#caff91'},
   darkGreen: {hex:'#1f4c43'},
   green2: {hex:'#4cd864'},
   orange: {hex:'#ff953a'},
@@ -115,7 +116,7 @@ export const styles = StyleSheet.create({
   },
   listView: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white.hex,
     paddingLeft:15,
     paddingRight:15,
     alignItems: 'center',
@@ -123,6 +124,7 @@ export const styles = StyleSheet.create({
   listText:{
     width:(1/3)*screenWidth,
     fontSize: 16,
+    backgroundColor: colors.white.hex
   },
   listTextLarge:{
     flex:10,
@@ -222,4 +224,3 @@ export const styles = StyleSheet.create({
     fontSize: 10,
   }
 });
-

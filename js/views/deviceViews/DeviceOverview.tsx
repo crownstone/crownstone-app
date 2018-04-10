@@ -34,12 +34,37 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
 import {BackAction} from "../../util/Back";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
+import {DeviceSmartBehaviour} from "./elements/smartBehaviour/DeviceSmartBehaviour";
+import {topBarStyle} from "../roomViews/RoomOverview";
+import {enoughCrownstonesForIndoorLocalization} from "../../util/DataUtil";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {SphereDeleted} from "../static/SphereDeleted";
+import {StoneDeleted} from "../static/StoneDeleted";
 
 Swiper.prototype.componentWillUpdate = (nextProps, nextState) => {
   eventBus.emit("setNewSwiperIndex", nextState.index);
 };
 
 export class DeviceOverview extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    let paramsToUse = params;
+    if (!params.title) {
+      if (NAVBAR_PARAMS_CACHE !== null) {
+        paramsToUse = NAVBAR_PARAMS_CACHE;
+      }
+      else {
+        paramsToUse = getNavBarParams(params.store.getState(), params, 0, false);
+      }
+    }
+
+    return {
+      title: paramsToUse.title,
+      headerRight: <TopbarButton text={paramsToUse.rightLabel} onPress={paramsToUse.rightAction} item={paramsToUse.rightItem}/>
+    }
+  };
+
   unsubscribeStoreEvents : any;
   unsubscribeSwiperEvents : any = [];
   touchEndTimeout: any;
@@ -53,6 +78,7 @@ export class DeviceOverview extends Component<any, any> {
     this.unsubscribeSwiperEvents.push(eventBus.on("setNewSwiperIndex", (nextIndex) => {
       if (this.state.swiperIndex !== nextIndex) {
         this.setState({swiperIndex: nextIndex, scrolling: false});
+        this._updateNavBar(nextIndex, false);
       }
     }));
     this.unsubscribeSwiperEvents.push(eventBus.on("UIGestureControl", (panAvailable) => {
@@ -65,9 +91,7 @@ export class DeviceOverview extends Component<any, any> {
         this.setState({swipeEnabled: false});
       }
     }));
-  }
 
-  componentWillMount() {
     const state = this.props.store.getState();
     const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
     if (stone.config.firmwareVersionSeenInOverview === null) {
@@ -92,14 +116,14 @@ export class DeviceOverview extends Component<any, any> {
         (change.removeSphere && change.removeSphere.sphereIds[this.props.sphereId]) ||
         (change.removeStone  && change.removeStone.stoneIds[this.props.stoneId])
        ) {
-        BackAction();
+        this.forceUpdate();
         return;
       }
 
       let stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
 
       if (!stone || !stone.config) {
-        BackAction();
+        this.forceUpdate();
         return;
       }
 
@@ -116,6 +140,7 @@ export class DeviceOverview extends Component<any, any> {
         applianceId && change.updateApplianceBehaviour && change.updateApplianceBehaviour.applianceIds[applianceId]
         ) {
           this.forceUpdate();
+          this._updateNavBar(this.state.swiperIndex, false);
         }
     });
   }
@@ -149,22 +174,25 @@ export class DeviceOverview extends Component<any, any> {
         });
       }
     }
+
+    NAVBAR_PARAMS_CACHE = null;
+  }
+
+  _updateNavBar(swiperIndex, scrolling) {
+    let state = this.props.store.getState();
+    let params = getNavBarParams(state, this.props, swiperIndex, scrolling);
+    this.props.navigation.setParams(params)
   }
 
 
   render() {
     const state = this.props.store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
-    const element = Util.data.getElement(state.spheres[this.props.sphereId], stone);
-    let hasAppliance = stone.config.applianceId !== null;
-
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return <SphereDeleted/> }
+    const stone = sphere.stones[this.props.stoneId];
+    if (!stone) { return <StoneDeleted/> }
     let summaryIndex = 0;
-    let behaviourIndex = summaryIndex + 1;
-
     this.summaryIndex = summaryIndex;
-
-    let spherePermissions = Permissions.inSphere(this.props.sphereId);
-
 
     let whatsNewEnabledFirmwares = {
       '2.0.0': true,
@@ -195,47 +223,16 @@ export class DeviceOverview extends Component<any, any> {
       hasScheduler    = false;
     }
 
-    // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
-    if (!hasError && !mustUpdate) {
-      if (showWhatsNew) { summaryIndex++; behaviourIndex++; }
-      if (canUpdate)    { summaryIndex++; behaviourIndex++; }
-    }
-
 
     let checkScrolling = (newState) => {
       if (this.state.scrolling !== newState) {
+        this._updateNavBar(this.state.swiperIndex, newState);
         this.setState({scrolling: newState});
       }
     };
 
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
-        <TopBar
-          leftAction={() => { BackAction(); }}
-          rightItem={this.state.scrolling ? this._getScrollingElement() : undefined}
-          right={() => {
-            switch (this.state.swiperIndex) {
-              case summaryIndex:
-                return (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) ? 'Edit' : undefined;
-              case behaviourIndex:
-                return (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) ? 'Change' : undefined;
-            }
-          }}
-          rightAction={() => {
-            switch (this.state.swiperIndex) {
-              case summaryIndex:
-                if ((hasAppliance && spherePermissions.editAppliance) || (!hasAppliance && spherePermissions.editCrownstone)) {
-                  Actions.deviceEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId})
-                }
-                break;
-              case behaviourIndex:
-                if (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
-                  Actions.deviceBehaviourEdit({sphereId: this.props.sphereId, stoneId: this.props.stoneId});
-                }
-                break;
-            }
-          }}
-          title={element.config.name} />
+      <Background image={this.props.backgrounds.detailsDark}>
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <Swiper
           style={swiperStyles.wrapper}
@@ -248,7 +245,7 @@ export class DeviceOverview extends Component<any, any> {
           scrollEnabled={this.state.swipeEnabled}
           bounces={true}
           loadMinimal={false}
-          onScrollBeginDrag={  () => { checkScrolling(true);  }}
+          onScrollBeginDrag={ () => { checkScrolling(true);  }}
           onTouchEnd={() => { this.touchEndTimeout = setTimeout(() => { checkScrolling(false); }, 400);  }}
         >
           { this._getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stone.config) }
@@ -257,14 +254,6 @@ export class DeviceOverview extends Component<any, any> {
     )
   }
 
-  _getScrollingElement() {
-    // ios props
-    return (
-      <View style={{ flex:1, alignItems:'flex-end', justifyContent:'center', paddingTop: 0 }}>
-        <ActivityIndicator animating={true} size='small' color={colors.iosBlue.hex} />
-      </View>
-    )
-  }
 
   _getContent(hasError, canUpdate, mustUpdate, hasBehaviour, hasPowerMonitor, hasScheduler, showWhatsNew, deviceType, stoneConfig) {
     let content = [];
@@ -313,6 +302,77 @@ export class DeviceOverview extends Component<any, any> {
     return content;
   }
 }
+
+
+function getNavBarParams(state, props, swiperIndex, scrolling) {
+  const stone = state.spheres[props.sphereId].stones[props.stoneId];
+  const element = Util.data.getElement(state.spheres[props.sphereId], stone);
+
+  let hasAppliance = stone.config.applianceId !== null;
+  let summaryIndex = 0;
+  let behaviourIndex = summaryIndex + 1;
+
+  let spherePermissions = Permissions.inSphere(props.sphereId);
+
+  let whatsNewEnabledFirmwares = {
+    '2.0.0': true,
+    '2.0.1': true,
+  }
+  let showWhatsNew = Permissions.inSphere(props.sphereId).canUpdateCrownstone &&
+    stone.config.firmwareVersionSeenInOverview &&
+    (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
+    whatsNewEnabledFirmwares[stone.config.firmwareVersion];
+
+  // check what we want to show the user:
+  let hasError   = stone.errors.hasError;
+  let mustUpdate = Util.versions.canIUse(stone.config.firmwareVersion, MINIMUM_REQUIRED_FIRMWARE_VERSION) === false;
+  let canUpdate  = Permissions.inSphere(props.sphereId).canUpdateCrownstone && Util.versions.canUpdate(stone, state) && stone.config.disabled === false;
+
+  // if this stone requires to be dfu-ed to continue working, block all other actions.
+  if (stone.config.dfuResetRequired) {
+    canUpdate = true;
+    hasError  = false;
+  }
+
+  // only shift the indexes (move the edit button to the next pages) if we do not have a mandatory view
+  if (!hasError && !mustUpdate) {
+    if (showWhatsNew) { summaryIndex++; behaviourIndex++; }
+    if (canUpdate)    { summaryIndex++; behaviourIndex++; }
+  }
+
+
+  let rightLabel = null;
+  let rightItem  = null;
+  let rightAction = null;
+  switch (swiperIndex) {
+    case summaryIndex:
+      if (hasAppliance ? spherePermissions.editAppliance : spherePermissions.editCrownstone) {
+        rightLabel = 'Edit';
+        rightAction = () => {Actions.deviceEdit({sphereId: props.sphereId, stoneId: props.stoneId})};
+      }
+      break;
+    case behaviourIndex:
+      if (spherePermissions.changeBehaviour && state.app.indoorLocalizationEnabled) {
+        rightLabel = 'Change';
+        rightAction = () => {Actions.deviceBehaviourEdit({sphereId: props.sphereId, stoneId: props.stoneId});}
+      }
+      break;
+  }
+
+  if (scrolling) {
+    rightItem = (
+      <View style={{ flex:1, alignItems:'flex-end', justifyContent:'center', paddingTop: 0 }}>
+        <ActivityIndicator animating={true} size='small' color={colors.iosBlue.hex} />
+      </View>
+    )
+  }
+
+  NAVBAR_PARAMS_CACHE = {title: element.config.name, rightLabel: rightLabel, rightAction: rightAction, rightItem: rightItem}
+  return NAVBAR_PARAMS_CACHE;
+}
+
+let NAVBAR_PARAMS_CACHE = null;
+
 
 let swiperStyles = StyleSheet.create({
   wrapper: {

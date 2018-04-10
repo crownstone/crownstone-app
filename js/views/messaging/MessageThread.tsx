@@ -27,12 +27,6 @@ import {BackAction} from "../../util/Back";
 
 export class MessageThread extends Component<any, any> {
 
-  componentWillMount() {}
-
-  componentDidMount() {}
-
-  componentWillUnmount() {}
-
   _getLabel(recipients) {
     let label = recipients[0];
     for (let i = 1; i < recipients.length - 1; i++) {
@@ -154,7 +148,7 @@ export class MessageThread extends Component<any, any> {
     let label = this._getLabel(recipientArray);
 
     return (
-      <Background image={this.props.backgrounds.detailsDark} hideTopBar={true}>
+      <Background image={this.props.backgrounds.detailsDark} hasNavBar={false}>
         <TopBar
           leftAction={() => { BackAction(); }}
           title={ message.config.everyoneInSphere ? 'Found in ' + locationName : 'Found in the ' + locationName }

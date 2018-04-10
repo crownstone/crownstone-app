@@ -16,7 +16,7 @@ import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import { styles, colors } from '../styles'
+import {styles, colors, screenWidth} from '../styles'
 import {Util} from "../../util/Util";
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 import {KEEPALIVE_INTERVAL} from "../../ExternalConfig";
@@ -25,6 +25,10 @@ import {LocationHandler} from "../../native/localization/LocationHandler";
 
 
 export class SettingsApp extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "App Settings" }
+  };
+
   unsubscribe : any;
   initialKeepAliveState = false;
   triggerTapToToggleCalibration = false;
@@ -172,6 +176,7 @@ export class SettingsApp extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.menu} >
+        <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

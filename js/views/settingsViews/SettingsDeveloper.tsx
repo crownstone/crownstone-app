@@ -24,6 +24,12 @@ import {MeshUtil} from "../../util/MeshUtil";
 
 
 export class SettingsDeveloper extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Developer",
+    }
+  };
+
   unsubscribe : any;
 
   componentDidMount() {
@@ -204,19 +210,6 @@ export class SettingsDeveloper extends Component<any, any> {
 
     items.push({label: "MESH", type: 'explanation', below: false, alreadyPadded: true});
     items.push({
-      label:"Use the Mesh",
-      value: dev.use_mesh,
-      type: 'switch',
-      icon: <IconButton name='md-share' size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green.hex}} />,
-      callback:(newValue) => {
-        store.dispatch({
-          type: 'CHANGE_DEV_SETTINGS',
-          data: {
-            use_mesh: newValue,
-          }
-        });
-      }});
-    items.push({
       label: 'Reset networks',
       type:  'button',
       style: {color: colors.black.hex},
@@ -229,6 +222,7 @@ export class SettingsDeveloper extends Component<any, any> {
               const state = store.getState();
               let sphereId = state.app.activeSphere || Util.data.getPresentSphereId(state) || Object.keys(state.spheres)[0];
               MeshUtil.clearMeshNetworkIds(store, sphereId);
+              MeshUtil.clearTopology(store, sphereId);
               Alert.alert("Reset Done", "Rediscovery will start automatically.",[{text:"OK"}]);
             }},[{text:"Cancel"}]
           ]

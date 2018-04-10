@@ -76,13 +76,12 @@ export class Graph extends Component<any, any> {
     if (props.options) {
       this.setOptions(props.options);
     }
-  }
 
-  componentWillMount() {
     let now = new Date().valueOf();
     this.range.start = new Date(now - RANGE);
     this.range.end   = new Date(now + OVERSHOOT);
   }
+
 
   componentDidMount() {
     this.loadData();
@@ -192,7 +191,6 @@ export class Graph extends Component<any, any> {
         items.push(
           <Path
             key="path_fill"
-            type={type}
             d={shadingPath}
             fill="url(#grad)"
             fillOpacity={1}
@@ -204,7 +202,6 @@ export class Graph extends Component<any, any> {
       items.push(
         <Path
           key="path1"
-          type={type}
           d={linePath}
           stroke="white"
           fillOpacity={0}
@@ -257,17 +254,18 @@ export class Graph extends Component<any, any> {
 
     return (
       <View style={{position:'relative', top:0, left:0, width: this.props.width, height: this.props.height}}>
-        <Svg
-          width={this.props.width}
-          height={this.props.height}
-          style={{position:'absolute', top:0, left:0, width: this.props.width, height: this.props.height}}
-        >
-          <GraphDefs
-            options={this.options}
-          />
-          {this._getCurves()}
-          {this._getPoints()}
-        </Svg>
+        <View style={{position:'absolute', top:0, left:0}}>
+          <Svg
+            width={this.props.width}
+            height={this.props.height}
+          >
+            <GraphDefs
+              options={this.options}
+            />
+            {this._getCurves()}
+            {this._getPoints()}
+          </Svg>
+        </View>
         <GraphDataAxis
           options={this.options}
           datastepLines={this.dataStepLines}

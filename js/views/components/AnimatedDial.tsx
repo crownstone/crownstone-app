@@ -19,7 +19,7 @@ import { styles, colors, screenWidth, screenHeight, availableScreenHeight, topBa
 import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { Mixer } from "../../util/colorCharm/Mixer";
 
-export class AnimatedDial extends Component<any, any> {
+export class AnimatedDial extends Component<{width: number, height: number, index?: number, level: any, blink: any}, any> {
   amountOfBlocks = 20;
   range = 1;
   spacing = 0.008;
@@ -127,13 +127,10 @@ export class AnimatedDial extends Component<any, any> {
   render() {
     return (
       <View style={{position: 'absolute', top:0, left:0, width: this.props.width, height: this.props.height}}>
-      <Svg style={{
-          width:  this.props.width,
-          height: this.props.height,
-          position: 'absolute',
-          top:  0,
-          left: 0,
-      }}>
+      <Svg
+        width={this.props.width}
+        height={this.props.height}
+      >
         {this._getStaticBlocks()}
       </Svg>
       {this._getBlocks(this.state.level * this.amountOfBlocks) }
@@ -211,13 +208,7 @@ class AnimatedBlock extends Component<{
         left: 0,
         opacity: this.state.opacity
       }}>
-        <Svg style={{
-          width:  this.props.width,
-          height: this.props.height,
-          position: 'absolute',
-          top:  0,
-          left: 0,
-        }}>
+        <Svg width={this.props.width} height={this.props.height}>
           <Circle
             r={radius}
             stroke={this.props.color.hex}

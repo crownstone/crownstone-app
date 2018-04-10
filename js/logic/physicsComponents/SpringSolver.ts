@@ -18,19 +18,29 @@ class SpringSolver {
    */
   solve() {
     let edgeLength, edge;
-    let edgeIndices = this.physicsBody.physicsEdgeIndices;
     let edges = this.physicsBody.edges;
-
+    let node1, node2, node3;
     // forces caused by the edges, modelled as springs
-    for (let i = 0; i < edgeIndices.length; i++) {
-      edge = edges[edgeIndices[i]];
+    for (let i = 0; i < edges.length; i++) {
+      edge = edges[i];
       if (edge.to !== edge.from) {
         // only calculate forces if nodes are in the same sector
-        if (this.physicsBody.nodes[edge.to] !== undefined && this.physicsBody.nodes[edge.from] !== undefined) {
-          // the * 1.5 is here so the edge looks as large as a smooth edge. It does not initially because the smooth edges use
-          // the support nodes which exert a repulsive force on the to and from nodes, making the edge appear larger.
-          edgeLength = edge.length === undefined ? this.options.springLength * 1.5: edge.length;
-          this._calculateSpringForce(this.physicsBody.nodes[edge.from], this.physicsBody.nodes[edge.to], edgeLength);
+        if (edge._viaId && this.physicsBody.nodes[edge.to] !== undefined && this.physicsBody.nodes[edge.from] !== undefined && this.physicsBody.nodes[edge._viaId] !== undefined) {
+          edgeLength = edge.length === undefined ? this.options.springLength : edge.length;
+          node1 = this.physicsBody.nodes[edge.from]
+          node2 = this.physicsBody.nodes[edge._viaId]
+          node3 = this.physicsBody.nodes[edge.to]
+
+          this._calculateSpringForce(node1, node2, 0.5 * edgeLength);
+          this._calculateSpringForce(node2, node3, 0.5 * edgeLength);
+        }
+        else {
+          if (this.physicsBody.nodes[edge.to] !== undefined && this.physicsBody.nodes[edge.from] !== undefined) {
+            // the * 1.5 is here so the edge looks as large as a smooth edge. It does not initially because the smooth edges use
+            // the support nodes which exert a repulsive force on the to and from nodes, making the edge appear larger.
+            edgeLength = edge.length === undefined ? this.options.springLength * 1.5 : edge.length;
+            this._calculateSpringForce(this.physicsBody.nodes[edge.from], this.physicsBody.nodes[edge.to], edgeLength);
+          }
         }
       }
     }

@@ -7,7 +7,7 @@ import {
 
 import { NativeBus }          from '../../native/libInterface/NativeBus'
 import { IconButton }         from '../components/IconButton'
-import { OverlayBox }         from '../components/overlays/OverlayBox'
+import { OverlayBox }         from '../components/Overlays/OverlayBox'
 import { styles, colors , screenHeight, screenWidth } from '../styles'
 
 export class BleStateOverlay extends Component<any, any> {

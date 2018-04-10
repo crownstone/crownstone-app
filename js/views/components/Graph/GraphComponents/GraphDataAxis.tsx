@@ -51,9 +51,11 @@ export class GraphDataAxis extends Component<any, any> {
     }
 
     return (
-      <Svg key={'dataAxisSvg'} width={options.width} height={options.height} style={{position:'absolute', top:0, left:0}}>
-        {elements}
-      </Svg>
+      <View style={{position:'absolute', top:0, left:0}}>
+        <Svg key={'dataAxisSvg'} width={options.width} height={options.height}>
+          {elements}
+        </Svg>
+      </View>
     );
   }
 }

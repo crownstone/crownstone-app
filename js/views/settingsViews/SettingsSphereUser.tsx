@@ -22,6 +22,10 @@ import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
 export class SettingsSphereUser extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "Sphere User" }
+  };
+
   deleting : boolean = false;
   unsubscribe : any;
 
@@ -117,6 +121,7 @@ export class SettingsSphereUser extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture

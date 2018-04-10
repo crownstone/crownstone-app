@@ -13,12 +13,18 @@ import { Background } from '../components/Background'
 import { TopBar } from '../components/Topbar'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { Actions } from 'react-native-router-flux';
-import { styles, colors } from '../styles'
+import {styles, colors, screenWidth} from '../styles'
 import { SettingConstructor } from '../../util/SettingConstructor'
 
 const DeviceInfo = require('react-native-device-info');
 
 export class SettingsOverview extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Settings",
+    }
+  };
+
   unsubscribe : any;
 
   constructor(props) {
@@ -71,11 +77,8 @@ export class SettingsOverview extends Component<any, any> {
 
   render() {
     return (
-      <Background hideTopBar={true} image={this.props.backgrounds.menu} >
-        <TopBar
-          title={"Settings"}
-          notBack={true}
-        />
+      <Background image={this.props.backgrounds.menu}>
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
           <Text style={[styles.version,{paddingBottom: 20}]}>{'version: ' + DeviceInfo.getReadableVersion()}</Text>

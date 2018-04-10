@@ -17,30 +17,49 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import { LOG } from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenWidth} from '../styles'
+import {styles, colors, screenWidth, topBarHeight} from '../styles'
 import {Util} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {CancelButton} from "../components/Topbar/CancelButton";
 
 
 
 export class RoomAdd extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    return {
+      title: "Create Room",
+      headerLeft: <CancelButton onPress={BackAction} />,
+      headerRight: <TopbarButton
+        text={"Create"}
+        onPress={() => {
+          params.rightAction ? params.rightAction() : () => {}
+        }}
+      />
+    }
+  };
+
   refName : string;
 
   constructor(props) {
     super(props);
-    this.state = {name:'', icon: 'c1-bookshelf', selectedStones: {}};
+    let initialState = {name:'', icon: 'c1-bookshelf', selectedStones: {}}
     this.refName = "listItems";
+
+    if (props.movingCrownstone) {
+      let selectedStones = {};
+      selectedStones[props.movingCrownstone] = true;
+      initialState.selectedStones = selectedStones;
+    }
+
+    this.state = initialState;
+
+    this.props.navigation.setParams({rightAction: () => { this.createRoom();}})
   }
 
-  componentWillMount() {
-    if (this.props.movingCrownstone) {
-      let selectedStones = {};
-      selectedStones[this.props.movingCrownstone] = true;
-      this.setState({selectedStones:selectedStones})
-    }
-  }
 
   _pushCrownstoneItem(items, device, stone, stoneId, subtext = '') {
     items.push({
@@ -176,18 +195,9 @@ export class RoomAdd extends Component<any, any> {
 
             store.batchDispatch(actions);
 
-            if (this.props.fromMovingView === true) {
-              BackAction(2);
-            }
-            else {
-              BackAction();
-            }
-
+            // BackAction('sphereOverview');
+            Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, store: store, seeStoneInSetupMode: false});
             this.props.eventBus.emit('hideLoading');
-
-            setTimeout(() => {
-              Actions.roomOverview({sphereId: this.props.sphereId, locationId: localId, title: this.state.name, store: store, seeStoneInSetupMode: false});
-            }, 0);
           })
           .catch((err) => {
             LOG.error("RoomAdd: Something went wrong with creation of rooms", err);
@@ -220,17 +230,7 @@ export class RoomAdd extends Component<any, any> {
 
     let itemHeight = amountOfFloatingStones * 62 + (items.length - amountOfFloatingStones)*50 + 120;
     return (
-      <Background hideInterface={true} image={backgroundImage} >
-        <TopBar
-          notBack={true}
-          left={'Cancel'}
-          leftStyle={{color:colors.white.hex, fontWeight: 'bold'}}
-          leftAction={ Actions.pop }
-          right={'Create'}
-          rightStyle={{fontWeight: 'bold'}}
-          rightAction={ () => { this.createRoom(); }}
-          title="Create Room"
-        />
+      <Background image={backgroundImage} >
         <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
         <ScrollView>
           <View style={{height: itemHeight}}>

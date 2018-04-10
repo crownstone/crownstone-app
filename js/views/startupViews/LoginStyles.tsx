@@ -7,7 +7,6 @@ export default StyleSheet.create({
     flexDirection:'column',
     flex:1,
     alignItems:'center',
-    marginTop:screenHeight*0.4,
   },
   textBoxView: {
     backgroundColor:'#fff',
@@ -15,11 +14,6 @@ export default StyleSheet.create({
     borderRadius:3,
     alignItems:'center',
     justifyContent:'center',
-    marginBottom:10,
-  },
-  forgot: {
-    padding:5,
-    color: '#93cfff',
   },
   backButton: {
     flexDirection:'row',
@@ -47,8 +41,6 @@ export default StyleSheet.create({
     borderColor:'white',
     alignItems:'center',
     justifyContent:'center',
-    margin: (screenWidth - 2*110) / 6,
-    marginBottom:0
   },
   loginText: {
     color:'white',

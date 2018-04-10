@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 import {colors} from "../styles";
 import {getPresentUsersInLocation} from "../../util/DataUtil";
-import {UserPicture} from "../components/animated/UserPicture";
-import {TextCircle} from "../components/animated/TextCircle";
+import {UserPicture} from "../components/Animated/UserPicture";
+import {TextCircle} from "../components/Animated/TextCircle";
 import {LOG} from "../../logging/Log";
 
 
@@ -86,9 +86,6 @@ export class UserLayer extends Component<any, any> {
     }
   }
 
-  componentWillMount() {
-    // set the usage initially
-  }
 
   componentDidMount() {
     const store = this.props.store;

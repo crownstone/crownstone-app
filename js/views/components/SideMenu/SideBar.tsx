@@ -21,6 +21,7 @@ import { NativeBus } from '../../../native/libInterface/NativeBus'
 import { AppUtil } from '../../../util/AppUtil'
 import { SettingConstructor } from '../../../util/SettingConstructor'
 import {LOG} from "../../../logging/Log";
+import {StoreManager} from "../../../router/store/storeManager";
 
 const DeviceInfo = require('react-native-device-info');
 
@@ -29,7 +30,13 @@ let BLUE_PADDING = 4;
 
 export class SideBar extends Component<any, any> {
   unsubscribe : any = [];
-
+  store = null;
+  
+  constructor(props) {
+    super(props);
+    
+    this.store = StoreManager.getStore()
+  }
 
   componentDidMount() {
     this.unsubscribe.push(eventBus.on("databaseChange", (data) => {
@@ -68,7 +75,6 @@ export class SideBar extends Component<any, any> {
           icon: <FinalizeLocalizationIcon color={colors.menuBackground.rgba(0.75)} />,
           callback: () => {
             this.props.viewProps.actions.finalizeLocalization();
-            setTimeout(() => {this.props.closeCallback();},0);
           }
         });
       }
@@ -88,7 +94,7 @@ export class SideBar extends Component<any, any> {
     //   }
     // });
 
-    let state = this.props.store.getState();
+    let state = this.store.getState();
     let activeSphereId = state.app.activeSphere;
     let highlight = false;
     if (activeSphereId && state.spheres[activeSphereId]) {
@@ -107,16 +113,14 @@ export class SideBar extends Component<any, any> {
       highlight: highlight,
       callback: () => {
         Actions.messageInbox();
-        setTimeout(() => {this.props.closeCallback();},0)
       }
     });
     return menuItems;
   }
 
   _getSettingsItems() {
-    let state = this.props.store.getState();
-
-    let settingItems = SettingConstructor(this.props.store, state, eventBus);
+    let state = this.store.getState();
+    let settingItems = SettingConstructor(this.store, state, eventBus);
 
     settingItems.push({
       id: 'quit',
@@ -229,7 +233,6 @@ class MenuItem extends Component<any, any> {
         alignItems:'center'
       }} onPress={() => {
         this.props.callback();
-        setTimeout(() => { this.props.closeCallback(); }, 0)
       }}>
         <View style={[styles.centered,{width:25, marginRight:10}]}>
           {this.props.icon}

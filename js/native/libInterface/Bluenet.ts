@@ -65,6 +65,7 @@ if (DISABLE_NATIVE === true) {
     clearFingerprintsPromise: () => {},
     clearFingerprints: () => {},
     setTime: () => {},
+    meshSetTime: () => {},
     batterySaving: () => {},
     setBackgroundScanning: () => {},
 

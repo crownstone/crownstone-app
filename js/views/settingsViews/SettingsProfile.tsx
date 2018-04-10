@@ -23,23 +23,26 @@ import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 
 export class SettingsProfile extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    return { title: "My Account" }
+  };
+
+
   unsubscribe : any;
   renderState : any;
   validationState : any;
 
   constructor(props) {
     super(props);
-    this.state = {picture:null, firstName: null, lastName: null};
     this.renderState = {};
-    this.validationState = {firstName:undefined, lastName:undefined, email:undefined}
-  }
+    this.validationState = {firstName: undefined, lastName: undefined, email: undefined}
 
-  componentWillMount() {
-    const store = this.props.store;
+    const store = props.store;
     const state = store.getState();
     let user = state.user;
 
-    this.setState({picture: user.picture, firstName: user.firstName, lastName: user.lastName});
+    let initialState = {picture: user.picture, firstName: user.firstName, lastName: user.lastName};
+    this.state = initialState;
   }
 
   componentDidMount() {
@@ -125,13 +128,31 @@ export class SettingsProfile extends Component<any, any> {
       }
     });
 
-    items.push({type: 'spacer'});
+    if (user.betaAccess) {
+      items.push({label: 'BETA FEATURES WILL LOOK LIKE THIS', type: 'explanation', below: false});
+    }
+    else {
+      items.push({label: ' ', type: 'explanation', below: false});
+    }
+    items.push({
+      label:'Join Beta Program',
+      value: user.betaAccess,
+      experimental: user.betaAccess,
+      icon: <IconButton name={"ios-flask"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+      type: 'switch',
+      callback:(newValue) => {
+        store.dispatch({
+          type: 'SET_BETA_ACCESS',
+          data: {betaAccess: newValue}
+        });
+      }});
+    items.push({label: 'This will give you early access to new experimental features!', type: 'explanation', below: true});
 
     if (user.developer !== true) {
       items.push({
         label:'Enable Developer Mode',
         value: false,
-        icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.menuTextSelected.hex}}/>,
+        icon: <IconButton name={"md-code-working"} size={25} button={true} color={colors.white.hex} buttonStyle={{backgroundColor: colors.csOrange.hex}}/>,
         type: 'switch',
         callback:(newValue) => {
         setTimeout(() => {
@@ -142,7 +163,7 @@ export class SettingsProfile extends Component<any, any> {
           });
         }, 300)
       }});
-      items.push({label: 'This will enable certain features that may be used for development of the Crownstone.', type: 'explanation', below: true});
+      items.push({label: 'This will enable certain features that are useful for developers. Only use if you know what you\'re doing.', type: 'explanation', below: true});
     }
     else {
       items.push({
@@ -188,6 +209,7 @@ export class SettingsProfile extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
+        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
         <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>

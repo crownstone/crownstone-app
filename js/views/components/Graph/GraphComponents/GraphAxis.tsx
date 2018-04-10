@@ -62,9 +62,11 @@ export class GraphAxis extends Component<any, any> {
     elements.push(<Text key={'UNIT'} x={options.padding} y={11} originX={0} fontSize={11} fontWeight="bold" fill={colors.white.hex} textAnchor="end" >{'(W)'}</Text>);
 
     return (
-      <Svg key={'baseAxisSvg'} width={options.width} height={options.height} style={{position:'absolute', top:0, left:0}}>
-        {elements}
-      </Svg>
+      <View style={{position:'absolute', top:0, left:0}}>
+        <Svg key={'baseAxisSvg'} width={options.width} height={options.height}>
+          {elements}
+        </Svg>
+      </View>
     );
   }
 }
