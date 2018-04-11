@@ -14,12 +14,8 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight, OrangeLine} from '../../styles'
-import {Util} from "../../../util/Util";
-import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../util/DataUtil";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
+import {colors, screenWidth, OrangeLine} from '../../styles'
 import {Background} from "../../components/Background";
-import {Icon} from "../../components/Icon";
 import {IconButton} from "../../components/IconButton";
 import {ScaledImage} from "../../components/ScaledImage";
 

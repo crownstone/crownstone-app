@@ -1,8 +1,7 @@
 import {request, download, downloadFile} from '../cloudCore'
 import { DEBUG, SILENCE_CLOUD } from '../../ExternalConfig'
 import { preparePictureURI } from '../../util/Util'
-import { EventBusClass } from '../../util/EventBus'
-import {LOG, LOGd, LOGe, LOGi} from '../../logging/Log'
+import {LOG, LOGe, LOGi} from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 const RNFS = require('react-native-fs');
 

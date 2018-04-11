@@ -20,7 +20,7 @@ const UPDATE_STONE_RSSI                    = 'UPDATE_STONE_RSSI';
 
 export const conditionMap = {
   SWITCH_STATE: 'switchState',
-}
+};
 
 interface condition {
   type: string,
@@ -297,7 +297,7 @@ export class StoneEntity {
     this._updateExternalRssiIndicator(stone, externalId, advertisement.serviceData.rssiOfExternalCrownstone);
 
     /// tell the rest of the app this stone was seen, and its meshnetwork was heard from.
-    this._emitUpdateEvents(stone, advertisement.rssi) // emit
+    this._emitUpdateEvents(stone, advertisement.rssi); // emit
 
     const state = this.store.getState();
     if (state.development.use_advertisement_rssi_too) {
@@ -327,7 +327,7 @@ export class StoneEntity {
     this._handleAdvertisementContent(stone, advertisement);
 
     // tell the rest of the app this stone was seen, and its meshnetwork was heard from.
-    this._emitUpdateEvents(stone, advertisement.rssi) // emit
+    this._emitUpdateEvents(stone, advertisement.rssi); // emit
 
     if (state.development.use_advertisement_rssi_too) {
       this._handleBehaviour(state, stone);

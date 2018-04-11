@@ -13,11 +13,10 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight, OrangeLine} from '../styles'
+import {colors, screenWidth, availableScreenHeight, OrangeLine} from '../styles'
 import { Background } from '../components/Background'
 const Swiper = require("react-native-swiper");
 import { Util } from "../../util/Util";
-import { TopBar } from "../components/Topbar";
 import { DeviceBehaviour } from "./elements/DeviceBehaviour";
 import { DeviceSummary } from "./elements/DeviceSummary";
 import { STONE_TYPES } from "../../router/store/reducers/stones";
@@ -27,12 +26,9 @@ import { GuidestoneSummary } from "./elements/GuidestoneSummary";
 import { eventBus } from "../../util/EventBus";
 import {DevicePowerCurve} from "./elements/DevicePowerCurve";
 import {DeviceSchedule} from "./elements/DeviceSchedule";
-import {LOG, LOGi} from '../../logging/Log';
-import { BATCH } from "../../router/store/storeManager";
 import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
-import {BackAction} from "../../util/Back";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
@@ -194,7 +190,7 @@ export class DeviceOverview extends Component<any, any> {
     let whatsNewEnabledFirmwares = {
       '2.0.0': true,
       '2.0.1': true,
-    }
+    };
     let showWhatsNew = Permissions.inSphere(this.props.sphereId).canUpdateCrownstone &&
                        stone.config.firmwareVersionSeenInOverview &&
                        (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
@@ -314,7 +310,7 @@ function getNavBarParams(state, props, swiperIndex, scrolling) {
   let whatsNewEnabledFirmwares = {
     '2.0.0': true,
     '2.0.1': true,
-  }
+  };
   let showWhatsNew = Permissions.inSphere(props.sphereId).canUpdateCrownstone &&
     stone.config.firmwareVersionSeenInOverview &&
     (stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) &&
@@ -364,7 +360,7 @@ function getNavBarParams(state, props, swiperIndex, scrolling) {
     )
   }
 
-  NAVBAR_PARAMS_CACHE = {title: element.config.name, rightLabel: rightLabel, rightAction: rightAction, rightItem: rightItem}
+  NAVBAR_PARAMS_CACHE = {title: element.config.name, rightLabel: rightLabel, rightAction: rightAction, rightItem: rightItem};
   return NAVBAR_PARAMS_CACHE;
 }
 

@@ -75,7 +75,7 @@ export const StoneUtil = {
   },
 
   checkFirmwareVersion: function(sphereId, stoneId, stone) {
-    let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware')
+    let promise = BatchCommandHandler.load(stone, stoneId, sphereId, {commandName: 'getFirmwareVersion'},{},1, 'from checkFirmware');
     BatchCommandHandler.executePriority();
     return promise;
   },

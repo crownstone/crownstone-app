@@ -12,8 +12,7 @@ import {
 } from 'react-native';
 
 const Actions = require('react-native-router-flux').Actions;
-import { TopBar } from '../components/Topbar';
-import {styles, colors, screenWidth, OrangeLine} from '../styles'
+import {styles, OrangeLine} from '../styles'
 import { LOG } from '../../logging/Log'
 import {BackAction} from "../../util/Back";
 

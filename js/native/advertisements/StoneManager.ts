@@ -61,7 +61,7 @@ class StoneManagerClass {
       // clean entities if we remove a stone or a sphere
       eventBus.on("databaseChange", (data) => {
         let change = data.change;
-        let changedAction = change.removeStone || change.removeSphere
+        let changedAction = change.removeStone || change.removeSphere;
         if (changedAction) {
           let sphereIds = Object.keys(changedAction.sphereIds);
           sphereIds.forEach((sphereId) => {

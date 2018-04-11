@@ -9,17 +9,14 @@ import {
   View
 } from 'react-native';
 
-import { Actions } from 'react-native-router-flux';
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {styles, colors, screenWidth, OrangeLine} from '../styles'
+import {colors, OrangeLine} from '../styles'
 import {Util} from "../../util/Util";
-import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
-import {KEEPALIVE_INTERVAL} from "../../ExternalConfig";
 import {KeepAliveHandler} from "../../backgroundProcesses/KeepAliveHandler";
 import {LocationHandler} from "../../native/localization/LocationHandler";
 

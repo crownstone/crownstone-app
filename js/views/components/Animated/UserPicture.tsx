@@ -3,7 +3,6 @@ import {
   Animated,
   View
 } from 'react-native';
-import { LOG } from '../../../logging/Log'
 import {ProfilePicture} from "../ProfilePicture";
 
 export class UserPicture extends Component<any, any> {

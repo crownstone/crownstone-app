@@ -16,7 +16,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { Background }            from '../components/Background'
 import { setupStyle }            from './SetupShared'
-import {styles, colors, screenWidth, screenHeight, OrangeLine} from './../styles'
+import {colors, screenWidth, screenHeight, OrangeLine} from './../styles'
 import { Util }                  from '../../util/Util'
 import { BleUtil }               from '../../util/BleUtil'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'

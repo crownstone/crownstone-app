@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 import { Util } from '../../../util/Util'
-import { styles, colors, screenWidth } from '../../styles'
+import { colors, screenWidth } from '../../styles'
 import {MapProvider} from "../../../backgroundProcesses/MapProvider";
 
 export class DeviceCommandProgressBar extends Component<any, any> {
@@ -42,7 +42,7 @@ export class DeviceCommandProgressBar extends Component<any, any> {
     this.unsubscribe.push(this.props.eventBus.on(Util.events.getIgnoreTopic(this.props.stoneId), (data) => {
       if (!data.timeoutMs) { return; }
       this.state.progressWidth.stopAnimation();
-      this.state.progressWidth.setValue(0.15*screenWidth)
+      this.state.progressWidth.setValue(0.15*screenWidth);
       Animated.timing(this.state.progressWidth, { toValue: screenWidth, duration: data.timeoutMs }).start((animationState) => {
         if (animationState.finished === true) {
           this._failureFinish();
@@ -120,8 +120,8 @@ export class DeviceCommandProgressBar extends Component<any, any> {
 
   _successFinish() {
     let animations = [];
-    animations.push(Animated.timing(this.state.progressWidth, {toValue: screenWidth, duration: 250}))
-    animations.push(Animated.timing(this.state.progressColor, {toValue: 1,           duration: 50 }))
+    animations.push(Animated.timing(this.state.progressWidth, {toValue: screenWidth, duration: 250}));
+    animations.push(Animated.timing(this.state.progressColor, {toValue: 1,           duration: 50 }));
     this.props.updateStatusText("Success!");
     Animated.parallel(animations).start(() => {
       this._hideCommandProgressBar();

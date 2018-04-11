@@ -10,7 +10,7 @@ import {
 let Actions = require('react-native-router-flux').Actions;
 
 import { PictureCircle }  from '../PictureCircle'
-import { styles, colors} from '../../styles'
+import { styles} from '../../styles'
 
 export class PictureEdit extends Component<any, any> {
   render() {

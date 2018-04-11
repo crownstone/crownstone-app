@@ -205,7 +205,7 @@ export class RoomTraining extends Component<any, any> {
           ai={ai}
           next={() => {
             this.setState({phase:1});
-            this.props.navigation.setParams({topBarSettings:{leftAction: cancelMethod }})
+            this.props.navigation.setParams({topBarSettings:{leftAction: cancelMethod }});
             this.start();
           }}
           sampleSize={this.props.sampleSize}
@@ -244,7 +244,7 @@ export class RoomTraining extends Component<any, any> {
 
 function getNavBarParams(state, props, viewingRemotely) {
   let ai = Util.data.getAiData(state, props.sphereId);
-  NAVBAR_PARAMS_CACHE = {title: 'Teaching ' + ai.name}
+  NAVBAR_PARAMS_CACHE = {title: 'Teaching ' + ai.name};
   return NAVBAR_PARAMS_CACHE;
 }
 

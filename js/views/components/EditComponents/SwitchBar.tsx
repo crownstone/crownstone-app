@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 
 import {styles, colors, screenWidth, barHeight} from '../../styles'
-import {Icon} from "../Icon";
 
 
 export class SwitchBar extends Component<any, any> {
@@ -62,10 +61,10 @@ export class SwitchBar extends Component<any, any> {
   }
 
   _getButton(navBarHeight, fontColor) {
-    let style = [styles.listView, {height: navBarHeight}, this.props.wrapperStyle]
+    let style = [styles.listView, {height: navBarHeight}, this.props.wrapperStyle];
     let helpColor = colors.black.rgba(0.5);
     if (this.props.experimental) {
-      style =  [styles.listView,{position:'absolute', top:0, left:0, overflow:'hidden', height: navBarHeight, width: screenWidth, backgroundColor:"transparent"}]
+      style =  [styles.listView,{position:'absolute', top:0, left:0, overflow:'hidden', height: navBarHeight, width: screenWidth, backgroundColor:"transparent"}];
       helpColor = colors.white.hex;
     }
 

@@ -25,7 +25,7 @@ import { TextEditBar }       from './EditComponents/TextEditBar'
 import { TimePicker }        from './EditComponents/TimePicker'
 import { TextBlob }          from "./EditComponents/TextBlob";
 
-import {styles, screenWidth, barHeight, barHeightLarge, colors} from '../styles'
+import {styles, barHeight, barHeightLarge, colors} from '../styles'
 import {CollapsableBar} from "./EditComponents/Collapsable";
 
 /**

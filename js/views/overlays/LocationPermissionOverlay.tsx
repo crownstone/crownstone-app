@@ -10,7 +10,6 @@ import { Icon }         from '../components/Icon'
 import { OverlayBox }   from '../components/Overlays/OverlayBox'
 import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
-import {eventBus} from "../../util/EventBus";
 import {NativeBus} from "../../native/libInterface/NativeBus";
 
 export class LocationPermissionOverlay extends Component<any, any> {

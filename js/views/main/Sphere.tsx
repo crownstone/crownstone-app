@@ -14,7 +14,7 @@ let Actions = require('react-native-router-flux').Actions;
 import { RoomLayer }           from './RoomLayer'
 import { StatusCommunication } from './StatusCommunication'
 import { LOG }       from '../../logging/Log'
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight } from '../styles'
+import { screenWidth, availableScreenHeight } from '../styles'
 import {SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 

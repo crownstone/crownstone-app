@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
+import {colors, screenWidth, availableScreenHeight} from '../../styles'
 import {Util} from "../../../util/Util";
 
 export class GuidestoneSummary extends Component<any, any> {

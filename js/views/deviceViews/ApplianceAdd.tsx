@@ -11,11 +11,10 @@ import {
   View
 } from 'react-native';
 
-import { TopBar } from '../components/Topbar'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth} from '../styles'
+import {tabBarHeight, screenWidth} from '../styles'
 import {getRandomC1Name} from "../../fonts/customIcons";
 import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {Util} from "../../util/Util";

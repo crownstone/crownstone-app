@@ -77,7 +77,7 @@ export const MeshUtil = {
       stoneIds.forEach((stoneId) => {
         actions.push({type:'UPDATE_MESH_NETWORK_ID', sphereId: sphereId, stoneId: stoneId, data:{meshNetworkId: null}})
       })
-    }
+    };
     if (sphereId) {
       getClearMeshNeworkActionsInSphere(sphereId);
     }
@@ -104,7 +104,7 @@ export const MeshUtil = {
       stoneIds.forEach((stoneId) => {
         actions.push({type:'CLEAR_MESH_TOPOLOGY', sphereId: sphereId, stoneId: stoneId})
       })
-    }
+    };
     if (sphereId) {
       getClearMeshTopologyActionsInSphere(sphereId);
     }

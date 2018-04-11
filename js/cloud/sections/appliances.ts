@@ -2,7 +2,6 @@
  * Created by alex on 25/08/16.
  */
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {cloudApiBase} from "./cloudApiBase";
 
 export const appliances = {
 

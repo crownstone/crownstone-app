@@ -1,5 +1,4 @@
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {cloudApiBase} from "./cloudApiBase";
 
 export const locations = {
   getLocations: function (background = true) {

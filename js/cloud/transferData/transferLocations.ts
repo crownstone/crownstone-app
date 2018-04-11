@@ -3,7 +3,6 @@ import { LOG }   from "../../logging/Log";
 
 
 import { transferUtil } from "./shared/transferUtil";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
 
 let fieldMap : fieldMap = [
   {local: 'name',      cloud: 'name'},

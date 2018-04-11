@@ -11,11 +11,9 @@ import {
   Text,
   View
 } from 'react-native';
-import {colors} from "../styles";
 import {getPresentUsersInLocation} from "../../util/DataUtil";
 import {UserPicture} from "../components/Animated/UserPicture";
 import {TextCircle} from "../components/Animated/TextCircle";
-import {LOG} from "../../logging/Log";
 
 
 export class UserLayer extends Component<any, any> {

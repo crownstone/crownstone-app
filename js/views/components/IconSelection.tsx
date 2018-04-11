@@ -61,7 +61,7 @@ export class IconSelection extends Component<any, any> {
           newIconArray.push(newIcon)
         }
       });
-      console.log(JSON.stringify(newIconArray, undefined, 2))
+      console.log(JSON.stringify(newIconArray, undefined, 2));
       console.log("Amount of duplicate icons: ", Object.keys(this.duplicates).length, ':', JSON.stringify(Object.keys(this.duplicates), undefined, 2))
     }
 
@@ -111,7 +111,7 @@ export class IconSelection extends Component<any, any> {
   _getIconRow(icons, iconIndex, key) {
     let items = [];
     for (let i = 0; i < AMOUNT_OF_ITEMS_IN_ROW; i++) {
-      items.push(this._getIcon(   icons, iconIndex + i))
+      items.push(this._getIcon(   icons, iconIndex + i));
       if (i < AMOUNT_OF_ITEMS_IN_ROW - 1) {
         items.push(this._getBorder(icons, iconIndex + i))
       }

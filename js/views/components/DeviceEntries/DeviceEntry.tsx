@@ -16,18 +16,15 @@ import {
 
 import { Icon } from '../Icon';
 import { Util } from '../../../util/Util'
-import { styles, colors, screenWidth }        from '../../styles'
+import { styles, colors}        from '../../styles'
 import { AlternatingContent }                 from '../Animated/AlternatingContent';
 import { MINIMUM_REQUIRED_FIRMWARE_VERSION }  from '../../../ExternalConfig';
 import { STONE_TYPES }                        from '../../../router/store/reducers/stones';
 import { INTENTS }                            from '../../../native/libInterface/Constants';
 import { Actions }                            from 'react-native-router-flux';
 import { StoneUtil }                          from "../../../util/StoneUtil";
-import { BackAction }                         from "../../../util/Back";
-import { DeviceCommandProgressBar }           from "./DeviceCommandProgressBar";
 import { DeviceEntrySubText }                 from "./DeviceEntrySubText";
 import {AnimatedCircle} from "../Animated/AnimatedCircle";
-import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 
 
 export class DeviceEntry extends Component<any, any> {
@@ -92,11 +89,11 @@ export class DeviceEntry extends Component<any, any> {
     let action = null;
     if (stone.config.disabled === false) {
       if (stone.errors.hasError) {
-        content = <Switch value={stone.state.state === 1} disabled={true} />
+        content = <Switch value={stone.state.state === 1} disabled={true} />;
         action = () => { this._basePressed(); }
       }
       else if (stone.config.locked) {
-        content = <Icon name={'md-lock'} color={colors.black.rgba(0.2)} size={32} />
+        content = <Icon name={'md-lock'} color={colors.black.rgba(0.2)} size={32} />;
         action = () => { this._basePressed(); }
       }
       else if (this.state.pendingCommand === true) {

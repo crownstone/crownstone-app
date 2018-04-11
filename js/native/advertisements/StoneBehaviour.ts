@@ -182,7 +182,7 @@ export class StoneBehaviour {
                 data: {
                   state: currentSwitchStateTransformed
                 }
-              })
+              });
               newSwitchState = 0;
               return BluenetPromiseWrapper.setSwitchState(newSwitchState)
             }

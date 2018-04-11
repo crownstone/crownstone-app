@@ -10,15 +10,13 @@ import {
   View
 } from 'react-native';
 
-import { Icon } from './../components/Icon'
 import { IconButton } from './../components/IconButton'
 import { Background } from './../components/Background'
 import { ProfilePicture } from './../components/ProfilePicture'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { processImage, safeDeleteFile } from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {styles, colors, screenWidth, OrangeLine} from './../styles'
+import {colors, screenWidth, OrangeLine} from './../styles'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;

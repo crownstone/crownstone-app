@@ -10,14 +10,13 @@ import {
   View
 } from 'react-native';
 
-import { TopBar } from '../components/Topbar'
 import { Background } from '../components/Background'
 import { IconCircle } from '../components/IconCircle'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import { LOG } from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenWidth, topBarHeight, OrangeLine} from '../styles'
+import {colors, OrangeLine} from '../styles'
 import {Util} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -46,7 +45,7 @@ export class RoomAdd extends Component<any, any> {
 
   constructor(props) {
     super(props);
-    let initialState = {name:'', icon: 'c1-bookshelf', selectedStones: {}}
+    let initialState = {name:'', icon: 'c1-bookshelf', selectedStones: {}};
     this.refName = "listItems";
 
     if (props.movingCrownstone) {

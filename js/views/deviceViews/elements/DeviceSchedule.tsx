@@ -26,7 +26,6 @@ import {Icon} from "../../components/Icon";
 import {BatchCommandHandler} from "../../../logic/BatchCommandHandler";
 import {LOG} from "../../../logging/Log";
 import {eventBus} from "../../../util/EventBus";
-import {StoneUtil} from "../../../util/StoneUtil";
 import {SchedulerEntry} from "../../components/SchedulerEntry";
 import {Scheduler} from "../../../logic/Scheduler";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";

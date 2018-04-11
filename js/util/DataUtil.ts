@@ -559,7 +559,7 @@ export const getMapOfCrownstonesInAllSpheresByIBeacon = function(state) {
   };
 
   return map;
-}
+};
 
 function _getMap(state, requestedKey, sphereMap : boolean) {
   let sphereIds = Object.keys(state.spheres);

@@ -12,7 +12,7 @@ import {
 
 import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from '../styles'
+import { colors } from '../styles'
 import {eventBus} from "../../util/EventBus";
 import {BackAction} from "../../util/Back";
 

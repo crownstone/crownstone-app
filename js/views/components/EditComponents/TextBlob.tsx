@@ -4,10 +4,8 @@ import {
   Text,
   View
 } from 'react-native';
-import { Icon } from '../Icon';
-import {styles, colors, screenWidth} from '../../styles'
+import {styles, screenWidth} from '../../styles'
 import { TextEditInput } from './TextEditInput'
-import { emailChecker, characterChecker, numberChecker } from '../../../util/Util'
 
 export class TextBlob extends Component<any, any> {
   refName : string;

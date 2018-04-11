@@ -1,6 +1,5 @@
-import { createStore, combineReducers } from 'redux'
+import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
-import {LOG} from "../../../logging/Log";
 
 
 let defaultSettings = {

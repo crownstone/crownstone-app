@@ -13,7 +13,7 @@ import {
 
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
-import {styles, colors, screenWidth, OrangeLine} from './../styles'
+import {colors, screenWidth, OrangeLine} from './../styles'
 import { IconCircle } from "../components/IconCircle";
 
 let FLOATING_NETWORK_KEY = '__null';

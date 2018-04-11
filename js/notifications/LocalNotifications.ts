@@ -3,7 +3,6 @@ import {LOG, LOGi} from "../logging/Log";
 import {Util} from "../util/Util";
 const PushNotification = require('react-native-push-notification');
 import {canUseIndoorLocalizationInSphere} from "../util/DataUtil";
-import {eventBus} from "../util/EventBus";
 import Toast from 'react-native-same-toast';
 import {MessageCenter} from "../backgroundProcesses/MessageCenter";
 import {MapProvider} from "../backgroundProcesses/MapProvider";

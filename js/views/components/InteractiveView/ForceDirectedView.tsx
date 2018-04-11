@@ -13,26 +13,15 @@ import {
 
 import {
   Svg,
-  Circle,
-  ClipPath,
-  Ellipse,
-  G,
   LinearGradient,
-  RadialGradient,
   Line,
   Path,
-  Polygon,
-  Polyline,
-  Rect,
-  Symbol,
   Stop,
-  Use,
   Text,
-  Defs,
-} from 'react-native-svg';
+  } from 'react-native-svg';
 
 let Actions = require('react-native-router-flux').Actions;
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../../styles'
+import { colors, screenWidth, topBarHeight, availableScreenHeight} from '../../styles'
 import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
 import {AnimatedDoubleTap} from "../Animated/AnimatedDoubleTap";
@@ -524,10 +513,10 @@ export class ForceDirectedView extends Component<{
     }
 
 
-    let edges = []
+    let edges = [];
     // gather the edges to render.
     for (let i = 0; i < this.props.edges.length; i++) {
-      let edge = this.props.edges[i]
+      let edge = this.props.edges[i];
       if (edge.connected === false) { continue; }
 
       let pos1 = {x: this.nodes[edge.from].x + this.props.nodeRadius, y: this.nodes[edge.from].y + this.props.nodeRadius};
@@ -565,7 +554,7 @@ export class ForceDirectedView extends Component<{
       let padding = 5;
       let width = maxX - minX;
       let height = maxY - minY;
-      let dist = Math.sqrt(width*width + height*height )
+      let dist = Math.sqrt(width*width + height*height );
 
       let rx = height / dist;
       let ry = width / dist;
@@ -576,7 +565,7 @@ export class ForceDirectedView extends Component<{
         if (settings.offset) {
           let dx = Math.abs(settings.offset) * rx;
           let dy = Math.abs(settings.offset) * ry;
-          let ref = Math.max(dx, dy)
+          let ref = Math.max(dx, dy);
           padding = Math.max(ref * 2+20, padding);
         }
       }
@@ -684,9 +673,9 @@ export class ForceDirectedView extends Component<{
 
         }
 
-        textResult.forEach((t) => { result.push(t); })
+        textResult.forEach((t) => { result.push(t); });
         return result
-      }
+      };
 
       edges.push(
         <View key={"edge" + edge.from +' '+ edge.to} style={{

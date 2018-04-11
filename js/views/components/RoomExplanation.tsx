@@ -16,7 +16,7 @@ import {
   getStonesAndAppliancesInLocation,
   getFloatingStones
 } from '../../util/DataUtil'
-import { styles, colors } from '../styles'
+import { colors } from '../styles'
 import {BackAction} from "../../util/Back";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 

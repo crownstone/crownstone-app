@@ -17,11 +17,9 @@ import { IconButton } from '../components/IconButton'
 import { Util } from '../../util/Util'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-import {styles, colors, screenWidth, OrangeLine} from './../styles'
-import { LOG } from './../../logging/Log'
+import {colors, OrangeLine} from './../styles'
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
-import { TopBar } from "../components/Topbar";
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/Topbar/CancelButton";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
@@ -107,7 +105,7 @@ export class RoomEdit extends Component<any, any> {
 
         // jump back to root
         this.props.eventBus.emit('hideLoading');
-        Actions.popTo('sphereOverview')
+        Actions.popTo('sphereOverview');
 
         // reload fingerprints.
         LocationHandler.loadFingerprints();

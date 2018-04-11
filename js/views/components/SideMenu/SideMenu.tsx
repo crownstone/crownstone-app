@@ -13,8 +13,7 @@ import {
 } from 'react-native';
 import { SideBar }  from './SideBar'
 import Drawer       from 'react-native-drawer';
-import { Scene, Router, Actions } from 'react-native-router-flux';
-import { styles, colors, screenWidth, screenHeight } from '../../styles'
+import { Actions } from 'react-native-router-flux';
 
 export class SideMenu extends Component<any, any> {
   constructor(props) {

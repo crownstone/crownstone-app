@@ -12,10 +12,9 @@ import {
   View
 } from 'react-native';
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight, topBarHeight, OrangeLine} from '../styles'
+import {colors, screenWidth, screenHeight, topBarHeight, OrangeLine} from '../styles'
 import { Background } from '../components/Background'
 const Swiper = require("react-native-swiper");
-import { TopBar } from "../components/Topbar";
 import { eventBus } from "../../util/EventBus";
 import {TutorialSphere} from "./elements/TutorialSphere";
 import {TutorialGetStarted} from "./elements/TutorialGetStarted";

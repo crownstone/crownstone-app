@@ -15,8 +15,7 @@ import {
 
 import { SetupStateHandler } from '../../../native/setup/SetupStateHandler'
 import { Icon } from '../Icon';
-import { styles, colors, screenWidth } from '../../styles'
-import {Util} from "../../../util/Util";
+import { styles, colors} from '../../styles'
 import {NativeBus} from "../../../native/libInterface/NativeBus";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";
 

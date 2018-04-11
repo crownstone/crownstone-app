@@ -10,12 +10,12 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {styles, colors, screenWidth, OrangeLine} from '../styles'
+import {colors, OrangeLine} from '../styles'
 import {Util} from "../../util/Util";
 import {NativeBus} from "../../native/libInterface/NativeBus";
 import {Scheduler} from "../../logic/Scheduler";
 
-const triggerId = "SettingsStoneBleDebug"
+const triggerId = "SettingsStoneBleDebug";
 
 export class SettingsStoneBleDebug extends Component<any, any> {
   unsubscribeNative : any[] = [];
@@ -70,19 +70,19 @@ export class SettingsStoneBleDebug extends Component<any, any> {
   _parseAdvertisement(data : crownstoneAdvertisement) {
     if (!data.serviceData) { return; }
 
-    let newData : any = {}
+    let newData : any = {};
     let changes = false;
 
     if (data.serviceData.crownstoneId === this._crownstoneId) {
       newData['advertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
-      newData["advertisementPayload"] = JSON.stringify(data, undefined, 2)
+      newData["advertisementPayload"] = JSON.stringify(data, undefined, 2);
       newData["advertisementTimestamp"] = new Date().valueOf();
       changes = true;
     }
 
     if (data.handle === this._handle) {
       newData['directAdvertisementStateExternal'] = data.serviceData.stateOfExternalCrownstone;
-      newData["directAdvertisementPayload"] = JSON.stringify(data, undefined, 2)
+      newData["directAdvertisementPayload"] = JSON.stringify(data, undefined, 2);
       newData["directAdvertisementTimestamp"] = new Date().valueOf();
       changes = true;
     }
@@ -106,11 +106,11 @@ export class SettingsStoneBleDebug extends Component<any, any> {
     let stone = sphere.stones[this.props.stoneId];
     let element = Util.data.getElement(sphere, stone);
 
-    let largeLabel = "Examining \"" + stone.config.name + "\"\nMAC address: \"" + stone.config.macAddress
+    let largeLabel = "Examining \"" + stone.config.name + "\"\nMAC address: \"" + stone.config.macAddress;
     if (stone.config.applianceId) {
       largeLabel += "\nConnected device: " + element.config.name
     }
-    items.push({label: largeLabel, type: 'largeExplanation'})
+    items.push({label: largeLabel, type: 'largeExplanation'});
     items.push({label:
       "iBeacon UUID: " + this._ibeaconUuid.toUpperCase() + '\n' +
       "iBeacon Major: " + this._major + '\n' +
@@ -124,7 +124,7 @@ export class SettingsStoneBleDebug extends Component<any, any> {
         </Text>
       </View>
     });
-    items.push({label: "Time received: " + (this.state.ibeaconTimestamp ? new Date(this.state.ibeaconTimestamp) : "no data"), type: 'explanation', below: true})
+    items.push({label: "Time received: " + (this.state.ibeaconTimestamp ? new Date(this.state.ibeaconTimestamp) : "no data"), type: 'explanation', below: true});
 
     items.push({label: "Green Background means external state.", type: 'largeExplanation'});
 
@@ -136,7 +136,7 @@ export class SettingsStoneBleDebug extends Component<any, any> {
           </Text>
         </View>
     });
-    items.push({label: "Time received: " + (this.state.directAdvertisementTimestamp ? new Date(this.state.directAdvertisementTimestamp) : "no data"), type: 'explanation', below: true})
+    items.push({label: "Time received: " + (this.state.directAdvertisementTimestamp ? new Date(this.state.directAdvertisementTimestamp) : "no data"), type: 'explanation', below: true});
 
 
     items.push({label: "Latest Applied Advertisement data:", type: 'largeExplanation'});
@@ -147,7 +147,7 @@ export class SettingsStoneBleDebug extends Component<any, any> {
           </Text>
         </View>
     });
-    items.push({label: "Time received: " + (this.state.advertisementTimestamp ? new Date(this.state.advertisementTimestamp) : "no data"), type: 'explanation', below: true})
+    items.push({label: "Time received: " + (this.state.advertisementTimestamp ? new Date(this.state.advertisementTimestamp) : "no data"), type: 'explanation', below: true});
 
     return items;
   }

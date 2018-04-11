@@ -15,11 +15,10 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
-import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
+import {colors, screenWidth} from '../styles'
+import { Svg, Circle} from 'react-native-svg';
 import {eventBus} from "../../util/EventBus";
 import {AnimatedCircle} from "./Animated/AnimatedCircle";
-import {StoneUtil} from "../../util/StoneUtil";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../../native/libInterface/Constants";
 
@@ -204,7 +203,7 @@ export class DimmerButton extends Component<any, any> {
         if (this.state.pendingId === switchId) {
           this.setState({pendingCommand: false});
         }
-      })
+      });
     if (this.state.pendingCommand === false) {
       BatchCommandHandler.executePriority();
     }

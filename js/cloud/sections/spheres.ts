@@ -1,10 +1,8 @@
 import {Util} from "../../util/Util";
 
 const RNFS = require('react-native-fs');
-import { LOG} from '../../logging/Log'
 import {transferSpheres} from "../transferData/transferSpheres";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {cloudApiBase} from "./cloudApiBase";
 
 export const spheres = {
 

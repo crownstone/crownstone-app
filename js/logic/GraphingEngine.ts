@@ -21,7 +21,7 @@ export let defaultOptions = {
     parametrization: 'centripetal', // uniform (alpha = 0.0), chordal (alpha = 1.0), centripetal (alpha = 0.5)
     alpha: 0.5
   }
-}
+};
 
 
 
@@ -264,4 +264,4 @@ export const GraphingEngine = {
     }
     return d;
   }
-}
+};

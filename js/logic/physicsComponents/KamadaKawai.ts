@@ -65,7 +65,7 @@ class KamadaKawai {
       [highE_nodeId, maxEnergy, dE_dx, dE_dy] = this._getHighestEnergyNode(nodes, nodeIdArray);
       delta_m = maxEnergy;
       subIterations = 0;
-      console.log("DeltaM", delta_m)
+      console.log("DeltaM", delta_m);
       while(delta_m > innerThreshold && subIterations < maxInnerIterations) {
         subIterations += 1;
         this._moveNode(highE_nodeId, dE_dx, dE_dy, nodes, nodeIdArray);

@@ -6,9 +6,6 @@ import {
 } from 'react-native';
 
 
-import { styles, colors} from '../../styles'
-
-
 export class LargeExplanation extends Component<any, any> {
   render() {
     return (

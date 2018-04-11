@@ -4,7 +4,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import {availableScreenHeight, colors} from "../../styles";
+import {colors} from "../../styles";
 
 export const WNStyles = StyleSheet.create({
   important: {

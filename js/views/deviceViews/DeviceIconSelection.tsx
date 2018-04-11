@@ -10,9 +10,8 @@ import {
 } from 'react-native';
 
 import { Background }  from '../components/Background'
-import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
-import {colors, OrangeLine, screenWidth} from "../styles";
+import {OrangeLine} from "../styles";
 import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 

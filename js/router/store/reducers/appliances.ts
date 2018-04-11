@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
 import { update, getTime, refreshDefaults } from './reducerUtil'
 import { updateToggleState, toggleState, toggleStateAway } from './shared'
-import {LOG} from "../../../logging/Log";
 
 let defaultSettings = {
   config: {

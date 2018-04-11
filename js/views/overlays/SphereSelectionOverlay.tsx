@@ -11,7 +11,7 @@ import {
 
 import { IconButton }         from '../components/IconButton'
 import { OverlayBox }         from '../components/Overlays/OverlayBox'
-import { styles, colors , screenHeight, screenWidth, availableScreenHeight } from '../styles'
+import { colors , screenHeight, screenWidth} from '../styles'
 import { eventBus } from "../../util/EventBus";
 import { SeparatedItemList } from "../components/SeparatedItemList";
 import { Icon } from "../components/Icon";

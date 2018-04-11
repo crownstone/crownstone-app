@@ -10,10 +10,8 @@ import {
 } from 'react-native';
 
 import { Background } from '../components/Background'
-import { TopBar } from '../components/Topbar'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { Actions } from 'react-native-router-flux';
-import {styles, colors, screenWidth, OrangeLine} from '../styles'
+import {styles, colors, OrangeLine} from '../styles'
 import { SettingConstructor } from '../../util/SettingConstructor'
 
 const DeviceInfo = require('react-native-device-info');

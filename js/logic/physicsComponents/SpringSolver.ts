@@ -27,9 +27,9 @@ class SpringSolver {
         // only calculate forces if nodes are in the same sector
         if (edge._viaId && this.physicsBody.nodes[edge.to] !== undefined && this.physicsBody.nodes[edge.from] !== undefined && this.physicsBody.nodes[edge._viaId] !== undefined) {
           edgeLength = edge.length === undefined ? this.options.springLength : edge.length;
-          node1 = this.physicsBody.nodes[edge.from]
-          node2 = this.physicsBody.nodes[edge._viaId]
-          node3 = this.physicsBody.nodes[edge.to]
+          node1 = this.physicsBody.nodes[edge.from];
+          node2 = this.physicsBody.nodes[edge._viaId];
+          node3 = this.physicsBody.nodes[edge.to];
 
           this._calculateSpringForce(node1, node2, 0.5 * edgeLength);
           this._calculateSpringForce(node2, node3, 0.5 * edgeLength);

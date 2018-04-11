@@ -35,7 +35,7 @@ class FloydWarshall {
     for (let k = 0; k < nodeCount; k++) {
       for (let i = 0; i < nodeCount-1; i++) {
         for (let j = i+1; j < nodeCount; j++) {
-          D_matrix[nodeIdArray[i]][nodeIdArray[j]] = Math.min(D_matrix[nodeIdArray[i]][nodeIdArray[j]],D_matrix[nodeIdArray[i]][nodeIdArray[k]] + D_matrix[nodeIdArray[k]][nodeIdArray[j]])
+          D_matrix[nodeIdArray[i]][nodeIdArray[j]] = Math.min(D_matrix[nodeIdArray[i]][nodeIdArray[j]],D_matrix[nodeIdArray[i]][nodeIdArray[k]] + D_matrix[nodeIdArray[k]][nodeIdArray[j]]);
           D_matrix[nodeIdArray[j]][nodeIdArray[i]] = D_matrix[nodeIdArray[i]][nodeIdArray[j]];
         }
       }

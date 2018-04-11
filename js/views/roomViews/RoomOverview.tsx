@@ -12,34 +12,28 @@ import {
 } from 'react-native';
 
 import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
-import { STONE_TYPES }           from '../../router/store/reducers/stones'
 import { AlternatingContent }   from '../components/Animated/AlternatingContent'
 import { Background }           from '../components/Background'
 import { DeviceEntry }          from '../components/DeviceEntries/DeviceEntry'
 import { SetupDeviceEntry }     from '../components/DeviceEntries/SetupDeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
-import { INTENTS }              from '../../native/libInterface/Constants'
-import { TopBar }               from '../components/Topbar'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
-import { Util }                 from '../../util/Util'
 import { Icon }                 from '../components/Icon'
 const Actions = require('react-native-router-flux').Actions;
 import {
   getPresentUsersInLocation,
   getCurrentPowerUsageInLocation,
   getStonesAndAppliancesInLocation,
-  enoughCrownstonesInLocationsForIndoorLocalization,
   canUseIndoorLocalizationInSphere,
-  getFloatingStones, enoughCrownstonesForIndoorLocalization
+  enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
-import { styles, colors, screenWidth, screenHeight, tabBarHeight, topBarHeight } from '../styles'
+import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from '../styles'
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
 import {DfuDeviceEntry}  from '../components/DeviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
 import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {BackAction} from "../../util/Back";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {RoomDeleted} from "../static/RoomDeleted";
@@ -462,7 +456,7 @@ function getNavBarParams(state, props, viewingRemotely) {
     };
   }
 
-  NAVBAR_PARAMS_CACHE = {title: title, rightItem: getNavBarRightItem(state, enoughCrownstones, rightLabel, props, viewingRemotely), rightAction: rightAction, rightLabel: rightLabel}
+  NAVBAR_PARAMS_CACHE = {title: title, rightItem: getNavBarRightItem(state, enoughCrownstones, rightLabel, props, viewingRemotely), rightAction: rightAction, rightLabel: rightLabel};
   return NAVBAR_PARAMS_CACHE;
 }
 

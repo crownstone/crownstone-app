@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 
 import { Background }  from '../components/Background'
-import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
 import {colors, screenWidth} from "../styles";
 import {BackAction} from "../../util/Back";

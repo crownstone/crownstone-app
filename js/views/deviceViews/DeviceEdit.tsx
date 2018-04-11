@@ -15,24 +15,20 @@ import {
 const Actions = require('react-native-router-flux').Actions;
 
 import { STONE_TYPES } from '../../router/store/reducers/stones'
-import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../styles'
+import {styles, colors, OrangeLine} from '../styles'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import { BleUtil } from '../../util/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { FadeInView } from '../components/Animated/FadeInView'
 import {LOG, LOGe} from '../../logging/Log'
-import {DIMMING_ENABLED, MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
-import {TopBar} from "../components/Topbar";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {StoneUtil} from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
 import {BackAction} from "../../util/Back";
-import {Scheduler} from "../../logic/Scheduler";
 import {CancelButton} from "../components/Topbar/CancelButton";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
 
@@ -428,11 +424,11 @@ export class DeviceEdit extends Component<any, any> {
 
     // collect promises to handle changes in switchcraft and dim state
     let changePromises = [];
-    let dimChange         = this._setDimState(stone)
-    let switchCraftChange = this._setSwitchcraftState(stone)
+    let dimChange         = this._setDimState(stone);
+    let switchCraftChange = this._setSwitchcraftState(stone);
     if (dimChange)         { changePromises.push(dimChange); }
     if (switchCraftChange) { changePromises.push(switchCraftChange); }
-    Promise.all(changePromises).then(() => { this.props.eventBus.emit("hideLoading") } ).catch((err) => { () => { this.props.eventBus.emit("hideLoading") } })
+    Promise.all(changePromises).then(() => { this.props.eventBus.emit("hideLoading") } ).catch((err) => { () => { this.props.eventBus.emit("hideLoading") } });
 
     let actions = [];
     if (

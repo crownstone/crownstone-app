@@ -10,7 +10,7 @@ import {
   Vibration,
   View
 } from 'react-native';
-import { styles, colors, screenWidth } from '../styles'
+import { styles, colors} from '../styles'
 import { Background }                  from '../components/Background'
 import { ListEditableItems }           from '../components/ListEditableItems'
 import { Util, addDistanceToRssi }     from '../../util/Util'

@@ -9,8 +9,8 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors } from '../styles'
-import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
+import { colors } from '../styles'
+
 const Actions = require('react-native-router-flux').Actions;
 
 import {IconCircle} from "./IconCircle";
@@ -41,11 +41,11 @@ class MeshElementClass extends Component<any, any> {
   componentDidMount() {
     this.unsubscribeControlEvents = eventBus.on('nodeWasTapped'+this.props.id, (data) => {
       this.handleTap(data);
-    })
+    });
 
     this.unsubscribeControlEvents = eventBus.on('nodeTouched'+this.props.id, (data) => {
       this.handleTouch(data);
-    })
+    });
 
     this.unsubscribeControlEvents = eventBus.on('nodeReleased'+this.props.id, (data) => {
       this.handleTouchReleased(data);
@@ -68,7 +68,7 @@ class MeshElementClass extends Component<any, any> {
 
     let width    = 2*this.props.radius;
     let height   = 2*this.props.radius;
-    let overlap  = 0.25
+    let overlap  = 0.25;
     let iconSize = 0.5*(width + overlap*width);
 
     let innerWidth  = 0.95*width;

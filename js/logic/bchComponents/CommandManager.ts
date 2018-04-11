@@ -1,7 +1,6 @@
 import { eventBus }              from '../../util/EventBus'
 import { Util }                  from '../../util/Util'
-import {LOG, LOGd, LOGe}         from '../../logging/Log'
-import {DISABLE_NATIVE, STONE_TIME_REFRESH_INTERVAL} from '../../ExternalConfig'
+import {LOGd, LOGe}         from '../../logging/Log'
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {MeshUtil} from "../../util/MeshUtil";
 
@@ -399,4 +398,4 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   }
 
   return payload;
-}
+};

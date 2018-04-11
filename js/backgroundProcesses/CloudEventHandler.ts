@@ -1,5 +1,4 @@
 import {eventBus} from "../util/EventBus";
-import {Util} from "../util/Util";
 import {LOG} from "../logging/Log";
 import {syncEvents} from "../cloud/sections/sync/syncEvents";
 

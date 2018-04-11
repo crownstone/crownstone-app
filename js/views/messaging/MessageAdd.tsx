@@ -13,22 +13,13 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 import {
-  availableScreenHeight,
   colors,
-  OrangeLine,
-  screenHeight,
-  screenWidth,
-  tabBarHeight,
-  topBarHeight
-} from '../styles'
+  OrangeLine} from '../styles'
 import {Background} from "../components/Background";
-import {TopBar} from "../components/Topbar";
 import {IconButton} from "../components/IconButton";
 import {Util} from "../../util/Util";
 import { ListEditableItems } from "../components/ListEditableItems";
-import { Icon } from "../components/Icon";
 import { ProfilePicture } from "../components/ProfilePicture";
-import {CLOUD} from "../../cloud/cloudAPI";
 import {MessageUtil} from "../../util/MessageUtil";
 import {BackAction} from "../../util/Back";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
@@ -64,7 +55,7 @@ export class MessageAdd extends Component<any, any> {
       recipients: {},
     };
 
-    this.state.recipients[EVERYONE_IN_SPHERE] = true
+    this.state.recipients[EVERYONE_IN_SPHERE] = true;
     this.props.navigation.setParams({rightAction: () => { this._createMessage();}})
   }
 

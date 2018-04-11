@@ -14,4 +14,4 @@ export const BackAction = function(popToName?) {
   } catch (popErr) {
     LOG.error("Pop error:", popErr);
   }
-}
+};

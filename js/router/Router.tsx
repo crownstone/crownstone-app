@@ -7,10 +7,9 @@ import { StoreManager }    from './store/storeManager'
 import { BackgroundProcessHandler } from '../backgroundProcesses/BackgroundProcessHandler'
 import { eventBus }        from '../util/EventBus'
 import { LOG }             from '../logging/Log'
-import { Background }      from '../views/components/Background'
 import { Router_IOS }      from './RouterIOS';
 import { Router_Android }  from './RouterAndroid';
-import { styles, colors, screenWidth, screenHeight } from '../views/styles'
+import { styles} from '../views/styles'
 import SplashScreen from 'react-native-splash-screen'
 import {Splash} from "../views/startupViews/Splash";
 

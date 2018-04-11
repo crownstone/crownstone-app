@@ -9,7 +9,7 @@ import {
 
 import { IconButton }           from '../components/IconButton'
 import { OverlayBox }           from '../components/Overlays/OverlayBox'
-import { styles, colors , screenHeight, screenWidth } from '../styles'
+import { styles, colors } from '../styles'
 import { eventBus }             from "../../util/EventBus";
 import { BatchCommandHandler }  from "../../logic/BatchCommandHandler";
 import { Scheduler }            from "../../logic/Scheduler";
@@ -67,13 +67,13 @@ export class LockOverlay extends Component<any, any> {
         eventBus.emit("showLoading", "Done!");
         Scheduler.scheduleCallback(() => {
           eventBus.emit("hideLoading");
-          this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.state.sphereId, stoneId: this.state.stoneId, data: {locked: true}})
+          this.props.store.dispatch({type:"UPDATE_STONE_CONFIG", sphereId: this.state.sphereId, stoneId: this.state.stoneId, data: {locked: true}});
           this.setState({visible: false, sphereId: null});
         }, 500, 'Locked Crownstone');
       })
       .catch((err) => {
         eventBus.emit("hideLoading");
-        Alert.alert("I'm sorry..", "Something went wrong while locking this Crownstone. Make sure you're near the Crownstone that you want to lock.",[{text:'OK'}])
+        Alert.alert("I'm sorry..", "Something went wrong while locking this Crownstone. Make sure you're near the Crownstone that you want to lock.",[{text:'OK'}]);
         this.setState({visible: false, sphereId: null});
       });
     BatchCommandHandler.executePriority();

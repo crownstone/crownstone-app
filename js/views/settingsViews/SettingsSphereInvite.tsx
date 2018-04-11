@@ -12,10 +12,9 @@ import {
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenWidth, OrangeLine} from '../styles';
+import {colors, OrangeLine} from '../styles';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 

@@ -14,9 +14,8 @@ import { Background } from '../components/Background'
 import { ProfilePicture } from '../components/ProfilePicture'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import {styles, colors, screenWidth, OrangeLine} from '../styles'
+import {screenWidth, OrangeLine} from '../styles'
 import {LOG} from "../../logging/Log";
-import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;

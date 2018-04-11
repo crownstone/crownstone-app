@@ -24,7 +24,7 @@ import { TextEditInput }                              from '../components/EditCo
 import { Background }                                 from '../components/Background'
 import { StoreManager }                               from '../../router/store/storeManager'
 import loginStyles                                    from './LoginStyles'
-import { styles, colors , screenWidth, screenHeight } from '../styles'
+import { screenWidth, screenHeight } from '../styles'
 import { DEBUG_MODE_ENABLED }                         from '../../ExternalConfig';
 import {TopBar} from "../components/Topbar";
 

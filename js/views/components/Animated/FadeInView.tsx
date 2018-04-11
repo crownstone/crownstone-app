@@ -3,7 +3,6 @@ import {
   Animated,
   View
 } from 'react-native';
-import { LOG } from '../../../logging/Log'
 
 export class FadeInView extends Component<any, any> {
   visible : boolean;

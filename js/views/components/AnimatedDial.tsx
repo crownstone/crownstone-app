@@ -15,9 +15,8 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import { styles, colors, screenWidth, screenHeight, availableScreenHeight, topBarHeight, statusBarHeight} from '../styles'
-import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
-import { Mixer } from "../../util/colorCharm/Mixer";
+import { colors} from '../styles'
+import { Svg, Circle} from 'react-native-svg';
 
 export class AnimatedDial extends Component<{width: number, height: number, index?: number, level: any, blink: any}, any> {
   amountOfBlocks = 20;

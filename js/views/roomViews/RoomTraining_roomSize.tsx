@@ -14,14 +14,10 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 
-import { TopBar }       from '../components/Topbar'
 import { Background }   from '../components/Background'
-import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../styles'
+import {colors, screenWidth, screenHeight, OrangeLine} from '../styles'
 import { Icon }         from '../components/Icon';
-import { LOG }          from '../../logging/Log'
 import { Util }         from "../../util/Util";
-import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {enoughCrownstonesForIndoorLocalization} from "../../util/DataUtil";
 
 
 let buttonTextStyle = {
@@ -144,7 +140,7 @@ export class RoomTraining_roomSize extends Component<any, any> {
 
 function getNavBarParams(state, props, viewingRemotely) {
   let ai = Util.data.getAiData(state, props.sphereId);
-  NAVBAR_PARAMS_CACHE = {title: 'Teaching ' + ai.name}
+  NAVBAR_PARAMS_CACHE = {title: 'Teaching ' + ai.name};
   return NAVBAR_PARAMS_CACHE;
 }
 

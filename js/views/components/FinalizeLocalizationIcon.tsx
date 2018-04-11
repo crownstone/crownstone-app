@@ -5,7 +5,7 @@ import {
   View
 } from 'react-native';
 import { Icon } from './Icon'
-import { styles, colors } from '../styles'
+import { colors } from '../styles'
 
 export class FinalizeLocalizationIcon extends Component<any, any> {
   render() {

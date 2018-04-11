@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 
-import { styles, colors, screenWidth, screenHeight, statusBarHeight, topBarHeight, tabBarHeight} from '../styles'
+import { styles, screenHeight, topBarHeight, tabBarHeight} from '../styles'
 
 
 export class Background extends Component<{hasNavBar?: boolean, fullScreen?: boolean, hasTopBar?: boolean, image: any, shadedStatusBar?: boolean}, any> {

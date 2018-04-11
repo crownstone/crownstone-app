@@ -13,19 +13,10 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 import {
-  availableScreenHeight,
   colors,
-  OrangeLine,
-  screenHeight,
-  screenWidth,
-  tabBarHeight,
-  topBarHeight
-} from '../styles'
+  OrangeLine} from '../styles'
 import {Background} from "../components/Background";
-import {TopBar} from "../components/Topbar";
 import {IconButton} from "../components/IconButton";
-import {Util} from "../../util/Util";
-import {ListEditableItems} from "../components/ListEditableItems";
 import {Icon} from "../components/Icon";
 import {SeparatedItemList} from "../components/SeparatedItemList";
 import {EditableItem} from "../components/EditableItem";

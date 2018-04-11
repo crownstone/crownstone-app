@@ -4,7 +4,6 @@ import {
   View
 } from 'react-native';
 import { FadeInView } from './FadeInView'
-import { LOG } from '../../../logging/Log'
 
 export class AlternatingContent extends Component<any, any> {
   interval : any;

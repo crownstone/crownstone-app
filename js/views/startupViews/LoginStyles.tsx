@@ -1,6 +1,6 @@
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import { Dimensions, PixelRatio, StyleSheet } from 'react-native'
-import { screenWidth, screenHeight } from '../styles'
+import { screenWidth} from '../styles'
 
 export default StyleSheet.create({
   spacer: {

@@ -99,7 +99,7 @@ export class DirectCommand {
           resolve();
         }
       })
-    }
+    };
 
 
     let actionPromise = () => {

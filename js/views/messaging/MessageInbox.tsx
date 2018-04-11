@@ -18,12 +18,8 @@ import {
   OrangeLine,
   screenHeight,
   screenWidth,
-  styles,
-  tabBarHeight,
-  topBarHeight
-} from '../styles'
+  styles} from '../styles'
 import {Background} from "../components/Background";
-import {TopBar} from "../components/Topbar";
 import {IconButton} from "../components/IconButton";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {MessageEntry} from "./MessageEntry";

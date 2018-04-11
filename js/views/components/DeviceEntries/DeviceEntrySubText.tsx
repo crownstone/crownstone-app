@@ -14,7 +14,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth } from '../../styles'
+import { colors} from '../../styles'
 import {SetupStateHandler} from "../../../native/setup/SetupStateHandler";
 
 export class DeviceEntrySubText extends Component<any, any> {

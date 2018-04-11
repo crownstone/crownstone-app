@@ -5,7 +5,6 @@ import { Component } from 'react';
 import Ionicon from 'react-native-vector-icons/dist/Ionicons';
 import EvilIcons from 'react-native-vector-icons/dist/EvilIcons';
 import { CustomIcon, CustomIcon2 } from '../../fonts/customIcons'
-import { styles, colors} from '../styles'
 
 import { iconCorrections } from '../../fonts/iconCorrections'
 

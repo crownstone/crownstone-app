@@ -3,7 +3,6 @@
  */
 
 import * as convert from '../ColorConverters';
-import { util } from './modules/util';
 import { interpolation } from './modules/interpolation';
 
 export class Mixer {

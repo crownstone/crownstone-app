@@ -5,7 +5,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth } from '../../styles'
+import { styles, screenWidth } from '../../styles'
 
 
 export class InfoBar extends Component<any, any> {

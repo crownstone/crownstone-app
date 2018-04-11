@@ -17,7 +17,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenWidth, OrangeLine} from './../styles'
+import {styles, colors, OrangeLine} from './../styles'
 import { Icon } from '../components/Icon';
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {EventBusClass} from "../../util/EventBus";

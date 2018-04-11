@@ -151,11 +151,11 @@ class RoomCircleClass extends Component<any, any> {
 
     this.unsubscribeControlEvents = this.props.eventBus.on('nodeWasTapped'+this.props.locationId, (data) => {
       this.handleTap(data);
-    })
+    });
 
     this.unsubscribeControlEvents = this.props.eventBus.on('nodeTouched'+this.props.locationId, (data) => {
       this.handleTouch(data);
-    })
+    });
 
     this.unsubscribeControlEvents = this.props.eventBus.on('nodeReleased'+this.props.locationId, (data) => {
       this.handleTouchReleased(data);

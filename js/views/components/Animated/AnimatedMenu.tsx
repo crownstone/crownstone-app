@@ -10,9 +10,7 @@ import {
 } from 'react-native';
 
 import {
-  styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight,
-  availableScreenHeight
-} from '../../styles'
+  styles, colors, screenWidth, screenHeight} from '../../styles'
 import { BlurView } from 'react-native-blur';
 import { FadeInView } from "./FadeInView";
 import { eventBus }  from "../../../util/EventBus";
@@ -105,7 +103,7 @@ export class AnimatedMenu extends Component<any, any> {
   }
 
   render() {
-    let totalHeight = this.menuItemHeight*this.state.content.length+ (this.state.content.length-1)*this.menuSpacerHeight
+    let totalHeight = this.menuItemHeight*this.state.content.length+ (this.state.content.length-1)*this.menuSpacerHeight;
     return (
       <FadeInView
         style={[styles.fullscreen]}

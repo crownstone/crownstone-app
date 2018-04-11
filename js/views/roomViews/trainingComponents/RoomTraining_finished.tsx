@@ -14,8 +14,7 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 
-import { TopBar } from '../../components/Topbar'
-import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../../styles'
+import {styles, colors, screenWidth, OrangeLine} from '../../styles'
 import { Icon } from '../../components/Icon';
 
 export class RoomTraining_finished extends Component<any, any> {

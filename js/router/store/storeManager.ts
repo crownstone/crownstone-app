@@ -6,7 +6,6 @@ import { CloudEnhancer }                from './cloudEnhancer'
 import { EventEnhancer }                from './eventEnhancer'
 import { eventBus }                     from '../../util/EventBus'
 import {LOG, LOGe} from '../../logging/Log'
-import { Scheduler }                    from "../../logic/Scheduler";
 import { PersistenceEnhancer }          from "./persistenceEnhancer";
 import {Persistor} from "./Persistor";
 

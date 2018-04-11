@@ -19,7 +19,6 @@ import { Util }                from "../../../util/Util";
 import { Icon }                from "../../components/Icon";
 import { StoneUtil }           from "../../../util/StoneUtil";
 import { AnimatedCircle }      from "../../components/Animated/AnimatedCircle";
-import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { DimmerButton }        from "../../components/DimmerButton";
 import { INTENTS }             from "../../../native/libInterface/Constants";
 import { DIMMING_ENABLED}      from "../../../ExternalConfig";
@@ -125,7 +124,7 @@ export class DeviceSummary extends Component<any, any> {
           sphereId={this.props.sphereId}
           stoneId={this.props.stoneId}
           unlockCrownstone={ () => {
-            let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'lockSwitch', value: false })
+            let promise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName : 'lockSwitch', value: false });
             BatchCommandHandler.executePriority();
             return promise;
           }}

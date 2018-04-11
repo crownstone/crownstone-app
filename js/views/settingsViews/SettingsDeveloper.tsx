@@ -14,10 +14,8 @@ import { Background } from '../components/Background'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { LOG } from '../../logging/Log'
-import { styles, colors } from '../styles'
+import { colors } from '../styles'
 import {Util} from "../../util/Util";
-import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 import {clearLogs} from "../../logging/LogUtil";
 import {BackAction} from "../../util/Back";
 import {MeshUtil} from "../../util/MeshUtil";
@@ -196,7 +194,7 @@ export class SettingsDeveloper extends Component<any, any> {
               use_advertisement_rssi_too: newValue,
             }
           });
-        }
+        };
 
         if (newValue === true) {
           Alert.alert("Are you sure?", "Only enable this if you know what you're doing!",[{text:"Do it.", onPress: execute}, {text:"Nevermind..."}])

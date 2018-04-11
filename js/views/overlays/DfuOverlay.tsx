@@ -18,7 +18,7 @@ import { FirmwareHandler } from "../../native/firmware/FirmwareHandler";
 import {LOG, LOGd} from "../../logging/Log";
 import { Util }            from "../../util/Util";
 import { ProgressCircle }  from "../components/ProgressCircle";
-import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../styles'
+import {colors, screenHeight, screenWidth} from '../styles'
 import {Icon} from "../components/Icon";
 import {NativeBus} from "../../native/libInterface/NativeBus";
 import {BleUtil} from "../../util/BleUtil";

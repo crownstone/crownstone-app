@@ -12,14 +12,9 @@ import {
 } from 'react-native';
 
 
-import {
-  Line,
-} from 'react-native-svg';
-
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
-import {styles, colors, screenWidth, OrangeLine} from './../styles'
-import { IconCircle } from "../components/IconCircle";
+import {colors, OrangeLine} from './../styles'
 import { MeshElement } from "../components/MeshElement";
 import {ForceDirectedView} from "../components/InteractiveView/ForceDirectedView";
 
@@ -134,7 +129,7 @@ export class SettingsMeshTopology extends Component<any, any> {
 
 
     let edges = [];
-    let connections = {}
+    let connections = {};
 
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];

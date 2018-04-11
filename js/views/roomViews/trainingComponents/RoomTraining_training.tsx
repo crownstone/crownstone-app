@@ -12,11 +12,9 @@ import {
   Vibration
 } from 'react-native';
 
-import { TopBar } from '../../components/Topbar'
-import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../../styles'
+import {colors, screenWidth, OrangeLine} from '../../styles'
 import { Icon } from '../../components/Icon';
 
-import { Svg, Circle } from 'react-native-svg';
 import {ProgressCircle} from "../../components/ProgressCircle";
 
 

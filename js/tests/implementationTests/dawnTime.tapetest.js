@@ -12,7 +12,7 @@ test('dawn', function (t) {
   let keys = Object.keys(times);
   keys.forEach((key) => {
     console.log(key, times[key].valueOf(), new Date(times[key]))
-  })
+  });
   t.end();
 });
 

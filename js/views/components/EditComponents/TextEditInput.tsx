@@ -5,7 +5,6 @@ import {
 } from 'react-native';
 
 import { eventBus } from '../../../util/EventBus'
-import {colors} from "../../styles";
 
 export class TextEditInput extends Component<any, any> {
   isInFocus : boolean;

@@ -3,7 +3,6 @@ let deepFreeze = require('deep-freeze');
 
 import CrownstoneReducer from '../../router/store/reducer'
 import spheresReducer from '../../router/store/reducers/spheres'
-import locationsReducer from '../../router/store/reducers/locations'
 
 // hack to remove the current time from the reducer so we can predictably match the results.
 Date.prototype.valueOf = function () {

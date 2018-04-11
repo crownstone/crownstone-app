@@ -1,5 +1,3 @@
-import { combineReducers } from 'redux'
-
 import userReducer         from './reducers/user'
 import eventReducer        from './reducers/events'
 import devicesReducer      from './reducers/devices'

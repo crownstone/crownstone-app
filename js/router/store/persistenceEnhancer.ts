@@ -4,7 +4,7 @@ import {StoreManager} from "./storeManager";
 
 const TransientTypes = {
   UPDATE_STONE_SWITCH_STATE_TRANSIENT: true
-}
+};
 
 /**
  * This will ensure that the usage of the classifier will be done according

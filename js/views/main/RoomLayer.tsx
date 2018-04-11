@@ -15,9 +15,8 @@ import {
 let Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler } from '../../native/setup/SetupStateHandler'
 import { RoomCircle }        from '../components/RoomCircle'
-import { getFloatingStones, getAmountOfStonesInLocation } from '../../util/DataUtil'
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight, availableScreenHeight} from '../styles'
-import { LOG }               from '../../logging/Log'
+import { getFloatingStones} from '../../util/DataUtil'
+import { screenWidth} from '../styles'
 import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
 import {ForceDirectedView}   from "../components/InteractiveView/ForceDirectedView";
@@ -25,11 +24,11 @@ import {ForceDirectedView}   from "../components/InteractiveView/ForceDirectedVi
 export class RoomLayer extends Component<any, any> {
   state:any; // used to avoid warnings for setting state values
 
-  _baseRadius
-  _currentSphere
-  _showingFloatingRoom
-  unsubscribeSetupEvents = []
-  unsubscribeStoreEvents
+  _baseRadius;
+  _currentSphere;
+  _showingFloatingRoom;
+  unsubscribeSetupEvents = [];
+  unsubscribeStoreEvents;
 
   constructor(props) {
     super(props);
@@ -121,7 +120,7 @@ export class RoomLayer extends Component<any, any> {
       return <View style={{position: 'absolute', top: 0, left: 0, width: screenWidth, flex: 1}} />;
     }
     else {
-      let roomIdArray = this.getRooms()
+      let roomIdArray = this.getRooms();
 
       return (
         <ForceDirectedView

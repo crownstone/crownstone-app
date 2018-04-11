@@ -14,21 +14,16 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler }                              from '../../native/setup/SetupStateHandler'
-import { TopBar }                                         from '../components/Topbar'
-import { FinalizeLocalizationIcon }                       from '../components/FinalizeLocalizationIcon'
 import { AnimatedBackground }                             from '../components/Animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
 import { requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { LOG }                        from '../../logging/Log'
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight, topBarHeight, statusBarHeight} from '../styles'
+import {colors, screenWidth, topBarHeight} from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
-import {Util} from "../../util/Util";
 import {eventBus} from "../../util/EventBus";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {AnimatedMenu} from "../components/Animated/AnimatedMenu";
 import {TopbarButton} from '../components/Topbar/TopbarButton';
-import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 
 
 export class SphereOverview extends Component<any, any> {

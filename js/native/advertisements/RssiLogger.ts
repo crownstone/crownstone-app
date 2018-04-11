@@ -4,7 +4,7 @@ class RssiLoggerClass {
   log = {};
 
   constructor() {
-    eventBus.on("iBeaconOfValidCrownstone",       (data) => { this.log[data.stoneId] = { t: new Date().valueOf(), rssi: data.rssi }; })
+    eventBus.on("iBeaconOfValidCrownstone",       (data) => { this.log[data.stoneId] = { t: new Date().valueOf(), rssi: data.rssi }; });
     eventBus.on("AdvertisementOfValidCrownstone", (data) => { this.log[data.stoneId] = { t: new Date().valueOf(), rssi: data.rssi }; })
   }
 

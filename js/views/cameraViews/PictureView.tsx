@@ -11,8 +11,7 @@ import {
 
 import { CameraKitCamera, CameraKitCameraScreen } from 'react-native-camera-kit';
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../styles'
-import { LOG } from '../../logging/Log'
+import {colors, screenWidth, screenHeight, OrangeLine} from '../styles'
 import { SessionMemory } from '../../util/SessionMemory'
 import {BackAction} from "../../util/Back";
 

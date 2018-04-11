@@ -16,7 +16,6 @@ import {
 import { Background } from './../components/Background'
 const Actions = require('react-native-router-flux').Actions;
 import loginStyles from './LoginStyles'
-import { styles, colors } from './../styles'
 
 
 export class RegisterConclusion extends Component<any, any> {

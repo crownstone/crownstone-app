@@ -1,7 +1,7 @@
 import { Scheduler } from "../../logic/Scheduler";
 
 
-const TRIGGER_ID = "STONE_STORE_MANAGER_TRIGGER"
+const TRIGGER_ID = "STONE_STORE_MANAGER_TRIGGER";
 /**
  * This manager will handle all of the store actions. It will tick on the scheduler and perform store actions for all crownstones as a batch.
  */

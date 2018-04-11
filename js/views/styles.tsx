@@ -1,9 +1,9 @@
 import * as React from 'react'; import { Component } from 'react';
 import { Dimensions, PixelRatio, Platform, StyleSheet, View } from 'react-native'
-import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/ColorConverters'
+import { hex2rgb} from '../util/ColorConverters'
 const DeviceInfo = require('react-native-device-info');
 
-export const deviceModel = DeviceInfo.getModel()
+export const deviceModel = DeviceInfo.getModel();
 
 export const topBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high
 export const tabBarMargin    = Platform.OS === 'android' ? 0   :  (deviceModel === 'iPhone X' ? 0 : 0 ); // Status bar in iOS is 20 high

@@ -1,5 +1,5 @@
 import { Alert, Platform } from 'react-native'
-import { CLOUD_ADDRESS, DEBUG, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
+import { CLOUD_ADDRESS, SILENCE_CLOUD, NETWORK_REQUEST_TIMEOUT } from '../ExternalConfig'
 const RNFS = require('react-native-fs');
 let emptyFunction = function() {};
 import {LOG, LOGe, LOGi} from '../logging/Log'
@@ -138,7 +138,7 @@ export function download(options, id, accessToken, toPath, beginCallback = empty
 export function downloadFile(url, targetPath, callbacks) {
   return new Promise((resolve, reject) => {
     // get a temp path
-    let downloadSessionId = Math.round(10000 + Math.random() * 1e5).toString(36)
+    let downloadSessionId = Math.round(10000 + Math.random() * 1e5).toString(36);
     let tempFilename = downloadSessionId + '.tmp';
     let tempPath = Util.getPath(tempFilename);
     tempPath = 'file://' + tempPath.replace("file://","");

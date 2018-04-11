@@ -6,8 +6,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth } from '../../styles'
-import {Icon} from "../Icon";
+import { styles, screenWidth } from '../../styles'
 import {Util} from "../../../util/Util";
 import {DoubleTapDelete} from "../DoubleTapDelete";
 

@@ -1,4 +1,4 @@
-import * as React from 'react'; import { Component } from 'react';
+import * as React from 'react';
 import {
   Alert,
   Dimensions,
@@ -13,7 +13,7 @@ import {
 import { Util } from './Util'
 import { AppUtil } from './AppUtil'
 import { Actions } from 'react-native-router-flux';
-import { styles, colors } from '../views/styles'
+import { colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";

@@ -162,7 +162,7 @@ class PhysicsEngine {
         this.options.useDynamicEdges ? 2*springLength : springLength,
         this.options[this.options.solver].springConstant
       );
-      layoutSolver.solve()
+      layoutSolver.solve();
 
 
       if (this.options.useDynamicEdges === true) {

@@ -4,7 +4,7 @@ import {
   View
 } from 'react-native';
 import {Background} from "../components/Background";
-import {colors, OrangeLine, screenWidth} from "../styles";
+import {OrangeLine} from "../styles";
 
 
 export class SphereDeleted extends Component<any, any> {

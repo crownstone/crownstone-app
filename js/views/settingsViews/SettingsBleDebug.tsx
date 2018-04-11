@@ -10,7 +10,7 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {styles, colors, screenWidth, OrangeLine} from '../styles'
+import {colors, OrangeLine} from '../styles'
 import {Util} from "../../util/Util";
 import {IconCircle} from "../components/IconCircle";
 const Actions = require('react-native-router-flux').Actions;
@@ -85,7 +85,7 @@ export class SettingsBleDebug extends Component<any, any> {
       let element = Util.data.getElement(sphere, stone);
 
       this._pushCrownstoneItem(items, sphereId, element, stone, stoneId, locationTitle, locationColor)
-    })
+    });
 
 
 

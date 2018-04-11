@@ -14,7 +14,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
-import {styles, colors, screenWidth, screenHeight, OrangeLine} from './../styles'
+import {colors, screenHeight, OrangeLine} from './../styles'
 
 export class SettingsPluginRecoverStep1 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {

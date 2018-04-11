@@ -1,5 +1,5 @@
 import { Alert, AsyncStorage } from 'react-native'
-import {LOGd, LOGe, LOGi, LOGv, LOGw} from '../../logging/Log'
+import {LOGd, LOGe, LOGi, LOGw} from '../../logging/Log'
 import {LOG_LEVEL} from "../../logging/LogLevels";
 import {PersistorUtil} from "./PersistorUtil";
 
@@ -103,9 +103,9 @@ export class Persistor {
                 this.fail();
                 migrationRequired = false;
                 return {};
-              })
+              });
           case 'v2':
-            return this._hydrateV2()
+            return this._hydrateV2();
           case 'reset':
             abortHydration = true;
             break;
@@ -256,7 +256,7 @@ export class Persistor {
             let key = err.key;
             LOGw.store("Persistor: Hydration v2 Step2, problem getting key in step 2:", key, err.message);
             failedKeys.push(key);
-          })
+          });
 
           // clear broken keys.
           LOGd.store("Persistor: Hydration v2 Step2, removing failing keys.", failedKeys);

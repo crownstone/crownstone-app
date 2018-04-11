@@ -10,10 +10,8 @@ import {
 
 import { IconButton } from '../components/IconButton'
 import { Background } from '../components/Background'
-import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
-import { LOG } from '../../logging/Log'
-import {styles, colors, screenWidth, OrangeLine} from '../styles'
+import {colors, OrangeLine} from '../styles'
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";

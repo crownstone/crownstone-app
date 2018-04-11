@@ -2,13 +2,12 @@ import { Alert, Platform } from 'react-native';
 import ImageResizer from 'react-native-image-resizer';
 const RNFS = require('react-native-fs');
 
-import { styles, colors , screenWidth, screenHeight, pxRatio } from '../views/styles'
+import { screenWidth, screenHeight, pxRatio } from '../views/styles'
 
 import { MeshUtil } from './MeshUtil'
 import { DataUtil } from './DataUtil'
 import {EventUtil} from "./EventUtil";
 import {ALWAYS_DFU_UPDATE} from "../ExternalConfig";
-import {MessageUtil} from "./MessageUtil";
 import {Permissions} from "../backgroundProcesses/PermissionManager";
 
 export const emailChecker = function(email) {
@@ -435,9 +434,9 @@ export const Util = {
 
 
 function getRC(version) {
-  let lowerCaseVersion = version.toLowerCase()
+  let lowerCaseVersion = version.toLowerCase();
   let lowerCaseRC_split = lowerCaseVersion.split("-rc");
-  let RC = null
+  let RC = null;
   if (lowerCaseRC_split.length > 1) {
     RC = lowerCaseRC_split[1];
   }

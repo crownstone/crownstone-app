@@ -11,7 +11,7 @@ import {
 import { AnimatedLogo }       from './Animated/AnimatedLogo'
 import { AnimatedLoadingBar } from './Animated/AnimatedLoadingBar'
 import { FadeInView }         from './Animated/FadeInView'
-import { styles, colors , screenHeight, screenWidth } from './../styles'
+import { styles, colors , screenHeight} from './../styles'
 import { eventBus } from '../../util/EventBus'
 
 export class Processing extends Component<any, any> {

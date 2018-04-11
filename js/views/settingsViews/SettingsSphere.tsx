@@ -15,17 +15,14 @@ import { ProfilePicture } from '../components/ProfilePicture'
 import { IconButton } from '../components/IconButton'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors } from './../styles';
+import { colors } from './../styles';
 import { getStonesAndAppliancesInSphere } from '../../util/DataUtil';
-import { Icon } from '../components/Icon';
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
 import { Util } from "../../util/Util";
-import {PermissionClass} from "../../backgroundProcesses/Permissions";
-import {TopBar} from "../components/Topbar";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
-import {OrangeLine, screenWidth, topBarHeight} from "../styles";
+import {OrangeLine} from "../styles";
 
 export class SettingsSphere extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {

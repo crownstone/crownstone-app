@@ -117,7 +117,7 @@ export class DeviceUpdate extends Component<any, any> {
   render() {
     const state    = this.props.store.getState();
     const sphere   = state.spheres[this.props.sphereId];
-    const stone    = sphere.stones[this.props.stoneId]
+    const stone    = sphere.stones[this.props.stoneId];
     const disabled = stone.config.disabled;
 
     return (

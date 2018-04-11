@@ -16,7 +16,6 @@ import { Util } from '../../util/Util'
 const Actions = require('react-native-router-flux').Actions;
 import Toast from 'react-native-same-toast';
 import { styles, colors } from './../styles'
-import { TopBar } from '../components/Topbar';
 import { RoomList } from '../components/RoomList';
 import { Icon } from '../components/Icon';
 import {BackAction} from "../../util/Back";

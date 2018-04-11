@@ -1,6 +1,5 @@
-import { Reducer, ActionConst } from 'react-native-router-flux';
+import { Reducer} from 'react-native-router-flux';
 import { Platform } from 'react-native';
-import { LOG } from '../../../logging/Log'
 
 let inTabMenu = (state) => {
   if (state && state.children && state.children.length > 0) {

@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 
-import { styles, colors, screenWidth, screenHeight} from '../../styles'
+import { colors, screenWidth} from '../../styles'
 
 
 /**

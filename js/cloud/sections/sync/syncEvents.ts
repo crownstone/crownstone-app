@@ -1,6 +1,5 @@
 import { CLOUD } from '../../cloudAPI'
 import { Platform } from 'react-native'
-import {transferSchedules} from "../../transferData/transferSchedules";
 import {LOG} from "../../../logging/Log";
 const RNFS = require('react-native-fs');
 

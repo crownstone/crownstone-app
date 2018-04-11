@@ -1,20 +1,7 @@
 import { Platform } from 'react-native';
 import {
-  LOG_INFO,
-  LOG_ERRORS,
-  LOG_WARNINGS,
-  LOG_VERBOSE,
-  LOG_EVENTS,
-  LOG_CLOUD,
-  LOG_BLE,
-  LOG_MESH,
-  LOG_STORE,
-  LOG_SCHEDULER,
   LOG_TO_FILE,
-  RELEASE_MODE_USED,
-} from '../ExternalConfig'
-import { Scheduler } from '../logic/Scheduler'
-import { eventBus } from '../util/EventBus'
+  } from '../ExternalConfig'
 import { safeDeleteFile, Util } from '../util/Util'
 import {LogProcessor} from "./LogProcessor";
 

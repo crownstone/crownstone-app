@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import { Icon } from './Icon';
-import { styles, colors, screenWidth, topBarHeight, statusBarHeight} from '../styles'
+import { colors, topBarHeight, statusBarHeight} from '../styles'
 let Actions = require('react-native-router-flux').Actions;
 import { AlternatingContent }   from './Animated/AlternatingContent'
 import {BackAction} from "../../util/Back";

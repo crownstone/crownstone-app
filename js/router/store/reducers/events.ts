@@ -1,4 +1,4 @@
-import { update, getTime, refreshDefaults } from './reducerUtil'
+import { update} from './reducerUtil'
 import { combineReducers } from 'redux'
 
 let itemSettings = {

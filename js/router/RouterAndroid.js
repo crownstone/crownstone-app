@@ -2,13 +2,12 @@ import * as React from 'react'; import { Component } from 'react';
 import {
   View
 } from 'react-native';
-import { Scene, Router, Actions, DefaultRenderer, Modal, Drawer } from 'react-native-router-flux';
+import { Scene, Router, DefaultRenderer, Modal, Drawer } from 'react-native-router-flux';
 import { eventBus }                  from '../util/EventBus'
 import { Bluenet }                   from '../native/libInterface/Bluenet';
 import { reducerCreate }             from './store/reducers/navigation'
 import { OptionPopup }               from '../views/components/OptionPopup'
 import { Processing }                from '../views/components/Processing'
-import { SideMenu }                  from '../views/components/SideMenu/SideMenu'
 import { DfuOverlay }                from '../views/overlays/DfuOverlay'
 import { ErrorOverlay }              from '../views/overlays/ErrorOverlay'
 import { LocationPermissionOverlay } from '../views/overlays/LocationPermissionOverlay'
@@ -23,7 +22,7 @@ import { AnimatedMenu }              from "../views/components/Animated/Animated
 import { SideBar }                   from "../views/components/SideMenu/SideBar";
 
 import { Views }                     from './Views'
-import { styles, colors, screenWidth, screenHeight } from '../views/styles'
+import { colors, screenWidth} from '../views/styles'
 
 export class Router_Android extends Component {
   componentDidMount() {

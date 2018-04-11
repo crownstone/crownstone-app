@@ -1,7 +1,3 @@
-import { LOG } from '../../logging/Log'
-import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {cloudApiBase} from "./cloudApiBase";
-
 export const user = {
   /**
    *

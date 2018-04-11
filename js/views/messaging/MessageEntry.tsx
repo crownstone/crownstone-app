@@ -13,14 +13,9 @@ import {
 } from 'react-native';
 
 const Actions = require('react-native-router-flux').Actions;
-import {availableScreenHeight, colors, screenHeight, screenWidth, styles, tabBarHeight, topBarHeight} from '../styles'
-import {Background} from "../components/Background";
-import {TopBar} from "../components/Topbar";
+import {colors, screenWidth} from '../styles'
 import {IconButton} from "../components/IconButton";
-import {Util} from "../../util/Util";
-import {ListEditableItems} from "../components/ListEditableItems";
-import {Icon} from "../components/Icon";
-import {ANYWHERE_IN_SPHERE, EVERYONE_IN_SPHERE} from "./MessageAdd";
+import {ANYWHERE_IN_SPHERE} from "./MessageAdd";
 import {ProfilePicture} from "../components/ProfilePicture";
 import {DoubleTapDelete} from "../components/DoubleTapDelete";
 import {StackedIcons} from "../components/StackedIcons";

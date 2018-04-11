@@ -4,27 +4,12 @@ import {
   Platform,
   View
 } from 'react-native';
-import { Icon } from '../../Icon'
-import { styles, colors } from '../../../styles'
+import { colors } from '../../../styles'
 import {
   Svg,
-  Circle,
-  ClipPath,
-  Ellipse,
-  G,
-  LinearGradient,
-  RadialGradient,
   Line,
-  Path,
-  Polygon,
-  Polyline,
-  Rect,
-  Symbol,
-  Stop,
-  Use,
   Text,
-  Defs,
-} from 'react-native-svg';
+  } from 'react-native-svg';
 import { Util } from "../../../../util/Util";
 import { TimeStep } from './TimeStep'
 

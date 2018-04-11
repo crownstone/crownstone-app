@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import { SlideFadeInView }  from '../Animated/SlideFadeInView'
-import { styles, colors } from '../../styles'
+import { styles} from '../../styles'
 
 
 export class TimePicker extends Component<any, any> {

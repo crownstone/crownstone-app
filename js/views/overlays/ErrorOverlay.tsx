@@ -96,7 +96,7 @@ export class ErrorOverlay extends Component<any, any> {
 
   render() {
     let aiData = { name: 'Amy' };
-    let state = this.props.store.getState()
+    let state = this.props.store.getState();
     let stone = null;
     if (this.state.sphereId) {
       aiData = Util.data.getAiData(state, this.state.sphereId);

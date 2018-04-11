@@ -12,8 +12,7 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {Actions} from "react-native-router-flux";
-import {colors, OrangeLine, screenWidth} from "../styles";
+import {colors, OrangeLine} from "../styles";
 import {IconButton} from "../components/IconButton";
 
 export class SettingsFAQ extends Component<any, any> {
@@ -34,7 +33,7 @@ export class SettingsFAQ extends Component<any, any> {
     items.push({
       type:'largeExplanation',
       label:"Frequently Asked Questions\n\nHow do I ...",
-    })
+    });
 
     items.push({
       type:'collapsable',
@@ -185,7 +184,7 @@ export class SettingsFAQ extends Component<any, any> {
     items.push({
       type:'largeExplanation',
       label:"More help is available on the website",
-    })
+    });
 
     items.push({
       id:'Help',
@@ -199,7 +198,7 @@ export class SettingsFAQ extends Component<any, any> {
 
     items.push({
       type:'spacer',
-    })
+    });
 
     return items;
   }

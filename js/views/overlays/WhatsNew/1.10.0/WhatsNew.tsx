@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { availableScreenHeight, colors, screenWidth } from "../../../styles";
+import { screenWidth } from "../../../styles";
 import { WNStyles } from "../WhatsNewStyles";
 
 

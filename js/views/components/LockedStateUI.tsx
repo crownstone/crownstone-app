@@ -15,8 +15,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
-import { Svg, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
+import {colors, screenWidth} from '../styles'
 import {eventBus} from "../../util/EventBus";
 import {AnimatedDial} from "./AnimatedDial";
 import {Icon} from "./Icon";
@@ -109,7 +108,7 @@ export class LockedStateUI extends Component<any, any> {
 
       if (level === 1) {
         this.controlling = false;
-        this.setState({level:1, failed: false})
+        this.setState({level:1, failed: false});
         clearTimeout(this.timeout);
       }
       else {

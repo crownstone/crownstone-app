@@ -1,4 +1,3 @@
-import * as React from 'react'; import { Component } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -8,7 +7,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth, topBarHeight, statusBarHeight} from '../../styles'
+import { colors, topBarHeight, statusBarHeight} from '../../styles'
 
 let barHeight = topBarHeight - statusBarHeight;
 

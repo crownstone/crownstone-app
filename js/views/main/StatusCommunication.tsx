@@ -13,7 +13,7 @@ import {
 import { Icon }               from '../components/Icon'
 import { requireMoreFingerprints, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { overviewStyles }     from './SphereOverview'
-import { styles, colors, screenWidth, availableScreenHeight} from '../styles'
+import { colors, screenWidth, availableScreenHeight} from '../styles'
 import { SetupStateHandler} from "../../native/setup/SetupStateHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 

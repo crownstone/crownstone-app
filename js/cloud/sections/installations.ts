@@ -1,5 +1,4 @@
 import {APP_NAME} from "../../ExternalConfig";
-import {cloudApiBase} from "./cloudApiBase";
 
 export const installations = {
   getInstallations: function (options : any = {}) {

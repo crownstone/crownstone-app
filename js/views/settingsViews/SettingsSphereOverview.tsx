@@ -13,10 +13,8 @@ import {
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenWidth, OrangeLine} from '../styles'
+import {colors, OrangeLine} from '../styles'
 import { IconButton } from '../components/IconButton'
-import { LOG } from '../../logging/Log'
-import {Util} from "../../util/Util";
 import {createNewSphere} from "../../util/CreateSphere";
 
 

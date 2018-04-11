@@ -13,8 +13,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
-import { LOG } from '../../../logging/Log'
+import {screenWidth, availableScreenHeight} from '../../styles'
 import {deviceStyles} from "../DeviceOverview";
 import {Graph} from "../../components/Graph/Graph";
 import {Util} from "../../../util/Util";

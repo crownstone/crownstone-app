@@ -1,4 +1,4 @@
-import { update, getTime, refreshDefaults } from './reducerUtil'
+import { update} from './reducerUtil'
 
 export const toggleState = {
   state:    1,  // [0 .. 1] for state, undefined for ignore

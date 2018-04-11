@@ -4,7 +4,7 @@ import {
   Text,
   View
 } from 'react-native';
-import { Scene, Tabs, Router, Actions, Modal, DefaultRenderer, Stack } from 'react-native-router-flux';
+import { Scene, Tabs, Router, Modal, DefaultRenderer} from 'react-native-router-flux';
 import { eventBus }                  from '../util/EventBus'
 import { reducerCreate }             from './store/reducers/navigation'
 import { OptionPopup }               from '../views/components/OptionPopup'
@@ -20,7 +20,7 @@ import { SphereSelectionOverlay }    from "../views/overlays/SphereSelectionOver
 import { WhatsNewOverlay }           from "../views/overlays/WhatsNewOverlay";
 import { LockOverlay }               from "../views/overlays/LockOverlay";
 import { Views }                     from './Views'
-import { styles, colors, tabBarMargin, screenWidth, tabBarHeight } from '../views/styles'
+import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
 import { AnimatedMenu }              from "../views/components/Animated/AnimatedMenu";
 
@@ -88,7 +88,7 @@ export class Router_IOS extends Component {
         </Router>
 
         <AnimatedMenu />
-        <DfuOverlay store={this.props.store} />
+        <DfuOverlay store={this.props.store}  />
         <LockOverlay store={this.props.store} />
         <LocalizationSetupStep1 store={this.props.store} />
         <LocalizationSetupStep2 store={this.props.store} />

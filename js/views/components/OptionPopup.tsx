@@ -12,9 +12,8 @@ import {
 
 import { FadeInView }   from './Animated/FadeInView'
 import { SlideInFromBottomView }  from './Animated/SlideInFromBottomView'
-import { styles, colors , screenHeight, screenWidth } from './../styles'
+import { styles, screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/EventBus'
-import {CameraRollView} from "../cameraViews/CameraRollView";
 
 
 export class OptionPopup extends Component<any, any> {

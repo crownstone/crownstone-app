@@ -13,11 +13,8 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../../styles'
-import { LOG } from '../../../logging/Log'
+import {colors, screenWidth} from '../../styles'
 import {Util} from "../../../util/Util";
-import {Icon} from "../../components/Icon";
-import {StoneUtil} from "../../../util/StoneUtil";
 import {enoughCrownstonesInLocationsForIndoorLocalization} from "../../../util/DataUtil";
 import {BEHAVIOUR_TYPES} from "../../../router/store/reducers/stones";
 import {Permissions} from "../../../backgroundProcesses/PermissionManager";

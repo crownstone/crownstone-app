@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
-import { styles, colors, screenWidth, screenHeight } from './../styles'
+import { colors, screenWidth} from './../styles'
 import loginStyles from './LoginStyles'
 
 const DeviceInfo = require('react-native-device-info');

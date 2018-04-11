@@ -4,8 +4,6 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors } from '../../styles'
-
 
 export class SliderBar extends Component<any, any> {
   constructor(props) {

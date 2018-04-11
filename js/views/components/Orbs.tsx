@@ -6,7 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { styles, colors , screenHeight, screenWidth } from './../styles'
+import { colors , screenWidth } from './../styles'
 
 let radius = 8; // make sure this is not an odd number
 

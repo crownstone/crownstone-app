@@ -8,7 +8,7 @@ import {
   View
 } from 'react-native';
 
-import { styles, colors, screenWidth, topBarHeight, statusBarHeight} from '../../styles'
+import { topBarHeight, statusBarHeight} from '../../styles'
 import {topBarStyle} from "./TopbarStyles";
 
 let barHeight = topBarHeight - statusBarHeight;

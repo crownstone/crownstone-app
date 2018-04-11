@@ -14,11 +14,11 @@ import { Actions } from 'react-native-router-flux';
 import { Background } from './../components/Background'
 import { PictureCircle } from './../components/PictureCircle'
 import { ListEditableItems } from './../components/ListEditableItems'
-import { Util, processImage, safeDeleteFile } from '../../util/Util'
+import { processImage, safeDeleteFile } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {styles, colors, screenWidth, OrangeLine} from './../styles'
+import {colors, screenWidth, OrangeLine} from './../styles'
 import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 
@@ -35,7 +35,7 @@ export class SettingsProfile extends Component<any, any> {
   constructor(props) {
     super(props);
     this.renderState = {};
-    this.validationState = {firstName: undefined, lastName: undefined, email: undefined}
+    this.validationState = {firstName: undefined, lastName: undefined, email: undefined};
 
     const store = props.store;
     const state = store.getState();

@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 
-import { styles, colors, screenWidth, screenHeight, topBarHeight, tabBarHeight} from '../../styles'
+import { styles, screenHeight, topBarHeight, tabBarHeight} from '../../styles'
 
 
 export class AnimatedBackground extends Component<any, any> {

@@ -12,22 +12,13 @@ import {
 import { FinalizeLocalizationIcon } from '../components/FinalizeLocalizationIcon'
 import { Icon }                     from '../components/Icon'
 import { FadeInView }               from '../components/Animated/FadeInView'
-import { styles, colors, tabBarHeight, topBarHeight, screenHeight, screenWidth } from '../styles'
+import { styles, colors, screenHeight, screenWidth } from '../styles'
 import { eventBus } from '../../util/EventBus'
 
 import Svg,{
   Circle,
-  Ellipse,
-  G,
   LinearGradient,
-  RadialGradient,
-  Line,
-  Path,
-  Polygon,
-  Polyline,
   Rect,
-  Symbol,
-  Use,
   Defs,
   Stop
 } from 'react-native-svg';

@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 import { Icon } from '../Icon';
-import { styles, colors, screenWidth, barHeight } from '../../styles'
+import { styles, colors, screenWidth} from '../../styles'
 import {Util} from "../../../util/Util";
 import {eventBus} from "../../../util/EventBus";
 import {SlideInView} from "../Animated/SlideInView";
@@ -15,7 +15,7 @@ import {Separator} from "../Separator";
 
 export class CollapsableBar extends Component<any, any> {
   unsubscribe = [];
-  uuid = Util.getUUID()
+  uuid = Util.getUUID();
 
   constructor(props) {
     super(props);
@@ -47,7 +47,7 @@ export class CollapsableBar extends Component<any, any> {
 
   render() {
     let paddingAmount = 15;
-    let labelStyle = {paddingTop:paddingAmount, paddingBottom:paddingAmount}
+    let labelStyle = {paddingTop:paddingAmount, paddingBottom:paddingAmount};
 
     return (
       <TouchableHighlight onPress={() => { this._handleClick() }}>

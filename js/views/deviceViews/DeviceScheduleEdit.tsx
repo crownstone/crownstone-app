@@ -16,10 +16,9 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight, OrangeLine} from '../styles'
+import {colors, screenWidth, OrangeLine} from '../styles'
 import {IconButton} from "../components/IconButton";
 import {Background} from "../components/Background";
-import {TopBar} from "../components/Topbar";
 import {ListEditableItems} from "../components/ListEditableItems";
 import {Util} from "../../util/Util";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";

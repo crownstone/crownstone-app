@@ -10,7 +10,6 @@ import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferLocations} from "../../../transferData/transferLocations";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
-import {LOGi} from "../../../../logging/Log";
 
 export class LocationSyncer extends SyncingSphereItemBase {
   userId: string;
