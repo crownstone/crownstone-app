@@ -105,6 +105,21 @@ export class SettingsFAQ extends Component<any, any> {
       contentHeight: 175
     });
 
+    items.push({
+      type:'collapsable',
+      label:"... use Switchcraft?",
+      content:"Switchcraft is currently a beta feature. You can join the Beta program by enabling this in your Account settings.\n\n" +
+      "- Go to the Settings -> My Account\n" +
+      "- Enable 'Join Beta Program'.\n" +
+      "- Go to the Sphere Overview\n    (with the room bubbles)\n" +
+      "- Tap on a room.\n" +
+      "- Select a built-in Crownstone.\n" +
+      "- Tap 'Edit' in the top right corner.\n" +
+      "- Enable the 'Enable Switchcraft' switch.\n" +
+      "- Tap the question mark next to 'Enable Switchcraft' and follow the instructions to upgrade your wall switch.\n",
+      contentHeight: 275
+    });
+
 
     items.push({
       type:'largeExplanation',

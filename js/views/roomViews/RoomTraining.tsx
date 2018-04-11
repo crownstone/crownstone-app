@@ -26,9 +26,29 @@ import { RoomTraining_training } from './trainingComponents/RoomTraining_trainin
 import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
 import { Util } from "../../util/Util";
 import {BackAction} from "../../util/Back";
+import {CancelButton} from "../components/Topbar/CancelButton";
 
 
 export class RoomTraining extends Component<any, any> {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    let paramsToUse = params;
+    if (!params.title) {
+      if (NAVBAR_PARAMS_CACHE !== null) {
+        paramsToUse = NAVBAR_PARAMS_CACHE;
+      }
+      else {
+        paramsToUse = getNavBarParams(params.store.getState(), params, true);
+      }
+    }
+
+    return {
+      title: params.title ? params.title : paramsToUse.title,
+      headerLeft: params.topBarSettings ? <CancelButton onPress={params.topBarSettings.leftAction} /> : undefined,
+    }
+  };
+
   collectedData : any;
   amountOfInvalidPoints : number;
   invalidMeasurements : any;
@@ -162,40 +182,70 @@ export class RoomTraining extends Component<any, any> {
     let ai = Util.data.getAiData(state, this.props.sphereId);
     let roomName = state.spheres[this.props.sphereId].locations[this.props.locationId].config.name || 'this room';
 
+
+    let cancelMethod = () => {
+      FingerprintManager.pauseCollectingFingerprint();
+      Alert.alert(
+        "Do you want to cancel training?",
+        "Cancelling this process will revert it to the way it was before.",
+        [
+          {text:'No', onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
+          {text:'Yes', onPress: () => { this.stop(true); BackAction('sphereOverview'); }}
+        ],
+        { cancelable : false }
+      )
+    };
+
+    let quitMethod = () => { BackAction('sphereOverview'); };
+
     let content = undefined;
     if (this.state.phase === 0) {
-      content = <RoomTraining_explanation ai={ai} next={() => {this.setState({phase:1}); this.start(); }} sampleSize={this.props.sampleSize} roomSize={this.props.roomSize} roomName={roomName} />
+      content = (
+        <RoomTraining_explanation
+          ai={ai}
+          next={() => {
+            this.setState({phase:1});
+            this.props.navigation.setParams({topBarSettings:{leftAction: cancelMethod }})
+            this.start();
+          }}
+          sampleSize={this.props.sampleSize}
+          roomSize={this.props.roomSize}
+          roomName={roomName}
+        />
+      )
     }
     else if (this.state.phase === 1) {
       content = (
         <RoomTraining_training
           ai={ai}
-          next={() => {this.setState({phase:2});}}
-          cancel={() => {
-              FingerprintManager.pauseCollectingFingerprint();
-              Alert.alert(
-                "Do you want to cancel training?",
-                "Cancelling this process will revert it to the way it was before.",
-                [
-                  {text:'No', onPress: () => { FingerprintManager.resumeCollectingFingerprint(this.handleCollection.bind(this)); }},
-                  {text:'Yes', onPress: () => { this.stop(true); BackAction('sphereOverview'); }}
-                ],
-                { cancelable : false }
-              )
+          next={() => {
+            this.setState({phase:2});
+            this.props.navigation.setParams({topBarSettings:{title: "All Done!", leftAction: undefined }})
           }}
-          {...this.state}
+          progress={this.state.progress}
+          opacity={this.state.opacity}
+          iconIndex={this.state.iconIndex}
         />
-      )
+      );
     }
     else if (this.state.phase === 2) {
-      content = <RoomTraining_finished ai={ai} quit={() => { BackAction('sphereOverview'); }} />
+      content = <RoomTraining_finished ai={ai} quit={ quitMethod } />
     }
 
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
         <KeepAwake />
         {content}
       </Background>
     );
   }
 }
+
+
+function getNavBarParams(state, props, viewingRemotely) {
+  let ai = Util.data.getAiData(state, props.sphereId);
+  NAVBAR_PARAMS_CACHE = {title: 'Teaching ' + ai.name}
+  return NAVBAR_PARAMS_CACHE;
+}
+
+let NAVBAR_PARAMS_CACHE = null;

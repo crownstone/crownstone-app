@@ -37,53 +37,53 @@ export class Router_IOS extends Component {
             <Scene key="tutorial"                       component={Views.Tutorial}                   />
             <Scene key="register"                       component={Views.Register}                   />
             <Scene key="registerConclusion"             component={Views.RegisterConclusion}         type="reset" />
-            <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} type="reset" initial={this.props.loggedIn}>
-                <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
-                  <Scene key="sphereOverview"             component={Views.SphereOverview}             />
-                  <Scene key="deviceOverview"             component={Views.DeviceOverview}             />
-                  <Scene key="roomOverview"               component={Views.RoomOverview}               />
-                </Scene>
-                <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
-                  <Scene key="messageInbox"               component={Views.MessageInbox}    />
-                </Scene>
-                <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
-                  <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
-                  <Scene key="settingsProfile"            component={Views.SettingsProfile}           />
-                  <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
-                  <Scene key="settingsApp"                component={Views.SettingsApp}               />
-                  <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
-                  <Scene key="SettingsMeshTopology"       component={Views.SettingsMeshTopology}      />
-                  <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
-                  <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
-                  <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />
-                  <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    />
-                  <Scene key="settingsSphere"             component={Views.SettingsSphere}            />
-                  <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}        />
-                  <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser} />
-                  <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}      />
-                  <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
-                </Scene>
-              </Tabs>
-              <Scene key="pictureView"                    component={Views.PictureView}                />
-              <Scene key="cameraRollView"                 component={Views.CameraRollView}             />
-              <Scene key="aiStart"                        component={Views.AiStart}                    />
-              <Scene key="roomTraining_roomSize"          component={Views.RoomTraining_roomSize}      />
-              <Scene key="roomTraining"                   component={Views.RoomTraining}               />
-              <Scene key="roomSelection"                  component={Views.RoomSelection}              />
-              <Scene key="roomIconSelection"              component={Views.RoomIconSelection}          />
-              <Scene key="roomAdd"                        component={Views.RoomAdd}                    />
-              <Scene key="roomEdit"                       component={Views.RoomEdit}                   />
-              <Scene key="deviceEdit"                     component={Views.DeviceEdit}                 />
-              <Scene key="deviceBehaviourEdit"            component={Views.DeviceBehaviourEdit}        />
-              <Scene key="applianceSelection"             component={Views.ApplianceSelection}         />
-              <Scene key="applianceAdd"                   component={Views.ApplianceAdd}               />
-              <Scene key="selectFromList"                 component={Views.SelectFromList}             />
-              <Scene key="deviceScheduleEdit"             component={Views.DeviceScheduleEdit}         />
-              <Scene key="messageAdd"                     component={Views.MessageAdd}                 />
-              <Scene key="switchCraftInformation"         component={Views.SwitchCraftInformation}     />
-              <Scene key="deviceIconSelection"            component={Views.DeviceIconSelection}        />
-              <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
-              <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />
+            <Tabs key="tabBar" showLabel={false} hideNavBar={true} tabBarSelectedItemStyle={{backgroundColor:colors.menuBackground.hex}} tabBarStyle={{backgroundColor:colors.menuBackground.hex}} backToInitial={true} initial={this.props.loggedIn}>
+              <Scene key="overview" tabTitle="Overview" icon={TabIcon} iconString="ios-color-filter-outline" >
+                <Scene key="sphereOverview"             component={Views.SphereOverview}             />
+                <Scene key="deviceOverview"             component={Views.DeviceOverview}             />
+                <Scene key="roomOverview"               component={Views.RoomOverview}               />
+              </Scene>
+              <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
+                <Scene key="messageInbox"               component={Views.MessageInbox}    />
+              </Scene>
+              <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
+                <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
+                <Scene key="settingsProfile"            component={Views.SettingsProfile}           />
+                <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
+                <Scene key="settingsApp"                component={Views.SettingsApp}               />
+                <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
+                <Scene key="SettingsMeshTopology"       component={Views.SettingsMeshTopology}      />
+                <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
+                <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
+                <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />
+                <Scene key="settingsSphereOverview"     component={Views.SettingsSphereOverview}    />
+                <Scene key="settingsSphere"             component={Views.SettingsSphere}            />
+                <Scene key="settingsSphereUser"         component={Views.SettingsSphereUser}        />
+                <Scene key="settingsSphereInvitedUser"  component={Views.SettingsSphereInvitedUser} />
+                <Scene key="settingsSphereInvite"       component={Views.SettingsSphereInvite}      />
+                <Scene key="settingsFAQ"                component={Views.SettingsFAQ}               />
+              </Scene>
+            </Tabs>
+            <Scene key="pictureView"                    component={Views.PictureView}                />
+            <Scene key="cameraRollView"                 component={Views.CameraRollView}             />
+            <Scene key="aiStart"                        component={Views.AiStart}                    />
+            <Scene key="roomTraining_roomSize"          component={Views.RoomTraining_roomSize}      />
+            <Scene key="roomTraining"                   component={Views.RoomTraining}               />
+            <Scene key="roomSelection"                  component={Views.RoomSelection}              />
+            <Scene key="roomIconSelection"              component={Views.RoomIconSelection}          />
+            <Scene key="roomAdd"                        component={Views.RoomAdd}                    />
+            <Scene key="roomEdit"                       component={Views.RoomEdit}                   />
+            <Scene key="deviceEdit"                     component={Views.DeviceEdit}                 />
+            <Scene key="deviceBehaviourEdit"            component={Views.DeviceBehaviourEdit}        />
+            <Scene key="applianceSelection"             component={Views.ApplianceSelection}         />
+            <Scene key="applianceAdd"                   component={Views.ApplianceAdd}               />
+            <Scene key="selectFromList"                 component={Views.SelectFromList}             />
+            <Scene key="deviceScheduleEdit"             component={Views.DeviceScheduleEdit}         />
+            <Scene key="messageAdd"                     component={Views.MessageAdd}                 />
+            <Scene key="switchCraftInformation"         component={Views.SwitchCraftInformation}     />
+            <Scene key="deviceIconSelection"            component={Views.DeviceIconSelection}        />
+            <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
+            <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />
           </Modal>
         </Router>
 

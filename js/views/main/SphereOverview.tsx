@@ -69,7 +69,7 @@ export class SphereOverview extends Component<any, any> {
       /> : undefined
 
       // headerTitle: <Component /> // used to insert custom header Title component
-      // headerLeft: <Component /> // used to insert custom header Right component
+      // headerLeft: <Component /> // used to insert custom header Left component
       // headerRight: <Component /> // used to insert custom header Right component
       // headerBackImage: require("path to image") // customize back button image
     }

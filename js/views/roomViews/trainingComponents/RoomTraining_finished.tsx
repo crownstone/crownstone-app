@@ -22,9 +22,6 @@ export class RoomTraining_finished extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1}}>
-        <TopBar
-          leftAction={ this.props.quit }
-          title={"All Done!"}/>
         <OrangeLine/>
         <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <Text style={{

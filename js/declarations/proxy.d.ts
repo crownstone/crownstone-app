@@ -49,6 +49,7 @@ interface BluenetPromiseWrapperProtocol {
   getSwitchState()                              : Promise< number >,
   lockSwitch(lock : Boolean)                    : Promise< void >,
   allowDimming(allow: Boolean)                  : Promise< void >,
+  setSwitchCraft(state: Boolean)                : Promise< void >,
 }
 
 

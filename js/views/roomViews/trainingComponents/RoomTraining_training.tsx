@@ -26,11 +26,6 @@ export class RoomTraining_training extends Component<any, any> {
 
     return (
       <View style={{flex:1}}>
-        <TopBar
-          left={"Cancel"}
-          notBack={true}
-          leftAction={() => {this.props.cancel()}}
-          title="Train Room"/>
         <OrangeLine/>
         <View style={{flexDirection:'column', flex:1}}>
           <View style={{padding:30, alignItems:'center'}}>
@@ -42,11 +37,8 @@ export class RoomTraining_training extends Component<any, any> {
               textAlign:'center'
             }}>{"Walk around the room so " + this.props.ai.name + " can learn to locate you within it. Each beat " + this.props.ai.he + " learns a bit more about the room!"}</Text>
           </View>
-
           <View style={{flex:1}} />
-
           <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:-40}} >
-
             <View style={{width:0.5*screenWidth, height:0.5*screenWidth}}>
               <View>
                 <View style={{position: 'absolute', top:0}}>
@@ -70,11 +62,8 @@ export class RoomTraining_training extends Component<any, any> {
                   </View>
                 </View>
               </View>
-
-
             </View>
           </View>
-
           <View style={{flex:1}} />
         </View>
         </View>

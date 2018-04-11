@@ -113,6 +113,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   getSchedules:                   () => { return BluenetPromise('getSchedules'); },                               // must return array of bridgeScheduleEntry
 
   getSwitchState:                 () => { return BluenetPromise('getSwitchState'); },
-  lockSwitch:                     (lock: boolean)   => { return BluenetPromise('lockSwitch', lock); },
-  allowDimming:                   (allow : boolean) => { return BluenetPromise('allowDimming', allow); },
+  lockSwitch:                     (lock: boolean)   => { return BluenetPromise('lockSwitch',     lock);  },
+  allowDimming:                   (allow : boolean) => { return BluenetPromise('allowDimming',   allow); },
+  setSwitchCraft:                 (state : boolean) => { return BluenetPromise('setSwitchCraft', state); },
 };

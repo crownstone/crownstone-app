@@ -24,7 +24,7 @@ import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { FadeInView } from '../components/Animated/FadeInView'
 import {LOG, LOGe} from '../../logging/Log'
-import {DIMMING_ENABLED} from "../../ExternalConfig";
+import {DIMMING_ENABLED, MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {Util} from "../../util/Util";
 import {TopBar} from "../components/Topbar";
@@ -229,18 +229,24 @@ export class DeviceEdit extends Component<any, any> {
     }
 
     if (state.user.betaAccess && this.state.stoneType === STONE_TYPES.builtin) {
-      items.push({
-        label: 'Enable SwitchCraft',
-        type: 'switch',
-        experimental: true, hasHelp: true, onHelp: () => { Actions.switchCraftInformation() },
-        icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
-        value: this.state.switchCraft === true,
-        callback: (newValue) => {
-          this.setState({switchCraft: newValue});
-        }
-      });
-
-      items.push({label: 'Use modified wall switches to switch the Crownstone. Tap the questionmark for more information.', type: 'explanation', below: true});
+      if (Util.versions.canIUse(stone.config.firmwareVersion, '2.1.0')) {
+        items.push({
+          label: 'Enable Switchcraft',
+          type: 'switch',
+          experimental: true, hasHelp: true, onHelp: () => { Actions.switchCraftInformation() },
+          icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+          value: this.state.switchCraft === true,
+          callback: (newValue) => {
+            this.setState({switchCraft: newValue});
+          }
+        });
+        items.push({label: 'Use modified wall switches to switch both the Crownstone and the light. Tap the questionmark for more information.', type: 'explanation', below: true});
+      }
+      else {
+        items.push({ label: 'SWITCHCRAFT', type: 'explanation', below: false, alreadyPadded:true});
+        items.push({ label: 'Firmware update required.', type: 'disabledInfo', icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,});
+        items.push({label: 'Use modified wall switches to switch both the Crownstone and the light.', type: 'explanation', below: true});
+      }
     }
 
 
@@ -420,8 +426,13 @@ export class DeviceEdit extends Component<any, any> {
       appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
     }
 
-    // turn the stone off if dimming is being disabled
-    this._setDimState(stone)
+    // collect promises to handle changes in switchcraft and dim state
+    let changePromises = [];
+    let dimChange         = this._setDimState(stone)
+    let switchCraftChange = this._setSwitchcraftState(stone)
+    if (dimChange)         { changePromises.push(dimChange); }
+    if (switchCraftChange) { changePromises.push(switchCraftChange); }
+    Promise.all(changePromises).then(() => { this.props.eventBus.emit("hideLoading") } ).catch((err) => { () => { this.props.eventBus.emit("hideLoading") } })
 
     let actions = [];
     if (
@@ -492,8 +503,7 @@ export class DeviceEdit extends Component<any, any> {
           }));
       }
       BatchCommandHandler.executePriority();
-      Promise.all(promises).then(() => {
-        this.props.eventBus.emit("hideLoading");
+      return Promise.all(promises).then(() => {
         this.props.store.dispatch({
           type: 'UPDATE_STONE_CONFIG',
           sphereId: this.props.sphereId,
@@ -503,6 +513,29 @@ export class DeviceEdit extends Component<any, any> {
           }
         });
       });
+    }
+  }
+
+  _setSwitchcraftState(stone) {
+    if (stone.config.switchCraft !== this.state.switchCraft) {
+      this.props.eventBus.emit("showLoading", "Configuring Switchcraft on this Crownstone...");
+      let changePromise = BatchCommandHandler.loadPriority(stone, this.props.stoneId, this.props.sphereId, { commandName: 'setSwitchCraft', value: this.state.switchCraft })
+        .then(() => {
+          this.props.store.dispatch({
+            type: 'UPDATE_STONE_CONFIG',
+            sphereId: this.props.sphereId,
+            stoneId: this.props.stoneId,
+            data: {
+              dimmingEnabled: this.state.dimmingEnabled,
+            }
+          });
+        })
+        .catch((err) => {
+          LOGe.info("DeviceEdit: Could not configure Switchcraft on Crownstone", this.state.switchCraft, err);
+          Alert.alert("I'm sorry...","I couldn't configure Switchcraft on this Crownstone. Please move closer and try again.", [{text:'OK'}])
+        });
+      BatchCommandHandler.executePriority();
+      return changePromise
     }
   }
 

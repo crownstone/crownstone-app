@@ -176,7 +176,10 @@ class BatchCommandHandlerClass {
               case 'addSchedule':
                 actionPromise = BluenetPromiseWrapper.addSchedule(command.scheduleConfig);
                 break;
-              case 'allowDimming':
+              case 'setSwitchCraft':
+                actionPromise = BluenetPromiseWrapper.setSwitchCraft(command.value);
+                break;
+                case 'allowDimming':
                 actionPromise = BluenetPromiseWrapper.allowDimming(command.value);
                 break;
               case 'lockSwitch':

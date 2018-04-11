@@ -23,9 +23,6 @@ export class RoomTraining_explanation extends Component<any, any> {
   render() {
     return (
       <View style={{flex:1}}>
-        <TopBar
-          leftAction={ Actions.pop }
-          title={"Teaching " + this.props.ai.name}/>
         <OrangeLine/>
         <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <Text style={{

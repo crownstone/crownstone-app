@@ -70,7 +70,7 @@ export class SwitchCraftInformation extends Component<any, any> {
             </Text>
             <ScaledImage source={require('../../../images/switchCraft/switchCraft_normal_after.png')} sourceWidth={1001} sourceHeight={590} targetWidth={0.85*screenWidth} />
             <Text style={explanationStyle}>{
-              "The adaptation in the image above shows the required change to enable Switchcraft. Most switches have 3 ports, where each port can have 2 slots. Let's take a look a the Busch-Jaeger switch below:"}
+              "The adaptation in the image above shows the required change to enable Switchcraft. Most switches have 3 ports, where each port can have 2 slots. Let's take a look a the switch below:"}
             </Text>
             <ScaledImage source={require('../../../images/switchCraft/pre_sluusje_edit_small.png')} sourceWidth={1031} sourceHeight={1000} targetWidth={0.8*screenWidth} />
             <Text style={explanationStyle}>{

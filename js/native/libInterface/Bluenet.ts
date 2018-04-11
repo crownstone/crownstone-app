@@ -78,6 +78,7 @@ if (DISABLE_NATIVE === true) {
     viewsInitialized: () => {},
     lockSwitch:() => {},
     allowDimming:() => {},
+    setSwitchCraft:() => {},
 
   }
 }

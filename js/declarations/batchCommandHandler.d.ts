@@ -86,8 +86,9 @@ type commandInterface = { commandName: 'keepAlive' } |
   { commandName : 'setSchedule', scheduleConfig: bridgeScheduleEntry } |
   { commandName : 'addSchedule', scheduleConfig: bridgeScheduleEntry } |
   { commandName : 'getSchedules' } |
-  { commandName : 'lockSwitch',   value: boolean } |
-  { commandName : 'allowDimming', value: boolean }
+  { commandName : 'lockSwitch',     value: boolean } |
+  { commandName : 'setSwitchCraft', value: boolean } |
+  { commandName : 'allowDimming',   value: boolean }
 
 
 interface batchCommands  {
