@@ -14,6 +14,7 @@ let fieldMap : fieldMap = [
   {local: 'iBeaconMajor',       cloud: 'major'},
   {local: 'iBeaconMinor',       cloud: 'minor'},
   {local: 'locked',             cloud: 'locked'},
+  {local: 'switchCraft',        cloud: 'switchCraft'},
   {local: 'macAddress',         cloud: 'address'},
   // {local: 'meshNetworkId',      cloud: 'meshNetworkId'},
   {local: 'name',               cloud: 'name'},

@@ -11,7 +11,7 @@ import {
 
 import { CameraKitCamera, CameraKitCameraScreen } from 'react-native-camera-kit';
 const Actions = require('react-native-router-flux').Actions;
-import { styles, colors, screenWidth, screenHeight } from '../styles'
+import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../styles'
 import { LOG } from '../../logging/Log'
 import { SessionMemory } from '../../util/SessionMemory'
 import {BackAction} from "../../util/Back";
@@ -60,7 +60,7 @@ export class PictureView extends Component<any, any> {
     // somehow the camera does not take full screen size.
     return (
       <View style={{flex:1, width: screenWidth, height: screenHeight}}>
-        <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+        <OrangeLine/>
         <View style={{width: screenWidth, height: 10, backgroundColor: colors.black.hex }} />
         <CameraKitCameraScreen
           ref={(cam) => this.cameraView = cam}

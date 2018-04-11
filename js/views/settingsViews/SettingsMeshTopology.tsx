@@ -18,7 +18,7 @@ import {
 
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
-import { styles, colors, screenWidth } from './../styles'
+import {styles, colors, screenWidth, OrangeLine} from './../styles'
 import { IconCircle } from "../components/IconCircle";
 import { MeshElement } from "../components/MeshElement";
 import {ForceDirectedView} from "../components/InteractiveView/ForceDirectedView";
@@ -182,7 +182,7 @@ export class SettingsMeshTopology extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ForceDirectedView
           nodeIds={stoneIds}
           nodeRadius={this._baseRadius}

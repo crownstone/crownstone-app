@@ -17,7 +17,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { getLocationNamesInSphere, getStonesAndAppliancesInLocation } from '../../util/DataUtil'
 import { LOG } from '../../logging/Log'
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenWidth, topBarHeight} from '../styles'
+import {styles, colors, screenWidth, topBarHeight, OrangeLine} from '../styles'
 import {Util} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
@@ -231,7 +231,7 @@ export class RoomAdd extends Component<any, any> {
     let itemHeight = amountOfFloatingStones * 62 + (items.length - amountOfFloatingStones)*50 + 120;
     return (
       <Background image={backgroundImage} >
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
+        <OrangeLine/>
         <ScrollView>
           <View style={{height: itemHeight}}>
             <ListEditableItems ref={this.refName} focusOnLoad={true} items={items} />

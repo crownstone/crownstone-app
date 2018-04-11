@@ -15,7 +15,7 @@ import {
 const Actions = require('react-native-router-flux').Actions;
 
 import { STONE_TYPES } from '../../router/store/reducers/stones'
-import { styles, colors, screenWidth, screenHeight } from '../styles'
+import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../styles'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
 import { BleUtil } from '../../util/BleUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
@@ -66,7 +66,6 @@ export class DeviceEdit extends Component<any, any> {
       appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
     }
 
-
     this.state = {
       applianceName: appliance && appliance.config.name || '',
       applianceIcon: appliance && appliance.config.icon || '',
@@ -74,8 +73,10 @@ export class DeviceEdit extends Component<any, any> {
 
       stoneName: stone.config.name,
       stoneIcon: stone.config.icon,
+      stoneType: stone.config.type,
 
       dimmingEnabled: stone.config.dimmingEnabled,
+      switchCraft: stone.config.switchCraft,
       tapToToggle: stone.config.tapToToggle,
 
       showStone: false,
@@ -177,39 +178,41 @@ export class DeviceEdit extends Component<any, any> {
       }
     });
 
-    if (DIMMING_ENABLED) {
-      if (Util.versions.canIUse(stone.config.firmwareVersion, '1.7.0')) {
-        items.push({
-          label: 'Allow Dimming', type: 'switch', value: this.state.dimmingEnabled === true, callback: (newValue) => {
-            if (Permissions.inSphere(this.props.sphereId).canEnableDimming) {
-              this.setState({dimmingEnabled: newValue});
-            }
-            else {
-              Alert.alert("Permission Required", "Only Admins have permission to enable dimming on a Crownstone.", [{text:"OK"}])
-            }
-          }
-        });
-      }
-      else {
-        items.push({ label: 'Firmware update required for dimming.', type: 'disabledInfo'});
-      }
 
-      items.push({
-        label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
-          Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
+    items.push({
+      label: 'Allow Dimming',
+      type: 'switch',
+      icon: <IconButton name="ios-sunny" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.lightCsOrange.hex}} />,
+      value: this.state.dimmingEnabled === true,
+      callback: (newValue) => {
+        if (Permissions.inSphere(this.props.sphereId).canEnableDimming) {
+          this.setState({dimmingEnabled: newValue});
         }
-      });
-      items.push({
-        label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',
-        type: 'explanation',
-        below: true
-      });
-    }
+        else {
+          Alert.alert("Permission Required", "Only Admins have permission to enable dimming on a Crownstone.", [{text:"OK"}])
+        }
+      }
+    });
+
+    items.push({
+      label: 'View Dimming Compatibility', type: 'navigation', callback: () => {
+        Linking.openURL('https://crownstone.rocks/compatibility/dimming/').catch(() => {})
+      }
+    });
+    items.push({
+      label: 'Dimming can be enabled per Crownstone. It is up to you to make sure you are not dimming anything other than lights. To do so is at your own risk.',
+      type: 'explanation',
+      below: true
+    });
 
 
     if (state.app.tapToToggleEnabled) {
       items.push({
-        label: 'Tap to toggle', type: 'switch', value: this.state.tapToToggle === true, callback: (newValue) => {
+        label: 'Tap to toggle',
+        icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,
+        type: 'switch',
+        value: this.state.tapToToggle === true,
+        callback: (newValue) => {
           this.setState({tapToToggle: newValue});
         }
       });
@@ -217,12 +220,27 @@ export class DeviceEdit extends Component<any, any> {
       items.push({label: 'Tap to toggle can be enabled per Crownstone.', type: 'explanation', below: true});
     }
     else {
-      items.push({ label: 'Tap to toggle is disabled.', type: 'disabledInfo'});
+      items.push({ label: 'Tap to toggle is disabled.', type: 'disabledInfo', icon: <IconButton name="md-color-wand" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.green2.hex}} />,});
       items.push({
         label: 'To use tap to toggle, you have to enable it globally in the app settings.',
         type: 'explanation',
         below: true,
       });
+    }
+
+    if (state.user.betaAccess && this.state.stoneType === STONE_TYPES.builtin) {
+      items.push({
+        label: 'Enable SwitchCraft',
+        type: 'switch',
+        experimental: true, hasHelp: true, onHelp: () => { Actions.switchCraftInformation() },
+        icon: <IconButton name="md-power" size={22} button={true} color="#fff" buttonStyle={{backgroundColor:colors.purple.hex}} />,
+        value: this.state.switchCraft === true,
+        callback: (newValue) => {
+          this.setState({switchCraft: newValue});
+        }
+      });
+
+      items.push({label: 'Use modified wall switches to switch the Crownstone. Tap the questionmark for more information.', type: 'explanation', below: true});
     }
 
 
@@ -546,7 +564,7 @@ export class DeviceEdit extends Component<any, any> {
 
     return (
       <Background hasNavBar={false} image={backgroundImage}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
+        <OrangeLine />
         <ScrollView>
           <ListEditableItems items={options} separatorIndent={true}/>
           {this._getVersionInformation(stone)}

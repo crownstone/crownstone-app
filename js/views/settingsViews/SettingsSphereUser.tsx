@@ -14,7 +14,7 @@ import { Background } from '../components/Background'
 import { ProfilePicture } from '../components/ProfilePicture'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { styles, colors, screenWidth } from '../styles'
+import {styles, colors, screenWidth, OrangeLine} from '../styles'
 import {LOG} from "../../logging/Log";
 import {Util} from "../../util/Util";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
@@ -121,7 +121,7 @@ export class SettingsSphereUser extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>
             <ProfilePicture

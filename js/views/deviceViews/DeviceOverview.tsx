@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
+import {styles, colors, screenWidth, screenHeight, availableScreenHeight, OrangeLine} from '../styles'
 import { Background } from '../components/Background'
 const Swiper = require("react-native-swiper");
 import { Util } from "../../util/Util";
@@ -34,9 +34,6 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
 import {BackAction} from "../../util/Back";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
-import {DeviceSmartBehaviour} from "./elements/smartBehaviour/DeviceSmartBehaviour";
-import {topBarStyle} from "../roomViews/RoomOverview";
-import {enoughCrownstonesForIndoorLocalization} from "../../util/DataUtil";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
@@ -233,7 +230,7 @@ export class DeviceOverview extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <Swiper
           style={swiperStyles.wrapper}
           showsPagination={true}

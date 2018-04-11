@@ -13,7 +13,7 @@ import { Background } from '../components/Background'
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { LOG } from '../../logging/Log'
-import {styles, colors, screenWidth} from '../styles'
+import {styles, colors, screenWidth, OrangeLine} from '../styles'
 import { Util } from "../../util/Util";
 import {CLOUD} from "../../cloud/cloudAPI";
 import {CLOUD_BATCH_UPDATE_INTERVAL, SYNC_INTERVAL} from "../../ExternalConfig";
@@ -194,7 +194,7 @@ export class SettingsPrivacy extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems(user)} separatorIndent={true} />
         </ScrollView>

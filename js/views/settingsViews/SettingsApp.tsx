@@ -16,7 +16,7 @@ import { Bluenet } from '../../native/libInterface/Bluenet'
 import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import {styles, colors, screenWidth} from '../styles'
+import {styles, colors, screenWidth, OrangeLine} from '../styles'
 import {Util} from "../../util/Util";
 import {NotificationHandler} from "../../backgroundProcesses/NotificationHandler";
 import {KEEPALIVE_INTERVAL} from "../../ExternalConfig";
@@ -176,7 +176,7 @@ export class SettingsApp extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.menu} >
-        <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

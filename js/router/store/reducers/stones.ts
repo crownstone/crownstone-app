@@ -49,6 +49,7 @@ let defaultSettings = {
     tapToToggle: true,
     hidden: false,
     locked: false,
+    switchCraft: false,
     type: STONE_TYPES.plug,
     stoneTime: 0,
     stoneTimeChecked: 0,
@@ -220,6 +221,7 @@ let stoneConfigReducer = (state = defaultSettings.config, action : any = {}) => 
         newState.onlyOnWhenDark    = update(action.data.onlyOnWhenDark,    newState.onlyOnWhenDark);
         newState.rssi              = update(action.data.rssi,              newState.rssi);
         newState.tapToToggle       = update(action.data.tapToToggle,       newState.tapToToggle);
+        newState.switchCraft       = update(action.data.switchCraft,       newState.switchCraft);
         newState.type              = update(action.data.type,              newState.type);
         newState.updatedAt         = getTime(action.data.updatedAt);
         return newState;

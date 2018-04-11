@@ -12,7 +12,15 @@ import {
 } from 'react-native';
 
 const Actions = require('react-native-router-flux').Actions;
-import {availableScreenHeight, colors, screenHeight, screenWidth, tabBarHeight, topBarHeight} from '../styles'
+import {
+  availableScreenHeight,
+  colors,
+  OrangeLine,
+  screenHeight,
+  screenWidth,
+  tabBarHeight,
+  topBarHeight
+} from '../styles'
 import {Background} from "../components/Background";
 import {TopBar} from "../components/Topbar";
 import {IconButton} from "../components/IconButton";
@@ -320,7 +328,7 @@ export class MessageAdd extends Component<any, any> {
   render() {
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} >
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} separatorIndent={false} />
         </ScrollView>

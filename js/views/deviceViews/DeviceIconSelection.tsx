@@ -12,7 +12,7 @@ import {
 import { Background }  from '../components/Background'
 import { TopBar }  from '../components/Topbar'
 import { IconSelection }  from '../components/IconSelection'
-import {colors, screenWidth} from "../styles";
+import {colors, OrangeLine, screenWidth} from "../styles";
 import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
 
@@ -285,7 +285,7 @@ export class DeviceIconSelection extends Component<{callback(icon: string) : voi
   render() {
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView>
           <IconSelection
             categories={categories}

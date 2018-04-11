@@ -17,7 +17,7 @@ import { ListEditableItems } from '../components/ListEditableItems'
 import { CLOUD } from '../../cloud/cloudAPI'
 
 const Actions = require('react-native-router-flux').Actions;
-import {styles, colors, screenWidth} from './../styles'
+import {styles, colors, screenWidth, OrangeLine} from './../styles'
 import { Icon } from '../components/Icon';
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {EventBusClass} from "../../util/EventBus";
@@ -159,7 +159,7 @@ export class ApplianceSelection extends Component<{
   render() {
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark} >
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

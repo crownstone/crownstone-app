@@ -16,7 +16,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { Background }            from '../components/Background'
 import { setupStyle }            from './SetupShared'
-import { styles, colors, screenWidth, screenHeight } from './../styles'
+import {styles, colors, screenWidth, screenHeight, OrangeLine} from './../styles'
 import { Util }                  from '../../util/Util'
 import { BleUtil }               from '../../util/BleUtil'
 import { BluenetPromiseWrapper } from '../../native/libInterface/BluenetPromise'
@@ -245,7 +245,7 @@ export class SettingsPluginRecoverStep2 extends Component<any, any> {
     let leftPos = 0.5 * (screenWidth - imageSize*screenHeight);
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>Hold your phone next to the Crownstone.</Text>
           <View style={setupStyle.lineDistance} />

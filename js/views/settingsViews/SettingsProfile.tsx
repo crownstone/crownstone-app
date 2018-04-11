@@ -18,7 +18,7 @@ import { Util, processImage, safeDeleteFile } from '../../util/Util'
 import { AppUtil } from '../../util/AppUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import { styles, colors, screenWidth } from './../styles'
+import {styles, colors, screenWidth, OrangeLine} from './../styles'
 import { IconButton } from "../components/IconButton";
 import { NotificationHandler } from "../../backgroundProcesses/NotificationHandler";
 
@@ -209,7 +209,7 @@ export class SettingsProfile extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <View>
             <View style={{alignItems:'center', justifyContent:'center', width: screenWidth, paddingTop:40}}>

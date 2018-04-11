@@ -13,7 +13,7 @@ import {
 
 import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
-import { styles, colors, screenWidth } from './../styles'
+import {styles, colors, screenWidth, OrangeLine} from './../styles'
 import { IconCircle } from "../components/IconCircle";
 
 let FLOATING_NETWORK_KEY = '__null';
@@ -124,7 +124,7 @@ export class SettingsMeshOverview extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView>
           <Text style={{
             backgroundColor:'transparent',

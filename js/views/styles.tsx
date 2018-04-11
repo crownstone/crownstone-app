@@ -1,4 +1,5 @@
-import { Dimensions, PixelRatio, Platform, StyleSheet } from 'react-native'
+import * as React from 'react'; import { Component } from 'react';
+import { Dimensions, PixelRatio, Platform, StyleSheet, View } from 'react-native'
 import { hex2rgb, rgb2hsv, rgb2hsl, rgb2hcl } from '../util/ColorConverters'
 const DeviceInfo = require('react-native-device-info');
 
@@ -224,3 +225,8 @@ export const styles = StyleSheet.create({
     fontSize: 10,
   }
 });
+
+
+export class OrangeLine extends Component<any, any> {
+  render() { return <View style={{backgroundColor:colors.csOrange.hex, height: 2, width: screenWidth}} />; }
+}

@@ -15,7 +15,7 @@ import {
 const Actions = require('react-native-router-flux').Actions;
 
 import { TopBar } from '../../components/Topbar'
-import { styles, colors, screenWidth, screenHeight } from '../../styles'
+import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../../styles'
 import { Icon } from '../../components/Icon';
 
 export class RoomTraining_finished extends Component<any, any> {
@@ -25,7 +25,7 @@ export class RoomTraining_finished extends Component<any, any> {
         <TopBar
           leftAction={ this.props.quit }
           title={"All Done!"}/>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <View style={{flexDirection:'column', flex:1, padding:20, alignItems:'center'}}>
           <Text style={{
             backgroundColor:'transparent',

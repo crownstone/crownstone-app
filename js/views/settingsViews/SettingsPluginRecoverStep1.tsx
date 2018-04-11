@@ -14,7 +14,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { setupStyle, NextButton } from './SetupShared'
-import { styles, colors, screenWidth, screenHeight } from './../styles'
+import {styles, colors, screenWidth, screenHeight, OrangeLine} from './../styles'
 
 export class SettingsPluginRecoverStep1 extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
@@ -25,7 +25,7 @@ export class SettingsPluginRecoverStep1 extends Component<any, any> {
     let imageSize = 0.40;
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <View style={{flex:1, flexDirection:'column', paddingTop:30}}>
           <Text style={[setupStyle.text, {color:colors.white.hex}]}>{"If you're physically next to the Crownstone, you can restore it to factory defaults."}</Text>
           <View style={setupStyle.lineDistance} />

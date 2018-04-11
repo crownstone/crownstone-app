@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 
-import {styles, colors, screenWidth, screenHeight, availableScreenHeight} from '../styles'
+import {styles, colors, screenWidth, screenHeight, availableScreenHeight, OrangeLine} from '../styles'
 import {IconButton} from "../components/IconButton";
 import {Background} from "../components/Background";
 import {TopBar} from "../components/Topbar";
@@ -526,7 +526,7 @@ export class DeviceScheduleEdit extends Component<any, any> {
   render() {
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView style={{flex:1}}>
           <View style={{alignItems:'center', width: screenWidth}}>
             { Platform.OS === 'android' ? this._getAndroidUI() : this._getIosUI() }

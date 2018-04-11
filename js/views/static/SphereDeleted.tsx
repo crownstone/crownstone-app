@@ -4,7 +4,7 @@ import {
   View
 } from 'react-native';
 import {Background} from "../components/Background";
-import {colors, screenWidth} from "../styles";
+import {colors, OrangeLine, screenWidth} from "../styles";
 
 
 export class SphereDeleted extends Component<any, any> {
@@ -17,7 +17,7 @@ export class SphereDeleted extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <Text>Sphere Deleted.</Text>
       </Background>
     )

@@ -12,7 +12,16 @@ import {
 } from 'react-native';
 
 const Actions = require('react-native-router-flux').Actions;
-import {availableScreenHeight, colors, screenHeight, screenWidth, styles, tabBarHeight, topBarHeight} from '../styles'
+import {
+  availableScreenHeight,
+  colors,
+  OrangeLine,
+  screenHeight,
+  screenWidth,
+  styles,
+  tabBarHeight,
+  topBarHeight
+} from '../styles'
 import {Background} from "../components/Background";
 import {TopBar} from "../components/Topbar";
 import {IconButton} from "../components/IconButton";
@@ -230,7 +239,7 @@ export class MessageInbox extends Component<any, any> {
 
         return (
           <Background image={this.props.backgrounds.detailsDark}>
-            <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+            <OrangeLine/>
             { scrollView }
           </Background>
         );
@@ -238,7 +247,7 @@ export class MessageInbox extends Component<any, any> {
       else {
         return (
           <Background image={this.props.backgrounds.detailsDark}>
-            <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+            <OrangeLine/>
             <View style={{flex:1}} />
             <Text style={messageExplanationStyle}>Add some Crownstones to use messages!</Text>
             <View style={{flex:1}} />
@@ -249,7 +258,7 @@ export class MessageInbox extends Component<any, any> {
     else {
       return (
         <Background image={this.props.backgrounds.detailsDark}>
-          <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+          <OrangeLine/>
           <View style={{flex:1}} />
           <Text style={messageExplanationStyle}>Add a Sphere to use messages!</Text>
           <View style={{flex:1}} />

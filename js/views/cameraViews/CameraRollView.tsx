@@ -13,7 +13,7 @@ import {
 
 const Actions = require('react-native-router-flux').Actions;
 import { TopBar } from '../components/Topbar';
-import {styles, colors, screenWidth} from '../styles'
+import {styles, colors, screenWidth, OrangeLine} from '../styles'
 import { LOG } from '../../logging/Log'
 import {BackAction} from "../../util/Back";
 
@@ -121,7 +121,7 @@ export class CameraRollView extends Component<any, any> {
   render() {
     return (
       <View style={[styles.fullscreen, {backgroundColor:'#fff'}]}>
-        <View style={{backgroundColor: colors.csOrange.hex, height: 1, width:screenWidth}} />
+        <OrangeLine/>
         {this.drawPictures()}
       </View>
     );

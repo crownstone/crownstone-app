@@ -17,7 +17,7 @@ import { IconButton } from '../components/IconButton'
 import { Util } from '../../util/Util'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
-import { styles, colors, screenWidth} from './../styles'
+import {styles, colors, screenWidth, OrangeLine} from './../styles'
 import { LOG } from './../../logging/Log'
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
@@ -244,7 +244,7 @@ export class RoomEdit extends Component<any, any> {
     let backgroundImage = this.props.getBackground('menu', this.viewingRemotely);
     return (
       <Background hasNavBar={false} image={backgroundImage}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width: screenWidth}} />
+        <OrangeLine/>
         <ScrollView>
           <ListEditableItems items={this._getItems()} />
         </ScrollView>

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import { TopBar } from '../../components/Topbar'
-import { styles, colors, screenWidth, screenHeight } from '../../styles'
+import {styles, colors, screenWidth, screenHeight, OrangeLine} from '../../styles'
 import { Icon } from '../../components/Icon';
 
 import { Svg, Circle } from 'react-native-svg';
@@ -31,7 +31,7 @@ export class RoomTraining_training extends Component<any, any> {
           notBack={true}
           leftAction={() => {this.props.cancel()}}
           title="Train Room"/>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <View style={{flexDirection:'column', flex:1}}>
           <View style={{padding:30, alignItems:'center'}}>
             <Text style={{

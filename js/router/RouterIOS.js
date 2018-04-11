@@ -45,7 +45,6 @@ export class Router_IOS extends Component {
                 </Scene>
                 <Scene key="messages"  tabTitle="Messages" icon={TabIcon} iconString="ios-mail" {...navBarStyle} badgeOnMessages={true} initial={false} >
                   <Scene key="messageInbox"               component={Views.MessageInbox}    />
-                  <Scene key="messageThread"              component={Views.MessageThread}   />
                 </Scene>
                 <Scene key="settings" tabTitle="Settings" icon={TabIcon} iconString="ios-cog" {...navBarStyle} initial={false}>
                   <Scene key="settingsOverview"           component={Views.SettingsOverview}          />
@@ -81,6 +80,7 @@ export class Router_IOS extends Component {
               <Scene key="selectFromList"                 component={Views.SelectFromList}             />
               <Scene key="deviceScheduleEdit"             component={Views.DeviceScheduleEdit}         />
               <Scene key="messageAdd"                     component={Views.MessageAdd}                 />
+              <Scene key="switchCraftInformation"         component={Views.SwitchCraftInformation}     />
               <Scene key="deviceIconSelection"            component={Views.DeviceIconSelection}        />
               <Scene key="settingsPluginRecoverStep1"     component={Views.SettingsPluginRecoverStep1} />
               <Scene key="settingsPluginRecoverStep2"     component={Views.SettingsPluginRecoverStep2} />

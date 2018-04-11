@@ -10,7 +10,7 @@ import {
 
 import { Background } from '../components/Background'
 import { ListEditableItems } from '../components/ListEditableItems'
-import {styles, colors, screenWidth} from '../styles'
+import {styles, colors, screenWidth, OrangeLine} from '../styles'
 import {Util} from "../../util/Util";
 import {NativeBus} from "../../native/libInterface/NativeBus";
 import {Scheduler} from "../../logic/Scheduler";
@@ -155,7 +155,7 @@ export class SettingsStoneBleDebug extends Component<any, any> {
   render() {
     return (
       <Background image={this.props.backgrounds.menu} >
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView keyboardShouldPersistTaps="always">
           <ListEditableItems items={this._getItems()} separatorIndent={true} />
         </ScrollView>

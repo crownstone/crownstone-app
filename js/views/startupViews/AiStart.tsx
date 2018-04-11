@@ -17,7 +17,7 @@ const Actions = require('react-native-router-flux').Actions;
 
 import { Background } from '../components/Background'
 import { LOG } from '../../logging/Log'
-import { styles, colors, screenWidth, screenHeight, topBarHeight } from '../styles'
+import {styles, colors, screenWidth, screenHeight, topBarHeight, OrangeLine} from '../styles'
 import { Icon } from '../components/Icon';
 import { TextEditInput } from '../components/EditComponents/TextEditInput'
 import loginStyles from './LoginStyles'
@@ -111,7 +111,7 @@ export class AiStart extends Component<any, any> {
 
     return (
       <Background hasNavBar={false} image={this.props.backgrounds.detailsDark}>
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <View style={[styles.centered, {flex:1}]}>
           <View style={{flex:1}} />
           <Icon name="c1-house" size={0.26*availableHeight} color={colors.white.hex} />

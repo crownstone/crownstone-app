@@ -236,7 +236,6 @@ export class ForceDirectedView extends Component<{
             this._currentScale = this._currentScale * (distance/this._initialDistance);
             this._initialDistance = distance;
 
-            console.log("Scale", this._currentScale)
             this.state.scale.setValue(this._currentScale);
             return Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }])(evt, gestureState);
           }

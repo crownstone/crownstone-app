@@ -18,7 +18,7 @@ import { ListEditableItems } from './../components/ListEditableItems'
 import { processImage, safeDeleteFile } from '../../util/Util'
 import { CLOUD } from '../../cloud/cloudAPI'
 import { LOG } from '../../logging/Log'
-import { styles, colors, screenWidth } from './../styles'
+import {styles, colors, screenWidth, OrangeLine} from './../styles'
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
 const Actions = require('react-native-router-flux').Actions;
@@ -127,7 +127,7 @@ export class SettingsSphereInvitedUser extends Component<any, any> {
 
     return (
       <Background image={this.props.backgrounds.menu} >
-        <View style={{backgroundColor:colors.csOrange.hex, height:1, width:screenWidth}} />
+        <OrangeLine/>
         <ScrollView>
           <View style={{alignItems:'center', justifyContent:'center', width:screenWidth, paddingTop:40}}>
             <ProfilePicture

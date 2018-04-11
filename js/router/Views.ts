@@ -24,7 +24,6 @@ import { DeviceScheduleEdit }         from '../views/deviceViews/DeviceScheduleE
 import { DeviceIconSelection }        from '../views/deviceViews/DeviceIconSelection'
 import { MessageInbox }               from '../views/messaging/MessageInbox'
 import { MessageAdd }                 from '../views/messaging/MessageAdd'
-import { MessageThread }              from '../views/messaging/MessageThread'
 import { SettingsApp }                from '../views/settingsViews/SettingsApp'
 import { SettingsOverview }           from '../views/settingsViews/SettingsOverview'
 import { SettingsProfile }            from '../views/settingsViews/SettingsProfile'
@@ -43,6 +42,7 @@ import { SettingsPluginRecoverStep1 } from '../views/settingsViews/SettingsPlugi
 import { SettingsPluginRecoverStep2 } from '../views/settingsViews/SettingsPluginRecoverStep2'
 import { Tutorial }                   from "../views/tutorialViews/Tutorial";
 import { SettingsFAQ }                from "../views/settingsViews/SettingsFAQ";
+import { SwitchCraftInformation }     from "../views/deviceViews/elements/SwitchCraftInformation";
 
 export const Views = {
   AiStart,
@@ -71,7 +71,6 @@ export const Views = {
   DeviceScheduleEdit,
   MessageInbox,
   MessageAdd,
-  MessageThread,
   SettingsApp,
   SettingsOverview,
   SettingsProfile,
@@ -89,5 +88,6 @@ export const Views = {
   SettingsSphereInvitedUser,
   SettingsPluginRecoverStep1,
   SettingsPluginRecoverStep2,
+  SwitchCraftInformation,
   Tutorial,
 };
