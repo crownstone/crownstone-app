@@ -86,7 +86,10 @@ export class DeviceOverview extends Component<any, any> {
     }));
 
     const state = this.props.store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return; }
+    const stone = sphere.stones[this.props.stoneId];
+    if (!stone) { return; }
     if (stone.config.firmwareVersionSeenInOverview === null) {
       this.props.store.dispatch({
         type: "UPDATE_STONE_LOCAL_CONFIG",
@@ -157,7 +160,7 @@ export class DeviceOverview extends Component<any, any> {
     const state = this.props.store.getState();
     const sphere = state.spheres[this.props.sphereId];
     if (sphere) {
-      const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+      const stone = sphere.stones[this.props.stoneId];
       if (stone && stone.config.firmwareVersionSeenInOverview !== stone.config.firmwareVersion) {
         this.props.store.dispatch({
           type: "UPDATE_STONE_LOCAL_CONFIG",
@@ -181,9 +184,9 @@ export class DeviceOverview extends Component<any, any> {
   render() {
     const state = this.props.store.getState();
     const sphere = state.spheres[this.props.sphereId];
-    if (!sphere) { return <SphereDeleted/> }
+    if (!sphere) { return <SphereDeleted /> }
     const stone = sphere.stones[this.props.stoneId];
-    if (!stone) { return <StoneDeleted/> }
+    if (!stone) { return <StoneDeleted /> }
     let summaryIndex = 0;
     this.summaryIndex = summaryIndex;
 

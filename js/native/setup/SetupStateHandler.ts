@@ -115,7 +115,7 @@ class SetupStateHandlerClass {
           }
 
           this._stonesInSetupStateAdvertisements[handle] = setupAdvertisement;
-          this._stonesInSetupStateTypes[handle] = SetupStateHandlerClass._getTypeData(setupAdvertisement);
+          this._stonesInSetupStateTypes[handle] = this._getTypeData(setupAdvertisement);
           eventBus.emit("setupStoneChange", this.areSetupStonesAvailable());
         }
 
@@ -157,12 +157,12 @@ class SetupStateHandlerClass {
     }
   }
 
-  static _getTypeData(advertisement) {
-    if (advertisement.serviceData.deviceType      == 'plug')
+  _getTypeData(advertisement) {
+    if (advertisement.serviceData.deviceType      == 'plug'     || advertisement.serviceUUID === 'C001')
       return {name: 'Crownstone Plug',    icon: 'c2-pluginFilled',  type:STONE_TYPES.plug,       handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'builtin')
+    else if (advertisement.serviceData.deviceType == 'builtin'  || advertisement.serviceUUID === 'C002')
       return {name: 'Crownstone Builtin', icon: 'c2-crownstone',    type:STONE_TYPES.builtin,    handle: advertisement.handle};
-    else if (advertisement.serviceData.deviceType == 'guidestone')
+    else if (advertisement.serviceData.deviceType == 'guidestone' || advertisement.serviceUUID === 'C003')
       return {name: 'Guidestone',         icon: 'c2-crownstone',    type:STONE_TYPES.guidestone, handle: advertisement.handle};
     else if (advertisement.serviceData.deviceType == 'crownstoneUSB')
       return {name: 'Crownstone USB',     icon: 'c1-router',        type:STONE_TYPES.crownstoneUSB, handle: advertisement.handle};

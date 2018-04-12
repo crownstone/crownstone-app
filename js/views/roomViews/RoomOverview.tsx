@@ -240,7 +240,7 @@ export class RoomOverview extends Component<any, any> {
       let setupStones = SetupStateHandler.getSetupStones();
       let setupIds = Object.keys(setupStones);
       setupIds.forEach((setupId) => {
-        if (shownHandles[setupStones[setupId].handle] === undefined) {
+        if (setupStones[setupId] && shownHandles[setupStones[setupId].handle] === undefined) {
           ids.push(setupId);
           shownHandles[setupStones[setupId].handle] = true;
           setupStones[setupId].setupMode = true;

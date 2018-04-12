@@ -128,6 +128,8 @@ export class ApplianceSelection extends Component<{
         this.props.callback(null); BackAction();
       }
     });
+
+    items.push({ type: 'spacer' });
     return items;
   }
 

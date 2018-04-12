@@ -157,7 +157,7 @@ export class RoomEdit extends Component<any, any> {
     // here we do the training if required and possible.
     if (state.app.indoorLocalizationEnabled) {
       let canDoIndoorLocalization = enoughCrownstonesInLocationsForIndoorLocalization(state, this.props.sphereId);
-      if (canDoIndoorLocalization === true && this.viewingRemotely === false || true) {
+      if (canDoIndoorLocalization === true && this.viewingRemotely === false) {
         items.push({label:'INDOOR LOCALIZATION', type: 'explanation',  below:false});
         // if a fingerprint is already present:
         if (room.config.fingerprintRaw) {

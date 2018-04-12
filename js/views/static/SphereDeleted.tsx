@@ -1,10 +1,11 @@
 import * as React from 'react'; import { Component } from 'react';
 import {
+  Image,
   Text,
   View
 } from 'react-native';
 import {Background} from "../components/Background";
-import {OrangeLine} from "../styles";
+import {OrangeLine, styles} from "../styles";
 
 
 export class SphereDeleted extends Component<any, any> {
@@ -16,7 +17,7 @@ export class SphereDeleted extends Component<any, any> {
 
   render() {
     return (
-      <Background image={this.props.backgrounds.detailsDark}>
+      <Background image={<Image style={[styles.fullscreen,{resizeMode:'cover'}]} source={require('../../images/mainBackgroundLightNotConnected.png')} />}>
         <OrangeLine/>
         <Text>Sphere Deleted.</Text>
       </Background>

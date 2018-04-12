@@ -31,6 +31,8 @@ import { INTENTS } from "../../native/libInterface/Constants";
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/Topbar/CancelButton";
 import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {SphereDeleted} from "../static/SphereDeleted";
+import {StoneDeleted} from "../static/StoneDeleted";
 
 
 export class DeviceEdit extends Component<any, any> {
@@ -56,7 +58,10 @@ export class DeviceEdit extends Component<any, any> {
 
     const store = props.store;
     const state = store.getState();
-    const stone = state.spheres[props.sphereId].stones[props.stoneId];
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return; }
+    const stone = sphere.stones[this.props.stoneId];
+    if (!stone) { return; }
     let appliance = null;
     if (stone.config.applianceId) {
       appliance = state.spheres[this.props.sphereId].appliances[stone.config.applianceId];
@@ -378,7 +383,7 @@ export class DeviceEdit extends Component<any, any> {
               "Try deleting it again or use the recovery procedure to put it in setup mode.",
               [{text:'OK', onPress: () => {
                 this.props.eventBus.emit('hideLoading');
-                BackAction();
+                BackAction('roomOverview');
               }}]
             )
           })
@@ -406,7 +411,7 @@ export class DeviceEdit extends Component<any, any> {
     Alert.alert("Success!", labelText,
       [{text:'OK', onPress: () => {
         this.props.eventBus.emit('hideLoading');
-        BackAction();
+        BackAction('roomOverview');
         this.props.store.dispatch({type: "REMOVE_STONE", sphereId: this.props.sphereId, stoneId: this.props.stoneId});
       }}]
     )
@@ -576,16 +581,18 @@ export class DeviceEdit extends Component<any, any> {
           <Text style={styles.version}>{'hardware id: '  + (stone.config.hardwareVersion   || unknownString)}</Text>
           <Text style={styles.version}>{'bootloader: '   + (stone.config.bootloaderVersion || unknownString)}</Text>
           <Text style={styles.version}>{'firmware: '     + (stone.config.firmwareVersion   || unknownString)}</Text>
-          <Text style={styles.version}>{'crownstone id: ' + (stone.config.crownstoneId      || unknownString)}</Text>
+          <Text style={styles.version}>{'crownstone id: ' + (stone.config.crownstoneId     || unknownString)}</Text>
         </TouchableOpacity>
       );
     }
   }
 
   render() {
-    const store = this.props.store;
-    const state = store.getState();
-    const stone = state.spheres[this.props.sphereId].stones[this.props.stoneId];
+    const state = this.props.store.getState();
+    const sphere = state.spheres[this.props.sphereId];
+    if (!sphere) { return <SphereDeleted /> }
+    const stone = sphere.stones[this.props.stoneId];
+    if (!stone) { return <StoneDeleted /> }
 
     let options = this.constructStoneOptions(stone, state);
 
