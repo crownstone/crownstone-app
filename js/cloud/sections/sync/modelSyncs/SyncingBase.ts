@@ -106,6 +106,7 @@ export class SyncingBase {
 export class SyncingSphereItemBase extends SyncingBase {
   localSphereId : string;
   cloudSphereId : string;
+  globalSphereMap : globalIdMap;
 
 
   constructor(
@@ -113,15 +114,17 @@ export class SyncingSphereItemBase extends SyncingBase {
     transferPromises: any[],
     localSphereId: string,
     cloudSphereId: string,
-    globalCloudIdMap: globalIdMap
+    globalCloudIdMap: globalIdMap,
+    globalSphereMap: globalIdMap
   ) {
     super(actions, transferPromises, globalCloudIdMap);
     this.localSphereId = localSphereId;
     this.cloudSphereId = cloudSphereId;
+    this.globalSphereMap = globalSphereMap;
   }
 }
 
 
 export function getGlobalIdMap() {
-  return {users: {}, locations: {}, appliances: {}, stones: {}, messages: {}, spheres: {}, schedules: {}}
+  return {users: {}, locations: {}, appliances: {}, stones: {}, messages: {}, spheres: {}, schedules: {}, devices: {}}
 }

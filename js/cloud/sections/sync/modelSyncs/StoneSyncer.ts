@@ -90,9 +90,14 @@ export class StoneSyncer extends SyncingSphereItemBase {
         );
       }
 
+      cloudIdMap[stone_from_cloud.id] = localId;
+
       this.syncChildren(localId, store, stone_from_cloud);
     });
 
+
+    this.globalSphereMap.stones = {...this.globalSphereMap.stones, ...cloudIdMap}
+    this.globalCloudIdMap.stones = {...this.globalCloudIdMap.stones, ...cloudIdMap};
     return localStoneIdsSynced;
   }
 

@@ -25,13 +25,14 @@ interface matchingSpecs {
 }
 
 
-
 export class DeviceSyncer extends SyncingBase {
   userId: string;
+
 
   download() {
     return CLOUD.forUser(this.userId).getDevices()
   }
+
 
   sync(state) {
     this.userId = state.user.userId;
@@ -46,6 +47,7 @@ export class DeviceSyncer extends SyncingBase {
         return Promise.all(this.transferPromises);
       })
   }
+
 
   syncUp(state, devicesInState, devicesInCloud) {
     // cleanup
@@ -78,12 +80,15 @@ export class DeviceSyncer extends SyncingBase {
     else if (state.devices[matchingSpecs.id] === undefined) {
       // download device data and store locally.
       this._createNewDeviceLocally(state, specs, matchingSpecs);
+      this.globalCloudIdMap.devices[matchingSpecs.id] = matchingSpecs.id;
     }
     else {
       // this
       this._updateLocalDevice(state, specs, devicesInState[matchingSpecs.id], matchingSpecs)
+      this.globalCloudIdMap.devices[matchingSpecs.id] = matchingSpecs.id
     }
   }
+
 
   _createNewDeviceInCloud(specs, state) {
     let newDevice = null;
@@ -130,6 +135,7 @@ export class DeviceSyncer extends SyncingBase {
               installationId: installation.id
             }
           });
+          this.globalCloudIdMap.devices[newDevice.id] = newDevice.id;
 
           // We now push the location of ourselves to the cloud.
           this._updateUserLocationInCloud(state, newDevice.id);

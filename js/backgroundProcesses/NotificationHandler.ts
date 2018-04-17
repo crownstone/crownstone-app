@@ -11,6 +11,7 @@ import {Actions} from "react-native-router-flux";
 import {MessageCenter} from "./MessageCenter";
 import {MapProvider} from "./MapProvider";
 import {SphereUserSyncer} from "../cloud/sections/sync/modelSyncs/SphereUserSyncer";
+import {getGlobalIdMap} from "../cloud/sections/sync/modelSyncs/SyncingBase";
 
 class NotificationHandlerClass {
   store: any = {};
@@ -222,7 +223,7 @@ class NotificationParserClass {
     let localSphereId = MapProvider.cloud2localMap.spheres[messageData.sphereId];
     if (localSphereId) {
       let actions = [];
-      let sphereUserSyncer = new SphereUserSyncer(actions, [], localSphereId, messageData.sphereId, MapProvider.cloud2localMap);
+      let sphereUserSyncer = new SphereUserSyncer(actions, [], localSphereId, messageData.sphereId, MapProvider.cloud2localMap, getGlobalIdMap());
       sphereUserSyncer.sync(this.store)
         .then(() => {
           if (actions.length > 0) {

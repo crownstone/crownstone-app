@@ -76,6 +76,7 @@ export class ApplianceSyncer extends SyncingSphereItemBase {
       cloudIdMap[appliance_from_cloud.id] = localId;
     });
 
+    this.globalSphereMap.appliances = {...this.globalSphereMap.appliances, ...cloudIdMap};
     this.globalCloudIdMap.appliances = {...this.globalCloudIdMap.appliances, ...cloudIdMap};
     return localApplianceIdsSynced;
   }

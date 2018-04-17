@@ -101,6 +101,7 @@ function checkAction(action, affectedIds) {
       eventStatus['changeUsers'] = affectedIds;
       break;
     case 'UPDATE_LOCATION_FINGERPRINT':
+    case 'UPDATE_NEW_LOCATION_FINGERPRINT':
       eventStatus['changeFingerprint'] = affectedIds; break;
     case 'ADD_LOCATION':
       eventStatus['addLocation'] = affectedIds;

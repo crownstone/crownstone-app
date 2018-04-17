@@ -1,19 +1,20 @@
-import { CLOUD }               from '../../cloudAPI'
-import { LOG }                 from '../../../logging/Log'
-import { Platform }            from 'react-native'
-import { AppUtil }             from "../../../util/AppUtil";
+import { CLOUD }                    from '../../cloudAPI'
+import { LOG }                      from '../../../logging/Log'
+import { Platform }                 from 'react-native'
+import { AppUtil }                  from "../../../util/AppUtil";
 import { cleanupPowerUsage, syncPowerUsage }   from "./syncPowerUsage";
-import { syncEvents }          from "./syncEvents";
-import { MessageCenter }       from "../../../backgroundProcesses/MessageCenter";
-import { NotificationHandler } from "../../../backgroundProcesses/NotificationHandler";
-import { UserSyncer }          from "./modelSyncs/UserSyncer";
-import { SphereSyncer }        from "./modelSyncs/SphereSyncer";
-import { DeviceSyncer }        from "./modelSyncs/DeviceSyncer";
+import { syncEvents }               from "./syncEvents";
+import { MessageCenter }            from "../../../backgroundProcesses/MessageCenter";
+import { NotificationHandler }      from "../../../backgroundProcesses/NotificationHandler";
+import { UserSyncer }               from "./modelSyncs/UserSyncer";
+import { SphereSyncer }             from "./modelSyncs/SphereSyncer";
+import { DeviceSyncer }             from "./modelSyncs/DeviceSyncer";
 import { FirmwareBootloaderSyncer } from "./modelSyncs/FirmwareBootloaderSyncer";
-import { getGlobalIdMap }      from "./modelSyncs/SyncingBase";
-import { eventBus }            from "../../../util/EventBus";
-import { KeySyncer }           from "./modelSyncs/KeySyncer";
-import { Scheduler }           from "../../../logic/Scheduler";
+import { getGlobalIdMap }           from "./modelSyncs/SyncingBase";
+import { eventBus }                 from "../../../util/EventBus";
+import { KeySyncer }                from "./modelSyncs/KeySyncer";
+import { Scheduler }                from "../../../logic/Scheduler";
+import { FingerprintSyncer }        from "./modelSyncs/FingerprintSyncer";
 
 
 
@@ -53,6 +54,8 @@ export const sync = {
     CLOUD.setUserId(userId);
 
     let globalCloudIdMap = getGlobalIdMap();
+    let globalSphereMap = {};
+
     let actions = [];
     let userSyncer = new UserSyncer(actions, [], globalCloudIdMap);
 
@@ -81,7 +84,7 @@ export const sync = {
       .then(() => {
         LOG.info("Sync: DONE FirmwareBootloader sync.");
         LOG.info("Sync: START SphereSyncer sync.");
-        let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap);
+        let sphereSyncer = new SphereSyncer(actions, [], globalCloudIdMap, globalSphereMap);
         return sphereSyncer.sync(store);
       })
       .then(() => {
@@ -95,6 +98,12 @@ export const sync = {
         LOG.info("Sync: START DeviceSyncer sync.");
         let deviceSyncer = new DeviceSyncer(actions, [], globalCloudIdMap);
         return deviceSyncer.sync(state);
+      })
+      .then(() => {
+        LOG.info("Sync: DONE DeviceSyncer sync.");
+        LOG.info("Sync: START Fingerprint sync.");
+        let fingerprintSyncer = new FingerprintSyncer(actions, [], globalCloudIdMap, globalSphereMap);
+        return fingerprintSyncer.sync(state);
       })
       .then(() => {
         LOG.info("Sync: DONE DeviceSyncer sync.");

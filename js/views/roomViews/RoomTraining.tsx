@@ -167,7 +167,7 @@ export class RoomTraining extends Component<any, any> {
       .then((stringifiedFingerprint) => {
         LOG.info("gathered fingerprint:", stringifiedFingerprint);
         store.dispatch({
-          type:'UPDATE_LOCATION_FINGERPRINT',
+          type:'UPDATE_NEW_LOCATION_FINGERPRINT',
           sphereId: this.props.sphereId,
           locationId: this.props.locationId,
           data:{ fingerprintRaw: stringifiedFingerprint }

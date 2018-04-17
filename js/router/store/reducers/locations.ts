@@ -8,8 +8,10 @@ let defaultSettings = {
     icon: undefined,
     cloudId: null,
     updatedAt: 1,
+
+    fingerprintCloudId: null,
     fingerprintRaw: null,
-    fingerprintParsed: null
+    fingerprintParsed: null,
   },
   presentUsers: []
 };
@@ -47,12 +49,30 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
       let newState = {...state};
       newState.fingerprintRaw = null;
       newState.fingerprintParsed = null;
+      newState.fingerprintCloudId = null;
       return newState;
     case 'UPDATE_LOCATION_FINGERPRINT':
       if (action.data) {
         let newState = {...state};
-        newState.fingerprintRaw    = update(action.data.fingerprintRaw, newState.fingerprintRaw);
-        newState.fingerprintParsed = update(action.data.fingerprintParsed, newState.fingerprintParsed);
+        newState.fingerprintRaw    = update(action.data.fingerprintRaw,      newState.fingerprintRaw);
+        newState.fingerprintParsed = update(action.data.fingerprintParsed,   newState.fingerprintParsed);
+        newState.fingerprintCloudId = update(action.data.fingerprintCloudId, newState.fingerprintCloudId);
+        return newState;
+      }
+      return state;
+    case 'UPDATE_NEW_LOCATION_FINGERPRINT':
+      if (action.data) {
+        let newState = {...state};
+        newState.fingerprintRaw    = update(action.data.fingerprintRaw,      newState.fingerprintRaw);
+        newState.fingerprintParsed = update(action.data.fingerprintParsed,   newState.fingerprintParsed);
+        newState.fingerprintCloudId = null;
+        return newState;
+      }
+      return state;
+    case 'UPDATE_LOCATION_FINGERPRINT_CLOUD_ID':
+      if (action.data) {
+        let newState = {...state};
+        newState.fingerprintCloudId = update(action.data.fingerprintCloudId, newState.fingerprintCloudId);
         return newState;
       }
       return state;

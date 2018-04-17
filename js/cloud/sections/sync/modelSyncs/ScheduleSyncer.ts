@@ -27,9 +27,10 @@ export class ScheduleSyncer extends SyncingSphereItemBase {
     cloudSphereId : string,
     localStoneId : string,
     cloudStoneId : string,
-    globalCloudIdMap? : globalIdMap
+    globalCloudIdMap? : globalIdMap,
+    globalSphereMap? : globalIdMap
   ) {
-    super(actions, transferPromises, localSphereId, cloudSphereId, globalCloudIdMap);
+    super(actions, transferPromises, localSphereId, cloudSphereId, globalCloudIdMap, globalSphereMap);
 
     this.localStoneId = localStoneId;
     this.cloudStoneId = cloudStoneId;

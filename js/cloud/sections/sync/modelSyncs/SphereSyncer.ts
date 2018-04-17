@@ -8,7 +8,7 @@ import { shouldUpdateInCloud, shouldUpdateLocally} from "../shared/syncUtil";
 
 import { CLOUD}               from "../../../cloudAPI";
 import { Util}                from "../../../../util/Util";
-import { SyncingBase }        from "./SyncingBase";
+import {getGlobalIdMap, SyncingBase} from "./SyncingBase";
 import { transferSpheres }    from "../../../transferData/transferSpheres";
 import { SphereUserSyncer }   from "./SphereUserSyncer";
 import { LocationSyncer }     from "./LocationSyncer";
@@ -19,6 +19,12 @@ import {LOG} from "../../../../logging/Log";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
 
 export class SphereSyncer extends SyncingBase {
+  globalSphereMap;
+
+  constructor(actions : any[], transferPromises: any[], globalCloudIdMap: globalIdMap, globalSphereMap : globalSphereMap) {
+    super(actions, transferPromises, globalCloudIdMap);
+    this.globalSphereMap = globalSphereMap
+  }
 
   download() {
     return CLOUD.getSpheres();
@@ -76,11 +82,13 @@ export class SphereSyncer extends SyncingBase {
   }
 
   syncChildren(store, localId, localSphere, sphere_from_cloud) {
-    let sphereUserSyncer  = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let locationSyncer    = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let applianceSyncer   = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let stoneSyncer       = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
-    let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap);
+    this.globalSphereMap[localId] = getGlobalIdMap();
+
+    let sphereUserSyncer  = new SphereUserSyncer( this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let locationSyncer    = new LocationSyncer(   this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let applianceSyncer   = new ApplianceSyncer(  this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let stoneSyncer       = new StoneSyncer(      this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
+    let messageSyncer     = new MessageSyncer(    this.actions, [], localId, sphere_from_cloud.id, this.globalCloudIdMap, this.globalSphereMap[localId]);
 
     // sync sphere users
     LOG.info("SphereSync ",localId,": START sphereUserSyncer sync.");

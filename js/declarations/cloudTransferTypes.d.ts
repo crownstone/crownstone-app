@@ -49,4 +49,17 @@ interface globalIdMap {
   messages: keyMap,
   spheres: keyMap,
   schedules: keyMap,
+  devices: keyMap,
+}
+
+interface globalSphereMap {
+  [key: string]: {
+    users: keyMap,
+    locations: keyMap,
+    appliances: keyMap,
+    stones: keyMap,
+    messages: keyMap,
+    spheres: keyMap,
+    schedules: keyMap,
+  }
 }

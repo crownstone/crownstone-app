@@ -111,6 +111,9 @@ function handleAction(action, returnValue, newState, oldState) {
     case 'UPDATE_LOCATION_CONFIG':
       handleLocationInCloud(action, newState);
       break;
+    case 'UPDATE_NEW_LOCATION_FINGERPRINT':
+      handleNewFingerprintInCloud(action, newState);
+      break;
     case 'UPDATE_SPHERE_CONFIG':
       handleSphereInCloud(action, newState);
       break;
@@ -286,6 +289,13 @@ function handleLocationInCloud(action, state) {
     cloudSphereId: sphere.config.cloudId    || action.sphereId, // we used to have the same ids locally and in the cloud.
     cloudId:       location.config.cloudId  || action.locationId,
   }).catch(() => {});
+}
+
+function handleNewFingerprintInCloud(action, state) {
+  if (!action.data) { return; }
+  let deviceId = Util.data.getCurrentDeviceId(state);
+
+  CLOUD.forDevice(deviceId).createFingerprint(action.locationId, action.data.fingerprintRaw).catch(() => {});
 }
 
 function handleSphereInCloud(action, state) {

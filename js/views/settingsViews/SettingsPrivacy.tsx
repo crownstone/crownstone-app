@@ -3,6 +3,7 @@ import {
   Alert,
   TouchableHighlight,
   ScrollView,
+  Linking,
   Switch,
   Text,
   View
@@ -180,6 +181,18 @@ export class SettingsPrivacy extends Component<any, any> {
       label: 'Help us improve your experience by sharing what type of phone you have!',
       type: 'explanation',
       below: true
+    });
+
+    items.push({
+      label:'Privacy Policy',
+      type:'navigation',
+      icon: <IconButton name={'ios-cloudy'} size={22} color={colors.white.hex} buttonStyle={{backgroundColor: colors.green.hex }}/>,
+      callback: () => {
+        Linking.openURL('https://crownstone.rocks/privacy-policy').catch(err => {});
+      }
+    });
+    items.push({
+      type: 'spacer',
     });
 
     return items;
