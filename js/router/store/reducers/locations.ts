@@ -12,6 +12,7 @@ let defaultSettings = {
     fingerprintCloudId: null,
     fingerprintRaw: null,
     fingerprintParsed: null,
+    fingerprintUpdatedAt: 1,
   },
   presentUsers: []
 };
@@ -57,6 +58,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
         newState.fingerprintRaw    = update(action.data.fingerprintRaw,      newState.fingerprintRaw);
         newState.fingerprintParsed = update(action.data.fingerprintParsed,   newState.fingerprintParsed);
         newState.fingerprintCloudId = update(action.data.fingerprintCloudId, newState.fingerprintCloudId);
+        newState.fingerprintUpdatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;
@@ -66,6 +68,7 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
         newState.fingerprintRaw    = update(action.data.fingerprintRaw,      newState.fingerprintRaw);
         newState.fingerprintParsed = update(action.data.fingerprintParsed,   newState.fingerprintParsed);
         newState.fingerprintCloudId = null;
+        newState.fingerprintUpdatedAt = getTime(action.data.updatedAt);
         return newState;
       }
       return state;

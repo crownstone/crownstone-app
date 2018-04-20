@@ -10,30 +10,56 @@ export const fingerprints = {
     );
   },
 
-  getFingerprintsInSphere: function (localSphereId, background = true) {
-    let cloudSphereId = MapProvider.local2cloudMap.spheres[localSphereId] || localSphereId; // the OR is in case a cloudId has been put into this method.
-    return this._setupRequest(
-      'GET',
-      '/Devices/{id}/fingerprintsInSphere?sphereId='+cloudSphereId,
-      { background: background},
-      'body'
-    );
-  },
-
   getFingerprintsInLocations: function (cloudLocationIdArray, background = true) {
     return this._setupRequest(
       'GET',
-      '/Devices/{id}/fingerprints?locationIds='+JSON.stringify(cloudLocationIdArray),
+      '/Devices/{id}/fingerprintsForLocations?locationIds='+JSON.stringify(cloudLocationIdArray),
       { background: background },
       'body'
     );
   },
 
-  getMatchingFingerprint: function (localLocationId, background = true) {
-    let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
+  getFingerprints: function (fingerprintIdArray, background = true) {
     return this._setupRequest(
       'GET',
-      '/Devices/{id}/matchingFingerprint?locationId='+cloudLocationId,
+      '/Devices/{id}/fingerprints?fingerprintIds='+JSON.stringify(fingerprintIdArray),
+      { background: background },
+      'body'
+    );
+  },
+
+  updateFingerprint: function (fingerprintId, data, background = true) {
+    return this._setupRequest(
+      'PUT',
+      '/Devices/{id}/fingerprint?fingerprintId='+fingerprintId,
+      { background: background, data:data },
+      'body'
+    );
+  },
+
+
+  getMatchingFingerprintsInLocations: function (cloudLocationIdArray, background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Devices/{id}/fingerprintsMatching?locationIds='+JSON.stringify(cloudLocationIdArray),
+      { background: background }
+    );
+  },
+
+
+  linkFingerprints: function (fingerprintIdArray, background = true) {
+    return this._setupRequest(
+      'POST',
+      '/Devices/{id}/fingerprintsLink?fingerprintIds='+JSON.stringify(fingerprintIdArray),
+      { background: background }
+    );
+  },
+
+
+  getFingerprintUpdateTimes: function (fingerprintIdArray, background = true) {
+    return this._setupRequest(
+      'GET',
+      '/Devices/{id}/fingerprintsUpdatedAt?fingerprintIds='+JSON.stringify(fingerprintIdArray),
       { background: background }
     );
   },

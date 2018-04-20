@@ -52,7 +52,7 @@ export class Router_IOS extends Component {
                 <Scene key="settingsPrivacy"            component={Views.SettingsPrivacy}           />
                 <Scene key="settingsApp"                component={Views.SettingsApp}               />
                 <Scene key="settingsMeshOverview"       component={Views.SettingsMeshOverview}      />
-                <Scene key="SettingsMeshTopology"       component={Views.SettingsMeshTopology}      />
+                <Scene key="settingsMeshTopology"       component={Views.SettingsMeshTopology}      />
                 <Scene key="settingsStoneBleDebug"      component={Views.SettingsStoneBleDebug}     />
                 <Scene key="settingsBleDebug"           component={Views.SettingsBleDebug}          />
                 <Scene key="settingsDeveloper"          component={Views.SettingsDeveloper}         />

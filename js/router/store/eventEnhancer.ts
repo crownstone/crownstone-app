@@ -294,6 +294,7 @@ function checkAction(action, affectedIds) {
     case "UPDATE_STONE_CLOUD_ID":
     case "UPDATE_SPHERE_CLOUD_ID":
       break;
+    case "SET_MESH_INDICATOR":
     case "UPDATE_STONE_DIAGNOSTICS":
     case "UPDATE_STONE_PREVIOUS_SWITCH_STATE":
       break;

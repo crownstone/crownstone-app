@@ -19,7 +19,7 @@ import { FingerprintManager } from '../../native/localization/FingerprintManager
 import { Bluenet } from '../../native/libInterface/Bluenet'
 import { canUseIndoorLocalizationInSphere } from '../../util/DataUtil'
 import { Background } from '../components/Background'
-import {LOG, LOGd} from '../../logging/Log'
+import {LOG, LOGd, LOGe} from '../../logging/Log'
 
 import { RoomTraining_explanation } from './trainingComponents/RoomTraining_explanation'
 import { RoomTraining_training } from './trainingComponents/RoomTraining_training'
@@ -27,6 +27,7 @@ import { RoomTraining_finished } from './trainingComponents/RoomTraining_finishe
 import { Util } from "../../util/Util";
 import {BackAction} from "../../util/Back";
 import {CancelButton} from "../components/Topbar/CancelButton";
+import {CLOUD} from "../../cloud/cloudAPI";
 
 
 export class RoomTraining extends Component<any, any> {
@@ -166,12 +167,28 @@ export class RoomTraining extends Component<any, any> {
     FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)
       .then((stringifiedFingerprint) => {
         LOG.info("gathered fingerprint:", stringifiedFingerprint);
-        store.dispatch({
+        let action = {
           type:'UPDATE_NEW_LOCATION_FINGERPRINT',
           sphereId: this.props.sphereId,
           locationId: this.props.locationId,
-          data:{ fingerprintRaw: stringifiedFingerprint }
-        });
+          data:{ fingerprintRaw: stringifiedFingerprint, fingerprintCloudId: null }
+        };
+        store.dispatch(action);
+        let state = store.getState();
+        let deviceId = Util.data.getCurrentDeviceId(state);
+
+        return CLOUD.forDevice(deviceId).createFingerprint(this.props.locationId, stringifiedFingerprint)
+          .then((fingerprint) => {
+            store.dispatch({
+              type:'UPDATE_LOCATION_FINGERPRINT_CLOUD_ID',
+              sphereId: this.props.sphereId,
+              locationId: this.props.locationId,
+              data:{ fingerprintCloudId: fingerprint.id }
+            });
+          })
+          .catch((err) => {
+            LOGe.info("uploadedFingerprint fingerprint ERROR:", err);
+          });
       }).catch(() => {});
   }
 

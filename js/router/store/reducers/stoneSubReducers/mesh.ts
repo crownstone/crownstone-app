@@ -7,7 +7,7 @@ let dataState = {
 
 let meshReducer = (state = dataState, action : any = {}) => {
   switch (action.type) {
-    case 'SET_MESH_INDICATOR': // this does not sort since the incoming data is brand new.
+    case 'SET_MESH_INDICATOR':
       if (action.data) {
         let newState = {...state};
         newState.rssi      = update( action.data.rssi,   newState.rssi);

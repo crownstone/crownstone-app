@@ -229,12 +229,12 @@ export class StoneEntity {
       return;
     }
 
-    if (rssi < 0) {
+    if (rssi >= 0) {
       return;
     }
 
     this.store.dispatch({
-      type: 'UPDATE_MESH_INDICATOR',
+      type: 'SET_MESH_INDICATOR',
       sphereId: this.sphereId,
       stoneId: this.stoneId,
       nodeId: externalId,

@@ -17,12 +17,21 @@ import { Util } from '../../util/Util'
 import {colors, OrangeLine} from './../styles'
 import { MeshElement } from "../components/MeshElement";
 import {ForceDirectedView} from "../components/InteractiveView/ForceDirectedView";
+import {topBarHeight} from "../styles";
+import {TopbarButton} from "../components/Topbar/TopbarButton";
+const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
 
 export class SettingsMeshTopology extends Component<any, any> {
   static navigationOptions = ({ navigation }) => {
-    return { title: "Mesh Topology" }
+    return { title: "Mesh Topology", headerRight:
+      <TopbarButton
+        text={"Networks"}
+        style={{width:100}}
+        onPress={() => { Actions.settingsMeshOverview(); }}
+      />
+    }
   };
 
   _baseRadius = 50;

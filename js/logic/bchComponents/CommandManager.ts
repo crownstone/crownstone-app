@@ -203,7 +203,31 @@ export class CommandManager {
       this._extractMeshCommand(state, todo,targetNetworkId, targetStoneId, meshCommands)
     }
 
-    return meshCommands;
+    // at this point, we only perform mesh commands if this is a direct connection as well. This will change in the future.
+    // because of this current limitation (connect directly and send full mesh payload to every node you directly connect to)
+    // we check now if there is a command for the targetStoneId in here. If not, return empty list.
+    let sphereIds = Object.keys(meshCommands);
+    for (let i = 0; i < sphereIds.length; i++) {
+      let meshNetworkIds = Object.keys(meshCommands[sphereIds[i]]);
+      for (let j = 0; j < meshNetworkIds.length; j++) {
+        let commands = meshCommands[sphereIds[i]][meshNetworkIds[j]];
+        let commandTypes = Object.keys(commands);
+        for (let k = 0; k < commandTypes.length; k++) {
+          let commandArray = commands[commandTypes[k]];
+          for (let l = 0; l < commandArray.length; l++) {
+            let command = commandArray[l];
+            if (command.stoneId === targetStoneId) {
+              return meshCommands;
+            }
+          }
+        }
+      }
+    }
+
+    return {};
+
+    // we only return the mesh commands in the check above (the evil looking loops).
+    // return meshCommands;
   }
 
   extractConnectionTargets(state) {
@@ -227,7 +251,7 @@ export class CommandManager {
       sphereMap[todo.stoneId] = todo.sphereId;
 
       if (this.isMeshEnabledCommand(command) === true && MapProvider.meshEnabled ) {
-        directTargets[todo.stoneId] = true;
+        directTargets[todo.stoneId] = todo.sphereId;
         let allMembersInNetwork = MeshUtil.getStonesInNetwork(state, todo.sphereId, stone.config.meshNetworkId);
 
         for (let j = 0; j < allMembersInNetwork.length; j++) {
@@ -348,6 +372,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
 
   if (command.commandName === 'keepAlive') {
     payload = {
+      stoneId: batchCommand.stoneId,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       options: batchCommand.options,
@@ -357,6 +382,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   }
   else if (command.commandName === 'keepAliveState') {
     payload = {
+      stoneId: batchCommand.stoneId,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       options: batchCommand.options,
@@ -371,6 +397,7 @@ const _getPayloadFromCommand = (batchCommand : batchCommandEntry, stoneConfig) =
   }
   else if (command.commandName === 'setSwitchState') {
     payload = {
+      stoneId: batchCommand.stoneId,
       attempts: batchCommand.attempts,
       timestamp: batchCommand.timestamp,
       crownstoneId: stoneConfig.crownstoneId,

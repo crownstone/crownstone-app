@@ -1,5 +1,6 @@
 interface keepAlivePayload {
   attempts: number,
+  stoneId: string,
   timestamp: number,
   options: batchCommandEntryOptions,
   cleanup(): void,
@@ -12,6 +13,7 @@ interface keepAlivePayload {
 
 interface keepAliveStatePayload {
   handle: string,
+  stoneId: string,
   crownstoneId: string,
   changeState: boolean,
   state: number,

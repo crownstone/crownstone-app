@@ -19,7 +19,7 @@ export class TopbarButton extends Component<any, any> {
   render() {
     if ( this.props.item ) {
       return (
-        <TouchableOpacity onPress={() => {this.props.onPress();}} style={topBarStyle.topBarRightTouch}>
+        <TouchableOpacity onPress={() => {this.props.onPress();}} style={[topBarStyle.topBarRightTouch, this.props.style]}>
           {this.props.item}
         </TouchableOpacity>
       );
@@ -30,13 +30,13 @@ export class TopbarButton extends Component<any, any> {
         text = this.props.text();
       }
       return (
-        <TouchableOpacity onPress={() => {this.props.onPress();}}  style={topBarStyle.topBarRightTouch}>
+        <TouchableOpacity onPress={() => {this.props.onPress();}}  style={[topBarStyle.topBarRightTouch, this.props.style]}>
           <View style={{flexDirection:'row', alignItems:'center', justifyContent:'flex-end', flex:0, height: barHeight}}>
             <Text style={[topBarStyle.topBarRight, topBarStyle.text, this.props.style]}>{text}</Text>
           </View>
         </TouchableOpacity>
       );
     }
-    return <View style={topBarStyle.topBarRightTouch} />;
+    return <View style={[topBarStyle.topBarRightTouch, this.props.style]} />;
   }
 }

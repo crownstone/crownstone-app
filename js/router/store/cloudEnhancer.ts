@@ -40,7 +40,7 @@ export function CloudEnhancer({ getState }) {
       case LOG_LEVEL.none:
         break;
       default:
-        LOG.store('will dispatch', action);
+        LOGi.store('will dispatch', action);
     }
 
     // required for some of the actions
@@ -110,9 +110,6 @@ function handleAction(action, returnValue, newState, oldState) {
       break;
     case 'UPDATE_LOCATION_CONFIG':
       handleLocationInCloud(action, newState);
-      break;
-    case 'UPDATE_NEW_LOCATION_FINGERPRINT':
-      handleNewFingerprintInCloud(action, newState);
       break;
     case 'UPDATE_SPHERE_CONFIG':
       handleSphereInCloud(action, newState);
@@ -203,10 +200,10 @@ function handleStoneInCloud(action, state) {
 }
 
 function _handleStone(action, state) {
-  if (!Permissions.inSphere(action.sphereId).canUpdateCrownstone) { return }
+  if (!Permissions.inSphere(action.sphereId).canUpdateCrownstone) { return; }
 
   let sphere = state.spheres[action.sphereId];
-  let stone = sphere.stones[action.stoneId];
+  let stone  = sphere.stones[action.stoneId];
 
   let localDataForCloud = {...stone};
   if (stone.config.applianceId) { localDataForCloud.config['cloudApplianceId'] = MapProvider.local2cloudMap.appliances[stone.config.applianceId] || stone.config.applianceId; }
@@ -291,12 +288,6 @@ function handleLocationInCloud(action, state) {
   }).catch(() => {});
 }
 
-function handleNewFingerprintInCloud(action, state) {
-  if (!action.data) { return; }
-  let deviceId = Util.data.getCurrentDeviceId(state);
-
-  CLOUD.forDevice(deviceId).createFingerprint(action.locationId, action.data.fingerprintRaw).catch(() => {});
-}
 
 function handleSphereInCloud(action, state) {
   let sphere = state.spheres[action.sphereId];
