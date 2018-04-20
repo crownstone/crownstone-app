@@ -5,8 +5,9 @@ export const fingerprints = {
     let cloudLocationId = MapProvider.local2cloudMap.locations[localLocationId] || localLocationId; // the OR is in case a cloudId has been put into this method.
     return this._setupRequest(
       'POST',
-      '/Devices/{id}/fingerprints?locationId='+cloudLocationId,
-      { background: background, data: data }
+      '/Devices/{id}/fingerprint?locationId='+cloudLocationId,
+      { background: background, data: data },
+      'body'
     );
   },
 
@@ -15,7 +16,6 @@ export const fingerprints = {
       'GET',
       '/Devices/{id}/fingerprintsForLocations?locationIds='+JSON.stringify(cloudLocationIdArray),
       { background: background },
-      'body'
     );
   },
 
@@ -24,7 +24,6 @@ export const fingerprints = {
       'GET',
       '/Devices/{id}/fingerprints?fingerprintIds='+JSON.stringify(fingerprintIdArray),
       { background: background },
-      'body'
     );
   },
 

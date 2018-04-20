@@ -165,19 +165,19 @@ export class RoomTraining extends Component<any, any> {
     this.setState({text:'Finished!', phase:2});
     const store = this.props.store;
     FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)
-      .then((stringifiedFingerprint) => {
+      .then((stringifiedFingerprint : any) => {
         LOG.info("gathered fingerprint:", stringifiedFingerprint);
-        let action = {
+        store.dispatch({
           type:'UPDATE_NEW_LOCATION_FINGERPRINT',
           sphereId: this.props.sphereId,
           locationId: this.props.locationId,
           data:{ fingerprintRaw: stringifiedFingerprint, fingerprintCloudId: null }
-        };
-        store.dispatch(action);
+        });
         let state = store.getState();
         let deviceId = Util.data.getCurrentDeviceId(state);
 
-        return CLOUD.forDevice(deviceId).createFingerprint(this.props.locationId, stringifiedFingerprint)
+
+        return CLOUD.forDevice(deviceId).createFingerprint(this.props.locationId, JSON.parse(stringifiedFingerprint))
           .then((fingerprint) => {
             store.dispatch({
               type:'UPDATE_LOCATION_FINGERPRINT_CLOUD_ID',
@@ -189,7 +189,7 @@ export class RoomTraining extends Component<any, any> {
           .catch((err) => {
             LOGe.info("uploadedFingerprint fingerprint ERROR:", err);
           });
-      }).catch(() => {});
+      }).catch((err) => { console.log("ERR W fingerprint uploading", err)});
   }
 
 
