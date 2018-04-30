@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import { IconButton }         from '../components/IconButton'
-import { OverlayBox }         from '../components/Overlays/OverlayBox'
+import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { styles, colors , screenHeight, screenWidth, availableScreenHeight } from '../styles'
 import { eventBus } from "../../util/EventBus";
 import { Util } from "../../util/Util";

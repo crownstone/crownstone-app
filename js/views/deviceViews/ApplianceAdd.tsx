@@ -20,8 +20,8 @@ import {transferAppliances} from "../../cloud/transferData/transferAppliances";
 import {Util} from "../../util/Util";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
-import {CancelButton} from "../components/Topbar/CancelButton";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {CancelButton} from "../components/topbar/CancelButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
 
 
 

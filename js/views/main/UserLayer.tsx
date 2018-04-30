@@ -12,8 +12,8 @@ import {
   View
 } from 'react-native';
 import {getPresentUsersInLocation} from "../../util/DataUtil";
-import {UserPicture} from "../components/Animated/UserPicture";
-import {TextCircle} from "../components/Animated/TextCircle";
+import {UserPicture} from "../components/animated/UserPicture";
+import {TextCircle} from "../components/animated/TextCircle";
 
 
 export class UserLayer extends Component<any, any> {

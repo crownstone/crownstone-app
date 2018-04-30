@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 
 import { SetupStateHandler }    from '../../native/setup/SetupStateHandler'
-import { AlternatingContent }   from '../components/Animated/AlternatingContent'
+import { AlternatingContent }   from '../components/animated/AlternatingContent'
 import { Background }           from '../components/Background'
-import { DeviceEntry }          from '../components/DeviceEntries/DeviceEntry'
-import { SetupDeviceEntry }     from '../components/DeviceEntries/SetupDeviceEntry'
+import { DeviceEntry }          from '../components/deviceEntries/DeviceEntry'
+import { SetupDeviceEntry }     from '../components/deviceEntries/SetupDeviceEntry'
 import { BatchCommandHandler }  from '../../logic/BatchCommandHandler'
 import { SeparatedItemList }    from '../components/SeparatedItemList'
 import { RoomBanner }           from '../components/RoomBanner'
@@ -30,11 +30,11 @@ import {
 } from '../../util/DataUtil'
 import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from '../styles'
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
-import {DfuDeviceEntry}  from '../components/DeviceEntries/DfuDeviceEntry';
+import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
 import {RoomBottomExplanation} from "../components/RoomBottomExplanation";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {RoomDeleted} from "../static/RoomDeleted";
 

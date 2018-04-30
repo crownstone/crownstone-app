@@ -10,8 +10,8 @@ import {
   View
 } from 'react-native';
 
-import { FadeInView }   from './Animated/FadeInView'
-import { SlideInFromBottomView }  from './Animated/SlideInFromBottomView'
+import { FadeInView }   from './animated/FadeInView'
+import { SlideInFromBottomView }  from './animated/SlideInFromBottomView'
 import { styles, screenHeight, screenWidth } from './../styles'
 import { eventBus } from '../../util/EventBus'
 

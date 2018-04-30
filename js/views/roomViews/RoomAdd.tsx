@@ -21,8 +21,8 @@ import {Util} from "../../util/Util";
 import {transferLocations} from "../../cloud/transferData/transferLocations";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
 import {BackAction} from "../../util/Back";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
-import {CancelButton} from "../components/Topbar/CancelButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
+import {CancelButton} from "../components/topbar/CancelButton";
 
 
 

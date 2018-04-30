@@ -17,7 +17,7 @@ import { colors } from '../views/styles'
 import { Icon } from '../views/components/Icon'
 import { IconButton } from '../views/components/IconButton'
 import {createNewSphere} from "./CreateSphere";
-import {AlternatingContent} from "../views/components/Animated/AlternatingContent";
+import {AlternatingContent} from "../views/components/animated/AlternatingContent";
 import {MapProvider} from "../backgroundProcesses/MapProvider";
 
 

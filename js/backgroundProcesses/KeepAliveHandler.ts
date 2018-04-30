@@ -90,6 +90,12 @@ class KeepAliveHandlerClass {
 
     sphereIds.forEach((sphereId) => {
       let sphere = state.spheres[sphereId];
+
+      // Do not keep alive in spheres that we are not present in.
+      if (sphere.config.present === false) {
+        return;
+      }
+
       LOG.info('KeepAliveHandler: Starting KeepAlive round for sphere:', sphere.config.name);
 
       // check every sphere where we are present. Usually this is only one of them!!
@@ -117,11 +123,8 @@ class KeepAliveHandlerClass {
           else if (behaviourRoomExit.active === true && useRoomLevel)   { behaviour = behaviourRoomExit; delay = determineDelay(behaviour.delay); }
           else if (behaviourAway.active     === true && !useRoomLevel)  { behaviour = behaviourAway;     delay = determineDelay(behaviour.delay); }
 
-          if (stone.config.handle && stone.config.disabled === false) {
+          if (stone.config.handle) {
             this._performKeepAliveForStone(sphere, sphereId, stone, stoneId, behaviour, delay, element, keepAliveId);
-          }
-          else if (stone.config.disabled === true) {
-            LOG.info('KeepAliveHandler: (' + keepAliveId + ') skip KeepAlive stone is disabled', stoneId);
           }
         }
       });

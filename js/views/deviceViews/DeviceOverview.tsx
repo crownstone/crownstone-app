@@ -30,7 +30,7 @@ import { BatchCommandHandler } from "../../logic/BatchCommandHandler";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {DeviceWhatsNew} from "./elements/DeviceWhatsNew";
 import {MINIMUM_REQUIRED_FIRMWARE_VERSION} from "../../ExternalConfig";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
 

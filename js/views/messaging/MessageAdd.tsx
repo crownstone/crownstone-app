@@ -22,8 +22,8 @@ import { ListEditableItems } from "../components/ListEditableItems";
 import { ProfilePicture } from "../components/ProfilePicture";
 import {MessageUtil} from "../../util/MessageUtil";
 import {BackAction} from "../../util/Back";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
-import {CancelButton} from "../components/Topbar/CancelButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
+import {CancelButton} from "../components/topbar/CancelButton";
 
 
 export const EVERYONE_IN_SPHERE = '__everyone_in_sphere__';

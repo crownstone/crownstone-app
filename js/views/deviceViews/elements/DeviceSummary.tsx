@@ -18,7 +18,7 @@ import { colors, screenWidth, screenHeight } from '../../styles'
 import { Util }                from "../../../util/Util";
 import { Icon }                from "../../components/Icon";
 import { StoneUtil }           from "../../../util/StoneUtil";
-import { AnimatedCircle }      from "../../components/Animated/AnimatedCircle";
+import { AnimatedCircle }      from "../../components/animated/AnimatedCircle";
 import { DimmerButton }        from "../../components/DimmerButton";
 import { INTENTS }             from "../../../native/libInterface/Constants";
 import { DIMMING_ENABLED}      from "../../../ExternalConfig";

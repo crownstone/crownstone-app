@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import { FadeInView }   from '../Animated/FadeInView'
+import { FadeInView }   from '../animated/FadeInView'
 import { Icon }         from '../Icon'
 import {styles, colors, screenHeight, screenWidth, availableScreenHeight} from '../../styles'
 

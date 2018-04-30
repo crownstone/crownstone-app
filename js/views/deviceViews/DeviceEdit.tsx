@@ -29,8 +29,8 @@ import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {StoneUtil} from "../../util/StoneUtil";
 import { INTENTS } from "../../native/libInterface/Constants";
 import {BackAction} from "../../util/Back";
-import {CancelButton} from "../components/Topbar/CancelButton";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {CancelButton} from "../components/topbar/CancelButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {StoneDeleted} from "../static/StoneDeleted";
 

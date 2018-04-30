@@ -22,7 +22,7 @@ import { LockOverlay }               from "../views/overlays/LockOverlay";
 import { Views }                     from './Views'
 import { colors, screenWidth, tabBarHeight } from '../views/styles'
 import { Icon }                      from '../views/components/Icon';
-import { AnimatedMenu }              from "../views/components/Animated/AnimatedMenu";
+import { AnimatedMenu }              from "../views/components/animated/AnimatedMenu";
 
 
 export class Router_IOS extends Component {

@@ -7,7 +7,7 @@ import {
   View
 } from 'react-native';
 
-import { SlideFadeInView }  from '../Animated/SlideFadeInView'
+import { SlideFadeInView }  from '../animated/SlideFadeInView'
 import { styles} from '../../styles'
 
 

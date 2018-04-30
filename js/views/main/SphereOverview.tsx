@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 const Actions = require('react-native-router-flux').Actions;
 import { SetupStateHandler }                              from '../../native/setup/SetupStateHandler'
-import { AnimatedBackground }                             from '../components/Animated/AnimatedBackground'
+import { AnimatedBackground }                             from '../components/animated/AnimatedBackground'
 import { Icon }                                           from '../components/Icon'
 import { Sphere }                                         from './Sphere'
 import { requireMoreFingerprints, enoughCrownstonesForIndoorLocalization, enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
@@ -23,7 +23,7 @@ import {colors, screenWidth, topBarHeight} from '../styles'
 import { DfuStateHandler } from "../../native/firmware/DfuStateHandler";
 import {eventBus} from "../../util/EventBus";
 import {Permissions} from "../../backgroundProcesses/PermissionManager";
-import {TopbarButton} from '../components/Topbar/TopbarButton';
+import {TopbarButton} from '../components/topbar/TopbarButton';
 
 
 export class SphereOverview extends Component<any, any> {

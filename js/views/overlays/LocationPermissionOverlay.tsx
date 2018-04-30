@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import { Icon }         from '../components/Icon'
-import { OverlayBox }   from '../components/Overlays/OverlayBox'
+import { OverlayBox }   from '../components/overlays/OverlayBox'
 import {styles, colors, screenHeight, screenWidth} from '../styles'
 import { Bluenet } from "../../native/libInterface/Bluenet";
 import {NativeBus} from "../../native/libInterface/NativeBus";

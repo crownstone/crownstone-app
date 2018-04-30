@@ -21,8 +21,8 @@ import {colors, OrangeLine} from './../styles'
 import { LocationHandler } from "../../native/localization/LocationHandler";
 import { Permissions } from "../../backgroundProcesses/PermissionManager";
 import {BackAction} from "../../util/Back";
-import {CancelButton} from "../components/Topbar/CancelButton";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {CancelButton} from "../components/topbar/CancelButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
 
 
 

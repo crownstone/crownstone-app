@@ -9,7 +9,7 @@ import { Icon } from '../Icon';
 import { styles, colors, screenWidth} from '../../styles'
 import {Util} from "../../../util/Util";
 import {eventBus} from "../../../util/EventBus";
-import {SlideInView} from "../Animated/SlideInView";
+import {SlideInView} from "../animated/SlideInView";
 import {Separator} from "../Separator";
 
 

@@ -11,8 +11,8 @@ import {
 
 import { styles, colors } from '../styles'
 
-import { SlideInView } from './Animated/SlideInView'
-import { NavigationBar } from './EditComponents/NavigationBar'
+import { SlideInView } from './animated/SlideInView'
+import { NavigationBar } from './editComponents/NavigationBar'
 import { Separator } from './Separator'
 import { CustomIcon } from '../../fonts/customIcons'
 

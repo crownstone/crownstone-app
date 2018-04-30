@@ -18,7 +18,7 @@ const Actions = require('react-native-router-flux').Actions;
 import {colors, screenWidth} from '../styles'
 import { Svg, Circle} from 'react-native-svg';
 import {eventBus} from "../../util/EventBus";
-import {AnimatedCircle} from "./Animated/AnimatedCircle";
+import {AnimatedCircle} from "./animated/AnimatedCircle";
 import {BatchCommandHandler} from "../../logic/BatchCommandHandler";
 import {INTENTS} from "../../native/libInterface/Constants";
 

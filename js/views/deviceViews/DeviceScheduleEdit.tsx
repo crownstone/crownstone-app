@@ -30,8 +30,8 @@ import {ScheduleUtil} from "../../util/ScheduleUtil";
 
 import UncontrolledDatePickerIOS from 'react-native-uncontrolled-date-picker-ios';
 import {BackAction} from "../../util/Back";
-import {CancelButton} from "../components/Topbar/CancelButton";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {CancelButton} from "../components/topbar/CancelButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
 
 let DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 

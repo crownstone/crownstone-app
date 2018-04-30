@@ -18,7 +18,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { Svg, Circle } from 'react-native-svg';
 import {DfuStateHandler} from "../../native/firmware/DfuStateHandler";
 import {MapProvider} from "../../backgroundProcesses/MapProvider";
-import {AnimatedCircle} from "./Animated/AnimatedCircle";
+import {AnimatedCircle} from "./animated/AnimatedCircle";
 
 let ALERT_TYPES = {
   fingerprintNeeded : 'fingerPrintNeeded'

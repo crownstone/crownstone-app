@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 
-import { OverlayBox }         from '../components/Overlays/OverlayBox'
+import { OverlayBox }         from '../components/overlays/OverlayBox'
 import { colors, screenHeight, screenWidth} from '../styles'
 import {eventBus} from "../../util/EventBus";
 const Swiper = require("react-native-swiper");

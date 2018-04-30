@@ -8,9 +8,9 @@ import {
   View,
 } from 'react-native';
 
-import { AnimatedLogo }       from './Animated/AnimatedLogo'
-import { AnimatedLoadingBar } from './Animated/AnimatedLoadingBar'
-import { FadeInView }         from './Animated/FadeInView'
+import { AnimatedLogo }       from './animated/AnimatedLogo'
+import { AnimatedLoadingBar } from './animated/AnimatedLoadingBar'
+import { FadeInView }         from './animated/FadeInView'
 import { styles, colors , screenHeight} from './../styles'
 import { eventBus } from '../../util/EventBus'
 

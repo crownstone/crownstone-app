@@ -26,7 +26,7 @@ import { RoomTraining_training } from './trainingComponents/RoomTraining_trainin
 import { RoomTraining_finished } from './trainingComponents/RoomTraining_finished'
 import { Util } from "../../util/Util";
 import {BackAction} from "../../util/Back";
-import {CancelButton} from "../components/Topbar/CancelButton";
+import {CancelButton} from "../components/topbar/CancelButton";
 import {CLOUD} from "../../cloud/cloudAPI";
 
 

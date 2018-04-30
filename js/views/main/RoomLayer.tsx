@@ -19,7 +19,7 @@ import { getFloatingStones} from '../../util/DataUtil'
 import { screenWidth} from '../styles'
 import { UserLayer }         from './UserLayer';
 import {Permissions}         from "../../backgroundProcesses/PermissionManager";
-import {ForceDirectedView}   from "../components/InteractiveView/ForceDirectedView";
+import {ForceDirectedView}   from "../components/interactiveView/ForceDirectedView";
 
 export class RoomLayer extends Component<any, any> {
   state:any; // used to avoid warnings for setting state values

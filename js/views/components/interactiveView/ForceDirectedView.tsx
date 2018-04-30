@@ -24,7 +24,7 @@ let Actions = require('react-native-router-flux').Actions;
 import { colors, screenWidth, topBarHeight, availableScreenHeight} from '../../styles'
 import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
-import {AnimatedDoubleTap} from "../Animated/AnimatedDoubleTap";
+import {AnimatedDoubleTap} from "../animated/AnimatedDoubleTap";
 import {eventBus} from "../../../util/EventBus";
 
 export class ForceDirectedView extends Component<{

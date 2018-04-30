@@ -11,7 +11,7 @@ import {
 import { Icon } from './Icon';
 import { colors, topBarHeight, statusBarHeight} from '../styles'
 let Actions = require('react-native-router-flux').Actions;
-import { AlternatingContent }   from './Animated/AlternatingContent'
+import { AlternatingContent }   from './animated/AlternatingContent'
 import {BackAction} from "../../util/Back";
 
 let barHeight = topBarHeight - statusBarHeight;

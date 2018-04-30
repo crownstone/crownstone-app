@@ -16,9 +16,9 @@ import { Background } from './../components/Background'
 import { Util } from '../../util/Util'
 import {colors, OrangeLine} from './../styles'
 import { MeshElement } from "../components/MeshElement";
-import {ForceDirectedView} from "../components/InteractiveView/ForceDirectedView";
+import {ForceDirectedView} from "../components/interactiveView/ForceDirectedView";
 import {topBarHeight} from "../styles";
-import {TopbarButton} from "../components/Topbar/TopbarButton";
+import {TopbarButton} from "../components/topbar/TopbarButton";
 const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
