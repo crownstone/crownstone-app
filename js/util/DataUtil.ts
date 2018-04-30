@@ -136,6 +136,7 @@ export const DataUtil = {
     }
     else if (stone.config.applianceId) {
       LOG.error("DataUtil: Stone has an appliance ID but the appliance itself is not found.", stone.config.applianceId);
+      return stone;
     }
     else {
       return stone;

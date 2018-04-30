@@ -99,6 +99,47 @@ class FingerprintManagerClass {
       Bluenet.pauseCollectingFingerprint();
     });
   }
+
+
+  /**
+   * Use this method to catch any case where the fingerprint would be incorrect due to bugs or old formats.
+   *
+   * @param fingerprintRaw
+   * @returns {boolean}
+   */
+  validateFingerprint(stringifiedFingerprint) {
+    let fingerprint = JSON.parse(stringifiedFingerprint);
+    if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
+      // check for negative major or minors, coming from casting to Int16 instead of UInt16 in Android.
+      for (let i = 0; i < fingerprint.length; i++) {
+        let deviceIds = Object.keys(fingerprint[i].devices);
+        for (let j = 0; j < deviceIds.length; j++) {
+          if (deviceIds[j].length < 1 || deviceIds[j].indexOf(':-') > 0) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
+
+
+  shouldTransformFingerprint(stringifiedFingerprint) {
+    return stringifiedFingerprint.indexOf(".Maj:") !== -1;
+  }
+
+  transformFingerprint(stringifiedFingerprint) {
+    let step1 = stringifiedFingerprint.replace(/(\.Maj:)/g,"_Maj:");
+    let step2 = step1.replace(/(\.Min:)/g,"_Min:");
+    return step2;
+  }
+
 }
+
+
 
 export const FingerprintManager = new FingerprintManagerClass();

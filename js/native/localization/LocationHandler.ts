@@ -13,6 +13,7 @@ import { ENCRYPTION_ENABLED, KEEPALIVE_INTERVAL } from '../../ExternalConfig';
 import { canUseIndoorLocalizationInSphere, clearRSSIs, disableStones } from '../../util/DataUtil';
 import { eventBus }          from '../../util/EventBus';
 import { BatterySavingUtil } from '../../util/BatterySavingUtil';
+import {FingerprintManager} from "./FingerprintManager";
 
 
 class LocationHandlerClass {
@@ -367,17 +368,29 @@ class LocationHandlerClass {
         sphereIds.forEach((sphereId) => {
           let sphereIBeaconUUID = state.spheres[sphereId].config.iBeaconUUID;
 
-          LOG.info('LocalizationUtil: Setup tracking for iBeacon UUID: ', sphereIBeaconUUID, ' with sphereId:', sphereId);
+          LOG.info('LocationHandler: Setup tracking for iBeacon UUID: ', sphereIBeaconUUID, ' with sphereId:', sphereId);
 
           let locations = state.spheres[sphereId].locations;
           let locationIds = Object.keys(locations);
           locationIds.forEach((locationId) => {
             if (locations[locationId].config.fingerprintRaw) {
               // check format of the fingerprint:
-              LOG.info('LocalizationUtil: Checking fingerprint format for: ', locationId, ' in sphere: ', sphereId);
-              if (validateFingerprint(locations[locationId].config.fingerprintRaw)) {
-                LOG.info('LocalizationUtil: Loading fingerprint for: ', locationId, ' in sphere: ', sphereId);
-                Bluenet.loadFingerprint(sphereId, locationId, locations[locationId].config.fingerprintRaw);
+              LOG.info('LocationHandler: Checking fingerprint format for: ', locationId, ' in sphere: ', sphereId);
+              if (FingerprintManager.validateFingerprint(locations[locationId].config.fingerprintRaw)) {
+                let activeFingerprint = locations[locationId].config.fingerprintRaw;
+                if (FingerprintManager.shouldTransformFingerprint(activeFingerprint)) {
+                  LOG.info('LocationHandler: Transforming fingerprint format for: ', locationId, ' in sphere: ', sphereId);
+                  activeFingerprint = FingerprintManager.transformFingerprint(activeFingerprint);
+                  this.store.dispatch({
+                    type: 'UPDATE_NEW_LOCATION_FINGERPRINT',
+                    sphereId: sphereId,
+                    locationId: locationId,
+                    data: { fingerprintRaw: activeFingerprint }
+                  });
+                }
+
+                LOG.info('LocationHandler: Loading fingerprint for: ', locationId, ' in sphere: ', sphereId);
+                Bluenet.loadFingerprint(sphereId, locationId, activeFingerprint);
               }
               else {
                 showRemoveFingerprintNotification = true;
@@ -437,30 +450,6 @@ class LocationHandlerClass {
 
 
 
-/**
- * Use this method to catch any case where the fingerprint would be incorrect due to bugs or old formats.
- *
- * @param fingerprintRaw
- * @returns {boolean}
- */
-function validateFingerprint(fingerprintRaw) {
-  let fingerprint = JSON.parse(fingerprintRaw);
-  if (fingerprint.length > 0 && fingerprint[0].devices !== undefined) {
-    // check for negative major or minors, coming from casting to Int16 instead of UInt16 in Android.
-    for (let i = 0; i < fingerprint.length; i++) {
-      let deviceIds = Object.keys(fingerprint[i].devices);
-      for (let j = 0; j < deviceIds.length; j++) {
-        if (deviceIds[j].length < 1 || deviceIds[j].indexOf(':-') > 0) {
-          return false;
-        }
-      }
-    }
-
-    return true;
-  }
-
-  return false;
-}
 
 export const LocationHandler = new LocationHandlerClass();
 

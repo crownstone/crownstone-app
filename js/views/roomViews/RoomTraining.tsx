@@ -167,17 +167,18 @@ export class RoomTraining extends Component<any, any> {
     FingerprintManager.finalizeFingerprint(this.props.sphereId, this.props.locationId)
       .then((stringifiedFingerprint : any) => {
         LOG.info("gathered fingerprint:", stringifiedFingerprint);
+        let transformedFingerprint = FingerprintManager.transformFingerprint(stringifiedFingerprint)
         store.dispatch({
           type:'UPDATE_NEW_LOCATION_FINGERPRINT',
           sphereId: this.props.sphereId,
           locationId: this.props.locationId,
-          data:{ fingerprintRaw: stringifiedFingerprint, fingerprintCloudId: null }
+          data:{ fingerprintRaw: transformedFingerprint, fingerprintCloudId: null }
         });
         let state = store.getState();
         let deviceId = Util.data.getCurrentDeviceId(state);
 
 
-        return CLOUD.forDevice(deviceId).createFingerprint(this.props.locationId, JSON.parse(stringifiedFingerprint))
+        return CLOUD.forDevice(deviceId).createFingerprint(this.props.locationId, JSON.parse(transformedFingerprint))
           .then((fingerprint) => {
             store.dispatch({
               type:'UPDATE_LOCATION_FINGERPRINT_CLOUD_ID',
