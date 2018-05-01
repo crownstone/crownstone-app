@@ -37,8 +37,7 @@ class MassMover {
     dx = center.x - nodesCenter.x;
     dy = center.y - nodesCenter.y; // inverse so we can just add x and y to node x and y
 
-    // console.log(minX, maxX, minY, maxY, dx, dy, nodesCenter, center)
-    // // move all nodes to center frame
+    // move all nodes to center frame
     for (let i = 0; i < nodeIndices.length; i++) {
       let nodeId = nodeIndices[i];
       node = nodes[nodeId];

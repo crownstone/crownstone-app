@@ -79,7 +79,8 @@ if (DISABLE_NATIVE === true) {
     lockSwitch:() => {},
     allowDimming:() => {},
     setSwitchCraft:() => {},
-
+    sendNoOp:() => {},
+    sendMeshNoOp:() => {},
   }
 }
 else {

@@ -225,7 +225,7 @@ export class StoneEntity {
   }
 
   _updateExternalRssiIndicator(stone, externalId, rssi) {
-    if (stone.mesh[externalId] && stone.mesh[externalId].rssi !== rssi) {
+    if (stone.mesh[externalId] && stone.mesh[externalId].rssi === rssi) {
       return;
     }
 

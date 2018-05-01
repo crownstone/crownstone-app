@@ -190,7 +190,7 @@ export class RoomTraining extends Component<any, any> {
           .catch((err) => {
             LOGe.info("uploadedFingerprint fingerprint ERROR:", err);
           });
-      }).catch((err) => { console.log("ERR W fingerprint uploading", err)});
+      }).catch((err) => { LOGe.cloud("ERR W fingerprint uploading", err)});
   }
 
 

@@ -46,7 +46,7 @@ export class SettingsMeshTopology extends Component<any, any> {
   componentDidMount() {
     this.unsubscribeStoreEvents = this.props.eventBus.on("databaseChange", (data) => {
       let change = data.change;
-      if ( change.meshIdUpdated ) {
+      if ( change.meshIdUpdated || change.meshIndicatorUpdated || change.changeStones || change.changeLocations || change.stoneLocationUpdated) {
         this.forceUpdate();
       }
     });
@@ -64,9 +64,10 @@ export class SettingsMeshTopology extends Component<any, any> {
   }
 
   getEdgeSettings(edge) {
+    let label = edge.rssi + '';
     if (edge.rssi > -60) {
       return [
-        {offset: 0, color: colors.white.hex, thickness: 6, coverage: 1},
+        {offset: 0, color: colors.white.hex, thickness: 6, coverage: 1, label: label},
         {offset: -15, color: colors.lightGreen.hex, thickness: 4, coverage: 1},
         {offset: 15, color: colors.lightGreen.hex, thickness: 4, coverage: 1},
         {offset: -28, color: colors.green.hex, thickness: 2, coverage: 0.8},
@@ -75,38 +76,38 @@ export class SettingsMeshTopology extends Component<any, any> {
     }
     else if (edge.rssi > -70) {
       return [
-        {offset: 0, color: colors.lightGreen.hex, thickness: 4, coverage: 1},
+        {offset: 0, color: colors.lightGreen.hex, thickness: 4, coverage: 1, label: label},
         {offset: -12, color: colors.green.hex, thickness: 3, coverage: 0.8},
         {offset: 12, color: colors.green.hex, thickness: 3, coverage: 0.8},
       ]
     }
     else if (edge.rssi > -80) {
       return [
-        {offset: 0, color: colors.green.hex, thickness: 4, coverage: 1},
+        {offset: 0, color: colors.green.hex, thickness: 4, coverage: 1, label: label},
         {offset: -12, color: colors.white.hex, thickness: 3, coverage: 0.7},
         {offset: 12, color: colors.white.hex, thickness: 3, coverage: 0.7},
       ]
     }
     else if (edge.rssi > -85) {
       return [
-        {offset: 0, color: colors.lightCsOrange.hex, thickness: 4, coverage: 1},
+        {offset: 0, color: colors.lightCsOrange.hex, thickness: 4, coverage: 1, label: label},
         {offset: -12, color: colors.lightCsOrange.hex, thickness: 3, coverage: 0.8},
         {offset: 12, color: colors.lightCsOrange.hex, thickness: 3, coverage: 0.8},
       ]
     }
     else if (edge.rssi > -90) {
       return [
-        {offset: 0, color: colors.lightCsOrange.hex, thickness: 4, coverage: 1},
+        {offset: 0, color: colors.lightCsOrange.hex, thickness: 4, coverage: 1, label: label},
       ]
     }
     else if (edge.rssi > -95) {
       return [
-        {offset: 0, color: colors.darkCsOrange.hex, thickness: 6, coverage: 0.8, dashArray:"10, 5"},
+        {offset: 0, color: colors.darkCsOrange.hex, thickness: 6, coverage: 0.8, dashArray:"10, 5", label: label},
       ]
     }
     else {
       return [
-        {offset: 0, color: colors.darkRed.hex, thickness: 6, coverage: 0.8, opacity: 0.3, dashArray:"8, 12"},
+        {offset: 0, color: colors.darkRed.hex, thickness: 6, coverage: 0.8, opacity: 0.3, dashArray:"8, 12", label: label},
       ]
     }
 
@@ -139,9 +140,9 @@ export class SettingsMeshTopology extends Component<any, any> {
 
     let edges = [];
     let connections = {};
-
     stoneIds.forEach((stoneId) => {
       let stone = stones[stoneId];
+
       if (locationColorMap[stone.config.locationId] === undefined) {
         locationColorMap[stone.config.locationId] = locationColorArray[colorIndex];
         colorIndex++;
@@ -160,16 +161,25 @@ export class SettingsMeshTopology extends Component<any, any> {
 
       this.nodeData[stoneId] = {locationIcon: locationIcon, locationTitle:locationTitle, locationColor: locationColor, element: element};
 
+      //  if a stone is not in a mesh, do not show any stored connections
+      if (!stone.config.meshNetworkId) { return; }
       let connectedNodes = Object.keys(stone.mesh);
       connectedNodes.forEach((nodeId) => {
-        let existing = connections[stoneId + nodeId];
+        // dont show dead nodes
+        if (!stones[nodeId]) { return }
+        // dont show nodes that are no longer is mesh
+        if (!stones[nodeId].config.meshNetworkId) { return }
+
+        let edgeId = stoneId > nodeId ? stoneId + nodeId : nodeId + stoneId;
+        let existing = connections[edgeId];
         if (
             existing === undefined ||
             existing.timestamp < MESH_TIMEOUT ||
             existing.timestamp < stone.mesh[nodeId].timestamp ||
             existing.rssi > stone.mesh[nodeId].rssi
            ) {
-          connections[stoneId + nodeId] = {
+          connections[edgeId] = {
+            id: edgeId,
             from: stoneId,
             to: nodeId,
             rssi: stone.mesh[nodeId].rssi,
@@ -177,12 +187,11 @@ export class SettingsMeshTopology extends Component<any, any> {
           };
         }
       });
-
-      let edgeIds = Object.keys(connectedNodes);
-      edgeIds.forEach((edgeId) => {
-        edges.push(connectedNodes[edgeId]);
-      })
     });
+    let edgeIds = Object.keys(connections);
+    edgeIds.forEach((edgeId) => {
+      edges.push(connections[edgeId]);
+    })
 
     return (
       <Background image={this.props.backgrounds.detailsDark}>

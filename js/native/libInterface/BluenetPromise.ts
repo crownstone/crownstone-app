@@ -116,4 +116,7 @@ export const BluenetPromiseWrapper : BluenetPromiseWrapperProtocol = {
   lockSwitch:                     (lock: boolean)   => { return BluenetPromise('lockSwitch',     lock);  },
   allowDimming:                   (allow : boolean) => { return BluenetPromise('allowDimming',   allow); },
   setSwitchCraft:                 (state : boolean) => { return BluenetPromise('setSwitchCraft', state); },
+
+  sendNoOp:                       () => { return BluenetPromise('sendNoOp'); },
+  sendMeshNoOp:                   () => { return BluenetPromise('sendMeshNoOp'); },
 };

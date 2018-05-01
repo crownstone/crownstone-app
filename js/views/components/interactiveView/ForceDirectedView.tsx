@@ -26,6 +26,7 @@ import PhysicsEngine from "../../../logic/PhysicsEngine";
 import {Scheduler} from "../../../logic/Scheduler";
 import {AnimatedDoubleTap} from "../animated/AnimatedDoubleTap";
 import {eventBus} from "../../../util/EventBus";
+import {Util} from "../../../util/Util";
 
 export class ForceDirectedView extends Component<{
   nodeIds: string[],
@@ -64,7 +65,8 @@ export class ForceDirectedView extends Component<{
 
   animationFrame : any;
 
-  nodes: any;
+  nodes: any = {};
+  edges: any = {};
   unsubscribeGestureEvents: any[];
 
   viewWidth : number = screenWidth;
@@ -159,17 +161,36 @@ export class ForceDirectedView extends Component<{
       this._currentPan = {x:0, y:0};
       this._currentScale = 1;
 
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius);
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
     }
-    if (nextProps.nodeIds.join() !== this.props.nodeIds.join()) {
-      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius);
+    else if (nextProps.nodeIds.join() !== this.props.nodeIds.join()) {
+      this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
     }
-
+    else {
+      // check for changes in edges.
+      let edgeIdsCurrent = [];
+      let edgeIdsNew = [];
+      if (this.props.edges && Array.isArray(this.props.edges)) {
+        for (let i = 0; i < this.props.edges.length; i++) {
+          edgeIdsCurrent.push(this.props.edges[i].id);
+        }
+        edgeIdsCurrent.sort();
+      }
+      if (nextProps.edges && Array.isArray(nextProps.edges)) {
+        for (let i = 0; i < nextProps.edges.length; i++) {
+          edgeIdsNew.push(nextProps.edges[i].id);
+        }
+        edgeIdsNew.sort();
+      }
+      if (edgeIdsCurrent.join() !== edgeIdsNew.join()) {
+        this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+      }
+    }
   }
 
   init() {
     this.panListener = this.state.pan.addListener(value => this._currentPan = value);
-    this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius);
+    this.loadIdsInSolver(this.props.nodeIds, this.props.nodeRadius, this.props.edges);
 
     // configure the pan responder
     this._panResponder = PanResponder.create({
@@ -427,7 +448,7 @@ export class ForceDirectedView extends Component<{
     this._pressedNodeData = false;
   }
 
-  loadIdsInSolver(nodeIds, radius) {
+  loadIdsInSolver(nodeIds, radius, edges) {
     this.state.opacity.setValue(0);
     this.physicsEngine.clear();
 
@@ -443,6 +464,12 @@ export class ForceDirectedView extends Component<{
       this.state.nodes[id] = {x: new Animated.Value(0), y: new Animated.Value(0), scale: new Animated.Value(1), opacity: new Animated.Value(1)};
     }
 
+    this.edges = [];
+    if (edges && Array.isArray(edges)) {
+      for (let i = 0; i < edges.length; i++) {
+        this.edges.push(Util.deepExtend({}, edges[i]))
+      }
+    }
 
     let initialized = false;
     cancelAnimationFrame(this.animationFrame);
@@ -473,7 +500,7 @@ export class ForceDirectedView extends Component<{
     // here we do not use this.viewWidth because it is meant to give the exact screen proportions
     this.physicsEngine.initEngine(center, screenWidth, availableScreenHeight - 50, radius, () => {}, onStable);
     this.physicsEngine.setOptions(this.props.options);
-    this.physicsEngine.load(this.nodes, this.props.edges);
+    this.physicsEngine.load(this.nodes, this.edges);
     this.physicsEngine.stabilize(300, false);
     // setInterval(() => { this.physicsEngine.stabilize(2, false); }, 50)
   }
@@ -508,15 +535,15 @@ export class ForceDirectedView extends Component<{
   }
 
   getEdges() {
-    if (!this.props.edges) {
+    if (!this.edges) {
       return;
     }
 
 
     let edges = [];
     // gather the edges to render.
-    for (let i = 0; i < this.props.edges.length; i++) {
-      let edge = this.props.edges[i];
+    for (let i = 0; i < this.edges.length; i++) {
+      let edge = this.edges[i];
       if (edge.connected === false) { continue; }
 
       let pos1 = {x: this.nodes[edge.from].x + this.props.nodeRadius, y: this.nodes[edge.from].y + this.props.nodeRadius};
@@ -551,7 +578,15 @@ export class ForceDirectedView extends Component<{
         maxY = Math.max(maxY, pos3.y);
       }
 
-      let padding = 5;
+      let hasLabel = false;
+      for (let i = 0; i < renderSettings.length; i++) {
+        if (renderSettings[i].label) {
+          hasLabel = true;
+          break;
+        }
+      }
+
+      let padding = hasLabel ? 40 : 5;
       let width = maxX - minX;
       let height = maxY - minY;
       let dist = Math.sqrt(width*width + height*height );
@@ -631,10 +666,10 @@ export class ForceDirectedView extends Component<{
             result.push(
               <Line
                 key={edge.id + "_" + i}
-                x1={ sX }
-                y1={ sY }
-                x2={ eX }
-                y2={ eY }
+                x1={ sX + dx }
+                y1={ sY - dy }
+                x2={ eX + dx}
+                y2={ eY - dy}
                 stroke={color}
                 strokeWidth={settings.thickness || 3}
                 strokeDasharray={settings.dashArray}
@@ -642,7 +677,7 @@ export class ForceDirectedView extends Component<{
             );
           }
 
-          if (settings.text !== undefined) {
+          if (settings.label !== undefined) {
             let middleX = (sX + eX) * 0.5;
             let middleY = (sY + eY) * 0.5;
             // textResult.push(
@@ -667,13 +702,14 @@ export class ForceDirectedView extends Component<{
                 x={middleX}
                 y={middleY}
                 textAnchor="middle"
-              >{settings.text}</Text>
+              >{settings.label}</Text>
             );
           }
 
         }
 
         textResult.forEach((t) => { result.push(t); });
+
         return result
       };
 
@@ -683,8 +719,8 @@ export class ForceDirectedView extends Component<{
           position:'absolute',
           top:  minY - padding,
           left: minX - padding,
-           width: width  + 2*padding,
-           height: height  + 2*padding,
+          width: width + 2*padding,
+          height: height + 2*padding,
         }}
         >
           <Svg

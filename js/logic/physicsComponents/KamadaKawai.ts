@@ -65,7 +65,6 @@ class KamadaKawai {
       [highE_nodeId, maxEnergy, dE_dx, dE_dy] = this._getHighestEnergyNode(nodes, nodeIdArray);
       delta_m = maxEnergy;
       subIterations = 0;
-      console.log("DeltaM", delta_m);
       while(delta_m > innerThreshold && subIterations < maxInnerIterations) {
         subIterations += 1;
         this._moveNode(highE_nodeId, dE_dx, dE_dy, nodes, nodeIdArray);
@@ -76,8 +75,6 @@ class KamadaKawai {
         totalSub++;
       }
     }
-
-    console.log("FINISHED IN ", iterations, totalSub)
   }
 
   /**
@@ -122,7 +119,6 @@ class KamadaKawai {
         let x_i = nodes[i].x;
         let y_i = nodes[i].y;
         let denominator = 1.0 / Math.sqrt(Math.pow(x_m - x_i, 2) + Math.pow(y_m - y_i, 2));
-        // console.log(x_m,y_m,x_i,y_i,dE_dx,dE_dy,denominator)
         dE_dx += this.K_matrix[m][i] * ((x_m - x_i) - this.L_matrix[m][i] * (x_m - x_i) * denominator);
         dE_dy += this.K_matrix[m][i] * ((y_m - y_i) - this.L_matrix[m][i] * (y_m - y_i) * denominator);
       }

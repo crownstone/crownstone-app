@@ -108,5 +108,9 @@ RCT_EXTERN_METHOD(clearSchedule:(nonnull NSNumber *)scheduleEntryIndex callback:
 RCT_EXTERN_METHOD(getAvailableScheduleEntryIndex:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(getSchedules:(RCTResponseSenderBlock)callback)
 
+// no op
+RCT_EXTERN_METHOD(sendNoOp:(RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(sendMeshNoOp:(RCTResponseSenderBlock)callback)
+
 + (BOOL)requiresMainQueueSetup { return YES; }
 @end

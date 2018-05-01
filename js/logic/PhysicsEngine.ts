@@ -5,6 +5,7 @@ import ForceAtlas2BasedRepulsionSolver      from './physicsComponents/FA2BasedRe
 import ForceAtlas2BasedCentralGravitySolver from './physicsComponents/FA2BasedCentralGravitySolver';
 import MassMover from "./physicsComponents/MassMover";
 import KamadaKawai from "./physicsComponents/KamadaKawai";
+import {Util} from "../util/Util";
 
 class PhysicsEngine {
 
@@ -111,7 +112,7 @@ class PhysicsEngine {
       useDynamicEdges: true,
       center: center
     };
-    this.options = deepExtend({}, this.baseOptions);
+    this.options = Util.deepExtend({}, this.baseOptions);
     this.timestep = 0.5;
     this.layoutFailed = false;
 
@@ -120,8 +121,8 @@ class PhysicsEngine {
 
   setOptions(options) {
     if (options) {
-      let baseOptions = deepExtend({}, this.options);
-      this.options = deepExtend(baseOptions, options);
+      let baseOptions = Util.deepExtend({}, this.options);
+      this.options = Util.deepExtend(baseOptions, options);
       this.init()
     }
   }
@@ -571,45 +572,5 @@ class PhysicsEngine {
     }
   }
 }
-
-
-function deepExtend(a, b, protoExtend = false, allowDeletion = false) {
-  for (var prop in b) {
-    if (b.hasOwnProperty(prop) || protoExtend === true) {
-      if (b[prop] && b[prop].constructor === Object) {
-        if (a[prop] === undefined) {
-          a[prop] = {};
-        }
-        if (a[prop].constructor === Object) {
-          deepExtend(a[prop], b[prop], protoExtend);
-        }
-        else {
-          if ((b[prop] === null) && a[prop] !== undefined && allowDeletion === true) {
-            delete a[prop];
-          }
-          else {
-            a[prop] = b[prop];
-          }
-        }
-      }
-      else if (Array.isArray(b[prop])) {
-        a[prop] = [];
-        for (let i = 0; i < b[prop].length; i++) {
-          a[prop].push(b[prop][i]);
-        }
-      }
-      else {
-        if ((b[prop] === null) && a[prop] !== undefined && allowDeletion === true) {
-          delete a[prop];
-        }
-        else {
-          a[prop] = b[prop];
-        }
-      }
-    }
-  }
-  return a;
-};
-
 
 export default PhysicsEngine;

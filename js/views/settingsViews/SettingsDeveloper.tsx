@@ -222,7 +222,7 @@ export class SettingsDeveloper extends Component<any, any> {
               MeshUtil.clearMeshNetworkIds(store, sphereId);
               MeshUtil.clearTopology(store, sphereId);
               Alert.alert("Reset Done", "Rediscovery will start automatically.",[{text:"OK"}]);
-            }},[{text:"Cancel"}]
+            }},{text:"Cancel"}
           ]
         )
       }

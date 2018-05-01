@@ -53,6 +53,8 @@ export const sync = {
     CLOUD.setAccess(accessToken);
     CLOUD.setUserId(userId);
 
+    eventBus.emit("CloudSyncStarting");
+
     let globalCloudIdMap = getGlobalIdMap();
     let globalSphereMap = {};
 

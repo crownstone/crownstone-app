@@ -162,13 +162,18 @@ export class CommandManager {
   extractDirectCommands(state, targetStoneId : string = null, addMeshEnabledCommands = true) {
     // This will determine if there are high priority commands to filter for, and if so return only those. If not, returns all.
     let commandsToHandle = this._getCommandsToHandle(state);
-
     let directCommands : directCommands = {};
 
     let uuids = Object.keys(commandsToHandle);
     for (let i = 0; i < uuids.length; i++) {
       let todo = commandsToHandle[uuids[i]];
-      if (this.isMeshEnabledCommand(todo.command) && !addMeshEnabledCommands) {
+
+      let sphere = state.spheres[todo.sphereId]; if (!sphere) { continue; }
+      let stone  = sphere.stones[todo.stoneId];  if (!stone)  { continue; }
+      let stoneConfig = stone.config;
+
+      // we will not handle mesh commands if this crownstone is in a mesh network. (assuming mesh is globally enabled)
+      if (this.isMeshEnabledCommand(todo.command) && !addMeshEnabledCommands && stoneConfig.meshNetworkId !== null && stoneConfig.meshNetworkId !== undefined) {
         continue;
       }
 
@@ -199,8 +204,7 @@ export class CommandManager {
       if (!this.isMeshEnabledCommand(todo.command)) {
         continue;
       }
-
-      this._extractMeshCommand(state, todo,targetNetworkId, targetStoneId, meshCommands)
+      this._extractMeshCommand(state, todo, targetNetworkId, targetStoneId, meshCommands)
     }
 
     // at this point, we only perform mesh commands if this is a direct connection as well. This will change in the future.

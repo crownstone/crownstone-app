@@ -31,6 +31,9 @@ class StoneManagerClass {
   entities = {};
   sphereEntityCollections = {};
 
+  factoryResetUnknownStonesEnabled = false;
+  factoryResetUnknownStonesEnableTimeout = null;
+
   loadStore(store) {
     if (this._initialized === false) {
       LOGi.native("StoreManager: loadStore");
@@ -79,6 +82,18 @@ class StoneManagerClass {
 
       eventBus.on("CrownstoneDisabled", (sphereId) => { this._evaluateDisabledState(sphereId); });
 
+      // if we are syncing, this means we might get new crownstones to download, in the mean time we dont want to factory reset them
+      eventBus.on("CloudSyncStarting", () => { this._pauseFactoryResetCapability();   });
+      // after syncing we enable factory reset capability
+      eventBus.on("CloudSyncComplete", () => { this._restoreFactoryResetCapability(); });
+
+      // during setup we do will ignore crownstones which we can understand but dont have in the database
+      eventBus.on("setupStarted"  , (stoneHandle) => { this._pauseFactoryResetCapability();   });
+
+      // we will delay the enabling of the automatic factory resetting to ensure setup mode has really been concluded.
+      eventBus.on("setupCancelled", (stoneHandle) => { this._restoreFactoryResetCapability(); });
+      eventBus.on("setupComplete" , (stoneHandle) => { this._restoreFactoryResetCapability(); });
+
       // listen to verified advertisements. Verified means consecutively successfully encrypted.
       NativeBus.on(NativeBus.topics.advertisement, this.handleAdvertisement.bind(this));
 
@@ -89,6 +104,22 @@ class StoneManagerClass {
       });
       this._initialized = true;
     }
+  }
+
+  _pauseFactoryResetCapability() {
+    // make sure we do not factory reset unknown crownstones.
+    if (this.factoryResetUnknownStonesEnableTimeout !== null) {
+      this.factoryResetUnknownStonesEnableTimeout();
+      this.factoryResetUnknownStonesEnableTimeout = null;
+    }
+    this.factoryResetUnknownStonesEnabled = false;
+  }
+
+  _restoreFactoryResetCapability() {
+    this.factoryResetUnknownStonesEnableTimeout = Scheduler.scheduleCallback(() => {
+      this.factoryResetUnknownStonesEnableTimeout = null;
+      this.factoryResetUnknownStonesEnabled = true;
+    }, 5000, "Restore factory reset capabilities.")
   }
 
 
@@ -229,11 +260,10 @@ class StoneManagerClass {
     }
 
     // unknown crownstone, factory reset it.
-    // TODO: restore this method when the race condition is covered (after setup, before loading into store this can happen)
-    // if (referenceByHandle === undefined) {
-    //   this._factoryResetUnknownCrownstone(advertisement.handle);
-    //   return;
-    // }
+    if (referenceByHandle === undefined) {
+      this._factoryResetUnknownCrownstone(advertisement.handle);
+      return;
+    }
 
     // create an entity for this crownstone if one does not exist yet.
     if (!this.entities[referenceByCrownstoneId.id]) { this.createEntity(sphereId, referenceByCrownstoneId.id); }
@@ -256,6 +286,8 @@ class StoneManagerClass {
 
 
   _factoryResetUnknownCrownstone(handle) {
+    if (this.factoryResetUnknownStonesEnabled === false) { return; }
+
     if (!this.factoryResettingCrownstones[handle]) {
       this.factoryResettingCrownstones[handle] = true;
 

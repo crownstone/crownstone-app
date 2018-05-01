@@ -289,7 +289,6 @@ class BatchCommandHandlerClass {
       // We will not use the relayOnlyTargets for now since the handling of the mesh should be improved for this.
       // However, we will send the entire mesh payload to each stone. This gives us the redundancy of the old system (individual connections),
       // while keeping the performance improvement of the mesh.
-
       let topicsToScan = this._getTopicsFromTargets(directTargets);
       if (topicsToScan.length === 0) {
         // Use the attempt handler to clean up after something fails.

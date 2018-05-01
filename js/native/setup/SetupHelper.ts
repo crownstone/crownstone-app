@@ -101,8 +101,11 @@ export class SetupHelper {
             LOG.info("setup progress: setupCrownstone done");
             eventBus.emit("setupInProgress", { handle: this.handle, progress: 18 });
 
+            // fast setup will require much less time in 'stand-by' after the setup has completed.
+            let fastSetupEnabled = Util.versions.isHigherOrEqual(this.firmwareVersion, '2.1.0')
+
             // we use the scheduleCallback instead of setTimeout to make sure the process won't stop because the user disabled his screen.
-            Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 300, 'setup19');
+            Scheduler.scheduleCallback(() => { eventBus.emit("setupInProgress", { handle: this.handle, progress: 19 }); }, 250, 'setup19');
             Scheduler.scheduleCallback(() => {
               let actions = [];
 
@@ -198,7 +201,7 @@ export class SetupHelper {
               }
 
 
-            }, 2500, 'setup20 resolver timeout');
+            }, fastSetupEnabled ? 500 : 2500, 'setup20 resolver timeout');
           })
           .catch((err) => {
             // Restore trigger state
