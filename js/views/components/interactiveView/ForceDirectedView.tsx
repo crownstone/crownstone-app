@@ -66,7 +66,8 @@ export class ForceDirectedView extends Component<{
   animationFrame : any;
 
   nodes: any = {};
-  edges: any = {};
+  edges: any = [];
+  edgeMap: any = {};
   unsubscribeGestureEvents: any[];
 
   viewWidth : number = screenWidth;
@@ -183,7 +184,17 @@ export class ForceDirectedView extends Component<{
         edgeIdsNew.sort();
       }
       if (edgeIdsCurrent.join() !== edgeIdsNew.join()) {
+        // the ids are different --> we need to change the physics
         this.loadIdsInSolver(nextProps.nodeIds, nextProps.nodeRadius, nextProps.edges);
+      }
+      else {
+        // the IDs are not different, but we will merge the edge information into our edges anyway.
+        if (nextProps.edges && Array.isArray(nextProps.edges)) {
+          for (let i = 0; i < nextProps.edges.length; i++) {
+            let edgeId = nextProps.edges[i].id;
+            this.edges[this.edgeMap[edgeId]] = Util.deepExtend(this.edges[this.edgeMap[edgeId]], nextProps.edges[i])
+          }
+        }
       }
     }
   }
@@ -465,9 +476,11 @@ export class ForceDirectedView extends Component<{
     }
 
     this.edges = [];
+    this.edgeMap = {};
     if (edges && Array.isArray(edges)) {
       for (let i = 0; i < edges.length; i++) {
-        this.edges.push(Util.deepExtend({}, edges[i]))
+        this.edges.push(Util.deepExtend({}, edges[i]));
+        this.edgeMap[edges[i].id] = i;
       }
     }
 
@@ -623,8 +636,8 @@ export class ForceDirectedView extends Component<{
         for (let i = 0; i < renderSettings.length; i++) {
           let settings = renderSettings[i];
           let offset = settings.offset || 0;
-          let dx = offset * rx;
-          let dy = offset * ry;
+          let dx = offset * rx * ((pos1.x-pos2.x) < 0 ? -1 : 1);
+          let dy = offset * ry * ((pos1.y-pos2.y) < 0 ? -1 : 1);
 
           let fillColor = "transparent";
           let color = settings.color || "#fff";
@@ -680,24 +693,13 @@ export class ForceDirectedView extends Component<{
           if (settings.label !== undefined) {
             let middleX = (sX + eX) * 0.5;
             let middleY = (sY + eY) * 0.5;
-            // textResult.push(
-            //   <Circle
-            //     key={edge.id + "_c" + i}
-            //     cx={middleX}
-            //     cy={middleY}
-            //     r={25}
-            //     fill={colors.white.hex}
-            //     stroke={colors.gray.hex}
-            //     strokeWidth={2}
-            //   />
-            // );
             textResult.push(
               <Text
                 key={edge.id + "_t" + i}
                 fill={colors.white.hex}
                 stroke={colors.menuBackground.hex}
                 strokeWidth={2}
-                fontSize="50"
+                fontSize="40"
                 fontWeight="bold"
                 x={middleX}
                 y={middleY}

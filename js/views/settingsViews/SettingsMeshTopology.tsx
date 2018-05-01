@@ -19,6 +19,7 @@ import { MeshElement } from "../components/MeshElement";
 import {ForceDirectedView} from "../components/interactiveView/ForceDirectedView";
 import {topBarHeight} from "../styles";
 import {TopbarButton} from "../components/topbar/TopbarButton";
+import KeepAwake from 'react-native-keep-awake';
 const Actions = require('react-native-router-flux').Actions;
 
 let MESH_TIMEOUT = 3*24*3600*1000;
@@ -124,12 +125,12 @@ export class SettingsMeshTopology extends Component<any, any> {
 
     let locationColorArray = [
       colors.green.hex,
-      colors.csOrange.hex,
       colors.menuTextSelected.hex,
       colors.blue.hex,
       colors.purple.hex,
       colors.darkPurple.hex,
       colors.menuBackground.hex,
+      colors.csOrange.hex,
       colors.red.hex,
       colors.darkRed.hex,
     ];
@@ -212,6 +213,7 @@ export class SettingsMeshTopology extends Component<any, any> {
             timestep: 0.4
           }}
         />
+        <KeepAwake />
       </Background>
     );
   }
