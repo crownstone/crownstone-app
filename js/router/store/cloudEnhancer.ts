@@ -276,6 +276,32 @@ function handleApplianceBehaviourInCloud(action, state) {
 }
 
 function handleLocationInCloud(action, state) {
+  if (action.data.picture) {
+    // in case the user has a pending delete location picture request, we will finish this immediately so a new
+    // picture will not be deleted.
+    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'removeLocationPicture' + action.locationId });
+    eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
+      id: 'uploadLocationPicture' + action.locationId,
+      localId: action.locationId,
+      localSphereId: action.sphereId,
+      specialType: 'uploadLocationPicture'
+    });
+  }
+  else if (action.data.picture === null) {
+    // in case the user has a pending upload location picture request, we will finish this immediately so a new
+    // picture will not be uploaded.
+    eventBus.emit("submitCloudEvent",{type: 'FINISHED_SPECIAL_LOCATIONS', id: 'uploadLocationPicture' + action.locationId });
+    eventBus.emit("submitCloudEvent", {
+      type: 'CLOUD_EVENT_SPECIAL_LOCATIONS',
+      id: 'removeLocationPicture'+ action.locationId,
+      localId: action.locationId,
+      localSphereId: action.sphereId,
+      specialType: 'removeLocationPicture'
+    });
+  }
+
+
   let sphere   = state.spheres[action.sphereId];
   let location = sphere.locations[action.locationId];
 

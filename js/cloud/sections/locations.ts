@@ -31,5 +31,20 @@ export const locations = {
       'DELETE',
       '/Spheres/{id}/ownedLocations/' + cloudLocationId
     );
-  }
+  },
+
+  downloadLocationPicture: function(toPath) {
+    return this._download({endPoint:'/Locations/{id}/image'}, toPath);
+  },
+
+  uploadLocationPicture: function(file: string) {
+    return this._uploadImage({endPoint:'/Locations/{id}/image', path:file, type:'body'})
+  },
+
+  deleteLocationPicture: function() {
+    return this._setupRequest(
+      'DELETE',
+      '/Locations/{id}/image/'
+    );
+  },
 };

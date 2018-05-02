@@ -6,6 +6,8 @@ let defaultSettings = {
   config: {
     name:'Untitled Room',
     icon: undefined,
+    picture: null,
+    pictureId: null,
     cloudId: null,
     updatedAt: 1,
 
@@ -83,12 +85,22 @@ let locationConfigReducer = (state = defaultSettings.config, action : any = {}) 
     case 'UPDATE_LOCATION_CONFIG':
       if (action.data) {
         let newState = {...state};
-        newState.name               = update(action.data.name, newState.name);
-        newState.icon               = update(action.data.icon, newState.icon);
-        newState.cloudId            = update(action.data.cloudId,        newState.cloudId);
-        newState.fingerprintRaw     = update(action.data.fingerprintRaw, newState.fingerprintRaw);
+        newState.name               = update(action.data.name,              newState.name);
+        newState.icon               = update(action.data.icon,              newState.icon);
+        newState.cloudId            = update(action.data.cloudId,           newState.cloudId);
+        newState.picture            = update(action.data.picture,           newState.picture);
+        newState.pictureId          = update(action.data.pictureId,         newState.pictureId);
+        newState.fingerprintRaw     = update(action.data.fingerprintRaw,    newState.fingerprintRaw);
         newState.fingerprintParsed  = update(action.data.fingerprintParsed, newState.fingerprintParsed);
         newState.updatedAt          = getTime(action.data.updatedAt);
+        return newState;
+      }
+      return state;
+    case 'LOCATION_UPDATE_PICTURE':
+      if (action.data) {
+        let newState = {...state};
+        newState.picture   = update(action.data.picture,    newState.picture  );
+        newState.pictureId = update(action.data.pictureId,  newState.pictureId);
         return newState;
       }
       return state;

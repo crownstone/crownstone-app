@@ -4,6 +4,20 @@ import {LOG} from "../../../logging/Log";
 const RNFS = require('react-native-fs');
 
 /**
+ * These events are used to remove/create files in the cloud.
+ * In case the initial command failed, we want the user to just continue
+ * what they were doing.
+ *
+ * To handle this, we have a list of events that we need to finalize.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  * @param store
  * @returns {Promise.<TResult>|*}
  */
@@ -31,7 +45,7 @@ export const syncEvents = function(store) {
 
 const handleRemove = function(state, events, actions) {
   let promises = [];
-  let scheduleIds = Object.keys(events.schedules) ;
+  let scheduleIds = Object.keys(events.schedules);
   let messageIds = Object.keys(events.messages);
   messageIds.forEach((messageId) => {
     let payload = events.messages[messageId];
@@ -67,6 +81,7 @@ const handleRemove = function(state, events, actions) {
 const handleSpecial = function(state, events, actions) {
   let promises = [];
   let messageIds = Object.keys(events.messages);
+  let locationEventIds = Object.keys(events.locations);
   let userEventIds = Object.keys(events.user);
   messageIds.forEach((dbId) => {
     let payload = events.messages[dbId];
@@ -117,6 +132,51 @@ const handleSpecial = function(state, events, actions) {
               .then(() => { success() })
               .catch((err) => {
                 LOG.error("syncEvents Special: Could not upload image to cloud", err);
+              })
+          )
+        }
+        break;
+
+    }
+  });
+
+  locationEventIds.forEach((locationEventId) => {
+    let payload = events.locations[locationEventId];
+    let success = () => { actions.push({type: 'FINISHED_SPECIAL_LOCATIONS', id: locationEventId })};
+
+    let sphere = state.spheres[payload.localSphereId];
+    if (!sphere) { return success(); }
+
+    let location = sphere.locations[payload.localId];
+    if (!location) { return success(); }
+
+
+    switch (payload.specialType) {
+      case 'removeLocationPicture':
+        promises.push(CLOUD.forLocation(payload.localId).deleteLocationPicture({background: true}).then(() => { success(); })
+          .catch((err) => {
+            // even if there is no profile pic, 204 will be returned. Any other errors are.. errors?
+            LOG.error("syncEvents Special: Could not remove location image from cloud", err);
+          }));
+        break;
+      case 'uploadLocationPicture':
+        if (!location.config.picture) {
+          success();
+        }
+        else {
+          promises.push(
+            RNFS.exists(location.config.picture)
+              .then((fileExists) => {
+                if (fileExists === false) {
+                  success();
+                }
+                else {
+                  return CLOUD.forLocation(payload.localId).uploadLocationPicture(location.config.picture)
+                }
+              })
+              .then(() => { success() })
+              .catch((err) => {
+                LOG.error("syncEvents Special: Could not upload location image to cloud", err);
               })
           )
         }

@@ -60,6 +60,41 @@ class LogProcessorClass {
     LOG.info("Device Locale", DeviceInfo.getDeviceLocale()); // e.g en-US
     LOG.info("Device Country", DeviceInfo.getDeviceCountry()); // e.g US
     LOG.info("App Instance ID", DeviceInfo.getInstanceID()); // ANDROID ONLY - see https://developers.google.com/instance-id/
+
+    // console.log("getAPILevel()", DeviceInfo.getAPILevel());
+    // console.log("getApplicationName()", DeviceInfo.getApplicationName());
+    // console.log("getBrand()", DeviceInfo.getBrand());
+    // console.log("getBuildNumber()", DeviceInfo.getBuildNumber());
+    // console.log("getBundleId()", DeviceInfo.getBundleId());
+    // console.log("getCarrier()", DeviceInfo.getCarrier());
+    // console.log("getDeviceCountry()", DeviceInfo.getDeviceCountry());
+    // console.log("getDeviceId()", DeviceInfo.getDeviceId());
+    // console.log("getDeviceLocale()", DeviceInfo.getDeviceLocale());
+    // console.log("getDeviceName()", DeviceInfo.getDeviceName());
+    // console.log("getFirstInstallTime()", DeviceInfo.getFirstInstallTime());
+    // console.log("getFontScale()", DeviceInfo.getFontScale());
+    // console.log("getFreeDiskStorage()", DeviceInfo.getFreeDiskStorage());
+    // console.log("getInstallReferrer()", DeviceInfo.getInstallReferrer());
+    // console.log("getInstanceID()", DeviceInfo.getInstanceID());
+    // console.log("getLastUpdateTime()", DeviceInfo.getLastUpdateTime());
+    // console.log("getManufacturer()", DeviceInfo.getManufacturer());
+    // console.log("getMaxMemory()", DeviceInfo.getMaxMemory());
+    // console.log("getModel()", DeviceInfo.getModel());
+    // console.log("getPhoneNumber()", DeviceInfo.getPhoneNumber());
+    // console.log("getReadableVersion()", DeviceInfo.getReadableVersion());
+    // console.log("getSerialNumber()", DeviceInfo.getSerialNumber());
+    // console.log("getSystemName()", DeviceInfo.getSystemName());
+    // console.log("getSystemVersion()", DeviceInfo.getSystemVersion());
+    // console.log("getTimezone()", DeviceInfo.getTimezone());
+    // console.log("getTotalDiskCapacity()", DeviceInfo.getTotalDiskCapacity());
+    // console.log("getTotalMemory()", DeviceInfo.getTotalMemory());
+    // console.log("getUniqueID()", DeviceInfo.getUniqueID());
+    // console.log("getUserAgent()", DeviceInfo.getUserAgent());
+    // console.log("getVersion()", DeviceInfo.getVersion());
+    // console.log("is24Hour()", DeviceInfo.is24Hour());
+    // console.log("isEmulator()", DeviceInfo.isEmulator());
+    // console.log("isPinOrFingerprintSet()", DeviceInfo.isPinOrFingerprintSet());
+    // console.log("isTablet()", DeviceInfo.isTablet());
   }
 
   refreshData() {

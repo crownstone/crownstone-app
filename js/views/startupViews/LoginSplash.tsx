@@ -27,7 +27,7 @@ let versionStyle = {
 
 export class LoginSplash extends Component<any, any> {
   render() {
-    let factor = 0.225;
+    let factor = 0.25;
 
 
     return (

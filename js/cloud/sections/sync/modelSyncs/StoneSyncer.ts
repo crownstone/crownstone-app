@@ -53,10 +53,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
       // TODO: [2017-10-02] RETROFIT CODE: AFTER A FEW RELEASES
       let locationLinkId = null;
       if (stone_from_cloud.locations.length > 0 && stone_from_cloud.locations[0]) {
-        locationLinkId = stone_from_cloud.locations[0].id;
+        locationLinkId = stone_from_cloud.locations[0].id || stone_from_cloud.locationId;
       }
       else {
-        locationLinkId = null;
+        locationLinkId = stone_from_cloud.locationId || null;
       }
 
       // if we do not have a stone with exactly this cloudId, verify that we do not have the same stone on our device already.
@@ -262,6 +262,10 @@ export class StoneSyncer extends SyncingSphereItemBase {
       syncLocal();
     }
     else if (stoneInState.config.locationId && localLocationId === null) {   // self repair
+      LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
+      syncLocal();
+    }
+    else if (localLocationId && stoneInState.config.locationId === null) {   // self repair
       LOGw.cloud("StoneSyncer: Repairing Stone due to non-existing locationId.");
       syncLocal();
     }

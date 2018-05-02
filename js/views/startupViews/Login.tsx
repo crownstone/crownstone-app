@@ -179,7 +179,7 @@ export class Login extends Component<any, any> {
   }
 
   render() {
-    let factor = 0.2;
+    let factor = 0.25;
 
     return (
       <Background fullScreen={true} image={this.props.backgrounds.mainDark} shadedStatusBar={true}>

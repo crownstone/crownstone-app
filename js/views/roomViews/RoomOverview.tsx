@@ -28,7 +28,7 @@ import {
   canUseIndoorLocalizationInSphere,
   enoughCrownstonesForIndoorLocalization
 } from '../../util/DataUtil'
-import { styles, colors, screenHeight, tabBarHeight, topBarHeight } from '../styles'
+import {styles, colors, screenHeight, tabBarHeight, topBarHeight, screenWidth} from '../styles'
 import {DfuStateHandler} from '../../native/firmware/DfuStateHandler';
 import {DfuDeviceEntry}  from '../components/deviceEntries/DfuDeviceEntry';
 import {RoomExplanation} from '../components/RoomExplanation';
@@ -37,6 +37,8 @@ import {Permissions} from "../../backgroundProcesses/PermissionManager";
 import {TopbarButton} from "../components/topbar/TopbarButton";
 import {SphereDeleted} from "../static/SphereDeleted";
 import {RoomDeleted} from "../static/RoomDeleted";
+import {ScaledImage} from "../components/ScaledImage";
+import {preparePictureURI} from "../../util/Util";
 
 
 export class RoomOverview extends Component<any, any> {
@@ -66,6 +68,7 @@ export class RoomOverview extends Component<any, any> {
   justFinishedSetup : any;
   nearestStoneIdInSphere : any;
   nearestStoneIdInRoom : any;
+  roomBackgroundImageAvailable = false;
 
   constructor(props) {
     super(props);
@@ -209,6 +212,7 @@ export class RoomOverview extends Component<any, any> {
             locationId={this.props.locationId}
             sphereId={this.props.sphereId}
             viewingRemotely={this.viewingRemotely}
+            roomBackgroundImageAvailable={this.roomBackgroundImageAvailable}
             nearestInSphere={stoneId === this.nearestStoneIdInSphere}
             nearestInRoom={stoneId === this.nearestStoneIdInRoom}
           />
@@ -282,9 +286,16 @@ export class RoomOverview extends Component<any, any> {
     const sphere = state.spheres[this.props.sphereId];
     if (!sphere) { return <SphereDeleted/> }
     let location = null;
+    let roomBackgroundImage = null;
+    this.roomBackgroundImageAvailable = false;
+
     if (this.props.locationId) {
       location = sphere.locations[this.props.locationId];
       if (!location) { return <RoomDeleted /> }
+      if (location.config.picture) {
+        this.roomBackgroundImageAvailable = true;
+        roomBackgroundImage = <Image style={{width: screenWidth, height: screenHeight}}  source={{uri:preparePictureURI(location.config.picture)}}  />;
+      }
     }
 
     let seeStoneInSetupMode = SetupStateHandler.areSetupStonesAvailable();
@@ -300,7 +311,7 @@ export class RoomOverview extends Component<any, any> {
     this.viewingRemotely = this.props.locationId === null && Object.keys(stones).length === 0 ? false : this.viewingRemotely;
 
     let amountOfStonesInRoom = Object.keys(stones).length;
-    let backgroundImage = this.props.getBackground('main', this.viewingRemotely);
+    let backgroundImage = roomBackgroundImage || this.props.getBackground('main', this.viewingRemotely);
 
     let content = undefined;
     if (amountOfStonesInRoom === 0 && seeStoneInSetupMode == false) {

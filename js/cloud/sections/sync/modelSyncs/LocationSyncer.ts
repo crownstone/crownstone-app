@@ -10,6 +10,7 @@ import {Util} from "../../../../util/Util";
 import {SyncingSphereItemBase} from "./SyncingBase";
 import {transferLocations} from "../../../transferData/transferLocations";
 import {Permissions} from "../../../../backgroundProcesses/PermissionManager";
+import {LOGe} from "../../../../logging/Log";
 
 export class LocationSyncer extends SyncingSphereItemBase {
   userId: string;
@@ -62,6 +63,7 @@ export class LocationSyncer extends SyncingSphereItemBase {
       else {
         // the location does not exist locally but it does exist in the cloud.
         // we create it locally.
+
         localId = Util.getUUID();
         this.transferPromises.push(
           transferLocations.createLocal(this.actions, {
@@ -71,6 +73,9 @@ export class LocationSyncer extends SyncingSphereItemBase {
           })
           .catch(() => {})
         );
+
+        // download image
+        this._downloadLocationImage(localId, location_from_cloud.id, location_from_cloud.imageId);
       }
 
       cloudIdMap[location_from_cloud.id] = localId;
@@ -199,7 +204,25 @@ export class LocationSyncer extends SyncingSphereItemBase {
     }
   }
 
+  _downloadLocationImage(localId, cloudId, imageId) {
+    if (!imageId) { return; }
+
+    let toPath = Util.getPath(localId + '.jpg');
+    this.transferPromises.push(
+      CLOUD.forLocation(cloudId).downloadLocationPicture(toPath)
+        .then((picturePath) => {
+          this.actions.push({type:'LOCATION_UPDATE_PICTURE', sphereId: this.localSphereId, locationId: localId, data:{ picture: picturePath, pictureId: imageId }});
+        }).catch((err) => { LOGe.cloud("LocationSyncer: Could not download location picture to ", toPath, ' err:', err); })
+    );
+  }
+
   syncLocalLocationDown(localId, locationInState, location_from_cloud) {
+    if (location_from_cloud.imageId && locationInState.pictureId === null || (location_from_cloud.imageId && (location_from_cloud.imageId !== locationInState.pictureId))) {
+      // user should have A or A DIFFERENT profile picture according to the cloud
+      this._downloadLocationImage(localId, location_from_cloud.id,  location_from_cloud.imageId);
+    }
+
+
     if (shouldUpdateInCloud(locationInState.config, location_from_cloud)) {
 
       if (!Permissions.inSphere(this.localSphereId).canUploadLocations) { return }

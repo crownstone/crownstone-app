@@ -14,7 +14,7 @@ const Actions = require('react-native-router-flux').Actions;
 import { Background } from './../components/Background'
 import { ListEditableItems } from './../components/ListEditableItems'
 import { IconButton } from '../components/IconButton'
-import { Util } from '../../util/Util'
+import {processImage, safeDeleteFile, Util} from '../../util/Util'
 import { enoughCrownstonesInLocationsForIndoorLocalization } from '../../util/DataUtil'
 import { CLOUD } from '../../cloud/cloudAPI'
 import {colors, OrangeLine} from './../styles'
@@ -31,7 +31,7 @@ export class RoomEdit extends Component<any, any> {
     const { params } = navigation.state;
     return {
       title: "Edit Room",
-      headerLeft: <CancelButton onPress={BackAction} />,
+      headerLeft: <CancelButton onPress={() => { params.leftAction ? params.leftAction() : BackAction() }}/>,
       headerRight: <TopbarButton
         text={"Save"}
         onPress={() => {
@@ -45,18 +45,24 @@ export class RoomEdit extends Component<any, any> {
   viewingRemotely : boolean = false;
   unsubscribeStoreEvents : any;
 
+  removePictureQueue = [];
+  pictureTaken = false;
+
   constructor(props) {
     super(props);
 
     const store = props.store;
     const state = store.getState();
     const room  = state.spheres[props.sphereId].locations[props.locationId];
+
     this.state = {
       name: room.config.name,
-      icon: room.config.icon
+      icon: room.config.icon,
+      picture: room.config.picture,
+      pictureId: room.config.pictureId,
     };
 
-    this.props.navigation.setParams({rightAction: () => { this._updateRoom(); }})
+    this.props.navigation.setParams({leftAction: () => { this.cancelEdit(); }, rightAction: () => { this._updateRoom(); }})
   }
 
   componentDidMount() {
@@ -85,7 +91,23 @@ export class RoomEdit extends Component<any, any> {
 
   componentWillUnmount() {
     this.unsubscribeStoreEvents();
+
+
   }
+
+  _removeUnusedPictures() {
+    this.removePictureQueue.forEach((pic) => {
+      this._removePicture(pic);
+    })
+  }
+
+  _removePicture(image) {
+    if (image) {
+      console.log("safe deleting")
+      safeDeleteFile(image).catch(() => {});
+    }
+  }
+
 
   _removeRoom() {
     const store = this.props.store;
@@ -152,6 +174,18 @@ export class RoomEdit extends Component<any, any> {
         }
       })
     }});
+    items.push({
+      label: 'Picture',
+      type:  'picture',
+      value: this.state.picture,
+      placeholderText: 'Optional',
+      callback:(image) => {
+        console.log("image", image); this.pictureTaken = true; this.setState({picture:image}); },
+      removePicture:() => {
+        this.removePictureQueue.push(this.state.picture);
+        this.setState({picture: null});
+      }
+    })
 
 
     // here we do the training if required and possible.
@@ -221,6 +255,36 @@ export class RoomEdit extends Component<any, any> {
     const state = store.getState();
     const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
 
+    // remove all pictures that have been attempted except the one we will use.
+    this._removeUnusedPictures()
+
+    if (this.pictureTaken) {
+      processImage(this.state.picture, this.props.locationId + ".jpg")
+        .then((picture) => {
+          this.props.store.dispatch({
+            type:'UPDATE_LOCATION_CONFIG',
+            sphereId: this.props.sphereId,
+            locationId: this.props.locationId,
+            data: {
+              picture: picture,
+              pictureId: null
+            }});
+        })
+    }
+
+    if (room.config.picture !== this.state.picture && this.state.picture === null) {
+      this._removePicture(room.config.picture);
+      this.props.store.dispatch({
+        type:'UPDATE_LOCATION_CONFIG',
+        sphereId: this.props.sphereId,
+        locationId: this.props.locationId,
+        data: {
+          picture: null,
+          pictureId: null
+        }});
+    }
+
+
     if (room.config.name !== this.state.name || room.config.icon !== this.state.icon) {
       this.props.store.dispatch({
         type:'UPDATE_LOCATION_CONFIG',
@@ -230,6 +294,24 @@ export class RoomEdit extends Component<any, any> {
           name: this.state.name,
           icon: this.state.icon
         }});
+    }
+    BackAction();
+  }
+
+  cancelEdit() {
+    const store = this.props.store;
+    const state = store.getState();
+    const room  = state.spheres[this.props.sphereId].locations[this.props.locationId];
+
+    // remove all pictures that have been attempted except the one we will use.
+    this.removePictureQueue.forEach((pic) => {
+      if (pic !== room.config.picture) {
+        this._removePicture(pic);
+      }
+    })
+
+    if (this.pictureTaken) {
+      this._removePicture(this.state.picture)
     }
     BackAction();
   }

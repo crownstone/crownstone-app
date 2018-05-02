@@ -4229,9 +4229,9 @@ react-native-console-time-polyfill@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/react-native-console-time-polyfill/-/react-native-console-time-polyfill-0.0.6.tgz#7823d86fe83439c74480d1b124a92b1a78571889"
 
-react-native-device-info@~0.16.0:
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.16.0.tgz#09534a5950c818aeebc8de5a10af94376c2018b8"
+react-native-device-info@~0.21.5:
+  version "0.21.5"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.21.5.tgz#99478a2d68182e012297f2d63f2bd1b788106dee"
 
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"

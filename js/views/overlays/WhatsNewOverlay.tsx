@@ -70,7 +70,7 @@ export class WhatsNewOverlay extends Component<any, any> {
   }
 
   render() {
-    let height = Math.min(460, 0.9 * screenHeight);
+    let height = Math.min(500, 0.9 * screenHeight);
     let width = 0.85*screenWidth-30;
     return (
       <OverlayBox

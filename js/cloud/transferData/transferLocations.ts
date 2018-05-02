@@ -8,6 +8,7 @@ let fieldMap : fieldMap = [
   {local: 'name',      cloud: 'name'},
   {local: 'icon',      cloud: 'icon'},
   {local: 'updatedAt', cloud: 'updatedAt'},
+  {local: 'pictureId', cloud:'imageId', cloudToLocalOnly: true},
 
   // used for local config
   {local: 'cloudId',           cloud: 'id' ,  cloudToLocalOnly: true },

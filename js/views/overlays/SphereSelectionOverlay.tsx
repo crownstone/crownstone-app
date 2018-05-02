@@ -57,7 +57,7 @@ export class SphereSelectionOverlay extends Component<any, any> {
           this.setState({visible:false});
         }}
       >
-        <Text style={textStyle}>{item.config.name + '\'s Sphere'}</Text>
+        <Text style={textStyle}>{item.config.name}</Text>
         {item.config.present ? <Icon name="c1-locationPin1" size={20} style={{paddingRight:10}} color={colors.black.rgba(0.4)} /> : undefined }
       </TouchableOpacity>
     )
